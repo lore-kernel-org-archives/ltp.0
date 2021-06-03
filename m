@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 Jun 2021 13:05:02 +0200
-Subject: [LTP] [RFC] Reduce LICENCE/COPYING files
-In-Reply-To: <YLeA8KOphpVg3IDP@pevik>
-References: <YLeA8KOphpVg3IDP@pevik>
-Message-ID: <YLi3XqA3hLh7HWqn@yuki>
+Date: Thu, 3 Jun 2021 13:26:54 +0200
+Subject: [LTP] [PATCH v5] syscalls/chown: Rewrite chown/chown04.c with
+ the new api
+In-Reply-To: <20210531114935.26000-1-xieziyao@huawei.com>
+References: <20210531114935.26000-1-xieziyao@huawei.com>
+Message-ID: <YLi8fjhmEpXlzC9d@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,11 +12,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I suppose it's safe to keep only single licence in testcases/open_posix_testsuite/,
-> but could we keep only COPYING in the root directory and delete the rest?
-> Or keep COPYING and testcases/open_posix_testsuite/COPYING only?
+Pushed with two minor changes, thanks.
 
-Do we even need these files? Isn't SPDX identifier enough these days?
+* Removed the cleanup() since there is no need to reset the UID at the
+  end of the test in the new library
+
+* Made use of tst_get_bad_addr() instead of the hardcoded mmap() call
 
 -- 
 Cyril Hrubis
