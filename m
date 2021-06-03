@@ -1,192 +1,253 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  3 Jun 2021 16:48:24 +0100
-Subject: [LTP] [RFC PATCH 1/2] Add 'make checks' and clang-checks to build
- system
+Date: Thu,  3 Jun 2021 16:48:25 +0100
+Subject: [LTP] [RFC PATCH 2/2] Start libclang based analyzer and TEST() check
 In-Reply-To: <20210603154825.30165-1-rpalethorpe@suse.com>
 References: <20210603154825.30165-1-rpalethorpe@suse.com>
-Message-ID: <20210603154825.30165-2-rpalethorpe@suse.com>
+Message-ID: <20210603154825.30165-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Allows the user to run 'make check' to check all source files or
-'make check-<target>' to check one source file corresponding to a
-target.
+This uses the stable Clang C API to find usages of the TEST()
+macro. It can also determine if a translation unit is a test
+executable by finding the struct tst_test test instantiation.
 
-Adds makefile pieces for tools/clang-checks/main which will be a
-libclang based tool. By default this is ran by 'make check'.
-
-In theory allows other tools to be specified with
-'make CHECK=tool CHECK_FLAGS=<args> check...'. e.g. 'make CHECK=sparse
-CHECK_FLAGS= check-tst_cgroup'
+This Clang API only exposes the AST along with some other utilities
+for evaluating constants, indexing, auto completion and source
+rewriting. This is somewhat less than what Smatch, Coccinelle and the
+unstable Clang C++ APIs expose. However it is a simple, stable and
+well supported C API.
 ---
- configure.ac                       |  2 ++
- include/mk/config.mk.in            |  5 +++++
- include/mk/env_post.mk             |  8 ++++++++
- include/mk/generic_leaf_target.inc |  5 ++++-
- include/mk/lib.mk                  |  3 +++
- include/mk/rules.mk                |  9 +++++++++
- include/mk/testcases.mk            |  1 +
- tools/clang-checks/.gitignore      |  1 +
- tools/clang-checks/Makefile        | 13 +++++++++++++
- 9 files changed, 46 insertions(+), 1 deletion(-)
- create mode 100644 tools/clang-checks/.gitignore
- create mode 100644 tools/clang-checks/Makefile
+ tools/clang-checks/main.c | 218 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 218 insertions(+)
+ create mode 100644 tools/clang-checks/main.c
 
-diff --git a/configure.ac b/configure.ac
-index 136d82d09..b37c13c3c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -14,6 +14,7 @@ AC_CONFIG_FILES([ \
- ])
- 
- AC_ARG_VAR(HOSTCC, [The C compiler on the host])
-+AC_ARG_VAR(CLANG, [The LLVM Clang C compiler on the host])
- 
- AM_MAINTAINER_MODE([enable])
- 
-@@ -42,6 +43,7 @@ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     asm/ldt.h \
-+    clang-c/Index.h \
-     ifaddrs.h \
-     keyutils.h \
-     linux/can.h \
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index 218447ef3..361b6a746 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -44,6 +44,11 @@ HOSTCC := cc
- endif
- endif
- 
-+CLANG := @CLANG@
-+ifeq ($(strip $(CLANG)),)
-+CLANG := clang
-+endif
-+
- AIO_LIBS		:= @AIO_LIBS@
- CAP_LIBS		:= @CAP_LIBS@
- ACL_LIBS		:= @ACL_LIBS@
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 1d22f9c53..13f1104ed 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -89,6 +89,14 @@ $(error You must define $$(prefix) before executing install)
- endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
- endif
- 
-+CHECK_TARGETS			?= $(addprefix check-,$(MAKE_TARGETS))
-+CHECK				?= $(abs_top_srcdir)/tools/clang-checks/main
-+CHECK_FLAGS			?= -resource-dir $(shell $(CLANG) -print-resource-dir)
-+
-+ifeq ($(dir $(CHECK)),$(abs_top_srcdir)/tools/clang-checks/)
-+CHECK_DEPS			+= $(CHECK)
-+endif
-+
- include $(top_srcdir)/include/mk/rules.mk
- 
- endif
-diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
-index 64953f89a..aa092a5a3 100644
---- a/include/mk/generic_leaf_target.inc
-+++ b/include/mk/generic_leaf_target.inc
-@@ -92,7 +92,7 @@
- # INSTALL_DIR			:= $(libdir)
- #
- 
--.PHONY: all clean install
-+.PHONY: all clean install check
- 
- ifneq ($(strip $(MAKE_TARGETS)),)
- $(MAKE_TARGETS) += $(HOST_MAKE_TARGETS)
-@@ -109,4 +109,7 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
- 
- install: $(INSTALL_FILES)
- 
-+$(CHECK_TARGETS): | $(CHECK_DEPS)
-+check: $(CHECK_TARGETS)
-+
- # vim: syntax=make
-diff --git a/include/mk/lib.mk b/include/mk/lib.mk
-index f9b6c0aff..f99e63acd 100644
---- a/include/mk/lib.mk
-+++ b/include/mk/lib.mk
-@@ -26,6 +26,7 @@
- # Makefile to include for libraries.
- 
- include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/clang-checks.mk
- 
- INSTALL_DIR	:= $(libdir)
- 
-@@ -57,6 +58,8 @@ LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
- 
- LIBOBJS		:= $(LIBSRCS:.c=.o)
- 
-+CHECK_TARGETS	:= $(addprefix check-,$(notdir $(LIBSRCS:.c=)))
-+
- $(LIB): $(notdir $(LIBOBJS))
- 	@if [ -z "$(strip $^)" ] ; then \
- 		echo "Cowardly refusing to create empty archive"; \
-diff --git a/include/mk/rules.mk b/include/mk/rules.mk
-index c8f4bbbbe..2a04b2b67 100644
---- a/include/mk/rules.mk
-+++ b/include/mk/rules.mk
-@@ -37,3 +37,12 @@ else
- 	@$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
- 	@echo CC $(target_rel_dir)$@
- endif
-+
-+.PHONY: $(CHECK_TARGETS)
-+$(CHECK_TARGETS): check-%: %.c
-+ifdef VERBOSE
-+	$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
-+else
-+	@$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
-+	@echo CHECK $(target_rel_dir)$<
-+endif
-diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
-index 1c81773d0..32b3b0f84 100644
---- a/include/mk/testcases.mk
-+++ b/include/mk/testcases.mk
-@@ -22,6 +22,7 @@
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(top_srcdir)/include/mk/functions.mk
-+include $(top_srcdir)/include/mk/clang-checks.mk
- 
- APICMDS_DIR	:= $(abs_top_builddir)/tools/apicmds
- 
-diff --git a/tools/clang-checks/.gitignore b/tools/clang-checks/.gitignore
+diff --git a/tools/clang-checks/main.c b/tools/clang-checks/main.c
 new file mode 100644
-index 000000000..ba2906d06
+index 000000000..22df30b35
 --- /dev/null
-+++ b/tools/clang-checks/.gitignore
-@@ -0,0 +1 @@
-+main
-diff --git a/tools/clang-checks/Makefile b/tools/clang-checks/Makefile
-new file mode 100644
-index 000000000..f132ba527
---- /dev/null
-+++ b/tools/clang-checks/Makefile
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-+# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
++++ b/tools/clang-checks/main.c
+@@ -0,0 +1,218 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
++ *
++ * Entry point for the LTP static analyser.
++ *
++ * Scans the AST generated by Clang twice. First pass we just collect
++ * info about the TU (Translation Unit). Second pass performs the
++ * checks.
++ *
++ * This program takes the same arguments the Clang compiler does.
++ */
++#include <unistd.h>
++#include <string.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <clang-c/Index.h>
 +
-+top_srcdir		?= ../..
++#define attr_unused __attribute__((unused))
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/functions.mk
++enum ltp_tu_kind {
++	LTP_TEST,
++	LTP_OTHER,
++};
 +
-+HOST_MAKE_TARGETS	:= main
-+HOST_LDFLAGS 		+= -lclang
++static struct {
++	enum ltp_tu_kind tu_kind;
++} tu_info;
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
++static const char *const ansi_red = "\033[1;31m";
++static const char *const ansi_reset = "\033[0m";
++static const char *const ansi_bold = "\033[1m";
++
++static unsigned error_flag;
++
++static int color_enabled(const int fd)
++{
++	static int color;
++
++	if (color)
++		return color - 1;
++
++	const char *const env = getenv("LTP_COLORIZE_OUTPUT");
++
++	if (env) {
++		if (!strcmp(env, "n") || !strcmp(env, "0"))
++			color = 1;
++
++		if (!strcmp(env, "y") || !strcmp(env, "1"))
++			color = 2;
++
++		return color - 1;
++	}
++
++	if (isatty(fd) == 0)
++		color = 1;
++	else
++		color = 2;
++
++	return color - 1;
++}
++
++static void emit_error(CXCursor offending_cursor, const char *const error_msg)
++{
++	CXSourceLocation loc = clang_getCursorLocation(offending_cursor);
++	CXFile loc_file;
++	unsigned loc_line, loc_column;
++	CXString file_name;
++
++	error_flag = 1;
++
++	clang_getFileLocation(loc, &loc_file, &loc_line, &loc_column,
++			      /*offset=*/NULL);
++	file_name = clang_getFileName(loc_file);
++
++	if (color_enabled(STDERR_FILENO)) {
++		dprintf(STDERR_FILENO,
++			"%s:%u:%u: %sCHECK ERROR%s: %s%s%s\n",
++			clang_getCString(file_name), loc_line, loc_column,
++			ansi_red, ansi_reset,
++			ansi_bold, error_msg, ansi_reset);
++	} else {
++		dprintf(STDERR_FILENO,
++			"%s:%u:%u: CHECK ERROR: %s\n",
++			clang_getCString(file_name), loc_line, loc_column,
++			error_msg);
++	}
++
++	clang_disposeString(file_name);
++}
++
++static int cursor_cmp_spelling(const char *const spelling, CXCursor cursor)
++{
++	CXString cursor_spelling = clang_getCursorSpelling(cursor);
++	const int ret = strcmp(spelling, clang_getCString(cursor_spelling));
++
++	clang_disposeString(cursor_spelling);
++
++	return ret;
++}
++
++static int cursor_type_cmp_spelling(const char *const spelling, CXCursor cursor)
++{
++	CXType ctype = clang_getCursorType(cursor);
++	CXString ctype_spelling = clang_getTypeSpelling(ctype);
++	const int ret = strcmp(spelling, clang_getCString(ctype_spelling));
++
++	clang_disposeString(ctype_spelling);
++
++	return ret;
++}
++
++/* Check if the TEST() macro is used inside the library */
++static void check_TEST_macro(CXCursor macro_cursor)
++{
++	if (tu_info.tu_kind == LTP_TEST)
++		return;
++
++	if (!cursor_cmp_spelling("TEST", macro_cursor)) {
++		emit_error(macro_cursor,
++			   "TEST() macro should not be used in library");
++	}
++}
++
++/* Second pass where we run the checks */
++static enum CXChildVisitResult check_visitor(CXCursor cursor,
++					     attr_unused CXCursor parent,
++					     attr_unused CXClientData client_data)
++{
++	CXSourceLocation loc = clang_getCursorLocation(cursor);
++
++	if (clang_Location_isInSystemHeader(loc))
++		return CXChildVisit_Continue;
++
++	switch (clang_getCursorKind(cursor)) {
++	case CXCursor_MacroExpansion:
++			check_TEST_macro(cursor);
++		break;
++	default:
++		break;
++	}
++
++	return CXChildVisit_Recurse;
++}
++
++/* If we find `struct tst_test = {...}` then record that this TU is a test */
++static void info_ltp_tu_kind(CXCursor cursor)
++{
++	CXCursor initializer;
++
++	if (clang_Cursor_hasVarDeclGlobalStorage(cursor) != 1)
++		return;
++
++	if (cursor_cmp_spelling("test", cursor))
++		return;
++
++	if (cursor_type_cmp_spelling("struct tst_test", cursor))
++		return;
++
++	initializer = clang_Cursor_getVarDeclInitializer(cursor);
++
++	if (!clang_Cursor_isNull(initializer))
++		tu_info.tu_kind = LTP_TEST;
++}
++
++/* First pass to collect info */
++static enum CXChildVisitResult info_visitor(CXCursor cursor,
++					    attr_unused CXCursor parent,
++					    attr_unused CXClientData client_data)
++{
++	CXSourceLocation loc = clang_getCursorLocation(cursor);
++
++	if (clang_Location_isInSystemHeader(loc))
++		return CXChildVisit_Continue;
++
++	switch (clang_getCursorKind(cursor)) {
++	case CXCursor_VarDecl:
++		info_ltp_tu_kind(cursor);
++		break;
++	default:
++		break;
++	}
++
++	return CXChildVisit_Continue;
++}
++
++int main(const int argc, const char *const *const argv)
++{
++	CXIndex cindex = clang_createIndex(0, 1);
++	CXTranslationUnit tu;
++	CXCursor tuc;
++
++	enum CXErrorCode ret = clang_parseTranslationUnit2(
++		cindex,
++		/*source_filename=*/NULL,
++		argv + 1, argc - 1,
++		/*unsaved_files=*/NULL, /*num_unsaved_files=*/0,
++		CXTranslationUnit_DetailedPreprocessingRecord,
++		&tu);
++
++	if (ret != CXError_Success) {
++		printf("Failed to load translation unit: %d\n", ret);
++		return 1;
++	}
++
++	tuc = clang_getTranslationUnitCursor(tu);
++
++	tu_info.tu_kind = LTP_OTHER;
++	clang_visitChildren(tuc, info_visitor, NULL);
++
++	clang_visitChildren(tuc, check_visitor, NULL);
++
++	/* Stop leak sanitizer from complaining */
++	clang_disposeTranslationUnit(tu);
++	clang_disposeIndex(cindex);
++
++	return error_flag;
++}
 -- 
 2.31.1
 
