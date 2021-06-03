@@ -1,45 +1,70 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  3 Jun 2021 16:48:23 +0100
-Subject: [LTP] [RFC PATCH 0/2] Libclang based analyzer
-Message-ID: <20210603154825.30165-1-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  3 Jun 2021 20:38:26 +0200
+Subject: [LTP] [RFC PATCH 2/3] build.sh: Add support for make check
+In-Reply-To: <20210603183827.24339-1-pvorel@suse.cz>
+References: <20210603183827.24339-1-pvorel@suse.cz>
+Message-ID: <20210603183827.24339-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ build.sh | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-This implements a TEST() check and integrates the check into the build
-system.
-
-Compared to the Coccinelle version it's very ugly. However I think
-this will allow us to get all the low hanging fruit without creating
-major problems for test developers.
-
-I guess it could be run during CI if we either fix all the existing
-TEST() usages in the library or add an ignore list. I already have a
-Coccinelle script to help with the former.
-
-Richard Palethorpe (2):
-  Add 'make checks' and clang-checks to build system
-  Start libclang based analyzer and TEST() check
-
- configure.ac                       |   2 +
- include/mk/config.mk.in            |   5 +
- include/mk/env_post.mk             |   8 ++
- include/mk/generic_leaf_target.inc |   5 +-
- include/mk/lib.mk                  |   3 +
- include/mk/rules.mk                |   9 ++
- include/mk/testcases.mk            |   1 +
- tools/clang-checks/.gitignore      |   1 +
- tools/clang-checks/Makefile        |  13 ++
- tools/clang-checks/main.c          | 218 +++++++++++++++++++++++++++++
- 10 files changed, 264 insertions(+), 1 deletion(-)
- create mode 100644 tools/clang-checks/.gitignore
- create mode 100644 tools/clang-checks/Makefile
- create mode 100644 tools/clang-checks/main.c
-
+diff --git a/build.sh b/build.sh
+index 240ce8e68..c892fa87b 100755
+--- a/build.sh
++++ b/build.sh
+@@ -119,6 +119,17 @@ build_out_tree()
+ 	make $MAKE_OPTS_OUT_TREE
+ }
+ 
++check_in_tree()
++{
++	make check
++}
++
++check_out_tree()
++{
++	cd $BUILD_DIR
++	make $MAKE_OPTS_OUT_TREE check
++}
++
+ install_in_tree()
+ {
+ 	make $MAKE_OPTS install
+@@ -165,6 +176,7 @@ RUN:
+ autotools   run only 'make autotools'
+ configure   run only 'configure'
+ build       run only 'make'
++check       run only 'make check'
+ install     run only 'make install'
+ 
+ Default configure options:
+@@ -192,7 +204,7 @@ while getopts "c:hio:p:r:t:" opt; do
+ 		esac;;
+ 	p) prefix="$OPTARG";;
+ 	r) case "$OPTARG" in
+-		autotools|configure|build|install) run="$OPTARG";;
++		autotools|configure|build|check|install) run="$OPTARG";;
+ 		*) echo "Wrong run type '$OPTARG'" >&2; usage; exit 1;;
+ 		esac;;
+ 	t) case "$OPTARG" in
+@@ -218,6 +230,10 @@ if [ -z "$run" -o "$run" = "build" ]; then
+ 	eval build_${tree}_tree
+ fi
+ 
++if [ -z "$run" -o "$run" = "check" ]; then
++	eval check_${tree}_tree
++fi
++
+ if [ -z "$run" -o "$run" = "install" ]; then
+ 	if [ "$install" = 1 ]; then
+ 		eval install_${tree}_tree
 -- 
 2.31.1
 
