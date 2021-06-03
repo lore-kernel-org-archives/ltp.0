@@ -1,47 +1,48 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  3 Jun 2021 17:10:11 +0200
-Subject: [LTP] [PATCH 1/2] tst_net.sh: Allow to skip initialization
-Message-ID: <20210603151012.14760-1-pvorel@suse.cz>
+Date: Thu,  3 Jun 2021 17:10:12 +0200
+Subject: [LTP] [PATCH 2/2] tst_ipaddr_un.sh: Properly disable netns
+ initialization
+In-Reply-To: <20210603151012.14760-1-pvorel@suse.cz>
+References: <20210603151012.14760-1-pvorel@suse.cz>
+Message-ID: <20210603151012.14760-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-with TST_NET_SKIP_VARIABLE_INIT=1.
-Useful for testing the library itself.
+It stopped working due 40110018e, but even before there were issues:
+
+tst_ipaddr_un 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+tst_ipaddr_un 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+cat: /sys/class/net/eth0/mtu: No such file or directory
+cat: /sys/class/net/eth0/address: No such file or directory
+
+Fixes: 807d60628 ("net: Add tst_ipaddr_un.sh test")
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/tst_net.sh  | 2 ++
- testcases/lib/tst_test.sh | 1 +
- 2 files changed, 3 insertions(+)
+ lib/newlib_tests/shell/net/tst_ipaddr_un.sh | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index fc5719057..db1db4790 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -933,6 +933,8 @@ tst_default_max_pkt()
- 	echo "$((mtu + mtu / 10))"
- }
+diff --git a/lib/newlib_tests/shell/net/tst_ipaddr_un.sh b/lib/newlib_tests/shell/net/tst_ipaddr_un.sh
+index 512d6d880..e7730b8d0 100755
+--- a/lib/newlib_tests/shell/net/tst_ipaddr_un.sh
++++ b/lib/newlib_tests/shell/net/tst_ipaddr_un.sh
+@@ -7,8 +7,11 @@ TST_CNT=2
  
-+[ -n "$TST_NET_SKIP_VARIABLE_INIT" ] && return 0
+ PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
+ 
+-# workaround to disable netns initialization
+-RHOST="foo"
++TST_NET_SKIP_VARIABLE_INIT=1
 +
- # Management Link
- [ -z "$RHOST" ] && TST_USE_NETNS="yes"
- export RHOST="$RHOST"
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 66ffde4eb..8b4e9cb60 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -559,6 +559,7 @@ tst_run()
- 			IPV6|IPV6_FLAG|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
- 			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG|NETLOAD_CLN_NUMBER);;
-+			NET_SKIP_VARIABLE_INIT);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
- 			esac
- 		done
++# from tst_net_vars.c
++IPV4_NET16_UNUSED="10.23"
++IPV6_NET32_UNUSED="fd00:23"
+ 
+ . tst_net.sh
+ 
 -- 
 2.31.1
 
