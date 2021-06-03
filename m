@@ -1,14 +1,27 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 3 Jun 2021 10:04:54 +0000
-Subject: [LTP] [PATCH] ltp-aiodio/dio_append: fix dio_append()
-In-Reply-To: <20210603075715.23524-1-dongshijiang@inspur.com>
-References: <20210603075715.23524-1-dongshijiang@inspur.com>
-Message-ID: <60B8A96C.8080503@fujitsu.com>
+From: James Dong =?unknown-8bit?b?6JGj5LiW5rGf?= <dongshijiang@inspur.com>
+Date: Thu, 3 Jun 2021 10:27:49 +0000
+Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0gbHRwLWFpb2Rpby9kaW9fYXBw?=
+ =?gb2312?b?ZW5kOiBmaXggZGlvX2FwcGVuZCgp?=
+In-Reply-To: <60B8A96C.8080503@fujitsu.com>
+References: <d87da351dd8cd8c8e51afc8922162e84@sslemail.net>
+ <60B8A96C.8080503@fujitsu.com>
+Message-ID: <befea6726fc7467b9410db3e3b961f3e@inspur.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+Hi xuyang
+1. if not create directory, in the function dio_append The open file returns a failure, Because the directory "aiodio" does not exist.
+2. The mkdir command is called to recursively create directories
+
+-----????-----
+???: xuyang2018.jy@fujitsu.com [mailto:xuyang2018.jy@fujitsu.com] 
+????: 2021?6?3? 18:05
+???: James Dong (???) <dongshijiang@inspur.com>
+??: ltp@lists.linux.it
+??: Re: [LTP] [PATCH] ltp-aiodio/dio_append: fix dio_append()
 
 Hi dong
 > When running the dio_append test in the ltp-aiodiio.part4 test item, there was a problem that the file could not be created, but the test result was PASS. To this end, the following operations have been added.
