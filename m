@@ -1,34 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 Jun 2021 15:40:56 +0200
-Subject: [LTP] [PATCH] ltp-aiodio: help aiodio test work normally
-In-Reply-To: <20210602182625.GJ2978781@localhost.localdomain>
-References: <20210601155427.996321-1-zlang@redhat.com> <YLdwYJ3Kw5qf64d2@yuki>
- <20210602182625.GJ2978781@localhost.localdomain>
-Message-ID: <YLjb6E5+CT3hMC4l@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  3 Jun 2021 17:10:11 +0200
+Subject: [LTP] [PATCH 1/2] tst_net.sh: Allow to skip initialization
+Message-ID: <20210603151012.14760-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I do not like this solution. I think that we should instead fix the
-> > scripts. I think that the runltp should just export TMPDIR if it was
-> > passed on commandline and it should be the resposibility of the caller
-> > to set up a temporary directory somewhere in /tmp in that case.
-> 
-> Sorry I can't understand your solution, would you like to show me some
-> detailed code which can make the aiodio test pass, to explain what do
-> you really like to do?
+with TST_NET_SKIP_VARIABLE_INIT=1.
+Useful for testing the library itself.
 
-Looking at the testscripts/ltp-aiodio.sh it calls ltp-pan directly so
-runltp is not involved at all. I guess that the simple solution here
-would be exporting correct TMPDIR so that it points to the
-"$TMP/aiodio".
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh  | 2 ++
+ testcases/lib/tst_test.sh | 1 +
+ 2 files changed, 3 insertions(+)
 
-From the testcase viewpoint TMPDIR always was the path where the test
-should create files.
-
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index fc5719057..db1db4790 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -933,6 +933,8 @@ tst_default_max_pkt()
+ 	echo "$((mtu + mtu / 10))"
+ }
+ 
++[ -n "$TST_NET_SKIP_VARIABLE_INIT" ] && return 0
++
+ # Management Link
+ [ -z "$RHOST" ] && TST_USE_NETNS="yes"
+ export RHOST="$RHOST"
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 66ffde4eb..8b4e9cb60 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -559,6 +559,7 @@ tst_run()
+ 			IPV6|IPV6_FLAG|IPVER|TEST_DATA|TEST_DATA_IFS);;
+ 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
+ 			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG|NETLOAD_CLN_NUMBER);;
++			NET_SKIP_VARIABLE_INIT);;
+ 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+ 			esac
+ 		done
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
