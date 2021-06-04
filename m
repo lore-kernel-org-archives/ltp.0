@@ -1,29 +1,30 @@
-From: Enji Cooper <yaneurabeya@gmail.com>
-Date: Fri, 4 Jun 2021 11:01:45 -0700
-Subject: [LTP] [RFC PATCH 1/3] make: Add make check{,-c,-shell} targets
-In-Reply-To: <20210603183827.24339-2-pvorel@suse.cz>
-References: <20210603183827.24339-1-pvorel@suse.cz>
- <20210603183827.24339-2-pvorel@suse.cz>
-Message-ID: <392BDC1B-F73E-411E-AE03-71DA0CBAB2D8@gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 4 Jun 2021 20:15:59 +0200
+Subject: [LTP] [RFC] Reduce LICENCE/COPYING files
+In-Reply-To: <3F3FDAE9-7190-4046-9438-17D2BE14FCA0@gmail.com>
+References: <YLeA8KOphpVg3IDP@pevik> <YLi3XqA3hLh7HWqn@yuki>
+ <YLjDnXeWib2KSILF@pevik>
+ <CAEemH2dTBbHbh5Vf9EQyYMsvHKs3p4sZvoNyR=uCFM0X5siYtQ@mail.gmail.com>
+ <YLn3BQHhZIq5vNId@pevik>
+ <3F3FDAE9-7190-4046-9438-17D2BE14FCA0@gmail.com>
+Message-ID: <YLpt386rlLDzgfCi@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> Unless there???s a real need for consolidating the LICENSE files,
+> I???d leave it well enough alone in the source tree and just aggregate
+> all of the licenses as an uber license and distribute it with the
+> binary packages.
 
-> On Jun 3, 2021, at 11:38 AM, Petr Vorel <pvorel@suse.cz> wrote:
-> 
-> For testing C and shell API.
+As far as I can tell the cleanup patch removes 22 identical copies of
+GPL v2 sprinkled randomly over the tree and keeps only the top level
+one, while each of the individual files still retains a copyright and a
+seprarate license. As far as I can tell this is harmless.
 
-Why not just add a single ?make check? target that calls the C and shell targets to match what most open source projects do in terms of testing? Also, continuing on in light of errors seems like a good default behavior to have as it would prevent a single error/failure from gathering all other results.
-
-My 2 cents,
--Enji
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 833 bytes
-Desc: Message signed with OpenPGP
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210604/1b27c9a2/attachment-0001.sig>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
