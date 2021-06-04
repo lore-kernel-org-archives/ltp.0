@@ -1,29 +1,38 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Fri, 4 Jun 2021 01:44:16 +0000
-Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0gbHRwLWFpb2Rpby9kaW9fYXBw?=
- =?gb2312?b?ZW5kOiBmaXggZGlvX2FwcGVuZCgp?=
-In-Reply-To: <befea6726fc7467b9410db3e3b961f3e@inspur.com>
+From: James Dong =?unknown-8bit?b?6JGj5LiW5rGf?= <dongshijiang@inspur.com>
+Date: Fri, 4 Jun 2021 02:37:26 +0000
+Subject: [LTP] =?gb2312?b?tPC4tDogtPC4tDogIFtQQVRDSF0gbHRwLWFpb2Rpby9k?=
+ =?gb2312?b?aW9fYXBwZW5kOiBmaXggZGlvX2FwcGVuZCgp?=
+In-Reply-To: <60B98598.7000905@fujitsu.com>
 References: <d87da351dd8cd8c8e51afc8922162e84@sslemail.net>
  <60B8A96C.8080503@fujitsu.com> <befea6726fc7467b9410db3e3b961f3e@inspur.com>
-Message-ID: <60B98598.7000905@fujitsu.com>
+ <60B98598.7000905@fujitsu.com>
+Message-ID: <eddbe134055240cb8889b4df76404c1d@inspur.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi xuyang
+
+Thank you very much for your reply, but I think we should add the judgment of the return value in the "dio_append" function, because the final return value is 0 regardless of whether the test item passes or not, and 0 means PASS.
+
+-----????-----
+???: xuyang2018.jy@fujitsu.com [mailto:xuyang2018.jy@fujitsu.com] 
+????: 2021?6?4? 9:44
+???: James Dong (???) <dongshijiang@inspur.com>
+??: ltp@lists.linux.it
+??: Re: ??: [LTP] [PATCH] ltp-aiodio/dio_append: fix dio_append()
+
 Hi Dong
 
 Please see ltp/testcases/kernel/io/ltp-aiodio/README
 it said "
-Run the ltp-aiodio.sh file to execute all the tests. The tests can also
-be run individually, just execute the program and the excepted params
-will be output. No scripts were created to run the test standalone."
+Run the ltp-aiodio.sh file to execute all the tests. The tests can also be run individually, just execute the program and the excepted params will be output. No scripts were created to run the test standalone."
 
 So use runltp to excute ltp-aiodio.part4 wasn't supported.
 
-Zorro and Cyril also discuss about ltp-aiodio directory/file non-existed
-problem. Please see the following url.
+Zorro and Cyril also discuss about ltp-aiodio directory/file non-existed problem. Please see the following url.
 https://patchwork.ozlabs.org/project/ltp/patch/20210601155427.996321-1-zlang@redhat.com/
 
 
@@ -51,7 +60,8 @@ Yang Xu
 >>    testcases/kernel/io/ltp-aiodio/dio_append.c | 26 +++++++++++++++------
 >>    1 file changed, 19 insertions(+), 7 deletions(-)
 >>
->> diff --git a/testcases/kernel/io/ltp-aiodio/dio_append.c b/testcases/kernel/io/ltp-aiodio/dio_append.c
+>> diff --git a/testcases/kernel/io/ltp-aiodio/dio_append.c 
+>> b/testcases/kernel/io/ltp-aiodio/dio_append.c
 >> index 3f0ed29d5..500dfdc31 100644
 >> --- a/testcases/kernel/io/ltp-aiodio/dio_append.c
 >> +++ b/testcases/kernel/io/ltp-aiodio/dio_append.c
