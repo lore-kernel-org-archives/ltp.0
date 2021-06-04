@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 4 Jun 2021 20:49:21 +0200
-Subject: [LTP] [RFC PATCH 1/3] make: Add make check{,-c,-shell} targets
-In-Reply-To: <392BDC1B-F73E-411E-AE03-71DA0CBAB2D8@gmail.com>
-References: <20210603183827.24339-1-pvorel@suse.cz>
- <20210603183827.24339-2-pvorel@suse.cz>
- <392BDC1B-F73E-411E-AE03-71DA0CBAB2D8@gmail.com>
-Message-ID: <YLp1sSlda6bEncO8@pevik>
+Date: Fri, 4 Jun 2021 21:50:49 +0200
+Subject: [LTP] [RFC] Remove disktest from LTP
+In-Reply-To: <656D3EBA-5A3C-45F5-84B0-1427CE69C1F2@gmail.com>
+References: <YLh9jvI/p/VxsSmx@pevik>
+ <CAASaF6yHHty1m+1U-buHUt4P80fnoTqXTaSO7G-YBm=REWZyWw@mail.gmail.com>
+ <656D3EBA-5A3C-45F5-84B0-1427CE69C1F2@gmail.com>
+Message-ID: <YLqEGb/fWiGJDI6z@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,32 +14,25 @@ To: ltp@lists.linux.it
 
 Hi Enji,
 
-> > On Jun 3, 2021, at 11:38 AM, Petr Vorel <pvorel@suse.cz> wrote:
+> > does anybody use testcases/kernel/io/disktest ?
 
-> > For testing C and shell API.
+> > It supports various OS, but not sure if it's relevant now in SSD era.
+> > Last update was in 2008 (version 1.4.2).
 
-> Why not just add a single ?make check? target that calls the C and shell targets to match what most open source projects do in terms of testing? Also, continuing on in light of errors seems like a good default behavior to have as it would prevent a single error/failure from gathering all other results.
+> > I don't think I ever used it, it does look outdated, so I won't miss it.
+> > If it has upstream repo somewhere, we could put a reference in commit message.
 
-Yes, the original approach in this patchset is make check,
-which consists of two make-c and make-shell. One of tst_fuzzy_sync checks is
-quite long and in longer term the number of tests for both C and shell API might
-grow to prolong the testing. Thus one may appreciate to test for local
-development just one of these two.
+> I say nuke it from orbit.
 
-Or, if you mean how it has been implemented (adding tests into variables),
-I plan to add docparse tests (into docparse/tests/) - i.e. into different
-directory.
+> It exists in VCS still, so if someone wants to restore it and work on it, they can go back through the git history and do so.
 
-Also, result of Richie's Libclang based analyzer patchset [1],
-where he also added make check, we decided to use make test here [2].
-
-> My 2 cents,
-Thanks, comments are always welcome.
-> -Enji
+I have not found the original project in sourceforge. Would you please post a
+link, I'll add it to the commit message of the removal commit.
 
 Kind regards,
 Petr
 
-[1] https://lists.linux.it/pipermail/ltp/2021-June/023008.html
-[2] https://lists.linux.it/pipermail/ltp/2021-June/023021.html
+> Cheers,
+> -Enji
+
 
