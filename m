@@ -1,45 +1,30 @@
 From: Enji Cooper <yaneurabeya@gmail.com>
-Date: Fri, 4 Jun 2021 10:42:27 -0700
-Subject: [LTP] [RFC] Remove disktest from LTP
-In-Reply-To: <CAASaF6yHHty1m+1U-buHUt4P80fnoTqXTaSO7G-YBm=REWZyWw@mail.gmail.com>
-References: <YLh9jvI/p/VxsSmx@pevik>
- <CAASaF6yHHty1m+1U-buHUt4P80fnoTqXTaSO7G-YBm=REWZyWw@mail.gmail.com>
-Message-ID: <656D3EBA-5A3C-45F5-84B0-1427CE69C1F2@gmail.com>
+Date: Fri, 4 Jun 2021 10:47:30 -0700
+Subject: [LTP] [RFC] Reduce LICENCE/COPYING files
+In-Reply-To: <YLn3BQHhZIq5vNId@pevik>
+References: <YLeA8KOphpVg3IDP@pevik> <YLi3XqA3hLh7HWqn@yuki>
+ <YLjDnXeWib2KSILF@pevik>
+ <CAEemH2dTBbHbh5Vf9EQyYMsvHKs3p4sZvoNyR=uCFM0X5siYtQ@mail.gmail.com>
+ <YLn3BQHhZIq5vNId@pevik>
+Message-ID: <3F3FDAE9-7190-4046-9438-17D2BE14FCA0@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+I?d actually exercise some caution here. If there was a top-level LICENSE file that was distributed, that would be awesome, but if people take bits and pieces of subprojects and hack it in elsewhere without there being appropriate attributions to the original authors and such, you could get into serious legal trouble.
 
-> On Jun 4, 2021, at 10:12 AM, Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> 
-> 
-> On Thu, Jun 3, 2021 at 8:58 AM Petr Vorel <pvorel@suse.cz <mailto:pvorel@suse.cz>> wrote:
-> Hi,
-> 
-> does anybody use testcases/kernel/io/disktest ?
-> 
-> It supports various OS, but not sure if it's relevant now in SSD era.
-> Last update was in 2008 (version 1.4.2).
-> 
-> I don't think I ever used it, it does look outdated, so I won't miss it.
-> If it has upstream repo somewhere, we could put a reference in commit message.
+Doing the ?right thing? requires getting all authors? sign-off in order to change licensing information and such. The FreeBSD project for instance has had to hop through a lot of hoops to change code from BSD 3-clause to 2-clause because some of the authors didn?t sign over the code to the project when contributing it, since the concern with signing off on code and such predated the code contribution.
 
-I say nuke it from orbit.
+Unless there?s a real need for consolidating the LICENSE files, I?d leave it well enough alone in the source tree and just aggregate all of the licenses as an uber license and distribute it with the binary packages.
 
-It exists in VCS still, so if someone wants to restore it and work on it, they can go back through the git history and do so.
-
-Cheers,
+That?s just my 2 cents,
 -Enji
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210604/f34ae6c8/attachment.htm>
 -------------- next part --------------
 A non-text attachment was scrubbed...
 Name: signature.asc
 Type: application/pgp-signature
 Size: 833 bytes
 Desc: Message signed with OpenPGP
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210604/f34ae6c8/attachment.sig>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210604/461ce00b/attachment.sig>
