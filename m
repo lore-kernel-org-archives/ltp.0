@@ -1,34 +1,36 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 7 Jun 2021 10:14:05 +0200
-Subject: [LTP] [RFC] Reduce LICENCE/COPYING files
-In-Reply-To: <YLpt386rlLDzgfCi@yuki>
-References: <YLeA8KOphpVg3IDP@pevik> <YLi3XqA3hLh7HWqn@yuki>
- <YLjDnXeWib2KSILF@pevik>
- <CAEemH2dTBbHbh5Vf9EQyYMsvHKs3p4sZvoNyR=uCFM0X5siYtQ@mail.gmail.com>
- <YLn3BQHhZIq5vNId@pevik>
- <3F3FDAE9-7190-4046-9438-17D2BE14FCA0@gmail.com>
- <YLpt386rlLDzgfCi@yuki>
-Message-ID: <YL3VTZeb/8Gemgl7@pevik>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 7 Jun 2021 10:37:45 +0200
+Subject: [LTP] [RFC PATCH v2 0/2] Libclang based analyzer
+In-Reply-To: <20210604111434.21422-1-rpalethorpe@suse.com>
+References: <20210604111434.21422-1-rpalethorpe@suse.com>
+Message-ID: <85bddc61-f6dc-de7c-3a62-daeefcd0a058@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi,
 
-> Hi!
-> > Unless there???s a real need for consolidating the LICENSE files,
-> > I???d leave it well enough alone in the source tree and just aggregate
-> > all of the licenses as an uber license and distribute it with the
-> > binary packages.
+just one quick remark. I guess the whole reason for using clang over 
+coccinelle was availability of clang on developer systems.
+I just wanted to quickly check your work, but had no clang installed. 
+Build fail, even with cyril's patch for CHECK_TARGETS, because 
+clang-c/Index.h is not found.
 
-> As far as I can tell the cleanup patch removes 22 identical copies of
-> GPL v2 sprinkled randomly over the tree and keeps only the top level
-> one, while each of the individual files still retains a copyright and a
-> seprarate license. As far as I can tell this is harmless.
+On ubuntu 20.04, this file is part of libclang-dev, but installing it 
+did not help either, because it is installed to an include path not know 
+to gcc (/usr/lib/llvm-10/include/clang-c).
+I added it to the include path and it was found, but the next problem 
+is, that some used functions (like clang_Cursor_getVarDeclInitializer) 
+are only available starting with libclang 12.
 
-Patch merged, thanks for your ack!
 
-Kind regards,
-Petr
+So in conclusion, I do not think we can assume libclang to be available 
+for all developers and installing it is probably more work, at least 
+when newer functions from libclang are used, than installing coccinelle.
+And very important for final setup: It must be possible to successfully 
+compile ltp, without libclang/coccinelle available. There is no reason 
+to force this libraries/tools for pure "users" of ltp.
+
+J?rg
