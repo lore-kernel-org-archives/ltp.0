@@ -1,78 +1,43 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 7 Jun 2021 16:07:42 +0800
-Subject: [LTP] [PATCH] syscalls/fchown: Make output nicer and add checks
- before SAFE_CLOSE(fd)
-Message-ID: <20210607080742.21377-1-xieziyao@huawei.com>
+From: Michal Hocko <mhocko@suse.com>
+Date: Mon, 7 Jun 2021 10:10:08 +0200
+Subject: [LTP] [mm/mempolicy]  7463fff037: ltp.mbind01.fail
+In-Reply-To: <20210607074815.GC16270@xsang-OptiPlex-9020>
+References: <1622560492-1294-3-git-send-email-feng.tang@intel.com>
+ <20210607074815.GC16270@xsang-OptiPlex-9020>
+Message-ID: <YL3UYOGIz1HoqGd1@dhcp22.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Print values not variable names in TST_EXP_PASS().
-2. Check if the fd has been opened in cleanup().
+On Mon 07-06-21 15:48:15, kernel test robot wrote:
+> mbind01.c:169: TINFO: case MPOL_PREFERRED (no target)
+> mbind01.c:188: TFAIL: Wrong policy: 1, expected: 4
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- testcases/kernel/syscalls/fchown/fchown01.c | 2 +-
- testcases/kernel/syscalls/fchown/fchown02.c | 8 +++++---
- testcases/kernel/syscalls/fchown/fchown03.c | 4 +++-
- 3 files changed, 9 insertions(+), 5 deletions(-)
+AFAIU this points to
+static void test_none(unsigned int i, char *p)
+{
+        struct test_case *tc = &tcase[i];
 
-diff --git a/testcases/kernel/syscalls/fchown/fchown01.c b/testcases/kernel/syscalls/fchown/fchown01.c
-index 77913ce32..16e1f677b 100644
---- a/testcases/kernel/syscalls/fchown/fchown01.c
-+++ b/testcases/kernel/syscalls/fchown/fchown01.c
-@@ -28,7 +28,7 @@ static gid_t gid;
+        TEST(mbind(p, MEM_LENGTH, tc->policy, NULL, 0, tc->flags));
+}
 
- static void run(void)
- {
--	TST_EXP_PASS(FCHOWN(fd, uid, gid));
-+	TST_EXP_PASS(FCHOWN(fd, uid, gid), "fchown(%i, %i, %i)", fd, uid, gid);
- }
+So it calls MPOL_PREFERRED with NULL parameter and the test has failed
+because the kernel returns MPOL_LOCAL instead of MPOL_PREFERRED. Strictly
+speaking this is breaking user interface but I am wondering whether this
+really matter or is completely unexpected.  The manual page explicitly
+talks about this case
+"
+	If the nodemask and maxnode arguments specify the empty set, then
+	the memory is allocated on the node of the CPU that triggered the
+	allocation.
+"
 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/fchown/fchown02.c b/testcases/kernel/syscalls/fchown/fchown02.c
-index d541f0450..ec04b5c01 100644
---- a/testcases/kernel/syscalls/fchown/fchown02.c
-+++ b/testcases/kernel/syscalls/fchown/fchown02.c
-@@ -53,7 +53,7 @@ static void run(unsigned int i)
-
- 	SAFE_CHMOD(tc[i].filename, tc[i].set_mode);
-
--	TST_EXP_PASS(FCHOWN(*tc[i].fd, uid, gid));
-+	TST_EXP_PASS(FCHOWN(*tc[i].fd, uid, gid), "fchown(%i, %i, %i)", *tc[i].fd, uid, gid);
-
- 	SAFE_STAT(tc[i].filename, &stat_buf);
-
-@@ -78,8 +78,10 @@ static void cleanup(void)
- {
- 	unsigned int i;
-
--	for (i = 0; i < ARRAY_SIZE(tc); i++)
--		SAFE_CLOSE(*tc[i].fd);
-+	for (i = 0; i < ARRAY_SIZE(tc); i++) {
-+		if (*tc[i].fd > 0)
-+			SAFE_CLOSE(*tc[i].fd);
-+	}
- }
-
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/fchown/fchown03.c b/testcases/kernel/syscalls/fchown/fchown03.c
-index 752d9c394..97d6c9d34 100644
---- a/testcases/kernel/syscalls/fchown/fchown03.c
-+++ b/testcases/kernel/syscalls/fchown/fchown03.c
-@@ -85,7 +85,9 @@ static void cleanup(void)
- {
- 	SAFE_SETEGID(0);
- 	SAFE_SETEUID(0);
--	SAFE_CLOSE(fd);
-+
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
- }
-
- static struct tst_test test = {
---
-2.17.1
-
+I would be inclined to keep this inconsistency and see whether anybody
+actually complains and have a relevant use for this behavior. The
+cleanup which makes the code easier to maintain and less error prone
+doesn't really deserve to get ditched just because of this IMHO.
+-- 
+Michal Hocko
+SUSE Labs
