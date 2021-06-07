@@ -1,81 +1,63 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 7 Jun 2021 13:34:56 +0200
-Subject: [LTP] [RFC PATCH v2 0/2] Libclang based analyzer
-In-Reply-To: <87bl8i563x.fsf@suse.de>
-References: <20210604111434.21422-1-rpalethorpe@suse.com>
- <85bddc61-f6dc-de7c-3a62-daeefcd0a058@jv-coder.de> <87bl8i563x.fsf@suse.de>
-Message-ID: <52c808d5-c5d7-3a79-122b-428fe2802957@jv-coder.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 7 Jun 2021 15:15:36 +0200
+Subject: [LTP] [PATCH 1/3] syscalls/io_destroy: Add io_destroy02 test
+ for native AIO
+In-Reply-To: <20210507083321.167998-2-xieziyao@huawei.com>
+References: <20210507083321.167998-1-xieziyao@huawei.com>
+ <20210507083321.167998-2-xieziyao@huawei.com>
+Message-ID: <YL4b+J7Cc+i4Bs7w@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+Hi!
+Test looks good but there is one minor problem that has to be solwed,
+see below.
 
-On 6/7/2021 12:20 PM, Richard Palethorpe wrote:
-> Hello Joerg,
->
-> On ubuntu 20.04, this file is part of libclang-dev, but installing it
-> did not help either, because it is installed to an include path not
-> know to gcc (/usr/lib/llvm-10/include/clang-c).
-> Is part of this path the same that 'clang -print-resource-dir' prints?
->
-> Either way I guess we can search for this during configuration. LLVM has
-> a CMake module (or w/e) which probably finds all this automatically.
-resource dir is /usr/lib/llvm-12/lib/clang/12.0.1.
+> +/*
+> + * Copyright (c) Crackerjack Project., 2007
+> + * Ported from Crackerjack to LTP by Masatake YAMATO <yamato@redhat.com>
+> + * Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
+> + * Copyright (c) 2017 Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + * Copyright (c) 2021 Xie Ziyao <xieziyao@huawei.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test io_destroy invoked via syscall(2) with an invalid ctx and expects
+> + * it to return EINVAL.
+> + */
+> +
+> +#include <linux/aio_abi.h>
+> +
+> +#include "config.h"
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static void verify_io_destroy(void)
+> +{
+> +	aio_context_t ctx;
+> +	memset(&ctx, 0xff, sizeof(ctx));
+> +	TST_EXP_FAIL(tst_syscall(__NR_io_destroy, ctx), EINVAL);
 
-The llvm-config tool can be used to find the locations of the include 
-and lib directory.
-On my ubuntu, I installed clang-12 from apt.llvm.org and clang-10 from 
-ubuntu repos.
-In the path there is the llvm-config tool from ubuntu pointing to 
-/usr/lib/llvm-10/bin/llvm-config and llvm-config-10 and llvm-config-12 
-pointing to the respective llvm-config tool.
+This may fail the test if CONFIG_AIO has been disabled in kernel, which
+I think is common for embedded tests.
 
-I guess using llvm-config from the path to detect the correct include 
-and library path would be the best way to go.
-If someone wants to use a different version, he can still set prepend it 
-to the path during configuration:
+Thinking of solution the easiest fix would probably be to add
+.needs_kconfigs with "CONFIG_AIO" to the tst_test structure.
 
-$ llvm-config --includedir
-/usr/lib/llvm-10/include
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = verify_io_destroy,
+> +};
+> --
+> 2.17.1
+> 
 
-$ llvm-config --libdir
-/usr/lib/llvm-10/lib
-
-$ PATH="/usr/lib/llvm-12/bin:$PATH" llvm-config --includedir
-/usr/lib/llvm-12/include
-
-
-Both includedir and libdir are required, to correctly link libclang. In 
-the default library search paths, there are only versioned versiones of 
-libclang (eg. libclang-12.so).
-
->> I added it to the include path and it was found, but the next problem
->> is, that some used functions (like clang_Cursor_getVarDeclInitializer)
->> are only available starting with libclang 12.
->>
-> I guess that we could replace that function by recursing further into
-> the AST to find the initializer ourselves.
->
-> Probably we can restrict ourselves to only use functions from before
-> libclang 11.
-Sounds good, but how to force this? I don't think there is a "allow only 
-libclang 10 symbols"...
->
->> So in conclusion, I do not think we can assume libclang to be
->> available for all developers and installing it is probably more work,
->> at least when newer functions from libclang are used, than installing
->> coccinelle.
-> IIRC Cyril said the Coccinelle package on Gentoo is not maintained
-> anymore. AFAICT it exists, but it is on an old version. I don't think
-> many people are interested in or want to maintain Ocaml
-> stuff. LLVM/Clang OTOH looks to be very active.
-Right, it actually is removed now from gentoo portage tree ([1]). But is 
-it used by the kernel developers?
-
-J?rg
-
-[1] 
-https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=58395d3a0c06e060a0a40182fff4bf39f1910529
+-- 
+Cyril Hrubis
+chrubis@suse.cz
