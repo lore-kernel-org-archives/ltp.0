@@ -1,118 +1,108 @@
 From: Vinay Kumar <vinay.m.engg@gmail.com>
-Date: Mon,  7 Jun 2021 16:15:10 +0530
-Subject: [LTP] [PATCH 2/7] getrusage02: Skipped EFAULT tests for libc
- variant.
+Date: Mon,  7 Jun 2021 16:15:11 +0530
+Subject: [LTP] [PATCH 3/7] msgctl04: Skipped EFAULT tests for libc variant.
 In-Reply-To: <20210607104515.29838-1-vinay.m.engg@gmail.com>
 References: <20210607104515.29838-1-vinay.m.engg@gmail.com>
-Message-ID: <20210607104515.29838-2-vinay.m.engg@gmail.com>
+Message-ID: <20210607104515.29838-3-vinay.m.engg@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tested EFAULT cases only for "__NR_getrusage" syscall.
+Tested EFAULT cases only for "__NR_msgctl" syscall.
 
 Signed-off-by: Vinay Kumar <vinay.m.engg@gmail.com>
 ---
- .../kernel/syscalls/getrusage/getrusage02.c   | 53 ++++++++++++++++---
- 1 file changed, 45 insertions(+), 8 deletions(-)
+ .../kernel/syscalls/ipc/msgctl/msgctl04.c     | 38 ++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage02.c b/testcases/kernel/syscalls/getrusage/getrusage02.c
-index 8077606a2..00c1af805 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage02.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage02.c
-@@ -71,6 +71,7 @@
- #include <sched.h>
- #include <sys/resource.h>
- #include "test.h"
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
+index 900b22244..3d0c7f896 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
+@@ -15,6 +15,7 @@
+ #include "tst_test.h"
+ #include "tst_safe_sysv_ipc.h"
+ #include "libnewipc.h"
 +#include "lapi/syscalls.h"
  
- #ifndef RUSAGE_BOTH		/* Removed from user space on RHEL4 */
- #define RUSAGE_BOTH (-2)	/* still works on SuSE      */
-@@ -83,6 +84,16 @@ char *TCID = "getrusage02";
+ static int msg_id1 = -1;
+ static int msg_id2 = -1;
+@@ -23,6 +24,16 @@ static int bad_q = -1;
  
- static struct rusage usage;
+ struct msqid_ds q_buf;
  
-+static int libc_getrusage(int who, void *usage)
++static int libc_msgctl(int msqid, int cmd, void *buf)
 +{
-+	return getrusage(who, usage);
++	return msgctl(msqid, cmd, buf);
 +}
 +
-+static int sys_getrusage(int who, void *usage)
++static int sys_msgctl(int msqid, int cmd, void *buf)
 +{
-+	return ltp_syscall(__NR_getrusage, who, usage);
++	return tst_syscall(__NR_msgctl, msqid, cmd, buf);
 +}
 +
- struct test_cases_t {
- 	int who;
- 	struct rusage *usage;
-@@ -96,12 +107,26 @@ struct test_cases_t {
- #endif
+ struct tcase {
+ 	int *msg_id;
+ 	int cmd;
+@@ -45,9 +56,29 @@ struct tcase {
+ 	{&msg_id3, IPC_RMID, NULL, EPERM},
  };
  
 +static struct test_variants
 +{
-+	int (*getrusage)(int who, void *usage);
++	int (*msgctl)(int msqid, int cmd, void *buf);
 +	char *desc;
 +} variants[] = {
-+	{ .getrusage = libc_getrusage, .desc = "libc getrusage()"},
++	{ .msgctl = libc_msgctl, .desc = "libc msgctl()"},
 +
-+#if (__NR_getrusage != __LTP__NR_INVALID_SYSCALL)
-+	{ .getrusage = sys_getrusage,  .desc = "__NR_getrusage syscall"},
++#if (__NR_msgctl != __LTP__NR_INVALID_SYSCALL)
++	{ .msgctl = sys_msgctl,  .desc = "__NR_msgctl syscall"},
 +#endif
 +};
 +
-+unsigned int tst_variant_t;
-+int TST_VARIANTS = ARRAY_SIZE(variants);
- int TST_TOTAL = ARRAY_SIZE(test_cases);
- 
- int main(int ac, char **av)
+ static void verify_msgctl(unsigned int i)
  {
--
--	int lc, i;
-+	struct test_variants *tv = &variants[tst_variant_t];
-+	int lc, i, j;
- 
- 	tst_parse_opts(ac, av, NULL, NULL);
- 
-@@ -111,18 +136,30 @@ int main(int ac, char **av)
- 
- 		tst_count = 0;
- 
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(getrusage(test_cases[i].who, test_cases[i].usage));
-+		for (j = 0; j < TST_VARIANTS; j++) {
+-	TEST(msgctl(*(tc[i].msg_id), tc[i].cmd, tc[i].buf));
++	struct test_variants *tv = &variants[tst_variant];
 +
-+			tst_resm(TINFO, "Testing variant: %s", tv->desc);
-+			for (i = 0; i < TST_TOTAL; i++) {
++	if (tc[i].error == EFAULT &&
++		tv->msgctl == libc_msgctl) {
++		tst_res(TCONF, "EFAULT is skipped for libc variant");
++		return;
++	}
 +
-+				if (test_cases[i].exp_errno == EFAULT &&
-+					tv->getrusage == libc_getrusage) {
-+					tst_resm(TCONF, "EFAULT is skipped for libc variant");
-+					tv++;
-+					continue;
-+				}
++	TEST(tv->msgctl(*(tc[i].msg_id), tc[i].cmd, tc[i].buf));
+ 
+ 	if (TST_RET != -1) {
+ 		tst_res(TFAIL, "msgctl() returned %li", TST_RET);
+@@ -66,6 +97,8 @@ static void verify_msgctl(unsigned int i)
+ 
+ static void setup(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
 +
-+			TEST(tv->getrusage(test_cases[i].who, test_cases[i].usage));
+ 	key_t msgkey1, msgkey2;
+ 	struct passwd *ltpuser;
  
- 			if (TEST_RETURN == -1 &&
--			    TEST_ERRNO == test_cases[i].exp_errno)
-+				TEST_ERRNO == test_cases[i].exp_errno)
- 				tst_resm(TPASS | TTERRNO,
--					 "getrusage failed as expected");
-+				"getrusage failed as expected");
- 			else
- 				tst_resm(TFAIL | TTERRNO,
--					 "getrusage failed unexpectedly");
-+				"getrusage failed unexpectedly");
-+				}
-+			}
- 		}
--	}
+@@ -79,6 +112,8 @@ static void setup(void)
  
- 	cleanup();
+ 	msg_id1 = SAFE_MSGGET(msgkey1, IPC_CREAT | IPC_EXCL);
+ 	msg_id2 = SAFE_MSGGET(msgkey2, IPC_CREAT | IPC_EXCL | MSG_RD | MSG_WR);
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
+ }
  
+ static void cleanup(void)
+@@ -100,6 +135,7 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test = verify_msgctl,
+ 	.tcnt = ARRAY_SIZE(tc),
++	.test_variants = ARRAY_SIZE(variants),
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
+ };
 -- 
 2.17.1
 
