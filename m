@@ -1,33 +1,33 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 7 Jun 2021 11:32:32 +0200
-Subject: [LTP] [PATCH 2/2] tst_ipaddr_un.sh: Properly disable netns
- initialization
-In-Reply-To: <40cd7b4a-2988-963f-ead0-6f8ffea01692@bell-sw.com>
-References: <20210603151012.14760-1-pvorel@suse.cz>
- <20210603151012.14760-2-pvorel@suse.cz>
- <40cd7b4a-2988-963f-ead0-6f8ffea01692@bell-sw.com>
-Message-ID: <YL3nsHclCxBYmju4@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 7 Jun 2021 11:12:55 +0200
+Subject: [LTP] [RFC PATCH v2 1/2] Add 'make check' and clang-check to
+ build system
+In-Reply-To: <e6efb099-1c51-9f68-4996-7ce917107929@jv-coder.de>
+References: <20210604111434.21422-1-rpalethorpe@suse.com>
+ <20210604111434.21422-2-rpalethorpe@suse.com>
+ <e6efb099-1c51-9f68-4996-7ce917107929@jv-coder.de>
+Message-ID: <YL3jFyCj8aPSEpXw@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-
-> > -# workaround to disable netns initialization
-> > -RHOST="foo"
-
-> Could be TST_INIT_NETNS="no"
-Good point.
-
-> > +TST_NET_SKIP_VARIABLE_INIT=1
+Hi!
+> > +include $(top_srcdir)/include/mk/env_pre.mk
+> > +include $(top_srcdir)/include/mk/functions.mk
 > > +
+> > +HOST_MAKE_TARGETS	:= main
+> > +HOST_LDFLAGS 		+= -lclang
+> If anyone else trying this has problems linking the tool, at least for 
+> me, this must be
+> HOST_LDLIBS ?????? ?????? += -lclang
+> 
+> Otherwise the link order is wrong (main.c after -lclang) and all symbols 
+> from libclang are undefined.
 
-> OK, I think it's better than setting TST_INIT_NETNS and other vars
-> (e.g. private _tst_net_parse_variables) here to actually skip init.
+Thx for report, indeed that has to be fixed.
 
-+1. Patchset merged with your Reviewed-by: tag. Thanks!
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
