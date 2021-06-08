@@ -1,10 +1,10 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Tue, 8 Jun 2021 21:57:18 +0800
-Subject: [LTP] [PATCH 4/4 v2] syscalls/io_submit: Add io_submit03 test for
+Date: Tue, 8 Jun 2021 21:57:17 +0800
+Subject: [LTP] [PATCH 3/4 v2] syscalls/io_submit: Add io_submit02 test for
  native AIO
 In-Reply-To: <20210608135718.36579-1-xieziyao@huawei.com>
 References: <20210608135718.36579-1-xieziyao@huawei.com>
-Message-ID: <20210608135718.36579-5-xieziyao@huawei.com>
+Message-ID: <20210608135718.36579-4-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,10 +12,8 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Test io_submit invoked via syscall(2):
-1. io_submit fails and returns EINVAL if ctx is invalid.
-2. io_submit fails and returns EINVAL if nr is invalid.
-3. io_submit fails and returns EFAULT if iocbpp pointer is invalid.
-4. io_submit fails and returns EBADF if fd is invalid.
+1. io_submit() returns the number of iocbs submitted.
+2. io_submit() returns 0 if nr is zero.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
@@ -24,38 +22,37 @@ v1->v2:
 2. Print values not variable names in TST_EXP_PASS().
 3. Add .needs_kconfig in this test.
 
-runtest/syscalls                              |   1 +
- .../kernel/syscalls/io_submit/.gitignore      |   1 +
- .../kernel/syscalls/io_submit/io_submit03.c   | 118 ++++++++++++++++++
- 3 files changed, 120 insertions(+)
- create mode 100644 testcases/kernel/syscalls/io_submit/io_submit03.c
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/io_submit/.gitignore      |  1 +
+ .../kernel/syscalls/io_submit/io_submit02.c   | 89 +++++++++++++++++++
+ 3 files changed, 91 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_submit/io_submit02.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 9c4c64fa3..e1a02ef7f 100644
+index d1ec32754..9c4c64fa3 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -617,6 +617,7 @@ io_setup01 io_setup01
+@@ -616,6 +616,7 @@ io_pgetevents02 io_pgetevents02
+ io_setup01 io_setup01
  io_setup02 io_setup02
  io_submit01 io_submit01
- io_submit02 io_submit02
-+io_submit03 io_submit03
++io_submit02 io_submit02
 
  keyctl01 keyctl01
  keyctl02 keyctl02
 diff --git a/testcases/kernel/syscalls/io_submit/.gitignore b/testcases/kernel/syscalls/io_submit/.gitignore
-index 5f2a2cff2..60b07970a 100644
+index cac043b6c..5f2a2cff2 100644
 --- a/testcases/kernel/syscalls/io_submit/.gitignore
 +++ b/testcases/kernel/syscalls/io_submit/.gitignore
-@@ -1,2 +1,3 @@
+@@ -1 +1,2 @@
  /io_submit01
- /io_submit02
-+/io_submit03
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit03.c b/testcases/kernel/syscalls/io_submit/io_submit03.c
++/io_submit02
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit02.c b/testcases/kernel/syscalls/io_submit/io_submit02.c
 new file mode 100644
-index 000000000..e0e596d00
+index 000000000..b0ed35eec
 --- /dev/null
-+++ b/testcases/kernel/syscalls/io_submit/io_submit03.c
-@@ -0,0 +1,118 @@
++++ b/testcases/kernel/syscalls/io_submit/io_submit02.c
+@@ -0,0 +1,89 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) Crackerjack Project., 2007
@@ -69,10 +66,8 @@ index 000000000..e0e596d00
 + *
 + * Test io_submit invoked via syscall(2):
 + *
-+ * 1. io_submit fails and returns EINVAL if ctx is invalid.
-+ * 2. io_submit fails and returns EINVAL if nr is invalid.
-+ * 3. io_submit fails and returns EFAULT if iocbpp pointer is invalid.
-+ * 4. io_submit fails and returns EBADF if fd is invalid.
++ * 1. io_submit() returns the number of iocbs submitted.
++ * 2. io_submit() returns 0 if nr is zero.
 + */
 +
 +#include <linux/aio_abi.h>
@@ -81,48 +76,24 @@ index 000000000..e0e596d00
 +#include "tst_test.h"
 +#include "lapi/syscalls.h"
 +
-+#define RDONLY_FILE "rdonly_file"
-+#define WRONLY_FILE "wronly_file"
++#define TEST_FILE "test_file"
 +#define MODE 0777
 +
++static int fd;
 +static char buf[100];
-+static aio_context_t ctx;
-+static aio_context_t invalid_ctx;
 +
++static aio_context_t ctx;
 +static struct iocb iocb;
 +static struct iocb *iocbs[] = {&iocb};
-+
-+static struct iocb inv_fd_iocb;
-+static struct iocb *inv_fd_iocbs[] = {&inv_fd_iocb};
-+
-+static int rdonly_fd;
-+static struct iocb rdonly_fd_iocb;
-+static struct iocb *rdonly_fd_iocbs[] = {&rdonly_fd_iocb};
-+
-+static int wronly_fd;
-+static struct iocb wronly_fd_iocb;
-+static struct iocb *wronly_fd_iocbs[] = {&wronly_fd_iocb};
-+
-+static struct iocb *zero_iocbs[1];
 +
 +static struct tcase {
 +	aio_context_t *ctx;
 +	long nr;
 +	struct iocb **iocbs;
-+	int exp_errno;
 +	const char *desc;
 +} tc[] = {
-+	/* Invalid ctx */
-+	{&invalid_ctx, 1, iocbs, EINVAL, "invalid ctx"},
-+	/* Invalid nr */
-+	{&ctx, -1, iocbs, EINVAL, "invalid nr"},
-+	/* Invalid pointer */
-+	{&ctx, 1, (void*)-1, EFAULT, "invalid iocbpp pointer"},
-+	{&ctx, 1, zero_iocbs, EFAULT, "NULL iocb pointers"},
-+	/* Invalid fd */
-+	{&ctx, 1, inv_fd_iocbs, EBADF, "invalid fd"},
-+	{&ctx, 1, rdonly_fd_iocbs, EBADF, "readonly fd for write"},
-+	{&ctx, 1, wronly_fd_iocbs, EBADF, "writeonly fd for read"},
++	{&ctx, 1, iocbs, "returns the number of iocbs submitted"},
++	{&ctx, 0, NULL, "returns 0 if nr is zero"},
 +};
 +
 +static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
@@ -139,28 +110,25 @@ index 000000000..e0e596d00
 +static void setup(void)
 +{
 +	TST_EXP_PASS_SILENT(tst_syscall(__NR_io_setup, 1, &ctx));
-+	io_prep_option(&inv_fd_iocb, -1, buf, sizeof(buf), 0, IOCB_CMD_PREAD);
-+
-+	rdonly_fd = SAFE_OPEN(RDONLY_FILE, O_RDONLY | O_CREAT, MODE);
-+	io_prep_option(&rdonly_fd_iocb, rdonly_fd, buf, sizeof(buf), 0, IOCB_CMD_PWRITE);
-+
-+	wronly_fd = SAFE_OPEN(WRONLY_FILE, O_WRONLY | O_CREAT, MODE);
-+	io_prep_option(&wronly_fd_iocb, wronly_fd, buf, sizeof(buf), 0, IOCB_CMD_PREAD);
++	fd = SAFE_OPEN(TEST_FILE, O_RDONLY | O_CREAT, MODE);
++	io_prep_option(&iocb, fd, buf, 0, 0, IOCB_CMD_PREAD);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (rdonly_fd > 0)
-+		SAFE_CLOSE(rdonly_fd);
-+	if (wronly_fd > 0)
-+		SAFE_CLOSE(wronly_fd);
++	if (fd > 0)
++		SAFE_CLOSE(fd);
 +	TST_EXP_PASS_SILENT(tst_syscall(__NR_io_destroy, ctx));
 +}
 +
 +static void run(unsigned int i)
 +{
-+	TST_EXP_FAIL(tst_syscall(__NR_io_submit, *tc[i].ctx, tc[i].nr, tc[i].iocbs),
-+		     tc[i].exp_errno, "io_submit() with %s", tc[i].desc);
++	TEST(tst_syscall(__NR_io_submit, *tc[i].ctx, tc[i].nr, tc[i].iocbs));
++
++	if (TST_RET == tc[i].nr)
++		tst_res(TPASS, "io_submit() %s", tc[i].desc);
++	else
++		tst_res(TFAIL, "io_submit() returns %ld, expected %ld", TST_RET, tc[i].nr);
 +}
 +
 +static struct tst_test test = {
