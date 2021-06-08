@@ -1,23 +1,31 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 8 Jun 2021 16:47:02 +0200
-Subject: [LTP] [Automated-testing] [RFC PATCH 0/2] Remove floppy and
- CDROM stress tests
-In-Reply-To: <YL8nl3nFzTAy+aG0@yuki>
-References: <20210607111016.20630-1-pvorel@suse.cz>
- <CAASaF6x1+j+nF=-TpkfLwi9hYXWN5sDVff4oJAKX-eTyH11s8A@mail.gmail.com>
- <YL8nl3nFzTAy+aG0@yuki>
-Message-ID: <YL+C5hO3dANxCcVD@pevik>
+Date: Tue, 8 Jun 2021 22:43:43 +0200
+Subject: [LTP] [PATCH 1/7] getitimer02: Skipped EFAULT tests for libc
+ variant.
+In-Reply-To: <20210607104515.29838-1-vinay.m.engg@gmail.com>
+References: <20210607104515.29838-1-vinay.m.engg@gmail.com>
+Message-ID: <YL/Wf51Y6V5lRnkM@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> Acked by me as well, but let's wait at least till the end of week until
-> we apply this.
+Hi Vinay,
 
-Sure, I can postpone the deletion till Monday. Thanks for your ack.
+> Tested EFAULT cases only for "__NR_getitimer" syscall.
+Well, you added testing raw syscall via test variant.
+That's IMHO the most important thing to mention.
+
+In the text after blank line I'd mention EFAULT skipped on raw syscall.
+It'd would deserve to mention why.
+
+Also, as test it's quite simple, it'd be nice, if you first convert it to new
+API and in second commit added test variants.
+During rewrite you should remove #if !defined(UCLINUX) check as getitimer() is
+supported on uclibc-ng.
+
+This apply to whole patchset (some tests are already ported to new API).
 
 Kind regards,
 Petr
