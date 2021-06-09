@@ -1,28 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Jun 2021 16:09:03 +0200
-Subject: [LTP] [PATCH] futex_wake04: avoid tst_ts_from_ns overflow on
- 32-bit platforms
-In-Reply-To: <YMDOkVaCIWEA6Etl@mussarela>
-References: <20210608132723.255996-1-cascardo@canonical.com>
- <YMB6aoVvTKJQ6wif@yuki> <YMCkB/iS54OJaby4@mussarela>
- <YMDEPYSWZG5FzUTi@yuki> <YMDOkVaCIWEA6Etl@mussarela>
-Message-ID: <YMDLf5B+YvqQhuor@yuki>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Wed,  9 Jun 2021 11:38:49 -0300
+Subject: [LTP] [PATCH] common_timers: define NSEC_PER_SEC as long long to
+ avoid overflow on 32-bit
+Message-ID: <20210609143849.298147-1-cascardo@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Yes, there are even uses where NSEC_PER_SEC is redefined.
-> 
-> I am fine with this other change. I had already tested that it fixes the
-> problem just the same.
-> 
-> How about the commit below?
+When multiplying 30 with NSEC_PER_SEC, the result would overflow on 32-bit
+platforms, unless there was promotion to long long, which is what
+tst_ts_from_ns expects.
 
-Looks good.
+futex_wake04, which uses that, would end up getting EINVAL when calling futex,
+because timespec_valid would fail, as tv_nsec would have an invalid value.
 
+After this change, futex_wake04 passes on i386.
+
+Reported-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+---
+ include/lapi/common_timers.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/lapi/common_timers.h b/include/lapi/common_timers.h
+index 8da3abec24b2..953741d73810 100644
+--- a/include/lapi/common_timers.h
++++ b/include/lapi/common_timers.h
+@@ -12,7 +12,7 @@
+ #include "lapi/posix_clocks.h"
+ 
+ #ifndef NSEC_PER_SEC
+-#define NSEC_PER_SEC (1000000000L)
++#define NSEC_PER_SEC (1000000000LL)
+ #endif
+ 
+ static const clock_t clock_list[] = {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.2
+
