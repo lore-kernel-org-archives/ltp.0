@@ -1,116 +1,238 @@
 From: Vinay Kumar <vinay.m.engg@gmail.com>
-Date: Wed,  9 Jun 2021 23:05:55 +0530
-Subject: [LTP] [PATCH v2 04/10] getrusage02: Skipped EFAULT tests for libc
- variant.
+Date: Wed,  9 Jun 2021 23:05:56 +0530
+Subject: [LTP] [PATCH v2 05/10] setitimer02: Convert setitimer02 to new API
 In-Reply-To: <20210609173601.29352-1-vinay.m.engg@gmail.com>
 References: <YL/Wf51Y6V5lRnkM@pevik>
  <20210609173601.29352-1-vinay.m.engg@gmail.com>
-Message-ID: <20210609173601.29352-4-vinay.m.engg@gmail.com>
+Message-ID: <20210609173601.29352-5-vinay.m.engg@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tested EFAULT cases only for "__NR_getrusage" syscall.
-
-Tests for bad addresses in LTP cases trigger segment
-fault in libc on a 32bit system.
-
 Signed-off-by: Vinay Kumar <vinay.m.engg@gmail.com>
 ---
- .../kernel/syscalls/getrusage/getrusage02.c   | 58 ++++++++++++++++---
- 1 file changed, 49 insertions(+), 9 deletions(-)
+ .../kernel/syscalls/setitimer/setitimer02.c   | 192 +++++-------------
+ 1 file changed, 51 insertions(+), 141 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage02.c b/testcases/kernel/syscalls/getrusage/getrusage02.c
-index c4b3f0f69..07ff04dee 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage02.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage02.c
-@@ -19,6 +19,7 @@
- #include <sched.h>
- #include <sys/resource.h>
- #include "tst_test.h"
-+#include "lapi/syscalls.h"
+diff --git a/testcases/kernel/syscalls/setitimer/setitimer02.c b/testcases/kernel/syscalls/setitimer/setitimer02.c
+index 4d13cd1e0..656cf7d6a 100644
+--- a/testcases/kernel/syscalls/setitimer/setitimer02.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer02.c
+@@ -1,161 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
++ * 03/2001 - Written by Wayne Boyer
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
  
- #ifndef RUSAGE_BOTH		/* Removed from user space on RHEL4 */
- #define RUSAGE_BOTH (-2)	/* still works on SuSE      */
-@@ -26,6 +27,16 @@
+-/*
+- * NAME
+- *	setitimer02.c
+- *
+- * DESCRIPTION
+- *	setitimer02 - check that a setitimer() call fails as expected
+- *		      with incorrect values.
++/*\
++ * [Description]
+  *
+- * ALGORITHM
+- *	loop if that option was specified
+- *	allocate needed space and set up needed values
+- *	issue the system call
+- *	check the errno value
+- *	  issue a PASS message if we get EFAULT
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	  break any remaining tests
+- *	  call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  setitimer02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
++ * setitimer02 - check that a setitimer() call fails as expected
++ *	 with incorrect values.
+  */
  
- static struct rusage usage;
- 
-+static int libc_getrusage(int who, void *usage)
-+{
-+	return getrusage(who, usage);
-+}
-+
-+static int sys_getrusage(int who, void *usage)
-+{
-+	return tst_syscall(__NR_getrusage, who, usage);
-+}
-+
- struct test_cases_t {
- 	int who;
- 	struct rusage *usage;
-@@ -37,21 +48,50 @@ struct test_cases_t {
- 	RUSAGE_SELF, (struct rusage *)-1, EFAULT}
- };
- 
-+static struct test_variants
-+{
-+	int (*getrusage)(int who, void *usage);
-+	char *desc;
-+} variants[] = {
-+{ .getrusage = libc_getrusage, .desc = "libc getrusage()"},
-+
-+#if (__NR_getrusage != __LTP__NR_INVALID_SYSCALL)
-+{ .getrusage = sys_getrusage,  .desc = "__NR_getrusage syscall"},
-+#endif
-+};
-+
- static void verify_getrusage(unsigned int i)
- {
--		TEST(getrusage(test_cases[i].who, test_cases[i].usage));
+-#include "test.h"
 -
--		if (TST_RET == -1 &&
--		    TST_ERR == test_cases[i].exp_errno)
--			tst_res(TPASS | TTERRNO,
--				"getrusage failed as expected");
--		else
--			tst_res(TFAIL | TTERRNO,
--				"getrusage failed unexpectedly");
-+	struct test_variants *tv = &variants[tst_variant];
+ #include <errno.h>
+ #include <sys/time.h>
++#include <stdlib.h>
++#include "tst_test.h"
+ 
+-void cleanup(void);
+-void setup(void);
+-
+-char *TCID = "setitimer02";
+-int TST_TOTAL = 1;
+-
+-#if !defined(UCLINUX)
+-
+-int main(int ac, char **av)
++static void verify_setitimer(void)
+ {
+-	int lc;
+ 	struct itimerval *value;
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/* allocate some space for a timer structure */
+-		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
+-		    NULL) {
+-			tst_brkm(TBROK, cleanup, "value malloc failed");
+-		}
+-
+-		/* set up some reasonable values */
+-
+-		value->it_value.tv_sec = 30;
+-		value->it_value.tv_usec = 0;
+-		value->it_interval.tv_sec = 0;
+-		value->it_interval.tv_usec = 0;
+-		/*
+-		 * issue the system call with the TEST() macro
+-		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+-		 */
+-
+-		/* call with a bad address */
+-		TEST(setitimer(ITIMER_REAL, value, (struct itimerval *)-1));
+-
+-		if (TEST_RETURN == 0) {
+-			tst_resm(TFAIL, "call failed to produce EFAULT error "
+-				 "- errno = %d - %s", TEST_ERRNO,
+-				 strerror(TEST_ERRNO));
+-			continue;
+-		}
+-
+-		switch (TEST_ERRNO) {
+-		case EFAULT:
+-			tst_resm(TPASS, "expected failure - errno = %d - %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		default:
+-			tst_resm(TFAIL, "call failed to produce EFAULT error "
+-				 "- errno = %d - %s", TEST_ERRNO,
+-				 strerror(TEST_ERRNO));
+-		}
+-
+-		/*
+-		 * clean up things in case we are looping
+-		 */
+-		free(value);
+-		value = NULL;
++	/* allocate some space for a timer structure */
++	if ((value = malloc((size_t)sizeof(struct itimerval))) ==
++		NULL) {
++		tst_brk(TBROK, "value malloc failed");
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
+-
+-}
+-
+-#else
+-
+-int main(void)
+-{
+-	tst_resm(TINFO, "test is not available on uClinux");
+-	tst_exit();
+-}
+-
+-#endif /* if !defined(UCLINUX) */
+-
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
++	/* set up some reasonable values */
++	value->it_value.tv_sec = 30;
++	value->it_value.tv_usec = 0;
++	value->it_interval.tv_sec = 0;
++	value->it_interval.tv_usec = 0;
++	/*
++	 * issue the system call with the TEST() macro
++	 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
++	 */
 +
-+	if (test_cases[i].exp_errno == EFAULT &&
-+		tv->getrusage == libc_getrusage) {
-+		tst_res(TCONF, "EFAULT is skipped for libc variant");
-+		return;
++	/* call with a bad address */
++	TEST(setitimer(ITIMER_REAL, value, (struct itimerval *)-1));
++
++	if (TST_RET == 0) {
++		tst_res(TFAIL, "call failed to produce EFAULT error "
++			"- errno = %d - %s", TST_ERR,
++			strerror(TST_ERR));
 +	}
-+
-+	TEST(tv->getrusage(test_cases[i].who, test_cases[i].usage));
-+
-+	if (TST_RET == -1 &&
-+		TST_ERR == test_cases[i].exp_errno)
-+		tst_res(TPASS | TTERRNO,
-+			"getrusage failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO,
-+			"getrusage failed unexpectedly");
-+}
-+
-+static void setup(void)
-+{
-+	struct test_variants *tv = &variants[tst_variant];
-+
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	switch (TST_ERR) {
++	case EFAULT:
++		tst_res(TPASS, "expected failure - errno = %d - %s",
++			TST_ERR, strerror(TST_ERR));
++		break;
++	default:
++		tst_res(TFAIL, "call failed to produce EFAULT error "
++			"- errno = %d - %s", TST_ERR,
++			strerror(TST_ERR));
++	}
+ 
+-	TEST_PAUSE;
++	/*
++	 * clean up things in case we are looping
++	 */
++	free(value);
++	value = NULL;
  }
  
- static struct tst_test test = {
- 	.test = verify_getrusage,
-+	.setup = setup,
- 	.tcnt = ARRAY_SIZE(test_cases),
-+	.test_variants = ARRAY_SIZE(variants),
- 	.needs_root = 1,
- };
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
+-{
++static struct tst_test test = {
++	.test_all = verify_setitimer,
++	.needs_root = 1,
++};
+ 
+-}
 -- 
 2.17.1
 
