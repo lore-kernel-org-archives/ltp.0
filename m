@@ -1,37 +1,71 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Jun 2021 10:23:06 +0200
-Subject: [LTP] [PATCH] futex_wake04: avoid tst_ts_from_ns overflow on
- 32-bit platforms
-In-Reply-To: <20210608132723.255996-1-cascardo@canonical.com>
-References: <20210608132723.255996-1-cascardo@canonical.com>
-Message-ID: <YMB6aoVvTKJQ6wif@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 9 Jun 2021 10:48:59 +0200
+Subject: [LTP] [PATCH v2 1/2] Add Coccinelle helper scripts for reference
+In-Reply-To: <20210607141421.15072-1-rpalethorpe@suse.com>
+References: <20210607141421.15072-1-rpalethorpe@suse.com>
+Message-ID: <YMCAe9PO5NMToFOq@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Good catch, I guess that it would be slightly cleaner to fix the
-NSEC_PER_SEC size instead with:
+Hi Richie,
 
-diff --git a/include/lapi/common_timers.h b/include/lapi/common_timers.h
-index b783beff4..e50f698d6 100644
---- a/include/lapi/common_timers.h
-+++ b/include/lapi/common_timers.h
-@@ -12,7 +12,7 @@
- #include "lapi/posix_clocks.h"
+> Check-in a couple of scripts used for removing the TEST macro from the
+> library. Also a shell script to show how to run them. These are only
+> intended to help someone develop their own refactoring scripts. Not
+> for running automatically.
+Nice, LGTM, with two notes bellow.
 
- #ifndef NSEC_PER_SEC
--#define NSEC_PER_SEC (1000000000L)
-+#define NSEC_PER_SEC (1000000000LL)
- #endif
+> +++ b/scripts/coccinelle/run-spatch.sh
+> @@ -0,0 +1,39 @@
+> +#!/bin/sh -eu
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
+> +
+> +# Helper for running spatch Coccinelle scripts on the LTP source tree
+> +
+> +if [[ ! -d lib || ! -d scripts/coccinelle ]]; then
+[[ ... ]] is bashism. It should be
+if [ ! -d lib ] || [ ! -d scripts/coccinelle ]; then
 
- static const clock_t clock_list[] = {
+or
 
+> +    echo "$0: Can't find lib or scripts directories. Run me from top src dir"
+> +    exit 1
+> +fi
+> +
+> +# Run a script on the lib dir
+> +libltp_spatch_report() {
+> +    spatch --dir lib \
+> +	   --ignore lib/parse_opts.c \
+> +	   --ignore lib/newlib_tests \
+> +	   --ignore lib/tests \
+> +	   --use-gitgrep \
+> +	   -D report \
+> +	   --include-headers \
+> +	   $*
+> +}
+> +
+> +libltp_spatch_fix() {
+> +    spatch --dir lib \
+> +	   --ignore lib/parse_opts.c \
+> +	   --ignore lib/newlib_tests \
+> +	   --ignore lib/tests \
+> +	   --use-gitgrep \
+> +	   --in-place \
+> +	   -D fix \
+> +	   --include-headers \
+> +	   $*
+> +}
+> +
+> +echo You should uncomment one of the scripts below!
+> +#libltp_spatch_report --sp-file scripts/coccinelle/libltp-test-macro.cocci
+> +#libltp_spatch_report --sp-file scripts/coccinelle/libltp-test-macro-vars.cocci \
+> +#		     --ignore lib/tst_test.c
+Maybe have getopts to specify what needs to be running would prevent a need to
+modify versioned file.
 
-What do you think?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
