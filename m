@@ -1,48 +1,57 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  9 Jun 2021 13:46:55 +0200
-Subject: [LTP] [PATCH 0/4] Introduce a concept of test runtime cap
-Message-ID: <20210609114659.2445-1-chrubis@suse.cz>
+Date: Wed,  9 Jun 2021 13:46:56 +0200
+Subject: [LTP] [PATCH 1/4] lib: tst_supported_fs_types: Add
+ tst_fs_max_types()
+In-Reply-To: <20210609114659.2445-1-chrubis@suse.cz>
+References: <20210609114659.2445-1-chrubis@suse.cz>
+Message-ID: <20210609114659.2445-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Recently we had a problem with tests that use .all_filesystems and
-tst_timeout_remaining().
+The tst_fs_max_types() returns an upper bound on the number of supported
+filesystems.
 
-The problem is that the tst_timeout_remaining() function wasn't aware of
-the loop over fork_testrun() that executes a testrun for each supported
-filesystem, which caused such test, e.g. writev03, to run for
-unpredictable and long periods.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_fs.h             | 5 +++++
+ lib/tst_supported_fs_types.c | 5 +++++
+ 2 files changed, 10 insertions(+)
 
-This is an attempt how to solve this properly by uncoupling timeouts
-from test runtime so that test never runs for longer than its timeout.
-
-Cyril Hrubis (4):
-  lib: tst_supported_fs_types: Add tst_fs_max_types()
-  lib: tst_test: Move timeout scaling out of fork_testrun()
-  lib: Introduce concept of max_test_runtime
-  syscalls/writev03: Adjust test runtime
-
- include/tst_fs.h                              |  5 ++
- include/tst_fuzzy_sync.h                      |  4 +-
- include/tst_test.h                            |  7 +-
- lib/newlib_tests/.gitignore                   |  3 +-
- .../{test18.c => test_runtime01.c}            |  7 +-
- lib/newlib_tests/test_runtime02.c             | 31 +++++++
- lib/tst_supported_fs_types.c                  |  5 ++
- lib/tst_test.c                                | 87 ++++++++++++++++---
- testcases/kernel/crypto/af_alg02.c            |  2 +-
- testcases/kernel/crypto/pcrypt_aead01.c       |  2 +-
- testcases/kernel/mem/mtest01/mtest01.c        |  6 +-
- testcases/kernel/mem/mtest06/mmap1.c          | 13 ++-
- .../kernel/syscalls/move_pages/move_pages12.c |  4 +-
- testcases/kernel/syscalls/writev/writev03.c   |  1 +
- 14 files changed, 141 insertions(+), 36 deletions(-)
- rename lib/newlib_tests/{test18.c => test_runtime01.c} (59%)
- create mode 100644 lib/newlib_tests/test_runtime02.c
-
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 36d4b46f0..d1ed78cb5 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -195,6 +195,11 @@ const char **tst_get_supported_fs_types(const char *const *skiplist);
+  */
+ int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist);
+ 
++/*
++ * Returns maximal number of supported filesystem types.
++ */
++unsigned int tst_fs_max_types(void);
++
+ /*
+  * Check whether device supports FS quotas. Negative return value means that
+  * quotas appear to be broken.
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index 592a526ae..1de0f30b2 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -29,6 +29,11 @@ static const char *const fs_type_whitelist[] = {
+ 
+ static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
+ 
++unsigned int tst_fs_max_types(void)
++{
++	return ARRAY_SIZE(fs_type_whitelist) - 1;
++}
++
+ static int has_mkfs(const char *fs_type)
+ {
+ 	char buf[128];
 -- 
 2.31.1
 
