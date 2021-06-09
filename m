@@ -1,51 +1,48 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Wed, 9 Jun 2021 08:20:39 -0300
-Subject: [LTP] [PATCH] futex_wake04: avoid tst_ts_from_ns overflow on
- 32-bit platforms
-In-Reply-To: <YMB6aoVvTKJQ6wif@yuki>
-References: <20210608132723.255996-1-cascardo@canonical.com>
- <YMB6aoVvTKJQ6wif@yuki>
-Message-ID: <YMCkB/iS54OJaby4@mussarela>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed,  9 Jun 2021 13:46:55 +0200
+Subject: [LTP] [PATCH 0/4] Introduce a concept of test runtime cap
+Message-ID: <20210609114659.2445-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jun 09, 2021 at 10:23:06AM +0200, Cyril Hrubis wrote:
-> Hi!
-> Good catch, I guess that it would be slightly cleaner to fix the
-> NSEC_PER_SEC size instead with:
-> 
-> diff --git a/include/lapi/common_timers.h b/include/lapi/common_timers.h
-> index b783beff4..e50f698d6 100644
-> --- a/include/lapi/common_timers.h
-> +++ b/include/lapi/common_timers.h
-> @@ -12,7 +12,7 @@
->  #include "lapi/posix_clocks.h"
-> 
->  #ifndef NSEC_PER_SEC
-> -#define NSEC_PER_SEC (1000000000L)
-> +#define NSEC_PER_SEC (1000000000LL)
->  #endif
-> 
->  static const clock_t clock_list[] = {
-> 
-> 
-> What do you think?
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+Recently we had a problem with tests that use .all_filesystems and
+tst_timeout_remaining().
 
-Yeah, I even wrote and tested that it would build, but I wasn't able to go
-through any build logs or run complete tests.
+The problem is that the tst_timeout_remaining() function wasn't aware of
+the loop over fork_testrun() that executes a testrun for each supported
+filesystem, which caused such test, e.g. writev03, to run for
+unpredictable and long periods.
 
-But maybe I am just overthinking this, and any promotions due to this would
-only fix issues and not introduce any new ones.
+This is an attempt how to solve this properly by uncoupling timeouts
+from test runtime so that test never runs for longer than its timeout.
 
-Well, on second thought, on 32-bit, in cases like variadic functions, it could
-cause a problem. So, I am just afraid that applying this fix without looking
-for every use of NSEC_PER_SEC might lead to new bugs.
+Cyril Hrubis (4):
+  lib: tst_supported_fs_types: Add tst_fs_max_types()
+  lib: tst_test: Move timeout scaling out of fork_testrun()
+  lib: Introduce concept of max_test_runtime
+  syscalls/writev03: Adjust test runtime
 
-Cascardo.
+ include/tst_fs.h                              |  5 ++
+ include/tst_fuzzy_sync.h                      |  4 +-
+ include/tst_test.h                            |  7 +-
+ lib/newlib_tests/.gitignore                   |  3 +-
+ .../{test18.c => test_runtime01.c}            |  7 +-
+ lib/newlib_tests/test_runtime02.c             | 31 +++++++
+ lib/tst_supported_fs_types.c                  |  5 ++
+ lib/tst_test.c                                | 87 ++++++++++++++++---
+ testcases/kernel/crypto/af_alg02.c            |  2 +-
+ testcases/kernel/crypto/pcrypt_aead01.c       |  2 +-
+ testcases/kernel/mem/mtest01/mtest01.c        |  6 +-
+ testcases/kernel/mem/mtest06/mmap1.c          | 13 ++-
+ .../kernel/syscalls/move_pages/move_pages12.c |  4 +-
+ testcases/kernel/syscalls/writev/writev03.c   |  1 +
+ 14 files changed, 141 insertions(+), 36 deletions(-)
+ rename lib/newlib_tests/{test18.c => test_runtime01.c} (59%)
+ create mode 100644 lib/newlib_tests/test_runtime02.c
+
+-- 
+2.31.1
+
