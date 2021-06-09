@@ -1,76 +1,86 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Wed, 9 Jun 2021 17:49:23 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/chown: format output and add testcases
- for chown05
-In-Reply-To: <20210609094924.145262-1-xieziyao@huawei.com>
-References: <20210609094924.145262-1-xieziyao@huawei.com>
-Message-ID: <20210609094924.145262-2-xieziyao@huawei.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 09 Jun 2021 11:28:14 +0100
+Subject: [LTP] [PATCH v2 1/2] Add Coccinelle helper scripts for reference
+In-Reply-To: <YMCAe9PO5NMToFOq@pevik>
+References: <20210607141421.15072-1-rpalethorpe@suse.com>
+ <YMCAe9PO5NMToFOq@pevik>
+Message-ID: <875yyn5o3l.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Print values not variable names in TST_EXP_PASS().
-2. Add testcases that -1 does not change the value after the chown
-call.
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- testcases/kernel/syscalls/chown/chown05.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+Petr Vorel <pvorel@suse.cz> writes:
 
-diff --git a/testcases/kernel/syscalls/chown/chown05.c b/testcases/kernel/syscalls/chown/chown05.c
-index ebb9e9b7c..44abdc750 100644
---- a/testcases/kernel/syscalls/chown/chown05.c
-+++ b/testcases/kernel/syscalls/chown/chown05.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  * 07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2021 Xie Ziyao <xieziyao@huawei.com>
-  */
+> Hi Richie,
+>
+>> Check-in a couple of scripts used for removing the TEST macro from the
+>> library. Also a shell script to show how to run them. These are only
+>> intended to help someone develop their own refactoring scripts. Not
+>> for running automatically.
+> Nice, LGTM, with two notes bellow.
+>
+>> +++ b/scripts/coccinelle/run-spatch.sh
+>> @@ -0,0 +1,39 @@
+>> +#!/bin/sh -eu
+>> +# SPDX-License-Identifier: GPL-2.0-or-later
+>> +# Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
+>> +
+>> +# Helper for running spatch Coccinelle scripts on the LTP source tree
+>> +
+>> +if [[ ! -d lib || ! -d scripts/coccinelle ]]; then
+> [[ ... ]] is bashism. It should be
+> if [ ! -d lib ] || [ ! -d scripts/coccinelle ]; then
 
- /*\
-@@ -20,24 +21,31 @@
- #define TESTFILE "testfile"
++1
 
- struct test_case_t {
-+	char *desc;
- 	uid_t uid;
- 	gid_t gid;
- } tc[] = {
--	{700, 701},
--	{702, 701},
--	{702, 703},
--	{704, 705}
-+	{"change owner/group ids", 700, 701},
-+	{"change owner id only", 702, -1},
-+	{"change owner id only", 703, 701},
-+	{"change group id only", -1, 704},
-+	{"change group id only", 703, 705},
-+	{"no change", -1, -1}
- };
+>
+> or
+>
+>> +    echo "$0: Can't find lib or scripts directories. Run me from top src dir"
+>> +    exit 1
+>> +fi
+>> +
+>> +# Run a script on the lib dir
+>> +libltp_spatch_report() {
+>> +    spatch --dir lib \
+>> +	   --ignore lib/parse_opts.c \
+>> +	   --ignore lib/newlib_tests \
+>> +	   --ignore lib/tests \
+>> +	   --use-gitgrep \
+>> +	   -D report \
+>> +	   --include-headers \
+>> +	   $*
+>> +}
+>> +
+>> +libltp_spatch_fix() {
+>> +    spatch --dir lib \
+>> +	   --ignore lib/parse_opts.c \
+>> +	   --ignore lib/newlib_tests \
+>> +	   --ignore lib/tests \
+>> +	   --use-gitgrep \
+>> +	   --in-place \
+>> +	   -D fix \
+>> +	   --include-headers \
+>> +	   $*
+>> +}
+>> +
+>> +echo You should uncomment one of the scripts below!
+>> +#libltp_spatch_report --sp-file scripts/coccinelle/libltp-test-macro.cocci
+>> +#libltp_spatch_report --sp-file scripts/coccinelle/libltp-test-macro-vars.cocci \
+>> +#		     --ignore lib/tst_test.c
+> Maybe have getopts to specify what needs to be running would prevent a need to
+> modify versioned file.
 
- static void run(unsigned int i)
- {
- 	struct stat stat_buf;
--	TST_EXP_PASS(CHOWN(TESTFILE, tc[i].uid, tc[i].gid));
-+	uid_t expect_uid = tc[i].uid == (uid_t)-1 ? tc[i - 1].uid : tc[i].uid;
-+	gid_t expect_gid = tc[i].gid == (uid_t)-1 ? tc[i - 1].gid : tc[i].gid;
-+
-+	TST_EXP_PASS(CHOWN(TESTFILE, tc[i].uid, tc[i].gid), "chown(%s, %d, %d), %s",
-+		     TESTFILE, tc[i].uid, tc[i].gid, tc[i].desc);
++1
 
- 	SAFE_STAT(TESTFILE, &stat_buf);
--	if (stat_buf.st_uid != tc[i].uid || stat_buf.st_gid != tc[i].gid) {
-+	if (stat_buf.st_uid != expect_uid || stat_buf.st_gid != expect_gid) {
- 		tst_res(TFAIL, "%s: incorrect ownership set, expected %d %d",
--			TESTFILE, tc[i].uid, tc[i].gid);
-+			TESTFILE, expect_uid, expect_gid);
- 	}
- }
+>
+> Kind regards,
+> Petr
 
---
-2.17.1
 
+-- 
+Thank you,
+Richard.
