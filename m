@@ -1,80 +1,63 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Jun 2021 16:00:29 +0200
-Subject: [LTP] [PATCH 1/2] controllers/cpuacct: skip cpuacct_100_100 on
- small memory systems
-In-Reply-To: <20210610100927.32015-1-krzysztof.kozlowski@canonical.com>
-References: <20210610100927.32015-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <YMIa/eXUzx8ygk9g@yuki>
+From: Leo Yu-Chi Liang <ycliang@andestech.com>
+Date: Fri, 11 Jun 2021 01:58:12 +0800
+Subject: [LTP] [PATCH 1/1] fs/racer: Fix LTP hang caused by fs_racer.sh
+Message-ID: <20210610175812.13730-1-ycliang@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Running cpuacct_100_100 on a system with less than ~4 GB of RAM fails:
-> 
->     cpuacct 1 TINFO: timeout per run is 0h 5m 0s
->     cpuacct 1 TINFO: cpuacct: /sys/fs/cgroup/cpu,cpuacct
->     cpuacct 1 TINFO: Creating 100 subgroups each with 100 processes
->     testcases/bin/cpuacct.sh: 0: Cannot fork
-> 
-> In dmesg:
-> 
->     LTP: starting cpuacct_100_100 (cpuacct.sh 100 100)
->     cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
-> 
-> It seems system might not handle or not allow that amount of processes,
-> so simply skip the test.  The threshold of ~4 GB was found during
-> experimenting, so it is not accurate.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  testcases/kernel/controllers/cpuacct/cpuacct.sh | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-> index 323aa7513bf4..2646018d295e 100755
-> --- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
-> +++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-> @@ -44,6 +44,20 @@ setup()
->  		tst_brk TCONF "cpuacct not supported on this system"
->  	fi
->  
-> +	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
-> +		local memtotal=`awk '/MemTotal/ {print $2}' /proc/meminfo`
-> +		if [ $? -eq 0 ]; then
-> +			# cpuacct.sh 100 100 will fail if memory is less
-> +			# than 4 GB with:
-> +			#   testcases/bin/cpuacct.sh: 0: Cannot fork
-> +			# Choose some limit of total memory, determined
-> +			# with experiments: 3*1024+768 MB = 3932160 kB
-> +			if [ $memtotal -lt 3932160 ]; then
-> +				tst_brk TCONF "not enough of memory on this system (less than 3840 MB)"
-> +			fi
-> +		fi
-> +	fi
-> +
+fs_racer.sh test could cause LTP to hang if the file
+gets removed when it's at time same time being renamed.
 
-This looks quite hacky and ad-hoc.
+The if statement in mv source implemented by busybox is as follows:
 
-First of all MemTotal is not a good estimate of usable system memory, if
-nothing else this should use better estimate. We have something that is
-more or less usable in swapping01.c tests in init_meminfo() function.
+	if (dest_exists) {
+		if (flags & OPT_NOCLOBBER)
+			goto RET_0;
+		if (!(flags & OPT_FORCE)           // OPT_FORCE is set by -f option
+		 && ((access(dest, W_OK) < 0 && isatty(0))
+		    || (flags & OPT_INTERACTIVE))  // this is set by -i option
+		) {
+			if (fprintf(stderr, "mv: overwrite '%s'? ", dest) < 0) {
+				goto RET_1;  /* Ouch! fprintf failed! */
+			}
+			if (!bb_ask_y_confirmation()) {
+				goto RET_0;
+			}
+		}
+	}
 
-Secondly we should create a rough estimage how the memory grows based on
-number of processes and on number of subgroups.
+If somehow the dest_file exists when mv executes the first if "if (dest_exists)",
+and gets removed when mv executes the third if "if (access(...))".
+Then it is possible for mv to reach "bb_ask_y_confirmation" and to try to read from tty.
 
-The we can have a generic check if there is enough memory for a given
-test. The problem is that all these estimates are rough and rest of the
-system may eat memory as well, so we will have to make sure there is big
-enough margin. If we want to count on the test success it has to be
-large and consists "offset" (N * pagesize) and percentage of available
-memory 10% or so.
+However, the mv process is executing in the background,
+so when it tries to read from tty,
+the processes in the same process group as mv would all receive SIGTTIN
+and be changed into TASK_STOPPED state.
 
-And yes, this is a complex problem that is not easy to fix. If it was
-easy it would have been fixed a long time ago...
+This would cause this testcase to hang, though happens rarely.
 
+Add -f option to suppress the attempt to read from tty.
+
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ testcases/kernel/fs/racer/fs_racer_file_rename.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_rename.sh b/testcases/kernel/fs/racer/fs_racer_file_rename.sh
+index 7e2e6b1b2..15090361f 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_rename.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_rename.sh
+@@ -25,5 +25,5 @@ MAX=$2
+ while true ; do
+     file=$(($RANDOM%$MAX))
+     new_file=$((($file + 1)%$MAX))
+-    mv $DIR/$file $DIR/$new_file 2> /dev/null
++    mv -f $DIR/$file $DIR/$new_file 2> /dev/null
+ done
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.17.0
+
