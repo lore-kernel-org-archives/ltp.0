@@ -1,26 +1,44 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 9 Jun 2021 22:45:00 +0200
-Subject: [LTP] [PATCH 0/2] syscalls/chown: Format output and add
- testcases for chown05
-In-Reply-To: <20210609094924.145262-1-xieziyao@huawei.com>
-References: <20210609094924.145262-1-xieziyao@huawei.com>
-Message-ID: <YMEoTApQgwz+eakI@pevik>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 10 Jun 2021 12:02:05 +0800
+Subject: [LTP] [PATCH] lib/tst_virt.c: Add fallback when not using Microsoft
+ Hyper-V hypervisor
+Message-ID: <1623297725-3296-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Ziyao,
+If we don't use Microsoft Hyper-V hypervisorm, getrusage04 will report the
+following error:
+getrusage04    1  TBROK  :  tst_virt.c:175: invalid virt_type flag: 6
+getrusage04    2  TBROK  :  tst_virt.c:175: Remaining cases broken
 
-> 1. Format output and add testcases for chown05.
-> 2. Delete duplicate header files.
+We should add is_hyperv() function when try_systemd_detect_virt returns -1.
+But it is a bit complexd according to systemd-detect-virt implementation[1].
+Microsoft Hyper-V hypervisor detection has been introduced since long time ago,
+most system should support it.
 
-> Xie Ziyao (2):
->   syscalls/chown: format output and add testcases for chown05
->   syscalls/chown: format output and delete duplicate header files
+[1]https://github.com/systemd/systemd/blob/main/src/basic/virt.c
 
-Thanks a lot, merged!
+Reported-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ lib/tst_virt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Kind regards,
-Petr
+diff --git a/lib/tst_virt.c b/lib/tst_virt.c
+index 14c4d526c..d23d7f564 100644
+--- a/lib/tst_virt.c
++++ b/lib/tst_virt.c
+@@ -166,6 +166,7 @@ int tst_is_virt(int virt_type)
+ 	case VIRT_IBMZ_LPAR:
+ 	case VIRT_IBMZ_ZVM:
+ 		return is_ibmz(virt_type);
++	case VIRT_HYPERV:
+ 	case VIRT_OTHER:
+ 		return 0;
+ 	}
+-- 
+2.23.0
+
