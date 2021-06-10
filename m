@@ -1,7 +1,9 @@
 From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Date: Thu, 10 Jun 2021 17:10:42 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/read03: Convert to new API
-Message-ID: <20210610091043.900863-1-ruansy.fnst@fujitsu.com>
+Date: Thu, 10 Jun 2021 17:10:43 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/read04: Convert to new API
+In-Reply-To: <20210610091043.900863-1-ruansy.fnst@fujitsu.com>
+References: <20210610091043.900863-1-ruansy.fnst@fujitsu.com>
+Message-ID: <20210610091043.900863-2-ruansy.fnst@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,14 +12,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 ---
- testcases/kernel/syscalls/read/read03.c | 155 +++++-------------------
- 1 file changed, 33 insertions(+), 122 deletions(-)
+ testcases/kernel/syscalls/read/read04.c | 157 +++++-------------------
+ 1 file changed, 34 insertions(+), 123 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/read/read03.c b/testcases/kernel/syscalls/read/read03.c
-index 28554f5ba..2bee29c13 100644
---- a/testcases/kernel/syscalls/read/read03.c
-+++ b/testcases/kernel/syscalls/read/read03.c
-@@ -1,146 +1,57 @@
+diff --git a/testcases/kernel/syscalls/read/read04.c b/testcases/kernel/syscalls/read/read04.c
+index 11469ad29..6a9ed218b 100644
+--- a/testcases/kernel/syscalls/read/read04.c
++++ b/testcases/kernel/syscalls/read/read04.c
+@@ -1,150 +1,61 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -41,96 +43,118 @@ index 28554f5ba..2bee29c13 100644
  
 -/*
 - * NAME
-- *	read03.c
+- *	read04.c
 - *
 - * DESCRIPTION
-- *	Testcase to check that read() sets errno to EAGAIN
+- *	Testcase to check if read returns the number of bytes read correctly.
 - *
 - * ALGORITHM
-- *	Create a named pipe (fifo), open it in O_NONBLOCK mode, and
-- *	attempt to read from it, without writing to it. read() should fail
-- *	with EAGAIN.
+- *	Create a file and write some bytes out to it.
+- *	Attempt to read more than written.
+- *	Check the return count, and the read buffer. The read buffer should be
+- *	same as the write buffer.
 - *
 - * USAGE:  <for command-line>
-- *  read03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  read04 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
 +/*\
 + * [DESCRIPTION]
   *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
 - * RESTRICTIONS
-- *	NONE
-+ * Testcase to check if read() successfully sets errno to EAGAIN when read from
-+ * a pipe(fifo, opened in O_NONBLOCK mode) without writing to it.
+- *	None
++ * Testcase to check if read() returns the number of bytes read correctly.
   */
--#include <sys/stat.h>
--#include <fcntl.h>
--#include <signal.h>
++
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <stdio.h>
+ #include <fcntl.h>
 -#include <errno.h>
 -#include "test.h"
- 
--char *TCID = "read03";
--int TST_TOTAL = 1;
+-#include "safe_macros.h"
 -
--char fifo[100] = "fifo";
--int rfd, wfd;
--struct stat buf;
-+#include <stdio.h>
-+#include <fcntl.h>
+-void cleanup(void);
+-void setup(void);
+-
+-char *TCID = "read04";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
  
--void alarm_handler();
--void setup();
--void cleanup();
-+static char fifo[100];
-+static int rfd, wfd;
+ #define TST_SIZE	27	/* could also do strlen(palfa) */
+-char fname[255];
+-char palfa[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+-int fild;
++static char fname[255];
++static char palfa[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
  
 -int main(int ac, char **av)
 +static void verify_read(void)
  {
 -	int lc;
 -
- 	int c;
+-	int rfild;
++	int fd;
+ 	char prbuf[BUFSIZ];
  
+-	/*
+-	 * parse standard options
+-	 */
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();
+-	setup();		/* global setup for test */
 -
--	/*
--	 * The following loop checks looping state if -i option given
--	 */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
 -
--		TEST(read(rfd, &c, 1));
+-		tst_count = 0;	/* reset tst_count while looping */
 -
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "read() failed to fail when nothing "
--				 "is written to a pipe");
+-		if ((rfild = open(fname, O_RDONLY)) == -1) {
+-			tst_brkm(TBROK, cleanup, "can't open for reading");
+-		}
+-		TEST(read(rfild, prbuf, BUFSIZ));
++	fd = SAFE_OPEN(fname, O_RDONLY);
++	TEST(read(fd, prbuf, BUFSIZ));
+ 
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "call failed unexpectedly");
 -			continue;
 -		}
 -
--		if (TEST_ERRNO != EAGAIN) {
--			tst_resm(TFAIL, "read set bad errno, expected "
--				 "EAGAIN, got %d", TEST_ERRNO);
--		} else {
--			tst_resm(TPASS, "read() succeded in setting errno to "
--				 "EAGAIN");
+-		if (TEST_RETURN != TST_SIZE) {
+-			tst_resm(TFAIL, "Bad read count - got %ld - "
+-				 "expected %d", TEST_RETURN, TST_SIZE);
+-			continue;
 -		}
--	}
+-		if (memcmp(palfa, prbuf, TST_SIZE) != 0) {
+-			tst_resm(TFAIL, "read buffer not equal "
+-				 "to write buffer");
+-			continue;
+-		}
+-		tst_resm(TPASS, "functionality of read() is correct");
+-
+-		SAFE_CLOSE(cleanup, rfild);
++	if (TST_RET != TST_SIZE) {
++		tst_res(TFAIL, "Bad read count - got %ld - expected %d",
++				TST_RET, TST_SIZE);
++		goto out;
++	}
++	if (memcmp(palfa, prbuf, TST_SIZE)) {
++		tst_res(TFAIL, "read buffer not equal to write buffer");
++		goto out;
+ 	}
++	tst_res(TPASS, "functionality of read() is correct");
+ 
 -	cleanup();
 -	tst_exit();
--
-+	TST_EXP_FAIL(read(rfd, &c, 1), EAGAIN,
-+		     "read() when nothing is written to a pipe");
++out:
++	SAFE_CLOSE(fd);
  }
  
 -/*
@@ -139,62 +163,45 @@ index 28554f5ba..2bee29c13 100644
 -void setup(void)
 +static void setup(void)
  {
-+	struct stat buf;
- 
+-
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	int fd;
+ 
+ 	umask(0);
 -
 -	TEST_PAUSE;
 -
--	/* create a temporary filename */
--	sprintf(fifo, "%s.%d", fifo, getpid());
-+	sprintf(fifo, "fifo.%d", getpid());
- 
--	/* Create a temporary directory and cd to it */
 -	tst_tmpdir();
-+	SAFE_MKNOD(fifo, S_IFIFO | 0777, 0);
-+	SAFE_STAT(fifo, &buf);
+-
+ 	sprintf(fname, "tfile_%d", getpid());
  
--	if (mknod(fifo, S_IFIFO | 0777, 0) < 0) {
--		tst_brkm(TBROK, cleanup, "mknod() failed, errno: %d", errno);
+-	if ((fild = creat(fname, 0777)) == -1) {
+-		tst_brkm(TBROK, cleanup, "creat(%s, 0777) Failed, errno = %d"
+-			 " : %s", fname, errno, strerror(errno));
 -	}
--	if (stat(fifo, &buf) != 0) {
--		tst_brkm(TBROK, cleanup, "stat() failed, errno: %d", errno);
+-	if (write(fild, palfa, TST_SIZE) != TST_SIZE) {
+-		tst_brkm(TBROK, cleanup, "can't write to Xread");
 -	}
- 	if ((buf.st_mode & S_IFIFO) == 0) {
--		tst_brkm(TBROK, cleanup, "Mode does not indicate fifo file");
-+		tst_brk(TBROK, "Mode does not indicate fifo file");
- 	}
- 
--	rfd = open(fifo, O_RDONLY | O_NONBLOCK);
--	wfd = open(fifo, O_WRONLY | O_NONBLOCK);
-+	rfd = SAFE_OPEN(fifo, O_RDONLY | O_NONBLOCK);
-+	wfd = SAFE_OPEN(fifo, O_WRONLY | O_NONBLOCK);
+-	close(fild);
++	fd = SAFE_CREAT(fname, 0777);
++	SAFE_WRITE(1, fd, palfa, TST_SIZE);
++	SAFE_CLOSE(fd);
  }
  
 -/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
+- * cleanup() - performs all ONE TIME cleanup for this test at completion or
+- *	       premature exit.
 - */
 -void cleanup(void)
-+static void cleanup(void)
- {
+-{
 -
--	close(rfd);
--	close(wfd);
--	unlink(fifo);
--
--	/* delete the test directory created in setup() */
+-	unlink(fname);
 -	tst_rmdir();
 -
-+	SAFE_CLOSE(rfd);
-+	SAFE_CLOSE(wfd);
-+	SAFE_UNLINK(fifo);
- }
-+
+-}
 +static struct tst_test test = {
 +	.needs_tmpdir = 1,
 +	.setup = setup,
-+	.cleanup = cleanup,
 +	.test_all = verify_read,
 +};
 -- 
