@@ -1,43 +1,34 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 10 Jun 2021 08:12:51 +0000
-Subject: [LTP] [PATCH] lib/tst_virt.c: Add fallback when not using
- Microsoft Hyper-V hypervisor
-In-Reply-To: <YMHF/H7OsORVP606@pevik>
-References: <1623297725-3296-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <121d371d-baca-fc43-9938-8d83e360d97b@canonical.com> <YMHF/H7OsORVP606@pevik>
-Message-ID: <60C1C99B.6070107@fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 10 Jun 2021 10:26:29 +0200
+Subject: [LTP] [PATCH 4/4 v2] syscalls/io_submit: Add io_submit03 test
+ for native AIO
+In-Reply-To: <20210608135718.36579-5-xieziyao@huawei.com>
+References: <20210608135718.36579-1-xieziyao@huawei.com>
+ <20210608135718.36579-5-xieziyao@huawei.com>
+Message-ID: <YMHMtS527P2OIHjs@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All
-Thanks for your review. I have merged this patch with correcting two typos.
+Hi!
+> +static void cleanup(void)
+> +{
+> +	if (rdonly_fd > 0)
+> +		SAFE_CLOSE(rdonly_fd);
+> +	if (wronly_fd > 0)
+> +		SAFE_CLOSE(wronly_fd);
+> +	TST_EXP_PASS_SILENT(tst_syscall(__NR_io_destroy, ctx));
 
-Best Regards
-Yang Xu
-> Hi all,
->
->> On 10/06/2021 06:02, Yang Xu wrote:
->>> If we don't use Microsoft Hyper-V hypervisorm, getrusage04 will report the
->
->> s/hypervisorm/hypervisor/
-> +1
->
->>> following error:
->>> getrusage04    1  TBROK  :  tst_virt.c:175: invalid virt_type flag: 6
->>> getrusage04    2  TBROK  :  tst_virt.c:175: Remaining cases broken
->
->>> We should add is_hyperv() function when try_systemd_detect_virt returns -1.
->>> But it is a bit complexd according to systemd-detect-virt implementation[1].
->
->> s/complexd/complex/
-> +1
->
-> Thanks!
->
-> Reviewed-by: Petr Vorel<pvorel@suse.cz>
->
-> Kind regards,
-> Petr
+I've replaced these PASS_SILENT() with plain old tst_brk(TBROK ...) in
+the last two tests and pushed, thanks.
+
+
+The TST_EXP_* macros are intended for the actual test and not for
+setup/cleanup where the test is supposed to report TBROK if something
+goes wrong.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
