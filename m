@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Jun 2021 15:44:27 +0200
-Subject: [LTP] [PATCH v3 2/2] API: Remove TEST macro usage from library
-In-Reply-To: <20210610121819.24626-2-rpalethorpe@suse.com>
-References: <20210610121819.24626-1-rpalethorpe@suse.com>
- <20210610121819.24626-2-rpalethorpe@suse.com>
-Message-ID: <YMIXO6IGN/1VHtbe@yuki>
+Date: Thu, 10 Jun 2021 16:00:29 +0200
+Subject: [LTP] [PATCH 1/2] controllers/cpuacct: skip cpuacct_100_100 on
+ small memory systems
+In-Reply-To: <20210610100927.32015-1-krzysztof.kozlowski@canonical.com>
+References: <20210610100927.32015-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <YMIa/eXUzx8ygk9g@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,93 +12,68 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
-> index d098173d5..cc2766be8 100644
-> --- a/lib/tst_netdevice.c
-> +++ b/lib/tst_netdevice.c
-> @@ -149,7 +149,7 @@ int tst_create_veth_pair(const char *file, const int lineno,
->  	tst_rtnl_destroy_context(file, lineno, ctx);
+> Running cpuacct_100_100 on a system with less than ~4 GB of RAM fails:
+> 
+>     cpuacct 1 TINFO: timeout per run is 0h 5m 0s
+>     cpuacct 1 TINFO: cpuacct: /sys/fs/cgroup/cpu,cpuacct
+>     cpuacct 1 TINFO: Creating 100 subgroups each with 100 processes
+>     testcases/bin/cpuacct.sh: 0: Cannot fork
+> 
+> In dmesg:
+> 
+>     LTP: starting cpuacct_100_100 (cpuacct.sh 100 100)
+>     cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
+> 
+> It seems system might not handle or not allow that amount of processes,
+> so simply skip the test.  The threshold of ~4 GB was found during
+> experimenting, so it is not accurate.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  testcases/kernel/controllers/cpuacct/cpuacct.sh | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> index 323aa7513bf4..2646018d295e 100755
+> --- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> +++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> @@ -44,6 +44,20 @@ setup()
+>  		tst_brk TCONF "cpuacct not supported on this system"
+>  	fi
 >  
->  	if (!ret) {
-> -		tst_brk_(file, lineno, TBROK | TTERRNO,
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
->  			"Failed to create veth interfaces %s+%s", ifname1,
->  			ifname2);
->  	}
-> @@ -183,7 +183,7 @@ int tst_remove_netdev(const char *file, const int lineno, const char *ifname)
->  	tst_rtnl_destroy_context(file, lineno, ctx);
->  
->  	if (!ret) {
-> -		tst_brk_(file, lineno, TBROK | TTERRNO,
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
->  			"Failed to remove netdevice %s", ifname);
->  	}
->  
-> @@ -232,7 +232,7 @@ static int modify_address(const char *file, const int lineno,
->  	tst_rtnl_destroy_context(file, lineno, ctx);
->  
->  	if (!ret) {
-> -		tst_brk_(file, lineno, TBROK | TTERRNO,
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
->  			"Failed to modify %s network address", ifname);
->  	}
->  
-> @@ -301,7 +301,7 @@ static int change_ns(const char *file, const int lineno, const char *ifname,
->  	tst_rtnl_destroy_context(file, lineno, ctx);
->  
->  	if (!ret) {
-> -		tst_brk_(file, lineno, TBROK | TTERRNO,
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
->  			"Failed to move %s to another namespace", ifname);
->  	}
->  
-> @@ -392,7 +392,7 @@ static int modify_route(const char *file, const int lineno, unsigned int action,
->  	tst_rtnl_destroy_context(file, lineno, ctx);
->  
->  	if (!ret) {
-> -		tst_brk_(file, lineno, TBROK | TTERRNO,
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
->  			"Failed to modify network route");
->  	}
->  
-> diff --git a/lib/tst_rtnetlink.c b/lib/tst_rtnetlink.c
-> index 1ecda3a9f..d93f7e18d 100644
-> --- a/lib/tst_rtnetlink.c
-> +++ b/lib/tst_rtnetlink.c
-> @@ -380,7 +380,7 @@ int tst_rtnl_check_acks(const char *file, const int lineno,
->  		}
->  
->  		if (res->err->error) {
-> -			TST_ERR = -res->err->error;
-> +			errno = -res->err->error;
->  			return 0;
->  		}
->  	}
-> @@ -394,7 +394,7 @@ int tst_rtnl_send_validate(const char *file, const int lineno,
->  	struct tst_rtnl_message *response;
->  	int ret;
->  
-> -	TST_ERR = 0;
-> +	errno = 0;
->  
->  	if (tst_rtnl_send(file, lineno, ctx) <= 0)
->  		return 0;
+> +	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
+> +		local memtotal=`awk '/MemTotal/ {print $2}' /proc/meminfo`
+> +		if [ $? -eq 0 ]; then
+> +			# cpuacct.sh 100 100 will fail if memory is less
+> +			# than 4 GB with:
+> +			#   testcases/bin/cpuacct.sh: 0: Cannot fork
+> +			# Choose some limit of total memory, determined
+> +			# with experiments: 3*1024+768 MB = 3932160 kB
+> +			if [ $memtotal -lt 3932160 ]; then
+> +				tst_brk TCONF "not enough of memory on this system (less than 3840 MB)"
+> +			fi
+> +		fi
+> +	fi
+> +
 
-I've did a careful review and this part is actually not correct. The
-tst_rtnl_send_validate() function uses TST_ERR to propagate error while
-the caller calls tst_rtnl_destroy_context() before it reads the value.
-It's not correct to use errno this way since it may be modified in the
-functions that free messages or destroys the context.
+This looks quite hacky and ad-hoc.
 
-I guess that fixing this part correctly would mean to change the
-tst_rtnl_send_validate() to return the return value from
-tst_rtnl_check_acks() and the tst_rtnl_check_acks() would have to return
-error on a failure.
+First of all MemTotal is not a good estimate of usable system memory, if
+nothing else this should use better estimate. We have something that is
+more or less usable in swapping01.c tests in init_meminfo() function.
 
-It may also make sense to split this patch into two and keep changes to
-these two files in a separate patch, since the rest is more or less
-mechanical replacement of the TEST() macro use which is as far as I can
-tell correct.
+Secondly we should create a rough estimage how the memory grows based on
+number of processes and on number of subgroups.
+
+The we can have a generic check if there is enough memory for a given
+test. The problem is that all these estimates are rough and rest of the
+system may eat memory as well, so we will have to make sure there is big
+enough margin. If we want to count on the test success it has to be
+large and consists "offset" (N * pagesize) and percentage of available
+memory 10% or so.
+
+And yes, this is a complex problem that is not easy to fix. If it was
+easy it would have been fixed a long time ago...
 
 -- 
 Cyril Hrubis
