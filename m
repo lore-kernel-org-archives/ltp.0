@@ -1,290 +1,331 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 10 Jun 2021 13:18:18 +0100
-Subject: [LTP] [PATCH v3 1/2] Add Coccinelle helper scripts for reference
-Message-ID: <20210610121819.24626-1-rpalethorpe@suse.com>
+Date: Thu, 10 Jun 2021 13:18:19 +0100
+Subject: [LTP] [PATCH v3 2/2] API: Remove TEST macro usage from library
+In-Reply-To: <20210610121819.24626-1-rpalethorpe@suse.com>
+References: <20210610121819.24626-1-rpalethorpe@suse.com>
+Message-ID: <20210610121819.24626-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check-in a couple of semantic patches used for removing the TEST macro
-from the library. Also include a shell script to run them with a
-working set of arguments.
-
-These are only intended to help someone develop their own refactoring
-or check scripts. Not for running automatically.
+The test author is guaranteed that the LTP library will not change the
+TST_RET and TST_ERR global variables. That way the test author can use
+the TEST macro then call other library functions before using TST_RET,
+TST_ERR or TTERRNO.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
+ lib/tst_af_alg.c             | 46 ++++++++++++++++++++----------------
+ lib/tst_cgroup.c             | 13 +++++-----
+ lib/tst_crypto.c             | 20 +++++++++-------
+ lib/tst_netdevice.c          | 10 ++++----
+ lib/tst_rtnetlink.c          |  4 ++--
+ lib/tst_supported_fs_types.c | 10 ++++----
+ 6 files changed, 57 insertions(+), 46 deletions(-)
 
-V3:
-* Make proper shell script to run spatch
-* Fix some issues people would likely encounter with semantic patches
-
-V2:
-* Simplify the Cocci scripts
-* Simplify the patchset and combine it with the separate CGroups patch
-* Testing & sign-off
-
- .../coccinelle/libltp-test-macro-vars.cocci   |  19 ++++
- scripts/coccinelle/libltp-test-macro.cocci    | 107 ++++++++++++++++++
- scripts/coccinelle/run-spatch.sh              | 106 +++++++++++++++++
- 3 files changed, 232 insertions(+)
- create mode 100644 scripts/coccinelle/libltp-test-macro-vars.cocci
- create mode 100644 scripts/coccinelle/libltp-test-macro.cocci
- create mode 100755 scripts/coccinelle/run-spatch.sh
-
-diff --git a/scripts/coccinelle/libltp-test-macro-vars.cocci b/scripts/coccinelle/libltp-test-macro-vars.cocci
-new file mode 100644
-index 000000000..ed5459a48
---- /dev/null
-+++ b/scripts/coccinelle/libltp-test-macro-vars.cocci
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
+diff --git a/lib/tst_af_alg.c b/lib/tst_af_alg.c
+index d3895a83d..05caa6301 100644
+--- a/lib/tst_af_alg.c
++++ b/lib/tst_af_alg.c
+@@ -13,25 +13,28 @@
+ 
+ int tst_alg_create(void)
+ {
+-	TEST(socket(AF_ALG, SOCK_SEQPACKET, 0));
+-	if (TST_RET >= 0)
+-		return TST_RET;
+-	if (TST_ERR == EAFNOSUPPORT)
++	const long ret = socket(AF_ALG, SOCK_SEQPACKET, 0);
 +
-+// The TEST macro should not be used in the library because it sets
-+// TST_RET and TST_ERR which are global variables. The test author
-+// only expects these to be changed if *they* call TEST directly.
++	if (ret >= 0)
++		return ret;
++	if (errno == EAFNOSUPPORT)
+ 		tst_brk(TCONF, "kernel doesn't support AF_ALG");
+-	tst_brk(TBROK | TTERRNO, "unexpected error creating AF_ALG socket");
++	tst_brk(TBROK | TERRNO, "unexpected error creating AF_ALG socket");
+ 	return -1;
+ }
+ 
+ void tst_alg_bind_addr(int algfd, const struct sockaddr_alg *addr)
+ {
+-	TEST(bind(algfd, (const struct sockaddr *)addr, sizeof(*addr)));
+-	if (TST_RET == 0)
++	const long ret = bind(algfd, (const struct sockaddr *)addr,
++			      sizeof(*addr));
 +
-+// Find all positions where TEST's variables are used
-+@ find_use exists @
-+expression E;
-+@@
++	if (ret == 0)
+ 		return;
+-	if (TST_ERR == ENOENT) {
++	if (errno == ENOENT) {
+ 		tst_brk(TCONF, "kernel doesn't support %s algorithm '%s'",
+ 			addr->salg_type, addr->salg_name);
+ 	}
+-	tst_brk(TBROK | TTERRNO,
++	tst_brk(TBROK | TERRNO,
+ 		"unexpected error binding AF_ALG socket to %s algorithm '%s'",
+ 		addr->salg_type, addr->salg_name);
+ }
+@@ -63,6 +66,7 @@ void tst_alg_bind(int algfd, const char *algtype, const char *algname)
+ 
+ bool tst_have_alg(const char *algtype, const char *algname)
+ {
++	long ret;
+ 	int algfd;
+ 	struct sockaddr_alg addr;
+ 	bool have_alg = true;
+@@ -71,10 +75,10 @@ bool tst_have_alg(const char *algtype, const char *algname)
+ 
+ 	init_sockaddr_alg(&addr, algtype, algname);
+ 
+-	TEST(bind(algfd, (const struct sockaddr *)&addr, sizeof(addr)));
+-	if (TST_RET != 0) {
+-		if (TST_ERR != ENOENT) {
+-			tst_brk(TBROK | TTERRNO,
++	ret = bind(algfd, (const struct sockaddr *)&addr, sizeof(addr));
++	if (ret != 0) {
++		if (errno != ENOENT) {
++			tst_brk(TBROK | TERRNO,
+ 				"unexpected error binding AF_ALG socket to %s algorithm '%s'",
+ 				algtype, algname);
+ 		}
+@@ -96,6 +100,7 @@ void tst_require_alg(const char *algtype, const char *algname)
+ 
+ void tst_alg_setkey(int algfd, const uint8_t *key, unsigned int keylen)
+ {
++	long ret;
+ 	uint8_t *keybuf = NULL;
+ 	unsigned int i;
+ 
+@@ -106,9 +111,9 @@ void tst_alg_setkey(int algfd, const uint8_t *key, unsigned int keylen)
+ 			keybuf[i] = rand();
+ 		key = keybuf;
+ 	}
+-	TEST(setsockopt(algfd, SOL_ALG, ALG_SET_KEY, key, keylen));
+-	if (TST_RET != 0) {
+-		tst_brk(TBROK | TTERRNO,
++	ret = setsockopt(algfd, SOL_ALG, ALG_SET_KEY, key, keylen);
++	if (ret != 0) {
++		tst_brk(TBROK | TERRNO,
+ 			"unexpected error setting key (len=%u)", keylen);
+ 	}
+ 	free(keybuf);
+@@ -116,12 +121,13 @@ void tst_alg_setkey(int algfd, const uint8_t *key, unsigned int keylen)
+ 
+ int tst_alg_accept(int algfd)
+ {
+-	TEST(accept(algfd, NULL, NULL));
+-	if (TST_RET < 0) {
+-		tst_brk(TBROK | TTERRNO,
++	const long ret = accept(algfd, NULL, NULL);
 +
-+(
-+* TST_ERR
-+|
-+* TST_RET
-+|
-+* TTERRNO | E
-+)
-diff --git a/scripts/coccinelle/libltp-test-macro.cocci b/scripts/coccinelle/libltp-test-macro.cocci
-new file mode 100644
-index 000000000..7563d23aa
---- /dev/null
-+++ b/scripts/coccinelle/libltp-test-macro.cocci
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
++	if (ret < 0) {
++		tst_brk(TBROK | TERRNO,
+ 			"unexpected error accept()ing AF_ALG request socket");
+ 	}
+-	return TST_RET;
++	return ret;
+ }
+ 
+ int tst_alg_setup(const char *algtype, const char *algname,
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 6d94ea41c..2b99c81a4 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -1073,6 +1073,7 @@ ssize_t safe_cgroup_read(const char *const file, const int lineno,
+ 	const char *alias;
+ 	size_t prev_len = 0;
+ 	char prev_buf[BUFSIZ];
++	ssize_t read_ret = 0;
+ 
+ 	for_each_dir(cg, cfile->ctrl_indx, dir) {
+ 		if (!(alias = cgroup_file_alias(cfile, *dir)))
+@@ -1081,9 +1082,9 @@ ssize_t safe_cgroup_read(const char *const file, const int lineno,
+ 		if (prev_len)
+ 			memcpy(prev_buf, out, prev_len);
+ 
+-		TEST(safe_file_readat(file, lineno,
+-				      (*dir)->dir_fd, alias, out, len));
+-		if (TST_RET < 0)
++		read_ret = safe_file_readat(file, lineno,
++					    (*dir)->dir_fd, alias, out, len);
++		if (read_ret < 0)
+ 			continue;
+ 
+ 		if (prev_len && memcmp(out, prev_buf, prev_len)) {
+@@ -1093,12 +1094,12 @@ ssize_t safe_cgroup_read(const char *const file, const int lineno,
+ 			break;
+ 		}
+ 
+-		prev_len = MIN(sizeof(prev_buf), (size_t)TST_RET);
++		prev_len = MIN(sizeof(prev_buf), (size_t)read_ret);
+ 	}
+ 
+-	out[MAX(TST_RET, 0)] = '\0';
++	out[MAX(read_ret, 0)] = '\0';
+ 
+-	return TST_RET;
++	return read_ret;
+ }
+ 
+ void safe_cgroup_printf(const char *const file, const int lineno,
+diff --git a/lib/tst_crypto.c b/lib/tst_crypto.c
+index 685e0871e..c01632c2a 100644
+--- a/lib/tst_crypto.c
++++ b/lib/tst_crypto.c
+@@ -14,16 +14,17 @@
+ 
+ void tst_crypto_open(struct tst_crypto_session *ses)
+ {
+-	TEST(socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO));
+-	if (TST_RET < 0 && TST_ERR == EPROTONOSUPPORT)
+-		tst_brk(TCONF | TTERRNO, "NETLINK_CRYPTO is probably disabled");
++	const long ret = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO);
+ 
+-	if (TST_RET < 0) {
+-		tst_brk(TBROK | TTERRNO,
++	if (ret < 0 && errno == EPROTONOSUPPORT)
++		tst_brk(TCONF | TERRNO, "NETLINK_CRYPTO is probably disabled");
 +
-+// The TEST macro should not be used in the library because it sets
-+// TST_RET and TST_ERR which are global variables. The test author
-+// only expects these to be changed if *they* call TEST directly.
++	if (ret < 0) {
++		tst_brk(TBROK | TERRNO,
+ 			"socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO)");
+ 	}
+ 
+-	ses->fd = TST_RET;
++	ses->fd = ret;
+ 	ses->seq_num = 0;
+ }
+ 
+@@ -83,6 +84,7 @@ int tst_crypto_add_alg(struct tst_crypto_session *ses,
+ int tst_crypto_del_alg(struct tst_crypto_session *ses,
+ 		       const struct crypto_user_alg *alg)
+ {
++	long ret;
+ 	unsigned int i = 0;
+ 	struct nlmsghdr nh = {
+ 		.nlmsg_len = sizeof(struct nlmsghdr) + sizeof(*alg),
+@@ -96,8 +98,8 @@ int tst_crypto_del_alg(struct tst_crypto_session *ses,
+ 
+ 		SAFE_NETLINK_SEND(ses->fd, &nh, alg);
+ 
+-		TEST(tst_crypto_recv_ack(ses));
+-		if (TST_RET != -EBUSY || i >= ses->retries)
++		ret = tst_crypto_recv_ack(ses);
++		if (ret != -EBUSY || i >= ses->retries)
+ 			break;
+ 
+ 		if (usleep(1) && errno != EINTR)
+@@ -106,5 +108,5 @@ int tst_crypto_del_alg(struct tst_crypto_session *ses,
+ 		++i;
+ 	}
+ 
+-	return TST_RET;
++	return ret;
+ }
+diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+index d098173d5..cc2766be8 100644
+--- a/lib/tst_netdevice.c
++++ b/lib/tst_netdevice.c
+@@ -149,7 +149,7 @@ int tst_create_veth_pair(const char *file, const int lineno,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
++		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Failed to create veth interfaces %s+%s", ifname1,
+ 			ifname2);
+ 	}
+@@ -183,7 +183,7 @@ int tst_remove_netdev(const char *file, const int lineno, const char *ifname)
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
++		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Failed to remove netdevice %s", ifname);
+ 	}
+ 
+@@ -232,7 +232,7 @@ static int modify_address(const char *file, const int lineno,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
++		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Failed to modify %s network address", ifname);
+ 	}
+ 
+@@ -301,7 +301,7 @@ static int change_ns(const char *file, const int lineno, const char *ifname,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
++		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Failed to move %s to another namespace", ifname);
+ 	}
+ 
+@@ -392,7 +392,7 @@ static int modify_route(const char *file, const int lineno, unsigned int action,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
++		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Failed to modify network route");
+ 	}
+ 
+diff --git a/lib/tst_rtnetlink.c b/lib/tst_rtnetlink.c
+index 1ecda3a9f..d93f7e18d 100644
+--- a/lib/tst_rtnetlink.c
++++ b/lib/tst_rtnetlink.c
+@@ -380,7 +380,7 @@ int tst_rtnl_check_acks(const char *file, const int lineno,
+ 		}
+ 
+ 		if (res->err->error) {
+-			TST_ERR = -res->err->error;
++			errno = -res->err->error;
+ 			return 0;
+ 		}
+ 	}
+@@ -394,7 +394,7 @@ int tst_rtnl_send_validate(const char *file, const int lineno,
+ 	struct tst_rtnl_message *response;
+ 	int ret;
+ 
+-	TST_ERR = 0;
++	errno = 0;
+ 
+ 	if (tst_rtnl_send(file, lineno, ctx) <= 0)
+ 		return 0;
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index 592a526ae..d0f745490 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -167,14 +167,16 @@ const char **tst_get_supported_fs_types(const char *const *skiplist)
+ 
+ int tst_check_quota_support(const char *device, int format, char *quotafile)
+ {
+-	TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format, quotafile));
++	const long ret = quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format,
++				  quotafile);
+ 
+ 	/* Not supported */
+-	if (TST_RET == -1 && TST_ERR == ESRCH)
 +
-+// Set with -D fix
-+virtual fix
-+
-+// Find all positions where TEST is _used_.
-+@ depends on !fix exists @
-+@@
-+
-+* TEST(...);
-+
-+// Below are rules which will create a patch to replace TEST usage
-+// It assumes we can use the ret var without conflicts
-+
-+// Fix all references to the variables TEST modifies when they occur in a
-+// function where TEST was used.
-+@ depends on fix exists @
-+@@
-+
-+ TEST(...)
-+
-+ ...
-+
-+(
-+- TST_RET
-++ ret
-+|
-+- TST_ERR
-++ errno
-+|
-+- TTERRNO
-++ TERRNO
-+)
-+
-+// Replace TEST in all functions where it occurs only at the start. It
-+// is slightly complicated by adding a newline if a statement appears
-+// on the line after TEST(). It is not clear to me what the rules are
-+// for matching whitespace as it has no semantic meaning, but this
-+// appears to work.
-+@ depends on fix @
-+identifier fn;
-+expression tested_expr;
-+statement st;
-+@@
-+
-+  fn (...)
-+  {
-+- 	TEST(tested_expr);
-++	const long ret = tested_expr;
-+(
-++
-+	st
-+|
-+
-+)
-+	... when != TEST(...)
-+  }
-+
-+// Replace TEST in all functions where it occurs at the start
-+// Functions where it *only* occurs at the start were handled above
-+@ depends on fix @
-+identifier fn;
-+expression tested_expr;
-+statement st;
-+@@
-+
-+  fn (...)
-+  {
-+- 	TEST(tested_expr);
-++	long ret = tested_expr;
-+(
-++
-+	st
-+|
-+
-+)
-+	...
-+  }
-+
-+// Add ret var at the start of a function where TEST occurs and there
-+// is not already a ret declaration
-+@ depends on fix exists @
-+identifier fn;
-+@@
-+
-+  fn (...)
-+  {
-++	long ret;
-+	... when != long ret;
-+
-+	TEST(...)
-+	...
-+  }
-+
-+// Replace any remaining occurrences of TEST
-+@ depends on fix @
-+expression tested_expr;
-+@@
-+
-+- 	TEST(tested_expr);
-++	ret = tested_expr;
-+
-diff --git a/scripts/coccinelle/run-spatch.sh b/scripts/coccinelle/run-spatch.sh
-new file mode 100755
-index 000000000..e8e6f47d8
---- /dev/null
-+++ b/scripts/coccinelle/run-spatch.sh
-@@ -0,0 +1,106 @@
-+#!/bin/sh -eu
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
-+
-+# Helper for running spatch Coccinelle scripts on the LTP source tree
-+
-+if [ ! -d lib ] || [ ! -d scripts/coccinelle ]; then
-+    echo "$0: Can't find lib or scripts directories. Run me from top src dir"
-+    exit 1
-+fi
-+
-+do_fix=no
-+
-+# Run a script on the lib dir
-+libltp_spatch() {
-+    echo libltp_spatch $*
-+
-+    if [ $do_fix = yes ]; then
-+	spatch --dir lib \
-+	       --ignore lib/parse_opts.c \
-+	       --ignore lib/newlib_tests \
-+	       --ignore lib/tests \
-+	       --use-gitgrep \
-+	       --in-place \
-+	       -D fix \
-+	       --include-headers \
-+	       $*
-+    else
-+	spatch --dir lib \
-+	       --ignore lib/parse_opts.c \
-+	       --ignore lib/newlib_tests \
-+	       --ignore lib/tests \
-+	       --use-gitgrep \
-+	       --include-headers \
-+	       $*
-+    fi
-+}
-+
-+tests_spatch() {
-+        echo tests_spatch $*
-+
-+        if [ $do_fix = yes ]; then
-+	    spatch --dir testcases \
-+		   --use-gitgrep \
-+		   --in-place \
-+		   -D fix \
-+		   --include-headers \
-+		   $*
-+	else
-+	    spatch --dir testcases \
-+		   --use-gitgrep \
-+		   --include-headers \
-+		   $*
-+	fi
-+}
-+
-+usage()
-+{
-+    cat <<EOF
-+Usage:
-+$0 [ -f ] <patch basename> [ <patch basename> [...] ]
-+$0 -h
-+
-+Options:
-+-f	Apply the semantic patch in-place to fix the code
-+-h	You are reading it
-+
-+If run without -f then the semantic patch will only print locations
-+where it matches or show a diff.
-+
-+EOF
-+}
-+
-+while getopts "fh" opt; do
-+    case $opt in
-+	f) do_fix=yes;;
-+	h|?) usage; exit $([ $opt = h ]);;
-+    esac
-+done
-+
-+shift $(($OPTIND - 1))
-+
-+if [ $# -eq 0 ]; then
-+    echo -e "Missing semantic patch name \n"
-+    usage; exit 1
-+fi
-+
-+if [ $do_fix = yes ] && [ -n "$(git ls-files -m -d)" ]; then
-+    echo "At least stage your current changes!"
-+    exit 1
-+fi
-+
-+for spatch_file in $*; do
-+    case $spatch_file in
-+	libltp-test-macro)
-+	    libltp_spatch --sp-file scripts/coccinelle/libltp-test-macro.cocci;;
-+	libltp-test-macro-vars)
-+	    libltp_spatch --sp-file scripts/coccinelle/libltp-test-macro-vars.cocci \
-+			  --ignore lib/tst_test.c;;
-+	*)
-+	    tests_spatch --sp-file scripts/coccinelle/$spatch_file.cocci;;
-+    esac
-+done
-+
-+
-+
++	if (ret == -1 && errno == ESRCH)
+ 		return 0;
+ 
+ 	/* Broken */
+-	if (TST_RET)
++	if (ret)
+ 		return -1;
+ 
+ 	quotactl(QCMD(Q_QUOTAOFF, USRQUOTA), device, 0, 0);
+@@ -192,5 +194,5 @@ void tst_require_quota_support_(const char *file, const int lineno,
+ 	}
+ 
+ 	if (status < 0)
+-		tst_brk_(file, lineno, TBROK|TTERRNO, "FS quotas are broken");
++		tst_brk_(file, lineno, TBROK|TERRNO, "FS quotas are broken");
+ }
 -- 
 2.31.1
 
