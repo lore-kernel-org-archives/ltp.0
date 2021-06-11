@@ -1,85 +1,343 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Fri, 11 Jun 2021 11:22:48 +0200
-Subject: [LTP] [PATCH 1/2] controllers/cpuacct: skip cpuacct_100_100 on
- small memory systems
-In-Reply-To: <YMIa/eXUzx8ygk9g@yuki>
-References: <20210610100927.32015-1-krzysztof.kozlowski@canonical.com>
- <YMIa/eXUzx8ygk9g@yuki>
-Message-ID: <c4f3198b-62b5-51ab-6dc6-0c6dc8e1cbb8@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 11 Jun 2021 13:46:37 +0200
+Subject: [LTP] [PATCH v4] adjtimex02.c: Skipped EFAULT tests for libc
+ variant"
+In-Reply-To: <20210610050952.2862-1-vinay.m.engg@gmail.com>
+References: <20210602040423.9350-1-vinay.m.engg@gmail.com>
+ <20210610050952.2862-1-vinay.m.engg@gmail.com>
+Message-ID: <YMNNHVaIQZ84+lLS@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/06/2021 16:00, Cyril Hrubis wrote:
-> Hi!
->> Running cpuacct_100_100 on a system with less than ~4 GB of RAM fails:
->>
->>     cpuacct 1 TINFO: timeout per run is 0h 5m 0s
->>     cpuacct 1 TINFO: cpuacct: /sys/fs/cgroup/cpu,cpuacct
->>     cpuacct 1 TINFO: Creating 100 subgroups each with 100 processes
->>     testcases/bin/cpuacct.sh: 0: Cannot fork
->>
->> In dmesg:
->>
->>     LTP: starting cpuacct_100_100 (cpuacct.sh 100 100)
->>     cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
->>
->> It seems system might not handle or not allow that amount of processes,
->> so simply skip the test.  The threshold of ~4 GB was found during
->> experimenting, so it is not accurate.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>  testcases/kernel/controllers/cpuacct/cpuacct.sh | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->>
->> diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
->> index 323aa7513bf4..2646018d295e 100755
->> --- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
->> +++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
->> @@ -44,6 +44,20 @@ setup()
->>  		tst_brk TCONF "cpuacct not supported on this system"
->>  	fi
->>  
->> +	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
->> +		local memtotal=`awk '/MemTotal/ {print $2}' /proc/meminfo`
->> +		if [ $? -eq 0 ]; then
->> +			# cpuacct.sh 100 100 will fail if memory is less
->> +			# than 4 GB with:
->> +			#   testcases/bin/cpuacct.sh: 0: Cannot fork
->> +			# Choose some limit of total memory, determined
->> +			# with experiments: 3*1024+768 MB = 3932160 kB
->> +			if [ $memtotal -lt 3932160 ]; then
->> +				tst_brk TCONF "not enough of memory on this system (less than 3840 MB)"
->> +			fi
->> +		fi
->> +	fi
->> +
+Hi!
+> Tested EFAULT cases only for "__NR_adjtimex" syscall.
 > 
-> This looks quite hacky and ad-hoc.
+> Tests for bad addresses in LTP cases trigger segment
+> fault in libc on a 32bit system.
 > 
-> First of all MemTotal is not a good estimate of usable system memory, if
-> nothing else this should use better estimate. We have something that is
-> more or less usable in swapping01.c tests in init_meminfo() function.
+> Signed-off-by: Vinay Kumar <vinay.m.engg@gmail.com>
+> ---
+>  .../kernel/syscalls/adjtimex/adjtimex02.c     | 226 ++++++++++++------
+>  1 file changed, 152 insertions(+), 74 deletions(-)
 > 
-> Secondly we should create a rough estimage how the memory grows based on
-> number of processes and on number of subgroups.
-> 
-> The we can have a generic check if there is enough memory for a given
-> test. The problem is that all these estimates are rough and rest of the
-> system may eat memory as well, so we will have to make sure there is big
-> enough margin. If we want to count on the test success it has to be
-> large and consists "offset" (N * pagesize) and percentage of available
-> memory 10% or so.
-> 
-> And yes, this is a complex problem that is not easy to fix. If it was
-> easy it would have been fixed a long time ago...
+> diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+> index 19ee97158..5eaea6352 100644
+> --- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+> +++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+> @@ -10,115 +10,193 @@
+>  #include <unistd.h>
+>  #include <pwd.h>
+>  #include "tst_test.h"
+> +#include "lapi/syscalls.h"
+>  
+> -#define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
+> -	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
+> +#define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
+> +				ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
+>  
+> -static int hz;			/* HZ from sysconf */
+> -
+> -static struct timex *tim_save;
+> -static struct timex *buf;
+> +static int hz;		/* HZ from sysconf */
+>  
+> +static struct timex *tim_save, *buf;
+>  static struct passwd *ltpuser;
+>  
+> -static void verify_adjtimex(unsigned int nr)
+> +struct test_case {
+> +	unsigned int modes;
+> +	long lowlimit;
+> +	long highlimit;
+> +	long delta;
+> +	int exp_err;
+> +};
+> +
+> +static int libc_adjtimex(void *timex)
+>  {
+> -	struct timex *bufp;
+> -	int expected_errno = 0;
+> +	return adjtimex(timex);
+> +}
 
-I understand, thanks for the hints. I'll try to come up with some more
-generic solution based on available memory (like mentioned init_meminfo).
+Do we need this indirection?
+
+As long as we fix the prototype in the test_variants to have a proper
+type for the function, i.e. the timex pointer is struct timex * instead
+of void * we can store the libc function pointer directly to the variant
+structure.
+
+> -	/*
+> -	 * since Linux 2.6.26, if buf.offset value is outside
+> -	 * the acceptable range, it is simply normalized instead
+> -	 * of letting the syscall fail. so just skip this test
+> -	 * case.
+> -	 */
+> -	if (nr > 3 && (tst_kvercmp(2, 6, 25) > 0)) {
+> -		tst_res(TCONF, "this kernel normalizes buf."
+> -				"offset value if it is outside"
+> -				" the acceptable range.");
+> -		return;
+> -	}
+> +static int sys_adjtimex(void *timex)
+                            ^
+			    This should be struct timex *
+> +{
+> +	return tst_syscall(__NR_adjtimex, timex);
+> +}
+> +
+> +static struct test_case tc[] = {
+> +	{
+> +	.modes = SET_MODE,
+> +	.exp_err = EFAULT,
+> +	},
+> +	{
+> +	.modes = ADJ_TICK,
+> +	.lowlimit = 900000,
+> +	.delta = 1,
+> +	.exp_err = EINVAL,
+> +	},
+> +	{
+> +	.modes = ADJ_TICK,
+> +	.highlimit = 1100000,
+> +	.delta = 1,
+> +	.exp_err = EINVAL,
+> +	},
+> +	{
+> +	.modes = ADJ_OFFSET,
+> +	.highlimit = 512000L,
+> +	.delta = 1,
+> +	.exp_err = EINVAL,
+> +	},
+> +	{
+> +	.modes = ADJ_OFFSET,
+> +	.lowlimit = -512000L,
+> +	.delta = -1,
+> +	.exp_err = EINVAL,
+> +	},
+> +};
+> +
+> +static struct test_variants
+> +{
+> +	int (*adjtimex)(void *timex);
+                        ^
+			This should be struct timex * as well.
+> +	char *desc;
+> +} variants[] = {
+> +	{ .adjtimex = libc_adjtimex, .desc = "libc adjtimex()"},
+> +
+> +#if (__NR_adjtimex != __LTP__NR_INVALID_SYSCALL)
+> +	{ .adjtimex = sys_adjtimex,  .desc = "__NR_adjtimex syscall"},
+> +#endif
+> +};
+> +
+> +static void verify_adjtimex(unsigned int i)
+> +{
+> +	struct timex *bufp;
+> +	struct test_variants *tv = &variants[tst_variant];
+>  
+>  	*buf = *tim_save;
+>  	buf->modes = SET_MODE;
+>  	bufp = buf;
+> -	switch (nr) {
+> -	case 0:
+> -		bufp = (struct timex *)-1;
+> -		expected_errno = EFAULT;
+> -		break;
+> -	case 1:
+> -		buf->tick = 900000 / hz - 1;
+> -		expected_errno = EINVAL;
+> -		break;
+> -	case 2:
+> -		buf->tick = 1100000 / hz + 1;
+> -		expected_errno = EINVAL;
+> -		break;
+> -	case 3:
+> -		/* Switch to nobody user for correct error code collection */
+> -		ltpuser = SAFE_GETPWNAM("nobody");
+> -		SAFE_SETEUID(ltpuser->pw_uid);
+> -		expected_errno = EPERM;
+> -		break;
+> -	case 4:
+> -		buf->offset = 512000L + 1;
+> -		expected_errno = EINVAL;
+> -		break;
+> -	case 5:
+> -		buf->offset = (-1) * (512000L) - 1;
+> -		expected_errno = EINVAL;
+> -		break;
+> -	default:
+> -		tst_brk(TFAIL, "Invalid test case %u ", nr);
+> +
+> +	if (tc[i].exp_err == EINVAL) {
+> +		if (tc[i].modes == ADJ_TICK) {
+> +			if (tc[i].lowlimit)
+> +				buf->tick = tc[i].lowlimit - tc[i].delta;
+> +
+> +			if (tc[i].highlimit)
+> +				buf->tick = tc[i].highlimit + tc[i].delta;
+> +		}
+> +		if (tc[i].modes == ADJ_OFFSET) {
+> +			if (tc[i].lowlimit) {
+> +				tst_res(TCONF, "this kernel normalizes buf. offset value if it is outside the acceptable range.");
+> +				return;
+> +			}
+> +			if (tc[i].highlimit) {
+> +				tst_res(TCONF, "this kernel normalizes buf. offset value if it is outside the acceptable range.");
+> +				return;
+> +			}
+> +		}
+>  	}
+>  
+> -	TEST(adjtimex(bufp));
+> -	if ((TST_RET == -1) && (TST_ERR == expected_errno)) {
+> -		tst_res(TPASS | TTERRNO,
+> -				"adjtimex() error %u ", expected_errno);
+> -	} else {
+> -		tst_res(TFAIL | TTERRNO,
+> -				"Test Failed, adjtimex() returned %ld",
+> -				TST_RET);
+> +	if (tc[i].exp_err == EFAULT) {
+> +		if (tv->adjtimex != libc_adjtimex) {
+> +			bufp = (struct timex *) -1;
+> +		} else {
+> +			tst_res(TCONF, "EFAULT is skipped for libc variant");
+> +			return;
+> +		}
+> +	}
+> +
+> +	TEST(tv->adjtimex(bufp));
+> +
+> +	if (tc[i].exp_err != TST_ERR) {
+> +		tst_res(TFAIL | TTERRNO, "adjtimex(): expected %s mode %x",
+> +					tst_strerrno(tc[i].exp_err), tc[i].modes);
+> +		return;
+>  	}
+
+We should really use TST_EXP_FAIL() here instead.
+
+> -	/* clean up after ourselves */
+> -	if (nr == 3)
+> -		SAFE_SETEUID(0);
+> +	tst_res(TPASS, "adjtimex() error %s", tst_strerrno(tc[i].exp_err));
+> +
+>  }
+>  
+>  static void setup(void)
+>  {
+> +	struct test_variants *tv = &variants[tst_variant];
+> +	size_t i;
+> +	int expected_errno = 0;
+> +
+> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
+> +
+>  	tim_save->modes = 0;
+>  
+> +	buf->modes = SET_MODE;
+> +
+> +	/* Switch to nobody user for correct error code collection */
+> +	ltpuser = SAFE_GETPWNAM("nobody");
+> +	SAFE_SETEUID(ltpuser->pw_uid);
+> +	expected_errno = EPERM;
+> +
+> +	TEST(tv->adjtimex(buf));
+> +
+> +	if ((TST_RET == -1) && (TST_ERR == expected_errno)) {
+> +		tst_res(TPASS, "adjtimex() error %s ",
+> +				tst_strerrno(expected_errno));
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO,
+> +				"adjtimex(): returned %ld", TST_RET);
+> +	}
+> +
+> +	SAFE_SETEUID(0);
+
+What is this nonsense?
+
+What is doing a test code in the test setup?
+
+The only thing that should be done in the setup is to store the nobody
+uid into a global variable.
+
+The EPERM test should be done in the verify_adjtimex() function, we can
+do something as:
+
+	if (tc[i].exp_err == EPERM)
+		SAFE_SETEUID(nobody_uid);
 
 
-Best regards,
-Krzysztof
+	/* do the actuall test */
+
+	if (tc[i].exp_err == EPERM)
+		SAFE_SETEUID(0);
+
+>  	/* set the HZ from sysconf */
+>  	hz = SAFE_SYSCONF(_SC_CLK_TCK);
+>  
+> -	/* Save current parameters */
+> -	if ((adjtimex(tim_save)) == -1)
+> +	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+> +		if (tc[i].modes == ADJ_TICK) {
+> +			tc[i].highlimit /= hz;
+> +			tc[i].lowlimit /= hz;
+> +		}
+> +	}
+> +
+> +	if ((adjtimex(tim_save)) == -1) {
+>  		tst_brk(TBROK | TERRNO,
+> -			"adjtimex(): failed to save current params");
+> +		"adjtimex(): failed to save current params");
+> +	}
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> +
+>  	tim_save->modes = SET_MODE;
+>  
+> -	/* Restore saved parameters */
+> -	if ((adjtimex(tim_save)) == -1)
+> -		tst_res(TWARN, "Failed to restore saved parameters");
+> +	if ((adjtimex(tim_save)) == -1) {
+> +		tst_brk(TBROK | TERRNO,
+> +		"adjtimex(): failed to save current params");
+                                  ^
+				  This was correct before the change, we
+				  change the modes to SET_MODE so we
+				  really restore the value here.
+> +	}
+>  }
+>  
+>  static struct tst_test test = {
+> -	.needs_root = 1,
+> -	.tcnt = 6,
+> +	.test = verify_adjtimex,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> -	.test = verify_adjtimex,
+> +	.tcnt = ARRAY_SIZE(tc),
+> +	.test_variants = ARRAY_SIZE(variants),
+> +	.needs_root = 1,
+>  	.bufs = (struct tst_buffers []) {
+> -		{&buf, .size = sizeof(*buf)},
+> -		{&tim_save, .size = sizeof(*tim_save)},
+> -		{},
+> -	}
+> +		 {&buf, .size = sizeof(*buf)},
+> +		 {&tim_save, .size = sizeof(*tim_save)},
+> +		 {},
+> +		}
+>  };
+> -- 
+> 2.17.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
