@@ -1,67 +1,70 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 11 Jun 2021 14:15:17 +0200
-Subject: [LTP] [PATCH] [COMMITTED] Revert "lib/{newlib_,
- }tests: Fix build dependency on lib"
-Message-ID: <20210611121517.6136-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 11 Jun 2021 15:49:59 +0200
+Subject: [LTP] [RFC PATCH v2 1/2] Add 'make check' and clang-check to
+ build system
+In-Reply-To: <20210604111434.21422-2-rpalethorpe@suse.com>
+References: <20210604111434.21422-1-rpalethorpe@suse.com>
+ <20210604111434.21422-2-rpalethorpe@suse.com>
+Message-ID: <YMNqB2j57/b7ESJB@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This reverts commit 90c6b2eb31106f0766ab2b8e90c97472e4ac3c78.
+Hi Richie,
 
-Unfortunately this change may cause an infinite loop when library
-rebuild is triggered from a test directory. E.g.:
+> Allows the user to run 'make check' to check all source files or
+> 'make check-<target>' to check one source file corresponding to a
+> target.
 
-$ cd ltp
-$ make clean
-...
-$ cd testcases/kernel/syscalls/abort
-$ make
-...
-make -C "/foo/bar/ltp/lib" -f "/foo/bar/ltp/lib/Makefile" all
-make -C "/foo/bar/ltp/lib" -f "/foo/bar/ltp/lib/Makefile" all
-make -C "/foo/bar/ltp/lib" -f "/foo/bar/ltp/lib/Makefile" all
-make -C "/foo/bar/ltp/lib" -f "/foo/bar/ltp/lib/Makefile" all
-make -C "/foo/bar/ltp/lib" -f "/foo/bar/ltp/lib/Makefile" all
-make -C "/foo/bar/ltp/lib" -f "/foo/bar/ltp/lib/Makefile" all
-...
+> Adds makefile pieces for tools/clang-check/main which will be a
+> libclang based tool. By default this is ran by 'make check'.
 
-Looks like some kind of race, so let's revert the commit for now.
+> In theory allows other tools to be specified with
+> 'make CHECK=tool CHECK_FLAGS=<args> check...'. e.g. 'make CHECK=sparse
+> CHECK_FLAGS= check-tst_cgroup'
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Petr Vorel <pvorel@suse.cz>
+one more proposal (addition to Metan's fix [1]):
+how about to add top level make check target:
+
+diff --git Makefile Makefile
+index 56812d77b..b65315618 100644
+--- Makefile
++++ Makefile
+@@ -79,6 +79,7 @@ BOOTSTRAP_TARGETS	:= $(sort $(COMMON_TARGETS) $(CLEAN_TARGETS) $(INSTALL_TARGETS
+ CLEAN_TARGETS		:= $(addsuffix -clean,$(CLEAN_TARGETS))
+ INSTALL_TARGETS		:= $(addsuffix -install,$(INSTALL_TARGETS))
+ MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
++CHECK_TARGETS		:= $(addsuffix -check,testcases lib)
+ 
+ # There's no reason why we should run `all' twice. Otherwise we're just wasting
+ # 3+ mins of useful CPU cycles on a modern machine, and even more time on an
+@@ -99,6 +100,11 @@ INSTALL_DIR		:= $(abspath $(INSTALL_DIR))
+ $(sort $(addprefix $(abs_top_builddir)/,$(BOOTSTRAP_TARGETS)) $(INSTALL_DIR) $(DESTDIR)/$(bindir)):
+ 	mkdir -m 00755 -p "$@"
+ 
++$(CHECK_TARGETS):
++	echo "CHECK_TARGETS: $(CHECK_TARGETS)"; \
++	$(MAKE) -C "$(subst -check,,$@)" \
++		-f "$(abs_top_srcdir)/$(subst -check,,$@)/Makefile" all
++
+ ## Pattern based subtarget rules.
+ lib-install: lib-all
+ 
+@@ -189,6 +195,9 @@ INSTALL_TARGETS		+= $(addprefix $(DESTDIR)/$(bindir)/,$(BINDIR_INSTALL_SCRIPTS))
+ 
+ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
+ 
++## Check
++check: $(CHECK_TARGETS)
++
+ ## Install
+ install: $(INSTALL_TARGETS)
+ 
 ---
- lib/newlib_tests/Makefile | 2 +-
- lib/tests/Makefile        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/newlib_tests/Makefile b/lib/newlib_tests/Makefile
-index a263d7db5..30ca6810c 100644
---- a/lib/newlib_tests/Makefile
-+++ b/lib/newlib_tests/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- top_srcdir		?= ../..
- 
--include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/env_pre.mk
- 
- CFLAGS			+= -W -Wall
- LDLIBS			+= -lltp
-diff --git a/lib/tests/Makefile b/lib/tests/Makefile
-index c418202ed..73a0f1655 100644
---- a/lib/tests/Makefile
-+++ b/lib/tests/Makefile
-@@ -1,6 +1,6 @@
- top_srcdir		?= ../..
- 
--include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/env_pre.mk
- 
- CFLAGS			+= -W
- LDLIBS			+= -lltp
--- 
-2.31.1
+Kind regards,
+Petr
 
+[1] https://lists.linux.it/pipermail/ltp/2021-June/023017.html
