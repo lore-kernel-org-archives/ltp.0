@@ -1,75 +1,172 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Jun 2021 16:17:51 +0200
-Subject: [LTP] [RFC PATCH v2 1/2] Add 'make check' and clang-check to
- build system
-In-Reply-To: <YMNqB2j57/b7ESJB@pevik>
-References: <20210604111434.21422-1-rpalethorpe@suse.com>
- <20210604111434.21422-2-rpalethorpe@suse.com>
- <YMNqB2j57/b7ESJB@pevik>
-Message-ID: <YMNwj5509FviXCza@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 11 Jun 2021 15:57:11 +0200
+Subject: [LTP] [PATCH v2 05/10] setitimer02: Convert setitimer02 to new
+ API
+In-Reply-To: <20210609173601.29352-5-vinay.m.engg@gmail.com>
+References: <YL/Wf51Y6V5lRnkM@pevik>
+ <20210609173601.29352-1-vinay.m.engg@gmail.com>
+ <20210609173601.29352-5-vinay.m.engg@gmail.com>
+Message-ID: <YMNrt8TxrxhNjFPN@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
-> Hi Richie,
+Hi!
+> +static void verify_setitimer(void)
+>  {
+> -	int lc;
+>  	struct itimerval *value;
+>  
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();		/* global setup */
+> -
+> -	/* The following loop checks looping state if -i option given */
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		/* reset tst_count in case we are looping */
+> -		tst_count = 0;
+> -
+> -		/* allocate some space for a timer structure */
+> -		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
+> -		    NULL) {
+> -			tst_brkm(TBROK, cleanup, "value malloc failed");
+> -		}
+> -
+> -		/* set up some reasonable values */
+> -
+> -		value->it_value.tv_sec = 30;
+> -		value->it_value.tv_usec = 0;
+> -		value->it_interval.tv_sec = 0;
+> -		value->it_interval.tv_usec = 0;
+> -		/*
+> -		 * issue the system call with the TEST() macro
+> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+> -		 */
+> -
+> -		/* call with a bad address */
+> -		TEST(setitimer(ITIMER_REAL, value, (struct itimerval *)-1));
+> -
+> -		if (TEST_RETURN == 0) {
+> -			tst_resm(TFAIL, "call failed to produce EFAULT error "
+> -				 "- errno = %d - %s", TEST_ERRNO,
+> -				 strerror(TEST_ERRNO));
+> -			continue;
+> -		}
+> -
+> -		switch (TEST_ERRNO) {
+> -		case EFAULT:
+> -			tst_resm(TPASS, "expected failure - errno = %d - %s",
+> -				 TEST_ERRNO, strerror(TEST_ERRNO));
+> -			break;
+> -		default:
+> -			tst_resm(TFAIL, "call failed to produce EFAULT error "
+> -				 "- errno = %d - %s", TEST_ERRNO,
+> -				 strerror(TEST_ERRNO));
+> -		}
+> -
+> -		/*
+> -		 * clean up things in case we are looping
+> -		 */
+> -		free(value);
+> -		value = NULL;
+> +	/* allocate some space for a timer structure */
+> +	if ((value = malloc((size_t)sizeof(struct itimerval))) ==
+> +		NULL) {
+> +		tst_brk(TBROK, "value malloc failed");
+>  	}
 
-> one more proposal (addition to Metan's fix [1]):
-> how about to add top level make check target:
+This should be allocated as a guarded buffer and initialized once in the
+test setup, see:
 
-> diff --git Makefile Makefile
-> index 56812d77b..b65315618 100644
-> --- Makefile
-> +++ Makefile
-> @@ -79,6 +79,7 @@ BOOTSTRAP_TARGETS	:= $(sort $(COMMON_TARGETS) $(CLEAN_TARGETS) $(INSTALL_TARGETS
->  CLEAN_TARGETS		:= $(addsuffix -clean,$(CLEAN_TARGETS))
->  INSTALL_TARGETS		:= $(addsuffix -install,$(INSTALL_TARGETS))
->  MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
-> +CHECK_TARGETS		:= $(addsuffix -check,testcases lib)
+https://github.com/linux-test-project/ltp/wiki/C-Test-API#131-guarded-buffers
 
->  # There's no reason why we should run `all' twice. Otherwise we're just wasting
->  # 3+ mins of useful CPU cycles on a modern machine, and even more time on an
-> @@ -99,6 +100,11 @@ INSTALL_DIR		:= $(abspath $(INSTALL_DIR))
->  $(sort $(addprefix $(abs_top_builddir)/,$(BOOTSTRAP_TARGETS)) $(INSTALL_DIR) $(DESTDIR)/$(bindir)):
->  	mkdir -m 00755 -p "$@"
-
-> +$(CHECK_TARGETS):
-> +	echo "CHECK_TARGETS: $(CHECK_TARGETS)"; \
-This should be obviously left out (my debug message).
-> +	$(MAKE) -C "$(subst -check,,$@)" \
-> +		-f "$(abs_top_srcdir)/$(subst -check,,$@)/Makefile" all
-This should be check target
-		-f "$(abs_top_srcdir)/$(subst -check,,$@)/Makefile" check
+> -	cleanup();
+> -	tst_exit();
+> -
+> -}
+> -
+> -#else
+> -
+> -int main(void)
+> -{
+> -	tst_resm(TINFO, "test is not available on uClinux");
+> -	tst_exit();
+> -}
+> -
+> -#endif /* if !defined(UCLINUX) */
+> -
+> -/*
+> - * setup() - performs all the ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> -{
+> +	/* set up some reasonable values */
+> +	value->it_value.tv_sec = 30;
+> +	value->it_value.tv_usec = 0;
+> +	value->it_interval.tv_sec = 0;
+> +	value->it_interval.tv_usec = 0;
+> +	/*
+> +	 * issue the system call with the TEST() macro
+> +	 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+> +	 */
 > +
->  ## Pattern based subtarget rules.
->  lib-install: lib-all
-
-> @@ -189,6 +195,9 @@ INSTALL_TARGETS		+= $(addprefix $(DESTDIR)/$(bindir)/,$(BINDIR_INSTALL_SCRIPTS))
-
->  $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
-
-> +## Check
-> +check: $(CHECK_TARGETS)
+> +	/* call with a bad address */
+> +	TEST(setitimer(ITIMER_REAL, value, (struct itimerval *)-1));
 > +
->  ## Install
->  install: $(INSTALL_TARGETS)
+> +	if (TST_RET == 0) {
+> +		tst_res(TFAIL, "call failed to produce EFAULT error "
+> +			"- errno = %d - %s", TST_ERR,
+> +			strerror(TST_ERR));
+> +	}
+>  
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +	switch (TST_ERR) {
+> +	case EFAULT:
+> +		tst_res(TPASS, "expected failure - errno = %d - %s",
+> +			TST_ERR, strerror(TST_ERR));
+> +		break;
+> +	default:
+> +		tst_res(TFAIL, "call failed to produce EFAULT error "
+> +			"- errno = %d - %s", TST_ERR,
+> +			strerror(TST_ERR));
+> +	}
+>  
+> -	TEST_PAUSE;
+> +	/*
+> +	 * clean up things in case we are looping
+> +	 */
+> +	free(value);
+> +	value = NULL;
 
-> ---
+Here as well, we should switch to TST_EXP_FAIL()
 
-+ there needs to be check added to RECURSIVE_TARGETS
-+++ include/mk/generic_trunk_target.inc
-@@ -48,7 +48,7 @@
- 
- include $(top_srcdir)/include/mk/functions.mk
- 
--RECURSIVE_TARGETS		?= all install
-+RECURSIVE_TARGETS		?= all install check
- 
- $(eval $(get_make_dirs))
- 
----
+>  }
+>  
+> -/*
+> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
+> - * 	       or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> +static struct tst_test test = {
+> +	.test_all = verify_setitimer,
+> +	.needs_root = 1,
 
-Kind regards,
-Petr
+Here as well, no need for the root.
+
+> +};
+>  
+> -}
+> -- 
+> 2.17.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
