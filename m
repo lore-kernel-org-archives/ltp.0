@@ -1,50 +1,69 @@
-From: Vinay Kumar <vinay.m.engg@gmail.com>
-Date: Sun, 13 Jun 2021 23:19:46 +0530
-Subject: [LTP] [PATCH v3] ipc/shmctl02: Make use of TST_EXP_FAIL()
-In-Reply-To: <20210609173601.29352-10-vinay.m.engg@gmail.com>
-References: <20210609173601.29352-10-vinay.m.engg@gmail.com>
-Message-ID: <20210613174946.9804-1-vinay.m.engg@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Sun, 13 Jun 2021 21:44:56 +0200
+Subject: [LTP] [Automated-testing] [PATCH 3/4] lib: Introduce concept of
+ max_test_runtime
+In-Reply-To: <fd006cd4-2f65-138a-8907-94153ee3b45e@suse.cz>
+References: <20210609114659.2445-1-chrubis@suse.cz>
+ <20210609114659.2445-4-chrubis@suse.cz> <YMDBFfCZwYDYwWDg@pevik>
+ <YMDC/mjGTXxoq9uH@yuki>
+ <fd006cd4-2f65-138a-8907-94153ee3b45e@suse.cz>
+Message-ID: <YMZgONrus6i45R9U@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In order to simplify the code a bit.
+Hi all,
 
-Signed-off-by: Vinay Kumar <vinay.m.engg@gmail.com>
----
- testcases/kernel/syscalls/ipc/shmctl/shmctl02.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+> On 09. 06. 21 15:32, Cyril Hrubis wrote:
+> > Hi!
+> >>>   - the scaled value is then divided, if needed, so that we end up a
+> >>>     correct maximal runtime for an instance of a test, i.e. we have
+> >>>     max runtime for an instance fork_testrun() that is inside of
+> >>>     .test_variants and .all_filesystems loops
+> >> Now "Max runtime per iteration" can vary, right? I.e. on .all_filesystems
+> >> runtime for each filesystems depends on number of filesystems? E.g. writev03.c
+> >> with setup .timeout = 600 on 2 filesystems is 5 min (300s), but with all 9
+> >> filesystems is about 1 min. We should document that author should expect max
+> >> number of filesystems. What happen with these values in the (long) future, when
+> >> LTP support new filesystem (or drop some)? This was a reason for me to define in
+> >> the test value for "Max runtime per iteration", not whole run.
 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-index b9a71722d..9841d3a86 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-@@ -96,21 +96,8 @@ static void verify_shmctl(unsigned int i)
- 		return;
- 	}
- 
--	TEST(tv->shmctl(*(tc[i].shm_id), tc[i].cmd, tc[i].buf));
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "shmctl() returned %li", TST_RET);
--		return;
--	}
--
--	if (TST_ERR == tc[i].error) {
--		tst_res(TPASS | TTERRNO, "shmctl(%i, %i, %p)",
--				*tc[i].shm_id, tc[i].cmd, tc[i].buf);
--		return;
--	}
--
--	tst_res(TFAIL | TTERRNO, "shmctl(%i, %i, %p) expected %s",
--		*tc[i].shm_id, tc[i].cmd, tc[i].buf, tst_strerrno(tc[i].error));
-+	TST_EXP_FAIL(tv->shmctl(*(tc[i].shm_id), tc[i].cmd, tc[i].buf),
-+		tc[i].error, "shmctl(%i, %i, %p)", *(tc[i].shm_id), tc[i].cmd, tc[i].buf);
- }
- 
- static void setup(void)
--- 
-2.17.1
+> > That's one of the downsides of this approach.
 
+> > The reason why I choose this approach is that you can set upper cap for
+> > the whole test run and not only for a single filesystem/variant.
+
+> > Also this way the test timeout corresponds to the maximal test runtime.
+
+> > Another option would be to redefine the timeout to be timeout per a
+> > fork_testrun() instance, which would make the approach slightly easier
+> > in some places, however that would mean either changing default test
+> > timeout to much smaller value and annotating all long running tests.
+
+> > Hmm, I guess that annotating all long running tests and changing default
+> > timeout may be a good idea regardless this approach.
+
+> Some fuzzysync tests have long run time by design because running too
+> few loops on broken systems will not trigger the bug. Limiting maximum
+> program execution time may be useful for quick smoke tests but it's not
+> usable for real test runs where we want reliable reproducibility.
+Interesting.
+
+> I'd prefer adding a command line option to tst_test (e.g. -m) that would
+> just print test metadata, including total timeout of all fork_testrun()
+> subtests, and exit. Static metadata is not a sufficient solution for
+FYI I suggested this some time ago with private chat with Cyril, he mentioned
+that there were some problems with it. IMHO it'd be great to implement it.
+
+> this because the same test binary may have different runtimes on
+> different system configurations, for example because the list of
+> available filesystems may change arbitrarily between test runs. It'd be
+> great if test runners other than runltp-ng could get a straighforward
+> timeout number without reimplementing a calculation that may change in
+> future versions of LTP.
++1
+
+Kind regards,
+Petr
