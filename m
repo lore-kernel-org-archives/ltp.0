@@ -1,67 +1,245 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 11 Jun 2021 17:07:42 +0200
-Subject: [LTP] [Automated-testing] [PATCH 3/4] lib: Introduce concept of
- max_test_runtime
-In-Reply-To: <YMDC/mjGTXxoq9uH@yuki>
-References: <20210609114659.2445-1-chrubis@suse.cz>
- <20210609114659.2445-4-chrubis@suse.cz> <YMDBFfCZwYDYwWDg@pevik>
- <YMDC/mjGTXxoq9uH@yuki>
-Message-ID: <fd006cd4-2f65-138a-8907-94153ee3b45e@suse.cz>
+From: Vinay Kumar <vinay.m.engg@gmail.com>
+Date: Sun, 13 Jun 2021 21:49:41 +0530
+Subject: [LTP] [PATCH v5] adjtimex02.c: Skipped EFAULT tests for libc variant
+In-Reply-To: <YMNNHVaIQZ84+lLS@yuki>
+References: <YMNNHVaIQZ84+lLS@yuki>
+Message-ID: <20210613161941.4934-1-vinay.m.engg@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 09. 06. 21 15:32, Cyril Hrubis wrote:
-> Hi!
->>>   - the scaled value is then divided, if needed, so that we end up a
->>>     correct maximal runtime for an instance of a test, i.e. we have
->>>     max runtime for an instance fork_testrun() that is inside of
->>>     .test_variants and .all_filesystems loops
->> Now "Max runtime per iteration" can vary, right? I.e. on .all_filesystems
->> runtime for each filesystems depends on number of filesystems? E.g. writev03.c
->> with setup .timeout = 600 on 2 filesystems is 5 min (300s), but with all 9
->> filesystems is about 1 min. We should document that author should expect max
->> number of filesystems. What happen with these values in the (long) future, when
->> LTP support new filesystem (or drop some)? This was a reason for me to define in
->> the test value for "Max runtime per iteration", not whole run.
-> 
-> That's one of the downsides of this approach.
-> 
-> The reason why I choose this approach is that you can set upper cap for
-> the whole test run and not only for a single filesystem/variant.
-> 
-> Also this way the test timeout corresponds to the maximal test runtime.
-> 
-> Another option would be to redefine the timeout to be timeout per a
-> fork_testrun() instance, which would make the approach slightly easier
-> in some places, however that would mean either changing default test
-> timeout to much smaller value and annotating all long running tests.
-> 
-> Hmm, I guess that annotating all long running tests and changing default
-> timeout may be a good idea regardless this approach.
+Tested EFAULT cases only for "__NR_adjtimex" syscall.
 
-Some fuzzysync tests have long run time by design because running too
-few loops on broken systems will not trigger the bug. Limiting maximum
-program execution time may be useful for quick smoke tests but it's not
-usable for real test runs where we want reliable reproducibility.
+Tests for bad addresses in LTP cases trigger segment
+fault in libc on a 32bit system.
 
-I'd prefer adding a command line option to tst_test (e.g. -m) that would
-just print test metadata, including total timeout of all fork_testrun()
-subtests, and exit. Static metadata is not a sufficient solution for
-this because the same test binary may have different runtimes on
-different system configurations, for example because the list of
-available filesystems may change arbitrarily between test runs. It'd be
-great if test runners other than runltp-ng could get a straighforward
-timeout number without reimplementing a calculation that may change in
-future versions of LTP.
+Signed-off-by: Vinay Kumar <vinay.m.engg@gmail.com>
+---
+ .../kernel/syscalls/adjtimex/adjtimex02.c     | 169 +++++++++++-------
+ 1 file changed, 101 insertions(+), 68 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+index 19ee97158..bfe07ec72 100644
+--- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
++++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+@@ -10,99 +10,131 @@
+ #include <unistd.h>
+ #include <pwd.h>
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ 
+-#define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
+-	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
++#define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
++				ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
+ 
+-static int hz;			/* HZ from sysconf */
+-
+-static struct timex *tim_save;
+-static struct timex *buf;
++static int hz;		/* HZ from sysconf */
+ 
++static struct timex *tim_save, *buf;
+ static struct passwd *ltpuser;
+ 
+-static void verify_adjtimex(unsigned int nr)
++static int libc_adjtimex(struct timex *value)
++{
++	return adjtimex(value);
++}
++
++static int sys_adjtimex(struct timex *value)
++{
++	return tst_syscall(__NR_adjtimex, value);
++}
++
++static struct test_case {
++	unsigned int modes;
++	long lowlimit;
++	long highlimit;
++	long delta;
++	int exp_err;
++} tc[] = {
++	{ .modes = SET_MODE, .exp_err = EPERM},
++	{ .modes = SET_MODE, .exp_err = EFAULT},
++	{ .modes = ADJ_TICK, .lowlimit = 900000, .delta = 1, .exp_err = EINVAL},
++	{ .modes = ADJ_TICK, .highlimit = 1100000, .delta = 1, .exp_err = EINVAL},
++	{ .modes = ADJ_OFFSET, .highlimit = 512000L, .delta = 1, .exp_err = EINVAL},
++	{ .modes = ADJ_OFFSET, .lowlimit = -512000L, .delta = -1,	.exp_err = EINVAL},
++};
++
++static struct test_variants
++{
++	int (*adjtimex)(struct timex *value);
++	char *desc;
++} variants[] = {
++	{ .adjtimex = libc_adjtimex, .desc = "libc adjtimex()"},
++
++#if (__NR_adjtimex != __LTP__NR_INVALID_SYSCALL)
++	{ .adjtimex = sys_adjtimex,  .desc = "__NR_adjtimex syscall"},
++#endif
++};
++
++static void verify_adjtimex(unsigned int i)
+ {
+ 	struct timex *bufp;
+-	int expected_errno = 0;
+-
+-	/*
+-	 * since Linux 2.6.26, if buf.offset value is outside
+-	 * the acceptable range, it is simply normalized instead
+-	 * of letting the syscall fail. so just skip this test
+-	 * case.
+-	 */
+-	if (nr > 3 && (tst_kvercmp(2, 6, 25) > 0)) {
+-		tst_res(TCONF, "this kernel normalizes buf."
+-				"offset value if it is outside"
+-				" the acceptable range.");
+-		return;
+-	}
++	struct test_variants *tv = &variants[tst_variant];
+ 
+ 	*buf = *tim_save;
+ 	buf->modes = SET_MODE;
+ 	bufp = buf;
+-	switch (nr) {
+-	case 0:
+-		bufp = (struct timex *)-1;
+-		expected_errno = EFAULT;
+-		break;
+-	case 1:
+-		buf->tick = 900000 / hz - 1;
+-		expected_errno = EINVAL;
+-		break;
+-	case 2:
+-		buf->tick = 1100000 / hz + 1;
+-		expected_errno = EINVAL;
+-		break;
+-	case 3:
+-		/* Switch to nobody user for correct error code collection */
+-		ltpuser = SAFE_GETPWNAM("nobody");
++
++	if (tc[i].exp_err == EPERM)
+ 		SAFE_SETEUID(ltpuser->pw_uid);
+-		expected_errno = EPERM;
+-		break;
+-	case 4:
+-		buf->offset = 512000L + 1;
+-		expected_errno = EINVAL;
+-		break;
+-	case 5:
+-		buf->offset = (-1) * (512000L) - 1;
+-		expected_errno = EINVAL;
+-		break;
+-	default:
+-		tst_brk(TFAIL, "Invalid test case %u ", nr);
++
++	if (tc[i].exp_err == EINVAL) {
++		if (tc[i].modes == ADJ_TICK) {
++			if (tc[i].lowlimit)
++				buf->tick = tc[i].lowlimit - tc[i].delta;
++
++			if (tc[i].highlimit)
++				buf->tick = tc[i].highlimit + tc[i].delta;
++		}
++		if (tc[i].modes == ADJ_OFFSET) {
++			if (tc[i].lowlimit) {
++				tst_res(TCONF, "this kernel normalizes buf. offset value if it is outside the acceptable range.");
++				return;
++			}
++			if (tc[i].highlimit) {
++				tst_res(TCONF, "this kernel normalizes buf. offset value if it is outside the acceptable range.");
++				return;
++			}
++		}
+ 	}
+ 
+-	TEST(adjtimex(bufp));
+-	if ((TST_RET == -1) && (TST_ERR == expected_errno)) {
+-		tst_res(TPASS | TTERRNO,
+-				"adjtimex() error %u ", expected_errno);
+-	} else {
+-		tst_res(TFAIL | TTERRNO,
+-				"Test Failed, adjtimex() returned %ld",
+-				TST_RET);
++	if (tc[i].exp_err == EFAULT) {
++		if (tv->adjtimex != libc_adjtimex) {
++			bufp = (struct timex *) -1;
++		} else {
++			tst_res(TCONF, "EFAULT is skipped for libc variant");
++			return;
++		}
+ 	}
+ 
+-	/* clean up after ourselves */
+-	if (nr == 3)
++	TST_EXP_FAIL(tv->adjtimex(bufp), tc[i].exp_err, "adjtimex() error");
++
++	if (tc[i].exp_err == EPERM)
+ 		SAFE_SETEUID(0);
+ }
+ 
+ static void setup(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
++	size_t i;
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++
+ 	tim_save->modes = 0;
+ 
++	ltpuser = SAFE_GETPWNAM("nobody");
++	SAFE_SETEUID(ltpuser->pw_uid);
++
+ 	/* set the HZ from sysconf */
+ 	hz = SAFE_SYSCONF(_SC_CLK_TCK);
+ 
+-	/* Save current parameters */
+-	if ((adjtimex(tim_save)) == -1)
++	for (i = 0; i < ARRAY_SIZE(tc); i++) {
++		if (tc[i].modes == ADJ_TICK) {
++			tc[i].highlimit /= hz;
++			tc[i].lowlimit /= hz;
++		}
++	}
++
++	if ((adjtimex(tim_save)) == -1) {
+ 		tst_brk(TBROK | TERRNO,
+ 			"adjtimex(): failed to save current params");
++	}
+ }
+ 
+ static void cleanup(void)
+ {
++
+ 	tim_save->modes = SET_MODE;
+ 
+ 	/* Restore saved parameters */
+@@ -111,14 +143,15 @@ static void cleanup(void)
+ }
+ 
+ static struct tst_test test = {
+-	.needs_root = 1,
+-	.tcnt = 6,
++	.test = verify_adjtimex,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.test = verify_adjtimex,
++	.tcnt = ARRAY_SIZE(tc),
++	.test_variants = ARRAY_SIZE(variants),
++	.needs_root = 1,
+ 	.bufs = (struct tst_buffers []) {
+-		{&buf, .size = sizeof(*buf)},
+-		{&tim_save, .size = sizeof(*tim_save)},
+-		{},
+-	}
++		 {&buf, .size = sizeof(*buf)},
++		 {&tim_save, .size = sizeof(*tim_save)},
++		 {},
++		}
+ };
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.17.1
+
