@@ -1,75 +1,100 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 14 Jun 2021 15:57:48 +0200
-Subject: [LTP] [PATCH] ssh-stress: Convert to new api
-In-Reply-To: <5db0624b-a6ce-2c02-d1d4-52034c85b2f1@jv-coder.de>
-References: <20210610101917.1251564-1-lkml@jv-coder.de>
- <YMcB3Wcu0J9C3Z/Q@pevik>
- <5db0624b-a6ce-2c02-d1d4-52034c85b2f1@jv-coder.de>
-Message-ID: <YMdgXPeTNHMtna/M@pevik>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 14 Jun 2021 15:25:39 +0100
+Subject: [LTP] [RFC PATCH v3 2/2] Start libclang based analyzer and
+ TEST() check
+In-Reply-To: <YMdfDZPxY7lZC8F0@pevik>
+References: <20210614115638.25467-1-rpalethorpe@suse.com>
+ <20210614115638.25467-3-rpalethorpe@suse.com> <YMdcgrabnou+u90I@pevik>
+ <YMdfDZPxY7lZC8F0@pevik>
+Message-ID: <87r1h44j6k.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hello,
 
-> Hi,
+Petr Vorel <pvorel@suse.cz> writes:
 
-> I will send a v2 with the changes commented here.
-Thanks!
+> Hi Richie,
+>
+>> Hi Richie,
+>
+>> > +#if HAVE_CLANG_C_INDEX_H
+>> > +
+>> > +#include <clang-c/Index.h>
+>> ...
+>
+>> > +static void emit_error(const char *const error_msg)
+>> > +{
+>> > +	if (color_enabled(STDERR_FILENO)) {
+>> > +		dprintf(STDERR_FILENO,
+>> > +			"%sERROR%s: %s%s%s\n",
+>> > +			ansi_red, ansi_reset,
+>> > +			ansi_bold, error_msg, ansi_reset);
+>> > +	} else {
+>> > +		dprintf(STDERR_FILENO, "ERROR: %s\n", error_msg);
+>> > +	}
+>> > +}
+>> ...
+>> > +	if (ret != CXError_Success) {
+>> > +		emit_error("Failed to parse translation unit!");
+>> > +		return 1;
+>> > +	}
+>> ...
+>
+>> > +#else
+>> > +
+>> > +int main(const attr_unused int argc, const attr_unused char *const *const argv)
+>> > +{
+>> > +	emit_error("clang-checks was not built correctly; libclang headers are not installed!\n");
+>> emit_error() is not visible here, thus build fails. Please add it
+>before HAVE_CLANG_C_INDEX_H.
 
-> On 6/14/2021 9:14 AM, Petr Vorel wrote:
-> > Hi Joerg,
++1
 
-> > [ Cc Alexey ]
-> > > From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> > > Apart from pure conversion:
-> > >   - Use "StrictModes no" in ssh config, to get rid of
-> > >     access permission problems; All part of the path of the
-> > >     authorized_keys file must not be writeable by anyone but the owner.
-> > >     This allows writing the file to the default temp directory
-> > >   - Moved all rhost scripts into ssh-stress.sh
-> > +1
+Uhg.
 
-> > Nice work, LGTM, few small notes (could be fixed before merge).
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+>> Or you could just use tst_test.h with TST_NO_DEFAULT_MAIN and here would be TST_TEST_TCONF()
+>> (+ LTP_ATTRIBUTE_UNUSED).
+>
+> ...
+>> > +/* Copied from lib/tst_ansi_color.c */
+>> > +static int color_enabled(const int fd)
+>
+> Also you'd probably get tst_color_enabled() and other things from
+> lib/tst_ansi_color.c for color handling for free when using
+> tst_test.h.
 
-> > Out of curiosity, did you test this on Two Host Configuration [2] (i.e. ssh)?
-> > Or just netns?
-> No, but should have...
-> I found two major problems with the test (will send a v2). But apart from
-> that, either I was not able to find the documentation or it is not clear
-> enough to me, how to run the two host setup.
-> I found network/README.md, but it only mentions to set RHOST, but for my
-> setup (with ips different from the default ones, IPV{4,6}_{L,R}HOST is also
-Yes we should be more verbose at Two Host Configuration [1] as there is nothing
-more. At least to mention IPV{4,6}_{L,R}HOST.
+We would probably have to build the ltplib with HOSTCC. I don't think we
+can just include the headers.
 
-> required) and ltp must already be in the PATH on rhost, which was not
-> possible for my rhost setup, where the filesystem is read-only and I had to
-> hack setting the path into tst_rhost_run. It is not totally clear, that ltp
-What exactly was your problem? Having to modify PATH on shell config on read
-only system? I'll send a proposal to set PATH in tst_test.sh.
+It is tempting, but it also seems very circular. I can imagine someone
+half refactoring a library and wanting to run the checks on one
+translation unit. However Make would detect a dependency has changed, so
+would try to rebuild the checker with a broken ltplib...
 
-> > > -	check_icmpv${TST_IPVER}_connectivity $(tst_iface) $(tst_ipaddr rhost) || \
-> > > -		tst_brkm TBROK "Failed to ping to $(tst_ipaddr rhost)"
-> > > +	check_icmpv${TST_IPVER}_connectivity $(tst_iface) $(tst_ipaddr rhost) \
-> > > +		|| tst_brk TBROK "Failed to ping $(tst_ipaddr rhost)"
-> > Anything from testcases/network/stress/ns-tools/ is deprecated,
-> > including check_icmpv{4,6}_connectivity. But this can be safely removed.
-> > Although I don't see any connectivity check in tst_net.sh, it should be handled
-> > there. IMHO it's needed at least for for two host based configuration, but it does not harm to test also netns based setup, thus somewhere after init_ltp_netspace.
-> There is tst_ping in tst_net.sh. Without arguments, it just tests
-> connectivity to rhost.
-> Nevertheless, this is kind of useless in setup here. Other network tests do
-> not check availability before execution, so I just dropped it for v2.
-> +1 on adding it to tst_net.sh initialization
-Yes, we should do it as a separate effort.
+We could probably make it work, but having the checker depend on the
+thing it checks seems like a recipe for complication. Meanwhile we just
+get to share a few macros and string constants.
 
-...
+>
+> But that's just a minor detail.
+>
+> Kind regards,
+> Petr
+>
+>> Kind regards,
+>> Petr
+>
+>> > +	return 1;
+>> > +}
+>> > +
+>> > +#endif
 
-Kind regards,
-Petr
 
-[1] https://github.com/linux-test-project/ltp/blob/master/testcases/network/README.md#two-host-configuration
+-- 
+Thank you,
+Richard.
