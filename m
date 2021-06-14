@@ -1,117 +1,56 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Mon, 14 Jun 2021 18:14:12 +0200
-Subject: [LTP] [PATCH v2 1/2] controllers/cpuacct: skip cpuacct_100_100 on
- small memory systems
-Message-ID: <20210614161413.82389-1-krzysztof.kozlowski@canonical.com>
+Date: Mon, 14 Jun 2021 18:14:13 +0200
+Subject: [LTP] [PATCH v2 2/2] controllers/cpuacct: fix rmdir failures on
+ early test abort
+In-Reply-To: <20210614161413.82389-1-krzysztof.kozlowski@canonical.com>
+References: <20210614161413.82389-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210614161413.82389-2-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Running cpuacct_100_100 on a system with less than ~4 GB of RAM fails:
+The "testpath" variable is assigned at the end of setup(), so if test
+exits early, the "rmdir $testpath" is wrong:
 
-    cpuacct 1 TINFO: timeout per run is 0h 5m 0s
-    cpuacct 1 TINFO: cpuacct: /sys/fs/cgroup/cpu,cpuacct
-    cpuacct 1 TINFO: Creating 100 subgroups each with 100 processes
-    testcases/bin/cpuacct.sh: 0: Cannot fork
-
-In dmesg:
-
-    LTP: starting cpuacct_100_100 (cpuacct.sh 100 100)
-    cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
-
-The reason is cgroups pid limit set by systemd user.slice.  For example
-on 2 GB RAM machine it is set as:
-    /sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max:5207
-
-Add a check for both free memory and maximum number of pids (when using
-systemd) to skip the test.  Systems not using systemd might still fail.
+    cpuacct 1 TCONF: not enough of memory on this system (less than 3840 MB)
+    cpuacct 1 TINFO: removing created directories
+    rmdir: missing operand
+    Try 'rmdir --help' for more information.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 ---
 
 Changes since v1:
-1. Add checking for pids.
-2. Accurately check the memory constraints.
+1. None.
 ---
- .../kernel/controllers/cpuacct/cpuacct.sh     | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ testcases/kernel/controllers/cpuacct/cpuacct.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-index 323aa7513bf4..66a48dde679b 100755
+index 66a48dde679b..2e9ff5a5286c 100755
 --- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
 +++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-@@ -38,12 +38,68 @@ OPTIONS
- EOF
- }
- 
-+check_free_memory()
-+{
-+	local memneeded
-+	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
-+
-+	if [ $? -ne 0 ]; then
-+		local memcached
-+
-+		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
-+		test $? || return 0
-+
-+		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
-+		test $? || return 0
-+
-+		memfree=$((memfree + memcached))
-+	fi
-+
-+	# On x86_64, each 100 of processes were using ~16 MB of memory,
-+	# so try to estimate the needed free memory based on this.
-+	memneeded=$((max * nbprocess * 16384 / 100))
-+
-+	if [ $memfree -lt $memneeded ]; then
-+		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
-+	fi
-+	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
-+
-+	return 0
-+}
-+
-+check_limits()
-+{
-+	local realuid="$SUDO_UID"
-+	local tasksneeded=$((max * nbprocess + 100))
-+
-+	if [ "$realuid" = "" ]; then
-+		realuid=`id -u`
-+		test $? || return 0
-+	fi
-+
-+	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
-+	test $? || return 0
-+
-+	if [ $tasksmax -le $tasksneeded ]; then
-+		tst_brk TCONF "limit of tasks is too low (approximate need $tasksneeded, limit $tasksmax)"
-+	fi
-+	tst_res TINFO "task limit fulfilled (approximate need $tasksneeded, limit $tasksmax)"
-+
-+	return 0
-+}
-+
- setup()
+@@ -127,12 +127,13 @@ cleanup()
  {
- 	if ! grep -q -w cpuacct /proc/cgroups; then
- 		tst_brk TCONF "cpuacct not supported on this system"
+ 	tst_res TINFO "removing created directories"
+ 
+-	if [ -d "$testpath/subgroup_1" ]; then
+-		rmdir $testpath/subgroup_*
++	if [ "$testpath" ]; then
++		if [ -d "$testpath/subgroup_1" ]; then
++			rmdir $testpath/subgroup_*
++		fi
++		rmdir $testpath
  	fi
  
-+	check_limits
-+	# Don't bother with memory limit checks on smaller tests
-+	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
-+		check_free_memory
-+	fi
-+
- 	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
- 	tst_res TINFO "cpuacct: $mount_point"
- 	if [ "$mount_point" = "" ]; then
+-	rmdir $testpath
+-
+ 	if [ "$mounted" -ne 1 ]; then
+ 		tst_res TINFO "Umounting cpuacct"
+ 		umount $mount_point
 -- 
 2.27.0
 
