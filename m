@@ -1,67 +1,117 @@
-From: Vinay Kumar <vinay.m.engg@gmail.com>
-Date: Mon, 14 Jun 2021 21:25:16 +0530
-Subject: [LTP] [PATCH v3] ipc/shmctl02: Make use of TST_EXP_FAIL()
-In-Reply-To: <20210613174946.9804-1-vinay.m.engg@gmail.com>
-References: <20210609173601.29352-10-vinay.m.engg@gmail.com>
- <20210613174946.9804-1-vinay.m.engg@gmail.com>
-Message-ID: <CANUMPcWrgeGYeUWg=zTYxwuMiXmTLDimX35=hH93wAJ0gO6t3w@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Mon, 14 Jun 2021 18:14:12 +0200
+Subject: [LTP] [PATCH v2 1/2] controllers/cpuacct: skip cpuacct_100_100 on
+ small memory systems
+Message-ID: <20210614161413.82389-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Running cpuacct_100_100 on a system with less than ~4 GB of RAM fails:
 
-Could you please review below test cases changes also,
+    cpuacct 1 TINFO: timeout per run is 0h 5m 0s
+    cpuacct 1 TINFO: cpuacct: /sys/fs/cgroup/cpu,cpuacct
+    cpuacct 1 TINFO: Creating 100 subgroups each with 100 processes
+    testcases/bin/cpuacct.sh: 0: Cannot fork
 
-semctl03.c
-https://lists.linux.it/pipermail/ltp/2021-June/023116.html
+In dmesg:
 
-shmctl02.c
-https://lists.linux.it/pipermail/ltp/2021-June/023118.html
-https://lists.linux.it/pipermail/ltp/2021-June/023166.html
+    LTP: starting cpuacct_100_100 (cpuacct.sh 100 100)
+    cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
 
-Regards,
-Vinay
+The reason is cgroups pid limit set by systemd user.slice.  For example
+on 2 GB RAM machine it is set as:
+    /sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max:5207
 
-On Sun, Jun 13, 2021 at 11:19 PM Vinay Kumar <vinay.m.engg@gmail.com> wrote:
->
-> In order to simplify the code a bit.
->
-> Signed-off-by: Vinay Kumar <vinay.m.engg@gmail.com>
-> ---
->  testcases/kernel/syscalls/ipc/shmctl/shmctl02.c | 17 ++---------------
->  1 file changed, 2 insertions(+), 15 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-> index b9a71722d..9841d3a86 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-> @@ -96,21 +96,8 @@ static void verify_shmctl(unsigned int i)
->                 return;
->         }
->
-> -       TEST(tv->shmctl(*(tc[i].shm_id), tc[i].cmd, tc[i].buf));
-> -
-> -       if (TST_RET != -1) {
-> -               tst_res(TFAIL, "shmctl() returned %li", TST_RET);
-> -               return;
-> -       }
-> -
-> -       if (TST_ERR == tc[i].error) {
-> -               tst_res(TPASS | TTERRNO, "shmctl(%i, %i, %p)",
-> -                               *tc[i].shm_id, tc[i].cmd, tc[i].buf);
-> -               return;
-> -       }
-> -
-> -       tst_res(TFAIL | TTERRNO, "shmctl(%i, %i, %p) expected %s",
-> -               *tc[i].shm_id, tc[i].cmd, tc[i].buf, tst_strerrno(tc[i].error));
-> +       TST_EXP_FAIL(tv->shmctl(*(tc[i].shm_id), tc[i].cmd, tc[i].buf),
-> +               tc[i].error, "shmctl(%i, %i, %p)", *(tc[i].shm_id), tc[i].cmd, tc[i].buf);
->  }
->
->  static void setup(void)
-> --
-> 2.17.1
->
+Add a check for both free memory and maximum number of pids (when using
+systemd) to skip the test.  Systems not using systemd might still fail.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+---
+
+Changes since v1:
+1. Add checking for pids.
+2. Accurately check the memory constraints.
+---
+ .../kernel/controllers/cpuacct/cpuacct.sh     | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+index 323aa7513bf4..66a48dde679b 100755
+--- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
++++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+@@ -38,12 +38,68 @@ OPTIONS
+ EOF
+ }
+ 
++check_free_memory()
++{
++	local memneeded
++	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
++
++	if [ $? -ne 0 ]; then
++		local memcached
++
++		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
++		test $? || return 0
++
++		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
++		test $? || return 0
++
++		memfree=$((memfree + memcached))
++	fi
++
++	# On x86_64, each 100 of processes were using ~16 MB of memory,
++	# so try to estimate the needed free memory based on this.
++	memneeded=$((max * nbprocess * 16384 / 100))
++
++	if [ $memfree -lt $memneeded ]; then
++		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
++	fi
++	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
++
++	return 0
++}
++
++check_limits()
++{
++	local realuid="$SUDO_UID"
++	local tasksneeded=$((max * nbprocess + 100))
++
++	if [ "$realuid" = "" ]; then
++		realuid=`id -u`
++		test $? || return 0
++	fi
++
++	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
++	test $? || return 0
++
++	if [ $tasksmax -le $tasksneeded ]; then
++		tst_brk TCONF "limit of tasks is too low (approximate need $tasksneeded, limit $tasksmax)"
++	fi
++	tst_res TINFO "task limit fulfilled (approximate need $tasksneeded, limit $tasksmax)"
++
++	return 0
++}
++
+ setup()
+ {
+ 	if ! grep -q -w cpuacct /proc/cgroups; then
+ 		tst_brk TCONF "cpuacct not supported on this system"
+ 	fi
+ 
++	check_limits
++	# Don't bother with memory limit checks on smaller tests
++	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
++		check_free_memory
++	fi
++
+ 	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
+ 	tst_res TINFO "cpuacct: $mount_point"
+ 	if [ "$mount_point" = "" ]; then
+-- 
+2.27.0
+
