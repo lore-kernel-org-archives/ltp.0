@@ -1,203 +1,293 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 15 Jun 2021 08:40:45 +0100
-Subject: [LTP] [PATCH v4 3/3] API: Remove TST_ERR usage from
- rtnetlink/netdevice
-In-Reply-To: <20210615074045.23974-1-rpalethorpe@suse.com>
-References: <20210615074045.23974-1-rpalethorpe@suse.com>
-Message-ID: <20210615074045.23974-3-rpalethorpe@suse.com>
+Date: Tue, 15 Jun 2021 08:40:43 +0100
+Subject: [LTP] [PATCH v4 1/3] Add Coccinelle helper scripts for reference
+Message-ID: <20210615074045.23974-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test author is guaranteed that the library will not set TST_ERR
-except via the TEST macro and similar.
+Check-in a couple of semantic patches used for removing the TEST macro
+from the library. Also include a shell script to run them with a
+working set of arguments.
 
-Currently the rtnetlink & netdevice API returns 0 on fail and 1 on
-success. Either TST_ERR or errno is used to store the error
-number. The commit stays with this scheme except that we only use
-errno. This means that we have to temporarily save errno when it would
-be overwritten by a less important operation.
+These are only intended to help someone develop their own refactoring
+or check scripts. Not for running automatically.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
 
-Possibly the API should be redesigned so that we are not juggling
-errno. We could return the errno instead of just a boolean. However I
-then think this should be done for all network functions for
-consistency. Even if that is done, I still don't like it.
+V4:
+* Break rtnetlink/netdevice into separate patch and save errno
 
-In most cases though, the issue is caused by tst_brk_ not
-returning. Instead we could print the error immediately, but defer
-cleanup. E.g. have tst_brk_defer_ which prints the error and sets a
-flag, then call tst_sync_ which exits if the brk flag is set.
+V3:
+* Make proper shell script to run spatch
+* Fix some issues people would likely encounter with semantic patches
 
-In any case these are quite big changes. So I have just submitted this
-errno patch.
+V2:
+* Simplify the Cocci scripts
+* Simplify the patchset and combine it with the separate CGroups patch
+* Testing & sign-off
 
- lib/tst_netdevice.c | 30 ++++++++++++++++++++----------
- lib/tst_rtnetlink.c |  9 +++++----
- 2 files changed, 25 insertions(+), 14 deletions(-)
+ .../coccinelle/libltp-test-macro-vars.cocci   |  19 ++++
+ scripts/coccinelle/libltp-test-macro.cocci    | 107 ++++++++++++++++++
+ scripts/coccinelle/run-spatch.sh              | 106 +++++++++++++++++
+ 3 files changed, 232 insertions(+)
+ create mode 100644 scripts/coccinelle/libltp-test-macro-vars.cocci
+ create mode 100644 scripts/coccinelle/libltp-test-macro.cocci
+ create mode 100755 scripts/coccinelle/run-spatch.sh
 
-diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
-index d098173d5..214a6f500 100644
---- a/lib/tst_netdevice.c
-+++ b/lib/tst_netdevice.c
-@@ -101,7 +101,7 @@ int tst_netdev_set_state(const char *file, const int lineno,
- int tst_create_veth_pair(const char *file, const int lineno,
- 	const char *ifname1, const char *ifname2)
- {
--	int ret;
-+	int ret, save_errno;
- 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
- 	struct tst_rtnl_context *ctx;
- 	struct tst_rtnl_attr_list peerinfo[] = {
-@@ -146,10 +146,12 @@ int tst_create_veth_pair(const char *file, const int lineno,
- 	}
- 
- 	ret = tst_rtnl_send_validate(file, lineno, ctx);
-+	save_errno = errno;
- 	tst_rtnl_destroy_context(file, lineno, ctx);
- 
- 	if (!ret) {
--		tst_brk_(file, lineno, TBROK | TTERRNO,
-+		errno = save_errno;
-+		tst_brk_(file, lineno, TBROK | TERRNO,
- 			"Failed to create veth interfaces %s+%s", ifname1,
- 			ifname2);
- 	}
-@@ -161,7 +163,7 @@ int tst_remove_netdev(const char *file, const int lineno, const char *ifname)
- {
- 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
- 	struct tst_rtnl_context *ctx;
--	int ret;
-+	int ret, save_errno;
- 
- 	if (strlen(ifname) >= IFNAMSIZ) {
- 		tst_brk_(file, lineno, TBROK,
-@@ -180,10 +182,12 @@ int tst_remove_netdev(const char *file, const int lineno, const char *ifname)
- 	}
- 
- 	ret = tst_rtnl_send_validate(file, lineno, ctx);
-+	save_errno = errno;
- 	tst_rtnl_destroy_context(file, lineno, ctx);
- 
- 	if (!ret) {
--		tst_brk_(file, lineno, TBROK | TTERRNO,
-+		errno = save_errno;
-+		tst_brk_(file, lineno, TBROK | TERRNO,
- 			"Failed to remove netdevice %s", ifname);
- 	}
- 
-@@ -196,7 +200,7 @@ static int modify_address(const char *file, const int lineno,
- 	size_t addrlen, uint32_t addr_flags)
- {
- 	struct tst_rtnl_context *ctx;
--	int index, ret;
-+	int index, ret, save_errno;
- 	struct ifaddrmsg info = {
- 		.ifa_family = family,
- 		.ifa_prefixlen = prefix
-@@ -229,10 +233,12 @@ static int modify_address(const char *file, const int lineno,
- 	}
- 
- 	ret = tst_rtnl_send_validate(file, lineno, ctx);
-+	save_errno = errno;
- 	tst_rtnl_destroy_context(file, lineno, ctx);
- 
- 	if (!ret) {
--		tst_brk_(file, lineno, TBROK | TTERRNO,
-+		errno = save_errno;
-+		tst_brk_(file, lineno, TBROK | TERRNO,
- 			"Failed to modify %s network address", ifname);
- 	}
- 
-@@ -276,7 +282,7 @@ static int change_ns(const char *file, const int lineno, const char *ifname,
- {
- 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
- 	struct tst_rtnl_context *ctx;
--	int ret;
-+	int ret, save_errno;
- 
- 	if (strlen(ifname) >= IFNAMSIZ) {
- 		tst_brk_(file, lineno, TBROK,
-@@ -298,10 +304,12 @@ static int change_ns(const char *file, const int lineno, const char *ifname,
- 	}
- 
- 	ret = tst_rtnl_send_validate(file, lineno, ctx);
-+	save_errno = errno;
- 	tst_rtnl_destroy_context(file, lineno, ctx);
- 
- 	if (!ret) {
--		tst_brk_(file, lineno, TBROK | TTERRNO,
-+		errno = save_errno;
-+		tst_brk_(file, lineno, TBROK | TERRNO,
- 			"Failed to move %s to another namespace", ifname);
- 	}
- 
-@@ -327,7 +335,7 @@ static int modify_route(const char *file, const int lineno, unsigned int action,
- 	const void *gateway, size_t gatewaylen)
- {
- 	struct tst_rtnl_context *ctx;
--	int ret;
-+	int ret, save_errno;
- 	int32_t index;
- 	struct rtmsg info = {
- 		.rtm_family = family,
-@@ -389,10 +397,12 @@ static int modify_route(const char *file, const int lineno, unsigned int action,
- 	}
- 
- 	ret = tst_rtnl_send_validate(file, lineno, ctx);
-+	save_errno = errno;
- 	tst_rtnl_destroy_context(file, lineno, ctx);
- 
- 	if (!ret) {
--		tst_brk_(file, lineno, TBROK | TTERRNO,
-+		errno = save_errno;
-+		tst_brk_(file, lineno, TBROK | TERRNO,
- 			"Failed to modify network route");
- 	}
- 
-diff --git a/lib/tst_rtnetlink.c b/lib/tst_rtnetlink.c
-index 1ecda3a9f..627695c80 100644
---- a/lib/tst_rtnetlink.c
-+++ b/lib/tst_rtnetlink.c
-@@ -376,11 +376,12 @@ int tst_rtnl_check_acks(const char *file, const int lineno,
- 			tst_brk_(file, lineno, TBROK,
- 				"No ACK found for Netlink message %u",
- 				msg->nlmsg_seq);
-+			errno = ENOMSG;
- 			return 0;
- 		}
- 
- 		if (res->err->error) {
--			TST_ERR = -res->err->error;
-+			errno = -res->err->error;
- 			return 0;
- 		}
- 	}
-@@ -392,9 +393,7 @@ int tst_rtnl_send_validate(const char *file, const int lineno,
- 	struct tst_rtnl_context *ctx)
- {
- 	struct tst_rtnl_message *response;
--	int ret;
--
--	TST_ERR = 0;
-+	int ret, save_errno;
- 
- 	if (tst_rtnl_send(file, lineno, ctx) <= 0)
- 		return 0;
-@@ -406,7 +405,9 @@ int tst_rtnl_send_validate(const char *file, const int lineno,
- 		return 0;
- 
- 	ret = tst_rtnl_check_acks(file, lineno, ctx, response);
-+	save_errno = errno;
- 	tst_rtnl_free_message(response);
-+	errno = save_errno;
- 
- 	return ret;
- }
+diff --git a/scripts/coccinelle/libltp-test-macro-vars.cocci b/scripts/coccinelle/libltp-test-macro-vars.cocci
+new file mode 100644
+index 000000000..ed5459a48
+--- /dev/null
++++ b/scripts/coccinelle/libltp-test-macro-vars.cocci
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++// Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
++
++// The TEST macro should not be used in the library because it sets
++// TST_RET and TST_ERR which are global variables. The test author
++// only expects these to be changed if *they* call TEST directly.
++
++// Find all positions where TEST's variables are used
++@ find_use exists @
++expression E;
++@@
++
++(
++* TST_ERR
++|
++* TST_RET
++|
++* TTERRNO | E
++)
+diff --git a/scripts/coccinelle/libltp-test-macro.cocci b/scripts/coccinelle/libltp-test-macro.cocci
+new file mode 100644
+index 000000000..7563d23aa
+--- /dev/null
++++ b/scripts/coccinelle/libltp-test-macro.cocci
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++// Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
++
++// The TEST macro should not be used in the library because it sets
++// TST_RET and TST_ERR which are global variables. The test author
++// only expects these to be changed if *they* call TEST directly.
++
++// Set with -D fix
++virtual fix
++
++// Find all positions where TEST is _used_.
++@ depends on !fix exists @
++@@
++
++* TEST(...);
++
++// Below are rules which will create a patch to replace TEST usage
++// It assumes we can use the ret var without conflicts
++
++// Fix all references to the variables TEST modifies when they occur in a
++// function where TEST was used.
++@ depends on fix exists @
++@@
++
++ TEST(...)
++
++ ...
++
++(
++- TST_RET
+++ ret
++|
++- TST_ERR
+++ errno
++|
++- TTERRNO
+++ TERRNO
++)
++
++// Replace TEST in all functions where it occurs only at the start. It
++// is slightly complicated by adding a newline if a statement appears
++// on the line after TEST(). It is not clear to me what the rules are
++// for matching whitespace as it has no semantic meaning, but this
++// appears to work.
++@ depends on fix @
++identifier fn;
++expression tested_expr;
++statement st;
++@@
++
++  fn (...)
++  {
++- 	TEST(tested_expr);
+++	const long ret = tested_expr;
++(
+++
++	st
++|
++
++)
++	... when != TEST(...)
++  }
++
++// Replace TEST in all functions where it occurs at the start
++// Functions where it *only* occurs at the start were handled above
++@ depends on fix @
++identifier fn;
++expression tested_expr;
++statement st;
++@@
++
++  fn (...)
++  {
++- 	TEST(tested_expr);
+++	long ret = tested_expr;
++(
+++
++	st
++|
++
++)
++	...
++  }
++
++// Add ret var at the start of a function where TEST occurs and there
++// is not already a ret declaration
++@ depends on fix exists @
++identifier fn;
++@@
++
++  fn (...)
++  {
+++	long ret;
++	... when != long ret;
++
++	TEST(...)
++	...
++  }
++
++// Replace any remaining occurrences of TEST
++@ depends on fix @
++expression tested_expr;
++@@
++
++- 	TEST(tested_expr);
+++	ret = tested_expr;
++
+diff --git a/scripts/coccinelle/run-spatch.sh b/scripts/coccinelle/run-spatch.sh
+new file mode 100755
+index 000000000..e8e6f47d8
+--- /dev/null
++++ b/scripts/coccinelle/run-spatch.sh
+@@ -0,0 +1,106 @@
++#!/bin/sh -eu
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
++
++# Helper for running spatch Coccinelle scripts on the LTP source tree
++
++if [ ! -d lib ] || [ ! -d scripts/coccinelle ]; then
++    echo "$0: Can't find lib or scripts directories. Run me from top src dir"
++    exit 1
++fi
++
++do_fix=no
++
++# Run a script on the lib dir
++libltp_spatch() {
++    echo libltp_spatch $*
++
++    if [ $do_fix = yes ]; then
++	spatch --dir lib \
++	       --ignore lib/parse_opts.c \
++	       --ignore lib/newlib_tests \
++	       --ignore lib/tests \
++	       --use-gitgrep \
++	       --in-place \
++	       -D fix \
++	       --include-headers \
++	       $*
++    else
++	spatch --dir lib \
++	       --ignore lib/parse_opts.c \
++	       --ignore lib/newlib_tests \
++	       --ignore lib/tests \
++	       --use-gitgrep \
++	       --include-headers \
++	       $*
++    fi
++}
++
++tests_spatch() {
++        echo tests_spatch $*
++
++        if [ $do_fix = yes ]; then
++	    spatch --dir testcases \
++		   --use-gitgrep \
++		   --in-place \
++		   -D fix \
++		   --include-headers \
++		   $*
++	else
++	    spatch --dir testcases \
++		   --use-gitgrep \
++		   --include-headers \
++		   $*
++	fi
++}
++
++usage()
++{
++    cat <<EOF
++Usage:
++$0 [ -f ] <patch basename> [ <patch basename> [...] ]
++$0 -h
++
++Options:
++-f	Apply the semantic patch in-place to fix the code
++-h	You are reading it
++
++If run without -f then the semantic patch will only print locations
++where it matches or show a diff.
++
++EOF
++}
++
++while getopts "fh" opt; do
++    case $opt in
++	f) do_fix=yes;;
++	h|?) usage; exit $([ $opt = h ]);;
++    esac
++done
++
++shift $(($OPTIND - 1))
++
++if [ $# -eq 0 ]; then
++    echo -e "Missing semantic patch name \n"
++    usage; exit 1
++fi
++
++if [ $do_fix = yes ] && [ -n "$(git ls-files -m -d)" ]; then
++    echo "At least stage your current changes!"
++    exit 1
++fi
++
++for spatch_file in $*; do
++    case $spatch_file in
++	libltp-test-macro)
++	    libltp_spatch --sp-file scripts/coccinelle/libltp-test-macro.cocci;;
++	libltp-test-macro-vars)
++	    libltp_spatch --sp-file scripts/coccinelle/libltp-test-macro-vars.cocci \
++			  --ignore lib/tst_test.c;;
++	*)
++	    tests_spatch --sp-file scripts/coccinelle/$spatch_file.cocci;;
++    esac
++done
++
++
++
 -- 
 2.31.1
 
