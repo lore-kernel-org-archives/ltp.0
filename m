@@ -1,50 +1,65 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 15 Jun 2021 11:59:35 +0200
-Subject: [LTP] [PATCH] ssh-stress: Convert to new api
-In-Reply-To: <YMdgXPeTNHMtna/M@pevik>
-References: <20210610101917.1251564-1-lkml@jv-coder.de>
- <YMcB3Wcu0J9C3Z/Q@pevik> <5db0624b-a6ce-2c02-d1d4-52034c85b2f1@jv-coder.de>
- <YMdgXPeTNHMtna/M@pevik>
-Message-ID: <0324b896-0ef7-66d3-3d2c-9b9817721500@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 15 Jun 2021 12:44:13 +0200
+Subject: [LTP] [RFC PATCH v3 2/2] Start libclang based analyzer and
+ TEST() check
+In-Reply-To: <87o8c84j3f.fsf@suse.de>
+References: <20210614115638.25467-1-rpalethorpe@suse.com>
+ <20210614115638.25467-3-rpalethorpe@suse.com>
+ <YMdcgrabnou+u90I@pevik> <YMdfDZPxY7lZC8F0@pevik>
+ <87r1h44j6k.fsf@suse.de> <87o8c84j3f.fsf@suse.de>
+Message-ID: <YMiEfQfujl9lJ1lZ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi Richie,
+...
 
-On 6/14/2021 3:57 PM, Petr Vorel wrote:
->
->>> Out of curiosity, did you test this on Two Host Configuration [2] (i.e. ssh)?
->>> Or just netns?
->> No, but should have...
->> I found two major problems with the test (will send a v2). But apart from
->> that, either I was not able to find the documentation or it is not clear
->> enough to me, how to run the two host setup.
->> I found network/README.md, but it only mentions to set RHOST, but for my
->> setup (with ips different from the default ones, IPV{4,6}_{L,R}HOST is also
-> Yes we should be more verbose at Two Host Configuration [1] as there is nothing
-> more. At least to mention IPV{4,6}_{L,R}HOST.
-+1
->> required) and ltp must already be in the PATH on rhost, which was not
->> possible for my rhost setup, where the filesystem is read-only and I had to
->> hack setting the path into tst_rhost_run. It is not totally clear, that ltp
-> What exactly was your problem? Having to modify PATH on shell config on read
-> only system? I'll send a proposal to set PATH in tst_test.sh.
-The simplest way to set the path would be in .profile on the rhost, but 
-since the whole fs was readonly, this was not possible.
-I somehow thought ltp would take care of setting the path and also 
-exporting LTPROOT automatically, because according to the documentation, 
-it expects to find ltp at the same path as on the LHOST.
-Maybe this restriction could even be lifted, if the LHOST sets the paths 
-on the RHOST (something like RHOST_LTPROOT, which defaults to LTPROOT). 
-This could then be used to set PATH on RHOST as you suggested.
-For my tests I just added "export PATH=$PATH;" to the rhost ssh command. 
-It wanted to use just "PATH=$PATH", but that did not work because I used 
-command grouping in the ssh-stress test.
-"X=1 ( echo $X )" fails with a syntax error. With export it works and I 
-guess it should be implemented cleaner than just forcing the whole PATH 
-from the LHOST onto the RHOST as I did.
+> >>> > +#else
+> >>> > +
+> >>> > +int main(const attr_unused int argc, const attr_unused char *const *const argv)
+> >>> > +{
+> >>> > +	emit_error("clang-checks was not built correctly; libclang headers are not installed!\n");
+> >>> emit_error() is not visible here, thus build fails. Please add it
+> >>before HAVE_CLANG_C_INDEX_H.
 
-J?rg
+> > +1
+
+> > Uhg.
+
+
+> >>> Or you could just use tst_test.h with TST_NO_DEFAULT_MAIN and here would be TST_TEST_TCONF()
+> >>> (+ LTP_ATTRIBUTE_UNUSED).
+
+> >> ...
+> >>> > +/* Copied from lib/tst_ansi_color.c */
+> >>> > +static int color_enabled(const int fd)
+
+> >> Also you'd probably get tst_color_enabled() and other things from
+> >> lib/tst_ansi_color.c for color handling for free when using
+> >> tst_test.h.
+
+> > We would probably have to build the ltplib with HOSTCC. I don't think we
+> > can just include the headers.
+
+> > It is tempting, but it also seems very circular. I can imagine someone
+> > half refactoring a library and wanting to run the checks on one
+> > translation unit. However Make would detect a dependency has changed, so
+> > would try to rebuild the checker with a broken ltplib...
+
+> > We could probably make it work, but having the checker depend on the
+> > thing it checks seems like a recipe for complication. Meanwhile we just
+> > get to share a few macros and string constants.
+
+> Although we could create a tools lib with shared code for the meta data
+> parser and maybe the future parallel executor if that does not use the
+> test lib.
+
+Uh, I'm sorry, I missed build dependency. It's probably not worth to rewriting
+this part just to reuse a bit of code. We might look into that in the future,
+but for now please just fix a build with your original approach.
+
+Kind regards,
+Petr
