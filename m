@@ -1,27 +1,18 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Jun 2021 13:53:10 +0200
-Subject: [LTP] [Automated-testing] [RFC PATCH 0/2] Remove floppy and
- CDROM stress tests
-In-Reply-To: <YL+C5hO3dANxCcVD@pevik>
-References: <20210607111016.20630-1-pvorel@suse.cz>
- <CAASaF6x1+j+nF=-TpkfLwi9hYXWN5sDVff4oJAKX-eTyH11s8A@mail.gmail.com>
- <YL8nl3nFzTAy+aG0@yuki> <YL+C5hO3dANxCcVD@pevik>
-Message-ID: <YMiUphhO3WeJtZSt@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 15 Jun 2021 15:22:43 +0200
+Subject: [LTP] [PATCH v4 1/3] Add Coccinelle helper scripts for reference
+In-Reply-To: <20210615074045.23974-1-rpalethorpe@suse.com>
+References: <20210615074045.23974-1-rpalethorpe@suse.com>
+Message-ID: <YMipowPMHWt6DeV/@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi!
+Applied, thanks.
 
-> > Hi!
-> > Acked by me as well, but let's wait at least till the end of week until
-> > we apply this.
-
-> Sure, I can postpone the deletion till Monday. Thanks for your ack.
-
-Merged. Thanks for your ack.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
