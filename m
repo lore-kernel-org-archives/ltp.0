@@ -1,62 +1,62 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Jun 2021 18:33:06 +0200
-Subject: [LTP] [RFC PATCH 2/3] lib: Add $LTPROOT/testcases/bin into PATH
+Date: Tue, 15 Jun 2021 18:33:07 +0200
+Subject: [LTP] [RFC PATCH 3/3] doc: Update LTPROOT and PATH environment
+ variables
 In-Reply-To: <20210615163307.10755-1-pvorel@suse.cz>
 References: <20210615163307.10755-1-pvorel@suse.cz>
-Message-ID: <20210615163307.10755-3-pvorel@suse.cz>
+Message-ID: <20210615163307.10755-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-when LTPROOT set. Put it as the last.
-TWARN when directory does not exist.
+to address changes in two previous commits.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/tst_test.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ README.md          | 2 +-
+ doc/user-guide.txt | 7 +++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 36a4809c7..14a739eb5 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1149,15 +1149,31 @@ static unsigned long long get_time_ms(void)
- static void add_paths(void)
- {
- 	char *old_path = getenv("PATH");
-+	const char *ltproot = getenv("LTPROOT");
- 	const char *start_dir;
--	char *new_path;
-+	char *bin_dir, *new_path = NULL;
+diff --git a/README.md b/README.md
+index 703395c6b..b0ad47dfa 100644
+--- a/README.md
++++ b/README.md
+@@ -162,7 +162,7 @@ $ testcases/bin/ioctl01 -h
+ Many require certain environment variables to be set
  
- 	start_dir = tst_get_startwd();
+ ```
+-$ LTPROOT=/opt/ltp PATH="$PATH:$LTPROOT/testcases/bin" testcases/bin/wc01.sh
++$ LTPROOT=/opt/ltp testcases/bin/wc01.sh
+ ```
  
-+	/* : - current directory */
- 	if (old_path)
--		SAFE_ASPRINTF(&new_path, "%s::%s", old_path, start_dir);
-+		SAFE_ASPRINTF(&new_path, "%s:", old_path);
- 	else
--		SAFE_ASPRINTF(&new_path, "::%s", start_dir);
-+		strcat(new_path, ":");
-+
-+	/* empty for library C API tests */
-+	if (strlen(start_dir) > 0)
-+		SAFE_ASPRINTF(&new_path, "%s:%s", new_path, start_dir);
-+
-+	if (ltproot) {
-+		SAFE_ASPRINTF(&bin_dir, "%s/testcases/bin", ltproot);
-+
-+		if (access(bin_dir, F_OK) == -1)
-+			tst_res(TWARN, "'%s' does not exist, is $LTPROOT set correctly?",
-+				bin_dir);
-+		else
-+			SAFE_ASPRINTF(&new_path, "%s:%s", new_path, bin_dir);
-+	}
- 
- 	SAFE_SETENV("PATH", new_path, 1);
- 	free(new_path);
+ Most commonly, the path variable needs to be set and also `LTPROOT`, but there
+diff --git a/doc/user-guide.txt b/doc/user-guide.txt
+index 8df29e688..ab2d773a7 100644
+--- a/doc/user-guide.txt
++++ b/doc/user-guide.txt
+@@ -11,6 +11,7 @@ For running LTP network tests see `testcases/network/README.md`.
+ | 'KCONFIG_PATH'        | The path to the kernel config file, (if not set, it tries
+                           the usual paths '/boot/config-RELEASE' or '/proc/config.gz').
+ | 'LTPROOT'             | Prefix for installed LTP, the default is '/opt/ltp'.
++                          Used for setting 'PATH' and other environment variables.
+ | 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
+                           'n' or '0': never colorize.
+ | 'LTP_DEV'             | Path to the block device to be used
+@@ -19,8 +20,10 @@ For running LTP network tests see `testcases/network/README.md`.
+ | 'LTP_TIMEOUT_MUL'     | Multiply timeout, must be number >= 1 (> 1 is useful for
+                           slow machines to avoid unexpected timeout).
+                           Variable is also used in shell tests, but ceiled to int.
+-| 'PATH'                | It's required to addjust path:
+-                          `PATH="$PATH:$LTPROOT/testcases/bin"`
++| 'PATH'                | Testcases are installed into 'LTPROOT/testcases/bin',
++                          'PATH' is set by library API. You need to add it into
++                          'PATH' only if you use custom runner (not runltp neither
++                          [runltp-ng](https://github.com/metan-ucw/runltp-ng).
+ | 'TMPDIR'              | Base directory for template directory (C: '.needs_tmpdir = 1'
+                           and others, which imply it, shell: 'TST_NEEDS_TMPDIR=1').
+ | 'TST_NO_CLEANUP'      | Disable running test cleanup (defined in 'TST_CLEANUP').
 -- 
 2.32.0
 
