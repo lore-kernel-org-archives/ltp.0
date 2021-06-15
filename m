@@ -1,59 +1,102 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Jun 2021 18:40:44 +0200
-Subject: [LTP] [PATCH 1/1] fs/racer: Fix LTP hang caused by fs_racer.sh
-In-Reply-To: <CAEemH2f-=oW3PqJN6EsCvBzvPk2LvrwkLd1oVgHgv+_HHN_oTQ@mail.gmail.com>
-References: <20210610175812.13730-1-ycliang@andestech.com>
- <CAEemH2f-=oW3PqJN6EsCvBzvPk2LvrwkLd1oVgHgv+_HHN_oTQ@mail.gmail.com>
-Message-ID: <YMjYDEXWlD7M/Dfp@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 15 Jun 2021 18:40:38 +0200
+Subject: [LTP] [PATCH v2 1/2] controllers/cpuacct: skip cpuacct_100_100
+ on small memory systems
+In-Reply-To: <20210614161413.82389-1-krzysztof.kozlowski@canonical.com>
+References: <20210614161413.82389-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <YMjYBoqTw9RSqYqH@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Leo, Li,
+Hi!
+> +check_free_memory()
+> +{
+> +	local memneeded
+> +	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
+> +
+> +	if [ $? -ne 0 ]; then
+> +		local memcached
+> +
+> +		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
+> +		test $? || return 0
+> +
+> +		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
+> +		test $? || return 0
 
-> On Fri, Jun 11, 2021 at 1:58 AM Leo Yu-Chi Liang <ycliang@andestech.com> wrote:
+I do not think that something as basic as awk on /proc/meminfo here will
+fail...
 
-> > fs_racer.sh test could cause LTP to hang if the file
-> > gets removed when it's at time same time being renamed.
+> +		memfree=$((memfree + memcached))
+> +	fi
+> +
+> +	# On x86_64, each 100 of processes were using ~16 MB of memory,
+> +	# so try to estimate the needed free memory based on this.
+> +	memneeded=$((max * nbprocess * 16384 / 100))
+> +
+> +	if [ $memfree -lt $memneeded ]; then
 
-> > The if statement in mv source implemented by busybox is as follows:
+I would still add some memory margin to the memneeded here. At least
+add a hundred of megabytes before we do the check.
 
-> >         if (dest_exists) {
-> >                 if (flags & OPT_NOCLOBBER)
-> >                         goto RET_0;
-> >                 if (!(flags & OPT_FORCE)           // OPT_FORCE is set by -f option
-> >                  && ((access(dest, W_OK) < 0 && isatty(0))
-> >                     || (flags & OPT_INTERACTIVE))  // this is set by -i option
-> >                 ) {
-> >                         if (fprintf(stderr, "mv: overwrite '%s'? ", dest) < 0) {
-> >                                 goto RET_1;  /* Ouch! fprintf failed! */
-> >                         }
-> >                         if (!bb_ask_y_confirmation()) {
-> >                                 goto RET_0;
-> >                         }
-> >                 }
-> >         }
+> +		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
+> +	fi
+> +	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
+> +
+> +	return 0
+> +}
+> +
+> +check_limits()
+> +{
+> +	local realuid="$SUDO_UID"
+> +	local tasksneeded=$((max * nbprocess + 100))
+> +
+> +	if [ "$realuid" = "" ]; then
+> +		realuid=`id -u`
+> +		test $? || return 0
+> +	fi
+> +
+> +	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
+> +	test $? || return 0
+> +
+> +	if [ $tasksmax -le $tasksneeded ]; then
+> +		tst_brk TCONF "limit of tasks is too low (approximate need $tasksneeded, limit $tasksmax)"
+> +	fi
+> +	tst_res TINFO "task limit fulfilled (approximate need $tasksneeded, limit $tasksmax)"
 
-> > If somehow the dest_file exists when mv executes the first if "if (dest_exists)",
-> > and gets removed when mv executes the third if "if (access(...))".
-> > Then it is possible for mv to reach "bb_ask_y_confirmation" and to try to read from tty.
+Huh, is this really needed? The test is supposed to run under root. The
+user is supposed to login as a root or at least do 'su -' before
+executing LTP anyways.
 
-> > However, the mv process is executing in the background,
-> > so when it tries to read from tty,
-> > the processes in the same process group as mv would all receive SIGTTIN
-> > and be changed into TASK_STOPPED state.
+> +	return 0
+> +}
+> +
+>  setup()
+>  {
+>  	if ! grep -q -w cpuacct /proc/cgroups; then
+>  		tst_brk TCONF "cpuacct not supported on this system"
+>  	fi
+>  
+> +	check_limits
+> +	# Don't bother with memory limit checks on smaller tests
+> +	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
 
-> > This would cause this testcase to hang, though happens rarely.
+We should probably check if the $max * $mbprocess -ge 1000 or something
+like that just in a case someone addds a test with large enough
+$nbprocess.
 
-> > Add -f option to suppress the attempt to read from tty.
+> +		check_free_memory
+> +	fi
+> +
+>  	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
+>  	tst_res TINFO "cpuacct: $mount_point"
+>  	if [ "$mount_point" = "" ]; then
+> -- 
+> 2.27.0
+> 
 
-> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-
-> Reviewed-by: Li Wang <liwang@redhat.com>
-
-Fix is trivial enough to merge it => merged.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
