@@ -1,420 +1,278 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 15 Jun 2021 17:28:48 +0300
-Subject: [LTP] [PATCH v2] ssh-stress: Convert to new api
-In-Reply-To: <20210614094338.125870-1-lkml@jv-coder.de>
-References: <20210614094338.125870-1-lkml@jv-coder.de>
-Message-ID: <a2ad7106-3e96-48a0-d195-80d7d09c8613@bell-sw.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 15 Jun 2021 16:16:06 +0200
+Subject: [LTP] [RFC PATCH v3 1/2] Add 'make check' and clang-check to
+ build system
+In-Reply-To: <20210614115638.25467-2-rpalethorpe@suse.com>
+References: <20210614115638.25467-1-rpalethorpe@suse.com>
+ <20210614115638.25467-2-rpalethorpe@suse.com>
+Message-ID: <YMi2JhW+QvTgOzE0@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 14.06.2021 12:43, Joerg Vehlow wrote:
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> 
+Hi!
+> diff --git a/include/mk/clang-check.mk b/include/mk/clang-check.mk
+> new file mode 100644
+> index 000000000..2ab7b67a1
+> --- /dev/null
+> +++ b/include/mk/clang-check.mk
+> @@ -0,0 +1,9 @@
+> +# Rules to make clang-check tool(s) for inclusion in lib and testcases Makefiles
+> +
+> +CLANG_CHECK_DIR:= $(abs_top_builddir)/tools/clang-check
+> +
+> +$(CLANG_CHECK_DIR)/main: $(CLANG_CHECK_DIR)
+> +	$(MAKE) -C "$^" -f "$(CLANG_CHECK_DIR)/Makefile" all
+> +
+> +$(CLANG_CHECK_DIR): %:
+> +	mkdir -p "$@"
+> diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+> index 218447ef3..e1561a989 100644
+> --- a/include/mk/config.mk.in
+> +++ b/include/mk/config.mk.in
+> @@ -44,6 +44,11 @@ HOSTCC := cc
+>  endif
+>  endif
+>  
+> +LLVM_CONFIG ?= @LLVM_CONFIG@
+> +CLANG 	    ?= @CLANG@
+> +CLANG_LIBS  ?= @CLANG_LIBS@
+> +HAVE_CLANG_C_INDEX_H := @HAVE_CLANG_C_INDEX_H@
+> +
+>  AIO_LIBS		:= @AIO_LIBS@
+>  CAP_LIBS		:= @CAP_LIBS@
+>  ACL_LIBS		:= @ACL_LIBS@
+> diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+> index 1d22f9c53..74f53e038 100644
+> --- a/include/mk/env_post.mk
+> +++ b/include/mk/env_post.mk
+> @@ -89,6 +89,17 @@ $(error You must define $$(prefix) before executing install)
+>  endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
+>  endif
+>  
+> +CHECK_TARGETS			?= $(addprefix check-,$(notdir $(patsubst %.c,%,$(sort $(wildcard $(abs_srcdir)/*.c)))))
+> +CHECK				?= $(abs_top_srcdir)/tools/clang-check/main
+> +ifneq ($(strip $(CLANG)),":")
+> +CHECK_FLAGS			?= -resource-dir $(shell $(CLANG) -print-resource-dir)
+> +endif
+> +
+> +
+> +ifeq ($(dir $(CHECK)),$(abs_top_srcdir)/tools/clang-check/)
+> +CHECK_DEPS			+= $(CHECK)
+> +endif
+> +
+>  include $(top_srcdir)/include/mk/rules.mk
+>  
+>  endif
+> diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
+> index 64953f89a..aa092a5a3 100644
+> --- a/include/mk/generic_leaf_target.inc
+> +++ b/include/mk/generic_leaf_target.inc
+> @@ -92,7 +92,7 @@
+>  # INSTALL_DIR			:= $(libdir)
+>  #
+>  
+> -.PHONY: all clean install
+> +.PHONY: all clean install check
+>  
+>  ifneq ($(strip $(MAKE_TARGETS)),)
+>  $(MAKE_TARGETS) += $(HOST_MAKE_TARGETS)
+> @@ -109,4 +109,7 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
+>  
+>  install: $(INSTALL_FILES)
+>  
+> +$(CHECK_TARGETS): | $(CHECK_DEPS)
+> +check: $(CHECK_TARGETS)
+> +
+>  # vim: syntax=make
+> diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
+> index fc59f944f..32a108fbf 100644
+> --- a/include/mk/generic_trunk_target.inc
+> +++ b/include/mk/generic_trunk_target.inc
+> @@ -48,7 +48,7 @@
+>  
+>  include $(top_srcdir)/include/mk/functions.mk
+>  
+> -RECURSIVE_TARGETS		?= all install
+> +RECURSIVE_TARGETS		?= all install check
+>  
+>  $(eval $(get_make_dirs))
+>  
+> @@ -68,6 +68,9 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
+>  
+>  trunk-install: $(INSTALL_FILES)
+>  
+> +$(CHECK_TARGETS): | $(CHECK_DEPS)
+> +trunk-check: $(CHECK_TARGETS)
+> +
+>  # Avoid creating duplicate .PHONY references to all, clean, and install. IIRC,
+>  # I've seen some indeterministic behavior when one does this in the past with
+>  # GNU Make...
+> @@ -108,4 +111,6 @@ else
+>  endif
+>  endif
+>  
+> +check: trunk-check
+> +
+>  # vim: syntax=make
+> diff --git a/include/mk/lib.mk b/include/mk/lib.mk
+> index f9b6c0aff..a3961bce5 100644
+> --- a/include/mk/lib.mk
+> +++ b/include/mk/lib.mk
+> @@ -26,6 +26,7 @@
+>  # Makefile to include for libraries.
+>  
+>  include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(top_srcdir)/include/mk/clang-check.mk
+>  
+>  INSTALL_DIR	:= $(libdir)
+>  
+> @@ -57,6 +58,8 @@ LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
+>  
+>  LIBOBJS		:= $(LIBSRCS:.c=.o)
+>  
+> +CHECK_TARGETS	:= $(addprefix check-,$(notdir $(LIBSRCS:.c=)))
+> +
+>  $(LIB): $(notdir $(LIBOBJS))
+>  	@if [ -z "$(strip $^)" ] ; then \
+>  		echo "Cowardly refusing to create empty archive"; \
+> diff --git a/include/mk/rules.mk b/include/mk/rules.mk
+> index c8f4bbbbe..2a04b2b67 100644
+> --- a/include/mk/rules.mk
+> +++ b/include/mk/rules.mk
+> @@ -37,3 +37,12 @@ else
+>  	@$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
+>  	@echo CC $(target_rel_dir)$@
+>  endif
+> +
+> +.PHONY: $(CHECK_TARGETS)
+> +$(CHECK_TARGETS): check-%: %.c
+> +ifdef VERBOSE
+> +	$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
+> +else
+> +	@$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
+> +	@echo CHECK $(target_rel_dir)$<
+> +endif
+> diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+> index 1c81773d0..e59899898 100644
+> --- a/include/mk/testcases.mk
+> +++ b/include/mk/testcases.mk
+> @@ -22,6 +22,7 @@
+>  
+>  include $(top_srcdir)/include/mk/env_pre.mk
+>  include $(top_srcdir)/include/mk/functions.mk
+> +include $(top_srcdir)/include/mk/clang-check.mk
+>  
+>  APICMDS_DIR	:= $(abs_top_builddir)/tools/apicmds
+>  
+> diff --git a/m4/ltp-clang.m4 b/m4/ltp-clang.m4
+> new file mode 100644
+> index 000000000..08314036b
+> --- /dev/null
+> +++ b/m4/ltp-clang.m4
+> @@ -0,0 +1,29 @@
+> +dnl SPDX-License-Identifier: GPL-2.0-or-later
+> +dnl Copyright (c) 2021 SUSE LLC
+> +
+> +dnl Find the libraries and tools necessary to build tools/clang-check
+> +
+> +dnl Note that it is possible to use libclang without the clang
+> +dnl executable or llvm-config. However it then means we have to start
+> +dnl searching the system for various Clang resources.
+> +
+> +AC_DEFUN([LTP_CHECK_CLANG],
+> +	[AC_CHECK_TOOL(LLVM_CONFIG, llvm-config, :)
+> +	 AC_CHECK_TOOL(CLANG, clang, :)
+> +	 ltp_save_CFLAGS=$CFLAGS
+> +    	 ltp_save_LDFLAGS=$LDFLAGS
+> +	 if test $LLVM_CONFIG != ":"; then
+> +    	    CFLAGS=$($LLVM_CONFIG --cflags)
+> +    	    LDFLAGS=$($LLVM_CONFIG --ldflags)
+> +	 fi
+> +	 AC_CHECK_LIB([clang], [clang_createIndex], [have_libclang=yes])
+> +	 AC_CHECK_HEADERS([clang-c/Index.h], [have_clang_h=1])
 
-Hi Joerg,
+Actually SUSE seems to be minority along distributions when it install
+the llvm and clang headers into /usr/include/. It seems to be quite
+common that the distribution allows to have more than one version of
+clang installed at the same time which obviously breaks this detection.
 
-> Apart from pure conversion:
->  - Use "StrictModes no" in ssh config, to get rid of
->    access permission problems; All part of the path of the
->    authorized_keys file must not be writeable by anyone but the owner.
->    This allows writing the file to the default temp directory
->  - Moved all rhost scripts into ssh-stress.sh
-> 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
->  .../network/stress/ssh/00_Descriptions.txt    |  11 -
->  testcases/network/stress/ssh/Makefile         |  24 +-
->  testcases/network/stress/ssh/ssh-stress.sh    | 260 ++++++++++++------
->  .../network/stress/ssh/ssh-stress01-rmt.sh    |  65 -----
->  .../network/stress/ssh/ssh-stress02-rmt.sh    |  76 -----
->  .../network/stress/ssh/ssh-stress03-rmt.sh    |  77 ------
->  6 files changed, 174 insertions(+), 339 deletions(-)
->  delete mode 100644 testcases/network/stress/ssh/00_Descriptions.txt
->  delete mode 100755 testcases/network/stress/ssh/ssh-stress01-rmt.sh
->  delete mode 100755 testcases/network/stress/ssh/ssh-stress02-rmt.sh
->  delete mode 100755 testcases/network/stress/ssh/ssh-stress03-rmt.sh
-> 
-> diff --git a/testcases/network/stress/ssh/00_Descriptions.txt b/testcases/network/stress/ssh/00_Descriptions.txt
-> deleted file mode 100644
-> index 543e60d7d..000000000
-> --- a/testcases/network/stress/ssh/00_Descriptions.txt
-> +++ /dev/null
-> @@ -1,11 +0,0 @@
-> -ssh-stress01
-> -	Verify the ssh connectivity over IPv4/IPv6 is not broken
-> -	after creating many ssh sessions
-> -
-> -ssh-stress02
-> -	Verify the ssh connectivity over IPv4/IPv6 is not broken
-> -	after logged in/out by many clients asynchronously for a long time
-> -
-> -ssh-stress03
-> -	Verify the ssh connectivity over IPv4/IPv6 is not broken
-> -	after forwarding TCP traffic for a long time
-> diff --git a/testcases/network/stress/ssh/Makefile b/testcases/network/stress/ssh/Makefile
-> index 1a6d052eb..7ebeec142 100644
-> --- a/testcases/network/stress/ssh/Makefile
-> +++ b/testcases/network/stress/ssh/Makefile
-> @@ -1,24 +1,6 @@
-> -#
-> -#    testcases/network/stress/ssh Makefile.
-> -#
-> -#    Copyright (C) 2009, Cisco Systems Inc.
-> -#
-> -#    This program is free software; you can redistribute it and/or modify
-> -#    it under the terms of the GNU General Public License as published by
-> -#    the Free Software Foundation; either version 2 of the License, or
-> -#    (at your option) any later version.
-> -#
-> -#    This program is distributed in the hope that it will be useful,
-> -#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-> -#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> -#    GNU General Public License for more details.
-> -#
-> -#    You should have received a copy of the GNU General Public License along
-> -#    with this program; if not, write to the Free Software Foundation, Inc.,
-> -#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> -#
-> -# Ngie Cooper, October 2009
-> -#
+We have to pass the output of llvm-config --includedir as the last
+parameter to the AC_CHECK_HEADERS() so that the right path is searched.
+I've seen at least /usr/lib/llvm/$VERSION/include and
+/usr/lib/llvm-$VERSION/include but there may be more.
+
+Also debian based derivatives also explicitly version the llvm-config,
+so the binary is called llvm-config-6 or llvm-config-7 and there is no
+default that would link llvm-config to the latest one, so we will have
+to deal with this as well.
+
+> +	 if test x$have_libclang != xyes -o x$have_clang_h != x1 -o "x$CLANG" = "x:"; then
+> +	    AC_MSG_WARN(Libclang and Clang are needed for test development)
+> +	 else
+> +	    AC_SUBST(HAVE_CLANG_C_INDEX_H, $have_clang_h)
+> +	    AC_SUBST(CLANG_LIBS, -lclang)
+> +	 fi
+> +	 CFLAGS=$ltp_save_CFLAGS
+> +	 LDFLAGS=$ltp_save_LDFLAGS
+> +])
+> diff --git a/tools/clang-check/.gitignore b/tools/clang-check/.gitignore
+> new file mode 100644
+> index 000000000..ba2906d06
+> --- /dev/null
+> +++ b/tools/clang-check/.gitignore
+> @@ -0,0 +1 @@
+> +main
+> diff --git a/tools/clang-check/Makefile b/tools/clang-check/Makefile
+> new file mode 100644
+> index 000000000..f5c4a9a78
+> --- /dev/null
+> +++ b/tools/clang-check/Makefile
+> @@ -0,0 +1,35 @@
 > +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2009, Cisco Systems Inc.
-> +# Ngie Cooper, July 2009
->  
->  top_srcdir		?= ../../../..
->  
-> diff --git a/testcases/network/stress/ssh/ssh-stress.sh b/testcases/network/stress/ssh/ssh-stress.sh
-> index 516bce765..49122eb54 100755
-> --- a/testcases/network/stress/ssh/ssh-stress.sh
-> +++ b/testcases/network/stress/ssh/ssh-stress.sh
-> @@ -1,147 +1,229 @@
->  #!/bin/sh
-> -
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
->  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-> -# Copyright (c) International Business Machines  Corp., 2005
-> -#
-> -# This program is free software; you can redistribute it and/or
-> -# modify it under the terms of the GNU General Public License as
-> -# published by the Free Software Foundation; either version 2 of
-> -# the License, or (at your option) any later version.
-> -#
-> -# This program is distributed in the hope that it would be useful,
-> -# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> -# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> -# GNU General Public License for more details.
-> -#
-> -# You should have received a copy of the GNU General Public License
-> -# along with this program; if not, write the Free Software Foundation,
-> -# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> -#
-> +# Copyright (c) International Business Machines Corp., 2005
->  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
-> -#
->  
-> -TCID=ssh-stress
-> -TST_TOTAL=3
->  TST_CLEANUP="cleanup"
-> +TST_SETUP="setup"
-> +TST_TESTFUNC="test"
-> +TST_CNT=3
-> +TST_NEEDS_ROOT=1
-> +TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_CMDS="sshd ssh od xargs"
->  
-> -TST_USE_LEGACY_API=1
->  . tst_net.sh
->  
-> -# Temporary directory to store sshd setting or ssh key
-> -# Note: ssh doesn't work when those directory is under /tmp.
-> -TMPDIR="/root"
-> +# SSH config file on the remote host
-> +RHOST_SSH_CONF=
-> +# SSG command to connect from the remote host to the test host
+> +# Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
+> +# Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
+> +# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+> +
+> +top_srcdir		?= ../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +include $(top_srcdir)/include/mk/functions.mk
+> +
+> +HOST_MAKE_TARGETS	:= main
+> +ifneq ($(strip $(LLVM_CONFIG)),":")
+> +HOST_CFLAGS		+= $(shell $(LLVM_CONFIG) --cflags)
+> +HOST_LDFLAGS		+= $(shell $(LLVM_CONFIG) --ldflags)
+> +endif
+> +HOST_LDLIBS 		+= $(CLANG_LIBS)
+> +
+> +.PHONY: check-clang-deps
+> +check-clang-deps:
+> +ifeq ($(strip $(CLANG)),":")
+> +	$(warning clang-check: clang executable is missing which we use to find the Clang resource directory; install clang package)
+> +endif
+> +ifeq ($(strip $(LLVM_CONFIG)),":")
+> +	$(warning clang-check: llvm-config is missing which we use to find the libclang location; install the clang/LLVM devel packages)
+> +endif
+> +ifeq ($(strip $(CLANG_LIBS)),)
+> +	$(warning clang-check: libclang missing)
+> +endif
+> +ifneq ($(strip $(HAVE_CLANG_C_INDEX_H)),1)
+> +	$(warning clang-check: clang development headers are missing; install the clang devel package)
+> +endif
+> +
+> +MAKE_DEPS += check-clang-deps
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-      ^
-     SSH
-
-> +RHOST_SSH=
-> +# Processes started on the remote host, killed at cleanup
-> +RHOST_PIDS=
-> +# Netstress process started on the test host, killed at cleanup
-> +NETSTRESS_PID=
->  
->  cleanup()
->  {
-> +	local pids pid
-> +
->  	# Stop the ssh daemon
-> -	test -s sshd.pid && kill $(cat sshd.pid)
-> -	pkill 'netstress$'
-> -	tst_rmdir
-> -	[ "$rtmpdir" ] && tst_rhost_run -c "rm -rf $rtmpdir"
-> -	TMPDIR=
-> +	[ -s sshd.pid ] && kill $(cat sshd.pid)
-> +	[ -n "$NETSTRESS_PID" ] && kill -2 $NETSTRESS_PID >/dev/null 2>&1
-> +
-> +	for pid in $RHOST_PIDS; do
-> +		tst_rhost_run -c "kill -- $pid"  >/dev/null 2>&1
-> +	done
-
-tst_rhost_run -c "kill $RHOST_PIDS"
-
-> +
-> +	# Kill all remaining ssh processes
-> +	tst_rhost_run -c "ps auwx | \
-> +		awk '\$0 ~ \"$RHOST_SSH_CONF\" && \$11 == \"ssh\" {print \$2}' | \
-> +		xargs -r -t kill -- >/dev/null 2>&1"
->  }
->  
-
-What about using pkill -f instead of ps|awk|kill?
-
->  setup()
->  {
-> -	trap "tst_brkm TBROK 'test interrupted'" INT
-> -
-> -	tst_require_root
-> -	tst_require_cmds pkill sshd ssh od
-> -
-> -	# Get the sshd command with absolute path
-> -	SSHD=$(which sshd)
-> -	test "$SSHD" || tst_brkm TBROK "sshd daemon is not found"
-> +	local port rc
->  
-> -	check_icmpv${TST_IPVER}_connectivity $(tst_iface) $(tst_ipaddr rhost) || \
-> -		tst_brkm TBROK "Failed to ping to $(tst_ipaddr rhost)"
->  
->  	port=$(tst_rhost_run -c "tst_get_unused_port ipv${TST_IPVER} stream")
->  
-> -	tst_tmpdir
-> -
-> -	tmpdir=$TST_TMPDIR
-> -
-> -	cat << EOD > $tmpdir/sshd_config
-> +	cat << EOD > sshd_config
->  Port $port
->  ListenAddress $(tst_ipaddr)
->  PermitRootLogin yes
-> -AuthorizedKeysFile $tmpdir/authorized_keys
-> +AuthorizedKeysFile $TST_TMPDIR/authorized_keys
->  PasswordAuthentication no
->  AllowTcpForwarding yes
->  TCPKeepAlive yes
->  UseDNS no
-> -PidFile $tmpdir/sshd.pid
-> +StrictModes no
-> +PidFile $TST_TMPDIR/sshd.pid
->  EOD
->  
-> -	$SSHD -f $tmpdir/sshd_config || \
-> -		tst_brkm TBROK "Failed to run sshd daemon"
-> -
-> -	tst_resm TINFO "Generate configuration file and key at the remote host"
-> -	rtmpdir=$(tst_rhost_run -c "mktemp -d -p $TMPDIR")
-> -	tst_rhost_run -s -c "ssh-keygen -t rsa -N \"\" -f $rtmpdir/id_rsa > /dev/null"
-> +	tst_res TINFO "Generate configuration file and key at the remote host"
-> +	tst_rhost_run -s -c "ssh-keygen -t rsa -N \"\" -f $TST_TMPDIR/id_rsa \
-> +		>/dev/null"
->  
-> -	rconfig=$rtmpdir/ssh_config
-> +	RHOST_SSH_CONF=$TST_TMPDIR/ssh_config
->  
->  	tst_rhost_run -s -c "printf \"\
->  Port $port\n\
->  StrictHostKeyChecking no\n\
->  PasswordAuthentication no\n\
-> -UserKnownHostsFile $rtmpdir/known_hosts\n\
-> -IdentityFile $rtmpdir/id_rsa\n\" > $rconfig"
-> +UserKnownHostsFile $TST_TMPDIR/known_hosts\n\
-> +IdentityFile $TST_TMPDIR/id_rsa\n\" > $RHOST_SSH_CONF"
->  
-> -	tst_rhost_run -s -c "chmod 700 $rtmpdir; chmod 600 $rtmpdir/*"
-> +	tst_res TINFO "Generate authorized_keys"
-> +	tst_rhost_run -c "cat ${TST_TMPDIR}/id_rsa.pub" > authorized_keys
->  
-> -	tst_resm TINFO "Generate authorized_keys"
-> -	tst_rhost_run -c "cat ${rtmpdir}/id_rsa.pub" > $tmpdir/authorized_keys
-> +	tst_res TINFO "restore context of authorized_keys"
-> +	rc=$(command -v restorecon)
-> +	[ -n "$rc" ] && $rc authorized_keys
->  
-> -	tst_resm TINFO "restore context of authorized_keys"
-> -	local rc=$(which restorecon)
-> -	test "$rc" && $rc $tmpdir/authorized_keys
-> +	$(command -v sshd) -f $TST_TMPDIR/sshd_config || \
-> +		tst_brk TBROK "Failed to run sshd daemon"
->  
-> -	chmod 700 $tmpdir
-> -	chmod 600 $tmpdir/*
-> +	RHOST_SSH="ssh -$TST_IPVER -F $RHOST_SSH_CONF $(tst_ipaddr)"
->  }
->  
-> -test01()
-> +test_ssh_connectivity()
->  {
-> -	tst_resm TINFO "Creating '$CONNECTION_TOTAL' ssh sessions"
-> -
-> -	tst_rhost_run -s -c "ssh-stress01-rmt.sh $TST_IPVER $(tst_ipaddr) \
-> -		$rconfig $CONNECTION_TOTAL"
-> -
-> -	tst_resm TPASS "Test is finished successfully"
-> +	tst_rhost_run -c "$RHOST_SSH 'true >/dev/null 2>&1' >/dev/null"
-> +	[ $? -ne 0 ] && tst_brk TFAIL "SSH not reachable"
->  }
->  
-> -test02()
-> +test1()
->  {
-> -	tst_resm TINFO "Log in/out by many clients asynchronously"
-> -	tst_resm TINFO "'$CONNECTION_TOTAL' clients, time $NS_DURATION sec"
-> +	local num all_conn pid
->  
-> -	tst_rhost_run -s -c "ssh-stress02-rmt.sh $TST_IPVER $(tst_ipaddr) \
-> -		$rconfig $CONNECTION_TOTAL $NS_DURATION"
-> +	tst_res TINFO "Verify the ssh connectivity over IPv4/IPv6 is not broken after creating many ssh sessions"
-                                                           ^
-The message may have indicated the exact IP version with $TST_IPVER
-
->  
-> -	tst_resm TPASS "Test is finished successfully"
-> +	test_ssh_connectivity
-> +
-> +	RHOST_PIDS=
-> +	num=0
-> +	while [ $num -lt $CONNECTION_TOTAL ]; do
-> +		pid=$(tst_rhost_run -c "$RHOST_SSH -N </dev/null 1>/dev/null 2>&1 \
-> +			& echo \$!")
-> +		RHOST_PIDS="$RHOST_PIDS $pid"
-> +		num=$(($num + 1))
-> +	done
-> +
-> +	tst_res TINFO "Killing all ssh sessions"
-> +	num=0
-> +	for pid in $RHOST_PIDS; do
-> +		tst_rhost_run -c "kill $pid" >/dev/null
-> +		[ $? -ne 0 ] && num=$((num + 1))
-
-Do we need $((num + 1)) here? At least it could be used in the
-message below instead of "some ssh"...
-
-> +	done
-> +	
-> +	[ $num -ne 0 ] && tst_brk TFAIL "Some ssh processes died during execution"
-> +
-> +	test_ssh_connectivity
-> +
-> +	tst_res TPASS "Test finished successfully"
->  }
->  
-> -test03()
-> +test2()
->  {
-> -	tst_resm TINFO "Forwarding TCP traffic with $NS_TIMES requests"
-> +	local start_epoc pids total_connections elapse_epoc new_pids
-> +	local ssh_num wait_sec login_sec
-> +
-> +	tst_res TINFO "Verify the ssh connectivity over IPv4/IPv6 is not broken after logged in/out by many clients asynchronously for a long time"
-> +
-> +	test_ssh_connectivity
-> +
-> +	start_epoc=$(date +%s)
-> +	RHOST_PIDS=
-> +	total_connections=0
-> +	while true ; do
-> +		# Exit after the specified time has elapsed.
-> +		elapse_epoc=$(( $(date +%s) - $start_epoc))
-> +		[ $elapse_epoc -ge $NS_DURATION ] && break
-> +
-> +		new_pids=
-> +		for pid in $RHOST_PIDS; do
-> +			if tst_rhost_run -c "kill -0 $pid" >/dev/null; then
-> +				new_pids="$new_pids $pid"
-> +			fi
-> +		done
-> +		RHOST_PIDS="$new_pids"
-> +
-> +		# Do not make ssh connection over the specified quantity
-> +		ssh_num=$(echo "$pids" | wc -w)
-> +		if [ $ssh_num -ge $CONNECTION_TOTAL ]; then
-> +			tst_res TINFO "Max connections reached"
-> +			tst_sleep 1
-> +			continue
-> +		fi
-> +
-> +		# specified wait time and login time
-> +		wait_sec=$(( $(od -A n -d -N 1 /dev/urandom) * 3 / 255 ))
-> +		login_sec=$(( $(od -A n -d -N 1 /dev/urandom) * 10 / 255 ))
-> +
-> +		# Login to the server
-> +		pid=$(tst_rhost_run -c "( \
-> +			  sleep $wait_sec && $RHOST_SSH -l root \"sleep $login_sec\" \
-> +			) </dev/null 1>/dev/null 2>&1 & echo \$!"
-> +		)
-> +		RHOST_PIDS="$RHOST_PIDS $pid"
-> +		total_connections=$(( total_connections + 1 ))
-> +	done
-> +
-> +	tst_res TINFO "Waiting for all connections to terminate"
-> +	while [ -n "$RHOST_PIDS" ]; do
-> +		tst_sleep 1
-> +		new_pids=
-> +		for pid in $RHOST_PIDS; do
-> +			if tst_rhost_run -c "kill -0 $pid" >/dev/null 2>&1; then
-> +				new_pids="$new_pids $pid"
-> +			fi
-> +		done
-> +		RHOST_PIDS="$new_pids"
-> +	done
-> +
-> +	test_ssh_connectivity
-> +
-> +	tst_res TPASS "Test finished successfully ($total_connections connections)"
-> +}
->  
-> -	# Run a TCP traffic server
-> +test3()
-> +{
-> +	local port lport localhost rhost ret
-> +	tst_res TINFO "Verify the ssh connectivity over IPv4/IPv6 is not broken after forwarding TCP traffic for a long time"
-> +
-> +	localhost="127.0.0.1"
-> +	rhost="$(tst_ipaddr)"
-> +	if [ "$TST_IPVER" = "6" ]; then
-> +		localhost="::1"
-> +		rhost="[$(tst_ipaddr)]"
-> +	fi
-> +
-> +	test_ssh_connectivity
-> +
-> +	# Get a port for the server and a forwarding port
->  	port=$(tst_get_unused_port ipv${TST_IPVER} stream)
-> +	lport=$(tst_rhost_run -c "tst_get_unused_port ipv${TST_IPVER} stream")
->  
-> -	netstress -R 3 -g $port > tcp_server.log 2>&1 &
-> +	# Start a tcp server
-> +	netstress -R 3 -g $port >/dev/null 2>&1 &
-> +	NETSTRESS_PID=$!
-
-
-We can now use netstress -B, it will go to background only after sucessfully
-performing bind()/listen(). The actual port number will be saved in the
-netstress_port file, i.e.:
-
-netstress -B .
-port=$(cat netstress_port)
-
->  
-> -	tst_rhost_run -s -c "ssh-stress03-rmt.sh $TST_IPVER $(tst_ipaddr) \
-> -		$rconfig $port $NS_TIMES"
-> +	# Setup an ssh tunnel from the remote host to testhost
-> +	RHOST_PIDS=$(tst_rhost_run -c \
-> +		"$RHOST_SSH -N -L $lport:$rhost:$port </dev/null 1>/dev/null 2>&1 \
-> +		& echo \$!")
-> +	tst_sleep 1
-
-Why you don't use -f option with ssh? I wouldn't rely on sleep 1 here.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
