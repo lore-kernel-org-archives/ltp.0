@@ -1,62 +1,59 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Jun 2021 18:33:07 +0200
-Subject: [LTP] [RFC PATCH 3/3] doc: Update LTPROOT and PATH environment
- variables
-In-Reply-To: <20210615163307.10755-1-pvorel@suse.cz>
-References: <20210615163307.10755-1-pvorel@suse.cz>
-Message-ID: <20210615163307.10755-4-pvorel@suse.cz>
+Date: Tue, 15 Jun 2021 18:40:44 +0200
+Subject: [LTP] [PATCH 1/1] fs/racer: Fix LTP hang caused by fs_racer.sh
+In-Reply-To: <CAEemH2f-=oW3PqJN6EsCvBzvPk2LvrwkLd1oVgHgv+_HHN_oTQ@mail.gmail.com>
+References: <20210610175812.13730-1-ycliang@andestech.com>
+ <CAEemH2f-=oW3PqJN6EsCvBzvPk2LvrwkLd1oVgHgv+_HHN_oTQ@mail.gmail.com>
+Message-ID: <YMjYDEXWlD7M/Dfp@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to address changes in two previous commits.
+Hi Leo, Li,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- README.md          | 2 +-
- doc/user-guide.txt | 7 +++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
+> On Fri, Jun 11, 2021 at 1:58 AM Leo Yu-Chi Liang <ycliang@andestech.com> wrote:
 
-diff --git a/README.md b/README.md
-index 703395c6b..b0ad47dfa 100644
---- a/README.md
-+++ b/README.md
-@@ -162,7 +162,7 @@ $ testcases/bin/ioctl01 -h
- Many require certain environment variables to be set
- 
- ```
--$ LTPROOT=/opt/ltp PATH="$PATH:$LTPROOT/testcases/bin" testcases/bin/wc01.sh
-+$ LTPROOT=/opt/ltp testcases/bin/wc01.sh
- ```
- 
- Most commonly, the path variable needs to be set and also `LTPROOT`, but there
-diff --git a/doc/user-guide.txt b/doc/user-guide.txt
-index 8df29e688..ab2d773a7 100644
---- a/doc/user-guide.txt
-+++ b/doc/user-guide.txt
-@@ -11,6 +11,7 @@ For running LTP network tests see `testcases/network/README.md`.
- | 'KCONFIG_PATH'        | The path to the kernel config file, (if not set, it tries
-                           the usual paths '/boot/config-RELEASE' or '/proc/config.gz').
- | 'LTPROOT'             | Prefix for installed LTP, the default is '/opt/ltp'.
-+                          Used for setting 'PATH' and other environment variables.
- | 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
-                           'n' or '0': never colorize.
- | 'LTP_DEV'             | Path to the block device to be used
-@@ -19,8 +20,10 @@ For running LTP network tests see `testcases/network/README.md`.
- | 'LTP_TIMEOUT_MUL'     | Multiply timeout, must be number >= 1 (> 1 is useful for
-                           slow machines to avoid unexpected timeout).
-                           Variable is also used in shell tests, but ceiled to int.
--| 'PATH'                | It's required to addjust path:
--                          `PATH="$PATH:$LTPROOT/testcases/bin"`
-+| 'PATH'                | Testcases are installed into 'LTPROOT/testcases/bin',
-+                          'PATH' is set by library API. You need to add it into
-+                          'PATH' only if you use custom runner (not runltp neither
-+                          [runltp-ng](https://github.com/metan-ucw/runltp-ng).
- | 'TMPDIR'              | Base directory for template directory (C: '.needs_tmpdir = 1'
-                           and others, which imply it, shell: 'TST_NEEDS_TMPDIR=1').
- | 'TST_NO_CLEANUP'      | Disable running test cleanup (defined in 'TST_CLEANUP').
--- 
-2.32.0
+> > fs_racer.sh test could cause LTP to hang if the file
+> > gets removed when it's at time same time being renamed.
 
+> > The if statement in mv source implemented by busybox is as follows:
+
+> >         if (dest_exists) {
+> >                 if (flags & OPT_NOCLOBBER)
+> >                         goto RET_0;
+> >                 if (!(flags & OPT_FORCE)           // OPT_FORCE is set by -f option
+> >                  && ((access(dest, W_OK) < 0 && isatty(0))
+> >                     || (flags & OPT_INTERACTIVE))  // this is set by -i option
+> >                 ) {
+> >                         if (fprintf(stderr, "mv: overwrite '%s'? ", dest) < 0) {
+> >                                 goto RET_1;  /* Ouch! fprintf failed! */
+> >                         }
+> >                         if (!bb_ask_y_confirmation()) {
+> >                                 goto RET_0;
+> >                         }
+> >                 }
+> >         }
+
+> > If somehow the dest_file exists when mv executes the first if "if (dest_exists)",
+> > and gets removed when mv executes the third if "if (access(...))".
+> > Then it is possible for mv to reach "bb_ask_y_confirmation" and to try to read from tty.
+
+> > However, the mv process is executing in the background,
+> > so when it tries to read from tty,
+> > the processes in the same process group as mv would all receive SIGTTIN
+> > and be changed into TASK_STOPPED state.
+
+> > This would cause this testcase to hang, though happens rarely.
+
+> > Add -f option to suppress the attempt to read from tty.
+
+> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+
+> Reviewed-by: Li Wang <liwang@redhat.com>
+
+Fix is trivial enough to merge it => merged.
+
+Kind regards,
+Petr
