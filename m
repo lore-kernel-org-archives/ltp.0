@@ -1,84 +1,68 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Wed, 16 Jun 2021 17:11:34 +0300
-Subject: [LTP] [PATCH v3] ssh-stress: Convert to new api
-In-Reply-To: <20210616081856.3026223-1-lkml@jv-coder.de>
-References: <20210616081856.3026223-1-lkml@jv-coder.de>
-Message-ID: <fb4b9d45-2cbb-5e5c-fefe-3ca429373a54@bell-sw.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 Jun 2021 16:15:27 +0200
+Subject: [LTP] [PATCH 1/3] syscalls/sendfile: Convert sendfile02 to the
+ new API
+In-Reply-To: <20210603033611.15619-2-xieziyao@huawei.com>
+References: <20210603033611.15619-1-xieziyao@huawei.com>
+ <20210603033611.15619-2-xieziyao@huawei.com>
+Message-ID: <YMoHf/mwjDXkCdJH@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 16.06.2021 11:18, Joerg Vehlow wrote:
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> 
-> Apart from pure conversion:
->  - Use "StrictModes no" in ssh config, to get rid of
->    access permission problems; All part of the path of the
->    authorized_keys file must not be writeable by anyone but the owner.
->    This allows writing the file to the default temp directory
->  - Moved all rhost scripts into ssh-stress.sh
-> 
-> Changes in v3:
-> - use pkill instead of ps | awk | xargs
-> - Changed test descriptions slightly
->   * include actual ip version
->   * dropped "for a long time", the tests do not run
->     for a long time with the default config
-> - Use netstress -B and ssh -f for background processes
->   This implies using pgrep to get the pids of these processes.
-> 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
-...
->  
-> -TCID=ssh-stress
-> -TST_TOTAL=3
->  TST_CLEANUP="cleanup"
-> +TST_SETUP="setup"
-> +TST_TESTFUNC="test"
-> +TST_CNT=3
-> +TST_NEEDS_ROOT=1
-> +TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_CMDS="sshd ssh od pkill pgrep"
->  
-> -TST_USE_LEGACY_API=1
->  . tst_net.sh
->  
-> -# Temporary directory to store sshd setting or ssh key
-> -# Note: ssh doesn't work when those directory is under /tmp.
-> -TMPDIR="/root"
-> +# SSH config file on the remote host
-> +RHOST_SSH_CONF=
-> +# SSH command to connect from the remote host to the test host
-> +RHOST_SSH=
-> +# Processes started on the remote host, killed at cleanup
-> +RHOST_PIDS=
-> +# Netstress process started on the test host, killed at cleanup
-> +NETSTRESS_PID=
->  
->  cleanup()
->  {
-> +	local pids
-> +
->  	# Stop the ssh daemon
-> -	test -s sshd.pid && kill $(cat sshd.pid)
-> -	pkill 'netstress$'
-> -	tst_rmdir
-> -	[ "$rtmpdir" ] && tst_rhost_run -c "rm -rf $rtmpdir"
-> -	TMPDIR=
-> +	[ -s sshd.pid ] && kill $(cat sshd.pid)
-> +	[ -n "$NETSTRESS_PID" ] && kill -2 $NETSTRESS_PID >/dev/null 2>&1
-> +
-> +	tst_rhost_run -c "kill $RHOST_PIDS"  >/dev/null 2>&1
-> +
-> +	# Kill all remaining ssh processes
-> +	tst_rhost_run -c "pkill -f '^ssh $RHOST_SSH_CONF'"
+> 1. Convert sendfile02 to the new API with file descriptors instead
+> of socket descriptors.
+> 2. Remove the support for UCLINUX.
+> 3. Remove redundant testcases {4, 22, 26} and {6, 20, 26}.
 
-Perhaps we should check that $RHOST_SSH_CONF is set before running
-pkill.
+Thanks, merged with diff below (fix docparse formatting, add OFFSET_DESC()
+macro, fix checkpatch.pl warning on comparison order).
 
+Kind regards,
+Petr
 
-For the rest:
-Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+diff --git testcases/kernel/syscalls/sendfile/sendfile02.c testcases/kernel/syscalls/sendfile/sendfile02.c
+index 820063681..ffd654885 100644
+--- testcases/kernel/syscalls/sendfile/sendfile02.c
++++ testcases/kernel/syscalls/sendfile/sendfile02.c
+@@ -9,7 +9,8 @@
+ /*\
+  * [Description]
+  *
+- * Test the basic functionality of the sendfile() system call,
++ * Test the basic functionality of the sendfile() system call:
++ *
+  * 1. Call sendfile() with offset = 0.
+  * 2. Call sendfile() with offset in the middle of the file.
+  */
+@@ -23,6 +24,8 @@
+ #define IN_FILE "in_file"
+ #define OUT_FILE "out_file"
+ 
++#define OFFSET_DESC(x) .desc = "with offset = "#x, .offset = x
++
+ struct test_case_t {
+ 	char *desc;
+ 	off_t offset;
+@@ -30,8 +33,8 @@ struct test_case_t {
+ 	int64_t exp_retval;
+ 	int64_t exp_updated_offset;
+ } tc[] = {
+-	{ "with offset = 0", 0, 26, 26, 26 },
+-	{ "with offset = 2", 2, 24, 24, 26 },
++	{ OFFSET_DESC(0), 26, 26, 26 },
++	{ OFFSET_DESC(2), 24, 24, 26 },
+ };
+ 
+ static void setup(void)
+@@ -60,7 +63,7 @@ static void run(unsigned int i)
+ 	TEST(sendfile(out_fd, in_fd, &offset, tc[i].count));
+ 	after_pos = SAFE_LSEEK(in_fd, 0, SEEK_CUR);
+ 
+-	if (TST_RET != tc[i].exp_retval)
++	if (tc[i].exp_retval != TST_RET)
+ 		tst_res(TFAIL, "sendfile() failed to return expected value, "
+ 			       "expected: %" PRId64 ", got: %ld",
+ 			tc[i].exp_retval, TST_RET);
