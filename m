@@ -1,55 +1,84 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 Jun 2021 15:13:38 +0200
-Subject: [LTP] [PATCH 2/3] syscalls/getrusage: Cleanup and bugfix for
- getrusage03
-In-Reply-To: <8f8852e0-eed3-f7ae-744e-db48724e9b02@huawei.com>
-References: <20210616093606.214856-1-xieziyao@huawei.com>
- <20210616093606.214856-3-xieziyao@huawei.com>
- <YMnk5QUhwnOHrWLi@yuki>
- <8f8852e0-eed3-f7ae-744e-db48724e9b02@huawei.com>
-Message-ID: <YMn5AvbsDDV8ojWu@yuki>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Wed, 16 Jun 2021 17:11:34 +0300
+Subject: [LTP] [PATCH v3] ssh-stress: Convert to new api
+In-Reply-To: <20210616081856.3026223-1-lkml@jv-coder.de>
+References: <20210616081856.3026223-1-lkml@jv-coder.de>
+Message-ID: <fb4b9d45-2cbb-5e5c-fefe-3ca429373a54@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Same with lib: tst_process_state: Add tst_process_release_wait().
+On 16.06.2021 11:18, Joerg Vehlow wrote:
+> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 > 
-> If we call the signal(SIGCHLD,SIG_IGN), the SIGCHLD signal is ignored by 
-> the system. Thus, no zombie is created before the child is terminated. 
-> The logs are as follows:
+> Apart from pure conversion:
+>  - Use "StrictModes no" in ssh config, to get rid of
+>    access permission problems; All part of the path of the
+>    authorized_keys file must not be writeable by anyone but the owner.
+>    This allows writing the file to the default temp directory
+>  - Moved all rhost scripts into ssh-stress.sh
 > 
-> getrusage03.h:27: TINFO: allocate 400MB
-> getrusage03.c:39: TPASS: check that initial.children ~= pre_wait.children
-> getrusage03.c:39: TPASS: check that post_wait.children ~= 400MB
-> getrusage03.h:27: TINFO: allocate 500MB
-> getrusage03.c:123: TBROK: Failed to open FILE '/proc/84598/stat' for 
-> reading: ENOENT (2)
+> Changes in v3:
+> - use pkill instead of ps | awk | xargs
+> - Changed test descriptions slightly
+>   * include actual ip version
+>   * dropped "for a long time", the tests do not run
+>     for a long time with the default config
+> - Use netstress -B and ssh -f for background processes
+>   This implies using pgrep to get the pids of these processes.
 > 
-> So I write TST_PROCESS_RELEASE_WAIT() here to check /proc/$PID.
+> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> ---
+...
+>  
+> -TCID=ssh-stress
+> -TST_TOTAL=3
+>  TST_CLEANUP="cleanup"
+> +TST_SETUP="setup"
+> +TST_TESTFUNC="test"
+> +TST_CNT=3
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_TMPDIR=1
+> +TST_NEEDS_CMDS="sshd ssh od pkill pgrep"
+>  
+> -TST_USE_LEGACY_API=1
+>  . tst_net.sh
+>  
+> -# Temporary directory to store sshd setting or ssh key
+> -# Note: ssh doesn't work when those directory is under /tmp.
+> -TMPDIR="/root"
+> +# SSH config file on the remote host
+> +RHOST_SSH_CONF=
+> +# SSH command to connect from the remote host to the test host
+> +RHOST_SSH=
+> +# Processes started on the remote host, killed at cleanup
+> +RHOST_PIDS=
+> +# Netstress process started on the test host, killed at cleanup
+> +NETSTRESS_PID=
+>  
+>  cleanup()
+>  {
+> +	local pids
+> +
+>  	# Stop the ssh daemon
+> -	test -s sshd.pid && kill $(cat sshd.pid)
+> -	pkill 'netstress$'
+> -	tst_rmdir
+> -	[ "$rtmpdir" ] && tst_rhost_run -c "rm -rf $rtmpdir"
+> -	TMPDIR=
+> +	[ -s sshd.pid ] && kill $(cat sshd.pid)
+> +	[ -n "$NETSTRESS_PID" ] && kill -2 $NETSTRESS_PID >/dev/null 2>&1
+> +
+> +	tst_rhost_run -c "kill $RHOST_PIDS"  >/dev/null 2>&1
+> +
+> +	# Kill all remaining ssh processes
+> +	tst_rhost_run -c "pkill -f '^ssh $RHOST_SSH_CONF'"
 
-Ah right, reading the documentation if parent ignores sigchild the child
-is discarded and there is no trace of it on the system once it returns
-from main().
+Perhaps we should check that $RHOST_SSH_CONF is set before running
+pkill.
 
-So I guess that we should add a function that checks that a given pid is
-present on a system but there is simpler interface for this, if you do
-kill(2) with signal == 0 it returns with with errno set to ESRCH if the
-pid is no longer present on a system.
 
-Also I'm not sure if release is right word here, maybe it would better
-describe the action if the function name was tst_process_exit_wait().
-
-> I noticed that some safe_ micro checks tst_test->forks_child or other 
-> tst_test->xx, while tst_test is not defined in some functions with 
-> #define TST_NO_DEFAULT_MAIN.
-
-Ah right, I guess that in a case of fork() and clone() calls it would be
-easier not to use SAFE_MACROS() for processes that have been started by
-exec().
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+For the rest:
+Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
