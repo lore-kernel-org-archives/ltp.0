@@ -1,49 +1,77 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 Jun 2021 16:36:45 +0200
-Subject: [LTP] [PATCH v3] ssh-stress: Convert to new api
-In-Reply-To: <fb4b9d45-2cbb-5e5c-fefe-3ca429373a54@bell-sw.com>
-References: <20210616081856.3026223-1-lkml@jv-coder.de>
- <fb4b9d45-2cbb-5e5c-fefe-3ca429373a54@bell-sw.com>
-Message-ID: <YMoMfS+cFx4aau01@pevik>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Wed, 16 Jun 2021 17:45:12 +0200
+Subject: [LTP] [PATCH] controllers/memcg: increase memory limit in subgroup
+ charge
+Message-ID: <20210616154512.47160-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg, Alexey,
+The memcg_subgroup_charge was failing on kernel v5.8 in around 10% cases
+with:
 
-...
-> >  cleanup()
-> >  {
-> > +	local pids
-> > +
-> >  	# Stop the ssh daemon
-> > -	test -s sshd.pid && kill $(cat sshd.pid)
-> > -	pkill 'netstress$'
-> > -	tst_rmdir
-> > -	[ "$rtmpdir" ] && tst_rhost_run -c "rm -rf $rtmpdir"
-> > -	TMPDIR=
-> > +	[ -s sshd.pid ] && kill $(cat sshd.pid)
-> > +	[ -n "$NETSTRESS_PID" ] && kill -2 $NETSTRESS_PID >/dev/null 2>&1
-> > +
-> > +	tst_rhost_run -c "kill $RHOST_PIDS"  >/dev/null 2>&1
-And check also $RHOST_PIDS, right?
-[ -n "$RHOST_PIDS" ] && tst_rhost_run -c "kill $RHOST_PIDS" >/dev/null 2>&1
+    memcg_subgroup_charge 1 TINFO: Running memcg_process --mmap-anon -s 135168
+    memcg_subgroup_charge 1 TINFO: Warming up pid: 19289
+    memcg_subgroup_charge 1 TINFO: Process is still here after warm up: 19289
+    memcg_subgroup_charge 1 TFAIL: rss is 0, 135168 expected
+    memcg_subgroup_charge 1 TPASS: rss is 0 as expected
 
-> > +
-> > +	# Kill all remaining ssh processes
-> > +	tst_rhost_run -c "pkill -f '^ssh $RHOST_SSH_CONF'"
+In dmesg one could see that OOM killer killed the process even though
+group memory limit was matching the usage:
 
-> Perhaps we should check that $RHOST_SSH_CONF is set before running
-> pkill.
-[ -n "$RHOST_SSH_CONF" ] && tst_rhost_run -c "pkill -f '^ssh $RHOST_SSH_CONF'"
+    memcg_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+    CPU: 4 PID: 19289 Comm: memcg_process Not tainted 5.8.0-1031-oracle #32~20.04.2-Ubuntu
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1 12/03/2020
+    ...
+    memory: usage 132kB, limit 132kB, failcnt 9
+    memory+swap: usage 132kB, limit 9007199254740988kB, failcnt 0
+    kmem: usage 4kB, limit 9007199254740988kB, failcnt 0
+    ...
+    Tasks state (memory values in pages):
+    [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
+    [  19289]     0 19289      669      389    40960        0             0 memcg_process
+    oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=/,mems_allowed=0,oom_memcg=/ltp_19257,task_memcg=/ltp_19257,task=memcg_process,pid=19289,uid=0
+    Memory cgroup out of memory: Killed process 19289 (memcg_process) total-vm:2676kB, anon-rss:84kB, file-rss:1468kB, shmem-rss:4kB, UID:0 pgtables:40kB oom_score_adj:0
+    oom_reaper: reaped process 19289 (memcg_process), now anon-rss:0kB, file-rss:0kB, shmem-rss:4kB
 
-No need to repost, I'll fix it before merge.
+It seems using 100% of memory assigned to given group might trigger OOM,
+so add a space of at least one page.
 
-> For the rest:
-> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Thanks!
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../memcg/functional/memcg_subgroup_charge.sh    | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+index 9b23177a4dc5..88ddbabf7fa9 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+@@ -19,9 +19,21 @@ TST_CNT=3
+ # $2 - memory.limit_in_bytes in sub group
+ test_subgroup()
+ {
++	local limit_parent=$1
++	local limit_subgroup=$2
++
++	# OOM might start killing if memory usage is 100%, so give it
++	# always one page size more:
++	if [ $limit_parent -ne 0 ]; then
++		limit_parent=$((limit_parent + PAGESIZE))
++	fi
++	if [ $limit_subgroup -ne 0 ]; then
++		limit_subgroup=$((limit_subgroup + PAGESIZE))
++	fi
++
+ 	mkdir subgroup
+-	echo $1 > memory.limit_in_bytes
+-	echo $2 > subgroup/memory.limit_in_bytes
++	echo $limit_parent > memory.limit_in_bytes
++	echo $limit_subgroup > subgroup/memory.limit_in_bytes
+ 
+ 	start_memcg_process --mmap-anon -s $PAGESIZES
+ 
+-- 
+2.27.0
+
