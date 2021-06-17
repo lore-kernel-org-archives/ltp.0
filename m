@@ -1,206 +1,87 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu, 17 Jun 2021 09:07:29 +0200
-Subject: [LTP] [PATCH v2 2/3] controllers/memcg: accept range of
- usage_in_bytes
-In-Reply-To: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
-References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210617070730.7699-3-krzysztof.kozlowski@canonical.com>
+From: dongshijiang <dongshijiang@inspur.com>
+Date: Thu, 17 Jun 2021 03:08:06 -0400
+Subject: [LTP] [PATCH] fix rpc_suite/rpc:add check returned value
+Message-ID: <20210617070806.174220-1-dongshijiang@inspur.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Several Linux kernel versions report higher usage_in_bytes than
-expected size of 1024 pages. For example v5.4, v5.8, v5.10
-and 5.13.0-rc5:
+"Segmentation fault (core dumped)" due to the failure of svcfd_create during the rpc test, so you need to check the return value of the "svcfd_create" function
 
-    memcg_usage_in_bytes_test 1 TINFO: Test memory.usage_in_bytes
-    memcg_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304
-    memcg_usage_in_bytes_test 1 TINFO: Warming up pid: 1160
-    memcg_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 1160
-    memcg_usage_in_bytes_test 1 TFAIL: memory.usage_in_bytes is 4325376, 4194304 expected
-
-It seems that recent Linux kernel reports more memory used than
-expected.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: dongshijiang <dongshijiang@inspur.com>
 ---
- .../controllers/memcg/functional/memcg_lib.sh | 11 +++++++---
- .../memcg/functional/memcg_stat_rss.sh        | 20 +++++++++----------
- .../memcg/functional/memcg_stat_test.sh       |  8 ++++----
- .../functional/memcg_usage_in_bytes_test.sh   | 10 ++++++++--
- 4 files changed, 30 insertions(+), 19 deletions(-)
+ .../rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c      | 5 +++++
+ .../rpc_createdestroy_svc_destroy/rpc_svc_destroy_stress.c   | 5 +++++
+ .../rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c       | 5 +++++
+ .../rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c   | 5 +++++
+ 4 files changed, 20 insertions(+)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 083ef376e120..d44bb027076c 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -239,8 +239,9 @@ test_mem_stat()
- 	local size=$2
- 	local total_size=$3
- 	local stat_name=$4
--	local exp_stat_size=$5
--	local check_after_free=$6
-+	local exp_stat_size_low=$5
-+	local exp_stat_size_up=$6
-+	local check_after_free=$7
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
+index 60b96cec3..3557c0068 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
+@@ -46,6 +46,11 @@ int main(void)
  
- 	start_memcg_process $memtypes -s $size
+ 	//First of all, create a server
+ 	svcr = svcfd_create(fd, 0, 0);
++
++	//check returned value
++	if ((SVCXPRT *) svcr == NULL) {
++		return test_status;
++	}
  
-@@ -251,7 +252,11 @@ test_mem_stat()
- 	echo $MEMCG_PROCESS_PID > tasks
- 	signal_memcg_process $size
+ 	//Then call destroy macro
+ 	svc_destroy(svcr);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy_stress.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy_stress.c
+index ecd145393..5a4331f4d 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy_stress.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy_stress.c
+@@ -55,6 +55,11 @@ int main(int argn, char *argc[])
+ 	//First of all, create a server
+ 	for (i = 0; i < nbCall; i++) {
+ 		svcr = svcfd_create(fd, 0, 0);
++
++		//check returned value
++		if ((SVCXPRT *) svcr == NULL)
++			continue;
++		svcr = NULL;
  
--	check_mem_stat $stat_name $exp_stat_size
-+	if [ "$exp_stat_size_low" = "$exp_stat_size_up" ]; then
-+		check_mem_stat $stat_name $exp_stat_size_low
-+	else
-+		check_mem_stat $stat_name $exp_stat_size_low $exp_stat_size_up
-+	fi
+ 		//Then call destroy macro
+ 		svc_destroy(svcr);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
+index da3b93022..de4df15f1 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
+@@ -48,6 +48,11 @@ int main(void)
  
- 	signal_memcg_process $size
- 	if $check_after_free; then
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh
-index 1a6128a6dba8..d9b4ec287b5f 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh
-@@ -18,54 +18,54 @@ TST_CNT=10
- # Test the management and counting of memory
- test1()
- {
--	test_mem_stat "--mmap-anon" $PAGESIZES $PAGESIZES "rss" $PAGESIZES false
-+	test_mem_stat "--mmap-anon" $PAGESIZES $PAGESIZES "rss" $PAGESIZES $PAGESIZES false
- }
+ 	//create a server
+ 	svcr = svcfd_create(fd, 1024, 1024);
++
++	//check returned value
++	if ((SVCXPRT *) svcr == NULL) {
++		return test_status;
++	}
  
- test2()
- {
--	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 false
-+	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 0 false
- }
+ 	//call routine
+ 	xprt_register(svcr);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
+index d0b7a20d4..fbaec25ad 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
+@@ -52,6 +52,11 @@ int main(int argn, char *argc[])
  
- test3()
- {
--	test_mem_stat "--shm -k 3" $PAGESIZE $PAGESIZE "rss" 0 false
-+	test_mem_stat "--shm -k 3" $PAGESIZE $PAGESIZE "rss" 0 0 false
- }
+ 	//create a server
+ 	svcr = svcfd_create(fd, 1024, 1024);
++
++	//check returned value
++	if ((SVCXPRT *) svcr == NULL) {
++		return test_status;
++	}
  
- test4()
- {
- 	test_mem_stat "--mmap-anon --mmap-file --shm" \
--		$PAGESIZES $((PAGESIZES * 3)) "rss" $PAGESIZES false
-+		$PAGESIZES $((PAGESIZES * 3)) "rss" $PAGESIZES $PAGESIZES false
- }
- 
- test5()
- {
--	test_mem_stat "--mmap-lock1" $PAGESIZES $PAGESIZES "rss" $PAGESIZES false
-+	test_mem_stat "--mmap-lock1" $PAGESIZES $PAGESIZES "rss" $PAGESIZES $PAGESIZES false
- }
- 
- test6()
- {
--	test_mem_stat "--mmap-anon" $PAGESIZES $PAGESIZES "rss" $PAGESIZES true
-+	test_mem_stat "--mmap-anon" $PAGESIZES $PAGESIZES "rss" $PAGESIZES $PAGESIZES true
- }
- 
- test7()
- {
--	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 true
-+	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 0 true
- }
- 
- test8()
- {
--	test_mem_stat "--shm -k 8" $PAGESIZE $PAGESIZE "rss" 0 true
-+	test_mem_stat "--shm -k 8" $PAGESIZE $PAGESIZE "rss" 0 0 true
- }
- 
- test9()
- {
- 	test_mem_stat "--mmap-anon --mmap-file --shm" \
--		$PAGESIZES $((PAGESIZES * 3)) "rss" $PAGESIZES true
-+		$PAGESIZES $((PAGESIZES * 3)) "rss" $PAGESIZES $PAGESIZES true
- }
- 
- test10()
- {
--	test_mem_stat "--mmap-lock1" $PAGESIZES $PAGESIZES "rss" $PAGESIZES true
-+	test_mem_stat "--mmap-lock1" $PAGESIZES $PAGESIZES "rss" $PAGESIZES $PAGESIZES true
- }
- 
- tst_run
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-index 925c4ecf87bc..e5eb7e5d0001 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-@@ -14,28 +14,28 @@ TST_CNT=8
- test1()
- {
- 	tst_res TINFO "Test cache"
--	test_mem_stat "--shm -k 3" $PAGESIZES $PAGESIZES "cache" $PAGESIZES false
-+	test_mem_stat "--shm -k 3" $PAGESIZES $PAGESIZES "cache" $PAGESIZES $PAGESIZES false
- }
- 
- test2()
- {
- 	tst_res TINFO "Test mapped_file"
- 	test_mem_stat "--mmap-file" $PAGESIZES $PAGESIZES \
--		"mapped_file" $PAGESIZES false
-+		"mapped_file" $PAGESIZES $PAGESIZES false
- }
- 
- test3()
- {
- 	tst_res TINFO "Test unevictable with MAP_LOCKED"
- 	test_mem_stat "--mmap-lock1" $PAGESIZES $PAGESIZES \
--		"unevictable" $PAGESIZES false
-+		"unevictable" $PAGESIZES $PAGESIZES false
- }
- 
- test4()
- {
- 	tst_res TINFO "Test unevictable with mlock"
- 	test_mem_stat "--mmap-lock2" $PAGESIZES $PAGESIZES \
--		"unevictable" $PAGESIZES false
-+		"unevictable" $PAGESIZES $PAGESIZES false
- }
- 
- test5()
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
-index e77d6bf2ef23..b5761a4e4716 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
-@@ -12,13 +12,18 @@ TST_CNT=2
- . memcg_lib.sh
- 
- MEM_TO_ALLOC=$((PAGESIZE * 1024))
-+# Recent Linux kernels (at least v5.4) started reporting memory usage of 32
-+# pages higher than requested allocation. Cause is not known, so let's just be
-+# flexible.
-+MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + PAGESIZE * 32))
- MEM_LIMIT=$((MEM_TO_ALLOC * 2))
- 
- test1()
- {
- 	tst_res TINFO "Test memory.usage_in_bytes"
- 	test_mem_stat "--mmap-anon" $MEM_TO_ALLOC $MEM_TO_ALLOC \
--		"memory.usage_in_bytes" $MEM_TO_ALLOC false
-+		"memory.usage_in_bytes" $MEM_TO_ALLOC \
-+		$MEM_EXPECTED_UPPER false
- }
- 
- test2()
-@@ -29,7 +34,8 @@ test2()
- 	echo $MEM_LIMIT > memory.limit_in_bytes
- 	echo $MEM_LIMIT > memory.memsw.limit_in_bytes
- 	test_mem_stat "--mmap-anon" $MEM_TO_ALLOC $MEM_TO_ALLOC \
--		"memory.memsw.usage_in_bytes" $MEM_TO_ALLOC false
-+		"memory.memsw.usage_in_bytes" $MEM_TO_ALLOC \
-+		$MEM_EXPECTED_UPPER false
- }
- 
- tst_run
+ 	xprt_register(svcr);
+ 	//call routine
 -- 
 2.27.0
 
