@@ -1,36 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 Jun 2021 14:41:22 +0200
-Subject: [LTP] [PATCH v3] ssh-stress: Convert to new api
-In-Reply-To: <38b6582d-fdfa-b661-27f9-bdcd2962b96b@jv-coder.de>
-References: <20210616081856.3026223-1-lkml@jv-coder.de>
- <YMrbQPcfS9xFOBpO@pevik>
- <38b6582d-fdfa-b661-27f9-bdcd2962b96b@jv-coder.de>
-Message-ID: <YMtC8usB3gZsN8cd@pevik>
+Date: Thu, 17 Jun 2021 22:06:29 +0200
+Subject: [LTP] [PATCH 2/3] syscalls/sendfile: Convert sendfile06 to the
+ new API
+In-Reply-To: <20210603033611.15619-3-xieziyao@huawei.com>
+References: <20210603033611.15619-1-xieziyao@huawei.com>
+ <20210603033611.15619-3-xieziyao@huawei.com>
+Message-ID: <YMurRVXwyvKXnkjj@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hi Ziyao,
 
-> Hi Petr,
+> 1. Convert sendfile06 to the new API with file descriptors instead
+> of socket descriptors.
+I wonder if this is ok, suppose yes, but better if other check.
 
-> On 6/17/2021 7:18 AM, Petr Vorel wrote:
-> > Hi Joerg, Alexey,
+> 2. Remove the support for UCLINUX.
 
-> > merged! Thanks both for your time.
-> thanks, but you should have removed my "changes in v3" from the commit
-> message :)
-Oh yes, although I usually check commit message, I haven't noticed.
+LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> Was I supposed to place stuff like that somewhere else in the mail, to
-> prevent it from being merged?
-
-Anything after first '---' in git format-patch output won't be included in
-commit message imported by git am. example: [1]
+...
+> +	TEST(sendfile(out_fd, in_fd, NULL, sb.st_size));
+> +	after_pos = SAFE_LSEEK(in_fd, 0, SEEK_CUR);
+> +
+> +	if (TST_RET != sb.st_size)
+nit: checkpatch.pl complains, it should be if (sb.st_size != TST_RET)
+(can be fixed during merge)
 
 Kind regards,
 Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20210512100746.5907-1-pvorel@suse.cz/
