@@ -1,38 +1,88 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu, 17 Jun 2021 09:07:27 +0200
-Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
-Message-ID: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+Date: Thu, 17 Jun 2021 09:07:28 +0200
+Subject: [LTP] [PATCH v2 1/3] controllers/memcg: accept range of
+ max_usage_in_bytes
+In-Reply-To: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210617070730.7699-2-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Several Linux kernel versions report higher max_usage_in_bytes than
+expected size of 1024 pages. For example v5.4, v5.8, v5.10
+and 5.13.0-rc5:
 
-This is a resend of previous Github pull:
-https://github.com/linux-test-project/ltp/pull/830
+    memcg_max_usage_in_bytes_test 1 TINFO: Test memory.max_usage_in_bytes
+    memcg_max_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304
+    memcg_max_usage_in_bytes_test 1 TINFO: Warming up pid: 1393215
+    memcg_max_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 1393215
+    memcg_max_usage_in_bytes_test 1 TFAIL: memory.max_usage_in_bytes is 4325376, 4194304 expected
 
-The patches fix several test failures we are hitting since months, see:
-https://bugs.launchpad.net/bugs/1829979
-https://bugs.launchpad.net/bugs/1829984
+It seems that recent Linux kernel reports more memory used than
+expected.
 
-Best regards,
-Krzysztof
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../kernel/controllers/memcg/functional/memcg_lib.sh  | 11 +++++++++--
+ .../memcg/functional/memcg_max_usage_in_bytes_test.sh |  6 +++++-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
-
-Krzysztof Kozlowski (3):
-  controllers/memcg: accept range of max_usage_in_bytes
-  controllers/memcg: accept range of usage_in_bytes
-  controllers/memcg: accept non-zero max_usage_in_bytes after reset
-
- .../controllers/memcg/functional/memcg_lib.sh | 22 ++++++++++++++-----
- .../memcg_max_usage_in_bytes_test.sh          | 12 ++++++++--
- .../memcg/functional/memcg_stat_rss.sh        | 20 ++++++++---------
- .../memcg/functional/memcg_stat_test.sh       |  8 +++----
- .../functional/memcg_usage_in_bytes_test.sh   | 10 +++++++--
- 5 files changed, 49 insertions(+), 23 deletions(-)
-
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index d9bb6d94324d..083ef376e120 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -140,7 +140,8 @@ shmmax_cleanup()
+ 
+ # Check size in memcg
+ # $1 - Item name
+-# $2 - Expected size
++# $2 - Expected size lower bound
++# $3 - Expected size upper bound (optional)
+ check_mem_stat()
+ {
+ 	local item_size
+@@ -151,7 +152,13 @@ check_mem_stat()
+ 		item_size=$(grep -w $1 memory.stat | cut -d " " -f 2)
+ 	fi
+ 
+-	if [ "$2" = "$item_size" ]; then
++	if [ "$3" ]; then
++		if [ $item_size -ge $2 ] && [ $item_size -le $3 ]; then
++			tst_res TPASS "$1 is ${2}-${3} as expected"
++		else
++			tst_res TFAIL "$1 is $item_size, ${2}-${3} expected"
++		fi
++	elif [ "$2" = "$item_size" ]; then
+ 		tst_res TPASS "$1 is $2 as expected"
+ 	else
+ 		tst_res TFAIL "$1 is $item_size, $2 expected"
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+index 14daa4651798..a940606cbd34 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+@@ -12,6 +12,10 @@ TST_CNT=4
+ . memcg_lib.sh
+ 
+ MEM_TO_ALLOC=$((PAGESIZE * 1024))
++# Recent Linux kernels (at least v5.4) started reporting memory usage of 32
++# pages higher than requested allocation. Cause is not known, so let's just be
++# flexible.
++MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + PAGESIZE * 32))
+ MEM_LIMIT=$((MEM_TO_ALLOC * 2))
+ 
+ # Run test cases which checks memory.[memsw.]max_usage_in_bytes after make
+@@ -32,7 +36,7 @@ test_max_usage_in_bytes()
+ 	signal_memcg_process $MEM_TO_ALLOC
+ 	signal_memcg_process $MEM_TO_ALLOC
+ 
+-	check_mem_stat $item $MEM_TO_ALLOC
++	check_mem_stat $item $MEM_TO_ALLOC $MEM_EXPECTED_UPPER
+ 
+ 	if [ $check_after_reset -eq 1 ]; then
+ 		echo 0 > $item
 -- 
 2.27.0
 
