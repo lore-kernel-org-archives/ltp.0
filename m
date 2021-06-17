@@ -1,27 +1,38 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu, 17 Jun 2021 08:56:05 +0200
-Subject: [LTP] [PATCH v3] ssh-stress: Convert to new api
-In-Reply-To: <YMrbQPcfS9xFOBpO@pevik>
-References: <20210616081856.3026223-1-lkml@jv-coder.de>
- <YMrbQPcfS9xFOBpO@pevik>
-Message-ID: <38b6582d-fdfa-b661-27f9-bdcd2962b96b@jv-coder.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Thu, 17 Jun 2021 09:07:27 +0200
+Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
+Message-ID: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi,
+
+This is a resend of previous Github pull:
+https://github.com/linux-test-project/ltp/pull/830
+
+The patches fix several test failures we are hitting since months, see:
+https://bugs.launchpad.net/bugs/1829979
+https://bugs.launchpad.net/bugs/1829984
+
+Best regards,
+Krzysztof
 
 
+Krzysztof Kozlowski (3):
+  controllers/memcg: accept range of max_usage_in_bytes
+  controllers/memcg: accept range of usage_in_bytes
+  controllers/memcg: accept non-zero max_usage_in_bytes after reset
 
-On 6/17/2021 7:18 AM, Petr Vorel wrote:
-> Hi Joerg, Alexey,
->
-> merged! Thanks both for your time.
-thanks, but you should have removed my "changes in v3" from the commit 
-message :)
-Was I supposed to place stuff like that somewhere else in the mail, to 
-prevent it from being merged?
+ .../controllers/memcg/functional/memcg_lib.sh | 22 ++++++++++++++-----
+ .../memcg_max_usage_in_bytes_test.sh          | 12 ++++++++--
+ .../memcg/functional/memcg_stat_rss.sh        | 20 ++++++++---------
+ .../memcg/functional/memcg_stat_test.sh       |  8 +++----
+ .../functional/memcg_usage_in_bytes_test.sh   | 10 +++++++--
+ 5 files changed, 49 insertions(+), 23 deletions(-)
 
-J?rg
+-- 
+2.27.0
+
