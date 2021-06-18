@@ -1,102 +1,81 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Fri, 18 Jun 2021 17:42:08 +0800
-Subject: [LTP] [PATCH 5/7] io_getevents02: Add io_getevents02 test for libaio
+Date: Fri, 18 Jun 2021 17:42:09 +0800
+Subject: [LTP] [PATCH 6/7] io_setup: Add docparse formatting and more
+ detailed description
 In-Reply-To: <20210618094210.183027-1-xieziyao@huawei.com>
 References: <20210618094210.183027-1-xieziyao@huawei.com>
-Message-ID: <20210618094210.183027-6-xieziyao@huawei.com>
+Message-ID: <20210618094210.183027-7-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test io_getevents invoked via libaio with invalid ctx and expects it to
-return -EINVAL.
+Add docparse formatting and more detailed description to distinguish
+io_setup01 from io_setup02.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/io_getevents/.gitignore   |  1 +
- .../syscalls/io_getevents/io_getevents02.c    | 51 +++++++++++++++++++
- 3 files changed, 53 insertions(+)
- create mode 100644 testcases/kernel/syscalls/io_getevents/io_getevents02.c
+ .../kernel/syscalls/io_setup/io_setup01.c     | 24 ++++++++++---------
+ .../kernel/syscalls/io_setup/io_setup02.c     |  8 +++----
+ 2 files changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 28ffa1286..bf5a42b1f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -610,6 +610,7 @@ io_cancel02 io_cancel02
- io_destroy01 io_destroy01
- io_destroy02 io_destroy02
- io_getevents01 io_getevents01
-+io_getevents02 io_getevents02
-
- io_pgetevents01 io_pgetevents01
- io_pgetevents02 io_pgetevents02
-diff --git a/testcases/kernel/syscalls/io_getevents/.gitignore b/testcases/kernel/syscalls/io_getevents/.gitignore
-index b3a5f4df1..b57022f73 100644
---- a/testcases/kernel/syscalls/io_getevents/.gitignore
-+++ b/testcases/kernel/syscalls/io_getevents/.gitignore
-@@ -1 +1,2 @@
- /io_getevents01
-+/io_getevents02
-diff --git a/testcases/kernel/syscalls/io_getevents/io_getevents02.c b/testcases/kernel/syscalls/io_getevents/io_getevents02.c
-new file mode 100644
-index 000000000..d91319151
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_getevents/io_getevents02.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
+diff --git a/testcases/kernel/syscalls/io_setup/io_setup01.c b/testcases/kernel/syscalls/io_setup/io_setup01.c
+index 28aee7831..0377ca193 100644
+--- a/testcases/kernel/syscalls/io_setup/io_setup01.c
++++ b/testcases/kernel/syscalls/io_setup/io_setup01.c
+@@ -1,19 +1,21 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *   Copyright (c) Crackerjack Project., 2007
+- *   Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
+- *   Copyright (c) 2017 Xiao Yang <yangx.jy@cn.fujitsu.com>
 + * Copyright (c) Crackerjack Project., 2007
 + * Ported from Crackerjack to LTP by Masatake YAMATO <yamato@redhat.com>
 + * Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2021 Xie Ziyao <xieziyao@huawei.com>
-+ */
-+
++ * Copyright (c) 2017 Xiao Yang <yangx.jy@cn.fujitsu.com>
+  */
+
+-/* Porting from Crackerjack to LTP is done
+- * by Masatake YAMATO <yamato@redhat.com>
 +/*\
 + * [Description]
+  *
+- * Description:
+- * 1) io_setup(2) succeeds if both nr_events and ctxp are valid.
+- * 2) io_setup(2) fails and returns -EINVAL if ctxp is not initialized to 0.
+- * 3) io_setup(2) fails and returns -EINVAL if nr_events is invalid.
+- * 4) io_setup(2) fails and returns -EFAULT if ctxp is NULL.
+- * 5) io_setup(2) fails and returns -EAGAIN if nr_events exceeds the limit
++ * Test io_setup invoked via libaio:
 + *
-+ * Test io_getevents invoked via libaio with invalid ctx and expects it to
-+ * return -EINVAL.
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+
-+#ifdef HAVE_LIBAIO
-+#include <libaio.h>
-+
-+#define EXP_RET (-EINVAL)
-+
-+static void run(void)
-+{
-+	io_context_t ctx;
-+
-+	memset(&ctx, 0, sizeof(ctx));
-+	TEST(io_getevents(ctx, 0, 0, NULL, NULL));
-+
-+	if (TST_RET == 0)
-+		tst_res(TFAIL, "call succeeded unexpectedly");
-+	else if (TST_RET == EXP_RET)
-+		tst_res(TPASS, "io_cancel(ctx, NULL, NULL) returns %ld : %s",
-+			TST_RET, strerror(-TST_RET));
-+	else
-+		tst_res(TFAIL, "io_cancel(ctx, NULL, NULL) returns %ld : %s, expected %d : %s",
-+			TST_RET, strerror(-TST_RET), EXP_RET, strerror(-EXP_RET));
-+}
-+
-+static struct tst_test test = {
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_AIO=y",
-+		NULL
-+	},
-+	.test_all = run,
-+};
-+
-+#else
-+TST_TEST_TCONF("test requires libaio and it's development packages");
-+#endif
++ * 1. io_setup succeeds if both nr_events and ctxp are valid.
++ * 2. io_setup fails and returns -EINVAL if ctxp is not initialized to 0.
++ * 3. io_setup fails and returns -EINVAL if nr_events is invalid.
++ * 4. io_setup fails and returns -EFAULT if ctxp is NULL.
++ * 5. io_setup fails and returns -EAGAIN if nr_events exceeds the limit
+  *    of available events.
+  */
+
+diff --git a/testcases/kernel/syscalls/io_setup/io_setup02.c b/testcases/kernel/syscalls/io_setup/io_setup02.c
+index 292b7440d..4ef0ad1a7 100644
+--- a/testcases/kernel/syscalls/io_setup/io_setup02.c
++++ b/testcases/kernel/syscalls/io_setup/io_setup02.c
+@@ -12,10 +12,10 @@
+  *
+  * Test io_setup invoked via syscall(2):
+  *
+- * 1. io_setup fails and returns -EFAULT if ctxp is NULL.
+- * 2. io_setup fails and returns -EINVAL if ctxp is not initialized to 0.
+- * 3. io_setup fails and returns -EINVAL if nr_events is -1.
+- * 4. io_setup fails and returns -EAGAIN if nr_events exceeds the limit
++ * 1. io_setup fails and returns EFAULT if ctxp is NULL.
++ * 2. io_setup fails and returns EINVAL if ctxp is not initialized to 0.
++ * 3. io_setup fails and returns EINVAL if nr_events is -1.
++ * 4. io_setup fails and returns EAGAIN if nr_events exceeds the limit
+  *    of available events.
+  * 5. io_setup succeeds if both nr_events and ctxp are valid.
+  */
 --
 2.17.1
 
