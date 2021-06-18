@@ -1,74 +1,54 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 18 Jun 2021 14:20:22 +0200
-Subject: [LTP] [PATCH 3/3 v2] getrusage: Cleanup and bugfix for
- getrusage03
-In-Reply-To: <20210617105556.130869-4-xieziyao@huawei.com>
-References: <20210617105556.130869-1-xieziyao@huawei.com>
- <20210617105556.130869-4-xieziyao@huawei.com>
-Message-ID: <YMyPhiiKwuwEdj7N@yuki>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Fri, 18 Jun 2021 15:05:35 +0200
+Subject: [LTP] [PATCH 1/2] tpci: fix NULL pointer dereference on wrong test
+ invocation
+Message-ID: <20210618130536.54806-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  static void sig_ign(void)
->  {
-> -	tst_resm(TINFO, "Testcase #06: SIG_IGN");
-> -
-> -	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> -	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> -	signal(SIGCHLD, SIG_IGN);
-> +	SAFE_SIGNAL(SIGCHLD, SIG_IGN);
-> +	SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
->  	maxrss_init = ru.ru_maxrss;
-> 
-> -	switch (pid = fork()) {
-> -	case -1:
-> -		tst_brkm(TBROK, cleanup, "fork #6");
-> -	case 0:
-> -		retval = system("getrusage03_child -n 500");
-> -		if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
-> -			tst_brkm(TBROK | TERRNO, cleanup, "system");
-> -		exit(0);
-> -	default:
-> -		break;
-> -	}
-> +	pid_t pid = SAFE_FORK();
-> +
-> +	if (!pid)
-> +		SAFE_EXECLP("getrusage03_child", "getrusage03_child",
-> +			    "consume", "500", NULL);
-> 
-> -	sleep(1);		/* children become zombie */
-> -	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> -	tst_resm(TINFO, "after_zombie.children = %ld", ru.ru_maxrss);
-> +	TST_PROCESS_EXIT_WAIT(pid, 0);
-> +	SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
->  	if (is_in_delta(ru.ru_maxrss - maxrss_init))
-> -		tst_resm(TPASS, "initial.children ~= after_zombie.children");
-> +		tst_res(TPASS, "initial.children ~= after_zombie.children");
->  	else
-> -		tst_resm(TFAIL, "initial.children !~= after_zombie.children");
-> -	signal(SIGCHLD, SIG_DFL);
-> -}
-> +		tst_res(TFAIL, "after_zombie.children = %li, expected %li",
-> +			ru.ru_maxrss, maxrss_init);
+Fix NULL pointer dereference when a ltp_tpci test case is started before
+choosing the device:
 
-I guess that these messages could be better, techincally it's not a
-zombie but rather ignored child, so I would change this to:
+    ltp_tpci: test-case 12
+    ltp_tpci: assign resources
+    ltp_tpci: assign resource #0
+    BUG: kernel NULL pointer dereference, address: 00000000000003b8
+    ...
+     Call Trace:
+      dev_attr_store+0x17/0x30
+      sysfs_kf_write+0x3e/0x50
+      kernfs_fop_write_iter+0x13c/0x1d0
+      new_sync_write+0x113/0x1a0
+      vfs_write+0x1c5/0x200
+      ksys_write+0x67/0xe0
+      __x64_sys_write+0x1a/0x20
+      do_syscall_64+0x49/0xc0
+      entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-"initial.children ~= ignored_child.children"
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Other than this the rest is good.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-
-Also if you agree I can fix the two minor issues in the patchset before
-merge, no need to send v3.
-
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+index 5b48aa0c7ece..f2d4a4ba497c 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+@@ -556,6 +556,11 @@ static int test_case(unsigned int cmd)
+ {
+ 	int rc = TSKIP;
+ 
++	if (!ltp_pci.dev || !ltp_pci.bus) {
++		prk_err("device or bus not selected for test");
++		return TFAIL;
++	}
++
+ 	switch (cmd) {
+ 	case PCI_ENABLE:
+ 		rc = pci_enable();
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.27.0
+
