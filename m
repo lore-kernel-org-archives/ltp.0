@@ -1,84 +1,96 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Fri, 18 Jun 2021 15:05:36 +0200
-Subject: [LTP] [PATCH 2/2] tpci: accept ENOMEM resource failure with
- virtio-pci
-In-Reply-To: <20210618130536.54806-1-krzysztof.kozlowski@canonical.com>
-References: <20210618130536.54806-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210618130536.54806-2-krzysztof.kozlowski@canonical.com>
+From: xieziyao <xieziyao@huawei.com>
+Date: Fri, 18 Jun 2021 13:16:54 +0000
+Subject: [LTP] [PATCH 3/3 v2] getrusage: Cleanup and bugfix for
+ getrusage03
+In-Reply-To: <YMyPhiiKwuwEdj7N@yuki>
+References: <20210617105556.130869-1-xieziyao@huawei.com>
+ <20210617105556.130869-4-xieziyao@huawei.com>,<YMyPhiiKwuwEdj7N@yuki>
+Message-ID: <021a65c83ac448e882077e7dabe1667b@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Assigning the memory prefetch resource to virtio-pci might fail on VM
-guests.  For example on Oracle cloud instance (describing itself as
-"Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1
-12/03/2020"):
+Yes, please do.
 
-    test_pci   76  TFAIL  :  tpci.c:73: PCI bus 00 slot 20 : Test-case '12'
+Feel fine with your modification and thanks for your review.
 
-In dmesg:
+Kind Regards,
+Ziyao
 
-    ltp_tpci: test-case 12
-    ltp_tpci: assign resources
-    ltp_tpci: assign resource #0
-    ltp_tpci: name = 0000:00:04.0, flags = 262401, start 0xc000, end 0xc03f
-    ltp_tpci: assign resource #1
-    ltp_tpci: name = 0000:00:04.0, flags = 262656, start 0xc1010000, end 0xc1010fff
-    ltp_tpci: assign resource #2
-    ltp_tpci: name = 0000:00:04.0, flags = 0, start 0x0, end 0x0
-    ltp_tpci: assign resource #3
-    ltp_tpci: name = 0000:00:04.0, flags = 0, start 0x0, end 0x0
-    ltp_tpci: assign resource #4
-    ltp_tpci: name = 0000:00:04.0, flags = 538190348, start 0x800004000, end 0x800007fff
-    virtio-pci 0000:00:04.0: BAR 4: no space for [mem size 0x00004000 64bit pref]
-    virtio-pci 0000:00:04.0: BAR 4: failed to assign [mem size 0x00004000 64bit pref]
+________________________________
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Xie Ziyao
+Email: xieziyao@huawei.com<mailto:xieziyao@huawei.com>
 
----
 
-Found the failure on multiple different kernels in different cloud
-providers (Oracle, AWS, Azure):
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1878389
----
- .../device-drivers/pci/tpci_kernel/ltp_tpci.c     | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+From: Cyril Hrubis<chrubis@suse.cz<mailto:chrubis@suse.cz>>
+To: xieziyao<xieziyao@huawei.com<mailto:xieziyao@huawei.com>>
+Cc: ltp<ltp@lists.linux.it<mailto:ltp@lists.linux.it>>;mdoucha<mdoucha@suse.cz<mailto:mdoucha@suse.cz>>
+Subject: Re: [LTP][PATCH 3/3 v2] getrusage: Cleanup and bugfix for getrusage03
+Time: 2021-06-18 20:46:14
 
-diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-index f2d4a4ba497c..41462d4ead6d 100644
---- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-@@ -108,8 +108,9 @@ static int probe_pci_dev(unsigned int bus, unsigned int slot)
- 	if (!dev || !dev->driver)
- 		return -ENODEV;
- 
--	prk_info("found pci_dev '%s', bus %u, devfn %u",
--		pci_name(dev), bus, slot);
-+	prk_info("found pci_dev '%s', driver '%s', bus %u, devfn %u",
-+		pci_name(dev), (dev->driver) ? dev->driver->name : "",
-+		bus, slot);
- 
- 	ltp_pci.dev = dev;
- 	ltp_pci.bus = dev->bus;
-@@ -444,7 +445,15 @@ static int test_assign_resources(void)
- 			r->flags & IORESOURCE_PREFETCH) {
- 			ret = pci_assign_resource(dev, i);
- 			prk_info("assign resource to '%d', ret '%d'", i, ret);
--			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
-+			if (dev->driver && !strncmp(dev->driver->name, "virtio-pci",
-+						    strlen("virtio-pci"))) {
-+				if (ret < 0 && ret != -EBUSY && ret != -ENOMEM)
-+					rc |= TFAIL;
-+				else
-+					rc |= TPASS;
-+			} else {
-+				rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
-+			}
- 		}
- 	}
- 
--- 
-2.27.0
+Hi!
+>  static void sig_ign(void)
+>  {
+> -     tst_resm(TINFO, "Testcase #06: SIG_IGN");
+> -
+> -     SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+> -     tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+> -     signal(SIGCHLD, SIG_IGN);
+> +     SAFE_SIGNAL(SIGCHLD, SIG_IGN);
+> +     SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
+>        maxrss_init = ru.ru_maxrss;
+>
+> -     switch (pid = fork()) {
+> -     case -1:
+> -             tst_brkm(TBROK, cleanup, "fork #6");
+> -     case 0:
+> -             retval = system("getrusage03_child -n 500");
+> -             if ((WIFEXITED(retval) && WEXITSTATUS(retval) != 0))
+> -                     tst_brkm(TBROK | TERRNO, cleanup, "system");
+> -             exit(0);
+> -     default:
+> -             break;
+> -     }
+> +     pid_t pid = SAFE_FORK();
+> +
+> +     if (!pid)
+> +             SAFE_EXECLP("getrusage03_child", "getrusage03_child",
+> +                         "consume", "500", NULL);
+>
+> -     sleep(1);               /* children become zombie */
+> -     SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+> -     tst_resm(TINFO, "after_zombie.children = %ld", ru.ru_maxrss);
+> +     TST_PROCESS_EXIT_WAIT(pid, 0);
+> +     SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
+>        if (is_in_delta(ru.ru_maxrss - maxrss_init))
+> -             tst_resm(TPASS, "initial.children ~= after_zombie.children");
+> +             tst_res(TPASS, "initial.children ~= after_zombie.children");
+>        else
+> -             tst_resm(TFAIL, "initial.children !~= after_zombie.children");
+> -     signal(SIGCHLD, SIG_DFL);
+> -}
+> +             tst_res(TFAIL, "after_zombie.children = %li, expected %li",
+> +                     ru.ru_maxrss, maxrss_init);
 
+I guess that these messages could be better, techincally it's not a
+zombie but rather ignored child, so I would change this to:
+
+"initial.children ~= ignored_child.children"
+
+Other than this the rest is good.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+
+Also if you agree I can fix the two minor issues in the patchset before
+merge, no need to send v3.
+
+--
+Cyril Hrubis
+chrubis@suse.cz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210618/2fbe3251/attachment.htm>
