@@ -1,32 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 21 Jun 2021 14:12:24 +0200
-Subject: [LTP] [PATCH 2/3] syscalls/sendfile: Convert sendfile06 to the
- new API
-In-Reply-To: <YMxTQliOqBJsYZcu@yuki>
-References: <20210603033611.15619-1-xieziyao@huawei.com>
- <20210603033611.15619-3-xieziyao@huawei.com>
- <YMurRVXwyvKXnkjj@pevik> <YMxTQliOqBJsYZcu@yuki>
-Message-ID: <YNCCKN3W5RsO28pq@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 21 Jun 2021 14:58:30 +0200
+Subject: [LTP] [PATCH 6/7] io_setup: Add docparse formatting and more
+ detailed description
+In-Reply-To: <20210618094210.183027-7-xieziyao@huawei.com>
+References: <20210618094210.183027-1-xieziyao@huawei.com>
+ <20210618094210.183027-7-xieziyao@huawei.com>
+Message-ID: <YNCM9qwRXZE8Zz/y@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi!
+> + * 1. io_setup succeeds if both nr_events and ctxp are valid.
+> + * 2. io_setup fails and returns -EINVAL if ctxp is not initialized to 0.
+> + * 3. io_setup fails and returns -EINVAL if nr_events is invalid.
+> + * 4. io_setup fails and returns -EFAULT if ctxp is NULL.
+> + * 5. io_setup fails and returns -EAGAIN if nr_events exceeds the limit
+>   *    of available events.
 
-> Hi!
-> > > 1. Convert sendfile06 to the new API with file descriptors instead
-> > > of socket descriptors.
-> > I wonder if this is ok, suppose yes, but better if other check.
+I've changed the numbered list to a asciidoc list (items start with -)
+so that it renders nicely and pushed, thanks.
 
-> In kernels before 2.6.33 out_fd had to be a socket. Kernel 2.6.33 went
-> out somewhere in 2010 which should be more than old enough.
-Yes, Ziyao also explained that. Thus merged.
-I forgot to mention the reason at commit message, fortunately unlike me other
-people aren't lazy to search in man page :).
-
-Thanks!
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
