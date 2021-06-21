@@ -1,26 +1,28 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Mon, 21 Jun 2021 06:42:25 +0000
-Subject: [LTP] [RFC] Makefile: simplify code
-In-Reply-To: <YMyK1/MluG2RHy+s@pevik>
-References: <1623997931-18117-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YMyK1/MluG2RHy+s@pevik>
-Message-ID: <60D034F1.2060006@fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 21 Jun 2021 09:25:30 +0200
+Subject: [LTP] [PATCH 2/2] shell: Extend timeout tests,
+ to run on multiple shells
+In-Reply-To: <2f8e652b-aaa8-5f98-4f9d-5b7c138c17fa@jv-coder.de>
+References: <20210519063109.224352-1-lkml@jv-coder.de>
+ <20210519063109.224352-2-lkml@jv-coder.de> <YKToUgBnK6ZQ5I0Q@yuki>
+ <2f8e652b-aaa8-5f98-4f9d-5b7c138c17fa@jv-coder.de>
+Message-ID: <YNA+6shWiWYRNi2P@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr
-Thanks for your review, merged.
+Hi all,
 
-Best Regards
-Yang Xu
-> Hi,
->
->> When these target use CFLAGS or LDLIBS, they can be in one line instead of separate lines.
->
-> Reviewed-by: Petr Vorel<pvorel@suse.cz>
->
-> Kind regards,
-> Petr
+I wonder what is the state of this patchset?
+Do we still consider it?
+Apart from reducing shells (i.e. which distro has ash, which is not
+alias to other shell in the list) I'm not against non-default shells, but I
+don't like how whole test gets complicated by this.
+
+Also we're reinventing wheel with printing results, checking whether test exist
+etc. Maybe using test API for this?
+
+Kind regards,
+Petr
