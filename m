@@ -1,63 +1,139 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 21 Jun 2021 10:42:31 +0200
-Subject: [LTP] [PATCH 1/7] io_cancel02: Add io_cancel02 test for libaio
-In-Reply-To: <20210618094210.183027-2-xieziyao@huawei.com>
-References: <20210618094210.183027-1-xieziyao@huawei.com>
- <20210618094210.183027-2-xieziyao@huawei.com>
-Message-ID: <YNBQ95gIlM9TTjpA@yuki>
+From: James Dong =?unknown-8bit?b?6JGj5LiW5rGf?= <dongshijiang@inspur.com>
+Date: Mon, 21 Jun 2021 09:11:17 +0000
+Subject: [LTP] [PATCH] fix rpc_suite/rpc:add check returned value
+Message-ID: <52e4b3cba7d74f17b64816acaf50be01@inspur.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#include "config.h"
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_LIBAIO
-> +#define EXP_RET (-EFAULT)
-> +
-> +#include <libaio.h>
-> +
-> +static void run(void)
-> +{
-> +	io_context_t ctx;
-> +
-> +	memset(&ctx, 0, sizeof(ctx));
-> +	TEST(io_cancel(ctx, NULL, NULL));
-> +
-> +	if (TST_RET == 0)
-> +		tst_res(TFAIL, "call succeeded unexpectedly");
-> +	else if (TST_RET == EXP_RET)
-> +		tst_res(TPASS, "io_cancel(ctx, NULL, NULL) returns %ld : %s",
-> +			TST_RET, strerror(-TST_RET));
-> +	else
-> +		tst_res(TFAIL, "io_cancel(ctx, NULL, NULL) returns %ld : %s, expected %d : %s",
-> +			TST_RET, strerror(-TST_RET), EXP_RET, strerror(-EXP_RET));
+Hi Petr
+I think this is just a simple test of some APIs, but some test cases are not standardized and cause errors like "Segmentation fault" during testing. I think it is necessary to fix these errors or delete these tests.
 
-Please use TST_EXP_FAIL() instead.
+Kind regards,
+Dong
 
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_AIO=y",
-> +		NULL
-> +	},
-> +	.test_all = run,
-> +};
-> +
-> +#else
-> +TST_TEST_TCONF("test requires libaio and it's development packages");
-> +#endif
-> --
-> 2.17.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+-----????-----
+???: Petr Vorel [mailto:pvorel@suse.cz] 
+????: 2021?6?21? 15:59
+???: James Dong (???) <dongshijiang@inspur.com>
+??: ltp@lists.linux.it; Alexey Kodanev <aleksei.kodanev@bell-sw.com>; Steve Dickson <SteveD@redhat.com>; libtirpc-devel@lists.sourceforge.net; linux-nfs@vger.kernel.org
+??: Re: [LTP] [PATCH] fix rpc_suite/rpc:add check returned value
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi all,
+
+[Cc libtirpc ML and Steve]
+
+> "Segmentation fault (core dumped)" due to the failure of svcfd_create 
+> during the rpc test, so you need to check the return value of the 
+> "svcfd_create" function
+
+I'm not sure what is the value of TI-RPC tests. IMHO really messy code does not in the end cover much of libtirpc functionality. That's why I'm thinking to propose deleting whole testcases/network/rpc/rpc-tirpc/. libtirpc is being used in nfs-utils, thus it'd deserve to have some testing, but IMHO this should be libtirpc.
+
+I'm not planning to dive into the technology to understand it enough be able to written the tests from scratch and I'm not aware of anybody else planning it.
+
+> Signed-off-by: dongshijiang <dongshijiang@inspur.com>
+> ---
+>  .../rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c      | 5 +++++
+>  .../rpc_createdestroy_svc_destroy/rpc_svc_destroy_stress.c   | 5 +++++
+>  .../rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c       | 5 +++++
+>  .../rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c   | 5 +++++
+>  4 files changed, 20 insertions(+)
+
+> diff --git 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_created
+> estroy_svc_destroy/rpc_svc_destroy.c 
+> b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_created
+> estroy_svc_destroy/rpc_svc_destroy.c
+> index 60b96cec3..3557c0068 100644
+> --- 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_created
+> estroy_svc_destroy/rpc_svc_destroy.c
+> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_cre
+> +++ atedestroy_svc_destroy/rpc_svc_destroy.c
+> @@ -46,6 +46,11 @@ int main(void)
+
+>  	//First of all, create a server
+>  	svcr = svcfd_create(fd, 0, 0);
+> +
+> +	//check returned value
+> +	if ((SVCXPRT *) svcr == NULL) {
+> +		return test_status;
+> +	}
+
+>  	//Then call destroy macro
+>  	svc_destroy(svcr);
+> diff --git 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_created
+> estroy_svc_destroy/rpc_svc_destroy_stress.c 
+> b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_created
+> estroy_svc_destroy/rpc_svc_destroy_stress.c
+> index ecd145393..5a4331f4d 100644
+> --- 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_created
+> estroy_svc_destroy/rpc_svc_destroy_stress.c
+> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_cre
+> +++ atedestroy_svc_destroy/rpc_svc_destroy_stress.c
+> @@ -55,6 +55,11 @@ int main(int argn, char *argc[])
+>  	//First of all, create a server
+>  	for (i = 0; i < nbCall; i++) {
+>  		svcr = svcfd_create(fd, 0, 0);
+> +
+> +		//check returned value
+> +		if ((SVCXPRT *) svcr == NULL)
+> +			continue;
+> +		svcr = NULL;
+man svc_destroy(3) states that it deallocates private data structures, including xprt itself.
+
+Kind regards,
+Petr
+
+>  		//Then call destroy macro
+>  		svc_destroy(svcr);
+> diff --git 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunre
+> g_xprt_register/rpc_xprt_register.c 
+> b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunre
+> g_xprt_register/rpc_xprt_register.c
+> index da3b93022..de4df15f1 100644
+> --- 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunre
+> g_xprt_register/rpc_xprt_register.c
+> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_reg
+> +++ unreg_xprt_register/rpc_xprt_register.c
+> @@ -48,6 +48,11 @@ int main(void)
+
+>  	//create a server
+>  	svcr = svcfd_create(fd, 1024, 1024);
+> +
+> +	//check returned value
+> +	if ((SVCXPRT *) svcr == NULL) {
+> +		return test_status;
+> +	}
+
+>  	//call routine
+>  	xprt_register(svcr);
+> diff --git 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunre
+> g_xprt_unregister/rpc_xprt_unregister.c 
+> b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunre
+> g_xprt_unregister/rpc_xprt_unregister.c
+> index d0b7a20d4..fbaec25ad 100644
+> --- 
+> a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunre
+> g_xprt_unregister/rpc_xprt_unregister.c
+> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_reg
+> +++ unreg_xprt_unregister/rpc_xprt_unregister.c
+> @@ -52,6 +52,11 @@ int main(int argn, char *argc[])
+
+>  	//create a server
+>  	svcr = svcfd_create(fd, 1024, 1024);
+> +
+> +	//check returned value
+> +	if ((SVCXPRT *) svcr == NULL) {
+> +		return test_status;
+> +	}
+
+>  	xprt_register(svcr);
+>  	//call routine
