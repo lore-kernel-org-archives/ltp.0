@@ -1,57 +1,215 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 21 Jun 2021 10:48:38 +0200
-Subject: [LTP] [RFC PATCH v2 1/1] make: Add make test{, -c, -c-run,
- -shell-run} targets
-In-Reply-To: <87a6nj4njt.fsf@suse.de>
-References: <20210618191252.12403-1-pvorel@suse.cz>
- <87a6nj4njt.fsf@suse.de>
-Message-ID: <YNBSZrDdiXxfrVnl@pevik>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Mon, 21 Jun 2021 08:56:32 +0000
+Subject: [LTP] [PATCH] cpuset_hotplug_test/cpuset_hotplug: Fix bug for
+ obtaining task_cpus value in root_cpu_hotplug_test
+In-Reply-To: <60CB2CF8.6090108@fujitsu.com>
+References: <1617701249-62196-1-git-send-email-zou_wei@huawei.com>
+ <437bb60b-4f97-4884-8713-c7b619dab211@huawei.com>
+ <60CB2CF8.6090108@fujitsu.com>
+Message-ID: <60D05460.5060903@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi Zou
 
-> Hello,
+It looks like this patch also miss to get task_cpus value 
+intgeneric_cpu_hotplug_test when expect cpu value is EMPTY.
 
-> Petr Vorel <pvorel@suse.cz> writes:
+I can reproduce this easily by increasing the possible_cpus value in 
+cmdline. Merge your patch, this case still fails as below:
+cpuset_hotplug 1 TINFO: CPUs are numbered continuously starting at 0 (0-3)
+cpuset_hotplug 1 TINFO: Nodes are numbered continuously starting at 0 (0-3)
+/opt/ltp/testcases/bin/cpuset_funcs.sh: line 179:  5676 Killed 
+         /bin/cat /dev/zero > /dev/null 2>&1
+cpuset_hotplug 1 TPASS: Cpuset vs CPU hotplug test succeeded.
+/opt/ltp/testcases/bin/cpuset_funcs.sh: line 179:  5714 Killed 
+         /bin/cat /dev/zero > /dev/null 2>&1
+cpuset_hotplug 3 TPASS: Cpuset vs CPU hotplug test succeeded.
+/opt/ltp/testcases/bin/cpuset_funcs.sh: line 179:  5750 Killed 
+         /bin/cat /dev/zero > /dev/null 2>&1
+cpuset_hotplug 5 TPASS: Cpuset vs CPU hotplug test succeeded.
+cpuset_hotplug 7 TFAIL: task's cpu present list isn't expected(Result: 
+0-7, Expect: 0-3).
+/opt/ltp/testcases/bin/cpuset_funcs.sh: line 179:  5795 Killed 
+         /bin/cat /dev/zero > /dev/null 2>&1
+/opt/ltp/testcases/bin/cpuset_funcs.sh: line 179:  5846 Killed 
+         /bin/cat /dev/zero > /dev/null 2>&1
+cpuset_hotplug 9 TPASS: Cpuset vs CPU hotplug test succeeded.
+/opt/ltp/testcases/bin/cpuset_funcs.sh: line 179:  5894 Killed 
+         /bin/cat /dev/zero > /dev/null 2>&1
+cpuset_hotplug 11 TPASS: Cpuset vs CPU hotplug test succeeded.
 
-> > For testing C and shell API.
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > Hi all,
+Also since we have use present value, we shoud adjust output to match 
+it. I modify this patch as below, What do you think about it?
 
-> > another attempt for make test target.
+--- 
+a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
++++ 
+b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+@@ -93,9 +93,7 @@ root_cpu_hotplug_test()
 
-> > In a long term, I'd like to wrap the execution with some script, as I
-> > suppose there will be some metadata in test, allowing to run tests which
-> > don't TPASS or TBROK (we have quite a lot of them). Then the summary
-> > would be even more useful.
+         root_cpus="`cat $CPUSET/cpuset.cpus`"
 
-> For each test you could have an tcl/expect (or equivalent Perl/shell if
-> we don't already require tcl) script which matches the output including
-> return value and stderr/stdout.
-I'd prefer to avoid tcl/expect. FYI There was some effort [1], based on my
-previous work [1], I plan to get back to it.
+-       task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
+-       task_cpus="`echo $task_cpus | sed -e 's/Cpus_allowed_list: //'`"
+-
++       task_cpus="`cat /sys/devices/system/cpu/present`"
+         check_result "$root_cpus" "$expect_cpus"
+         ret=$?
+         if [ $ret -eq 0 ]
+@@ -103,7 +101,7 @@ root_cpu_hotplug_test()
+                 check_result "$task_cpus" "$expect_task_cpus"
+                 ret=$?
+                 if [ $ret -ne 0 ]; then
+-                       tst_resm TFAIL "task's allowed list isn't 
+expected.(Result: $task_cpus, Expect: $expect_task_cpus)"
++                       tst_resm TFAIL "task's present list isn't 
+expected.(Result: $task_cpus, Expect: $expect_task_cpus)"
+                 fi
+         else
+                 tst_resm TFAIL "root group's cpus isn't 
+expected(Result: $root_cpus, Expect: $expect_cpus)."
+@@ -166,7 +164,6 @@ general_cpu_hotplug_test()
+         sleep 1
 
-> For most tests it would just call a common function to check for
-> TPASS/TBROK. For tests where we want to look for a given message, it
-> could match the output. If we sometimes expect TCONF then it could
-> perform a check to verify that it really should return TCONF.
-As I noted in [2] today, I might create very simple library for these test
-wrappers (small subset of things needed in test wrappers like
-lib/newlib_tests/shell/test_timeout.sh).
+         cpus="`cat $path/cpuset.cpus`"
+-
+         task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
+         task_cpus="`echo $task_cpus | sed -e 's/Cpus_allowed_list: //'`"
 
-> I guess you could just put some data in a comment. I think that is
-> likely to be harder though. At least with the number of tests we current
-> have.
-Yep, that's what was used in [1].
+@@ -186,6 +183,7 @@ general_cpu_hotplug_test()
+                         /bin/kill -s SIGKILL $tst_pid
+                         return 1
+                 fi
++               task_cpus="`cat /sys/devices/system/cpu/present`"
+         fi
 
-Kind regards,
-Petr
+         check_result "$cpus" "$expect_cpus"
+@@ -194,7 +192,7 @@ general_cpu_hotplug_test()
+                 check_result $task_cpus $expect_task_cpus
+                 ret=$?
+                 if [ $ret -ne 0 ]; then
+-                       tst_resm TFAIL "task's cpu allowed list isn't 
+expected(Result: $task_cpus, Expect: $expect_task_cpus)."
++                       tst_resm TFAIL "task's cpu present list isn't 
+expected(Result: $task_cpus, Expect: $expect_task_cpus)."
+                 fi
+         else
+                 if [ "$cpus" = "" ]; then
 
-[1] https://patchwork.ozlabs.org/project/ltp/patch/ce675759672af52bea02c11d51bd7d10f0bcb5cb.1566500817.git.clanig@suse.com/
-[2] https://lists.linux.it/pipermail/ltp/2021-June/023306.html
+
+Best Regards
+Yang XU
+> Hi Samuel, Zou
+>> Hi,
+>>
+>> A friendly reminder for the two patchs in:
+>>
+>> https://patchwork.ozlabs.org/project/ltp/patch/1617707717-63693-1-git-send-email-zou_wei@huawei.com/
+>>
+>>
+>>
+>> https://patchwork.ozlabs.org/project/ltp/patch/1617701249-62196-1-git-send-email-zou_wei@huawei.com/
+>>
+>>
+>>
+>> Can someone please review the patchs, comment, and if appropriate commit
+>> them?
+>>
+>> Regards,
+>> Zou Wei
+>>
+>> On 2021/4/6 17:27, Zou Wei wrote:
+>>> --------------------------
+>>>
+>>> 1. The method of obtaining $task_cpus from root_cpu_hotplug_test is
+>>> incorrect, because the value of Cpus_allowed_list is related
+>>> to /sys/devices/system/cpu/possible and
+>>> /sys/devices/system/cpu/isolated.
+>>>
+>>> 2. If isolcpus is configured in cmdline, the value of
+>>> Cpus_allowed_list is equal to /sys/devices/system/cpu/possible minus
+>>> /sys/devices/system/cpu/isolated. In this case, $task_cpus is
+>>> inconsistent
+>>> with $expect_task_cpus, test will be failed.
+>>>
+>>> 3. Need to change the method of obtaining $task_cpu
+>>> from /sys/devices/system/cpu/present.
+> Thanks for your patch, I also met the same problem when
+> /sys/devices/system/cpu/possible is not equal
+> to/sys/devices/system/cpu/possible/present .
+> Cpus_allowed_list: 0-511
+> but my present cpu is 0-103
+>
+> Then I use possible_cpus==104 in /etc/defaut/grub, cpu_hotplug case then
+> pass.
+>
+> According to kernel documentation[1] and kernel fs/proc/array code[2](It
+> just print cpu mask instead of present cpu), So using
+> /sys/devices/system/cpu/present is right instead of getting cpu_allow_list.
+>
+> possible: cpus that have been allocated resources and can be
+> brought online if they are present.
+>
+> present: cpus that have been identified as being present in
+> the system.
+>
+>
+> Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+>
+> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/ABI/testing/sysfs-devices-system-cpu
+>
+> [2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/proc/array.c#n418
+>
+>
+> ps:
+> Also find a kernel documentation problem and have sent a patch to remove
+> non-existed cpu-hotplug.txt in admin-guide/cputopology.rst.
+>
+>
+> Best Regards
+> Yang Xu
+>>>
+>>> 4. The description of cpu_present_mask:
+>>> Bitmap of CPUs currently present in the system.
+>>> Not all of them may be online. When physical hotplug is processed
+>>> by the relevant subsystem (e.g ACPI) can change and new bit either be
+>>> added or removed from the map depending on the event is
+>>> hot-add/hot-remove. There are currently no locking rules as of now.
+>>> Typical usage is to init topology during boot,
+>>> at which time hotplug is disabled.
+>>>
+>>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>>> ---
+>>> .../controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh | 3
+>>> +--
+>>> 1 file changed, 1 insertion(+), 2 deletions(-)
+>>>
+>>> diff --git
+>>> a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+>>>
+>>> b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+>>>
+>>>
+>>> index 155e536..2c6993a 100755
+>>> ---
+>>> a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+>>>
+>>>
+>>> +++
+>>> b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+>>>
+>>>
+>>> @@ -93,8 +93,7 @@ root_cpu_hotplug_test()
+>>> root_cpus="`cat $CPUSET/cpuset.cpus`"
+>>> - task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
+>>> - task_cpus="`echo $task_cpus | sed -e 's/Cpus_allowed_list: //'`"
+>>> + task_cpus="`cat /sys/devices/system/cpu/present`"
+>>> check_result "$root_cpus" "$expect_cpus"
+>>> ret=$?
+>>>
+>>
