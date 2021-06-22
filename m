@@ -1,253 +1,61 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Tue, 22 Jun 2021 18:12:17 +0800
-Subject: [LTP] [RFC] syscalls/ipc: Make use of TST_EXP_FAIL macro
-Message-ID: <1624356737-508-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Tue, 22 Jun 2021 13:14:40 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/msgstress04: fix fork failure on small
+ memory systems
+In-Reply-To: <20210622111440.74722-1-krzysztof.kozlowski@canonical.com>
+References: <20210622111440.74722-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210622111440.74722-2-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Running syscalls/msgstress04 on a system with less than ~4 GB of RAM fails:
+
+    Fork failure in the first child of child group 4396
+    Fork failure in the second child of child group 4413
+    msgstress04    1  TFAIL  :  msgstress04.c:222: Child exit status = 1
+
+The reason is cgroups pid limit set by systemd user.slice.  The limit is
+set for login session, also for root user.  For example on 2 GB RAM
+machine it is set as:
+    /sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max:5207
+
+Read the maximum number of pids and adjust the test limit.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
-Since TST_EXP_FAIL macro only recognizes sycalls succeeded when syscalls return 0,
-Can we use this macro directly for the these syscalls's error test? It may result in
-invalid retval value and print errno when syscall succeeded. I think it
-is a nit and it can improve this api usage range. Is it right?
+ testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- testcases/kernel/syscalls/ipc/msgget/msgget02.c | 15 ++-------------
- testcases/kernel/syscalls/ipc/msgget/msgget03.c | 12 ++----------
- testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c | 14 ++------------
- testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c | 17 ++---------------
- testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c | 12 ++----------
- testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c | 11 ++---------
- testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c | 14 ++------------
- testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c | 14 ++------------
- testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c | 14 ++------------
- 9 files changed, 18 insertions(+), 105 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget02.c b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-index a8fac930b..de139790b 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-@@ -46,19 +46,8 @@ static struct tcase {
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+index f1c124990cb1..37561b18c651 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+@@ -387,7 +387,7 @@ static void term(int sig LTP_ATTRIBUTE_UNUSED)
  
- static void verify_msgget(struct tcase *tc)
+ void setup(void)
  {
--	TEST(msgget(*tc->key, tc->flags));
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "msgget() succeeded unexpectedly");
--		return;
--	}
--
--	if (TST_ERR == tc->exp_err) {
--		tst_res(TPASS | TTERRNO, "msgget() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
--			" expected %s", tst_strerrno(tc->exp_err));
--	}
-+	TST_EXP_FAIL(msgget(*tc->key, tc->flags), tc->exp_err, "msgget(%i, %i)",
-+		*tc->key, tc->flags);
- }
+-	int nr_msgqs, free_pids;
++	int nr_msgqs, free_pids, max_session_pids;
  
- static void do_test(unsigned int n)
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-index 8fa620855..e1f36b3ae 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-@@ -26,16 +26,8 @@ static key_t msgkey;
+ 	tst_tmpdir();
+ 	/* You will want to enable some signal handling so you can capture
+@@ -423,6 +423,13 @@ void setup(void)
+ 	 * For each child we fork up to 2*maxnkids grandchildren. */
+ 	maxnprocs = (free_pids / 2) / (1 + 2 * maxnkids);
  
- static void verify_msgget(void)
- {
--	TEST(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL));
--	if (TST_RET != -1)
--		tst_res(TFAIL, "msgget() succeeded unexpectedly");
--
--	if (TST_ERR == ENOSPC) {
--		tst_res(TPASS | TTERRNO, "msgget() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
--			" expected ENOSPC");
--	}
-+	TST_EXP_FAIL(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL), ENOSPC,
-+		"msgget(%i, %i)", msgkey + maxmsgs, IPC_CREAT | IPC_EXCL);
- }
++	max_session_pids = get_pids_limit();
++	if ((max_session_pids > 0) && (max_session_pids < free_pids)) {
++		/* Clamp number of processes to session limit with some buffer for OS */
++		max_session_pids = (max_session_pids > 500 ? max_session_pids - 500 : 0);
++		maxnprocs = (max_session_pids / 2) / (1 + 2 * maxnkids);
++	}
++
+ 	if (!maxnprocs)
+ 		tst_brkm(TBROK, cleanup, "Not enough free pids");
  
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-index 8dd28116a..d8df401e7 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-@@ -59,18 +59,8 @@ static struct tcase {
- 
- static void verify_msgrcv(struct tcase *tc)
- {
--	TEST(msgrcv(*tc->id, tc->buffer, tc->msgsz, tc->msgtyp, tc->msgflag));
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "smgrcv() succeeded unexpectedly");
--		return;
--	}
--
--	if (TST_ERR == tc->exp_err) {
--		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO, "msgrcv() failed unexpectedly,"
--			" expected %s but got", tst_strerrno(tc->exp_err));
--	}
-+	TST_EXP_FAIL(msgrcv(*tc->id, tc->buffer, tc->msgsz, tc->msgtyp, tc->msgflag), tc->exp_err,
-+		"msgrcv(%i, %p, %i, %ld, %i)", *tc->id, tc->buffer, tc->msgsz, tc->msgtyp, tc->msgflag);
- }
- 
- static void do_test(unsigned int n)
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-index b578e2810..8f4b3fa52 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-@@ -59,21 +59,8 @@ static void verify_msgrcv(unsigned int n)
- 
- 	tst_res(TINFO, "%s", tc->message);
- 
--	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | tc->msg_flag));
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "msgrcv() succeeded unexpectedly");
--		SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
--		return;
--	}
--
--	if (TST_ERR == tc->exp_err) {
--		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
--		return;
--	}
--
--	tst_res(TFAIL | TTERRNO,
--		"msgrcv() failed unexpectedly, expected %s got",
--		tst_strerrno(tc->exp_err));
-+	TST_EXP_FAIL(msgrcv(queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | tc->msg_flag), tc->exp_err,
-+		"msgrcv(%i, %p, %i, %i, %i)", queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | tc->msg_flag);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
-index 43581896a..6bc908aa5 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
-@@ -30,16 +30,8 @@ static void sighandler(int sig)
- 
- static void verify_msgrcv(void)
- {
--	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0));
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "msgrcv() succeeded unexpectedly");
--		return;
--	}
--	if (TST_ERR == EINTR)
--		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
--	else
--		tst_res(TFAIL | TTERRNO, "msgrcv() failed expected EINTR but got");
-+	TST_EXP_FAIL(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0), EINTR,
-+		"msgrcv(%i, %p, %d, 1, 0)", queue_id, &rcv_buf, MSGSIZE);
- }
- 
- static void do_test(void)
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
-index 283b4af1d..7fec0b6ad 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
-@@ -24,15 +24,8 @@ static struct buf {
- 
- static void verify_msgrcv(void)
- {
--	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0));
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "msgrcv() succeeded unexpectedly");
--		return;
--	}
--	if (TST_ERR == EIDRM)
--		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
--	else
--		tst_res(TFAIL | TTERRNO, "msgrcv() failed expected EIDRM but got");
-+	TST_EXP_FAIL(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0), EIDRM,
-+		"msgrcv(%i, %p, %d, 1, 0)", queue_id, &rcv_buf, MSGSIZE);
- }
- 
- static void do_test(void)
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-index 24ef6c562..eca660605 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-@@ -61,18 +61,8 @@ static struct tcase {
- 
- static void verify_msgsnd(struct tcase *tc)
- {
--	TEST(msgsnd(*tc->id, tc->buffer, tc->msgsz, 0));
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "smgsnd() succeeded unexpectedly");
--		return;
--	}
--
--	if (TST_ERR == tc->exp_err) {
--		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO, "msgsnd() failed unexpectedly,"
--			" expected %s", tst_strerrno(tc->exp_err));
--	}
-+	TST_EXP_FAIL(msgsnd(*tc->id, tc->buffer, tc->msgsz, 0), tc->exp_err,
-+		"msgsnd(%i, %p, %i, 0)", *tc->id, tc->buffer, tc->msgsz);
- }
- 
- static void do_test(unsigned int n)
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-index ace32cdaa..f048fa698 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-@@ -41,18 +41,8 @@ static struct tcase {
- 
- static void verify_msgsnd(struct tcase *tc)
- {
--	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, tc->flag));
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "msgsnd() succeeded unexpectedly");
--		return;
--	}
--
--	if (TST_ERR == tc->exp_err) {
--		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO, "msgsnd() failed unexpectedly,"
--			" expected %s", tst_strerrno(tc->exp_err));
--	}
-+	TST_EXP_FAIL(msgsnd(queue_id, &snd_buf, MSGSIZE, tc->flag), tc->exp_err,
-+		"msgsnd(%i, %p, %i, %i)", queue_id, &snd_buf, MSGSIZE, tc->flag);
- }
- 
- static void sighandler(int sig)
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-index 9f462b672..8fc665e68 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-@@ -28,18 +28,8 @@ static struct buf {
- 
- static void verify_msgsnd(void)
- {
--	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, 0));
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "msgsnd() succeeded unexpectedly");
--		return;
--	}
--
--	if (TST_ERR == EIDRM) {
--		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO,
--			"msgsnd() failed unexpectedly, expected EIDRM");
--	}
-+	TST_EXP_FAIL(msgsnd(queue_id, &snd_buf, MSGSIZE, 0), EIDRM,
-+		"msgsnd(%i, %p, %i, 0)", queue_id, &snd_buf, MSGSIZE);
- }
- 
- static void do_test(void)
 -- 
-2.23.0
+2.27.0
 
