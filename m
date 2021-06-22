@@ -1,31 +1,79 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Jun 2021 15:54:29 +0200
-Subject: [LTP] [PATCH 0/8] Fix uninitialized var errors
-In-Reply-To: <20210622113514.22284-1-rpalethorpe@suse.com>
-References: <20210622113514.22284-1-rpalethorpe@suse.com>
-Message-ID: <YNHrldS4vrr2BN/t@yuki>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 22 Jun 2021 15:23:50 +0100
+Subject: [LTP] [PATCH v2 2/3] oom: enable lite == 1 for memory.swap.max
+ testing
+In-Reply-To: <20210622122538.402907-2-liwang@redhat.com>
+References: <20210622122538.402907-1-liwang@redhat.com>
+ <20210622122538.402907-2-liwang@redhat.com>
+Message-ID: <874kdq566h.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> In a lot of cases the compiler is simply confused and gives an error,
-> but there is no undefined behaviour. This is often caused by tst_brk
-> which is the source of much confusion. Most likely there should be two
-> versions of tst_brk. One which never returns and is used by test
-> authors and one which can return, but is usually only used in library
-> functions which may be called from cleanup.
+Hello Li,
 
-Having two tst_brk() wouldn't solve much since all SAFE_MACROS() still
-needs to use the one that may return.
+Li Wang <liwang@redhat.com> writes:
 
-So as far as I can tell it's easier to initialize variables to 0 in the
-few cases where compiler ends up confused.
+> oom03: adding print info and restore memory.swap.max after testing
+> oom05: enable lite == 1 for memory.swap.max testing
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/mem/oom/oom03.c | 6 ++++++
+>  testcases/kernel/mem/oom/oom05.c | 8 ++++++--
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+> index 89d7711a5..6728e1ddb 100644
+> --- a/testcases/kernel/mem/oom/oom03.c
+> +++ b/testcases/kernel/mem/oom/oom03.c
+> @@ -46,6 +46,7 @@ static void verify_oom(void)
+>  	testoom(0, 0, ENOMEM, 1);
+>  
+>  	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
+> +		tst_res(TINFO, "OOM on MEMCG with special memswap limitation:");
+>  		/*
+>  		 * Cgroup v2 tracks memory and swap in separate, which splits
+>  		 * memory and swap counter. So with swappiness enable (default
+> @@ -63,6 +64,11 @@ static void verify_oom(void)
+>  			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+>  
+>  		testoom(0, 1, ENOMEM, 1);
+> +
+> +		if (TST_CGROUP_VER(cg, "memory") == TST_CGROUP_V1)
+> +			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
+> +		else
+> +			SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
+>  	}
+>  
+>  	/* OOM for MEMCG with mempolicy */
+> diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+> index 9c9bba7f6..9e1cff312 100644
+> --- a/testcases/kernel/mem/oom/oom05.c
+> +++ b/testcases/kernel/mem/oom/oom05.c
+> @@ -63,8 +63,12 @@ static void verify_oom(void)
+>  	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
+>  		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+>  				"special memswap limitation:");
+> -		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+> -		testoom(0, 0, ENOMEM, 1);
+> +		if (TST_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
+> +			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", MB);
+> +		else
+> +			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
 
-Anyways whole patchset pushed, thanks.
+Again; TESTMEM + MB?
+> +
+> +		testoom(0, 1, ENOMEM, 1);
+>  
+>  		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+>  				"disabled memswap limitation:");
+> -- 
+> 2.31.1
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
