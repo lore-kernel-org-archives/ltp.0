@@ -1,79 +1,55 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 22 Jun 2021 15:23:50 +0100
-Subject: [LTP] [PATCH v2 2/3] oom: enable lite == 1 for memory.swap.max
- testing
-In-Reply-To: <20210622122538.402907-2-liwang@redhat.com>
-References: <20210622122538.402907-1-liwang@redhat.com>
- <20210622122538.402907-2-liwang@redhat.com>
-Message-ID: <874kdq566h.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 22 Jun 2021 16:25:02 +0200
+Subject: [LTP] [PATCH v4 3/3] API: Remove TST_ERR usage from
+ rtnetlink/netdevice
+In-Reply-To: <YNHoS1L+0toUtAWT@yuki>
+References: <20210615074045.23974-1-rpalethorpe@suse.com>
+ <20210615074045.23974-3-rpalethorpe@suse.com> <YMirQoiYRYsDP7Sb@yuki>
+ <87czsk51fc.fsf@suse.de> <1e7ecce7-2e46-ea46-3c5b-357d53a238c3@suse.cz>
+ <YNHoS1L+0toUtAWT@yuki>
+Message-ID: <3dfda1bd-3829-7188-6add-e1755e91df4f@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Li,
+On 22. 06. 21 15:40, Cyril Hrubis wrote:
+> Hi!
+>>> The test author is guaranteed that the library will not set TST_ERR
+>>> except via the TEST macro and similar.
+>>
+>> Hi, who decided to guarantee this and where is the guarantee documented?
 
-Li Wang <liwang@redhat.com> writes:
+Guaranteeing that TST_RET and TST_ERR will not be modified makes sense
+for SAFE_SYSCALL()s because they will be used extensively throughout
+test code. But the case is not so clear for primarily setup()/cleanup()
+functions like the af_alg, rtnetlink and netdevice libraries. And note
+that the rtnetlink library allows you to check ACKs manually without
+calling the two functions which will modify TST_ERR.
 
-> oom03: adding print info and restore memory.swap.max after testing
-> oom05: enable lite == 1 for memory.swap.max testing
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/mem/oom/oom03.c | 6 ++++++
->  testcases/kernel/mem/oom/oom05.c | 8 ++++++--
->  2 files changed, 12 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-> index 89d7711a5..6728e1ddb 100644
-> --- a/testcases/kernel/mem/oom/oom03.c
-> +++ b/testcases/kernel/mem/oom/oom03.c
-> @@ -46,6 +46,7 @@ static void verify_oom(void)
->  	testoom(0, 0, ENOMEM, 1);
->  
->  	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
-> +		tst_res(TINFO, "OOM on MEMCG with special memswap limitation:");
->  		/*
->  		 * Cgroup v2 tracks memory and swap in separate, which splits
->  		 * memory and swap counter. So with swappiness enable (default
-> @@ -63,6 +64,11 @@ static void verify_oom(void)
->  			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
->  
->  		testoom(0, 1, ENOMEM, 1);
-> +
-> +		if (TST_CGROUP_VER(cg, "memory") == TST_CGROUP_V1)
-> +			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
-> +		else
-> +			SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
->  	}
->  
->  	/* OOM for MEMCG with mempolicy */
-> diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-> index 9c9bba7f6..9e1cff312 100644
-> --- a/testcases/kernel/mem/oom/oom05.c
-> +++ b/testcases/kernel/mem/oom/oom05.c
-> @@ -63,8 +63,12 @@ static void verify_oom(void)
->  	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
->  		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
->  				"special memswap limitation:");
-> -		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
-> -		testoom(0, 0, ENOMEM, 1);
-> +		if (TST_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
-> +			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", MB);
-> +		else
-> +			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+So again, where is the extent of this guarantee documented? I haven't
+found any mention of it in the doc/ dir and Richie didn't add any docs
+changes in his patchset either. Documenting this is necessary for both
+test writers and library maintainers.
 
-Again; TESTMEM + MB?
-> +
-> +		testoom(0, 1, ENOMEM, 1);
->  
->  		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
->  				"disabled memswap limitation:");
-> -- 
-> 2.31.1
+>> Changing the return value to always return errno will be a major PITA
+>> because 95% of error handling happens after some safe_syscall() which
+>> clobbers errno by calling tst_brk() after failure. And if you only want
+>> to return error codes from rtnetlink ACK messages, then there's the
+>> problem what to return when a safe_syscall() fails during cleanup().
+> 
+> For the current code it would be as easy as:
 
+That code will only result in RTNL_SEND_VALIDATE() always returning 0
+regardless of success or failure, except when tst_brk() terminates the
+whole program.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
