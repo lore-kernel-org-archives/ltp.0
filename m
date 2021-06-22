@@ -1,48 +1,58 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 22 Jun 2021 14:40:45 +0100
-Subject: [LTP] [PATCH v2 3/3] tst_cgroup: make use of alias in
- safe_cgroup_has
-In-Reply-To: <20210622122538.402907-3-liwang@redhat.com>
-References: <20210622122538.402907-1-liwang@redhat.com>
- <20210622122538.402907-3-liwang@redhat.com>
-Message-ID: <87a6ni586a.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 22 Jun 2021 15:49:04 +0200
+Subject: [LTP] [PATCH v4 3/3] API: Remove TST_ERR usage from
+ rtnetlink/netdevice
+In-Reply-To: <87czsk51fc.fsf@suse.de>
+References: <20210615074045.23974-1-rpalethorpe@suse.com>
+ <20210615074045.23974-3-rpalethorpe@suse.com> <YMirQoiYRYsDP7Sb@yuki>
+ <87czsk51fc.fsf@suse.de>
+Message-ID: <1e7ecce7-2e46-ea46-3c5b-357d53a238c3@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On 15. 06. 21 9:40, Richard Palethorpe wrote:
+> The test author is guaranteed that the library will not set TST_ERR
+> except via the TEST macro and similar.
 
-Li Wang <liwang@redhat.com> writes:
+Hi, who decided to guarantee this and where is the guarantee documented?
 
-> This is to fix the check issue of 'memory.swap.max' on CGroup v1.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  lib/tst_cgroup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-> index 18e3b6169..61cc02fa7 100644
-> --- a/lib/tst_cgroup.c
-> +++ b/lib/tst_cgroup.c
-> @@ -1010,7 +1010,7 @@ int safe_cgroup_has(const char *const file, const int lineno,
->  		if (!(alias = cgroup_file_alias(cfile, *dir)))
->  		    continue;
->  
-> -		if (!faccessat((*dir)->dir_fd, file_name, F_OK, 0))
+I was planning to document that RTNL_SEND_VALIDATE() and
+RTNL_CHECK_ACKS() will pass error codes found in rtnetlink ACK messages
+through TST_ERR.
 
-Ah, dumb mistake by me!
+On 17. 06. 21 10:40, Richard Palethorpe wrote:
+> Hello,
+> 
+> Cyril Hrubis <chrubis@suse.cz> writes:
+>> I do not like this fix. If nothing else it's fragile and would make any
+>> patch review for these libraries much harder.
+>>
+>> I would prefer having these functions modified to return the errors
+>> instead even if I have to do the work.
 
-> +		if (!faccessat((*dir)->dir_fd, alias, F_OK, 0))
->  			return 1;
->  
->  		if (errno == ENOENT)
+Changing the return value to always return errno will be a major PITA
+because 95% of error handling happens after some safe_syscall() which
+clobbers errno by calling tst_brk() after failure. And if you only want
+to return error codes from rtnetlink ACK messages, then there's the
+problem what to return when a safe_syscall() fails during cleanup().
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+> I think there are some other issues here as well. Like the macros are
+> not prefixed with SAFE_. A lot of the functions are not used or they are
+> just used internally, but are not marked as static.
+
+All the functions which are intended as internal-only are already static
+in both tst_netlink.c and tst_netdevice.c. The macros are not prefixed
+with SAFE_ because they're not simple syscall wrappers. They're prefixed
+with RTNL_ and NETDEV_ instead.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
