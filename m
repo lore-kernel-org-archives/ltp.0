@@ -1,113 +1,130 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 22 Jun 2021 16:59:38 +0200
-Subject: [LTP] [PATCH] controllers/cpuset_hotplug: skip unsupported
- Microsoft Hyper-V
-Message-ID: <20210622145938.106477-1-krzysztof.kozlowski@canonical.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 22 Jun 2021 17:48:04 +0200
+Subject: [LTP] [PATCH] tst_rtnetlink: pass error codes using rtnl_errno
+ variable
+Message-ID: <20210622154804.19946-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Microsoft Hyper-V with Linux guests does not support CPU hotplug, even
-if enabled in kernel configuration.  Quoting Ubuntu bug report from
-June 2018: "While Hyper-V may present all potential CPUs via ACPI MADT,
-CPU add/remove is not supported.". [1]
-
-The test fails on Azure clouds with:
-
-    cpuset_hotplug 1 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 1 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 3 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 3 TFAIL: setup test environment(offline CPU#1) failed
-    cpuset_hotplug 5 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 5 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 7 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 7 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 9 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 9 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 11 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 11 TFAIL: setup test environment(offline CPU#1) failed
-
-Detect the Hyper-V with systemd and if it succeeds, skip the test.
-This of course does not support all possible cases, e.g. running tests
-under Hyper-V without systemd will still fail, but it's a easy way to
-avoid test failure in common configuration.
-
-Ideally the newly introduced tst_virt_hyperv should be added to
-testcases/lib but first the tests would have to be converted to newlib.
-
-[1] https://bugs.launchpad.net/ubuntu/+source/linux-azure/+bug/1776293
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- .../kernel/controllers/cpuset/cpuset_funcs.sh | 25 +++++++++++++++++++
- .../include/cpuhotplug_testsuite.sh           |  2 ++
- 2 files changed, 27 insertions(+)
+ include/tst_rtnetlink.h |  2 ++
+ lib/tst_netdevice.c     | 26 +++++++++++++++-----------
+ lib/tst_rtnetlink.c     |  6 ++++--
+ 3 files changed, 21 insertions(+), 13 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index f3ba1d5ca931..397784a3f2ac 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -63,6 +63,23 @@ HOTPLUG_CPU="1"
- SCHED_LB="/dev/cpuset/cpuset.sched_load_balance"
- SCHED_LB_VALUE="0"
+diff --git a/include/tst_rtnetlink.h b/include/tst_rtnetlink.h
+index 12ec258f2..7c28f795d 100644
+--- a/include/tst_rtnetlink.h
++++ b/include/tst_rtnetlink.h
+@@ -21,6 +21,8 @@ struct tst_rtnl_message {
+ 	size_t payload_size;
+ };
  
-+# Detect whether running under hypervisor: Microsoft Hyper-V
-+# Return 0: running under Hyper-V
-+# Return 1: not running under Hyper-V (bare metal, other hypervisor or
-+#           failure of detection)
-+# TODO: move to newlib and remove duplication with:
-+#       testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-+tst_virt_hyperv()
-+{
-+	local v="$(systemd-detect-virt)"
-+	# TODO: once converted to newlib, use tst_cmd_available
++extern int rtnl_errno;
 +
-+	[ $? -eq 0 ] || return 1
-+	[ "$v" = "microsoft" ] || return 1
+ /* Open a netlink socket */
+ struct tst_rtnl_context *tst_rtnl_create_context(const char *file,
+ 	const int lineno);
+diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+index d098173d5..af57fba1e 100644
+--- a/lib/tst_netdevice.c
++++ b/lib/tst_netdevice.c
+@@ -149,9 +149,9 @@ int tst_create_veth_pair(const char *file, const int lineno,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
+-			"Failed to create veth interfaces %s+%s", ifname1,
+-			ifname2);
++		tst_brk_(file, lineno, TBROK,
++			"Failed to create veth interfaces %s+%s: %s", ifname1,
++			ifname2, tst_strerrno(rtnl_errno));
+ 	}
+ 
+ 	return ret;
+@@ -183,8 +183,9 @@ int tst_remove_netdev(const char *file, const int lineno, const char *ifname)
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
+-			"Failed to remove netdevice %s", ifname);
++		tst_brk_(file, lineno, TBROK,
++			"Failed to remove netdevice %s: %s", ifname,
++			tst_strerrno(rtnl_errno));
+ 	}
+ 
+ 	return ret;
+@@ -232,8 +233,9 @@ static int modify_address(const char *file, const int lineno,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
+-			"Failed to modify %s network address", ifname);
++		tst_brk_(file, lineno, TBROK,
++			"Failed to modify %s network address: %s", ifname,
++			tst_strerrno(rtnl_errno));
+ 	}
+ 
+ 	return ret;
+@@ -301,8 +303,9 @@ static int change_ns(const char *file, const int lineno, const char *ifname,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
+-			"Failed to move %s to another namespace", ifname);
++		tst_brk_(file, lineno, TBROK,
++			"Failed to move %s to another namespace: %s", ifname,
++			tst_strerrno(rtnl_errno));
+ 	}
+ 
+ 	return ret;
+@@ -392,8 +395,9 @@ static int modify_route(const char *file, const int lineno, unsigned int action,
+ 	tst_rtnl_destroy_context(file, lineno, ctx);
+ 
+ 	if (!ret) {
+-		tst_brk_(file, lineno, TBROK | TTERRNO,
+-			"Failed to modify network route");
++		tst_brk_(file, lineno, TBROK,
++			"Failed to modify network route: %s",
++			tst_strerrno(rtnl_errno));
+ 	}
+ 
+ 	return ret;
+diff --git a/lib/tst_rtnetlink.c b/lib/tst_rtnetlink.c
+index 1ecda3a9f..6f24b89fe 100644
+--- a/lib/tst_rtnetlink.c
++++ b/lib/tst_rtnetlink.c
+@@ -24,6 +24,8 @@ struct tst_rtnl_context {
+ 	struct nlmsghdr *curmsg;
+ };
+ 
++int rtnl_errno;
 +
-+	return 0
-+}
-+
- cpuset_log()
+ static int tst_rtnl_grow_buffer(const char *file, const int lineno,
+ 	struct tst_rtnl_context *ctx, size_t size)
  {
- 	tst_resm TINFO "$*"
-@@ -134,6 +151,13 @@ cpuset_check()
- 	tst_brkm TCONF "Cpuset is not supported"
- }
+@@ -380,7 +382,7 @@ int tst_rtnl_check_acks(const char *file, const int lineno,
+ 		}
  
-+machine_check()
-+{
-+	if tst_virt_hyperv; then
-+		tst_brkm TCONF "Microsoft Hyper-V detected, no support for CPU hotplug"
-+	fi
-+}
-+
- # optional parameters (pass both or none of them):
- # $1 - required number of cpus (default 2)
- # $2 - required number of memory nodes (default 2)
-@@ -149,6 +173,7 @@ check()
+ 		if (res->err->error) {
+-			TST_ERR = -res->err->error;
++			rtnl_errno = -res->err->error;
+ 			return 0;
+ 		}
+ 	}
+@@ -394,7 +396,7 @@ int tst_rtnl_send_validate(const char *file, const int lineno,
+ 	struct tst_rtnl_message *response;
+ 	int ret;
  
- 	nnodes_check ${2:-2}
+-	TST_ERR = 0;
++	rtnl_errno = 0;
  
-+	machine_check
- }
- 
- # Create /dev/cpuset & mount the cgroup file system with cpuset
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-index 291dc5ab2b7e..561b7cf85370 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-@@ -54,6 +54,8 @@ assert ()                 #  If condition false,
- # Return 0: running under Hyper-V
- # Return 1: not running under Hyper-V (bare metal, other hypervisor or
- #           failure of detection)
-+# TODO: move to newlib and remove duplication with:
-+#       testcases/kernel/controllers/cpuset/cpuset_funcs.sh
- tst_virt_hyperv()
- {
- 	local v="$(systemd-detect-virt)"
+ 	if (tst_rtnl_send(file, lineno, ctx) <= 0)
+ 		return 0;
 -- 
-2.27.0
+2.32.0
 
