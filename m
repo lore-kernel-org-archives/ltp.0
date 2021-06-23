@@ -1,42 +1,22 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Jun 2021 13:38:30 +0200
-Subject: [LTP] [PATCH] device-drivers/cpufreq_boost: skip test on
- virtual machines
-In-Reply-To: <2a08d5c4-c002-7284-03d1-ff4441f8c9c5@canonical.com>
-References: <20210623080157.26424-1-krzysztof.kozlowski@canonical.com>
- <2a08d5c4-c002-7284-03d1-ff4441f8c9c5@canonical.com>
-Message-ID: <YNMdNqGiGXOgby6v@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 23 Jun 2021 20:32:43 +0800
+Subject: [LTP] [PATCH v3 1/3] mem: child alloc memory should larger than
+ memory.max + memory.swap.max if lite==1
+In-Reply-To: <87sg1850qg.fsf@suse.de>
+References: <20210623062456.430406-1-liwang@redhat.com>
+ <87sg1850qg.fsf@suse.de>
+Message-ID: <CAEemH2fhhWj1AnN=0ChFCRSJvbPFge4LSVXK_+MVmSXx0H+Jsg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> > index b9739db37cb7..67917b3fea25 100644
-> > --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> > +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> > @@ -90,6 +90,9 @@ static void setup(void)
-> >  	unsigned int i;
-> >  	tst_require_root();
-> >  
-> > +	if (tst_is_virt(VIRT_ANY))
-> > +		tst_brkm(TCONF, NULL, "running in a virtual machine, overclock not reliably measureable");
-> > +
-> >  	for (i = 0; i < ARRAY_SIZE(cdrv); ++i) {
-> >  		fd = open(cdrv[i].file, O_RDWR);
-> >  		if (fd == -1)
-> > 
-> 
-> Optionally, under virtual machine the test failure could be converted to
-> accepted pass. This would still allow to test CPUfreq boosting
-> interface. Any preferences?
-
-I wonder what is the likehood of actually dicovering a bug by writing to
-the cpufreq boost file from within a VM, I guess that it's non-zero at
-least.
+Patchset pushed, thanks!
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210623/c2b50fc7/attachment-0001.htm>
