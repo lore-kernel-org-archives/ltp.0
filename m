@@ -1,48 +1,84 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 23 Jun 2021 11:39:04 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/msgstress03: fix fork failure on
- small memory systems
-In-Reply-To: <60D2FEFC.8030706@fujitsu.com>
-References: <20210622111440.74722-1-krzysztof.kozlowski@canonical.com>
- <60D2FEFC.8030706@fujitsu.com>
-Message-ID: <8dd7fb6b-c1d4-819c-9013-f19589f89eb3@canonical.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 23 Jun 2021 11:24:08 +0100
+Subject: [LTP] [PATCH v4 3/3] API: Remove TST_ERR usage from
+ rtnetlink/netdevice
+In-Reply-To: <3dfda1bd-3829-7188-6add-e1755e91df4f@suse.cz>
+References: <20210615074045.23974-1-rpalethorpe@suse.com>
+ <20210615074045.23974-3-rpalethorpe@suse.com> <YMirQoiYRYsDP7Sb@yuki>
+ <87czsk51fc.fsf@suse.de> <1e7ecce7-2e46-ea46-3c5b-357d53a238c3@suse.cz>
+ <YNHoS1L+0toUtAWT@yuki> <3dfda1bd-3829-7188-6add-e1755e91df4f@suse.cz>
+Message-ID: <87wnqk516f.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 23/06/2021 11:28, xuyang2018.jy@fujitsu.com wrote:
-> Hi Krzysztof
->> Running syscalls/msgstress03 on a system with less than ~4 GB of RAM fails:
->>
->>      msgstress03    1  TFAIL  :  msgstress03.c:155: 	Fork failed (may be OK if under stress)
->>
->> In dmesg:
->>
->>      LTP: starting msgstress03
->>      cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
->>
->> The reason is cgroups pid limit set by systemd user.slice.  The limit is
->> set for login session, also for root user.  For example on 2 GB RAM
->> machine it is set as:
->>      /sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max:5207
-> This file only exists on cgroupv1 and cgroupv2 should use
-> /sys/fs/cgroup/user.slice/user-0.slice/pids.max.
+Hello Martin,
 
-I can use both paths.
+Martin Doucha <mdoucha@suse.cz> writes:
 
-> 
-> Also if some embedded system doesn't have systemd, do we have a generic 
-> way or fallback way to calculate the pid max?
+> On 22. 06. 21 15:40, Cyril Hrubis wrote:
+>> Hi!
+>>>> The test author is guaranteed that the library will not set TST_ERR
+>>>> except via the TEST macro and similar.
+>>>
+>>> Hi, who decided to guarantee this and where is the guarantee documented?
+>
+> Guaranteeing that TST_RET and TST_ERR will not be modified makes sense
+> for SAFE_SYSCALL()s because they will be used extensively throughout
+> test code. But the case is not so clear for primarily setup()/cleanup()
+> functions like the af_alg, rtnetlink and netdevice libraries. And note
+> that the rtnetlink library allows you to check ACKs manually without
+> calling the two functions which will modify TST_ERR.
 
-This slice is set by systemd, so no-systemd systems are out of scope
-because:
-1. They will not be affected by this.
-2. The limits there might be set by other init manager so other patch
-should come in. Making a generic solution for unknown-init-managers is a
-much bigger task and not necessarily needed,
+Cyril said not to use it (on my CGroups patch set) and when I thought
+about it, it made a lot of sense. I don't want to discuss it again here,
+we can do that on a doc RFC.
+
+>
+> So again, where is the extent of this guarantee documented? I haven't
+> found any mention of it in the doc/ dir and Richie didn't add any docs
+> changes in his patchset either. Documenting this is necessary for both
+> test writers and library maintainers.
+
+Yes, it needs documenting, we should have done that once the discussions
+concluded. I think this highlights a process issue. I don't really know
+where to put such a rule. I can just arbitrarily put it in the API docs
+somewhere, but that is suboptimal IMO.
+
+As well as explanatory API documentation I think we need a simple
+machine readable document which lists rules like this (e.g. CSV file
+with ID and description columns). Then we can have a process for
+deciding on rules like this. Where someone makes an RFC patch to update
+the rule.
+
+I also think we need an automated way of enforcing (some of) these rules
+and making test authors aware of them. Which is why I'm trying to create
+a SA tool specifically for LTP. In the SA error message we can list the
+ID of the rule it violates.
+
+I can add this to the Sparse patch set with the TEST macro and
+TST_RET,TST_ERR rules.
+
+The problem with documentation is that people do not read it once their
+code works. Also it is easy to miss or forget about something like
+TST_ERR being set.
+
+>
+>>> Changing the return value to always return errno will be a major PITA
+>>> because 95% of error handling happens after some safe_syscall() which
+>>> clobbers errno by calling tst_brk() after failure. And if you only want
+>>> to return error codes from rtnetlink ACK messages, then there's the
+>>> problem what to return when a safe_syscall() fails during cleanup().
+>> 
+>> For the current code it would be as easy as:
+>
+> That code will only result in RTNL_SEND_VALIDATE() always returning 0
+> regardless of success or failure, except when tst_brk() terminates the
+> whole program.
 
 
-Best regards,
-Krzysztof
+-- 
+Thank you,
+Richard.
