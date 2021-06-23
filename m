@@ -1,54 +1,56 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 Jun 2021 15:34:12 +0200
-Subject: [LTP] [PATCH] controllers/cpuset_hotplug: skip unsupported
- Microsoft Hyper-V
-In-Reply-To: <c015b22b-5775-7301-a8b8-13cdd7000fb6@canonical.com>
-References: <20210622145938.106477-1-krzysztof.kozlowski@canonical.com>
- <YNL9/k1iRralo/fj@pevik>
- <a7dd74e2-858f-19e4-d2bf-21cb77a3705e@canonical.com>
- <c015b22b-5775-7301-a8b8-13cdd7000fb6@canonical.com>
-Message-ID: <YNM4VFC0pgygzNJz@pevik>
+From: Alessio Balsini <balsini@android.com>
+Date: Wed, 23 Jun 2021 14:40:41 +0100
+Subject: [LTP] [PATCH] getrlimit/getrlimit03: fix unavailable __NR_getrlimit
+ for arm
+Message-ID: <20210623134041.366838-1-balsini@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Krzysztof,
+__NR_getrlimit has been deprecated from arm EABI, and is only available
+if the OABI_COMPAT config option is defined.
+This causes failures with the current test as it assumes that
+__NR_getrlimit exists if __NR_ugetrlimit is defined, while this
+assumption does not hold anymore.
 
-> On 23/06/2021 11:35, Krzysztof Kozlowski wrote:
-> > On 23/06/2021 11:25, Petr Vorel wrote:
-> >> Hi Krzysztof,
+Catch this exception by testing if __NR_getrlimit is defined and the
+target is arm.
 
-> >>> Microsoft Hyper-V with Linux guests does not support CPU hotplug, even
-> >>> if enabled in kernel configuration.  Quoting Ubuntu bug report from
-> >>> June 2018: "While Hyper-V may present all potential CPUs via ACPI MADT,
-> >>> CPU add/remove is not supported.". [1]
+Signed-off-by: Alessio Balsini <balsini@android.com>
+---
+ testcases/kernel/syscalls/getrlimit/getrlimit03.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-> >> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index 319bc494a..e46a25f7b 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -45,6 +45,14 @@
+ #define __NR_getrlimit_ulong_str	"__NR_getrlimit"
+ #endif
+ 
++/**
++ * __NR_getrlimit has been deprecated from arm EABI and moved to OABI_COMPAT,
++ * so the syscall may or may not be available.
++ */
++#if defined(__arm__) && __NR_getrlimit == __LTP__NR_INVALID_SYSCALL
++#define DEPRECATED_GETRLIMIT
++#endif
++
+ #ifndef HAVE_STRUCT_RLIMIT64
+ struct rlimit64 {
+ 	uint64_t rlim_cur;
+@@ -167,7 +175,7 @@ static void run(unsigned int resource)
+ 	tst_res(TPASS, "__NR_prlimit64(%d) and %s(%d) gave consistent results",
+ 		resource, __NR_getrlimit_ulong_str, resource);
+ 
+-#if SIGNED_GETRLIMIT
++#if SIGNED_GETRLIMIT && !defined(DEPRECATED_GETRLIMIT)
+ 	errno = 0;
+ 	ret_l = getrlimit_long(resource, &rlim_l);
+ 	errno_l = errno;
+-- 
+2.32.0.288.g62a8d224e6-goog
 
-> >> LGTM. How many of tests will need tst_virt_hyperv? Although we don't touch
-> >> legacy API, I'd make an exception and add it to both test.sh and tst_test.sh
-> >> (ideally with an API extension, i.e. test could use SKIP_VIRT="hyperv", but that
-> >> can wait till tests are converted).
-
-> > Around CPU hotplug that would be the last one I did not spot so far
-> > other failures but I also do not track all failures in nice way. Rather
-> > fixing them ad-hoc...
-
-> I just checked more and there are additional failures on Azure/HyperV
-> with more nodes: cpuset_load_balance, cpuset_memory_pressure,
-> cpuset_memory_spread and cpuset_sched_domains. These did not appear on
-> smaller instances (e.g. 4 CPUs).
-
-Good to know. Does it mean we should check number of processors?
-
-But even there were just these two and no additional change to
-tst_virt_hyperv(), we'd prefer to have them in test.sh and tst_test.sh.
-Could you please send v2, where you implement that?
-
-Kind regards,
-Petr
-
-> Best regards,
-> Krzysztof
