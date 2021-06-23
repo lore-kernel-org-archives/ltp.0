@@ -1,41 +1,42 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 23 Jun 2021 13:57:48 +0200
-Subject: [LTP] [PATCH] controllers/cpuset_hotplug: skip unsupported
- Microsoft Hyper-V
-In-Reply-To: <a7dd74e2-858f-19e4-d2bf-21cb77a3705e@canonical.com>
-References: <20210622145938.106477-1-krzysztof.kozlowski@canonical.com>
- <YNL9/k1iRralo/fj@pevik> <a7dd74e2-858f-19e4-d2bf-21cb77a3705e@canonical.com>
-Message-ID: <c015b22b-5775-7301-a8b8-13cdd7000fb6@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 23 Jun 2021 13:38:30 +0200
+Subject: [LTP] [PATCH] device-drivers/cpufreq_boost: skip test on
+ virtual machines
+In-Reply-To: <2a08d5c4-c002-7284-03d1-ff4441f8c9c5@canonical.com>
+References: <20210623080157.26424-1-krzysztof.kozlowski@canonical.com>
+ <2a08d5c4-c002-7284-03d1-ff4441f8c9c5@canonical.com>
+Message-ID: <YNMdNqGiGXOgby6v@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 23/06/2021 11:35, Krzysztof Kozlowski wrote:
-> On 23/06/2021 11:25, Petr Vorel wrote:
->> Hi Krzysztof,
->>
->>> Microsoft Hyper-V with Linux guests does not support CPU hotplug, even
->>> if enabled in kernel configuration.  Quoting Ubuntu bug report from
->>> June 2018: "While Hyper-V may present all potential CPUs via ACPI MADT,
->>> CPU add/remove is not supported.". [1]
->>
->> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->>
->> LGTM. How many of tests will need tst_virt_hyperv? Although we don't touch
->> legacy API, I'd make an exception and add it to both test.sh and tst_test.sh
->> (ideally with an API extension, i.e. test could use SKIP_VIRT="hyperv", but that
->> can wait till tests are converted).
+Hi!
+> > diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > index b9739db37cb7..67917b3fea25 100644
+> > --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > @@ -90,6 +90,9 @@ static void setup(void)
+> >  	unsigned int i;
+> >  	tst_require_root();
+> >  
+> > +	if (tst_is_virt(VIRT_ANY))
+> > +		tst_brkm(TCONF, NULL, "running in a virtual machine, overclock not reliably measureable");
+> > +
+> >  	for (i = 0; i < ARRAY_SIZE(cdrv); ++i) {
+> >  		fd = open(cdrv[i].file, O_RDWR);
+> >  		if (fd == -1)
+> > 
 > 
-> Around CPU hotplug that would be the last one I did not spot so far
-> other failures but I also do not track all failures in nice way. Rather
-> fixing them ad-hoc...
+> Optionally, under virtual machine the test failure could be converted to
+> accepted pass. This would still allow to test CPUfreq boosting
+> interface. Any preferences?
 
-I just checked more and there are additional failures on Azure/HyperV
-with more nodes: cpuset_load_balance, cpuset_memory_pressure,
-cpuset_memory_spread and cpuset_sched_domains. These did not appear on
-smaller instances (e.g. 4 CPUs).
+I wonder what is the likehood of actually dicovering a bug by writing to
+the cpufreq boost file from within a VM, I guess that it's non-zero at
+least.
 
-Best regards,
-Krzysztof
+-- 
+Cyril Hrubis
+chrubis@suse.cz
