@@ -1,77 +1,110 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 23 Jun 2021 17:30:03 +0200
-Subject: [LTP] [PATCH v2 2/2] controllers/cpuset: skip unsupported Microsoft
- Hyper-V
-In-Reply-To: <20210623153003.94404-1-krzysztof.kozlowski@canonical.com>
-References: <20210623153003.94404-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210623153003.94404-2-krzysztof.kozlowski@canonical.com>
+Date: Wed, 23 Jun 2021 17:30:02 +0200
+Subject: [LTP] [PATCH v2 1/2] lib: Add tst_virt_hyperv
+Message-ID: <20210623153003.94404-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Microsoft Hyper-V with Linux guests does not support CPU hotplug, even
-if enabled in kernel configuration.  Quoting Ubuntu bug report from
-June 2018: "While Hyper-V may present all potential CPUs via ACPI MADT,
-CPU add/remove is not supported.". [1]
-
-The cpuset_hotplug, cpuset_memory_spread, cpuset_sched_domains,
-cpuset_memory_pressure abd cpuset_load_balance fail on Azure clouds with:
-
-    cpuset_hotplug 1 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 1 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 3 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 3 TFAIL: setup test environment(offline CPU#1) failed
-    cpuset_hotplug 5 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 5 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 7 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 7 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 9 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 9 TFAIL:  CPU#1 failed.
-    cpuset_hotplug 11 TINFO: /bin/echo: write error: Device or resource busy
-    cpuset_hotplug 11 TFAIL: setup test environment(offline CPU#1) failed
-
-Detect the Hyper-V with systemd and if it succeeds, skip the test.
-
-[1] https://bugs.launchpad.net/ubuntu/+source/linux-azure/+bug/1776293
+Move the Microsoft Hyper-V detection to lib/ so it can be reused in
+further tests.  Add it also to the newlib.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 ---
 
 Changes since v1:
-1. tst_virt_hyperv moved to patch #1.
+1. New patch.
 ---
- testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../include/cpuhotplug_testsuite.sh            | 15 ---------------
+ testcases/lib/test.sh                          | 16 ++++++++++++++++
+ testcases/lib/tst_test.sh                      | 18 ++++++++++++++++++
+ 3 files changed, 34 insertions(+), 15 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index f3ba1d5ca931..9939f13a3218 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -134,6 +134,13 @@ cpuset_check()
- 	tst_brkm TCONF "Cpuset is not supported"
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
+index 291dc5ab2b7e..7dd0ebaae069 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
+@@ -50,21 +50,6 @@ assert ()                 #  If condition false,
+   fi
  }
  
-+machine_check()
+-# Detect whether running under hypervisor: Microsoft Hyper-V
+-# Return 0: running under Hyper-V
+-# Return 1: not running under Hyper-V (bare metal, other hypervisor or
+-#           failure of detection)
+-tst_virt_hyperv()
+-{
+-	local v="$(systemd-detect-virt)"
+-	# TODO: once converted to newlib, use tst_cmd_available
+-
+-	[ $? -eq 0 ] || return 1
+-	[ "$v" = "microsoft" ] || return 1
+-
+-	return 0
+-}
+-
+ ############################################################
+ ## Process management                                     ##
+ ############################################################
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index a15fb0540d3e..3facb7fd1f9d 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -321,6 +321,22 @@ tst_mkfs()
+ 	ROD_SILENT mkfs.$fs_type $fs_opts $device
+ }
+ 
++# Detect whether running under hypervisor: Microsoft Hyper-V
++# Return 0: running under Hyper-V
++# Return 1: not running under Hyper-V (bare metal, other hypervisor or
++#           failure of detection)
++tst_virt_hyperv()
 +{
-+	if tst_virt_hyperv; then
-+		tst_brkm TCONF "Microsoft Hyper-V detected, no support for CPU hotplug"
-+	fi
++	local v
++	
++	v="$(systemd-detect-virt)"
++
++	[ $? -eq 0 ] || return 1
++	[ "$v" = "microsoft" ] || return 1
++
++	return 0
 +}
 +
- # optional parameters (pass both or none of them):
- # $1 - required number of cpus (default 2)
- # $2 - required number of memory nodes (default 2)
-@@ -149,6 +156,7 @@ check()
- 
- 	nnodes_check ${2:-2}
- 
-+	machine_check
+ tst_umount()
+ {
+ 	local device="$1"
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 8b4e9cb6007b..f0b47e2d6e2c 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -326,6 +326,24 @@ tst_mkfs()
+ 	ROD_SILENT mkfs.$fs_type $fs_opts $device
  }
  
- # Create /dev/cpuset & mount the cgroup file system with cpuset
++# Detect whether running under hypervisor: Microsoft Hyper-V
++# Return 0: running under Hyper-V
++# Return 1: not running under Hyper-V (bare metal, other hypervisor or
++#           failure of detection)
++tst_virt_hyperv()
++{
++	local v
++	
++	tst_cmd_available systemd-detect-virt || return 1
++
++	v="$(systemd-detect-virt)"
++
++	[ $? -eq 0 ] || return 1
++	[ "$v" = "microsoft" ] || return 1
++
++	return 0
++}
++
+ tst_cmd_available()
+ {
+ 	if type command > /dev/null 2>&1; then
 -- 
 2.27.0
 
