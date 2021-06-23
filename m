@@ -1,48 +1,37 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 23 Jun 2021 15:55:24 +0200
-Subject: [LTP] [PATCH v2 4/4] syscalls/msgstress: tune limit of processes
- for small machines
+Date: Wed, 23 Jun 2021 15:58:18 +0200
+Subject: [LTP] [PATCH v2 0/4] syscalls/msgstress: fixes for small systems
 In-Reply-To: <20210623135524.80663-1-krzysztof.kozlowski@canonical.com>
 References: <20210623135524.80663-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210623135524.80663-8-krzysztof.kozlowski@canonical.com>
+Message-ID: <fa241120-da74-618b-b708-9f113031c127@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Forking the exactly amount of processes as the limit (either from
-max_pids or from cgroups) is risky - OS might be doing some work and
-interfere with the test.  Instead leave some reserve (hard-coded to
-500) for the OS so the test won't fail on fork failure.
+On 23/06/2021 15:55, Krzysztof Kozlowski wrote:
+> Hi,
+> 
+> Changes since v1:
+> 1. Move the code reading cgroups session limit to lib/tst_pid.c to
+>    existing tst_get_free_pids_().
+> 2. Allow reading session limits from cgroups v2.
+> 3. Add patch 1/4 - typo fix.
+> 4. Add patch 4/4 with the buffer/reserve of pids.
+> 
+> Best regards,
+> Krzysztof
+> 
+> Krzysztof Kozlowski (4):
+>   include/tst_pid.h: fix language typo (subtraction)
+>   syscalls/msgstress04: fix fork failure on small memory systems
+>   syscalls/msgstress03: fix fork failure on small memory systems
+>   syscalls/msgstress: tune limit of processes for small machines
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- lib/tst_pid.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Ah, I messed up and sent v2 with duplicated patches. Sorry for the
+noise, I will send a v3 to make it organized...
 
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index c1ea3fe90e83..1b2e85959430 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -32,6 +32,8 @@
- #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
- #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
- #define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
-+/* Leave some available processes for the OS */
-+#define PIDS_RESERVE 500
- 
- pid_t tst_get_unused_pid_(void (*cleanup_fn) (void))
- {
-@@ -106,7 +108,7 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
- 	if (max_pids < 0)
- 		return -1;
- 
--	return max_pids;
-+	return max_pids > PIDS_RESERVE ? max_pids - PIDS_RESERVE : 0;
- }
- 
- int tst_get_free_pids_(void (*cleanup_fn) (void))
--- 
-2.27.0
 
+Best regards,
+Krzysztof
