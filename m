@@ -1,20 +1,26 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 Jun 2021 10:48:33 +0200
-Subject: [LTP] [PATCH v2] tst_rtnetlink: pass error codes using
- rtnl_errno variable
-In-Reply-To: <20210622161753.32550-1-mdoucha@suse.cz>
-References: <20210622161753.32550-1-mdoucha@suse.cz>
-Message-ID: <YNL1YatxX5D10w1o@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 23 Jun 2021 10:44:39 +0200
+Subject: [LTP] LTP environment setup
+In-Reply-To: <BY5PR22MB1826245B4D2C69C3553F0DDAF30E9@BY5PR22MB1826.namprd22.prod.outlook.com>
+References: <BY5PR22MB1826245B4D2C69C3553F0DDAF30E9@BY5PR22MB1826.namprd22.prod.outlook.com>
+Message-ID: <YNL0d39i3OOOIft/@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi!
+> Can you provide any links or documents on how to set up LTP environment from scratch?
 
-LGTM.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+What exactly are you looking for?
 
-Kind regards,
-Petr
+Compiling and installing LTP can be quite easy, that's just usuall ./configure && make && make install.
+
+If you are looking for build/run dependencies we recently started to
+work on a script that prints list of packages when given a distribution
+name, see https://github.com/metan-ucw/runltp-ng/blob/master/install_pkg.pm
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
