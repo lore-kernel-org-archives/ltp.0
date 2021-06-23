@@ -1,26 +1,29 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Jun 2021 10:44:39 +0200
-Subject: [LTP] LTP environment setup
-In-Reply-To: <BY5PR22MB1826245B4D2C69C3553F0DDAF30E9@BY5PR22MB1826.namprd22.prod.outlook.com>
-References: <BY5PR22MB1826245B4D2C69C3553F0DDAF30E9@BY5PR22MB1826.namprd22.prod.outlook.com>
-Message-ID: <YNL0d39i3OOOIft/@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 23 Jun 2021 11:25:18 +0200
+Subject: [LTP] [PATCH] controllers/cpuset_hotplug: skip unsupported
+ Microsoft Hyper-V
+In-Reply-To: <20210622145938.106477-1-krzysztof.kozlowski@canonical.com>
+References: <20210622145938.106477-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <YNL9/k1iRralo/fj@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Can you provide any links or documents on how to set up LTP environment from scratch?
+Hi Krzysztof,
 
-What exactly are you looking for?
+> Microsoft Hyper-V with Linux guests does not support CPU hotplug, even
+> if enabled in kernel configuration.  Quoting Ubuntu bug report from
+> June 2018: "While Hyper-V may present all potential CPUs via ACPI MADT,
+> CPU add/remove is not supported.". [1]
 
-Compiling and installing LTP can be quite easy, that's just usuall ./configure && make && make install.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-If you are looking for build/run dependencies we recently started to
-work on a script that prints list of packages when given a distribution
-name, see https://github.com/metan-ucw/runltp-ng/blob/master/install_pkg.pm
+LGTM. How many of tests will need tst_virt_hyperv? Although we don't touch
+legacy API, I'd make an exception and add it to both test.sh and tst_test.sh
+(ideally with an API extension, i.e. test could use SKIP_VIRT="hyperv", but that
+can wait till tests are converted).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
