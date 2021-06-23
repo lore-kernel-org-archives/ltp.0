@@ -1,10 +1,10 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 23 Jun 2021 15:55:23 +0200
-Subject: [LTP] [PATCH v2 3/3] syscalls/msgstress: tune limit of processes
+Date: Wed, 23 Jun 2021 15:55:24 +0200
+Subject: [LTP] [PATCH v2 4/4] syscalls/msgstress: tune limit of processes
  for small machines
 In-Reply-To: <20210623135524.80663-1-krzysztof.kozlowski@canonical.com>
 References: <20210623135524.80663-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210623135524.80663-7-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210623135524.80663-8-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
