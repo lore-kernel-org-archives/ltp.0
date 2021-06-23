@@ -1,32 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Jun 2021 13:18:11 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/msgstress03: fix fork failure on
- small memory systems
-In-Reply-To: <7e086a3e-afd5-7b54-e04f-2db7893f3778@canonical.com>
-References: <20210622111440.74722-1-krzysztof.kozlowski@canonical.com>
- <YNMOr/9X8J3NaAMZ@yuki>
- <7e086a3e-afd5-7b54-e04f-2db7893f3778@canonical.com>
-Message-ID: <YNMYc6EiyQrvl7Ss@yuki>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Wed, 23 Jun 2021 13:57:48 +0200
+Subject: [LTP] [PATCH] controllers/cpuset_hotplug: skip unsupported
+ Microsoft Hyper-V
+In-Reply-To: <a7dd74e2-858f-19e4-d2bf-21cb77a3705e@canonical.com>
+References: <20210622145938.106477-1-krzysztof.kozlowski@canonical.com>
+ <YNL9/k1iRralo/fj@pevik> <a7dd74e2-858f-19e4-d2bf-21cb77a3705e@canonical.com>
+Message-ID: <c015b22b-5775-7301-a8b8-13cdd7000fb6@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > This is quite generic functionality so we may as well put it into the
-> > include/tst_pid.h and lib/tst_pid.c as tst_get_pids_limit().
+On 23/06/2021 11:35, Krzysztof Kozlowski wrote:
+> On 23/06/2021 11:25, Petr Vorel wrote:
+>> Hi Krzysztof,
+>>
+>>> Microsoft Hyper-V with Linux guests does not support CPU hotplug, even
+>>> if enabled in kernel configuration.  Quoting Ubuntu bug report from
+>>> June 2018: "While Hyper-V may present all potential CPUs via ACPI MADT,
+>>> CPU add/remove is not supported.". [1]
+>>
+>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>>
+>> LGTM. How many of tests will need tst_virt_hyperv? Although we don't touch
+>> legacy API, I'd make an exception and add it to both test.sh and tst_test.sh
+>> (ideally with an API extension, i.e. test could use SKIP_VIRT="hyperv", but that
+>> can wait till tests are converted).
 > 
-> Sure, I can move it there.
-> 
-> > And we do already have tst_get_free_pids_() in there so we can substract
-> > that as well if applicable to make it a bit more precise.
-> 
-> I can just merge the code into tst_get_free_pids_(). It's basically the
-> same purpose - how many processes can we have more.
+> Around CPU hotplug that would be the last one I did not spot so far
+> other failures but I also do not track all failures in nice way. Rather
+> fixing them ad-hoc...
 
-Yes actually that would make a lot of sense.
+I just checked more and there are additional failures on Azure/HyperV
+with more nodes: cpuset_load_balance, cpuset_memory_pressure,
+cpuset_memory_spread and cpuset_sched_domains. These did not appear on
+smaller instances (e.g. 4 CPUs).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best regards,
+Krzysztof
