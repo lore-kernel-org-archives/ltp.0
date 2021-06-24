@@ -1,64 +1,42 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu, 24 Jun 2021 15:22:26 +0200
-Subject: [LTP] [PATCH] lib: memutils: don't pollute entire system memory to
- avoid OoM
-Message-ID: <20210624132226.84611-1-krzysztof.kozlowski@canonical.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 24 Jun 2021 15:33:10 +0200
+Subject: [LTP] [PATCH] lib: memutils: don't pollute entire system memory
+ to avoid OoM
+In-Reply-To: <20210624132226.84611-1-krzysztof.kozlowski@canonical.com>
+References: <20210624132226.84611-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <018a369f-473b-524d-f81b-eb8be4df49bb@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On big memory systems, e.g. 196 GB RAM machine, the ioctl_sg01 test was
-failing because of OoM killer during memory pollution:
+On 24. 06. 21 15:22, Krzysztof Kozlowski wrote:
+> On big memory systems, e.g. 196 GB RAM machine, the ioctl_sg01 test was
+> failing because of OoM killer during memory pollution:
+> 
+> ...
+> 
+> It seems leaving hard-coded 128 MB free memory works for small or medium
+> systems, but for such bigger machine it creates significant memory
+> pressure triggering the out of memory reaper.
+> 
+> The memory pressure usually is defined by ratio between free and total
+> memory, so adjust the safety/spare memory similarly to keep always 0.5%
+> of memory free.
 
-    tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
-    ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg2
-    tst_test.c:1357: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-    tst_test.c:1359: TBROK: Test killed! (timeout?)
+Hi,
+I've sent a similar patch for the same issue a while ago. It covers a
+few more edge cases. See [1] for the discussion about it.
 
-In dmesg:
+[1]
+https://patchwork.ozlabs.org/project/ltp/patch/20210127115606.28985-1-mdoucha@suse.cz/
 
-    [76477.661067] LTP: starting cve-2018-1000204 (ioctl_sg01)
-    [76578.062209] ioctl_sg01 invoked oom-killer: gfp_mask=0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO), order=0, oom_score_adj=0
-    ...
-    [76578.062335] Mem-Info:
-    [76578.062340] active_anon:63 inactive_anon:49016768 isolated_anon:0
-                    active_file:253 inactive_file:117 isolated_file:0
-                    unevictable:4871 dirty:4 writeback:0
-                    slab_reclaimable:18451 slab_unreclaimable:56355
-                    mapped:2478 shmem:310 pagetables:96625 bounce:0
-                    free:121136 free_pcp:0 free_cma:0
-    ...
-    [76578.062527] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0-1,global_oom,task_memcg=/user.slice/user-1000.slice/session-40.scope,task=ioctl_sg01,pid=446171,uid=0
-    [76578.062539] Out of memory: Killed process 446171 (ioctl_sg01) total-vm:195955840kB, anon-rss:195941256kB, file-rss:1416kB, shmem-rss:0kB, UID:0 pgtables:383496kB oom_score_adj:0
-    [76581.046078] oom_reaper: reaped process 446171 (ioctl_sg01), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-
-It seems leaving hard-coded 128 MB free memory works for small or medium
-systems, but for such bigger machine it creates significant memory
-pressure triggering the out of memory reaper.
-
-The memory pressure usually is defined by ratio between free and total
-memory, so adjust the safety/spare memory similarly to keep always 0.5%
-of memory free.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- lib/tst_memutils.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
-index dd09db4902b0..abf382d41b20 100644
---- a/lib/tst_memutils.c
-+++ b/lib/tst_memutils.c
-@@ -21,6 +21,7 @@ void tst_pollute_memory(size_t maxsize, int fillchar)
- 
- 	SAFE_SYSINFO(&info);
- 	safety = MAX(4096 * SAFE_SYSCONF(_SC_PAGESIZE), 128 * 1024 * 1024);
-+	safety = MAX(safety, (info.freeram / 200));
- 	safety /= info.mem_unit;
- 
- 	if (info.freeswap > safety)
 -- 
-2.27.0
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
