@@ -1,31 +1,40 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Thu, 24 Jun 2021 11:15:00 +0300
-Subject: [LTP] [PATCH 2/2] fcntl38: check required kernel config option for
- dnotify
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 24 Jun 2021 16:37:02 +0800
+Subject: [LTP] [PATCH 1/2] lib/tst_test: setup TCID earlier in do_setup()
 In-Reply-To: <20210624081500.11715-1-aleksei.kodanev@bell-sw.com>
 References: <20210624081500.11715-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210624081500.11715-2-aleksei.kodanev@bell-sw.com>
+Message-ID: <CAEemH2ca=ubrdg=EzjgcDBPBp-jVQ1r7dMSc9TH4KCrctSuN2g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
----
- testcases/kernel/syscalls/fcntl/fcntl38.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Alexey,
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl38.c b/testcases/kernel/syscalls/fcntl/fcntl38.c
-index 6185d3209..fae2ab4f7 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl38.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl38.c
-@@ -93,4 +93,5 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_dnotify,
-+	.needs_kconfigs = (const char *[]) { "CONFIG_DNOTIFY=y", NULL },
- };
+Good catch.
+
+On Thu, Jun 24, 2021 at 4:15 PM Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+wrote:
+
+> TCID can be NULL in tst_tmpdir() because it is set after do_setup():
+>
+>     tst_run_tcases()
+>         do_setup()
+>             ...
+>             tid = get_tid();
+>             ...
+>             tst_tmpdir()  /* using TCID here */
+>         TCID = tid;
+>
+> Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+>
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
 -- 
-2.25.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210624/342af4b5/attachment-0001.htm>
