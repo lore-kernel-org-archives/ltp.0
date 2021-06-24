@@ -1,145 +1,64 @@
-From: Alessio Balsini <balsini@android.com>
-Date: Thu, 24 Jun 2021 13:31:43 +0100
-Subject: [LTP] [PATCH] getrlimit/getrlimit03: fix unavailable
- __NR_getrlimit for arm
-In-Reply-To: <YNM6QGFYt/bpaPDS@yuki>
-References: <20210623134041.366838-1-balsini@android.com>
- <YNM6QGFYt/bpaPDS@yuki>
-Message-ID: <YNR7L2ftbwx6IUls@google.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Thu, 24 Jun 2021 15:22:26 +0200
+Subject: [LTP] [PATCH] lib: memutils: don't pollute entire system memory to
+ avoid OoM
+Message-ID: <20210624132226.84611-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+On big memory systems, e.g. 196 GB RAM machine, the ioctl_sg01 test was
+failing because of OoM killer during memory pollution:
 
-On Wed, Jun 23, 2021 at 03:42:24PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > __NR_getrlimit has been deprecated from arm EABI, and is only available
-> > if the OABI_COMPAT config option is defined.
-> > This causes failures with the current test as it assumes that
-> > __NR_getrlimit exists if __NR_ugetrlimit is defined, while this
-> > assumption does not hold anymore.
-> > 
-> > Catch this exception by testing if __NR_getrlimit is defined and the
-> > target is arm.
-> 
-> I suppose that this a proper fix for:
-> 
-> https://github.com/linux-test-project/ltp/issues/819
-> 
+    tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
+    ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg2
+    tst_test.c:1357: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+    tst_test.c:1359: TBROK: Test killed! (timeout?)
 
-We spotted this failure on Android, but they are indeed the same issue!
+In dmesg:
 
-> 
-> I guess that this generates a few unused function warnings, can we fix
-> all the places with #if SIGNED_GETRLIMIT in the source code please?
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+    [76477.661067] LTP: starting cve-2018-1000204 (ioctl_sg01)
+    [76578.062209] ioctl_sg01 invoked oom-killer: gfp_mask=0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO), order=0, oom_score_adj=0
+    ...
+    [76578.062335] Mem-Info:
+    [76578.062340] active_anon:63 inactive_anon:49016768 isolated_anon:0
+                    active_file:253 inactive_file:117 isolated_file:0
+                    unevictable:4871 dirty:4 writeback:0
+                    slab_reclaimable:18451 slab_unreclaimable:56355
+                    mapped:2478 shmem:310 pagetables:96625 bounce:0
+                    free:121136 free_pcp:0 free_cma:0
+    ...
+    [76578.062527] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0-1,global_oom,task_memcg=/user.slice/user-1000.slice/session-40.scope,task=ioctl_sg01,pid=446171,uid=0
+    [76578.062539] Out of memory: Killed process 446171 (ioctl_sg01) total-vm:195955840kB, anon-rss:195941256kB, file-rss:1416kB, shmem-rss:0kB, UID:0 pgtables:383496kB oom_score_adj:0
+    [76581.046078] oom_reaper: reaped process 446171 (ioctl_sg01), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
 
-Here below the new patch that should fixed the unused functions warnings, as
-well as the useless definition of rlimit_long if the signed version of
-__NR_getrlimit does not exist.
+It seems leaving hard-coded 128 MB free memory works for small or medium
+systems, but for such bigger machine it creates significant memory
+pressure triggering the out of memory reaper.
 
-Thanks,
-Alessio
+The memory pressure usually is defined by ratio between free and total
+memory, so adjust the safety/spare memory similarly to keep always 0.5%
+of memory free.
 
--- >8 --
-Subject: [PATCH] getrlimit/getrlimit03: fix deprecated __NR_getrlimit for arm
-
-__NR_getrlimit has been deprecated from arm EABI, and is only available
-if the OABI_COMPAT config option is defined.
-This may cause failures with the current test as it assumes that
-__NR_getrlimit always exists if __NR_ugetrlimit is defined, but this
-assumption does not hold anymore.
-
-Catch this exception by testing if __NR_getrlimit is defined and the
-target is arm.
-
-Signed-off-by: Alessio Balsini <balsini@android.com>
-
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../kernel/syscalls/getrlimit/getrlimit03.c   | 27 ++++++++++++++-----
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ lib/tst_memutils.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-index 319bc494a..8601b6caa 100644
---- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-@@ -36,13 +36,25 @@
-  * the architecture predates the "new" handler.  For clarity, this test
-  * will call them getrlimit_long and getlimit_ulong internally.
-  */
--#define SIGNED_GETRLIMIT (__NR_ugetrlimit != __LTP__NR_INVALID_SYSCALL)
--#if SIGNED_GETRLIMIT
-+#if __NR_ugetrlimit != __LTP__NR_INVALID_SYSCALL
-+
-+/**
-+ * __NR_getrlimit has been deprecated from arm EABI and moved to OABI_COMPAT,
-+ * so the syscall on arm may or may not be available, also if __NR_ugetrlimit
-+ * exists.
-+ */
-+#if !defined(__arm__) || __NR_getrlimit != __LTP__NR_INVALID_SYSCALL
-+#define SIGNED_GETRLIMIT
-+#endif
-+
- #define __NR_getrlimit_ulong           __NR_ugetrlimit
- #define __NR_getrlimit_ulong_str       "__NR_ugetrlimit"
-+
- #else
-+
- #define __NR_getrlimit_ulong           __NR_getrlimit
- #define __NR_getrlimit_ulong_str       "__NR_getrlimit"
-+
- #endif
-
- #ifndef HAVE_STRUCT_RLIMIT64
-@@ -74,12 +86,13 @@ static int getrlimit_ulong(int resource, struct rlimit_ulong *rlim)
-        return syscall(__NR_getrlimit_ulong, resource, rlim);
- }
-
--#if SIGNED_GETRLIMIT
-+const long RLIM_INFINITY_L = LONG_MAX;
-+
-+#ifdef SIGNED_GETRLIMIT
- struct rlimit_long {
-        long rlim_cur;
-        long rlim_max;
- };
--const long RLIM_INFINITY_L = LONG_MAX;
-
- static int getrlimit_long(int resource, struct rlimit_long *rlim)
- {
-@@ -116,7 +129,7 @@ static int compare_u64_ulong(int resource, uint64_t val_u64,
-        return 0;
- }
-
--#if SIGNED_GETRLIMIT
-+#ifdef SIGNED_GETRLIMIT
- static int compare_u64_long(int resource, uint64_t val_u64, long val_l,
-                            const char *kind)
- {
-@@ -142,7 +155,7 @@ static void run(unsigned int resource)
-        int ret_ul;
-        int errno_ul;
-
--#if SIGNED_GETRLIMIT
-+#ifdef SIGNED_GETRLIMIT
-        struct rlimit_long rlim_l;
-        int ret_l;
-        int errno_l;
-@@ -167,7 +180,7 @@ static void run(unsigned int resource)
-        tst_res(TPASS, "__NR_prlimit64(%d) and %s(%d) gave consistent results",
-                resource, __NR_getrlimit_ulong_str, resource);
-
--#if SIGNED_GETRLIMIT
-+#ifdef SIGNED_GETRLIMIT
-        errno = 0;
-        ret_l = getrlimit_long(resource, &rlim_l);
-        errno_l = errno;
---
-2.32.0.288.g62a8d224e6-goog
+diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
+index dd09db4902b0..abf382d41b20 100644
+--- a/lib/tst_memutils.c
++++ b/lib/tst_memutils.c
+@@ -21,6 +21,7 @@ void tst_pollute_memory(size_t maxsize, int fillchar)
+ 
+ 	SAFE_SYSINFO(&info);
+ 	safety = MAX(4096 * SAFE_SYSCONF(_SC_PAGESIZE), 128 * 1024 * 1024);
++	safety = MAX(safety, (info.freeram / 200));
+ 	safety /= info.mem_unit;
+ 
+ 	if (info.freeswap > safety)
+-- 
+2.27.0
 
