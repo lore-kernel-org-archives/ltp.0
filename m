@@ -1,45 +1,54 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 25 Jun 2021 11:03:19 +0800
-Subject: [LTP] [COMMITTED] cfs-scheduler: Add one more kernel git hash
-Message-ID: <20210625030319.496916-1-liwang@redhat.com>
+Date: Fri, 25 Jun 2021 16:21:30 +0800
+Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
+In-Reply-To: <bd56facc-55a3-4e8a-4e9d-304d5177462d@canonical.com>
+References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+ <bd56facc-55a3-4e8a-4e9d-304d5177462d@canonical.com>
+Message-ID: <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On Fri, Jun 25, 2021 at 3:31 AM Krzysztof Kozlowski <
+krzysztof.kozlowski@canonical.com> wrote:
 
-diff --git a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-index b06cede16..9301ee458 100644
---- a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-+++ b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-@@ -16,6 +16,14 @@
-  *
-  * The test is known to reproduce an issue with an update to
-  * SLE-15-SP1 (kernel 4.12.14-197.64, bsc#1179093).
-+ *
-+ * Also as an reproducer for another bug:
-+ *
-+ *    commit fdaba61ef8a268d4136d0a113d153f7a89eb9984
-+ *    Author: Rik van Riel <riel@surriel.com>
-+ *    Date:   Mon Jun 21 19:43:30 2021 +0200
-+ *
-+ *    sched/fair: Ensure that the CFS parent is added after unthrottling
-  */
- 
- #include <stdlib.h>
-@@ -179,6 +187,7 @@ static struct tst_test test = {
- 		{"linux-git", "fe61468b2cbc"},
- 		{"linux-git", "5ab297bab984"},
- 		{"linux-git", "6d4d22468dae"},
-+		{"linux-git", "fdaba61ef8a2"},
- 		{ }
- 	}
- };
+> On 17/06/2021 09:07, Krzysztof Kozlowski wrote:
+> > Hi,
+> >
+> > This is a resend of previous Github pull:
+> > https://github.com/linux-test-project/ltp/pull/830
+> >
+> > The patches fix several test failures we are hitting since months, see:
+> > https://bugs.launchpad.net/bugs/1829979
+> > https://bugs.launchpad.net/bugs/1829984
+> >
+> > Best regards,
+> > Krzysztof
+> >
+> >
+> > Krzysztof Kozlowski (3):
+> >   controllers/memcg: accept range of max_usage_in_bytes
+> >   controllers/memcg: accept range of usage_in_bytes
+> >   controllers/memcg: accept non-zero max_usage_in_bytes after reset
+>
+>
+> Hi everyone,
+>
+> The patchset got positive LGTM on the Github. Any further comments for
+> it or can it be applied?
+>
+
+I slightly agree with Richard that we need an explanation/investigation
+on where the 32*PAGE_SIZE comes from. Otherwise, we are very possible
+to mask a counter bug if only to make the test happy.
+
+Forgive me pour cold water on the method though it looks good in coding:).
+
 -- 
-2.31.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210625/0f253bc8/attachment.htm>
