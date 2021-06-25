@@ -1,102 +1,47 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 25 Jun 2021 17:03:43 +0800
-Subject: [LTP] [PATCH] ipc/msgget03: Make sure we get ENOSPC error after
- creating MSGMNI message queues
-In-Reply-To: <1624515373-3899-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1624515373-3899-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <CAEemH2eJLd5cSHZLUyXCYBhr643noDPT4RrMb8YBxrE_M3d1gA@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Fri, 25 Jun 2021 11:13:29 +0200
+Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
+In-Reply-To: <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
+References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+ <bd56facc-55a3-4e8a-4e9d-304d5177462d@canonical.com>
+ <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
+Message-ID: <56f9de88-92dd-a005-4248-107bf60083e2@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jun 24, 2021 at 2:16 PM Yang Xu <xuyang2018.jy@fujitsu.com> wrote:
+On 25/06/2021 10:21, Li Wang wrote:
+> 
+> 
+> On Fri, Jun 25, 2021 at 3:31 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com
+> <mailto:krzysztof.kozlowski@canonical.com>> wrote:
+> 
+>     Hi everyone,
+> 
+>     The patchset got positive LGTM on the Github. Any further comments for
+>     it or can it be applied?
+> 
+> 
+> I slightly agree with Richard that we need an explanation/investigation
+> on where the 32*PAGE_SIZE comes from. Otherwise, we are very possible
+> to mask a counter bug if only to make the test happy.
 
-> Even msgget() failed, this for loop still continues. So we can't know
-> whether
-> system creates actual MSGMNI message queues and then fail with ENOSPC. Fix
-> this by
-> reporting fail if msgget failed in setup.
->
-> Also make use of TST_EXP_FAIL2 macro.
->
+I don't know where 32*PAGE_SIZE comes from and investigation would
+require effort/time which I don't have.
 
-Do we have TST_EXP_FAIL2 macro? or do you mean TST_EXP_FAIL?
-And the remaining part looks good.
+I don't think we mask current bug as this appears in multiple kernels -
+I tested from v5.4 up to 5.13.0-rc5-next-20210608.
 
+It is possible this will mask future bugs but that's life of a project
+depending on kernel internals, not on API or ABI. The kernel is allowed
+to change such details any moment because it is neither part of API nor
+ABI. Therefore you just have to live with inaccurate limits or keep
+investigating every x-months.
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->  .../kernel/syscalls/ipc/msgget/msgget03.c     | 21 +++++++------------
->  1 file changed, 7 insertions(+), 14 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> index 8fa620855..da3753a19 100644
-> --- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> +++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> @@ -20,22 +20,14 @@
->  #include "tst_safe_sysv_ipc.h"
->  #include "libnewipc.h"
->
-> -static int maxmsgs;
-> +static int maxmsgs, queue_cnt;
->  static int *queues;
->  static key_t msgkey;
->
->  static void verify_msgget(void)
->  {
-> -       TEST(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL));
-> -       if (TST_RET != -1)
-> -               tst_res(TFAIL, "msgget() succeeded unexpectedly");
-> -
-> -       if (TST_ERR == ENOSPC) {
-> -               tst_res(TPASS | TTERRNO, "msgget() failed as expected");
-> -       } else {
-> -               tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
-> -                       " expected ENOSPC");
-> -       }
-> +       TST_EXP_FAIL2(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL),
-> ENOSPC,
-> +               "msgget(%i, %i)", msgkey + maxmsgs, IPC_CREAT | IPC_EXCL);
->  }
->
->  static void setup(void)
-> @@ -52,8 +44,9 @@ static void setup(void)
->                 queues[num] = -1;
->
->                 res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
-> -               if (res != -1)
-> -                       queues[num] = res;
-> +               if (res == -1)
-> +                       tst_brk(TBROK | TERRNO, "msgget failed
-> unexpectedly");
-> +               queues[queue_cnt++] = res;
->         }
->
->         tst_res(TINFO, "The maximum number of message queues (%d) reached",
-> @@ -67,7 +60,7 @@ static void cleanup(void)
->         if (!queues)
->                 return;
->
-> -       for (num = 0; num < maxmsgs; num++) {
-> +       for (num = 0; num < queue_cnt; num++) {
->                 if (queues[num] != -1)
->                         SAFE_MSGCTL(queues[num], IPC_RMID, NULL);
->         }
-> --
-> 2.23.0
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+For now the test is simply unreliable.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210625/9f3cb97a/attachment.htm>
+Best regards,
+Krzysztof
