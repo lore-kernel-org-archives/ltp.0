@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 25 Jun 2021 11:27:18 +0200
-Subject: [LTP] [PATCH 1/2] lib/tst_test: setup TCID earlier in do_setup()
-In-Reply-To: <20210624081500.11715-1-aleksei.kodanev@bell-sw.com>
-References: <20210624081500.11715-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <YNWhdgAUp5e/hNwx@yuki>
+Date: Fri, 25 Jun 2021 11:58:58 +0200
+Subject: [LTP] [Automated-testing] [RFC PATCH] rm unused
+ controllers/io-throttle tests
+In-Reply-To: <YNNV1NeXNUyLNE4a@pevik>
+References: <20210621143056.2724-1-rpalethorpe@suse.com>
+ <YNNV1NeXNUyLNE4a@pevik>
+Message-ID: <YNWo4kz8JaGyaW0M@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,19 +13,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> TCID can be NULL in tst_tmpdir() because it is set after do_setup():
-> 
->     tst_run_tcases()
->         do_setup()
->             ...
->             tid = get_tid();
->             ...
->             tst_tmpdir()  /* using TCID here */
->         TCID = tid;
+> Acked-by: Petr Vorel <pvorel@suse.cz>
 
-Good catch, I wonder how we missed this for so long...
+Things that never got into mainline shouldn't be in the repo at all...
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
