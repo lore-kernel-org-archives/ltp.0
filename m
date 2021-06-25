@@ -1,45 +1,45 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu, 24 Jun 2021 21:32:42 +0200
-Subject: [LTP] [PATCH 1/2] tpci: fix NULL pointer dereference on wrong
- test invocation
-In-Reply-To: <20210618130536.54806-1-krzysztof.kozlowski@canonical.com>
-References: <20210618130536.54806-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <8753cbfb-01ac-34f9-57d6-afa33629ac78@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 25 Jun 2021 11:03:19 +0800
+Subject: [LTP] [COMMITTED] cfs-scheduler: Add one more kernel git hash
+Message-ID: <20210625030319.496916-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18/06/2021 15:05, Krzysztof Kozlowski wrote:
-> Fix NULL pointer dereference when a ltp_tpci test case is started before
-> choosing the device:
-> 
->     ltp_tpci: test-case 12
->     ltp_tpci: assign resources
->     ltp_tpci: assign resource #0
->     BUG: kernel NULL pointer dereference, address: 00000000000003b8
->     ...
->      Call Trace:
->       dev_attr_store+0x17/0x30
->       sysfs_kf_write+0x3e/0x50
->       kernfs_fop_write_iter+0x13c/0x1d0
->       new_sync_write+0x113/0x1a0
->       vfs_write+0x1c5/0x200
->       ksys_write+0x67/0xe0
->       __x64_sys_write+0x1a/0x20
->       do_syscall_64+0x49/0xc0
->       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Hi everyone,
+diff --git a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
+index b06cede16..9301ee458 100644
+--- a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
++++ b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
+@@ -16,6 +16,14 @@
+  *
+  * The test is known to reproduce an issue with an update to
+  * SLE-15-SP1 (kernel 4.12.14-197.64, bsc#1179093).
++ *
++ * Also as an reproducer for another bug:
++ *
++ *    commit fdaba61ef8a268d4136d0a113d153f7a89eb9984
++ *    Author: Rik van Riel <riel@surriel.com>
++ *    Date:   Mon Jun 21 19:43:30 2021 +0200
++ *
++ *    sched/fair: Ensure that the CFS parent is added after unthrottling
+  */
+ 
+ #include <stdlib.h>
+@@ -179,6 +187,7 @@ static struct tst_test test = {
+ 		{"linux-git", "fe61468b2cbc"},
+ 		{"linux-git", "5ab297bab984"},
+ 		{"linux-git", "6d4d22468dae"},
++		{"linux-git", "fdaba61ef8a2"},
+ 		{ }
+ 	}
+ };
+-- 
+2.31.1
 
-Any comments on these two tpci patches? Do they look reasonable?
-
-Best regards,
-Krzysztof
