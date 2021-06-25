@@ -1,109 +1,50 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Fri, 25 Jun 2021 09:23:05 +0000
-Subject: [LTP] [PATCH] ipc/msgget03: Make sure we get ENOSPC error after
- creating MSGMNI message queues
-In-Reply-To: <CAEemH2eJLd5cSHZLUyXCYBhr643noDPT4RrMb8YBxrE_M3d1gA@mail.gmail.com>
-References: <1624515373-3899-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <CAEemH2eJLd5cSHZLUyXCYBhr643noDPT4RrMb8YBxrE_M3d1gA@mail.gmail.com>
-Message-ID: <60D5A0A0.7060801@fujitsu.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Fri, 25 Jun 2021 11:24:18 +0200
+Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
+In-Reply-To: <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
+References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+ <bd56facc-55a3-4e8a-4e9d-304d5177462d@canonical.com>
+ <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
+Message-ID: <0042989e-08b8-88d8-75e5-00c09f6c25bb@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
->
->
-> On Thu, Jun 24, 2021 at 2:16 PM Yang Xu <xuyang2018.jy@fujitsu.com
-> <mailto:xuyang2018.jy@fujitsu.com>> wrote:
->
->     Even msgget() failed, this for loop still continues. So we can't
->     know whether
->     system creates actual MSGMNI message queues and then fail with
->     ENOSPC. Fix this by
->     reporting fail if msgget failed in setup.
->
->     Also make use of TST_EXP_FAIL2 macro.
->
->
-> Do we have TST_EXP_FAIL2 macro? or do you mean TST_EXP_FAIL?
-> And the remaining part looks good.
-Sorry. I should have added this macro implementation url(In review).
-https://patchwork.ozlabs.org/project/ltp/patch/1624512827-3256-2-git-send-email-xuyang2018.jy@fujitsu.com/
+Hi,
 
-Best Regards
-Yang Xu
+On 6/25/2021 10:21 AM, Li Wang wrote:
+> On Fri, Jun 25, 2021 at 3:31 AM Krzysztof Kozlowski 
+> <krzysztof.kozlowski@canonical.com 
+> <mailto:krzysztof.kozlowski@canonical.com>> wrote:
+>
+>     On 17/06/2021 09:07, Krzysztof Kozlowski wrote:
+>
+>
+>     The patchset got positive LGTM on the Github. Any further comments for
+>     it or can it be applied?
+>
+>
+> I slightly agree with Richard that we need an explanation/investigation
+> on where the 32*PAGE_SIZE comes from. Otherwise, we are very possible
+> to mask a counter bug if only to make the test happy.
++1. I think it has something to do with batch processing of counter updates.
+The memory handling code is heavily batched per cpu and only committed 
+to a global counter after the batch size overflows.
+At least for the subgroup_charge test I once found that page table cache 
+stored in kmem contributes to the memory counter used in the test.
+Maybe something in that region was changed in recent kernel version. 
+Maybe you could ask on the kernel mailing list?
+
 
 >
+> Forgive me pour cold water on the method though it looks good in coding:).
+I would just suggest to make 32 * PAGESIZE a constant calculated in 
+memcg_lib.sh, instead of calculating (and defining) it everywhere.
 >
->     Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com
->     <mailto:xuyang2018.jy@fujitsu.com>>
->     ---
->     .../kernel/syscalls/ipc/msgget/msgget03.c | 21 +++++++------------
->     1 file changed, 7 insertions(+), 14 deletions(-)
->
->     diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
->     b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
->     index 8fa620855..da3753a19 100644
->     --- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
->     +++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
->     @@ -20,22 +20,14 @@
->     #include "tst_safe_sysv_ipc.h"
->     #include "libnewipc.h"
->
->     -static int maxmsgs;
->     +static int maxmsgs, queue_cnt;
->     static int *queues;
->     static key_t msgkey;
->
->     static void verify_msgget(void)
->     {
->     - TEST(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL));
->     - if (TST_RET != -1)
->     - tst_res(TFAIL, "msgget() succeeded unexpectedly");
->     -
->     - if (TST_ERR == ENOSPC) {
->     - tst_res(TPASS | TTERRNO, "msgget() failed as expected");
->     - } else {
->     - tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
->     - " expected ENOSPC");
->     - }
->     + TST_EXP_FAIL2(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL), ENOSPC,
->     + "msgget(%i, %i)", msgkey + maxmsgs, IPC_CREAT | IPC_EXCL);
->     }
->
->     static void setup(void)
->     @@ -52,8 +44,9 @@ static void setup(void)
->     queues[num] = -1;
->
->     res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
->     - if (res != -1)
->     - queues[num] = res;
->     + if (res == -1)
->     + tst_brk(TBROK | TERRNO, "msgget failed unexpectedly");
->     + queues[queue_cnt++] = res;
->     }
->
->     tst_res(TINFO, "The maximum number of message queues (%d) reached",
->     @@ -67,7 +60,7 @@ static void cleanup(void)
->     if (!queues)
->     return;
->
->     - for (num = 0; num < maxmsgs; num++) {
->     + for (num = 0; num < queue_cnt; num++) {
->     if (queues[num] != -1)
->     SAFE_MSGCTL(queues[num], IPC_RMID, NULL);
->     }
->     --
->     2.23.0
->
->
->     --
->     Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
->
-> --
+> -- 
 > Regards,
 > Li Wang
+>
+J?rg
