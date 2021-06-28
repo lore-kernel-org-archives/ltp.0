@@ -1,56 +1,37 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 28 Jun 2021 16:12:52 +0800
-Subject: [LTP] [PATCH 0/3] epoll_pwait2: Add test for epoll_pwait2
-In-Reply-To: <20210628080424.245911-1-xieziyao@huawei.com>
-References: <20210628080424.245911-1-xieziyao@huawei.com>
-Message-ID: <6ae18b1d-6363-3dbc-0696-f0c7115aeb67@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 28 Jun 2021 10:49:39 +0200
+Subject: [LTP] [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount
+ failure
+In-Reply-To: <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de>
+References: <20210628033002.GA1469@andestech.com>
+ <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de>
+Message-ID: <YNmNI3omBfAnj5dN@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi all,
 
-> Xie Ziyao (3):
->    lapi/syscalls: Add syscall number for epoll_pwait2
->    epoll_pwait2: Add test for epoll_pwait201
->    epoll_pwait2: Add test for epoll_pwait202
-Sorry for testing only under several archs (like arm, x86) on QEMU due 
-to environmental limitations.
+[ changed Cyril's address in Cc to the working one ]
 
-If possible, I would recommend testing it on other platforms as well.
+> >   	mkdir cgroup/0
+> >   	sleep 100 < cgroup/0 &	# add refcnt to this dir
+> >   	rmdir cgroup/0
+> > +	sync
+> >   	# remount with some subsystems removed
+> >   	# since 2.6.28, this remount will fail
+> I would like a short comment close to the syncs. When I converted
+> cpuset_regression_test.sh, I would have removed the sync in there, if there
+> wouldn't have been any comment.
+> Most of the time syncs are not required and just added by paranoid
+> developers, but if there is a real reason, I think it should be stated in a
+> comment.
 
-Kind Regards,
-Ziyao
-> 
->   include/lapi/syscalls/aarch64.in              |  1 +
->   include/lapi/syscalls/arc.in                  |  1 +
->   include/lapi/syscalls/arm.in                  |  1 +
->   include/lapi/syscalls/hppa.in                 |  3 +-
->   include/lapi/syscalls/i386.in                 |  1 +
->   include/lapi/syscalls/ia64.in                 |  1 +
->   include/lapi/syscalls/powerpc.in              |  1 +
->   include/lapi/syscalls/powerpc64.in            |  1 +
->   include/lapi/syscalls/s390.in                 |  1 +
->   include/lapi/syscalls/s390x.in                |  1 +
->   include/lapi/syscalls/sh.in                   |  1 +
->   include/lapi/syscalls/sparc.in                |  1 +
->   include/lapi/syscalls/sparc64.in              |  1 +
->   include/lapi/syscalls/x86_64.in               |  1 +
->   runtest/syscalls                              |  2 +
->   .../kernel/syscalls/epoll_pwait2/.gitignore   |  2 +
->   .../kernel/syscalls/epoll_pwait2/Makefile     |  9 +++
->   .../syscalls/epoll_pwait2/epoll_pwait201.c    | 62 +++++++++++++++
->   .../syscalls/epoll_pwait2/epoll_pwait202.c    | 76 +++++++++++++++++++
->   19 files changed, 166 insertions(+), 1 deletion(-)
->   create mode 100644 testcases/kernel/syscalls/epoll_pwait2/.gitignore
->   create mode 100644 testcases/kernel/syscalls/epoll_pwait2/Makefile
->   create mode 100644 testcases/kernel/syscalls/epoll_pwait2/epoll_pwait201.c
->   create mode 100644 testcases/kernel/syscalls/epoll_pwait2/epoll_pwait202.c
-> 
-> --
-> 2.17.1
-> 
-> .
-> 
+Agree with this. Are all these sync really needed? Or just some?
+
+Kind regards,
+Petr
+
+> J?rg
