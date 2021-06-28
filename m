@@ -1,49 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 28 Jun 2021 17:05:05 +0200
-Subject: [LTP] [PATCH v3 3/3] syscalls/shmget*: Convert into new api
-In-Reply-To: <1624512827-3256-3-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <YNM4rlDJLzb4xk6v@yuki>
- <1624512827-3256-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1624512827-3256-3-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <YNnlIVB9M4/11JmT@yuki>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Mon, 28 Jun 2021 17:50:10 +0200
+Subject: [LTP] [PATCH v3 1/4] include/tst_pid.h: fix language typo
+ (subtraction)
+In-Reply-To: <YNnhawovD2P/JBHu@pevik>
+References: <20210623135912.81156-1-krzysztof.kozlowski@canonical.com>
+ <20210623135912.81156-2-krzysztof.kozlowski@canonical.com>
+ <YNnhawovD2P/JBHu@pevik>
+Message-ID: <c02beb1f-31f8-8902-8be8-27b4bf9ecfe2@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with a minor changes, thanks.
+On 28/06/2021 16:49, Petr Vorel wrote:
+> Hi Krzysztof,
+> 
+>>  /*
+>> - * Returns number of free pids by substarction of the number of pids
+>> + * Returns number of free pids by subtraction of the number of pids
+>>   * currently used ('ps -eT') from max_pids
+> Because you change the description of this function in the next commit,
+> I'd just fix this simple typo in 2nd commit. But of course it's not wrong
+> (prevents keeping the fix even if we'd removed second commit).
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-index 81841788c..efbc465e1 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-@@ -41,7 +41,6 @@ static void setup(void)
- 
-        queues = SAFE_MALLOC(maxshms * sizeof(int));
-        for (num = 0; num < maxshms; num++) {
--               queues[num] = -1;
-                res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
-                if (res == -1)
-                        tst_brk(TBROK | TERRNO, "shmget failed unexpectedly");
-@@ -59,10 +58,8 @@ static void cleanup(void)
-        if (!queues)
-                return;
- 
--       for (num = 0; num < queue_cnt; num++) {
--               if (queues[num] != -1)
--                       SAFE_SHMCTL(queues[num], IPC_RMID, NULL);
--       }
-+       for (num = 0; num < queue_cnt; num++)
-+               SAFE_SHMCTL(queues[num], IPC_RMID, NULL);
- 
-        free(queues);
- }
+The commits should do only one thing (fix one bug, bring one feature if
+possible) and the next commit does not touch that line. There is no
+re-doing of the same change in next commit.
 
-As there is no need to check for -1 and pre-initialize the array
-anymore.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best regards,
+Krzysztof
