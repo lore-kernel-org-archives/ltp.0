@@ -1,109 +1,126 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 28 Jun 2021 09:36:13 +0200
-Subject: [LTP] [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount
- failure
-In-Reply-To: <20210628033002.GA1469@andestech.com>
-References: <20210628033002.GA1469@andestech.com>
-Message-ID: <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Mon, 28 Jun 2021 16:04:24 +0800
+Subject: [LTP] [PATCH 3/3] epoll_pwait2: Add test for epoll_pwait202
+In-Reply-To: <20210628080424.245911-1-xieziyao@huawei.com>
+References: <20210628080424.245911-1-xieziyao@huawei.com>
+Message-ID: <20210628080424.245911-4-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Check that epoll_pwait2 timeouts correctly.
 
-On 6/28/2021 5:30 AM, Leo Liang wrote:
->  From a151d48235629a125d5db57dd76c96fd951d5293 Mon Sep 17 00:00:00 2001
-> From: Leo Yu-Chi Liang <ycliang@andestech.com>
-> Date: Mon, 28 Jun 2021 11:05:54 +0800
-> Subject: [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount failure
->
-> The test sequence
-> 	mount -t cgroup -o <controllers> <path>
-> 	mkdir <path>/<dir>
-> 	rmdir <path>/<dir>
-> 	umount <path>
-> 	mount -t cgroup -o <controllers> <path>
-> would easily fail at the last mount with -EBUSY.
->
-> The reason is that this test sequence have the chance of
-> missing a release code path when doing rmdir and umount.
->
-> Add sync between every "rmdir, umount" pair to fix the problem.
->
-> Fixes: #839
->
-> Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> ---
->   .../kernel/controllers/cgroup/cgroup_regression_test.sh    | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index 1f7f3820e..9a00df101 100755
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -145,6 +145,7 @@ test2()
->   	fi
->   
->   	rmdir cgroup/0 cgroup/1
-> +	sync
->   	umount cgroup/
->   }
->   
-> @@ -193,6 +194,7 @@ test3()
->   	wait $pid2 2>/dev/null
->   
->   	rmdir $cpu_subsys_path/0 2> /dev/null
-> +	sync
->   	umount cgroup/ 2> /dev/null
->   	check_kernel_bug
->   }
-> @@ -222,6 +224,7 @@ test4()
->   	mount -t cgroup -o none,name=foo cgroup cgroup/
->   	mkdir cgroup/0
->   	rmdir cgroup/0
-> +	sync
->   	umount cgroup/
->   
->   	if dmesg | grep -q "MAX_LOCKDEP_SUBCLASSES too low"; then
-> @@ -254,6 +257,7 @@ test5()
->   	mount -t cgroup none cgroup 2> /dev/null
->   	mkdir cgroup/0
->   	rmdir cgroup/0
-> +	sync
->   	umount cgroup/ 2> /dev/null
->   	check_kernel_bug
->   }
-> @@ -290,6 +294,7 @@ test6()
->   
->   	mount -t cgroup -o ns xxx cgroup/ > /dev/null 2>&1
->   	rmdir cgroup/[1-9]* > /dev/null 2>&1
-> +	sync
->   	umount cgroup/
->   	check_kernel_bug
->   }
-> @@ -324,6 +329,7 @@ test_7_1()
->   	mkdir $subsys_path/0
->   	sleep 100 < $subsys_path/0 &	# add refcnt to this dir
->   	rmdir $subsys_path/0
-> +	sync
->   
->   	# remount with new subsystems added
->   	# since 2.6.28, this remount will fail
-> @@ -349,6 +355,7 @@ test_7_2()
->   	mkdir cgroup/0
->   	sleep 100 < cgroup/0 &	# add refcnt to this dir
->   	rmdir cgroup/0
-> +	sync
->   
->   	# remount with some subsystems removed
->   	# since 2.6.28, this remount will fail
-I would like a short comment close to the syncs. When I converted 
-cpuset_regression_test.sh, I would have removed the sync in there, if 
-there wouldn't have been any comment.
-Most of the time syncs are not required and just added by paranoid 
-developers, but if there is a real reason, I think it should be stated 
-in a comment.
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/epoll_pwait2/.gitignore   |  1 +
+ .../syscalls/epoll_pwait2/epoll_pwait202.c    | 76 +++++++++++++++++++
+ 3 files changed, 78 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait2/epoll_pwait202.c
 
-J?rg
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 8a6b8ba20..f63e57fee 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -167,6 +167,7 @@ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+ epoll_pwait01 epoll_pwait01
+ epoll_pwait201 epoll_pwait201
++epoll_pwait202 epoll_pwait202
+
+ eventfd01 eventfd01
+
+diff --git a/testcases/kernel/syscalls/epoll_pwait2/.gitignore b/testcases/kernel/syscalls/epoll_pwait2/.gitignore
+index 2298cf9d9..8b2c314ea 100644
+--- a/testcases/kernel/syscalls/epoll_pwait2/.gitignore
++++ b/testcases/kernel/syscalls/epoll_pwait2/.gitignore
+@@ -1 +1,2 @@
+ epoll_pwait201
++epoll_pwait202
+diff --git a/testcases/kernel/syscalls/epoll_pwait2/epoll_pwait202.c b/testcases/kernel/syscalls/epoll_pwait2/epoll_pwait202.c
+new file mode 100644
+index 000000000..2b0d5dd5b
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_pwait2/epoll_pwait202.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 HUAWEI LIMITED
++ * Author: Xie Ziyao <xieziyao@huawei.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Check that epoll_pwait2 timeouts correctly.
++ */
++
++#include <sys/epoll.h>
++
++#include "tst_timer_test.h"
++#include "lapi/epoll.h"
++
++static int efd, sfd[2];
++static struct epoll_event e;
++static struct __kernel_timespec ts;
++
++int sample_fn(int clk_id, long long usec)
++{
++	if (usec >= 1000000) {
++		ts.tv_sec = usec / 1000000;
++		ts.tv_nsec = 0;
++	} else {
++		ts.tv_sec = 0;
++		ts.tv_nsec = usec * 1000;
++	}
++
++	tst_timer_start(clk_id);
++	TEST(tst_syscall(__NR_epoll_pwait2, efd, &e, 1, &ts, NULL, 0));
++	tst_timer_stop();
++	tst_timer_sample();
++
++	if (TST_RET != 0) {
++		tst_res(TFAIL | TTERRNO,
++			"epoll_pwait2() returned %li, expected 0", TST_RET);
++		return 1;
++	}
++
++	return 0;
++}
++
++static void setup(void)
++{
++	SAFE_SOCKETPAIR(AF_UNIX, SOCK_STREAM, 0, sfd);
++
++	efd = epoll_create(1);
++	if (efd == -1)
++		tst_brk(TBROK | TERRNO, "epoll_create()");
++
++	e.events = EPOLLIN;
++	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
++		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++}
++
++static void cleanup(void)
++{
++	if (efd > 0)
++		SAFE_CLOSE(efd);
++
++	if (sfd[0] > 0)
++		SAFE_CLOSE(sfd[0]);
++
++	if (sfd[1] > 0)
++		SAFE_CLOSE(sfd[1]);
++}
++
++static struct tst_test test = {
++	.scall = "epoll_pwait2()",
++	.sample = sample_fn,
++	.setup = setup,
++	.cleanup = cleanup,
++};
+--
+2.17.1
+
