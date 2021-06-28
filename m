@@ -1,106 +1,98 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 28 Jun 2021 11:26:32 +0800
-Subject: [LTP] [PATCH] fix cpuhotplug04 check last cpu error
-In-Reply-To: <20210628110316.01247283dbcd989cfe6f7c12@uniontech.com>
-References: <20210628110316.01247283dbcd989cfe6f7c12@uniontech.com>
-Message-ID: <CAEemH2dHj9jBfV0NNEDCx+4pijh6Mm-z68ZHa8Y8XGWdATxUkg@mail.gmail.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Mon, 28 Jun 2021 11:30:02 +0800
+Subject: [LTP] [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount failure
+Message-ID: <20210628033002.GA1469@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jun 28, 2021 at 11:03 AM <gouhao@uniontech.com> wrote:
+From a151d48235629a125d5db57dd76c96fd951d5293 Mon Sep 17 00:00:00 2001
+From: Leo Yu-Chi Liang <ycliang@andestech.com>
+Date: Mon, 28 Jun 2021 11:05:54 +0800
+Subject: [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount failure
 
-> hi, LiWang,
->
-> My cpu is Hygon C86 7185 32-core Processor, x86_64 architecture? kernel is
-> 4.19.90
-> Only cpu0 has no files?It doesn't seem to have anything to do with the
-> kernel. I tried other kernels, too
->
+The test sequence
+	mount -t cgroup -o <controllers> <path>
+	mkdir <path>/<dir>
+	rmdir <path>/<dir>
+	umount <path>
+	mount -t cgroup -o <controllers> <path>
+would easily fail at the last mount with -EBUSY.
 
-Thanks for the info.
+The reason is that this test sequence have the chance of
+missing a release code path when doing rmdir and umount.
 
-I checked my laptop (5.12.11-300.fc34.x86_64), it has no 'online' file in
-the first cpu0 as well.
-It seems common to consider cpu0 is always online, so it won?t have
-?cpu0/online?.
-(I got this view from google search ^)
+Add sync between every "rmdir, umount" pair to fix the problem.
 
+Fixes: #839
 
-But go back to your patch, does it really make sense to correct
-the judgment of the last CPU?
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ .../kernel/controllers/cgroup/cgroup_regression_test.sh    | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-If I understand correctly, the original judgment is purposely to
-guarantee all CPUs can be safely offline, so if there is already
-a cpu0 without an 'online' file, it will be filtered out, right? This
-means all of the remaining hotplugged CPUs can be offline safely.
-In this case, the judgment of the last CPU is losing effect as
-expected. Why should we correct it?
-
-Or, do you get any failures/abnormal in testing?
-
-
-
->
-> Attached is a screenshot.
-> ------------------------------
->
-> *??????????*
->
-> *UnionTech Software Technology Co., Ltd. *
->
-> ???www.uniontech.com
->
->
->
-> ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
->
->
->
-> This email message is intended only for the use of the individual or
-> entity who/which is the intended recipient and may contain information that
-> is privileged or confidential. If you are not the intended recipient, you
-> are hereby notified that any use, dissemination, distribution or copying
-> of, or taking any action in reliance on, this e-mail is strictly
-> prohibited. If you have received this email in error, please notify
-> UnionTech Software Technology  immediately by replying to this e-mail and
-> immediately delete and discard all copies of the e-mail and the attachment
-> thereto (if any). Thank you.
-> ------------------------------------------------------------------
->
-> Hi Hao,
->
-> On Mon, Jun 28, 2021 at 9:16 AM Gou Hao <gouhao@uniontech.com> wrote:
->
->> From: gouhao <gouhao@uniontech.com>
->>
->>
->
->> Cpuhotplug04 uses get_hotplug_cpus when traversing,
->> get_hotplug_cpus will filter out cpu without online files,
->> and $cpus_num will be used to determine the last cpu num?
->
->
->
->>
->> If some cpu do not have an online file,
->> it will lead to an error in the judgment of the last cpu.
->>
->
-> I'm wondering what kind of CPU does not have the online file, and which
-> kernel version is being used? Is that test machine an x86 or MIPS?
->
-> --
-> Regards,
-> Li Wang
->
-
-
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index 1f7f3820e..9a00df101 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -145,6 +145,7 @@ test2()
+ 	fi
+ 
+ 	rmdir cgroup/0 cgroup/1
++	sync
+ 	umount cgroup/
+ }
+ 
+@@ -193,6 +194,7 @@ test3()
+ 	wait $pid2 2>/dev/null
+ 
+ 	rmdir $cpu_subsys_path/0 2> /dev/null
++	sync
+ 	umount cgroup/ 2> /dev/null
+ 	check_kernel_bug
+ }
+@@ -222,6 +224,7 @@ test4()
+ 	mount -t cgroup -o none,name=foo cgroup cgroup/
+ 	mkdir cgroup/0
+ 	rmdir cgroup/0
++	sync
+ 	umount cgroup/
+ 
+ 	if dmesg | grep -q "MAX_LOCKDEP_SUBCLASSES too low"; then
+@@ -254,6 +257,7 @@ test5()
+ 	mount -t cgroup none cgroup 2> /dev/null
+ 	mkdir cgroup/0
+ 	rmdir cgroup/0
++	sync
+ 	umount cgroup/ 2> /dev/null
+ 	check_kernel_bug
+ }
+@@ -290,6 +294,7 @@ test6()
+ 
+ 	mount -t cgroup -o ns xxx cgroup/ > /dev/null 2>&1
+ 	rmdir cgroup/[1-9]* > /dev/null 2>&1
++	sync
+ 	umount cgroup/
+ 	check_kernel_bug
+ }
+@@ -324,6 +329,7 @@ test_7_1()
+ 	mkdir $subsys_path/0
+ 	sleep 100 < $subsys_path/0 &	# add refcnt to this dir
+ 	rmdir $subsys_path/0
++	sync
+ 
+ 	# remount with new subsystems added
+ 	# since 2.6.28, this remount will fail
+@@ -349,6 +355,7 @@ test_7_2()
+ 	mkdir cgroup/0
+ 	sleep 100 < cgroup/0 &	# add refcnt to this dir
+ 	rmdir cgroup/0
++	sync
+ 
+ 	# remount with some subsystems removed
+ 	# since 2.6.28, this remount will fail
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210628/64c58e22/attachment.htm>
+2.17.0
+
