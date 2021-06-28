@@ -1,37 +1,34 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 28 Jun 2021 10:49:39 +0200
-Subject: [LTP] [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount
- failure
-In-Reply-To: <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de>
-References: <20210628033002.GA1469@andestech.com>
- <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de>
-Message-ID: <YNmNI3omBfAnj5dN@pevik>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Mon, 28 Jun 2021 12:47:57 +0300
+Subject: [LTP] [PATCH 1/2] lib/tst_test: setup TCID earlier in do_setup()
+In-Reply-To: <YNWhdgAUp5e/hNwx@yuki>
+References: <20210624081500.11715-1-aleksei.kodanev@bell-sw.com>
+ <YNWhdgAUp5e/hNwx@yuki>
+Message-ID: <e65771c9-709e-e6a6-977b-90c6ca194d08@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi Li, Cyril,
+On 25.06.2021 12:27, Cyril Hrubis wrote:
+> Hi!
+>> TCID can be NULL in tst_tmpdir() because it is set after do_setup():
+>>
+>>     tst_run_tcases()
+>>         do_setup()
+>>             ...
+>>             tid = get_tid();
+>>             ...
+>>             tst_tmpdir()  /* using TCID here */
+>>         TCID = tid;
+> 
+> Good catch, I wonder how we missed this for so long...
 
-[ changed Cyril's address in Cc to the working one ]
+Ran into this with musl, it pastes "(null)" to the tmpdir path if
+TCID is NULL, so the final template looked like "/tmp/(nuXXXXXX".
+But glibc skips it because the same string doesn't fit in 3 chars
+template in snprintf(..., "%s/%.3sXXXXXX",...).
 
-> >   	mkdir cgroup/0
-> >   	sleep 100 < cgroup/0 &	# add refcnt to this dir
-> >   	rmdir cgroup/0
-> > +	sync
-> >   	# remount with some subsystems removed
-> >   	# since 2.6.28, this remount will fail
-> I would like a short comment close to the syncs. When I converted
-> cpuset_regression_test.sh, I would have removed the sync in there, if there
-> wouldn't have been any comment.
-> Most of the time syncs are not required and just added by paranoid
-> developers, but if there is a real reason, I think it should be stated in a
-> comment.
-
-Agree with this. Are all these sync really needed? Or just some?
-
-Kind regards,
-Petr
-
-> J?rg
+Applied the patch. Thanks for review!
