@@ -1,32 +1,94 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Mon, 28 Jun 2021 17:50:10 +0200
-Subject: [LTP] [PATCH v3 1/4] include/tst_pid.h: fix language typo
- (subtraction)
-In-Reply-To: <YNnhawovD2P/JBHu@pevik>
+Date: Mon, 28 Jun 2021 18:05:56 +0200
+Subject: [LTP] [PATCH v3 2/4] syscalls/msgstress04: fix fork failure on
+ small memory systems
+In-Reply-To: <YNnhBhN6bzUCfqdk@pevik>
 References: <20210623135912.81156-1-krzysztof.kozlowski@canonical.com>
- <20210623135912.81156-2-krzysztof.kozlowski@canonical.com>
- <YNnhawovD2P/JBHu@pevik>
-Message-ID: <c02beb1f-31f8-8902-8be8-27b4bf9ecfe2@canonical.com>
+ <20210623135912.81156-3-krzysztof.kozlowski@canonical.com>
+ <YNnhBhN6bzUCfqdk@pevik>
+Message-ID: <07365741-d607-b1b0-879a-ecf7ae34cc14@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 28/06/2021 16:49, Petr Vorel wrote:
+On 28/06/2021 16:47, Petr Vorel wrote:
 > Hi Krzysztof,
 > 
->>  /*
->> - * Returns number of free pids by substarction of the number of pids
->> + * Returns number of free pids by subtraction of the number of pids
->>   * currently used ('ps -eT') from max_pids
-> Because you change the description of this function in the next commit,
-> I'd just fix this simple typo in 2nd commit. But of course it's not wrong
-> (prevents keeping the fix even if we'd removed second commit).
+> nit: Instead of git commit subject "syscalls/msgstress04: fix fork failure
+> on small memory systems". I'd use "tst_pid.c: fix fork ...".
 
-The commits should do only one thing (fix one bug, bring one feature if
-possible) and the next commit does not touch that line. There is no
-re-doing of the same change in next commit.
+Sure.
+
+>> +/*
+>> + * Get the effective session UID - either one invoking current test via sudo
+>> + * or the real UID.
+>> + */
+>> +static int get_session_uid(void)
+>> +{
+>> +	const char *sudo_uid;
+>> +
+>> +	sudo_uid = getenv("SUDO_UID");
+>> +	if (sudo_uid) {
+>> +		int real_uid;
+>> +
+>> +		TEST(sscanf(sudo_uid, "%u", &real_uid));
+> FYI We recently decided to not use TEST() macro in library itself.
+> See Richard's effort [1]. We should document it in LTP Library API Writing Guidelines [2]
+> 
+
+I'll remove it.
+
+>> +		if (TEST_RETURN != 1) {
+>> +#ifdef DEBUG
+> FYI we don't support DEBUG. Either the information is always important or not.
+> In this case I'd probably avoid printing it.
+
+Sure.
+
+> 
+>> +			tst_resm(TINFO, "No SUDO_UID from env");
+>> +#endif
+>> +		} else {
+>> +			return real_uid;
+>> +		}
+>> +	}
+>> +
+>> +	return getuid();
+>> +}
+>> +
+>> +static int read_session_pids_limit(const char *path_fmt, int uid,
+>> +				   void (*cleanup_fn) (void))
+>> +{
+>> +	int max_pids, ret;
+>> +	char path[PATH_MAX];
+>> +
+>> +	ret = snprintf(path, sizeof(path), path_fmt, uid);
+>> +	if (ret < 0 || (size_t)ret >= sizeof(path))
+>> +		return -1;
+>> +
+>> +	if (access(path, R_OK) != 0) {
+>> +		tst_resm(TINFO, "Cannot read session user limits from '%s'", path);
+>> +		return -1;
+>> +	}
+>> +
+>> +	SAFE_FILE_SCANF(cleanup_fn, path, "%d", &max_pids);
+>> +	tst_resm(TINFO, "Found limit of processes %d (from %s)", max_pids, path);
+>> +
+>> +	return max_pids;
+>> +}
+>> +
+>> +static int get_session_pids_limit(void (*cleanup_fn) (void))
+>> +{
+>> +	int max_pids, uid;
+>> +
+>> +	uid = get_session_uid();
+>> +	if (TEST_RETURN != 1) {
+> and here as well 
+
+OK, thanks for review!
+
 
 Best regards,
 Krzysztof
