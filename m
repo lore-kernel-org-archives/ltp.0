@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 28 Jun 2021 17:01:43 +0200
-Subject: [LTP] [PATCH v3 1/3] lib: Add SAFE_SETGROUPS() and
- SAFE_GETGROUPS() function to LTP library
-In-Reply-To: <1624512827-3256-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon, 28 Jun 2021 17:02:56 +0200
+Subject: [LTP] [PATCH v3 2/3] include/tst_test_macro.h: Add
+ TST_EXP_FAIL2 macros
+In-Reply-To: <1624512827-3256-2-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <YNM4rlDJLzb4xk6v@yuki>
  <1624512827-3256-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <YNnkV/Jz4IV4+PbJ@yuki>
+ <1624512827-3256-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <YNnkoGkFbv1HftMs@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,7 +14,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed, thanks.
+> +[source,c]
+> +-------------------------------------------------------------------------------
+> +static void test(void)
+> +{
+> +	...
+> +	TST_EXP_FAIL2(msgget(key, flags), EINVAL, "msgget(%i, %i)", key, flags);
+> +	...
+> +}
+> +The 'TST_EXP_FAIL2()' is the same as 'TST_EXP_FAIL' the only difference is that
+> +the return value is a non-negative integer if call passes.
+> +
+
+I've fixed this part, it was missing the end of the code block (the ----
+at the end) and reworded the description a bit and pushed, thanks.
 
 -- 
 Cyril Hrubis
