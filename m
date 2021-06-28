@@ -1,95 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 28 Jun 2021 22:24:27 +0200
-Subject: [LTP] [PATCH 2/2] tpci: accept ENOMEM resource failure with
- virtio-pci
-In-Reply-To: <20210618130536.54806-2-krzysztof.kozlowski@canonical.com>
-References: <20210618130536.54806-1-krzysztof.kozlowski@canonical.com>
- <20210618130536.54806-2-krzysztof.kozlowski@canonical.com>
-Message-ID: <YNov+zuL+C4JFlsJ@pevik>
+Date: Mon, 28 Jun 2021 22:29:30 +0200
+Subject: [LTP] [PATCH] ltp_tpci.c: Add release operation before
+ allocation
+In-Reply-To: <20210401125127.45600-1-wangxin410@huawei.com>
+References: <20210401125127.45600-1-wangxin410@huawei.com>
+Message-ID: <YNoxKg+Hm0qa3Z70@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Krzysztof,
+Hi Xin,
 
-> Assigning the memory prefetch resource to virtio-pci might fail on VM
-> guests.  For example on Oracle cloud instance (describing itself as
-> "Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1
-> 12/03/2020"):
+> When we run the test case, the following results will be obtained:
+> test_pci  283  TPASS  :  PCI bus 7d slot 00 : Test-case '11'
+> test_pci  284  TFAIL  :  tpci.c:74: PCI bus 7d slot 00 : Test-case '12'
+> ...
+> test_pci  300  TFAIL  :  tpci.c:74: PCI bus 7d slot 01 : Test-case '12'
+> test_pci  301  TPASS  :  PCI bus 7d slot 01 : Test-case '13'
 
->     test_pci   76  TFAIL  :  tpci.c:73: PCI bus 00 slot 20 : Test-case '12'
+> The analysis is that the space allocated by the bios is insufficient.
+> The solution to this problem can be in add pci_release_resource(dev, i)
+> before system resources are reallocated.Because the resources have been
+> allocated when the system is initialized.If it is redistributed, it
+> should be released and then allocated.
 
-I'm not sure if we don't cover actual bug. Because I haven't found any issues on
-virtio_pci used on VM boxes. But probably failing to assign memory is something
-else than kernel bug.
+I wonder if this is the same issue as the one described by Krzysztof in his
+patch:
+https://patchwork.ozlabs.org/project/ltp/patch/20210401125127.45600-1-wangxin410@huawei.com/
 
-> In dmesg:
-
->     ltp_tpci: test-case 12
->     ltp_tpci: assign resources
->     ltp_tpci: assign resource #0
->     ltp_tpci: name = 0000:00:04.0, flags = 262401, start 0xc000, end 0xc03f
->     ltp_tpci: assign resource #1
->     ltp_tpci: name = 0000:00:04.0, flags = 262656, start 0xc1010000, end 0xc1010fff
->     ltp_tpci: assign resource #2
->     ltp_tpci: name = 0000:00:04.0, flags = 0, start 0x0, end 0x0
->     ltp_tpci: assign resource #3
->     ltp_tpci: name = 0000:00:04.0, flags = 0, start 0x0, end 0x0
->     ltp_tpci: assign resource #4
->     ltp_tpci: name = 0000:00:04.0, flags = 538190348, start 0x800004000, end 0x800007fff
->     virtio-pci 0000:00:04.0: BAR 4: no space for [mem size 0x00004000 64bit pref]
->     virtio-pci 0000:00:04.0: BAR 4: failed to assign [mem size 0x00004000 64bit pref]
-
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-> ---
-
-> Found the failure on multiple different kernels in different cloud
-> providers (Oracle, AWS, Azure):
-> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1878389
-> ---
->  .../device-drivers/pci/tpci_kernel/ltp_tpci.c     | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-
-> diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-> index f2d4a4ba497c..41462d4ead6d 100644
-> --- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-> +++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-> @@ -108,8 +108,9 @@ static int probe_pci_dev(unsigned int bus, unsigned int slot)
->  	if (!dev || !dev->driver)
->  		return -ENODEV;
-
-> -	prk_info("found pci_dev '%s', bus %u, devfn %u",
-> -		pci_name(dev), bus, slot);
-> +	prk_info("found pci_dev '%s', driver '%s', bus %u, devfn %u",
-> +		pci_name(dev), (dev->driver) ? dev->driver->name : "",
-> +		bus, slot);
-
->  	ltp_pci.dev = dev;
->  	ltp_pci.bus = dev->bus;
-> @@ -444,7 +445,15 @@ static int test_assign_resources(void)
->  			r->flags & IORESOURCE_PREFETCH) {
->  			ret = pci_assign_resource(dev, i);
->  			prk_info("assign resource to '%d', ret '%d'", i, ret);
-> -			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
-> +			if (dev->driver && !strncmp(dev->driver->name, "virtio-pci",
-> +						    strlen("virtio-pci"))) {
-> +				if (ret < 0 && ret != -EBUSY && ret != -ENOMEM)
-> +					rc |= TFAIL;
-> +				else
-
-Shouldn't ENOMEM/EBUSY result to TCONF or TBROK?
-
-https://github.com/linux-test-project/ltp/wiki/C-Test-API#12-basic-test-interface
+Could you please share what HW and kernel you use and post dmesg?
 
 Kind regards,
 Petr
 
-> +					rc |= TPASS;
-> +			} else {
-> +				rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
-> +			}
->  		}
->  	}
+> Signed-off-by: Wang Xin <wangxin410@huawei.com>
+> ---
+>  testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 1 +
+>  1 file changed, 1 insertion(+)
+
+> diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+> index e29821dda..5b0896093 100644
+> --- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+> +++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+> @@ -439,6 +439,7 @@ static int test_assign_resources(void)
+>  		if (r->flags & IORESOURCE_MEM &&
+>  			r->flags & IORESOURCE_PREFETCH) {
+> +			pci_release_resource(dev, i);
+>  			ret = pci_assign_resource(dev, i);
+>  			prk_info("assign resource to '%d', ret '%d'", i, ret);
+>  			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
+> 2.17.1
