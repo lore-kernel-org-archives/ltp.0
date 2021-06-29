@@ -1,278 +1,227 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 29 Jun 2021 08:27:04 +0100
-Subject: [LTP] [PATCH 1/7] Add Sparse based checker and TST_RET/ERR check
+Date: Tue, 29 Jun 2021 08:27:05 +0100
+Subject: [LTP] [PATCH 2/7] Add 'make check' to the build system
 In-Reply-To: <20210629072710.23800-1-rpalethorpe@suse.com>
 References: <20210629072710.23800-1-rpalethorpe@suse.com>
-Message-ID: <20210629072710.23800-2-rpalethorpe@suse.com>
+Message-ID: <20210629072710.23800-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Vendors in Sparse as a git module. Then uses it to check for stores to
-TST_RET/ERR within the library.
+Allows one to run 'make check' or 'make check-$TARGET'. Which will
+execute the CHECK tool with that target's CC arguments and
+CHECK_FLAGS. By default the check tool is tools/sparse/main.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- .gitmodules             |   3 +
- tools/sparse/.gitignore |   1 +
- tools/sparse/Makefile   |  20 ++++++
- tools/sparse/README.md  |  34 +++++++++
- tools/sparse/main.c     | 148 ++++++++++++++++++++++++++++++++++++++++
- tools/sparse/sparse-src |   1 +
- 6 files changed, 207 insertions(+)
- create mode 100644 tools/sparse/.gitignore
- create mode 100644 tools/sparse/Makefile
- create mode 100644 tools/sparse/README.md
- create mode 100644 tools/sparse/main.c
- create mode 160000 tools/sparse/sparse-src
+ Makefile                                | 8 ++++++++
+ include/mk/env_post.mk                  | 8 ++++++++
+ include/mk/generic_leaf_target.inc      | 5 ++++-
+ include/mk/generic_trunk_target.inc     | 7 ++++++-
+ include/mk/lib.mk                       | 3 +++
+ include/mk/module.mk                    | 2 ++
+ include/mk/rules.mk                     | 9 +++++++++
+ include/mk/sparse.mk                    | 9 +++++++++
+ include/mk/testcases.mk                 | 1 +
+ testcases/open_posix_testsuite/Makefile | 4 ++++
+ 10 files changed, 54 insertions(+), 2 deletions(-)
+ create mode 100644 include/mk/sparse.mk
 
-diff --git a/.gitmodules b/.gitmodules
-index 1c9e9c38a..a3c34af4b 100644
---- a/.gitmodules
-+++ b/.gitmodules
-@@ -1,3 +1,6 @@
- [submodule "testcases/kernel/mce-test"]
- 	path = testcases/kernel/mce-test
- 	url = git://git.kernel.org/pub/scm/linux/kernel/git/gong.chen/mce-test.git
-+[submodule "tools/sparse/sparse-src"]
-+	path = tools/sparse/sparse-src
-+	url = git://git.kernel.org/pub/scm/devel/sparse/sparse.git
-diff --git a/tools/sparse/.gitignore b/tools/sparse/.gitignore
+diff --git a/Makefile b/Makefile
+index 56812d77b..3b0ba330d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -79,6 +79,7 @@ BOOTSTRAP_TARGETS	:= $(sort $(COMMON_TARGETS) $(CLEAN_TARGETS) $(INSTALL_TARGETS
+ CLEAN_TARGETS		:= $(addsuffix -clean,$(CLEAN_TARGETS))
+ INSTALL_TARGETS		:= $(addsuffix -install,$(INSTALL_TARGETS))
+ MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
++CHECK_TARGETS		:= $(addsuffix -check,testcases lib)
+ 
+ # There's no reason why we should run `all' twice. Otherwise we're just wasting
+ # 3+ mins of useful CPU cycles on a modern machine, and even more time on an
+@@ -108,6 +109,10 @@ $(MAKE_TARGETS) include-all lib-all libs-all:
+ 	$(MAKE) -C "$(subst -all,,$@)" \
+ 		-f "$(abs_top_srcdir)/$(subst -all,,$@)/Makefile" all
+ 
++$(CHECK_TARGETS): tools-all
++	$(MAKE) -C "$(subst -check,,$@)" \
++		-f "$(abs_top_srcdir)/$(subst -check,,$@)/Makefile" check
++
+ # Let's not conflict with ac-clean, maintainer-clean, etc, so.
+ $(filter-out include-clean,$(CLEAN_TARGETS))::
+ 	-$(MAKE) -C "$(subst -clean,,$@)" \
+@@ -189,6 +194,9 @@ INSTALL_TARGETS		+= $(addprefix $(DESTDIR)/$(bindir)/,$(BINDIR_INSTALL_SCRIPTS))
+ 
+ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
+ 
++.PHONY: check
++check: $(CHECK_TARGETS)
++
+ ## Install
+ install: $(INSTALL_TARGETS)
+ 
+diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+index 1d22f9c53..0288c30b6 100644
+--- a/include/mk/env_post.mk
++++ b/include/mk/env_post.mk
+@@ -89,6 +89,14 @@ $(error You must define $$(prefix) before executing install)
+ endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
+ endif
+ 
++CHECK_TARGETS			?= $(addprefix check-,$(notdir $(patsubst %.c,%,$(sort $(wildcard $(abs_srcdir)/*.c)))))
++CHECK_TARGETS			:= $(filter-out $(addprefix check-, $(FILTER_OUT_MAKE_TARGETS)), $(CHECK_TARGETS))
++CHECK				?= $(abs_top_srcdir)/tools/sparse/main
++
++ifeq ($(dir $(CHECK)),$(abs_top_srcdir)/tools/sparse/main)
++CHECK_DEPS			+= $(CHECK)
++endif
++
+ include $(top_srcdir)/include/mk/rules.mk
+ 
+ endif
+diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
+index 64953f89a..aa092a5a3 100644
+--- a/include/mk/generic_leaf_target.inc
++++ b/include/mk/generic_leaf_target.inc
+@@ -92,7 +92,7 @@
+ # INSTALL_DIR			:= $(libdir)
+ #
+ 
+-.PHONY: all clean install
++.PHONY: all clean install check
+ 
+ ifneq ($(strip $(MAKE_TARGETS)),)
+ $(MAKE_TARGETS) += $(HOST_MAKE_TARGETS)
+@@ -109,4 +109,7 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
+ 
+ install: $(INSTALL_FILES)
+ 
++$(CHECK_TARGETS): | $(CHECK_DEPS)
++check: $(CHECK_TARGETS)
++
+ # vim: syntax=make
+diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
+index fc59f944f..32a108fbf 100644
+--- a/include/mk/generic_trunk_target.inc
++++ b/include/mk/generic_trunk_target.inc
+@@ -48,7 +48,7 @@
+ 
+ include $(top_srcdir)/include/mk/functions.mk
+ 
+-RECURSIVE_TARGETS		?= all install
++RECURSIVE_TARGETS		?= all install check
+ 
+ $(eval $(get_make_dirs))
+ 
+@@ -68,6 +68,9 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
+ 
+ trunk-install: $(INSTALL_FILES)
+ 
++$(CHECK_TARGETS): | $(CHECK_DEPS)
++trunk-check: $(CHECK_TARGETS)
++
+ # Avoid creating duplicate .PHONY references to all, clean, and install. IIRC,
+ # I've seen some indeterministic behavior when one does this in the past with
+ # GNU Make...
+@@ -108,4 +111,6 @@ else
+ endif
+ endif
+ 
++check: trunk-check
++
+ # vim: syntax=make
+diff --git a/include/mk/lib.mk b/include/mk/lib.mk
+index f9b6c0aff..3bf63bf9e 100644
+--- a/include/mk/lib.mk
++++ b/include/mk/lib.mk
+@@ -26,6 +26,7 @@
+ # Makefile to include for libraries.
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/sparse.mk
+ 
+ INSTALL_DIR	:= $(libdir)
+ 
+@@ -57,6 +58,8 @@ LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
+ 
+ LIBOBJS		:= $(LIBSRCS:.c=.o)
+ 
++CHECK_TARGETS	:= $(addprefix check-,$(notdir $(LIBSRCS:.c=)))
++
+ $(LIB): $(notdir $(LIBOBJS))
+ 	@if [ -z "$(strip $^)" ] ; then \
+ 		echo "Cowardly refusing to create empty archive"; \
+diff --git a/include/mk/module.mk b/include/mk/module.mk
+index 6c8814b96..3bb7350f1 100644
+--- a/include/mk/module.mk
++++ b/include/mk/module.mk
+@@ -47,6 +47,8 @@ endif
+ 
+ CLEAN_TARGETS += .dep_modules *.mod built-in.a
+ 
++CHECK_TARGETS := $(filter-out %.ko, $(CHECK_TARGETS))
++
+ MODULE_SOURCES := $(patsubst %.ko,%.c,$(filter %.ko, $(MAKE_TARGETS)))
+ 
+ # Ignoring the exit status of commands is done to be forward compatible with
+diff --git a/include/mk/rules.mk b/include/mk/rules.mk
+index c8f4bbbbe..2a04b2b67 100644
+--- a/include/mk/rules.mk
++++ b/include/mk/rules.mk
+@@ -37,3 +37,12 @@ else
+ 	@$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
+ 	@echo CC $(target_rel_dir)$@
+ endif
++
++.PHONY: $(CHECK_TARGETS)
++$(CHECK_TARGETS): check-%: %.c
++ifdef VERBOSE
++	$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
++else
++	@$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
++	@echo CHECK $(target_rel_dir)$<
++endif
+diff --git a/include/mk/sparse.mk b/include/mk/sparse.mk
 new file mode 100644
-index 000000000..ba2906d06
+index 000000000..66711d107
 --- /dev/null
-+++ b/tools/sparse/.gitignore
-@@ -0,0 +1 @@
-+main
-diff --git a/tools/sparse/Makefile b/tools/sparse/Makefile
-new file mode 100644
-index 000000000..cf4ccdb60
---- /dev/null
-+++ b/tools/sparse/Makefile
-@@ -0,0 +1,20 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
++++ b/include/mk/sparse.mk
+@@ -0,0 +1,9 @@
++# Rules to make sparse tool(s) for inclusion in lib and testcases Makefiles
 +
-+top_srcdir		?= ../..
++SPARSE_DIR:= $(abs_top_builddir)/tools/sparse
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/functions.mk
++$(SPARSE_DIR)/main: $(SPARSE_DIR)
++	$(MAKE) -C "$^" all
 +
-+SPARSE_SRC	?= sparse-src
++$(SPARSE_DIR): %:
++	mkdir -p "$@"
+diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+index 1c81773d0..444020f16 100644
+--- a/include/mk/testcases.mk
++++ b/include/mk/testcases.mk
+@@ -22,6 +22,7 @@
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(top_srcdir)/include/mk/functions.mk
++include $(top_srcdir)/include/mk/sparse.mk
+ 
+ APICMDS_DIR	:= $(abs_top_builddir)/tools/apicmds
+ 
+diff --git a/testcases/open_posix_testsuite/Makefile b/testcases/open_posix_testsuite/Makefile
+index 205ecdc00..fea6db14b 100644
+--- a/testcases/open_posix_testsuite/Makefile
++++ b/testcases/open_posix_testsuite/Makefile
+@@ -104,3 +104,7 @@ $(CRITICAL_MAKEFILE): \
+ 	$(top_srcdir)/LDFLAGS			\
+ 	$(top_srcdir)/LDLIBS
+ 	@$(MAKE) generate-makefiles
 +
-+$(SPARSE_SRC)/libsparse.a:
-+	$(error "You need to build Sparse. See tools/sparse/README.md")
-+
-+HOST_MAKE_TARGETS	:= main
-+MAKE_DEPS		+= $(SPARSE_SRC)/libsparse.a
-+HOST_CFLAGS		+= -I$(SPARSE_SRC)
-+HOST_LDLIBS		+= $(SPARSE_SRC)/libsparse.a
-+
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/tools/sparse/README.md b/tools/sparse/README.md
-new file mode 100644
-index 000000000..368cd7d99
---- /dev/null
-+++ b/tools/sparse/README.md
-@@ -0,0 +1,34 @@
-+# Sparse based linting
-+
-+This tool checks LTP test and library code for common problems.
-+
-+## Building
-+
-+The bad news is you must get and build Sparse[^1]. The good news this only
-+takes a minute.
-+
-+If you already have the Sparse source code, then do the
-+following. Where `$SRC_PATH` is the path to the Sparse directory.
-+
-+```sh
-+$ cd tools/sparse
-+$ make -C $SRC_PATH -j$(nproc) # Optional
-+$ make SPARSE_SRC=$SRC_PATH
-+```
-+If not then you can fetch it via the git submodule
-+
-+```sh
-+$ cd tools/sparse
-+$ git submodule update --init
-+$ cd sparse-src
-+$ make -C sparse-src -j$(nproc)
-+$ make
-+```
-+
-+## Usage
-+
-+It is integrated with the LTP build system. Just run `make check` or
-+`make check-a_test01`, where `a_test01` is an arbitrary test
-+executable or object file.
-+
-+[1]: Many distributions have a Sparse package. This only contains some executables. There is no shared library
-diff --git a/tools/sparse/main.c b/tools/sparse/main.c
-new file mode 100644
-index 000000000..58f9a549c
---- /dev/null
-+++ b/tools/sparse/main.c
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
-+ *
-+ * Sparse allows us to perform checks on the AST (struct symbol) or on
-+ * a linearized representation. In the latter case we are given a set
-+ * of entry points (functions) containing basic blocks of
-+ * instructions.
-+ *
-+ * The basic blocks contain byte code in SSA form. This is similar to
-+ * the the intermediate representation most compilers use during
-+ * optimisation.
-+ */
-+#include <stdarg.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <ctype.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+
-+#include "lib.h"
-+#include "allocate.h"
-+#include "opcode.h"
-+#include "token.h"
-+#include "parse.h"
-+#include "symbol.h"
-+#include "expression.h"
-+#include "linearize.h"
-+
-+/* The rules for test, library and tool code are different */
-+enum ltp_tu_kind {
-+	LTP_LIB,
-+	LTP_OTHER,
-+};
-+
-+static enum ltp_tu_kind tu_kind = LTP_OTHER;
-+
-+/* Check for LTP-002
-+ *
-+ * Inspects the destination symbol of each store instruction. If it is
-+ * TST_RET or TST_ERR then emit a warning.
-+ */
-+static void check_lib_sets_TEST_vars(const struct instruction *insn)
-+{
-+	static struct ident *TST_RES_id, *TST_ERR_id;
-+
-+	if (!TST_RES_id) {
-+		TST_RES_id = built_in_ident("TST_RET");
-+		TST_ERR_id = built_in_ident("TST_ERR");
-+	}
-+
-+	if (insn->opcode != OP_STORE)
-+		return;
-+	if (insn->src->ident != TST_RES_id &&
-+	    insn->src->ident != TST_ERR_id)
-+		return;
-+
-+	warning(insn->pos,
-+		"LTP-002: Library should not write to TST_RET or TST_ERR");
-+}
-+
-+static void do_basicblock_checks(struct basic_block *bb)
-+{
-+	struct instruction *insn;
-+
-+	FOR_EACH_PTR(bb->insns, insn) {
-+		if (!bb_reachable(insn->bb))
-+			continue;
-+
-+		if (tu_kind == LTP_LIB)
-+			check_lib_sets_TEST_vars(insn);
-+	} END_FOR_EACH_PTR(insn);
-+}
-+
-+static void do_entrypoint_checks(struct entrypoint *ep)
-+{
-+	struct basic_block *bb;
-+
-+	FOR_EACH_PTR(ep->bbs, bb) {
-+		do_basicblock_checks(bb);
-+	} END_FOR_EACH_PTR(bb);
-+}
-+
-+/* Compile the AST into a graph of basicblocks */
-+static void process_symbols(struct symbol_list *list)
-+{
-+	struct symbol *sym;
-+
-+	FOR_EACH_PTR(list, sym) {
-+		struct entrypoint *ep;
-+
-+		expand_symbol(sym);
-+		ep = linearize_symbol(sym);
-+		if (!ep || !ep->entry)
-+			continue;
-+
-+		do_entrypoint_checks(ep);
-+
-+		if (dbg_entry)
-+			show_entry(ep);
-+	} END_FOR_EACH_PTR(sym);
-+}
-+
-+static void collect_info_from_args(const int argc, char *const *const argv)
-+{
-+	int i;
-+
-+	for (i = 0; i < argc; i++) {
-+		if (!strcmp("-DLTPLIB", argv[i])) {
-+			tu_kind = LTP_LIB;
-+		}
-+	}
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct string_list *filelist = NULL;
-+	char *file;
-+
-+	Waddress_space = 0;
-+	Wbitwise = 0;
-+	Wcast_truncate = 0;
-+	Wcontext = 0;
-+	Wdecl = 0;
-+	Wexternal_function_has_definition = 0;
-+	Wflexible_array_array = 0;
-+	Wimplicit_int = 0;
-+	Wint_to_pointer_cast = 0;
-+	Wmemcpy_max_count = 0;
-+	Wnon_pointer_null = 0;
-+	Wone_bit_signed_bitfield = 0;
-+	Woverride_init = 0;
-+	Wpointer_to_int_cast = 0;
-+	Wvla = 0;
-+
-+	do_output = 0;
-+
-+	collect_info_from_args(argc, argv);
-+
-+	process_symbols(sparse_initialize(argc, argv, &filelist));
-+	FOR_EACH_PTR(filelist, file) {
-+		process_symbols(sparse(file));
-+	} END_FOR_EACH_PTR(file);
-+
-+	report_stats();
-+	return 0;
-+}
-diff --git a/tools/sparse/sparse-src b/tools/sparse/sparse-src
-new file mode 160000
-index 000000000..8af243292
---- /dev/null
-+++ b/tools/sparse/sparse-src
-@@ -0,0 +1 @@
-+Subproject commit 8af2432923486c753ab52cae70b94ee684121080
++.PHONY: check
++check:
++	@echo "Checker not yet supported by Open POSIX testsuite"
 -- 
 2.31.1
 
