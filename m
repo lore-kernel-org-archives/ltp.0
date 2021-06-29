@@ -1,5 +1,5 @@
 From: Josef Bacik <josef@toxicpanda.com>
-Date: Tue, 29 Jun 2021 14:32:15 -0400
+Date: Tue, 29 Jun 2021 16:14:43 -0400
 Subject: [LTP] [BUG] btrfs potential failure on 32 core LTP test
  (fallocate05)
 In-Reply-To: <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
@@ -9,7 +9,7 @@ References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
  <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
  <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
  <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
-Message-ID: <57cfa398-8a33-06e2-dfcd-fa959c27ac47@toxicpanda.com>
+Message-ID: <62d1df14-7ee5-8ff4-5676-cf98cdd966df@toxicpanda.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -29,15 +29,9 @@ On 6/29/21 2:28 PM, Krzysztof Kozlowski wrote:
 > dmesg is empty - no error around this.
 > 
 > Maybe something with per-cpu variables?
+> 
 
-Ah yeah, so since you are further into this than I am, want to give my recent 
-batch of fixes a try?
-
-https://github.com/josefbacik/linux/tree/delalloc-shrink
-
-This might actually resolve the problems.  If not I'm getting one of our 64cpu 
-boxes setup to test this, I also couldn't reproduce it on my smaller local 
-machines.  Thanks,
+Can I get y'alls .config?  I ran it on one of my 80cpu boxes and it didn't 
+reproduce on my new code or on 5.12.  Thanks,
 
 Josef
-
