@@ -1,24 +1,26 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 29 Jun 2021 18:10:22 +0800
-Subject: [LTP] [PATCH v2] ipc/msgget03: Make sure we get ENOSPC error
- after creating MSGMNI message queues
-In-Reply-To: <1624930818-31474-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <CAEemH2eJLd5cSHZLUyXCYBhr643noDPT4RrMb8YBxrE_M3d1gA@mail.gmail.com>
- <1624930818-31474-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <CAEemH2cR2tFtVMPQE=SQqPDOA1gPo3ONTxrr5N5FVs5fJzXhyQ@mail.gmail.com>
+Date: Tue, 29 Jun 2021 18:10:41 +0800
+Subject: [LTP] [PATCH 1/2] include/tst_test_macro.h: Fix zero-length
+ gnu_printf format string warning
+In-Reply-To: <1624958759-5562-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1624958759-5562-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <CAEemH2dHmSXkKtzNz9R+CnW3G86HPnWjHMZtiyOa90z0Qk_+aQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+On Tue, Jun 29, 2021 at 5:25 PM Yang Xu <xuyang2018.jy@fujitsu.com> wrote:
 
-Patch applied, thanks.
+> When build test_macro02.c, it reports the following warning.
+>
+
+Pushed.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210629/af3ce3d3/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210629/a1cfb0d1/attachment.htm>
