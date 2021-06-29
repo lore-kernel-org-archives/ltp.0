@@ -1,161 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Jun 2021 23:48:05 +0200
-Subject: [LTP] [PATCH v3 2/5] lib: Add script for running tests
+Date: Wed, 30 Jun 2021 00:20:12 +0200
+Subject: [LTP] [PATCH v3 0/5] Run tests in CI
 In-Reply-To: <20210629214808.18760-1-pvorel@suse.cz>
 References: <20210629214808.18760-1-pvorel@suse.cz>
-Message-ID: <20210629214808.18760-3-pvorel@suse.cz>
+Message-ID: <YNucnE+N98zmKmWN@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For now run only tests which TPASS or TCONF.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
 Hi,
 
-not sure if using same name for custom versions is a good idea.
-Maybe I should have just used echo, but I plan to add other features to
-runtest.sh, thus I try to keep usage similar to normal tests.
-Maybe it's a wrong approach, making things less readable for new
-contributors who will try to figure out why their change in test API
-failed.
+> Hi all,
+
+> changes v2->v3:
+> * going back to simplest changes in make
+> * adding lib/newlib_tests/runtest.sh (instead fighting with our build
+>   system I concentrated on runtest.sh)
+> * removing tst_fuzzy_sync01 as it sporadically fails
+
+> Tested:
+> https://github.com/pevik/ltp/actions/runs/984224611
+
+> TODO: Not what's wrong with PATH on CentOS 7:
+> /__w/ltp/ltp/lib/newlib_tests/runtest.sh: line 78: ./test05: No such file or directory
+> ./shell/net/../../../../testcases/lib/tst_test.sh: line 149: tst_rod: command not found
+
+> Maybe it's in different directory?
+> It uses old make 3.82, there is something incompatible.
+OK, whole out-of-tree build is broken. There are 2 issues:
+
+1) probably PATH ../../testcases/lib/ points to srcdir instead of build dir).
+It's just older make exit properly with 2, newer don't, not sure why.
+
+2) The same issue with non-zero exit not being propagated on newer make
+is also when runtest.sh quits with:
+runtest TFAIL: shell/net/tst_ipaddr_un.sh failed with TFAIL
+
+I guess I need to use @set -e; in Makefile (I didn't want to use set -e in the
+runtest.sh itself, it would break printing printing what failed).
 
 Kind regards,
 Petr
-
- lib/newlib_tests/runtest.sh | 120 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 120 insertions(+)
- create mode 100755 lib/newlib_tests/runtest.sh
-
-diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
-new file mode 100755
-index 000000000..b110a5876
---- /dev/null
-+++ b/lib/newlib_tests/runtest.sh
-@@ -0,0 +1,120 @@
-+#!/bin/sh
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+
-+LTP_C_API_TESTS="${LTP_C_API_TESTS:-test05 test07 test09 test12 test15 test16 test18
-+test_exec test_timer tst_bool_expr tst_res_hexd tst_strstatus tst_fuzzy_sync02}"
-+
-+LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh shell/net/*.sh}"
-+
-+cd $(dirname $0)
-+PATH="$PWD/../../testcases/lib/:$PATH"
-+
-+. tst_ansi_color.sh
-+
-+usage()
-+{
-+	echo "Usage: $0 [-c|-s]"
-+	echo "-c    run C API tests only"
-+	echo "-s    run shell API tests only"
-+	echo "-h    print this help"
-+}
-+
-+# custom version
-+tst_flag2mask()
-+{
-+	case "$1" in
-+	TPASS) return 0;;
-+	TFAIL) return 1;;
-+	TBROK) return 2;;
-+	TWARN) return 4;;
-+	TINFO) return 16;;
-+	TCONF) return 32;;
-+	esac
-+}
-+
-+# custom version
-+tst_res()
-+{
-+	if [ $# -eq 0 ]; then
-+		echo >&2
-+		return
-+	fi
-+
-+	local res="$1"
-+	shift
-+
-+	tst_color_enabled
-+	local color=$?
-+
-+	printf "runtest " >&2
-+	tst_print_colored $res "$res: " >&2
-+	echo "$@" >&2
-+
-+}
-+
-+# custom version
-+tst_brk()
-+{
-+	local res="$1"
-+	shift
-+
-+	tst_res
-+	tst_res $res $@
-+
-+	exit $(tst_flag2mask $res)
-+}
-+
-+run_tests()
-+{
-+	local target="$1"
-+	local i ret tconf tpass vars
-+
-+	eval vars="\$LTP_${target}_API_TESTS"
-+
-+	tst_res TINFO "=== Run $target tests ==="
-+
-+	for i in $vars; do
-+		tst_res TINFO "* $i"
-+		./$i
-+		ret=$?
-+
-+		case $ret in
-+			0) tpass="$tpass $i";;
-+			1) tst_brk TFAIL "$i failed with TFAIL";;
-+			2) tst_brk TFAIL "$i failed with TBROK";;
-+			4) tst_brk TFAIL "$i failed with TWARN";;
-+			32) tconf="$tconf $i";;
-+		esac
-+		tst_res
-+	done
-+
-+	[ -z "$tpass" ] && tpass=" none"
-+	[ -z "$tconf" ] && tconf=" none"
-+
-+	tst_res TINFO "=== $target TEST RESULTS ==="
-+	tst_res TINFO "Tests exited with TPASS:$tpass"
-+	tst_res TINFO "Tests exited with TCONF:$tconf"
-+	tst_res
-+}
-+
-+run=
-+while getopts chs opt; do
-+	case $opt in
-+		'h') usage; exit 0;;
-+		'c') run="c";;
-+		's') run="s";;
-+		*) usage; tst_brk TBROK "Error: invalid option";;
-+	esac
-+done
-+
-+tst_res TINFO "PATH='$PATH'"
-+
-+if [ -z "$run" -o "$run" = "c" ]; then
-+	run_tests "C"
-+fi
-+
-+if [ -z "$run" -o "$run" = "s" ]; then
-+	run_tests "SHELL"
-+fi
-+
-+tst_res TPASS "No test failed"
--- 
-2.32.0
-
