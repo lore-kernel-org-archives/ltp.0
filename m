@@ -1,55 +1,43 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 29 Jun 2021 08:27:10 +0100
-Subject: [LTP] [PATCH 7/7] Reference LTP-002 rule in Cocci scripts
-In-Reply-To: <20210629072710.23800-1-rpalethorpe@suse.com>
-References: <20210629072710.23800-1-rpalethorpe@suse.com>
-Message-ID: <20210629072710.23800-8-rpalethorpe@suse.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 29 Jun 2021 10:12:00 +0200
+Subject: [LTP] [PATCH 1/1] delete_module0{1,
+ 3}: Skip when kernel is locked down
+In-Reply-To: <YNrFdXeCRXUko2Ua@pevik>
+References: <20210629065836.20932-1-pvorel@suse.cz> <YNrFdXeCRXUko2Ua@pevik>
+Message-ID: <CAASaF6wVbZ8GT549y3RXiTrXi3mwtFVK=-=RWtyJOK+1TasJCg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Avoid duplication of rule description
+On Tue, Jun 29, 2021 at 9:02 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- scripts/coccinelle/libltp-test-macro-vars.cocci | 6 +-----
- scripts/coccinelle/libltp-test-macro.cocci      | 4 +---
- 2 files changed, 2 insertions(+), 8 deletions(-)
+> Hi,
+>
+> > Lockdown requires signed modules, otherwise tests fails with EPERM.
+> > TCONF until we solve signing modules in LTP build.
+>
 
-diff --git a/scripts/coccinelle/libltp-test-macro-vars.cocci b/scripts/coccinelle/libltp-test-macro-vars.cocci
-index ed5459a48..e0fe4e2a7 100644
---- a/scripts/coccinelle/libltp-test-macro-vars.cocci
-+++ b/scripts/coccinelle/libltp-test-macro-vars.cocci
-@@ -1,11 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- // Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
- 
--// The TEST macro should not be used in the library because it sets
--// TST_RET and TST_ERR which are global variables. The test author
--// only expects these to be changed if *they* call TEST directly.
--
--// Find all positions where TEST's variables are used
-+// Find violations of LTP-002
- @ find_use exists @
- expression E;
- @@
-diff --git a/scripts/coccinelle/libltp-test-macro.cocci b/scripts/coccinelle/libltp-test-macro.cocci
-index 7563d23aa..86c55c6c4 100644
---- a/scripts/coccinelle/libltp-test-macro.cocci
-+++ b/scripts/coccinelle/libltp-test-macro.cocci
-@@ -1,9 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- // Copyright (c) 2021 SUSE LLC  <rpalethorpe@suse.com>
- 
--// The TEST macro should not be used in the library because it sets
--// TST_RET and TST_ERR which are global variables. The test author
--// only expects these to be changed if *they* call TEST directly.
-+// Find and fix violations of rule LTP-002
- 
- // Set with -D fix
- virtual fix
--- 
-2.31.1
+Acked-by: Jan Stancek <jstancek@redhat.com>
 
+
+> BTW up now only 4 tests are using tst_lockdown_enabled() check, but maybe
+> it's a
+> time to add flag .skip_on_lockdown, as docparse would benefit from it.
+>
+
+I guess we'll find more over time.
+
+
+>
+> Kind regards,
+> Petr
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210629/aa3e9b00/attachment-0001.htm>
