@@ -1,54 +1,87 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 28 Jun 2021 22:29:30 +0200
-Subject: [LTP] [PATCH] ltp_tpci.c: Add release operation before
- allocation
-In-Reply-To: <20210401125127.45600-1-wangxin410@huawei.com>
-References: <20210401125127.45600-1-wangxin410@huawei.com>
-Message-ID: <YNoxKg+Hm0qa3Z70@pevik>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Tue, 29 Jun 2021 09:40:18 +0800
+Subject: [LTP] [PATCH v2] ipc/msgget03: Make sure we get ENOSPC error after
+ creating MSGMNI message queues
+In-Reply-To: <CAEemH2eJLd5cSHZLUyXCYBhr643noDPT4RrMb8YBxrE_M3d1gA@mail.gmail.com>
+References: <CAEemH2eJLd5cSHZLUyXCYBhr643noDPT4RrMb8YBxrE_M3d1gA@mail.gmail.com>
+Message-ID: <1624930818-31474-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xin,
+Even msgget() failed, this for loop in setup phase still continues. So we can't know
+whether system creates actual MSGMNI message queues and then fail with ENOSPC. Fix this by
+reporting fail if msgget failed in setup.
 
-> When we run the test case, the following results will be obtained:
-> test_pci  283  TPASS  :  PCI bus 7d slot 00 : Test-case '11'
-> test_pci  284  TFAIL  :  tpci.c:74: PCI bus 7d slot 00 : Test-case '12'
-> ...
-> test_pci  300  TFAIL  :  tpci.c:74: PCI bus 7d slot 01 : Test-case '12'
-> test_pci  301  TPASS  :  PCI bus 7d slot 01 : Test-case '13'
+Also make use of TST_EXP_FAIL2 macro. It has been introduced in the previous commit
+95f518efe ("include/tst_test_macro.h: Add TST_EXP_FAIL2 macros").
 
-> The analysis is that the space allocated by the bios is insufficient.
-> The solution to this problem can be in add pci_release_resource(dev, i)
-> before system resources are reallocated.Because the resources have been
-> allocated when the system is initialized.If it is redistributed, it
-> should be released and then allocated.
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+v1->v2: Remove check for -1 and pre-initialize the array
+ .../kernel/syscalls/ipc/msgget/msgget03.c     | 27 ++++++-------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-I wonder if this is the same issue as the one described by Krzysztof in his
-patch:
-https://patchwork.ozlabs.org/project/ltp/patch/20210401125127.45600-1-wangxin410@huawei.com/
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+index 8fa620855..76cf82cd3 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+@@ -20,22 +20,14 @@
+ #include "tst_safe_sysv_ipc.h"
+ #include "libnewipc.h"
+ 
+-static int maxmsgs;
++static int maxmsgs, queue_cnt;
+ static int *queues;
+ static key_t msgkey;
+ 
+ static void verify_msgget(void)
+ {
+-	TEST(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL));
+-	if (TST_RET != -1)
+-		tst_res(TFAIL, "msgget() succeeded unexpectedly");
+-
+-	if (TST_ERR == ENOSPC) {
+-		tst_res(TPASS | TTERRNO, "msgget() failed as expected");
+-	} else {
+-		tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
+-			" expected ENOSPC");
+-	}
++	TST_EXP_FAIL2(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL), ENOSPC,
++		"msgget(%i, %i)", msgkey + maxmsgs, IPC_CREAT | IPC_EXCL);
+ }
+ 
+ static void setup(void)
+@@ -49,11 +41,10 @@ static void setup(void)
+ 	queues = SAFE_MALLOC(maxmsgs * sizeof(int));
+ 
+ 	for (num = 0; num < maxmsgs; num++) {
+-		queues[num] = -1;
+-
+ 		res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
+-		if (res != -1)
+-			queues[num] = res;
++		if (res == -1)
++			tst_brk(TBROK | TERRNO, "msgget failed unexpectedly");
++		queues[queue_cnt++] = res;
+ 	}
+ 
+ 	tst_res(TINFO, "The maximum number of message queues (%d) reached",
+@@ -67,10 +58,8 @@ static void cleanup(void)
+ 	if (!queues)
+ 		return;
+ 
+-	for (num = 0; num < maxmsgs; num++) {
+-		if (queues[num] != -1)
+-			SAFE_MSGCTL(queues[num], IPC_RMID, NULL);
+-	}
++	for (num = 0; num < queue_cnt; num++)
++		SAFE_MSGCTL(queues[num], IPC_RMID, NULL);
+ 
+ 	free(queues);
+ }
+-- 
+2.23.0
 
-Could you please share what HW and kernel you use and post dmesg?
-
-Kind regards,
-Petr
-
-> Signed-off-by: Wang Xin <wangxin410@huawei.com>
-> ---
->  testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 1 +
->  1 file changed, 1 insertion(+)
-
-> diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-> index e29821dda..5b0896093 100644
-> --- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-> +++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-> @@ -439,6 +439,7 @@ static int test_assign_resources(void)
->  		if (r->flags & IORESOURCE_MEM &&
->  			r->flags & IORESOURCE_PREFETCH) {
-> +			pci_release_resource(dev, i);
->  			ret = pci_assign_resource(dev, i);
->  			prk_info("assign resource to '%d', ret '%d'", i, ret);
->  			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
-> 2.17.1
