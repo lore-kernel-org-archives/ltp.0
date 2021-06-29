@@ -1,237 +1,156 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Tue, 29 Jun 2021 19:14:09 +0800
-Subject: [LTP] [PATCH v2] lib/newlib_tests/test_macros*.c: Include more test
- macros
-In-Reply-To: <CAEemH2dL=bZdP_X+YkZuOFK2dCV8RTq5CyZYPTrKh+_2yjHK5g@mail.gmail.com>
-References: <CAEemH2dL=bZdP_X+YkZuOFK2dCV8RTq5CyZYPTrKh+_2yjHK5g@mail.gmail.com>
-Message-ID: <1624965249-7087-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Tue, 29 Jun 2021 11:16:02 +0000
+Subject: [LTP] [PATCH v2 1/2] syscalls: Use more accurate TST_EXP_FAIL2
+ macro
+In-Reply-To: <1624963486-6614-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <YNHCQ8qWSBdHIAra@yuki>
+ <1624963486-6614-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <60DB0121.9000404@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) test TST_EXP_FD_SILENT macro in test_macros01.c
-2) test TST_EXP_FAIL2 macro in test_macros02.c
-3) test TST_EXP_PASS_SILENT macro in test_macros03.c
-4) add test_macros04.c to test TST_EXP_PID and TST_EXP_PID_SILENT macros
+Hi Cyril
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
-v1->v2:
-1.add more info for silent macro
-2.replace scall string with function name
- lib/newlib_tests/.gitignore      |  1 +
- lib/newlib_tests/test_macros01.c | 26 +++++++++++---
- lib/newlib_tests/test_macros02.c | 21 +++++++++---
- lib/newlib_tests/test_macros03.c | 17 +++++++---
- lib/newlib_tests/test_macros04.c | 58 ++++++++++++++++++++++++++++++++
- 5 files changed, 110 insertions(+), 13 deletions(-)
- create mode 100644 lib/newlib_tests/test_macros04.c
+When I do this patch, I found a tst_res usage problem in sendfile06.c.
 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index b95ead2c2..83a240223 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -41,5 +41,6 @@ tst_bool_expr
- test_macros01
- test_macros02
- test_macros03
-+test_macros04
- tst_fuzzy_sync01
- tst_fuzzy_sync02
-diff --git a/lib/newlib_tests/test_macros01.c b/lib/newlib_tests/test_macros01.c
-index 9a920f8e4..c04c94363 100644
---- a/lib/newlib_tests/test_macros01.c
-+++ b/lib/newlib_tests/test_macros01.c
-@@ -4,7 +4,7 @@
-  */
- 
- /*
-- * Test macros.
-+ * Test TST_EXP_FD and TST_EXP_FD_SILENT macro.
-  */
- 
- #include "tst_test.h"
-@@ -25,14 +25,32 @@ static int inval_val(void)
- 	return -42;
- }
- 
-+static int zero_val(void)
-+{
-+	return 0;
-+}
-+
- static void do_test(void)
- {
--	TST_EXP_FD(fail_fd(), "TEST DESCRIPTION");
-+	tst_res(TINFO, "Testing TST_EXP_FD macro");
-+	TST_EXP_FD(fail_fd(), "fail_fd()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD(pass_fd(), "pass_fd()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FD(pass_fd(), "%s", "TEST DESCRIPTION PARAM");
-+	TST_EXP_FD(inval_val(), "inval_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD(zero_val(), "zero_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_FD_SILENT macro");
-+	TST_EXP_FD_SILENT(fail_fd(), "fail_fd()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FD(inval_val());
-+	TST_EXP_FD_SILENT(pass_fd(), "%s", "pass_fd()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_FD_SILENT(pass_fd, ...)", TST_PASS);
-+	TST_EXP_FD_SILENT(inval_val(), "inval_val()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD_SILENT(zero_val(), "zero_val()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_FD_SILENT(zero_val, ...)", TST_PASS);
- }
- 
- static struct tst_test test = {
-diff --git a/lib/newlib_tests/test_macros02.c b/lib/newlib_tests/test_macros02.c
-index f0a692ab6..647f73682 100644
---- a/lib/newlib_tests/test_macros02.c
-+++ b/lib/newlib_tests/test_macros02.c
-@@ -4,7 +4,7 @@
-  */
- 
- /*
-- * Test macros.
-+ * Test TST_EXP_FAIL and TST_EXP_FAIL2 macro.
-  */
- 
- #include "tst_test.h"
-@@ -27,13 +27,24 @@ static int inval_ret_fn(void)
- 
- static void do_test(void)
- {
--	TST_EXP_FAIL(fail_fn(), EINVAL);
-+	tst_res(TINFO, "Testing TST_EXP_FAIL macro");
-+	TST_EXP_FAIL(fail_fn(), EINVAL, "fail_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FAIL(fail_fn(), ENOTTY);
-+	TST_EXP_FAIL(fail_fn(), ENOTTY, "fail_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FAIL(pass_fn(), ENOTTY);
-+	TST_EXP_FAIL(pass_fn(), ENOTTY, "pass_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FAIL(inval_ret_fn(), ENOTTY, "TEST DESCRIPTION");
-+	TST_EXP_FAIL(inval_ret_fn(), ENOTTY, "inval_ret_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_FAIL2 macro");
-+	TST_EXP_FAIL2(fail_fn(), EINVAL, "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL2(fail_fn(), ENOTTY, "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL2(pass_fn(), ENOTTY, "pass_fn");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL2(inval_ret_fn(), ENOTTY, "inval_ret_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
- }
- 
-diff --git a/lib/newlib_tests/test_macros03.c b/lib/newlib_tests/test_macros03.c
-index 414370980..19a0ad6fd 100644
---- a/lib/newlib_tests/test_macros03.c
-+++ b/lib/newlib_tests/test_macros03.c
-@@ -4,7 +4,7 @@
-  */
- 
- /*
-- * Test macros.
-+ * Test TST_EXP_PASS and TST_EXP_PASS_SILENT macro.
-  */
- 
- #include "tst_test.h"
-@@ -27,11 +27,20 @@ static int inval_ret_fn(void)
- 
- static void do_test(void)
- {
--	TST_EXP_PASS(fail_fn());
-+	tst_res(TINFO, "Testing TST_EXP_PASS macro");
-+	TST_EXP_PASS(fail_fn(), "fail_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_PASS(pass_fn(), "TEST DESCRIPTION");
-+	TST_EXP_PASS(pass_fn(), "pass_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_PASS(inval_ret_fn());
-+	TST_EXP_PASS(inval_ret_fn(), "inval_ret_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_PASS_SILENT macro");
-+	TST_EXP_PASS_SILENT(fail_fn(), "fail_fn()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PASS_SILENT(pass_fn(), "pass_fn()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_PASS_SILENT(pass_fn, ...)", TST_PASS);
-+	TST_EXP_PASS_SILENT(inval_ret_fn(), "inval_ret_fn()");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
- }
- 
-diff --git a/lib/newlib_tests/test_macros04.c b/lib/newlib_tests/test_macros04.c
-new file mode 100644
-index 000000000..e0111807f
---- /dev/null
-+++ b/lib/newlib_tests/test_macros04.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*
-+ * Test TST_EXP_PID and TST_EXP_PID_SILENT macro.
-+ */
-+
-+#include "tst_test.h"
-+
-+static int fail_pid(void)
-+{
-+	errno = EINVAL;
-+	return -1;
-+}
-+
-+static int pass_pid(void)
-+{
-+	return 42;
-+}
-+
-+static int inval_val(void)
-+{
-+	return -42;
-+}
-+
-+static int zero_val(void)
-+{
-+	return 0;
-+}
-+
-+static void do_test(void)
-+{
-+	tst_res(TINFO, "Testing TST_EXP_PID macro");
-+	TST_EXP_PID(fail_pid(), "fail_pid()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID(pass_pid(), "pass_pid()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID(inval_val(), "inval_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID(zero_val(), "zero_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_PID_SILENT macro");
-+	TST_EXP_PID_SILENT(fail_pid(), "fail_pid()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID_SILENT(pass_pid(), "%s", "pass_pid()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_PID_SILENT(pass_pid, ...)", TST_PASS);
-+	TST_EXP_PID_SILENT(inval_val(), "inval_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID_SILENT(zero_val(), "zero_val()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_PID_SILENT(zero_val, ...)", TST_PASS);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
--- 
-2.23.0
+see https://github.com/linux-test-project/ltp/runs/2933366481#step:10:3797
 
+Best Regards
+Yang Xu
+> For these modified files, the return value is expected to be non-negative integer
+> if call passes. So they should use TST_EXP_FAIL2 macro.
+> 
+> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+> ---
+>   testcases/kernel/syscalls/accept/accept01.c             | 2 +-
+>   testcases/kernel/syscalls/adjtimex/adjtimex02.c         | 2 +-
+>   testcases/kernel/syscalls/io_getevents/io_getevents01.c | 3 ++-
+>   testcases/kernel/syscalls/io_submit/io_submit03.c       | 2 +-
+>   testcases/kernel/syscalls/open/open02.c                 | 2 +-
+>   testcases/kernel/syscalls/open/open11.c                 | 2 +-
+>   testcases/kernel/syscalls/recvmmsg/recvmmsg01.c         | 2 +-
+>   testcases/kernel/syscalls/sendfile/sendfile03.c         | 2 +-
+>   testcases/kernel/syscalls/sendfile/sendfile04.c         | 2 +-
+>   9 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/accept/accept01.c b/testcases/kernel/syscalls/accept/accept01.c
+> index 52234b792..85af0f8af 100644
+> --- a/testcases/kernel/syscalls/accept/accept01.c
+> +++ b/testcases/kernel/syscalls/accept/accept01.c
+> @@ -97,7 +97,7 @@ void verify_accept(unsigned int nr)
+>   {
+>   	struct test_case *tcase =&tcases[nr];
+> 
+> -	TST_EXP_FAIL(accept(*tcase->fd, tcase->sockaddr,&tcase->salen),
+> +	TST_EXP_FAIL2(accept(*tcase->fd, tcase->sockaddr,&tcase->salen),
+>   	             tcase->experrno, "%s", tcase->desc);
+>   }
+> 
+> diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+> index 5d8d7019b..747d83254 100644
+> --- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+> +++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+> @@ -110,7 +110,7 @@ static void verify_adjtimex(unsigned int i)
+>   		}
+>   	}
+> 
+> -	TST_EXP_FAIL(tv->adjtimex(bufp), tc[i].exp_err, "adjtimex() error");
+> +	TST_EXP_FAIL2(tv->adjtimex(bufp), tc[i].exp_err, "adjtimex() error");
+> 
+>   	if (tc[i].exp_err == EPERM)
+>   		SAFE_SETEUID(0);
+> diff --git a/testcases/kernel/syscalls/io_getevents/io_getevents01.c b/testcases/kernel/syscalls/io_getevents/io_getevents01.c
+> index 9dba4addf..e8a426ab6 100644
+> --- a/testcases/kernel/syscalls/io_getevents/io_getevents01.c
+> +++ b/testcases/kernel/syscalls/io_getevents/io_getevents01.c
+> @@ -23,7 +23,8 @@ static void run(void)
+>   	aio_context_t ctx;
+> 
+>   	memset(&ctx, 0, sizeof(ctx));
+> -	TST_EXP_FAIL(tst_syscall(__NR_io_getevents, ctx, 0, 0, NULL, NULL), EINVAL);
+> +	TST_EXP_FAIL2(tst_syscall(__NR_io_getevents, ctx, 0, 0, NULL, NULL), EINVAL,
+> +		"io_getevents syscall with invalid ctx");
+>   }
+> 
+>   static struct tst_test test = {
+> diff --git a/testcases/kernel/syscalls/io_submit/io_submit03.c b/testcases/kernel/syscalls/io_submit/io_submit03.c
+> index 052b0c8cc..90780c0e4 100644
+> --- a/testcases/kernel/syscalls/io_submit/io_submit03.c
+> +++ b/testcases/kernel/syscalls/io_submit/io_submit03.c
+> @@ -103,7 +103,7 @@ static void cleanup(void)
+> 
+>   static void run(unsigned int i)
+>   {
+> -	TST_EXP_FAIL(tst_syscall(__NR_io_submit, *tc[i].ctx, tc[i].nr, tc[i].iocbs),
+> +	TST_EXP_FAIL2(tst_syscall(__NR_io_submit, *tc[i].ctx, tc[i].nr, tc[i].iocbs),
+>   		     tc[i].exp_errno, "io_submit() with %s", tc[i].desc);
+>   }
+> 
+> diff --git a/testcases/kernel/syscalls/open/open02.c b/testcases/kernel/syscalls/open/open02.c
+> index ca9839c2d..67bf423ae 100644
+> --- a/testcases/kernel/syscalls/open/open02.c
+> +++ b/testcases/kernel/syscalls/open/open02.c
+> @@ -49,7 +49,7 @@ static void verify_open(unsigned int n)
+>   {
+>   	struct tcase *tc =&tcases[n];
+> 
+> -	TST_EXP_FAIL(open(tc->filename, tc->flag, 0444),
+> +	TST_EXP_FAIL2(open(tc->filename, tc->flag, 0444),
+>   	             tc->exp_errno, "open() %s", tc->desc);
+>   }
+> 
+> diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
+> index ded384fa8..3c3c11b84 100644
+> --- a/testcases/kernel/syscalls/open/open11.c
+> +++ b/testcases/kernel/syscalls/open/open11.c
+> @@ -278,7 +278,7 @@ static struct test_case {
+>   static void verify_open(unsigned int n)
+>   {
+>   	if (tc[n].err>  0) {
+> -		TST_EXP_FAIL(open(tc[n].path, tc[n].flags, tc[n].mode),
+> +		TST_EXP_FAIL2(open(tc[n].path, tc[n].flags, tc[n].mode),
+>   		             tc[n].err, "%s", tc[n].desc);
+>   	} else if (tc[n].err == 0) {
+>   		TST_EXP_FD(open(tc[n].path, tc[n].flags, tc[n].mode),
+> diff --git a/testcases/kernel/syscalls/recvmmsg/recvmmsg01.c b/testcases/kernel/syscalls/recvmmsg/recvmmsg01.c
+> index 10eaa3dcd..fb21ea1e7 100644
+> --- a/testcases/kernel/syscalls/recvmmsg/recvmmsg01.c
+> +++ b/testcases/kernel/syscalls/recvmmsg/recvmmsg01.c
+> @@ -89,7 +89,7 @@ static void do_test(unsigned int i)
+>   	else
+>   		timeout = tst_ts_get(&ts);
+> 
+> -	TST_EXP_FAIL(tv->recvmmsg(*tc->fd, *tc->msg_vec, VLEN, 0, timeout),
+> +	TST_EXP_FAIL2(tv->recvmmsg(*tc->fd, *tc->msg_vec, VLEN, 0, timeout),
+>   	             tc->exp_errno, "recvmmsg() %s", tc->desc);
+>   }
+> 
+> diff --git a/testcases/kernel/syscalls/sendfile/sendfile03.c b/testcases/kernel/syscalls/sendfile/sendfile03.c
+> index dda651703..85a3b0f35 100644
+> --- a/testcases/kernel/syscalls/sendfile/sendfile03.c
+> +++ b/testcases/kernel/syscalls/sendfile/sendfile03.c
+> @@ -50,7 +50,7 @@ static void cleanup(void)
+> 
+>   static void run(unsigned int i)
+>   {
+> -	TST_EXP_FAIL(sendfile(*(tc[i].out_fd), *(tc[i].in_fd), NULL, 1),
+> +	TST_EXP_FAIL2(sendfile(*(tc[i].out_fd), *(tc[i].in_fd), NULL, 1),
+>   		     EBADF, "sendfile(..) with %s", tc[i].desc);
+>   }
+> 
+> diff --git a/testcases/kernel/syscalls/sendfile/sendfile04.c b/testcases/kernel/syscalls/sendfile/sendfile04.c
+> index 8ebeb3c10..9a8ec08b9 100644
+> --- a/testcases/kernel/syscalls/sendfile/sendfile04.c
+> +++ b/testcases/kernel/syscalls/sendfile/sendfile04.c
+> @@ -58,7 +58,7 @@ static void run(unsigned int i)
+>   	if (tc[i].pass_unmapped_buffer)
+>   		SAFE_MUNMAP(protected_buffer, sizeof(*protected_buffer));
+> 
+> -	TST_EXP_FAIL(sendfile(out_fd, in_fd, protected_buffer, 1),
+> +	TST_EXP_FAIL2(sendfile(out_fd, in_fd, protected_buffer, 1),
+>   		     EFAULT, "sendfile(..) with %s, protection=%d",
+>   		     tc[i].desc, tc[i].protection);
+> 
