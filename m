@@ -1,48 +1,20 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 29 Jun 2021 14:10:47 +0200
-Subject: [LTP] [PATCH v4 4/4] syscalls/msgstress: tune limit of processes
- for small machines
-In-Reply-To: <20210629121047.100391-1-krzysztof.kozlowski@canonical.com>
-References: <20210629121047.100391-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210629121047.100391-5-krzysztof.kozlowski@canonical.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Jun 2021 14:15:39 +0200
+Subject: [LTP] [PATCH 1/1] delete_module0{1,
+ 3}: Skip when kernel is locked down
+In-Reply-To: <CAEemH2dTEC9QNhs4JZtiR33U9m=nyfQOiZ2u=DrMrXkVvcrRDw@mail.gmail.com>
+References: <20210629065836.20932-1-pvorel@suse.cz> <YNrFdXeCRXUko2Ua@pevik>
+ <CAEemH2dTEC9QNhs4JZtiR33U9m=nyfQOiZ2u=DrMrXkVvcrRDw@mail.gmail.com>
+Message-ID: <YNsO63zlBTPy9foV@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Forking the exactly amount of processes as the limit (either from
-max_pids or from cgroups) is risky - OS might be doing some work and
-interfere with the test.  Instead leave some reserve (hard-coded to
-500) for the OS so the test won't fail on fork failure.
+Hi Jan, Li,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- lib/tst_pid.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+thanks for your review, merged!
 
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index c408172675a7..338235f13a6a 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -32,6 +32,8 @@
- #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
- #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
- #define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
-+/* Leave some available processes for the OS */
-+#define PIDS_RESERVE 500
- 
- pid_t tst_get_unused_pid_(void (*cleanup_fn) (void))
- {
-@@ -97,7 +99,7 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
- 	if (max_pids < 0)
- 		return -1;
- 
--	return max_pids;
-+	return max_pids > PIDS_RESERVE ? max_pids - PIDS_RESERVE : 0;
- }
- 
- int tst_get_free_pids_(void (*cleanup_fn) (void))
--- 
-2.27.0
-
+Kind regards,
+Petr
