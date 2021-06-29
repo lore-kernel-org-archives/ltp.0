@@ -1,45 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Jun 2021 23:48:06 +0200
-Subject: [LTP] [PATCH v3 3/5] make: Add make test{, -c, -shell} targets
+Date: Tue, 29 Jun 2021 23:48:08 +0200
+Subject: [LTP] [PATCH v3 5/5] CI: Run also make test
 In-Reply-To: <20210629214808.18760-1-pvorel@suse.cz>
 References: <20210629214808.18760-1-pvorel@suse.cz>
-Message-ID: <20210629214808.18760-4-pvorel@suse.cz>
+Message-ID: <20210629214808.18760-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For testing C and shell API.
+on all targets
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Simplicity wins :).
+ .github/workflows/ci.yml | 3 +++
+ 1 file changed, 3 insertions(+)
 
- Makefile | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index 56812d77b..7c1dba7e6 100644
---- a/Makefile
-+++ b/Makefile
-@@ -192,6 +192,16 @@ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
- ## Install
- install: $(INSTALL_TARGETS)
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index f67f14927..553d3c62b 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -151,6 +151,9 @@ jobs:
+     - name: Compile
+       run: ./build.sh -r build -o ${TREE:-in}
  
-+## Test
-+test: lib-all
-+	$(top_srcdir)/lib/newlib_tests/runtest.sh
++    - name: Test
++      run: ./build.sh -r test -o ${TREE:-in}
 +
-+test-c: lib-all
-+	$(top_srcdir)/lib/newlib_tests/runtest.sh -c
-+
-+test-shell: lib-all
-+	$(top_srcdir)/lib/newlib_tests/runtest.sh -s
-+
- ## Help
- .PHONY: help
- help:
+     - name: Install
+       run: |
+         if [ "$MAKE_INSTALL" = 1 ]; then INSTALL_OPT="-i"; fi
 -- 
 2.32.0
 
