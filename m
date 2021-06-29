@@ -1,18 +1,18 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 29 Jun 2021 19:25:07 +0200
+Date: Tue, 29 Jun 2021 19:26:20 +0200
 Subject: [LTP] [BUG] btrfs potential failure on 32 core LTP test
  (fallocate05)
-In-Reply-To: <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
+In-Reply-To: <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
 References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
-Message-ID: <b5c6779b-f11d-661e-18c5-569a07f6fd8e@canonical.com>
+ <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
+Message-ID: <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 29/06/2021 19:20, Josef Bacik wrote:
+On 29/06/2021 19:24, Josef Bacik wrote:
 > On 6/29/21 1:00 PM, Krzysztof Kozlowski wrote:
 >> Dear BTRFS folks,
 >>
@@ -38,12 +38,49 @@ On 29/06/2021 19:20, Josef Bacik wrote:
 >> cd ../ltp-install
 >> sudo ./runltp -f syscalls -s fallocate05
 >>
+>> Failure output:
+>> tst_test.c:1379: TINFO: Testing on btrfs
+>> tst_test.c:888: TINFO: Formatting /dev/loop4 with btrfs opts='' extra opts=''
+>> tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file7 size 76896492
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file8 size 72228649
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file9 size 36207821
+>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file10 size 81483962
+>> tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
+>> fallocate05.c:81: TPASS: write() wrote 65536 bytes
+>> fallocate05.c:102: TINFO: fallocate()d 0 extra blocks on full FS
+>> fallocate05.c:114: TPASS: fallocate() on full FS
+>> fallocate05.c:130: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)
+>> fallocate05.c:134: TFAIL: write(): ENOSPC (28)
+>>
+>> Test code:
+>> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/fallocate/fallocate05.c#L134
+>>
+>> See also: https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1933112
+>>
+>> Other FS tests succeed on that machines/kernels. Other file systems
+>> also pass - only btrfs fails. The issue was not bisected. Full test
+>> log attached.
+>>
 > 
-> This thing keeps trying to test ext2, how do I make it only test btrfs?  Thanks,
+> Also it looks like you're using a loop device, the instructions you gave me 
+> aren't complete enough for me to reproduce.  What is the actual setup you are 
+> using?  How big is your loop device?  Is it a backing device?  I had to do -b 
+> <device> to get the test to even start to run, but I've got a 2tib ssd, am I 
+> supposed to be using something else?  Thanks,
 
-It tests all available file systems, just wait till it gets to btrfs. I
-don't know how to limit it only to one file system.
+The test takes care about loop device, nothing is needed from your side.
+Just run the test and wait till you see:
+"tst_test.c:1379: TINFO: Testing on btrfs"
 
+That's where the interesting part starts :)
 
 Best regards,
 Krzysztof
