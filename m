@@ -1,233 +1,47 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Tue, 29 Jun 2021 17:25:59 +0800
-Subject: [LTP] [PATCH 2/2] lib/newlib_tests/test_macros*.c: Include more
- test macros
-In-Reply-To: <1624958759-5562-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1624958759-5562-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <1624958759-5562-2-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Tue, 29 Jun 2021 11:38:27 +0200
+Subject: [LTP] [PATCH] ltp_tpci.c: Add release operation before
+ allocation
+In-Reply-To: <YNoxKg+Hm0qa3Z70@pevik>
+References: <20210401125127.45600-1-wangxin410@huawei.com>
+ <YNoxKg+Hm0qa3Z70@pevik>
+Message-ID: <fd26cf45-7dd8-004f-3d41-422ce4d9bbdb@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) test TST_EXP_FD_SILENT macro in test_macros01.c
-2) test TST_EXP_FAIL2 macro in test_macros02.c
-3) test TST_EXP_PASS_SILENT macro in test_macros03.c
-4) add test_macros04.c to test TST_EXP_PID and TST_EXP_PID_SILENT macros
+On 28/06/2021 22:29, Petr Vorel wrote:
+> Hi Xin,
+> 
+>> When we run the test case, the following results will be obtained:
+>> test_pci  283  TPASS  :  PCI bus 7d slot 00 : Test-case '11'
+>> test_pci  284  TFAIL  :  tpci.c:74: PCI bus 7d slot 00 : Test-case '12'
+>> ...
+>> test_pci  300  TFAIL  :  tpci.c:74: PCI bus 7d slot 01 : Test-case '12'
+>> test_pci  301  TPASS  :  PCI bus 7d slot 01 : Test-case '13'
+> 
+>> The analysis is that the space allocated by the bios is insufficient.
+>> The solution to this problem can be in add pci_release_resource(dev, i)
+>> before system resources are reallocated.Because the resources have been
+>> allocated when the system is initialized.If it is redistributed, it
+>> should be released and then allocated.
+> 
+> I wonder if this is the same issue as the one described by Krzysztof in his
+> patch:
+> https://patchwork.ozlabs.org/project/ltp/patch/20210401125127.45600-1-wangxin410@huawei.com/
+> 
+> Could you please share what HW and kernel you use and post dmesg?
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- lib/newlib_tests/.gitignore      |  1 +
- lib/newlib_tests/test_macros01.c | 26 +++++++++++---
- lib/newlib_tests/test_macros02.c | 21 +++++++++---
- lib/newlib_tests/test_macros03.c | 17 +++++++---
- lib/newlib_tests/test_macros04.c | 58 ++++++++++++++++++++++++++++++++
- 5 files changed, 110 insertions(+), 13 deletions(-)
- create mode 100644 lib/newlib_tests/test_macros04.c
+This solves my problem. It seems that could be the root cause - early
+configuration allocated too small resource? It might be also some
+specific BIOS issue (wrong resource allocated?) because in case of
+resource assignment failure, the kernel should try to get the original
+FW address from BIOS (pcibios_retrieve_fw_addr()) and this apparently
+returns NULL translated to -ENOMEM.
 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index b95ead2c2..83a240223 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -41,5 +41,6 @@ tst_bool_expr
- test_macros01
- test_macros02
- test_macros03
-+test_macros04
- tst_fuzzy_sync01
- tst_fuzzy_sync02
-diff --git a/lib/newlib_tests/test_macros01.c b/lib/newlib_tests/test_macros01.c
-index 9a920f8e4..95144385e 100644
---- a/lib/newlib_tests/test_macros01.c
-+++ b/lib/newlib_tests/test_macros01.c
-@@ -4,7 +4,7 @@
-  */
- 
- /*
-- * Test macros.
-+ * Test TST_EXP_FD and TST_EXP_FD_SILENT macro.
-  */
- 
- #include "tst_test.h"
-@@ -25,13 +25,31 @@ static int inval_val(void)
- 	return -42;
- }
- 
-+static int zero_val(void)
-+{
-+	return 0;
-+}
-+
- static void do_test(void)
- {
--	TST_EXP_FD(fail_fd(), "TEST DESCRIPTION");
-+	tst_res(TINFO, "Testing TST_EXP_FD macro");
-+	TST_EXP_FD(fail_fd(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD(pass_fd(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD(inval_val(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD(zero_val(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_FD_SILENT macro");
-+	TST_EXP_FD_SILENT(fail_fd(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FD_SILENT(pass_fd(), "%s", "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FD(pass_fd(), "%s", "TEST DESCRIPTION PARAM");
-+	TST_EXP_FD_SILENT(inval_val(), "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FD(inval_val());
-+	TST_EXP_FD_SILENT(zero_val(), "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
- }
- 
-diff --git a/lib/newlib_tests/test_macros02.c b/lib/newlib_tests/test_macros02.c
-index f0a692ab6..5b14f871b 100644
---- a/lib/newlib_tests/test_macros02.c
-+++ b/lib/newlib_tests/test_macros02.c
-@@ -4,7 +4,7 @@
-  */
- 
- /*
-- * Test macros.
-+ * Test TST_EXP_FAIL and TST_EXP_FAIL2 macro.
-  */
- 
- #include "tst_test.h"
-@@ -27,13 +27,24 @@ static int inval_ret_fn(void)
- 
- static void do_test(void)
- {
--	TST_EXP_FAIL(fail_fn(), EINVAL);
-+	tst_res(TINFO, "Testing TST_EXP_FAIL macro");
-+	TST_EXP_FAIL(fail_fn(), EINVAL, "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FAIL(fail_fn(), ENOTTY);
-+	TST_EXP_FAIL(fail_fn(), ENOTTY, "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FAIL(pass_fn(), ENOTTY);
-+	TST_EXP_FAIL(pass_fn(), ENOTTY, "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_FAIL(inval_ret_fn(), ENOTTY, "TEST DESCRIPTION");
-+	TST_EXP_FAIL(inval_ret_fn(), ENOTTY, "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_FAIL2 macro");
-+	TST_EXP_FAIL2(fail_fn(), EINVAL, "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL2(fail_fn(), ENOTTY, "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL2(pass_fn(), ENOTTY, "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_FAIL2(inval_ret_fn(), ENOTTY, "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
- }
- 
-diff --git a/lib/newlib_tests/test_macros03.c b/lib/newlib_tests/test_macros03.c
-index 414370980..9544aacbc 100644
---- a/lib/newlib_tests/test_macros03.c
-+++ b/lib/newlib_tests/test_macros03.c
-@@ -4,7 +4,7 @@
-  */
- 
- /*
-- * Test macros.
-+ * Test TST_EXP_PASS and TST_EXP_PASS_SILENT macro.
-  */
- 
- #include "tst_test.h"
-@@ -27,11 +27,20 @@ static int inval_ret_fn(void)
- 
- static void do_test(void)
- {
--	TST_EXP_PASS(fail_fn());
-+	tst_res(TINFO, "Testing TST_EXP_PASS macro");
-+	TST_EXP_PASS(fail_fn(), "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_PASS(pass_fn(), "TEST DESCRIPTION");
-+	TST_EXP_PASS(pass_fn(), "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
--	TST_EXP_PASS(inval_ret_fn());
-+	TST_EXP_PASS(inval_ret_fn(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_PASS_SILENT macro");
-+	TST_EXP_PASS_SILENT(fail_fn(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PASS_SILENT(pass_fn(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PASS_SILENT(inval_ret_fn(), "SCALL");
- 	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
- }
- 
-diff --git a/lib/newlib_tests/test_macros04.c b/lib/newlib_tests/test_macros04.c
-new file mode 100644
-index 000000000..968261b9b
---- /dev/null
-+++ b/lib/newlib_tests/test_macros04.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*
-+ * Test TST_EXP_PID and TST_EXP_PID_SILENT macro.
-+ */
-+
-+#include "tst_test.h"
-+
-+static int fail_pid(void)
-+{
-+	errno = EINVAL;
-+	return -1;
-+}
-+
-+static int pass_pid(void)
-+{
-+	return 42;
-+}
-+
-+static int inval_val(void)
-+{
-+	return -42;
-+}
-+
-+static int zero_val(void)
-+{
-+	return 0;
-+}
-+
-+static void do_test(void)
-+{
-+	tst_res(TINFO, "Testing TST_EXP_PID macro");
-+	TST_EXP_PID(fail_pid(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID(pass_pid(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID(inval_val(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID(zero_val(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_PID_SILENT macro");
-+	TST_EXP_PID_SILENT(fail_pid(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID_SILENT(pass_pid(), "%s", "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID_SILENT(inval_val(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_PID_SILENT(zero_val(), "SCALL");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
--- 
-2.23.0
+I am fine with going with this patch instead of mine.
 
+Best regards,
+Krzysztof
