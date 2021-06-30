@@ -1,48 +1,52 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 30 Jun 2021 16:30:03 +0800
-Subject: [LTP] 
-	=?utf-8?q?=5BPATCH=5D_fix_cpuhotplug04_check_last_cpu_erro?=
-	=?utf-8?q?r=E3=80=90Suspected_phishing_email=2C_please_pay_attenti?=
-	=?utf-8?q?on_to_password_security=E3=80=91?=
-In-Reply-To: <1292921202.339978.1625040966427.JavaMail.xmail@bj-wm-cp-8>
-References: <20210628115740.5da3dbfda1c263f95d66c77a@uniontech.com>
- <CAEemH2cMAEuf_Qx-UE8LFX_1zB6N=p=RzJUXr2+tLAFLHuqg9A@mail.gmail.com>
- <1292921202.339978.1625040966427.JavaMail.xmail@bj-wm-cp-8>
-Message-ID: <CAEemH2fQNwP3eRsUMmsHiZfad48ZLvsLPNMWfNS=8xTeWi_Q0g@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Wed, 30 Jun 2021 10:34:56 +0200
+Subject: [LTP] [BUG] btrfs potential failure on 32 core LTP test
+ (fallocate05)
+In-Reply-To: <57cfa398-8a33-06e2-dfcd-fa959c27ac47@toxicpanda.com>
+References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
+ <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
+ <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
+ <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
+ <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
+ <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
+ <57cfa398-8a33-06e2-dfcd-fa959c27ac47@toxicpanda.com>
+Message-ID: <30d510db-df48-e499-6e46-bd84c85d4b41@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Hao,
+On 29/06/2021 20:32, Josef Bacik wrote:
+> On 6/29/21 2:28 PM, Krzysztof Kozlowski wrote:
+>> On 29/06/2021 20:06, Krzysztof Kozlowski wrote:
+>>> Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
+>>> and 64 cores) fail similarly. I'll try later also QEMU machines with
+>>> different amount of CPUs.
+>>>
+>>
+>> Test on QEMU machine with 31 CPUs passes. With 32 CPUs - failure as
+>> reported.
+>>
+>> dmesg is empty - no error around this.
+>>
+>> Maybe something with per-cpu variables?
+> 
+> Ah yeah, so since you are further into this than I am, want to give my recent 
+> batch of fixes a try?
+> 
+> https://github.com/josefbacik/linux/tree/delalloc-shrink
+> 
+> This might actually resolve the problems.  If not I'm getting one of our 64cpu 
+> boxes setup to test this, I also couldn't reproduce it on my smaller local 
+> machines.  Thanks,
 
-On Wed, Jun 30, 2021 at 4:16 PM ?? <gouhao@uniontech.com> wrote:
+I just gave ita try on v5.13 + merge of your branch and it fixes the
+issue, at least on QEMU with 32 and 64 CPUs.
 
->
->
-> Hi LiWang:
->
->
-> you are right.
->
->
-> I asked the CPU manufacturers and tried several kernel, which should be
-> the problem of the kernel.
->
->
-> I don't understand the code right.
->
->
-> Thank you very much.
->
+Would be good to find the exact commit fixing it to be sure it gets
+backported to stables.
 
-You're welcome, and no one can always right,
-just like Petr said: we are all learning.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210630/e2d6773b/attachment.htm>
+Best regards,
+Krzysztof
