@@ -1,49 +1,77 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Jun 2021 13:29:45 +0200
-Subject: [LTP] [BUG] btrfs potential failure on 32 core LTP test
- (fallocate05)
-In-Reply-To: <YNxTr43lvviG0GOn@pevik>
-References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
- <b5c6779b-f11d-661e-18c5-569a07f6fd8e@canonical.com>
- <YNxTr43lvviG0GOn@pevik>
-Message-ID: <YNxVqca+WeQcBmzA@pevik>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 30 Jun 2021 13:05:08 +0100
+Subject: [LTP] tst_fuzzy_sync01 sporadically fails
+In-Reply-To: <YNxDEt931O3OlUx4@pevik>
+References: <YNuA/0J20mjiV+NC@pevik> <87tulf3jyk.fsf@suse.de>
+ <YNwk9EwTtqAnRWH6@pevik> <87r1gj3ed2.fsf@suse.de> <YNxDEt931O3OlUx4@pevik>
+Message-ID: <87o8bn36dn.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hello Petr,
 
-...
-> > >> Reproduction steps:
-> > >> git clone https://github.com/linux-test-project/ltp.git
-> > >> cd ltp
-> > >> ./build.sh && make install -j8
-> > >> cd ../ltp-install
-> > >> sudo ./runltp -f syscalls -s fallocate05
+Petr Vorel <pvorel@suse.cz> writes:
 
-NOTE: you can also be a bit faster if you test just single test, see
-https://github.com/linux-test-project/ltp#shortcut-to-running-a-single-test
-(not compiling and installing whole LTP)
+> Hi Richie,
+>
+>> Hello Petr,
+>
+>> Petr Vorel <pvorel@suse.cz> writes:
+>
+>> > Hi Richie,
+>
+>> > ...
+>> >> > tst_fuzzy_sync01.c:224: TFAIL: acs:1  act:1  art:3  | =:3    -:2999996 +:1   
+>
+>> >> It looks like the CI machines are too noisy/contended. The avg_dev is
+>> >> very high. Probably we could relax the dev_ratio threshold to 0.2 or
+>> >> 0.3. Although we would still get failures occassionally. As this is a
+>> >> probabalistic test.
+>> > Test is failing on my laptop, thus haven't enabled it in CI.
+>> > But maybe it'll be working on it more reliably than my busy machine.
+>
+>> Is it really that busy? Perhaps we should increase the dev ratio
+>> threshold. Clearly the deviations from contention are not enough to
+>> reproduce the races, but are enough to prevent the radomization phase.
+> I probably did some VM testing or kernel compilation or something.
+> I'll try to enable for next patchset version it to see how it works on CI.
+>
+>> > But I'd prefer to wasting time with false positives, thus I guess we should
+>> > enable only tests which are working reliably.
+>
+>> >> Could you change the script so that it passes so long as the test
+>> >> returns TPASS or TFAIL?
+>> > Well, accepting TFAIL sounds a bit strange to me :).
+>> > Also next effort will be (at least for shell tests) to compare actual test
+>> > output. Obviously that will not be straightforward for some tests, which aren't
+>> > reproducible (avg = 11729ns could be matched by regex, but having more variants
+>> > of results is kind of special case).
+>
+>> >> We don't want TBROK, TCONF or no result.
+>> > FYI in my CI patchset is TCONF accepted. Motivation was to not require root for
+>> > make test as some tests needed it. Thus TCONF will be a special case, then I
+>> > guess we could add tst_fuzzy_sync01 accepting TFAIL as a special case.
+>
+>> At least if we run the tests and look for TPASS or TFAIL, we will catch
+>> segfaults and similar.
+>
+>> Also, for fuzzy sync, returning TCONF would be a major error. It should
+>> run on all systems.
+> Well, TCONF should be used on places where it's really a configuration issue.
+> IMHO only TBROK and TFAIL should be a problem. Or is fuzzy sync part somehow
+> special in this?
 
-$ cd testcases/kernel/syscalls/fallocate/
-$ make -j`nproc`
-$ sudo ./fallocate05
+I can't imagine any Linux config where fuzzy sync won't work. Even if we
+are compiling with some libc that doesn't have POSIX threads, we can
+work around that. Probably if it returns TCONF it's because some other
+library func has an error in it.
 
-> > > This thing keeps trying to test ext2, how do I make it only test btrfs?  Thanks,
+For example if tst_ncpus_available starts aborting with TCONF. Then that
+is an error. Fuzzy Sync should be able to work around that.
 
-> > It tests all available file systems, just wait till it gets to btrfs. I
-> > don't know how to limit it only to one file system.
-> In the future we can add environment variable to specify the only fs to be
-> tested. There is LTP_DEV_FS_TYPE, but that does not work when .all_filesystems
-> flag is enabled. Thus just patch the file:
-
-NOTE: It detect kernel filesystem support and presence of mkfs.xxx.
-Thus other way to limit filesystem is to rename mkfs.xxx of other filesystems
-(in case you test LTP from package and don't want / cannot compile and can
-modify root filesystem).
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
