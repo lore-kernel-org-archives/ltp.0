@@ -1,42 +1,85 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Jun 2021 10:01:56 +0200
-Subject: [LTP] ee
-In-Reply-To: <87tulf3jyk.fsf@suse.de>
-References: <YNuA/0J20mjiV+NC@pevik>
- <87tulf3jyk.fsf@suse.de>
-Message-ID: <YNwk9EwTtqAnRWH6@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 30 Jun 2021 16:08:35 +0800
+Subject: [LTP] [RFC] Limit the tmpfs size on mounting
+Message-ID: <CAEemH2da0dOeKpnZZ6+A696gFL+nDAiP7UL9tqm68JH8KO-Qkw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi all,
 
-...
-> > tst_fuzzy_sync01.c:224: TFAIL: acs:1  act:1  art:3  | =:3    -:2999996 +:1   
+LTP mount and make use of the whole tmpfs of the test system,
+generally, it's fine. But if a test (e.g fallocate06) try to fill full in
+the
+filesystem, it takes too long to complete testing on a large memory
+system.
 
-> It looks like the CI machines are too noisy/contended. The avg_dev is
-> very high. Probably we could relax the dev_ratio threshold to 0.2 or
-> 0.3. Although we would still get failures occassionally. As this is a
-> probabalistic test.
-Test is failing on my laptop, thus haven't enabled it in CI.
-But maybe it'll be working on it more reliably than my busy machine.
-But I'd prefer to wasting time with false positives, thus I guess we should
-enable only tests which are working reliably.
+I'm thinking whether we should limit the mount tmpfs size for the
+LTP test, maybe only give 512MB?  but the tricky part for me is to
+add options like "-o size=512M" to prepare_device(), or do some
+additional work for tmpfs mounting.
 
-> Could you change the script so that it passes so long as the test
-> returns TPASS or TFAIL?
-Well, accepting TFAIL sounds a bit strange to me :).
-Also next effort will be (at least for shell tests) to compare actual test
-output. Obviously that will not be straightforward for some tests, which aren't
-reproducible (avg = 11729ns could be matched by regex, but having more variants
-of results is kind of special case).
+and any else way can speed up is also welcome. I'd like to hear
+more advice. Thanks!
 
-> We don't want TBROK, TCONF or no result.
-FYI in my CI patchset is TCONF accepted. Motivation was to not require root for
-make test as some tests needed it. Thus TCONF will be a special case, then I
-guess we could add tst_fuzzy_sync01 accepting TFAIL as a special case.
 
-Kind regards,
-Petr
+   120 tst_test.c:1379: TINFO: Testing on tmpfs
+   121 tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+   122 tst_test.c:1313: TINFO: Timeout per run is 0h 05m 00s
+   123 fallocate06.c:126: TINFO: Copy-on-write is not supported
+   124 fallocate06.c:177: TINFO: Case 1. Fill FS: no; Use copy on write: no
+   125 fallocate06.c:166: TPASS: write() successful
+   126 fallocate06.c:210: TPASS: Misaligned allocation works as expected
+   127 fallocate06.c:166: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE |
+FALLOC_FL_KEEP_SIZE) successful
+   128 fallocate06.c:246: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE |
+FALLOC_FL_KEEP_SIZE) cleared the correct file range
+   129 fallocate06.c:177: TINFO: Case 2. Fill FS: yes; Use copy on write: no
+   130 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
+   131 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
+   132 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
+   133 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
+   134 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
+   135 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935
+   136 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786
+   137 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file7 size 76896492
+   ...
+  2382 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2252 size
+57793556
+  2383 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2253 size
+44128200
+  2384 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2254 size
+31600129
+  2385 tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2255 size 1865251
+ <------- create too many files
+  2386 tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
+  2387 fallocate06.c:166: TPASS: write() successful
+  2388 fallocate06.c:210: TPASS: Misaligned allocation works as expected
+  2389 fallocate06.c:166: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE |
+FALLOC_FL_KEEP_SIZE) successful
+  2390 fallocate06.c:246: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE |
+FALLOC_FL_KEEP_SIZE) cleared the correct file range
+  2391 Test timeouted, sending SIGKILL!    <------- looks like takes too
+much time on purge dirs
+
+
+# df -Th | grep tmpfs
+Filesystem                             Type      Size  Used Avail Use%
+Mounted on
+devtmpfs                               devtmpfs  126G     0  126G   0% /dev
+tmpfs                                  tmpfs     126G  4.0K  126G   1%
+/dev/shm
+tmpfs                                  tmpfs     126G   18M  126G   1% /run
+tmpfs                                  tmpfs     126G     0  126G   0%
+/sys/fs/cgroup
+/dev/loop0                             tmpfs     126G   23G  104G  18%
+/tmp/falywSTkc/mntpoint
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210630/4c277cb1/attachment.htm>
