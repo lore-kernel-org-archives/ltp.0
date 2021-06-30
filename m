@@ -1,70 +1,105 @@
-From: Samuel Zou <zou_wei@huawei.com>
-Date: Wed, 30 Jun 2021 10:07:47 +0800
-Subject: [LTP] [PATCH] cpuset/cpuset_memory_pressure_test: Check whether
- the swap partition is configured
-In-Reply-To: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
-References: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
-Message-ID: <411076e8-3734-a56a-bdcb-841a904aea5d@huawei.com>
+From: wangxin (CQ) <wangxin410@huawei.com>
+Date: Wed, 30 Jun 2021 02:14:28 +0000
+Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0gbHRwX3RwY2kuYzogQWRkIHJl?=
+ =?gb2312?b?bGVhc2Ugb3BlcmF0aW9uIGJlZm9yZSBhbGxvY2F0aW9u?=
+In-Reply-To: <YNoxKg+Hm0qa3Z70@pevik>
+References: <20210401125127.45600-1-wangxin410@huawei.com>
+ <YNoxKg+Hm0qa3Z70@pevik>
+Message-ID: <0af806e1a9da40ee8d5fb1745ed34bdc@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ping, and has anybody met the same issue?
+Hi Petr,
 
-On 2021/4/6 19:15, Zou Wei wrote:
-> --------------------------
-> 
-> 1. Fixed a bug where a null value is obtained because swap is not in
->     the fourth line of the free result
-> free -m
->          total        used        free      shared  buff/cache   available
-> Mem:   128135        3857      120633         158        3644      123219
-> Swap:    8191          82        8109
-> 
-> free -m
->          total       used       free     shared    buffers     cached
-> Mem:   419694       9464     410230        234        435       6005
-> -/+ buffers/cache:       3022     416671
-> Swap:    2053          0       2053
-> 
-> 2. If no swap partition is configured in the test environment,
->     the testcase will be failed:
-> 
-> cpuset_memory_pressure 7 TFAIL: sub group's memory_pressure
-> didn't have memory pressure rate.
-> cpuset_memory_pressure 9 TFAIL: root group's memory_pressure
-> didn't have memory pressure rate.
-> cpuset_memory_pressure 11 TFAIL: root group's memory_pressure
-> didn't have memory pressure rate.
-> 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+The following is the kernel version information of the test case. The hardware information is in the attachment.
+
+# uname -a
+Linux hulk-168 4.19.195+ #1 SMP Tue Jun 29 09:42:18 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
+# lscpu 
+Architecture:        aarch64
+Byte Order:          Little Endian
+CPU(s):              128
+On-line CPU(s) list: 0-127
+Thread(s) per core:  1
+Core(s) per socket:  64
+Socket(s):           2
+NUMA node(s):        4
+Vendor ID:           0x48
+Model:               0
+Stepping:            0x1
+CPU max MHz:         2600.0000
+CPU min MHz:         200.0000
+BogoMIPS:            200.00
+L1d cache:           64K
+L1i cache:           64K
+L2 cache:            512K
+L3 cache:            65536K
+NUMA node0 CPU(s):   0-31
+NUMA node1 CPU(s):   32-63
+NUMA node2 CPU(s):   64-95
+NUMA node3 CPU(s):   96-127
+Flags:               fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma dcpop asimddp asimdfhm
+
+Kind regards,
+Xin
+
+-----????-----
+???: Petr Vorel [mailto:pvorel@suse.cz] 
+????: 2021?6?29? 4:30
+???: wangxin (CQ) <wangxin410@huawei.com>
+??: ltp@lists.linux.it; Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+??: Re: [LTP] [PATCH] ltp_tpci.c: Add release operation before allocation
+
+Hi Xin,
+
+> When we run the test case, the following results will be obtained:
+> test_pci  283  TPASS  :  PCI bus 7d slot 00 : Test-case '11'
+> test_pci  284  TFAIL  :  tpci.c:74: PCI bus 7d slot 00 : Test-case '12'
+> ...
+> test_pci  300  TFAIL  :  tpci.c:74: PCI bus 7d slot 01 : Test-case '12'
+> test_pci  301  TPASS  :  PCI bus 7d slot 01 : Test-case '13'
+
+> The analysis is that the space allocated by the bios is insufficient.
+> The solution to this problem can be in add pci_release_resource(dev, 
+> i) before system resources are reallocated.Because the resources have 
+> been allocated when the system is initialized.If it is redistributed, 
+> it should be released and then allocated.
+
+I wonder if this is the same issue as the one described by Krzysztof in his
+patch:
+https://patchwork.ozlabs.org/project/ltp/patch/20210401125127.45600-1-wangxin410@huawei.com/
+
+Could you please share what HW and kernel you use and post dmesg?
+
+Kind regards,
+Petr
+
+> Signed-off-by: Wang Xin <wangxin410@huawei.com>
 > ---
->   .../cpuset_memory_pressure_testset.sh                        | 12 ++++++++++--
->   1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-> index eddd7f6..2a2d2a1 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-> @@ -35,8 +35,16 @@ exit_status=0
->   # usable physical memory
->   py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
->   
-> -# free swap space
-> -sw_mem=$(free -m | awk '{if(NR==4) print $4}')
-> +# total swap space
-> +sw_mem=$(free -m | awk '{if(NR==4) print $2}')
-> +if [ -z $sw_mem ]; then
-> +	sw_mem=$(free -m | awk '{if(NR==3) print $2}')
-> +fi
-> +
-> +if [ $sw_mem -eq 0 ]; then
-> +	tst_resm TCONF "The size of the swap partition is zero."
-> +	exit 32
-> +fi
->   
->   # the memory which is going to be used
->   usemem=$((py_mem - 20))
-> 
+>  testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 1 +
+>  1 file changed, 1 insertion(+)
+
+> diff --git 
+> a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c 
+> b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+> index e29821dda..5b0896093 100644
+> --- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+> +++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+> @@ -439,6 +439,7 @@ static int test_assign_resources(void)
+>  		if (r->flags & IORESOURCE_MEM &&
+>  			r->flags & IORESOURCE_PREFETCH) {
+> +			pci_release_resource(dev, i);
+>  			ret = pci_assign_resource(dev, i);
+>  			prk_info("assign resource to '%d', ret '%d'", i, ret);
+>  			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
+> 2.17.1
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: dmesg.log
+Type: application/octet-stream
+Size: 135634 bytes
+Desc: dmesg.log
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210630/6e9839e7/attachment-0001.obj>
