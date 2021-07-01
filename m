@@ -1,41 +1,41 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 1 Jul 2021 05:55:02 +0000
-Subject: [LTP] [PATCH 0/2] API tests cleanup
-In-Reply-To: <20210701050314.1005067-1-petr.vorel@gmail.com>
-References: <20210701050314.1005067-1-petr.vorel@gmail.com>
-Message-ID: <60DD58CE.5070800@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 1 Jul 2021 13:58:01 +0800
+Subject: [LTP] [RFC] Limit the tmpfs size on mounting
+In-Reply-To: <YNw3ePbVhio3s9JX@yuki>
+References: <CAEemH2da0dOeKpnZZ6+A696gFL+nDAiP7UL9tqm68JH8KO-Qkw@mail.gmail.com>
+ <YNw3ePbVhio3s9JX@yuki>
+Message-ID: <CAEemH2dQOWgBMc8H+oY81B-ppbr9wRVPey46-xFLvAyW7nG7vA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Why only rename these two tests?
 
-ps:IMO, test01-test21 also can ben rename to a meaningful name.
+> I guess that appending '-o size ...' to the mount flags in prepare_device()
+> is reasonable, but instead of hardcoing the value we should do the same
+> as we do with the loop devices and the size should be
+> MAX(tst_test->dev_min_size, DEV_SIZE_MB).
+>
 
-Best Regards
-Yang Xu
-> From: Petr Vorel<pvorel@suse.cz>
+Yes, dynamically setting the size is better.
+
+
+> > /dev/loop0                             tmpfs     126G   23G  104G  18%
 >
-> Hi,
+> Also it looks like should pass something as "ltp-tmpfs" instead of the
+> "/dev/loopX" string in a case of "tmpfs" filesystem in order not to
+> confuse people...
 >
-> preparation for v4 test API cleanup.
->
-> Kind regards,
-> Petr
->
-> Petr Vorel (2):
->    lib/tests: Rename test tst_print_result.c
->    lib/tests: Rename test to tst_fuzzy_sync03.c
->
->   lib/newlib_tests/.gitignore                       |  4 ++--
->   lib/newlib_tests/Makefile                         |  4 ++--
->   lib/newlib_tests/{test16.c =>  tst_fuzzy_sync03.c} |  0
->   lib/newlib_tests/{test17.c =>  tst_print_result.c} | 10 ++++------
->   4 files changed, 8 insertions(+), 10 deletions(-)
->   rename lib/newlib_tests/{test16.c =>  tst_fuzzy_sync03.c} (100%)
->   rename lib/newlib_tests/{test17.c =>  tst_print_result.c} (80%)
->
+
+Quite good proposals, I have sent two patches for achieving the ideas.
+
+Thanks!
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210701/c31bf5ad/attachment.htm>
