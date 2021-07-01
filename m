@@ -1,33 +1,20 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 1 Jul 2021 06:32:22 +0000
-Subject: [LTP] [PATCH 0/2] API tests cleanup
-In-Reply-To: <YN1gOkdw7b8b833v@pevik>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 1 Jul 2021 08:53:14 +0200
+Subject: [LTP] [PATCH 2/2] lib/tests: Rename test to tst_fuzzy_sync03.c
+In-Reply-To: <87im1u37ll.fsf@suse.de>
 References: <20210701050314.1005067-1-petr.vorel@gmail.com>
- <60DD58CE.5070800@fujitsu.com> <YN1gOkdw7b8b833v@pevik>
-Message-ID: <60DD618D.10100@fujitsu.com>
+ <20210701050314.1005067-3-petr.vorel@gmail.com>
+ <87im1u37ll.fsf@suse.de>
+Message-ID: <YN1mWgrwYQQOY84b@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr, Li
-> Hi Xu,
->
->> Hi Petr
->
->> Why only rename these two tests?
-> There have been other tst_fuzzy_sync* tests, test17 had other issues to be
-> fixed.
-I see. Anyway, this rename patchset is ok.
-Acked-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Hi all,
 
-Best Regards
-Yang Xu
->
->> ps:IMO, test01-test21 also can ben rename to a meaningful name.
->
-> Sure, feel free to rename more.
->
-> Kind regards,
-> Petr
+thanks for your review, both patches merged.
+
+Kind regards,
+Petr
