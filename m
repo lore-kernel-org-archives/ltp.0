@@ -1,41 +1,41 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 1 Jul 2021 13:58:01 +0800
-Subject: [LTP] [RFC] Limit the tmpfs size on mounting
-In-Reply-To: <YNw3ePbVhio3s9JX@yuki>
-References: <CAEemH2da0dOeKpnZZ6+A696gFL+nDAiP7UL9tqm68JH8KO-Qkw@mail.gmail.com>
- <YNw3ePbVhio3s9JX@yuki>
-Message-ID: <CAEemH2dQOWgBMc8H+oY81B-ppbr9wRVPey46-xFLvAyW7nG7vA@mail.gmail.com>
+Date: Thu, 1 Jul 2021 14:11:56 +0800
+Subject: [LTP] [PATCH 0/2] API tests cleanup
+In-Reply-To: <60DD58CE.5070800@fujitsu.com>
+References: <20210701050314.1005067-1-petr.vorel@gmail.com>
+ <60DD58CE.5070800@fujitsu.com>
+Message-ID: <CAEemH2d+sxyTC1tB-=Qo5OSg3pcFRsJ83dsiexUUM1D6e8XG8g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> wrote:
+On Thu, Jul 1, 2021 at 1:55 PM xuyang2018.jy@fujitsu.com <
+xuyang2018.jy@fujitsu.com> wrote:
 
-
-> I guess that appending '-o size ...' to the mount flags in prepare_device()
-> is reasonable, but instead of hardcoing the value we should do the same
-> as we do with the loop devices and the size should be
-> MAX(tst_test->dev_min_size, DEV_SIZE_MB).
+> Hi Petr
+>
+> Why only rename these two tests?
 >
 
-Yes, dynamically setting the size is better.
+I guess Petr is recently working on investigating the tst_fuzzy_sync01 fail
+(I haven't got a chance to look into that issue) and do this by the
+opportunity.
+
+Anyway, the rename looks good at this point:).
+Acked-by: Li Wang <liwang@redhat.com>
 
 
-> > /dev/loop0                             tmpfs     126G   23G  104G  18%
 >
-> Also it looks like should pass something as "ltp-tmpfs" instead of the
-> "/dev/loopX" string in a case of "tmpfs" filesystem in order not to
-> confuse people...
+> ps:IMO, test01-test21 also can ben rename to a meaningful name.
 >
 
-Quite good proposals, I have sent two patches for achieving the ideas.
++1, someone will be appreciated if they complete that in separate patches.
 
-Thanks!
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210701/c31bf5ad/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210701/2fd24b11/attachment-0001.htm>
