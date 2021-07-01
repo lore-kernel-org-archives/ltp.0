@@ -1,37 +1,44 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 01 Jul 2021 11:21:03 +0100
-Subject: [LTP] [PATCH v2] Add documentation for netdevice and rtnetlink
- libraries
-In-Reply-To: <20210630154611.12019-1-mdoucha@suse.cz>
-References: <20210630154611.12019-1-mdoucha@suse.cz>
-Message-ID: <87czs22v3k.fsf@suse.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Thu,  1 Jul 2021 14:23:51 +0200
+Subject: [LTP] [PATCH 2/2] proc01: remove unused lsm_should_work
+ (-Wunused-const-variable)
+In-Reply-To: <20210701122351.56397-1-krzysztof.kozlowski@canonical.com>
+References: <20210701122351.56397-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210701122351.56397-2-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Martin,
+Recent refactoring made the "lsm_should_work" unused without
+libselinux-dev:
 
-Martin Doucha <mdoucha@suse.cz> writes:
+    proc01.c:142:19: warning: ?lsm_should_work? defined but not used [-Wunused-const-variable=]
 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ testcases/kernel/fs/proc/proc01.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-
-> ---
->
-> Changes since v1:
-> - Refer to tst_brk() instead of explaining test termination on error
-> - Use ndash where appropriate
-> - Improved formatting of warnings
->
-> We can't change struct tst_rtnl_attr_list.type to an enum. We don't have
-> the complete list of its values and it has to match struct rtattr.rta_type,
-> which is defined as unsigned short by the kernel.
-
-+1
-
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index 282c70e94882..c90e509a3243 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -137,12 +137,7 @@ static const char lsm_should_work[][PATH_MAX] = {
+ 	"/proc/self/attr/*",
+ 	"/proc/self/attr/selinux/*",
+ 	"/proc/self/task/[0-9]*/attr/*",
+-	""
+-};
+-
+-/* Place holder for none of LSM is detected. */
+-#else
+-static const char lsm_should_work[][PATH_MAX] = {
++	"/proc/self/task/[0-9]*/attr/selinux/*",
+ 	""
+ };
+ #endif
 -- 
-Thank you,
-Richard.
+2.27.0
+
