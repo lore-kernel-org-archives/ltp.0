@@ -1,79 +1,92 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Fri,  2 Jul 2021 14:53:37 +0200
-Subject: [LTP] [PATCH v3 4/5] controllers/memcg: increase memory limit in
- subgroup charge
+Date: Fri,  2 Jul 2021 14:53:38 +0200
+Subject: [LTP] [PATCH v3 5/5] controllers/memcg: offset kernel memory
 In-Reply-To: <20210702125338.43248-1-krzysztof.kozlowski@canonical.com>
 References: <20210702125338.43248-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210702125338.43248-5-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210702125338.43248-6-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The memcg_subgroup_charge was failing on kernel v5.8 in around 10% cases
-with:
+The memory allocated by kernel with __GFP_ACCOUNT is counted as well in
+memory group usage limits.  Add it to fix failures like:
 
-    memcg_subgroup_charge 1 TINFO: Running memcg_process --mmap-anon -s 135168
-    memcg_subgroup_charge 1 TINFO: Warming up pid: 19289
-    memcg_subgroup_charge 1 TINFO: Process is still here after warm up: 19289
-    memcg_subgroup_charge 1 TFAIL: rss is 0, 135168 expected
-    memcg_subgroup_charge 1 TPASS: rss is 0 as expected
+    memcg_max_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304
+    memcg_max_usage_in_bytes_test 1 TINFO: Warming up pid: 925811
+    memcg_max_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 925811
+    memcg_max_usage_in_bytes_test 1 TFAIL: memory.max_usage_in_bytes is 4333568, 4194304-4325376 expected
 
-In dmesg one could see that OOM killer killed the process even though
-group memory limit was matching the usage:
-
-    memcg_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
-    CPU: 4 PID: 19289 Comm: memcg_process Not tainted 5.8.0-1031-oracle #32~20.04.2-Ubuntu
-    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1 12/03/2020
-    ...
-    memory: usage 132kB, limit 132kB, failcnt 9
-    memory+swap: usage 132kB, limit 9007199254740988kB, failcnt 0
-    kmem: usage 4kB, limit 9007199254740988kB, failcnt 0
-    ...
-    Tasks state (memory values in pages):
-    [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
-    [  19289]     0 19289      669      389    40960        0             0 memcg_process
-    oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=/,mems_allowed=0,oom_memcg=/ltp_19257,task_memcg=/ltp_19257,task=memcg_process,pid=19289,uid=0
-    Memory cgroup out of memory: Killed process 19289 (memcg_process) total-vm:2676kB, anon-rss:84kB, file-rss:1468kB, shmem-rss:4kB, UID:0 pgtables:40kB oom_score_adj:0
-    oom_reaper: reaped process 19289 (memcg_process), now anon-rss:0kB, file-rss:0kB, shmem-rss:4kB
-
-It seems using 100% of memory assigned to given group might trigger OOM,
-so add a space of at least one page.
+    (where memory.kmem.max_usage_in_bytes:8192)
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../memcg/functional/memcg_subgroup_charge.sh    | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ .../controllers/memcg/functional/memcg_lib.sh     | 10 ++++++++++
+ .../functional/memcg_max_usage_in_bytes_test.sh   | 15 ++++++++++++++-
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-index 9b23177a4dc5..88ddbabf7fa9 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-@@ -19,9 +19,21 @@ TST_CNT=3
- # $2 - memory.limit_in_bytes in sub group
- test_subgroup()
- {
-+	local limit_parent=$1
-+	local limit_subgroup=$2
-+
-+	# OOM might start killing if memory usage is 100%, so give it
-+	# always one page size more:
-+	if [ $limit_parent -ne 0 ]; then
-+		limit_parent=$((limit_parent + PAGESIZE))
-+	fi
-+	if [ $limit_subgroup -ne 0 ]; then
-+		limit_subgroup=$((limit_subgroup + PAGESIZE))
-+	fi
-+
- 	mkdir subgroup
--	echo $1 > memory.limit_in_bytes
--	echo $2 > subgroup/memory.limit_in_bytes
-+	echo $limit_parent > memory.limit_in_bytes
-+	echo $limit_subgroup > subgroup/memory.limit_in_bytes
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 9634eb7e9f42..dad66c798e19 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -251,6 +251,7 @@ test_mem_stat()
+ 	local exp_stat_size_low=$5
+ 	local exp_stat_size_up=$6
+ 	local check_after_free=$7
++	local kmem_stat_name="${stat_name##*.}"
  
- 	start_memcg_process --mmap-anon -s $PAGESIZES
+ 	start_memcg_process $memtypes -s $size
  
+@@ -261,6 +262,15 @@ test_mem_stat()
+ 	echo $MEMCG_PROCESS_PID > tasks
+ 	signal_memcg_process $size
+ 
++	if [ "$kmem_stat_name" = "max_usage_in_bytes" ] ||
++	   [ "$kmem_stat_name" = "usage_in_bytes" ]; then
++		local kmem=$(cat "memory.kmem.${kmem_stat_name}")
++		if [ $? -eq 0 ]; then
++			exp_stat_size_low=$((exp_stat_size_low + kmem))
++			exp_stat_size_up=$((exp_stat_size_up + kmem))
++		fi
++	fi
++
+ 	if [ "$exp_stat_size_low" = "$exp_stat_size_up" ]; then
+ 		check_mem_stat $stat_name $exp_stat_size_low
+ 	else
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+index 2d494ac3a78f..24e9d115c19e 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+@@ -22,6 +22,10 @@ test_max_usage_in_bytes()
+ 	local item="memory.max_usage_in_bytes"
+ 	[ $1 -eq 1 ] && item="memory.memsw.max_usage_in_bytes"
+ 	local check_after_reset=$2
++	local exp_stat_size_low=$MEM_TO_ALLOC
++	local exp_stat_size_up=$MEM_EXPECTED_UPPER
++	local kmem_stat_name="${item##*.}"
++
+ 	start_memcg_process --mmap-anon -s $MEM_TO_ALLOC
+ 
+ 	warmup
+@@ -33,7 +37,16 @@ test_max_usage_in_bytes()
+ 	signal_memcg_process $MEM_TO_ALLOC
+ 	signal_memcg_process $MEM_TO_ALLOC
+ 
+-	check_mem_stat $item $MEM_TO_ALLOC $MEM_EXPECTED_UPPER
++	if [ "$kmem_stat_name" = "max_usage_in_bytes" ] ||
++	   [ "$kmem_stat_name" = "usage_in_bytes" ]; then
++		local kmem=$(cat "memory.kmem.${kmem_stat_name}")
++		if [ $? -eq 0 ]; then
++			exp_stat_size_low=$((exp_stat_size_low + kmem))
++			exp_stat_size_up=$((exp_stat_size_up + kmem))
++		fi
++	fi
++
++	check_mem_stat $item $exp_stat_size_low $exp_stat_size_up
+ 
+ 	if [ $check_after_reset -eq 1 ]; then
+ 		echo 0 > $item
 -- 
 2.27.0
 
