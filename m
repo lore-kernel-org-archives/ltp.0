@@ -1,48 +1,128 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu,  1 Jul 2021 15:14:27 +0200
-Subject: [LTP] [PATCH v2 2/2] proc01: remove unused lsm_should_work
- (-Wunused-const-variable)
-In-Reply-To: <20210701131427.72574-1-krzysztof.kozlowski@canonical.com>
-References: <20210701131427.72574-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210701131427.72574-2-krzysztof.kozlowski@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 2 Jul 2021 11:21:00 +0200
+Subject: [LTP] [PATCH 1/2] lib: limit the size of tmpfs in LTP
+In-Reply-To: <20210701055208.715395-1-liwang@redhat.com>
+References: <20210701055208.715395-1-liwang@redhat.com>
+Message-ID: <YN7afAs3Mup5UbIf@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Recent refactoring made the "lsm_should_work" unused without
-libselinux-dev:
+Hi!
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  include/tst_device.h |  7 +++++++
+>  lib/tst_device.c     | 15 +++++++++++++++
+>  lib/tst_test.c       | 10 ++++++++++
+>  3 files changed, 32 insertions(+)
+> 
+> diff --git a/include/tst_device.h b/include/tst_device.h
+> index 1d1246e82..51bde4190 100644
+> --- a/include/tst_device.h
+> +++ b/include/tst_device.h
+> @@ -31,6 +31,13 @@ int tst_umount(const char *path);
+>  int tst_is_mounted(const char *path);
+>  int tst_is_mounted_at_tmpdir(const char *path);
+>  
+> +/*
+> + * Limit the tmpfs mount size for LTP test
+> + * @mnt_data: mount options from tst_test->mnt_data
+> + * @size: tmpfs size to be mounted
+> + */
+> +char *limit_tmpfs_mount_size(const char *mnt_data, unsigned int size);
 
-    proc01.c:142:19: warning: ?lsm_should_work? defined but not used [-Wunused-const-variable=]
+If we want this function to be public it has to be prefixed with 'tst_'.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Also do we really need this to be public?
 
----
+>  /*
+>   * Clears a first few blocks of the device. This is needed when device has
+>   * already been formatted with a filesystems, subset of mkfs.foo utils aborts
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index c096b418b..66a830b7b 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -45,6 +45,7 @@
+>  #define DEV_FILE "test_dev.img"
+>  #define DEV_SIZE_MB 256u
+>  
+> +static char tmpfs_buf[1024];
 
-Changes since v1:
-1. Fixup part of #1 patch.
----
- testcases/kernel/fs/proc/proc01.c | 6 ------
- 1 file changed, 6 deletions(-)
+Can we please, instead of adding a global variable, pass the buffer and
+it's size to the limit_tmpfs_mount size, and then create the path on the
+stack in the prepare device function?
 
-diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
-index 6ddb6682f38b..c90e509a3243 100644
---- a/testcases/kernel/fs/proc/proc01.c
-+++ b/testcases/kernel/fs/proc/proc01.c
-@@ -140,12 +140,6 @@ static const char lsm_should_work[][PATH_MAX] = {
- 	"/proc/self/task/[0-9]*/attr/selinux/*",
- 	""
- };
--
--/* Place holder for none of LSM is detected. */
--#else
--static const char lsm_should_work[][PATH_MAX] = {
--	""
--};
- #endif
- 
- /* Known files that does not honor O_NONBLOCK, so they will hang
+>  static char dev_path[1024];
+>  static int device_acquired;
+>  static unsigned long prev_dev_sec_write;
+> @@ -368,6 +369,20 @@ int tst_clear_device(const char *dev)
+>  	return 0;
+>  }
+>  
+> +char *limit_tmpfs_mount_size(const char *mnt_data, unsigned int size)
+> +{
+> +	unsigned int dev_size = MAX(size, DEV_SIZE_MB);
+> +
+> +	if (mnt_data)
+> +		snprintf(tmpfs_buf, sizeof(tmpfs_buf), "%s,size=%uM", mnt_data, dev_size);
+> +	else
+> +		snprintf(tmpfs_buf, sizeof(tmpfs_buf), "size=%uM", dev_size);
+> +
+> +	tst_resm(TINFO, "Limiting tmpfs size to %uMB", dev_size);
+> +
+> +	return tmpfs_buf;
+> +}
+
+If we passed the filesystem type to this function here as well we could
+do:
+
+	if (!strcmp(fs_type, "tmpfs"))
+		return mnt_data;
+
+As a first thing in this function and then we could pass the return
+value from this function to the SAFE_MOUNT() unconditionally.
+
+>  int tst_umount(const char *path)
+>  {
+>  	int err, ret, i;
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 55449c80b..27766fbfd 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -896,9 +896,19 @@ static void prepare_device(void)
+>  	}
+>  
+>  	if (tst_test->mount_device) {
+> +		char *mnt_data = tst_test->mnt_data;
+> +
+> +		if (!strcmp(tdev.fs_type, "tmpfs")) {
+> +			tst_test->mnt_data = limit_tmpfs_mount_size(tst_test->mnt_data,
+> +					tst_test->dev_min_size);
+> +		}
+> +
+>  		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
+>  			   tst_test->mnt_flags, tst_test->mnt_data);
+>  		mntpoint_mounted = 1;
+> +
+> +		if (!strcmp(tdev.fs_type, "tmpfs"))
+> +			tst_test->mnt_data = mnt_data;
+
+I guess that we are doing this in order to export the changes in the
+mnt_data to the test, right?
+
+Is that needed for something or are you doing this just in a case that
+somebody will use that?
+
+>  	}
+>  }
+>  
+> -- 
+> 2.31.1
+> 
+
 -- 
-2.27.0
-
+Cyril Hrubis
+chrubis@suse.cz
