@@ -1,58 +1,79 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 2 Jul 2021 11:23:14 +0200
-Subject: [LTP] [PATCH 2/2] lib: mount tmpfs name as ltp-tmpfs
-In-Reply-To: <20210701055208.715395-2-liwang@redhat.com>
-References: <20210701055208.715395-1-liwang@redhat.com>
- <20210701055208.715395-2-liwang@redhat.com>
-Message-ID: <YN7bAlNkd1xaRj7Z@yuki>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Fri, 2 Jul 2021 12:49:07 +0200
+Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
+In-Reply-To: <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
+References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
+ <bd56facc-55a3-4e8a-4e9d-304d5177462d@canonical.com>
+ <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
+Message-ID: <ced1d406-97f4-286a-656b-671a333ba46a@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Given a specific name as "ltp-tmpfs" instead of the "/dev/loopX"
-> string in order to make "tmpfs" filesystem more evident.
+On 25/06/2021 10:21, Li Wang wrote:
 > 
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  lib/tst_test.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 27766fbfd..ab343e593 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -896,19 +896,23 @@ static void prepare_device(void)
->  	}
->  
->  	if (tst_test->mount_device) {
-> +		const char *path_name = tdev.dev;
->  		char *mnt_data = tst_test->mnt_data;
->  
->  		if (!strcmp(tdev.fs_type, "tmpfs")) {
->  			tst_test->mnt_data = limit_tmpfs_mount_size(tst_test->mnt_data,
->  					tst_test->dev_min_size);
-> +			tdev.dev = "ltp-tmpfs";
->  		}
->  
->  		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
->  			   tst_test->mnt_flags, tst_test->mnt_data);
->  		mntpoint_mounted = 1;
->  
-> -		if (!strcmp(tdev.fs_type, "tmpfs"))
-> +		if (!strcmp(tdev.fs_type, "tmpfs")) {
->  			tst_test->mnt_data = mnt_data;
-> +			tdev.dev = path_name;
+> On Fri, Jun 25, 2021 at 3:31 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com
+> <mailto:krzysztof.kozlowski@canonical.com>> wrote:
+> 
+>     On 17/06/2021 09:07, Krzysztof Kozlowski wrote:
+>     > Hi,
+>     >
+>     > This is a resend of previous Github pull:
+>     > https://github.com/linux-test-project/ltp/pull/830
+>     <https://github.com/linux-test-project/ltp/pull/830>
+>     >
+>     > The patches fix several test failures we are hitting since months,
+>     see:
+>     > https://bugs.launchpad.net/bugs/1829979
+>     <https://bugs.launchpad.net/bugs/1829979>
+>     > https://bugs.launchpad.net/bugs/1829984
+>     <https://bugs.launchpad.net/bugs/1829984>
+>     >
+>     > Best regards,
+>     > Krzysztof
+>     >
+>     >
+>     > Krzysztof Kozlowski (3):
+>     >? ?controllers/memcg: accept range of max_usage_in_bytes
+>     >? ?controllers/memcg: accept range of usage_in_bytes
+>     >? ?controllers/memcg: accept non-zero max_usage_in_bytes after reset
+> 
+> 
+>     Hi everyone,
+> 
+>     The patchset got positive LGTM on the Github. Any further comments for
+>     it or can it be applied?
+> 
+> 
+> I slightly agree with Richard that we need an explanation/investigation
+> on where the 32*PAGE_SIZE comes from. Otherwise, we are very possible
+> to mask a counter bug if only to make the test happy.
 
-Here as well, do we need to change the tdev.dev?
+On newer v5.11 the max_usage_in_bytes go even above 32 pages up to 34.
 
-Can't we just create a function get_device_name(const char *fs_type)
-that would return either tdev.dev pointer or pointer to static
-"ltp-tmpfs" string based on the fs_type argument?
+I got some explanation from Michal Hocko [1] from which one can try to
+conclude:
+1. There is significant caching in memory accounting. Not only charging
+of cgroup is once per MEMCG_CHARGE_BATCH batch (try_charge()), but also
+statistics are gathered from per-cpu if threshold exceed
+MEMCG_CHARGE_BATCH (__mod_memcg_state()).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+2. Depending on machine (different amount of CPUs), the memory group
+charging be less or more accurate.
+
+3. The accuracy of group memory accounting is not considered as
+important thus test relying on it, will be failing from time to time.
+
+
+I'll send a v3 with significantly increased limits and some explanation.
+
+[1]
+https://lore.kernel.org/linux-mm/85b8a4f9-b9e9-a6ca-5d0c-c1ecb8c11ef3@canonical.com/T/#m6459b3be3a86f5eaf2cfc48dd586b6faf949e440
+
+
+Best regards,
+Krzysztof
