@@ -1,51 +1,46 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 2 Jul 2021 20:20:37 +0800
-Subject: [LTP] [PATCH 1/2] lib: limit the size of tmpfs in LTP
-In-Reply-To: <YN77SxjQ2tHeXJfp@yuki>
-References: <20210701055208.715395-1-liwang@redhat.com> <YN7afAs3Mup5UbIf@yuki>
- <CAEemH2dJ4FYh-7-8C5na-uB1jg31mdV8wC+7w_DHG1463XudHA@mail.gmail.com>
- <YN77SxjQ2tHeXJfp@yuki>
-Message-ID: <CAEemH2cDM819aXG7yGwP77FjUNG8GSp-qYxbzZa-RWyJgtFVMw@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Fri,  2 Jul 2021 14:53:33 +0200
+Subject: [LTP] [PATCH v3 0/5] controllers/memcg: fixes for newer kernels
+Message-ID: <20210702125338.43248-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jul 2, 2021 at 8:06 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi,
 
-> Hi!
-> > > > +
-> > > > +             if (!strcmp(tdev.fs_type, "tmpfs"))
-> > > > +                     tst_test->mnt_data = mnt_data;
-> > >
-> > > I guess that we are doing this in order to export the changes in the
-> > > mnt_data to the test, right?
-> > >
-> > > Is that needed for something or are you doing this just in a case that
-> > > somebody will use that?
-> > >
-> >
-> > No, you probably mis-read this part.
-> >
-> > In contrast, this is just to restore it to the original value,
-> > because we don't want to export the changed tst_test->mnt_data
-> > take effect on other filesystems.
->
-> I'm just asking why we are setting it in the first place?
->
-> If we do not change it there is no need to restore the value, so the
-> real question is, do we need to change the tst_test->mnt_data at all?
->
+Changes since v2:
+1. Patch 1/5: Define MEM_USAGE_RANGE and explain it.
+2. Patch 3/5: Use PAGESIZES to explain it is the batch accounting.
+3. Patch 4/5: Add to this patchset (previously sent separately, no
+   dependencies on others).
+4. Patch 5/5: New patch, fixes additional difference, usually of 2-3
+   pages coming from the kernel.
 
-Alright, we can just return a new pointer buf, and do nothing
-for the tst_test->mnt_data itself.
+See also reply from Michal Hocko:
+https://lore.kernel.org/linux-mm/85b8a4f9-b9e9-a6ca-5d0c-c1ecb8c11ef3@canonical.com/T/#m6459b3be3a86f5eaf2cfc48dd586b6faf949e440
 
-Seems the misread person is me (I need more coffee now:).
+v2: https://lists.linux.it/pipermail/ltp/2021-June/023259.html
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (5):
+  controllers/memcg: accept range of max_usage_in_bytes
+  controllers/memcg: accept range of usage_in_bytes
+  controllers/memcg: accept non-zero max_usage_in_bytes after reset
+  controllers/memcg: increase memory limit in subgroup charge
+  controllers/memcg: offset kernel memory
+
+ .../controllers/memcg/functional/memcg_lib.sh | 41 ++++++++++++++++---
+ .../memcg_max_usage_in_bytes_test.sh          | 18 +++++++-
+ .../memcg/functional/memcg_stat_rss.sh        | 20 ++++-----
+ .../memcg/functional/memcg_stat_test.sh       |  8 ++--
+ .../memcg/functional/memcg_subgroup_charge.sh | 16 +++++++-
+ .../functional/memcg_usage_in_bytes_test.sh   |  7 +++-
+ 6 files changed, 85 insertions(+), 25 deletions(-)
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210702/32ade573/attachment.htm>
+2.27.0
+
