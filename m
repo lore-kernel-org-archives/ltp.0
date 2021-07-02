@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 2 Jul 2021 14:42:15 +0200
-Subject: [LTP] [PATCH 2/2] fork08: Rewrite the test to a proper
- synchronization
-In-Reply-To: <20210701032931.132468-3-xieziyao@huawei.com>
-References: <20210701032931.132468-1-xieziyao@huawei.com>
- <20210701032931.132468-3-xieziyao@huawei.com>
-Message-ID: <YN8Jp5iAVVjmU7js@yuki>
+Date: Fri, 2 Jul 2021 16:26:35 +0200
+Subject: [LTP] [PATCH] vsock01,
+ CVE-2021-26708: Add reproducer for race condition
+In-Reply-To: <20210702123533.18008-1-rpalethorpe@suse.com>
+References: <20210702123533.18008-1-rpalethorpe@suse.com>
+Message-ID: <YN8iG1fchuyC/SEI@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,10 +12,56 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Can we please get rid of the FILE and use file descriptors instead?
+> diff --git a/include/lapi/vm_sockets.h b/include/lapi/vm_sockets.h
+> new file mode 100644
+> index 000000000..94d0248c5
+> --- /dev/null
+> +++ b/include/lapi/vm_sockets.h
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
+> + */
+> +
+> +#include <sys/socket.h>
+> +
+> +#if HAVE_LINUX_VM_SOCKETS_H
+> +#  include <linux/vm_sockets.h>
+> +#endif
+> +
+> +#ifndef VMADDR_CID_LOCAL
+> +#  define VMADDR_CID_LOCAL 1
+> +#endif
 
-Here as well the test is invalid since the whole file is read into libc
-buffers on the first call to getc().
+I've added guards to this header.
+
+> +#include "config.h"
+> +#include "tst_test.h"
+> +
+> +#if HAVE_LINUX_VM_SOCKETS_H
+> +#  include "tst_fuzzy_sync.h"
+> +#  include "lapi/vm_sockets.h"
+> +
+> +static struct tst_fzsync_pair pair;
+> +int vsock = -1;
+> +
+> +void *writer(LTP_ATTRIBUTE_UNUSED void *unused)
+> +{
+> +	const uint64_t b_buflen = 0x4141;
+> +
+> +	while (tst_fzsync_run_b(&pair)) {
+> +		tst_fzsync_start_race_b(&pair);
+> +		SAFE_SETSOCKOPT(vsock, AF_VSOCK,
+> +				SO_VM_SOCKETS_BUFFER_SIZE,
+> +				&b_buflen, sizeof(b_buflen));
+> +		tst_fzsync_end_race_b(&pair);
+> +	}
+> +
+> +
+> +	return NULL;
+> +}
+
+And sprinkled a few 'static' keywords here, and pushed, thanks.
 
 -- 
 Cyril Hrubis
