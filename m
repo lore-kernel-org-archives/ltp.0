@@ -1,79 +1,58 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Fri, 2 Jul 2021 12:49:07 +0200
-Subject: [LTP] [PATCH v2 0/3] controllers/memcg: fixes for newer kernels
-In-Reply-To: <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
-References: <20210617070730.7699-1-krzysztof.kozlowski@canonical.com>
- <bd56facc-55a3-4e8a-4e9d-304d5177462d@canonical.com>
- <CAEemH2dqM29Y5s5U2QbeONH30h6aR1B4DZxSnSdowWKSXzfgYQ@mail.gmail.com>
-Message-ID: <ced1d406-97f4-286a-656b-671a333ba46a@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 2 Jul 2021 13:28:44 +0200
+Subject: [LTP] [PATCH 1/2] fork07: Rewrite the test to a proper
+ synchronization
+In-Reply-To: <20210701032931.132468-2-xieziyao@huawei.com>
+References: <20210701032931.132468-1-xieziyao@huawei.com>
+ <20210701032931.132468-2-xieziyao@huawei.com>
+Message-ID: <YN74bEchlEFD1nDN@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 25/06/2021 10:21, Li Wang wrote:
-> 
-> 
-> On Fri, Jun 25, 2021 at 3:31 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com
-> <mailto:krzysztof.kozlowski@canonical.com>> wrote:
-> 
->     On 17/06/2021 09:07, Krzysztof Kozlowski wrote:
->     > Hi,
->     >
->     > This is a resend of previous Github pull:
->     > https://github.com/linux-test-project/ltp/pull/830
->     <https://github.com/linux-test-project/ltp/pull/830>
->     >
->     > The patches fix several test failures we are hitting since months,
->     see:
->     > https://bugs.launchpad.net/bugs/1829979
->     <https://bugs.launchpad.net/bugs/1829979>
->     > https://bugs.launchpad.net/bugs/1829984
->     <https://bugs.launchpad.net/bugs/1829984>
->     >
->     > Best regards,
->     > Krzysztof
->     >
->     >
->     > Krzysztof Kozlowski (3):
->     >? ?controllers/memcg: accept range of max_usage_in_bytes
->     >? ?controllers/memcg: accept range of usage_in_bytes
->     >? ?controllers/memcg: accept non-zero max_usage_in_bytes after reset
-> 
-> 
->     Hi everyone,
-> 
->     The patchset got positive LGTM on the Github. Any further comments for
->     it or can it be applied?
-> 
-> 
-> I slightly agree with Richard that we need an explanation/investigation
-> on where the 32*PAGE_SIZE comes from. Otherwise, we are very possible
-> to mask a counter bug if only to make the test happy.
+Hi!
+The more I look at the test to more I realize how broken it is.
 
-On newer v5.11 the max_usage_in_bytes go even above 32 pages up to 34.
+It starts with a wrong premise that file offset changes, as a
+consequences of read(), are not propagated between the child and parent
+process for a file descriptor that has been opened by parent and
+propagated to a child on a fork(). This is not true at all as internally
+in kernel the child and parent file descriptor will refer to the same
+open file structure. And the test avoids failures by reading a byte from
+a libc FILE in the parent, which of course caches data in the FILE
+buffer so the first read() in libc reads the whole buffer. After that
+each forked child will get the exact FILE structure in it's userspace
+memory with the buffered data.
 
-I got some explanation from Michal Hocko [1] from which one can try to
-conclude:
-1. There is significant caching in memory accounting. Not only charging
-of cgroup is once per MEMCG_CHARGE_BATCH batch (try_charge()), but also
-statistics are gathered from per-cpu if threshold exceed
-MEMCG_CHARGE_BATCH (__mod_memcg_state()).
+In conclusion this test has to be deleted and we should write a new one
+from a scratch.
 
-2. Depending on machine (different amount of CPUs), the memory group
-charging be less or more accurate.
+When we are asked to check if file descriptors are passed down correctly
+between forks it makes much more sense to do it as follows:
 
-3. The accuracy of group memory accounting is not considered as
-important thus test relying on it, will be failing from time to time.
+* Parent writes N bytes (for example 'a') to a file in setup()
+* Parent opens a file descriptor for reading pointing to that file
+* Parent forks N children
+  - each child reads a byte from the file
+    checks that the byte is 'a' then exits
+* Parent waits the all the children
+* Parent checks that the end of file is reached
+  for example by checking that read() from the
+  file descriptor returns 0
 
 
-I'll send a v3 with significantly increased limits and some explanation.
+And the other way around would be:
 
-[1]
-https://lore.kernel.org/linux-mm/85b8a4f9-b9e9-a6ca-5d0c-c1ecb8c11ef3@canonical.com/T/#m6459b3be3a86f5eaf2cfc48dd586b6faf949e440
+* Parent opens a file descriptor for writing pointing to an empty file
+  (the file should be unlinked() before the open with O_CREAT)
+* Parent forks N children
+  - each child writes a sequence of bytes 'test' or something like this
+* Parent waits the all the children
+* Parent checks that the file is filled with N string 'test' that are
+  not interleaved
 
-
-Best regards,
-Krzysztof
+-- 
+Cyril Hrubis
+chrubis@suse.cz
