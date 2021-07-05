@@ -1,68 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 2 Jul 2021 16:26:35 +0200
-Subject: [LTP] [PATCH] vsock01,
- CVE-2021-26708: Add reproducer for race condition
-In-Reply-To: <20210702123533.18008-1-rpalethorpe@suse.com>
-References: <20210702123533.18008-1-rpalethorpe@suse.com>
-Message-ID: <YN8iG1fchuyC/SEI@yuki>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Mon, 5 Jul 2021 15:59:01 +0800
+Subject: [LTP] [PATCH 0/2 v2] syscalls/fork: Rewrite fork{07,
+ 08} to a proper synchronization
+Message-ID: <20210705075903.98692-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/include/lapi/vm_sockets.h b/include/lapi/vm_sockets.h
-> new file mode 100644
-> index 000000000..94d0248c5
-> --- /dev/null
-> +++ b/include/lapi/vm_sockets.h
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
-> + */
-> +
-> +#include <sys/socket.h>
-> +
-> +#if HAVE_LINUX_VM_SOCKETS_H
-> +#  include <linux/vm_sockets.h>
-> +#endif
-> +
-> +#ifndef VMADDR_CID_LOCAL
-> +#  define VMADDR_CID_LOCAL 1
-> +#endif
+v1->v2:
+1. Write a new test for fork07, which checks that all children inherit parent's file descriptor.
+* Parent writes N bytes (for example 'a') to a file in setup()
+* Parent opens a file descriptor for reading pointing to that file
+* Parent forks N children
+  - each child reads a byte from the file checks that the byte is 'a' then exits
+* Parent waits the all the children
+* Parent checks that the end of file is reached
+2. Same changes are applied to fork08, and use file descriptors instead of the FILE.
 
-I've added guards to this header.
+Xie Ziyao (2):
+  fork07: Rewrite the test to a proper synchronization
+  fork08: Rewrite the test to a proper synchronization
 
-> +#include "config.h"
-> +#include "tst_test.h"
-> +
-> +#if HAVE_LINUX_VM_SOCKETS_H
-> +#  include "tst_fuzzy_sync.h"
-> +#  include "lapi/vm_sockets.h"
-> +
-> +static struct tst_fzsync_pair pair;
-> +int vsock = -1;
-> +
-> +void *writer(LTP_ATTRIBUTE_UNUSED void *unused)
-> +{
-> +	const uint64_t b_buflen = 0x4141;
-> +
-> +	while (tst_fzsync_run_b(&pair)) {
-> +		tst_fzsync_start_race_b(&pair);
-> +		SAFE_SETSOCKOPT(vsock, AF_VSOCK,
-> +				SO_VM_SOCKETS_BUFFER_SIZE,
-> +				&b_buflen, sizeof(b_buflen));
-> +		tst_fzsync_end_race_b(&pair);
-> +	}
-> +
-> +
-> +	return NULL;
-> +}
+ testcases/kernel/syscalls/fork/fork07.c | 236 +++++-------------------
+ testcases/kernel/syscalls/fork/fork08.c | 200 +++++---------------
+ 2 files changed, 94 insertions(+), 342 deletions(-)
 
-And sprinkled a few 'static' keywords here, and pushed, thanks.
+--
+2.17.1
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
