@@ -1,94 +1,76 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Tue, 6 Jul 2021 05:45:32 +0000
-Subject: [LTP] [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount
- failure
-In-Reply-To: <20210706032748.GA16346@andestech.com>
-References: <20210628033002.GA1469@andestech.com>
- <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de> <YNnJ18Q+cqb8zM5K@yuki>
- <20210706032748.GA16346@andestech.com>
-Message-ID: <60E3EE1D.2090800@fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 06 Jul 2021 09:53:51 +0100
+Subject: [LTP] [PATCH] vsock01,
+ CVE-2021-26708: Add reproducer for race condition
+In-Reply-To: <YN8iG1fchuyC/SEI@yuki>
+References: <20210702123533.18008-1-rpalethorpe@suse.com>
+ <YN8iG1fchuyC/SEI@yuki>
+Message-ID: <8735sr961s.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Leo
-> Hi,
->
-> Sorry for the late response and thanks for all the replies and suggestions.
->
-> I am running on a rather new RISC-V platform (Andes/AE350) and with 5.4.0 off-tree kernel.
-> The umount in cgroup_regression_test mostly failed at test_2 and test_3,
-> so it would show FAIL result (mount not successfully executed) at test_3 and test_5 (test_4 shows TCONF on my platform).
->
-> On Mon, Jun 28, 2021 at 03:08:39PM +0200, Cyril Hrubis wrote:
->> Hi!
->>> I would like a short comment close to the syncs. When I converted
->>> cpuset_regression_test.sh, I would have removed the sync in there, if
->>> there wouldn't have been any comment.
->>> Most of the time syncs are not required and just added by paranoid
->>> developers, but if there is a real reason, I think it should be stated
->>> in a comment.
->>
->> Sounds reasonable to me, can we please add a comment there?
->
-> Hi Cyril and Joerg,
->
-> Sounds reasonable to me as well,
-> will send a v2 patch with comment.
->
->> --
->> Cyril Hrubis
->> chrubis@suse.cz
->
->
->> Agree with this. Are all these sync really needed? Or just some?
->
-> Hi Petr,
->
-> I've written a script containing only the following sequence
-> 	" mount 'cgroup mntpoint' "
-> 	" mkdir 'under cgroup mntpoint' "
-> 	" rmdir 'under cgroup mntpoint' "
-> 	" umount 'cgroup mntpoint' "
-> 	" mount 'cgroup mntpoint' "
-> and it could trigger the fail.
->
-> But only bumped into the umount fail when doing test_2 and test_3 in the cgroup_regression_test.
->
-> I am adding syncs in every sub-tests that execute the above sequence now.
-> Should them be added only at the places where umount failure did occur ?
->
->> Kind regards,
->> Petr
->
->
->> IMO, Even we call sync, this umount may fail because sync ensures
->> nothing.  Why not use tst_umount?
->
-> Hi Yang,
->
-> I think this might be a timing issue and a little delay could fix this problem. (e.g. 'sleep 1')
-> Using 'sync' here IMHO would be more descriptive and has a semantic meaning.
-Yes, it is a timing issue.
-I also met a similar problem because of sync to lead EBUSY error in 
-xfstests log time ago.
+Hello Cyril,
 
-https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=b536de2a042484bb241cca120ce55c974309513a
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-So, I don't think using sync is a good idea because sync will make 
-metadata into disk but no ensure it. So if we have other io work, then 
-sync may push other's metadata into disk firstly instead of here's data.
+> Hi!
+>> diff --git a/include/lapi/vm_sockets.h b/include/lapi/vm_sockets.h
+>> new file mode 100644
+>> index 000000000..94d0248c5
+>> --- /dev/null
+>> +++ b/include/lapi/vm_sockets.h
+>> @@ -0,0 +1,14 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
+>> + */
+>> +
+>> +#include <sys/socket.h>
+>> +
+>> +#if HAVE_LINUX_VM_SOCKETS_H
+>> +#  include <linux/vm_sockets.h>
+>> +#endif
+>> +
+>> +#ifndef VMADDR_CID_LOCAL
+>> +#  define VMADDR_CID_LOCAL 1
+>> +#endif
+>
+> I've added guards to this header.
+>
+>> +#include "config.h"
+>> +#include "tst_test.h"
+>> +
+>> +#if HAVE_LINUX_VM_SOCKETS_H
+>> +#  include "tst_fuzzy_sync.h"
+>> +#  include "lapi/vm_sockets.h"
+>> +
+>> +static struct tst_fzsync_pair pair;
+>> +int vsock = -1;
+>> +
+>> +void *writer(LTP_ATTRIBUTE_UNUSED void *unused)
+>> +{
+>> +	const uint64_t b_buflen = 0x4141;
+>> +
+>> +	while (tst_fzsync_run_b(&pair)) {
+>> +		tst_fzsync_start_race_b(&pair);
+>> +		SAFE_SETSOCKOPT(vsock, AF_VSOCK,
+>> +				SO_VM_SOCKETS_BUFFER_SIZE,
+>> +				&b_buflen, sizeof(b_buflen));
+>> +		tst_fzsync_end_race_b(&pair);
+>> +	}
+>> +
+>> +
+>> +	return NULL;
+>> +}
+>
+> And sprinkled a few 'static' keywords here, and pushed, thanks.
 
-Since we have tst_umount api to avoid EBUSY error, why not to use it in 
-here to avoid your problem?
->
-> Speaking of tst_umount, do you mean to convert this test to C code ?
-No, we also have shell api  for tst_umount.
->
->> Best Regards
->> Yang Xu
->
-> Best regards,
-> Leo
+Just noting; this would be caught by Wmissing-declarations.
+
+
+-- 
+Thank you,
+Richard.
