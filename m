@@ -1,48 +1,47 @@
 From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Tue,  6 Jul 2021 10:21:14 -0300
-Subject: [LTP] [PATCH] shmget02: fix EPERM test when RLIMIT_MEMLOCK is large
- enough
-Message-ID: <20210706132114.204443-1-cascardo@canonical.com>
+Date: Tue, 6 Jul 2021 10:22:47 -0300
+Subject: [LTP] [PATCH v3 3/3] syscalls/shmget*: Convert into new api
+In-Reply-To: <98a17ec4-3697-d5ba-583b-ce539782f18c@canonical.com>
+References: <YNM4rlDJLzb4xk6v@yuki>
+ <1624512827-3256-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1624512827-3256-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ <YNnlIVB9M4/11JmT@yuki>
+ <98a17ec4-3697-d5ba-583b-ce539782f18c@canonical.com>
+Message-ID: <YORZJ5vIMabVG0yG@mussarela>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-shmget(..., SHM_HUGETLB) will not fail with EPERM if there is enough space
-for RLIMIT_MEMLOCK. If the limit is 0, it will fail with EPERM as expected
-when a not enough privileged user calls it.
+On Mon, Jul 05, 2021 at 12:03:33PM +0200, Krzysztof Kozlowski wrote:
+> On 28/06/2021 17:05, Cyril Hrubis wrote:
+> > Hi!
+> > Pushed with a minor changes, thanks.
+> > 
+> 
+> It looks like this commit not only converted into new API but also
+> changed the test. We started noticing shmget02 and shmget03 test
+> failures on several systems.
+> 
+> https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1934432
+> 
+> Reverting the commit helps and tests pass.
+> 
+> Since it is one big patch doing multiple things at the same time, it is
+> difficult to bisect it more and find the cause.  Any ideas what went
+> different here comparing to previous version of these tests?
+> 
 
-Set RLIMIT_MEMLOCK to 0 for all calls, as this is the only one which will
-fail because of that limit, unless we are talking about very old kernels
-(before 2.6.9).
+New tests were added, like testing for EPERM when using SHM_HUGETLB.
+However, it does not fail with EPERM with there is sufficient
+RLIMIT_MEMLOCK. I have just sent a fix for that.
 
-Fixes: 4dc493b44a85 ("syscalls/shmget*: Convert into new api")
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
----
- testcases/kernel/syscalls/ipc/shmget/shmget02.c | 2 ++
- 1 file changed, 2 insertions(+)
+Cascardo.
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-index 6be8d8157999..8857207cfd3d 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-@@ -64,6 +64,7 @@ static void do_test(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
- 	pid_t pid;
-+	struct rlimit rl = { 0, 0 };
- 
- 	if (tc->exp_user == 0 && tc->exp_group == 0) {
- 		TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
-@@ -78,6 +79,7 @@ static void do_test(unsigned int n)
- 			SAFE_SETGID(pw->pw_gid);
- 		}
- 		SAFE_SETUID(pw->pw_uid);
-+		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &rl);
- 		TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
- 			"shmget(%i, %lu, %i)", *tc->shmkey, tc->size, tc->flags);
- 		exit(0);
--- 
-2.30.2
-
+> 
+> Best regards,
+> Krzysztof
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
