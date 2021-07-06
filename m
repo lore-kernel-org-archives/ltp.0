@@ -1,7 +1,8 @@
 From: kernel test robot <rong.a.chen@intel.com>
-Date: Tue, 6 Jul 2021 16:56:52 +0800
-Subject: [LTP] [sched/fair] 1c35b07e6d: RIP:native_queued_spin_lock_slowpath
-Message-ID: <20210706085652.GF2022171@shao2-debian>
+Date: Tue, 6 Jul 2021 16:58:27 +0800
+Subject: [LTP] [vfs] cfc6d02606: ltp.copy_file_range01.fail
+In-Reply-To: <20210702090012.28458-1-lhenriques@suse.de>
+Message-ID: <20210706085827.GG2022171@shao2-debian>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,9 +13,9 @@ Greeting,
 
 FYI, we noticed the following commit (built with gcc-9):
 
-commit: 1c35b07e6d3986474e5635be566e7bc79d97c64d ("sched/fair: Ensure _sum and _avg values stay consistent")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
+commit: cfc6d026063ed144c3413870e09cb210253d333d ("[PATCH v12] vfs: fix copy_file_range regression in cross-fs copies")
+url: https://github.com/0day-ci/linux/commits/Luis-Henriques/vfs-fix-copy_file_range-regression-in-cross-fs-copies/20210702-170036
+base: https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git for-next
 
 in testcase: ltp
 version: ltp-x86_64-14c1f76-1_20210703
@@ -22,88 +23,4520 @@ with following parameters:
 
 	disk: 1HDD
 	fs: ext4
-	test: dio-01
+	test: syscalls-03
 	ucode: 0xe2
 
 test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
 test-url: http://linux-test-project.github.io/
 
 
-on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 28G memory
+on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
 
 caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-
 
 
 If you fix the issue, kindly add following tag
 Reported-by: kernel test robot <rong.a.chen@intel.com>
 
 
-[  160.446205]
-[  160.451594] <<<test_output>>>
-[  160.451595]
-[  178.116525] ------------[ cut here ]------------
-[  203.592757] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
-[  203.592758] Modules linked in: dm_mod btrfs blake2b_generic xor zstd_compress raid6_pq libcrc32c ipmi_devintf ipmi_msghandler sd_mod t10_pi sg intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp i915 kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel mei_wdt intel_gtt drm_kms_helper ahci rapl syscopyarea libahci sysfillrect intel_cstate sysimgblt mei_me fb_sys_fops wmi_bmof drm intel_uncore libata mei joydev intel_pch_thermal wmi video intel_pmc_core acpi_pad ip_tables
-[  203.592770] CPU: 3 PID: 3103 Comm: diotest6 Tainted: G          I       5.13.0-rc6-00076-g1c35b07e6d39 #1
-[  203.592770] Hardware name: Dell Inc. OptiPlex 7040/0Y7WYT, BIOS 1.2.8 01/26/2016
-[  203.592771] RIP: 0010:native_queued_spin_lock_slowpath (kbuild/src/consumer/kernel/locking/qspinlock.c:382 kbuild/src/consumer/kernel/locking/qspinlock.c:315) 
-[ 203.592771] Code: 6c f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 46 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 b8 00 02 00 00
-All code
-========
-   0:	6c                   	insb   (%dx),%es:(%rdi)
-   1:	f0 0f ba 2f 08       	lock btsl $0x8,(%rdi)
-   6:	0f 92 c0             	setb   %al
-   9:	0f b6 c0             	movzbl %al,%eax
-   c:	c1 e0 08             	shl    $0x8,%eax
-   f:	89 c2                	mov    %eax,%edx
-  11:	8b 07                	mov    (%rdi),%eax
-  13:	30 e4                	xor    %ah,%ah
-  15:	09 d0                	or     %edx,%eax
-  17:	a9 00 01 ff ff       	test   $0xffff0100,%eax
-  1c:	75 46                	jne    0x64
-  1e:	85 c0                	test   %eax,%eax
-  20:	74 0e                	je     0x30
-  22:	8b 07                	mov    (%rdi),%eax
-  24:	84 c0                	test   %al,%al
-  26:	74 08                	je     0x30
-  28:	f3 90                	pause  
-  2a:*	8b 07                	mov    (%rdi),%eax		<-- trapping instruction
-  2c:	84 c0                	test   %al,%al
-  2e:	75 f8                	jne    0x28
-  30:	b8 01 00 00 00       	mov    $0x1,%eax
-  35:	66 89 07             	mov    %ax,(%rdi)
-  38:	c3                   	retq   
-  39:	8b 37                	mov    (%rdi),%esi
-  3b:	b8 00 02 00 00       	mov    $0x200,%eax
+<<<test_start>>>
+tag=copy_file_range01 stime=1636341812
+cmdline="copy_file_range01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:180: TCONF: copy_file_range() doesn't support cross-device, skip it
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:180: TCONF: copy_file_range() doesn't support cross-device, skip it
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
 
-Code starting with the faulting instruction
-===========================================
-   0:	8b 07                	mov    (%rdi),%eax
-   2:	84 c0                	test   %al,%al
-   4:	75 f8                	jne    0xfffffffffffffffe
-   6:	b8 01 00 00 00       	mov    $0x1,%eax
-   b:	66 89 07             	mov    %ax,(%rdi)
-   e:	c3                   	retq   
-   f:	8b 37                	mov    (%rdi),%esi
-  11:	b8 00 02 00 00       	mov    $0x200,%eax
-[  203.592772] RSP: 0018:ffffc90001f032d8 EFLAGS: 00000002
-[  203.592773] RAX: 0000000000000101 RBX: ffff88810d4a0000 RCX: ffff888759cc0000
-[  203.592773] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888759ceba80
-[  203.592774] RBP: ffffc90001f032e8 R08: ffff888759ceb420 R09: ffff888759ceb420
-[  203.592774] R10: ffff88810cc01500 R11: 0000000000000000 R12: ffff888759ceba80
-[  203.592774] R13: 0000000000000000 R14: 0000000000000087 R15: ffff88810d4a0c8c
-[  203.592775] FS:  00007fc252ae2740(0000) GS:ffff888759cc0000(0000) knlGS:0000000000000000
-[  203.592775] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  203.592776] CR2: 00007fa0a4d577f8 CR3: 000000074d22a005 CR4: 00000000003706e0
-[  203.592776] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  203.592776] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  203.592777] Call Trace:
-[  203.592777] _raw_spin_lock (kbuild/src/consumer/arch/x86/include/asm/paravirt.h:585 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:51 kbuild/src/consumer/include/asm-generic/qspinlock.h:85 kbuild/src/consumer/include/linux/spinlock.h:183 kbuild/src/consumer/include/linux/spinlock_api_smp.h:143 kbuild/src/consumer/kernel/locking/spinlock.c:151) 
-[  203.592777] raw_spin_rq_lock_nested (kbuild/src/consumer/arch/x86/include/asm/preempt.h:85 kbuild/src/consumer/kernel/sched/core.c:462) 
-[  203.592778] try_to_wake_up (kbuild/src/consumer/kernel/sched/sched.h:1536 kbuild/src/consumer/kernel/sched/sched.h:1611 kbuild/src/consumer/kernel/sched/core.c:3555 kbuild/src/consumer/kernel/sched/core.c:3835) 
-[  203.592778] __queue_work (kbuild/src/consumer/arch/x86/include/asm/paravirt.h:590 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:56 kbuild/src/consumer/include/linux/spinlock.h:212 kbuild/src/consumer/include/linux/spinlock_api_smp.h:151 kbuild/src/consumer/kernel/workqueue.c:1501) 
-[  203.592778] queue_work_on (kbuild/src/consumer/kernel/workqueue.c:1526) 
+Summary:
+passed   0
+failed   4350
+broken   0
+skipped  2
+warnings 0
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=12 termination_type=exited termination_id=33 corefile=no
+cutime=23 cstime=201
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20210524-150-gb26d13173
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20210524-150-gb26d13173
+       ###############################################################
+
+
 
 
 To reproduce:
@@ -126,7 +4559,7 @@ Rong Chen
 -------------- next part --------------
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 5.13.0-rc6 Kernel Configuration
+# Linux/x86_64 5.13.0-rc1 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="gcc-9 (Debian 9.3.0-22) 9.3.0"
 CONFIG_CC_IS_GCC=y
@@ -228,27 +4661,10 @@ CONFIG_NO_HZ=y
 CONFIG_HIGH_RES_TIMERS=y
 # end of Timers subsystem
 
-CONFIG_BPF=y
-CONFIG_HAVE_EBPF_JIT=y
-CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
-
-#
-# BPF subsystem
-#
-CONFIG_BPF_SYSCALL=y
-CONFIG_BPF_JIT=y
-CONFIG_BPF_JIT_ALWAYS_ON=y
-CONFIG_BPF_JIT_DEFAULT_ON=y
-# CONFIG_BPF_UNPRIV_DEFAULT_OFF is not set
-# CONFIG_BPF_PRELOAD is not set
-# CONFIG_BPF_LSM is not set
-# end of BPF subsystem
-
 # CONFIG_PREEMPT_NONE is not set
 CONFIG_PREEMPT_VOLUNTARY=y
 # CONFIG_PREEMPT is not set
 CONFIG_PREEMPT_COUNT=y
-CONFIG_SCHED_CORE=y
 
 #
 # CPU/Task time and stats accounting
@@ -357,6 +4773,7 @@ CONFIG_SYSCTL=y
 CONFIG_HAVE_UID16=y
 CONFIG_SYSCTL_EXCEPTION_TRACE=y
 CONFIG_HAVE_PCSPKR_PLATFORM=y
+CONFIG_BPF=y
 # CONFIG_EXPERT is not set
 CONFIG_UID16=y
 CONFIG_MULTIUSER=y
@@ -387,6 +4804,12 @@ CONFIG_KALLSYMS=y
 CONFIG_KALLSYMS_ALL=y
 CONFIG_KALLSYMS_ABSOLUTE_PERCPU=y
 CONFIG_KALLSYMS_BASE_RELATIVE=y
+# CONFIG_BPF_LSM is not set
+CONFIG_BPF_SYSCALL=y
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+CONFIG_BPF_JIT_ALWAYS_ON=y
+CONFIG_BPF_JIT_DEFAULT_ON=y
+# CONFIG_BPF_PRELOAD is not set
 CONFIG_USERFAULTFD=y
 CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE=y
 CONFIG_KCMP=y
@@ -1185,6 +5608,7 @@ CONFIG_ARCH_HAS_PKEYS=y
 # CONFIG_GUP_TEST is not set
 # CONFIG_READ_ONLY_THP_FOR_FS is not set
 CONFIG_ARCH_HAS_PTE_SPECIAL=y
+CONFIG_IO_MAPPING=y
 # end of Memory Management options
 
 CONFIG_NET=y
@@ -1845,6 +6269,7 @@ CONFIG_CGROUP_NET_PRIO=y
 CONFIG_CGROUP_NET_CLASSID=y
 CONFIG_NET_RX_BUSY_POLL=y
 CONFIG_BQL=y
+CONFIG_BPF_JIT=y
 CONFIG_BPF_STREAM_PARSER=y
 CONFIG_NET_FLOW_LIMIT=y
 
@@ -2010,6 +6435,7 @@ CONFIG_NET_DEVLINK=y
 CONFIG_PAGE_POOL=y
 CONFIG_FAILOVER=m
 CONFIG_ETHTOOL_NETLINK=y
+CONFIG_HAVE_EBPF_JIT=y
 
 #
 # Device Drivers
@@ -3382,6 +7808,7 @@ CONFIG_SPI_MASTER=y
 # SPI Master Controller Drivers
 #
 # CONFIG_SPI_ALTERA is not set
+# CONFIG_SPI_ALTERA_CORE is not set
 # CONFIG_SPI_AXI_SPI_ENGINE is not set
 # CONFIG_SPI_BITBANG is not set
 # CONFIG_SPI_BUTTERFLY is not set
@@ -4887,7 +9314,6 @@ CONFIG_HID_PRIMAX=m
 # CONFIG_HID_ROCCAT is not set
 CONFIG_HID_SAITEK=m
 CONFIG_HID_SAMSUNG=m
-# CONFIG_HID_SEMITEK is not set
 # CONFIG_HID_SONY is not set
 CONFIG_HID_SPEEDLINK=m
 # CONFIG_HID_STEAM is not set
@@ -7046,30 +11472,27 @@ export_top_env()
 	export category='functional'
 	export need_modules=true
 	export need_memory='4G'
-	export job_origin='ltp-dio.yaml'
+	export job_origin='ltp-syscalls.yaml'
 	export queue_cmdline_keys='branch
 commit
 queue_at_least_once'
 	export queue='validate'
-	export testbox='lkp-skl-d01'
-	export tbox_group='lkp-skl-d01'
+	export testbox='lkp-skl-d02'
+	export tbox_group='lkp-skl-d02'
 	export kconfig='x86_64-rhel-8.3'
-	export submit_id='60e2c018801d9025db988594'
-	export job_file='/lkp/jobs/scheduled/lkp-skl-d01/ltp-1HDD-ext4-dio-01-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-1c35b07e6d3986474e5635be566e7bc79d97c64d-20210705-75227-f7s7ov-5.yaml'
-	export id='a1c86da5b6db4a4241547105366104498a84c14a'
+	export submit_id='60e3c9615a30f204d133649c'
+	export job_file='/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-ext4-syscalls-03-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-cfc6d026063ed144c3413870e09cb210253d333d-20210706-66769-rfza0v-4.yaml'
+	export id='752543fd3ab71373b92e39c791ba8d8ff04fd424'
 	export queuer_version='/lkp-src'
 	export model='Skylake'
-	export nr_cpu=8
-	export memory='28G'
+	export nr_cpu=4
+	export memory='32G'
 	export nr_ssd_partitions=1
 	export nr_hdd_partitions=4
-	export hdd_partitions='/dev/disk/by-id/wwn-0x50014ee20d26b072-part*'
-	export ssd_partitions='/dev/disk/by-id/wwn-0x55cd2e404c39bfc5-part1'
-	export swap_partitions='/dev/disk/by-id/wwn-0x55cd2e404c39bfc5-part3'
-	export rootfs_partition='/dev/disk/by-id/wwn-0x55cd2e404c39bfc5-part2'
-	export brand='Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz'
-	export cpu_info='skylake i7-6700'
-	export bios_version='1.2.8'
+	export hdd_partitions='/dev/disk/by-id/wwn-0x5000c500746fa0cc-part*'
+	export ssd_partitions='/dev/disk/by-id/wwn-0x55cd2e41514d5105-part2'
+	export rootfs_partition='/dev/disk/by-id/wwn-0x55cd2e41514d5105-part1'
+	export brand='Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz'
 	export need_kconfig='CONFIG_BLK_DEV_SD
 CONFIG_SCSI
 CONFIG_BLOCK=y
@@ -7084,36 +11507,36 @@ CONFIG_CAN_VCAN=m
 CONFIG_IPV6_VTI=m
 CONFIG_MINIX_FS=m
 CONFIG_EXT4_FS'
-	export commit='1c35b07e6d3986474e5635be566e7bc79d97c64d'
+	export commit='cfc6d026063ed144c3413870e09cb210253d333d'
 	export need_kconfig_hw='CONFIG_E1000E=y
 CONFIG_SATA_AHCI
 CONFIG_DRM_I915'
 	export ucode='0xe2'
-	export enqueue_time='2021-07-05 16:17:28 +0800'
-	export _id='60e2c02a801d9025db988598'
-	export _rt='/result/ltp/1HDD-ext4-dio-01-ucode=0xe2/lkp-skl-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d'
+	export enqueue_time='2021-07-06 11:09:22 +0800'
+	export _id='60e3c9835a30f204d133649f'
+	export _rt='/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d'
 	export user='lkp'
 	export compiler='gcc-9'
 	export LKP_SERVER='internal-lkp-server'
-	export head_commit='b81d2980a80c435866b2a0b1b6296e3928214307'
+	export head_commit='8bb68a1e85879bb9c8051646a2f73b935ead953d'
 	export base_commit='62fb9874f5da54fdb243003b386128037319b219'
-	export branch='linus/master'
+	export branch='linux-review/Luis-Henriques/vfs-fix-copy_file_range-regression-in-cross-fs-copies/20210702-170036'
 	export rootfs='debian-10.4-x86_64-20200603.cgz'
-	export result_root='/result/ltp/1HDD-ext4-dio-01-ucode=0xe2/lkp-skl-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/3'
-	export scheduler_version='/lkp/lkp/.src-20210705-113352'
+	export result_root='/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/3'
+	export scheduler_version='/lkp/lkp/.src-20210705-194717'
 	export arch='x86_64'
 	export max_uptime=2100
 	export initrd='/osimage/debian/debian-10.4-x86_64-20200603.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/lkp-skl-d01/ltp-1HDD-ext4-dio-01-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-1c35b07e6d3986474e5635be566e7bc79d97c64d-20210705-75227-f7s7ov-5.yaml
+job=/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-ext4-syscalls-03-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-cfc6d026063ed144c3413870e09cb210253d333d-20210706-66769-rfza0v-4.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-8.3
-branch=linus/master
-commit=1c35b07e6d3986474e5635be566e7bc79d97c64d
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/vmlinuz-5.13.0-rc6-00076-g1c35b07e6d39
+branch=linux-review/Luis-Henriques/vfs-fix-copy_file_range-regression-in-cross-fs-copies/20210702-170036
+commit=cfc6d026063ed144c3413870e09cb210253d333d
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/vmlinuz-5.13.0-rc1-00058-gcfc6d026063e
 max_uptime=2100
-RESULT_ROOT=/result/ltp/1HDD-ext4-dio-01-ucode=0xe2/lkp-skl-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/3
+RESULT_ROOT=/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/3
 LKP_SERVER=internal-lkp-server
 nokaslr
 selinux=0
@@ -7137,19 +11560,19 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/modules.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/modules.cgz'
 	export bm_initrd='/osimage/deps/debian-10.4-x86_64-20200603.cgz/run-ipconfig_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/lkp_20201211.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/rsync-rootfs_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/fs_20200714.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/ltp_20210703.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/ltp-x86_64-14c1f76-1_20210703.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/hw_20200715.cgz'
 	export ucode_initrd='/osimage/ucode/intel-ucode-20210222.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
 	export LKP_CGI_PORT=80
 	export LKP_CIFS_PORT=139
-	export last_kernel='4.20.0'
+	export last_kernel='5.13.0'
 	export repeat_to=6
 	export queue_at_least_once=1
-	export kernel='/pkg/linux/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/vmlinuz-5.13.0-rc6-00076-g1c35b07e6d39'
-	export dequeue_time='2021-07-05 16:32:41 +0800'
-	export job_initrd='/lkp/jobs/scheduled/lkp-skl-d01/ltp-1HDD-ext4-dio-01-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-1c35b07e6d3986474e5635be566e7bc79d97c64d-20210705-75227-f7s7ov-5.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/vmlinuz-5.13.0-rc1-00058-gcfc6d026063e'
+	export dequeue_time='2021-07-06 11:43:15 +0800'
+	export job_initrd='/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-ext4-syscalls-03-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-cfc6d026063ed144c3413870e09cb210253d333d-20210706-66769-rfza0v-4.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -7175,7 +11598,7 @@ run_job()
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test test='dio-01' $LKP_SRC/tests/wrapper ltp
+	run_test test='syscalls-03' $LKP_SRC/tests/wrapper ltp
 }
 
 extract_stats()
@@ -7183,7 +11606,7 @@ extract_stats()
 	export stats_part_begin=
 	export stats_part_end=
 
-	env test='dio-01' $LKP_SRC/stats/wrapper ltp
+	env test='syscalls-03' $LKP_SRC/stats/wrapper ltp
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper meminfo
 
@@ -7200,12 +11623,8691 @@ extract_stats()
 A non-text attachment was scrubbed...
 Name: dmesg.xz
 Type: application/x-xz
-Size: 28496 bytes
+Size: 69348 bytes
 Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210706/f4d88435/attachment-0001.xz>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210706/91114a62/attachment-0001.xz>
+-------------- next part --------------
+2021-11-08 03:22:32 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+2021-11-08 03:22:32 ./runltp -f syscalls-03 -d /fs/sdb1/tmpdir
+INFO: creating /lkp/benchmarks/ltp/output directory
+INFO: creating /lkp/benchmarks/ltp/results directory
+Checking for required user/group ids
+
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+Required users/groups exist.
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+/etc/os-release
+PRETTY_NAME="Debian GNU/Linux 10 (buster)"
+NAME="Debian GNU/Linux"
+VERSION_ID="10"
+VERSION="10 (buster)"
+VERSION_CODENAME=buster
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
+uname:
+Linux lkp-skl-d02 5.13.0-rc1-00058-gcfc6d026063e #1 SMP Sat Jul 3 12:14:31 CST 2021 x86_64 GNU/Linux
+
+/proc/cmdline
+ip=::::lkp-skl-d02::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-ext4-syscalls-03-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-cfc6d026063ed144c3413870e09cb210253d333d-20210706-66769-rfza0v-4.yaml ARCH=x86_64 kconfig=x86_64-rhel-8.3 branch=linux-review/Luis-Henriques/vfs-fix-copy_file_range-regression-in-cross-fs-copies/20210702-170036 commit=cfc6d026063ed144c3413870e09cb210253d333d BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/vmlinuz-5.13.0-rc1-00058-gcfc6d026063e max_uptime=2100 RESULT_ROOT=/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/3 LKP_SERVER=internal-lkp-server nokaslr selinux=0 debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw
+
+Gnu C                  gcc (Debian 8.3.0-6) 8.3.0
+Clang                 
+Gnu make               4.2.1
+util-linux             2.33.1
+mount                  linux 2.33.1 (libmount 2.33.1: selinux, smack, btrfs, namespaces, assert, debug)
+modutils               26
+e2fsprogs              1.44.5
+Linux C Library        > libc.2.28
+Dynamic linker (ldd)   2.28
+Procps                 3.3.15
+Net-tools              2.10-alpha
+iproute2               iproute2-ss190107
+iputils                iputils-s20180629
+ethtool                4.19
+Kbd                    119:
+Sh-utils               8.30
+Modules Loaded         dm_mod xfs libcrc32c ipmi_devintf ipmi_msghandler sd_mod t10_pi sg intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp i915 coretemp kvm_intel vfio_mdev kvm vfio_iommu_type1 irqbypass crct10dif_pclmul vfio crc32_pclmul mdev crc32c_intel intel_gtt ghash_clmulni_intel drm_kms_helper mei_wdt wmi_bmof syscopyarea rapl sysfillrect sysimgblt fb_sys_fops ahci intel_cstate libahci mei_me intel_uncore drm libata mei intel_pch_thermal wmi video acpi_pad intel_pmc_core ip_tables
+
+free reports:
+              total        used        free      shared  buff/cache   available
+Mem:       32754212      321748    29841480       13616     2590984    29607592
+Swap:             0           0           0
+
+cpuinfo:
+Architecture:        x86_64
+CPU op-mode(s):      32-bit, 64-bit
+Byte Order:          Little Endian
+Address sizes:       39 bits physical, 48 bits virtual
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  4
+Socket(s):           1
+NUMA node(s):        1
+Vendor ID:           GenuineIntel
+CPU family:          6
+Model:               94
+Model name:          Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz
+Stepping:            3
+CPU MHz:             3200.000
+CPU max MHz:         3600.0000
+CPU min MHz:         800.0000
+BogoMIPS:            6399.96
+Virtualization:      VT-x
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            256K
+L3 cache:            6144K
+NUMA node0 CPU(s):   0-3
+Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+
+AppArmor enabled
+
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2551     -n 2551 -p -f /fs/sdb1/tmpdir/ltp-PvA9jDgEYI/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON-2021_11_08-03h_22m_32s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2021_11_08-03h_22m_32s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2021_11_08-03h_22m_32s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2021_11_08-03h_22m_32s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2021_11_08-03h_22m_32s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2021_11_08-03h_22m_32s.tconf
+Running tests.......
+<<<test_start>>>
+tag=add_key01 stime=1636341752
+cmdline="add_key01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+add_key01.c:63: TINFO: The key type is keyrings and plen is 0
+add_key01.c:79: TPASS: add_key call succeeded as expected
+add_key01.c:63: TINFO: the key type is keyrings and plen is 1
+add_key01.c:83: TPASS: add_key call failed as expected: EINVAL (22)
+add_key01.c:63: TINFO: The key type is user and plen is 32767
+add_key01.c:79: TPASS: add_key call succeeded as expected
+add_key01.c:63: TINFO: The key type is user and plen is 32768
+add_key01.c:83: TPASS: add_key call failed as expected: EINVAL (22)
+add_key01.c:63: TINFO: The key type is logon and plen is 32767
+add_key01.c:79: TPASS: add_key call succeeded as expected
+add_key01.c:63: TINFO: The key type is logon and plen is 32768
+add_key01.c:83: TPASS: add_key call failed as expected: EINVAL (22)
+add_key01.c:63: TINFO: The key type is big_key and plen is 1048575
+add_key01.c:70: TCONF: skipping unsupported big_key key
+add_key01.c:63: TINFO: The key type is big_key and plen is 1048576
+add_key01.c:70: TCONF: skipping unsupported big_key key
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=alarm07 stime=1636341752
+cmdline="alarm07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+alarm07.c:43: TPASS: Got 1 sigalarm in parent
+alarm07.c:32: TPASS: alarm() request cleared in child
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=bpf_map01 stime=1636341755
+cmdline="bpf_map01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+bpf_common.c:17: TINFO: Raising RLIMIT_MEMLOCK to 2162688
+bpf_map01.c:53: TPASS: Created hash map
+bpf_map01.c:70: TPASS: Empty hash map lookup: ENOENT (2)
+bpf_map01.c:104: TPASS: Update hash map element
+bpf_map01.c:122: TPASS: hash map lookup
+bpf_map01.c:53: TPASS: Created array map
+bpf_map01.c:104: TPASS: Update array map element
+bpf_map01.c:122: TPASS: array map lookup
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=bpf_prog02 stime=1636341755
+cmdline="bpf_prog02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+bpf_common.c:17: TINFO: Raising RLIMIT_MEMLOCK to 2162688
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+bpf_common.c:114: TPASS: Loaded program
+bpf_prog02.c:93: TPASS: val = 1152921504606846976 + 1
+bpf_prog02.c:103: TPASS: val = 1152921504606846976 - 1
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=brk02 stime=1636341755
+cmdline="brk02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+brk02.c:55: TPASS: munmap at least two VMAs of brk() passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=capget02 stime=1636341755
+cmdline="capget02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+capget02.c:59: TPASS: capget() with bad address header : EFAULT (14)
+capget02.c:59: TPASS: capget() with bad address data : EFAULT (14)
+capget02.c:59: TPASS: capget() with bad version : EINVAL (22)
+capget02.c:59: TPASS: capget() with bad pid : EINVAL (22)
+capget02.c:59: TPASS: capget() with unused pid : ESRCH (3)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=capset03 stime=1636341755
+cmdline="capset03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+capset03.c:24: TINFO: Test bad value data(when pI is not old pP or old pI without CAP_SETPCAP)
+capset03.c:26: TPASS: capset() : EPERM (1)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=chmod02 stime=1636341755
+cmdline="chmod02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+chmod02     1  TPASS  :  chmod(test_file, 0) returned 0
+chmod02     2  TPASS  :  chmod(test_file, 07) returned 0
+chmod02     3  TPASS  :  chmod(test_file, 070) returned 0
+chmod02     4  TPASS  :  chmod(test_file, 0700) returned 0
+chmod02     5  TPASS  :  chmod(test_file, 0777) returned 0
+chmod02     6  TPASS  :  chmod(test_file, 02777) returned 0
+chmod02     7  TPASS  :  chmod(test_file, 04777) returned 0
+chmod02     8  TPASS  :  chmod(test_file, 06777) returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=chmod04 stime=1636341755
+cmdline="chmod04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+chmod04     1  TPASS  :  Functionality of chmod(testdir_4, 01777) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=chown02 stime=1636341755
+cmdline="chown02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+chown02.c:46: TPASS: chown(testfile1, 0, 0) passed
+chown02.c:46: TPASS: chown(testfile2, 0, 0) passed
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=chown04 stime=1636341755
+cmdline="chown04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+chown04.c:78: TPASS: chown() without permissions : EPERM (1)
+chown04.c:78: TPASS: chown() without full permissions of the path prefix : EACCES (13)
+chown04.c:78: TPASS: chown() with unaccessible pathname points : EFAULT (14)
+chown04.c:78: TPASS: chown() when pathname is too long : ENAMETOOLONG (36)
+chown04.c:78: TPASS: chown() when file does not exist : ENOENT (2)
+chown04.c:78: TPASS: chown() when the path prefix is not a directory : ENOTDIR (20)
+chown04.c:78: TPASS: chown() with too many symbolic links : ELOOP (40)
+chown04.c:78: TPASS: chown() when the named file resides on a read-only filesystem : EROFS (30)
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=clock_nanosleep04 stime=1636341755
+cmdline="clock_nanosleep04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+clock_nanosleep04.c:33: TINFO: Testing variant: vDSO or syscall with libc spec
+clock_nanosleep04.c:58: TPASS: clock_nanosleep(2) passed for clock CLOCK_MONOTONIC
+clock_nanosleep04.c:58: TPASS: clock_nanosleep(2) passed for clock CLOCK_REALTIME
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+clock_nanosleep04.c:33: TINFO: Testing variant: syscall with old kernel spec
+clock_nanosleep04.c:58: TPASS: clock_nanosleep(2) passed for clock CLOCK_MONOTONIC
+clock_nanosleep04.c:58: TPASS: clock_nanosleep(2) passed for clock CLOCK_REALTIME
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=close02 stime=1636341755
+cmdline="close02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+close02.c:20: TPASS:  : EBADF (9)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=creat03 stime=1636341755
+cmdline="creat03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+creat03.c:36: TINFO: Created file has mode = 0100674
+creat03.c:41: TPASS: save text bit cleared
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=creat05 stime=1636341755
+cmdline="creat05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+creat05.c:49: TINFO: getdtablesize() = 1024
+creat05.c:59: TINFO: Opened additional #1020 fds
+creat05.c:36: TPASS: creat() failed with EMFILE
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=eventfd01 stime=1636341755
+cmdline="eventfd01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+eventfd01    1  TPASS  :  counter value matches required
+eventfd01    2  TPASS  :  read failed with EAGAIN as expected
+eventfd01    3  TPASS  :  counter value matches required
+eventfd01    4  TPASS  :  write failed with EAGAIN as expected
+eventfd01    5  TPASS  :  read failed with EINVAL as expected
+eventfd01    6  TPASS  :  write failed with EINVAL as expected
+eventfd01    7  TPASS  :  write failed with EINVAL as expected
+eventfd01    8  TPASS  :  fd is set in readfds
+eventfd01    9  TPASS  :  fd is not set in readfds
+eventfd01   10  TPASS  :  fd is set in writefds
+eventfd01   11  TPASS  :  fd is not set in writefds
+eventfd01    1  TPASS  :  counter value matches required
+eventfd01    2  TPASS  :  read failed with EAGAIN as expected
+eventfd01    3  TPASS  :  counter value matches required
+eventfd01    4  TPASS  :  write failed with EAGAIN as expected
+eventfd01    5  TPASS  :  read failed with EINVAL as expected
+eventfd01    6  TPASS  :  write failed with EINVAL as expected
+eventfd01    7  TPASS  :  write failed with EINVAL as expected
+eventfd01    8  TPASS  :  fd is set in readfds
+eventfd01    9  TPASS  :  fd is not set in readfds
+eventfd01   10  TPASS  :  fd is set in writefds
+eventfd01   11  TPASS  :  fd is not set in writefds
+eventfd01   12  TPASS  :  counter value write from child successful
+eventfd01   13  TPASS  :  read fd set as expected
+eventfd01   14  TPASS  :  POLLERR occurred as expected
+eventfd01   15  TPASS  :  overflow occurred as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=execve02 stime=1636341755
+cmdline="execve02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+execve02.c:54: TPASS: execve() failed expectedly: EACCES (13)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=execveat03 stime=1636341755
+cmdline="execveat03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+execveat_child.c:17: TPASS: execveat_child run as expected
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=exit_group01 stime=1636341756
+cmdline="exit_group01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+exit_group01    1  TPASS  :  exit_group() succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fallocate01 stime=1636341756
+cmdline="fallocate01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fallocate01    1  TPASS  :  fallocate(4, 0, 49152, 4096) returned 0
+fallocate01    2  TPASS  :  write operation on fallocated(4, 0, 49152, 4096) returned 1
+fallocate01    3  TPASS  :  fallocate(5, 1, 49152, 4096) returned 0
+fallocate01    4  TPASS  :  write operation on fallocated(5, 1, 49152, 4096) returned 1
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fallocate02 stime=1636341756
+cmdline="fallocate02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fallocate02    1  TPASS  :  fallocate(test_file1:4, 1, 0, 1024) returned 9: TEST_ERRNO=EBADF(9): Bad file descriptor
+fallocate02    2  TPASS  :  fallocate(test_file2:5, 1, -1024, 1024) returned 22: TEST_ERRNO=EINVAL(22): Invalid argument
+fallocate02    3  TPASS  :  fallocate(test_file2:5, 1, 1024, -1024) returned 22: TEST_ERRNO=EINVAL(22): Invalid argument
+fallocate02    4  TPASS  :  fallocate(test_file2:5, 1, 12288, 0) returned 22: TEST_ERRNO=EINVAL(22): Invalid argument
+fallocate02    5  TPASS  :  fallocate(test_file2:5, 1, 12288, -1024) returned 22: TEST_ERRNO=EINVAL(22): Invalid argument
+fallocate02    6  TPASS  :  fallocate(test_file2:5, 1, -24576, 1024) returned 22: TEST_ERRNO=EINVAL(22): Invalid argument
+fallocate02    7  TPASS  :  fallocate(test_file2:5, 1, 9223372036854774784, 1024) returned 27: TEST_ERRNO=EFBIG(27): File too large
+fallocate02    8  TPASS  :  fallocate(test_file2:5, 1, 1024, 9223372036854774784) returned 27: TEST_ERRNO=EFBIG(27): File too large
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fallocate04 stime=1636341756
+cmdline="fallocate04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '3072' bytes
+fallocate04.c:86: TCONF: fallocate() not supported
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '3072' bytes
+fallocate04.c:86: TCONF: fallocate() not supported
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '3072' bytes
+fallocate04.c:96: TPASS: test-case succeeded
+fallocate04.c:103: TINFO: read allocated file size '3072'
+fallocate04.c:104: TINFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:120: TINFO: check that file has a hole with lseek(,,SEEK_HOLE)
+fallocate04.c:137: TINFO: found a hole at '1024' offset
+fallocate04.c:143: TINFO: allocated file size before '3072' and after '2048'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:154: TPASS: test-case succeeded
+fallocate04.c:159: TINFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+fallocate04.c:168: TINFO: read current allocated file size '2048'
+fallocate04.c:185: TINFO: allocated file size before '2048' and after '3072'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:196: TPASS: test-case succeeded
+fallocate04.c:201: TINFO: collapsing file space with FALLOC_FL_COLLAPSE_RANGE
+fallocate04.c:205: TINFO: read current allocated file size '3072'
+fallocate04.c:219: TINFO: allocated file size before '3072' and after '2048'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:236: TPASS: test-case succeeded
+fallocate04.c:241: TINFO: inserting space with FALLOC_FL_INSERT_RANGE
+fallocate04.c:245: TINFO: read current allocated file size '2048'
+fallocate04.c:263: TINFO: allocated file size before '2048' and after '3072'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:274: TPASS: test-case succeeded
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '12288' bytes
+fallocate04.c:96: TPASS: test-case succeeded
+fallocate04.c:103: TINFO: read allocated file size '12288'
+fallocate04.c:104: TINFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:120: TINFO: check that file has a hole with lseek(,,SEEK_HOLE)
+fallocate04.c:137: TINFO: found a hole at '4096' offset
+fallocate04.c:143: TINFO: allocated file size before '12288' and after '8192'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:154: TPASS: test-case succeeded
+fallocate04.c:159: TINFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+fallocate04.c:168: TINFO: read current allocated file size '8192'
+fallocate04.c:185: TINFO: allocated file size before '8192' and after '12288'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:196: TPASS: test-case succeeded
+fallocate04.c:201: TINFO: collapsing file space with FALLOC_FL_COLLAPSE_RANGE
+fallocate04.c:205: TINFO: read current allocated file size '12288'
+fallocate04.c:219: TINFO: allocated file size before '12288' and after '8192'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:236: TPASS: test-case succeeded
+fallocate04.c:241: TINFO: inserting space with FALLOC_FL_INSERT_RANGE
+fallocate04.c:245: TINFO: read current allocated file size '8192'
+fallocate04.c:263: TINFO: allocated file size before '8192' and after '12288'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:274: TPASS: test-case succeeded
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '12288' bytes
+fallocate04.c:96: TPASS: test-case succeeded
+fallocate04.c:103: TINFO: read allocated file size '12288'
+fallocate04.c:104: TINFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:120: TINFO: check that file has a hole with lseek(,,SEEK_HOLE)
+fallocate04.c:137: TINFO: found a hole at '4096' offset
+fallocate04.c:143: TINFO: allocated file size before '12288' and after '8192'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:154: TPASS: test-case succeeded
+fallocate04.c:159: TINFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+fallocate04.c:168: TINFO: read current allocated file size '8192'
+fallocate04.c:185: TINFO: allocated file size before '8192' and after '12288'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:196: TPASS: test-case succeeded
+fallocate04.c:201: TINFO: collapsing file space with FALLOC_FL_COLLAPSE_RANGE
+fallocate04.c:205: TINFO: read current allocated file size '12288'
+fallocate04.c:211: TCONF: FALLOC_FL_COLLAPSE_RANGE not supported
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '12288' bytes
+fallocate04.c:96: TPASS: test-case succeeded
+fallocate04.c:103: TINFO: read allocated file size '12288'
+fallocate04.c:104: TINFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:115: TCONF: FALLOC_FL_PUNCH_HOLE not supported
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '12288' bytes
+fallocate04.c:86: TCONF: fallocate() not supported
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fallocate04.c:82: TINFO: allocate '12288' bytes
+fallocate04.c:96: TPASS: test-case succeeded
+fallocate04.c:103: TINFO: read allocated file size '12288'
+fallocate04.c:104: TINFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:120: TINFO: check that file has a hole with lseek(,,SEEK_HOLE)
+fallocate04.c:137: TINFO: found a hole at '4096' offset
+fallocate04.c:143: TINFO: allocated file size before '12288' and after '8192'
+fallocate04.c:66: TINFO: reading the file, compare with expected buffer
+fallocate04.c:154: TPASS: test-case succeeded
+fallocate04.c:159: TINFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+fallocate04.c:168: TINFO: read current allocated file size '8192'
+fallocate04.c:174: TCONF: FALLOC_FL_ZERO_RANGE not supported
+
+Summary:
+passed   16
+failed   0
+broken   0
+skipped  6
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=6 termination_type=exited termination_id=0 corefile=no
+cutime=10 cstime=90
+<<<test_end>>>
+<<<test_start>>>
+tag=posix_fadvise03_64 stime=1636341762
+cmdline="posix_fadvise03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+posix_fadvise03.c:86: TPASS: skipping defined - advise = 0
+posix_fadvise03.c:86: TPASS: skipping defined - advise = 1
+posix_fadvise03.c:86: TPASS: skipping defined - advise = 2
+posix_fadvise03.c:86: TPASS: skipping defined - advise = 3
+posix_fadvise03.c:86: TPASS: skipping defined - advise = 4
+posix_fadvise03.c:86: TPASS: skipping defined - advise = 5
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 6 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 7 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 8 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 9 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 10 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 11 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 12 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 13 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 14 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 15 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 16 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 17 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 18 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 19 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 20 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 21 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 22 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 23 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 24 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 25 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 26 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 27 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 28 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 29 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 30 : EINVAL
+posix_fadvise03.c:104: TPASS: expected failure - returned value = 22, advise = 31 : EINVAL
+
+Summary:
+passed   32
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=posix_fadvise04 stime=1636341762
+cmdline="posix_fadvise04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+posix_fadvise04.c:59: TPASS: expected failure - returned value = 29 : ESPIPE
+posix_fadvise04.c:59: TPASS: expected failure - returned value = 29 : ESPIPE
+posix_fadvise04.c:59: TPASS: expected failure - returned value = 29 : ESPIPE
+posix_fadvise04.c:59: TPASS: expected failure - returned value = 29 : ESPIPE
+posix_fadvise04.c:59: TPASS: expected failure - returned value = 29 : ESPIPE
+posix_fadvise04.c:59: TPASS: expected failure - returned value = 29 : ESPIPE
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fchown01_16 stime=1636341762
+cmdline="fchown01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/fchown/../utils/compat_tst_16.h:143: TCONF: 16-bit version of fchown() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fchown02_16 stime=1636341762
+cmdline="fchown02_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/fchown/../utils/compat_tst_16.h:143: TCONF: 16-bit version of fchown() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl02 stime=1636341762
+cmdline="fcntl02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fcntl02.c:42: TPASS: fcntl(fcntl02_2863, F_DUPFD, 0) returned 5
+fcntl02.c:42: TPASS: fcntl(fcntl02_2863, F_DUPFD, 1) returned 5
+fcntl02.c:42: TPASS: fcntl(fcntl02_2863, F_DUPFD, 2) returned 5
+fcntl02.c:42: TPASS: fcntl(fcntl02_2863, F_DUPFD, 3) returned 5
+fcntl02.c:42: TPASS: fcntl(fcntl02_2863, F_DUPFD, 10) returned 10
+fcntl02.c:42: TPASS: fcntl(fcntl02_2863, F_DUPFD, 100) returned 100
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl03_64 stime=1636341762
+cmdline="fcntl03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fcntl03.c:33: TPASS: fcntl(fcntl03_2865, F_GETFD, 0) returned 0
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl04 stime=1636341762
+cmdline="fcntl04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fcntl04.c:39: TPASS: fcntl(fcntl04_2867, F_GETFL, 0) returned 8002
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl08 stime=1636341762
+cmdline="fcntl08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl08     1  TPASS  :  fcntl returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl13 stime=1636341762
+cmdline="fcntl13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl13     1  TPASS  :  got EINVAL
+fcntl13     2  TPASS  :  F_SETLK: got EFAULT
+fcntl13     3  TPASS  :  F_SETLKW: got EFAULT
+fcntl13     4  TPASS  :  F_GETLK: got EFAULT
+fcntl13     5  TPASS  :  got EINVAL
+fcntl13     6  TPASS  :  got EBADFD
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl15 stime=1636341762
+cmdline="fcntl15"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl15     1  TPASS  :  Test 1: test with "dup" PASSED
+fcntl15     0  TINFO  :  Failed to record test working dir
+fcntl15     2  TPASS  :  Test 2: test with "open" PASSED
+fcntl15     0  TINFO  :  Failed to record test working dir
+fcntl15     3  TPASS  :  Test 3: test with "fork" PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl17_64 stime=1636341772
+cmdline="fcntl17_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl17     0  TINFO  :  Enter preparation phase
+fcntl17     0  TINFO  :  child 1 starting
+fcntl17     0  TINFO  :  child 1 pid 2906 locked
+fcntl17     0  TINFO  :  child 1 resuming
+fcntl17     0  TINFO  :  child 1 unlocked
+fcntl17     0  TINFO  :  child 1 exiting
+fcntl17     0  TINFO  :  child 3 starting
+fcntl17     0  TINFO  :  child 3 pid 2908 locked
+fcntl17     0  TINFO  :  child 3 resuming
+fcntl17     0  TINFO  :  child 3 lockw err 35
+fcntl17     0  TINFO  :  child 3 exiting
+fcntl17     0  TINFO  :  child 2 starting
+fcntl17     0  TINFO  :  child 2 pid 2907 locked
+fcntl17     0  TINFO  :  child 2 resuming
+fcntl17     0  TINFO  :  child 2 lockw locked
+fcntl17     0  TINFO  :  child 2 exiting
+fcntl17     0  TINFO  :  Exit preparation phase
+fcntl17     0  TINFO  :  Enter block 1
+fcntl17     1  TPASS  :  Block 1 PASSED
+fcntl17     0  TINFO  :  Exit block 1
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl19 stime=1636341772
+cmdline="fcntl19"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl19     0  TINFO  :  Enter block 1
+fcntl19     0  TINFO  :  Test block 1: PASSED
+fcntl19     0  TINFO  :  Exit block 1
+fcntl19     0  TINFO  :  Enter block 2
+fcntl19     0  TINFO  :  Test block 2: PASSED
+fcntl19     0  TINFO  :  Exit block 2
+fcntl19     0  TINFO  :  Enter block 3
+fcntl19     0  TINFO  :  Test block 3: PASSED
+fcntl19     0  TINFO  :  Exit block 3
+fcntl19     0  TINFO  :  Enter blcok 4
+fcntl19     0  TINFO  :  Test block 4: PASSED
+fcntl19     0  TINFO  :  Exit block 4
+fcntl19     0  TINFO  :  Enter block 5
+fcntl19     0  TINFO  :  Test block 5: PASSED
+fcntl19     0  TINFO  :  Exit block 5
+fcntl19     0  TINFO  :  Enter block 6
+fcntl19     0  TINFO  :  Test block 6: PASSED
+fcntl19     0  TINFO  :  Exit block 6
+fcntl19     0  TINFO  :  Enter block 7
+fcntl19     0  TINFO  :  Test block 7: PASSED
+fcntl19     0  TINFO  :  Exit block 7
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl20 stime=1636341772
+cmdline="fcntl20"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl20     0  TINFO  :  Enter block 1
+fcntl20     0  TINFO  :  Test block 1: PASSED
+fcntl20     0  TINFO  :  Exit block 1
+fcntl20     0  TINFO  :  Enter block 2
+fcntl20     0  TINFO  :  Test block 2: PASSED
+fcntl20     0  TINFO  :  Exit block 2
+fcntl20     0  TINFO  :  Enter block 3
+fcntl20     0  TINFO  :  Test block 3: PASSED
+fcntl20     0  TINFO  :  Exit block 3
+fcntl20     0  TINFO  :  Enter blcok 4
+fcntl20     0  TINFO  :  Test block 4: PASSED
+fcntl20     0  TINFO  :  Exit block 4
+fcntl20     0  TINFO  :  Enter block 5
+fcntl20     0  TINFO  :  Test block 5: PASSED
+fcntl20     0  TINFO  :  Exit block 5
+fcntl20     0  TINFO  :  Enter block 6
+fcntl20     0  TINFO  :  Test block 6: PASSED
+fcntl20     0  TINFO  :  Exit block 6
+fcntl20     0  TINFO  :  Enter block 7
+fcntl20     0  TINFO  :  Test block 7: PASSED
+fcntl20     0  TINFO  :  Exit block 7
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl20_64 stime=1636341772
+cmdline="fcntl20_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl20     0  TINFO  :  Enter block 1
+fcntl20     0  TINFO  :  Test block 1: PASSED
+fcntl20     0  TINFO  :  Exit block 1
+fcntl20     0  TINFO  :  Enter block 2
+fcntl20     0  TINFO  :  Test block 2: PASSED
+fcntl20     0  TINFO  :  Exit block 2
+fcntl20     0  TINFO  :  Enter block 3
+fcntl20     0  TINFO  :  Test block 3: PASSED
+fcntl20     0  TINFO  :  Exit block 3
+fcntl20     0  TINFO  :  Enter blcok 4
+fcntl20     0  TINFO  :  Test block 4: PASSED
+fcntl20     0  TINFO  :  Exit block 4
+fcntl20     0  TINFO  :  Enter block 5
+fcntl20     0  TINFO  :  Test block 5: PASSED
+fcntl20     0  TINFO  :  Exit block 5
+fcntl20     0  TINFO  :  Enter block 6
+fcntl20     0  TINFO  :  Test block 6: PASSED
+fcntl20     0  TINFO  :  Exit block 6
+fcntl20     0  TINFO  :  Enter block 7
+fcntl20     0  TINFO  :  Test block 7: PASSED
+fcntl20     0  TINFO  :  Exit block 7
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl26 stime=1636341772
+cmdline="fcntl26"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl26     1  TPASS  :  fcntl(tfile_2915, F_SETLEASE, F_WRLCK)
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl28_64 stime=1636341772
+cmdline="fcntl28_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl28     1  TPASS  :  fcntl(fd, F_SETLEASE, F_RDLCK) succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl31 stime=1636341772
+cmdline="fcntl31"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fcntl31     0  TINFO  :  default io events signal is SIGIO
+fcntl31     1  TPASS  :  fcntl test F_GETOWN, F_SETOWN for process ID success
+fcntl31     0  TINFO  :  default io events signal is SIGIO
+fcntl31     2  TPASS  :  fcntl test F_GETOWN, F_SETOWN for process group ID success
+fcntl31     0  TINFO  :  default io events signal is SIGIO
+fcntl31     3  TPASS  :  fcntl test F_GETOWN_EX, F_SETOWN_EX for thread ID success
+fcntl31     0  TINFO  :  default io events signal is SIGIO
+fcntl31     4  TPASS  :  fcntl test F_GETOWN_EX, F_SETOWN_EX for process ID success
+fcntl31     0  TINFO  :  default io events signal is SIGIO
+fcntl31     5  TPASS  :  fcntl test F_GETOWN_EX, F_SETOWN_EX for process group ID success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl34_64 stime=1636341772
+cmdline="fcntl34_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fcntl34.c:90: TINFO: write to a file inside threads with OFD locks
+fcntl34.c:36: TINFO: spawning '12' threads
+fcntl34.c:45: TINFO: waiting for '12' threads
+fcntl34.c:99: TINFO: verifying file's data
+fcntl34.c:127: TPASS: OFD locks synchronized access between threads
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=fcntl37 stime=1636341772
+cmdline="fcntl37"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_capability.c:29: TINFO: Dropping CAP_SYS_RESOURCE(24)
+fcntl37.c:42: TINFO: F_SETPIPE_SZ and size is beyond 1<<31
+fcntl37.c:50: TPASS: F_SETPIPE_SZ failed as expected: EINVAL (22)
+fcntl37.c:42: TINFO: F_SETPIPE_SZ and size < data stored in pipe
+fcntl37.c:50: TPASS: F_SETPIPE_SZ failed as expected: EBUSY (16)
+fcntl37.c:42: TINFO: F_SETPIPE_SZ and size is over limit for unpriviledged user
+fcntl37.c:50: TPASS: F_SETPIPE_SZ failed as expected: EPERM (1)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=fgetxattr01 stime=1636341772
+cmdline="fgetxattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ENODATA (61)
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ERANGE (34)
+fgetxattr01.c:88: TPASS: fgetxattr(2) passed
+fgetxattr01.c:98: TPASS: got the right value
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: SUCCESS (0)
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ENODATA (61)
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ERANGE (34)
+fgetxattr01.c:88: TPASS: fgetxattr(2) passed
+fgetxattr01.c:98: TPASS: got the right value
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: SUCCESS (0)
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ENODATA (61)
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ERANGE (34)
+fgetxattr01.c:88: TPASS: fgetxattr(2) passed
+fgetxattr01.c:98: TPASS: got the right value
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: SUCCESS (0)
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ENODATA (61)
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ERANGE (34)
+fgetxattr01.c:88: TPASS: fgetxattr(2) passed
+fgetxattr01.c:98: TPASS: got the right value
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: SUCCESS (0)
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ENODATA (61)
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ERANGE (34)
+fgetxattr01.c:88: TPASS: fgetxattr(2) passed
+fgetxattr01.c:98: TPASS: got the right value
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: SUCCESS (0)
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:122: TCONF: no xattr support in fs or mounted without user_xattr option
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ENODATA (61)
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: ERANGE (34)
+fgetxattr01.c:88: TPASS: fgetxattr(2) passed
+fgetxattr01.c:98: TPASS: got the right value
+fgetxattr01.c:102: TPASS: fgetxattr(2) passed: SUCCESS (0)
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr01.c:122: TCONF: no xattr support in fs or mounted without user_xattr option
+
+Summary:
+passed   30
+failed   0
+broken   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=6 cstime=90
+<<<test_end>>>
+<<<test_start>>>
+tag=fgetxattr02 stime=1636341777
+cmdline="fgetxattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fgetxattr02.c:174: TPASS: fgetxattr(2) on testfile passed
+fgetxattr02.c:188: TPASS: fgetxattr(2) on testfile got the right value
+fgetxattr02.c:201: TPASS: fgetxattr(2) on testfile passed: SUCCESS (0)
+fgetxattr02.c:174: TPASS: fgetxattr(2) on testdir passed
+fgetxattr02.c:188: TPASS: fgetxattr(2) on testdir got the right value
+fgetxattr02.c:201: TPASS: fgetxattr(2) on testdir passed: SUCCESS (0)
+fgetxattr02.c:174: TPASS: fgetxattr(2) on symlink passed
+fgetxattr02.c:188: TPASS: fgetxattr(2) on symlink got the right value
+fgetxattr02.c:201: TPASS: fgetxattr(2) on symlink passed: SUCCESS (0)
+fgetxattr02.c:201: TPASS: fgetxattr(2) on fifo passed: ENODATA (61)
+fgetxattr02.c:201: TPASS: fgetxattr(2) on chr passed: ENODATA (61)
+fgetxattr02.c:201: TPASS: fgetxattr(2) on blk passed: ENODATA (61)
+fgetxattr02.c:201: TPASS: fgetxattr(2) on sock passed: ENODATA (61)
+
+Summary:
+passed   13
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fork02 stime=1636341777
+cmdline="fork02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fork02      0  TINFO  :  Inside parent
+fork02      0  TINFO  :  exit status of wait 0
+fork02      1  TPASS  :  test 1 PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fork03 stime=1636341777
+cmdline="fork03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fork03      0  TINFO  :  process id in parent of child from fork : 3045
+fork03      1  TPASS  :  test 1 PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fork14 stime=1636341777
+cmdline="fork14"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fork14      1  TPASS  :  fork failed as expected.
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=3 cstime=28
+<<<test_end>>>
+<<<test_start>>>
+tag=fpathconf01 stime=1636341778
+cmdline="fpathconf01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fpathconf01    1  TPASS  :  fpathconf(fd, _PC_MAX_CANON) returned 255
+fpathconf01    2  TPASS  :  fpathconf(fd, _PC_MAX_INPUT) returned 255
+fpathconf01    3  TPASS  :  fpathconf(fd, _PC_VDISABLE) returned 0
+fpathconf01    4  TPASS  :  fpathconf(fd, _PC_LINK_MAX) returned 65000
+fpathconf01    5  TPASS  :  fpathconf(fd, _PC_NAME_MAX) returned 255
+fpathconf01    6  TPASS  :  fpathconf(fd, _PC_PATH_MAX) returned 4096
+fpathconf01    7  TPASS  :  fpathconf(fd, _PC_PIPE_BUF) returned 4096
+fpathconf01    8  TPASS  :  fpathconf(fd, _PC_CHOWN_RESTRICTED) returned 1
+fpathconf01    9  TPASS  :  fpathconf(fd, _PC_NO_TRUNC) returned 1
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getdtablesize01 stime=1636341778
+cmdline="getdtablesize01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdtablesize01    0  TINFO  :  Maximum number of files a process can have opened is 1024
+getdtablesize01    0  TINFO  :  Checking with the value returned by getrlimit...RLIMIT_NOFILE
+getdtablesize01    1  TPASS  :  got correct dtablesize, value is 1024
+getdtablesize01    0  TINFO  :  Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1
+getdtablesize01    2  TPASS  :  1023 = 1023
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getegid02 stime=1636341778
+cmdline="getegid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getegid02    1  TPASS  :  effective group id 0 is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=gethostbyname_r01 stime=1636341778
+cmdline="gethostbyname_r01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+gethostbyname_r01    1  TPASS  :  not vulnerable
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpgid01 stime=1636341778
+cmdline="getpgid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpgid01    1  TPASS  :  getpgid(0) PASSED
+getpgid01    2  TPASS  :  getpgid(getpid()) PASSED
+getpgid01    3  TPASS  :  getpgid(getppid()) PASSED
+getpgid01    4  TPASS  :  getpgid(3082) PASSED
+getpgid01    5  TPASS  :  getpgid(1) PASSED
+getpgid01    1  TPASS  :  getpgid01 PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getppid01 stime=1636341778
+cmdline="getppid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+getppid01.c:25: TPASS: getppid() returned 3084
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpriority01 stime=1636341778
+cmdline="getpriority01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+getpriority01.c:50: TPASS: getpriority(0, 0) returned 0
+getpriority01.c:50: TPASS: getpriority(1, 0) returned 0
+getpriority01.c:50: TPASS: getpriority(2, 0) returned -20
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid01 stime=1636341778
+cmdline="getresgid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid01    1  TPASS  :  Functionality of getresgid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid01_16 stime=1636341778
+cmdline="getresgid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid01    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:151: 16-bit version of getresgid() is not supported on your platform
+getresgid01    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:151: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid02 stime=1636341778
+cmdline="getresgid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid02    1  TPASS  :  Functionality of getresgid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid01_16 stime=1636341778
+cmdline="getresuid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid01    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:141: 16-bit version of getresuid() is not supported on your platform
+getresuid01    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:141: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getrusage03 stime=1636341778
+cmdline="getrusage03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+getrusage03.c:43: TPASS: initial.self ~= child.self
+getrusage03.c:57: TPASS: initial.children ~= 100MB
+getrusage03.c:66: TPASS: child.children == 0
+getrusage03.c:84: TPASS: child.children ~= 300MB
+getrusage03.c:104: TPASS: initial.children ~= pre_wait.children
+getrusage03.c:112: TPASS: post_wait.children ~= 400MB
+getrusage03.c:133: TPASS: initial.children ~= after_zombie.children
+getrusage03_child.c:57: TPASS: initial.self ~= exec.self
+getrusage03_child.c:62: TPASS: initial.children ~= exec.children
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=4 cstime=10
+<<<test_end>>>
+<<<test_start>>>
+tag=getsockopt01 stime=1636341778
+cmdline="getsockopt01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getsockopt01    1  TPASS  :  bad file descriptor successful
+getsockopt01    2  TPASS  :  bad file descriptor successful
+getsockopt01    3  TPASS  :  invalid option buffer successful
+getsockopt01    4  TPASS  :  invalid optlen successful
+getsockopt01    5  TPASS  :  invalid level successful
+getsockopt01    6  TPASS  :  invalid option name successful
+getsockopt01    7  TPASS  :  invalid option name (UDP) successful
+getsockopt01    8  TPASS  :  invalid option name (IP) successful
+getsockopt01    9  TPASS  :  invalid option name (TCP) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getuid03 stime=1636341778
+cmdline="getuid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getuid03    1  TPASS  :  values from getuid and getpwuid match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl03 stime=1636341778
+cmdline="ioctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+ioctl03.c:76: TINFO: Available features are: 0x7133
+ioctl03.c:81: TPASS: TUN 0x1
+ioctl03.c:81: TPASS: TAP 0x2
+ioctl03.c:81: TPASS: NO_PI 0x1000
+ioctl03.c:81: TPASS: ONE_QUEUE 0x2000
+ioctl03.c:81: TPASS: VNET_HDR 0x4000
+ioctl03.c:81: TPASS: MULTI_QUEUE 0x100
+ioctl03.c:81: TPASS: IFF_NAPI 0x10
+ioctl03.c:81: TPASS: IFF_NAPI_FRAGS 0x20
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl05 stime=1636341778
+cmdline="ioctl05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+ioctl05.c:35: TPASS: BLKGETSIZE returned 524288, BLKGETSIZE64 268435456
+ioctl05.c:46: TPASS: Could lseek to the end of the device
+ioctl05.c:53: TPASS: Got EOF when trying to read after the end of device
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl09 stime=1636341778
+cmdline="ioctl09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+ioctl09.c:45: TPASS: access /sys/block/loop0/loop0p1 succeeds
+ioctl09.c:53: TPASS: access /dev/loop0p1 succeeds
+ioctl09.c:48: TPASS: access /sys/block/loop0/loop0p2 fails
+ioctl09.c:56: TPASS: access /dev/loop0p2 fails
+ioctl09.c:45: TPASS: access /sys/block/loop0/loop0p1 succeeds
+ioctl09.c:53: TPASS: access /dev/loop0p1 succeeds
+ioctl09.c:45: TPASS: access /sys/block/loop0/loop0p2 succeeds
+ioctl09.c:53: TPASS: access /dev/loop0p2 succeeds
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_loop04 stime=1636341779
+cmdline="ioctl_loop04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+ioctl_loop04.c:35: TPASS: /sys/block/loop0/size = 20
+ioctl_loop04.c:50: TPASS: LOOP_SET_CAPACITY set loop size to 5120
+ioctl_loop04.c:56: TPASS: /sys/block/loop0/size = 10
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns07 stime=1636341779
+cmdline="ioctl_ns07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+ioctl_ns07.c:33: TPASS: request failed with ENOTTY
+ioctl_ns07.c:33: TPASS: request failed with ENOTTY
+ioctl_ns07.c:33: TPASS: request failed with ENOTTY
+ioctl_ns07.c:33: TPASS: request failed with ENOTTY
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify02 stime=1636341779
+cmdline="inotify02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+inotify02.c:185: TPASS: get event: wd=1 mask=40000004 cookie=0     len=0  name=""
+inotify02.c:185: TPASS: get event: wd=1 mask=00000100 cookie=0     len=16 name="test_file1"
+inotify02.c:185: TPASS: get event: wd=1 mask=00000020 cookie=0     len=16 name="test_file1"
+inotify02.c:185: TPASS: get event: wd=1 mask=00000008 cookie=0     len=16 name="test_file1"
+inotify02.c:185: TPASS: get event: wd=1 mask=00000040 cookie=5377  len=16 name="test_file1"
+inotify02.c:185: TPASS: get event: wd=1 mask=00000080 cookie=5377  len=16 name="test_file2"
+inotify02.c:185: TPASS: get event: wd=1 mask=00000800 cookie=0     len=0  name=""
+inotify02.c:185: TPASS: get event: wd=1 mask=00000200 cookie=0     len=16 name="test_file2"
+inotify02.c:185: TPASS: get event: wd=1 mask=00000800 cookie=0     len=0  name=""
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify05 stime=1636341779
+cmdline="inotify05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+inotify05.c:115: TPASS: get event: wd=-1 mask=4000 cookie=0 len=0
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify04 stime=1636341779
+cmdline="fanotify04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify04.c:71: TPASS: fanotify_mark (4, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, '.') succeeded
+fanotify04.c:71: TPASS: fanotify_mark (4, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, 'fname_3152') failed
+fanotify04.c:71: TPASS: fanotify_mark (4, FAN_MARK_ADD | FAN_MARK_DONT_FOLLOW, FAN_OPEN, AT_FDCWD, 'symlink_3152') succeeded
+fanotify04.c:163: TPASS: No event as expected
+fanotify04.c:71: TPASS: fanotify_mark (4, FAN_MARK_ADD | 0, FAN_OPEN, AT_FDCWD, 'symlink_3152') succeeded
+fanotify04.c:127: TPASS: event generated properly for type 100000
+fanotify04.c:127: TPASS: event generated properly for type 100000
+fanotify04.c:127: TPASS: event generated properly for type 40000
+fanotify04.c:163: TPASS: No event as expected
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify13 stime=1636341779
+cmdline="fanotify13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = 3cd3ae6e.192e15dc.c.a90d665e.0...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = 3cd3ae6e.192e15dc.d.a90d665f.0...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = 3cd3ae6e.192e15dc.e001.a90d6660.0...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665e0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665f0000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665e0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665f0000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3180, fid=3cd3ae6e.192e15dc.a90d66600000e001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665e0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665f0000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665e0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665f0000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3180, fid=3cd3ae6e.192e15dc.a90d66600000e001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665e0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665f0000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665e0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3180, fid=3cd3ae6e.192e15dc.a90d665f0000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3180, fid=3cd3ae6e.192e15dc.a90d66600000e001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = 71604d12.c14bcf14.1801.7d650d27.0...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = 71604d12.c14bcf14.1802.d4a35c00.0...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = 71604d12.c14bcf14.a001.cb376531.0...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.7d650d2700001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.d4a35c0000001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.7d650d2700001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.d4a35c0000001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3187, fid=71604d12.c14bcf14.cb3765310000a001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.7d650d2700001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.d4a35c0000001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.7d650d2700001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.d4a35c0000001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3187, fid=71604d12.c14bcf14.cb3765310000a001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.7d650d2700001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.d4a35c0000001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.7d650d2700001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3187, fid=71604d12.c14bcf14.d4a35c0000001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3187, fid=71604d12.c14bcf14.cb3765310000a001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = dc614c9d.a9af155.c.91be3e7a.0...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = dc614c9d.a9af155.d.308d74e2.0...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = dc614c9d.a9af155.8001.9392d031.0...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.91be3e7a0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.308d74e20000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.91be3e7a0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.308d74e20000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3197, fid=dc614c9d.a9af155.9392d03100008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.91be3e7a0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.308d74e20000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.91be3e7a0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.308d74e20000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3197, fid=dc614c9d.a9af155.9392d03100008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.91be3e7a0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.308d74e20000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.91be3e7a0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3197, fid=dc614c9d.a9af155.308d74e20000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3197, fid=dc614c9d.a9af155.9392d03100008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = 700.0.83.0.bccebf0e...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = 700.0.84.0.3bf2809d...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = 700.0.85.0.d255ca58...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.83 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.84 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.83 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.84 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3210, fid=700.0.85 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.83 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.84 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.83 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.84 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3210, fid=700.0.85 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.83 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.84 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.83 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3210, fid=700.0.84 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3210, fid=700.0.85 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = 2e59a3a4.808857fe.101.0.5...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = 2e59a3a4.808857fe.102.0.5...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = 2e59a3a4.808857fe.103.0.5...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3236, fid=2e59a3a4.808857fe.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3236, fid=2e59a3a4.808857fe.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3236, fid=2e59a3a4.808857fe.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3236, fid=2e59a3a4.808857fe.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = 700.0.73.ad8f3b1b.0...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = 700.0.74.67c27b53.0...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = 700.0.75.e7900c36.0...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.ad8f3b1b00000073 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.67c27b5300000074 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.ad8f3b1b00000073 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.67c27b5300000074 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3238, fid=700.0.e7900c3600000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.ad8f3b1b00000073 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.67c27b5300000074 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.ad8f3b1b00000073 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.67c27b5300000074 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3238, fid=700.0.e7900c3600000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.ad8f3b1b00000073 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.67c27b5300000074 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.ad8f3b1b00000073 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3238, fid=700.0.67c27b5300000074 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3238, fid=700.0.e7900c3600000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify13.c:262: TCONF: FAN_REPORT_FID not supported on ntfs filesystem
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+fanotify.h:240: TINFO: fid(mntpoint/file_one) = e090d1d3.66a31fee.68131a6.2.0...
+fanotify.h:240: TINFO: fid(mntpoint/file_two) = e090d1d3.66a31fee.834740da.3.0...
+fanotify.h:240: TINFO: fid(mntpoint/dir_one) = e090d1d3.66a31fee.824f27a3.4.0...
+fanotify13.c:146: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.2068131a6 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.3834740da values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.2068131a6 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.3834740da values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3249, fid=e090d1d3.66a31fee.4824f27a3 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.2068131a6 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.3834740da values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.2068131a6 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.3834740da values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3249, fid=e090d1d3.66a31fee.4824f27a3 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.2068131a6 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.3834740da values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:146: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.2068131a6 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=30, pid=3249, fid=e090d1d3.66a31fee.3834740da values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:254: TPASS: got event: mask=40000030, pid=3249, fid=e090d1d3.66a31fee.4824f27a3 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+
+Summary:
+passed   105
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=9 cstime=90
+<<<test_end>>>
+<<<test_start>>>
+tag=io_getevents02 stime=1636341784
+cmdline="io_getevents02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_kconfig.c:64: TINFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+io_getevents02.c:35: TPASS: io_getevents() failed with EINVAL
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl01 stime=1636341784
+cmdline="keyctl01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+keyctl01.c:27: TPASS: KEYCTL_GET_KEYRING_ID succeeded
+keyctl01.c:48: TPASS: KEYCTL_REVOKE failed as expected: ENOKEY (126)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kcmp02 stime=1636341784
+cmdline="kcmp02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+kcmp02.c:83: TPASS: kcmp() returned the expected value: ESRCH (3)
+kcmp02.c:83: TPASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: TPASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: TPASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: TPASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: TPASS: kcmp() returned the expected value: EBADF (9)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kcmp03 stime=1636341784
+cmdline="kcmp03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+kcmp03.c:64: TPASS: kcmp() returned the expected value
+kcmp03.c:64: TPASS: kcmp() returned the expected value
+kcmp03.c:64: TPASS: kcmp() returned the expected value
+kcmp03.c:64: TPASS: kcmp() returned the expected value
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=link06 stime=1636341784
+cmdline="link06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link06      1  TPASS  :  link() fails with expected error EACCES errno:13
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=link07 stime=1636341784
+cmdline="link07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link07      1  TPASS  :  link() fails with expected error: TEST_ERRNO=EACCES(13): Permission denied
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=llistxattr03 stime=1636341784
+cmdline="llistxattr03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+llistxattr03.c:55: TPASS: llistxattr() succeed with suitable buffer
+llistxattr03.c:55: TPASS: llistxattr() succeed with suitable buffer
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lremovexattr01 stime=1636341784
+cmdline="lremovexattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:115: TCONF: symlink() not supported
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: TPASS: lremovexattr(2) removed attribute as expected
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=89
+<<<test_end>>>
+<<<test_start>>>
+tag=lseek01 stime=1636341789
+cmdline="lseek01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lseek01.c:67: TPASS: lseek(tfile, 4, SEEK_SET) read correct data
+lseek01.c:67: TPASS: lseek(tfile, -2, SEEK_CUR) read correct data
+lseek01.c:67: TPASS: lseek(tfile, -4, SEEK_END) read correct data
+lseek01.c:67: TPASS: lseek(tfile, 0, SEEK_END) read correct data
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lseek07 stime=1636341789
+cmdline="lseek07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+lseek07.c:70: TPASS: lseek(tfile1, 7, SEEK_SET) wrote correct data abcdefgijk
+lseek07.c:70: TPASS: lseek(tfile2, 2, SEEK_SET) wrote correct data abijkfg
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mallinfo02 stime=1636341789
+cmdline="mallinfo02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+mallinfo02.c:28: TPASS: malloc() uses sbrk when size < 128k
+mallinfo02.c:41: TPASS: malloc() uses mmap when size >= 128k
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mallopt01 stime=1636341789
+cmdline="mallopt01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+mallopt01.c:41: TPASS: mallinfo() succeeded
+mallopt01.c:48: TPASS: mallopt(M_MXFAST, 160) succeeded
+mallopt01.c:53: TPASS: malloc(1024) succeeded
+mallopt01.c:60: TPASS: mallopt(M_MXFAST, 0) succeeded
+mallopt01.c:65: TPASS: malloc(1024) succeeded
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=migrate_pages03 stime=1636341789
+cmdline="migrate_pages03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+migrate_pages03.c:60: TCONF: requires NUMA with at least 2 node
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlockall02 stime=1636341789
+cmdline="mlockall02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlockall02    1  TPASS  :  expected failure - errno = 12 : Cannot allocate memory
+mlockall02    2  TPASS  :  expected failure - errno = 1 : Operation not permitted
+mlockall02    3  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir02 stime=1636341789
+cmdline="mkdir02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+mkdir02.c:55: TPASS: New dir inherited GID and S_ISGID
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir04 stime=1636341789
+cmdline="mkdir04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+mkdir04.c:37: TPASS: mkdir() failed expectedly: EACCES (13)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknodat01 stime=1636341789
+cmdline="mknodat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknodat01    1  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mknodat01    2  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mknodat01    3  TPASS  :  mknodat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
+mknodat01    4  TPASS  :  mknodat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
+mknodat01    5  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock02 stime=1636341789
+cmdline="mlock02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlock02     1  TPASS  :  mlock failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+mlock02     2  TPASS  :  mlock failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+mlock02     3  TPASS  :  mlock failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock04 stime=1636341789
+cmdline="mlock04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlock04     0  TINFO  :  locked 40960 bytes from 0x7f4c2c44e000
+mlock04     1  TPASS  :  test succeeded.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=qmm01 stime=1636341789
+cmdline="mmap001 -m 1"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap001     0  TINFO  :  mmap()ing file of 1 pages or 4096 bytes
+mmap001     1  TPASS  :  mmap() completed successfully.
+mmap001     0  TINFO  :  touching mmaped memory
+mmap001     2  TPASS  :  we're still here, mmaped area must be good
+mmap001     3  TPASS  :  synchronizing mmapped page passed
+mmap001     4  TPASS  :  munmapping testfile.3387 successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap04 stime=1636341789
+cmdline="mmap04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap04      1  TPASS  :  Functionality of mmap() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap05 stime=1636341789
+cmdline="mmap05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap05      1  TPASS  :  Got SIGSEGV as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap12 stime=1636341789
+cmdline="mmap12"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+mmap12.c:90: TINFO: All pages are present
+mmap12.c:114: TPASS: File mapped properly
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap13 stime=1636341789
+cmdline="mmap13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap13      1  TPASS  :  Got SIGBUS as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=modify_ldt03 stime=1636341789
+cmdline="modify_ldt03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+modify_ldt03    1  TCONF  :  modify_ldt03.c:94: modify_ldt is available but not tested on the platform than __i386__
+modify_ldt03    2  TCONF  :  modify_ldt03.c:94: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=move_pages12 stime=1636341789
+cmdline="move_pages12"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+move_pages_support.c:407: TCONF: at least 2 allowed NUMA nodes are required
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mprotect04 stime=1636341789
+cmdline="mprotect04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
+mprotect04    0  TINFO  :  exec_func: 0x562b6ec10d80, page_to_copy: 0x562b6ec10000
+mprotect04    2  TPASS  :  test PROT_EXEC for mprotect success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mremap05 stime=1636341789
+cmdline="mremap05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mremap05    1  TPASS  :  MREMAP_FIXED requires MREMAP_MAYMOVE
+mremap05    2  TPASS  :  new_addr has to be page aligned
+mremap05    3  TPASS  :  old/new area must not overlap
+mremap05    4  TPASS  :  mremap #1
+mremap05    5  TPASS  :  mremap #1 value OK
+mremap05    6  TPASS  :  mremap #2
+mremap05    7  TPASS  :  mremap #2 value OK
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=msgctl03 stime=1636341789
+cmdline="msgctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msgctl03.c:30: TPASS: msgctl(IPC_RMID)
+msgctl03.c:34: TPASS: msgctl(IPC_STAT): EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=msgrcv06 stime=1636341789
+cmdline="msgrcv06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msgrcv06.c:28: TPASS: msgrcv(1, 0x55c15e649660, 1024, 1, 0) : EIDRM (43)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=msync02 stime=1636341789
+cmdline="msync02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+msync02     1  TPASS  :  Functionality of msync successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=msync04 stime=1636341789
+cmdline="msync04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:148: TINFO: Skipping tmpfs as requested by the test
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+msync04.c:72: TPASS: msync() working correctly
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=89
+<<<test_end>>>
+<<<test_start>>>
+tag=nice01 stime=1636341794
+cmdline="nice01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+nice01.c:48: TPASS: nice(-12) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open01A stime=1636341794
+cmdline="symlink01 -T open01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open01      1  TPASS  :  open(2) with (O_CREAT | O_RDWR) to create object file through symbolic link file and all writes, reads, and lseeks are ok
+open01      2  TPASS  :  open(2) with O_RDWR of existing  object file through symbolic link file and all writes, reads, and lseeks are ok
+open01      3  TPASS  :  open(2) with (O_CREAT | O_EXCL) error  is caught when creating object file through symbolic link file
+open01      4  TPASS  :  open(2) error with O_RDWR is caught when processing symbolic link file which points at no object file
+open01      5  TPASS  :  Nested symbolic link access condition caught.  ELOOP is returned
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise10 stime=1636341794
+cmdline="madvise10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+madvise10.c:134: TINFO: MADV_WIPEONFORK zeroes memory in child
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 16384, 0x0)
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 16384, 0x12)
+madvise10.c:89: TPASS: In PID 3505, Matched expected pattern
+madvise10.c:134: TINFO: MADV_WIPEONFORK with zero length does nothing
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 0, 0x0)
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 0, 0x12)
+madvise10.c:89: TPASS: In PID 3506, Matched expected pattern
+madvise10.c:134: TINFO: MADV_WIPEONFORK zeroes memory in grand-child
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 16384, 0x0)
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 16384, 0x12)
+madvise10.c:89: TPASS: In PID 3508, Matched expected pattern
+madvise10.c:134: TINFO: MADV_KEEPONFORK will undo MADV_WIPEONFORK
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 16384, 0x12)
+madvise10.c:108: TPASS: madvise(0x7f251b290000, 16384, 0x13)
+madvise10.c:89: TPASS: In PID 3509, Matched expected pattern
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=pause01 stime=1636341794
+cmdline="pause01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+pause01.c:24: TPASS: pause() interrupted with EINTR
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=personality01 stime=1636341794
+cmdline="personality01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+personality01    1  TPASS  :  personality(PER_LINUX)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_LINUX_32BIT)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SVR4)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SVR3)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SCOSVR3)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_OSR5)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_WYSEV386)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_ISCR4)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_BSD)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_XENIX)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_LINUX32)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_IRIX32)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_IRIXN32)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_IRIX64)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_RISCOS)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SOLARIS)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_UW7)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_OSF4)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_HPUX)
+personality01    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe01 stime=1636341794
+cmdline="pipe01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+pipe01.c:48: TPASS: pipe() functionality is correct
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=poll01 stime=1636341794
+cmdline="poll01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+poll01.c:42: TPASS: poll() POLLOUT
+poll01.c:69: TPASS: poll() POLLIN
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pread03_64 stime=1636341794
+cmdline="pread03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pread03     1  TPASS  :  pread() fails with expected error EISDIR errno:21
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv202_64 stime=1636341794
+cmdline="preadv202_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+preadv202.c:82: TPASS: preadv2() failed as expected: EINVAL (22)
+preadv202.c:82: TPASS: preadv2() failed as expected: EINVAL (22)
+preadv202.c:82: TPASS: preadv2() failed as expected: EOPNOTSUPP (95)
+preadv202.c:82: TPASS: preadv2() failed as expected: EFAULT (14)
+preadv202.c:82: TPASS: preadv2() failed as expected: EBADF (9)
+preadv202.c:82: TPASS: preadv2() failed as expected: EBADF (9)
+preadv202.c:82: TPASS: preadv2() failed as expected: EISDIR (21)
+preadv202.c:82: TPASS: preadv2() failed as expected: ESPIPE (29)
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=process_vm_writev02 stime=1636341794
+cmdline="process_vm_writev02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+process_vm_writev02    0  TINFO  :  child 2: write to the same memory location.
+process_vm_writev02    0  TINFO  :  child 0: memory allocated.
+process_vm_writev02    1  TPASS  :  child 0: all bytes are expected.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect03 stime=1636341794
+cmdline="pselect03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+pselect03.c:31: TPASS: pselect() succeeded retval=0
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace07 stime=1636341794
+cmdline="ptrace07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+ptrace07.c:138: TINFO: PTRACE_SETREGSET with reserved bits failed with EINVAL
+ptrace07.c:161: TINFO: test child 3547 exited, retcode: 0
+ptrace07.c:174: TPASS: wasn't able to set invalid FPU state
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=173 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=quotactl07 stime=1636341795
+cmdline="quotactl07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_kconfig.c:64: TINFO: Parsing kernel config '/proc/config.gz'
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+quotactl07.c:32: TPASS: Q_XQUOTARM has quota type check
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=realpath01 stime=1636341796
+cmdline="realpath01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+realpath01.c:35: TPASS: bug not reproduced
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=recvmsg03 stime=1636341796
+cmdline="recvmsg03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+recvmsg03.c:38: TCONF: rds was not supported
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename03 stime=1636341796
+cmdline="rename03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename03    1  TPASS  :  functionality is correct for renaming a file
+rename03    2  TPASS  :  functionality is correct for renaming a directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename11 stime=1636341796
+cmdline="rename11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.44.5 (15-Dec-2018)
+rename11    0  TINFO  :  Found free device 0 '/dev/loop0'
+rename11    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+rename11    0  TINFO  :  Failed reach the subdirs limit on ext2/ext3/ext4 filesystem
+rename11    1  TPASS  :  failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+rename11    2  TPASS  :  failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
+rename11    3  TCONF  :  rename11.c:167: EMLINK test is not appropriate
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=183
+<<<test_end>>>
+<<<test_start>>>
+tag=request_key04 stime=1636341799
+cmdline="request_key04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+request_key04.c:66: TPASS: request_key() failed with EACCES as expected
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_get_priority_min02 stime=1636341799
+cmdline="sched_get_priority_min02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_get_priority_min02    1  TPASS  :  Test Passed, Got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getparam03 stime=1636341799
+cmdline="sched_getparam03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sched_getparam03.c:46: TPASS: sched_getparam() with non-existing pid : ESRCH (3)
+sched_getparam03.c:46: TPASS: sched_getparam() with invalid pid : EINVAL (22)
+sched_getparam03.c:46: TPASS: sched_getparam() with invalid address for param : EINVAL (22)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setparam05 stime=1636341799
+cmdline="sched_setparam05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setparam05    1  TPASS  :  Test passed, Got EPERM
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setscheduler01 stime=1636341799
+cmdline="sched_setscheduler01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setscheduler01    1  TPASS  :  expected failure - errno = 3 : No such process
+sched_setscheduler01    2  TPASS  :  expected failure - errno = 22 : Invalid argument
+sched_setscheduler01    3  TPASS  :  expected failure - errno = 14 : Bad address
+sched_setscheduler01    4  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=select04 stime=1636341799
+cmdline="select04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+select_var.h:109: TINFO: Testing libc select()
+select04.c:58: TPASS: No data to read: select() cleared the fd set
+select04.c:58: TPASS: No space to write: select() cleared the fd set
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+select_var.h:112: TINFO: Testing SYS_select syscall
+select04.c:58: TPASS: No data to read: select() cleared the fd set
+select04.c:58: TPASS: No space to write: select() cleared the fd set
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+select_var.h:115: TINFO: Testing SYS_pselect6 syscall
+select04.c:58: TPASS: No data to read: select() cleared the fd set
+select04.c:58: TPASS: No space to write: select() cleared the fd set
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+select_var.h:118: TINFO: Testing SYS_pselect6 time64 syscall
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+select_var.h:121: TINFO: Testing SYS__newselect syscall
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl02 stime=1636341799
+cmdline="semctl02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+semctl02.c:29: TPASS: semctl(IPC_STAT) with nobody user : EACCES (13)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semop01 stime=1636341799
+cmdline="semop01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+semop01.c:71: TINFO: Testing variant: semop: syscall
+semop01.c:58: TPASS: semaphore values are correct
+semop01.c:58: TPASS: semaphore values are correct
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+semop01.c:71: TINFO: Testing variant: semtimedop: syscall with old kernel spec
+semop01.c:58: TPASS: semaphore values are correct
+semop01.c:58: TPASS: semaphore values are correct
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile05_64 stime=1636341799
+cmdline="sendfile05_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sendfile05.c:42: TPASS: sendfile(out, in, &offset, ..) with offset=-1 : EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile06 stime=1636341799
+cmdline="sendfile06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sendfile06.c:61: TPASS: sendfile() with offset=NULL
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendmmsg02 stime=1636341799
+cmdline="sendmmsg02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sendmmsg02.c:56: TINFO: Testing variant: vDSO or syscall with libc spec
+sendmmsg02.c:49: TPASS: sendmmsg() bad file descriptor : EBADF (9)
+sendmmsg02.c:49: TPASS: sendmmsg() invalid msgvec address : EFAULT (14)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sendmmsg02.c:56: TINFO: Testing variant: syscall with old kernel spec
+sendmmsg02.c:49: TPASS: sendmmsg() bad file descriptor : EBADF (9)
+sendmmsg02.c:49: TPASS: sendmmsg() invalid msgvec address : EFAULT (14)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendto01 stime=1636341799
+cmdline="sendto01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendto01    1  TPASS  :  bad file descriptor successful
+sendto01    2  TPASS  :  invalid socket successful
+sendto01    3  TPASS  :  invalid send buffer successful
+sendto01    4  TPASS  :  connected TCP successful
+sendto01    5  TPASS  :  not connected TCP successful
+sendto01    6  TPASS  :  invalid to buffer length successful
+sendto01    7  TPASS  :  invalid to buffer successful
+sendto01    8  TPASS  :  UDP message too big successful
+sendto01    9  TPASS  :  local endpoint shutdown successful
+sendto01   10  TPASS  :  invalid flags set successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=set_mempolicy04 stime=1636341799
+cmdline="set_mempolicy04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: TINFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: TCONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  8
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=setdomainname03 stime=1636341799
+cmdline="setdomainname03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setdomainname.h:36: TINFO: Testing libc setdomainname()
+setdomainname03.c:32: TPASS: expected failure: EPERM (1)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setdomainname.h:39: TINFO: Testing __NR_setdomainname syscall
+setdomainname03.c:32: TPASS: expected failure: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setfsuid03 stime=1636341799
+cmdline="setfsuid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setfsuid03    1  TPASS  :  setfsuid() returned expected value : 65534
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setgid01 stime=1636341799
+cmdline="setgid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setgid01.c:21: TPASS: SETGID(gid) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setegid01 stime=1636341799
+cmdline="setegid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setegid01    0  TINFO  :  getresgid reports rgid 0, egid 0, sgid 0
+setegid01    0  TINFO  :  calling setegid(nobody_gid 65534)
+setegid01    0  TINFO  :  getresgid reports rgid 0, egid 65534, sgid 0
+setegid01    1  TPASS  :  setegid() passed functional test
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setgroups01 stime=1636341799
+cmdline="setgroups01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setgroups01    1  TPASS  :  setgroups(65536, list) returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setgroups02 stime=1636341799
+cmdline="setgroups02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setgroups02    1  TPASS  :  Functionality of setgroups(1, groups_list) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=setgroups04 stime=1636341799
+cmdline="setgroups04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setgroups04    1  TPASS  :  setgroups() fails with expected error EFAULT errno:14
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sethostname02 stime=1636341799
+cmdline="sethostname02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname.h:36: TINFO: Testing libc sethostname()
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:32: TINFO: testing len == -1
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:44: TPASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:32: TINFO: testing len > allowed maximum
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:44: TPASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:32: TINFO: testing name == NULL
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:44: TPASS: expected failure: EFAULT (14)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname.h:39: TINFO: Testing __NR_sethostname syscall
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:32: TINFO: testing len == -1
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:44: TPASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:32: TINFO: testing len > allowed maximum
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:44: TPASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:32: TINFO: testing name == NULL
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname/setdomainname02.c:44: TPASS: expected failure: EFAULT (14)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setpgid02 stime=1636341799
+cmdline="setpgid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setpgid02    1  TPASS  :  expected failure - errno = 22 : Invalid argument
+setpgid02    2  TPASS  :  expected failure - errno = 3 : No such process
+setpgid02    3  TPASS  :  expected failure - errno = 1 : Operation not permitted
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setregid03 stime=1636341799
+cmdline="setregid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setregid03.c:61: TINFO: getgrnam(nobody) failed - try fallback nogroup
+setregid03.c:95: TPASS: setregid(1, 2) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(-1, 1) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(-1, 2) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(2, -1) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(-1, -1) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(-1, 2) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(2, -1) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:95: TPASS: setregid(2, 2) succeeded as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:105: TPASS: setregid(1, -1) failed as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:105: TPASS: setregid(-1, 1) failed as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+setregid03.c:105: TPASS: setregid(1, 1) failed as expected
+setregid03.c:121: TPASS: real or effective gid was modified as expected
+
+Summary:
+passed   22
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setresgid01_16 stime=1636341799
+cmdline="setresgid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setresgid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setresgid/../utils/compat_16.h:146: 16-bit version of setresgid() is not supported on your platform
+setresgid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setresgid/../utils/compat_16.h:146: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setresuid01_16 stime=1636341799
+cmdline="setresuid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setresuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setresuid/../utils/compat_16.h:136: 16-bit version of setresuid() is not supported on your platform
+setresuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setresuid/../utils/compat_16.h:136: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setreuid05 stime=1636341799
+cmdline="setreuid05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setreuid05    1  TPASS  :  setreuid(65534, 0) succeeded as expected.
+setreuid05    2  TPASS  :  setreuid(-1, 65534) succeeded as expected.
+setreuid05    3  TPASS  :  setreuid(-1, 0) succeeded as expected.
+setreuid05    4  TPASS  :  setreuid(1, -1) succeeded as expected.
+setreuid05    5  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05    6  TPASS  :  setreuid(-1, 0) succeeded as expected.
+setreuid05    7  TPASS  :  setreuid(-1, 65534) succeeded as expected.
+setreuid05    8  TPASS  :  setreuid(-1, 1) succeeded as expected.
+setreuid05    9  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05   10  TPASS  :  setreuid(2, 1) succeeded as expected.
+setreuid05   11  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05   12  TPASS  :  setreuid(-1, 1) succeeded as expected.
+setreuid05   13  TPASS  :  setreuid(1, -1) succeeded as expected.
+setreuid05   14  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setrlimit03 stime=1636341799
+cmdline="setrlimit03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setrlimit03.c:55: TPASS: setrlimit() failed as expected: EPERM (1)
+setrlimit03.c:55: TPASS: setrlimit() failed as expected: EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setrlimit05 stime=1636341799
+cmdline="setrlimit05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setrlimit05.c:38: TPASS: setrlimit() failed as expected: EFAULT (14)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setrlimit06 stime=1636341799
+cmdline="setrlimit06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setrlimit06.c:86: TPASS: Got SIGXCPU then SIGKILL after reaching both limit
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=200 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setsockopt04 stime=1636341801
+cmdline="setsockopt04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+setsockopt04.c:39: TINFO: Try to set send buffer size to: 4294967040
+setsockopt04.c:40: TINFO: Send buffer size was set to: 4608
+setsockopt04.c:45: TPASS: Was unable to set negative send buffer size!
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setuid03_16 stime=1636341801
+cmdline="setuid03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setuid/../utils/compat_tst_16.h:84: TCONF: 16-bit version of setuid() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=shmctl03 stime=1636341801
+cmdline="shmctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+shmctl03.c:34: TPASS: shmmin = 1
+shmctl03.c:36: TPASS: /proc/sys/kernel/shmmax = 18446744073692774399
+shmctl03.c:37: TPASS: /proc/sys/kernel/shmmni = 4096
+shmctl03.c:38: TPASS: /proc/sys/kernel/shmall = 18446744073692774399
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=signal06 stime=1636341801
+cmdline="signal06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+signal06    0  TINFO  :  loop = 30000
+signal06    1  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop = 30000
+signal06    2  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop = 30000
+signal06    3  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop = 30000
+signal06    4  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop = 30000
+signal06    5  TPASS  :  signal06 call succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=22 cstime=154
+<<<test_end>>>
+<<<test_start>>>
+tag=sigtimedwait01 stime=1636341802
+cmdline="sigtimedwait01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sigwait.c:27: TPASS: Wait interrupted by expected signal
+sigwait.c:88: TPASS: struct siginfo is correct
+sigwait.c:148: TPASS: struct siginfo is correct
+sigwait.c:160: TPASS: sigwaitinfo restored the original mask
+sigwait.c:113: TPASS: Wait interrupted by expected signal
+sigwait.c:259: TPASS: Wait interrupted by expected signal
+sigwait.c:268: TPASS: sigwaitinfo restored the original mask
+sigwait.c:302: TPASS: Fault occurred while accessing the buffers
+sigwait.c:344: TPASS: Child exited with expected code
+sigwait.c:367: TPASS: Fault occurred while accessing the buffers
+sigwait.c:57: TPASS: Wait interrupted by timeout
+
+Summary:
+passed   11
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sigwait01 stime=1636341804
+cmdline="sigwait01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+sigwait.c:113: TPASS: Wait interrupted by expected signal
+sigwait.c:259: TPASS: Wait interrupted by expected signal
+sigwait.c:268: TPASS: sigwaitinfo restored the original mask
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=socket01 stime=1636341804
+cmdline="socket01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+socket01.c:66: TPASS: invalid domain successful
+socket01.c:66: TPASS: invalid type successful
+socket01.c:66: TPASS: UNIX domain dgram successful
+socket01.c:66: TPASS: raw open as non-root successful
+socket01.c:66: TPASS: UDP socket successful
+socket01.c:66: TPASS: UDP stream successful
+socket01.c:66: TPASS: TCP dgram successful
+socket01.c:66: TPASS: TCP socket successful
+socket01.c:66: TPASS: ICMP stream successful
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=stat01 stime=1636341804
+cmdline="stat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+stat01.c:75: TPASS: stat(test_fileread)
+stat01.c:75: TPASS: stat(test_filenoread)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=statfs03_64 stime=1636341804
+cmdline="statfs03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+statfs03    1  TPASS  :  expected failure - errno = 13 : Permission denied
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=syslog06 stime=1636341804
+cmdline="syslog06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+syslog06    0  TINFO  :   Test the logging option: LOG_NDELAY
+syslog06    0  TINFO  :   o Do openlog() without LOG_NDELAY option.
+syslog06    0  TINFO  :   o open a file and check the returned file descriptor
+syslog06    0  TINFO  :     It should be 3.
+syslog06    0  TINFO  :   o Now do openlog() with LOG_NDELAY option.
+syslog06    0  TINFO  :   o open a file and check the returned file descriptor.
+syslog06    0  TINFO  :     It should be greater than 3.
+syslog06    0  TINFO  :  syslog: Testing the log option: LOG_NDELAY...
+syslog06    0  TINFO  :  restarting syslog daemon
+syslog06    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status="ok"
+duration=4 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=timerfd02 stime=1636341808
+cmdline="timerfd02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+timerfd02    1  TPASS  :  timerfd_create(TFD_CLOEXEC) Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=timer_create02 stime=1636341808
+cmdline="timer_create02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+timer_create02.c:73: TPASS: invalid sigevent struct failed as expected: EFAULT (14)
+timer_create02.c:73: TPASS: invalid timer ID failed as expected: EFAULT (14)
+timer_create02.c:73: TPASS: invalid clock failed as expected: EINVAL (22)
+timer_create02.c:73: TPASS: wrong sigev_notify failed as expected: EINVAL (22)
+timer_create02.c:73: TPASS: wrong sigev_signo failed as expected: EINVAL (22)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=truncate02_64 stime=1636341808
+cmdline="truncate02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+truncate02.c:90: TPASS: truncate(testfile, 256) succeeded
+truncate02.c:90: TPASS: truncate(testfile, 512) succeeded
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=unshare01 stime=1636341808
+cmdline="unshare01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+unshare01.c:47: TPASS: unshare(CLONE_FILES) passed
+unshare01.c:47: TPASS: unshare(CLONE_FS) passed
+unshare01.c:47: TPASS: unshare(CLONE_NEWNS) passed
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=umount02 stime=1636341808
+cmdline="umount02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+umount02.c:58: TPASS: umount() fails as expected: Already mounted/busy: EBUSY (16)
+umount02.c:58: TPASS: umount() fails as expected: Invalid address: EFAULT (14)
+umount02.c:58: TPASS: umount() fails as expected: Directory not found: ENOENT (2)
+umount02.c:58: TPASS: umount() fails as expected: Invalid  device: EINVAL (22)
+umount02.c:58: TPASS: umount() fails as expected: Pathname too long: ENAMETOOLONG (36)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=utime06 stime=1636341808
+cmdline="utime06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.44.5 (15-Dec-2018)
+utime06     0  TINFO  :  Found free device 0 '/dev/loop0'
+utime06     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+utime06     1  TPASS  :  utime failed as expected: TEST_ERRNO=EACCES(13): Permission denied
+utime06     2  TPASS  :  utime failed as expected: TEST_ERRNO=ENOENT(2): No such file or directory
+utime06     3  TPASS  :  utime failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
+utime06     4  TPASS  :  utime failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=wait401 stime=1636341809
+cmdline="wait401"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+wait401.c:40: TPASS: wait4() returned correct pid 3817
+wait401.c:49: TPASS: WIFEXITED() is set in status
+wait401.c:54: TPASS: WEXITSTATUS() == 0
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=waitpid10 stime=1636341809
+cmdline="waitpid10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+waitpid10.c:62: TPASS: Test PASSED
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=writev06 stime=1636341811
+cmdline="writev06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+writev06    1  TPASS  :  writev returned 2 as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=perf_event_open01 stime=1636341811
+cmdline="perf_event_open01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 300000079
+perf_event_open01    1  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_HW_INSTRUCTIONS succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 21
+perf_event_open01    2  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_HW_CACHE_REFERENCES succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 0
+perf_event_open01    3  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_HW_CACHE_MISSES succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 100000069
+perf_event_open01    4  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_HW_BRANCH_INSTRUCTIONS succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 5
+perf_event_open01    5  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_HW_BRANCH_MISSES succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 63012509
+perf_event_open01    6  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_CPU_CLOCK succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 62778546
+perf_event_open01    7  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_TASK_CLOCK succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=44 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=futex_wake03 stime=1636341811
+cmdline="futex_wake03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+futex_wake03.c:97: TINFO: Testing variant: syscall with old kernel spec
+futex_wake03.c:61: TPASS: futex_wake() woken up 1 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 2 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 3 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 4 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 5 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 6 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 7 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 8 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 9 childs
+futex_wake03.c:61: TPASS: futex_wake() woken up 10 childs
+futex_wake03.c:89: TPASS: futex_wake() woken up 0 children
+
+Summary:
+passed   11
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=memfd_create03 stime=1636341812
+cmdline="memfd_create03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+memfd_create03.c:179: TINFO: --TESTING WRITE CALL IN HUGEPAGES--
+memfd_create03.c:184: TINFO: memfd_create() succeeded
+memfd_create03.c:80: TPASS: write(4, "LTP", 3) failed as expected
+
+memfd_create03.c:179: TINFO: --TESTING PAGE SIZE OF CREATED FILE--
+memfd_create03.c:184: TINFO: memfd_create() succeeded
+memfd_create03.c:53: TINFO: mmap((nil), 2097152, 2, 2, 4, 0) succeeded
+memfd_create03.c:102: TINFO: munmap(0x7f2af1200000, 512kB) failed as expected
+memfd_create03.c:102: TINFO: munmap(0x7f2af1200000, 1024kB) failed as expected
+memfd_create03.c:102: TINFO: munmap(0x7f2af1200000, 1536kB) failed as expected
+memfd_create03.c:120: TPASS: munmap() fails for page sizes less than 2048kB
+
+memfd_create03.c:179: TINFO: --TESTING HUGEPAGE ALLOCATION LIMIT--
+memfd_create03.c:184: TINFO: memfd_create() succeeded
+memfd_create03.c:53: TINFO: mmap((nil), 2097152, 2, 2, 4, 0) succeeded
+memfd_create03.c:139: TINFO: memfd_create() succeeded
+memfd_create03.c:146: TPASS: mmap((nil), 2097152, 0, 2, 5, 0) failed as expected
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=copy_file_range01 stime=1636341812
+cmdline="copy_file_range01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:180: TCONF: copy_file_range() doesn't support cross-device, skip it
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:51: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:51: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:51: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:51: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:119: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:51: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1379: TINFO: Testing on ext2
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext3
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ext4
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.44.5 (15-Dec-2018)
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on xfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on btrfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on vfat
+tst_test.c:889: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+tst_test.c:1379: TINFO: Testing on ntfs
+tst_test.c:889: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:900: TINFO: Trying FUSE...
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:180: TCONF: copy_file_range() doesn't support cross-device, skip it
+tst_test.c:1379: TINFO: Testing on tmpfs
+tst_test.c:889: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1313: TINFO: Timeout per run is 0h 25m 00s
+copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: non cross-device copy_file_range failed 144 of 144 copy jobs.
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:133: TFAIL: copy_file_range() failed: EOPNOTSUPP (95)
+copy_file_range01.c:211: TFAIL: cross-device copy_file_range failed 144 of 144 copy jobs.
+
+Summary:
+passed   0
+failed   4350
+broken   0
+skipped  2
+warnings 0
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=12 termination_type=exited termination_id=33 corefile=no
+cutime=23 cstime=201
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20210524-150-gb26d13173
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20210524-150-gb26d13173
+       ###############################################################
+
 -------------- next part --------------
 ---
-:#! jobs/ltp-dio.yaml:
+:#! jobs/ltp-syscalls.yaml:
 suite: ltp
 testcase: ltp
 category: functional
@@ -7214,33 +20316,30 @@ need_memory: 4G
 disk: 1HDD
 fs: ext4
 ltp:
-  test: dio-01
-job_origin: ltp-dio.yaml
+  test: syscalls-03
+job_origin: ltp-syscalls.yaml
 :#! queue options:
 queue_cmdline_keys:
 - branch
 - commit
 queue: bisect
-testbox: lkp-skl-d01
-tbox_group: lkp-skl-d01
+testbox: lkp-skl-d02
+tbox_group: lkp-skl-d02
 kconfig: x86_64-rhel-8.3
-submit_id: 60e282e4801d900d543ac515
-job_file: "/lkp/jobs/scheduled/lkp-skl-d01/ltp-1HDD-ext4-dio-01-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-1c35b07e6d3986474e5635be566e7bc79d97c64d-20210705-68948-de7g1y-0.yaml"
-id: 0ae908d1f556c2711fa2150032a64caa5ba1494b
+submit_id: 60e36ae15a30f2ea3384d0a9
+job_file: "/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-ext4-syscalls-03-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-cfc6d026063ed144c3413870e09cb210253d333d-20210706-59955-1wcpk65-0.yaml"
+id: 00d4b56e17f1a603458f0b1d0eedb3b7e70f5704
 queuer_version: "/lkp-src"
-:#! hosts/lkp-skl-d01:
+:#! hosts/lkp-skl-d02:
 model: Skylake
-nr_cpu: 8
-memory: 28G
+nr_cpu: 4
+memory: 32G
 nr_ssd_partitions: 1
 nr_hdd_partitions: 4
-hdd_partitions: "/dev/disk/by-id/wwn-0x50014ee20d26b072-part*"
-ssd_partitions: "/dev/disk/by-id/wwn-0x55cd2e404c39bfc5-part1"
-swap_partitions: "/dev/disk/by-id/wwn-0x55cd2e404c39bfc5-part3"
-rootfs_partition: "/dev/disk/by-id/wwn-0x55cd2e404c39bfc5-part2"
-brand: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
-cpu_info: skylake i7-6700
-bios_version: 1.2.8
+hdd_partitions: "/dev/disk/by-id/wwn-0x5000c500746fa0cc-part*"
+ssd_partitions: "/dev/disk/by-id/wwn-0x55cd2e41514d5105-part2"
+rootfs_partition: "/dev/disk/by-id/wwn-0x55cd2e41514d5105-part1"
+brand: Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz
 :#! include/category/functional:
 kmsg:
 heartbeat:
@@ -7263,41 +20362,41 @@ need_kconfig:
 - CONFIG_EXT4_FS
 :#! include/ltp:
 :#! include/queue/cyclic:
-commit: 1c35b07e6d3986474e5635be566e7bc79d97c64d
-:#! include/testbox/lkp-skl-d01:
+commit: cfc6d026063ed144c3413870e09cb210253d333d
+:#! include/testbox/lkp-skl-d02:
 need_kconfig_hw:
 - CONFIG_E1000E=y
 - CONFIG_SATA_AHCI
 - CONFIG_DRM_I915
 ucode: '0xe2'
 :#! include/fs/OTHERS:
-enqueue_time: 2021-07-05 11:56:20.361981104 +08:00
-_id: 60e282e4801d900d543ac515
-_rt: "/result/ltp/1HDD-ext4-dio-01-ucode=0xe2/lkp-skl-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d"
+enqueue_time: 2021-07-06 04:26:10.293333382 +08:00
+_id: 60e36ae15a30f2ea3384d0a9
+_rt: "/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d"
 :#! schedule options:
 user: lkp
 compiler: gcc-9
 LKP_SERVER: internal-lkp-server
-head_commit: b81d2980a80c435866b2a0b1b6296e3928214307
+head_commit: 8bb68a1e85879bb9c8051646a2f73b935ead953d
 base_commit: 62fb9874f5da54fdb243003b386128037319b219
-branch: linux-devel/devel-hourly-20210704-040033
+branch: linux-devel/devel-hourly-20210705-104849
 rootfs: debian-10.4-x86_64-20200603.cgz
-result_root: "/result/ltp/1HDD-ext4-dio-01-ucode=0xe2/lkp-skl-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/0"
-scheduler_version: "/lkp/lkp/.src-20210705-113352"
+result_root: "/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/0"
+scheduler_version: "/lkp/lkp/.src-20210705-194717"
 arch: x86_64
 max_uptime: 2100
 initrd: "/osimage/debian/debian-10.4-x86_64-20200603.cgz"
 bootloader_append:
 - root=/dev/ram0
 - user=lkp
-- job=/lkp/jobs/scheduled/lkp-skl-d01/ltp-1HDD-ext4-dio-01-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-1c35b07e6d3986474e5635be566e7bc79d97c64d-20210705-68948-de7g1y-0.yaml
+- job=/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-ext4-syscalls-03-ucode=0xe2-debian-10.4-x86_64-20200603.cgz-cfc6d026063ed144c3413870e09cb210253d333d-20210706-59955-1wcpk65-0.yaml
 - ARCH=x86_64
 - kconfig=x86_64-rhel-8.3
-- branch=linux-devel/devel-hourly-20210704-040033
-- commit=1c35b07e6d3986474e5635be566e7bc79d97c64d
-- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/vmlinuz-5.13.0-rc6-00076-g1c35b07e6d39
+- branch=linux-devel/devel-hourly-20210705-104849
+- commit=cfc6d026063ed144c3413870e09cb210253d333d
+- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/vmlinuz-5.13.0-rc1-00058-gcfc6d026063e
 - max_uptime=2100
-- RESULT_ROOT=/result/ltp/1HDD-ext4-dio-01-ucode=0xe2/lkp-skl-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/0
+- RESULT_ROOT=/result/ltp/1HDD-ext4-syscalls-03-ucode=0xe2/lkp-skl-d02/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/0
 - LKP_SERVER=internal-lkp-server
 - nokaslr
 - selinux=0
@@ -7321,20 +20420,32 @@ bootloader_append:
 - console=ttyS0,115200
 - vga=normal
 - rw
-modules_initrd: "/pkg/linux/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/modules.cgz"
+modules_initrd: "/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/modules.cgz"
 bm_initrd: "/osimage/deps/debian-10.4-x86_64-20200603.cgz/run-ipconfig_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/lkp_20201211.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/rsync-rootfs_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/fs_20200714.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/ltp_20210703.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/ltp-x86_64-14c1f76-1_20210703.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/hw_20200715.cgz"
 ucode_initrd: "/osimage/ucode/intel-ucode-20210222.cgz"
 lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
 site: inn
-:#! /lkp/lkp/.src-20210702-175843/include/site/inn:
+:#! /lkp/lkp/.src-20210705-113352/include/site/inn:
 LKP_CGI_PORT: 80
 LKP_CIFS_PORT: 139
 oom-killer:
 watchdog:
 :#! runtime status:
-last_kernel: 4.20.0
+last_kernel: 5.13.0-wt-ath-13147-g6e6ae6d740ad
 :#! user overrides:
-kernel: "/pkg/linux/x86_64-rhel-8.3/gcc-9/1c35b07e6d3986474e5635be566e7bc79d97c64d/vmlinuz-5.13.0-rc6-00076-g1c35b07e6d39"
-dequeue_time: 2021-07-05 12:16:37.651778324 +08:00
-:#! /lkp/lkp/.src-20210705-113352/include/site/inn:
-job_state: running
+kernel: "/pkg/linux/x86_64-rhel-8.3/gcc-9/cfc6d026063ed144c3413870e09cb210253d333d/vmlinuz-5.13.0-rc1-00058-gcfc6d026063e"
+dequeue_time: 2021-07-06 04:56:10.385380676 +08:00
+:#! /lkp/lkp/.src-20210705-194717/include/site/inn:
+job_state: finished
+loadavg: 2.24 0.86 0.32 2/207 4298
+start_time: '1636156472'
+end_time: '1636156544'
+version: "/lkp/lkp/.src-20210705-194750:1a7bed74:09d804841"
+-------------- next part --------------
+dmsetup remove_all
+wipefs -a --force /dev/sdb1
+mkfs -t ext4 -q -F /dev/sdb1
+mkdir -p /fs/sdb1
+mount -t ext4 /dev/sdb1 /fs/sdb1
+ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+./runltp -f syscalls-03 -d /fs/sdb1/tmpdir
