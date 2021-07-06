@@ -1,37 +1,48 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 6 Jul 2021 20:49:15 +0800
-Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
- exist
-In-Reply-To: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
-References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Tue,  6 Jul 2021 10:21:14 -0300
+Subject: [LTP] [PATCH] shmget02: fix EPERM test when RLIMIT_MEMLOCK is large
+ enough
+Message-ID: <20210706132114.204443-1-cascardo@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+shmget(..., SHM_HUGETLB) will not fail with EPERM if there is enough space
+for RLIMIT_MEMLOCK. If the limit is 0, it will fail with EPERM as expected
+when a not enough privileged user calls it.
 
-On Tue, Jul 6, 2021 at 6:59 PM Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-wrote:
+Set RLIMIT_MEMLOCK to 0 for all calls, as this is the only one which will
+fail because of that limit, unless we are talking about very old kernels
+(before 2.6.9).
 
-> It's unlikely, but still possible that some of them could be
-> created during the test as well, so the patch only checks
-> errno.
->
+Fixes: 4dc493b44a85 ("syscalls/shmget*: Convert into new api")
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+---
+ testcases/kernel/syscalls/ipc/shmget/shmget02.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks for fixing this, seems the msgget03 has this problem as well.
-https://github.com/linux-test-project/ltp/issues/842
-
-
-> Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
->
- Reviewed-by: Li Wang <liwang@redhat.com>
-
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+index 6be8d8157999..8857207cfd3d 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+@@ -64,6 +64,7 @@ static void do_test(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 	pid_t pid;
++	struct rlimit rl = { 0, 0 };
+ 
+ 	if (tc->exp_user == 0 && tc->exp_group == 0) {
+ 		TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
+@@ -78,6 +79,7 @@ static void do_test(unsigned int n)
+ 			SAFE_SETGID(pw->pw_gid);
+ 		}
+ 		SAFE_SETUID(pw->pw_uid);
++		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &rl);
+ 		TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
+ 			"shmget(%i, %lu, %i)", *tc->shmkey, tc->size, tc->flags);
+ 		exit(0);
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210706/d67fbe02/attachment.htm>
+2.30.2
+
