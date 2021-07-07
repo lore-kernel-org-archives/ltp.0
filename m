@@ -1,52 +1,95 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 7 Jul 2021 12:16:18 +0200
-Subject: [LTP] [PATCH] kill13, CVE-2018-10124: Reproduce INT_MIN negation
-In-Reply-To: <87a6my788m.fsf@suse.de>
-References: <20210707071838.27834-1-rpalethorpe@suse.com>
- <43e8b66b-04df-9c4f-c47b-aba13347b6d8@jv-coder.de>
- <6c665478-d831-9e3f-470c-8538a399e4f7@jv-coder.de> <87a6my788m.fsf@suse.de>
-Message-ID: <c67e4bc2-3159-d61d-0307-38e83e50ea24@jv-coder.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed,  7 Jul 2021 11:42:38 +0100
+Subject: [LTP] [PATCH v2] wait403: Reproduce undefined INT_MIN negation
+Message-ID: <20210707104238.16251-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
-
-On 7/7/2021 12:01 PM, Richard Palethorpe wrote:
-> Hello Joerg,
->
-> Joerg Vehlow <lkml@jv-coder.de> writes:
->
->> Hi,
->>
->> On 7/7/2021 10:35 AM, Joerg Vehlow wrote:
->>> Hi Richard,
->>>
->>> On 7/7/2021 9:18 AM, Richard Palethorpe via ltp wrote:
->>> Results in INT_MIN? What does this mean or did you meant to write
->>> results in ESRCH?
->>> Default negating int min in two's complement yields 0 (INT_MIN =
->>> b1000... and negating means inverting the first bit -> thus 0).
->> Nevermind... Just checked. Looks like somehow x86 keeps -INT_MIN.
->> Now I know what you mean with "results in INT_MIN"
->>
->> Joerg
-> Actually this seems to be expected unless the CPU takes action to prvent
-> it. As you invert all the bits then add one in two's complement. So
-> inverting results in INT_MAX then we add one and overflow back to
-> INT_MIN.
-Ahh yes totally had the wrong model of * -1 in my head... Of course it 
-is invert everything and add +1.
-That of course means -INT_MIN == INT_MIN.
-
->
-> It is undefined though so the CPU could decide to do something
-> else. OTOH it seems quite unlikely we will get anything other than
-> INT_MIN or INT_MAX. So I will set sig number to zero as you suggested
-> and we will just have to rely on UBSAN.
-With this change:
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 Acked-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+---
 
-J?rg
+V2:
+* Use INT_MIN
+* Add {} as tags sentinel
+
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/wait4/.gitignore |  1 +
+ testcases/kernel/syscalls/wait4/wait403.c  | 42 ++++++++++++++++++++++
+ 3 files changed, 44 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/wait4/wait403.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 98fe3c02e..128eaadd2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1663,6 +1663,7 @@ wait02 wait02
+ 
+ wait401 wait401
+ wait402 wait402
++wait403 wait403
+ 
+ waitpid01 waitpid01
+ waitpid02 waitpid02
+diff --git a/testcases/kernel/syscalls/wait4/.gitignore b/testcases/kernel/syscalls/wait4/.gitignore
+index 9313eb72c..577f73479 100644
+--- a/testcases/kernel/syscalls/wait4/.gitignore
++++ b/testcases/kernel/syscalls/wait4/.gitignore
+@@ -1,2 +1,3 @@
+ /wait401
+ /wait402
++/wait403
+diff --git a/testcases/kernel/syscalls/wait4/wait403.c b/testcases/kernel/syscalls/wait4/wait403.c
+new file mode 100644
+index 000000000..bbd240770
+--- /dev/null
++++ b/testcases/kernel/syscalls/wait4/wait403.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
++ */
++
++/*
++ * [Description]
++ *
++ * Check wait4(INT_MIN, ...) is not allowed. The pid is negated before
++ * searching for a group with that pid. Negating INT_MIN is not
++ * defined so UBSAN will be triggered if enabled. Also see kill13.
++ *
++ * If the bug is present, but UBSAN is not enabled, then it should
++ * result in ECHILD.
++ */
++
++#include <stdlib.h>
++#include <errno.h>
++#include <limits.h>
++#define _USE_BSD
++#include <sys/types.h>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	int status = 1;
++	struct rusage rusage;
++
++	TST_EXP_FAIL2(wait4(INT_MIN, &status, 0, &rusage), ESRCH,
++		      "wait4 fails with ESRCH");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "dd83c161fbcc"},
++		{}
++	}
++};
+-- 
+2.31.1
+
