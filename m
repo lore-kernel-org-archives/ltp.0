@@ -1,127 +1,39 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Wed, 7 Jul 2021 17:03:55 +0300
-Subject: [LTP] [PATCH] network/tc01.sh: Add a regression test for tc
- qdisc command
-In-Reply-To: <1625649746-11987-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1625649746-11987-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <50bca7a2-41f5-3eba-d1da-e8e12c883d22@bell-sw.com>
+Date: Wed, 7 Jul 2021 17:12:18 +0300
+Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
+ exist
+In-Reply-To: <60E50AB4.7050404@fujitsu.com>
+References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
+ <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
+ <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
+ <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
+ <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
+ <60E50AB4.7050404@fujitsu.com>
+Message-ID: <7c3f8681-b5c2-950a-34cb-c3d75344ff8e@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-On 07.07.2021 12:22, Yang Xu wrote:
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->  runtest/net.tcp_cmds                   |  1 +
->  testcases/network/tcp_cmds/tc/Makefile | 13 +++++++
->  testcases/network/tcp_cmds/tc/tc01.sh  | 51 ++++++++++++++++++++++++++
->  3 files changed, 65 insertions(+)
->  create mode 100644 testcases/network/tcp_cmds/tc/Makefile
->  create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
+On 07.07.2021 04:59, xuyang2018.jy@fujitsu.com wrote:
+> Hi Li, Alexey
+>> Alexey Kodanev <aleksei.kodanev@bell-sw.com
+>> <mailto:aleksei.kodanev@bell-sw.com>> wrote:
+>>
+>>
+>>     It's also possible that some resources will be freed during
+>>     the tests... perhaps, moving the loop to verify_*() is the
+>>     better option?
+>>
+>>
+>> Yes, good point, that would be more precise for ENOSPC testing.
+> AFAIK, ltp doesn't support parallel test now. I think parallel test 
+> maybe a future plan that is why we use docparase to collect each case's 
+> used resources(so we can convert many groups, like pid, memory, disk 
+> space..., then we can run pid group and memory groups test case parallelly).
 > 
-> diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
-> index db47dfd5b..7e142de11 100644
-> --- a/runtest/net.tcp_cmds
-> +++ b/runtest/net.tcp_cmds
-> @@ -12,6 +12,7 @@ netstat netstat01.sh
->  ping01 ping01.sh
->  ping02 ping02.sh
->  sendfile sendfile01.sh
-> +tc01 tc01.sh
->  tcpdump tcpdump01.sh
->  telnet telnet01.sh
->  iptables iptables01.sh
-> diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
-> new file mode 100644
-> index 000000000..60150a1ce
-> --- /dev/null
-> +++ b/testcases/network/tcp_cmds/tc/Makefile
-> @@ -0,0 +1,13 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2009, Cisco Systems Inc.
-> +# Ngie Cooper, July 2009
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_TARGETS		:= tc01.sh
-> +
-> +MAKE_TARGETS		:=
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
-> new file mode 100755
-> index 000000000..0a241843b
-> --- /dev/null
-> +++ b/testcases/network/tcp_cmds/tc/tc01.sh
-> @@ -0,0 +1,51 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-> +# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
-> +#
-> +# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
-> +# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
-> +# because both devices are teql0, and it does not set qdisc_priv(sch)->m
-> +# leaving it zero on error path, then qdisc_create() imediately calls
-> +# teql_destroy() which does not expect zero master pointer and we get OOPS
-> +# on unpatched kernel.
-> +#
-> +# If we enable panic_on_oops, this case may crash.
-> +#
-> +# This kernel bug was introduced by
-> +# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
-> +# and has been fixed by
-> +# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
-> +#
-> +
-> +TST_TESTFUNC="do_test"
-> +TST_NEEDS_ROOT=1
-> +TST_NEEDS_DRIVERS="sch_teql"
-> +TST_NEEDS_CMDS="tc modprobe"
-> +sys_file="/proc/sys/kernel/panic_on_oops"
-> +. tst_test.sh
-> +
-> +do_test()
-> +{
-> +	[ ! -f "$sys_file" ] && tst_brk TCONF "$sys_file not enabled"
+> This is my understanding. If wrong, please correct me.
 
-Why this check is needed and also setting panic_on_oops to
-trigger the bug? If not, I would suggest to remove them from
-the test.
-
-> +	orig_value=$(cat "$sys_file")
-> +	if [ $orig_value = "0" ]; then
-> +		echo 1 > $sys_file
-> +	fi
-> +
-> +	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
-> +	modprobe $TST_NEEDS_DRIVERS
-
-setup()
-{
-	ROD modprobe $TST_NEEDS_DRIVERS
-}
-
-> +
-> +	tc qdisc add dev teql0 root teql0 2>/dev/null
-
-TST_EXP_FAIL tc qdisc add dev teql0 root teql0
-
-> +	if [ $? -eq 0 ]; then
-> +		tst_res TFAIL "tc qdisc command succeeded unexpectedly"
-> +	else
-> +		tst_res TPASS "the bug was not reproduced"
-> +	fi
-> +
-> +	if [ $orig_value = "0" ]; then
-> +		 echo 0 > $sys_file
-> +	fi
-> +}
-> +
-> +tst_run
->
+The problem is that these shared resources might be acquired/released
+not only by ltp tests. And changing limits in proc is not the same...
