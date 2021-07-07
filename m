@@ -1,42 +1,41 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Wed, 7 Jul 2021 01:59:49 +0000
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 7 Jul 2021 10:21:02 +0800
 Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
  exist
-In-Reply-To: <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
+In-Reply-To: <60E50890.9040903@fujitsu.com>
 References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
  <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
  <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
  <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
- <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
-Message-ID: <60E50AB4.7050404@fujitsu.com>
+ <60E50890.9040903@fujitsu.com>
+Message-ID: <CAEemH2fKXJmgKAr4JXW5y+dcgEwL1taobXLY7OdTWBzLXGVOYg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Alexey
-> Alexey Kodanev <aleksei.kodanev@bell-sw.com
-> <mailto:aleksei.kodanev@bell-sw.com>> wrote:
->
->
->     It's also possible that some resources will be freed during
->     the tests... perhaps, moving the loop to verify_*() is the
->     better option?
->
->
-> Yes, good point, that would be more precise for ENOSPC testing.
-AFAIK, ltp doesn't support parallel test now. I think parallel test 
-maybe a future plan that is why we use docparase to collect each case's 
-used resources(so we can convert many groups, like pid, memory, disk 
-space..., then we can run pid group and memory groups test case parallelly).
+Hi Xu,
 
-This is my understanding. If wrong, please correct me.
+xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com> wrote:
 
-Best Regards
-Yang Xu
+
+> If we use this old format, then we can not ensure whether we trigger the
+> ENOSPC errer correctly when reaching the expected nums.
 >
+> So to avoid the existed memory segments error, I think we should alter
+> get_used_queus api to count the existed  memory segments by adding a
+> file argument.
 >
-> --
-> Regards,
-> Li Wang
+
+Just as Alex pointed, if there are some resources be freed after invoking
+get_used_queus, then the value of existed_cnt will be imprecise, how do
+you think that affects the test result?
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210707/4126b872/attachment.htm>
