@@ -1,59 +1,100 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 7 Jul 2021 09:21:43 +0200
-Subject: [LTP] [PATCH] ltp_tpci.c: Add release operation before
- allocation
-In-Reply-To: <34bbe196-515c-f4f3-6d1c-5c9f1221e52a@canonical.com>
-References: <20210401125127.45600-1-wangxin410@huawei.com>
- <YNoxKg+Hm0qa3Z70@pevik> <fd26cf45-7dd8-004f-3d41-422ce4d9bbdb@canonical.com>
- <34bbe196-515c-f4f3-6d1c-5c9f1221e52a@canonical.com>
-Message-ID: <ca6ecb17-c1b4-0d8a-a3c4-dc5e8e2bd275@canonical.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 07 Jul 2021 08:52:03 +0100
+Subject: [LTP] [PATCH] wait403: Reproduce undefined INT_MIN negation
+In-Reply-To: <20210706142325.11347-1-rpalethorpe@suse.com>
+References: <20210706142325.11347-1-rpalethorpe@suse.com>
+Message-ID: <87im1m7e8s.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07/07/2021 09:04, Krzysztof Kozlowski wrote:
-> On 29/06/2021 11:38, Krzysztof Kozlowski wrote:
->> On 28/06/2021 22:29, Petr Vorel wrote:
->>> Hi Xin,
->>>
->>>> When we run the test case, the following results will be obtained:
->>>> test_pci  283  TPASS  :  PCI bus 7d slot 00 : Test-case '11'
->>>> test_pci  284  TFAIL  :  tpci.c:74: PCI bus 7d slot 00 : Test-case '12'
->>>> ...
->>>> test_pci  300  TFAIL  :  tpci.c:74: PCI bus 7d slot 01 : Test-case '12'
->>>> test_pci  301  TPASS  :  PCI bus 7d slot 01 : Test-case '13'
->>>
->>>> The analysis is that the space allocated by the bios is insufficient.
->>>> The solution to this problem can be in add pci_release_resource(dev, i)
->>>> before system resources are reallocated.Because the resources have been
->>>> allocated when the system is initialized.If it is redistributed, it
->>>> should be released and then allocated.
->>>
->>> I wonder if this is the same issue as the one described by Krzysztof in his
->>> patch:
->>> https://patchwork.ozlabs.org/project/ltp/patch/20210401125127.45600-1-wangxin410@huawei.com/
->>>
->>> Could you please share what HW and kernel you use and post dmesg?
->>
->> This solves my problem. It seems that could be the root cause - early
->> configuration allocated too small resource? It might be also some
->> specific BIOS issue (wrong resource allocated?) because in case of
->> resource assignment failure, the kernel should try to get the original
->> FW address from BIOS (pcibios_retrieve_fw_addr()) and this apparently
->> returns NULL translated to -ENOMEM.
->>
->> I am fine with going with this patch instead of mine.
->>
-> 
-> Is there anything stopping Xin's patch from being applied? LGTM:
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
 
-Oh, I see what's wrong with the patch - it's corrupted, not possible to
-apply.
+Richard Palethorpe <rpalethorpe@suse.com> writes:
 
-Best regards,
-Krzysztof
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+Fixes: https://github.com/linux-test-project/ltp/issues/322
+
+> ---
+>  runtest/syscalls                           |  1 +
+>  testcases/kernel/syscalls/wait4/.gitignore |  1 +
+>  testcases/kernel/syscalls/wait4/wait403.c  | 40 ++++++++++++++++++++++
+>  3 files changed, 42 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/wait4/wait403.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 98fe3c02e..128eaadd2 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1663,6 +1663,7 @@ wait02 wait02
+>  
+>  wait401 wait401
+>  wait402 wait402
+> +wait403 wait403
+>  
+>  waitpid01 waitpid01
+>  waitpid02 waitpid02
+> diff --git a/testcases/kernel/syscalls/wait4/.gitignore b/testcases/kernel/syscalls/wait4/.gitignore
+> index 9313eb72c..577f73479 100644
+> --- a/testcases/kernel/syscalls/wait4/.gitignore
+> +++ b/testcases/kernel/syscalls/wait4/.gitignore
+> @@ -1,2 +1,3 @@
+>  /wait401
+>  /wait402
+> +/wait403
+> diff --git a/testcases/kernel/syscalls/wait4/wait403.c b/testcases/kernel/syscalls/wait4/wait403.c
+> new file mode 100644
+> index 000000000..262351b7c
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/wait4/wait403.c
+> @@ -0,0 +1,40 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
+> + */
+> +
+> +/*
+> + * [Description]
+> + *
+> + * Check wait4(INT_MIN, ...) is not allowed. The pid is negated before
+> + * searching for a group with that pid. Negating INT_MIN is not
+> + * defined so UBSAN will be triggered if enabled.
+> + *
+> + * If the bug is present, but UBSAN is not enabled, then it should
+> + * result in ECHILD.
+> + */
+> +
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#define _USE_BSD
+> +#include <sys/types.h>
+> +#include <sys/resource.h>
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+> +
+> +static void run(void)
+> +{
+> +	int status = 1;
+> +	struct rusage rusage;
+> +
+> +	TST_EXP_FAIL2(wait4(-2147483648, &status, 0, &rusage), ESRCH,
+> +		      "wait4 fails with ESRCH");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "dd83c161fbcc"},
+
+Possibly needs {}
+
+> +	}
+> +};
+
+
+-- 
+Thank you,
+Richard.
