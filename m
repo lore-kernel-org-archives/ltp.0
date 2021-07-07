@@ -1,113 +1,127 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed,  7 Jul 2021 11:59:54 +0100
-Subject: [LTP] [PATCH v2] kill13, CVE-2018-10124: Reproduce INT_MIN negation
-Message-ID: <20210707105954.18182-1-rpalethorpe@suse.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Wed, 7 Jul 2021 17:03:55 +0300
+Subject: [LTP] [PATCH] network/tc01.sh: Add a regression test for tc
+ qdisc command
+In-Reply-To: <1625649746-11987-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1625649746-11987-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <50bca7a2-41f5-3eba-d1da-e8e12c883d22@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Acked-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
+Hi!
+On 07.07.2021 12:22, Yang Xu wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  runtest/net.tcp_cmds                   |  1 +
+>  testcases/network/tcp_cmds/tc/Makefile | 13 +++++++
+>  testcases/network/tcp_cmds/tc/tc01.sh  | 51 ++++++++++++++++++++++++++
+>  3 files changed, 65 insertions(+)
+>  create mode 100644 testcases/network/tcp_cmds/tc/Makefile
+>  create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
+> 
+> diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
+> index db47dfd5b..7e142de11 100644
+> --- a/runtest/net.tcp_cmds
+> +++ b/runtest/net.tcp_cmds
+> @@ -12,6 +12,7 @@ netstat netstat01.sh
+>  ping01 ping01.sh
+>  ping02 ping02.sh
+>  sendfile sendfile01.sh
+> +tc01 tc01.sh
+>  tcpdump tcpdump01.sh
+>  telnet telnet01.sh
+>  iptables iptables01.sh
+> diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
+> new file mode 100644
+> index 000000000..60150a1ce
+> --- /dev/null
+> +++ b/testcases/network/tcp_cmds/tc/Makefile
+> @@ -0,0 +1,13 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (C) 2009, Cisco Systems Inc.
+> +# Ngie Cooper, July 2009
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= tc01.sh
+> +
+> +MAKE_TARGETS		:=
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
+> new file mode 100755
+> index 000000000..0a241843b
+> --- /dev/null
+> +++ b/testcases/network/tcp_cmds/tc/tc01.sh
+> @@ -0,0 +1,51 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+> +# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
+> +#
+> +# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
+> +# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
+> +# because both devices are teql0, and it does not set qdisc_priv(sch)->m
+> +# leaving it zero on error path, then qdisc_create() imediately calls
+> +# teql_destroy() which does not expect zero master pointer and we get OOPS
+> +# on unpatched kernel.
+> +#
+> +# If we enable panic_on_oops, this case may crash.
+> +#
+> +# This kernel bug was introduced by
+> +# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
+> +# and has been fixed by
+> +# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
+> +#
+> +
+> +TST_TESTFUNC="do_test"
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_DRIVERS="sch_teql"
+> +TST_NEEDS_CMDS="tc modprobe"
+> +sys_file="/proc/sys/kernel/panic_on_oops"
+> +. tst_test.sh
+> +
+> +do_test()
+> +{
+> +	[ ! -f "$sys_file" ] && tst_brk TCONF "$sys_file not enabled"
 
-V2:
-* Add more explanation
-* Set signal to 0
-* Require signed overflow detection in the kernel
+Why this check is needed and also setting panic_on_oops to
+trigger the bug? If not, I would suggest to remove them from
+the test.
 
- runtest/cve                               |  1 +
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/kill/.gitignore |  1 +
- testcases/kernel/syscalls/kill/kill13.c   | 45 +++++++++++++++++++++++
- 4 files changed, 48 insertions(+)
- create mode 100644 testcases/kernel/syscalls/kill/kill13.c
+> +	orig_value=$(cat "$sys_file")
+> +	if [ $orig_value = "0" ]; then
+> +		echo 1 > $sys_file
+> +	fi
+> +
+> +	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
+> +	modprobe $TST_NEEDS_DRIVERS
 
-diff --git a/runtest/cve b/runtest/cve
-index 5a6ef966d..226b5ea44 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -49,6 +49,7 @@ cve-2018-5803 sctp_big_chunk
- cve-2018-7566 snd_seq01
- cve-2018-8897 ptrace09
- cve-2018-9568 connect02
-+cve-2018-10124 kill13
- cve-2018-1000001 realpath01
- cve-2018-1000199 ptrace08
- cve-2018-1000204 ioctl_sg01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 98fe3c02e..0c1e16f9e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -644,6 +644,7 @@ kill09 kill09
- kill10 kill10
- kill11 kill11
- kill12 kill12
-+kill13 kill13
- 
- lchown01 lchown01
- lchown01_16 lchown01_16
-diff --git a/testcases/kernel/syscalls/kill/.gitignore b/testcases/kernel/syscalls/kill/.gitignore
-index 75fdaa561..810ed0200 100644
---- a/testcases/kernel/syscalls/kill/.gitignore
-+++ b/testcases/kernel/syscalls/kill/.gitignore
-@@ -8,3 +8,4 @@
- /kill10
- /kill11
- /kill12
-+/kill13
-diff --git a/testcases/kernel/syscalls/kill/kill13.c b/testcases/kernel/syscalls/kill/kill13.c
-new file mode 100644
-index 000000000..66ae37bc0
---- /dev/null
-+++ b/testcases/kernel/syscalls/kill/kill13.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Reproducer of CVE-2018-10124; INT_MIN negation.
-+ *
-+ * On most two's complement CPUs negation of INT_MIN will result in
-+ * INT_MIN because ~((unsigned)INT_MIN) + 1 overflows to INT_MIN
-+ * (unless trapped). On one's complement ~((unsigned)INT_MIN) = INT_MAX.
-+ *
-+ * Without UBSAN kill will always return ESRCH. Regardless of if the
-+ * bug is present as INT_MIN/INT_MAX are invalid PIDs. It checks the
-+ * PID before the signal number so we can not cause EINVAL. A trivial
-+ * test of kill is performed elsewhere. So we don't run the test
-+ * without UBSAN to avoid giving the impression we have actually
-+ * tested for the bug.
-+ */
-+
-+#include <limits.h>
-+#include <signal.h>
-+#include "tst_test.h"
-+
-+static void run(void)
-+{
-+	TST_EXP_FAIL2(kill(INT_MIN, 0), ESRCH,
-+		      "kill(INT_MIN, ...) fails with ESRCH");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_UBSAN_SIGNED_OVERFLOW",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "4ea77014af0d"},
-+		{"CVE", "CVE-2018-10124"},
-+		{}
-+	}
-+};
--- 
-2.31.1
+setup()
+{
+	ROD modprobe $TST_NEEDS_DRIVERS
+}
 
+> +
+> +	tc qdisc add dev teql0 root teql0 2>/dev/null
+
+TST_EXP_FAIL tc qdisc add dev teql0 root teql0
+
+> +	if [ $? -eq 0 ]; then
+> +		tst_res TFAIL "tc qdisc command succeeded unexpectedly"
+> +	else
+> +		tst_res TPASS "the bug was not reproduced"
+> +	fi
+> +
+> +	if [ $orig_value = "0" ]; then
+> +		 echo 0 > $sys_file
+> +	fi
+> +}
+> +
+> +tst_run
+>
