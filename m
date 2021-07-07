@@ -1,41 +1,57 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 7 Jul 2021 10:21:02 +0800
-Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
- exist
-In-Reply-To: <60E50890.9040903@fujitsu.com>
-References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
- <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
- <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
- <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
- <60E50890.9040903@fujitsu.com>
-Message-ID: <CAEemH2fKXJmgKAr4JXW5y+dcgEwL1taobXLY7OdTWBzLXGVOYg@mail.gmail.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Wed, 7 Jul 2021 02:36:21 +0000
+Subject: [LTP] [PATCH] shmget02: fix EPERM test when RLIMIT_MEMLOCK is
+ large enough
+In-Reply-To: <20210706132114.204443-1-cascardo@canonical.com>
+References: <20210706132114.204443-1-cascardo@canonical.com>
+Message-ID: <60E51347.5000209@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
-
-xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com> wrote:
-
-
-> If we use this old format, then we can not ensure whether we trigger the
-> ENOSPC errer correctly when reaching the expected nums.
+Hi Thadeu
+> shmget(..., SHM_HUGETLB) will not fail with EPERM if there is enough space
+> for RLIMIT_MEMLOCK. If the limit is 0, it will fail with EPERM as expected
+> when a not enough privileged user calls it.
 >
-> So to avoid the existed memory segments error, I think we should alter
-> get_used_queus api to count the existed  memory segments by adding a
-> file argument.
+> Set RLIMIT_MEMLOCK to 0 for all calls, as this is the only one which will
+> fail because of that limit, unless we are talking about very old kernels
+> (before 2.6.9).
 >
+> Fixes: 4dc493b44a85 ("syscalls/shmget*: Convert into new api")
+> Signed-off-by: Thadeu Lima de Souza Cascardo<cascardo@canonical.com>
+Thanks for the fix!
+Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 
-Just as Alex pointed, if there are some resources be freed after invoking
-get_used_queus, then the value of existed_cnt will be imprecise, how do
-you think that affects the test result?
+just a small nit: Since a child process created via fork(2) inherits its 
+parent's resource limits. I prefer to move it to setup function, so we 
+don't need to set it in each sub case.
 
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210707/4126b872/attachment.htm>
+Best Regards
+Yang Xu
+> ---
+>   testcases/kernel/syscalls/ipc/shmget/shmget02.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> index 6be8d8157999..8857207cfd3d 100644
+> --- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> @@ -64,6 +64,7 @@ static void do_test(unsigned int n)
+>   {
+>   	struct tcase *tc =&tcases[n];
+>   	pid_t pid;
+> +	struct rlimit rl = { 0, 0 };
+>
+>   	if (tc->exp_user == 0&&  tc->exp_group == 0) {
+>   		TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
+> @@ -78,6 +79,7 @@ static void do_test(unsigned int n)
+>   			SAFE_SETGID(pw->pw_gid);
+>   		}
+>   		SAFE_SETUID(pw->pw_uid);
+> +		SAFE_SETRLIMIT(RLIMIT_MEMLOCK,&rl);
+>   		TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
+>   			"shmget(%i, %lu, %i)", *tc->shmkey, tc->size, tc->flags);
+>   		exit(0);
