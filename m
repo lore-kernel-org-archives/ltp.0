@@ -1,9 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 07 Jul 2021 08:52:03 +0100
-Subject: [LTP] [PATCH] wait403: Reproduce undefined INT_MIN negation
-In-Reply-To: <20210706142325.11347-1-rpalethorpe@suse.com>
-References: <20210706142325.11347-1-rpalethorpe@suse.com>
-Message-ID: <87im1m7e8s.fsf@suse.de>
+Date: Wed, 07 Jul 2021 08:52:43 +0100
+Subject: [LTP] [PATCH] kill13, CVE-2018-10124: Reproduce INT_MIN negation
+In-Reply-To: <20210707071838.27834-1-rpalethorpe@suse.com>
+References: <20210707071838.27834-1-rpalethorpe@suse.com>
+Message-ID: <87fswq7e7o.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,82 +15,88 @@ Richard Palethorpe <rpalethorpe@suse.com> writes:
 
 > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-Fixes: https://github.com/linux-test-project/ltp/issues/322
+Fixes: https://github.com/linux-test-project/ltp/issues/323
 
 > ---
->  runtest/syscalls                           |  1 +
->  testcases/kernel/syscalls/wait4/.gitignore |  1 +
->  testcases/kernel/syscalls/wait4/wait403.c  | 40 ++++++++++++++++++++++
->  3 files changed, 42 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/wait4/wait403.c
+>  runtest/cve                               |  1 +
+>  runtest/syscalls                          |  1 +
+>  testcases/kernel/syscalls/kill/.gitignore |  1 +
+>  testcases/kernel/syscalls/kill/kill13.c   | 35 +++++++++++++++++++++++
+>  4 files changed, 38 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/kill/kill13.c
 >
+> diff --git a/runtest/cve b/runtest/cve
+> index 5a6ef966d..226b5ea44 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -49,6 +49,7 @@ cve-2018-5803 sctp_big_chunk
+>  cve-2018-7566 snd_seq01
+>  cve-2018-8897 ptrace09
+>  cve-2018-9568 connect02
+> +cve-2018-10124 kill13
+>  cve-2018-1000001 realpath01
+>  cve-2018-1000199 ptrace08
+>  cve-2018-1000204 ioctl_sg01
 > diff --git a/runtest/syscalls b/runtest/syscalls
-> index 98fe3c02e..128eaadd2 100644
+> index 98fe3c02e..0c1e16f9e 100644
 > --- a/runtest/syscalls
 > +++ b/runtest/syscalls
-> @@ -1663,6 +1663,7 @@ wait02 wait02
+> @@ -644,6 +644,7 @@ kill09 kill09
+>  kill10 kill10
+>  kill11 kill11
+>  kill12 kill12
+> +kill13 kill13
 >  
->  wait401 wait401
->  wait402 wait402
-> +wait403 wait403
->  
->  waitpid01 waitpid01
->  waitpid02 waitpid02
-> diff --git a/testcases/kernel/syscalls/wait4/.gitignore b/testcases/kernel/syscalls/wait4/.gitignore
-> index 9313eb72c..577f73479 100644
-> --- a/testcases/kernel/syscalls/wait4/.gitignore
-> +++ b/testcases/kernel/syscalls/wait4/.gitignore
-> @@ -1,2 +1,3 @@
->  /wait401
->  /wait402
-> +/wait403
-> diff --git a/testcases/kernel/syscalls/wait4/wait403.c b/testcases/kernel/syscalls/wait4/wait403.c
+>  lchown01 lchown01
+>  lchown01_16 lchown01_16
+> diff --git a/testcases/kernel/syscalls/kill/.gitignore b/testcases/kernel/syscalls/kill/.gitignore
+> index 75fdaa561..810ed0200 100644
+> --- a/testcases/kernel/syscalls/kill/.gitignore
+> +++ b/testcases/kernel/syscalls/kill/.gitignore
+> @@ -8,3 +8,4 @@
+>  /kill10
+>  /kill11
+>  /kill12
+> +/kill13
+> diff --git a/testcases/kernel/syscalls/kill/kill13.c b/testcases/kernel/syscalls/kill/kill13.c
 > new file mode 100644
-> index 000000000..262351b7c
+> index 000000000..b5afb653f
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/wait4/wait403.c
-> @@ -0,0 +1,40 @@
+> +++ b/testcases/kernel/syscalls/kill/kill13.c
+> @@ -0,0 +1,35 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
-> + * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
+> + * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
 > + */
 > +
-> +/*
+> +/*\
 > + * [Description]
 > + *
-> + * Check wait4(INT_MIN, ...) is not allowed. The pid is negated before
-> + * searching for a group with that pid. Negating INT_MIN is not
-> + * defined so UBSAN will be triggered if enabled.
+> + * Reproducer of CVE-2018-10124; INT_MIN negation.
 > + *
-> + * If the bug is present, but UBSAN is not enabled, then it should
-> + * result in ECHILD.
+> + * Most likely this test will always pass without UBSAN
+> + * enabled. Perhaps unless negating INT_MIN results in -1 or
+> + * 0. However on my computer it just results in INT_MIN.
+> + *
 > + */
 > +
-> +#include <stdlib.h>
-> +#include <errno.h>
-> +#define _USE_BSD
-> +#include <sys/types.h>
-> +#include <sys/resource.h>
-> +#include <sys/wait.h>
+> +#include <limits.h>
+> +#include <signal.h>
 > +#include "tst_test.h"
 > +
 > +static void run(void)
 > +{
-> +	int status = 1;
-> +	struct rusage rusage;
-> +
-> +	TST_EXP_FAIL2(wait4(-2147483648, &status, 0, &rusage), ESRCH,
-> +		      "wait4 fails with ESRCH");
+> +	TST_EXP_FAIL2(kill(INT_MIN, 1000), ESRCH,
+> +		      "kill(INT_MIN, ...) fails with ESRCH");
 > +}
 > +
 > +static struct tst_test test = {
 > +	.test_all = run,
 > +	.taint_check = TST_TAINT_W | TST_TAINT_D,
 > +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "dd83c161fbcc"},
-
-Possibly needs {}
-
+> +		{"linux-git", "4ea77014af0d"},
+> +		{"CVE", "CVE-2018-10124"},
+> +		{}
 > +	}
 > +};
 
