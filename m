@@ -1,111 +1,113 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Wed, 7 Jul 2021 17:22:26 +0800
-Subject: [LTP] [PATCH] network/tc01.sh: Add a regression test for tc qdisc
- command
-Message-ID: <1625649746-11987-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 07 Jul 2021 10:42:55 +0100
+Subject: [LTP] [PATCH] wait403: Reproduce undefined INT_MIN negation
+In-Reply-To: <ce948ff6-4115-338c-7990-d27df8658534@jv-coder.de>
+References: <20210706142325.11347-1-rpalethorpe@suse.com>
+ <ce948ff6-4115-338c-7990-d27df8658534@jv-coder.de>
+Message-ID: <87czru7940.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/net.tcp_cmds                   |  1 +
- testcases/network/tcp_cmds/tc/Makefile | 13 +++++++
- testcases/network/tcp_cmds/tc/tc01.sh  | 51 ++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
- create mode 100644 testcases/network/tcp_cmds/tc/Makefile
- create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
+Hello Joerg,
 
-diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
-index db47dfd5b..7e142de11 100644
---- a/runtest/net.tcp_cmds
-+++ b/runtest/net.tcp_cmds
-@@ -12,6 +12,7 @@ netstat netstat01.sh
- ping01 ping01.sh
- ping02 ping02.sh
- sendfile sendfile01.sh
-+tc01 tc01.sh
- tcpdump tcpdump01.sh
- telnet telnet01.sh
- iptables iptables01.sh
-diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
-new file mode 100644
-index 000000000..60150a1ce
---- /dev/null
-+++ b/testcases/network/tcp_cmds/tc/Makefile
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2009, Cisco Systems Inc.
-+# Ngie Cooper, July 2009
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= tc01.sh
-+
-+MAKE_TARGETS		:=
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
-new file mode 100755
-index 000000000..0a241843b
---- /dev/null
-+++ b/testcases/network/tcp_cmds/tc/tc01.sh
-@@ -0,0 +1,51 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-+# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
-+#
-+# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
-+# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
-+# because both devices are teql0, and it does not set qdisc_priv(sch)->m
-+# leaving it zero on error path, then qdisc_create() imediately calls
-+# teql_destroy() which does not expect zero master pointer and we get OOPS
-+# on unpatched kernel.
-+#
-+# If we enable panic_on_oops, this case may crash.
-+#
-+# This kernel bug was introduced by
-+# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
-+# and has been fixed by
-+# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
-+#
-+
-+TST_TESTFUNC="do_test"
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_DRIVERS="sch_teql"
-+TST_NEEDS_CMDS="tc modprobe"
-+sys_file="/proc/sys/kernel/panic_on_oops"
-+. tst_test.sh
-+
-+do_test()
-+{
-+	[ ! -f "$sys_file" ] && tst_brk TCONF "$sys_file not enabled"
-+	orig_value=$(cat "$sys_file")
-+	if [ $orig_value = "0" ]; then
-+		echo 1 > $sys_file
-+	fi
-+
-+	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
-+	modprobe $TST_NEEDS_DRIVERS
-+
-+	tc qdisc add dev teql0 root teql0 2>/dev/null
-+	if [ $? -eq 0 ]; then
-+		tst_res TFAIL "tc qdisc command succeeded unexpectedly"
-+	else
-+		tst_res TPASS "the bug was not reproduced"
-+	fi
-+
-+	if [ $orig_value = "0" ]; then
-+		 echo 0 > $sys_file
-+	fi
-+}
-+
-+tst_run
+Joerg Vehlow <lkml@jv-coder.de> writes:
+
+> Hi Richard,
+>
+> On 7/6/2021 4:23 PM, Richard Palethorpe via ltp wrote:
+>> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>> ---
+>>   runtest/syscalls                           |  1 +
+>>   testcases/kernel/syscalls/wait4/.gitignore |  1 +
+>>   testcases/kernel/syscalls/wait4/wait403.c  | 40 ++++++++++++++++++++++
+>>   3 files changed, 42 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/wait4/wait403.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 98fe3c02e..128eaadd2 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -1663,6 +1663,7 @@ wait02 wait02
+>>     wait401 wait401
+>>   wait402 wait402
+>> +wait403 wait403
+>>     waitpid01 waitpid01
+>>   waitpid02 waitpid02
+>> diff --git a/testcases/kernel/syscalls/wait4/.gitignore b/testcases/kernel/syscalls/wait4/.gitignore
+>> index 9313eb72c..577f73479 100644
+>> --- a/testcases/kernel/syscalls/wait4/.gitignore
+>> +++ b/testcases/kernel/syscalls/wait4/.gitignore
+>> @@ -1,2 +1,3 @@
+>>   /wait401
+>>   /wait402
+>> +/wait403
+>> diff --git a/testcases/kernel/syscalls/wait4/wait403.c b/testcases/kernel/syscalls/wait4/wait403.c
+>> new file mode 100644
+>> index 000000000..262351b7c
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/wait4/wait403.c
+>> @@ -0,0 +1,40 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
+>> + */
+>> +
+>> +/*
+>> + * [Description]
+>> + *
+>> + * Check wait4(INT_MIN, ...) is not allowed. The pid is negated before
+>> + * searching for a group with that pid. Negating INT_MIN is not
+>> + * defined so UBSAN will be triggered if enabled.
+>> + *
+>> + * If the bug is present, but UBSAN is not enabled, then it should
+>> + * result in ECHILD.
+>> + */
+>> +
+>> +#include <stdlib.h>
+>> +#include <errno.h>
+>> +#define _USE_BSD
+>> +#include <sys/types.h>
+>> +#include <sys/resource.h>
+>> +#include <sys/wait.h>
+>> +#include "tst_test.h"
+>> +
+>> +static void run(void)
+>> +{
+>> +	int status = 1;
+>> +	struct rusage rusage;
+>> +
+>> +	TST_EXP_FAIL2(wait4(-2147483648, &status, 0, &rusage), ESRCH,
+>> +		      "wait4 fails with ESRCH");
+> Could this use INT_MIN instead of the literal value? If not a comment
+> would be nice, especially because there is already wait4(INT_MIN, ...) 
+> in the description.
+
+OK, I will roll another patch.
+
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = run,
+>> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
+>> +	.tags = (const struct tst_tag[]) {
+>> +		{"linux-git", "dd83c161fbcc"},
+>> +	}
+>> +};
+>
+> Otherwise:
+>
+> Acked-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+
+Thanks.
+
+>
+>
+> Joerg
+
+
 -- 
-2.23.0
-
+Thank you,
+Richard.
