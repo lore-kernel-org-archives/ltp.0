@@ -1,66 +1,51 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 8 Jul 2021 03:20:00 +0000
-Subject: [LTP] [PATCH] shmget02: fix EPERM test when RLIMIT_MEMLOCK is
- large enough
-In-Reply-To: <60E51347.5000209@fujitsu.com>
-References: <20210706132114.204443-1-cascardo@canonical.com>
- <60E51347.5000209@fujitsu.com>
-Message-ID: <60E66F04.4090406@fujitsu.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Thu, 8 Jul 2021 07:26:55 +0200
+Subject: [LTP] [PATCH v2 3/4] fs_bind: Convert cloneNS tests
+In-Reply-To: <20210706120434.867426-4-lkml@jv-coder.de>
+References: <20210706120434.867426-1-lkml@jv-coder.de>
+ <20210706120434.867426-4-lkml@jv-coder.de>
+Message-ID: <d862f662-c06a-74d2-5e2d-8cd7a1e77a49@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with moving this into setup, thanks.
+Hi,
 
-Best Regards
-Yang Xu
-> Hi Thadeu
->> shmget(..., SHM_HUGETLB) will not fail with EPERM if there is enough
->> space
->> for RLIMIT_MEMLOCK. If the limit is 0, it will fail with EPERM as
->> expected
->> when a not enough privileged user calls it.
->>
->> Set RLIMIT_MEMLOCK to 0 for all calls, as this is the only one which will
->> fail because of that limit, unless we are talking about very old kernels
->> (before 2.6.9).
->>
->> Fixes: 4dc493b44a85 ("syscalls/shmget*: Convert into new api")
->> Signed-off-by: Thadeu Lima de Souza Cascardo<cascardo@canonical.com>
-> Thanks for the fix!
-> Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+please do not merge, I found a bug in the code
+
+On 7/6/2021 2:04 PM, Joerg Vehlow wrote:
+> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 >
-> just a small nit: Since a child process created via fork(2) inherits its
-> parent's resource limits. I prefer to move it to setup function, so we
-> don't need to set it in each sub case.
->
-> Best Regards
-> Yang Xu
->> ---
->> testcases/kernel/syscalls/ipc/shmget/shmget02.c | 2 ++
->> 1 file changed, 2 insertions(+)
->>
->> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
->> b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
->> index 6be8d8157999..8857207cfd3d 100644
->> --- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
->> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
->> @@ -64,6 +64,7 @@ static void do_test(unsigned int n)
->> {
->> struct tcase *tc =&tcases[n];
->> pid_t pid;
->> + struct rlimit rl = { 0, 0 };
->>
->> if (tc->exp_user == 0&& tc->exp_group == 0) {
->> TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
->> @@ -78,6 +79,7 @@ static void do_test(unsigned int n)
->> SAFE_SETGID(pw->pw_gid);
->> }
->> SAFE_SETUID(pw->pw_uid);
->> + SAFE_SETRLIMIT(RLIMIT_MEMLOCK,&rl);
->> TST_EXP_FAIL2(shmget(*tc->shmkey, tc->size, tc->flags), tc->exp_err,
->> "shmget(%i, %lu, %i)", *tc->shmkey, tc->size, tc->flags);
->> exit(0);
+> diff --git a/testcases/kernel/fs/fs_bind/fs_bind_lib.sh b/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
+> index b644ef512..94e94024c 100644
+> --- a/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
+> +++ b/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
+> @@ -28,6 +28,8 @@ FS_BIND_DISK2="disk2"
+>   FS_BIND_DISK3="disk3"
+>   FS_BIND_DISK4="disk4"
+>   
+> +FS_BIND_MNTNS_PID=
+> +
+>   # Creates a directory and bind-mounts it to itself.
+>   # usage: fs_bind_makedir share_mode directory
+>   # where
+> @@ -68,16 +70,23 @@ fs_bind_makedir()
+>   #              If -n is given, only two directories are allowed.
+>   fs_bind_check()
+>   {
+> -	local expect_diff args msg dir1 dir2 fail output
+> +	local expect_diff use_ns args msg dir1 dir2 fail output
+>   	expect_diff=0
+> -	while getopts "n" args; do
+> +	use_ns=0
+> +	while getopts "ns" args; do
+>   		case "$args" in
+>   		n) expect_diff=1; shift; ;;
+> +		s) use_ns=1; shift; ;;
+>   		esac
+>   	done
+This getopts loop does not seem to be portable. I will send a v3....
+
+Joerg
