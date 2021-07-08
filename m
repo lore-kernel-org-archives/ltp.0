@@ -1,19 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 8 Jul 2021 15:38:59 +0200
-Subject: [LTP] [PATCH 0/7] Sparse based checker and rule proposal
-In-Reply-To: <20210629072710.23800-1-rpalethorpe@suse.com>
-References: <20210629072710.23800-1-rpalethorpe@suse.com>
-Message-ID: <YOb/8+LO++bW/PlC@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 8 Jul 2021 19:00:10 +0200
+Subject: [LTP] [PATCH] gethostid: skip test if sethostid undefined
+In-Reply-To: <CAEemH2ej5BBxppxOLnL-+QTRSChj+M8bVX_Abk75bUULrHpovg@mail.gmail.com>
+References: <20210708130602.970689-1-liwang@redhat.com> <YOb2ddFMEW1aniyI@yuki>
+ <CAEemH2ej5BBxppxOLnL-+QTRSChj+M8bVX_Abk75bUULrHpovg@mail.gmail.com>
+Message-ID: <YOcvGinZBbwj12cH@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Generally looks very good, I guess that it could be merged once we
-figure out how exactly we should vendor sparse checker.
+Hi Li,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > > --- a/testcases/kernel/syscalls/gethostid/gethostid01.c
+> > > +++ b/testcases/kernel/syscalls/gethostid/gethostid01.c
+> > > @@ -26,6 +26,8 @@
+
+> > >  #include "tst_test.h"
+
+> > Shouldn't we include config.h here?
+
+
+> Yes, merged with including. Thanks for the quick reply.
+
+Thanks for fixing 39f341af5 ("gethostid: Rewrite with newlib and use/test sethostid")
+
+Kind regards,
+Petr
