@@ -1,31 +1,34 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Thu, 8 Jul 2021 19:38:36 +0800
-Subject: [LTP] [PATCH] gethostid: Rewrite with newlib and use/test
- sethostid
-In-Reply-To: <CAEemH2cTBd45n9F5Db+Xc3ZE0R8GyLVa1AVsgbEPYFB+2hVV5Q@mail.gmail.com>
-References: <20210708080720.18997-1-xieziyao@huawei.com>
- <CAEemH2cTBd45n9F5Db+Xc3ZE0R8GyLVa1AVsgbEPYFB+2hVV5Q@mail.gmail.com>
-Message-ID: <16e18b1d-93c7-9885-9485-c2d08c17c02d@huawei.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 8 Jul 2021 13:43:47 +0200
+Subject: [LTP] [PATCH v3 0/4] fs_bind: Convert to ltp tests
+In-Reply-To: <20210708055757.945702-1-lkml@jv-coder.de>
+References: <20210708055757.945702-1-lkml@jv-coder.de>
+Message-ID: <YObk85gnpGKFFLSv@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> I split up the patch into 4 commits. The first one just renames
+> all tests to the new nameing schema, in order to make git detect
+> renames instead of delete/add.
 
-> I made some refine and pushed, thanks!
-Thanks for your review. Besides, I noticed the CI fails to be compiled 
-on Apine. The difference appears to be caused by the underlying libc 
-implementation: glibc and Alpine's musl-libc.
+Pushed with minor changes, great cleanup, thanks.
 
-Is there anything that needs to be modified for this patch? Or simply 
-ignore it in the CI script.
+I've removed a few trailing whitespaces and also the .gitignore that
+should have been included in the last removal patch.
 
-> 
-> -- 
-> Regards,
-> Li Wang
 
-Kind Regards,
-Ziyao
+Also I guess that we should move the ns_exec and ns_create tools to the
+testcases/lib/ directory so that:
+
+- it's easier to find it
+
+- to make the the how to on running tests from git checkout work
+  for these tests as well
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
