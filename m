@@ -1,57 +1,50 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu,  8 Jul 2021 21:06:02 +0800
-Subject: [LTP] [PATCH] gethostid: skip test if sethostid undefined
-Message-ID: <20210708130602.970689-1-liwang@redhat.com>
+Date: Thu, 8 Jul 2021 21:17:41 +0800
+Subject: [LTP] [PATCH] gethostid: Rewrite with newlib and use/test
+ sethostid
+In-Reply-To: <YOboa9GY1eL+HR99@yuki>
+References: <20210708080720.18997-1-xieziyao@huawei.com>
+ <CAEemH2cTBd45n9F5Db+Xc3ZE0R8GyLVa1AVsgbEPYFB+2hVV5Q@mail.gmail.com>
+ <16e18b1d-93c7-9885-9485-c2d08c17c02d@huawei.com> <YOboa9GY1eL+HR99@yuki>
+Message-ID: <CAEemH2c7jk0C7DGkbeb_99ysCzQr-5bn1NDb0y9LXHdR56vqOQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is to avoid compiling error if the sethostid() is not
-implemented, e.g. build with Alpine's musl-libc.
+Hi Cyril, Ziyao,
 
-CI: https://github.com/wangli5665/ltp/runs/3019192920
+Thanks for catching the failure, I have posted a new patch fixing that.
+And sorry for my negligence in code pushing.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- configure.ac                                      | 1 +
- testcases/kernel/syscalls/gethostid/gethostid01.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+On Thu, Jul 8, 2021 at 8:24 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-diff --git a/configure.ac b/configure.ac
-index 1a43ebea8..25c421de0 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -128,6 +128,7 @@ AC_CHECK_FUNCS_ONCE([ \
-     renameat2 \
-     sched_getcpu \
-     sendmmsg \
-+    sethostid \
-     setns \
-     sigpending \
-     splice \
-diff --git a/testcases/kernel/syscalls/gethostid/gethostid01.c b/testcases/kernel/syscalls/gethostid/gethostid01.c
-index 802604777..20e4cd307 100644
---- a/testcases/kernel/syscalls/gethostid/gethostid01.c
-+++ b/testcases/kernel/syscalls/gethostid/gethostid01.c
-@@ -26,6 +26,8 @@
- 
- #include "tst_test.h"
- 
-+#ifdef HAVE_SETHOSTID
-+
- static long origin;
- static long tc[] = {0x00000000, 0x0000ffff};
- 
-@@ -64,3 +66,7 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.tcnt = ARRAY_SIZE(tc),
- };
-+
-+#else
-+TST_TEST_TCONF("sethostid is undefined.");
-+#endif
+> Hi!
+> > > I made some refine and pushed, thanks!
+> > Thanks for your review. Besides, I noticed the CI fails to be compiled
+> > on Apine. The difference appears to be caused by the underlying libc
+> > implementation: glibc and Alpine's musl-libc.
+> >
+> > Is there anything that needs to be modified for this patch? Or simply
+> > ignore it in the CI script.
+>
+> This has to be fixed, the whole point of the CI is to catch build
+> failures on different libc/compiler combinations.
+>
+> Looking at musl the sethostid() is not implemented at all, so I guess
+> that the correct solution here would be adding a configure check for
+> sethostid() and skip the whole test if it's not available.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+>
+
 -- 
-2.31.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210708/6ef6576a/attachment.htm>
