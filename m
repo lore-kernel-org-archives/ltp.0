@@ -1,40 +1,110 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 8 Jul 2021 16:27:16 +0800
-Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
- exist
-In-Reply-To: <60E661ED.7000305@fujitsu.com>
-References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
- <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
- <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
- <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
- <60E50890.9040903@fujitsu.com>
- <CAEemH2fKXJmgKAr4JXW5y+dcgEwL1taobXLY7OdTWBzLXGVOYg@mail.gmail.com>
- <60E52E00.8020105@fujitsu.com> <60E661ED.7000305@fujitsu.com>
-Message-ID: <CAEemH2fvp4C4VF8+bNbWbmenJr4Q3duX2va8UqD6y4DMzYbZUw@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 8 Jul 2021 16:42:39 +0800
+Subject: [LTP] [PATCH v2] network/tc01.sh: Add a regression test for tc
+ qdisc command
+In-Reply-To: <50bca7a2-41f5-3eba-d1da-e8e12c883d22@bell-sw.com>
+References: <50bca7a2-41f5-3eba-d1da-e8e12c883d22@bell-sw.com>
+Message-ID: <1625733759-30715-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 8, 2021 at 10:24 AM xuyang2018.jy@fujitsu.com <
-xuyang2018.jy@fujitsu.com> wrote:
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/net.tcp_cmds                   |  1 +
+ testcases/network/tcp_cmds/tc/Makefile | 13 +++++++
+ testcases/network/tcp_cmds/tc/tc01.sh  | 48 ++++++++++++++++++++++++++
+ 3 files changed, 62 insertions(+)
+ create mode 100644 testcases/network/tcp_cmds/tc/Makefile
+ create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
 
-> Hi Li
->
-> How about using CLONE_NEWIPC to test this, so we can avoid this race
-> situation.
->
-
-Maybe yes, but that sounds a bit like a new test.
-
-If let me choose from Alex suggestion or this CLONE_NEWIPC,
-I think both are OK, because it just an error return check,
-not a big deal.
-
+diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
+index db47dfd5b..7e142de11 100644
+--- a/runtest/net.tcp_cmds
++++ b/runtest/net.tcp_cmds
+@@ -12,6 +12,7 @@ netstat netstat01.sh
+ ping01 ping01.sh
+ ping02 ping02.sh
+ sendfile sendfile01.sh
++tc01 tc01.sh
+ tcpdump tcpdump01.sh
+ telnet telnet01.sh
+ iptables iptables01.sh
+diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
+new file mode 100644
+index 000000000..60150a1ce
+--- /dev/null
++++ b/testcases/network/tcp_cmds/tc/Makefile
+@@ -0,0 +1,13 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2009, Cisco Systems Inc.
++# Ngie Cooper, July 2009
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= tc01.sh
++
++MAKE_TARGETS		:=
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
+new file mode 100755
+index 000000000..d4f0792bc
+--- /dev/null
++++ b/testcases/network/tcp_cmds/tc/tc01.sh
+@@ -0,0 +1,48 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
++# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
++#
++# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
++# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
++# because both devices are teql0, and it does not set qdisc_priv(sch)->m
++# leaving it zero on error path, then qdisc_create() imediately calls
++# teql_destroy() which does not expect zero master pointer and we get OOPS
++# on unpatched kernel.
++#
++# If we enable panic_on_oops, this case may crash.
++#
++# This kernel bug was introduced by
++# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
++# and has been fixed by
++# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
++#
++
++TST_SETUP="setup"
++TST_TESTFUNC="do_test"
++TST_NEEDS_ROOT=1
++TST_NEEDS_DRIVERS="sch_teql"
++TST_NEEDS_CMDS="tc modprobe dmesg grep"
++
++. tst_test.sh
++
++setup()
++{
++	ROD modprobe $TST_NEEDS_DRIVERS
++}
++
++do_test()
++{
++	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
++
++	EXPECT_FAIL tc qdisc add dev teql0 root teql0
++
++	dmesg | grep RIP | grep teql_destroy | grep sch_teql > /dev/null
++	if [ $? -eq 0 ]; then
++		tst_res TFAIL "This bug is reproduced."
++	else
++		tst_res TPASS "This bug is not reproduced."
++	fi
++}
++
++tst_run
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210708/ce66ae30/attachment.htm>
+2.23.0
+
