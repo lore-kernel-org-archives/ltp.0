@@ -1,9 +1,9 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu,  8 Jul 2021 07:57:56 +0200
-Subject: [LTP] [PATCH v3 3/4] fs_bind: Convert cloneNS tests
+Date: Thu,  8 Jul 2021 07:57:57 +0200
+Subject: [LTP] [PATCH v3 4/4] fs_bind: Remove old framework
 In-Reply-To: <20210708055757.945702-1-lkml@jv-coder.de>
 References: <20210708055757.945702-1-lkml@jv-coder.de>
-Message-ID: <20210708055757.945702-4-lkml@jv-coder.de>
+Message-ID: <20210708055757.945702-5-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,480 +12,374 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-The cloneNS tests are now also executed and working. The test code
-is now fully contained in the fs_bind_cloneNS*.sh files, instead
-of three files for test, parent and child and some wonky synchronization.
-The three files contained code, that was executed before creating the
-new mount namespace, in the parent process and in the child process.
-The code in parent and child process had some synchronization points before.
-Using ns_create and ns_exec no snychronization is required anymore,
-because code can be executed arbitrarily in the parent or child namespace.
+After converting the tests to real ltp tests, the old framework
+is not required anymore
 
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/fs_bind                               |   9 ++
- .../fs/fs_bind/cloneNS/00_Descriptions.txt    |  70 ---------
- testcases/kernel/fs/fs_bind/cloneNS/child01   |  34 -----
- testcases/kernel/fs/fs_bind/cloneNS/child02   |  42 ------
- testcases/kernel/fs/fs_bind/cloneNS/child03   |  32 ----
- testcases/kernel/fs/fs_bind/cloneNS/child04   |  33 -----
- testcases/kernel/fs/fs_bind/cloneNS/child05   |  41 ------
- testcases/kernel/fs/fs_bind/cloneNS/child06   |  49 ------
- testcases/kernel/fs/fs_bind/cloneNS/child07   |  42 ------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS01.sh   |  99 ++++---------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS02.sh   | 104 +++++--------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS03.sh   |  86 +++--------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS04.sh   |  87 +++--------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS05.sh   | 139 +++++++-----------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS06.sh   | 137 ++++++++---------
- .../fs/fs_bind/cloneNS/fs_bind_cloneNS07.sh   | 106 +++++--------
- testcases/kernel/fs/fs_bind/cloneNS/parent01  |  44 ------
- testcases/kernel/fs/fs_bind/cloneNS/parent02  |  45 ------
- testcases/kernel/fs/fs_bind/cloneNS/parent03  |  34 -----
- testcases/kernel/fs/fs_bind/cloneNS/parent04  |  37 -----
- testcases/kernel/fs/fs_bind/cloneNS/parent05  |  45 ------
- testcases/kernel/fs/fs_bind/cloneNS/parent06  |  51 -------
- testcases/kernel/fs/fs_bind/cloneNS/parent07  |  48 ------
- testcases/kernel/fs/fs_bind/fs_bind_lib.sh    |  44 +++++-
- 24 files changed, 294 insertions(+), 1164 deletions(-)
- delete mode 100644 testcases/kernel/fs/fs_bind/cloneNS/00_Descriptions.txt
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child01
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child02
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child03
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child04
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child05
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child06
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/child07
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent01
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent02
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent03
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent04
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent05
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent06
- delete mode 100755 testcases/kernel/fs/fs_bind/cloneNS/parent07
+ testcases/kernel/fs/fs_bind/BUGS            |   5 -
+ testcases/kernel/fs/fs_bind/CHANGELOG       |  84 ----------
+ testcases/kernel/fs/fs_bind/README          | 165 --------------------
+ testcases/kernel/fs/fs_bind/TODO            |  11 --
+ testcases/kernel/fs/fs_bind/bin/Makefile    |  31 ----
+ testcases/kernel/fs/fs_bind/bin/check_prop  |  73 ---------
+ testcases/kernel/fs/fs_bind/bin/lockfile    |  84 ----------
+ testcases/kernel/fs/fs_bind/bin/makedir     | 101 ------------
+ testcases/kernel/fs/fs_bind/bin/nsclone.c   |  68 --------
+ testcases/kernel/fs/fs_bind/bin/setup       | 104 ------------
+ testcases/kernel/fs/fs_bind/bin/setupnslock |  64 --------
+ testcases/kernel/fs/fs_bind/bin/smount.c    |  73 ---------
+ 12 files changed, 863 deletions(-)
+ delete mode 100644 testcases/kernel/fs/fs_bind/BUGS
+ delete mode 100644 testcases/kernel/fs/fs_bind/CHANGELOG
+ delete mode 100644 testcases/kernel/fs/fs_bind/README
+ delete mode 100644 testcases/kernel/fs/fs_bind/TODO
+ delete mode 100644 testcases/kernel/fs/fs_bind/bin/Makefile
+ delete mode 100755 testcases/kernel/fs/fs_bind/bin/check_prop
+ delete mode 100755 testcases/kernel/fs/fs_bind/bin/lockfile
+ delete mode 100755 testcases/kernel/fs/fs_bind/bin/makedir
+ delete mode 100644 testcases/kernel/fs/fs_bind/bin/nsclone.c
+ delete mode 100755 testcases/kernel/fs/fs_bind/bin/setup
+ delete mode 100755 testcases/kernel/fs/fs_bind/bin/setupnslock
+ delete mode 100644 testcases/kernel/fs/fs_bind/bin/smount.c
 
-diff --git a/runtest/fs_bind b/runtest/fs_bind
-index 7d8400336..61b3e7628 100644
---- a/runtest/fs_bind
-+++ b/runtest/fs_bind
-@@ -94,3 +94,12 @@ fs_bind_rbind39_sh fs_bind_rbind39.sh
- 
- 
- fs_bind_regression_sh fs_bind_regression.sh
-+
-+
-+fs_bind_cloneNS01_sh fs_bind_cloneNS01.sh
-+fs_bind_cloneNS02_sh fs_bind_cloneNS02.sh
-+fs_bind_cloneNS03_sh fs_bind_cloneNS03.sh
-+fs_bind_cloneNS04_sh fs_bind_cloneNS04.sh
-+fs_bind_cloneNS05_sh fs_bind_cloneNS05.sh
-+fs_bind_cloneNS06_sh fs_bind_cloneNS06.sh
-+fs_bind_cloneNS07_sh fs_bind_cloneNS07.sh
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/00_Descriptions.txt b/testcases/kernel/fs/fs_bind/cloneNS/00_Descriptions.txt
+diff --git a/testcases/kernel/fs/fs_bind/BUGS b/testcases/kernel/fs/fs_bind/BUGS
 deleted file mode 100644
-index 8c616cca6..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/00_Descriptions.txt
+index 51c1e30d9..000000000
+--- a/testcases/kernel/fs/fs_bind/BUGS
 +++ /dev/null
-@@ -1,70 +0,0 @@
--/******************************************************************************/
--/*                                                                            */
--/* Copyright (c) International Business Machines  Corp., 2008                 */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
--/*                                                                            */
--/******************************************************************************/
+@@ -1,5 +0,0 @@
+-Clone Namespace Tests:
+-	Currently the cloneNS test do not accurately report a final success or
+-	failure value. To check if a test has passed, view the test output and
+-	look at each individual check_prop test, and see if there are any
+-	failures.
+diff --git a/testcases/kernel/fs/fs_bind/CHANGELOG b/testcases/kernel/fs/fs_bind/CHANGELOG
+deleted file mode 100644
+index d41598821..000000000
+--- a/testcases/kernel/fs/fs_bind/CHANGELOG
++++ /dev/null
+@@ -1,84 +0,0 @@
+-Remove this file prior to submission??
+-------------------------------------
 -
--OO_DESCRIPTION.txt
--==================
+-Changes by Matt Helsley <matthltc@us.ibm.com>, March 12th, 2008:
 -
--The contents of the cloneNS directory:
--test01 - namespace with shared dirs
--test02 - namespaces with parent-slave
--test03 - namespace with unclonable mount
--test04 - namespace with private mount.
--test05 - namespace with multi-level
--test06 - namespace with shared point bind mounted
--test07 - slave child to slave parent.
+-Many (but not all) of these changes are scripted so that I can modify the tests
+-quickly by editting the ltp-convert.sh script. It saves a copy of the test foo
+-as foo.orig before making any modifications. Currently there's a patch.txt file
+-which shows all the changes the script makes.
+-
+-Moved readme.README to README
+-
+-Made tests run in the sandbox directory rather than in testcases/working
+-
+-Moved scripts and executables from testcases/working to bin
+-
+-Based all non-local paths out of the "$FS_BIND_ROOT" directory rather than
+-having a "$path" variable.
+-
+-Logged mount lists before and after each test, took a diff, and removed the list
+-	if they look the same. Otherwise it keeps the two files, reports the
+-	diff, cleans up the mounts with a big hammer, and goes onto the next
+-	test.
+-
+-Logged the sandbox contents before and after, took a diff, and removed the
+-	logged contents if they look the same. Otherwise it keeps the
+-	lists of files and dirs, reports the problem, and cleans up the
+-	sandbox. This happens after the mount cleanups otherwise it could fail.
+-
+-Factored out the "check" function from most tests (still need to work on "childXX" and "parentXX" scripts) and put it into the setup script.
+-
+-Factored out the "path" variable and pushd bits into the sharedSubtree script.
+-
+-Added some traps to the test scripts to detect unexpected errors and log them
+-
+-Switched to LTP infrastructure for the test scripts. The driver scripts however
+-are not switched yet (easy to do). I did this by writing some LTP API shims
+-rather than try to toss it into ltp-full-XXXXXX.tgz. Then, once everything
+-uses LTP we can integrate it.
+-
+-Made mkdir logdir quiet (restore it??)
+-
+-Count total tests in a separate loop so we can detect accidentally skipped tests
+-
+-"test" is a program -- changed variables named "test" to "t" to avoid potential
+-	confusion later
+-
+-Added quotes around paths, variables, and output that may someday contain
+-spaces (hopefully never, but..)
+-
+-Added logdir/errors redirection of stderr
+-
+-Removed testcases/<Up> script
+-
+-Removed .c files in testcases/cloneNS which appeared to be unused
+-
+-Added Makefiles for .c files and for toplevel dir (for LTP integration)
+-
+-Converted "mmount" to "smount" to match the .c file.
+-
+-Fixed up nsclone.c and smount.c to compile and do so without warnings.
+-	(at least on gcc 4.2.3-1 debian)
+-
+-Fixed some bugs in the testcases:
+-	A couple copy-paste bugs
+-	Bugs with uncloneable mounts being bound but the error wasn't expected.
+-	A few path bugs.
+-
+-Added bits to handle commands that are expected to fail (return non-zero)
+-	Fixup the return code so that these are trapped properly
+-		expected_to_fail && /bin/false || /bin/true
+-	Redirected output
+-		mount_expected_to_fail 2> /dev/null || result=$?
+-
+-Added umounts and comments describing cleanup bits which cleanup in case of
+-	unexpected mount --move failure for example
+-
+-Added a BUGS file
+-
+-Added a CHANGELOG
+-
+-Added TODO file(s)
+-
+-Moved the sharedSubtree test to LTPROOT/testscripts and rewrote it for LTP
+diff --git a/testcases/kernel/fs/fs_bind/README b/testcases/kernel/fs/fs_bind/README
+deleted file mode 100644
+index 74b2ee1e7..000000000
+--- a/testcases/kernel/fs/fs_bind/README
++++ /dev/null
+@@ -1,165 +0,0 @@
+-=================================================================
+-Test Suite for Bind Mount and Shared Subtree Features in the VFS:
+-=================================================================
+-Author: Avantika Mathur
+-Date: September 16, 2005
+-Last update: March 18th, 2008 (by Matt Helsley)
+-
+-About:
+-------
+-These tests exercise the Linux Kernel's bind mount and shared subtree
+-capabilities. With it administrators may use clear semantics to manage
+-complex mount trees on a system.
+-
+-Bind mount simply allows administrators to make a directory appear in
+-two places at once -- somewhat like hard links for files:
+-
+-# mkdir mnt mnt2
+-# mount --bind mnt mnt2
+-# touch mnt/a
+-# ls mnt2
+-a
+-
+-Note that bind mounts are not recursive. To get a recursive bind mount
+-use --rbind.
+-
+-Another limitation of simple bind mounts is they cannot propagate future binds:
+-
+-# mkdir mnt mnt2
+-# mount --bind mnt mnt2
+-# touch mnt/a
+-# mkdir mnt/foo
+-# ls mnt2
+-a foo
+-# mkdir sub
+-# touch sub/b
+-# mount --bind sub /mnt/foo
+-# ls mnt/foo
+-b
+-# ls mnt2/foo
+-
+-mnt2/foo appears to be empty because the second bind mount did not propagate
+-to mnt2. Shared subtrees allow propagation whereas bind mounts do not.
+-To enable full administrator control of propagation there are several kinds of
+-subtrees:
+-	private		[default -- this is a "normal" mount]
+-	shared		[propagation goes both ways]
+-	slave		[propagation goes one way]
+-	unbindable	[cannot --bind and hence cannot share]
+-
+-For further details on these types of subtrees please see your kernel source's
+-Documentation/filesystems/sharedsubtree.txt file.
+-
+-Building:
+----------
+-Uses GNU Make. In the root directory type:
+-make
+-
+-Installing:
+------------
+-Type:
+-make install
+-
+-Cleaning:
+----------
+-Type:
+-make clean
+-
+-Running:
+---------
+-run LTPROOT/testscripts/test_fs_bind.sh
 -
 -
--test01:
--=======
--namespace with shared dirs
+-Testcases:
+-----------
+-There are multiple testcases testing in each of the following categories,
+-testing functionality of different types of mounts, different combinations,
+-etc:
+--- bind
+--- rbind
+--- move
+--- regression tests
+--- clone namespace (currently not run)
 -
 -
--test02:
--=======
--namespaces with parent-slave
+-Directory Structure:
+---------------------
+-In the root directory of the suite there are scripts to execute the whole test suite. Logged results are stored in LTPROOT/results/fs_bind. PASS/FAIL
+-indications are passed to the LTP API and logged in the results directory too.
 -
+-Basic tests of bind and move mounts are part of the test_fs_bind.sh test
+-script itself. These are prerequisites for the more the complicated tests.
+-The bind, rbind, and move directories contain tests for bind, rbind, move in
+-combination with the various kinds of subtrees. The regression and cloneNS
+-directories perform basic regression tests and combine some of the tests with
+-mount namespaces respectively.
 -
--test03:
--=======
--namespace with unclonable mount
+-The bin directory contains scripts used by each of the testcases for
+-common setup, creating, and comparing mounts.
 -
+-Running the Test Suite:
+------------------------
+-To run the entire testsuite run:
+-test_fs_bind.sh
 -
--test04:
--=======
--namespace with private mount.
+-Log directories where the results are stored in LTPROOT/results/fs_bind
 -
+-Reading the Test Suite Results:
+--------------------------------
+-Test suite results are logged, by default, in the LTPROOT/results/fs_bind
+-directory. Its structure is:
+-fs_bind-\
+-	|-> errors		 (stderr of main test suite script itself)
+-	|-> summary		 (stdout of main test suite script itself)
+-	|-move--\
+-	|	|->test01-\	(logs of test01)
+-	|	|	  |-> log		(stdout)
+-	|	|	  |-> err		(stderr)
+-	|	|	  |-> mtab.before
+-	|	|	  |-> mtab.after
+-	|	|	  |-> proc_mounts.before
+-	|	|	  |-> proc_mounts.after
+-	|	|	  |-> files.before	(files  before running)
+-	|	|	  |-> dirs.before	(dirs   before running)
+-	|	|	  |-> files.after	(files  after  running)
+-	|	|	  \-> dirs.after	(dirs   after  running)
+-	|	|->test02-\
+-	|	|	  |
+-	|	...	  ...
+-	|-rbind--\
+-	|        |-->
+-	...       ...
 -
--test05:
--=======
--namespace with multi-level
--chain of slaves
+-An testXX/err file will only be left for those tests that had errors and
+-stderr was non-empty. mounts.*, files.*, and dirs.* files will be left for
+-tests that appear to have broken cleanup sections. The test_fs_bind.sh
+-script robustly handles cleanup so, unless the tests are run individually, this
+-is not an issue that prevents testing from completing successfully nor does it
+-interfere with test results.
 -
+-These files make it easy to determine what happened during a given test.
+-It's easy to see which tests need to be debugged and which do not. It also
+-makes it easy to aggregate output or trace sandbox dirtying from test to test.
 -
--test06:
--=======
--namespace with shared point bind mounted
--within the same directory
+-Running individual Tests:
+--------------------------
+-Currently tests cannot be run individually because there are several important
+-LTP environment dependencies. Some of them are documented below:
+-	LTP test script environment variables:
+-		LTPROOT
+-		TCID
+-		TST_TOTAL
+-		TST_COUNT
+-	LTP commands/functions:
+-		tst_resm
+-		tst_brkm
+-		tst_exit
+-	LTP contents:
+-		LTPROOT/testcases/bin
 -
+-It's important to note that the individual test scripts use the current working
+-directory extensively but never exit it. This may allow the tests to be run
+-individually once the above LTP environment dependencies are resolved.
+-Lastly none of the logging or debugging information will appear in the
+-LTPROOT/results/fs_bind directory when tests are invoked individually since
+-those are collected by the test_fs_bind.sh script.
+diff --git a/testcases/kernel/fs/fs_bind/TODO b/testcases/kernel/fs/fs_bind/TODO
+deleted file mode 100644
+index 1730148ef..000000000
+--- a/testcases/kernel/fs/fs_bind/TODO
++++ /dev/null
+@@ -1,11 +0,0 @@
+-Consider replacing long invocations
+-	(replace "$FS_BIND_ROOT/bin/makedir") with something shorter).
 -
--test07:
--=======
--slave child to slave parent.
+-Factor out common bits of setup, setupnslock, and lockfile
 -
+-Rename smount to something more meaningful? (bind_mount ?)
 -
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child01 b/testcases/kernel/fs/fs_bind/cloneNS/child01
+-Check for leaks of vfsmount structs by diffing vfs slab cache obj numbers
+-	(after -before)
+-
+-The cloneNS testcases need to be checked and tested -- consider them expiremental. (at least as of March 2008)
+diff --git a/testcases/kernel/fs/fs_bind/bin/Makefile b/testcases/kernel/fs/fs_bind/bin/Makefile
+deleted file mode 100644
+index 2c09a286d..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/Makefile
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#
+-#    testcases/kernel/fs/fs_bind/bin Makefile.
+-#
+-#    Copyright (C) 2009, Cisco Systems Inc.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Ngie Cooper, September 2009
+-#
+-
+-top_srcdir		?= ../../../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-
+-INSTALL_DIR		:= $(prefix)/testcases/bin/fs_bind/bin
+-
+-INSTALL_TARGETS		:= check_prop lockfile makedir setup setupnslock
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/fs/fs_bind/bin/check_prop b/testcases/kernel/fs/fs_bind/bin/check_prop
 deleted file mode 100755
-index 4e667941f..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child01
+index 07da8ea28..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/check_prop
 +++ /dev/null
-@@ -1,34 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--check "$disk2" dir1/a dir2/a
--mount --bind "$disk3" dir1/b
--check dir1/b dir2/b
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child02 b/testcases/kernel/fs/fs_bind/cloneNS/child02
-deleted file mode 100755
-index b46e8d1d2..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child02
-+++ /dev/null
-@@ -1,42 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--
--check "$disk2" dir1/a dir2/a
--check -n "$disk3" d2/b
--check -n "$disk3" d1/b
--
--mount --bind "$disk4" dir1/c
--check dir1/c dir2/c
--
--umount dir2/a
--check -n dir1/a dir2/a
--
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child03 b/testcases/kernel/fs/fs_bind/cloneNS/child03
-deleted file mode 100755
-index 2b78bc3bc..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child03
-+++ /dev/null
-@@ -1,32 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--check "$disk1" dir1
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child04 b/testcases/kernel/fs/fs_bind/cloneNS/child04
-deleted file mode 100755
-index b6ba67c62..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child04
-+++ /dev/null
-@@ -1,33 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--check -n "$disk2" dir1/a
--mount --bind "$disk3" dir1/b
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child05 b/testcases/kernel/fs/fs_bind/cloneNS/child05
-deleted file mode 100755
-index a82cbb2b5..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child05
-+++ /dev/null
-@@ -1,41 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--
--check "$disk2" parent/child1/a parent/child2/child1/a
--check "$disk3" parent/child1/b parent/child2/child1/b
--
--mount --bind "$disk4" parent/child2/child1/c
--check parent/child2/child1/c parent/child1/c
--
--umount parent/child1/b
--check parent/child2/child1/b parent/child1/b
--
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child06 b/testcases/kernel/fs/fs_bind/cloneNS/child06
-deleted file mode 100755
-index 5abbf97ec..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child06
-+++ /dev/null
-@@ -1,49 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--
--check dir1/x dir2/x dir3/x dir4/x
--
--echo ls dir1/x/a
--ls dir1/x/a
--check -n dir1/x/a dir2/x/a
--check "$disk2" dir2/x/a dir3/x/a dir4/x/a
--
--mount --rbind "$disk3" dir3/x/b
--check -n dir1/x/b dir3/x/b
--check -n dir2/x/b dir3/x/b
--check dir3/x/b dir4/x/b
--
--mount --rbind "$disk4" dir4/x/c
--check -n dir1/x/c dir4/x/c
--check -n dir2/x/c dir4/x/c
--check -n dir3/x/c dir4/x/c
--
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/child07 b/testcases/kernel/fs/fs_bind/cloneNS/child07
-deleted file mode 100755
-index 50c4965c0..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/child07
-+++ /dev/null
-@@ -1,42 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startchild
--goahead
--iamgoingahead
--
--
--result=0
--
--check parent2 parent2/a parent2/a/a
--check parent2/b parent2/a/b parent2/a/a/b
--
--mount --bind "$disk3" parent1/a/c
--check parent2/c parent2/a/c parent2/a/a/c
--
--goahead
--iamgoingahead
--check parent2/c parent2/a/c parent2/a/a/c
--
--
--exit $result
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS01.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS01.sh
-index a4fda7dc4..930e98547 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS01.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS01.sh
-@@ -1,85 +1,38 @@
+@@ -1,73 +0,0 @@
 -#!/bin/bash
--
 -#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
+-# Copyright (c) International Business Machines  Corp., 2005
+-# Author: Avantika Mathur (mathurav@us.ibm.com)
 -#
 -# This library is free software; you can redistribute it and/or
 -# modify it under the terms of the GNU Lesser General Public
@@ -502,106 +396,69 @@ index a4fda7dc4..930e98547 100755
 -# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -#
 -
--SETS_DEFAULTS="${TCID=test01} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
--
--tst_resm TINFO "***************TEST01***************"
--tst_resm TINFO "cloneNS: namespace with shared dirs"
--tst_resm TINFO "************************************"
--
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test01 failed" && tst_exit)
--export result=0
--
- 
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
-+FS_BIND_TESTFUNC=test
- 
--while /bin/true ; do
--	# This loop is for error recovery purposes only
-+. fs_bind_lib.sh
- 
--	cp "${FS_BIND_ROOT}/cloneNS/parent01" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child01" .
--
--	chmod 755 parent01 child01
--
--	"${FS_BIND_ROOT}/bin/makedir" share dir1
--	"${FS_BIND_ROOT}/bin/makedir" share dir2
-+test()
-+{
-+	tst_res TINFO "cloneNS: namespace with shared dirs"
- 
-+	fs_bind_makedir rshared dir1
-+	fs_bind_makedir rshared dir2
- 
--	mount --bind "$disk1" dir1
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK1" dir1
-+	EXPECT_PASS mount --bind dir1 dir2
- 
--	mount --bind dir1 dir2
-+	fs_bind_create_ns
- 
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent01 ./child01 || result=$?
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK2" dir2/a
-+	fs_bind_check dir1/a dir2/a
- 
--	break
+-reverse=0
+-while getopts "n" args $OPTIONS
+-do
+-	case "$args" in
+-        n)      reverse=1
+-		shift
+-                ;;
+- 	esac
 -done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test01: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test01: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
--{
--	umount dir1/a
--	umount dir2/b
--	umount dir1
--	umount dir1
--	umount dir1
--	umount dir2
-+	fs_bind_check -s "$FS_BIND_DISK2" dir1/a dir2/a
-+	fs_bind_exec_ns mount --bind "$PWD/$FS_BIND_DISK3" $PWD/dir1/b
-+	fs_bind_check -s dir1/b dir2/b
- 
--	rm -rf dir* parent* child*
-+	EXPECT_PASS umount dir1/b
-+	EXPECT_PASS umount dir2/a
-+	EXPECT_PASS umount dir2
-+	EXPECT_PASS umount dir1
-+	EXPECT_PASS umount dir2
-+	EXPECT_PASS umount dir1
-+}
- 
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
+-
+-if [ $reverse -eq 1 ]
 -then
--	tst_resm TFAIL "cloneNS/test01: FAILED: cloneNS: namespace with shared dirs"
--	exit 1
+-	echo Check No Propagation $*
 -else
--	tst_resm TPASS "cloneNS/test01: PASSED"
+-	echo Check Propagation $*
+-fi
+-
+-dir1="$1"
+-shift
+-
+-for dir2 in "$@"
+-do
+-	# compare adjacent pairs of directory trees
+-
+-	echo "Checking \"$dir1\" \"$dir2\""
+-	diff -r "$dir1" "$dir2" 2> /dev/null
+-
+-	if [ $? -ne 0 ]
+-	then
+-		if [ $reverse -eq 1 ]
+-		then
+-			echo Successful
+-			echo "---------"
+-			exit 0
+-		else
+-			echo "FAILED"
+-			echo "---------"
+-                	exit 1
+-		fi
+-        fi
+-        dir1="$dir2"
+-done
+-
+-if [ $reverse -eq 1 ]
+-then
+-	echo FAILED
+-	echo "---------"
+-	exit -1
+-else
+-	echo Successful
+-	echo "---------"
 -	exit 0
 -fi
--tst_exit
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS02.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS02.sh
-index 62045130f..b1ce9b2bd 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS02.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS02.sh
-@@ -1,85 +1,53 @@
+diff --git a/testcases/kernel/fs/fs_bind/bin/lockfile b/testcases/kernel/fs/fs_bind/bin/lockfile
+deleted file mode 100755
+index 93d4d81a9..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/lockfile
++++ /dev/null
+@@ -1,84 +0,0 @@
 -#!/bin/bash
--
 -#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
+-# Copyright (c) International Business Machines  Corp., 2005
+-# Author: Ram Pai (linuxram@us.ibm.com)
 -#
 -# This library is free software; you can redistribute it and/or
 -# modify it under the terms of the GNU Lesser General Public
@@ -617,1177 +474,511 @@ index 62045130f..b1ce9b2bd 100755
 -# License along with this library; if not, write to the Free Software
 -# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -#
- 
-+FS_BIND_TESTFUNC=test
- 
--SETS_DEFAULTS="${TCID=test02} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
-+. fs_bind_lib.sh
- 
--tst_resm TINFO "***************TEST02***************"
--tst_resm TINFO "cloneNS: namespaces with parent-slave"
--tst_resm TINFO "************************************"
-+test()
-+{
-+	tst_res TINFO "cloneNS: namespaces with parent-slave"
- 
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test02 failed" && tst_exit)
--export result=0
-+	fs_bind_makedir rshared dir1
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK1" dir1
- 
-+	mkdir dir2
-+	EXPECT_PASS mount --bind dir1 dir2
-+	EXPECT_PASS mount --make-slave dir2
- 
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
-+	fs_bind_create_ns
- 
--while /bin/true ; do
--	# This loop is for error recovery purposes only
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK2" dir1/a
-+	fs_bind_check dir1/a dir2/a
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK3" dir2/b
-+	fs_bind_check -n dir1/b dir2/b
- 
--	cp "${FS_BIND_ROOT}/cloneNS/parent02" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child02" .
- 
--	chmod 755 parent02 child02
-+	fs_bind_check -s "$FS_BIND_DISK2" dir1/a dir2/a
-+	fs_bind_check -s -n "$FS_BIND_DISK3" dir2/b
-+	fs_bind_check -s -n "$FS_BIND_DISK3" dir1/b
-+	fs_bind_exec_ns mount --bind "$PWD/$FS_BIND_DISK4" $PWD/dir1/c
-+	fs_bind_check -s dir1/c dir2/c
- 
--	"${FS_BIND_ROOT}/bin/makedir" share dir1
--	mount --bind "$disk1" dir1
-+	fs_bind_exec_ns umount $PWD/dir2/a
-+	fs_bind_check -s -n dir1/a dir2/a
- 
--	mkdir dir2
--	mount --bind dir1 dir2
--	"${FS_BIND_ROOT}/bin/makedir" slave dir2
- 
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent02 ./child02 || result=$?
-+	fs_bind_check "$FS_BIND_DISK2" dir1/a dir2/a
-+	fs_bind_check "$FS_BIND_DISK4" dir1/c dir2/c
- 
--	break
--done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test02: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test02: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
+-
+-
+-lockfile="/.nslock"
+-SUCCESS=0
+-FAIL=1
+-otherpid=
+-startparent()
 -{
--	umount dir1/a
--	umount dir2/b
--	umount dir1/c
--	umount dir2
--	umount dir1
--	umount dir1
-+	fs_bind_destroy_ns
- 
--	rm -rf dir* parent* child*
-+	EXPECT_PASS umount dir1/c
-+	EXPECT_PASS umount dir1/a
-+	EXPECT_PASS umount dir2/b
-+	EXPECT_PASS umount dir2
-+	EXPECT_PASS umount dir1
-+	EXPECT_PASS umount dir1
-+}
- 
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
--then
--	tst_resm TFAIL "cloneNS/test02: FAILED: cloneNS: namespaces with parent-slave"
--	exit 1
--else
--	tst_resm TPASS "cloneNS/test02: PASSED"
--	exit 0
--fi
--tst_exit
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS03.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS03.sh
-index 8db2c78fc..777b976b7 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS03.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS03.sh
-@@ -1,77 +1,27 @@
--#!/bin/bash
+-	rm -f $lockfile
+-	echo $$ >| ${lockfile}parent
+-	while [ 1 ]
+-	do
+-		otherpid="$(cat ${lockfile}child 2> /dev/null)"
+-		if [ -n "$otherpid" -a -d /proc/$otherpid ]
+-		then
+-			return
+-		fi
+-	done
+-}
 -
--#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--SETS_DEFAULTS="${TCID=test03} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
--
--tst_resm TINFO "***************TEST03***************"
--tst_resm TINFO "cloneNS: namespace with unclonable mount "
--tst_resm TINFO "************************************"
--
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test03 failed" && tst_exit)
--export result=0
--
- 
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
-+FS_BIND_TESTFUNC=test
- 
--while /bin/true ; do
--	# This loop is for error recovery purposes only
--
--	cp "${FS_BIND_ROOT}/cloneNS/parent03" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child03" .
--
--	chmod 755 parent03 child03
--
--	"${FS_BIND_ROOT}/bin/makedir" unclone dir1
--	mount --bind "$disk1" dir1
-+. fs_bind_lib.sh
- 
-+test()
-+{
-+	tst_res TINFO "cloneNS: namespace with unclonable mount"
- 
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent03 ./child03 || result=$?
-+	fs_bind_makedir runbindable dir1
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK1" dir1
-+	fs_bind_check "$FS_BIND_DISK1" dir1
- 
--	break
--done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test03: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test03: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
+-startchild()
 -{
--	umount dir1
--	umount dir1
-+	fs_bind_create_ns
- 
--	rm -rf dir* parent* child*
-+	fs_bind_check -s "$FS_BIND_DISK1" dir1
-+	
-+	EXPECT_PASS umount dir1
-+	EXPECT_PASS umount dir1
-+}
- 
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
--then
--	tst_resm TFAIL "cloneNS/test03: FAILED: cloneNS: namespace with unclonable mount "
--	exit 1
--else
--	tst_resm TPASS "cloneNS/test03: PASSED"
--	exit 0
--fi
--tst_exit
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS04.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS04.sh
-index 2605fbedf..58080cc94 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS04.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS04.sh
-@@ -1,78 +1,31 @@
--#!/bin/bash
+-	rm -f $lockfile
+-	echo $$ >| ${lockfile}child
+-	while [ 1 ]
+-	do
+-		otherpid="$(cat ${lockfile}parent 2> /dev/null)"
+-		if [ -n "$otherpid" -a -d /proc/$otherpid ]
+-		then
+-			return
+-		fi
+-	done
+-}
 -
--#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--SETS_DEFAULTS="${TCID=test04} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
--
--tst_resm TINFO "***************TEST04***************"
--tst_resm TINFO "cloneNS: namespace with private mount."
--tst_resm TINFO "************************************"
--
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test04 failed" && tst_exit)
--export result=0
- 
-+FS_BIND_TESTFUNC=test
- 
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
-+. fs_bind_lib.sh
- 
--while /bin/true ; do
--	# This loop is for error recovery purposes only
--
--	cp "${FS_BIND_ROOT}/cloneNS/parent04" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child04" .
--
--	chmod 755 parent04 child04
-+test()
-+{
-+	tst_res TINFO "cloneNS: namespace with private mount"
- 
--	"${FS_BIND_ROOT}/bin/makedir" priv dir1
--	mount --bind "$disk1" dir1
-+	fs_bind_makedir private dir1
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK1" dir1
-+	fs_bind_create_ns
- 
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK2" dir1/a
- 
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent04 ./child04 || result=$?
-+	fs_bind_check -s -n "$FS_BIND_DISK2" dir1/a
-+	fs_bind_exec_ns mount --bind "$PWD/$FS_BIND_DISK3" "$PWD/dir1/b"
- 
--	break
--done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test04: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test04: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
+-iamgoingahead()
 -{
--	umount dir1/a
--	umount dir1
--	umount dir1
-+	fs_bind_check -n "$FS_BIND_DISK3" dir1/b   
- 
--	rm -rf dir* parent* child*
-+	EXPECT_PASS umount dir1/a
-+	EXPECT_PASS umount dir1
-+	EXPECT_PASS umount dir1
-+}
- 
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
--then
--	tst_resm TFAIL "cloneNS/test04: FAILED: cloneNS: namespace with private mount."
--	exit 1
--else
--	tst_resm TPASS "cloneNS/test04: PASSED"
--	exit 0
--fi
--tst_exit
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS05.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS05.sh
-index d03ac2937..dbcb5ba17 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS05.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS05.sh
-@@ -1,90 +1,55 @@
--#!/bin/bash
--
--#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--SETS_DEFAULTS="${TCID=test05} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
--
--tst_resm TINFO "***************TEST05***************"
--tst_resm TINFO "cloneNS: namespace with multi-level "
--tst_resm TINFO "chain of slaves"
--tst_resm TINFO "************************************"
--
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test05 failed" && tst_exit)
--export result=0
+-	while [ 1 ]
+-	do
+-		if [ ! -d /proc/$otherpid ]
+-		then
+-			return $FAIL
+-		fi
+-		str=`cat $lockfile 2> /dev/null`
+-		pid=$(echo $str | awk '{print $1}')
+-		error=$(echo $str | awk '{print $2}')
+-		if [ "$pid" == "$$" ]
+-		then
+-			return $error
+-		fi
+-		sleep 1
+-	done
+-}
 -
 -
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
--
--while /bin/true ; do
--	# This loop is for error recovery purposes only
--
--	cp "${FS_BIND_ROOT}/cloneNS/parent05" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child05" .
--
--	chmod 755 parent05 child05
--
--
--	"${FS_BIND_ROOT}/bin/makedir" share parent
--	"${FS_BIND_ROOT}/bin/makedir" share parent/child1
--	"${FS_BIND_ROOT}/bin/makedir" share parent/child2
--
--	mount --rbind "$disk1" parent/child1
--
--	mount --rbind parent parent/child2/
--
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent05 ./child05 || result=$?
--
--	break
--done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test05: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test05: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
-+
-+FS_BIND_TESTFUNC=test
-+
-+. fs_bind_lib.sh
-+
-+test()
- {
--	umount parent/child2/child2
--	umount parent/child2/child1/a
--	umount parent/child2/child1/c
--	umount parent/child2/child1
--	umount parent/child2/child1
--	umount parent/child2
--	umount parent/child2
--	umount parent
--
--	rm -rf parent* child*
--
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
--then
--	tst_resm TFAIL "cloneNS/test05: FAILED: cloneNS: namespace with multi-level
--chain of slaves"
--	exit 1
--else
--	tst_resm TPASS "cloneNS/test05: PASSED"
--	exit 0
--fi
--tst_exit
-+	tst_res TINFO "cloneNS: namespace with multi-level chain of slaves"
-+
-+	fs_bind_makedir rshared parent
-+	fs_bind_makedir rshared parent/child1
-+	fs_bind_makedir rshared parent/child2
-+
-+	EXPECT_PASS mount --rbind "$FS_BIND_DISK1" parent/child1
-+	EXPECT_PASS mount --rbind parent parent/child2
-+
-+	fs_bind_create_ns
-+
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK2" parent/child1/a
-+	fs_bind_check parent/child1/a parent/child2/child1/a
-+
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK3" parent/child2/child1/b
-+	fs_bind_check parent/child1/b parent/child2/child1/b
-+
-+
-+	fs_bind_check -s "$FS_BIND_DISK2" parent/child1/a parent/child2/child1/a
-+	fs_bind_check -s "$FS_BIND_DISK3" parent/child1/b parent/child2/child1/b
-+
-+	fs_bind_exec_ns mount --bind "$PWD/$FS_BIND_DISK4" "$PWD/parent/child2/child1/c"
-+	fs_bind_check -scheck parent/child2/child1/c parent/child1/c
-+
-+	fs_bind_exec_ns umount "$PWD/parent/child1/b"
-+	fs_bind_check -s parent/child2/child1/b parent/child1/b
-+
-+
-+	fs_bind_check "$FS_BIND_DISK4" parent/child2/child1/c parent/child1/c
-+	fs_bind_check -n "$FS_BIND_DISK3" parent/child1/b
-+	fs_bind_check parent/child1/b parent/child2/child1/b
-+
-+
-+	EXPECT_PASS umount parent/child2/child1/c
-+	EXPECT_PASS umount parent/child2/child1/a
-+	EXPECT_PASS umount parent/child2/child1
-+	EXPECT_PASS umount parent/child2/child1
-+	EXPECT_PASS umount parent/child2/child2
-+	EXPECT_PASS umount parent/child2
-+	EXPECT_PASS umount parent
-+}
-+
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS06.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS06.sh
-index b7af489a2..0e87cc464 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS06.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS06.sh
-@@ -1,96 +1,77 @@
--#!/bin/bash
--
--#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
- 
--SETS_DEFAULTS="${TCID=test06} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
-+FS_BIND_TESTFUNC=test
-+
-+. fs_bind_lib.sh
- 
--tst_resm TINFO "***************TEST06***************"
--tst_resm TINFO "cloneNS: namespace with shared point bind mounted "
--tst_resm TINFO "within the same directory"
--tst_resm TINFO "************************************"
-+test()
-+{
-+	tst_res TINFO "cloneNS: namespace with shared point bind mounted within the same directory"
- 
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test06 failed" && tst_exit)
--export result=0
-+	fs_bind_makedir rshared dir1
- 
-+	mkdir dir1/x dir2 dir3 dir4
- 
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
-+	EXPECT_PASS mount --rbind dir1 dir2
-+	EXPECT_PASS mount --make-rslave dir2
-+	EXPECT_PASS mount --make-rshared dir2
- 
--while /bin/true ; do
--	# This loop is for error recovery purposes only
-+	EXPECT_PASS mount --rbind dir2 dir3
-+	EXPECT_PASS mount --make-rslave dir3
-+	EXPECT_PASS mount --make-rshared dir3
- 
--	cp "${FS_BIND_ROOT}/cloneNS/parent06" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child06" .
-+	EXPECT_PASS mount --rbind dir3 dir4
-+	EXPECT_PASS mount --make-rslave dir4
- 
--	chmod 755 parent06 child06
-+	fs_bind_create_ns
- 
--	"${FS_BIND_ROOT}/bin/makedir" share dir1
-+	EXPECT_PASS mount --rbind "$FS_BIND_DISK1" dir1/x
- 
--	mkdir dir1/x dir2 dir3 dir4
-+	fs_bind_check dir1/x dir2/x dir3/x dir4/x
- 
--	mount --rbind dir1 dir2
--	"${FS_BIND_ROOT}/bin/makedir" slave dir2
--	"${FS_BIND_ROOT}/bin/makedir" -n share dir2
-+	EXPECT_PASS mount --rbind "$FS_BIND_DISK2" dir2/x/a
-+	fs_bind_check -n dir1/x/a dir2/x/a
-+	fs_bind_check dir2/x/a dir3/x/a dir4/x/a
- 
--	mount --rbind dir2 dir3
--	"${FS_BIND_ROOT}/bin/makedir" slave dir3
--	"${FS_BIND_ROOT}/bin/makedir" -n share dir3
- 
--	mount --rbind dir3 dir4
--	"${FS_BIND_ROOT}/bin/makedir" slave dir4
-+	fs_bind_check -s dir1/x dir2/x dir3/x dir4/x
- 
-+	fs_bind_check -s -n dir1/x/a dir2/x/a
-+	fs_bind_check -s "$FS_BIND_DISK2" dir2/x/a dir3/x/a dir4/x/a
- 
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent06 ./child06 || result=$?
-+	fs_bind_exec_ns mount --rbind "$PWD/$FS_BIND_DISK3" "$PWD/dir3/x/b"
-+	fs_bind_check -s -n dir1/x/b dir3/x/b
-+	fs_bind_check -s -n dir2/x/b dir3/x/b
-+	fs_bind_check -s dir3/x/b dir4/x/b
- 
--	break
--done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test06: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test06: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
+-goahead()
 -{
--	umount dir3/x/b
--	umount dir2/x/a
--	umount dir1/x
--	umount dir4
--	umount dir3
--	umount dir2
--	umount dir1
+-	set -x
+-	ret=$SUCCESS
+-	if [ -n "$1" ]
+-	then
+-		ret=$1
+-	fi
+-	echo "$otherpid $ret" >| $lockfile
+-	set +x
+-}
+diff --git a/testcases/kernel/fs/fs_bind/bin/makedir b/testcases/kernel/fs/fs_bind/bin/makedir
+deleted file mode 100755
+index 7c0766a1b..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/makedir
++++ /dev/null
+@@ -1,101 +0,0 @@
+-#!/bin/bash
+-#
+-# Copyright (c) International Business Machines  Corp., 2005
+-# Author: Avantika Mathur (mathurav@us.ibm.com)
+-#
+-# This library is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU Lesser General Public
+-# License as published by the Free Software Foundation; either
+-# version 2.1 of the License, or (at your option) any later version.
+-#
+-# This library is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-# Lesser General Public License for more details.
+-#
+-# You should have received a copy of the GNU Lesser General Public
+-# License along with this library; if not, write to the Free Software
+-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-#
 -
--	rm -rf parent* child* dir*
+-mflags=""
+-#mflags="-n" # Don't futz with mtab
 -
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
+-flag=y
+-while getopts "n" arg "$@"
+-do
+-        case "$arg" in
+-        n)      flag=n
+-                shift
+-                ;;
+-        esac
+-done
+-
+-bind_type="$1"
+-dir="$2"
+-
+-
+-if [ ! -d "$dir" ]
 -then
--	tst_resm TFAIL "cloneNS/test06: FAILED: cloneNS: namespace with shared point bind mounted
--within the same directory"
--	exit 1
--else
--	tst_resm TPASS "cloneNS/test06: PASSED"
--	exit 0
+-	if [ -e "$dir" ]; then
+-		echo "ERROR: a file by the name \"$dir\" exists"
+-		exit 1
+-	fi
+-	mkdir -p "$dir"
+-	echo "mkdir -p \"$dir\""
 -fi
--tst_exit
-+	fs_bind_exec_ns mount --rbind "$PWD/$FS_BIND_DISK4" "$PWD/dir4/x/c"
-+	fs_bind_check -s -n dir1/x/c dir4/x/c
-+	fs_bind_check -s -n dir2/x/c dir4/x/c
-+	fs_bind_check -s -n dir3/x/c dir4/x/c
-+
-+
-+	fs_bind_check -n dir1/x/b dir3/x/b
-+	fs_bind_check -n dir2/x/b dir3/x/b
-+	fs_bind_check dir3/x/b dir4/x/b
-+	fs_bind_check "$FS_BIND_DISK3" dir3/x/b
-+
-+	fs_bind_check -n "$FS_BIND_DISK4" dir4/x/c
-+	fs_bind_check dir1/x/c dir2/x/c dir3/x/c dir4/x/c
-+
-+
-+	EXPECT_PASS umount dir3/x/b
-+	EXPECT_PASS umount dir3/x/a
-+	EXPECT_PASS umount dir2/x/a
-+	EXPECT_PASS umount dir2/x
-+	EXPECT_PASS umount dir1/x
-+	EXPECT_PASS umount dir4
-+	EXPECT_PASS umount dir3
-+	EXPECT_PASS umount dir2
-+	EXPECT_PASS umount dir1
-+}
-+
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS07.sh b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS07.sh
-index bf94912c6..0780734a9 100755
---- a/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS07.sh
-+++ b/testcases/kernel/fs/fs_bind/cloneNS/fs_bind_cloneNS07.sh
-@@ -1,91 +1,55 @@
+-
+-
+-if [ "$flag" = "y" ] && [ "$bind_type" != slave ]
+-then
+-	mount $mflags --bind "$dir" "$dir" || exit $?
+-	echo "mount $mflags --bind \"$dir\" \"$dir\""
+-fi
+-
+-# Try to use native mount, else fallback to included smount binary
+-case "$bind_type" in
+-   share)
+-   	echo "mount $mflags --make-rshared \"$dir\""
+-	mount $mflags --make-rshared "$dir" 2> /dev/null || \
+-	smount "$dir" rshared || exit $?
+-      	;;
+-   priv)
+-   	echo "mount $mflags --make-rprivate \"$dir\""
+-	mount $mflags --make-rprivate "$dir" 2> /dev/null || \
+-	smount "$dir" rprivate || exit $?
+-      	;;
+-   slave)
+-   	echo "mount $mflags --make-rslave \"$dir\""
+-	mount $mflags --make-rslave "$dir" 2> /dev/null || \
+-	smount "$dir" rslave || exit $?
+-      	;;
+-   unclone)
+-   	echo "mount $mflags --make-runbindable \"$dir\""
+-	mount $mflags --make-runbindable "$dir" 2> /dev/null || \
+-	smount "$dir" runclone || exit $?
+-      	;;
+-   nshare)
+-   	echo "mount $mflags --make-shared \"$dir\""
+-	mount $mflags --make-shared "$dir" 2> /dev/null || \
+-	smount "$dir" shared || exit $?
+-      	;;
+-   npriv)
+-   	echo "mount $mflags --make-private \"$dir\""
+-	mount $mflags --make-private "$dir" 2> /dev/null || \
+-	smount "$dir" private || exit $?
+-      	;;
+-   nslave)
+-   	echo "mount $mflags --make-slave \"$dir\""
+-	mount $mflags --make-slave "$dir" 2> /dev/null || \
+-	smount "$dir" slave || exit $?
+-      	;;
+-   nunclone)
+-   	echo "mount $mflags --make-unbindable \"$dir\""
+-	mount $mflags --make-unbindable "$dir" 2> /dev/null || \
+-	smount "$dir" unclone || exit $?
+-      	;;
+-   *)
+-   	echo "$0: unrecognized bind type (1st arg): $bind_type" 1>&2
+-	exit 1
+-	;;
+-esac
+diff --git a/testcases/kernel/fs/fs_bind/bin/nsclone.c b/testcases/kernel/fs/fs_bind/bin/nsclone.c
+deleted file mode 100644
+index 36ae874db..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/nsclone.c
++++ /dev/null
+@@ -1,68 +0,0 @@
+-/*
+- * Copyright (c) International Business Machines  Corp., 2005
+- * Author: Ram Pai (linuxram@us.ibm.com)
+- *
+- * This library is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation; either
+- * version 2.1 of the License, or (at your option) any later version.
+- *
+- * This library is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this library; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- */
+-
+-#define _GNU_SOURCE
+-
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <sched.h>
+-#include <signal.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-
+-int myfunc(void *arg)
+-{
+-	return system(arg);
+-}
+-
+-static void usage(char *cmd)
+-{
+-	printf("%s  child_script parent_script\n", cmd);
+-}
+-
+-int main(int argc, char *argv[])
+-{
+-	char *child_cmd;
+-	char *parent_cmd;
+-	int ret = 0, childret = 0;
+-
+-	if (argc < 3) {
+-		usage(argv[0]);
+-		exit(1);
+-	}
+-
+-	child_cmd = (char *)strdup(argv[2]);
+-	parent_cmd = (char *)strdup(argv[1]);
+-
+-	printf("1\n");
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, myfunc, (void *)child_cmd);
+-	if (ret != -1) {
+-		system(parent_cmd);
+-		wait(&childret);
+-	} else {
+-		fprintf(stderr, "clone failed\n");
+-	}
+-	if (ret || !WIFEXITED(childret)) {
+-		exit(1);
+-	}
+-	exit(0);
+-}
+diff --git a/testcases/kernel/fs/fs_bind/bin/setup b/testcases/kernel/fs/fs_bind/bin/setup
+deleted file mode 100755
+index 4e30ef42b..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/setup
++++ /dev/null
+@@ -1,104 +0,0 @@
+-#!/bin/bash -v
+-
+-#
+-# Copyright (c) International Business Machines  Corp., 2005
+-# Author: Avantika Mathur (mathurav@us.ibm.com)
+-#
+-# This library is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU Lesser General Public
+-# License as published by the Free Software Foundation; either
+-# version 2.1 of the License, or (at your option) any later version.
+-#
+-# This library is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-# Lesser General Public License for more details.
+-#
+-# You should have received a copy of the GNU Lesser General Public
+-# License along with this library; if not, write to the Free Software
+-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-#
+-
+-
+-disk1=disk1
+-disk2=disk2
+-disk3=disk3
+-disk4=disk4
+-fs=ext3
+-
+-mkdir -p $disk1 $disk2 $disk3 $disk4
+-
+-
+-
+-rm -rf $disk1/* $disk2/* $disk3/* $disk4/*
+-
+-mkdir $disk1/a $disk1/b $disk1/c
+-mkdir $disk2/d $disk2/e $disk2/f
+-mkdir $disk3/g $disk3/h $disk3/i
+-mkdir $disk4/j $disk4/k $disk4/l
+-
+-lockfile="/.nslock"
+-otherpid=
+-startparent()
+-{
+-        rm -f $lockfile
+-        echo $$ >| ${lockfile}parent
+-        while [ 1 ]
+-        do
+-                otherpid="$(cat ${lockfile}child 2> /dev/null)"
+-                if [ -n "$otherpid" -a -d /proc/$otherpid ]
+-                then
+-                        return
+-                fi
+-        done
+-}
+-
+-
+-startchild()
+-{
+-        rm -f $lockfile
+-        echo $$ >| ${lockfile}child
+-        while [ 1 ]
+-        do
+-                otherpid="$(cat ${lockfile}parent 2> /dev/null)"
+-                if [ -n "$otherpid" -a -d /proc/$otherpid ]
+-                then
+-                        return
+-                fi
+-        done
+-}
+-
+-iamgoingahead()
+-{
+-        while [ 1 ]
+-        do
+-                pid=`cat $lockfile 2> /dev/null`
+-                if [ "$pid" == "$$" ]
+-                then
+-                        return
+-                fi
+-                sleep 1
+-        done
+-}
+-
+-
+-goahead()
+-{
+-        set -x
+-        echo $otherpid > $lockfile
+-        set +x
+-}
+-
+-
+-check(){
+-	"${FS_BIND_ROOT}/bin/check_prop" $*
+-	ret=$?
+-	if [ $ret -ne 0 ]; then
+-		result=$ret
+-	fi
+-}
+-export result=0
+-
+-cleanup(){
+-	rm -rf "disk"*
+-}
+diff --git a/testcases/kernel/fs/fs_bind/bin/setupnslock b/testcases/kernel/fs/fs_bind/bin/setupnslock
+deleted file mode 100755
+index e35927b69..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/setupnslock
++++ /dev/null
+@@ -1,64 +0,0 @@
 -#!/bin/bash
 -
--#
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines  Corp., 2005
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
- # Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--SETS_DEFAULTS="${TCID=test07} ${TST_COUNT=1} ${TST_TOTAL=1}"
--declare -r TCID
--declare -r TST_COUNT
--declare -r TST_TOTAL
--export TCID TST_COUNT TST_TOTAL
- 
--tst_resm TINFO "***************TEST 07***************"
--tst_resm TINFO "cloneNS: slave child to slave parent."
--tst_resm TINFO "************************************"
--
--. "${FS_BIND_ROOT}/bin/setup" || (tst_resm TWARN "Setup of cloneNS/test07 failed" && tst_exit)
--export result=0
-+FS_BIND_TESTFUNC=test
- 
-+. fs_bind_lib.sh
- 
-+test()
-+{
-+	tst_res TINFO "cloneNS: slave child to slave parent"
- 
-+	mkdir parent1 parent2
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK1" parent1
-+	EXPECT_PASS mount --make-rshared parent1
-+	EXPECT_PASS mount --bind parent1 parent2
- 
--trap 'ERR=$? ; ERR_MSG="caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"; break' ERR
-+	fs_bind_check parent1 parent2
- 
--while /bin/true ; do
--	# This loop is for error recovery purposes only
-+	EXPECT_PASS mount --move parent1 parent2/a
- 
--	cp "${FS_BIND_ROOT}/cloneNS/parent07" ./
--	cp "${FS_BIND_ROOT}/cloneNS/child07" .
--	chmod 755 parent07 child07
-+	fs_bind_check parent2 parent2/a parent2/a/a
- 
--	mkdir parent1 parent2
--	mount --bind "$disk1" parent1
--	mount --make-rshared parent1 > /dev/null 2>&1 || "${FS_BIND_ROOT}/bin/smount" parent1 rshared
--	mount --bind parent1 parent2
-+	fs_bind_create_ns
- 
--	check parent1 parent2
-+	fs_bind_check parent2 parent2/a parent2/a/a
- 
--	mount --move parent1 parent2/a
-+	EXPECT_PASS mount --bind "$FS_BIND_DISK2" parent2/b
-+	fs_bind_check parent2/b parent2/a/b parent2/a/a/b
- 
--	check parent2 parent2/a parent2/a/a
- 
--	"${FS_BIND_ROOT}/bin/nsclone" ./parent07 ./child07 || result=$?
-+	fs_bind_check -s parent2 parent2/a parent2/a/a
-+	fs_bind_check -s parent2/b parent2/a/b parent2/a/a/b
- 
--	break
--done
--trap 'ERR=$? ; tst_resm TWARN "cloneNS/test07: caught error near: ${BASH_SOURCE[0]}:${FUNCNAME[0]}:${LINENO}:$_ (returned ${ERR})"' ERR
--if [ -n "${ERR_MSG}" ]; then
--	tst_resm TWARN "cloneNS/test07: ${ERR_MSG}"
--	ERR_MSG=""
--	result=$ERR
--fi
--trap '' ERR
+-lockfile="/.nslock"
+-SUCCESS=0
+-FAIL=1
+-otherpid=
+-startparent()
 -{
--	umount parent2/b
--	umount parent2/a/a
--	umount parent2/a
--	umount parent2
--	umount parent1
-+	fs_bind_exec_ns mount --bind "$PWD/$FS_BIND_DISK3" "$PWD/parent2/a/c"
-+	fs_bind_check -s parent2/c parent2/a/c parent2/a/a/c
- 
- 
-+	fs_bind_check parent2 parent2/a parent2/a/a
-+	fs_bind_check parent2/c parent2/a/c parent2/a/a/c
- 
--	rm -rf parent* child*
--	cleanup
--} >& /dev/null
--if [ $result -ne 0 ]
--then
--        tst_resm TFAIL "cloneNS/test07: FAILED: cloneNS: slave child to slave parent."
--        exit 1
--else
--        tst_resm TPASS "cloneNS/test07: PASSED"
--        exit 0
--fi
-+	EXPECT_PASS umount parent2/a/a/c
-+	fs_bind_check parent2/c parent2/a/c parent2/a/a/c
-+	
-+	
-+	fs_bind_check -s parent2/c parent2/a/c parent2/a/a/c
- 
-+	EXPECT_PASS umount parent2/a/b
-+	EXPECT_PASS umount parent2/a/a
-+	EXPECT_PASS umount parent2
-+}
- 
--tst_exit
-+tst_run
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent01 b/testcases/kernel/fs/fs_bind/cloneNS/parent01
-deleted file mode 100755
-index afeb5bf1b..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent01
+-        rm -f $lockfile
+-        echo $$ >| ${lockfile}parent
+-        while [ 1 ]
+-        do
+-                otherpid="$(cat ${lockfile}child 2> /dev/null)"
+-                if [ -n "$otherpid" -a -d /proc/$otherpid ]
+-                then
+-                        return
+-                fi
+-        done
+-}
+-
+-startchild()
+-{
+-        rm -f $lockfile
+-        echo $$ >| ${lockfile}child
+-        while [ 1 ]
+-        do
+-                otherpid="$(cat ${lockfile}parent 2> /dev/null)"
+-                if [ -n "$otherpid" -a -d /proc/$otherpid ]
+-                then
+-                        return
+-                fi
+-        done
+-}
+-
+-iamgoingahead()
+-{
+-        while [ 1 ]
+-        do
+-                if [ ! -d /proc/$otherpid ]
+-                then
+-                        return $FAIL
+-                fi
+-                str=`cat $lockfile 2> /dev/null`
+-                pid=$(echo $str | awk '{print $1}')
+-                error=$(echo $str | awk '{print $2}')
+-                if [ "$pid" == "$$" ]
+-                then
+-                        return $error
+-                fi
+-                sleep 1
+-        done
+-}
+-
+-goahead()
+-{
+-        set -x
+-        ret=$SUCCESS
+-        if [ -n "$1" ]
+-        then
+-                ret=$1
+-        fi
+-        echo "$otherpid $ret" >| $lockfile
+-        set +x
+-}
+diff --git a/testcases/kernel/fs/fs_bind/bin/smount.c b/testcases/kernel/fs/fs_bind/bin/smount.c
+deleted file mode 100644
+index 9484687ee..000000000
+--- a/testcases/kernel/fs/fs_bind/bin/smount.c
 +++ /dev/null
-@@ -1,44 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--ls
--ls dir*
--mount --bind "$disk2" dir2/a
--check dir1/a dir2/a
--echo dir1/a
--ls dir1/a
--
--goahead
--iamgoingahead
--check "$disk3" dir1/b dir2/b
--echo dir2/b
--ls dir2/b
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent02 b/testcases/kernel/fs/fs_bind/cloneNS/parent02
-deleted file mode 100755
-index 56b3c9072..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent02
-+++ /dev/null
-@@ -1,45 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--ls
--ls dir*
--mount --bind "$disk2" dir1/a
--check dir1/a dir2/a
--
--mount --bind "$disk3" dir2/b
--check -n dir1/b dir2/b
--
--goahead
--iamgoingahead
--
--check "$disk2" dir1/a dir2/a
--check "$disk4" dir1/c dir2/c
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent03 b/testcases/kernel/fs/fs_bind/cloneNS/parent03
-deleted file mode 100755
-index e9c3b77c5..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent03
-+++ /dev/null
-@@ -1,34 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--check "$disk1" dir1
--goahead
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent04 b/testcases/kernel/fs/fs_bind/cloneNS/parent04
-deleted file mode 100755
-index 58ac7306d..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent04
-+++ /dev/null
-@@ -1,37 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--mount --bind "$disk2" dir1/a
--goahead
--iamgoingahead
--check -n "$disk3" dir1/b
--
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent05 b/testcases/kernel/fs/fs_bind/cloneNS/parent05
-deleted file mode 100755
-index 3aa69dfe4..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent05
-+++ /dev/null
-@@ -1,45 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--mount --bind "$disk2" parent/child1/a
--check parent/child1/a parent/child2/child1/a
--
--mount --bind "$disk3" parent/child2/child1/b
--check parent/child1/b parent/child2/child1/b
--
--goahead
--iamgoingahead
--
--check "$disk4" parent/child2/child1/c parent/child1/c
--check -n "$disk3" parent/child1/b
--check parent/child1/b parent/child2/child1/b
--
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent06 b/testcases/kernel/fs/fs_bind/cloneNS/parent06
-deleted file mode 100755
-index 0f3e87f89..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent06
-+++ /dev/null
-@@ -1,51 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--mount --rbind "$disk1" dir1/x
--
--check dir1/x dir2/x dir3/x dir4/x
--
--mount --rbind "$disk2" dir2/x/a
--check -n dir1/x/a dir2/x/a
--check dir2/x/a dir3/x/a dir4/x/a
--
--
--goahead
--iamgoingahead
--
--check -n dir1/x/b dir3/x/b
--check -n dir2/x/b dir3/x/b
--check dir3/x/b dir4/x/b
--check "$disk3" dir3/x/b
--
--check -n "$disk4" dir4/x/c
--check dir1/x/c dir2/x/c dir3/x/c dir4/x/c
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/cloneNS/parent07 b/testcases/kernel/fs/fs_bind/cloneNS/parent07
-deleted file mode 100755
-index 6a5109f7c..000000000
---- a/testcases/kernel/fs/fs_bind/cloneNS/parent07
-+++ /dev/null
-@@ -1,48 +0,0 @@
--#
--# Copyright (c) International Business Machines  Corp., 2005
--# Author: Avantika Mathur (mathurav@us.ibm.com)
--#
--# This library is free software; you can redistribute it and/or
--# modify it under the terms of the GNU Lesser General Public
--# License as published by the Free Software Foundation; either
--# version 2.1 of the License, or (at your option) any later version.
--#
--# This library is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--# Lesser General Public License for more details.
--#
--# You should have received a copy of the GNU Lesser General Public
--# License along with this library; if not, write to the Free Software
--# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--#
--
--
--. "${FS_BIND_ROOT}/bin/setup"
--. "${FS_BIND_ROOT}/bin/setupnslock"
--
--startparent
--iamgoingahead
--
--
--result=0
--
--check parent2 parent2/a parent2/a/a
--
--mount --bind "$disk2" parent2/b
--check parent2/b parent2/a/b parent2/a/a/b
--
--
--goahead
--iamgoingahead
--
--
--check parent2 parent2/a parent2/a/a
--check parent2/c parent2/a/c parent2/a/a/c
--
--umount parent2/a/a/c
--check parent2/c parent2/a/c parent2/a/a/c
--goahead
--
--exit $result
--
-diff --git a/testcases/kernel/fs/fs_bind/fs_bind_lib.sh b/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
-index b644ef512..f301c126d 100644
---- a/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
-+++ b/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
-@@ -28,6 +28,8 @@ FS_BIND_DISK2="disk2"
- FS_BIND_DISK3="disk3"
- FS_BIND_DISK4="disk4"
- 
-+FS_BIND_MNTNS_PID=
-+
- # Creates a directory and bind-mounts it to itself.
- # usage: fs_bind_makedir share_mode directory
- # where
-@@ -68,16 +70,24 @@ fs_bind_makedir()
- #              If -n is given, only two directories are allowed.
- fs_bind_check()
- {
--	local expect_diff args msg dir1 dir2 fail output
-+	local OPTIND expect_diff use_ns args msg dir1 dir2 fail output
- 	expect_diff=0
--	while getopts "n" args; do
-+	use_ns=0
-+	while getopts "ns" args; do
- 		case "$args" in
--		n) expect_diff=1; shift; ;;
-+		n) expect_diff=1; ;;
-+		s) use_ns=1; ;;
- 		esac
- 	done
-+	shift $((OPTIND-1))
- 	msg="Check"
- 	[ $expect_diff -eq 1 ] && msg="$msg no"
--	msg="$msg propagation $*"
-+	msg="$msg propagation"
-+	if [ $use_ns -eq 1 ]; then
-+		[ -z "$FS_BIND_MNTNS_PID" ] && tst_brk TBROK "Namespace does not exist"
-+		msg="$msg in mnt namespace"
-+	fi
-+	msg="$msg $*"
- 
- 	if [ $# -lt 2 ] || ( [ $expect_diff -eq 1 ] && [ $# -ne 2 ] ); then
- 		tst_brk TBROK "Insufficient arguments"
-@@ -102,7 +112,11 @@ fs_bind_check()
- 	        fi
- 	    fi
- 
--		output="$(diff -r "$dir1" "$dir2" 2> /dev/null)"
-+		if [ $use_ns -eq 1 ]; then
-+			output="$(ns_exec ${FS_BIND_MNTNS_PID} mnt diff -r "$PWD/$dir1" "$PWD/$dir2" 2> /dev/null)"
-+		else
-+			output="$(diff -r "$dir1" "$dir2" 2> /dev/null)"
-+		fi
- 
- 		if [ $? -ne 0 ]; then
- 			if [ $expect_diff -eq 1 ]; then
-@@ -184,10 +198,30 @@ _fs_bind_setup_test()
- 	done
- }
- 
-+fs_bind_create_ns()
-+{
-+	[ -n "$FS_BIND_MNTNS_PID" ] && tst_brk TBROK "Namespace exist already"
-+	FS_BIND_MNTNS_PID=$(ns_create mnt)
-+}
-+
-+fs_bind_exec_ns()
-+{
-+	[ -z "$FS_BIND_MNTNS_PID" ] && tst_brk TBROK "Namespace does not exist"
-+	EXPECT_PASS ns_exec $FS_BIND_MNTNS_PID mnt "$@"
-+}
-+
-+fs_bind_destroy_ns()
-+{
-+	[ -n "$FS_BIND_MNTNS_PID" ] && kill $FS_BIND_MNTNS_PID 2>/dev/null
-+	FS_BIND_MNTNS_PID=
-+}
-+
- _fs_bind_cleanup_test()
- {
- 	local mounts
- 
-+	fs_bind_destroy_ns
-+
- 	mounts=$( awk -v tmp="$TST_TMPDIR/$FS_BIND_SANDBOX/" '
- 		index($2, tmp) {
- 			print substr($2, length(tmp) + 1)
+@@ -1,73 +0,0 @@
+-//
+-//this code was developed my Miklos Szeredi <miklos@szeredi.hu>
+-//and modified by Ram Pai <linuxram@us.ibm.com>
+-// sample usage:
+-//              newmount /tmp shared
+-//
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-
+-#include <unistd.h>
+-#include <sys/mount.h>
+-#include <sys/fsuid.h>
+-
+-#ifndef MS_REC
+-#define MS_REC		0x4000	/* 16384: Recursive loopback */
+-#endif
+-
+-#ifndef MS_SHARED
+-#define MS_SHARED		1<<20	/* Shared */
+-#endif
+-
+-#ifndef MS_PRIVATE
+-#define MS_PRIVATE		1<<18	/* Private */
+-#endif
+-
+-#ifndef MS_SLAVE
+-#define MS_SLAVE		1<<19	/* Slave */
+-#endif
+-
+-#ifndef MS_UNCLONE
+-#define MS_UNCLONE		1<<17	/* UNCLONE */
+-#endif
+-
+-int main(int argc, char *argv[])
+-{
+-	int type;
+-	if (argc != 3) {
+-		fprintf(stderr, "usage: %s DIR "
+-			"[rshared|rslave|rprivate|runclone|shared|slave|private|unclone]\n",
+-			argv[0]);
+-		return 1;
+-	}
+-
+-	fprintf(stdout, "%s %s %s\n", argv[0], argv[1], argv[2]);
+-
+-	if (strcmp(argv[2], "rshared") == 0)
+-		type = (MS_SHARED | MS_REC);
+-	else if (strcmp(argv[2], "rslave") == 0)
+-		type = (MS_SLAVE | MS_REC);
+-	else if (strcmp(argv[2], "rprivate") == 0)
+-		type = (MS_PRIVATE | MS_REC);
+-	else if (strcmp(argv[2], "runclone") == 0)
+-		type = (MS_UNCLONE | MS_REC);
+-	else if (strcmp(argv[2], "shared") == 0)
+-		type = MS_SHARED;
+-	else if (strcmp(argv[2], "slave") == 0)
+-		type = MS_SLAVE;
+-	else if (strcmp(argv[2], "private") == 0)
+-		type = MS_PRIVATE;
+-	else if (strcmp(argv[2], "unclone") == 0)
+-		type = MS_UNCLONE;
+-	else {
+-		fprintf(stderr, "invalid operation: %s\n", argv[2]);
+-		return 1;
+-	}
+-	setfsuid(getuid());
+-	if (mount("", argv[1], "ext2", type, "") == -1) {
+-		perror("mount");
+-		return 1;
+-	}
+-	return 0;
+-}
 -- 
 2.25.1
 
