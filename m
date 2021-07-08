@@ -1,29 +1,43 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 8 Jul 2021 21:35:11 +0800
-Subject: [LTP] [PATCH] gethostid: skip test if sethostid undefined
-In-Reply-To: <YOb2ddFMEW1aniyI@yuki>
-References: <20210708130602.970689-1-liwang@redhat.com> <YOb2ddFMEW1aniyI@yuki>
-Message-ID: <CAEemH2ej5BBxppxOLnL-+QTRSChj+M8bVX_Abk75bUULrHpovg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 8 Jul 2021 15:11:31 +0200
+Subject: [LTP] [PATCH 3/7] meltdown: Set CFLAGS for check targets
+In-Reply-To: <20210629072710.23800-4-rpalethorpe@suse.com>
+References: <20210629072710.23800-1-rpalethorpe@suse.com>
+ <20210629072710.23800-4-rpalethorpe@suse.com>
+Message-ID: <YOb5g66KfDWx77Hr@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > --- a/testcases/kernel/syscalls/gethostid/gethostid01.c
-> > +++ b/testcases/kernel/syscalls/gethostid/gethostid01.c
-> > @@ -26,6 +26,8 @@
-> >
-> >  #include "tst_test.h"
->
-> Shouldn't we include config.h here?
->
+Hi!
+> The include set in the CFLAGS is necessary for Sparse to parse the
+> test source. If a specific target has variables set on it. Then these
+> won't be available to the corresponding check-target. Usually this is
+> not a problem because most variables set on a target are just for
+> linking and the checker doesn't need them.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  testcases/cve/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+> index ddf8b6fe1..7b011b6c9 100644
+> --- a/testcases/cve/Makefile
+> +++ b/testcases/cve/Makefile
+> @@ -19,6 +19,7 @@ cve-2014-0196:  LDLIBS += -lutil
+>  endif
+>  
+>  meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
+> +check-meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
 
-Yes, merged with including. Thanks for the quick reply.
+Uff, this will likely bite us in a different ways later on.
+
+I guess that it would be cleaner to move the libtsc.h into top level
+include so that it's clear that the header is used in several tests.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210708/f407eb87/attachment.htm>
+Cyril Hrubis
+chrubis@suse.cz
