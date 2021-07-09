@@ -1,172 +1,83 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri,  9 Jul 2021 15:52:02 +0800
-Subject: [LTP] [PATCH v3 1/3] lib: add new function tst_get_device_size
-Message-ID: <20210709075204.999168-1-liwang@redhat.com>
+Date: Fri,  9 Jul 2021 15:52:03 +0800
+Subject: [LTP] [PATCH v3 2/3] lib: limit the size of tmpfs in LTP
+In-Reply-To: <20210709075204.999168-1-liwang@redhat.com>
+References: <20210709075204.999168-1-liwang@redhat.com>
+Message-ID: <20210709075204.999168-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+LTP mount and make use of the whole tmpfs of the test system,
+generally, it's fine. But if a test (e.g fallocate06) try to
+fill full in the filesystem, it takes too long to complete
+testing on a large memory system.
+
+This patch adds a new function limit_tmpfs_mount_size with
+appending '-o size=xxM' to the mount options in prepare_device()
+which helps limit the tmpfs mount size.
+
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- doc/c-test-api.txt   | 10 ++++++
- include/tst_device.h |  7 ++++
- lib/tst_device.c     | 76 +++++++++++++++++++++++++-------------------
- 3 files changed, 60 insertions(+), 33 deletions(-)
+ lib/tst_test.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 4af1a9c97..e4ba858cf 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -979,6 +979,16 @@ This function finds the block dev that this path belongs to, it uses stat functi
- to get the major/minor number of the path. Then scan them in "/proc/self/mountinfo"
- and list 2th column value after ' - ' string as its block dev if match succeeds.
- 
-+[source,c]
-+-------------------------------------------------------------------------------
-+#include "tst_test.h"
-+
-+uint64_t tst_get_device_size(const char *dev_path);
-+-------------------------------------------------------------------------------
-+
-+This function gets size of the given block device, it checks the dev_path is
-+valid first, if yes, return the size in MB, otherwise return -1.
-+
- 1.16 Formatting a device with a filesystem
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 1d1246e82..72c560c02 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -7,10 +7,12 @@
- #define TST_DEVICE_H__
- 
- #include <unistd.h>
-+#include <stdint.h>
- 
- struct tst_device {
- 	const char *dev;
- 	const char *fs_type;
-+	uint64_t size;
- };
- 
- /*
-@@ -57,6 +59,11 @@ int tst_find_free_loopdev(const char *path, size_t path_len);
-  */
- int tst_attach_device(const char *dev_path, const char *file_path);
- 
-+/*
-+ * Get size (in MB) of the given device
-+ */
-+uint64_t tst_get_device_size(const char *dev_path);
-+
- /*
-  * Detaches a file from a loop device fd.
-  *
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index c096b418b..c91c6cd55 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -187,6 +187,48 @@ int tst_attach_device(const char *dev, const char *file)
- 	return 0;
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 55449c80b..b996f1b2e 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -882,8 +882,26 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 	}
  }
  
-+uint64_t tst_get_device_size(const char *dev_path)
++static char *limit_tmpfs_mount_size(const char *mnt_data,
++		char *buf, size_t buf_size, const char *fs_type)
 +{
-+	int fd;
-+	uint64_t size;
-+	struct stat st;
++	if (strcmp(fs_type, "tmpfs"))
++		return mnt_data;
 +
-+	if (!dev_path)
-+		tst_brkm(TBROK, NULL, "No block device path");
++	if (mnt_data)
++		snprintf(buf, buf_size, "%s,size=%luM", mnt_data, tdev.size);
++	else
++		snprintf(buf, buf_size, "size=%luM", tdev.size);
 +
-+	if (stat(dev_path, &st)) {
-+		tst_resm(TWARN | TERRNO, "stat() failed");
-+		return -1;
-+	}
++	tst_res(TINFO, "Limiting tmpfs size to %luMB", tdev.size);
 +
-+	if (!S_ISBLK(st.st_mode)) {
-+		tst_resm(TWARN, "%s is not a block device", dev_path);
-+		return -1;
-+	}
-+
-+	fd = open(dev_path, O_RDONLY);
-+	if (fd < 0) {
-+		tst_resm(TWARN | TERRNO,
-+				"open(%s, O_RDONLY) failed", dev_path);
-+		return -1;
-+	}
-+
-+	if (ioctl(fd, BLKGETSIZE64, &size)) {
-+		tst_resm(TWARN | TERRNO,
-+				"ioctl(fd, BLKGETSIZE64, ...) failed");
-+		close(fd);
-+		return -1;
-+	}
-+
-+	if (close(fd)) {
-+		tst_resm(TWARN | TERRNO,
-+				"close(fd) failed");
-+		return -1;
-+	}
-+
-+	return size/1024/1024;
++	return buf;
 +}
 +
- int tst_detach_device_by_fd(const char *dev, int dev_fd)
+ static void prepare_device(void)
  {
- 	int ret, i;
-@@ -254,9 +296,7 @@ const char *tst_acquire_loop_device(unsigned int size, const char *filename)
++	char *mnt_data, buf[1024];
++
+ 	if (tst_test->format_device) {
+ 		SAFE_MKFS(tdev.dev, tdev.fs_type, tst_test->dev_fs_opts,
+ 			  tst_test->dev_extra_opts);
+@@ -896,8 +914,11 @@ static void prepare_device(void)
+ 	}
  
- const char *tst_acquire_device__(unsigned int size)
- {
--	int fd;
- 	const char *dev;
--	struct stat st;
- 	unsigned int acq_dev_size;
- 	uint64_t ltp_dev_size;
+ 	if (tst_test->mount_device) {
++		mnt_data = limit_tmpfs_mount_size(tst_test->mnt_data,
++				buf, sizeof(buf), tdev.fs_type);
++
+ 		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
+-			   tst_test->mnt_flags, tst_test->mnt_data);
++			   tst_test->mnt_flags, mnt_data);
+ 		mntpoint_mounted = 1;
+ 	}
+ }
+@@ -1015,6 +1036,8 @@ static void do_setup(int argc, char *argv[])
+ 		if (!tdev.dev)
+ 			tst_brk(TCONF, "Failed to acquire device");
  
-@@ -267,37 +307,7 @@ const char *tst_acquire_device__(unsigned int size)
- 	if (dev) {
- 		tst_resm(TINFO, "Using test device LTP_DEV='%s'", dev);
++		tdev.size = tst_get_device_size(tdev.dev);
++
+ 		tst_device = &tdev;
  
--		if (stat(dev, &st)) {
--			tst_resm(TWARN | TERRNO, "stat() failed");
--			return NULL;
--		}
--
--		if (!S_ISBLK(st.st_mode)) {
--			tst_resm(TWARN, "%s is not a block device", dev);
--			return NULL;
--		}
--
--		fd = open(dev, O_RDONLY);
--		if (fd < 0) {
--			tst_resm(TWARN | TERRNO,
--				 "open(%s, O_RDONLY) failed", dev);
--			return NULL;
--		}
--
--		if (ioctl(fd, BLKGETSIZE64, &ltp_dev_size)) {
--			tst_resm(TWARN | TERRNO,
--				 "ioctl(fd, BLKGETSIZE64, ...) failed");
--			close(fd);
--			return NULL;
--		}
--
--		if (close(fd)) {
--			tst_resm(TWARN | TERRNO,
--				 "close(fd) failed");
--			return NULL;
--		}
--
--		ltp_dev_size = ltp_dev_size/1024/1024;
-+		ltp_dev_size = tst_get_device_size(dev);
- 
- 		if (acq_dev_size <= ltp_dev_size)
- 			return dev;
+ 		if (tst_test->dev_fs_type)
 -- 
 2.31.1
 
