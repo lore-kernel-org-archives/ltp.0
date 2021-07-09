@@ -1,49 +1,172 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 09 Jul 2021 08:49:25 +0100
-Subject: [LTP] [PATCH 3/7] meltdown: Set CFLAGS for check targets
-In-Reply-To: <YOb5g66KfDWx77Hr@yuki>
-References: <20210629072710.23800-1-rpalethorpe@suse.com>
- <20210629072710.23800-4-rpalethorpe@suse.com> <YOb5g66KfDWx77Hr@yuki>
-Message-ID: <874kd46i62.fsf@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Fri,  9 Jul 2021 15:52:02 +0800
+Subject: [LTP] [PATCH v3 1/3] lib: add new function tst_get_device_size
+Message-ID: <20210709075204.999168-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ doc/c-test-api.txt   | 10 ++++++
+ include/tst_device.h |  7 ++++
+ lib/tst_device.c     | 76 +++++++++++++++++++++++++-------------------
+ 3 files changed, 60 insertions(+), 33 deletions(-)
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
-> Hi!
->> The include set in the CFLAGS is necessary for Sparse to parse the
->> test source. If a specific target has variables set on it. Then these
->> won't be available to the corresponding check-target. Usually this is
->> not a problem because most variables set on a target are just for
->> linking and the checker doesn't need them.
->> 
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->>  testcases/cve/Makefile | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
->> index ddf8b6fe1..7b011b6c9 100644
->> --- a/testcases/cve/Makefile
->> +++ b/testcases/cve/Makefile
->> @@ -19,6 +19,7 @@ cve-2014-0196:  LDLIBS += -lutil
->>  endif
->>  
->>  meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
->> +check-meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
->
-> Uff, this will likely bite us in a different ways later on.
->
-> I guess that it would be cleaner to move the libtsc.h into top level
-> include so that it's clear that the header is used in several tests.
-
-+1
-
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index 4af1a9c97..e4ba858cf 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -979,6 +979,16 @@ This function finds the block dev that this path belongs to, it uses stat functi
+ to get the major/minor number of the path. Then scan them in "/proc/self/mountinfo"
+ and list 2th column value after ' - ' string as its block dev if match succeeds.
+ 
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++uint64_t tst_get_device_size(const char *dev_path);
++-------------------------------------------------------------------------------
++
++This function gets size of the given block device, it checks the dev_path is
++valid first, if yes, return the size in MB, otherwise return -1.
++
+ 1.16 Formatting a device with a filesystem
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 1d1246e82..72c560c02 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -7,10 +7,12 @@
+ #define TST_DEVICE_H__
+ 
+ #include <unistd.h>
++#include <stdint.h>
+ 
+ struct tst_device {
+ 	const char *dev;
+ 	const char *fs_type;
++	uint64_t size;
+ };
+ 
+ /*
+@@ -57,6 +59,11 @@ int tst_find_free_loopdev(const char *path, size_t path_len);
+  */
+ int tst_attach_device(const char *dev_path, const char *file_path);
+ 
++/*
++ * Get size (in MB) of the given device
++ */
++uint64_t tst_get_device_size(const char *dev_path);
++
+ /*
+  * Detaches a file from a loop device fd.
+  *
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index c096b418b..c91c6cd55 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -187,6 +187,48 @@ int tst_attach_device(const char *dev, const char *file)
+ 	return 0;
+ }
+ 
++uint64_t tst_get_device_size(const char *dev_path)
++{
++	int fd;
++	uint64_t size;
++	struct stat st;
++
++	if (!dev_path)
++		tst_brkm(TBROK, NULL, "No block device path");
++
++	if (stat(dev_path, &st)) {
++		tst_resm(TWARN | TERRNO, "stat() failed");
++		return -1;
++	}
++
++	if (!S_ISBLK(st.st_mode)) {
++		tst_resm(TWARN, "%s is not a block device", dev_path);
++		return -1;
++	}
++
++	fd = open(dev_path, O_RDONLY);
++	if (fd < 0) {
++		tst_resm(TWARN | TERRNO,
++				"open(%s, O_RDONLY) failed", dev_path);
++		return -1;
++	}
++
++	if (ioctl(fd, BLKGETSIZE64, &size)) {
++		tst_resm(TWARN | TERRNO,
++				"ioctl(fd, BLKGETSIZE64, ...) failed");
++		close(fd);
++		return -1;
++	}
++
++	if (close(fd)) {
++		tst_resm(TWARN | TERRNO,
++				"close(fd) failed");
++		return -1;
++	}
++
++	return size/1024/1024;
++}
++
+ int tst_detach_device_by_fd(const char *dev, int dev_fd)
+ {
+ 	int ret, i;
+@@ -254,9 +296,7 @@ const char *tst_acquire_loop_device(unsigned int size, const char *filename)
+ 
+ const char *tst_acquire_device__(unsigned int size)
+ {
+-	int fd;
+ 	const char *dev;
+-	struct stat st;
+ 	unsigned int acq_dev_size;
+ 	uint64_t ltp_dev_size;
+ 
+@@ -267,37 +307,7 @@ const char *tst_acquire_device__(unsigned int size)
+ 	if (dev) {
+ 		tst_resm(TINFO, "Using test device LTP_DEV='%s'", dev);
+ 
+-		if (stat(dev, &st)) {
+-			tst_resm(TWARN | TERRNO, "stat() failed");
+-			return NULL;
+-		}
+-
+-		if (!S_ISBLK(st.st_mode)) {
+-			tst_resm(TWARN, "%s is not a block device", dev);
+-			return NULL;
+-		}
+-
+-		fd = open(dev, O_RDONLY);
+-		if (fd < 0) {
+-			tst_resm(TWARN | TERRNO,
+-				 "open(%s, O_RDONLY) failed", dev);
+-			return NULL;
+-		}
+-
+-		if (ioctl(fd, BLKGETSIZE64, &ltp_dev_size)) {
+-			tst_resm(TWARN | TERRNO,
+-				 "ioctl(fd, BLKGETSIZE64, ...) failed");
+-			close(fd);
+-			return NULL;
+-		}
+-
+-		if (close(fd)) {
+-			tst_resm(TWARN | TERRNO,
+-				 "close(fd) failed");
+-			return NULL;
+-		}
+-
+-		ltp_dev_size = ltp_dev_size/1024/1024;
++		ltp_dev_size = tst_get_device_size(dev);
+ 
+ 		if (acq_dev_size <= ltp_dev_size)
+ 			return dev;
 -- 
-Thank you,
-Richard.
+2.31.1
+
