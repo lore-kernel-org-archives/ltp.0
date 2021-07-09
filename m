@@ -1,57 +1,20 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri,  9 Jul 2021 15:52:04 +0800
-Subject: [LTP] [PATCH v3 3/3] lib: mount tmpfs name as ltp-tmpfs
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 9 Jul 2021 10:03:01 +0200
+Subject: [LTP] [PATCH v3 1/3] lib: add new function tst_get_device_size
 In-Reply-To: <20210709075204.999168-1-liwang@redhat.com>
 References: <20210709075204.999168-1-liwang@redhat.com>
-Message-ID: <20210709075204.999168-3-liwang@redhat.com>
+Message-ID: <YOgCtfqdl4719aXr@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Given a specific name as "ltp-tmpfs" instead of the "/dev/loopX"
-string in order to make "tmpfs" filesystem more evident.
+Hi!
+The whole patchset looks good.
 
-Achieve that in get_device_name() function.
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Li Wang <liwang@redhat.com>
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_test.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index b996f1b2e..f4d9f8e3b 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -898,6 +898,14 @@ static char *limit_tmpfs_mount_size(const char *mnt_data,
- 	return buf;
- }
- 
-+static const char *get_device_name(const char *fs_type)
-+{
-+       if (!strcmp(fs_type, "tmpfs"))
-+               return "ltp-tmpfs";
-+       else
-+               return tdev.dev;
-+}
-+
- static void prepare_device(void)
- {
- 	char *mnt_data, buf[1024];
-@@ -917,8 +925,8 @@ static void prepare_device(void)
- 		mnt_data = limit_tmpfs_mount_size(tst_test->mnt_data,
- 				buf, sizeof(buf), tdev.fs_type);
- 
--		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
--			   tst_test->mnt_flags, mnt_data);
-+		SAFE_MOUNT(get_device_name(tdev.fs_type), tst_test->mntpoint,
-+				tdev.fs_type, tst_test->mnt_flags, mnt_data);
- 		mntpoint_mounted = 1;
- 	}
- }
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
