@@ -1,8 +1,10 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Mon, 12 Jul 2021 10:52:22 +0300
-Subject: [LTP] [PATCH v2 1/2] shmget03: don't depend on existed shared
+Date: Mon, 12 Jul 2021 10:52:23 +0300
+Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
  resources
-Message-ID: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+In-Reply-To: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210712075223.10682-2-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,85 +19,60 @@ Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
 v2: * Move the loop to the test run function and try to get
       ENOSPC errno there.
-    * Rename queues* to segments*
 
- .../kernel/syscalls/ipc/shmget/shmget03.c     | 42 ++++++++++---------
- 1 file changed, 22 insertions(+), 20 deletions(-)
+ .../kernel/syscalls/ipc/msgget/msgget03.c     | 31 ++++++++++---------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-index efbc465e1..5dc5d55fd 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-@@ -21,47 +21,49 @@
- #include "tst_safe_sysv_ipc.h"
- #include "libnewipc.h"
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+index 76cf82cd3..1ade8f942 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+@@ -26,29 +26,30 @@ static key_t msgkey;
  
--static int *queues;
--static int maxshms, queue_cnt;
-+static int *segments;
-+static int maxshms, segments_cnt;
- static key_t shmkey;
- 
- static void verify_shmget(void)
+ static void verify_msgget(void)
  {
--	TST_EXP_FAIL2(shmget(shmkey + maxshms, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW), ENOSPC,
--		"shmget(%i, %i, %i)", shmkey + maxshms, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
+-	TST_EXP_FAIL2(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL), ENOSPC,
+-		"msgget(%i, %i)", msgkey + maxmsgs, IPC_CREAT | IPC_EXCL);
 +	int res = 0, num;
 +
 +	errno = 0;
-+	for (num = 0; num <= maxshms; ++num) {
-+		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
++	for (num = 0; num <= maxmsgs; ++num) {
++		res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
 +		if (res == -1)
 +			break;
-+		segments[segments_cnt++] = res;
++		queues[queue_cnt++] = res;
 +	}
 +
 +	if (res != -1 || errno != ENOSPC)
 +		tst_brk(TFAIL | TERRNO, "Failed to trigger ENOSPC error");
 +
-+	tst_res(TPASS, "Maximum number of segments reached (%d), used by test %d",
-+		maxshms, segments_cnt);
++	tst_res(TPASS, "Maximum number of queues reached (%d), used by test %d",
++		maxmsgs, queue_cnt);
  }
  
  static void setup(void)
  {
 -	int res, num;
 -
- 	shmkey = GETIPCKEY();
+ 	msgkey = GETIPCKEY();
  
- 	SAFE_FILE_SCANF("/proc/sys/kernel/shmmni", "%i", &maxshms);
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/msgmni", "%i", &maxmsgs);
  
--	queues = SAFE_MALLOC(maxshms * sizeof(int));
--	for (num = 0; num < maxshms; num++) {
--		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
--		if (res == -1)
--			tst_brk(TBROK | TERRNO, "shmget failed unexpectedly");
+-	queues = SAFE_MALLOC(maxmsgs * sizeof(int));
 -
+-	for (num = 0; num < maxmsgs; num++) {
+-		res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
+-		if (res == -1)
+-			tst_brk(TBROK | TERRNO, "msgget failed unexpectedly");
 -		queues[queue_cnt++] = res;
 -	}
--	tst_res(TINFO, "The maximum number of memory segments (%d) has been reached",
--		maxshms);
-+	segments = SAFE_MALLOC((maxshms + 1) * sizeof(int));
+-
+-	tst_res(TINFO, "The maximum number of message queues (%d) reached",
+-		maxmsgs);
++	queues = SAFE_MALLOC((maxmsgs + 1) * sizeof(int));
  }
  
  static void cleanup(void)
- {
- 	int num;
- 
--	if (!queues)
-+	if (!segments)
- 		return;
- 
--	for (num = 0; num < queue_cnt; num++)
--		SAFE_SHMCTL(queues[num], IPC_RMID, NULL);
-+	for (num = 0; num < segments_cnt; num++)
-+		SAFE_SHMCTL(segments[num], IPC_RMID, NULL);
- 
--	free(queues);
-+	free(segments);
- }
- 
- static struct tst_test test = {
 -- 
 2.25.1
 
