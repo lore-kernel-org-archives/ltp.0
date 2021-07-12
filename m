@@ -1,23 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Jul 2021 17:11:17 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/read04: Convert to new API
-In-Reply-To: <20210610091043.900863-2-ruansy.fnst@fujitsu.com>
-References: <20210610091043.900863-1-ruansy.fnst@fujitsu.com>
- <20210610091043.900863-2-ruansy.fnst@fujitsu.com>
-Message-ID: <YOxblezBZT3trfTi@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 12 Jul 2021 18:12:30 +0200
+Subject: [LTP] [PATCH 1/1] tst_net.sh: Declare prefix variable as empty
+In-Reply-To: <34959e10-45fc-f7ea-9e2d-ebe186a97859@jv-coder.de>
+References: <20210709140143.9180-1-pvorel@suse.cz>
+ <CAEemH2fB5VakafKhTgcOsvwK6Q50AJ3WcpRY2fSLfhB86b03Nw@mail.gmail.com>
+ <YOvX/tczl7Duu+6L@pevik>
+ <34959e10-45fc-f7ea-9e2d-ebe186a97859@jv-coder.de>
+Message-ID: <YOxp7pwIQKDiT3bs@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
+Hi all,
 
-The main change was that I renamed the TST_SIZE to PALFA_LEN since
-anything with tst_ or TST_ prefix is reserved for the test library, test
-must not define ideintifiers with these prefixes.
+> in tst_ipaddr_un(). This is required to fix problem on dash, which
+> (unlike bash and busybox ash implementation) takes value of previously
+> defined variable, i.e.  guarding with local does not work:
+> 
+> $ foo=ee; bar() { local foo; echo "foo: '$foo'"; }; bar
+> foo: 'ee'
+> 
+> It requires declare it as empty:
+> $ foo=ee; bar() { local foo=; echo "foo: '$foo'"; }; bar
+> foo: ''
+> 
+> This problem seems to be on various dash versions from 0.5.8 to
+> 0.5.11+git20200708+dd9ef66-5 (on Debian oldstable, stable, testing).
+> It'd require to set all variables, but now fix just prefix, which is
+> used in build.sh and it's quite common name.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+FYI this behavior is expected on dash, quoting man dash(1):
+"When a variable is made local, it inherits the initial value and exported and
+readonly flags from the variable with the same name in the surrounding scope, if
+there is one."
+
+Kind regards,
+Petr
