@@ -1,45 +1,145 @@
 From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Mon, 12 Jul 2021 02:31:52 +0000
-Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
- exist
-In-Reply-To: <YObpRzTjx8T2GAZn@yuki>
-References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
- <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
- <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
- <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
- <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
- <60E50AB4.7050404@fujitsu.com> <YObbKCNKUoC7lSxd@pevik>
- <YObpRzTjx8T2GAZn@yuki>
-Message-ID: <60EBA9C3.4050103@fujitsu.com>
+Date: Mon, 12 Jul 2021 02:37:04 +0000
+Subject: [LTP] [PATCH v1 3/4] syscalls/shmget05: Add test for
+ /proc/sys/kernel/shm_next_id
+In-Reply-To: <60DA92E9.40103@fujitsu.com>
+References: <1620809541-6891-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1620809541-6891-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ <60DA92E9.40103@fujitsu.com>
+Message-ID: <60EBAAFC.30205@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All
-> Hi!
->>>> Yes, good point, that would be more precise for ENOSPC testing.
->>> AFAIK, ltp doesn't support parallel test now. I think parallel test
->>> maybe a future plan that is why we use docparase to collect each case's
->>> used resources(so we can convert many groups, like pid, memory, disk
->>> space..., then we can run pid group and memory groups test case parallelly).
->> Yes, parallel support is not supported atm. Richie and Cyril has done some work
->> on runltp-ng to support it. Yes, first it's needed to add support in resources
->> (docparse), see Cyril's old block post [1].
->
-> Besides most of the SHM tests will crash and burn if executed in
-> parallel. The SysV IPC shares a global namespace and because of that we
-> can't really write tests without assuming that we are the only one
-> manipulating them when the test is executed.
-I guess we should reach a consensus that how to fix this problem
-1)use for loop to trigger this error
-2)use CLONE_NEWIPC to trigger this error
-3)Or we are the only one that use shm and we can add a api to count the 
-existed_cnt
+Hi
+Ping.
 
-ps: I don't want to leave this problem too long time.
+ps:On lastest ltp, this patch still can be merged without rebase.
 
 Best Regards
 Yang Xu
->
+> Hi Cyril
+> 
+> Since the previous patches have been merged, this patch can be continued.
+> 
+> Best Regards
+> Yang Xu
+>> This case is similar to msgget04.c.
+>>
+>> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+>> ---
+>>    runtest/syscalls                              |  1 +
+>>    runtest/syscalls-ipc                          |  1 +
+>>    .../kernel/syscalls/ipc/shmget/.gitignore     |  1 +
+>>    .../kernel/syscalls/ipc/shmget/shmget05.c     | 69 +++++++++++++++++++
+>>    4 files changed, 72 insertions(+)
+>>    create mode 100644 testcases/kernel/syscalls/ipc/shmget/shmget05.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 2dff25984..63d821e53 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -1402,6 +1402,7 @@ shmdt02 shmdt02
+>>    shmget02 shmget02
+>>    shmget03 shmget03
+>>    shmget04 shmget04
+>> +shmget05 shmget05
+>>
+>>    sigaction01 sigaction01
+>>    sigaction02 sigaction02
+>> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+>> index b3bd37923..ff0364704 100644
+>> --- a/runtest/syscalls-ipc
+>> +++ b/runtest/syscalls-ipc
+>> @@ -67,3 +67,4 @@ shmdt02 shmdt02
+>>    shmget02 shmget02
+>>    shmget03 shmget03
+>>    shmget04 shmget04
+>> +shmget05 shmget05
+>> diff --git a/testcases/kernel/syscalls/ipc/shmget/.gitignore b/testcases/kernel/syscalls/ipc/shmget/.gitignore
+>> index c57df68f5..6f08529f8 100644
+>> --- a/testcases/kernel/syscalls/ipc/shmget/.gitignore
+>> +++ b/testcases/kernel/syscalls/ipc/shmget/.gitignore
+>> @@ -1,3 +1,4 @@
+>>    /shmget02
+>>    /shmget03
+>>    /shmget04
+>> +/shmget05
+>> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget05.c b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
+>> new file mode 100644
+>> index 000000000..601609648
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
+>> @@ -0,0 +1,69 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu<xuyang2018.jy@fujitsu.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * It is a basic test about shm_next_id.
+>> + *
+>> + * shm_next_id specifies desired id for next allocated IPC shared memory. By
+>> + * default they are equal to -1, which means generic allocation logic.
+>> + * Possible values to set are in range {0..INT_MAX}.
+>> + * Toggle with non-default value will be set back to -1 by kernel after
+>> + * successful IPC object allocation.
+>> + */
+>> +
+>> +#include<errno.h>
+>> +#include<string.h>
+>> +#include<sys/types.h>
+>> +#include<sys/ipc.h>
+>> +#include<sys/shm.h>
+>> +#include "tst_test.h"
+>> +#include "tst_safe_sysv_ipc.h"
+>> +#include "libnewipc.h"
+>> +
+>> +#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
+>> +static int shm_id, pid;
+>> +static key_t shmkey;
+>> +
+>> +static void verify_shmget(void)
+>> +{
+>> +	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
+>> +
+>> +	shm_id = SAFE_SHMGET(shmkey, SHM_SIZE, SHM_RW | IPC_CREAT);
+>> +	if (shm_id == pid)
+>> +		tst_res(TPASS, "shm_next_id succeeded, shm id %d", pid);
+>> +	else
+>> +		tst_res(TFAIL, "shm_next_id failed, expected id %d, but got %d", pid, shm_id);
+>> +
+>> +	TST_ASSERT_INT(NEXT_ID_PATH, -1);
+>> +	SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+>> +	pid++;
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	shmkey = GETIPCKEY();
+>> +	pid = getpid();
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (shm_id != -1)
+>> +		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.needs_tmpdir = 1,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.test_all = verify_shmget,
+>> +	.needs_kconfigs = (const char *[]) {
+>> +		"CONFIG_CHECKPOINT_RESTORE=y",
+>> +		NULL
+>> +	},
+>> +	.needs_root = 1,
+>> +};
+> 
