@@ -1,63 +1,109 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Mon, 12 Jul 2021 11:46:45 +0300
-Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
- exist
-In-Reply-To: <YOwASqNKNXBl4lqe@pevik>
-References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
- <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
- <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
- <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
- <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
- <60E50AB4.7050404@fujitsu.com> <YObbKCNKUoC7lSxd@pevik>
- <YObpRzTjx8T2GAZn@yuki> <60EBA9C3.4050103@fujitsu.com>
- <c81eee80-6cea-de14-aeff-8919495c4396@bell-sw.com> <YOwASqNKNXBl4lqe@pevik>
-Message-ID: <0b622e21-453c-5dc2-214e-c9c0a5d48f44@bell-sw.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 12 Jul 2021 16:55:46 +0800
+Subject: [LTP] [PATCH v2 1/2] shmget03: don't depend on existed shared
+ resources
+In-Reply-To: <CAEemH2d9gYfTE28m9bzXstSLWes36bbBo3EuoVvJa2AQpC2DXQ@mail.gmail.com>
+References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+ <CAEemH2ehOzddTbDqZBcbyZcnUy3899u_U81XGtckf1Gs_LJGMA@mail.gmail.com>
+ <af9eb653-4c75-938e-71b1-2e4050b39d26@bell-sw.com>
+ <CAEemH2d9gYfTE28m9bzXstSLWes36bbBo3EuoVvJa2AQpC2DXQ@mail.gmail.com>
+Message-ID: <CAEemH2djOOVXQCfhgMcz6Wgn=F+UvqDA0OvVm+45wjMwMUR9DQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12.07.2021 11:41, Petr Vorel wrote:
->> On 12.07.2021 05:31, xuyang2018.jy@fujitsu.com wrote:
->>> Hi All
->>>> Hi!
->>>>>>> Yes, good point, that would be more precise for ENOSPC testing.
->>>>>> AFAIK, ltp doesn't support parallel test now. I think parallel test
->>>>>> maybe a future plan that is why we use docparase to collect each case's
->>>>>> used resources(so we can convert many groups, like pid, memory, disk
->>>>>> space..., then we can run pid group and memory groups test case parallelly).
->>>>> Yes, parallel support is not supported atm. Richie and Cyril has done some work
->>>>> on runltp-ng to support it. Yes, first it's needed to add support in resources
->>>>> (docparse), see Cyril's old block post [1].
-> 
->>>> Besides most of the SHM tests will crash and burn if executed in
->>>> parallel. The SysV IPC shares a global namespace and because of that we
->>>> can't really write tests without assuming that we are the only one
->>>> manipulating them when the test is executed.
->>> I guess we should reach a consensus that how to fix this problem
->>> 1)use for loop to trigger this error
->>> 2)use CLONE_NEWIPC to trigger this error
-> 
->> Perhaps it can be done at the higher level, e.g. in the ltp tests
->> runner if some tests request it with a newipc flag...
-> Well, we have at least two runners (runltp which uses ltp-pan, runltp-ng) and we
-> also support running tests without runner, it'd be nice to solve this in LTP
-> API.
+On Mon, Jul 12, 2021 at 4:42 PM Li Wang <liwang@redhat.com> wrote:
 
-I didn't mean these runners, I was thinking about fork_testrun() in tst_test.c.
+>
+>
+> On Mon, Jul 12, 2021 at 4:37 PM Alexey Kodanev <
+> aleksei.kodanev@bell-sw.com> wrote:
+>
+>> On 12.07.2021 11:28, Li Wang wrote:
+>> >
+>> >
+>> > On Mon, Jul 12, 2021 at 3:54 PM Alexey Kodanev <
+>> aleksei.kodanev@bell-sw.com <mailto:aleksei.kodanev@bell-sw.com>> wrote:
+>> >
+>> >     It's unlikely, but still possible that some of them could be
+>> >     created/released during the test as well, so the patch only
+>> >     checks errno.
+>> >
+>> >     Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com <mailto:
+>> aleksei.kodanev@bell-sw.com>>
+>> >     ---
+>> >     v2: * Move the loop to the test run function and try to get
+>> >           ENOSPC errno there.
+>> >
+>> >
+>> > I'm fine to go with this but move the loop to test run without any
+>> > limit will bring new fail if running with parameter '-i 2'.
+>> >
+>> > We have to handle that situation (maybe add a judgment to skip
+>> > test for run more times) in case someone uses it like:
+>>
+>> Or just release them asap after tpass?
+>
+>
+> Sure, but looks a bit redundant.
+>
+> Or we can just adding a global varible for saving num:
+>
+> --- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+> @@ -22,7 +22,7 @@
+>  #include "libnewipc.h"
+>
+>  static int *segments;
+> -static int maxshms, segments_cnt;
+> +static int number = 0, maxshms, segments_cnt;
+>  static key_t shmkey;
+>
+>  static void verify_shmget(void)
+> @@ -30,7 +30,7 @@ static void verify_shmget(void)
+>         int res = 0, num;
+>
+>         errno = 0;
+> -       for (num = 0; num <= maxshms; ++num) {
+> +       for (num = number; num <= maxshms; ++num) {
+>
 
-> 
-> Kind regards,
-> Petr
-> 
->>> 3)Or we are the only one that use shm and we can add a api to count the 
->>> existed_cnt
-> 
->>> ps: I don't want to leave this problem too long time.
-> 
->>> Best Regards
->>> Yang Xu
-> 
-> 
+Oh, this method is thoughtless, because if the test gets ENOSPC at
+the last looping time, which means num == maxshms, then the global
+number will be larger than maxshms, so the test won't fall into
+for() loop next time and report FAIL again.
 
+So, let's go with your way: release them after TPASS. This is safer.
+
+
+
+>                 res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL
+> | SHM_RW);
+>                 if (res == -1)
+>                         break;
+> @@ -42,6 +42,8 @@ static void verify_shmget(void)
+>
+>         tst_res(TPASS, "Maximum number of segments reached (%d), used by
+> test %d",
+>                 maxshms, segments_cnt);
+> +
+> +       number = num;
+>  }
+>
+>  static void setup(void)
+>
+>
+> --
+> Regards,
+> Li Wang
+>
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210712/fa877490/attachment-0001.htm>
