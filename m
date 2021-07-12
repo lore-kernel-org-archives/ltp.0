@@ -1,109 +1,45 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Mon, 12 Jul 2021 10:18:17 +0800
-Subject: [LTP] [PATCH v3] network/tc01.sh: Add a regression test for tc
- qdisc command
-In-Reply-To: <7d822a0c-451c-4653-23f1-9bbc81bd0842@bell-sw.com>
-References: <7d822a0c-451c-4653-23f1-9bbc81bd0842@bell-sw.com>
-Message-ID: <1626056297-5744-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Mon, 12 Jul 2021 02:31:52 +0000
+Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
+ exist
+In-Reply-To: <YObpRzTjx8T2GAZn@yuki>
+References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
+ <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
+ <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
+ <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
+ <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
+ <60E50AB4.7050404@fujitsu.com> <YObbKCNKUoC7lSxd@pevik>
+ <YObpRzTjx8T2GAZn@yuki>
+Message-ID: <60EBA9C3.4050103@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/net.tcp_cmds                   |  1 +
- testcases/network/tcp_cmds/tc/Makefile | 13 +++++++
- testcases/network/tcp_cmds/tc/tc01.sh  | 47 ++++++++++++++++++++++++++
- 3 files changed, 61 insertions(+)
- create mode 100644 testcases/network/tcp_cmds/tc/Makefile
- create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
+Hi All
+> Hi!
+>>>> Yes, good point, that would be more precise for ENOSPC testing.
+>>> AFAIK, ltp doesn't support parallel test now. I think parallel test
+>>> maybe a future plan that is why we use docparase to collect each case's
+>>> used resources(so we can convert many groups, like pid, memory, disk
+>>> space..., then we can run pid group and memory groups test case parallelly).
+>> Yes, parallel support is not supported atm. Richie and Cyril has done some work
+>> on runltp-ng to support it. Yes, first it's needed to add support in resources
+>> (docparse), see Cyril's old block post [1].
+>
+> Besides most of the SHM tests will crash and burn if executed in
+> parallel. The SysV IPC shares a global namespace and because of that we
+> can't really write tests without assuming that we are the only one
+> manipulating them when the test is executed.
+I guess we should reach a consensus that how to fix this problem
+1)use for loop to trigger this error
+2)use CLONE_NEWIPC to trigger this error
+3)Or we are the only one that use shm and we can add a api to count the 
+existed_cnt
 
-diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
-index db47dfd5b..7e142de11 100644
---- a/runtest/net.tcp_cmds
-+++ b/runtest/net.tcp_cmds
-@@ -12,6 +12,7 @@ netstat netstat01.sh
- ping01 ping01.sh
- ping02 ping02.sh
- sendfile sendfile01.sh
-+tc01 tc01.sh
- tcpdump tcpdump01.sh
- telnet telnet01.sh
- iptables iptables01.sh
-diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
-new file mode 100644
-index 000000000..60150a1ce
---- /dev/null
-+++ b/testcases/network/tcp_cmds/tc/Makefile
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2009, Cisco Systems Inc.
-+# Ngie Cooper, July 2009
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= tc01.sh
-+
-+MAKE_TARGETS		:=
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
-new file mode 100755
-index 000000000..a9da45b41
---- /dev/null
-+++ b/testcases/network/tcp_cmds/tc/tc01.sh
-@@ -0,0 +1,47 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-+# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
-+#
-+# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
-+# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
-+# because both devices are teql0, and it does not set qdisc_priv(sch)->m
-+# leaving it zero on error path, then qdisc_create() imediately calls
-+# teql_destroy() which does not expect zero master pointer and we get OOPS
-+# on unpatched kernel.
-+#
-+# If we enable panic_on_oops, this case may crash.
-+#
-+# This kernel bug was introduced by
-+# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
-+# and has been fixed by
-+# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
-+#
-+
-+TST_SETUP="setup"
-+TST_TESTFUNC="do_test"
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_DRIVERS="sch_teql"
-+TST_NEEDS_CMDS="tc modprobe dmesg grep"
-+
-+. tst_test.sh
-+
-+setup()
-+{
-+	ROD modprobe $TST_NEEDS_DRIVERS
-+}
-+
-+do_test()
-+{
-+	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
-+
-+	EXPECT_FAIL tc qdisc add dev teql0 root teql0
-+
-+	if dmesg | grep -q 'RIP:.*sch_teql'; then
-+		tst_res TFAIL "This bug is reproduced."
-+	else
-+		tst_res TPASS "This bug is not reproduced."
-+	fi
-+}
-+
-+tst_run
--- 
-2.23.0
+ps: I don't want to leave this problem too long time.
 
+Best Regards
+Yang Xu
+>
