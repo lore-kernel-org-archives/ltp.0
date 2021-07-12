@@ -1,60 +1,51 @@
-From: Leo Liang <ycliang@andestech.com>
-Date: Mon, 12 Jul 2021 15:28:40 +0800
-Subject: [LTP] [PATCH 1/1] cgroup/cgroup_regression_test: Fix umount
- failure
-In-Reply-To: <60E3EE1D.2090800@fujitsu.com>
-References: <20210628033002.GA1469@andestech.com>
- <caf1bb46-5212-3c3d-f180-e722ef2cf8dd@jv-coder.de>
- <YNnJ18Q+cqb8zM5K@yuki> <20210706032748.GA16346@andestech.com>
- <60E3EE1D.2090800@fujitsu.com>
-Message-ID: <20210712072840.GA9612@andestech.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Mon, 12 Jul 2021 10:46:59 +0300
+Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
+ exist
+In-Reply-To: <60EBA9C3.4050103@fujitsu.com>
+References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
+ <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
+ <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
+ <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
+ <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
+ <60E50AB4.7050404@fujitsu.com> <YObbKCNKUoC7lSxd@pevik>
+ <YObpRzTjx8T2GAZn@yuki> <60EBA9C3.4050103@fujitsu.com>
+Message-ID: <c81eee80-6cea-de14-aeff-8919495c4396@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+On 12.07.2021 05:31, xuyang2018.jy@fujitsu.com wrote:
+> Hi All
+>> Hi!
+>>>>> Yes, good point, that would be more precise for ENOSPC testing.
+>>>> AFAIK, ltp doesn't support parallel test now. I think parallel test
+>>>> maybe a future plan that is why we use docparase to collect each case's
+>>>> used resources(so we can convert many groups, like pid, memory, disk
+>>>> space..., then we can run pid group and memory groups test case parallelly).
+>>> Yes, parallel support is not supported atm. Richie and Cyril has done some work
+>>> on runltp-ng to support it. Yes, first it's needed to add support in resources
+>>> (docparse), see Cyril's old block post [1].
+>>
+>> Besides most of the SHM tests will crash and burn if executed in
+>> parallel. The SysV IPC shares a global namespace and because of that we
+>> can't really write tests without assuming that we are the only one
+>> manipulating them when the test is executed.
+> I guess we should reach a consensus that how to fix this problem
+> 1)use for loop to trigger this error
+> 2)use CLONE_NEWIPC to trigger this error
 
-On Tue, Jul 06, 2021 at 05:45:32AM +0000, xuyang2018.jy@fujitsu.com wrote:
-> Hi Leo
-> >
-> >> IMO, Even we call sync, this umount may fail because sync ensures
-> >> nothing.  Why not use tst_umount?
-> >
-> > Hi Yang,
-> >
-> > I think this might be a timing issue and a little delay could fix this problem. (e.g. 'sleep 1')
-> > Using 'sync' here IMHO would be more descriptive and has a semantic meaning.
-> Yes, it is a timing issue.
-> I also met a similar problem because of sync to lead EBUSY error in 
-> xfstests log time ago.
+Perhaps it can be done at the higher level, e.g. in the ltp tests
+runner if some tests request it with a newipc flag...
+
+> 3)Or we are the only one that use shm and we can add a api to count the 
+> existed_cnt
 > 
-> https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=b536de2a042484bb241cca120ce55c974309513a
+> ps: I don't want to leave this problem too long time.
 > 
-> So, I don't think using sync is a good idea because sync will make 
-> metadata into disk but no ensure it. So if we have other io work, then 
-> sync may push other's metadata into disk firstly instead of here's data.
-> 
-> Since we have tst_umount api to avoid EBUSY error, why not to use it in 
-> here to avoid your problem?
-> >
-> > Speaking of tst_umount, do you mean to convert this test to C code ?
-> No, we also have shell api  for tst_umount.
+> Best Regards
+> Yang Xu
+>>
 
-Thanks for the suggestion.
-I've tested the cgroup_regression_test with the tst_umount api
-and it works fine!
-
-I will convert "add sync" patch to this!
-Thanks again.
-
-> >
-> >> Best Regards
-> >> Yang Xu
-> >
-> > Best regards,
-> > Leo
-
-Best regards,
-Leo
