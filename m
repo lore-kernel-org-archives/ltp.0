@@ -1,51 +1,101 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Mon, 12 Jul 2021 10:46:59 +0300
-Subject: [LTP] [PATCH] shmget03: fix test when some shm segments already
- exist
-In-Reply-To: <60EBA9C3.4050103@fujitsu.com>
-References: <20210706105758.43220-1-aleksei.kodanev@bell-sw.com>
- <CAEemH2cOm+1BMWE7oWVFttXNOeQsYk9veXePS+ctxAABk2rCWQ@mail.gmail.com>
- <c2c7ff46-df28-c7b6-49dd-c891d9655d00@bell-sw.com>
- <381b8420-3dba-d7c1-027c-e2e2adc719de@bell-sw.com>
- <CAEemH2fcubrbMpeoeSJJoZtD+xaiRrs_upG_+KQXB_8C9m3eQg@mail.gmail.com>
- <60E50AB4.7050404@fujitsu.com> <YObbKCNKUoC7lSxd@pevik>
- <YObpRzTjx8T2GAZn@yuki> <60EBA9C3.4050103@fujitsu.com>
-Message-ID: <c81eee80-6cea-de14-aeff-8919495c4396@bell-sw.com>
+Date: Mon, 12 Jul 2021 10:52:22 +0300
+Subject: [LTP] [PATCH v2 1/2] shmget03: don't depend on existed shared
+ resources
+Message-ID: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12.07.2021 05:31, xuyang2018.jy@fujitsu.com wrote:
-> Hi All
->> Hi!
->>>>> Yes, good point, that would be more precise for ENOSPC testing.
->>>> AFAIK, ltp doesn't support parallel test now. I think parallel test
->>>> maybe a future plan that is why we use docparase to collect each case's
->>>> used resources(so we can convert many groups, like pid, memory, disk
->>>> space..., then we can run pid group and memory groups test case parallelly).
->>> Yes, parallel support is not supported atm. Richie and Cyril has done some work
->>> on runltp-ng to support it. Yes, first it's needed to add support in resources
->>> (docparse), see Cyril's old block post [1].
->>
->> Besides most of the SHM tests will crash and burn if executed in
->> parallel. The SysV IPC shares a global namespace and because of that we
->> can't really write tests without assuming that we are the only one
->> manipulating them when the test is executed.
-> I guess we should reach a consensus that how to fix this problem
-> 1)use for loop to trigger this error
-> 2)use CLONE_NEWIPC to trigger this error
+It's unlikely, but still possible that some of them could be
+created/released during the test as well, so the patch only
+checks errno.
 
-Perhaps it can be done at the higher level, e.g. in the ltp tests
-runner if some tests request it with a newipc flag...
+Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+---
+v2: * Move the loop to the test run function and try to get
+      ENOSPC errno there.
+    * Rename queues* to segments*
 
-> 3)Or we are the only one that use shm and we can add a api to count the 
-> existed_cnt
-> 
-> ps: I don't want to leave this problem too long time.
-> 
-> Best Regards
-> Yang Xu
->>
+ .../kernel/syscalls/ipc/shmget/shmget03.c     | 42 ++++++++++---------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+index efbc465e1..5dc5d55fd 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+@@ -21,47 +21,49 @@
+ #include "tst_safe_sysv_ipc.h"
+ #include "libnewipc.h"
+ 
+-static int *queues;
+-static int maxshms, queue_cnt;
++static int *segments;
++static int maxshms, segments_cnt;
+ static key_t shmkey;
+ 
+ static void verify_shmget(void)
+ {
+-	TST_EXP_FAIL2(shmget(shmkey + maxshms, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW), ENOSPC,
+-		"shmget(%i, %i, %i)", shmkey + maxshms, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
++	int res = 0, num;
++
++	errno = 0;
++	for (num = 0; num <= maxshms; ++num) {
++		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
++		if (res == -1)
++			break;
++		segments[segments_cnt++] = res;
++	}
++
++	if (res != -1 || errno != ENOSPC)
++		tst_brk(TFAIL | TERRNO, "Failed to trigger ENOSPC error");
++
++	tst_res(TPASS, "Maximum number of segments reached (%d), used by test %d",
++		maxshms, segments_cnt);
+ }
+ 
+ static void setup(void)
+ {
+-	int res, num;
+-
+ 	shmkey = GETIPCKEY();
+ 
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/shmmni", "%i", &maxshms);
+ 
+-	queues = SAFE_MALLOC(maxshms * sizeof(int));
+-	for (num = 0; num < maxshms; num++) {
+-		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
+-		if (res == -1)
+-			tst_brk(TBROK | TERRNO, "shmget failed unexpectedly");
+-
+-		queues[queue_cnt++] = res;
+-	}
+-	tst_res(TINFO, "The maximum number of memory segments (%d) has been reached",
+-		maxshms);
++	segments = SAFE_MALLOC((maxshms + 1) * sizeof(int));
+ }
+ 
+ static void cleanup(void)
+ {
+ 	int num;
+ 
+-	if (!queues)
++	if (!segments)
+ 		return;
+ 
+-	for (num = 0; num < queue_cnt; num++)
+-		SAFE_SHMCTL(queues[num], IPC_RMID, NULL);
++	for (num = 0; num < segments_cnt; num++)
++		SAFE_SHMCTL(segments[num], IPC_RMID, NULL);
+ 
+-	free(queues);
++	free(segments);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.25.1
 
