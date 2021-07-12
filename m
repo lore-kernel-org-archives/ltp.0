@@ -1,52 +1,121 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Mon, 12 Jul 2021 11:03:22 +0300
-Subject: [LTP] [PATCH] mmap18: fix when PTHREAD_STACK_MIN < PAGE_SIZE
-Message-ID: <20210712080322.11512-1-aleksei.kodanev@bell-sw.com>
+Date: Mon, 12 Jul 2021 11:19:42 +0300
+Subject: [LTP] [PATCH v3] network/tc01.sh: Add a regression test for tc
+ qdisc command
+In-Reply-To: <1626056297-5744-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <7d822a0c-451c-4653-23f1-9bbc81bd0842@bell-sw.com>
+ <1626056297-5744-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <ae2bc43c-1745-a0f1-67a7-b9d5a6691404@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-PTHREAD_STACK_MIN can be less than the page size, to be more
-precise 2048 on musl. This value is used in the test as an
-offset for a new stack address with mmap() + MAP_FIXED flag.
-Though it might not be aligned to the page size.
+Hi Xu!
+On 12.07.2021 05:18, Yang Xu wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  runtest/net.tcp_cmds                   |  1 +
+>  testcases/network/tcp_cmds/tc/Makefile | 13 +++++++
+>  testcases/network/tcp_cmds/tc/tc01.sh  | 47 ++++++++++++++++++++++++++
+>  3 files changed, 61 insertions(+)
+>  create mode 100644 testcases/network/tcp_cmds/tc/Makefile
+>  create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
+> 
+> diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
+> index db47dfd5b..7e142de11 100644
+> --- a/runtest/net.tcp_cmds
+> +++ b/runtest/net.tcp_cmds
+> @@ -12,6 +12,7 @@ netstat netstat01.sh
+>  ping01 ping01.sh
+>  ping02 ping02.sh
+>  sendfile sendfile01.sh
+> +tc01 tc01.sh
+>  tcpdump tcpdump01.sh
+>  telnet telnet01.sh
+>  iptables iptables01.sh
+> diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
+> new file mode 100644
+> index 000000000..60150a1ce
+> --- /dev/null
+> +++ b/testcases/network/tcp_cmds/tc/Makefile
+> @@ -0,0 +1,13 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (C) 2009, Cisco Systems Inc.
+> +# Ngie Cooper, July 2009
 
-This breaks the test with musl:
+Since it's a new Makefile, not sure if it should be copy-pasted
+from the other tests...
 
-  tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
-  mmap18.c:98: TBROK: mmap(0x7fe67e2ee800,2048,3,306,-1,0) failed: EINVAL (22)
-  mmap18.c:169: TFAIL: Child: exited with 2
-  [...]
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= tc01.sh
+> +
+> +MAKE_TARGETS		:=
 
-The fix is to align mapped_size arg to the page size.
+There is no point adding an empty make targets here.
 
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
----
- testcases/kernel/syscalls/mmap/mmap18.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
+> new file mode 100755
+> index 000000000..a9da45b41
+> --- /dev/null
+> +++ b/testcases/network/tcp_cmds/tc/tc01.sh
+> @@ -0,0 +1,47 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+> +# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
+> +#
+> +# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
+> +# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
+> +# because both devices are teql0, and it does not set qdisc_priv(sch)->m
+> +# leaving it zero on error path, then qdisc_create() imediately calls
+> +# teql_destroy() which does not expect zero master pointer and we get OOPS
+> +# on unpatched kernel.
+> +#
+> +# If we enable panic_on_oops, this case may crash.
+> +#
+> +# This kernel bug was introduced by
+> +# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
+> +# and has been fixed by
+> +# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
+> +#
+> +
+> +TST_SETUP="setup"
+> +TST_TESTFUNC="do_test"
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_DRIVERS="sch_teql"
+> +TST_NEEDS_CMDS="tc modprobe dmesg grep"
+> +
+> +. tst_test.sh
+> +
+> +setup()
+> +{
+> +	ROD modprobe $TST_NEEDS_DRIVERS
+> +}
+> +
+> +do_test()
+> +{
+> +	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
+> +
+> +	EXPECT_FAIL tc qdisc add dev teql0 root teql0
+> +
+> +	if dmesg | grep -q 'RIP:.*sch_teql'; then
+> +		tst_res TFAIL "This bug is reproduced."
+> +	else
+> +		tst_res TPASS "This bug is not reproduced."
+> +	fi
+> +}
+> +
+> +tst_run
+> 
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap18.c b/testcases/kernel/syscalls/mmap/mmap18.c
-index dc2926454..b37b29890 100644
---- a/testcases/kernel/syscalls/mmap/mmap18.c
-+++ b/testcases/kernel/syscalls/mmap/mmap18.c
-@@ -200,11 +200,12 @@ static void grow_stack_fail(size_t stack_size, size_t mapped_size)
- 
- static void run_test(void)
- {
--	size_t stack_size = 8 * PTHREAD_STACK_MIN;
-+	size_t pthread_stack = LTP_ALIGN(PTHREAD_STACK_MIN, getpagesize());
-+	size_t stack_size = 8 * pthread_stack;
- 
--	grow_stack_success(stack_size, PTHREAD_STACK_MIN);
-+	grow_stack_success(stack_size, pthread_stack);
- 	grow_stack_success(stack_size, stack_size/2);
--	grow_stack_fail(stack_size, PTHREAD_STACK_MIN);
-+	grow_stack_fail(stack_size, pthread_stack);
- 	grow_stack_fail(stack_size, stack_size/2);
- }
- 
--- 
-2.25.1
+For the rest:
 
+Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
