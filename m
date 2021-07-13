@@ -1,12 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Jul 2021 13:49:07 +0200
-Subject: [LTP] tst_strstatus.c fails on Alpine
-In-Reply-To: <YO1p3LfWwdY0cmGj@pevik>
-References: <YOx1pir0UuBNM+4w@pevik>
- <CAASaF6zS0kPHk6vSvANA1KzuOCtJHskLmOE_DE1n4b5AhMUPkg@mail.gmail.com>
- <YO1VaOB8nnMh6FT1@pevik> <YO1cIhIKgEPrApUC@yuki>
- <YO1p3LfWwdY0cmGj@pevik>
-Message-ID: <YO19s5999M7m24dI@yuki>
+Date: Tue, 13 Jul 2021 13:55:19 +0200
+Subject: [LTP] Failing test on failing shell commands
+In-Reply-To: <9c05b592-e474-6a3e-2dc1-ec075a0bc558@canonical.com>
+References: <9c05b592-e474-6a3e-2dc1-ec075a0bc558@canonical.com>
+Message-ID: <YO1/J2pTbSsX2dGb@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,25 +11,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> FYI musl commit 41c63282 ("fix definitions of WIFSTOPPED and WIFSIGNALED
-> to support up to signal 127") [1] mentions mips bug discussion on linux-mips ML
-> from 2013 (musl fix is also from that time) [2]:
+> I have a failing memcg_use_hierarchy_test (in
+> testcases/kernel/controllers/memcg/functional/) which hits unexpected
+> OOM on one of earlier commands, already in the test:
 > 
-> > I think it's feasible to ask {g,uc}libc to change their defines
-> > (on MIPS as a minimum), and live with 127 signals.
+>  18         echo 1 > memory.use_hierarchy
+>  19         echo $PAGESIZE > memory.limit_in_bytes
+>  20 
+>  21         mkdir subgroup  
+> mkdir: cannot create directory ???subgroup???: Cannot allocate memory
+> /home/ubuntu/ltp-install/testcases/bin/memcg_use_hierarchy_test.sh: 22: cd: can't cd to subgroup
 > 
-> => I haven't checked if it was posted at the time. I wonder if anybody cares
-> enough about mips nowadays to fix this. I also like these guarders, thus I
-> wonder if musl should have it only for mips (currently it's for all archs).
+> The command did not fail, as there is no "set -e" and test fails later.
+> However there could be a case where such failure does not trigger later
+> issue and test is a false-positive.
+> 
+> What is the practice for LTP shell tests to handle kind of preparation
+> commands? Maybe this should be something like:
 
-Hmm, as long as you allow signal 127 you really have to look at the
-zeroed unused bits to distinguish between stopped and killed by a
-signal. And after that the invalid cobinations end up only to be
-non-zero in the upper byte and anything else than 0x7f in the lower
-byte without the special value 0xffff.
+We do have ROD (as a shorthand for "run or die") in the shell test
+library, so this really should be:
 
-So in addition to the 0x01ff things like 0x0101 etc. are invalid as
-well.
+	ROD mkdir subgroup
 
 -- 
 Cyril Hrubis
