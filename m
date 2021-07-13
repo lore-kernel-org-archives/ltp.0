@@ -1,147 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Jul 2021 16:16:48 +0200
-Subject: [LTP] [PATCH v4 4/7] lib: Add script for running tests
-In-Reply-To: <YO2T4J14roLUT32t@yuki>
-References: <20210713101338.6985-1-pvorel@suse.cz>
- <20210713101338.6985-5-pvorel@suse.cz> <YO2T4J14roLUT32t@yuki>
-Message-ID: <YO2gUL2/s29SGdNo@pevik>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 13 Jul 2021 15:17:36 +0100
+Subject: [LTP] [PATCH v4 4/5] controllers/memcg: increase memory limit
+ in subgroup charge
+In-Reply-To: <9e0129f5-2edd-1f49-aedb-0f5aecc72c6d@canonical.com>
+References: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
+ <20210713092210.17141-5-krzysztof.kozlowski@canonical.com>
+ <87y2aa5z6q.fsf@suse.de>
+ <9e0129f5-2edd-1f49-aedb-0f5aecc72c6d@canonical.com>
+Message-ID: <874kcypabj.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > For now run only tests which TPASS or TCONF.
+Hello,
 
-> > Disabled also problematic tests:
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> writes:
 
-> > * tst_bool_expr: for some reason killed after testing:
+> On 13/07/2021 11:40, Richard Palethorpe wrote:
+>> Hello Krzysztof,
+>> 
+>> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> writes:
+>> 
+>>> The memcg_subgroup_charge was failing on kernel v5.8 in around 10% cases
+>>> with:
+>>>
+>>>     memcg_subgroup_charge 1 TINFO: Running memcg_process --mmap-anon -s 135168
+>>>     memcg_subgroup_charge 1 TINFO: Warming up pid: 19289
+>>>     memcg_subgroup_charge 1 TINFO: Process is still here after warm up: 19289
+>>>     memcg_subgroup_charge 1 TFAIL: rss is 0, 135168 expected
+>>>     memcg_subgroup_charge 1 TPASS: rss is 0 as expected
+>>>
+>>> In dmesg one could see that OOM killer killed the process even though
+>>> group memory limit was matching the usage:
+>>>
+>>>     memcg_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+>>>     CPU: 4 PID: 19289 Comm: memcg_process Not tainted 5.8.0-1031-oracle #32~20.04.2-Ubuntu
+>>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1 12/03/2020
+>>>     ...
+>>>     memory: usage 132kB, limit 132kB, failcnt 9
+>>>     memory+swap: usage 132kB, limit 9007199254740988kB, failcnt 0
+>>>     kmem: usage 4kB, limit 9007199254740988kB, failcnt 0
+>>>     ...
+>>>     Tasks state (memory values in pages):
+>>>     [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
+>>>     [  19289]     0 19289      669      389    40960        0             0 memcg_process
+>>>     oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=/,mems_allowed=0,oom_memcg=/ltp_19257,task_memcg=/ltp_19257,task=memcg_process,pid=19289,uid=0
+>>>     Memory cgroup out of memory: Killed process 19289 (memcg_process) total-vm:2676kB, anon-rss:84kB, file-rss:1468kB, shmem-rss:4kB, UID:0 pgtables:40kB oom_score_adj:0
+>>>     oom_reaper: reaped process 19289 (memcg_process), now anon-rss:0kB, file-rss:0kB, shmem-rss:4kB
+>>>
+>>> It seems actual kernel memory usage by a given group depends on number
+>>> of CPUs, where at least one page is allocated per-cpu beside regular
+>>> (expected) allocation.  Fix the test on machines with more CPUs by
+>>> including this per-CPU memory in group limits, plus some slack of 4
+>>> PAGES.  Increase also memory allocation from 32 to 64 pages to be more
+>>> distinctive from kernel per-CPU memory.
+>> 
+>> Actually I think it is 66 pages? Because PAGESIZES=pagesize*33.
+>>
+>
+> Yes, right. Maybe this could be fixed when applying - no need for resend.
+>
+>
+> Best regards,
+> Krzysztof
 
-> > /__w/ltp/ltp/lib/newlib_tests/tst_bool_expr.c:41: TINFO: Parsing 'A ( B )'
-> > A ( B )
+Well I am more than happy with the patchset.
 
-> > Summary:
-> > passed   24
-> > failed   0
-> > broken   0
-> > skipped  0
-> > warnings 0
-> > PATH: '/__w/ltp/ltp/../ltp-build/testcases/lib:/__w/ltp/ltp/lib/newlib_tests/../../testcases/lib/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-> > DEBUG: 0
-> > /__w/ltp/ltp/lib/tst_test.c:1363: TBROK: Test killed by SIGSEGV!
+Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-> I've executed the test under valgrind and found some "conditional jump
-> depends on uninitialized value", which is because we do not clear the
-> priv pointer for newly added tokens. Does this patch fix it for you?
-
-> diff --git a/lib/tst_bool_expr.c b/lib/tst_bool_expr.c
-> index 387c38b91..15825e364 100644
-> --- a/lib/tst_bool_expr.c
-> +++ b/lib/tst_bool_expr.c
-> @@ -55,6 +55,7 @@ static int new_tok(struct tst_expr_tok **last, const char *tok, size_t tok_len)
->         (*last)->tok = tok;
->         (*last)->tok_len = tok_len;
->         (*last)->op = char_to_op(tok[0]);
-> +       (*last)->priv = NULL;
->         (*last)++;
-
-Thanks! It looks like it helped (but few jobs haven't finished yet).
-https://github.com/pevik/ltp/actions/runs/1026771350
-Will you merge this fix yourself please?
-
->         return 1;
-
-> > * tst_fuzzy_sync01: sporadically fails:
-> > ../../include/tst_fuzzy_sync.h:685: TINFO: Exceeded execution loops, requesting exit
-> > tst_fuzzy_sync01.c:227: TFAIL: acs:3  act:1  art:1  | =:23   -:46   +:2999931
-> > ...
-> > Summary:
-> > passed   21
-> > failed   3
-
-> Not sure what we can do here, I guess that timings would be hard to fix
-> on VMs that run the tests.
-
-If I remember correctly Richie suggested that FAIL is also OK. He said only
-TBROK and TCONF is a problem. I'd prefer to fuzzy sync tests which always pass,
-but after this effort I can work on API tests metadata, which would allow also
-this.
-
-...
-> > +# custom version
-> > +tst_res()
-> > +{
-> > +	if [ $# -eq 0 ]; then
-> > +		echo >&2
-> > +		return
-> > +	fi
-> > +
-> > +	local res="$1"
-> > +	shift
-> > +
-> > +	tst_color_enabled
-> > +	local color=$?
-> > +
-> > +	printf "runtest " >&2
-> > +	tst_print_colored $res "$res: " >&2
-> > +	echo "$@" >&2
-> > +
-> > +}
-> > +
-> > +# custom version
-> > +tst_brk()
-> > +{
-> > +	local res="$1"
-> > +	shift
-> > +
-> > +	tst_flag2mask "$res"
-> > +	local mask=$?
-> > +
-> > +	tst_res
-> > +	tst_res $res $@
-> > +
-> > +	exit $mask
-> > +}
-
-> I'm not sure that we should call these function tst_res and tst_brk it
-> only confuses everything since these are different from the ones in the
-> test library.
-OK, I'll rename it (runtest_res() and runtest_brk()).
-
-> > +run_tests()
-> > +{
-> > +	local target="$1"
-> > +	local i ret tconf tpass vars
-> > +
-> > +	eval vars="\$LTP_${target}_API_TESTS"
-> > +
-> > +	tst_res TINFO "=== Run $target tests ==="
-> > +
-> > +	for i in $vars; do
-> > +		tst_res TINFO "* $i"
-> > +		./$i
-> > +		ret=$?
-> > +
-> > +		case $ret in
-> > +			0) tpass="$tpass $i";;
-> > +			1) tst_brk TFAIL "$i failed with TFAIL";;
-> > +			2) tst_brk TFAIL "$i failed with TBROK";;
-> > +			4) tst_brk TFAIL "$i failed with TWARN";;
-> > +			32) tconf="$tconf $i";;
-> > +			127) tst_brk TBROK "Error: file not found (wrong PATH? out-of-tree build without -b?), exit code: $ret";;
-> > +			*) tst_brk TBROK "Error: unknown failure, exit code: $ret";;
-
-> Why do we exit on failure here?
-
-> We should just increase the fail counters and go ahead with next test.
-
-I quit here because you know how hard is to find error in very long log
-file. Also why to waste developer time when some test failed? Similar approach
-make has. But sure, I can continue here and print summary at the end.
-
-Thanks for your review!
-I merged the first 3 commits.
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
