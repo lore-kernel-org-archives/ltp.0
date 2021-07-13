@@ -1,50 +1,59 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Jul 2021 12:13:34 +0200
-Subject: [LTP] [PATCH v4 3/7] tst_strstatus.c: Use musl compatible status
- number
+Date: Tue, 13 Jul 2021 12:13:36 +0200
+Subject: [LTP] [PATCH v4 5/7] make: Add make test{, -c, -shell} targets
 In-Reply-To: <20210713101338.6985-1-pvorel@suse.cz>
 References: <20210713101338.6985-1-pvorel@suse.cz>
-Message-ID: <20210713101338.6985-4-pvorel@suse.cz>
+Message-ID: <20210713101338.6985-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-musl since commit 41c632824c08 ("fix definitions of WIFSTOPPED and
-WIFSIGNALED to support up to signal 127") returns 1 on
-WIFSIGNALED(0xff). Thus test with WIFSIGNALED(0x1ff), which is
-compatible for both glibc and musl.
+For testing C and shell API.
 
-Suggested-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-New in v4.
+changes v3->v4:
+Don't run on cross-compile.
 
- lib/newlib_tests/tst_strstatus.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Makefile | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/lib/newlib_tests/tst_strstatus.c b/lib/newlib_tests/tst_strstatus.c
-index aeeeb77ed..f8655fe82 100644
---- a/lib/newlib_tests/tst_strstatus.c
-+++ b/lib/newlib_tests/tst_strstatus.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
-  */
+diff --git a/Makefile b/Makefile
+index 56812d77b..ff4a70eec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -192,6 +192,29 @@ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
+ ## Install
+ install: $(INSTALL_TARGETS)
  
- /*
-@@ -18,7 +19,7 @@ static struct tcase {
- 	{0x0001, "killed by SIGHUP"},
- 	{0x137f, "is stopped"},
- 	{0xffff, "is resumed"},
--	{0xff, "invalid status 0xff"},
-+	{0x1ff, "invalid status 0x1ff"},
- };
- 
- static void do_test(unsigned int n)
++## Test
++define _test
++	@set -e; $(top_srcdir)/lib/newlib_tests/runtest.sh -b $(abs_builddir) $(1)
++endef
++
++test: lib-all
++ifneq ($(build),$(host))
++	$(error running tests on cross-compile build not supported)
++endif
++	$(call _test)
++
++test-c: lib-all
++ifneq ($(build),$(host))
++	$(error running tests on cross-compile build not supported)
++endif
++	$(call _test,-c)
++
++test-shell: lib-all
++ifneq ($(build),$(host))
++	$(error running tests on cross-compile build not supported)
++endif
++	$(call _test,-s)
++
+ ## Help
+ .PHONY: help
+ help:
 -- 
 2.32.0
 
