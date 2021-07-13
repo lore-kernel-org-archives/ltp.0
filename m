@@ -1,73 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Jul 2021 11:25:54 +0200
-Subject: [LTP] tst_strstatus.c fails on Alpine
-In-Reply-To: <YO1VaOB8nnMh6FT1@pevik>
-References: <YOx1pir0UuBNM+4w@pevik>
- <CAASaF6zS0kPHk6vSvANA1KzuOCtJHskLmOE_DE1n4b5AhMUPkg@mail.gmail.com>
- <YO1VaOB8nnMh6FT1@pevik>
-Message-ID: <YO1cIhIKgEPrApUC@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 13 Jul 2021 12:13:32 +0200
+Subject: [LTP] [PATCH v4 1/7] tst_device: Require root
+In-Reply-To: <20210713101338.6985-1-pvorel@suse.cz>
+References: <20210713101338.6985-1-pvorel@suse.cz>
+Message-ID: <20210713101338.6985-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Thanks for a hint. Indeed WIFSIGNALED(0xff) returns 1, thus tst_strstatus()
-> returns signaled(status).
-> 
-> musl defines WIFSIGNALED() as:
-> 
-> #define WIFSIGNALED(s) (((s)&0xffff)-1U < 0xffu)
-> 
-> which returns 1.
-> 
-> Glibc defines __WIFSIGNALED() as:
-> 
-> #define __WIFSIGNALED(status) \
->   (((signed char) (((status) & 0x7f) + 1) >> 1) > 0)
-> 
-> which returns 0.
-> 
-> I wonder if it's a musl bug which we should report or {0x100, "invalid status
-> 0xff"} test case is glibc specific and we should guard it with #ifdef __GLIBC__.
+as it's actually required for successful run:
+tst_device.c:100: TINFO: Not allowed to open /dev/loop-control. Are you root?: EACCES (13)
+tst_device.c:139: TINFO: No free devices found
+tst_device.c:335: TBROK: Failed to acquire device
 
-The process exit values are defined in the kernel ABI so I would say
-that there shouldn't be any differencies between how these are handled
-inside different libc implementation. That being said the musl version
-is incorrect only for invalid values that will probably not happen in
-practice. Glibc is simply more defensive in parsing and rejects invalid
-conditions.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+The same as in v3.
 
-WIFSIGNALED() is supposed to return 1 only if process was killed by a
-signal, which means that the upper byte of the status is ignored and the
-lower byte has to look like:
+ lib/newlib_tests/tst_device.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-7 6 5 4 3 2 1 0
-x . . . . . . .
-  ^
-^ Termination signal
-|
-Core dumped flag
-
-Also this value can't be set tio 0x7f since that means "stopped by
-signal".
-
-This is exaclty what glibc does since it masks the termination signal
-number with 0x7f then adds 1, which would overlfow to 0x80 if the value
-was 0x7f initially and end up being negative. The bitshift is there to
-erase the +1 in a case we started with 0.
-
-The musl libc returns 1 if the lower byte is non-zero and the upper byte
-is zero, which depends on the fact that the upper byte is unused and
-filled in zeroes when the process was killed by a signal and non-zero in
-all other cases where the lower byte is non-zero. As long as we get only
-valid status from wait() this is going to work fine.
-
-To be honest I like the defensive parsing from libc more than the musl
-variant but I'm not 100% sure if this is something that should be added
-to musl as well.
-
+diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
+index ad077affd..0bee0a939 100644
+--- a/lib/newlib_tests/tst_device.c
++++ b/lib/newlib_tests/tst_device.c
+@@ -40,6 +40,7 @@ static void do_test(void)
+ }
+ 
+ static struct tst_test test = {
++	.needs_root = 1,
+ 	.needs_device = 1,
+ 	.dev_min_size = 300,
+ 	.test_all = do_test,
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.32.0
+
