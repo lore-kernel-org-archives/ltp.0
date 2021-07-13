@@ -1,49 +1,102 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 13 Jul 2021 11:22:05 +0200
-Subject: [LTP] [PATCH v4 0/5] controllers/memcg: fixes for newer kernels
-Message-ID: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
+Date: Tue, 13 Jul 2021 11:22:06 +0200
+Subject: [LTP] [PATCH v4 1/5] controllers/memcg: accept range of
+ max_usage_in_bytes
+In-Reply-To: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
+References: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210713092210.17141-2-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Several Linux kernel versions report higher max_usage_in_bytes than
+expected size of 1024 pages. For example v5.4, v5.8, v5.10
+and 5.13.0-rc5:
 
-Changes since v3:
-1. Patch 4/5: Include per-CPU memory as well in group limits.
+    memcg_max_usage_in_bytes_test 1 TINFO: Test memory.max_usage_in_bytes
+    memcg_max_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304
+    memcg_max_usage_in_bytes_test 1 TINFO: Warming up pid: 1393215
+    memcg_max_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 1393215
+    memcg_max_usage_in_bytes_test 1 TFAIL: memory.max_usage_in_bytes is 4325376, 4194304 expected
 
-Changes since v2:
-1. Patch 1/5: Define MEM_USAGE_RANGE and explain it.
-2. Patch 3/5: Use PAGESIZES to explain it is the batch accounting.
-3. Patch 4/5: Add to this patchset (previously sent separately, no
-   dependencies on others).
-4. Patch 5/5: New patch, fixes additional difference, usually of 2-3
-   pages coming from the kernel.
+It seems that recent Linux kernel caches the statistics more
+aggressively (especially on multi-CPU systems) and the batch updates of
+32 pages are visible in usage_in_bytes.
 
-See also reply from Michal Hocko:
-https://lore.kernel.org/linux-mm/85b8a4f9-b9e9-a6ca-5d0c-c1ecb8c11ef3@canonical.com/T/#m6459b3be3a86f5eaf2cfc48dd586b6faf949e440
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../controllers/memcg/functional/memcg_lib.sh | 20 +++++++++++++++++--
+ .../memcg_max_usage_in_bytes_test.sh          |  3 ++-
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
-v2: https://lists.linux.it/pipermail/ltp/2021-June/023259.html
-
-Best regards,
-Krzysztof
-
-Krzysztof Kozlowski (5):
-  controllers/memcg: accept range of max_usage_in_bytes
-  controllers/memcg: accept range of usage_in_bytes
-  controllers/memcg: accept non-zero max_usage_in_bytes after reset
-  controllers/memcg: increase memory limit in subgroup charge
-  controllers/memcg: offset kernel memory
-
- .../controllers/memcg/functional/memcg_lib.sh | 41 ++++++++++++++++---
- .../memcg_max_usage_in_bytes_test.sh          | 18 +++++++-
- .../memcg/functional/memcg_stat_rss.sh        | 20 ++++-----
- .../memcg/functional/memcg_stat_test.sh       |  8 ++--
- .../memcg/functional/memcg_subgroup_charge.sh | 33 +++++++++++----
- .../functional/memcg_usage_in_bytes_test.sh   |  7 +++-
- 6 files changed, 96 insertions(+), 31 deletions(-)
-
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index d9bb6d94324d..4c47e63745ff 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -27,6 +27,15 @@ fi
+ # Post 4.16 kernel updates stat in batch (> 32 pages) every time
+ PAGESIZES=$(($PAGESIZE * 33))
+ 
++# On recent Linux kernels (at least v5.4) updating stats happens in batches
++# (PAGESIZES) and also might depend on workload and number of CPUs.  The kernel
++# caches the data and does not prioritize stats precision.  This is especially
++# visible for max_usage_in_bytes where it usually exceeds
++# actual memory allocation.
++# When checking for usage_in_bytes and max_usage_in_bytes accept also higher values
++# from given range:
++MEM_USAGE_RANGE=$((PAGESIZES))
++
+ HUGEPAGESIZE=$(awk '/Hugepagesize/ {print $2}' /proc/meminfo)
+ [ -z $HUGEPAGESIZE ] && HUGEPAGESIZE=0
+ HUGEPAGESIZE=$(($HUGEPAGESIZE * 1024))
+@@ -140,7 +149,8 @@ shmmax_cleanup()
+ 
+ # Check size in memcg
+ # $1 - Item name
+-# $2 - Expected size
++# $2 - Expected size lower bound
++# $3 - Expected size upper bound (optional)
+ check_mem_stat()
+ {
+ 	local item_size
+@@ -151,7 +161,13 @@ check_mem_stat()
+ 		item_size=$(grep -w $1 memory.stat | cut -d " " -f 2)
+ 	fi
+ 
+-	if [ "$2" = "$item_size" ]; then
++	if [ "$3" ]; then
++		if [ $item_size -ge $2 ] && [ $item_size -le $3 ]; then
++			tst_res TPASS "$1 is ${2}-${3} as expected"
++		else
++			tst_res TFAIL "$1 is $item_size, ${2}-${3} expected"
++		fi
++	elif [ "$2" = "$item_size" ]; then
+ 		tst_res TPASS "$1 is $2 as expected"
+ 	else
+ 		tst_res TFAIL "$1 is $item_size, $2 expected"
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+index 14daa4651798..8831f1937070 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+@@ -12,6 +12,7 @@ TST_CNT=4
+ . memcg_lib.sh
+ 
+ MEM_TO_ALLOC=$((PAGESIZE * 1024))
++MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + MEM_USAGE_RANGE))
+ MEM_LIMIT=$((MEM_TO_ALLOC * 2))
+ 
+ # Run test cases which checks memory.[memsw.]max_usage_in_bytes after make
+@@ -32,7 +33,7 @@ test_max_usage_in_bytes()
+ 	signal_memcg_process $MEM_TO_ALLOC
+ 	signal_memcg_process $MEM_TO_ALLOC
+ 
+-	check_mem_stat $item $MEM_TO_ALLOC
++	check_mem_stat $item $MEM_TO_ALLOC $MEM_EXPECTED_UPPER
+ 
+ 	if [ $check_after_reset -eq 1 ]; then
+ 		echo 0 > $item
 -- 
 2.27.0
 
