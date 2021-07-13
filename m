@@ -1,68 +1,47 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 13 Jul 2021 18:13:26 +0200
-Subject: [LTP] [PATCH 2/4] controllers/memcg: fix memcg_stat_test on two
- node machines
-In-Reply-To: <20210713161328.62560-1-krzysztof.kozlowski@canonical.com>
-References: <20210713161328.62560-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210713161328.62560-3-krzysztof.kozlowski@canonical.com>
+Date: Tue, 13 Jul 2021 18:15:56 +0200
+Subject: [LTP] [PATCH] controllers/memcg: document non-hierarchical on v5.11
+Message-ID: <20210713161556.63096-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Recent Linux kernels charge groups also with kernel memory.  This is not
-limited only to process-allocated memory but also cgroup-handling code
-memory as well.
-
-For example since kernel v5.9 with commit 3e38e0aaca9e ("mm: memcg:
-charge memcg percpu memory to the parent cgroup") creating a subgroup
-causes several kernel allocations towards this group.
-
-These additional kernel memory allocations are proportional to number of
-CPUs and number of nodes.
-
-On c4.8xlarge AWS instance with 36 cores in two nodes with v5.11 Linux
-kernel the memcg_stat_test was failing because of unable to set memory
-limit lower than current kernel memory accounted to the group:
-
-    memcg_stat_test 5 TINFO: Test hierarchical_memory_limit with enabling hierarchical accounting
-        shell code from test:
-        > mkdir subgroup
-        > cat memory.kmem.usage_in_bytes
-        > 442368
-        > echo $PAGESIZE > memory.limit_in_bytes
-    /home/ubuntu/ltp-install/testcases/bin/memcg_stat_test.sh: 47: echo: echo: I/O error
-    memcg_stat_test 5 TFAIL: hierarchical_memory_limit is 270336, 135168 expected
+Since kernel v5.11, there is no non-hierarchical mode, so mention it in
+the code.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../controllers/memcg/functional/memcg_stat_test.sh      | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ .../kernel/controllers/memcg/functional/memcg_lib.sh | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-index e5eb7e5d0001..f6b5aa84e31e 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-@@ -43,12 +43,15 @@ test5()
- 	tst_res TINFO "Test hierarchical_memory_limit with enabling hierarchical accounting"
- 	echo 1 > memory.use_hierarchy
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 3d04c3a60700..873b637c88f9 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -124,13 +124,17 @@ memcg_setup()
+ 	ROD mkdir /dev/memcg
+ 	ROD mount -t cgroup -omemory memcg /dev/memcg
  
-+	local limit=$PAGESIZES
-+	memcg_adjust_limit_for_kmem limit
-+
- 	mkdir subgroup
--	echo $PAGESIZES > memory.limit_in_bytes
--	echo $((PAGESIZES * 2)) > subgroup/memory.limit_in_bytes
-+	echo $limit > memory.limit_in_bytes
-+	echo $((limit + PAGESIZES * 2)) > subgroup/memory.limit_in_bytes
- 
- 	cd subgroup
--	check_mem_stat "hierarchical_memory_limit" $PAGESIZES
-+	check_mem_stat "hierarchical_memory_limit" $limit
- 
- 	cd ..
- 	rmdir subgroup
+-	# The default value for memory.use_hierarchy is 0 and some of tests
+-	# (memcg_stat_test.sh and memcg_use_hierarchy_test.sh) expect it so
+-	# while there are distributions (RHEL7U0Beta for example) that sets
+-	# it to 1.
++	# For kernels older than v5.11 the default value for
++	# memory.use_hierarchy is 0 and some of tests (memcg_stat_test.sh and
++	# memcg_use_hierarchy_test.sh) expect it so while there are
++	# distributions (RHEL7U0Beta for example) that sets it to 1.
+ 	# Note: If there are already subgroups created it is not possible,
+ 	# to set this back to 0.
+ 	# This seems to be the default for all systems using systemd.
++	#
++	# Starting with kernel v5.11, the non-hierarchical mode is not
++	# available. See Linux kernel commit bef8620cd8e0 ("mm: memcg:
++	# deprecate the non-hierarchical mode").
+ 	orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
+ 	if [ -z "$orig_memory_use_hierarchy" ];then
+ 		tst_res TINFO "cat /dev/memcg/ failed"
 -- 
 2.27.0
 
