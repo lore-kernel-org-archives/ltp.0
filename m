@@ -1,56 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Jul 2021 10:57:12 +0200
-Subject: [LTP] tst_strstatus.c fails on Alpine
-In-Reply-To: <CAASaF6zS0kPHk6vSvANA1KzuOCtJHskLmOE_DE1n4b5AhMUPkg@mail.gmail.com>
-References: <YOx1pir0UuBNM+4w@pevik>
- <CAASaF6zS0kPHk6vSvANA1KzuOCtJHskLmOE_DE1n4b5AhMUPkg@mail.gmail.com>
-Message-ID: <YO1VaOB8nnMh6FT1@pevik>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Tue, 13 Jul 2021 11:22:05 +0200
+Subject: [LTP] [PATCH v4 0/5] controllers/memcg: fixes for newer kernels
+Message-ID: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Hi,
 
-> On Mon, Jul 12, 2021 at 7:02 PM Petr Vorel <pvorel@suse.cz> wrote:
+Changes since v3:
+1. Patch 4/5: Include per-CPU memory as well in group limits.
 
-> > Hi all,
+Changes since v2:
+1. Patch 1/5: Define MEM_USAGE_RANGE and explain it.
+2. Patch 3/5: Use PAGESIZES to explain it is the batch accounting.
+3. Patch 4/5: Add to this patchset (previously sent separately, no
+   dependencies on others).
+4. Patch 5/5: New patch, fixes additional difference, usually of 2-3
+   pages coming from the kernel.
 
-> > I see failures of lib/newlib_tests/tst_strstatus on Alpine:
+See also reply from Michal Hocko:
+https://lore.kernel.org/linux-mm/85b8a4f9-b9e9-a6ca-5d0c-c1ecb8c11ef3@canonical.com/T/#m6459b3be3a86f5eaf2cfc48dd586b6faf949e440
 
-> > tst_strstatus.c:31: TPASS: exited with 1
-> > tst_strstatus.c:31: TPASS: killed by SIGHUP
-> > tst_strstatus.c:31: TPASS: is stopped
-> > tst_strstatus.c:31: TPASS: is resumed
-> > tst_strstatus.c:29: TFAIL: killed by ??? != invalid status 0xff
+v2: https://lists.linux.it/pipermail/ltp/2021-June/023259.html
 
-> > Any idea what could be wrong?
+Best regards,
+Krzysztof
 
+Krzysztof Kozlowski (5):
+  controllers/memcg: accept range of max_usage_in_bytes
+  controllers/memcg: accept range of usage_in_bytes
+  controllers/memcg: accept non-zero max_usage_in_bytes after reset
+  controllers/memcg: increase memory limit in subgroup charge
+  controllers/memcg: offset kernel memory
 
-> I'd start with definition of WIFSIGNALED on that system.
+ .../controllers/memcg/functional/memcg_lib.sh | 41 ++++++++++++++++---
+ .../memcg_max_usage_in_bytes_test.sh          | 18 +++++++-
+ .../memcg/functional/memcg_stat_rss.sh        | 20 ++++-----
+ .../memcg/functional/memcg_stat_test.sh       |  8 ++--
+ .../memcg/functional/memcg_subgroup_charge.sh | 33 +++++++++++----
+ .../functional/memcg_usage_in_bytes_test.sh   |  7 +++-
+ 6 files changed, 96 insertions(+), 31 deletions(-)
 
-> printf("%d\n", WIFSIGNALED(0xff));
-> should give you 0, but it does appear to return 1 in output above.
+-- 
+2.27.0
 
-Thanks for a hint. Indeed WIFSIGNALED(0xff) returns 1, thus tst_strstatus()
-returns signaled(status).
-
-musl defines WIFSIGNALED() as:
-
-#define WIFSIGNALED(s) (((s)&0xffff)-1U < 0xffu)
-
-which returns 1.
-
-Glibc defines __WIFSIGNALED() as:
-
-#define __WIFSIGNALED(status) \
-  (((signed char) (((status) & 0x7f) + 1) >> 1) > 0)
-
-which returns 0.
-
-I wonder if it's a musl bug which we should report or {0x100, "invalid status
-0xff"} test case is glibc specific and we should guard it with #ifdef __GLIBC__.
-
-Kind regards,
-Petr
