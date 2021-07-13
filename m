@@ -1,39 +1,61 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Jul 2021 12:13:32 +0200
-Subject: [LTP] [PATCH v4 1/7] tst_device: Require root
+Date: Tue, 13 Jul 2021 12:13:33 +0200
+Subject: [LTP] [PATCH v4 2/7] tst_net.sh: Declare prefix variable as empty
 In-Reply-To: <20210713101338.6985-1-pvorel@suse.cz>
 References: <20210713101338.6985-1-pvorel@suse.cz>
-Message-ID: <20210713101338.6985-2-pvorel@suse.cz>
+Message-ID: <20210713101338.6985-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-as it's actually required for successful run:
-tst_device.c:100: TINFO: Not allowed to open /dev/loop-control. Are you root?: EACCES (13)
-tst_device.c:139: TINFO: No free devices found
-tst_device.c:335: TBROK: Failed to acquire device
+in tst_ipaddr_un(). This is required to fix problem on dash, which
+(unlike bash and busybox ash implementation) takes value of previously
+defined variable, i.e.  guarding with local does not work:
 
+$ foo=ee; bar() { local foo; echo "foo: '$foo'"; }; bar
+foo: 'ee'
+
+It requires declare it as empty:
+$ foo=ee; bar() { local foo=; echo "foo: '$foo'"; }; bar
+foo: ''
+
+This problem seems to be on various dash versions from 0.5.8 to
+0.5.11+git20200708+dd9ef66-5 (on Debian oldstable, stable, testing).
+It'd require to set all variables, but now fix just prefix, which is
+used in build.sh and it's quite common name.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-The same as in v3.
+New in v4.
 
- lib/newlib_tests/tst_device.c | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/lib/tst_net.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
-index ad077affd..0bee0a939 100644
---- a/lib/newlib_tests/tst_device.c
-+++ b/lib/newlib_tests/tst_device.c
-@@ -40,6 +40,7 @@ static void do_test(void)
- }
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index db1db4790..511fb7eb1 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2016-2019 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2016-2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
  
- static struct tst_test test = {
-+	.needs_root = 1,
- 	.needs_device = 1,
- 	.dev_min_size = 300,
- 	.test_all = do_test,
+ [ -n "$TST_LIB_NET_LOADED" ] && return 0
+@@ -408,7 +408,7 @@ tst_ipaddr_un()
+ 	local max_net_id=$default_max
+ 	local min_net_id=0
+ 
+-	local counter host_id host_range is_counter max_host_id min_host_id net_id prefix tmp type
++	local counter host_id host_range is_counter max_host_id min_host_id net_id prefix= tmp type
+ 
+ 	local OPTIND
+ 	while getopts "c:h:n:p" opt; do
 -- 
 2.32.0
 
