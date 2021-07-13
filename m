@@ -1,62 +1,73 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 13 Jul 2021 11:48:09 +0200
-Subject: [LTP] [PATCH v4 4/5] controllers/memcg: increase memory limit
- in subgroup charge
-In-Reply-To: <87y2aa5z6q.fsf@suse.de>
-References: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
- <20210713092210.17141-5-krzysztof.kozlowski@canonical.com>
- <87y2aa5z6q.fsf@suse.de>
-Message-ID: <9e0129f5-2edd-1f49-aedb-0f5aecc72c6d@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 13 Jul 2021 11:25:54 +0200
+Subject: [LTP] tst_strstatus.c fails on Alpine
+In-Reply-To: <YO1VaOB8nnMh6FT1@pevik>
+References: <YOx1pir0UuBNM+4w@pevik>
+ <CAASaF6zS0kPHk6vSvANA1KzuOCtJHskLmOE_DE1n4b5AhMUPkg@mail.gmail.com>
+ <YO1VaOB8nnMh6FT1@pevik>
+Message-ID: <YO1cIhIKgEPrApUC@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13/07/2021 11:40, Richard Palethorpe wrote:
-> Hello Krzysztof,
+Hi!
+> Thanks for a hint. Indeed WIFSIGNALED(0xff) returns 1, thus tst_strstatus()
+> returns signaled(status).
 > 
-> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> writes:
+> musl defines WIFSIGNALED() as:
 > 
->> The memcg_subgroup_charge was failing on kernel v5.8 in around 10% cases
->> with:
->>
->>     memcg_subgroup_charge 1 TINFO: Running memcg_process --mmap-anon -s 135168
->>     memcg_subgroup_charge 1 TINFO: Warming up pid: 19289
->>     memcg_subgroup_charge 1 TINFO: Process is still here after warm up: 19289
->>     memcg_subgroup_charge 1 TFAIL: rss is 0, 135168 expected
->>     memcg_subgroup_charge 1 TPASS: rss is 0 as expected
->>
->> In dmesg one could see that OOM killer killed the process even though
->> group memory limit was matching the usage:
->>
->>     memcg_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
->>     CPU: 4 PID: 19289 Comm: memcg_process Not tainted 5.8.0-1031-oracle #32~20.04.2-Ubuntu
->>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1 12/03/2020
->>     ...
->>     memory: usage 132kB, limit 132kB, failcnt 9
->>     memory+swap: usage 132kB, limit 9007199254740988kB, failcnt 0
->>     kmem: usage 4kB, limit 9007199254740988kB, failcnt 0
->>     ...
->>     Tasks state (memory values in pages):
->>     [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
->>     [  19289]     0 19289      669      389    40960        0             0 memcg_process
->>     oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=/,mems_allowed=0,oom_memcg=/ltp_19257,task_memcg=/ltp_19257,task=memcg_process,pid=19289,uid=0
->>     Memory cgroup out of memory: Killed process 19289 (memcg_process) total-vm:2676kB, anon-rss:84kB, file-rss:1468kB, shmem-rss:4kB, UID:0 pgtables:40kB oom_score_adj:0
->>     oom_reaper: reaped process 19289 (memcg_process), now anon-rss:0kB, file-rss:0kB, shmem-rss:4kB
->>
->> It seems actual kernel memory usage by a given group depends on number
->> of CPUs, where at least one page is allocated per-cpu beside regular
->> (expected) allocation.  Fix the test on machines with more CPUs by
->> including this per-CPU memory in group limits, plus some slack of 4
->> PAGES.  Increase also memory allocation from 32 to 64 pages to be more
->> distinctive from kernel per-CPU memory.
+> #define WIFSIGNALED(s) (((s)&0xffff)-1U < 0xffu)
 > 
-> Actually I think it is 66 pages? Because PAGESIZES=pagesize*33.
->
+> which returns 1.
+> 
+> Glibc defines __WIFSIGNALED() as:
+> 
+> #define __WIFSIGNALED(status) \
+>   (((signed char) (((status) & 0x7f) + 1) >> 1) > 0)
+> 
+> which returns 0.
+> 
+> I wonder if it's a musl bug which we should report or {0x100, "invalid status
+> 0xff"} test case is glibc specific and we should guard it with #ifdef __GLIBC__.
 
-Yes, right. Maybe this could be fixed when applying - no need for resend.
+The process exit values are defined in the kernel ABI so I would say
+that there shouldn't be any differencies between how these are handled
+inside different libc implementation. That being said the musl version
+is incorrect only for invalid values that will probably not happen in
+practice. Glibc is simply more defensive in parsing and rejects invalid
+conditions.
 
+WIFSIGNALED() is supposed to return 1 only if process was killed by a
+signal, which means that the upper byte of the status is ignored and the
+lower byte has to look like:
 
-Best regards,
-Krzysztof
+7 6 5 4 3 2 1 0
+x . . . . . . .
+  ^
+^ Termination signal
+|
+Core dumped flag
+
+Also this value can't be set tio 0x7f since that means "stopped by
+signal".
+
+This is exaclty what glibc does since it masks the termination signal
+number with 0x7f then adds 1, which would overlfow to 0x80 if the value
+was 0x7f initially and end up being negative. The bitshift is there to
+erase the +1 in a case we started with 0.
+
+The musl libc returns 1 if the lower byte is non-zero and the upper byte
+is zero, which depends on the fact that the upper byte is unused and
+filled in zeroes when the process was killed by a signal and non-zero in
+all other cases where the lower byte is non-zero. As long as we get only
+valid status from wait() this is going to work fine.
+
+To be honest I like the defensive parsing from libc more than the musl
+variant but I'm not 100% sure if this is something that should be added
+to musl as well.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
