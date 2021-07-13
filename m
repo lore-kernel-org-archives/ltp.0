@@ -1,41 +1,46 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Jul 2021 12:13:38 +0200
-Subject: [LTP] [PATCH v4 7/7] CI: Run also make test
-In-Reply-To: <20210713101338.6985-1-pvorel@suse.cz>
-References: <20210713101338.6985-1-pvorel@suse.cz>
-Message-ID: <20210713101338.6985-8-pvorel@suse.cz>
+Date: Tue, 13 Jul 2021 12:13:31 +0200
+Subject: [LTP] [PATCH v4 0/7] Run tests in CI
+Message-ID: <20210713101338.6985-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on all targets
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
 changes v3->v4:
-Add $BUILD to not run on cross-compile.
+* don't run on cross compile build
+* add 2 commits to fix tests on (tst_net.sh on dash and tst_strstatus.c
+  on alpine)
+* partly rewrite runtest.sh
 
- .github/workflows/ci.yml | 5 +++++
- 1 file changed, 5 insertions(+)
+tested
+https://github.com/pevik/ltp/actions/runs/1026124767
 
-diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
-index f67f14927..776dbf646 100644
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -151,6 +151,11 @@ jobs:
-     - name: Compile
-       run: ./build.sh -r build -o ${TREE:-in}
- 
-+    - name: Test
-+      run: |
-+        case "$VARIANT" in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
-+        ./build.sh -r test -o ${TREE:-in} -t $BUILD
-+
-     - name: Install
-       run: |
-         if [ "$MAKE_INSTALL" = 1 ]; then INSTALL_OPT="-i"; fi
+Kind regards,
+Petr
+
+Petr Vorel (7):
+  tst_device: Require root
+  tst_net.sh: Declare prefix variable as empty
+  tst_strstatus.c: Use musl compatible status number
+  lib: Add script for running tests
+  make: Add make test{, -c, -shell} targets
+  build.sh: Add support for make test
+  CI: Run also make test
+
+ .github/workflows/ci.yml         |   5 ++
+ Makefile                         |  23 +++++
+ build.sh                         |  22 ++++-
+ lib/newlib_tests/runtest.sh      | 148 +++++++++++++++++++++++++++++++
+ lib/newlib_tests/tst_device.c    |   1 +
+ lib/newlib_tests/tst_strstatus.c |   3 +-
+ testcases/lib/tst_net.sh         |   2 +-
+ 7 files changed, 201 insertions(+), 3 deletions(-)
+ create mode 100755 lib/newlib_tests/runtest.sh
+
 -- 
 2.32.0
 
