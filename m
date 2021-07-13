@@ -1,204 +1,94 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Jul 2021 12:13:35 +0200
-Subject: [LTP] [PATCH v4 4/7] lib: Add script for running tests
-In-Reply-To: <20210713101338.6985-1-pvorel@suse.cz>
-References: <20210713101338.6985-1-pvorel@suse.cz>
-Message-ID: <20210713101338.6985-5-pvorel@suse.cz>
+Date: Tue, 13 Jul 2021 12:24:28 +0200
+Subject: [LTP] tst_strstatus.c fails on Alpine
+In-Reply-To: <YO1cIhIKgEPrApUC@yuki>
+References: <YOx1pir0UuBNM+4w@pevik>
+ <CAASaF6zS0kPHk6vSvANA1KzuOCtJHskLmOE_DE1n4b5AhMUPkg@mail.gmail.com>
+ <YO1VaOB8nnMh6FT1@pevik> <YO1cIhIKgEPrApUC@yuki>
+Message-ID: <YO1p3LfWwdY0cmGj@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For now run only tests which TPASS or TCONF.
+Hi all,
 
-Disabled also problematic tests:
+> Hi!
+> > Thanks for a hint. Indeed WIFSIGNALED(0xff) returns 1, thus tst_strstatus()
+> > returns signaled(status).
 
-* tst_bool_expr: for some reason killed after testing:
+> > musl defines WIFSIGNALED() as:
 
-/__w/ltp/ltp/lib/newlib_tests/tst_bool_expr.c:41: TINFO: Parsing 'A ( B )'
-A ( B )
+> > #define WIFSIGNALED(s) (((s)&0xffff)-1U < 0xffu)
 
-Summary:
-passed   24
-failed   0
-broken   0
-skipped  0
-warnings 0
-PATH: '/__w/ltp/ltp/../ltp-build/testcases/lib:/__w/ltp/ltp/lib/newlib_tests/../../testcases/lib/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-DEBUG: 0
-/__w/ltp/ltp/lib/tst_test.c:1363: TBROK: Test killed by SIGSEGV!
+> > which returns 1.
 
-* tst_fuzzy_sync01: sporadically fails:
-../../include/tst_fuzzy_sync.h:685: TINFO: Exceeded execution loops, requesting exit
-tst_fuzzy_sync01.c:227: TFAIL: acs:3  act:1  art:1  | =:23   -:46   +:2999931
-...
-Summary:
-passed   21
-failed   3
+> > Glibc defines __WIFSIGNALED() as:
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Partly rewritten since v3.
+> > #define __WIFSIGNALED(status) \
+> >   (((signed char) (((status) & 0x7f) + 1) >> 1) > 0)
 
- lib/newlib_tests/runtest.sh | 148 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 148 insertions(+)
- create mode 100755 lib/newlib_tests/runtest.sh
+> > which returns 0.
 
-diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
-new file mode 100755
-index 000000000..80bba00e9
---- /dev/null
-+++ b/lib/newlib_tests/runtest.sh
-@@ -0,0 +1,148 @@
-+#!/bin/sh
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+
-+LTP_C_API_TESTS="${LTP_C_API_TESTS:-test05 test07 test09 test12 test15 test18
-+test_exec test_timer tst_res_hexd tst_strstatus tst_fuzzy_sync02 tst_fuzzy_sync03}"
-+
-+LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh shell/net/*.sh}"
-+
-+cd $(dirname $0)
-+PATH="$PWD/../../testcases/lib/:$PATH"
-+
-+. tst_ansi_color.sh
-+
-+usage()
-+{
-+	cat << EOF
-+Usage: $0 [-b DIR ] [-c|-s]
-+-b DIR  build directory (required for out-of-tree build)
-+-c      run C API tests only
-+-s      run shell API tests only
-+-h      print this help
-+EOF
-+}
-+
-+# custom version
-+tst_flag2mask()
-+{
-+	case "$1" in
-+	TPASS) return 0;;
-+	TFAIL) return 1;;
-+	TBROK) return 2;;
-+	TWARN) return 4;;
-+	TINFO) return 16;;
-+	TCONF) return 32;;
-+	esac
-+}
-+
-+# custom version
-+tst_res()
-+{
-+	if [ $# -eq 0 ]; then
-+		echo >&2
-+		return
-+	fi
-+
-+	local res="$1"
-+	shift
-+
-+	tst_color_enabled
-+	local color=$?
-+
-+	printf "runtest " >&2
-+	tst_print_colored $res "$res: " >&2
-+	echo "$@" >&2
-+
-+}
-+
-+# custom version
-+tst_brk()
-+{
-+	local res="$1"
-+	shift
-+
-+	tst_flag2mask "$res"
-+	local mask=$?
-+
-+	tst_res
-+	tst_res $res $@
-+
-+	exit $mask
-+}
-+
-+run_tests()
-+{
-+	local target="$1"
-+	local i ret tconf tpass vars
-+
-+	eval vars="\$LTP_${target}_API_TESTS"
-+
-+	tst_res TINFO "=== Run $target tests ==="
-+
-+	for i in $vars; do
-+		tst_res TINFO "* $i"
-+		./$i
-+		ret=$?
-+
-+		case $ret in
-+			0) tpass="$tpass $i";;
-+			1) tst_brk TFAIL "$i failed with TFAIL";;
-+			2) tst_brk TFAIL "$i failed with TBROK";;
-+			4) tst_brk TFAIL "$i failed with TWARN";;
-+			32) tconf="$tconf $i";;
-+			127) tst_brk TBROK "Error: file not found (wrong PATH? out-of-tree build without -b?), exit code: $ret";;
-+			*) tst_brk TBROK "Error: unknown failure, exit code: $ret";;
-+		esac
-+		tst_res
-+	done
-+
-+	[ -z "$tpass" ] && tpass=" none"
-+	[ -z "$tconf" ] && tconf=" none"
-+
-+	tst_res TINFO "=== $target TEST RESULTS ==="
-+	tst_res TINFO "Tests exited with TPASS:$tpass"
-+	tst_res TINFO "Tests exited with TCONF:$tconf"
-+	tst_res
-+}
-+
-+run_c_tests()
-+{
-+	if [ "$builddir" ]; then
-+		cd $builddir/lib/newlib_tests
-+	fi
-+
-+	run_tests "C"
-+
-+	if [ "$builddir" ]; then
-+		cd -
-+	fi
-+}
-+
-+run_shell_tests()
-+{
-+	run_tests "SHELL"
-+}
-+
-+builddir=
-+run=
-+while getopts b:chs opt; do
-+	case $opt in
-+		'h') usage; exit 0;;
-+		'b') builddir=$OPTARG; PATH="$builddir/testcases/lib:$PATH";;
-+		'c') run="c";;
-+		's') run="s";;
-+		*) usage; tst_brk TBROK "Error: invalid option";;
-+	esac
-+done
-+
-+tst_res TINFO "PATH='$PATH'"
-+
-+if [ -z "$run" -o "$run" = "c" ]; then
-+	run_c_tests
-+fi
-+
-+if [ -z "$run" -o "$run" = "s" ]; then
-+	run_shell_tests
-+fi
-+
-+tst_res TPASS "No test failed"
--- 
-2.32.0
+> > I wonder if it's a musl bug which we should report or {0x100, "invalid status
+> > 0xff"} test case is glibc specific and we should guard it with #ifdef __GLIBC__.
+
+> The process exit values are defined in the kernel ABI so I would say
+> that there shouldn't be any differencies between how these are handled
+> inside different libc implementation. That being said the musl version
+> is incorrect only for invalid values that will probably not happen in
+> practice. Glibc is simply more defensive in parsing and rejects invalid
+> conditions.
+Agree.
+
+
+> WIFSIGNALED() is supposed to return 1 only if process was killed by a
+> signal, which means that the upper byte of the status is ignored and the
+> lower byte has to look like:
+
+> 7 6 5 4 3 2 1 0
+> x . . . . . . .
+>   ^
+> ^ Termination signal
+
+> Core dumped flag
+
+> Also this value can't be set tio 0x7f since that means "stopped by
+> signal".
+
+> This is exaclty what glibc does since it masks the termination signal
+> number with 0x7f then adds 1, which would overlfow to 0x80 if the value
+> was 0x7f initially and end up being negative. The bitshift is there to
+> erase the +1 in a case we started with 0.
+
+> The musl libc returns 1 if the lower byte is non-zero and the upper byte
+> is zero, which depends on the fact that the upper byte is unused and
+> filled in zeroes when the process was killed by a signal and non-zero in
+> all other cases where the lower byte is non-zero. As long as we get only
+> valid status from wait() this is going to work fine.
+
+Thanks for a detailed explanation.
+
+> To be honest I like the defensive parsing from libc more than the musl
+> variant but I'm not 100% sure if this is something that should be added
+> to musl as well.
+
+FYI musl commit 41c63282 ("fix definitions of WIFSTOPPED and WIFSIGNALED
+to support up to signal 127") [1] mentions mips bug discussion on linux-mips ML
+from 2013 (musl fix is also from that time) [2]:
+
+> I think it's feasible to ask {g,uc}libc to change their defines
+> (on MIPS as a minimum), and live with 127 signals.
+
+=> I haven't checked if it was posted at the time. I wonder if anybody cares
+enough about mips nowadays to fix this. I also like these guarders, thus I
+wonder if musl should have it only for mips (currently it's for all archs).
+
+
+Kind regards,
+Petr
+
+[1] https://git.musl-libc.org/cgit/musl/commit/?id=41c632824c08ac2c9eea43b30d1b3515dd910df6
+[2] https://www.linux-mips.org/archives/linux-mips/2013-06/msg00552.html
 
