@@ -1,75 +1,37 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 13 Jul 2021 15:17:36 +0100
-Subject: [LTP] [PATCH v4 4/5] controllers/memcg: increase memory limit
- in subgroup charge
-In-Reply-To: <9e0129f5-2edd-1f49-aedb-0f5aecc72c6d@canonical.com>
-References: <20210713092210.17141-1-krzysztof.kozlowski@canonical.com>
- <20210713092210.17141-5-krzysztof.kozlowski@canonical.com>
- <87y2aa5z6q.fsf@suse.de>
- <9e0129f5-2edd-1f49-aedb-0f5aecc72c6d@canonical.com>
-Message-ID: <874kcypabj.fsf@suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 13 Jul 2021 16:06:18 +0200
+Subject: [LTP] [PATCH] [COMMITTED] lib/tst_bool_expr: Clear priv pointer on
+ token insertion
+Message-ID: <20210713140618.18227-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+We are using the priv pointer to store an error message but as it wasn't
+initialized from the start it may have contianed random data leading to
+a crash on a parser error reports.
 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> writes:
+Reported-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_bool_expr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> On 13/07/2021 11:40, Richard Palethorpe wrote:
->> Hello Krzysztof,
->> 
->> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> writes:
->> 
->>> The memcg_subgroup_charge was failing on kernel v5.8 in around 10% cases
->>> with:
->>>
->>>     memcg_subgroup_charge 1 TINFO: Running memcg_process --mmap-anon -s 135168
->>>     memcg_subgroup_charge 1 TINFO: Warming up pid: 19289
->>>     memcg_subgroup_charge 1 TINFO: Process is still here after warm up: 19289
->>>     memcg_subgroup_charge 1 TFAIL: rss is 0, 135168 expected
->>>     memcg_subgroup_charge 1 TPASS: rss is 0 as expected
->>>
->>> In dmesg one could see that OOM killer killed the process even though
->>> group memory limit was matching the usage:
->>>
->>>     memcg_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
->>>     CPU: 4 PID: 19289 Comm: memcg_process Not tainted 5.8.0-1031-oracle #32~20.04.2-Ubuntu
->>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.4.1 12/03/2020
->>>     ...
->>>     memory: usage 132kB, limit 132kB, failcnt 9
->>>     memory+swap: usage 132kB, limit 9007199254740988kB, failcnt 0
->>>     kmem: usage 4kB, limit 9007199254740988kB, failcnt 0
->>>     ...
->>>     Tasks state (memory values in pages):
->>>     [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
->>>     [  19289]     0 19289      669      389    40960        0             0 memcg_process
->>>     oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=/,mems_allowed=0,oom_memcg=/ltp_19257,task_memcg=/ltp_19257,task=memcg_process,pid=19289,uid=0
->>>     Memory cgroup out of memory: Killed process 19289 (memcg_process) total-vm:2676kB, anon-rss:84kB, file-rss:1468kB, shmem-rss:4kB, UID:0 pgtables:40kB oom_score_adj:0
->>>     oom_reaper: reaped process 19289 (memcg_process), now anon-rss:0kB, file-rss:0kB, shmem-rss:4kB
->>>
->>> It seems actual kernel memory usage by a given group depends on number
->>> of CPUs, where at least one page is allocated per-cpu beside regular
->>> (expected) allocation.  Fix the test on machines with more CPUs by
->>> including this per-CPU memory in group limits, plus some slack of 4
->>> PAGES.  Increase also memory allocation from 32 to 64 pages to be more
->>> distinctive from kernel per-CPU memory.
->> 
->> Actually I think it is 66 pages? Because PAGESIZES=pagesize*33.
->>
->
-> Yes, right. Maybe this could be fixed when applying - no need for resend.
->
->
-> Best regards,
-> Krzysztof
-
-Well I am more than happy with the patchset.
-
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-
+diff --git a/lib/tst_bool_expr.c b/lib/tst_bool_expr.c
+index 387c38b91..15825e364 100644
+--- a/lib/tst_bool_expr.c
++++ b/lib/tst_bool_expr.c
+@@ -55,6 +55,7 @@ static int new_tok(struct tst_expr_tok **last, const char *tok, size_t tok_len)
+ 	(*last)->tok = tok;
+ 	(*last)->tok_len = tok_len;
+ 	(*last)->op = char_to_op(tok[0]);
++	(*last)->priv = NULL;
+ 	(*last)++;
+ 
+ 	return 1;
 -- 
-Thank you,
-Richard.
+2.31.1
+
