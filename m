@@ -1,37 +1,20 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 14 Jul 2021 13:21:21 +0200
-Subject: [LTP] [PATCH v2 1/8] Add Sparse based checker and TST_RET/ERR
- check
-In-Reply-To: <20210714071158.15868-2-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 14 Jul 2021 13:22:30 +0200
+Subject: [LTP] [PATCH v2 8/8] API/tst_tsc: Add guards and remove some
+ boilerplate
+In-Reply-To: <20210714071158.15868-9-rpalethorpe@suse.com>
 References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-2-rpalethorpe@suse.com>
-Message-ID: <36430750-17c9-06e4-0f49-efc744116154@jv-coder.de>
+ <20210714071158.15868-9-rpalethorpe@suse.com>
+Message-ID: <YO7I9pmCwTTHDQzu@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Richie,
 
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-On 7/14/2021 9:11 AM, Richard Palethorpe via ltp wrote:
-> Vendors in Sparse as a git module. Then uses it to check for stores to
-> TST_RET/ERR within the library.
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->   .gitmodules             |   3 +
->   tools/Makefile          |   2 +
->   tools/sparse/.gitignore |   1 +
->   tools/sparse/Makefile   |  27 ++++++++
->   tools/sparse/README.md  |  38 +++++++++++
->   tools/sparse/main.c     | 148 ++++++++++++++++++++++++++++++++++++++++
-I think the name could be a bit better... sparse_main or ltp_checker or 
-something, because a binary just called main could be confusing.
-
-Otherwise good basis for additional checks and fixing the warnings 
-emitted by sparse will allow use to raise the overall warning level.
-Hopefully at some point at least "-Wall -Werror" is possible.
-
-Joerg
+Kind regards,
+Petr
