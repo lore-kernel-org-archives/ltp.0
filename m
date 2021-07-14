@@ -1,32 +1,85 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 16:37:12 +0200
-Subject: [LTP] [PATCH v4 4/7] lib: Add script for running tests
-In-Reply-To: <YO2f+P8Z9l6SISDG@yuki>
-References: <20210713101338.6985-1-pvorel@suse.cz>
- <20210713101338.6985-5-pvorel@suse.cz> <YO2T4J14roLUT32t@yuki>
- <YO2gUL2/s29SGdNo@pevik> <YO2f+P8Z9l6SISDG@yuki>
-Message-ID: <YO72mA9nhaCq1bLe@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 14 Jul 2021 17:00:08 +0200
+Subject: [LTP] [PATCH v5 0/4] Run tests in CI
+In-Reply-To: <YO70PiTdyxzTw0k2@pevik>
+References: <20210714142001.20566-1-pvorel@suse.cz>
+ <YO70PiTdyxzTw0k2@pevik>
+Message-ID: <YO77+MmmxwMewgnQ@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi!
+> tested:
+> https://github.com/pevik/ltp/actions/runs/1030551185
+> 
+> One thing which bothers me is mangled output of several tests together:
+> https://github.com/pevik/ltp/runs/3067600696?check_suite_focus=true#step:11:554
+> 
+> runtest TINFO: * tst_res_hexd
+> /__w/ltp/ltp/lib/tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
+> /__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: dump1
+> /__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: 48 65 6c 6c 6f 20 66 72 6f 6d 20 74 73 74 5f 72
+> /__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: 65 73 5f 68 65 78 64 00
+> 
+> runtest TINFO: * tst_strstatus
+> /__w/ltp/ltp/lib/tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
+> 
+> Summary:
+> passed   35
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+> 
+> Summary:
+> passed   1
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
 
-...
-> > > Not sure what we can do here, I guess that timings would be hard to fix
-> > > on VMs that run the tests.
+That is indeed strange, you are running these in a loop, the buffers
+should have been flushed once controll returns back to the shell from
+the test.
 
-> > If I remember correctly Richie suggested that FAIL is also OK. He said only
-> > TBROK and TCONF is a problem. I'd prefer to fuzzy sync tests which always pass,
-> > but after this effort I can work on API tests metadata, which would allow also
-> > this.
+I guess that this is a combination of:
 
-> Another possibility would be relaxing the timings on VMs. I guess that
-> we could change the treshold for reaching the criticall section to 10 on
-> VMs.
-I'd be for it, we have checks for VM. @Richie, any opinion about it?
+* The stdout and stderr are block buffered by the gitlab CI and flushed
+  at different times
 
-Kind regards,
-Petr
+* The summary is written into stdout in contrast with the message
+  so we end up with summary printed later than the rest that goes into
+  stderr
+
+I guess this should fix it:
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index f4d9f8e3b..084a83c9e 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -734,12 +734,12 @@ static void do_exit(int ret)
+                if (results->broken)
+                        ret |= TBROK;
+
+-               printf("\nSummary:\n");
+-               printf("passed   %d\n", results->passed);
+-               printf("failed   %d\n", results->failed);
+-               printf("broken   %d\n", results->broken);
+-               printf("skipped  %d\n", results->skipped);
+-               printf("warnings %d\n", results->warnings);
++               fprintf(stderr, "\nSummary:\n");
++               fprintf(stderr, "passed   %d\n", results->passed);
++               fprintf(stderr, "failed   %d\n", results->failed);
++               fprintf(stderr, "broken   %d\n", results->broken);
++               fprintf(stderr, "skipped  %d\n", results->skipped);
++               fprintf(stderr, "warnings %d\n", results->warnings);
+        }
+
+        do_cleanup();
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
