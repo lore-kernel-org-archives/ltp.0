@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 12:56:16 +0200
-Subject: [LTP] [PATCH v2 4/8] doc: Remind authors and maintainers to run
- make check
-In-Reply-To: <20210714071158.15868-5-rpalethorpe@suse.com>
+Date: Wed, 14 Jul 2021 13:16:59 +0200
+Subject: [LTP] [PATCH v2 5/8] doc: Document TEST macro and state
+ TST_RET/ERR rule LTP-002
+In-Reply-To: <20210714071158.15868-6-rpalethorpe@suse.com>
 References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-5-rpalethorpe@suse.com>
-Message-ID: <YO7C0DgkpaUSf4Nw@pevik>
+ <20210714071158.15868-6-rpalethorpe@suse.com>
+Message-ID: <YO7HqwWdG7mtuihO@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,43 +14,121 @@ To: ltp@lists.linux.it
 
 Hi Richie,
 
+generally LGTM, with comments below.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> There are cases where these variables can be safely used by the
+> library. However it is a difficult problem to identify these cases
+> automatically.
+
+> Identifying any library code which uses them is relatively easy. In
+> fact it is easier to automate it than by code review. Because it is
+> such a boring thing to repeatedly look for and comment on.
+
+> If a test library function needs these variables it can recreate its
+> own private copies.
+
 > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 > ---
->  doc/maintainer-patch-review-checklist.txt | 2 +-
->  doc/test-writing-guidelines.txt           | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
+>  doc/c-test-api.txt                     | 47 ++++++++++++++++++++++++++
+>  doc/library-api-writing-guidelines.txt | 14 ++++++++
+>  2 files changed, 61 insertions(+)
 
-> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
-> index f6682b574..970779acc 100644
-> --- a/doc/maintainer-patch-review-checklist.txt
-> +++ b/doc/maintainer-patch-review-checklist.txt
-> @@ -39,7 +39,7 @@ New test should
->  * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
->  * Test binaries are added into corresponding '.gitignore' files
->  * Check coding style with
-> -  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
-> +  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl] and `make check`
->    (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style[C coding style])
+> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> index 45784195b..b47728f60 100644
+> --- a/doc/c-test-api.txt
+> +++ b/doc/c-test-api.txt
+> @@ -767,6 +767,53 @@ LTP_ALIGN(x, a)
+
+>  Aligns the x to be next multiple of a. The a must be power of 2.
+
+> +[source,c]
+> +-------------------------------------------------------------------------------
+> +TEST(socket(AF_INET, SOCK_RAW, 1));
+> +if (TST_RET > -1) {
+> +	tst_res(TFAIL, "Created raw socket");
+> +	SAFE_CLOSE(TST_RET);
+> +} else if (TST_ERR != EPERM) {
+> +	tst_res(TFAIL | TTERRNO,
+> +		"Failed to create socket for wrong reason");
+> +} else {
+> +	tst_res(TPASS | TTERRNO, "Didn't create raw socket");
+> +}
+> +-------------------------------------------------------------------------------
+> +
+> +The +TEST+ macro sets +TST_RET+ to its argument's return value and
+> ++TST_ERR+ to +errno+. The +TTERNO+ flag can be used to print the error
+> +number's symbolic value.
+Nice examples, but we already talk about TEST() in "1.2 Basic test interface".
+Should we put it there? If not, I'd add links to both places to the other
+(separate effort).
+Also I suppose whole thing could be simplified with TST_EXP_FAIL2().
+
+> +
+> +No LTP library function or macro, except those in 'tst_test_macros.h',
+> +will write to these variables (rule 'LTP-002'). So their values will
+> +not be changed unexpectedly.
+> +
+> +[source,c]
+> +-------------------------------------------------------------------------------
+> +TST_EXP_POSITIVE(wait(&status));
+> +
+> +if (!TST_PASS)
+> +	return;
+IMHO This is really for "1.2 Basic test interface".
+
+> +-------------------------------------------------------------------------------
+> +
+> +If the return value of 'wait' is positive. This macro will print a
+> +pass result and set +TST_PASS+ appropriately. If the return value is
+> +zero or negative, then it will print fail.
+> +
+> +This and similar macros take optional variadic arguments. These begin
+> +with a format string and then appropriate values to be formatted.
+> +
+> +[source,c]
+> +-------------------------------------------------------------------------------
+> +TST_EXP_PASS(chown("a/file", uid, gid), "chown(%s,%d,%d)",
+> +	     "a/file", uid, gid);
+> +-------------------------------------------------------------------------------
+> +
+> +Expects +chown+ to return 0 and emits a pass or a fail. The arguments
+> +to +chown+ will be printed in either case. There are many similar
+> +macros, please see 'tst_test_macros.h'.
+And this as well.
+
+...
+
+> diff --git a/doc/library-api-writing-guidelines.txt b/doc/library-api-writing-guidelines.txt
+> index a4393fc54..2819d4177 100644
+> --- a/doc/library-api-writing-guidelines.txt
+> +++ b/doc/library-api-writing-guidelines.txt
+> @@ -21,10 +21,24 @@ Don't forget to update docs when you change the API.
+>  2. C API
+>  --------
+
+> +2.1 LTP-001: Sources have tst_ prefix
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 +1
 
-"131" would mean section 1.3.1. If you put it into "2.1 C coding style" the link
-should be #21-c-coding-style.
+> +
+>  API source code is in headers `include/*.h`, `include/lapi/*.h` (backward
+>  compatibility for old kernel and libc) and C sources in `lib/*.c`. Files have
+>  'tst_' prefix.
 
-Kind regards,
-Petr
+> +2.2 LTP-002: TST_RET and TST_ERR are not modified
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +The test author is guaranteed that the test API will not modify these
+> +variables. This prevents silent errors where the return value and
+> +errno are overwritten before the test has chance to check them.
+> +
+> +The macros which are clearly intended to update these variables. That
+> +is +TEST+ and those in 'tst_test_macros.h'. Are of course allowed to
+nit: Maybe +TEST()+ (it's a "function", unlike "variables" TST_RET TST_ERR)?
 
->  * Docparse documentation
->  * If a test is a regression test it should include tags
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index 74e8ad7ee..e3268852a 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -308,6 +308,7 @@ NOTE: See also
->  3. The runtest entires are in place
->  4. Test binaries are added into corresponding '.gitignore' files
->  5. Patches apply over the latest git
-> +6. 'make check' does not emit any warnings
-+1
+> +update these variables.
 
 Kind regards,
 Petr
