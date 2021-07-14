@@ -1,24 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 13:21:13 +0200
-Subject: [LTP] [PATCH v2 7/8] API: Move libtsc.h from realtime tests
- include to tst_tsc.h
-In-Reply-To: <20210714071158.15868-8-rpalethorpe@suse.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Wed, 14 Jul 2021 13:21:21 +0200
+Subject: [LTP] [PATCH v2 1/8] Add Sparse based checker and TST_RET/ERR
+ check
+In-Reply-To: <20210714071158.15868-2-rpalethorpe@suse.com>
 References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-8-rpalethorpe@suse.com>
-Message-ID: <YO7IqecaXFwjvHQn@pevik>
+ <20210714071158.15868-2-rpalethorpe@suse.com>
+Message-ID: <36430750-17c9-06e4-0f49-efc744116154@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi,
 
-> Allow the meltdown test to use this file without modifying the
-> CFLAGS. This avoids having to add the include also to the CHECK_FLAGS.
-+1
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+On 7/14/2021 9:11 AM, Richard Palethorpe via ltp wrote:
+> Vendors in Sparse as a git module. Then uses it to check for stores to
+> TST_RET/ERR within the library.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>   .gitmodules             |   3 +
+>   tools/Makefile          |   2 +
+>   tools/sparse/.gitignore |   1 +
+>   tools/sparse/Makefile   |  27 ++++++++
+>   tools/sparse/README.md  |  38 +++++++++++
+>   tools/sparse/main.c     | 148 ++++++++++++++++++++++++++++++++++++++++
+I think the name could be a bit better... sparse_main or ltp_checker or 
+something, because a binary just called main could be confusing.
 
-Kind regards,
-Petr
+Otherwise good basis for additional checks and fixing the warnings 
+emitted by sparse will allow use to raise the overall warning level.
+Hopefully at some point at least "-Wall -Werror" is possible.
+
+Joerg
