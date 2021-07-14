@@ -1,88 +1,69 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 18:43:12 +0200
-Subject: [LTP] [PATCH v5 0/4] Run tests in CI
-In-Reply-To: <YO77+MmmxwMewgnQ@yuki>
-References: <20210714142001.20566-1-pvorel@suse.cz> <YO70PiTdyxzTw0k2@pevik>
- <YO77+MmmxwMewgnQ@yuki>
-Message-ID: <YO8UIP310jsAmq8I@pevik>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 14 Jul 2021 21:08:40 +0300
+Subject: [LTP] [PATCH] syscalls/fanotify: Fix running tests in a loop
+Message-ID: <20210714180840.160798-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Both fanotify19 and fanotify18 leaked fds when run in a loop.
+fanotify19 was not checking child process exit status correctly
+which resulted in random failures.
 
-> Hi!
-> > tested:
-> > https://github.com/pevik/ltp/actions/runs/1030551185
+Reported-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+---
+ testcases/kernel/syscalls/fanotify/fanotify18.c | 5 ++++-
+ testcases/kernel/syscalls/fanotify/fanotify19.c | 4 +++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-> > One thing which bothers me is mangled output of several tests together:
-> > https://github.com/pevik/ltp/runs/3067600696?check_suite_focus=true#step:11:554
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify18.c b/testcases/kernel/syscalls/fanotify/fanotify18.c
+index 8a7eebba3..54a4b8ba0 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify18.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify18.c
+@@ -136,7 +136,7 @@ static void test_fanotify(unsigned int n)
+ 			(tc->mark_flags & DISALLOWED_MARK_FLAGS ||
+ 			 tc->mark_mask & FAN_ALL_PERM_EVENTS)) {
+ 			tst_res(TPASS, "Received result EPERM, as expected");
+-			return;
++			goto out;
+ 		}
+ 
+ 		tst_brk(TBROK | TERRNO,
+@@ -151,6 +151,9 @@ static void test_fanotify(unsigned int n)
+ 	tst_res(TPASS,
+ 		"fanotify_init() and fanotify_mark() returned successfully, "
+ 		"as expected");
++
++out:
++	SAFE_CLOSE(fd_notify);
+ }
+ 
+ static void setup(void)
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify19.c b/testcases/kernel/syscalls/fanotify/fanotify19.c
+index 60714408d..fac257bb4 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify19.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify19.c
+@@ -132,7 +132,7 @@ static void do_fork(void)
+ 
+ 	SAFE_WAITPID(child, &status, 0);
+ 
+-	if (WIFEXITED(child) && WEXITSTATUS(child) != 0)
++	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+ 		tst_brk(TBROK, "Child process terminated incorrectly. Aborting");
+ }
+ 
+@@ -255,6 +255,8 @@ static void test_fanotify(unsigned int n)
+ 			event = FAN_EVENT_NEXT(event, len);
+ 		}
+ 	}
++
++	SAFE_CLOSE(fd_notify);
+ }
+ 
+ static void setup(void)
+-- 
+2.32.0
 
-> > runtest TINFO: * tst_res_hexd
-> > /__w/ltp/ltp/lib/tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
-> > /__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: dump1
-> > /__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: 48 65 6c 6c 6f 20 66 72 6f 6d 20 74 73 74 5f 72
-> > /__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: 65 73 5f 68 65 78 64 00
-
-> > runtest TINFO: * tst_strstatus
-> > /__w/ltp/ltp/lib/tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
-
-> > Summary:
-> > passed   35
-> > failed   0
-> > broken   0
-> > skipped  0
-> > warnings 0
-
-> > Summary:
-> > passed   1
-> > failed   0
-> > broken   0
-> > skipped  0
-> > warnings 0
-
-> That is indeed strange, you are running these in a loop, the buffers
-> should have been flushed once controll returns back to the shell from
-> the test.
-
-> I guess that this is a combination of:
-
-> * The stdout and stderr are block buffered by the gitlab CI and flushed
->   at different times
-
-> * The summary is written into stdout in contrast with the message
->   so we end up with summary printed later than the rest that goes into
->   stderr
-
-Yep, it could be.
-
-> I guess this should fix it:
-
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index f4d9f8e3b..084a83c9e 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -734,12 +734,12 @@ static void do_exit(int ret)
->                 if (results->broken)
->                         ret |= TBROK;
-
-> -               printf("\nSummary:\n");
-> -               printf("passed   %d\n", results->passed);
-> -               printf("failed   %d\n", results->failed);
-> -               printf("broken   %d\n", results->broken);
-> -               printf("skipped  %d\n", results->skipped);
-> -               printf("warnings %d\n", results->warnings);
-> +               fprintf(stderr, "\nSummary:\n");
-> +               fprintf(stderr, "passed   %d\n", results->passed);
-> +               fprintf(stderr, "failed   %d\n", results->failed);
-> +               fprintf(stderr, "broken   %d\n", results->broken);
-> +               fprintf(stderr, "skipped  %d\n", results->skipped);
-> +               fprintf(stderr, "warnings %d\n", results->warnings);
->         }
-
-Thanks! Testing it in https://github.com/pevik/ltp/actions/runs/1031005963
-
-Kind regards,
-Petr
