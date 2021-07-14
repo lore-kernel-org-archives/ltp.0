@@ -1,45 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 16:27:10 +0200
-Subject: [LTP] [PATCH v5 0/4] Run tests in CI
-In-Reply-To: <20210714142001.20566-1-pvorel@suse.cz>
-References: <20210714142001.20566-1-pvorel@suse.cz>
-Message-ID: <YO70PiTdyxzTw0k2@pevik>
+Date: Wed, 14 Jul 2021 16:30:00 +0200
+Subject: [LTP] [PATCH v2 4/8] doc: Remind authors and maintainers to run
+ make check
+In-Reply-To: <87pmvlnhnh.fsf@suse.de>
+References: <20210714071158.15868-1-rpalethorpe@suse.com>
+ <20210714071158.15868-5-rpalethorpe@suse.com>
+ <YO7C0DgkpaUSf4Nw@pevik> <87pmvlnhnh.fsf@suse.de>
+Message-ID: <YO706MRTx0m8r5au@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+> Hello Petr,
 
-tested:
-https://github.com/pevik/ltp/actions/runs/1030551185
+> Petr Vorel <pvorel@suse.cz> writes:
 
-One thing which bothers me is mangled output of several tests together:
-https://github.com/pevik/ltp/runs/3067600696?check_suite_focus=true#step:11:554
+> > Hi Richie,
 
-runtest TINFO: * tst_res_hexd
-/__w/ltp/ltp/lib/tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
-/__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: dump1
-/__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: 48 65 6c 6c 6f 20 66 72 6f 6d 20 74 73 74 5f 72
-/__w/ltp/ltp/lib/newlib_tests/tst_res_hexd.c:13: TPASS: 65 73 5f 68 65 78 64 00
+> >> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> >> ---
+> >>  doc/maintainer-patch-review-checklist.txt | 2 +-
+> >>  doc/test-writing-guidelines.txt           | 1 +
+> >>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-runtest TINFO: * tst_strstatus
-/__w/ltp/ltp/lib/tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
+> >> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+> >> index f6682b574..970779acc 100644
+> >> --- a/doc/maintainer-patch-review-checklist.txt
+> >> +++ b/doc/maintainer-patch-review-checklist.txt
+> >> @@ -39,7 +39,7 @@ New test should
+> >>  * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+> >>  * Test binaries are added into corresponding '.gitignore' files
+> >>  * Check coding style with
+> >> -  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
+> >> +  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl] and `make check`
+> >>    (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style[C coding style])
+> > +1
 
-Summary:
-passed   35
-failed   0
-broken   0
-skipped  0
-warnings 0
+> > "131" would mean section 1.3.1. If you put it into "2.1 C coding style" the link
+> > should be #21-c-coding-style.
 
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
+> You may want to do a quick-fix commit for that, because it is not part
+> of my patch. Although I can add it ofcourse.
+I'm sorry, I overlooked that it does not have ^+. Thanks for info!
 
 Kind regards,
 Petr
