@@ -1,10 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 12:54:11 +0200
-Subject: [LTP] [PATCH v2 3/8] doc: Add rules and recommendations list
-In-Reply-To: <20210714071158.15868-4-rpalethorpe@suse.com>
+Date: Wed, 14 Jul 2021 12:56:16 +0200
+Subject: [LTP] [PATCH v2 4/8] doc: Remind authors and maintainers to run
+ make check
+In-Reply-To: <20210714071158.15868-5-rpalethorpe@suse.com>
 References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-4-rpalethorpe@suse.com>
-Message-ID: <YO7CU8UebcFN2VtY@pevik>
+ <20210714071158.15868-5-rpalethorpe@suse.com>
+Message-ID: <YO7C0DgkpaUSf4Nw@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,20 +14,43 @@ To: ltp@lists.linux.it
 
 Hi Richie,
 
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -10,6 +10,11 @@ NOTE: See also
->        https://github.com/linux-test-project/ltp/wiki/Shell-Test-API[Shell Test API],
->        https://github.com/linux-test-project/ltp/wiki/LTP-Library-API-Writing-Guidelines[LTP Library API Writing Guidelines].
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  doc/maintainer-patch-review-checklist.txt | 2 +-
+>  doc/test-writing-guidelines.txt           | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-> +Rules and recommendations which are "machine checkable" should be
-> +tagged with an ID like +LTP-XXX+. There will be a corresponding entry
-> +in 'doc/rules.tsv'. When you run 'make check' or 'make check-test' it
-> +will display these IDs as a reference.
-> +
-Actually text is on the top. I suppose, you probably planned to put this into "2.1 C coding style".
+> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+> index f6682b574..970779acc 100644
+> --- a/doc/maintainer-patch-review-checklist.txt
+> +++ b/doc/maintainer-patch-review-checklist.txt
+> @@ -39,7 +39,7 @@ New test should
+>  * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+>  * Test binaries are added into corresponding '.gitignore' files
+>  * Check coding style with
+> -  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
+> +  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl] and `make check`
+>    (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style[C coding style])
++1
+
+"131" would mean section 1.3.1. If you put it into "2.1 C coding style" the link
+should be #21-c-coding-style.
 
 Kind regards,
 Petr
 
->  1. Guide to clean and understandable code
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  * Docparse documentation
+>  * If a test is a regression test it should include tags
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index 74e8ad7ee..e3268852a 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -308,6 +308,7 @@ NOTE: See also
+>  3. The runtest entires are in place
+>  4. Test binaries are added into corresponding '.gitignore' files
+>  5. Patches apply over the latest git
+> +6. 'make check' does not emit any warnings
++1
+
+Kind regards,
+Petr
