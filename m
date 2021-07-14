@@ -1,159 +1,74 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 13 Jul 2021 19:24:50 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify19: Add test cases for elevated
- reader privileges
-Message-ID: <20210713162450.34947-1-amir73il@gmail.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Wed, 14 Jul 2021 02:30:32 +0000
+Subject: [LTP] [PATCH] syscalls/shmctl05.c: Fix leak of shared memory
+ segment
+In-Reply-To: <20210713133449.33278-1-ian.s.may@gmail.com>
+References: <20210713133449.33278-1-ian.s.may@gmail.com>
+Message-ID: <60EE4C74.7040802@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Even when event reader has elevated privileges, the information provided
-in events is determined by the privileges of the user that created the
-fanotify group.
+Hi Ian
 
-Add test cases for unprivileged listener and privileged event reader.
+Thanks! Applied.
 
-This is a regression test for kernel commit
-a8b98c808eab ("fanotify: fix permission model of unprivileged group")
-
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
-
-Hi Petr,
-
-Added test for a fix in v5.13-rc5.
-
-Thanks,
-Amir.
-
- .../kernel/syscalls/fanotify/fanotify19.c     | 57 ++++++++++++++++---
- 1 file changed, 49 insertions(+), 8 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify19.c b/testcases/kernel/syscalls/fanotify/fanotify19.c
-index e4ac8a032..3792c717c 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify19.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify19.c
-@@ -38,6 +38,7 @@
- #define MOUNT_PATH	"fs_mnt"
- #define TEST_FILE	MOUNT_PATH "/testfile"
- 
-+static uid_t euid;
- static int fd_notify;
- static char buf[BUF_SIZE];
- static struct fanotify_event_metadata event_buf[EVENT_BUF_LEN];
-@@ -45,12 +46,14 @@ static struct fanotify_event_metadata event_buf[EVENT_BUF_LEN];
- static struct test_case_t {
- 	const char *name;
- 	unsigned int fork;
-+	unsigned int elevate;
- 	unsigned int event_count;
- 	unsigned long long event_set[EVENT_SET_MAX];
- } test_cases[] = {
- 	{
- 		"unprivileged listener - events by self",
- 		0,
-+		0,
- 		4,
- 		{
- 			FAN_OPEN,
-@@ -62,6 +65,7 @@ static struct test_case_t {
- 	{
- 		"unprivileged lisneter - events by child",
- 		1,
-+		0,
- 		4,
- 		{
- 			FAN_OPEN,
-@@ -69,7 +73,31 @@ static struct test_case_t {
- 			FAN_MODIFY,
- 			FAN_CLOSE,
- 		}
--	}
-+	},
-+	{
-+		"unprivileged listener, privileged reader - events by self",
-+		0,
-+		1,
-+		4,
-+		{
-+			FAN_OPEN,
-+			FAN_ACCESS,
-+			FAN_MODIFY,
-+			FAN_CLOSE,
-+		}
-+	},
-+	{
-+		"unprivileged lisneter, privileged reader - events by child",
-+		1,
-+		1,
-+		4,
-+		{
-+			FAN_OPEN,
-+			FAN_ACCESS,
-+			FAN_MODIFY,
-+			FAN_CLOSE,
-+		}
-+	},
- };
- 
- static void generate_events(void)
-@@ -118,6 +146,14 @@ static void test_fanotify(unsigned int n)
- 
- 	tst_res(TINFO, "Test #%d %s", n, tc->name);
- 
-+	/* Relinquish privileged user */
-+	if (euid == 0) {
-+		tst_res(TINFO,
-+			"Running as privileged user, revoking.");
-+		struct passwd *nobody = SAFE_GETPWNAM("nobody");
-+		SAFE_SETEUID(nobody->pw_uid);
-+	}
-+
- 	/* Initialize fanotify */
- 	fd_notify = fanotify_init(FANOTIFY_REQUIRED_USER_INIT_FLAGS, O_RDONLY);
- 
-@@ -149,6 +185,13 @@ static void test_fanotify(unsigned int n)
- 	else
- 		generate_events();
- 
-+	/* Restore privileges */
-+	if (euid == 0 && tc->elevate) {
-+		tst_res(TINFO,
-+			"Restoring privileged user.");
-+		SAFE_SETEUID(0);
-+	}
-+
- 	/* Read events from queue */
- 	len = SAFE_READ(0, fd_notify, event_buf + len, EVENT_BUF_LEN - len);
- 
-@@ -224,13 +267,7 @@ static void setup(void)
- 	/* Check for kernel fanotify support */
- 	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, TEST_FILE);
- 
--	/* Relinquish privileged user */
--	if (geteuid() == 0) {
--		tst_res(TINFO,
--			"Running as privileged user, revoking.");
--		struct passwd *nobody = SAFE_GETPWNAM("nobody");
--		SAFE_SETUID(nobody->pw_uid);
--	}
-+	euid = geteuid();
- }
- 
- static void cleanup(void)
-@@ -248,6 +285,10 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.mntpoint = MOUNT_PATH,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "a8b98c808eab"},
-+		{}
-+	}
- };
- 
- #else
--- 
-2.25.1
-
+Best Regards
+Yang Xu
+> The cleanup function is using the key 0xF00F instead of the id in the shmctl call.
+> This causes the shared mem segment to not be removed properly.
+>
+> This can be reproduced with the following:
+>
+> $ ./shmctl05
+> tst_test.c:1342: TINFO: Timeout per run is
+> ../../../../../include/tst_fuzzy_sync.h:522: TINFO: Minimum sampling period ended
+> ../../../../../include/tst_fuzzy_sync.h:345: TINFO: loop = 1024, delay_bias = 0
+> ../../../../../include/tst_fuzzy_sync.h:333: TINFO: start_a - start_b: { avg =   ns, avg_dev =     ns, dev_ratio = }
+> ../../../../../include/tst_fuzzy_sync.h:333: TINFO: end_a - start_a  : { avg =   ns, avg_dev =     ns, dev_ratio = }
+> ../../../../../include/tst_fuzzy_sync.h:333: TINFO: end_b - start_b  : { avg =   ns, avg_dev =     ns, dev_ratio = }
+> ../../../../../include/tst_fuzzy_sync.h:333: TINFO: end_a - end_b    : { avg =   ns, avg_dev =     ns, dev_ratio = }
+> ../../../../../include/tst_fuzzy_sync.h:333: TINFO: spins            : { avg =     , avg_dev =       , dev_ratio = }
+> ../../../../../include/tst_fuzzy_sync.h:678: TINFO: Exceeded execution time, requesting exit
+> shmctl05.c:89: TPASS: didn't crash
+>
+> Summary:
+> passed   1
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+>
+> $ ipcs -m
+>
+> ------ Shared Memory Segments --------
+> key        shmid      owner      perms      bytes      nattch     status
+> 0x0000f00f 629964859  user       700        4096       0
+>
+> Fix
+> In the cleanup, add a SAFE_SHMGET to fetch the id and pass into shmctl call.
+> Confirmed this resolves the leaked segment.
+>
+> Signed-off-by: Ian May<ian.s.may@gmail.com>
+> ---
+>   testcases/kernel/syscalls/ipc/shmctl/shmctl05.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+> index f8b76bda7..ea7eef6f1 100644
+> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+> @@ -91,8 +91,10 @@ static void do_test(void)
+>
+>   static void cleanup(void)
+>   {
+> +	int id;
+>   	tst_fzsync_pair_cleanup(&fzsync_pair);
+> -	shmctl(0xF00F, IPC_RMID, NULL);
+> +	id = SAFE_SHMGET(0xF00F, 4096, 0);
+> +	SAFE_SHMCTL(id, IPC_RMID, NULL);
+>   }
+>
+>   static struct tst_test test = {
