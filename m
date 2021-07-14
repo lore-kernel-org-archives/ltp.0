@@ -1,53 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 16:34:40 +0200
-Subject: [LTP] [PATCH v2 3/8] doc: Add rules and recommendations list
-In-Reply-To: <87sg0hni07.fsf@suse.de>
-References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-4-rpalethorpe@suse.com>
- <YO7CU8UebcFN2VtY@pevik> <87sg0hni07.fsf@suse.de>
-Message-ID: <YO72AKW7/AEDsMtp@pevik>
+Date: Wed, 14 Jul 2021 16:37:12 +0200
+Subject: [LTP] [PATCH v4 4/7] lib: Add script for running tests
+In-Reply-To: <YO2f+P8Z9l6SISDG@yuki>
+References: <20210713101338.6985-1-pvorel@suse.cz>
+ <20210713101338.6985-5-pvorel@suse.cz> <YO2T4J14roLUT32t@yuki>
+ <YO2gUL2/s29SGdNo@pevik> <YO2f+P8Z9l6SISDG@yuki>
+Message-ID: <YO72mA9nhaCq1bLe@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi all,
 
-> Hello Petr,
+...
+> > > Not sure what we can do here, I guess that timings would be hard to fix
+> > > on VMs that run the tests.
 
-> Petr Vorel <pvorel@suse.cz> writes:
+> > If I remember correctly Richie suggested that FAIL is also OK. He said only
+> > TBROK and TCONF is a problem. I'd prefer to fuzzy sync tests which always pass,
+> > but after this effort I can work on API tests metadata, which would allow also
+> > this.
 
-> > Hi Richie,
-
-> >> +++ b/doc/test-writing-guidelines.txt
-> >> @@ -10,6 +10,11 @@ NOTE: See also
-> >>        https://github.com/linux-test-project/ltp/wiki/Shell-Test-API[Shell Test API],
-> >>        https://github.com/linux-test-project/ltp/wiki/LTP-Library-API-Writing-Guidelines[LTP Library API Writing Guidelines].
-
-> >> +Rules and recommendations which are "machine checkable" should be
-> >> +tagged with an ID like +LTP-XXX+. There will be a corresponding entry
-> >> +in 'doc/rules.tsv'. When you run 'make check' or 'make check-test' it
-> >> +will display these IDs as a reference.
-> >> +
-> > Actually text is on the top. I suppose, you probably planned to put
-> > this into "2.1 C coding style".
-
-> I'm not sure where to put it. The coding style is mostly about syntax
-> and formatting. The rules file can state anything machine checkable, so
-> that can include shell, directory structure, what functions are used
-> etc.
-
-Not sure myself myself. But my note was that you put it below NOTE,
-above "1. Guide to clean and understandable code" which looks strange to me.
-
-But not a big deal with it, just a nit.
+> Another possibility would be relaxing the timings on VMs. I guess that
+> we could change the treshold for reaching the criticall section to 10 on
+> VMs.
+I'd be for it, we have checks for VM. @Richie, any opinion about it?
 
 Kind regards,
 Petr
-
-> > Kind regards,
-> > Petr
-
-> >>  1. Guide to clean and understandable code
-> >>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
