@@ -1,75 +1,73 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 14 Jul 2021 08:11:58 +0100
-Subject: [LTP] [PATCH v2 8/8] API/tst_tsc: Add guards and remove some
- boilerplate
-In-Reply-To: <20210714071158.15868-1-rpalethorpe@suse.com>
-References: <20210714071158.15868-1-rpalethorpe@suse.com>
-Message-ID: <20210714071158.15868-9-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 14 Jul 2021 09:28:20 +0200
+Subject: [LTP] [PATCH] syscalls/fanotify19: Add test cases for elevated
+ reader privileges
+In-Reply-To: <20210713162450.34947-1-amir73il@gmail.com>
+References: <20210713162450.34947-1-amir73il@gmail.com>
+Message-ID: <YO6SFGTvHJkAR5+9@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_tsc.h | 35 ++++++++---------------------------
- 1 file changed, 8 insertions(+), 27 deletions(-)
+Hi Amir,
 
-diff --git a/include/tst_tsc.h b/include/tst_tsc.h
-index 9ad5fd659..3f49a6ca7 100644
---- a/include/tst_tsc.h
-+++ b/include/tst_tsc.h
-@@ -1,28 +1,6 @@
--/******************************************************************************
-- *
-- *   Copyright ? International Business Machines  Corp., 2006-2008
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-- * NAME
-- *       libtsc.h
-- *
-- * DESCRIPTION
-- *
-- * USAGE:
-- *       To be included in some testcases.
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright ? International Business Machines  Corp., 2006-2008
-  *
-  * AUTHOR
-  *        Darren Hart <dvhltc@us.ibm.com>
-@@ -30,8 +8,10 @@
-  *
-  * HISTORY
-  *      It directly comes from the librttest.h (see its HISTORY).
-- *
-- *****************************************************************************/
-+ */
-+
-+#ifndef TST_TSC_H
-+#define TST_TSC_H
- 
- #undef TSC_UNSUPPORTED
- 
-@@ -70,3 +50,4 @@
- #define TSC_UNSUPPORTED
- #endif
- 
-+#endif
--- 
-2.31.1
+> Even when event reader has elevated privileges, the information provided
+> in events is determined by the privileges of the user that created the
+> fanotify group.
 
+> Add test cases for unprivileged listener and privileged event reader.
+
+> This is a regression test for kernel commit
+> a8b98c808eab ("fanotify: fix permission model of unprivileged group")
+
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> ---
+
+> Hi Petr,
+
+> Added test for a fix in v5.13-rc5.
+
+Thanks for your patch, pushed!
+
+Things I've found, not related to this patch:
+
+TBROK when running with higher number of iterations:
+./fanotify19 -i 30
+...
+fanotify19.c:224: TPASS: Received event: mask=2b, pid=11351 fd=-1
+fanotify19.c:224: TPASS: Received event: mask=b, pid=11351 fd=-1
+fanotify19.c:224: TPASS: Received event: mask=a, pid=11351 fd=-1
+fanotify19.c:224: TPASS: Received event: mask=8, pid=11351 fd=-1
+fanotify19.c:147: TINFO: Test #3 unprivileged lisneter, privileged reader - events by child
+fanotify19.c:151: TINFO: Running as privileged user, revoking.
+fanotify19.c:136: TBROK: Child process terminated incorrectly. Aborting
+
+Summary:
+passed   316
+failed   0
+broken   1
+skipped  0
+warnings 0
+
+Could you have look into it?
+
+very minor nit: checkpatch complains about minor issues. Although all but quoted
+string split across lines are easily fixable we don't need to bother with it.
+But could you please use checkpatch for new tests?
+Also I'd personally join also strings which are below 100 chars, because it
+helps to grep.
+
+> @@ -248,6 +285,10 @@ static struct tst_test test = {
+>  	.needs_root = 1,
+>  	.mount_device = 1,
+>  	.mntpoint = MOUNT_PATH,
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "a8b98c808eab"},
+FYI we also support "linux-stable-git", but we mainly use it for stable branch
+specific patches (something required just for stable), not for regular backports
+of fixes.
+
+Kind regards,
+Petr
