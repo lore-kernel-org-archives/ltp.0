@@ -1,75 +1,213 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 16:20:00 +0200
-Subject: [LTP] [PATCH v5 3/4] build.sh: Add support for make test
+Date: Wed, 14 Jul 2021 16:19:58 +0200
+Subject: [LTP] [PATCH v5 1/4] lib: Add script for running tests
 In-Reply-To: <20210714142001.20566-1-pvorel@suse.cz>
 References: <20210714142001.20566-1-pvorel@suse.cz>
-Message-ID: <20210714142001.20566-4-pvorel@suse.cz>
+Message-ID: <20210714142001.20566-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+For now run only tests which TPASS or TCONF.
+
+tst_fuzzy_sync01: sporadically fails, thus disabled:
+
+../../include/tst_fuzzy_sync.h:685: TINFO: Exceeded execution loops, requesting exit
+tst_fuzzy_sync01.c:227: TFAIL: acs:3  act:1  art:1  | =:23   -:46   +:2999931
+...
+Summary:
+passed   21
+failed   3
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- build.sh | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ lib/newlib_tests/runtest.sh | 175 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 175 insertions(+)
+ create mode 100755 lib/newlib_tests/runtest.sh
 
-diff --git a/build.sh b/build.sh
-index 240ce8e68..9cb26e899 100755
---- a/build.sh
-+++ b/build.sh
-@@ -119,6 +119,17 @@ build_out_tree()
- 	make $MAKE_OPTS_OUT_TREE
- }
- 
-+test_in_tree()
+diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
+new file mode 100755
+index 000000000..207553aaa
+--- /dev/null
++++ b/lib/newlib_tests/runtest.sh
+@@ -0,0 +1,175 @@
++#!/bin/sh
++# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
++
++LTP_C_API_TESTS="${LTP_C_API_TESTS:-test05 test07 test09 test12 test15 test18
++tst_bool_expr test_exec test_timer tst_res_hexd tst_strstatus tst_fuzzy_sync02
++tst_fuzzy_sync03}"
++
++LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh shell/net/*.sh}"
++
++cd $(dirname $0)
++PATH="$PWD/../../testcases/lib/:$PATH"
++
++. tst_ansi_color.sh
++
++usage()
 +{
-+	make test
++	cat << EOF
++Usage: $0 [-b DIR ] [-c|-s]
++-b DIR  build directory (required for out-of-tree build)
++-c      run C API tests only
++-s      run shell API tests only
++-h      print this help
++EOF
 +}
 +
-+test_out_tree()
++tst_flag2mask()
 +{
-+	cd $BUILD_DIR
-+	make $MAKE_OPTS_OUT_TREE test
++	case "$1" in
++	TPASS) return 0;;
++	TFAIL) return 1;;
++	TBROK) return 2;;
++	TWARN) return 4;;
++	TINFO) return 16;;
++	TCONF) return 32;;
++	esac
 +}
 +
- install_in_tree()
- {
- 	make $MAKE_OPTS install
-@@ -165,6 +176,7 @@ RUN:
- autotools   run only 'make autotools'
- configure   run only 'configure'
- build       run only 'make'
-+test        run only 'make test' (not supported for cross-compile build)
- install     run only 'make install'
- 
- Default configure options:
-@@ -192,7 +204,7 @@ while getopts "c:hio:p:r:t:" opt; do
- 		esac;;
- 	p) prefix="$OPTARG";;
- 	r) case "$OPTARG" in
--		autotools|configure|build|install) run="$OPTARG";;
-+		autotools|configure|build|test|install) run="$OPTARG";;
- 		*) echo "Wrong run type '$OPTARG'" >&2; usage; exit 1;;
- 		esac;;
- 	t) case "$OPTARG" in
-@@ -218,6 +230,14 @@ if [ -z "$run" -o "$run" = "build" ]; then
- 	eval build_${tree}_tree
- fi
- 
-+if [ -z "$run" -o "$run" = "test" ]; then
-+	if [ "$build" = "cross" ]; then
-+		echo "cross-compile build, skipping running tests" >&2
-+	else
-+		eval test_${tree}_tree
++runtest_res()
++{
++	if [ $# -eq 0 ]; then
++		echo >&2
++		return
 +	fi
++
++	local res="$1"
++	shift
++
++	tst_color_enabled
++	local color=$?
++
++	printf "runtest " >&2
++	tst_print_colored $res "$res: " >&2
++	echo "$@" >&2
++
++}
++
++runtest_brk()
++{
++	local res="$1"
++	shift
++
++	tst_flag2mask "$res"
++	local mask=$?
++
++	runtest_res
++	runtest_res $res $@
++
++	exit $mask
++}
++
++run_tests()
++{
++	local target="$1"
++	local i res ret=0 tbrok tconf tfail tpass twarn vars
++
++	eval vars="\$LTP_${target}_API_TESTS"
++
++	runtest_res TINFO "=== Run $target tests ==="
++
++	for i in $vars; do
++		runtest_res TINFO "* $i"
++		./$i
++		res=$?
++
++		[ $res -ne 0 -a $res -ne 32 ] && ret=1
++
++		case $res in
++			0) tpass="$tpass $i";;
++			1) tfail="$tfail $i";;
++			2) tbrok="$tbrok $i";;
++			4) twarn="$twarn $i";;
++			32) tconf="$tconf $i";;
++			127) runtest_brk TBROK "Error: file not found (wrong PATH? out-of-tree build without -b?), exit code: $res";;
++			*) runtest_brk TBROK "Error: unknown failure, exit code: $res";;
++		esac
++		runtest_res
++	done
++
++	runtest_res TINFO "=== $target TEST RESULTS ==="
++	runtest_res TINFO "$(echo $tpass | wc -w)x TPASS:$tpass"
++	runtest_res TINFO "$(echo $tfail | wc -w)x TFAIL:$tfail"
++	runtest_res TINFO "$(echo $tbrok | wc -w)x TBROK:$tbrok"
++	runtest_res TINFO "$(echo $twarn | wc -w)x TWARN:$twarn"
++	runtest_res TINFO "$(echo $tconf | wc -w)x TCONF:$tconf"
++	runtest_res
++
++	return $ret
++}
++
++run_c_tests()
++{
++	if [ "$builddir" ]; then
++		cd $builddir/lib/newlib_tests
++	fi
++
++	run_tests "C"
++
++	if [ "$builddir" ]; then
++		cd -
++	fi
++}
++
++run_shell_tests()
++{
++	run_tests "SHELL"
++}
++
++
++print_result()
++{
++	local res="$1"
++	local target="$2"
++
++	if [ -z "$res" ]; then
++		runtest_res TCONF "$target tests skipped"
++	elif [ $res -eq 0 ]; then
++		runtest_res TPASS "All $target tests TCONF/TPASS"
++	else
++		runtest_res TFAIL "Some $target test(s) TBROK/TFAIL/TWARN"
++	fi
++}
++
++builddir=
++c_fail=
++run=
++shell_fail=
++
++while getopts b:chs opt; do
++	case $opt in
++		'h') usage; exit 0;;
++		'b') builddir=$OPTARG; PATH="$builddir/testcases/lib:$PATH";;
++		'c') run="c";;
++		's') run="s";;
++		*) usage; runtest_brk TBROK "Error: invalid option";;
++	esac
++done
++
++runtest_res TINFO "PATH='$PATH'"
++
++if [ -z "$run" -o "$run" = "c" ]; then
++	run_c_tests
++	c_fail=$?
 +fi
 +
- if [ -z "$run" -o "$run" = "install" ]; then
- 	if [ "$install" = 1 ]; then
- 		eval install_${tree}_tree
++if [ -z "$run" -o "$run" = "s" ]; then
++	run_shell_tests
++	shell_fail=$?
++fi
++
++runtest_res TINFO "=== FINAL TEST RESULTS ==="
++
++print_result "$c_fail" "C"
++print_result "$shell_fail" "shell"
++
++exit $((c_fail|shell_fail))
 -- 
 2.32.0
 
