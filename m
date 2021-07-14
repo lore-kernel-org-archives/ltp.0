@@ -1,69 +1,86 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 14 Jul 2021 21:08:40 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify: Fix running tests in a loop
-Message-ID: <20210714180840.160798-1-amir73il@gmail.com>
+Date: Wed, 14 Jul 2021 21:15:39 +0300
+Subject: [LTP] [PATCH] syscalls/fanotify19: Add test cases for elevated
+ reader privileges
+In-Reply-To: <YO6SFGTvHJkAR5+9@pevik>
+References: <20210713162450.34947-1-amir73il@gmail.com>
+ <YO6SFGTvHJkAR5+9@pevik>
+Message-ID: <CAOQ4uxjjbv996OC_xqAtV1wttK51ytb3dPavS8F28K3QMU6Xzw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Both fanotify19 and fanotify18 leaked fds when run in a loop.
-fanotify19 was not checking child process exit status correctly
-which resulted in random failures.
+On Wed, Jul 14, 2021 at 10:28 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Amir,
+>
+> > Even when event reader has elevated privileges, the information provided
+> > in events is determined by the privileges of the user that created the
+> > fanotify group.
+>
+> > Add test cases for unprivileged listener and privileged event reader.
+>
+> > This is a regression test for kernel commit
+> > a8b98c808eab ("fanotify: fix permission model of unprivileged group")
+>
+> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> > ---
+>
+> > Hi Petr,
+>
+> > Added test for a fix in v5.13-rc5.
+>
+> Thanks for your patch, pushed!
+>
+> Things I've found, not related to this patch:
+>
+> TBROK when running with higher number of iterations:
+> ./fanotify19 -i 30
+> ...
+> fanotify19.c:224: TPASS: Received event: mask=2b, pid=11351 fd=-1
+> fanotify19.c:224: TPASS: Received event: mask=b, pid=11351 fd=-1
+> fanotify19.c:224: TPASS: Received event: mask=a, pid=11351 fd=-1
+> fanotify19.c:224: TPASS: Received event: mask=8, pid=11351 fd=-1
+> fanotify19.c:147: TINFO: Test #3 unprivileged lisneter, privileged reader - events by child
+> fanotify19.c:151: TINFO: Running as privileged user, revoking.
+> fanotify19.c:136: TBROK: Child process terminated incorrectly. Aborting
+>
+> Summary:
+> passed   316
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
+>
+> Could you have look into it?
+>
 
-Reported-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
- testcases/kernel/syscalls/fanotify/fanotify18.c | 5 ++++-
- testcases/kernel/syscalls/fanotify/fanotify19.c | 4 +++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Posted fix.
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify18.c b/testcases/kernel/syscalls/fanotify/fanotify18.c
-index 8a7eebba3..54a4b8ba0 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify18.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify18.c
-@@ -136,7 +136,7 @@ static void test_fanotify(unsigned int n)
- 			(tc->mark_flags & DISALLOWED_MARK_FLAGS ||
- 			 tc->mark_mask & FAN_ALL_PERM_EVENTS)) {
- 			tst_res(TPASS, "Received result EPERM, as expected");
--			return;
-+			goto out;
- 		}
- 
- 		tst_brk(TBROK | TERRNO,
-@@ -151,6 +151,9 @@ static void test_fanotify(unsigned int n)
- 	tst_res(TPASS,
- 		"fanotify_init() and fanotify_mark() returned successfully, "
- 		"as expected");
-+
-+out:
-+	SAFE_CLOSE(fd_notify);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify19.c b/testcases/kernel/syscalls/fanotify/fanotify19.c
-index 60714408d..fac257bb4 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify19.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify19.c
-@@ -132,7 +132,7 @@ static void do_fork(void)
- 
- 	SAFE_WAITPID(child, &status, 0);
- 
--	if (WIFEXITED(child) && WEXITSTATUS(child) != 0)
-+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
- 		tst_brk(TBROK, "Child process terminated incorrectly. Aborting");
- }
- 
-@@ -255,6 +255,8 @@ static void test_fanotify(unsigned int n)
- 			event = FAN_EVENT_NEXT(event, len);
- 		}
- 	}
-+
-+	SAFE_CLOSE(fd_notify);
- }
- 
- static void setup(void)
--- 
-2.32.0
+> very minor nit: checkpatch complains about minor issues. Although all but quoted
+> string split across lines are easily fixable we don't need to bother with it.
+> But could you please use checkpatch for new tests?
 
+Will do.
+
+> Also I'd personally join also strings which are below 100 chars, because it
+> helps to grep.
+>
+> > @@ -248,6 +285,10 @@ static struct tst_test test = {
+> >       .needs_root = 1,
+> >       .mount_device = 1,
+> >       .mntpoint = MOUNT_PATH,
+> > +     .tags = (const struct tst_tag[]) {
+> > +             {"linux-git", "a8b98c808eab"},
+> FYI we also support "linux-stable-git", but we mainly use it for stable branch
+> specific patches (something required just for stable), not for regular backports
+> of fixes.
+>
+
+I did not understand when linux-stable-git should be used or why it applies
+to this case.
+
+Thanks,
+Amir.
