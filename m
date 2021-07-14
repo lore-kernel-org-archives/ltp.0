@@ -1,102 +1,227 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 14 Jul 2021 08:11:57 +0100
-Subject: [LTP] [PATCH v2 7/8] API: Move libtsc.h from realtime tests include
- to tst_tsc.h
+Date: Wed, 14 Jul 2021 08:11:52 +0100
+Subject: [LTP] [PATCH v2 2/8] Add 'make check' to the build system
 In-Reply-To: <20210714071158.15868-1-rpalethorpe@suse.com>
 References: <20210714071158.15868-1-rpalethorpe@suse.com>
-Message-ID: <20210714071158.15868-8-rpalethorpe@suse.com>
+Message-ID: <20210714071158.15868-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Allow the meltdown test to use this file without modifying the
-CFLAGS. This avoids having to add the include also to the CHECK_FLAGS.
+Allows one to run 'make check' or 'make check-$TARGET'. Which will
+execute the CHECK tool with that target's CC arguments and
+CHECK_FLAGS. By default the check tool is tools/sparse/main.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/realtime/include/libtsc.h => include/tst_tsc.h  | 0
- testcases/cve/Makefile                                    | 2 --
- testcases/cve/meltdown.c                                  | 2 +-
- testcases/realtime/func/async_handler/async_handler_tsc.c | 3 ++-
- testcases/realtime/func/measurement/preempt_timing.c      | 3 ++-
- testcases/realtime/func/measurement/rdtsc-latency.c       | 3 ++-
- 6 files changed, 7 insertions(+), 6 deletions(-)
- rename testcases/realtime/include/libtsc.h => include/tst_tsc.h (100%)
+ Makefile                                | 8 ++++++++
+ include/mk/env_post.mk                  | 8 ++++++++
+ include/mk/generic_leaf_target.inc      | 5 ++++-
+ include/mk/generic_trunk_target.inc     | 7 ++++++-
+ include/mk/lib.mk                       | 3 +++
+ include/mk/module.mk                    | 2 ++
+ include/mk/rules.mk                     | 9 +++++++++
+ include/mk/sparse.mk                    | 9 +++++++++
+ include/mk/testcases.mk                 | 1 +
+ testcases/open_posix_testsuite/Makefile | 4 ++++
+ 10 files changed, 54 insertions(+), 2 deletions(-)
+ create mode 100644 include/mk/sparse.mk
 
-diff --git a/testcases/realtime/include/libtsc.h b/include/tst_tsc.h
-similarity index 100%
-rename from testcases/realtime/include/libtsc.h
-rename to include/tst_tsc.h
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index ddf8b6fe1..c5308794d 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -18,8 +18,6 @@ ifneq ($(ANDROID),1)
- cve-2014-0196:  LDLIBS += -lutil
+diff --git a/Makefile b/Makefile
+index 56812d77b..3b0ba330d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -79,6 +79,7 @@ BOOTSTRAP_TARGETS	:= $(sort $(COMMON_TARGETS) $(CLEAN_TARGETS) $(INSTALL_TARGETS
+ CLEAN_TARGETS		:= $(addsuffix -clean,$(CLEAN_TARGETS))
+ INSTALL_TARGETS		:= $(addsuffix -install,$(INSTALL_TARGETS))
+ MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
++CHECK_TARGETS		:= $(addsuffix -check,testcases lib)
+ 
+ # There's no reason why we should run `all' twice. Otherwise we're just wasting
+ # 3+ mins of useful CPU cycles on a modern machine, and even more time on an
+@@ -108,6 +109,10 @@ $(MAKE_TARGETS) include-all lib-all libs-all:
+ 	$(MAKE) -C "$(subst -all,,$@)" \
+ 		-f "$(abs_top_srcdir)/$(subst -all,,$@)/Makefile" all
+ 
++$(CHECK_TARGETS): tools-all
++	$(MAKE) -C "$(subst -check,,$@)" \
++		-f "$(abs_top_srcdir)/$(subst -check,,$@)/Makefile" check
++
+ # Let's not conflict with ac-clean, maintainer-clean, etc, so.
+ $(filter-out include-clean,$(CLEAN_TARGETS))::
+ 	-$(MAKE) -C "$(subst -clean,,$@)" \
+@@ -189,6 +194,9 @@ INSTALL_TARGETS		+= $(addprefix $(DESTDIR)/$(bindir)/,$(BINDIR_INSTALL_SCRIPTS))
+ 
+ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
+ 
++.PHONY: check
++check: $(CHECK_TARGETS)
++
+ ## Install
+ install: $(INSTALL_TARGETS)
+ 
+diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+index 1d22f9c53..7f4948037 100644
+--- a/include/mk/env_post.mk
++++ b/include/mk/env_post.mk
+@@ -89,6 +89,14 @@ $(error You must define $$(prefix) before executing install)
+ endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
  endif
  
--meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
--
- ifneq (,$(filter $(HOST_CPU),x86 x86_64))
- meltdown: CFLAGS += -msse2
++CHECK_TARGETS			?= $(addprefix check-,$(notdir $(patsubst %.c,%,$(sort $(wildcard $(abs_srcdir)/*.c)))))
++CHECK_TARGETS			:= $(filter-out $(addprefix check-, $(FILTER_OUT_MAKE_TARGETS)), $(CHECK_TARGETS))
++CHECK				?= $(abs_top_srcdir)/tools/sparse/main
++
++ifeq ($(CHECK),$(abs_top_srcdir)/tools/sparse/main)
++CHECK_DEPS			+= $(CHECK)
++endif
++
+ include $(top_srcdir)/include/mk/rules.mk
+ 
  endif
-diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-index a387b3205..5a984aba3 100644
---- a/testcases/cve/meltdown.c
-+++ b/testcases/cve/meltdown.c
-@@ -19,7 +19,7 @@
+diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
+index 64953f89a..aa092a5a3 100644
+--- a/include/mk/generic_leaf_target.inc
++++ b/include/mk/generic_leaf_target.inc
+@@ -92,7 +92,7 @@
+ # INSTALL_DIR			:= $(libdir)
+ #
  
- #include <emmintrin.h>
+-.PHONY: all clean install
++.PHONY: all clean install check
  
--#include "libtsc.h"
-+#include "tst_tsc.h"
+ ifneq ($(strip $(MAKE_TARGETS)),)
+ $(MAKE_TARGETS) += $(HOST_MAKE_TARGETS)
+@@ -109,4 +109,7 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
  
- #define TARGET_OFFSET	9
- #define TARGET_SIZE	(1 << TARGET_OFFSET)
-diff --git a/testcases/realtime/func/async_handler/async_handler_tsc.c b/testcases/realtime/func/async_handler/async_handler_tsc.c
-index 7da4324a5..73d4ee5c6 100644
---- a/testcases/realtime/func/async_handler/async_handler_tsc.c
-+++ b/testcases/realtime/func/async_handler/async_handler_tsc.c
-@@ -46,7 +46,8 @@
- #include <pthread.h>
- #include <librttest.h>
- #include <libstats.h>
--#include <libtsc.h>
+ install: $(INSTALL_FILES)
+ 
++$(CHECK_TARGETS): | $(CHECK_DEPS)
++check: $(CHECK_TARGETS)
 +
-+#include "tst_tsc.h"
+ # vim: syntax=make
+diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
+index fc59f944f..32a108fbf 100644
+--- a/include/mk/generic_trunk_target.inc
++++ b/include/mk/generic_trunk_target.inc
+@@ -48,7 +48,7 @@
  
- #define HANDLER_PRIO 98
- #define SIGNAL_PRIO 99
-diff --git a/testcases/realtime/func/measurement/preempt_timing.c b/testcases/realtime/func/measurement/preempt_timing.c
-index 8b5333480..b84d54692 100644
---- a/testcases/realtime/func/measurement/preempt_timing.c
-+++ b/testcases/realtime/func/measurement/preempt_timing.c
-@@ -52,7 +52,8 @@
- #include <sys/mman.h>
- #include <stdint.h>
- #include <librttest.h>
--#include <libtsc.h>
+ include $(top_srcdir)/include/mk/functions.mk
+ 
+-RECURSIVE_TARGETS		?= all install
++RECURSIVE_TARGETS		?= all install check
+ 
+ $(eval $(get_make_dirs))
+ 
+@@ -68,6 +68,9 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
+ 
+ trunk-install: $(INSTALL_FILES)
+ 
++$(CHECK_TARGETS): | $(CHECK_DEPS)
++trunk-check: $(CHECK_TARGETS)
 +
-+#include "tst_tsc.h"
+ # Avoid creating duplicate .PHONY references to all, clean, and install. IIRC,
+ # I've seen some indeterministic behavior when one does this in the past with
+ # GNU Make...
+@@ -108,4 +111,6 @@ else
+ endif
+ endif
  
- #define ITERATIONS 1000000ULL
- #define INTERVALS 10
-diff --git a/testcases/realtime/func/measurement/rdtsc-latency.c b/testcases/realtime/func/measurement/rdtsc-latency.c
-index d6ab89ff0..3829947bc 100644
---- a/testcases/realtime/func/measurement/rdtsc-latency.c
-+++ b/testcases/realtime/func/measurement/rdtsc-latency.c
-@@ -44,7 +44,8 @@
- #include <errno.h>
- #include <stdint.h>
- #include <librttest.h>
--#include <libtsc.h>
++check: trunk-check
 +
-+#include "tst_tsc.h"
+ # vim: syntax=make
+diff --git a/include/mk/lib.mk b/include/mk/lib.mk
+index f9b6c0aff..3bf63bf9e 100644
+--- a/include/mk/lib.mk
++++ b/include/mk/lib.mk
+@@ -26,6 +26,7 @@
+ # Makefile to include for libraries.
  
- #define ITERATIONS 1000000
+ include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/sparse.mk
  
+ INSTALL_DIR	:= $(libdir)
+ 
+@@ -57,6 +58,8 @@ LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
+ 
+ LIBOBJS		:= $(LIBSRCS:.c=.o)
+ 
++CHECK_TARGETS	:= $(addprefix check-,$(notdir $(LIBSRCS:.c=)))
++
+ $(LIB): $(notdir $(LIBOBJS))
+ 	@if [ -z "$(strip $^)" ] ; then \
+ 		echo "Cowardly refusing to create empty archive"; \
+diff --git a/include/mk/module.mk b/include/mk/module.mk
+index 6c8814b96..3bb7350f1 100644
+--- a/include/mk/module.mk
++++ b/include/mk/module.mk
+@@ -47,6 +47,8 @@ endif
+ 
+ CLEAN_TARGETS += .dep_modules *.mod built-in.a
+ 
++CHECK_TARGETS := $(filter-out %.ko, $(CHECK_TARGETS))
++
+ MODULE_SOURCES := $(patsubst %.ko,%.c,$(filter %.ko, $(MAKE_TARGETS)))
+ 
+ # Ignoring the exit status of commands is done to be forward compatible with
+diff --git a/include/mk/rules.mk b/include/mk/rules.mk
+index c8f4bbbbe..2a04b2b67 100644
+--- a/include/mk/rules.mk
++++ b/include/mk/rules.mk
+@@ -37,3 +37,12 @@ else
+ 	@$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
+ 	@echo CC $(target_rel_dir)$@
+ endif
++
++.PHONY: $(CHECK_TARGETS)
++$(CHECK_TARGETS): check-%: %.c
++ifdef VERBOSE
++	$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
++else
++	@$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
++	@echo CHECK $(target_rel_dir)$<
++endif
+diff --git a/include/mk/sparse.mk b/include/mk/sparse.mk
+new file mode 100644
+index 000000000..66711d107
+--- /dev/null
++++ b/include/mk/sparse.mk
+@@ -0,0 +1,9 @@
++# Rules to make sparse tool(s) for inclusion in lib and testcases Makefiles
++
++SPARSE_DIR:= $(abs_top_builddir)/tools/sparse
++
++$(SPARSE_DIR)/main: $(SPARSE_DIR)
++	$(MAKE) -C "$^" all
++
++$(SPARSE_DIR): %:
++	mkdir -p "$@"
+diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+index 1c81773d0..444020f16 100644
+--- a/include/mk/testcases.mk
++++ b/include/mk/testcases.mk
+@@ -22,6 +22,7 @@
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(top_srcdir)/include/mk/functions.mk
++include $(top_srcdir)/include/mk/sparse.mk
+ 
+ APICMDS_DIR	:= $(abs_top_builddir)/tools/apicmds
+ 
+diff --git a/testcases/open_posix_testsuite/Makefile b/testcases/open_posix_testsuite/Makefile
+index 205ecdc00..fea6db14b 100644
+--- a/testcases/open_posix_testsuite/Makefile
++++ b/testcases/open_posix_testsuite/Makefile
+@@ -104,3 +104,7 @@ $(CRITICAL_MAKEFILE): \
+ 	$(top_srcdir)/LDFLAGS			\
+ 	$(top_srcdir)/LDLIBS
+ 	@$(MAKE) generate-makefiles
++
++.PHONY: check
++check:
++	@echo "Checker not yet supported by Open POSIX testsuite"
 -- 
 2.31.1
 
