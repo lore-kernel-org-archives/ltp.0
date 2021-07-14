@@ -1,57 +1,57 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Jul 2021 16:19:57 +0200
-Subject: [LTP] [PATCH v5 0/4] Run tests in CI
-Message-ID: <20210714142001.20566-1-pvorel@suse.cz>
+Date: Wed, 14 Jul 2021 16:19:59 +0200
+Subject: [LTP] [PATCH v5 2/4] make: Add make test{, -c, -shell} targets
+In-Reply-To: <20210714142001.20566-1-pvorel@suse.cz>
+References: <20210714142001.20566-1-pvorel@suse.cz>
+Message-ID: <20210714142001.20566-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+For testing C and shell API.
 
-changes v4->v5:
-* don't exit on test failure, but continue testing (Cyril)
-* rename tst_{brk,res}() to runtest_{brk,res}() (Cyril)
-* rewritten summary, put everything to the end
-* merged 3 already acked commits
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ Makefile | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-$ make test
-...
-
-runtest TINFO: === C TEST RESULTS ===
-runtest TINFO: 13x TPASS: test05 test07 test09 test12 test15 test18 tst_bool_expr test_exec test_timer tst_res_hexd tst_strstatus tst_fuzzy_sync02 tst_fuzzy_sync03
-runtest TINFO: 0x TFAIL:
-runtest TINFO: 0x TBROK:
-runtest TINFO: 0x TWARN:
-runtest TINFO: 0x TCONF:
-
-...
-
-runtest TINFO: === SHELL TEST RESULTS ===
-runtest TINFO: 2x TPASS: shell/tst_check_driver.sh shell/net/tst_ipaddr_un.sh
-runtest TINFO: 0x TFAIL:
-runtest TINFO: 0x TBROK:
-runtest TINFO: 0x TWARN:
-runtest TINFO: 1x TCONF: shell/net/tst_rhost_run.sh
-
-runtest TINFO: === FINAL TEST RESULTS ===
-runtest TPASS: All C tests TCONF/TPASS
-runtest TPASS: All shell tests TCONF/TPASS
-
-Petr Vorel (4):
-  lib: Add script for running tests
-  make: Add make test{, -c, -shell} targets
-  build.sh: Add support for make test
-  CI: Run also make test
-
- .github/workflows/ci.yml    |   5 ++
- Makefile                    |  23 +++++
- build.sh                    |  22 ++++-
- lib/newlib_tests/runtest.sh | 175 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 224 insertions(+), 1 deletion(-)
- create mode 100755 lib/newlib_tests/runtest.sh
-
+diff --git a/Makefile b/Makefile
+index 56812d77b..ff4a70eec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -192,6 +192,29 @@ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
+ ## Install
+ install: $(INSTALL_TARGETS)
+ 
++## Test
++define _test
++	@set -e; $(top_srcdir)/lib/newlib_tests/runtest.sh -b $(abs_builddir) $(1)
++endef
++
++test: lib-all
++ifneq ($(build),$(host))
++	$(error running tests on cross-compile build not supported)
++endif
++	$(call _test)
++
++test-c: lib-all
++ifneq ($(build),$(host))
++	$(error running tests on cross-compile build not supported)
++endif
++	$(call _test,-c)
++
++test-shell: lib-all
++ifneq ($(build),$(host))
++	$(error running tests on cross-compile build not supported)
++endif
++	$(call _test,-s)
++
+ ## Help
+ .PHONY: help
+ help:
 -- 
 2.32.0
 
