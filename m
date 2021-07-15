@@ -1,10 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 15 Jul 2021 09:38:19 +0200
+Date: Thu, 15 Jul 2021 09:48:47 +0200
 Subject: [LTP] [PATCH v5 0/4] Run tests in CI
-In-Reply-To: <YO8UIP310jsAmq8I@pevik>
+In-Reply-To: <YO/l6yni/AAOGhn9@pevik>
 References: <20210714142001.20566-1-pvorel@suse.cz> <YO70PiTdyxzTw0k2@pevik>
  <YO77+MmmxwMewgnQ@yuki> <YO8UIP310jsAmq8I@pevik>
-Message-ID: <YO/l6yni/AAOGhn9@pevik>
+ <YO/l6yni/AAOGhn9@pevik>
+Message-ID: <YO/oX6ZvrbvR4Xrx@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,72 +15,40 @@ To: ltp@lists.linux.it
 Hi Cyril,
 
 ...
-> > I guess this should fix it:
+> > Thanks! Testing it in https://github.com/pevik/ltp/actions/runs/1031005963
 
-> > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> > index f4d9f8e3b..084a83c9e 100644
-> > --- a/lib/tst_test.c
-> > +++ b/lib/tst_test.c
-> > @@ -734,12 +734,12 @@ static void do_exit(int ret)
-> >                 if (results->broken)
-> >                         ret |= TBROK;
+> The result is much better but still not correct:
+> https://github.com/pevik/ltp/runs/3068932859?check_suite_focus=true#step:11:707
 
-> > -               printf("\nSummary:\n");
-> > -               printf("passed   %d\n", results->passed);
-> > -               printf("failed   %d\n", results->failed);
-> > -               printf("broken   %d\n", results->broken);
-> > -               printf("skipped  %d\n", results->skipped);
-> > -               printf("warnings %d\n", results->warnings);
-> > +               fprintf(stderr, "\nSummary:\n");
-> > +               fprintf(stderr, "passed   %d\n", results->passed);
-> > +               fprintf(stderr, "failed   %d\n", results->failed);
-> > +               fprintf(stderr, "broken   %d\n", results->broken);
-> > +               fprintf(stderr, "skipped  %d\n", results->skipped);
-> > +               fprintf(stderr, "warnings %d\n", results->warnings);
-> >         }
+> runtest TINFO: * shell/net/tst_ipaddr_un.sh
 
-> Thanks! Testing it in https://github.com/pevik/ltp/actions/runs/1031005963
+> Summary:
+> passed   0
+> failed   0
+> broken   0
+> skipped  1
+> warnings 0
+> tst_ipaddr_un 1 TINFO: timeout per run is 0h 5m 0s
 
-The result is much better but still not correct:
-https://github.com/pevik/ltp/runs/3068932859?check_suite_focus=true#step:11:707
+> Could you please merge your fix? And I'll try sync after each test.
+> https://github.com/pevik/ltp/actions/runs/1033070696
 
-runtest TINFO: * shell/net/tst_ipaddr_un.sh
+There is still some output printed later, at least
+In RPN: A B | C ! ! &
+In RPN: A B | C ! ! &
+which is from tst_bool_expr.c, but printed after tst_strstatus
+https://github.com/pevik/ltp/runs/3074335940?check_suite_focus=true#step:11:587
+But it's much better.
 
-Summary:
-passed   0
-failed   0
-broken   0
-skipped  1
-warnings 0
-tst_ipaddr_un 1 TINFO: timeout per run is 0h 5m 0s
+I also found a bug in final evaluation on one of my VM:
 
-Could you please merge your fix? And I'll try sync after each test.
-https://github.com/pevik/ltp/actions/runs/1033070696
-
-What is worse is that tests are green, but I see TBROK and TWARN which are not
-reflected by results:
-
-tst_check_driver 1 TBROK: Test still running, sending SIGKILL
+tst_test.c:1313: TBROK: Test killed by SIGSEGV!
 ...
-tst_rhost_run 1 TCONF: (null)      0  TWARN  :  tst_kernel.c:105: expected file /lib/modules/5.8.0-1036-azure/modules.dep does not exist or not a file
-
-veth(null)      0  TWARN  :  tst_kernel.c:105: expected file /lib/modules/5.8.0-1036-azure/modules.builtin does not exist or not a file driver not available
-Summary:
-passed   0
-failed   0
-broken   0
-skipped  1
-warnings 0
-
-runtest TINFO: === SHELL TEST RESULTS ===
-runtest TINFO: 1x TPASS: shell/net/tst_ipaddr_un.sh
-runtest TINFO: 0x TFAIL:
-runtest TINFO: 0x TBROK:
-runtest TINFO: 0x TWARN:
-runtest TINFO: 2x TCONF: shell/tst_check_driver.sh shell/net/tst_rhost_run.sh
+runtest TINFO: 1x TBROK: tst_bool_expr
+...
+runtest TINFO: === FINAL TEST RESULTS ===
+runtest TPASS: All C tests TCONF/TPASS <- THIS IS WRONG
+runtest TPASS: All shell tests TCONF/TPASS
 
 Kind regards,
 Petr
-
-> Kind regards,
-> Petr
