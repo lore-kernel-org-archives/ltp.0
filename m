@@ -1,47 +1,42 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 15 Jul 2021 13:58:05 +0200
-Subject: [LTP] [PATCH 0/2] Add TST_NET_IPV{4,
- 6}_ONLY and use on broken_ip
-In-Reply-To: <77583f09-e378-c39e-8ca2-6bf77adbda52@bell-sw.com>
+Date: Thu, 15 Jul 2021 14:07:42 +0200
+Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
+ protocol
+In-Reply-To: <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
 References: <20210714140716.1568-1-pvorel@suse.cz>
- <77583f09-e378-c39e-8ca2-6bf77adbda52@bell-sw.com>
-Message-ID: <YPAizWCKXQHQOSBv@pevik>
+ <20210714140716.1568-3-pvorel@suse.cz>
+ <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
+Message-ID: <YPAlDpkrCoxt5o0q@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 14.07.2021 17:07, Petr Vorel wrote:
-> > Hi Alexey,
+Hi Alexey,
 
-> > https://github.com/linux-test-project/ltp/issues/843
+...
+> >  TST_TESTFUNC="do_test"
+> > +TST_NET_IPV6_ONLY=1
 
-> > does it make sense to run it on IPv4 and broken_ip-totlen on IPv6?
-> > Both don't break but not in runtest file.
+> +TST_IPV6=6 won't work to fix #843?
+Sure, it'd fix it. And TST_IPV6= for broken_ip-ihl. That's a simple way to fix
+it. But I thought having TST_NET_IPV{4,6}_ONLY=1 would be self descriptive + it
+could be later processed with docparse metadata documentation (I plan to
+implement docparse for shell).
 
-> Hi Petr,
-
-> Yes it should work with the -L option, but these tests are the same
-> (differs the descriptions for IPv4/IPv6):
-
-> diff -u broken_ip-plen broken_ip-totlen
-> --- broken_ip-plen	2020-10-08 22:23:52.000000000 +0300
-> +++ broken_ip-totlen	2020-10-08 22:23:52.000000000 +0300
-> @@ -10,7 +10,7 @@
-
->  do_test()
->  {
-> -	tst_res TINFO "Sending ICMPv$TST_IPVER with wrong payload len for $NS_DURATION sec"
-> +	tst_res TINFO "Sending ICMPv$TST_IPVER with wrong total len field for $NS_DURATION sec"
->  	tst_icmp -t $NS_DURATION -s "0 100 500 1000 $NS_ICMP_SENDER_DATA_MAXSIZE" -L
->  	tst_ping
->  }
-
-Good catch, thanks!
-
-> So broken_ip-totlen should be just removed.
-I merged commit which implements this.
+So it's more a question whether we want to manifest this info.
 
 Kind regards,
 Petr
+
+...
+> >  TST_TESTFUNC="do_test"
+> > +TST_NET_IPV4_ONLY=1
+> >  . tst_net.sh
+
+> >  do_test()
+
+> The generic version looks fine:
+
+> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
