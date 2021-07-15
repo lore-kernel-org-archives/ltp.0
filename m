@@ -1,42 +1,51 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 15 Jul 2021 10:30:47 +0200
-Subject: [LTP] [PATCH v6 0/5] 	Run tests in CI
-Message-ID: <20210715083052.7138-1-pvorel@suse.cz>
+Date: Thu, 15 Jul 2021 10:30:48 +0200
+Subject: [LTP] [PATCH v6 1/5] lib: Print Summary: into stderr
+In-Reply-To: <20210715083052.7138-1-pvorel@suse.cz>
+References: <20210715083052.7138-1-pvorel@suse.cz>
+Message-ID: <20210715083052.7138-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+to follow tst_{brk,res}() being printed to stderr.
 
-changes v5->v6:
-* add new commit suggested by Cyril: "lib: Print Summary: into stderr"
-* fix final error evaluation for C tests in runtest.sh
-* run C and shell test separately (test-c and test-shell instead of
-  test). Having them separate helps to easily navigate in CI. This
-  required to add support to build.sh.
+Found with GitHub actions where stdout and stderr are probably
+block buffered and flushed at different times.
 
-Hope this is a final version.
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+* new in v6
 
-Kind regards,
-Petr
+ lib/tst_test.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Petr Vorel (5):
-  lib: Print Summary: into stderr
-  lib: Add script for running tests
-  make: Add make test{, -c, -shell} targets
-  build.sh: Add support for make test{,-c,-shell}
-  CI: Run also make test-c, test-shell
-
- .github/workflows/ci.yml    |  10 ++
- Makefile                    |  23 +++++
- build.sh                    |  24 ++++-
- lib/newlib_tests/runtest.sh | 182 ++++++++++++++++++++++++++++++++++++
- lib/tst_test.c              |  12 +--
- 5 files changed, 244 insertions(+), 7 deletions(-)
- create mode 100755 lib/newlib_tests/runtest.sh
-
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index f4d9f8e3b..084a83c9e 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -734,12 +734,12 @@ static void do_exit(int ret)
+ 		if (results->broken)
+ 			ret |= TBROK;
+ 
+-		printf("\nSummary:\n");
+-		printf("passed   %d\n", results->passed);
+-		printf("failed   %d\n", results->failed);
+-		printf("broken   %d\n", results->broken);
+-		printf("skipped  %d\n", results->skipped);
+-		printf("warnings %d\n", results->warnings);
++		fprintf(stderr, "\nSummary:\n");
++		fprintf(stderr, "passed   %d\n", results->passed);
++		fprintf(stderr, "failed   %d\n", results->failed);
++		fprintf(stderr, "broken   %d\n", results->broken);
++		fprintf(stderr, "skipped  %d\n", results->skipped);
++		fprintf(stderr, "warnings %d\n", results->warnings);
+ 	}
+ 
+ 	do_cleanup();
 -- 
 2.32.0
 
