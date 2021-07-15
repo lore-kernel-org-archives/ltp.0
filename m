@@ -1,59 +1,93 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Thu, 15 Jul 2021 12:38:04 +0300
-Subject: [LTP] [PATCH 0/2] Add TST_NET_IPV{4,
- 6}_ONLY and use on broken_ip
-In-Reply-To: <20210714140716.1568-1-pvorel@suse.cz>
-References: <20210714140716.1568-1-pvorel@suse.cz>
-Message-ID: <77583f09-e378-c39e-8ca2-6bf77adbda52@bell-sw.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 15 Jul 2021 11:38:23 +0200
+Subject: [LTP] [PATCH v6 0/5] 	Run tests in CI
+In-Reply-To: <20210715083052.7138-1-pvorel@suse.cz>
+References: <20210715083052.7138-1-pvorel@suse.cz>
+Message-ID: <YPACD9fqq2HpD3gC@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 14.07.2021 17:07, Petr Vorel wrote:
-> Hi Alexey,
-> 
-> https://github.com/linux-test-project/ltp/issues/843
-> 
-> does it make sense to run it on IPv4 and broken_ip-totlen on IPv6?
-> Both don't break but not in runtest file.
+Hi Cyril,
 
-Hi Petr,
+> Hi,
 
-Yes it should work with the -L option, but these tests are the same
-(differs the descriptions for IPv4/IPv6):
+> changes v5->v6:
+> * add new commit suggested by Cyril: "lib: Print Summary: into stderr"
+> * fix final error evaluation for C tests in runtest.sh
+> * run C and shell test separately (test-c and test-shell instead of
+>   test). Having them separate helps to easily navigate in CI. This
+>   required to add support to build.sh.
 
-diff -u broken_ip-plen broken_ip-totlen
---- broken_ip-plen	2020-10-08 22:23:52.000000000 +0300
-+++ broken_ip-totlen	2020-10-08 22:23:52.000000000 +0300
-@@ -10,7 +10,7 @@
+> Hope this is a final version.
 
- do_test()
- {
--	tst_res TINFO "Sending ICMPv$TST_IPVER with wrong payload len for $NS_DURATION sec"
-+	tst_res TINFO "Sending ICMPv$TST_IPVER with wrong total len field for $NS_DURATION sec"
- 	tst_icmp -t $NS_DURATION -s "0 100 500 1000 $NS_ICMP_SENDER_DATA_MAXSIZE" -L
- 	tst_ping
- }
+Verified slightly modified version (see diff below):
+https://github.com/pevik/ltp/actions/runs/1033374720
 
-So broken_ip-totlen should be just removed.
+FYI I'd probably keep first commit "ib: Print Summary: into stderr" although it
+should not be needed for CI as 1>&2 redirection fixed the output.
 
-> 
-> Kind regards,
-> Petr
-> 
-> Petr Vorel (2):
->   tst_net.sh: Add variable for supported protocol
->   broken_ip: TCONF when test run on unsupported protocol
-> 
->  testcases/lib/tst_net.sh                              | 8 ++++++++
->  testcases/lib/tst_test.sh                             | 2 +-
->  testcases/network/stress/broken_ip/broken_ip-checksum | 3 ++-
->  testcases/network/stress/broken_ip/broken_ip-fragment | 3 ++-
->  testcases/network/stress/broken_ip/broken_ip-ihl      | 3 ++-
->  testcases/network/stress/broken_ip/broken_ip-nexthdr  | 3 ++-
->  testcases/network/stress/broken_ip/broken_ip-protcol  | 3 ++-
->  7 files changed, 19 insertions(+), 6 deletions(-)
-> 
+Can I merge it with your ack?
 
+Kind regards,
+Petr
+
+diff --git ci/debian.sh ci/debian.sh
+index a609da887..e929452ff 100755
+--- ci/debian.sh
++++ ci/debian.sh
+@@ -22,6 +22,7 @@ $apt \
+ 	clang \
+ 	gcc \
+ 	git \
++	iproute2 \
+ 	libacl1 \
+ 	libacl1-dev \
+ 	libaio-dev \
+diff --git ci/fedora.sh ci/fedora.sh
+index 959f3af20..dc1293aa5 100755
+--- ci/fedora.sh
++++ ci/fedora.sh
+@@ -13,6 +13,7 @@ $yum \
+ 	gcc \
+ 	git \
+ 	findutils \
++	iproute \
+ 	numactl-devel \
+ 	libtirpc \
+ 	libtirpc-devel \
+diff --git ci/tumbleweed.sh ci/tumbleweed.sh
+index ab622e05c..f1e7252f2 100755
+--- ci/tumbleweed.sh
++++ ci/tumbleweed.sh
+@@ -13,6 +13,7 @@ $zyp \
+ 	gcc \
+ 	git \
+ 	gzip \
++	iproute2 \
+ 	make \
+ 	kernel-default-devel \
+ 	keyutils-devel \
+diff --git lib/newlib_tests/runtest.sh lib/newlib_tests/runtest.sh
+index bd7995f3b..a11d6ed1a 100755
+--- lib/newlib_tests/runtest.sh
++++ lib/newlib_tests/runtest.sh
+@@ -79,7 +79,7 @@ run_tests()
+ 
+ 	for i in $vars; do
+ 		runtest_res TINFO "* $i"
+-		./$i
++		./$i 1>&2
+ 		res=$?
+ 
+ 		[ $res -ne 0 -a $res -ne 32 ] && ret=1
+@@ -94,7 +94,6 @@ run_tests()
+ 			*) runtest_brk TBROK "Error: unknown failure, exit code: $res";;
+ 		esac
+ 		runtest_res
+-		sync
+ 	done
+ 
+ 	runtest_res TINFO "=== $target TEST RESULTS ==="
