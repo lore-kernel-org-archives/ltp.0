@@ -1,59 +1,126 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 15 Jul 2021 11:27:29 +0200
-Subject: [LTP] [PATCH v3] squashfs: Add regression test for sanity check
- bug
-In-Reply-To: <4aaba9d9-e013-3c12-500a-647ff2c0b82d@jv-coder.de>
-References: <20210715050812.1950884-1-lkml@jv-coder.de>
- <60EFF034.6070800@fujitsu.com>
- <4aaba9d9-e013-3c12-500a-647ff2c0b82d@jv-coder.de>
-Message-ID: <YO//gakCvqaDZl9f@yuki>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Thu, 15 Jul 2021 12:53:19 +0300
+Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
+ protocol
+In-Reply-To: <20210714140716.1568-3-pvorel@suse.cz>
+References: <20210714140716.1568-1-pvorel@suse.cz>
+ <20210714140716.1568-3-pvorel@suse.cz>
+Message-ID: <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> +static struct tst_test test = {
-> >> +	.test_all = run,
-> >> +	.cleanup = cleanup,
-> >> +	.setup = setup,
-> >> +	.needs_root = 1,
-> >> +	.needs_device = 1,
-> >> +	.dev_min_size = 1,
-> >> +	.needs_cmds = (const char *const []) {
-> >> +		"mksquashfs",
-> >> +		NULL
-> >> +	},
-> >> +	.needs_drivers = (const char *const []) {
-> >> +		"squashfs",
-> >> +		NULL
-> >> +	},
-> >> +	.tags = (const struct tst_tag[]) {
-> >> +		{"linux-git", "c1b2028315c"},
-> >> +		{"linux-git", "8b44ca2b634"},
-> >> +		{}
-> >> +	},
-> >> +	.needs_tmpdir = 1,
-> > needs_device has enabled needs_tmpdir in internal, so we don't need to
-> > set it here.
-> Honestly I hate implicitness like that. I think if the test itself needs 
-> the tmpdir, it should state it and not rely on some other "needs_*" 
-> stuff to also enable it.
-> But if whoever merges this agrees with you, he can change it...
+On 14.07.2021 17:07, Petr Vorel wrote:
+> net_stress.broken_ip runtest file is correct, but some users try to run
+> tests manually.
+> 
+> Fixes: #843
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/network/stress/broken_ip/broken_ip-checksum | 3 ++-
+>  testcases/network/stress/broken_ip/broken_ip-fragment | 3 ++-
+>  testcases/network/stress/broken_ip/broken_ip-ihl      | 3 ++-
+>  testcases/network/stress/broken_ip/broken_ip-nexthdr  | 3 ++-
+>  testcases/network/stress/broken_ip/broken_ip-protcol  | 3 ++-
+>  5 files changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/network/stress/broken_ip/broken_ip-checksum b/testcases/network/stress/broken_ip/broken_ip-checksum
+> index 78f00ce98..707ffcb29 100644
+> --- a/testcases/network/stress/broken_ip/broken_ip-checksum
+> +++ b/testcases/network/stress/broken_ip/broken_ip-checksum
+> @@ -1,11 +1,12 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2006
+>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+>  
+>  TST_TESTFUNC="do_test"
+> +TST_NET_IPV4_ONLY=1
+>  . tst_net.sh
+>  
+>  do_test()
+> diff --git a/testcases/network/stress/broken_ip/broken_ip-fragment b/testcases/network/stress/broken_ip/broken_ip-fragment
+> index 1f5e5f713..7356bb523 100644
+> --- a/testcases/network/stress/broken_ip/broken_ip-fragment
+> +++ b/testcases/network/stress/broken_ip/broken_ip-fragment
+> @@ -1,11 +1,12 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2006
+>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+>  
+>  TST_TESTFUNC="do_test"
+> +TST_NET_IPV4_ONLY=1
+>  . tst_net.sh
+>  
+>  do_test()
+> diff --git a/testcases/network/stress/broken_ip/broken_ip-ihl b/testcases/network/stress/broken_ip/broken_ip-ihl
+> index 9f2a42568..e5e41ee8e 100644
+> --- a/testcases/network/stress/broken_ip/broken_ip-ihl
+> +++ b/testcases/network/stress/broken_ip/broken_ip-ihl
+> @@ -1,11 +1,12 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2006
+>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+>  
+>  TST_TESTFUNC="do_test"
+> +TST_NET_IPV4_ONLY=1
+>  . tst_net.sh
+>  
+>  do_test()
+> diff --git a/testcases/network/stress/broken_ip/broken_ip-nexthdr b/testcases/network/stress/broken_ip/broken_ip-nexthdr
+> index 475b92b16..2ab0601ac 100644
+> --- a/testcases/network/stress/broken_ip/broken_ip-nexthdr
+> +++ b/testcases/network/stress/broken_ip/broken_ip-nexthdr
+> @@ -1,11 +1,12 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2006
+>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+>  
+>  TST_TESTFUNC="do_test"
+> +TST_NET_IPV6_ONLY=1
 
-We tend to avoid listing full subtree of dependencies, in this case it's
-not that bad, but it tends to get out of hand quickly.
++TST_IPV6=6 won't work to fix #843?
 
-For instance mount_device flag needs implies format_device which implies
-needs_device which implies needs_tmpdir.
+>  . tst_net.sh
+>  
+>  do_test()
+> diff --git a/testcases/network/stress/broken_ip/broken_ip-protcol b/testcases/network/stress/broken_ip/broken_ip-protcol
+> index a91cdaaeb..9f9275f03 100644
+> --- a/testcases/network/stress/broken_ip/broken_ip-protcol
+> +++ b/testcases/network/stress/broken_ip/broken_ip-protcol
+> @@ -1,11 +1,12 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2006
+>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+>  
+>  TST_TESTFUNC="do_test"
+> +TST_NET_IPV4_ONLY=1
+>  . tst_net.sh
+>  
+>  do_test()
+> 
+The generic version looks fine:
 
-Also the dev_min_size = 1 does not have any efect here, since it can be
-used only to request bigger-than-default size and gets ignored here. I
-guess that we can merge this as it is and I will add needs_loopdev to
-the tst_test structure later which will just allocate loop device and
-pass it down to the test.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
