@@ -1,37 +1,41 @@
 From: Leo Liang <ycliang@andestech.com>
-Date: Thu, 15 Jul 2021 22:20:41 +0800
+Date: Thu, 15 Jul 2021 22:24:48 +0800
 Subject: [LTP] [PATCH v2,
- 0/2] cgroup/cgroup_regression_test: Fix umount failure
-Message-ID: <20210715142037.GA30536@atcfdc88>
+ 1/2] lib/tst_test.sh: Make tst_umount work with argument that
+Message-ID: <20210715142448.GA30641@atcfdc88>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test sequence
-	mount -t cgroup -o <controllers> <path>
-	mkdir <path>/<dir>
-	rmdir <path>/<dir>
-	umount <path>
-	mount -t cgroup -o <controllers> <path>
-would easily fail at the last mount with -EBUSY on certain platform.
+/proc/mounts shows the mount point without terminating slashes, e.g.
+~ $ cat /proc/mounts
+xxx /root/cgroup cgroup rw,relatime,cpu 0 0
 
-Adding a little delay between "rmdir" and "umount" could fix the problem,
-so use tst_umount API instead of umount in "rmdir, umount" sequence.
+So current tst_umount would not work with argument that has terminating slash, e.g.
+tst_umount cgroup/ would give "The device is not mounted".
 
-Changes since v1
-- Use "tst_umount" instead of "sync" as suggested
-- Make "tst_umount" work with argument that has terminating slash
+Fix this by using mountpoint command instead of grepping /proc/mounts.
 
-Leo Yu-Chi Liang (2):
-  lib/tst_test.sh: Make tst_umount work with argument that has
-    terminating slash
-  cgroup/cgroup_regression_test: Fix umount failure
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
- testcases/lib/tst_test.sh                              |  2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index c6aa2c487..7e77711f1 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -282,7 +282,7 @@ tst_umount()
+ 
+ 	[ -z "$device" ] && return
+ 
+-	if ! grep -q "$device" /proc/mounts; then
++	if ! mountpoint -q "$device"; then
+ 		tst_res TINFO "The $device is not mounted, skipping umount"
+ 		return
+ 	fi
 -- 
 2.17.0
+
