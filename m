@@ -1,42 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 15 Jul 2021 14:07:42 +0200
-Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
- protocol
-In-Reply-To: <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
-References: <20210714140716.1568-1-pvorel@suse.cz>
- <20210714140716.1568-3-pvorel@suse.cz>
- <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
-Message-ID: <YPAlDpkrCoxt5o0q@pevik>
+From: Leo Liang <ycliang@andestech.com>
+Date: Thu, 15 Jul 2021 22:20:41 +0800
+Subject: [LTP] [PATCH v2,
+ 0/2] cgroup/cgroup_regression_test: Fix umount failure
+Message-ID: <20210715142037.GA30536@atcfdc88>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+The test sequence
+	mount -t cgroup -o <controllers> <path>
+	mkdir <path>/<dir>
+	rmdir <path>/<dir>
+	umount <path>
+	mount -t cgroup -o <controllers> <path>
+would easily fail at the last mount with -EBUSY on certain platform.
 
-...
-> >  TST_TESTFUNC="do_test"
-> > +TST_NET_IPV6_ONLY=1
+Adding a little delay between "rmdir" and "umount" could fix the problem,
+so use tst_umount API instead of umount in "rmdir, umount" sequence.
 
-> +TST_IPV6=6 won't work to fix #843?
-Sure, it'd fix it. And TST_IPV6= for broken_ip-ihl. That's a simple way to fix
-it. But I thought having TST_NET_IPV{4,6}_ONLY=1 would be self descriptive + it
-could be later processed with docparse metadata documentation (I plan to
-implement docparse for shell).
+Changes since v1
+- Use "tst_umount" instead of "sync" as suggested
+- Make "tst_umount" work with argument that has terminating slash
 
-So it's more a question whether we want to manifest this info.
+Leo Yu-Chi Liang (2):
+  lib/tst_test.sh: Make tst_umount work with argument that has
+    terminating slash
+  cgroup/cgroup_regression_test: Fix umount failure
 
-Kind regards,
-Petr
+ .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
+ testcases/lib/tst_test.sh                              |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-...
-> >  TST_TESTFUNC="do_test"
-> > +TST_NET_IPV4_ONLY=1
-> >  . tst_net.sh
-
-> >  do_test()
-
-> The generic version looks fine:
-
-> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+-- 
+2.17.0
