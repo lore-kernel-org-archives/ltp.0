@@ -1,51 +1,81 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 15 Jul 2021 10:30:52 +0200
-Subject: [LTP] [PATCH v6 5/5] CI: Run also make test-c, test-shell
+Date: Thu, 15 Jul 2021 10:30:51 +0200
+Subject: [LTP] [PATCH v6 4/5] build.sh: Add support for make test{, -c,
+ -shell}
 In-Reply-To: <20210715083052.7138-1-pvorel@suse.cz>
 References: <20210715083052.7138-1-pvorel@suse.cz>
-Message-ID: <20210715083052.7138-6-pvorel@suse.cz>
+Message-ID: <20210715083052.7138-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-run C and shell test separately (test-c and test-shell instead of test).
-Having them separate helps to easily navigate in CI.
-
-It's run on all jobs, but on cross compile jobs it's obviously skipped.
-
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-changes v5->v6:
-* run C and shell test separately (test-c and test-shell instead of
-  test). Having them separate helps to easily navigate in CI. This
-  required to add support to build.sh.
+changes v5->v6 (not yet reviewed by Cyril):
+* add support to run also test-c and test-shell
 
- .github/workflows/ci.yml | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ build.sh | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
-index f67f14927..9d37f49e4 100644
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -151,6 +151,16 @@ jobs:
-     - name: Compile
-       run: ./build.sh -r build -o ${TREE:-in}
+diff --git a/build.sh b/build.sh
+index 240ce8e68..1767cc21b 100755
+--- a/build.sh
++++ b/build.sh
+@@ -119,6 +119,17 @@ build_out_tree()
+ 	make $MAKE_OPTS_OUT_TREE
+ }
  
-+    - name: Test C API
-+      run: |
-+        case "$VARIANT" in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
-+        ./build.sh -r test-c -o ${TREE:-in} -t $BUILD
++test_in_tree()
++{
++	make $1
++}
 +
-+    - name: Test shell API
-+      run: |
-+        case "$VARIANT" in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
-+        ./build.sh -r test-shell -o ${TREE:-in} -t $BUILD
++test_out_tree()
++{
++	cd $BUILD_DIR
++	make $MAKE_OPTS_OUT_TREE $1
++}
 +
-     - name: Install
-       run: |
-         if [ "$MAKE_INSTALL" = 1 ]; then INSTALL_OPT="-i"; fi
+ install_in_tree()
+ {
+ 	make $MAKE_OPTS install
+@@ -165,6 +176,9 @@ RUN:
+ autotools   run only 'make autotools'
+ configure   run only 'configure'
+ build       run only 'make'
++test        run only 'make test' (not supported for cross-compile build)
++test-c      run only 'make test-c' (not supported for cross-compile build)
++test-shell  run only 'make test-shell' (not supported for cross-compile build)
+ install     run only 'make install'
+ 
+ Default configure options:
+@@ -192,7 +206,7 @@ while getopts "c:hio:p:r:t:" opt; do
+ 		esac;;
+ 	p) prefix="$OPTARG";;
+ 	r) case "$OPTARG" in
+-		autotools|configure|build|install) run="$OPTARG";;
++		autotools|configure|build|test|test-c|test-shell|install) run="$OPTARG";;
+ 		*) echo "Wrong run type '$OPTARG'" >&2; usage; exit 1;;
+ 		esac;;
+ 	t) case "$OPTARG" in
+@@ -218,6 +232,14 @@ if [ -z "$run" -o "$run" = "build" ]; then
+ 	eval build_${tree}_tree
+ fi
+ 
++if [ -z "$run" -o "$run" = "test" -o "$run" = "test-c" -o "$run" = "test-shell" ]; then
++	if [ "$build" = "cross" ]; then
++		echo "cross-compile build, skipping running tests" >&2
++	else
++		eval test_${tree}_tree $run
++	fi
++fi
++
+ if [ -z "$run" -o "$run" = "install" ]; then
+ 	if [ "$install" = 1 ]; then
+ 		eval install_${tree}_tree
 -- 
 2.32.0
 
