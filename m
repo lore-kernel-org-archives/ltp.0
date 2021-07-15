@@ -1,86 +1,51 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 14 Jul 2021 21:15:39 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify19: Add test cases for elevated
- reader privileges
-In-Reply-To: <YO6SFGTvHJkAR5+9@pevik>
-References: <20210713162450.34947-1-amir73il@gmail.com>
- <YO6SFGTvHJkAR5+9@pevik>
-Message-ID: <CAOQ4uxjjbv996OC_xqAtV1wttK51ytb3dPavS8F28K3QMU6Xzw@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 15 Jul 2021 09:39:29 +0800
+Subject: [LTP] [PATCH] syscalls/ioctl_ns05,6: Fix buffer overflow
+Message-ID: <1626313169-30611-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jul 14, 2021 at 10:28 AM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Amir,
->
-> > Even when event reader has elevated privileges, the information provided
-> > in events is determined by the privileges of the user that created the
-> > fanotify group.
->
-> > Add test cases for unprivileged listener and privileged event reader.
->
-> > This is a regression test for kernel commit
-> > a8b98c808eab ("fanotify: fix permission model of unprivileged group")
->
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > ---
->
-> > Hi Petr,
->
-> > Added test for a fix in v5.13-rc5.
->
-> Thanks for your patch, pushed!
->
-> Things I've found, not related to this patch:
->
-> TBROK when running with higher number of iterations:
-> ./fanotify19 -i 30
-> ...
-> fanotify19.c:224: TPASS: Received event: mask=2b, pid=11351 fd=-1
-> fanotify19.c:224: TPASS: Received event: mask=b, pid=11351 fd=-1
-> fanotify19.c:224: TPASS: Received event: mask=a, pid=11351 fd=-1
-> fanotify19.c:224: TPASS: Received event: mask=8, pid=11351 fd=-1
-> fanotify19.c:147: TINFO: Test #3 unprivileged lisneter, privileged reader - events by child
-> fanotify19.c:151: TINFO: Running as privileged user, revoking.
-> fanotify19.c:136: TBROK: Child process terminated incorrectly. Aborting
->
-> Summary:
-> passed   316
-> failed   0
-> broken   1
-> skipped  0
-> warnings 0
->
-> Could you have look into it?
->
+Since pid's max value is 2147483647, the child_namespace maybe not
+enough to store "/proc/%s/ns/user" string when using a large pid.
+Fix it by improving the length to 30.
 
-Posted fix.
+Fixes: #847
+Reported-by: Marius Hillenbrand <mhillen@linux.ibm.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl_ns05.c | 2 +-
+ testcases/kernel/syscalls/ioctl/ioctl_ns06.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> very minor nit: checkpatch complains about minor issues. Although all but quoted
-> string split across lines are easily fixable we don't need to bother with it.
-> But could you please use checkpatch for new tests?
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
+index a67ddbe2c..488c48d8e 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
+@@ -59,7 +59,7 @@ static void run(void)
+ 	if (pid == -1)
+ 		tst_brk(TBROK | TERRNO, "ltp_clone failed");
+ 
+-	char child_namespace[20];
++	char child_namespace[30];
+ 	int my_fd, child_fd, parent_fd;
+ 
+ 	sprintf(child_namespace, "/proc/%i/ns/pid", pid);
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
+index b6ac80208..77ec04edc 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
+@@ -51,7 +51,7 @@ static int child(void *arg LTP_ATTRIBUTE_UNUSED)
+ 
+ static void run(void)
+ {
+-	char child_namespace[20];
++	char child_namespace[30];
+ 
+ 	pid_t pid = ltp_clone(CLONE_NEWUSER | SIGCHLD, &child, 0,
+ 		STACK_SIZE, child_stack);
+-- 
+2.23.0
 
-Will do.
-
-> Also I'd personally join also strings which are below 100 chars, because it
-> helps to grep.
->
-> > @@ -248,6 +285,10 @@ static struct tst_test test = {
-> >       .needs_root = 1,
-> >       .mount_device = 1,
-> >       .mntpoint = MOUNT_PATH,
-> > +     .tags = (const struct tst_tag[]) {
-> > +             {"linux-git", "a8b98c808eab"},
-> FYI we also support "linux-stable-git", but we mainly use it for stable branch
-> specific patches (something required just for stable), not for regular backports
-> of fixes.
->
-
-I did not understand when linux-stable-git should be used or why it applies
-to this case.
-
-Thanks,
-Amir.
