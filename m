@@ -1,65 +1,120 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 Jul 2021 12:10:42 +0200
-Subject: [LTP] [question] tst_rhost_run.sh not installed
-In-Reply-To: <48573d84-20e4-11a1-6306-d82b6ada6efd@jv-coder.de>
-References: <CAHLe9YYCDFxqoaciAcz4Ec9bU7cQPJM9SDL2_4ygjcaWx967-A@mail.gmail.com>
- <48573d84-20e4-11a1-6306-d82b6ada6efd@jv-coder.de>
-Message-ID: <YPFbIiNl3W9RR2i/@pevik>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Fri, 16 Jul 2021 18:22:56 +0800
+Subject: [LTP] [PATCH 4/5 v2] epoll_pwait: Add test for epoll_pwait02
+In-Reply-To: <20210716102257.20882-1-xieziyao@huawei.com>
+References: <20210628080424.245911-3-xieziyao@huawei.com>
+ <20210716102257.20882-1-xieziyao@huawei.com>
+Message-ID: <20210716102257.20882-5-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi,
+Basic test for epoll_pwait/epoll_pwait2.
 
-> Sorry for the duplicate, I forgot to add the mailing list...
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+1. Add test variants to switch between epoll_pwait and epoll_pwait2.
 
-> On 7/16/2021 8:13 AM, Boyang Xue wrote:
-> > Hi,
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/epoll_pwait/.gitignore    |  3 +-
+ .../syscalls/epoll_pwait/epoll_pwait02.c      | 65 +++++++++++++++++++
+ 3 files changed, 68 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
 
-> > I'm trying to build, install and run LTP like this:
-> > ```
-> > git clone https://github.com/linux-test-project/ltp.git repo_ltp
-> > pushd repo_ltp/
-> > make autotools
-> > ./configure
-> > make
-> > make install
-> > # export RHOST, LHOST, etc. test vars
-> > export LTPROOT=/opt/ltp; export PATH=$LTPROOT/bin:$LTPROOT/testcases/bin:$PATH
-> > ./runltp -d /test -f net.nfs
-> > ```
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 26786c96a..bed224809 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -166,6 +166,7 @@ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+ epoll_pwait01 epoll_pwait01
++epoll_pwait02 epoll_pwait02
 
-> > During the test run, it complains that
-> > ```
-> > /opt/ltp/testcases/bin/tst_net.sh: line 979: bash:: command not found
-> > ```
-> > line#979 is:
-> > ```
-> > eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST || echo "exit $?")
-> > ```
+ eventfd01 eventfd01
 
-> > I can find tst_net_iface_prefix in the $PATH, so it should be
-> > tst_rhost_run which leads to the error.
-> > Searching for tst_rhost_run in /opt/ltp and $PATH shows not found, so
-> > is it a bug or did I miss something that the file wasn't installed?
-> No tst_rhost_run is a shell function defined in tst_net.sh.
-> I guess the problem is your RHOST setup.
-> LTP supports two setups for network tests:
-> 1. network namespace based. This is used if you don't set RHOST and LHOST.
-> 2. Two-host setup, where RHOST points to a second host.
+diff --git a/testcases/kernel/syscalls/epoll_pwait/.gitignore b/testcases/kernel/syscalls/epoll_pwait/.gitignore
+index d53943a75..ab049f173 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/.gitignore
++++ b/testcases/kernel/syscalls/epoll_pwait/.gitignore
+@@ -1 +1,2 @@
+-/epoll_pwait01
++epoll_pwait01
++epoll_pwait02
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+new file mode 100644
+index 000000000..b2733fa41
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
++ * Author: Xie Ziyao <xieziyao@huawei.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Basic test for epoll_pwait and epoll_pwait2.
++ */
++
++#include <sys/epoll.h>
++
++#include "tst_test.h"
++#include "epoll_pwait_var.h"
++
++static int efd, sfd[2];
++static struct epoll_event e;
++
++static void run(void)
++{
++	TEST(do_epoll_pwait(efd, &e, 1, -1, NULL));
++
++	if (TST_RET == 1) {
++		tst_res(TPASS, "do_epoll_pwait() succeeded");
++		return;
++	}
++	tst_res(TFAIL, "do_epoll_pwait() returned %li, expected 1", TST_RET);
++}
++
++static void setup(void)
++{
++	epoll_pwait_info();
++
++	SAFE_SOCKETPAIR(AF_UNIX, SOCK_STREAM, 0, sfd);
++
++	efd = epoll_create(1);
++	if (efd == -1)
++		tst_brk(TBROK | TERRNO, "epoll_create()");
++
++	e.events = EPOLLIN;
++	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
++		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++	SAFE_WRITE(1, sfd[1], "w", 1);
++}
++
++static void cleanup(void)
++{
++	if (efd > 0)
++		SAFE_CLOSE(efd);
++
++	if (sfd[0] > 0)
++		SAFE_CLOSE(sfd[0]);
++
++	if (sfd[1] > 0)
++		SAFE_CLOSE(sfd[1]);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_variants = TEST_VARIANTS,
++};
+--
+2.17.1
 
-> The important thing in two host setup is, that $LTP_ROOT/testcases/bin is in
-> the PATH for the user, that is used on the RHOST.
-> I guess what happens in your setup is that tst_net_iface_prefix is not found
-> on the RHOST, because it is not in the path.
-
-+1
-FYI see
-https://github.com/linux-test-project/ltp/tree/master/testcases/network
-
-Kind regards,
-Petr
-
-> Joerg
