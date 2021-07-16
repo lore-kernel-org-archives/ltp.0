@@ -1,21 +1,50 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 16 Jul 2021 15:35:06 +0800
-Subject: [LTP] [PATCH] interfaces/sched_setparam/9-1.c: Fix leak of
- shared memory segment
-In-Reply-To: <1626244478-15350-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1626244478-15350-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <CAEemH2dy+kMkzjQhygP7Y9MR68APjS3JZQcnUN4TwoGKUs=Y8A@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 16 Jul 2021 10:12:32 +0200
+Subject: [LTP] [PATCH v2,
+ 1/2] lib/tst_test.sh: Make tst_umount work with argument that
+In-Reply-To: <60F0DF88.9020603@fujitsu.com>
+References: <20210715142448.GA30641@atcfdc88>
+ <60F0DF88.9020603@fujitsu.com>
+Message-ID: <YPE/cJ0551pTYlSZ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Patch applied, thanks!
+Hi all,
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210716/080e66d4/attachment.htm>
+> Hi Leo
+> > /proc/mounts shows the mount point without terminating slashes, e.g.
+> > ~ $ cat /proc/mounts
+> > xxx /root/cgroup cgroup rw,relatime,cpu 0 0
+
+> > So current tst_umount would not work with argument that has terminating slash, e.g.
+> > tst_umount cgroup/ would give "The device is not mounted".
+
+> > Fix this by using mountpoint command instead of grepping /proc/mounts.
+
+> > Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
+> > ---
+> >   testcases/lib/tst_test.sh | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+
+> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> > index c6aa2c487..7e77711f1 100644
+> > --- a/testcases/lib/tst_test.sh
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -282,7 +282,7 @@ tst_umount()
+
+> >   	[ -z "$device" ]&&  return
+
+> > -	if ! grep -q "$device" /proc/mounts; then
+> > +	if ! mountpoint -q "$device"; then
+> Honestly speaking, I don't want to introduce mountpoint command.
+> we can just filter the last "/" string for $device.
++1, please no any unnecessary dependency.
+
+Kind regards,
+Petr
+
+> Best Regards
+> Yang Xu
