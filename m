@@ -1,73 +1,35 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 16 Jul 2021 21:12:48 +0800
+Date: Fri, 16 Jul 2021 21:21:44 +0800
 Subject: [LTP] [PATCH] crypto/af_alg02: use pthread_tryjoin_np() instead
  of pthread_kill()
-In-Reply-To: <6e1a3663-59ea-5286-5c36-558b077184aa@bell-sw.com>
+In-Reply-To: <CAEemH2fdJ_N2PpdCvH8M06U-ov9G0g-tcCdCDV2wZTVWCwCR2g@mail.gmail.com>
 References: <20210715102813.106843-1-aleksei.kodanev@bell-sw.com>
  <CAEemH2cXAY8KSFNNv8_23uSs-wRaResAkTPmPyZQNN6UwcMcgA@mail.gmail.com>
  <6e1a3663-59ea-5286-5c36-558b077184aa@bell-sw.com>
-Message-ID: <CAEemH2fdJ_N2PpdCvH8M06U-ov9G0g-tcCdCDV2wZTVWCwCR2g@mail.gmail.com>
+ <CAEemH2fdJ_N2PpdCvH8M06U-ov9G0g-tcCdCDV2wZTVWCwCR2g@mail.gmail.com>
+Message-ID: <CAEemH2c7q8yTC94WvJW61=YtUHBz0_saVM+H=HPysJ0TR-ieVg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Alexey Kodanev <aleksei.kodanev@bell-sw.com> wrote:
-
-
->
-> > Maybe another workaround is to define a volatile flag 'thread_complete',
-> > initialize it to '0' when thread_B starts and reset to '1' while exit,
-> and just
-> > do a value check in the while loop of thread_A should acquire thread_B
-> status.
-> > Is this way a bit better?
->
-> OK, why not, so something like this:
->
-> diff --git a/testcases/kernel/crypto/af_alg02.c
-> b/testcases/kernel/crypto/af_alg02.c
-> index 0f5793c16..1fe0f3bf0 100644
-> --- a/testcases/kernel/crypto/af_alg02.c
-> +++ b/testcases/kernel/crypto/af_alg02.c
-> @@ -18,11 +18,13 @@
->  #include "tst_test.h"
->  #include "tst_af_alg.h"
->  #include "tst_safe_pthread.h"
-> +#include "tst_atomic.h"
->  #include <pthread.h>
->  #include <errno.h>
->
 >  #define SALSA20_IV_SIZE       8
->  #define SALSA20_MIN_KEY_SIZE  16
-> +static int completed;
+>>  #define SALSA20_MIN_KEY_SIZE  16
+>> +static int completed;
+>>
+>>  static void *verify_encrypt(void *arg)
+>>  {
+>>
 >
->  static void *verify_encrypt(void *arg)
->  {
-> @@ -48,6 +50,8 @@ static void *verify_encrypt(void *arg)
->                 tst_res(TPASS, "Successfully \"encrypted\" an empty
-> message");
->         else
->                 tst_res(TFAIL, "read() didn't return 0");
-> +
-> +       tst_atomic_store(1, &completed);
->         return arg;
->  }
->
-> @@ -60,7 +64,7 @@ static void run(void)
->
->         TST_CHECKPOINT_WAIT(0);
->
-> -       while (pthread_tryjoin_np(thr, NULL) == EBUSY) {
-> +       while (!tst_atomic_load(&completed)) {
->
+But we still need to initialize '0' at the start of thread_B,
+in case of test running with '-i xx' parameter. Isn't it?
 
-+1
-The atomic method is quite awesome!
+     tst_atomic_store(0, &completed);
+
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210716/e43fce96/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210716/96e883bb/attachment.htm>
