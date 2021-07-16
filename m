@@ -1,52 +1,90 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Fri, 16 Jul 2021 18:22:52 +0800
-Subject: [LTP] [PATCH 0/5 v2] epoll_pwait2: Add test for epoll_pwait2
-In-Reply-To: <20210628080424.245911-3-xieziyao@huawei.com>
-References: <20210628080424.245911-3-xieziyao@huawei.com>
-Message-ID: <20210716102257.20882-1-xieziyao@huawei.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Fri, 16 Jul 2021 15:03:06 +0300
+Subject: [LTP] [PATCH] crypto/af_alg02: use pthread_tryjoin_np() instead
+ of pthread_kill()
+In-Reply-To: <CAEemH2cXAY8KSFNNv8_23uSs-wRaResAkTPmPyZQNN6UwcMcgA@mail.gmail.com>
+References: <20210715102813.106843-1-aleksei.kodanev@bell-sw.com>
+ <CAEemH2cXAY8KSFNNv8_23uSs-wRaResAkTPmPyZQNN6UwcMcgA@mail.gmail.com>
+Message-ID: <6e1a3663-59ea-5286-5c36-558b077184aa@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-v1->v2:
-1. Add the prototype for epoll_pwait and epoll_pwait2 into include/lapi/epoll.h.
-2. Add test variants to switch between epoll_pwait and epoll_pwait2 for epoll_pwait.
+Hi Li,
+On 16.07.2021 10:06, Li Wang wrote:
+> Hi Alexey,
+> 
+> On Thu, Jul 15, 2021 at 6:29 PM Alexey Kodanev <aleksei.kodanev@bell-sw.com <mailto:aleksei.kodanev@bell-sw.com>> wrote:
+> 
+>     musl doesn't return ESRCH for pthread_kill() if thread id is not found.
+> 
+>     POSIX only recommends to return ESRCH, and also says that pthread_kill()
+>     produces undefined behavior if tid lifetime has ended [1].
+> 
+>     [1]: https://man7.org/linux/man-pages/man3/pthread_kill.3.html <https://man7.org/linux/man-pages/man3/pthread_kill.3.html>
+> 
+>     Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com <mailto:aleksei.kodanev@bell-sw.com>>
+>     ---
+>     ?testcases/kernel/crypto/af_alg02.c | 2 +-
+>     ?1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+>     diff --git a/testcases/kernel/crypto/af_alg02.c b/testcases/kernel/crypto/af_alg02.c
+>     index 31d30777c..0f5793c16 100644
+>     --- a/testcases/kernel/crypto/af_alg02.c
+>     +++ b/testcases/kernel/crypto/af_alg02.c
+>     @@ -60,7 +60,7 @@ static void run(void)
+> 
+>     ? ? ? ? TST_CHECKPOINT_WAIT(0);
+> 
+>     -? ? ? ?while (pthread_kill(thr, 0) != ESRCH) {
+>     +? ? ? ?while (pthread_tryjoin_np(thr, NULL) == EBUSY) {
+> 
+> 
+> I'm not sure ifsafeenough to use because it is nonstandard GNU extensions
+> and the "_np" means nonportable.
+> 
+> Maybe another workaround is to define a volatile?flag 'thread_complete',?
+> initialize it to '0' when thread_B starts and reset to '1' while exit, and just
+> do a value check in the while loop of thread_A should acquire?thread_B status.
+> Is this way a bit better? 
 
-Xie Ziyao (5):
-  lapi/syscalls: Add syscall number for epoll_pwait2
-  lapi: Add the prototype for epoll_pwait and epoll_pwait2
-  epoll_pwait: Add test variants for epoll_pwait
-  epoll_pwait: Add test for epoll_pwait02
-  epoll_pwait: Add test for epoll_pwait03
+OK, why not, so something like this:
 
- configure.ac                                  |  1 +
- include/lapi/epoll.h                          | 37 +++++++++-
- include/lapi/syscalls/aarch64.in              |  1 +
- include/lapi/syscalls/arc.in                  |  1 +
- include/lapi/syscalls/arm.in                  |  1 +
- include/lapi/syscalls/hppa.in                 |  3 +-
- include/lapi/syscalls/i386.in                 |  1 +
- include/lapi/syscalls/ia64.in                 |  1 +
- include/lapi/syscalls/powerpc.in              |  1 +
- include/lapi/syscalls/powerpc64.in            |  1 +
- include/lapi/syscalls/s390.in                 |  1 +
- include/lapi/syscalls/s390x.in                |  1 +
- include/lapi/syscalls/sh.in                   |  1 +
- include/lapi/syscalls/sparc.in                |  1 +
- include/lapi/syscalls/sparc64.in              |  1 +
- include/lapi/syscalls/x86_64.in               |  1 +
- runtest/syscalls                              |  2 +
- .../kernel/syscalls/epoll_pwait/.gitignore    |  4 +-
- .../syscalls/epoll_pwait/epoll_pwait02.c      | 65 ++++++++++++++++
- .../syscalls/epoll_pwait/epoll_pwait03.c      | 74 +++++++++++++++++++
- .../syscalls/epoll_pwait/epoll_pwait_var.h    | 43 +++++++++++
- 21 files changed, 237 insertions(+), 5 deletions(-)
- create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
- create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
- create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
+diff --git a/testcases/kernel/crypto/af_alg02.c b/testcases/kernel/crypto/af_alg02.c
+index 0f5793c16..1fe0f3bf0 100644
+--- a/testcases/kernel/crypto/af_alg02.c
++++ b/testcases/kernel/crypto/af_alg02.c
+@@ -18,11 +18,13 @@
+ #include "tst_test.h"
+ #include "tst_af_alg.h"
+ #include "tst_safe_pthread.h"
++#include "tst_atomic.h"
+ #include <pthread.h>
+ #include <errno.h>
 
---
-2.17.1
+ #define SALSA20_IV_SIZE       8
+ #define SALSA20_MIN_KEY_SIZE  16
++static int completed;
 
+ static void *verify_encrypt(void *arg)
+ {
+@@ -48,6 +50,8 @@ static void *verify_encrypt(void *arg)
+                tst_res(TPASS, "Successfully \"encrypted\" an empty message");
+        else
+                tst_res(TFAIL, "read() didn't return 0");
++
++       tst_atomic_store(1, &completed);
+        return arg;
+ }
+
+@@ -60,7 +64,7 @@ static void run(void)
+
+        TST_CHECKPOINT_WAIT(0);
+
+-       while (pthread_tryjoin_np(thr, NULL) == EBUSY) {
++       while (!tst_atomic_load(&completed)) {
+                if (tst_timeout_remaining() <= 10) {
+                        pthread_cancel(thr);
+                        tst_brk(TBROK,
