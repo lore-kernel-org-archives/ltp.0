@@ -1,58 +1,59 @@
-From: Leo Liang <ycliang@andestech.com>
-Date: Fri, 16 Jul 2021 14:43:58 +0800
-Subject: [LTP] [PATCH v2,
- 1/2] lib/tst_test.sh: Make tst_umount work with argument that
-In-Reply-To: <60F0DF88.9020603@fujitsu.com>
-References: <20210715142448.GA30641@atcfdc88>
- <60F0DF88.9020603@fujitsu.com>
-Message-ID: <20210716064358.GA9807@andestech.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 16 Jul 2021 15:06:13 +0800
+Subject: [LTP] [PATCH] crypto/af_alg02: use pthread_tryjoin_np() instead
+ of pthread_kill()
+In-Reply-To: <20210715102813.106843-1-aleksei.kodanev@bell-sw.com>
+References: <20210715102813.106843-1-aleksei.kodanev@bell-sw.com>
+Message-ID: <CAEemH2cXAY8KSFNNv8_23uSs-wRaResAkTPmPyZQNN6UwcMcgA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
-On Fri, Jul 16, 2021 at 09:23:01AM +0800, xuyang2018.jy@fujitsu.com wrote:
-> Hi Leo
-> > /proc/mounts shows the mount point without terminating slashes, e.g.
-> > ~ $ cat /proc/mounts
-> > xxx /root/cgroup cgroup rw,relatime,cpu 0 0
-> >
-> > So current tst_umount would not work with argument that has terminating slash, e.g.
-> > tst_umount cgroup/ would give "The device is not mounted".
-> >
-> > Fix this by using mountpoint command instead of grepping /proc/mounts.
-> >
-> > Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
-> > ---
-> >   testcases/lib/tst_test.sh | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> > index c6aa2c487..7e77711f1 100644
-> > --- a/testcases/lib/tst_test.sh
-> > +++ b/testcases/lib/tst_test.sh
-> > @@ -282,7 +282,7 @@ tst_umount()
-> >
-> >   	[ -z "$device" ]&&  return
-> >
-> > -	if ! grep -q "$device" /proc/mounts; then
-> > +	if ! mountpoint -q "$device"; then
-> Honestly speaking, I don't want to introduce mountpoint command.
-> we can just filter the last "/" string for $device.
-> 
-> Best Regards
-> Yang Xu
+Hi Alexey,
 
-Got it! 
-I'll send a v3 patch with this approach:
-Filtering out the '/' when determining whether a $device is mounted.
-Thanks!
+On Thu, Jul 15, 2021 at 6:29 PM Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+wrote:
 
-Best regards,
-Leo
+> musl doesn't return ESRCH for pthread_kill() if thread id is not found.
+>
+> POSIX only recommends to return ESRCH, and also says that pthread_kill()
+> produces undefined behavior if tid lifetime has ended [1].
+>
+> [1]: https://man7.org/linux/man-pages/man3/pthread_kill.3.html
+>
+> Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+> ---
+>  testcases/kernel/crypto/af_alg02.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/crypto/af_alg02.c
+> b/testcases/kernel/crypto/af_alg02.c
+> index 31d30777c..0f5793c16 100644
+> --- a/testcases/kernel/crypto/af_alg02.c
+> +++ b/testcases/kernel/crypto/af_alg02.c
+> @@ -60,7 +60,7 @@ static void run(void)
+>
+>         TST_CHECKPOINT_WAIT(0);
+>
+> -       while (pthread_kill(thr, 0) != ESRCH) {
+> +       while (pthread_tryjoin_np(thr, NULL) == EBUSY) {
+>
 
-> >   		tst_res TINFO "The $device is not mounted, skipping umount"
-> >   		return
-> >   	fi
+I'm not sure if safe enough to use because it is nonstandard GNU extensions
+and the "_np" means nonportable.
+
+Maybe another workaround is to define a volatile flag 'thread_complete',
+initialize it to '0' when thread_B starts and reset to '1' while exit, and
+just
+do a value check in the while loop of thread_A should acquire thread_B
+status.
+Is this way a bit better?
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210716/67185a7b/attachment.htm>
