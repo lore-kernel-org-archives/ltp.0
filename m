@@ -1,57 +1,58 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 16 Jul 2021 08:43:03 +0200
-Subject: [LTP] [question] tst_rhost_run.sh not installed
-In-Reply-To: <CAHLe9YYCDFxqoaciAcz4Ec9bU7cQPJM9SDL2_4ygjcaWx967-A@mail.gmail.com>
-References: <CAHLe9YYCDFxqoaciAcz4Ec9bU7cQPJM9SDL2_4ygjcaWx967-A@mail.gmail.com>
-Message-ID: <48573d84-20e4-11a1-6306-d82b6ada6efd@jv-coder.de>
+From: Leo Liang <ycliang@andestech.com>
+Date: Fri, 16 Jul 2021 14:43:58 +0800
+Subject: [LTP] [PATCH v2,
+ 1/2] lib/tst_test.sh: Make tst_umount work with argument that
+In-Reply-To: <60F0DF88.9020603@fujitsu.com>
+References: <20210715142448.GA30641@atcfdc88>
+ <60F0DF88.9020603@fujitsu.com>
+Message-ID: <20210716064358.GA9807@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Yang,
+On Fri, Jul 16, 2021 at 09:23:01AM +0800, xuyang2018.jy@fujitsu.com wrote:
+> Hi Leo
+> > /proc/mounts shows the mount point without terminating slashes, e.g.
+> > ~ $ cat /proc/mounts
+> > xxx /root/cgroup cgroup rw,relatime,cpu 0 0
+> >
+> > So current tst_umount would not work with argument that has terminating slash, e.g.
+> > tst_umount cgroup/ would give "The device is not mounted".
+> >
+> > Fix this by using mountpoint command instead of grepping /proc/mounts.
+> >
+> > Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
+> > ---
+> >   testcases/lib/tst_test.sh | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> > index c6aa2c487..7e77711f1 100644
+> > --- a/testcases/lib/tst_test.sh
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -282,7 +282,7 @@ tst_umount()
+> >
+> >   	[ -z "$device" ]&&  return
+> >
+> > -	if ! grep -q "$device" /proc/mounts; then
+> > +	if ! mountpoint -q "$device"; then
+> Honestly speaking, I don't want to introduce mountpoint command.
+> we can just filter the last "/" string for $device.
+> 
+> Best Regards
+> Yang Xu
 
-Sorry for the duplicate, I forgot to add the mailing list...
+Got it! 
+I'll send a v3 patch with this approach:
+Filtering out the '/' when determining whether a $device is mounted.
+Thanks!
 
-On 7/16/2021 8:13 AM, Boyang Xue wrote:
-> Hi,
->
-> I'm trying to build, install and run LTP like this:
-> ```
-> git clone https://github.com/linux-test-project/ltp.git repo_ltp
-> pushd repo_ltp/
-> make autotools
-> ./configure
-> make
-> make install
-> # export RHOST, LHOST, etc. test vars
-> export LTPROOT=/opt/ltp; export PATH=$LTPROOT/bin:$LTPROOT/testcases/bin:$PATH
-> ./runltp -d /test -f net.nfs
-> ```
->
-> During the test run, it complains that
-> ```
-> /opt/ltp/testcases/bin/tst_net.sh: line 979: bash:: command not found
-> ```
-> line#979 is:
-> ```
-> eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST || echo "exit $?")
-> ```
->
-> I can find tst_net_iface_prefix in the $PATH, so it should be
-> tst_rhost_run which leads to the error.
-> Searching for tst_rhost_run in /opt/ltp and $PATH shows not found, so
-> is it a bug or did I miss something that the file wasn't installed?
-No tst_rhost_run is a shell function defined in tst_net.sh.
-I guess the problem is your RHOST setup.
-LTP supports two setups for network tests:
-1. network namespace based. This is used if you don't set RHOST and LHOST.
-2. Two-host setup, where RHOST points to a second host.
+Best regards,
+Leo
 
-The important thing in two host setup is, that $LTP_ROOT/testcases/bin 
-is in the PATH for the user, that is used on the RHOST.
-I guess what happens in your setup is that tst_net_iface_prefix is not 
-found on the RHOST, because it is not in the path.
-
-Joerg
+> >   		tst_res TINFO "The $device is not mounted, skipping umount"
+> >   		return
+> >   	fi
