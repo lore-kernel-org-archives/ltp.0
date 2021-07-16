@@ -1,65 +1,65 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 Jul 2021 12:04:13 +0200
-Subject: [LTP] [PATCH 1/3] netns_helper.sh: Check for ping
-In-Reply-To: <20210716100415.27410-1-pvorel@suse.cz>
-References: <20210716100415.27410-1-pvorel@suse.cz>
-Message-ID: <20210716100415.27410-2-pvorel@suse.cz>
+Date: Fri, 16 Jul 2021 12:10:42 +0200
+Subject: [LTP] [question] tst_rhost_run.sh not installed
+In-Reply-To: <48573d84-20e4-11a1-6306-d82b6ada6efd@jv-coder.de>
+References: <CAHLe9YYCDFxqoaciAcz4Ec9bU7cQPJM9SDL2_4ygjcaWx967-A@mail.gmail.com>
+ <48573d84-20e4-11a1-6306-d82b6ada6efd@jv-coder.de>
+Message-ID: <YPFbIiNl3W9RR2i/@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to give more informative message than just:
-netns_comm 1 TFAIL: ns_exec 48906 net ping -q -c2 -I veth0 192.168.0.3 failed unexpectedly
-netns_comm 1 TFAIL: ns_exec 48908 net ping -q -c2 -I veth1 192.168.0.2 failed unexpectedly
-netns_comm 1 TFAIL: ns_exec 48906 net ping -q -c2 -I lo 127.0.0.1 failed unexpectedly
+> Hi,
 
-Use the same approach implemented in d57ac0b7a for tst_net.sh: for IPv6
-ping6 is preferred (but still require ping), but fallback with warning
-if only ping is available (some distros may still miss ping6 symlink
-required by upstream since iputils s20150815).
+> Sorry for the duplicate, I forgot to add the mailing list...
 
-Reported-by: Martin Doucha <mdoucha@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Reported in https://github.com/linux-test-project/ltp/issues/840
+> On 7/16/2021 8:13 AM, Boyang Xue wrote:
+> > Hi,
 
- testcases/kernel/containers/netns/netns_helper.sh | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> > I'm trying to build, install and run LTP like this:
+> > ```
+> > git clone https://github.com/linux-test-project/ltp.git repo_ltp
+> > pushd repo_ltp/
+> > make autotools
+> > ./configure
+> > make
+> > make install
+> > # export RHOST, LHOST, etc. test vars
+> > export LTPROOT=/opt/ltp; export PATH=$LTPROOT/bin:$LTPROOT/testcases/bin:$PATH
+> > ./runltp -d /test -f net.nfs
+> > ```
 
-diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-index 1f97ec4d4..218fcef8c 100755
---- a/testcases/kernel/containers/netns/netns_helper.sh
-+++ b/testcases/kernel/containers/netns/netns_helper.sh
-@@ -1,11 +1,11 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) Linux Test Project, 2014-2020
-+# Copyright (c) Linux Test Project, 2014-2021
- # Copyright (c) 2015 Red Hat, Inc.
- 
- TST_CLEANUP=netns_ns_exec_cleanup
- TST_NEEDS_ROOT=1
--TST_NEEDS_CMDS="ip modprobe"
-+TST_NEEDS_CMDS="ip modprobe ping"
- . tst_test.sh
- 
- # Set to 1 only for test cases using ifconfig (ioctl).
-@@ -132,10 +132,12 @@ netns_setup()
- 	ipv6)
- 		IFCONF_IN6_ARG="inet6 add"
- 		IP0=$6; IP1=$7;
--		if which ping6 >/dev/null 2>&1; then
-+
-+		if tst_cmd_available ping6; then
- 		    tping="ping6"
- 		else
- 		    tping="ping -6"
-+			tst_res_ TINFO "ping6 binary/symlink is missing, using workaround. Please, report missing ping6 to your distribution."
- 		fi
- 		NETMASK=64
- 		;;
--- 
-2.32.0
+> > During the test run, it complains that
+> > ```
+> > /opt/ltp/testcases/bin/tst_net.sh: line 979: bash:: command not found
+> > ```
+> > line#979 is:
+> > ```
+> > eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST || echo "exit $?")
+> > ```
 
+> > I can find tst_net_iface_prefix in the $PATH, so it should be
+> > tst_rhost_run which leads to the error.
+> > Searching for tst_rhost_run in /opt/ltp and $PATH shows not found, so
+> > is it a bug or did I miss something that the file wasn't installed?
+> No tst_rhost_run is a shell function defined in tst_net.sh.
+> I guess the problem is your RHOST setup.
+> LTP supports two setups for network tests:
+> 1. network namespace based. This is used if you don't set RHOST and LHOST.
+> 2. Two-host setup, where RHOST points to a second host.
+
+> The important thing in two host setup is, that $LTP_ROOT/testcases/bin is in
+> the PATH for the user, that is used on the RHOST.
+> I guess what happens in your setup is that tst_net_iface_prefix is not found
+> on the RHOST, because it is not in the path.
+
++1
+FYI see
+https://github.com/linux-test-project/ltp/tree/master/testcases/network
+
+Kind regards,
+Petr
+
+> Joerg
