@@ -1,79 +1,52 @@
-From: Boyang Xue <bxue@redhat.com>
-Date: Sat, 17 Jul 2021 19:33:32 +0800
-Subject: [LTP] [question] tst_rhost_run.sh not installed
-In-Reply-To: <YPFbIiNl3W9RR2i/@pevik>
-References: <CAHLe9YYCDFxqoaciAcz4Ec9bU7cQPJM9SDL2_4ygjcaWx967-A@mail.gmail.com>
- <48573d84-20e4-11a1-6306-d82b6ada6efd@jv-coder.de> <YPFbIiNl3W9RR2i/@pevik>
-Message-ID: <CAHLe9YZTw0F1LfmHGokJTRXGu3Th2Z_4yizqxdUuw=QpNpcVEQ@mail.gmail.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Mon, 19 Jul 2021 05:19:17 +0000
+Subject: [LTP] [PATCH v3,
+ 1/2] lib/tst_test.sh: Make tst_umount work with argument that has
+ trailing slash
+In-Reply-To: <20210716140142.GA7113@andestech.com>
+References: <20210716140142.GA7113@andestech.com>
+Message-ID: <60F50B67.4000807@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thanks Petr and Joerg!
+Hi Leo
 
-Yes. I was testing with the two-host setup. Previously RHOST didn't
-have LTP installed, so there's no tst_net_iface_prefix. After
-installing LTP on RHOST and setting LTPROOT & PATH env variables
-there, the error disappeared and it works well now.
-
-Thanks,
-Boyang
-
-On Fri, Jul 16, 2021 at 6:20 PM Petr Vorel <pvorel@suse.cz> wrote:
+> /proc/mounts shows the mount point without trailing slashes, e.g.
+> ~ $ cat /proc/mounts
+> xxx /root/cgroup cgroup rw,relatime,cpu 0 0
 >
-> > Hi,
+> So current tst_umount would not work with argument that has trailing slash, e.g.
+> tst_umount cgroup/ would give "The device is not mounted".
 >
-> > Sorry for the duplicate, I forgot to add the mailing list...
+> Fix this by filtering out the trailing slash before grepping /proc/mounts.
 >
-> > On 7/16/2021 8:13 AM, Boyang Xue wrote:
-> > > Hi,
+> Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
+> ---
+>   testcases/lib/tst_test.sh | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> > > I'm trying to build, install and run LTP like this:
-> > > ```
-> > > git clone https://github.com/linux-test-project/ltp.git repo_ltp
-> > > pushd repo_ltp/
-> > > make autotools
-> > > ./configure
-> > > make
-> > > make install
-> > > # export RHOST, LHOST, etc. test vars
-> > > export LTPROOT=/opt/ltp; export PATH=$LTPROOT/bin:$LTPROOT/testcases/bin:$PATH
-> > > ./runltp -d /test -f net.nfs
-> > > ```
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index c6aa2c487..f132512e7 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -282,13 +282,14 @@ tst_umount()
 >
-> > > During the test run, it complains that
-> > > ```
-> > > /opt/ltp/testcases/bin/tst_net.sh: line 979: bash:: command not found
-> > > ```
-> > > line#979 is:
-> > > ```
-> > > eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST || echo "exit $?")
-> > > ```
+>   	[ -z "$device" ]&&  return
 >
-> > > I can find tst_net_iface_prefix in the $PATH, so it should be
-> > > tst_rhost_run which leads to the error.
-> > > Searching for tst_rhost_run in /opt/ltp and $PATH shows not found, so
-> > > is it a bug or did I miss something that the file wasn't installed?
-> > No tst_rhost_run is a shell function defined in tst_net.sh.
-> > I guess the problem is your RHOST setup.
-> > LTP supports two setups for network tests:
-> > 1. network namespace based. This is used if you don't set RHOST and LHOST.
-> > 2. Two-host setup, where RHOST points to a second host.
+> +	device=${device%/}
+>   	if ! grep -q "$device" /proc/mounts; then
+>   		tst_res TINFO "The $device is not mounted, skipping umount"
+>   		return
+>   	fi
 >
-> > The important thing in two host setup is, that $LTP_ROOT/testcases/bin is in
-> > the PATH for the user, that is used on the RHOST.
-> > I guess what happens in your setup is that tst_net_iface_prefix is not found
-> > on the RHOST, because it is not in the path.
+>   	while [ "$i" -lt 50 ]; do
+> -		if umount "$device">  /dev/null; then
+> +		if umount "$device"/>  /dev/null; then
+With removing this(we don't need add "/" here), this patch looks good to me
+Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+>   			return
+>   		fi
 >
-> +1
-> FYI see
-> https://github.com/linux-test-project/ltp/tree/master/testcases/network
->
-> Kind regards,
-> Petr
->
-> > Joerg
->
-
