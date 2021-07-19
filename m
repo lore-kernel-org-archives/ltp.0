@@ -1,96 +1,91 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 19 Jul 2021 08:45:58 +0200
+Date: Mon, 19 Jul 2021 08:48:10 +0200
 Subject: [LTP] [PATCH v3,
- 1/2] lib/tst_test.sh: Make tst_umount work with argument that has
- trailing slash
-In-Reply-To: <60F519D1.9040508@fujitsu.com>
-References: <20210716140142.GA7113@andestech.com>
- <60F50B67.4000807@fujitsu.com> <YPUS+/YZgAxUAlDn@pevik>
- <YPUUaOMUjRMy43ZH@pevik> <60F519D1.9040508@fujitsu.com>
-Message-ID: <YPUfpkJlrWTCH4p4@pevik>
+ 2/2] cgroup/cgroup_regression_test: Fix umount failure
+In-Reply-To: <20210716140235.GA22205@andestech.com>
+References: <20210716140235.GA22205@andestech.com>
+Message-ID: <YPUgKpSqTLYVCSRF@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu, all,
+> The test sequence
+> 	mount -t cgroup -o <controllers> <path>
+> 	mkdir <path>/<dir>
+> 	rmdir <path>/<dir>
+> 	umount <path>
+> 	mount -t cgroup -o <controllers> <path>
+> would easily fail at the last mount with -EBUSY on certain platform.
 
-> Hi Petr
-> > Hi all,
+> The reason is that this test sequence would have the chance of
+> missing a release code path when doing rmdir and umount.
 
-> >>> Hi Leo
+> Adding a little delay between "rmdir" and "umount" could fix the problem,
+> so use tst_umount API instead of umount in "rmdir, umount" sequence.
 
-> >>>> /proc/mounts shows the mount point without trailing slashes, e.g.
-> >>>> ~ $ cat /proc/mounts
-> >>>> xxx /root/cgroup cgroup rw,relatime,cpu 0 0
+> Fixes: #839
 
-> >>>> So current tst_umount would not work with argument that has trailing slash, e.g.
-> >>>> tst_umount cgroup/ would give "The device is not mounted".
+> Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> ---
+>  .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-> >>>> Fix this by filtering out the trailing slash before grepping /proc/mounts.
+> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> index 1f7f3820e..056166f11 100755
+> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> @@ -145,7 +145,7 @@ test2()
+>  	fi
 
-> >>>> Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
-> >>>> ---
-> >>>>    testcases/lib/tst_test.sh | 3 ++-
-> >>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>  	rmdir cgroup/0 cgroup/1
+> -	umount cgroup/
+> +	tst_umount cgroup/
+As I note in previous patch, with suggested change to tst_umount() to always add
+trailing "/" it'd be enough just "tst_umount cgroup".
 
-> >>>> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> >>>> index c6aa2c487..f132512e7 100644
-> >>>> --- a/testcases/lib/tst_test.sh
-> >>>> +++ b/testcases/lib/tst_test.sh
-> >>>> @@ -282,13 +282,14 @@ tst_umount()
-
-> >>>>    	[ -z "$device" ]&&   return
-
-> >>>> +	device=${device%/}
-> >>>>    	if ! grep -q "$device" /proc/mounts; then
-> >>>>    		tst_res TINFO "The $device is not mounted, skipping umount"
-> >>>>    		return
-> >>>>    	fi
-
-> >>>>    	while [ "$i" -lt 50 ]; do
-> >>>> -		if umount "$device">   /dev/null; then
-> >>>> +		if umount "$device"/>   /dev/null; then
-> >>> With removing this(we don't need add "/" here), this patch looks good to me
-> >> +1
-> > Actually we need to keep / for next patch, right? (cgroup/)
-> I guess our ltp tst_umount api should support  to umount cgroup or 
-> cgroup/ like umount command does.
-
-Also the patch always added trailing /:
-+		if umount "$device"/ > /dev/null; then
-
-if we keep that, the second patch wouldn't have to add it to "tst_umount
-cgroup/" call ("tst_umount cgroup" would be enough).
-I'm not sure if we want it. @Cyril?
-
-> > Thus why not just changing argument for grep?
-> > -       if ! grep -q "$device" /proc/mounts; then
-> > +       if ! grep -q "${device%/}" /proc/mounts; then
-> Yes, it is more easier. But I think it still existed the problme when 
-> we only use "/" parameters. I guess we should reject this situation.
-
-I would not care about it. 1) no test does 'tst_umount /' 2) error reporting
-would be correct: umount: /: target is busy.
+I'm not sure what is better: automatic handling or having to explicitly add
+trailing "/".
 
 Kind regards,
 Petr
 
-> code maybe as below:
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -282,7 +282,12 @@ tst_umount()
+>  }
 
->          [ -z "$device" ] && return
+>  #---------------------------------------------------------------------------
+> @@ -193,7 +193,7 @@ test3()
+>  	wait $pid2 2>/dev/null
 
-> -       if ! grep -q "$device" /proc/mounts; then
-> +       if [ "$device" = "/" ]; then
-> +               tst_res TINFO "We can not umount / directory"
-> +               return
-> +       fi
-> +
-> +       if ! grep -q "${device%/}" /proc/mounts; then
->                  tst_res TINFO "The $device is not mounted, skipping umount"
->                  return
->          fi
+>  	rmdir $cpu_subsys_path/0 2> /dev/null
+> -	umount cgroup/ 2> /dev/null
+> +	tst_umount cgroup/ 2> /dev/null
+>  	check_kernel_bug
+>  }
+
+> @@ -222,7 +222,7 @@ test4()
+>  	mount -t cgroup -o none,name=foo cgroup cgroup/
+>  	mkdir cgroup/0
+>  	rmdir cgroup/0
+> -	umount cgroup/
+> +	tst_umount cgroup/
+
+>  	if dmesg | grep -q "MAX_LOCKDEP_SUBCLASSES too low"; then
+>  		tst_res TFAIL "lockdep BUG was found"
+> @@ -254,7 +254,7 @@ test5()
+>  	mount -t cgroup none cgroup 2> /dev/null
+>  	mkdir cgroup/0
+>  	rmdir cgroup/0
+> -	umount cgroup/ 2> /dev/null
+> +	tst_umount cgroup/ 2> /dev/null
+>  	check_kernel_bug
+>  }
+
+> @@ -290,7 +290,7 @@ test6()
+
+>  	mount -t cgroup -o ns xxx cgroup/ > /dev/null 2>&1
+>  	rmdir cgroup/[1-9]* > /dev/null 2>&1
+> -	umount cgroup/
+> +	tst_umount cgroup/
+>  	check_kernel_bug
+>  }
