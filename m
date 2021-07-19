@@ -1,93 +1,112 @@
 From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Mon, 19 Jul 2021 05:24:12 +0000
-Subject: [LTP] [PATCH v3,
- 2/2] cgroup/cgroup_regression_test: Fix umount failure
-In-Reply-To: <20210716140235.GA22205@andestech.com>
-References: <20210716140235.GA22205@andestech.com>
-Message-ID: <60F50C8E.6020405@fujitsu.com>
+Date: Mon, 19 Jul 2021 05:45:34 +0000
+Subject: [LTP] [PATCH v4 1/2] network/tc01.sh: Add a regression test for
+ tc qdisc command
+In-Reply-To: <1626081029-11258-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <ae2bc43c-1745-a0f1-67a7-b9d5a6691404@bell-sw.com>
+ <1626081029-11258-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <60F51190.4090906@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Leo
-> The test sequence
-> 	mount -t cgroup -o<controllers>  <path>
-> 	mkdir<path>/<dir>
-> 	rmdir<path>/<dir>
-> 	umount<path>
-> 	mount -t cgroup -o<controllers>  <path>
-> would easily fail at the last mount with -EBUSY on certain platform.
->
-> The reason is that this test sequence would have the chance of
-> missing a release code path when doing rmdir and umount.
->
-> Adding a little delay between "rmdir" and "umount" could fix the problem,
-> so use tst_umount API instead of umount in "rmdir, umount" sequence.
->
-> Fixes: #839
->
-> Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
+Hi Alexey
+
+Thanks for your review, I have merged this patch.
+
+Best Regards
+Yang Xu
+
+> Reviewed-by: Alexey Kodanev<aleksei.kodanev@bell-sw.com>
+> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
 > ---
->   .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index 1f7f3820e..056166f11 100755
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -145,7 +145,7 @@ test2()
->   	fi
->
->   	rmdir cgroup/0 cgroup/1
-> -	umount cgroup/
-With adding a comment like
-# Avoid possible EBUSY error
-
-so when other converts this case into new api, they will keep to use 
-tst_umount.
-
-Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> +	tst_umount cgroup/
->   }
->
->   #---------------------------------------------------------------------------
-> @@ -193,7 +193,7 @@ test3()
->   	wait $pid2 2>/dev/null
->
->   	rmdir $cpu_subsys_path/0 2>  /dev/null
-> -	umount cgroup/ 2>  /dev/null
-> +	tst_umount cgroup/ 2>  /dev/null
->   	check_kernel_bug
->   }
->
-> @@ -222,7 +222,7 @@ test4()
->   	mount -t cgroup -o none,name=foo cgroup cgroup/
->   	mkdir cgroup/0
->   	rmdir cgroup/0
-> -	umount cgroup/
-> +	tst_umount cgroup/
-here as well
->
->   	if dmesg | grep -q "MAX_LOCKDEP_SUBCLASSES too low"; then
->   		tst_res TFAIL "lockdep BUG was found"
-> @@ -254,7 +254,7 @@ test5()
->   	mount -t cgroup none cgroup 2>  /dev/null
->   	mkdir cgroup/0
->   	rmdir cgroup/0
-> -	umount cgroup/ 2>  /dev/null
-> +	tst_umount cgroup/ 2>  /dev/null
->   	check_kernel_bug
->   }
->
-> @@ -290,7 +290,7 @@ test6()
->
->   	mount -t cgroup -o ns xxx cgroup/>  /dev/null 2>&1
->   	rmdir cgroup/[1-9]*>  /dev/null 2>&1
-> -	umount cgroup/
-> +	tst_umount cgroup/
-here as well
->   	check_kernel_bug
->   }
->
+>   runtest/net.tcp_cmds                   |  1 +
+>   testcases/network/tcp_cmds/tc/Makefile | 10 ++++++
+>   testcases/network/tcp_cmds/tc/tc01.sh  | 47 ++++++++++++++++++++++++++
+>   3 files changed, 58 insertions(+)
+>   create mode 100644 testcases/network/tcp_cmds/tc/Makefile
+>   create mode 100755 testcases/network/tcp_cmds/tc/tc01.sh
+> 
+> diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
+> index db47dfd5b..7e142de11 100644
+> --- a/runtest/net.tcp_cmds
+> +++ b/runtest/net.tcp_cmds
+> @@ -12,6 +12,7 @@ netstat netstat01.sh
+>   ping01 ping01.sh
+>   ping02 ping02.sh
+>   sendfile sendfile01.sh
+> +tc01 tc01.sh
+>   tcpdump tcpdump01.sh
+>   telnet telnet01.sh
+>   iptables iptables01.sh
+> diff --git a/testcases/network/tcp_cmds/tc/Makefile b/testcases/network/tcp_cmds/tc/Makefile
+> new file mode 100644
+> index 000000000..b4d8b86ee
+> --- /dev/null
+> +++ b/testcases/network/tcp_cmds/tc/Makefile
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= tc01.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/network/tcp_cmds/tc/tc01.sh b/testcases/network/tcp_cmds/tc/tc01.sh
+> new file mode 100755
+> index 000000000..a9da45b41
+> --- /dev/null
+> +++ b/testcases/network/tcp_cmds/tc/tc01.sh
+> @@ -0,0 +1,47 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+> +# Author: Yang Xu<xuyang2018.jy@fujitsu.com>
+> +#
+> +# When using "tc qdisc add dev teql0 root teql0 command", qdisc_create()
+> +# calls teql_qdisc_init() it imediately fails after check "if (m->dev == dev)"
+> +# because both devices are teql0, and it does not set qdisc_priv(sch)->m
+> +# leaving it zero on error path, then qdisc_create() imediately calls
+> +# teql_destroy() which does not expect zero master pointer and we get OOPS
+> +# on unpatched kernel.
+> +#
+> +# If we enable panic_on_oops, this case may crash.
+> +#
+> +# This kernel bug was introduced by
+> +# commit 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
+> +# and has been fixed by
+> +# commit 1ffbc7ea9160 ("net: sched: sch_teql: fix null-pointer dereference")
+> +#
+> +
+> +TST_SETUP="setup"
+> +TST_TESTFUNC="do_test"
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_DRIVERS="sch_teql"
+> +TST_NEEDS_CMDS="tc modprobe dmesg grep"
+> +
+> +. tst_test.sh
+> +
+> +setup()
+> +{
+> +	ROD modprobe $TST_NEEDS_DRIVERS
+> +}
+> +
+> +do_test()
+> +{
+> +	tst_res TINFO "Use tc qdisc command to trigger a null-pointer dereference"
+> +
+> +	EXPECT_FAIL tc qdisc add dev teql0 root teql0
+> +
+> +	if dmesg | grep -q 'RIP:.*sch_teql'; then
+> +		tst_res TFAIL "This bug is reproduced."
+> +	else
+> +		tst_res TPASS "This bug is not reproduced."
+> +	fi
+> +}
+> +
+> +tst_run
