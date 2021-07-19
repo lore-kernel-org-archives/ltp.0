@@ -1,43 +1,41 @@
 From: Leo Liang <ycliang@andestech.com>
-Date: Mon, 19 Jul 2021 17:19:22 +0800
+Date: Mon, 19 Jul 2021 17:21:11 +0800
 Subject: [LTP] [PATCH v4,
- 0/2] cgroup/cgroup_regression_test: Fix umount failure
-Message-ID: <20210719091918.GA360@atcfdc88>
+ 1/2] lib/tst_test.sh: Make tst_umount work with argument has
+ trailing slash
+Message-ID: <20210719092107.GA1406@atcfdc88>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test sequence
-	mount -t cgroup -o <controllers> <path>
-	mkdir <path>/<dir>
-	rmdir <path>/<dir>
-	umount <path>
-	mount -t cgroup -o <controllers> <path>
-would easily fail at the last mount with -EBUSY on certain platform.
+/proc/mounts shows the mount point without trailing slashes, e.g.
+~ $ cat /proc/mounts
+xxx /root/cgroup cgroup rw,relatime,cpu 0 0
 
-Adding a little delay between "rmdir" and "umount" could fix the problem,
-so use tst_umount API instead of umount in "rmdir, umount" sequence.
+So current tst_umount would not work with argument that has trailing slash, e.g.
+tst_umount cgroup/ would give "The device is not mounted".
 
-Changes since v1
-- Use "tst_umount" instead of "sync" as suggested
-- Make "tst_umount" work with argument that has terminating slash
+Fix this by filtering out the trailing slash in the argument for grep.
 
-Changes since v2
-- Filter out the trailing slash instead of using mountpoint command
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes since v3
-- Filter out the trailing slash only in grep command
-- Add comment in the test script
-
-Leo Yu-Chi Liang (2):
-  lib/tst_test.sh: Make tst_umount work with argument has trailing slash
-  cgroup/cgroup_regression_test: Fix umount failure
-
- .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
- testcases/lib/tst_test.sh                              |  2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index c6aa2c487..cbdfb707a 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -282,7 +282,7 @@ tst_umount()
+ 
+ 	[ -z "$device" ] && return
+ 
+-	if ! grep -q "$device" /proc/mounts; then
++	if ! grep -q "${device%/}" /proc/mounts; then
+ 		tst_res TINFO "The $device is not mounted, skipping umount"
+ 		return
+ 	fi
 -- 
 2.17.0
