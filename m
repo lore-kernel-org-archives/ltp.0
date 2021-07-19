@@ -1,24 +1,82 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 19 Jul 2021 08:49:08 +0200
+From: Leo Liang <ycliang@andestech.com>
+Date: Mon, 19 Jul 2021 16:18:16 +0800
 Subject: [LTP] [PATCH v3,
  1/2] lib/tst_test.sh: Make tst_umount work with argument that has
  trailing slash
-In-Reply-To: <20210716140142.GA7113@andestech.com>
+In-Reply-To: <YPUUaOMUjRMy43ZH@pevik>
 References: <20210716140142.GA7113@andestech.com>
-Message-ID: <YPUgZGgztmG04Mfa@pevik>
+ <60F50B67.4000807@fujitsu.com> <YPUS+/YZgAxUAlDn@pevik>
+ <YPUUaOMUjRMy43ZH@pevik>
+Message-ID: <20210719081816.GA27093@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi all,
 
-...
->  	while [ "$i" -lt 50 ]; do
-> -		if umount "$device" > /dev/null; then
-> +		if umount "$device"/ > /dev/null; then
-nit: although previous is working, I'd prefer "$device/"
+On Mon, Jul 19, 2021 at 01:58:00PM +0800, Petr Vorel wrote:
+> Hi all,
+> 
+> > > Hi Leo
+> 
+> > > > /proc/mounts shows the mount point without trailing slashes, e.g.
+> > > > ~ $ cat /proc/mounts
+> > > > xxx /root/cgroup cgroup rw,relatime,cpu 0 0
+> 
+> > > > So current tst_umount would not work with argument that has trailing slash, e.g.
+> > > > tst_umount cgroup/ would give "The device is not mounted".
+> 
+> > > > Fix this by filtering out the trailing slash before grepping /proc/mounts.
+> 
+> > > > Signed-off-by: Leo Yu-Chi Liang<ycliang@andestech.com>
+> > > > ---
+> > > >   testcases/lib/tst_test.sh | 3 ++-
+> > > >   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> > > > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> > > > index c6aa2c487..f132512e7 100644
+> > > > --- a/testcases/lib/tst_test.sh
+> > > > +++ b/testcases/lib/tst_test.sh
+> > > > @@ -282,13 +282,14 @@ tst_umount()
+> 
+> > > >   	[ -z "$device" ]&&  return
+> 
+> > > > +	device=${device%/}
+> > > >   	if ! grep -q "$device" /proc/mounts; then
+> > > >   		tst_res TINFO "The $device is not mounted, skipping umount"
+> > > >   		return
+> > > >   	fi
+> 
+> > > >   	while [ "$i" -lt 50 ]; do
+> > > > -		if umount "$device">  /dev/null; then
+> > > > +		if umount "$device"/>  /dev/null; then
+> > > With removing this(we don't need add "/" here), this patch looks good to me
+> > +1
+> Actually we need to keep / for next patch, right? (cgroup/)
 
-Kind regards,
-Petr
+Yes, I thought so as well, for commit 46172493.
+
+> Thus why not just changing argument for grep?
+> -       if ! grep -q "$device" /proc/mounts; then
+> +       if ! grep -q "${device%/}" /proc/mounts; then
+
+Thanks! That's a better way to do it.
+Will send a v4 patch later with this modification.
+
+Best regards,
+Leo
+
+> Kind regards,
+> Petr
+> 
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> > Kind regards,
+> > Petr
+> 
+> > > Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> > > >   			return
+> > > >   		fi
+> 
