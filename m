@@ -1,10 +1,10 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 20 Jul 2021 16:33:20 +0300
-Subject: [LTP] [PATCH 12/16] syscalls/sched_setscheduler01: convert to new
+Date: Tue, 20 Jul 2021 16:33:21 +0300
+Subject: [LTP] [PATCH 13/16] syscalls/sched_setscheduler02: convert to new
  API
 In-Reply-To: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
 References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210720133324.21752-13-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210720133324.21752-14-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +13,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../sched_setscheduler/sched_setscheduler01.c | 171 +++++-------------
- 1 file changed, 42 insertions(+), 129 deletions(-)
+ .../sched_setscheduler/sched_setscheduler02.c | 154 ++++--------------
+ 1 file changed, 33 insertions(+), 121 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c
-index 1cbce15d0..2feaa60d5 100644
---- a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c
-+++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler01.c
-@@ -1,160 +1,73 @@
+diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c
+index 36952d9cb..68afb05c9 100644
+--- a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c
++++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler02.c
+@@ -1,148 +1,60 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -46,168 +46,146 @@ index 1cbce15d0..2feaa60d5 100644
 -/*
 - * NAME
 - *	sched_setscheduler01.c
-- *
-- * DESCRIPTION
-- *	Testcase to test whether sched_setscheduler(2) sets the errnos
-- *	correctly.
 +/*\
 + * [Description]
   *
-- * ALGORITHM
-- *	1.	Call sched_setscheduler with an invalid pid, and expect
-- *	ESRCH to be returned.
-- *	2.	Call sched_setscheduler with an invalid scheduling policy,
-- *	and expect EINVAL to be returned.
-- *	3.	Call sched_setscheduler with an invalid "param" address,
-- *	which lies outside the address space of the process, and expect
-- *	EFAULT to be returned.
-- *	4.	Call sched_setscheduler with an invalid priority value
-- *	in "param" and expect EINVAL to be returned
+- * DESCRIPTION
+- *	Testcase to test whether sched_setscheduler(2) sets the errnos
+- *	correctly.
 + * Testcase to test whether sched_setscheduler(2) sets the errnos
 + * correctly.
   *
+- * ALGORITHM
+- *	1.	Call sched_setscheduler as a non-root uid, and expect EPERM
+- *	to be returned.
++ * [Algorithm]
+  *
 - * USAGE:  <for command-line>
-- *  sched_setscheduler01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  sched_setscheduler02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -e   : Turn on errno logging.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
-+ * [Algorithm]
++ * Call sched_setscheduler as a non-root uid, and expect EPERM
++ * to be returned.
   *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS
-- *	None
-+ * 1. Call sched_setscheduler with an invalid pid, and expect
-+ * ESRCH to be returned.
-+ * 2. Call sched_setscheduler with an invalid scheduling policy,
-+ * and expect EINVAL to be returned.
-+ * 3. Call sched_setscheduler with an invalid "param" address,
-+ * which lies outside the address space of the process, and expect
-+ * EFAULT to be returned.
-+ * 4.Call sched_setscheduler with an invalid priority value
-+ * in "param" and expect EINVAL to be returned
+- *	Must run test as root.
   */
+-#include <stdio.h>
 +
- #include <stdio.h>
++#include <stdlib.h>
  #include <errno.h>
 -#include <sched.h>
  #include <pwd.h>
--#include "test.h"
+ #include <sys/types.h>
+-#include <sys/wait.h>
  
--#define SCHED_INVALID	99
--
--char *TCID = "sched_setscheduler01";
+-#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
 +#include "tst_sched.h"
  
--struct sched_param param;
--struct sched_param param1 = { 1 };
+ #define SCHED_INVALID	99
+ #define INVALID_PID	999999
+ 
+-char *TCID = "sched_setscheduler02";
+-int TST_TOTAL = 1;
 -
 -void setup(void);
 -void cleanup(void);
-+#define SCHED_INVALID	99
- 
-+static struct sched_param p;
-+static struct sched_param p1 = { .sched_priority = 1 };
- static pid_t unused_pid;
- static pid_t init_pid = 1;
- static pid_t zero_pid;
- 
--struct test_case_t {
-+struct test_cases_t {
- 	pid_t *pid;
- 	int policy;
- 	struct sched_param *p;
- 	int error;
--} TC[] = {
-+} tcases[] = {
- 	/* The pid is invalid - ESRCH */
--	{
--	&unused_pid, SCHED_OTHER, &param, ESRCH},
--	    /* The policy is invalid - EINVAL */
--	{
--	&init_pid, SCHED_INVALID, &param, EINVAL},
--#ifndef UCLINUX
--	    /* Skip since uClinux does not implement memory protection */
--	    /* The param address is invalid - EFAULT */
--	{
--	&init_pid, SCHED_OTHER, (struct sched_param *)-1, EFAULT},
--#endif
--	    /* The priority value in param invalid - EINVAL */
--	{
--	&zero_pid, SCHED_OTHER, &param1, EINVAL}
-+	{&unused_pid, SCHED_OTHER, &p, ESRCH},
-+	/* The policy is invalid - EINVAL */
-+	{&init_pid, SCHED_INVALID, &p, EINVAL},
-+	/* The param address is invalid - EFAULT */
-+	{&init_pid, SCHED_OTHER, (struct sched_param *)-1, EFAULT},
-+	/* The priority value in param invalid - EINVAL */
-+	{&zero_pid, SCHED_OTHER, &p1, EINVAL}
- };
- 
--int TST_TOTAL = ARRAY_SIZE(TC);
 -
+ static uid_t nobody_uid;
+ 
 -int main(int ac, char **av)
 +static void setup(void)
  {
 -	int lc;
--
--	int i;
+-	pid_t pid;
+-	struct sched_param param;
+-	int status;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
+-	setup();
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		setup();
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "fork failed");
+-		}
 -
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
+-		if (pid == 0) {	/* child */
+-			param.sched_priority = 1;
 -
--			TEST(sched_setscheduler(*(TC[i].pid), TC[i].policy,
--						TC[i].p));
+-			SAFE_SETEUID(cleanup, nobody_uid);
+-
+-			TEST(sched_setscheduler(pid, SCHED_FIFO, &param));
+-
+-			if (TEST_ERRNO) {
+-			}
 -
 -			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
+-				tst_resm(TFAIL, "sched_setscheduler(2) passed "
+-					 "with non root priveledges");
+-			} else if (TEST_ERRNO != EPERM) {
+-				tst_resm(TFAIL, "Expected EPERM, got %d",
+-					 TEST_ERRNO);
 -			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
+-				tst_resm(TPASS, "got EPERM");
+-			}
+-		} else {	/* parent */
+-			/* let the child carry on */
+-			wait(&status);
+-			if (WIFEXITED(status) != 0) {	/* Exit with errors */
+-				exit(WEXITSTATUS(status));
+-			} else {
+-				exit(0);
 -			}
 -		}
+-
+-		SAFE_SETEUID(cleanup, 0);
 -	}
 -	cleanup();
--
 -	tst_exit();
--
-+	unused_pid = tst_get_unused_pid();
++	struct passwd *pw = SAFE_GETPWNAM("nobody");
+ 
++	nobody_uid = pw->pw_uid;
  }
  
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - */
 -void setup(void)
-+static void run(unsigned int n)
++static void run(void)
  {
--	unused_pid = tst_get_unused_pid(cleanup);
+-	struct passwd *pw;
 -
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	struct test_cases_t *tc = &tcases[n];
+-	tst_require_root();
++	pid_t pid = SAFE_FORK();
+ 
+-	pw = SAFE_GETPWNAM(NULL, "nobody");
+-	nobody_uid = pw->pw_uid;
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	if (!pid) {
++		struct sched_param p = { .sched_priority = 1 };
  
 -	TEST_PAUSE;
-+	TST_EXP_FAIL(tst_sched_setscheduler(*tc->pid, tc->policy, tc->p), tc->error);
++		SAFE_SETEUID(nobody_uid);
++		TST_EXP_FAIL(tst_sched_setscheduler(0, SCHED_FIFO, &p), EPERM);
++		SAFE_SETEUID(0);
++		exit(0);
++	}
++	tst_reap_children();
  }
  
 -/*
@@ -219,9 +197,10 @@ index 1cbce15d0..2feaa60d5 100644
 -
 -}
 +static struct tst_test test = {
++	.forks_child = 1,
++	.needs_root = 1,
 +	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
++	.test_all = run,
 +};
 -- 
 2.25.1
