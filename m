@@ -1,59 +1,94 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 20 Jul 2021 16:33:08 +0300
-Subject: [LTP] [PATCH 00/16] syscalls/sched_*: convert to new API and handle
- ENOSYS errno
-Message-ID: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
+Date: Tue, 20 Jul 2021 16:33:09 +0300
+Subject: [LTP] [PATCH 01/16] lib/tst_sched: add ltp tst_sched_*()
+In-Reply-To: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
+References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210720133324.21752-2-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The patch-set introduced new tst_sched_* wrappers to handle ENOSYS
-error that can be returned by libc (musl [1]). In that particular
-case the wrapper uses syscall directly to test the kernel anyway.
+The new tst_sched_*() invoke libc variant first, and if ENOSYS errno
+has been returned, tries to invoke syscall directly.
 
-[1]: https://git.musl-libc.org/cgit/musl/commit/?id=1e21e78bf7a5
+musl implementation returns ENOSYS for some sched_*() functions due
+to commit 1e21e78bf7a5 ("add support for thread scheduling (POSIX
+TPS option)").
 
-Alexey Kodanev (16):
-  lib/tst_sched: add ltp tst_sched_*()
-  syscalls/sched_getparam01: use tst_sched_*()
-  syscalls/sched_getparam03: use tst_sched_*()
-  syscalls/sched_setparam01: convert to new API
-  syscalls/sched_setparam02: convert to new API
-  syscalls/sched_setparam03: convert to new API
-  syscalls/sched_setparam04: convert to new API
-  syscalls/sched_setparam05: convert to new API
-  syscalls/sched_rr_get_interval01: use tst_sched_*()
-  syscalls/sched_rr_get_interval02: use tst_sched_*()
-  syscalls/sched_rr_get_interval03: use tst_sched_*()
-  syscalls/sched_setscheduler01: convert to new API
-  syscalls/sched_setscheduler02: convert to new API
-  syscalls/sched_setscheduler03: use tst_sched_*()
-  syscalls/sched_getscheduler01: convert to new API
-  syscalls/sched_getscheduler02: convert to new API
-
- include/tst_sched.h                           |  16 ++
- lib/tst_sched.c                               |  36 +++
- .../sched_getparam/sched_getparam01.c         |   6 +-
- .../sched_getparam/sched_getparam03.c         |   4 +-
- .../sched_getscheduler/sched_getscheduler01.c | 141 +++---------
- .../sched_getscheduler/sched_getscheduler02.c | 104 ++-------
- .../sched_rr_get_interval01.c                 |   4 +-
- .../sched_rr_get_interval02.c                 |   4 +-
- .../sched_rr_get_interval03.c                 |   4 +-
- .../sched_setparam/sched_setparam01.c         | 135 ++---------
- .../sched_setparam/sched_setparam02.c         | 195 +++-------------
- .../sched_setparam/sched_setparam03.c         | 215 ++++--------------
- .../sched_setparam/sched_setparam04.c         | 161 +++----------
- .../sched_setparam/sched_setparam05.c         | 186 +++------------
- .../sched_setscheduler/sched_setscheduler01.c | 171 ++++----------
- .../sched_setscheduler/sched_setscheduler02.c | 154 +++----------
- .../sched_setscheduler/sched_setscheduler03.c |  10 +-
- 17 files changed, 345 insertions(+), 1201 deletions(-)
+Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+---
+ include/tst_sched.h | 16 ++++++++++++++++
+ lib/tst_sched.c     | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+)
  create mode 100644 include/tst_sched.h
  create mode 100644 lib/tst_sched.c
 
+diff --git a/include/tst_sched.h b/include/tst_sched.h
+new file mode 100644
+index 000000000..0e5d61344
+--- /dev/null
++++ b/include/tst_sched.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (c) 2021, BELLSOFT. All rights reserved.
++ */
++
++#ifndef TST_SCHED_H_
++#define TST_SCHED_H_
++
++#include <sched.h>
++
++int tst_sched_setparam(pid_t pid, const struct sched_param *param);
++int tst_sched_getparam(pid_t pid, struct sched_param *param);
++int tst_sched_setscheduler(pid_t pid, int policy, const struct sched_param *param);
++int tst_sched_getscheduler(pid_t pid);
++
++#endif /* TST_SCHED_H_ */
+diff --git a/lib/tst_sched.c b/lib/tst_sched.c
+new file mode 100644
+index 000000000..d53273d8e
+--- /dev/null
++++ b/lib/tst_sched.c
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021, BELLSOFT. All rights reserved.
++ */
++
++#include <errno.h>
++#include <unistd.h>
++#include "tst_sched.h"
++#include "lapi/syscalls.h"
++
++#define TST_SCHED_COMMON(SCALL, ...) do {			\
++	int ret = SCALL(__VA_ARGS__);				\
++	if (ret == -1 && errno == ENOSYS)			\
++		return syscall(__NR_##SCALL, __VA_ARGS__);	\
++	return ret;						\
++} while (0)
++
++int tst_sched_setparam(pid_t pid, const struct sched_param *param)
++{
++	TST_SCHED_COMMON(sched_setparam, pid, param);
++}
++
++int tst_sched_getparam(pid_t pid, struct sched_param *param)
++{
++	TST_SCHED_COMMON(sched_getparam, pid, param);
++}
++
++int tst_sched_setscheduler(pid_t pid, int policy, const struct sched_param *param)
++{
++	TST_SCHED_COMMON(sched_setscheduler, pid, policy, param);
++}
++
++int tst_sched_getscheduler(pid_t pid)
++{
++	TST_SCHED_COMMON(sched_getscheduler, pid);
++}
 -- 
 2.25.1
 
