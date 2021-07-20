@@ -1,141 +1,26 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Tue, 20 Jul 2021 17:05:20 +0200
-Subject: [LTP] [PATCH] controllers: detect previous test failure on cgroup
- mounts
-Message-ID: <20210720150520.17612-1-krzysztof.kozlowski@canonical.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Tue, 20 Jul 2021 18:26:48 +0300
+Subject: [LTP] [PATCH 00/16] syscalls/sched_*: convert to new API and
+ handle ENOSYS errno
+In-Reply-To: <YPbcfEgPs66/ng7c@yuki>
+References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
+ <YPbNQ4AebDiUMxVz@yuki> <f9767568-466f-73d2-7d73-aa880fde6a63@bell-sw.com>
+ <YPbcfEgPs66/ng7c@yuki>
+Message-ID: <7941651c-1712-55cb-a935-277cff8b1969@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The failure of memcg_stress_test.sh cleanup went unnoticed (except
-echo message) and caused further cgroup_fj and memcg_control_test
-failures because of unclean cgroups. Flow is usually like:
+On 20.07.2021 17:23, Cyril Hrubis wrote:
+> Hi!
+>> BTW, sched_rr_get_interval* tests already using tst_variants, adding
+>> more variants will double them too, right?
+> 
+> Actually not, since we do run the test for both the libc
+> sched_rr_get_interval and for all possible syscalls variants we don't
+> have to touch these tests at all.
 
-1. memcg_stress_test succeeds but actually the /dev/memcg was not
-   cleaned up. Notice lack of any error message due to 2>/dev/null.
-
-     memcg_stress_test 1 TINFO: Testing 150 cgroups, using 1273 MB, interval 5
-     memcg_stress_test 1 TINFO: Starting cgroups
-     memcg_stress_test 1 TINFO: Testing cgroups for 900s
-     memcg_stress_test 1 TINFO: Killing groups
-     tag=memcg_stress stime=1626770787 dur=903 exit=exited stat=2 core=no cu=19 cs=12
-
-2. memcg_control_test has false-positive. It succeeds but actually no
-   test was done due to /dev/memcg pollution from previous test:
-
-     mkdir: cannot create directory ?/tmp/ltp-q8DjShPJeB/mnt/1?: File exists
-     memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit imposed by the topmost group is enforced
-     sh: echo: I/O error
-     /opt/ltp/testcases/bin/memcg_control_test.sh: 86: /opt/ltp/testcases/bin/memcg_control_test.sh: cannot create /tmp/ltp-q8DjShPJeB/mnt/1/memory.memsw.limit_in_bytes:
-     Permission denied
-     rmdir: failed to remove 'sub': Device or resource busy
-     rmdir: failed to remove '/tmp/ltp-q8DjShPJeB/mnt/1': Device or resource busy
-     memcg_control    1  TPASS  :  memcg_control: passed
-     tag=memcg_control stime=1626771695 dur=6 exit=exited stat=0 core=no cu=2 cs=1
-
-3. cgroup_fj_function2_memory fails with a cryptic message of mounting a
-   path with new line (because /dev/memcg was not cleaned up before):
-
-     cgroup_fj_function2_memory 1 TINFO: Subsystem memory is mounted at /sys/fs/cgroup/memory
-     /dev/memcg
-     mkdir: cannot create directory ?/sys/fs/cgroup/memory?: File exists
-     cgroup_fj_function2_memory 1 TBROK: mkdir /sys/fs/cgroup/memory
-     /dev/memcg/ltp failed
-     cgroup_fj_function2_memory 1 TINFO: Removing all ltp subgroups...
-     find: ?/sys/fs/cgroup/memory\n/dev/memcg/ltp/?: No such file or directory
-
-The actual failure was in memcg_stress_test executed before other tests,
-however it went unnoticed.  Debugging such failures is difficult as
-result of failing test depends on running another which did not fail.
-Instead, detect unclean cgroups mounts and explicitly test it.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- .../kernel/controllers/cgroup_fj/cgroup_fj_common.sh   |  4 ++--
- .../controllers/memcg/control/memcg_control_test.sh    | 10 ++++++----
- .../controllers/memcg/stress/memcg_stress_test.sh      |  8 ++++----
- 3 files changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-index 5594fe9de426..53ab637e8910 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-@@ -123,10 +123,10 @@ cleanup()
-     fi
- 
-     if grep -q "$mount_point" /proc/mounts; then
--        umount "$mount_point"
-+        EXPECT_PASS umount "$mount_point"
-     fi
- 
-     if [ -e "$mount_point" ]; then
--        rmdir "$mount_point"
-+        EXPECT_PASS rmdir "$mount_point"
-     fi
- }
-diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-index 4d9f1bb5d586..626f5e676831 100644
---- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-+++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-@@ -53,6 +53,8 @@ STATUS_PIPE="$TMP/status_pipe"
- PASS=0
- FAIL=1
- 
-+. test.sh
-+
- # Check if the test process is killed on crossing boundary
- test_proc_kill()
- {
-@@ -118,8 +120,8 @@ result()
- cleanup()
- {
- 	if [ -e $TST_PATH/mnt ]; then
--		umount $TST_PATH/mnt 2> /dev/null
--		rm -rf $TST_PATH/mnt
-+		EXPECT_PASS umount $TST_PATH/mnt
-+		EXPECT_PASS rm -rf $TST_PATH/mnt
- 	fi
- }
- 
-@@ -127,8 +129,8 @@ do_mount()
- {
- 	cleanup
- 
--	mkdir $TST_PATH/mnt
--	mount -t cgroup -o memory cgroup $TST_PATH/mnt 2> /dev/null
-+	EXPECT_PASS mkdir $TST_PATH/mnt
-+	EXPECT_PASS mount -t cgroup -o memory cgroup $TST_PATH/mnt 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		tst_brkm TBROK NULL "Mounting cgroup to temp dir failed"
- 		rmdir $TST_PATH/mnt
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index c2501e164018..8f7a0eb9dc37 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -44,8 +44,8 @@ setup()
- cleanup()
- {
- 	if [ -e /dev/memcg ]; then
--		umount /dev/memcg 2> /dev/null
--		rmdir /dev/memcg 2> /dev/null
-+		EXPECT_PASS umount /dev/memcg
-+		EXPECT_PASS rmdir /dev/memcg
- 	fi
- }
- 
-@@ -53,8 +53,8 @@ do_mount()
- {
- 	cleanup
- 
--	mkdir /dev/memcg 2> /dev/null
--	mount -t cgroup -omemory memcg /dev/memcg
-+	EXPECT_PASS mkdir /dev/memcg
-+	EXPECT_PASS mount -t cgroup -omemory memcg /dev/memcg
- }
- 
- # $1 Number of cgroups
--- 
-2.27.0
-
+sched_rr_get_interval works with musl, the one which returns ENOSYS
+is sched_setscheduler() there, in setup().
