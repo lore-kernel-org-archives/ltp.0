@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Jul 2021 13:59:09 +0200
-Subject: [LTP] [PATCH 1/3] Add skip_in_lockdown flag to struct tst_test
-In-Reply-To: <20210720103941.9767-1-mdoucha@suse.cz>
+Date: Tue, 20 Jul 2021 13:59:20 +0200
+Subject: [LTP] [PATCH 2/3] Replace existing lockdown checks with
+ skip_in_lockdown
+In-Reply-To: <20210720103941.9767-2-mdoucha@suse.cz>
 References: <20210720103941.9767-1-mdoucha@suse.cz>
-Message-ID: <YPa6jRyJtfyenCao@yuki>
+ <20210720103941.9767-2-mdoucha@suse.cz>
+Message-ID: <YPa6mDqaNwFhzNgu@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
