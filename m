@@ -1,9 +1,9 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 20 Jul 2021 16:33:14 +0300
-Subject: [LTP] [PATCH 06/16] syscalls/sched_setparam03: convert to new API
+Date: Tue, 20 Jul 2021 16:33:15 +0300
+Subject: [LTP] [PATCH 07/16] syscalls/sched_setparam04: convert to new API
 In-Reply-To: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
 References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210720133324.21752-7-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210720133324.21752-8-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +12,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../sched_setparam/sched_setparam03.c         | 215 ++++--------------
- 1 file changed, 40 insertions(+), 175 deletions(-)
+ .../sched_setparam/sched_setparam04.c         | 161 ++++--------------
+ 1 file changed, 30 insertions(+), 131 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_setparam/sched_setparam03.c b/testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
-index 252364e2e..e9571a9b1 100644
---- a/testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
-+++ b/testcases/kernel/syscalls/sched_setparam/sched_setparam03.c
-@@ -1,196 +1,61 @@
+diff --git a/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c b/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
+index f6e017d3d..d80fd0d2a 100644
+--- a/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
++++ b/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
+@@ -1,34 +1,14 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
 + * Copyright (c) 2021, BELLSOFT. All rights reserved.
@@ -33,228 +33,186 @@ index 252364e2e..e9571a9b1 100644
 - * WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 - *
 + * AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
   */
--/**********************************************************
+- /*******************************************************************
 - *
-- *    TEST IDENTIFIER	: sched_setparam03
+- *    TEST IDENTIFIER   : sched_setparam04
 - *
-- *    EXECUTED BY	: root / superuser
+- *    EXECUTED BY       : anyone
 - *
-- *    TEST TITLE	: Checks functionality for sched_setparam(2) for pid!=0
+- *    TEST TITLE        : testing error conditions for sched_setparam(2)
 - *
-- *    TEST CASE TOTAL	: 1
+- *    TEST CASE TOTAL   : 4
 - *
-- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This test forks a child & changes its parent's scheduling priority
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *	  Change scheduling policy to SCHED_FIFO
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	 Fork a child
-- *
-- *	 CHILD:
-- *	  Changes scheduling priority for parent
-- *
-- *	 PARENT:
-- *	  If scheduling priority is set properly,
-- *		TEST passed
-- *	  else
-- *		TEST failed
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
+- *    AUTHOR            : Saji Kumar.V.R <saji.kumar@wipro.com>
 +
 +/*\
 + * [Description]
   *
-- * USAGE:  <for command-line>
-- *  sched_setparam03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *			where,  -c n : Run n copies concurrently.
-- *				-e   : Turn on errno logging.
-- *				-h   : Show help screen
-- *				-f   : Turn off functional testing
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
-+ * Checks functionality for sched_setparam(2) for pid != 0
+- *    SIGNALS
+- *      Uses SIGUSR1 to pause before test if option set.
+- *      (See the parse_opts(3) man page).
++ * Testing error conditions for sched_setparam(2)
   *
-- ****************************************************************/
+  * DESCRIPTION
+  * 	Verify that,
+@@ -41,129 +21,48 @@
+  *   4) sched_setparam(2) returns -1 sets errno to EINVAL if the
+  *	value for p.sched_priority is other than 0 for scheduling
+  *	policy, SCHED_OTHER
+- *
+- * ALGORITHM
+- * Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if (system call failed (return=-1)) &
+- *			   (errno set == expected errno)
+- *              Issue sys call fails with expected return value and errno.
+- *   Otherwise,
+- *      Issue sys call returns unexpected value.
+- *
+- *  Cleanup:
+- *        Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  sched_setparam04 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *		where,  -c n : Run n copies concurrently.
+- *			-e   : Turn on errno logging.
+- *			-h   : Show help screen
+- *			-f   : Turn off functional testing
+- *			-i n : Execute test n times.
+- *			-I x : Execute test for x seconds.
+- *			-p   : Pause for SIGUSR1 before starting
+- *			-P x : Pause for x seconds between iterations.
+- *			-t   : Turn on syscall timing.
+- *
+- *********************************************************************/
 -
--#include <err.h>
 -#include <errno.h>
 -#include <sched.h>
--#include <sys/wait.h>
+-#include <pwd.h>
 -#include "test.h"
--
--#define NEW_PRIORITY 5
--
--static void setup();
--static void cleanup();
--static int verify_priority();
-+ * This test forks a child and changes its parent's scheduling priority.
 + */
  
--char *TCID = "sched_setparam03";
--int TST_TOTAL = 1;
+-static void cleanup(void);
+-static void setup(void);
 +#include <stdlib.h>
  
--static struct sched_param param = { NEW_PRIORITY };
+-static struct sched_param param = { 0 };
+-static struct sched_param param1 = { 1 };
 +#include "tst_test.h"
 +#include "tst_sched.h"
  
--int main(int ac, char **av)
-+static void run(void)
- {
--
--	int lc;
--	int status;
-+	struct sched_param p5 = { .sched_priority = 5 };
-+	struct sched_param p;
- 	pid_t child_pid;
+-char *TCID = "sched_setparam04";
++static struct sched_param p = { .sched_priority = 0 };
++static struct sched_param p1 = { .sched_priority = 1 };
  
+ static pid_t unused_pid;
+ static pid_t inval_pid = -1;
+ static pid_t zero_pid;
+ 
+-static struct test_case_t {
++static struct test_cases_t {
+ 	char *desc;
+ 	pid_t *pid;
+ 	struct sched_param *p;
+ 	int exp_errno;
+-	char err_desc[10];
+-} test_cases[] = {
++} tcases[] = {
+ 	{
+-	"test with non-existing pid", &unused_pid, &param, ESRCH, "ESRCH"}, {
+-	"test invalid pid value", &inval_pid, &param, EINVAL, "EINVAL"}, {
+-	"test with invalid address for p", &zero_pid, NULL, EINVAL, "EINVAL"}, {
+-	"test with invalid p.sched_priority", &zero_pid, &param1, EINVAL,
+-		    "EINVAL"}
++	"test with non-existing pid", &unused_pid, &p, ESRCH}, {
++	"test invalid pid value", &inval_pid, &p, EINVAL,}, {
++	"test with invalid address for p", &zero_pid, NULL, EINVAL}, {
++	"test with invalid p.sched_priority", &zero_pid, &p1, EINVAL}
+ };
+ 
+-int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc, ind;
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();
+-	setup();		/* global setup */
 -
+-	/* The following loop checks looping state if -i option given */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
+-		/* reset tst_count in case we are looping */
 -		tst_count = 0;
-+	child_pid = SAFE_FORK();
- 
--		switch (child_pid = FORK_OR_VFORK()) {
 -
--		case -1:
--			/* fork() failed */
--			tst_resm(TFAIL, "fork() failed");
--			continue;
--
--		case 0:
--			/* Child */
--
+-		for (ind = 0; ind < TST_TOTAL; ind++) {
 -			/*
--			 * Call sched_setparam(2) with pid = getppid() so that
--			 * it will set the scheduling parameters for parent
--			 * process
+-			 * call the system call with the TEST() macro
 -			 */
--			TEST(sched_setparam(getppid(), &param));
+-			TEST(sched_setparam(*(test_cases[ind].pid),
+-					    test_cases[ind].p));
 -
--			if (TEST_RETURN == -1) {
--				err(0, "sched_setparam returned %ld",
--				    TEST_RETURN);
--			}
--			exit(1);
--
--		default:
--			/* Parent */
--			if ((waitpid(child_pid, &status, 0)) < 0) {
--				tst_resm(TFAIL, "wait() failed");
--				continue;
--			}
--
--			/*
--			 * Verify that parent's scheduling priority has
--			 * changed.
--			 */
--			if ((WIFEXITED(status)) && (WEXITSTATUS(status)) &&
--			    (verify_priority())) {
--				tst_resm(TPASS, "Test Passed");
+-			if ((TEST_RETURN == -1) &&
+-			    (TEST_ERRNO == test_cases[ind].exp_errno)) {
+-				tst_resm(TPASS, "expected failure; Got %s",
+-					 test_cases[ind].err_desc);
 -			} else {
--				tst_resm(TFAIL, "Test Failed");
+-				tst_resm(TFAIL, "Call failed to produce "
+-					 "expected error;  Expected errno: %d "
+-					 "Got : %d, %s",
+-					 test_cases[ind].exp_errno,
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
 -			}
 -		}
-+	if (!child_pid) {
-+		/*
-+		 * Call sched_setparam(2) with pid = getppid() so that
-+		 * it will set the scheduling parameters for parent
-+		 * process
-+		 */
-+		TST_EXP_PASS_SILENT(tst_sched_setparam(getppid(), &p5));
-+		exit(0);
- 	}
-+	tst_reap_children();
-+
-+	TST_EXP_PASS_SILENT(tst_sched_getparam(0, &p));
- 
--	cleanup();
--	tst_exit();
-+	if (p.sched_priority == p5.sched_priority)
-+		tst_res(TPASS, "got expected priority %d", p.sched_priority);
-+	else
-+		tst_res(TFAIL, "got priority %d, expected %d",
-+			p.sched_priority, p5.sched_priority);
- }
- 
--/* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
--	struct sched_param p = { 1 };
--
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* Change scheduling policy to SCHED_FIFO */
--	if ((sched_setscheduler(0, SCHED_FIFO, &p)) == -1) {
--		tst_brkm(TBROK, cleanup, "sched_setscheduler() failed");
 -	}
-+	struct sched_param p = { .sched_priority = 1 };
- 
-+	TST_EXP_PASS_SILENT(tst_sched_setscheduler(0, SCHED_FIFO, &p));
+-
+-	cleanup();
+-
+-	tst_exit();
++	unused_pid = tst_get_unused_pid();
  }
  
 -/*
-- *cleanup() -   performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
++static void run(unsigned int n)
+ {
+-	unused_pid = tst_get_unused_pid(cleanup);
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	struct test_cases_t *tc = &tcases[n];
+ 
++	TST_EXP_FAIL(tst_sched_setparam(*tc->pid, tc->p), tc->exp_errno,
++		     "%s", tc->desc);
+ }
+ 
+-/*
+- * cleanup() -  performs all the ONE TIME cleanup for this test at completion
+- *		or premature exit.
 - */
 -void cleanup(void)
 -{
--}
 -
--/*
-- * verify_priority() -  This function checks whether the priority is
-- *			set correctly
-- */
--int verify_priority(void)
--{
--	struct sched_param p;
--
--	if ((sched_getparam(0, &p)) == 0) {
--		if (p.sched_priority == NEW_PRIORITY) {
--			return 1;
--		} else {
--			tst_resm(TWARN, "sched_getparam() returned priority"
--				 " value as %d", p.sched_priority);
--			return 0;
--		}
--	}
--
--	tst_resm(TWARN, "sched_getparam() failed");
--	return 0;
 -}
 +static struct tst_test test = {
-+	.forks_child = 1,
-+	.needs_root = 1,
 +	.setup = setup,
-+	.test_all = run,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
 +};
 -- 
 2.25.1
