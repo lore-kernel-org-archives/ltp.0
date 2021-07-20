@@ -1,10 +1,10 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 20 Jul 2021 16:33:23 +0300
-Subject: [LTP] [PATCH 15/16] syscalls/sched_getscheduler01: convert to new
+Date: Tue, 20 Jul 2021 16:33:24 +0300
+Subject: [LTP] [PATCH 16/16] syscalls/sched_getscheduler02: convert to new
  API
 In-Reply-To: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
 References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210720133324.21752-16-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210720133324.21752-17-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +13,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../sched_getscheduler/sched_getscheduler01.c | 141 +++++-------------
- 1 file changed, 37 insertions(+), 104 deletions(-)
+ .../sched_getscheduler/sched_getscheduler02.c | 104 +++---------------
+ 1 file changed, 16 insertions(+), 88 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
-index f6bdf1a1b..e0da0510d 100644
---- a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
-+++ b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
-@@ -1,129 +1,62 @@
+diff --git a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
+index c43240108..73c5f58db 100644
+--- a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
++++ b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
+@@ -1,106 +1,34 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -45,147 +45,103 @@ index f6bdf1a1b..e0da0510d 100644
  
 -/*
 - * NAME
-- *	sched_getscheduler01.C
+- *	sched_getscheduler02.C
+- *
+- * DESCRIPTION
+- *	To check for the errno ESRCH
+- *
+- * ALGORITHM
+- *	Pass an invalid pid to sched_getscheduler() and test for ESRCH.
 +/*\
 + * [Description]
   *
-- * DESCRIPTION
-- *	Testcase to check sched_getscheduler() returns correct return value
-+ * Testcase to check sched_getscheduler() returns correct return value.
-  *
-- * ALGORTIHM
-- *	Call sched_setcheduler() to set the scheduling policy of the current
-- *	process. Then call sched_getscheduler() to ensure that this is same
-- *	as what set by the previous call to sched_setscheduler().
-+ * [Algorithm]
-  *
-- *	Use SCHED_RR, SCHED_FIFO, SCHED_OTHER as the scheduling policies for
-- *	sched_setscheduler().
-+ * Call sched_setcheduler() to set the scheduling policy of the current
-+ * process. Then call sched_getscheduler() to ensure that this is same
-+ * as what set by the previous call to sched_setscheduler().
-  *
 - * USAGE:  <for command-line>
-- *  sched_getscheduler01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  sched_getscheduler02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
+- *             -e   : Turn on errno logging.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
-+ * Use SCHED_RR, SCHED_FIFO, SCHED_OTHER as the scheduling policies for
-+ * sched_setscheduler().
-  *
+- *
 - * RESTRICTION
-- *	Must run test as root.
+- *	None
++ * Pass an invalid pid to sched_getscheduler() and test for ESRCH.
   */
  
- #include <errno.h>
--#include <sched.h>
  #include <stdio.h>
+-#include <sched.h>
+ #include <errno.h>
 -#include "test.h"
--
--char *TCID = "sched_getscheduler01";
--int TST_TOTAL = 3;
  
--void setup(void);
--void cleanup(void);
+-char *TCID = "sched_getscheduler02";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
 +#include "tst_sched.h"
  
--struct test_case_t {
--	int prio;
-+struct test_cases_t {
-+	int priority;
- 	int policy;
--} TC[] = {
--	/* set scheduling policy to SCHED_RR */
--	{
--	1, SCHED_RR},
--	    /* set scheduling policy to SCHED_OTHER */
--	{
--	0, SCHED_OTHER},
--	    /* set scheduling policy to SCHED_FIFO */
--	{
--	1, SCHED_FIFO}
-+} tcases[] = {
-+	{1, SCHED_RR},
-+	{0, SCHED_OTHER},
-+	{1, SCHED_FIFO}
- };
+ static pid_t unused_pid;
  
+-void setup(void);
+-void cleanup(void);
+-
 -int main(int ac, char **av)
-+static void run(unsigned int n)
++static void setup(void)
  {
 -	int lc;
--	int i;
--	struct sched_param param;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
+-		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; i++) {
-+	struct test_cases_t *tc = &tcases[n];
-+	struct sched_param p = { .sched_priority = tc->priority };
- 
--			param.sched_priority = TC[i].prio;
-+	TST_EXP_PASS_SILENT(tst_sched_setscheduler(0, tc->policy, &p));
- 
--			if (sched_setscheduler(0, TC[i].policy, &param) == -1)
--				tst_brkm(TBROK, cleanup,
--					 "sched_setscheduler failed");
-+	TEST(tst_sched_getscheduler(0));
- 
--			TEST(sched_getscheduler(0));
+-		TEST(sched_getscheduler(unused_pid));
 -
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL, "call failed unexpectedly");
--				continue;
--			}
--
--			if (TEST_RETURN != TC[i].policy)
--				tst_resm(TFAIL,
--					 "policy value returned is not "
--					 "correct");
--			else
--				tst_resm(TPASS,
--					 "policy value returned is correct");
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "sched_getscheduler(2) passed "
+-				 "unexpectedly");
+-			continue;
 -		}
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL, "sched_getscheduler() failed unexpectedly");
-+		return;
- 	}
- 
+-
+-		if (errno != ESRCH) {
+-			tst_resm(TFAIL, "Expected ESRCH, got %d", errno);
+-		} else {
+-			tst_resm(TPASS, "call failed with ESRCH");
+-		}
+-	}
 -	cleanup();
 -	tst_exit();
-+	if (TST_RET == tc->policy)
-+		tst_res(TPASS, "got expected policy %d", tc->policy);
-+	else
-+		tst_res(TFAIL, "got policy %ld, expected %d", TST_RET, tc->policy);
+-
++	unused_pid = tst_get_unused_pid();
  }
  
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
 -void setup(void)
--{
--
--	tst_require_root();
++static void run(void)
+ {
+-	unused_pid = tst_get_unused_pid(cleanup);
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
--}
--
++	TST_EXP_FAIL(tst_sched_getscheduler(unused_pid), ESRCH);
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- */
 -void cleanup(void)
 -{
+-
 -}
 +static struct tst_test test = {
-+	.needs_root = 1,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
++	.setup = setup,
++	.test_all = run,
 +};
 -- 
 2.25.1
