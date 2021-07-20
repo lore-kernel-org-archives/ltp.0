@@ -1,25 +1,42 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Jul 2021 16:51:07 +0200
-Subject: [LTP] [PATCH v2 1/8] Add Sparse based checker and TST_RET/ERR
- check
-In-Reply-To: <20210714071158.15868-2-rpalethorpe@suse.com>
-References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-2-rpalethorpe@suse.com>
-Message-ID: <YPWRW/G2IMhkUCeE@yuki>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Tue, 20 Jul 2021 14:38:52 +0800
+Subject: [LTP] [PATCH] stime: Only o32 system calls require 32-bit programs
+ on mips
+Message-ID: <20210720063852.1883-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Looks good now, if I'm reading it correctly the 'make check' will get
-fetch the submodule sources and build everything.
+The stime() system call is only o32, not n32 and n64. If you do not
+specify that the current program is compiled to 32-bit when compiling
+the program on mips, the stime() system call will fail when the
+program is running.
 
-With the main.c file name changed to something reasonable:
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+---
+ testcases/kernel/syscalls/stime/stime_var.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+diff --git a/testcases/kernel/syscalls/stime/stime_var.h b/testcases/kernel/syscalls/stime/stime_var.h
+index 708b80573..c5bafac99 100644
+--- a/testcases/kernel/syscalls/stime/stime_var.h
++++ b/testcases/kernel/syscalls/stime/stime_var.h
+@@ -25,7 +25,11 @@ static int do_stime(time_t *ntime)
+ #endif
+ 	break;
+ 	case 1:
++#if defined(__mips__) && _MIPS_SZLONG == 32
+ 		return tst_syscall(__NR_stime, ntime);
++#else
++		tst_brk(TCONF, "the stime() syscall only o32 ABI in mips, make sure the current program is 32-bit");
++#endif
+ 	case 2: {
+ 		struct __kernel_old_timeval tv;
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--
+2.20.1
+
+
+
