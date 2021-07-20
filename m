@@ -1,9 +1,9 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 20 Jul 2021 16:33:10 +0300
-Subject: [LTP] [PATCH 02/16] syscalls/sched_getparam01: use tst_sched_*()
+Date: Tue, 20 Jul 2021 16:33:11 +0300
+Subject: [LTP] [PATCH 03/16] syscalls/sched_getparam03: use tst_sched_*()
 In-Reply-To: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
 References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210720133324.21752-3-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210720133324.21752-4-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,34 +12,32 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- testcases/kernel/syscalls/sched_getparam/sched_getparam01.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/sched_getparam/sched_getparam03.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-index efb697707..c24d1c917 100644
---- a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-+++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-@@ -21,8 +21,8 @@
- #include <stdlib.h>
- #include <sys/types.h>
- #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+index 19ecaf147..451bfdc50 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+@@ -17,8 +17,8 @@
+  */
+ 
+ #include <errno.h>
 -#include <sched.h>
  #include "tst_test.h"
 +#include "tst_sched.h"
  
- static pid_t pids[2] = {0, 0};
+ static struct sched_param param;
+ static pid_t unused_pid;
+@@ -43,7 +43,7 @@ static void verify_sched_getparam(unsigned int n)
+ {
+ 	struct test_case_t *tc = &test_cases[n];
  
-@@ -35,8 +35,8 @@ static void verify_sched_getparam(unsigned int n)
+-	TST_EXP_FAIL(sched_getparam(*(tc->pid), tc->p), tc->exp_errno, "%s", tc->desc);
++	TST_EXP_FAIL(tst_sched_getparam(*(tc->pid), tc->p), tc->exp_errno, "%s", tc->desc);
+ }
  
- 	child_pid = SAFE_FORK();
- 	if (!child_pid) {
--		TST_EXP_PASS_SILENT(sched_getparam(pids[n], &param),
--				    "sched_getparam(%d)", pids[n]);
-+		TST_EXP_PASS_SILENT(tst_sched_getparam(pids[n], &param),
-+				   "sched_getparam(%d)", pids[n]);
- 		if (!TST_PASS)
- 			exit(0);
- 
+ static void setup(void)
 -- 
 2.25.1
 
