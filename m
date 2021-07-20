@@ -1,80 +1,25 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Tue, 20 Jul 2021 17:06:55 +0300
-Subject: [LTP] [PATCH 00/16] syscalls/sched_*: convert to new API and
- handle ENOSYS errno
-In-Reply-To: <YPbNQ4AebDiUMxVz@yuki>
-References: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
- <YPbNQ4AebDiUMxVz@yuki>
-Message-ID: <f9767568-466f-73d2-7d73-aa880fde6a63@bell-sw.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 20 Jul 2021 15:49:29 +0200
+Subject: [LTP] [PATCH] syscalls/readv03: Convert to new API
+In-Reply-To: <1626771497-20281-1-git-send-email-daisl.fnst@fujitsu.com>
+References: <1626771497-20281-1-git-send-email-daisl.fnst@fujitsu.com>
+Message-ID: <YPbUaYZTUaM44cFl@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-On 20.07.2021 16:18, Cyril Hrubis wrote:
-> Hi!
->> The patch-set introduced new tst_sched_* wrappers to handle ENOSYS
->> error that can be returned by libc (musl [1]). In that particular
->> case the wrapper uses syscall directly to test the kernel anyway.
-> 
-> Can't we use the test_variants to test both the kernel and libc calls
-> instead?
+Hi!
+Nice cleanup, pushed with minor change, thanks.
 
-With glibc it seems it would be just a redundant work to call both
-variants, wouldn't it?
+* I've changed the buf and rd_iovec to static.
 
-BTW, sched_rr_get_interval* tests already using tst_variants, adding
-more variants will double them too, right?
 
-> 
->> [1]: https://git.musl-libc.org/cgit/musl/commit/?id=1e21e78bf7a5
->>
->> Alexey Kodanev (16):
->>   lib/tst_sched: add ltp tst_sched_*()
->>   syscalls/sched_getparam01: use tst_sched_*()
->>   syscalls/sched_getparam03: use tst_sched_*()
->>   syscalls/sched_setparam01: convert to new API
->>   syscalls/sched_setparam02: convert to new API
->>   syscalls/sched_setparam03: convert to new API
->>   syscalls/sched_setparam04: convert to new API
->>   syscalls/sched_setparam05: convert to new API
->>   syscalls/sched_rr_get_interval01: use tst_sched_*()
->>   syscalls/sched_rr_get_interval02: use tst_sched_*()
->>   syscalls/sched_rr_get_interval03: use tst_sched_*()
->>   syscalls/sched_setscheduler01: convert to new API
->>   syscalls/sched_setscheduler02: convert to new API
->>   syscalls/sched_setscheduler03: use tst_sched_*()
->>   syscalls/sched_getscheduler01: convert to new API
->>   syscalls/sched_getscheduler02: convert to new API
->>
->>  include/tst_sched.h                           |  16 ++
->>  lib/tst_sched.c                               |  36 +++
->>  .../sched_getparam/sched_getparam01.c         |   6 +-
->>  .../sched_getparam/sched_getparam03.c         |   4 +-
->>  .../sched_getscheduler/sched_getscheduler01.c | 141 +++---------
->>  .../sched_getscheduler/sched_getscheduler02.c | 104 ++-------
->>  .../sched_rr_get_interval01.c                 |   4 +-
->>  .../sched_rr_get_interval02.c                 |   4 +-
->>  .../sched_rr_get_interval03.c                 |   4 +-
->>  .../sched_setparam/sched_setparam01.c         | 135 ++---------
->>  .../sched_setparam/sched_setparam02.c         | 195 +++-------------
->>  .../sched_setparam/sched_setparam03.c         | 215 ++++--------------
->>  .../sched_setparam/sched_setparam04.c         | 161 +++----------
->>  .../sched_setparam/sched_setparam05.c         | 186 +++------------
->>  .../sched_setscheduler/sched_setscheduler01.c | 171 ++++----------
->>  .../sched_setscheduler/sched_setscheduler02.c | 154 +++----------
->>  .../sched_setscheduler/sched_setscheduler03.c |  10 +-
->>  17 files changed, 345 insertions(+), 1201 deletions(-)
->>  create mode 100644 include/tst_sched.h
->>  create mode 100644 lib/tst_sched.c
->>
->> -- 
->> 2.25.1
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+Also it would probably be for the best if we implemented the EINVAL,
+EFAULT, and EBADFD tests in the readv03.c and got rid of readv02.c as
+well.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
