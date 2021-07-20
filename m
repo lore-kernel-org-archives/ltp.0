@@ -1,38 +1,59 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Jul 2021 14:45:56 +0200
-Subject: [LTP] [PATCH 3/3] Add lockdown checks to init_module* and
- finit_module* tests
-In-Reply-To: <e6033278-8e27-eed5-5f36-1dd09e68bf5a@suse.cz>
-References: <20210720103941.9767-1-mdoucha@suse.cz>
- <20210720103941.9767-3-mdoucha@suse.cz> <YPa7bSB8pNPrBDn8@yuki>
- <e6033278-8e27-eed5-5f36-1dd09e68bf5a@suse.cz>
-Message-ID: <YPbFhOEjYr9nOryX@yuki>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Tue, 20 Jul 2021 16:33:08 +0300
+Subject: [LTP] [PATCH 00/16] syscalls/sched_*: convert to new API and handle
+ ENOSYS errno
+Message-ID: <20210720133324.21752-1-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I'm slightly afraid that the order of checks may change over the time
-> > and we will get EPERM in all these cases, but maybe I'm just overly
-> > cautious. Other than this the code looks good.
-> 
-> I don't think we need to worry about that. With root privileges, the
-> EPERM error is returned when a kernel module does not have a valid
-> signature. How would something that is not even a valid kernel module in
-> the first place fail that check?
->
-> The only subtests that actually try to load a valid kernel module are
-> null-param, invalid-param and module-exists. All three of them now
-> handle lockdown correctly.
+The patch-set introduced new tst_sched_* wrappers to handle ENOSYS
+error that can be returned by libc (musl [1]). In that particular
+case the wrapper uses syscall directly to test the kernel anyway.
 
-Right, we have to be able to read the signature in order to produce
-EPERM and the same for the init_module() there has to be a pointer to
-a module data that kernel can check the signature from.
+[1]: https://git.musl-libc.org/cgit/musl/commit/?id=1e21e78bf7a5
 
-Patch pushed, thanks.
+Alexey Kodanev (16):
+  lib/tst_sched: add ltp tst_sched_*()
+  syscalls/sched_getparam01: use tst_sched_*()
+  syscalls/sched_getparam03: use tst_sched_*()
+  syscalls/sched_setparam01: convert to new API
+  syscalls/sched_setparam02: convert to new API
+  syscalls/sched_setparam03: convert to new API
+  syscalls/sched_setparam04: convert to new API
+  syscalls/sched_setparam05: convert to new API
+  syscalls/sched_rr_get_interval01: use tst_sched_*()
+  syscalls/sched_rr_get_interval02: use tst_sched_*()
+  syscalls/sched_rr_get_interval03: use tst_sched_*()
+  syscalls/sched_setscheduler01: convert to new API
+  syscalls/sched_setscheduler02: convert to new API
+  syscalls/sched_setscheduler03: use tst_sched_*()
+  syscalls/sched_getscheduler01: convert to new API
+  syscalls/sched_getscheduler02: convert to new API
+
+ include/tst_sched.h                           |  16 ++
+ lib/tst_sched.c                               |  36 +++
+ .../sched_getparam/sched_getparam01.c         |   6 +-
+ .../sched_getparam/sched_getparam03.c         |   4 +-
+ .../sched_getscheduler/sched_getscheduler01.c | 141 +++---------
+ .../sched_getscheduler/sched_getscheduler02.c | 104 ++-------
+ .../sched_rr_get_interval01.c                 |   4 +-
+ .../sched_rr_get_interval02.c                 |   4 +-
+ .../sched_rr_get_interval03.c                 |   4 +-
+ .../sched_setparam/sched_setparam01.c         | 135 ++---------
+ .../sched_setparam/sched_setparam02.c         | 195 +++-------------
+ .../sched_setparam/sched_setparam03.c         | 215 ++++--------------
+ .../sched_setparam/sched_setparam04.c         | 161 +++----------
+ .../sched_setparam/sched_setparam05.c         | 186 +++------------
+ .../sched_setscheduler/sched_setscheduler01.c | 171 ++++----------
+ .../sched_setscheduler/sched_setscheduler02.c | 154 +++----------
+ .../sched_setscheduler/sched_setscheduler03.c |  10 +-
+ 17 files changed, 345 insertions(+), 1201 deletions(-)
+ create mode 100644 include/tst_sched.h
+ create mode 100644 lib/tst_sched.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
