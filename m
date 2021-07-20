@@ -1,33 +1,31 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Tue, 20 Jul 2021 14:57:02 +0800
-Subject: [LTP] [PATCH 0/5 v2] epoll_pwait2: Add test for epoll_pwait2
-In-Reply-To: <YPWB5hvIVTPjF7fO@yuki>
-References: <20210628080424.245911-3-xieziyao@huawei.com>
- <20210716102257.20882-1-xieziyao@huawei.com> <YPWB5hvIVTPjF7fO@yuki>
-Message-ID: <8f05475c-d105-1538-dcdc-9e20ff6e1d60@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 20 Jul 2021 09:56:15 +0200
+Subject: [LTP] [PATCH] stime: Only o32 system calls require 32-bit
+ programs on mips
+In-Reply-To: <20210720063852.1883-1-zhanglianjie@uniontech.com>
+References: <20210720063852.1883-1-zhanglianjie@uniontech.com>
+Message-ID: <YPaBnxlp2SsxCaPE@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, Cyril,
+Hi zhanglianjie,
 
-> Pushed with minor changes, thanks.
-> 
-> * Changed the include in lapi/epoll.h to tst_timer.h
-> 
-> * Added better description to epoll_wait02
-> 
-Looks good. Thanks for your modifications.
+> The stime() system call is only o32, not n32 and n64. If you do not
+> specify that the current program is compiled to 32-bit when compiling
+> the program on mips, the stime() system call will fail when the
+> program is running.
+You're right that stime() is only on o32. But tst_syscall() should catch that.
+Or does it set different errno than ENOSYS?
 
-> 
-> Also it would be nice to convert the epoll_pwait01.c to the variants as
-> well...
-> 
-OK, I'll fix it.
+Kind regards,
+Petr
 
-Thanks for your review.
-
-Kind Regards,
-Ziyao
+...
+> +#if defined(__mips__) && _MIPS_SZLONG == 32
+>  		return tst_syscall(__NR_stime, ntime);
+> +#else
+> +		tst_brk(TCONF, "the stime() syscall only o32 ABI in mips, make sure the current program is 32-bit");
+> +#endif
