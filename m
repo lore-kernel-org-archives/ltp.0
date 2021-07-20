@@ -1,68 +1,77 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 20 Jul 2021 11:40:36 +0200
-Subject: [LTP] [PATCH] stime: Only o32 system calls require 32-bit
- programs on mips
-In-Reply-To: <045e5fc2-05a7-e006-3bb6-2f536c5634b4@uniontech.com>
-References: <20210720063852.1883-1-zhanglianjie@uniontech.com>
- <YPaBnxlp2SsxCaPE@pevik>
- <045e5fc2-05a7-e006-3bb6-2f536c5634b4@uniontech.com>
-Message-ID: <YPaaFAdTO9coCUxN@pevik>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Tue, 20 Jul 2021 13:12:49 +0300
+Subject: [LTP] [PATCH v2] crypto/af_alg02: thread termination fixes
+Message-ID: <20210720101249.10118-1-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi zhanglianjie,
+On musl, pthread_kill() doesn't return ESRCH if thread id is not found
+(POSIX only recommends to return ESRCH). Use tst_atomic_store/load()
+instead, when waiting for the thread.
 
-[ Cc Thomas Bogendoerfer, MIPS kernel maintainer ]
+Also, the thread's resources wasn't properly freed after the run(),
+so adding pthread_join() should fix that.
 
-> On 2021-07-20 15:56, Petr Vorel wrote:
-> > Hi zhanglianjie,
+Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+---
+v2: convert pthread_tryjoin_np() into atomic_load/store() + pthread_join()
 
-> > > The stime() system call is only o32, not n32 and n64. If you do not
-> > > specify that the current program is compiled to 32-bit when compiling
-> > > the program on mips, the stime() system call will fail when the
-> > > program is running.
-> > You're right that stime() is only on o32. But tst_syscall() should catch that.
-> > Or does it set different errno than ENOSYS?
+ testcases/kernel/crypto/af_alg02.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-> The returned errno is EFAULT. The o32 system call of stime is implemented on
-> mips, so ENOSYS will not be returned.
-I see.
+diff --git a/testcases/kernel/crypto/af_alg02.c b/testcases/kernel/crypto/af_alg02.c
+index 31d30777c..5863fd26b 100644
+--- a/testcases/kernel/crypto/af_alg02.c
++++ b/testcases/kernel/crypto/af_alg02.c
+@@ -18,11 +18,13 @@
+ #include "tst_test.h"
+ #include "tst_af_alg.h"
+ #include "tst_safe_pthread.h"
++#include "tst_atomic.h"
+ #include <pthread.h>
+ #include <errno.h>
+ 
+ #define SALSA20_IV_SIZE       8
+ #define SALSA20_MIN_KEY_SIZE  16
++static int completed;
+ 
+ static void *verify_encrypt(void *arg)
+ {
+@@ -48,19 +50,21 @@ static void *verify_encrypt(void *arg)
+ 		tst_res(TPASS, "Successfully \"encrypted\" an empty message");
+ 	else
+ 		tst_res(TFAIL, "read() didn't return 0");
++
++	tst_atomic_store(1, &completed);
+ 	return arg;
+ }
+ 
+ static void run(void)
+ {
+ 	pthread_t thr;
+-
++	tst_atomic_store(0, &completed);
+ 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+ 	SAFE_PTHREAD_CREATE(&thr, NULL, verify_encrypt, NULL);
+ 
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+-	while (pthread_kill(thr, 0) != ESRCH) {
++	while (!tst_atomic_load(&completed)) {
+ 		if (tst_timeout_remaining() <= 10) {
+ 			pthread_cancel(thr);
+ 			tst_brk(TBROK,
+@@ -68,6 +72,7 @@ static void run(void)
+ 		}
+ 		usleep(1000);
+ 	}
++	pthread_join(thr, NULL);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.25.1
 
-> COMPAT_SYSCALL_DEFINE1(stime, compat_time_t __user *, tptr)
-> {
->     ...
->     if (get_user(tv.tv_sec, tptr))
->         return -EFAULT;
->     ...
-> }
-
-> The tptr address is in the user space 0x120010da0, and after the system
-> call, it is 0x20010da0 in the kernel state, and the upper 32 bits are set to
-> 0, resulting in a failure to copy data from the user space to the kernel
-> space.
-Thanks for explanation.
-
-> This patch needs to be modified and cannot affect other architectures.
-Yes, o2 has to fixed, but agree that this would affect other archs which
-supports __NR_stime, i.e. i386 now also complains:
-stime_var.h:31: TCONF: the stime() syscall only o32 ABI in mips, make sure the current program is 32-bit
-
-but it should stay:
-stime02.c:37: TPASS: stime(2) fails, Caller not root: EPERM (1)
-
-> > ...
-> > > +#if defined(__mips__) && _MIPS_SZLONG == 32
-Not sure if this would work to whitelist only mips n32 and n64 (keep mips o32
-and all other archs):
-#if ! defined(_MIPS_SZLONG) || _MIPS_SZLONG == 32
-
-Kind regards,
-Petr
-
-> > >   		return tst_syscall(__NR_stime, ntime);
-> > > +#else
-> > > +		tst_brk(TCONF, "the stime() syscall only o32 ABI in mips, make sure the current program is 32-bit");
-> > > +#endif
