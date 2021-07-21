@@ -1,107 +1,52 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Wed, 21 Jul 2021 09:57:20 +0800
-Subject: [LTP] [PATCH] stime: Only o32 system calls require 32-bit
- programs on mips
-In-Reply-To: <YPaaFAdTO9coCUxN@pevik>
-References: <20210720063852.1883-1-zhanglianjie@uniontech.com>
- <YPaBnxlp2SsxCaPE@pevik> <045e5fc2-05a7-e006-3bb6-2f536c5634b4@uniontech.com>
- <YPaaFAdTO9coCUxN@pevik>
-Message-ID: <36548c15-1d5a-c74e-87f4-63049deec070@uniontech.com>+479EA11EEA18FB8F
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 21 Jul 2021 13:47:54 +0200
+Subject: [LTP] [PATCH v3] squashfs: Add regression test for sanity check
+ bug
+In-Reply-To: <f2fd323e-a5da-2959-d130-2d3c0aa59e89@jv-coder.de>
+References: <20210715050812.1950884-1-lkml@jv-coder.de>
+ <60EFF034.6070800@fujitsu.com>
+ <4aaba9d9-e013-3c12-500a-647ff2c0b82d@jv-coder.de>
+ <YO//gakCvqaDZl9f@yuki>
+ <f2fd323e-a5da-2959-d130-2d3c0aa59e89@jv-coder.de>
+Message-ID: <YPgJan6PMGu+Pb/J@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> > Also the dev_min_size = 1 does not have any efect here, since it can be
+> > used only to request bigger-than-default size and gets ignored here. I
+> > guess that we can merge this as it is and I will add needs_loopdev to
+> > the tst_test structure later which will just allocate loop device and
+> > pass it down to the test.
+> This is true, but the test should also specify what it needs. If for 
+> whatever reason DEV_SIZE_MB is redefined to a smaller value, the test 
+> would still work.
+> To be honest, for "1" it doesn't matter. But it it was bigger, it makes 
+> total sense to specify the size if the test knows it...
+
+I was thinking about it and we can easily allow the test to request
+smaller than the default size with a pretty minimal change:
+
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index c91c6cd55..4ef802c41 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -300,7 +300,7 @@ const char *tst_acquire_device__(unsigned int size)
+        unsigned int acq_dev_size;
+        uint64_t ltp_dev_size;
+
+-       acq_dev_size = MAX(size, DEV_SIZE_MB);
++       acq_dev_size = size ? size : DEV_SIZE_MB;
+
+        dev = getenv("LTP_DEV");
 
 
-On 2021-07-20 17:40, Petr Vorel wrote:
-> Hi zhanglianjie,
-> 
-> [ Cc Thomas Bogendoerfer, MIPS kernel maintainer ]
-> 
->> On 2021-07-20 15:56, Petr Vorel wrote:
->>> Hi zhanglianjie,
-> 
->>>> The stime() system call is only o32, not n32 and n64. If you do not
->>>> specify that the current program is compiled to 32-bit when compiling
->>>> the program on mips, the stime() system call will fail when the
->>>> program is running.
->>> You're right that stime() is only on o32. But tst_syscall() should catch that.
->>> Or does it set different errno than ENOSYS?
-> 
->> The returned errno is EFAULT. The o32 system call of stime is implemented on
->> mips, so ENOSYS will not be returned.
-> I see.
-> 
->> COMPAT_SYSCALL_DEFINE1(stime, compat_time_t __user *, tptr)
->> {
->>      ...
->>      if (get_user(tv.tv_sec, tptr))
->>          return -EFAULT;
->>      ...
->> }
-> 
->> The tptr address is in the user space 0x120010da0, and after the system
->> call, it is 0x20010da0 in the kernel state, and the upper 32 bits are set to
->> 0, resulting in a failure to copy data from the user space to the kernel
->> space.
-> Thanks for explanation.
-> 
->> This patch needs to be modified and cannot affect other architectures.
-> Yes, o2 has to fixed, but agree that this would affect other archs which
-> supports __NR_stime, i.e. i386 now also complains:
-> stime_var.h:31: TCONF: the stime() syscall only o32 ABI in mips, make sure the current program is 32-bit
-> 
-> but it should stay:
-> stime02.c:37: TPASS: stime(2) fails, Caller not root: EPERM (1)
-> 
-Thanks for the code review.
-If it only affects the mips architecture and does not affect other 
-architectures, does it need to be modified here?
->>> ...
->>>> +#if defined(__mips__) && _MIPS_SZLONG == 32
-> Not sure if this would work to whitelist only mips n32 and n64 (keep mips o32
-> and all other archs):
-> #if ! defined(_MIPS_SZLONG) || _MIPS_SZLONG == 32
-> 
-It can be determined that only mips n32 and n64 need to be whitelisted, 
-and calling stime() on other 64-bit architectures will return ENOSYS.
-
-In the following compilation conditions, _ABIO32, _ABI64, and _ABIN32 
-have been defined:
-
-grep -E 'ifdef|if defined' ~/ltp/include/lapi/syscalls.h
-#ifdef __aarch64__
-#ifdef __arc__
-#ifdef __arm__
-#ifdef __hppa__
-#ifdef __i386__
-#ifdef __ia64__
-#if defined(__mips__) && defined(_ABIN32)
-#if defined(__mips__) && defined(_ABI64)
-#if defined(__mips__) && defined(_ABIO32)
-#ifdef __powerpc64__
-#ifdef __powerpc__
-#ifdef __s390x__
-#if defined(__s390__) && !defined(__s390x__)
-#ifdef __sh__
-#if defined(__sparc__) && defined(__arch64__)
-#if defined(__sparc__) && !defined(__arch64__)
-#ifdef __x86_64__
-
-
-Modified patch v2:
-https://patchwork.ozlabs.org/project/ltp/patch/20210720083708.13281-1-zhanglianjie@uniontech.com/
-> 
->>>>    		return tst_syscall(__NR_stime, ntime);
->>>> +#else
->>>> +		tst_brk(TCONF, "the stime() syscall only o32 ABI in mips, make sure the current program is 32-bit");
->>>> +#endif
-> 
+This shouldn't break anything while it allows better controll for the
+test over the device size.
 
 -- 
-Regards,
-Zhang Lianjie
-
-
+Cyril Hrubis
+chrubis@suse.cz
