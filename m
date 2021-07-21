@@ -1,48 +1,100 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 21 Jul 2021 17:43:45 +0200
-Subject: [LTP] [PATCH v2 3/8] doc: Add rules and recommendations list
-In-Reply-To: <87v95dniii.fsf@suse.de>
-References: <20210714071158.15868-1-rpalethorpe@suse.com>
- <20210714071158.15868-4-rpalethorpe@suse.com>
- <YO7BQjUuCP3ah5wu@pevik> <87v95dniii.fsf@suse.de>
-Message-ID: <YPhAsSXIE3c0C7O7@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 21 Jul 2021 17:29:56 +0200
+Subject: [LTP] [PATCH v4 1/5] libs/libltpnewipc/libnewipc.c: Add
+ msg_do_reader/msg_do_writer function
+In-Reply-To: <1615550541-21714-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20201111163114.GB23576@yuki.lan>
+ <1615550541-21714-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <YPg9dN2GhnncVnQQ@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi!
+> +void msg_do_reader(long key, int tid, long type, int child, int nreps)
+> +{
+> +	int i, size;
+> +	int id;
+> +	struct mbuffer buffer;
+> +
+> +	id = SAFE_MSGGET(key, 0);
+> +	if (id != tid) {
+> +		tst_brk(TFAIL,
+> +			"Message queue mismatch in the reader of child group %d for message queue id %d ",
+> +			child, id);
+> +	}
 
-> Hello Petr,
+Also looking at how these functions are used, we fork a child that calls
+this function then wait it and ignore the exit value it does not make
+sense to use tst_brk() here at all.
 
-> Petr Vorel <pvorel@suse.cz> writes:
+The tst_brk() is supposed to exit the whole test, including all
+suprocesses but that does not work if we throw away the child return
+value. This piece of code looks like we exit the whole test here, which
+isn't simply true.
 
-> > Hi Richie,
+So either we should do tst_res(TFAIL, ...) followed by an exit(0) here,
+or we should handle the return value in the parent. I.e. stop the test
+if one of the children reported a failure.
 
-> > obviously correct.
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> +	for (i = 0; i < nreps; i++) {
+> +		memset(&buffer, 0, sizeof(buffer));
+> +
+> +		size = SAFE_MSGRCV(id, &buffer, 100, type, 0);
+> +		if (buffer.type != type) {
+> +			tst_brk(TFAIL,
+> +				"Type mismatch in child %d, read #%d, for message got %ld, exected %ld",
+> +				child, (i + 1), buffer.type, type);
+> +		}
+> +		if (buffer.data.len + 1 != size) {
+> +			tst_brk(TFAIL,
+> +				"Size mismatch in child %d, read #%d, for message got %d, expected %d",
+> +				child, (i + 1), buffer.data.len + 1, size);
+> +		}
+> +		if (verify(buffer.data.pbytes, (key % 255), size - 1, child)) {
+> +			tst_brk(TFAIL,
+> +				"Verify failed in child %d read # = %d, key = %lx",
+> +				child, (i + 1), key);
+> +		}
+> +		key++;
+> +	}
 
-> >> +++ b/doc/test-writing-guidelines.txt
-> >> @@ -10,6 +10,11 @@ NOTE: See also
-> >>        https://github.com/linux-test-project/ltp/wiki/Shell-Test-API[Shell Test API],
-> >>        https://github.com/linux-test-project/ltp/wiki/LTP-Library-API-Writing-Guidelines[LTP Library API Writing Guidelines].
+It would also make sense to do exit(0); here so that we do not have to
+repeat that in each test.
 
-> >> +Rules and recommendations which are "machine checkable" should be
-> >> +tagged with an ID like +LTP-XXX+. There will be a corresponding entry
-> >> +in 'doc/rules.tsv'. When you run 'make check' or 'make check-test' it
-> > nit: I'd make 'doc/rules.tsv' as link (for lazy people like me):
-> > https://github.com/linux-test-project/ltp/tree/master/doc/rules.tsv[doc/rules.tsv]
+> +}
+> +
+> +void msg_do_writer(long key, int tid, long type, int child, int nreps)
+> +{
+> +	int i, size;
+> +	int id;
+> +	struct mbuffer buffer;
+> +
+> +	id = SAFE_MSGGET(key, 0);
+> +	if (id != tid) {
+> +		tst_brk(TFAIL,
+> +			"Message queue mismatch in the writer of child group %d for message queue id %d",
+> +			child, id);
+> +	}
+> +
+> +	for (i = 0; i < nreps; i++) {
+> +		memset(&buffer, 0, sizeof(buffer));
+> +
+> +		do {
+> +			size = (lrand48() % 99);
+> +		} while (size == 0);
+> +		memset(buffer.data.pbytes, (key % 255), size);
+> +		buffer.data.len = size;
+> +		buffer.type = type;
+> +		SAFE_MSGSND(id, &buffer, size + 1, 0);
+> +		key++;
+> +	}
+> +}
 
-> +1
+And same here.
 
-> Although I was wondering if it could be formatted and displayed inline somehow?
-
-I'm not aware of it :(.
-
-Kind regards,
-Petr
-
-
-> > Kind regards,
-> > Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
