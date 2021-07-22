@@ -1,70 +1,95 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu, 22 Jul 2021 08:37:23 +0200
-Subject: [LTP] [PATCH v4,
- 2/2] cgroup/cgroup_regression_test: Fix umount failure
-In-Reply-To: <20210722063232.GA28553@andestech.com>
-References: <20210719092239.GA1475@atcfdc88> <YPgxJwx795fhXgLa@pevik>
- <62262681-222f-8d09-a100-0d7be0c7526f@jv-coder.de>
- <20210722063232.GA28553@andestech.com>
-Message-ID: <3d17ca93-3c93-894c-77d2-0b588fce3dad@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 22 Jul 2021 09:35:23 +0200
+Subject: [LTP] [PATCH 1/1] shmget03: Consider already mapped segments
+Message-ID: <20210722073523.5099-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Leo,
+This fixes running test on systems with already mapped segments.
 
+Test expected that no segment was already mapped, thus reached the
+maximum earlier:
 
-On 7/22/2021 8:32 AM, Leo Liang wrote:
-> Hi Joerg,
-> On Thu, Jul 22, 2021 at 12:35:59PM +0800, Joerg Vehlow wrote:
->> Hi,
->>
->> On 7/21/2021 4:37 PM, Petr Vorel wrote:
->>> Hi Leo,
->>>
->>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->>>
->>>>    	rmdir cgroup/0 cgroup/1
->>>> -	umount cgroup/
->>>> +	tst_umount cgroup/	# Avoid possible EBUSY error
->>>>    }
->>>>    #---------------------------------------------------------------------------
->>>> @@ -193,7 +193,7 @@ test3()
->>>>    	wait $pid2 2>/dev/null
->>>>    	rmdir $cpu_subsys_path/0 2> /dev/null
->>>> -	umount cgroup/ 2> /dev/null
->>>> +	tst_umount cgroup/ 2> /dev/null		# Avoid possible EBUSY error
->>> I'd prefer: # keep "/" to avoid possible EBUSY error
->>> But that can be changed before merge.
->>>
->>> More I'm interested if other maintainers agree with me about this approach.
->>> (keep / here instead of in tst_umount())
->> I had a first look at this patches and was curious, what the reasoning
->> behind the "/" is.
->> The comment you suggest is wrong. The / was introduced to prevent
->> unmounting some other mountpoint,
->> where the device was cgroup.
->> Imho the approach of adding a / to the end was wrong and intransparent.
->> I would rather use "./cgroup" or "$PWD/cgroup".
->> If possible, I'd actually change tst_umount, to always unmount the
->> mountpoint and not the device, i.e. if the given path is not an absolute
->> path, make it absolute (e.g. by prepending $PWD").
->> This way the check if the mountpoint exist wouldn't be the fuzzy thing
->> it is right now.
->>
->> As for the comment ("# Avoid possible EBUSY error"): Honestly I'd drop
->> it and like in the c-api make using tst_umount instead of plain umount
->> the default, for the same reasons.
-> Got it!
-> Thanks for the detailed explanation!
-> I will send a v5 patch for this modification.
-> (making the path absolute inside tst_umount)
-This was just my opinon. I am not in the place to say how it should be done.
-Maybe wait for replies from the maintainers.
-Additionally, all usages of tst_umount have to be checked, to ensure 
-they are passing a mountpoint and not a device, otherwise my proposal 
-cannot be implemented in tst_umount.
+$ ipcs -m
 
-Joerg
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x62001fae 0          root       660        4124096    1
+
+./shmget03
+tst_test.c:1344: TINFO: Timeout per run is 0h 05m 00s
+shmget03.c:46: TBROK: shmget failed unexpectedly: ENOSPC (28)
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
+
+I suppose we don't want to factor out the code counting lines and put it
+into safe_file_ops.c.
+
+Kind regards,
+Petr
+
+ testcases/kernel/syscalls/ipc/shmget/shmget03.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+index efbc465e1..57130e993 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+@@ -14,15 +14,19 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <sys/ipc.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ #include <pwd.h>
+ #include <sys/shm.h>
+ #include "tst_test.h"
+ #include "tst_safe_sysv_ipc.h"
++#include "tst_safe_stdio.h"
+ #include "libnewipc.h"
+ 
+ static int *queues;
+ static int maxshms, queue_cnt;
++static int mapped_shms = -1;
++static FILE *f = NULL;
+ static key_t shmkey;
+ 
+ static void verify_shmget(void)
+@@ -34,10 +38,19 @@ static void verify_shmget(void)
+ static void setup(void)
+ {
+ 	int res, num;
++	char c;
+ 
+ 	shmkey = GETIPCKEY();
+ 
++	f = SAFE_FOPEN("/proc/sysvipc/shm", "r");
++	while ((c = fgetc(f)) != EOF) {
++		if (c == '\n')
++			mapped_shms++;
++	}
++	tst_res(TINFO, "Already mapped shared memory segments: %d", mapped_shms);
++
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/shmmni", "%i", &maxshms);
++	maxshms -= mapped_shms;
+ 
+ 	queues = SAFE_MALLOC(maxshms * sizeof(int));
+ 	for (num = 0; num < maxshms; num++) {
+@@ -62,6 +75,9 @@ static void cleanup(void)
+ 		SAFE_SHMCTL(queues[num], IPC_RMID, NULL);
+ 
+ 	free(queues);
++
++	if (f)
++		SAFE_FCLOSE(f);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.32.0
+
