@@ -1,34 +1,32 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Thu, 22 Jul 2021 20:52:19 +0800
-Subject: [LTP] [PATCH] regen.sh: Limit mips o32 system calls
-Message-ID: <20210722125219.31895-1-zhanglianjie@uniontech.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 22 Jul 2021 15:01:31 +0200
+Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
+ resources
+In-Reply-To: <YPlhMeRRsNnemT05@yuki>
+References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+ <20210712075223.10682-2-aleksei.kodanev@bell-sw.com>
+ <YPkkZ0Zq9DyHKBaT@pevik> <YPlhMeRRsNnemT05@yuki>
+Message-ID: <YPlsK8fsMI8T+H7c@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-With mips architecture, 64-bit programs cannot call o32 system calls.
-For example, __NR_stime, __NR_socketcall, __NR_time, etc.
-Better solve the problem described in commit: 22c2c9e2f
+> Hi!
+> > In different patch [1] (I forget you already send patches to fix this) I counted
+> > items in /proc/sysvipc/shm. Not sure what is safer: <= looks a bit drastic
+> > (how about bug which reports ENOSPC much earlier than it should be?), but
+> > obviously new mapping from other program created in the middle of testing.
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+> I think that we allready discussed this in another thread:
 
-diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
-index 7a4f0cf44..8ac80440c 100755
---- a/include/lapi/syscalls/regen.sh
-+++ b/include/lapi/syscalls/regen.sh
-@@ -80,7 +80,7 @@ for arch in $(cat "${srcdir}/order") ; do
- 		s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
- 		mips_n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
- 		mips_n64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
--		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32)" ;;
-+		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
- 		*) echo "#ifdef __${arch}__" ;;
- 	esac
- 	while read line ; do
---
-2.20.1
+> https://lists.linux.it/pipermail/ltp/2021-July/023831.html
 
+Thanks, I forgot this. In that case my approach (not using <=, but count
+segments in /proc/sysvipc/shm before testing) might be more precise.
+But no strong feeling about that, both solutions fix the test, let's chose one
+and merge.
 
-
+Kind regards,
+Petr
