@@ -1,64 +1,84 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 22 Jul 2021 09:55:19 +0200
-Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
- resources
-In-Reply-To: <20210712075223.10682-2-aleksei.kodanev@bell-sw.com>
-References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
- <20210712075223.10682-2-aleksei.kodanev@bell-sw.com>
-Message-ID: <YPkkZ0Zq9DyHKBaT@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 22 Jul 2021 12:51:57 +0200
+Subject: [LTP] [PATCH v3 3/3] syscalls/shmget*: Convert into new api
+In-Reply-To: <1624512827-3256-3-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <YNM4rlDJLzb4xk6v@yuki>
+ <1624512827-3256-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1624512827-3256-3-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <YPlNzVze5T9r5qCz@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey, Li,
+Hi!
+> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> index 4436ca7f8..6be8d8157 100644
+> --- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
 
-> It's unlikely, but still possible that some of them could be
-> created/released during the test as well, so the patch only
-> checks errno.
-
-> Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-> ---
-> v2: * Move the loop to the test run function and try to get
->       ENOSPC errno there.
-
->  .../kernel/syscalls/ipc/msgget/msgget03.c     | 31 ++++++++++---------
->  1 file changed, 16 insertions(+), 15 deletions(-)
-
-> diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> index 76cf82cd3..1ade8f942 100644
-> --- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> +++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-> @@ -26,29 +26,30 @@ static key_t msgkey;
-
->  static void verify_msgget(void)
->  {
-> -	TST_EXP_FAIL2(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL), ENOSPC,
-> -		"msgget(%i, %i)", msgkey + maxmsgs, IPC_CREAT | IPC_EXCL);
-> +	int res = 0, num;
-> +
-> +	errno = 0;
-> +	for (num = 0; num <= maxmsgs; ++num) {
-In different patch [1] (I forget you already send patches to fix this) I counted
-items in /proc/sysvipc/shm. Not sure what is safer: <= looks a bit drastic
-(how about bug which reports ENOSPC much earlier than it should be?), but
-obviously new mapping from other program created in the middle of testing.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20210722073523.5099-1-pvorel@suse.cz/
-> +		res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
-> +		if (res == -1)
-> +			break;
-> +		queues[queue_cnt++] = res;
-> +	}
-> +
-> +	if (res != -1 || errno != ENOSPC)
-> +		tst_brk(TFAIL | TERRNO, "Failed to trigger ENOSPC error");
-> +
-> +	tst_res(TPASS, "Maximum number of queues reached (%d), used by test %d",
-> +		maxmsgs, queue_cnt);
->  }
 ...
+
+> +static struct tst_test test = {
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test = do_test,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.request_hugepages = 0,
+> +};
+
+We got some test failures for the ENOMEM hugepage test and then I we
+realized that setting .request_hugepages = 0 is no-op since zero is the
+default value when it's not initialized and we ignore it the tst_test.c.
+
+Thinking of possible solutions I guess that the easiest would be to add
+a special value that would tell the library to set the pool size to 0.
+
+Something as:
+
+diff --git a/include/tst_test.h b/include/tst_test.h
+index c7d77eb09..5f05e3a33 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -125,6 +125,8 @@ struct tst_tag {
+ 
+ extern unsigned int tst_variant;
+ 
++#define TST_NO_HUGEPAGES ((unsigned long)-1)
++
+ struct tst_test {
+        /* number of tests available in test() function */
+        unsigned int tcnt;
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index 1d0e62e5b..ef93afc61 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -34,6 +34,11 @@ unsigned long tst_request_hugepages(unsigned long hpages)
+        else
+                tst_hugepages = hpages;
+ 
++       if (hpages == TST_NO_HUGEPAGES) {
++               hpages = 0;
++               goto set_hugepages;
++       }
++
+        SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
+        max_hpages = SAFE_READ_MEMINFO("MemFree:") / SAFE_READ_MEMINFO("Hugepagesize:");
+ 
+@@ -47,6 +52,8 @@ unsigned long tst_request_hugepages(unsigned long hpages)
+                        goto out;
+        }
+ 
++set_hugepages:
++
+        tst_sys_conf_save("?/proc/sys/vm/nr_hugepages");
+        SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
+        SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
