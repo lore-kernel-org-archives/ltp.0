@@ -1,76 +1,62 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Fri, 23 Jul 2021 15:19:26 +0200
-Subject: [LTP] [PATCH 5.13 000/156] 5.13.5-rc1 review
-In-Reply-To: <CA+G9fYvjgkaQxdW52sMzQm73f2xJreQzrPiCV48qD+5EN-b0Kw@mail.gmail.com>
-References: <20210722155628.371356843@linuxfoundation.org>
- <CA+G9fYt_9nfDcQzKm8SZtmQXzzrybutS9vD4GgUw_0o8UD1HOQ@mail.gmail.com>
- <YPqwF7wtM6n3wHlr@kroah.com>
- <CA+G9fYvjgkaQxdW52sMzQm73f2xJreQzrPiCV48qD+5EN-b0Kw@mail.gmail.com>
-Message-ID: <YPrB3rvRPjn5D8oI@kroah.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 23 Jul 2021 15:19:57 +0200
+Subject: [LTP] [PATCH] clock_gettime01: avoid zero exec runtime due to irq
+ and steal time accounting
+Message-ID: <15dd5ab99369da3cba33a748d1bf05be145ef373.1627046193.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jul 23, 2021 at 05:55:15PM +0530, Naresh Kamboju wrote:
-> On Fri, 23 Jul 2021 at 17:33, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Jul 23, 2021 at 05:26:22PM +0530, Naresh Kamboju wrote:
-> > > On Thu, 22 Jul 2021 at 22:17, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.13.5 release.
-> > > > There are 156 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > The following error is due to SATA drive format failing with arm64 64k-page
-> > > size ( CONFIG_ARM64_64K_PAGES=y ) kernel.
-> > > while running LTP syscalls test suite on running 5.13.3 and 5.13.5-rc1 kernel.
-> > >
-> > > First it was noticed on the stable-rc 5.13.3-rc2 kernel.
-> > >
-> > > Whereas 64bit kernel and 32bit kernel pass with 4K page size.
-> > >
-> > > Initially, I thought it could be a Hard drive fault but it is reproducible on
-> > > other devices but not always. Which is a blocker to bisect the problem.
-> > >
-> > > The steps to reproduce:
-> > >  - Boot arm64 juno device with 64k page stable-rc 5.13 kernel Image [1]
-> > >    - CONFIG_ARM64_64K_PAGES=y
-> > >  - format connected SATA drives and mount /scratch
-> > >  - Use the mounted /scratch for LTP runs to create and delete files from this
-> > >  - cd /opt/ltp
-> > >  - ./runltp -d /scratch -f syscalls
-> >
-> > And does that also fail for 5.13.2?
-> 
-> Yes. It failed on 5.13.2 also.
-> 
-> Ref failed log:
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13.2/testrun/5147287/suite/ltp-syscalls-tests/test/copy_file_range01/log
+Test is sporadically failing on KVM guests with zero-ed timespec
+returned by CLOCK_{PROCESS,THREAD}_CPUTIME_ID. This can be reproduced
+on kernels v4.18 and v5.13-rc3 which have IRQ and PARAVIRT TIME
+ACCOUNTING enabled.
 
-Great, not a new problem?
+Task exectime is usually updated on call of clock_gettime().
+But update_rq_clock_task() may not update clock_task if there's
+more unaccounted irq or steal time than rq->clock delta since
+last call. In this instance rq->clock_task does not advance
+and it is left for next update to account rest. Because LTP
+test is quick and checks only once, it sometimes sees zero
+timespec and treats it as failure.
 
-5.13.0?
+Add a small warm-up to setup() in form of busy loop, to make
+sure that clock_task advanced. In case of bug we would either
+hit a timeout or still report zeroed timespec.
 
-bisection would be most helpful.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../kernel/syscalls/clock_gettime/clock_gettime01.c      | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-thanks,
+diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
+index be9573afcc8e..11da39cf07cf 100644
+--- a/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
++++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
+@@ -73,7 +73,15 @@ static struct time64_variants variants[] = {
+ 
+ static void setup(void)
+ {
++	long unsigned utime;
++
+ 	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
++
++	do {
++		SAFE_FILE_SCANF("/proc/self/stat",
++			"%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu",
++			&utime);
++	} while (utime == 0);
+ }
+ 
+ static void verify_clock_gettime(unsigned int i)
+@@ -118,4 +126,5 @@ static struct tst_test test = {
+ 	.test_variants = ARRAY_SIZE(variants),
+ 	.setup = setup,
+ 	.needs_root = 1,
++	.timeout = 10,
+ };
+-- 
+2.27.0
 
-greg k-h
