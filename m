@@ -1,62 +1,51 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 23 Jul 2021 15:19:57 +0200
-Subject: [LTP] [PATCH] clock_gettime01: avoid zero exec runtime due to irq
- and steal time accounting
-Message-ID: <15dd5ab99369da3cba33a748d1bf05be145ef373.1627046193.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 23 Jul 2021 17:00:23 +0200
+Subject: [LTP] [PATCH 1/2] lib/tst_hugepage: Fix .request_hugepages = 0
+ bug
+In-Reply-To: <1627017584-30405-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1627017584-30405-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <YPrZhzFng/7nHywg@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test is sporadically failing on KVM guests with zero-ed timespec
-returned by CLOCK_{PROCESS,THREAD}_CPUTIME_ID. This can be reproduced
-on kernels v4.18 and v5.13-rc3 which have IRQ and PARAVIRT TIME
-ACCOUNTING enabled.
+Hi!
+> +'tst_hugepages' will be set to 0. If need zero hugepage on supported hugetlb
+                                      ^
+				      If the hugepage size needs to be
+				      set to 0 on ...
+> +system, please use '.request_hugepages = TST_NO_HUGEPAGES'.
+>  
+>  Also, we do cleanup and restore work for the hpages resetting automatically.
+>  
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index c7d77eb09..40c725995 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -125,6 +125,8 @@ struct tst_tag {
+>  
+>  extern unsigned int tst_variant;
+>  
+> +#define TST_NO_HUGEPAGES ((unsigned long)-1)
+> +
+>  struct tst_test {
+>  	/* number of tests available in test() function */
+>  	unsigned int tcnt;
+> @@ -175,7 +177,8 @@ struct tst_test {
+>  	 * have enough hpage for using, it will try the best to reserve 80% available
+>  	 * number of hpages. With success test stores the reserved hugepage number in
+>  	 * 'tst_hugepages. For the system without hugetlb supporting, variable
+> -	 * 'tst_hugepages' will be set to 0.
+> +	 * 'tst_hugepages' will be set to 0. If need zero hugepage on supported hugetlb
+> +	 * system, please use '.request_hugepages = TST_NO_HUGEPAGES'.
 
-Task exectime is usually updated on call of clock_gettime().
-But update_rq_clock_task() may not update clock_task if there's
-more unaccounted irq or steal time than rq->clock delta since
-last call. In this instance rq->clock_task does not advance
-and it is left for next update to account rest. Because LTP
-test is quick and checks only once, it sometimes sees zero
-timespec and treats it as failure.
+Here as well.
 
-Add a small warm-up to setup() in form of busy loop, to make
-sure that clock_task advanced. In case of bug we would either
-hit a timeout or still report zeroed timespec.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../kernel/syscalls/clock_gettime/clock_gettime01.c      | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Other than that it looks good.
 
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
-index be9573afcc8e..11da39cf07cf 100644
---- a/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
-@@ -73,7 +73,15 @@ static struct time64_variants variants[] = {
- 
- static void setup(void)
- {
-+	long unsigned utime;
-+
- 	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
-+
-+	do {
-+		SAFE_FILE_SCANF("/proc/self/stat",
-+			"%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu",
-+			&utime);
-+	} while (utime == 0);
- }
- 
- static void verify_clock_gettime(unsigned int i)
-@@ -118,4 +126,5 @@ static struct tst_test test = {
- 	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.needs_root = 1,
-+	.timeout = 10,
- };
 -- 
-2.27.0
-
+Cyril Hrubis
+chrubis@suse.cz
