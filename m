@@ -1,145 +1,145 @@
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Fri, 23 Jul 2021 17:42:00 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/shmget06: Add test when shm_next_id
- is already in use
-In-Reply-To: <1627033320-1584-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <YPlftOtF7QxjjDnX@yuki>
- <1627033320-1584-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <1627033320-1584-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Fri, 23 Jul 2021 18:13:46 +0800
+Subject: [LTP] [PATCH] syscalls/msgget*: Add docparse formatting
+Message-ID: <1627035226-2220-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When the identifier of the System V shared memory segment that shm_next_id stored
-is already in use, shmget() with different key will return the another shm id. But
-kernel doesn't guarantee desired id, I just compare with the existed id, if not
-equal, the test succeeds.
+Additionally, for msgget04.c and msgget05.c, do some adjustements in description.
 
-This case is similar to msgget05.c.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- runtest/syscalls                              |  1 +
- runtest/syscalls-ipc                          |  1 +
- .../kernel/syscalls/ipc/shmget/.gitignore     |  1 +
- .../kernel/syscalls/ipc/shmget/shmget06.c     | 75 +++++++++++++++++++
- 4 files changed, 78 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ipc/shmget/shmget06.c
+ .../kernel/syscalls/ipc/msgget/msgget01.c      |  7 ++++---
+ .../kernel/syscalls/ipc/msgget/msgget02.c      |  7 +++++--
+ .../kernel/syscalls/ipc/msgget/msgget03.c      |  9 +++++----
+ .../kernel/syscalls/ipc/msgget/msgget04.c      | 18 +++++++++++-------
+ .../kernel/syscalls/ipc/msgget/msgget05.c      | 14 ++++++++------
+ 5 files changed, 33 insertions(+), 22 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b65b18c32..b379b2d90 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1413,6 +1413,7 @@ shmget02 shmget02
- shmget03 shmget03
- shmget04 shmget04
- shmget05 shmget05
-+shmget06 shmget06
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget01.c b/testcases/kernel/syscalls/ipc/msgget/msgget01.c
+index 5b7c6e3af..2ab34ff9d 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget01.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget01.c
+@@ -3,9 +3,10 @@
+  * Copyright (c) International Business Machines Corp., 2001
+  */
  
- sigaction01 sigaction01
- sigaction02 sigaction02
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index ff0364704..b758158c3 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -68,3 +68,4 @@ shmget02 shmget02
- shmget03 shmget03
- shmget04 shmget04
- shmget05 shmget05
-+shmget06 shmget06
-diff --git a/testcases/kernel/syscalls/ipc/shmget/.gitignore b/testcases/kernel/syscalls/ipc/shmget/.gitignore
-index 6f08529f8..768d1c69d 100644
---- a/testcases/kernel/syscalls/ipc/shmget/.gitignore
-+++ b/testcases/kernel/syscalls/ipc/shmget/.gitignore
-@@ -2,3 +2,4 @@
- /shmget03
- /shmget04
- /shmget05
-+/shmget06
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget06.c b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-new file mode 100644
-index 000000000..d91b7b635
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+-/*
+- * DESCRIPTION
+- * create a message queue, write a message to it and
++/*\
++ * [Description]
++ *
++ * Create a message queue, write a message to it and
+  * read it back.
+  */
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget02.c b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
+index efd2636ca..ce59a8fb5 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget02.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
+@@ -3,8 +3,11 @@
+  * Copyright (c) International Business Machines Corp., 2001
+  */
+ 
+-/*
+- * DESCRIPTION
++/*\
++ * [Description]
++ *
++ * Test for EEXIST, ENOENT, EACCES errors.
++ *
+  * 1) msgget(2) fails if a message queue exists for key and msgflg
+  *    specified both IPC_CREAT and IPC_EXCL.
+  * 2) msgget(2) fails if no message queue exists for key and msgflg
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+index 76cf82cd3..ab5714cdc 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+@@ -3,11 +3,12 @@
+  * Copyright (c) International Business Machines Corp., 2001
+  */
+ 
+-/*
+- * DESCRIPTION
+- * test for an ENOSPC error by using up all available
+- * message queues.
++/*\
++ * [Description]
++ *
++ * Test for ENOSPC error.
+  *
++ * ENOSPC -  All possible message queues have been taken (MSGMNI)
+  */
+ 
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
+index 72cd4497b..a01ecea85 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget04.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
+@@ -1,14 +1,18 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+- * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
 + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
 + */
 +
 +/*\
 + * [Description]
-+ *
-+ * It is a basic test for shm_next_id.
-+ *
-+ * When the shared memory segment identifier that shm_next_id stored is already
-+ * in use, call shmget with different key just use another unused value in range
-+ * [0,INT_MAX]. Kernel doesn't guarantee the desired id.
+  *
+- * It is a basic test about msg_next_id.
+- * msg_next_id specifies desired id for next allocated IPC message. By default
+- * they are equal to -1, which means generic allocation logic. Possible values
+- * to set are in range {0..INT_MAX}.
+- * Toggle with non-default value will be set back to -1 by kernel after
+- * successful IPC object allocation.
++ * It is a basic test for msg_next_id.
++ * msg_next_id specifies desired id for next allocated IPC message. By
++ * default it's equal to -1, which means generic allocation logic.
++ * Possible values to set are in range {0..INT_MAX}.
++ * The value will be set back to -1 by kernel after successful IPC object
++ * allocation.
+  */
+ 
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget05.c b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
+index d6177bbed..817c8486e 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget05.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
+@@ -1,12 +1,16 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+- * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
 + */
 +
-+#include <errno.h>
-+#include <string.h>
-+#include <sys/types.h>
-+#include <sys/ipc.h>
-+#include <sys/shm.h>
-+#include "tst_test.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "libnewipc.h"
-+
-+#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
-+
-+static int shm_id[2], pid;
-+static key_t shmkey[2];
-+
-+static void verify_shmget(void)
-+{
-+	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", shm_id[0]);
-+
-+	shm_id[1] = SAFE_SHMGET(shmkey[1], SHM_SIZE, IPC_CREAT | SHM_RW);
-+	if (shm_id[1] == shm_id[0])
-+		tst_res(TFAIL, "shm id %d has existed, shmget() returns the"
-+			" same shm id unexpectedly", shm_id[0]);
-+	else
-+		tst_res(TPASS, "shm id %d has existed, shmget() returns the"
-+			" new shm id %d", shm_id[0], shm_id[1]);
-+
-+	SAFE_SHMCTL(shm_id[1], IPC_RMID, NULL);
-+}
-+
-+static void setup(void)
-+{
-+	shmkey[0] = GETIPCKEY();
-+	shmkey[1] = GETIPCKEY();
-+	pid = getpid();
-+	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
-+	shm_id[0] = SAFE_SHMGET(shmkey[0], SHM_SIZE, IPC_CREAT | SHM_RW);
-+}
-+
-+static void cleanup(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < 2; i++) {
-+		if (shm_id[i] != -1)
-+			SAFE_SHMCTL(shm_id[i], IPC_RMID, NULL);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_shmget,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_CHECKPOINT_RESTORE=y",
-+		NULL
-+	},
-+	.needs_root = 1,
-+};
++/*\
++ * [Description]
+  *
+- * It is a basic test about msg_next_id.
+- * When the message queue identifier that msg_next_id stored has existed,
++ * It is a basic test for msg_next_id.
++ * When the message queue identifier that msg_next_id stored is already in use,
+  * call msgget with different key just use another unused value in range
+- * [0,INT_MAX]. kernel doesn't guarantee the desired id.
++ * [0,INT_MAX]. Kernel doesn't guarantee the desired id.
+  */
+ 
+ #include <errno.h>
+@@ -45,8 +49,6 @@ static void setup(void)
+ 	pid = getpid();
+ 	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
+ 	queue_id[0] = SAFE_MSGGET(msgkey[0], IPC_CREAT | MSG_RW);
+-	tst_res(TINFO, "Test msg_next_id effects on msgget(different key) "
+-		"when this message queue identifier has existed");
+ }
+ 
+ static void cleanup(void)
 -- 
 2.23.0
 
