@@ -1,7 +1,7 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 26 Jul 2021 17:17:35 +0200
-Subject: [LTP] [PATCH 1/2] Add tst_hexdump utility
-Message-ID: <20210726151736.14299-1-mdoucha@suse.cz>
+Date: Mon, 26 Jul 2021 17:22:54 +0200
+Subject: [LTP] [PATCH v2 1/2] Add tst_hexdump utility
+Message-ID: <20210726152255.16868-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,11 +13,24 @@ directions for shell tests.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
+
+Changes since v1: Added tst_hexdump to .gitignore
+
+ testcases/lib/.gitignore    |  1 +
  testcases/lib/Makefile      |  2 +-
  testcases/lib/tst_hexdump.c | 55 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+), 1 deletion(-)
+ 3 files changed, 57 insertions(+), 1 deletion(-)
  create mode 100644 testcases/lib/tst_hexdump.c
 
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index bc299b6ee..a2e9f1ef0 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -12,3 +12,4 @@
+ /tst_rod
+ /tst_sleep
+ /tst_supported_fs
++/tst_hexdump
 diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
 index 98d9e4613..38813e640 100644
 --- a/testcases/lib/Makefile
