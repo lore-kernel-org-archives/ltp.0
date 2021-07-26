@@ -1,109 +1,83 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 26 Jul 2021 17:22:54 +0200
-Subject: [LTP] [PATCH v2 1/2] Add tst_hexdump utility
-Message-ID: <20210726152255.16868-1-mdoucha@suse.cz>
+Date: Mon, 26 Jul 2021 17:22:55 +0200
+Subject: [LTP] [PATCH v2 2/2] Replace the xxd utility with tst_hexdump
+In-Reply-To: <20210726152255.16868-1-mdoucha@suse.cz>
+References: <20210726152255.16868-1-mdoucha@suse.cz>
+Message-ID: <20210726152255.16868-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_hexdump implements conversion between binary and hexadecimal values in both
-directions for shell tests.
+The xxd utility is part of Vim suite and may not be available on embedded
+systems. Replace it with internal LTP helper program.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1: Added tst_hexdump to .gitignore
+Changes since v1: None
 
- testcases/lib/.gitignore    |  1 +
- testcases/lib/Makefile      |  2 +-
- testcases/lib/tst_hexdump.c | 55 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+), 1 deletion(-)
- create mode 100644 testcases/lib/tst_hexdump.c
+Note: I couldn't test ima_selinux.sh changes because SLES kernel don't support
+measure func=CRITICAL_DATA yet. ima_keys.sh appears to work correctly.
 
-diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-index bc299b6ee..a2e9f1ef0 100644
---- a/testcases/lib/.gitignore
-+++ b/testcases/lib/.gitignore
-@@ -12,3 +12,4 @@
- /tst_rod
- /tst_sleep
- /tst_supported_fs
-+/tst_hexdump
-diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-index 98d9e4613..38813e640 100644
---- a/testcases/lib/Makefile
-+++ b/testcases/lib/Makefile
-@@ -11,6 +11,6 @@ INSTALL_TARGETS		:= *.sh
- MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
- 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
- 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
--			   tst_get_median
-+			   tst_get_median tst_hexdump
+ testcases/kernel/security/integrity/ima/tests/ima_keys.sh   | 6 +++---
+ .../kernel/security/integrity/ima/tests/ima_selinux.sh      | 4 +---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index 3476b8007..995a55fed 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -6,7 +6,7 @@
+ #
+ # Verify that keys are measured correctly based on policy.
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/lib/tst_hexdump.c b/testcases/lib/tst_hexdump.c
-new file mode 100644
-index 000000000..f83b8bfbf
---- /dev/null
-+++ b/testcases/lib/tst_hexdump.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 SUSE LLC <mdoucha@suse.cz>
-+ *
-+ * Convert bytes from standard input to hexadecimal representation.
-+ *
-+ * Parameters:
-+ * -d   Convert hexadecimal values from standard input to binary representation
-+ *      instead.
-+ */
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+
-+int decode_hex(void)
-+{
-+	int ret;
-+	unsigned int val;
-+
-+	while ((ret = scanf("%2x", &val)) == 1)
-+		putchar(val);
-+
-+	return ret != EOF || ferror(stdin);
-+}
-+
-+int encode_hex(void)
-+{
-+	int val;
-+
-+	for (val = getchar(); val >= 0 && val <= 0xff; val = getchar())
-+		printf("%02x", val);
-+
-+	return val != EOF || ferror(stdin);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int ret, decode = 0;
-+
-+	while ((ret = getopt(argc, argv, "d"))) {
-+		if (ret < 0)
-+			break;
-+
-+		switch (ret) {
-+		case 'd':
-+			decode = 1;
-+			break;
-+		}
-+	}
-+
-+	if (decode)
-+		return decode_hex();
-+	else
-+		return encode_hex();
-+}
+-TST_NEEDS_CMDS="cmp cut grep sed xxd"
++TST_NEEDS_CMDS="cmp cut grep sed"
+ TST_CNT=2
+ TST_NEEDS_DEVICE=1
+ TST_SETUP=setup
+@@ -82,7 +82,7 @@ test1()
+ 		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
+ 		keyring=$(echo "$line" | cut -d' ' -f5)
+ 
+-		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
++		echo "$line" | cut -d' ' -f6 | tst_hexdump -d > $test_file
+ 
+ 		if ! expected_digest="$(compute_digest $algorithm $test_file)"; then
+ 			tst_res TCONF "cannot compute digest for $algorithm"
+@@ -126,7 +126,7 @@ test2()
+ 		tst_brk TBROK "unable to import a certificate into $keyring_name keyring"
+ 
+ 	grep $keyring_name $ASCII_MEASUREMENTS | tail -n1 | cut -d' ' -f6 | \
+-		xxd -r -p > $temp_file
++		tst_hexdump -d > $temp_file
+ 
+ 	if [ ! -s $temp_file ]; then
+ 		tst_res TFAIL "keyring $keyring_name not found in $ASCII_MEASUREMENTS"
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
+index c2af0e298..a4eb60b16 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
+@@ -100,8 +100,6 @@ test1()
+ # configuration.
+ test2()
+ {
+-	tst_check_cmds xxd || return
+-
+ 	local measured_data state_file="$TST_TMPDIR/selinux_state.txt"
+ 	local data_source_name="selinux"
+ 	local pattern="data_sources=[^[:space:]]*$data_source_name"
+@@ -127,7 +125,7 @@ test2()
+ 	digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
+ 	algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
+ 
+-	echo "$line" | cut -d' ' -f6 | xxd -r -p > $state_file
++	echo "$line" | cut -d' ' -f6 | tst_hexdump -d > $state_file
+ 
+ 	expected_digest="$(compute_digest $algorithm $state_file)" || \
+ 	tst_brk TCONF "cannot compute digest for $algorithm"
 -- 
 2.32.0
 
