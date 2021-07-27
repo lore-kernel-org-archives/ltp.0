@@ -1,64 +1,59 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Tue, 27 Jul 2021 20:45:06 +0800
-Subject: [LTP] [PATCH 2/3] lapi: Add epoll_pwait_supported() and
- epoll_pwait2_supported() check
+Date: Tue, 27 Jul 2021 20:45:05 +0800
+Subject: [LTP] [PATCH 1/3] tst_process_state: Add tst_process_state_wait2 to
+ newlib
 In-Reply-To: <20210727124507.28356-1-xieziyao@huawei.com>
 References: <20210727124507.28356-1-xieziyao@huawei.com>
-Message-ID: <20210727124507.28356-3-xieziyao@huawei.com>
+Message-ID: <20210727124507.28356-2-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add the function of checking whether epoll_pwait or epoll_pwait2 is supported.
+Add tst_process_state_wait2 to newlib for epoll_pwait01.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- include/lapi/epoll.h | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ include/tst_process_state.h | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/include/lapi/epoll.h b/include/lapi/epoll.h
-index e5b4387f1..fc068ae20 100644
---- a/include/lapi/epoll.h
-+++ b/include/lapi/epoll.h
-@@ -14,18 +14,32 @@
- #define EPOLL_CLOEXEC 02000000
- #endif
+diff --git a/include/tst_process_state.h b/include/tst_process_state.h
+index 81532524a..4641557bd 100644
+--- a/include/tst_process_state.h
++++ b/include/tst_process_state.h
+@@ -37,14 +37,6 @@
+ 	tst_process_exit_wait((pid), (msec_timeout))
 
-+static inline void epoll_pwait_supported(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_epoll_pwait);
-+}
+ #else
+-/*
+- * The same as above but does not use tst_brkm() interface.
+- *
+- * This function is intended to be used from child processes.
+- *
+- * Returns zero on success, non-zero on failure.
+- */
+-int tst_process_state_wait2(pid_t pid, const char state);
+
+ #define TST_PROCESS_STATE_WAIT(cleanup_fn, pid, state) \
+ 	tst_process_state_wait(__FILE__, __LINE__, (cleanup_fn), \
+@@ -54,6 +46,16 @@ int tst_process_state_wait2(pid_t pid, const char state);
+ int tst_process_state_wait(const char *file, const int lineno,
+ 			   void (*cleanup_fn)(void), pid_t pid,
+ 			   const char state, unsigned int msec_timeout);
 +
- #ifndef HAVE_EPOLL_PWAIT
--int epoll_pwait(int epfd, struct epoll_event *events, int maxevents,
--		int timeout, const sigset_t *sigmask)
-+static inline int epoll_pwait(int epfd, struct epoll_event *events,
-+			      int maxevents, int timeout,
-+			      const sigset_t *sigmask)
- {
- 	return tst_syscall(__NR_epoll_pwait, epfd, events, maxevents,
- 			   timeout, sigmask, _NSIG / 8);
- }
- #endif
-
-+static inline void epoll_pwait2_supported(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_epoll_pwait2);
-+}
++/*
++ * The same as above but does not use tst_brkm() interface.
++ *
++ * This function is intended to be used from child processes.
++ *
++ * Returns zero on success, non-zero on failure.
++ */
++int tst_process_state_wait2(pid_t pid, const char state);
 +
- #ifndef HAVE_EPOLL_PWAIT2
--int epoll_pwait2(int epfd, struct epoll_event *events, int maxevents,
--		 const struct timespec *timeout, const sigset_t *sigmask)
-+static inline int epoll_pwait2(int epfd, struct epoll_event *events,
-+			       int maxevents, const struct timespec *timeout,
-+			       const sigset_t *sigmask)
- {
- 	if (timeout == NULL)
- 		return tst_syscall(__NR_epoll_pwait2, epfd, events, maxevents,
+ int tst_process_exit_wait(pid_t pid, unsigned int msec_timeout);
+
+ #endif /* TST_PROCESS_STATE__ */
 --
 2.17.1
 
