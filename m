@@ -1,202 +1,149 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 26 Jul 2021 16:46:05 +0100
-Subject: [LTP] [PATCH] Add set_mempolicy05, CVE-2017-7616
-Message-ID: <20210726154605.7828-1-rpalethorpe@suse.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Tue, 27 Jul 2021 02:13:30 +0000
+Subject: [LTP] [PATCH v2 2/2] syscalls/shmget06: Add test when
+ shm_next_id is already in use
+In-Reply-To: <1627033320-1584-2-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <YPlftOtF7QxjjDnX@yuki>
+ <1627033320-1584-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1627033320-1584-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <60FF6BE9.5040101@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+Hi Cyril
 
-Possibly this is useful for education, but not much else.
+I have merged this patchset, thanks for your review.
 
- runtest/cve                                   |   1 +
- runtest/numa                                  |   1 +
- .../kernel/syscalls/set_mempolicy/.gitignore  |   1 +
- .../kernel/syscalls/set_mempolicy/Makefile    |   3 +
- .../syscalls/set_mempolicy/set_mempolicy05.c  | 128 ++++++++++++++++++
- 5 files changed, 134 insertions(+)
- create mode 100644 testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-
-diff --git a/runtest/cve b/runtest/cve
-index 226b5ea44..96cc98f20 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -22,6 +22,7 @@ cve-2017-2671 cve-2017-2671
- cve-2017-6951 request_key05
- cve-2017-7308 setsockopt02
- cve-2017-7472 keyctl04
-+cve-2017-7616 set_mempolicy05
- cve-2017-10661 timerfd_settime02
- cve-2017-12192 keyctl07
- cve-2017-12193 add_key04
-diff --git a/runtest/numa b/runtest/numa
-index 7b9c2ae9d..3b9a9a7c5 100644
---- a/runtest/numa
-+++ b/runtest/numa
-@@ -20,3 +20,4 @@ set_mempolicy01 set_mempolicy01
- set_mempolicy02 set_mempolicy02
- set_mempolicy03 set_mempolicy03
- set_mempolicy04 set_mempolicy04
-+set_mempolicy05 set_mempolicy05
-diff --git a/testcases/kernel/syscalls/set_mempolicy/.gitignore b/testcases/kernel/syscalls/set_mempolicy/.gitignore
-index 52ae73b52..4c121d2e0 100644
---- a/testcases/kernel/syscalls/set_mempolicy/.gitignore
-+++ b/testcases/kernel/syscalls/set_mempolicy/.gitignore
-@@ -2,3 +2,4 @@
- /set_mempolicy02
- /set_mempolicy03
- /set_mempolicy04
-+/set_mempolicy05
-diff --git a/testcases/kernel/syscalls/set_mempolicy/Makefile b/testcases/kernel/syscalls/set_mempolicy/Makefile
-index e6e699808..1fbadf6e8 100644
---- a/testcases/kernel/syscalls/set_mempolicy/Makefile
-+++ b/testcases/kernel/syscalls/set_mempolicy/Makefile
-@@ -8,4 +8,7 @@ include $(top_srcdir)/include/mk/testcases.mk
- LDLIBS  += $(NUMA_LIBS)
- LTPLDLIBS = -lltpnuma
- 
-+set_mempolicy05: LDLIBS=-lltp
-+set_mempolicy05: LTPLDLIBS=
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-new file mode 100644
-index 000000000..86f6a95dc
---- /dev/null
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 SUSE LLC <rpalethorpe@suse.com>
-+ */
-+/*\
-+ *
-+ * [Description]
-+ *
-+ * This will reproduce an information leak in the set_mempolicy 32-bit
-+ * compat syscall. The catch is that the 32-bit compat syscall is not
-+ * used in x86_64 upstream. So at the time of writing, 32-bit programs
-+ * on large x86_64 numa systems will be broken if they use
-+ * set_mempolicy. OTOH they could not have been exploited either.
-+ *
-+ * On other architectures the compat syscall is connected. Including
-+ * PowerPC which has also been included as well. It is possible some
-+ * vendors connected the x86_64 compat call in their kernel branch.
-+ *
-+ * The kernel allocates memory from the user's stack as a temporary
-+ * work area. Allowing it to copy the node array of 32-bit fields to
-+ * 64-bit fields. It uses user memory so that it can share the
-+ * non-compatability syscall functions which use copy_from_user()
-+ * internally.
-+ *
-+ * Originally the compat call would copy a chunk of the
-+ * uninitialized kernel stack to the user stack before checking the
-+ * validation result. This meant when the user passed in an invalid
-+ * node_mask_ptr. They would get kernel stack data somewhere below
-+ * their stack pointer.
-+ *
-+ * So we allocate and set an array on the stack (larger than any
-+ * redzone). Then move the stack pointer to the beginning of the
-+ * array. Then move it back after the syscall. We can then check to
-+ * see if the array has been modified.
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+
-+#if defined(__i386__) || defined(__powerpc__)
-+
-+#include <string.h>
-+
-+static unsigned int i;
-+static int sys_ret;
-+#ifdef __i386__
-+static const int sys_num = 276;
-+static const int mode;
-+static const int node_mask_ptr = UINT_MAX;
-+static const int node_mask_sz = UINT_MAX;
-+#endif
-+static volatile char *stack_ptr;
-+
-+static void run(void)
-+{
-+#ifdef __powerpc__
-+	register long sys_num __asm__("r0");
-+	register long mode __asm__("r3");
-+	register long node_mask_ptr __asm__("r4");
-+	register long node_mask_sz __asm__("r5");
-+#endif
-+	char stack_pattern[0x400];
-+
-+	stack_ptr = stack_pattern;
-+	memset(stack_pattern, 0xA5, sizeof(stack_pattern));
-+	tst_res(TINFO, "stack pattern is in %p-%p", stack_ptr, stack_ptr + 0x400);
-+
-+#ifdef __powerpc__
-+	sys_num = 261;
-+	mode = 0;
-+	node_mask_ptr = ~0UL;
-+	node_mask_sz = ~0UL;
-+	asm volatile (
-+		"addi 1,1,1024\n\t"
-+		"sc\n\t"
-+		"addi 1,1,-1024\n\t" :
-+		"+r"(sys_num), "+r"(mode), "+r"(node_mask_ptr), "+r"(node_mask_sz) :
-+		:
-+		"memory", "cr0", "r6", "r7", "r8", "r9", "r10", "r11", "r12");
-+	sys_ret = mode;
-+#else /* __i386__ */
-+	asm volatile (
-+		"add $0x400, %%esp\n\t"
-+		"int $0x80\n\t"
-+		"sub $0x400, %%esp\n\t" :
-+		"=a"(sys_ret) :
-+		"a"(sys_num), "b"(mode), "c"(node_mask_ptr), "d"(node_mask_sz) :
-+		"memory");
-+	sys_ret = -sys_ret;
-+#endif
-+
-+	for (i = 0; i < sizeof(stack_pattern); i++) {
-+		if (stack_ptr[i] != (char)0xA5) {
-+			tst_brk(TFAIL,
-+				"User stack was overwritten with something@%d", i);
-+		}
-+	}
-+
-+	switch (sys_ret) {
-+	case EFAULT:
-+		tst_res(TPASS,
-+			"set_mempolicy returned EFAULT (compat assumed)");
-+		break;
-+	case EINVAL:
-+		tst_res(TCONF,
-+			"set_mempolicy returned EINVAL (non compat assumed)");
-+		break;
-+	default:
-+		tst_res(TFAIL,
-+			"set_mempolicy should fail with EFAULT or EINVAL, instead returned %ld",
-+			(long)sys_ret);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "cf01fb9985e8"},
-+		{"CVE", "CVE-2017-7616"},
-+		{}
-+	}
-+};
-+
-+#else /* #if defined(__x86_64__) || defined(__powerpc__) */
-+
-+TST_TEST_TCONF("not i386 or powerpc");
-+
-+#endif /* #else #if defined(__x86_64__) || defined(__powerpc__) */
--- 
-2.31.1
-
+Best Regards
+Yang Xu
+> When the identifier of the System V shared memory segment that shm_next_id stored
+> is already in use, shmget() with different key will return the another shm id. But
+> kernel doesn't guarantee desired id, I just compare with the existed id, if not
+> equal, the test succeeds.
+> 
+> This case is similar to msgget05.c.
+> 
+> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
+> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+> ---
+>   runtest/syscalls                              |  1 +
+>   runtest/syscalls-ipc                          |  1 +
+>   .../kernel/syscalls/ipc/shmget/.gitignore     |  1 +
+>   .../kernel/syscalls/ipc/shmget/shmget06.c     | 75 +++++++++++++++++++
+>   4 files changed, 78 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/ipc/shmget/shmget06.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index b65b18c32..b379b2d90 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1413,6 +1413,7 @@ shmget02 shmget02
+>   shmget03 shmget03
+>   shmget04 shmget04
+>   shmget05 shmget05
+> +shmget06 shmget06
+> 
+>   sigaction01 sigaction01
+>   sigaction02 sigaction02
+> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+> index ff0364704..b758158c3 100644
+> --- a/runtest/syscalls-ipc
+> +++ b/runtest/syscalls-ipc
+> @@ -68,3 +68,4 @@ shmget02 shmget02
+>   shmget03 shmget03
+>   shmget04 shmget04
+>   shmget05 shmget05
+> +shmget06 shmget06
+> diff --git a/testcases/kernel/syscalls/ipc/shmget/.gitignore b/testcases/kernel/syscalls/ipc/shmget/.gitignore
+> index 6f08529f8..768d1c69d 100644
+> --- a/testcases/kernel/syscalls/ipc/shmget/.gitignore
+> +++ b/testcases/kernel/syscalls/ipc/shmget/.gitignore
+> @@ -2,3 +2,4 @@
+>   /shmget03
+>   /shmget04
+>   /shmget05
+> +/shmget06
+> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget06.c b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
+> new file mode 100644
+> index 000000000..d91b7b635
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu<xuyang2018.jy@fujitsu.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * It is a basic test for shm_next_id.
+> + *
+> + * When the shared memory segment identifier that shm_next_id stored is already
+> + * in use, call shmget with different key just use another unused value in range
+> + * [0,INT_MAX]. Kernel doesn't guarantee the desired id.
+> + */
+> +
+> +#include<errno.h>
+> +#include<string.h>
+> +#include<sys/types.h>
+> +#include<sys/ipc.h>
+> +#include<sys/shm.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_sysv_ipc.h"
+> +#include "libnewipc.h"
+> +
+> +#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
+> +
+> +static int shm_id[2], pid;
+> +static key_t shmkey[2];
+> +
+> +static void verify_shmget(void)
+> +{
+> +	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", shm_id[0]);
+> +
+> +	shm_id[1] = SAFE_SHMGET(shmkey[1], SHM_SIZE, IPC_CREAT | SHM_RW);
+> +	if (shm_id[1] == shm_id[0])
+> +		tst_res(TFAIL, "shm id %d has existed, shmget() returns the"
+> +			" same shm id unexpectedly", shm_id[0]);
+> +	else
+> +		tst_res(TPASS, "shm id %d has existed, shmget() returns the"
+> +			" new shm id %d", shm_id[0], shm_id[1]);
+> +
+> +	SAFE_SHMCTL(shm_id[1], IPC_RMID, NULL);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	shmkey[0] = GETIPCKEY();
+> +	shmkey[1] = GETIPCKEY();
+> +	pid = getpid();
+> +	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
+> +	shm_id[0] = SAFE_SHMGET(shmkey[0], SHM_SIZE, IPC_CREAT | SHM_RW);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i<  2; i++) {
+> +		if (shm_id[i] != -1)
+> +			SAFE_SHMCTL(shm_id[i], IPC_RMID, NULL);
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = verify_shmget,
+> +	.needs_kconfigs = (const char *[]) {
+> +		"CONFIG_CHECKPOINT_RESTORE=y",
+> +		NULL
+> +	},
+> +	.needs_root = 1,
+> +};
