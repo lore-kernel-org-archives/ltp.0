@@ -1,46 +1,62 @@
-From: Leo Liang <ycliang@andestech.com>
-Date: Tue, 27 Jul 2021 13:47:23 +0800
-Subject: [LTP] [PATCH v5,
- 0/2] cgroup/cgroup_regression_test: Fix umount failure
-Message-ID: <20210727054710.GA5868@atcfdc88>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Tue, 27 Jul 2021 05:51:25 +0000
+Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
+ resources
+In-Reply-To: <YPq0749ZnnGsAV2q@pevik>
+References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+ <20210712075223.10682-2-aleksei.kodanev@bell-sw.com> <YPkkZ0Zq9DyHKBaT@pevik>
+ <YPlhMeRRsNnemT05@yuki> <YPlsK8fsMI8T+H7c@pevik> <YPlsVD2gbIiX8JJk@yuki>
+ <60FA81E4.3060709@fujitsu.com> <YPq0749ZnnGsAV2q@pevik>
+Message-ID: <60FF9EFA.308@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test sequence
-	mount -t cgroup -o <controllers> <path>
-	mkdir <path>/<dir>
-	rmdir <path>/<dir>
-	umount <path>
-	mount -t cgroup -o <controllers> <path>
-would easily fail at the last mount with -EBUSY on certain platform.
+Hi Petr
+> Hi all,
+>
+>> Hi Cyril, Petr
+>>> Hi!
+>>>>> I think that we allready discussed this in another thread:
+>
+>>>>> https://lists.linux.it/pipermail/ltp/2021-July/023831.html
+>
+>>>> Thanks, I forgot this. In that case my approach (not using<=, but count
+>>>> segments in /proc/sysvipc/shm before testing) might be more precise.
+>>>> But no strong feeling about that, both solutions fix the test, let's chose one
+>>>> and merge.
+>
+>>> As I said previously, there are many SysV IPC tests that do expect that
+>>> nobody will add/remove IPC shm/queue/semaphores during the testrun and
+>>> some of the testcases cannot even be implemented without this
+>>> expectation.
+>
+>>> Hence I wouldn't complicate the test here and just count how many
+>>> segments are there at the start and be done with it.
+>> Agree.
+>
+>> A possible solution(alter get_used_queues api in new ipc lib and add
+>> file parametrers, so we can use this api for msgget03) I have mentioned
+>> in the previous email, the url as below:
+>> https://lists.linux.it/pipermail/ltp/2021-July/023653.html
+> LGTM. Or use /proc/sysvipc/shm instead of /proc/sysvipc/msg in get_used_queues()
+> as you noted get_used_queues() has not been used yet.
+I rename get_used_queues to get_used_sysvipc_cnt. see attached patch.
+>
+> BTW searching where get_used_queues() appeared, I see [LTP] [PATCH v3 1/4]
+> syscalls/ipc: add newipc library for new API [1], but if I'm not mistaken
+> get_used_queues() was not used even there, maybe it was in some previous
+> versions.
+Yes, no new api case use GET_USED_QUEUES api.
+>
+> Kind regards,
+> Petr
+>
+> [1] https://lists.linux.it/pipermail/ltp/2016-December/003239.html
 
-Adding a little delay between "rmdir" and "umount" could fix the problem,
-so use tst_umount API instead of umount in "rmdir, umount" sequence.
-
-Changes since v1
-- Use "tst_umount" instead of "sync" as suggested
-- Make "tst_umount" work with argument that has terminating slash
-
-Changes since v2
-- Filter out the trailing slash instead of using mountpoint command
-
-Changes since v3
-- Filter out the trailing slash only in grep command
-- Add comment in the test script
-
-Changes since v4
-- remove unnecessary stderr redirection
-
-Leo Yu-Chi Liang (2):
-  lib/tst_test.sh: Make tst_umount work with argument has trailing slash
-  cgroup/cgroup_regression_test: Fix umount failure
-
- .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
- testcases/lib/tst_test.sh                              |  2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
--- 
-2.17.0
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: 0001-libs-libnewipc-Rename-get_used_queues-as-get_used_sy.patch
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210727/401bfffc/attachment.ksh>
