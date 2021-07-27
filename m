@@ -1,149 +1,82 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Tue, 27 Jul 2021 02:13:30 +0000
-Subject: [LTP] [PATCH v2 2/2] syscalls/shmget06: Add test when
- shm_next_id is already in use
-In-Reply-To: <1627033320-1584-2-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <YPlftOtF7QxjjDnX@yuki>
- <1627033320-1584-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1627033320-1584-2-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <60FF6BE9.5040101@fujitsu.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Tue, 27 Jul 2021 13:27:04 +0800
+Subject: [LTP] [PATCH v4,
+ 2/2] cgroup/cgroup_regression_test: Fix umount failure
+In-Reply-To: <3d17ca93-3c93-894c-77d2-0b588fce3dad@jv-coder.de>
+References: <20210719092239.GA1475@atcfdc88> <YPgxJwx795fhXgLa@pevik>
+ <62262681-222f-8d09-a100-0d7be0c7526f@jv-coder.de>
+ <20210722063232.GA28553@andestech.com>
+ <3d17ca93-3c93-894c-77d2-0b588fce3dad@jv-coder.de>
+Message-ID: <20210727052704.GA19416@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+Hi Joerg,
 
-I have merged this patchset, thanks for your review.
+On Thu, Jul 22, 2021 at 02:37:23PM +0800, Joerg Vehlow wrote:
+> Hi Leo,
+> 
+> 
+> On 7/22/2021 8:32 AM, Leo Liang wrote:
+> > Hi Joerg,
+> > On Thu, Jul 22, 2021 at 12:35:59PM +0800, Joerg Vehlow wrote:
+> >> Hi,
+> >>
+> >> On 7/21/2021 4:37 PM, Petr Vorel wrote:
+> >>> Hi Leo,
+> >>>
+> >>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> >>>
+> >>>>    	rmdir cgroup/0 cgroup/1
+> >>>> -	umount cgroup/
+> >>>> +	tst_umount cgroup/	# Avoid possible EBUSY error
+> >>>>    }
+> >>>>    #---------------------------------------------------------------------------
+> >>>> @@ -193,7 +193,7 @@ test3()
+> >>>>    	wait $pid2 2>/dev/null
+> >>>>    	rmdir $cpu_subsys_path/0 2> /dev/null
+> >>>> -	umount cgroup/ 2> /dev/null
+> >>>> +	tst_umount cgroup/ 2> /dev/null		# Avoid possible EBUSY error
+> >>> I'd prefer: # keep "/" to avoid possible EBUSY error
+> >>> But that can be changed before merge.
+> >>>
+> >>> More I'm interested if other maintainers agree with me about this approach.
+> >>> (keep / here instead of in tst_umount())
+> >> I had a first look at this patches and was curious, what the reasoning
+> >> behind the "/" is.
+> >> The comment you suggest is wrong. The / was introduced to prevent
+> >> unmounting some other mountpoint,
+> >> where the device was cgroup.
+> >> Imho the approach of adding a / to the end was wrong and intransparent.
+> >> I would rather use "./cgroup" or "$PWD/cgroup".
+> >> If possible, I'd actually change tst_umount, to always unmount the
+> >> mountpoint and not the device, i.e. if the given path is not an absolute
+> >> path, make it absolute (e.g. by prepending $PWD").
+> >> This way the check if the mountpoint exist wouldn't be the fuzzy thing
+> >> it is right now.
+> >>
+> >> As for the comment ("# Avoid possible EBUSY error"): Honestly I'd drop
+> >> it and like in the c-api make using tst_umount instead of plain umount
+> >> the default, for the same reasons.
+> > Got it!
+> > Thanks for the detailed explanation!
+> > I will send a v5 patch for this modification.
+> > (making the path absolute inside tst_umount)
+> This was just my opinon. I am not in the place to say how it should be done.
+> Maybe wait for replies from the maintainers.
+> Additionally, all usages of tst_umount have to be checked, to ensure 
+> they are passing a mountpoint and not a device, otherwise my proposal 
+> cannot be implemented in tst_umount.
+> 
 
-Best Regards
-Yang Xu
-> When the identifier of the System V shared memory segment that shm_next_id stored
-> is already in use, shmget() with different key will return the another shm id. But
-> kernel doesn't guarantee desired id, I just compare with the existed id, if not
-> equal, the test succeeds.
-> 
-> This case is similar to msgget05.c.
-> 
-> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
-> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
-> ---
->   runtest/syscalls                              |  1 +
->   runtest/syscalls-ipc                          |  1 +
->   .../kernel/syscalls/ipc/shmget/.gitignore     |  1 +
->   .../kernel/syscalls/ipc/shmget/shmget06.c     | 75 +++++++++++++++++++
->   4 files changed, 78 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/ipc/shmget/shmget06.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index b65b18c32..b379b2d90 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1413,6 +1413,7 @@ shmget02 shmget02
->   shmget03 shmget03
->   shmget04 shmget04
->   shmget05 shmget05
-> +shmget06 shmget06
-> 
->   sigaction01 sigaction01
->   sigaction02 sigaction02
-> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-> index ff0364704..b758158c3 100644
-> --- a/runtest/syscalls-ipc
-> +++ b/runtest/syscalls-ipc
-> @@ -68,3 +68,4 @@ shmget02 shmget02
->   shmget03 shmget03
->   shmget04 shmget04
->   shmget05 shmget05
-> +shmget06 shmget06
-> diff --git a/testcases/kernel/syscalls/ipc/shmget/.gitignore b/testcases/kernel/syscalls/ipc/shmget/.gitignore
-> index 6f08529f8..768d1c69d 100644
-> --- a/testcases/kernel/syscalls/ipc/shmget/.gitignore
-> +++ b/testcases/kernel/syscalls/ipc/shmget/.gitignore
-> @@ -2,3 +2,4 @@
->   /shmget03
->   /shmget04
->   /shmget05
-> +/shmget06
-> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget06.c b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-> new file mode 100644
-> index 000000000..d91b7b635
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu<xuyang2018.jy@fujitsu.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * It is a basic test for shm_next_id.
-> + *
-> + * When the shared memory segment identifier that shm_next_id stored is already
-> + * in use, call shmget with different key just use another unused value in range
-> + * [0,INT_MAX]. Kernel doesn't guarantee the desired id.
-> + */
-> +
-> +#include<errno.h>
-> +#include<string.h>
-> +#include<sys/types.h>
-> +#include<sys/ipc.h>
-> +#include<sys/shm.h>
-> +#include "tst_test.h"
-> +#include "tst_safe_sysv_ipc.h"
-> +#include "libnewipc.h"
-> +
-> +#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
-> +
-> +static int shm_id[2], pid;
-> +static key_t shmkey[2];
-> +
-> +static void verify_shmget(void)
-> +{
-> +	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", shm_id[0]);
-> +
-> +	shm_id[1] = SAFE_SHMGET(shmkey[1], SHM_SIZE, IPC_CREAT | SHM_RW);
-> +	if (shm_id[1] == shm_id[0])
-> +		tst_res(TFAIL, "shm id %d has existed, shmget() returns the"
-> +			" same shm id unexpectedly", shm_id[0]);
-> +	else
-> +		tst_res(TPASS, "shm id %d has existed, shmget() returns the"
-> +			" new shm id %d", shm_id[0], shm_id[1]);
-> +
-> +	SAFE_SHMCTL(shm_id[1], IPC_RMID, NULL);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	shmkey[0] = GETIPCKEY();
-> +	shmkey[1] = GETIPCKEY();
-> +	pid = getpid();
-> +	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
-> +	shm_id[0] = SAFE_SHMGET(shmkey[0], SHM_SIZE, IPC_CREAT | SHM_RW);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i<  2; i++) {
-> +		if (shm_id[i] != -1)
-> +			SAFE_SHMCTL(shm_id[i], IPC_RMID, NULL);
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = verify_shmget,
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_CHECKPOINT_RESTORE=y",
-> +		NULL
-> +	},
-> +	.needs_root = 1,
-> +};
+Understood! Thanks for the suggestion.
+I think I will send a v5 that stays with the original change for this patchset.
+Then send a new RFC patchset to implement your suggestion and check for all uses of this API.
+
+Best regards,
+Leo
+
+> Joerg
