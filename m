@@ -1,28 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 28 Jul 2021 15:38:20 +0200
-Subject: [LTP] [PATCH 2/2 v2] epoll_pwait: Add test variants for
- epoll_pwait2 in epoll_pwait01
-In-Reply-To: <20210728092918.202639-3-xieziyao@huawei.com>
-References: <20210728092918.202639-1-xieziyao@huawei.com>
- <20210728092918.202639-3-xieziyao@huawei.com>
-Message-ID: <YQFdzHHJZqCUrnZV@yuki>
+From: Radoslav Kolev <radoslav.kolev@suse.com>
+Date: Wed, 28 Jul 2021 17:00:55 +0300
+Subject: [LTP] [PATCH v1] lib/tst_test.sh: skip test if ip returns
+ "Error: Unknown device type"
+In-Reply-To: <YQFWT/0MBcZsLNVV@pevik>
+References: <20210722063422.18059-1-radoslav.kolev@suse.com>
+ <YPkjE3KHHnhYklp/@pevik> <8b564e10-d87e-aaf0-03a4-1af347f02d4b@suse.com>
+ <8cc8d5bc-b651-8e15-6389-69f36cf6bb49@bell-sw.com> <YP/ZxhYSZb/NusUs@pevik>
+ <c94e1459-07d5-ceb0-f113-9d3f57343983@bell-sw.com> <YQFWT/0MBcZsLNVV@pevik>
+Message-ID: <c78c6b1a-2793-de86-a263-5bcf58ab41da@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
+On 7/28/21 4:06 PM, Petr Vorel wrote:
+> Yep, that'd be safer. But your original proposal to check ip_vti ip6_vti
+> is IMHO the best solution. Radoslav, would you send a new patch with it?
 
-* Move the check_epoll_support() to the setup to abort the test early if
-  syscall is not supported
+Agreed that the proposed by Alexey is a better approach. Yes, patch is 
+coming.
 
-* Revoved the .min_kver since we check for the syscall availability now
-
-* Reformatted the description a bit so that it renders nicely in
-  metadata
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
