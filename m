@@ -1,43 +1,24 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Wed, 28 Jul 2021 14:20:42 +0300
-Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
- protocol
-In-Reply-To: <YQBD4w2nKwY2G1l+@pevik>
-References: <20210714140716.1568-1-pvorel@suse.cz>
- <20210714140716.1568-3-pvorel@suse.cz>
- <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com> <YQBD4w2nKwY2G1l+@pevik>
-Message-ID: <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 28 Jul 2021 13:27:24 +0200
+Subject: [LTP] [PATCH] clock_gettime01: avoid zero exec runtime due to
+ irq and steal time accounting
+In-Reply-To: <YPrbrX3VePpf84C+@yuki>
+References: <15dd5ab99369da3cba33a748d1bf05be145ef373.1627046193.git.jstancek@redhat.com>
+ <YPrbrX3VePpf84C+@yuki>
+Message-ID: <CAASaF6zu+6rAuE7aRJShiHEF9_4f94AdfqDBb66kOv6Ymh9ErQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 27.07.2021 20:35, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> On 14.07.2021 17:07, Petr Vorel wrote:
->>> net_stress.broken_ip runtest file is correct, but some users try to run
->>> tests manually.
-> 
->>> Fixes: #843
-> 
-...
->>>  do_test()
-> 
->> The generic version looks fine:
-> 
->> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-> 
-> I didn't understand whether you'd prefer to add TST_IPV6=6 (or TST_IPV6=) where
-> needed or accept this patchset. Both would work.
+On Fri, Jul 23, 2021 at 5:35 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-I think for manual runs it is better to set TST_IPV6=6 in the test
-so it will run the test rather the require passing some options.
+> Hi!
+> Looks good: Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+>
 
-
-> Kind regards,
-> Petr
-> 
-
+Thanks for review, pushed.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210728/6e8cc8a8/attachment.htm>
