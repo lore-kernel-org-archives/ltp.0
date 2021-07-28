@@ -1,49 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 28 Jul 2021 15:08:07 +0200
-Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
- protocol
-In-Reply-To: <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
-References: <20210714140716.1568-1-pvorel@suse.cz>
- <20210714140716.1568-3-pvorel@suse.cz>
- <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
- <YQBD4w2nKwY2G1l+@pevik>
- <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
-Message-ID: <YQFWt/NcacYfVt9R@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 28 Jul 2021 15:38:20 +0200
+Subject: [LTP] [PATCH 2/2 v2] epoll_pwait: Add test variants for
+ epoll_pwait2 in epoll_pwait01
+In-Reply-To: <20210728092918.202639-3-xieziyao@huawei.com>
+References: <20210728092918.202639-1-xieziyao@huawei.com>
+ <20210728092918.202639-3-xieziyao@huawei.com>
+Message-ID: <YQFdzHHJZqCUrnZV@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi Petr,
-> On 27.07.2021 20:35, Petr Vorel wrote:
-> > Hi Alexey,
+Hi!
+Pushed with minor changes, thanks.
 
-> >> On 14.07.2021 17:07, Petr Vorel wrote:
-> >>> net_stress.broken_ip runtest file is correct, but some users try to run
-> >>> tests manually.
+* Move the check_epoll_support() to the setup to abort the test early if
+  syscall is not supported
 
-> >>> Fixes: #843
+* Revoved the .min_kver since we check for the syscall availability now
 
-> ...
-> >>>  do_test()
+* Reformatted the description a bit so that it renders nicely in
+  metadata
 
-> >> The generic version looks fine:
-
-> >> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-
-> > I didn't understand whether you'd prefer to add TST_IPV6=6 (or TST_IPV6=) where
-> > needed or accept this patchset. Both would work.
-
-> I think for manual runs it is better to set TST_IPV6=6 in the test
-> so it will run the test rather the require passing some options.
-+1.
-
-Kind regards,
-Petr
-
-
-> > Kind regards,
-> > Petr
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
