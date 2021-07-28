@@ -1,24 +1,63 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 28 Jul 2021 13:27:24 +0200
-Subject: [LTP] [PATCH] clock_gettime01: avoid zero exec runtime due to
- irq and steal time accounting
-In-Reply-To: <YPrbrX3VePpf84C+@yuki>
-References: <15dd5ab99369da3cba33a748d1bf05be145ef373.1627046193.git.jstancek@redhat.com>
- <YPrbrX3VePpf84C+@yuki>
-Message-ID: <CAASaF6zu+6rAuE7aRJShiHEF9_4f94AdfqDBb66kOv6Ymh9ErQ@mail.gmail.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Wed, 28 Jul 2021 14:38:12 +0300
+Subject: [LTP] [PATCH v1] lib/tst_test.sh: skip test if ip returns
+ "Error: Unknown device type"
+In-Reply-To: <YP/ZxhYSZb/NusUs@pevik>
+References: <20210722063422.18059-1-radoslav.kolev@suse.com>
+ <YPkjE3KHHnhYklp/@pevik> <8b564e10-d87e-aaf0-03a4-1af347f02d4b@suse.com>
+ <8cc8d5bc-b651-8e15-6389-69f36cf6bb49@bell-sw.com> <YP/ZxhYSZb/NusUs@pevik>
+Message-ID: <c94e1459-07d5-ceb0-f113-9d3f57343983@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jul 23, 2021 at 5:35 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On 27.07.2021 13:02, Petr Vorel wrote:
+> Hi Alexey, Radoslav,
+> 
+>> Hi Radoslav,
+> 
+>> On 27.07.2021 11:20, Radoslav Kolev wrote:
+>>> On 7/22/21 10:49 AM, Petr Vorel wrote:
+>>>> Hi Radoslav,
+> 
+>>>>> In network stress test groups there are tests expecting
+>>>>> CONFIG_NET_IPVTI to be enabled in the kernel, and if it's not they
+>>>>> fail. There is a check for VTI support in the ip utility, but not
+>>>>> for the kernel. Skip these tests if vti device type is not known by
+>>>>> the kernel.
+>>>> LGTM.
+>>>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+>>> Thanks for the review, Petr!
+> 
+>>> Alexey, please let me know if you have any comments.
+> 
+> 
+> 
+>> What about checking vti drivers in stress/ipsec/ipsec_lib.sh:tst_ipsec_setup_vti()
+>> Similar to the checks for xfrm_user driver there...
+> 
+>> For example:
+> 
+>> tst_net_run -q "tst_check_drivers ip_vti ip6_vti" || \
+>>     tst_brk TCONF "vti driver not available on lhost or rhost"
+> 
+> 
+>> I think this should work for wireguard02 test as well.
+> 
+> The above LGTM, Radoslav, do you have time to look into it?
+> Alexey, do we also accept this patch? IMHO this error should be mostly TCONF and
+> it'd work for other possible drivers.
+> 
 
-> Hi!
-> Looks good: Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
->
+Not sure if we really want to add the new patterns every time the
+error message from ip changes. For example depending on the ip/libc
+the error can be "Error: Unknown device type." or "RTNETLINK answers:
+Not supported".
 
-Thanks for review, pushed.
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210728/6e8cc8a8/attachment.htm>
+We could also save the error message in setup by passing the wrong
+type and then compare it during the test:
+
+no_dev_msg="$(ip link add ltp0 type ltp0 2>&1)"
