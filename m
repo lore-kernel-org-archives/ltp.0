@@ -1,72 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 28 Jul 2021 15:06:23 +0200
-Subject: [LTP] [PATCH v1] lib/tst_test.sh: skip test if ip returns
- "Error: Unknown device type"
-In-Reply-To: <c94e1459-07d5-ceb0-f113-9d3f57343983@bell-sw.com>
-References: <20210722063422.18059-1-radoslav.kolev@suse.com>
- <YPkjE3KHHnhYklp/@pevik>
- <8b564e10-d87e-aaf0-03a4-1af347f02d4b@suse.com>
- <8cc8d5bc-b651-8e15-6389-69f36cf6bb49@bell-sw.com>
- <YP/ZxhYSZb/NusUs@pevik>
- <c94e1459-07d5-ceb0-f113-9d3f57343983@bell-sw.com>
-Message-ID: <YQFWT/0MBcZsLNVV@pevik>
+Date: Wed, 28 Jul 2021 15:08:07 +0200
+Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
+ protocol
+In-Reply-To: <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
+References: <20210714140716.1568-1-pvorel@suse.cz>
+ <20210714140716.1568-3-pvorel@suse.cz>
+ <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
+ <YQBD4w2nKwY2G1l+@pevik>
+ <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
+Message-ID: <YQFWt/NcacYfVt9R@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 27.07.2021 13:02, Petr Vorel wrote:
-> > Hi Alexey, Radoslav,
+> Hi Petr,
+> On 27.07.2021 20:35, Petr Vorel wrote:
+> > Hi Alexey,
 
-> >> Hi Radoslav,
+> >> On 14.07.2021 17:07, Petr Vorel wrote:
+> >>> net_stress.broken_ip runtest file is correct, but some users try to run
+> >>> tests manually.
 
-> >> On 27.07.2021 11:20, Radoslav Kolev wrote:
-> >>> On 7/22/21 10:49 AM, Petr Vorel wrote:
-> >>>> Hi Radoslav,
+> >>> Fixes: #843
 
-> >>>>> In network stress test groups there are tests expecting
-> >>>>> CONFIG_NET_IPVTI to be enabled in the kernel, and if it's not they
-> >>>>> fail. There is a check for VTI support in the ip utility, but not
-> >>>>> for the kernel. Skip these tests if vti device type is not known by
-> >>>>> the kernel.
-> >>>> LGTM.
-> >>>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ...
+> >>>  do_test()
 
-> >>> Thanks for the review, Petr!
+> >> The generic version looks fine:
 
-> >>> Alexey, please let me know if you have any comments.
+> >> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 
+> > I didn't understand whether you'd prefer to add TST_IPV6=6 (or TST_IPV6=) where
+> > needed or accept this patchset. Both would work.
 
-
-> >> What about checking vti drivers in stress/ipsec/ipsec_lib.sh:tst_ipsec_setup_vti()
-> >> Similar to the checks for xfrm_user driver there...
-
-> >> For example:
-
-> >> tst_net_run -q "tst_check_drivers ip_vti ip6_vti" || \
-> >>     tst_brk TCONF "vti driver not available on lhost or rhost"
-
-
-> >> I think this should work for wireguard02 test as well.
-
-> > The above LGTM, Radoslav, do you have time to look into it?
-> > Alexey, do we also accept this patch? IMHO this error should be mostly TCONF and
-> > it'd work for other possible drivers.
-
-
-> Not sure if we really want to add the new patterns every time the
-> error message from ip changes. For example depending on the ip/libc
-> the error can be "Error: Unknown device type." or "RTNETLINK answers:
-> Not supported".
-Sure, more effective ways are always welcome.
-
-> We could also save the error message in setup by passing the wrong
-> type and then compare it during the test:
-
-> no_dev_msg="$(ip link add ltp0 type ltp0 2>&1)"
-Yep, that'd be safer. But your original proposal to check ip_vti ip6_vti
-is IMHO the best solution. Radoslav, would you send a new patch with it?
+> I think for manual runs it is better to set TST_IPV6=6 in the test
+> so it will run the test rather the require passing some options.
++1.
 
 Kind regards,
 Petr
+
+
+> > Kind regards,
+> > Petr
+
+
