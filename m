@@ -1,63 +1,60 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Wed, 28 Jul 2021 14:38:12 +0300
-Subject: [LTP] [PATCH v1] lib/tst_test.sh: skip test if ip returns
- "Error: Unknown device type"
-In-Reply-To: <YP/ZxhYSZb/NusUs@pevik>
-References: <20210722063422.18059-1-radoslav.kolev@suse.com>
- <YPkjE3KHHnhYklp/@pevik> <8b564e10-d87e-aaf0-03a4-1af347f02d4b@suse.com>
- <8cc8d5bc-b651-8e15-6389-69f36cf6bb49@bell-sw.com> <YP/ZxhYSZb/NusUs@pevik>
-Message-ID: <c94e1459-07d5-ceb0-f113-9d3f57343983@bell-sw.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 28 Jul 2021 13:34:07 +0100
+Subject: [LTP] [PATCH v3 3/8] doc: Add rules and recommendations list
+In-Reply-To: <20210728123412.31858-1-rpalethorpe@suse.com>
+References: <20210728123412.31858-1-rpalethorpe@suse.com>
+Message-ID: <20210728123412.31858-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27.07.2021 13:02, Petr Vorel wrote:
-> Hi Alexey, Radoslav,
-> 
->> Hi Radoslav,
-> 
->> On 27.07.2021 11:20, Radoslav Kolev wrote:
->>> On 7/22/21 10:49 AM, Petr Vorel wrote:
->>>> Hi Radoslav,
-> 
->>>>> In network stress test groups there are tests expecting
->>>>> CONFIG_NET_IPVTI to be enabled in the kernel, and if it's not they
->>>>> fail. There is a check for VTI support in the ip utility, but not
->>>>> for the kernel. Skip these tests if vti device type is not known by
->>>>> the kernel.
->>>> LGTM.
->>>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
->>> Thanks for the review, Petr!
-> 
->>> Alexey, please let me know if you have any comments.
-> 
-> 
-> 
->> What about checking vti drivers in stress/ipsec/ipsec_lib.sh:tst_ipsec_setup_vti()
->> Similar to the checks for xfrm_user driver there...
-> 
->> For example:
-> 
->> tst_net_run -q "tst_check_drivers ip_vti ip6_vti" || \
->>     tst_brk TCONF "vti driver not available on lhost or rhost"
-> 
-> 
->> I think this should work for wireguard02 test as well.
-> 
-> The above LGTM, Radoslav, do you have time to look into it?
-> Alexey, do we also accept this patch? IMHO this error should be mostly TCONF and
-> it'd work for other possible drivers.
-> 
+Create a list of rules which are feasible to check automatically. The
+file is a table of tab separated values. It's intended to be machine
+readable.
 
-Not sure if we really want to add the new patterns every time the
-error message from ip changes. For example depending on the ip/libc
-the error can be "Error: Unknown device type." or "RTNETLINK answers:
-Not supported".
+For now there is just an ID column, with IDs that look similar to CWE
+IDs or CVEs. For now these can just be used with 'git grep'. Also
+there is a description column.
 
-We could also save the error message in setup by passing the wrong
-type and then compare it during the test:
+Clearly this is not an exhaustive list. It just contains a library
+rule already stated in the guide and the issue Sparse checks for.
 
-no_dev_msg="$(ip link add ltp0 type ltp0 2>&1)"
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ doc/rules.tsv                   | 3 +++
+ doc/test-writing-guidelines.txt | 7 +++++++
+ 2 files changed, 10 insertions(+)
+ create mode 100644 doc/rules.tsv
+
+diff --git a/doc/rules.tsv b/doc/rules.tsv
+new file mode 100644
+index 000000000..d4081ce0f
+--- /dev/null
++++ b/doc/rules.tsv
+@@ -0,0 +1,3 @@
++ID	DESCRIPTION
++LTP-001	Library source files have tst_ prefix
++LTP-002	TST_RET and TST_ERR are never modified by test library functions
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index d57e52655..1197c9a0d 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -10,6 +10,13 @@ NOTE: See also
+       https://github.com/linux-test-project/ltp/wiki/Shell-Test-API[Shell Test API],
+       https://github.com/linux-test-project/ltp/wiki/LTP-Library-API-Writing-Guidelines[LTP Library API Writing Guidelines].
+ 
++Rules and recommendations which are "machine checkable" should be
++tagged with an ID like +LTP-XXX+. There will be a corresponding entry
++in
++https://github.com/linux-test-project/ltp/tree/master/doc/rules.tsv[doc/rules.tsv]. When
++you run 'make check' or 'make check-test' it will display these IDs as
++a reference.
++
+ 1. Guide to clean and understandable code
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-- 
+2.31.1
+
