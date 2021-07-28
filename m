@@ -1,106 +1,49 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 28 Jul 2021 13:34:04 +0100
-Subject: [LTP] [PATCH v3 0/8] Sparse based checker and rule proposal
-Message-ID: <20210728123412.31858-1-rpalethorpe@suse.com>
+Date: Wed, 28 Jul 2021 13:34:08 +0100
+Subject: [LTP] [PATCH v3 4/8] doc: Remind authors and maintainers to run
+ make check
+In-Reply-To: <20210728123412.31858-1-rpalethorpe@suse.com>
+References: <20210728123412.31858-1-rpalethorpe@suse.com>
+Message-ID: <20210728123412.31858-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ doc/maintainer-patch-review-checklist.txt | 4 ++--
+ doc/test-writing-guidelines.txt           | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-So it turns out that it is quite easy to implement the TST_RET/ERR
-check in Sparse. It compiles the code into an IR which is just the
-right abstraction for the test. It is also possible to inspect the AST
-with Sparse. It appears more difficult to inspect the AST before
-macros are expanded.
-
-Sparse is not packaged as a shared library, but has few/no
-dependencies and is easy to compile. It seems like it was meant to be
-vendored. Including it as a git module seems reasonable to me. Please
-see tools/sparse/README.md.
-
-There are still a lot of errors/noise when running 'make check' on the
-entire tree. These are mainly caused by old function definitions and
-such. They need to be fixed before the tool can be used properly.
-
-Also I have tried to document the rule and created a list of rules. So
-this can also be taken as a formal proposal for the rule itself.
-
-Thanks,
-
-V3:
-* Rename main to sparse-ltp
-* Unify TEST/TST_EXP docs
-* Add/fix a couple of links in the docs
-* minor formatting changes in sparse-ltp
-* Add note on building with -m32
-
-V2:
-* Automatically download and build sparse.
-* Only build sparse if "make check" is run. It is filtered from "make all".
-* Move libtsc.h out of the realtime tests dir. Note that checking of metldown.c
-  now fails because it uses a GCC builtin sparse does not recognize.
-
-As mentioned above, there are various errors during checking that need
-fixing. For the most part these are legit errors (usually old style
-function definitions or redefining of symbols). With stuff like
-metldown I am tempted to filter it, but OTOH it looks relatively
-straight forward to add a builtin to Sparse upstream. I just need time
-to do it. First though I would like to get "make check" working on the
-library, so we can put that in CI.
-
-Richard Palethorpe (8):
-  Add Sparse based checker and TST_RET/ERR check
-  Add 'make check' to the build system
-  doc: Add rules and recommendations list
-  doc: Remind authors and maintainers to run make check
-  doc: Document TEST macro and state TST_RET/ERR rule LTP-002
-  Reference LTP-002 rule in Cocci scripts
-  API: Move libtsc.h from realtime tests include to tst_tsc.h
-  API/tst_tsc: Add guards and remove some boilerplate
-
- .gitmodules                                   |   3 +
- Makefile                                      |   8 +
- doc/c-test-api.txt                            |  54 ++++++-
- doc/library-api-writing-guidelines.txt        |  14 ++
- doc/maintainer-patch-review-checklist.txt     |   4 +-
- doc/rules.tsv                                 |   3 +
- doc/test-writing-guidelines.txt               |   8 +
- include/mk/env_post.mk                        |   8 +
- include/mk/generic_leaf_target.inc            |   5 +-
- include/mk/generic_trunk_target.inc           |   7 +-
- include/mk/lib.mk                             |   3 +
- include/mk/module.mk                          |   2 +
- include/mk/rules.mk                           |   9 ++
- include/mk/sparse.mk                          |   9 ++
- include/mk/testcases.mk                       |   1 +
- .../include/libtsc.h => include/tst_tsc.h     |  35 +----
- .../coccinelle/libltp-test-macro-vars.cocci   |   6 +-
- scripts/coccinelle/libltp-test-macro.cocci    |   4 +-
- testcases/cve/Makefile                        |   2 -
- testcases/cve/meltdown.c                      |   2 +-
- testcases/open_posix_testsuite/Makefile       |   4 +
- .../func/async_handler/async_handler_tsc.c    |   3 +-
- .../func/measurement/preempt_timing.c         |   3 +-
- .../realtime/func/measurement/rdtsc-latency.c |   3 +-
- tools/Makefile                                |   2 +
- tools/sparse/.gitignore                       |   1 +
- tools/sparse/Makefile                         |  27 ++++
- tools/sparse/README.md                        |  51 ++++++
- tools/sparse/sparse-ltp.c                     | 147 ++++++++++++++++++
- tools/sparse/sparse-src                       |   1 +
- 30 files changed, 382 insertions(+), 47 deletions(-)
- create mode 100644 doc/rules.tsv
- create mode 100644 include/mk/sparse.mk
- rename testcases/realtime/include/libtsc.h => include/tst_tsc.h (53%)
- create mode 100644 tools/sparse/.gitignore
- create mode 100644 tools/sparse/Makefile
- create mode 100644 tools/sparse/README.md
- create mode 100644 tools/sparse/sparse-ltp.c
- create mode 160000 tools/sparse/sparse-src
-
+diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+index f6682b574..58662bed1 100644
+--- a/doc/maintainer-patch-review-checklist.txt
++++ b/doc/maintainer-patch-review-checklist.txt
+@@ -39,8 +39,8 @@ New test should
+ * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+ * Test binaries are added into corresponding '.gitignore' files
+ * Check coding style with
+-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
+-  (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style[C coding style])
++  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl] and `make check`
++  (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#21-c-coding-style[C coding style])
+ * Docparse documentation
+ * If a test is a regression test it should include tags
+   (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2238-test-tags[Test tags])
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 1197c9a0d..340c80cc6 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -310,6 +310,7 @@ NOTE: See also
+ 3. The runtest entires are in place
+ 4. Test binaries are added into corresponding '.gitignore' files
+ 5. Patches apply over the latest git
++6. 'make check' does not emit any warnings
+ 
+ 6.1 About .gitignore files
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- 
 2.31.1
 
