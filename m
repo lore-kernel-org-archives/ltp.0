@@ -1,102 +1,75 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 28 Jul 2021 13:34:11 +0100
-Subject: [LTP] [PATCH v3 7/8] API: Move libtsc.h from realtime tests include
- to tst_tsc.h
+Date: Wed, 28 Jul 2021 13:34:12 +0100
+Subject: [LTP] [PATCH v3 8/8] API/tst_tsc: Add guards and remove some
+ boilerplate
 In-Reply-To: <20210728123412.31858-1-rpalethorpe@suse.com>
 References: <20210728123412.31858-1-rpalethorpe@suse.com>
-Message-ID: <20210728123412.31858-8-rpalethorpe@suse.com>
+Message-ID: <20210728123412.31858-9-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Allow the meltdown test to use this file without modifying the
-CFLAGS. This avoids having to add the include also to the CHECK_FLAGS.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/realtime/include/libtsc.h => include/tst_tsc.h  | 0
- testcases/cve/Makefile                                    | 2 --
- testcases/cve/meltdown.c                                  | 2 +-
- testcases/realtime/func/async_handler/async_handler_tsc.c | 3 ++-
- testcases/realtime/func/measurement/preempt_timing.c      | 3 ++-
- testcases/realtime/func/measurement/rdtsc-latency.c       | 3 ++-
- 6 files changed, 7 insertions(+), 6 deletions(-)
- rename testcases/realtime/include/libtsc.h => include/tst_tsc.h (100%)
+ include/tst_tsc.h | 35 ++++++++---------------------------
+ 1 file changed, 8 insertions(+), 27 deletions(-)
 
-diff --git a/testcases/realtime/include/libtsc.h b/include/tst_tsc.h
-similarity index 100%
-rename from testcases/realtime/include/libtsc.h
-rename to include/tst_tsc.h
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index ddf8b6fe1..c5308794d 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -18,8 +18,6 @@ ifneq ($(ANDROID),1)
- cve-2014-0196:  LDLIBS += -lutil
- endif
- 
--meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
--
- ifneq (,$(filter $(HOST_CPU),x86 x86_64))
- meltdown: CFLAGS += -msse2
- endif
-diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-index a387b3205..5a984aba3 100644
---- a/testcases/cve/meltdown.c
-+++ b/testcases/cve/meltdown.c
-@@ -19,7 +19,7 @@
- 
- #include <emmintrin.h>
- 
--#include "libtsc.h"
-+#include "tst_tsc.h"
- 
- #define TARGET_OFFSET	9
- #define TARGET_SIZE	(1 << TARGET_OFFSET)
-diff --git a/testcases/realtime/func/async_handler/async_handler_tsc.c b/testcases/realtime/func/async_handler/async_handler_tsc.c
-index 7da4324a5..73d4ee5c6 100644
---- a/testcases/realtime/func/async_handler/async_handler_tsc.c
-+++ b/testcases/realtime/func/async_handler/async_handler_tsc.c
-@@ -46,7 +46,8 @@
- #include <pthread.h>
- #include <librttest.h>
- #include <libstats.h>
--#include <libtsc.h>
+diff --git a/include/tst_tsc.h b/include/tst_tsc.h
+index 9ad5fd659..3f49a6ca7 100644
+--- a/include/tst_tsc.h
++++ b/include/tst_tsc.h
+@@ -1,28 +1,6 @@
+-/******************************************************************************
+- *
+- *   Copyright ? International Business Machines  Corp., 2006-2008
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+- * NAME
+- *       libtsc.h
+- *
+- * DESCRIPTION
+- *
+- * USAGE:
+- *       To be included in some testcases.
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright ? International Business Machines  Corp., 2006-2008
+  *
+  * AUTHOR
+  *        Darren Hart <dvhltc@us.ibm.com>
+@@ -30,8 +8,10 @@
+  *
+  * HISTORY
+  *      It directly comes from the librttest.h (see its HISTORY).
+- *
+- *****************************************************************************/
++ */
 +
-+#include "tst_tsc.h"
++#ifndef TST_TSC_H
++#define TST_TSC_H
  
- #define HANDLER_PRIO 98
- #define SIGNAL_PRIO 99
-diff --git a/testcases/realtime/func/measurement/preempt_timing.c b/testcases/realtime/func/measurement/preempt_timing.c
-index 8b5333480..b84d54692 100644
---- a/testcases/realtime/func/measurement/preempt_timing.c
-+++ b/testcases/realtime/func/measurement/preempt_timing.c
-@@ -52,7 +52,8 @@
- #include <sys/mman.h>
- #include <stdint.h>
- #include <librttest.h>
--#include <libtsc.h>
-+
-+#include "tst_tsc.h"
+ #undef TSC_UNSUPPORTED
  
- #define ITERATIONS 1000000ULL
- #define INTERVALS 10
-diff --git a/testcases/realtime/func/measurement/rdtsc-latency.c b/testcases/realtime/func/measurement/rdtsc-latency.c
-index d6ab89ff0..3829947bc 100644
---- a/testcases/realtime/func/measurement/rdtsc-latency.c
-+++ b/testcases/realtime/func/measurement/rdtsc-latency.c
-@@ -44,7 +44,8 @@
- #include <errno.h>
- #include <stdint.h>
- #include <librttest.h>
--#include <libtsc.h>
-+
-+#include "tst_tsc.h"
+@@ -70,3 +50,4 @@
+ #define TSC_UNSUPPORTED
+ #endif
  
- #define ITERATIONS 1000000
- 
++#endif
 -- 
 2.31.1
 
