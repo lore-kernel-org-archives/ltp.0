@@ -1,75 +1,68 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 29 Jul 2021 15:27:24 +0800
-Subject: [LTP] [PATCH] mbind01: accept MPOL_LOCAL when passing empty set
- for MPOL_PREFERRED
-In-Reply-To: <3d693985aafc13fba1cd7c4fa807bbbddd015c7b.1627303875.git.jstancek@redhat.com>
-References: <3d693985aafc13fba1cd7c4fa807bbbddd015c7b.1627303875.git.jstancek@redhat.com>
-Message-ID: <CAEemH2fR-2pF5WpvgEQrNRVHJKYekXPwe72_KmQy4Bvh+NRs6Q@mail.gmail.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Thu, 29 Jul 2021 15:41:33 +0800
+Subject: [LTP] [PATCH v4,
+ 2/2] cgroup/cgroup_regression_test: Fix umount failure
+In-Reply-To: <YQAP8hoNpE+xykFA@pevik>
+References: <20210719092239.GA1475@atcfdc88> <YPgxJwx795fhXgLa@pevik>
+ <62262681-222f-8d09-a100-0d7be0c7526f@jv-coder.de>
+ <YQAFcVwvz+eXGOsk@yuki> <YQAP8hoNpE+xykFA@pevik>
+Message-ID: <20210729074133.GA21036@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jul 26, 2021 at 8:53 PM Jan Stancek <jstancek@redhat.com> wrote:
+Hi, 
+On Tue, Jul 27, 2021 at 09:53:54PM +0800, Petr Vorel wrote:
+> Hi,
+> 
+> FYI this discussion is on v4, there is already v5 (marking it changes requested
+> in patchwork) and obviously v6 will be needed. Leo, I suppose you'll implement
+> everything mentioned here in v6.
+> 
 
-> When empty set is passed to MPOL_PREFERRED, memory is allocated
-> on the node of the CPU that triggered the allocation.
->
-> After kernel commit:
->   7858d7bca7fb ("mm/mempolicy: don't handle MPOL_LOCAL like a fake
-> MPOL_PREFERRED policy")
-> kernel returns stored policy as MPOL_LOCAL.
->
-
-As the MPOL_LOCAL has been setup as a real policy, I'm wondering should we
-add more tests for it in the next? e.g.
-
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -47,6 +47,19 @@ struct test_case {
- };
-
- static struct test_case tcase[] = {
-+       {
-+               POLICY_DESC(MPOL_LOCAL),
-+               .ret = 0,
-+               .err = 0,
-+               .test = test_none,
-+               .exp_nodemask = &empty_nodemask,
-+       },
-+       {
-+               POLICY_DESC_TEXT(MPOL_LOCAL, "target exists"),
-+               .ret = -1,
-+               .err = EINVAL,
-+               .test = test_default,
-+       },
-        {
-                POLICY_DESC(MPOL_DEFAULT),
-                .ret = 0,
+No problem! Thanks for all the advice!
+Will prepare a v6 soon!
 
 
+> > Hi!
+> > > I had a first look at this patches and was curious, what the reasoning 
+> > > behind the "/" is.
+> +1 I should have ask myself as well :).
+> 
+> > > The comment you suggest is wrong. The / was introduced to prevent 
+> > > unmounting some other mountpoint,
+> > > where the device was cgroup.
+> > > Imho the approach of adding a / to the end was wrong and intransparent. 
+> > > I would rather use "./cgroup" or "$PWD/cgroup".
+> 
+> > Passing full path to the cgroup directory sound much safer to me
+> > especially when the directory name is just 'cgroup', try it yourself:
+> 
+> > device=cgroup/; grep "${device%/}" /proc/mounts
+> 
+> > On my machine this yields 10 lines and 21 matches.
+> 
+> > > If possible, I'd actually change tst_umount, to always unmount the 
+> > > mountpoint and not the device, i.e. if the given path is not an absolute 
+> > > path, make it absolute (e.g. by prepending $PWD").
+> > > This way the check if the mountpoint exist wouldn't be the fuzzy thing 
+> > > it is right now.
+> +1
 
->
-> Per mhocko@suse.com in
-> https://lists.linux.it/pipermail/ltp/2021-June/023037.html
->   Strictly speaking this is breaking user interface but I am wondering
->   whether this really matter or is completely unexpected ... I would
->   be inclined to keep this inconsistency and see whether anybody
->   actually complains and have a relevant use for this behavior.
->
-> Modify the test to accept either MPOL_PREFERRED or MPOL_LOCAL.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
->
+> 
+> > Strongly agree here.
+> 
+> > I would go even one step further and change the library so that it
+> > rejects anything that does not start with '/'.
+> +1
+> 
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Will include both points in v6 patch!
 
-But anyway, this patch makes sense!
+> Kind regards,
+> Petr
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210729/e122676e/attachment.htm>
+Best regards,
+Leo
