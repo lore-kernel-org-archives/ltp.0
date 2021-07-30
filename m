@@ -1,39 +1,128 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 30 Jul 2021 11:32:21 +0200
-Subject: [LTP] [PATCH v2] crypto/af_alg02: thread termination fixes
-In-Reply-To: <YQPCcew5Are2VrDh@yuki>
-References: <20210720101249.10118-1-aleksei.kodanev@bell-sw.com>
- <YQPCcew5Are2VrDh@yuki>
-Message-ID: <0c978fd5-9772-ad4e-c14e-c8b4a8344506@jv-coder.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri, 30 Jul 2021 10:43:20 +0100
+Subject: [LTP] [PATCH v4] doc: Document TEST macro and state TST_RET/ERR
+ rule LTP-002
+Message-ID: <20210730094320.2988-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+There are cases where these variables can be safely used by the
+library. However it is a difficult problem to identify these cases
+automatically.
 
-On 7/30/2021 11:12 AM, Cyril Hrubis wrote:
-> Hi!
->> On musl, pthread_kill() doesn't return ESRCH if thread id is not found
->> (POSIX only recommends to return ESRCH). Use tst_atomic_store/load()
->> instead, when waiting for the thread.
->>
->> Also, the thread's resources wasn't properly freed after the run(),
->> so adding pthread_join() should fix that.
-> I do not think that we even need atomic operations here as we do not
-> have competing threads setting the value, it should work fine with
-> regular assignments as long as the completed variable is marked as
-> volatile (which will prevent compiler mis-optimizations).
+Identifying any library code which uses them is relatively easy. In
+fact it is easier to automate it than by code review. Because it is
+such a boring thing to repeatedly look for and comment on.
 
-+1 Using a volatile variable should be enough here.
-If only pthread_timedjoin_np was not _np... This is exactly the function 
-that could be used here without any boilerplate.
-But is the custom timeout handling in this test even required? Does the 
-default timeout using SIGALRM not work?
-The thread was introduced, because SIG_ALRM was apparently not able to 
-interrupt the read call on linux < 4.14.
-But even there it should be possible to interrupt pthread_join. So just 
-replacing the whole loop with pthread_join should be enough.
+If a test library function needs these variables it can recreate its
+own private copies.
 
-Joerg
+Reviewed-by: Petr Vorel <pvorel@suse.com>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+
+The rest of the patchset was merged. 
+
+V4:
+* Remove second TST_EXP_PASS example.
+
+ doc/c-test-api.txt                     | 43 ++++++++++++++++++++++++--
+ doc/library-api-writing-guidelines.txt | 14 +++++++++
+ 2 files changed, 55 insertions(+), 2 deletions(-)
+
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index dd6c608a4..7caf7d86f 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -251,6 +251,9 @@ success. It will check for the return value and reports failure if the return
+ value is not equal to 0. The call also sets the 'TST_PASS' variable to 1 if
+ the call succeeeded.
+ 
++As seen above, this and similar macros take optional variadic arguments. These
++begin with a format string and then appropriate values to be formatted.
++
+ [source,c]
+ -------------------------------------------------------------------------------
+ static void test(void)
+@@ -291,8 +294,44 @@ static void test(void)
+ }
+ -------------------------------------------------------------------------------
+ 
+-The 'TST_EXP_FAIL2()' is the same as 'TST_EXP_FAIL()' except the return value
+-is expected to be non-negative integer if call passes.
++The 'TST_EXP_FAIL2()' is the same as 'TST_EXP_FAIL()' except the return value is
++expected to be non-negative integer if call passes. These macros build upon the
+++TEST()+ macro and associated variables.
++
++[source,c]
++-------------------------------------------------------------------------------
++TEST(socket(AF_INET, SOCK_RAW, 1));
++if (TST_RET > -1) {
++	tst_res(TFAIL, "Created raw socket");
++	SAFE_CLOSE(TST_RET);
++} else if (TST_ERR != EPERM) {
++	tst_res(TFAIL | TTERRNO,
++		"Failed to create socket for wrong reason");
++} else {
++	tst_res(TPASS | TTERRNO, "Didn't create raw socket");
++}
++-------------------------------------------------------------------------------
++
++The +TEST+ macro sets +TST_RET+ to its argument's return value and +TST_ERR+ to
+++errno+. The +TTERNO+ flag can be used to print the error number's symbolic
++value.
++
++No LTP library function or macro, except those in 'tst_test_macros.h', will
++write to these variables (rule 'LTP-002'). So their values will not be changed
++unexpectedly.
++
++[source,c]
++-------------------------------------------------------------------------------
++TST_EXP_POSITIVE(wait(&status));
++
++if (!TST_PASS)
++	return;
++-------------------------------------------------------------------------------
++
++If the return value of 'wait' is positive. This macro will print a pass result
++and set +TST_PASS+ appropriately. If the return value is zero or negative, then
++it will print fail.  There are many similar macros to those shown here, please
++see 'tst_test_macros.h'.
+ 
+ [source,c]
+ -------------------------------------------------------------------------------
+diff --git a/doc/library-api-writing-guidelines.txt b/doc/library-api-writing-guidelines.txt
+index a4393fc54..2819d4177 100644
+--- a/doc/library-api-writing-guidelines.txt
++++ b/doc/library-api-writing-guidelines.txt
+@@ -21,10 +21,24 @@ Don't forget to update docs when you change the API.
+ 2. C API
+ --------
+ 
++2.1 LTP-001: Sources have tst_ prefix
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
+ API source code is in headers `include/*.h`, `include/lapi/*.h` (backward
+ compatibility for old kernel and libc) and C sources in `lib/*.c`. Files have
+ 'tst_' prefix.
+ 
++2.2 LTP-002: TST_RET and TST_ERR are not modified
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The test author is guaranteed that the test API will not modify these
++variables. This prevents silent errors where the return value and
++errno are overwritten before the test has chance to check them.
++
++The macros which are clearly intended to update these variables. That
++is +TEST+ and those in 'tst_test_macros.h'. Are of course allowed to
++update these variables.
++
+ 3. Shell API
+ ------------
+ 
+-- 
+2.31.1
+
