@@ -1,36 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 30 Jul 2021 13:43:49 +0200
-Subject: [LTP] [PATCH v2] crypto/af_alg02: thread termination fixes
-In-Reply-To: <668aa923-dda1-b3ce-8f5e-042e3a2174f5@jv-coder.de>
-References: <20210720101249.10118-1-aleksei.kodanev@bell-sw.com>
- <YQPCcew5Are2VrDh@yuki>
- <0c978fd5-9772-ad4e-c14e-c8b4a8344506@jv-coder.de>
- <CAEemH2d8sHSWCAst9-q6KiKfJTSULYS8-KivWHrS04mR6ZXjzQ@mail.gmail.com>
- <668aa923-dda1-b3ce-8f5e-042e3a2174f5@jv-coder.de>
-Message-ID: <YQPl9f6JYE8zlNrm@yuki>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 30 Jul 2021 13:54:55 +0200
+Subject: [LTP] [PATCH 3/3] mbind01: add more tests for MPOL_LOCAL
+In-Reply-To: <CAEemH2e04E_dhqBzJVWXX_ux6rx-Pev+gp1Piv9VJ8FC-cSutQ@mail.gmail.com>
+References: <20210729132514.1699551-1-liwang@redhat.com>
+ <20210729132514.1699551-3-liwang@redhat.com>
+ <CAASaF6yQkiZVPWpsoo0ZrryBGFdLSGo3kkoejeWcy8dQMSL3yw@mail.gmail.com>
+ <CAEemH2cJHtVkaaH5OokAHfVLzPdxU=SqiCf_Gg_ntX_fnWorYw@mail.gmail.com>
+ <CAASaF6x2pTo1kMXy+nPJT+B9nEZ4Z+ovNzjtfW5f2WEq1fxc0g@mail.gmail.com>
+ <CAEemH2e04E_dhqBzJVWXX_ux6rx-Pev+gp1Piv9VJ8FC-cSutQ@mail.gmail.com>
+Message-ID: <CAASaF6wOz0BX6z0w0LroG8XKgp-NSsGWyu=_rj2pKvZfFwBU0A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > That should work but no precise log to indicate where goes wrong,
-> > so I vote to go the loop way:).
-> Does it really matter? The being stuck in the read does not seem to be 
-> the failure case tested with this test. Otherwise it would TFAIL.
-> Additionally the loop and "custom" timeout was only introduced at a 
-> later stage of the test. Initially it relied on the default timeout 
-> handling.
-> If my assumption, that being stuck in the read is not the failure case 
-> of this test, then your argument is invalid. Your argument would work for
-> each and every line of code, that might be executed, when the timeout hits.
-
-The top level in the test actually says that for some kernels the read()
-does not return, which is a kernel bug so the test should report this
-case as a failure as well and also the commit that fixes this should be
-added to the tags structure.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>
+> Or, If we want something more precise, just cancel the
+> check_policy_pref_or_local on kernel >= 5.14.
+>
+> Is this sound better?
+>
+> -       if ((tst_kvercmp(3, 8, 0)) < 0 && (tc->policy == MPOL_LOCAL)) {
+> -               tst_res(TCONF, "%s is not supported",
+> tst_mempolicy_mode_name(tc->policy));
+> -               return;
+>
+> +       if (tc->policy == MPOL_LOCAL) {
+> +               if ((tst_kvercmp(3, 8, 0)) < 0) {
+> +                       tst_res(TCONF, "%s is not supported",
+> tst_mempolicy_mode_name(tc->policy));
+> +                       return;
+> +               }
+> +
+> +               if ((tst_kvercmp(5, 14, 0)) >= 0)
+> +                       tc->check_policy = NULL;
+>
+>
+Yes, that works too.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210730/78002607/attachment.htm>
