@@ -1,25 +1,59 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 2 Aug 2021 18:12:16 +0200
-Subject: [LTP] [PATCH 1/2] Add test for CVE 2020-25704
-In-Reply-To: <20210802160918.30861-1-mdoucha@suse.cz>
-References: <20210802160918.30861-1-mdoucha@suse.cz>
-Message-ID: <4b9da626-5587-a626-229d-df189da345e1@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  2 Aug 2021 18:30:07 +0200
+Subject: [LTP] [PATCH 1/1] openposix/pthread_cancel/3-1: Move sleep loop
+ into separate function
+Message-ID: <20210802163007.2282-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02. 08. 21 18:09, Martin Doucha wrote:
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+to fix warning:
+pthread_cancel/3-1.c:40:13: warning: variable ?waited_for_cancel_ms? might be clobbered by ?longjmp? or ?vfork? [-Wclobbered]
+   40 |         int waited_for_cancel_ms = 0;
 
-I forgot to add "Fixes #740" to the commit message in patch 1...
+Suggested-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .../conformance/interfaces/pthread_cancel/3-1.c  | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cancel/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cancel/3-1.c
+index 3527d57fd..90500b371 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cancel/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cancel/3-1.c
+@@ -35,19 +35,25 @@ static void cleanup_func(PTS_ATTRIBUTE_UNUSED void *unused)
+ 	} while (after_cancel == 0 && thread_sleep_time < TIMEOUT_MS);
+ }
+ 
+-static void *thread_func(PTS_ATTRIBUTE_UNUSED void *unused)
++static void sleep_loop(void)
+ {
+ 	int waited_for_cancel_ms = 0;
+ 	struct timespec cancel_wait_ts = {0, SLEEP_MS*1000000};
+ 
+-	SAFE_PFUNC(pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL));
+-	pthread_cleanup_push(cleanup_func, NULL);
+-
+-	SAFE_FUNC(sem_post(&sem));
+ 	while (waited_for_cancel_ms < TIMEOUT_MS) {
+ 		nanosleep(&cancel_wait_ts, NULL);
+ 		waited_for_cancel_ms += SLEEP_MS;
+ 	}
++}
++
++static void *thread_func(PTS_ATTRIBUTE_UNUSED void *unused)
++{
++	SAFE_PFUNC(pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL));
++	pthread_cleanup_push(cleanup_func, NULL);
++
++	SAFE_FUNC(sem_post(&sem));
++
++	sleep_loop();
+ 
+ 	/* shouldn't be reached */
+ 	printf("Error: cancel never arrived\n");
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.32.0
+
