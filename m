@@ -1,44 +1,81 @@
 From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Date: Mon,  2 Aug 2021 17:46:43 -0400
-Subject: [LTP] [PATCH 5/7] syscalls/fanotify20: Support submission of
- debugfs commands
+Date: Mon,  2 Aug 2021 17:46:44 -0400
+Subject: [LTP] [PATCH 6/7] syscalls/fanotify20: Test file event with broken
+ inode
 In-Reply-To: <20210802214645.2633028-1-krisman@collabora.com>
 References: <20210802214645.2633028-1-krisman@collabora.com>
-Message-ID: <20210802214645.2633028-6-krisman@collabora.com>
+Message-ID: <20210802214645.2633028-7-krisman@collabora.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In order to test FAN_FS_ERROR, we want to corrupt the filesystem.  The
-easiest way to do it is by using debugfs.  Add a small helper to issue
-debugfs requests.  Since most likely this will be the only testcase to
-need this, don't bother making it a proper helper for now.
+This test corrupts an inode entry with an invalid mode through debugfs
+and then tries to access it.  This should result in a ext4 error, which
+we monitor through the fanotify group.
 
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 ---
- testcases/kernel/syscalls/fanotify/fanotify20.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../kernel/syscalls/fanotify/fanotify20.c     | 38 +++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-index 7a9601072139..e7ced28eb61d 100644
+index e7ced28eb61d..0c63e90edc3a 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-@@ -63,6 +63,13 @@ int fd_notify;
+@@ -76,6 +76,36 @@ static void trigger_fs_abort(void)
+ 		   MS_REMOUNT|MS_RDONLY, "abort");
+ }
  
- #define EXT4_ERR_ESHUTDOWN 16
- 
-+static void do_debugfs_request(const char *dev, char *request)
-+{
-+	char *cmd[] = {"debugfs", "-w", dev, "-R", request, NULL};
++#define TCASE2_BASEDIR "tcase2"
++#define TCASE2_BAD_DIR TCASE2_BASEDIR"/bad_dir"
 +
-+	SAFE_CMD(cmd, NULL, NULL);
++static unsigned int tcase2_bad_ino;
++static void tcase2_prepare_fs(void)
++{
++	struct stat stat;
++
++	SAFE_MKDIR(MOUNT_PATH"/"TCASE2_BASEDIR, 0777);
++	SAFE_MKDIR(MOUNT_PATH"/"TCASE2_BAD_DIR, 0777);
++
++	SAFE_STAT(MOUNT_PATH"/"TCASE2_BAD_DIR, &stat);
++	tcase2_bad_ino = stat.st_ino;
++
++	SAFE_UMOUNT(MOUNT_PATH);
++	do_debugfs_request(tst_device->dev, "sif " TCASE2_BAD_DIR " mode 0xff");
++	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
 +}
 +
- static void trigger_fs_abort(void)
- {
- 	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type,
++static void tcase2_trigger_lookup(void)
++{
++	int ret;
++
++	/* SAFE_OPEN cannot be used here because we expect it to fail. */
++	ret = open(MOUNT_PATH"/"TCASE2_BAD_DIR, O_RDONLY, 0);
++	if (ret != -1 && errno != EUCLEAN)
++		tst_res(TFAIL, "Unexpected lookup result(%d) of %s (%d!=%d)",
++			ret, TCASE2_BAD_DIR, errno, EUCLEAN);
++}
++
+ static const struct test_case {
+ 	char *name;
+ 	int error;
+@@ -92,6 +122,14 @@ static const struct test_case {
+ 		.error_count = 1,
+ 		.error = EXT4_ERR_ESHUTDOWN,
+ 		.inode = NULL
++	},
++	{
++		.name = "Lookup of inode with invalid mode",
++		.prepare_fs = tcase2_prepare_fs,
++		.trigger_error = &tcase2_trigger_lookup,
++		.error_count = 1,
++		.error = 0,
++		.inode = &tcase2_bad_ino,
+ 	}
+ };
+ 
 -- 
 2.32.0
 
