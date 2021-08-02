@@ -1,77 +1,200 @@
-From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Date: Mon,  2 Aug 2021 19:06:20 +0300
-Subject: [LTP] [PATCH v2] shmget02: check if CONFIG_HUGETLBFS enabled in
- kernel
-Message-ID: <20210802160620.9544-1-bogdan.lezhepekov@suse.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon,  2 Aug 2021 18:09:17 +0200
+Subject: [LTP] [PATCH 1/2] Add test for CVE 2020-25704
+Message-ID: <20210802160918.30861-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Two tests call shmget with a flag SHM_HUGETLB, trying to
-allocate the segment using "huge" pages. The hugetlbpage
-support needs to be enabled in kernel (CONFIG_HUGETLBFS),
-otherwise shmget returns EINVAL.
-
-Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- .../kernel/syscalls/ipc/shmget/shmget02.c     | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ runtest/cve                                   |  2 +
+ runtest/syscalls                              |  3 +
+ .../syscalls/perf_event_open/.gitignore       |  1 +
+ .../perf_event_open/perf_event_open.h         | 39 ++++++++
+ .../perf_event_open/perf_event_open03.c       | 96 +++++++++++++++++++
+ 5 files changed, 141 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/perf_event_open/perf_event_open.h
+ create mode 100644 testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-index 66a4b94ee..7616178be 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-@@ -32,10 +32,13 @@
- #include <sys/shm.h>
- #include <grp.h>
- #include "tst_safe_sysv_ipc.h"
-+#include "tst_kconfig.h"
- #include "tst_test.h"
- #include "libnewipc.h"
- #include "lapi/shm.h"
+diff --git a/runtest/cve b/runtest/cve
+index 8aa048a40..d2d2ee103 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -66,3 +66,5 @@ cve-2020-25705 icmp_rate_limit01
+ cve-2020-29373 io_uring02
+ cve-2021-3444 bpf_prog05
+ cve-2021-26708 vsock01
++# Tests below may cause kernel memory leak
++cve-2020-25704 perf_event_open03
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b379b2d90..5e3ac517f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1737,3 +1737,6 @@ membarrier01 membarrier01
  
-+#define CONFIG_HUGETLBFS "CONFIG_HUGETLBFS"
+ io_uring01 io_uring01
+ io_uring02 io_uring02
 +
- static int shm_id = -1;
- static key_t shmkey, shmkey1;
- static struct passwd *pw;
-@@ -60,6 +63,17 @@ static struct tcase {
- 	{&shmkey1, SHM_SIZE, IPC_CREAT | SHM_HUGETLB, 0, 0, ENOMEM}
- };
- 
-+static int hugetlbfs_supported()
++# Tests below may cause kernel memory leak
++perf_event_open03 perf_event_open03
+diff --git a/testcases/kernel/syscalls/perf_event_open/.gitignore b/testcases/kernel/syscalls/perf_event_open/.gitignore
+index 057690063..a1e5987b6 100644
+--- a/testcases/kernel/syscalls/perf_event_open/.gitignore
++++ b/testcases/kernel/syscalls/perf_event_open/.gitignore
+@@ -1,2 +1,3 @@
+ /perf_event_open01
+ /perf_event_open02
++/perf_event_open03
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open.h b/testcases/kernel/syscalls/perf_event_open/perf_event_open.h
+new file mode 100644
+index 000000000..02f0dd72e
+--- /dev/null
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open.h
+@@ -0,0 +1,39 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (c) 2021 SUSE LLC <mdoucha@suse.cz>
++ *
++ * Common definitions for perf_event_open tests
++ */
++
++#ifndef _PERF_EVENT_OPEN_H
++#define _PERF_EVENT_OPEN_H
++
++#include <linux/types.h>
++#include <linux/perf_event.h>
++#include <inttypes.h>
++
++static int perf_event_open(struct perf_event_attr *event, pid_t pid,
++	int cpu, int group_fd, unsigned long flags)
 +{
-+	struct tst_kconfig_var kconfig = {
-+		.id = CONFIG_HUGETLBFS,
-+		.id_len = sizeof(CONFIG_HUGETLBFS)-1,
-+	};
++	int ret;
 +
-+	tst_kconfig_read(&kconfig, 1);
-+	return kconfig.choice == 'y';
++	ret = tst_syscall(__NR_perf_event_open, event, pid, cpu,
++		group_fd, flags);
++
++	if (ret != -1)
++		return ret;
++
++	tst_res(TINFO, "%s event.type: %"PRIu32
++		", event.config: %"PRIu64, __func__, (uint32_t)event->type,
++		(uint64_t)event->config);
++	if (errno == ENOENT || errno == ENODEV) {
++		tst_brk(TCONF | TERRNO, "%s type/config not supported",
++			__func__);
++	}
++	tst_brk(TBROK | TERRNO, "%s failed", __func__);
++
++	/* unreachable */
++	return -1;
 +}
 +
- static void do_test(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
-@@ -94,6 +108,16 @@ static void setup(void)
- 	SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &rl);
- 	shm_id = SAFE_SHMGET(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL);
- 	pw = SAFE_GETPWNAM("nobody");
-+	
-+	if (! hugetlbfs_supported()) {
++#endif /* _PERF_EVENT_OPEN_H */
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
+new file mode 100644
+index 000000000..7d03823e6
+--- /dev/null
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 SUSE LLC <mdoucha@suse.cz>
++ *
++ * CVE-2020-25704
++ *
++ * Check for memory leak in PERF_EVENT_IOC_SET_FILTER ioctl command. Fixed in:
++ *
++ *  commit 7bdb157cdebbf95a1cd94ed2e01b338714075d00
++ *  Author: kiyin(??) <kiyin@tencent.com>
++ *  Date:   Wed Nov 4 08:23:22 2020 +0300
++ *
++ *  perf/core: Fix a memory leak in perf_event_parse_addr_filter()
++ */
 +
-+		tst_res(TINFO, "SHM_HUGETLB not supported by kernel");
++#include "config.h"
++#include "tst_test.h"
++#include "lapi/syscalls.h"
 +
-+		for (int i = 0; i < ARRAY_SIZE(tcases); i++) {
-+				if (tcases[i].flags & SHM_HUGETLB)
-+						tcases[i].exp_err = EINVAL;
-+		}
++#if HAVE_PERF_EVENT_ATTR
++#include "perf_event_open.h"
++
++#define INTEL_PT_PATH "/sys/bus/event_source/devices/intel_pt/type"
++
++static int fd = -1;
++
++static void setup(void)
++{
++	struct perf_event_attr ev = {
++		.size = sizeof(struct perf_event_attr),
++		.exclude_kernel = 1,
++		.exclude_hv = 1,
++		.exclude_idle = 1
++	};
++
++	/* intel_pt is currently the only event source that supports filters */
++	if (access(INTEL_PT_PATH, F_OK))
++		tst_brk(TCONF, "intel_pt is not available");
++
++	SAFE_FILE_SCANF(INTEL_PT_PATH, "%d", &ev.type);
++	fd = perf_event_open(&ev, getpid(), -1, -1, 0);
++}
++
++static void run(void)
++{
++	struct sysinfo info1, info2;
++	unsigned long diff, memunit;
++	int i;
++
++	SAFE_SYSINFO(&info1);
++
++	/* leak about 100MB of RAM */
++	for (i = 0; i < 12000000; i++)
++		ioctl(fd, PERF_EVENT_IOC_SET_FILTER, "filter,0/0@abcd");
++
++	SAFE_SYSINFO(&info2);
++	memunit = info1.mem_unit;
++
++	/* sysinfo(2) man page does not guarantee consistent mem_unit... */
++	if (info1.mem_unit > info2.mem_unit) {
++		diff = info1.mem_unit / info2.mem_unit;
++		info2.freeram /= diff;
++	} else if (info1.mem_unit < info2.mem_unit) {
++		diff = info2.mem_unit / info1.mem_unit;
++		info1.freeram /= diff;
++		memunit = info2.mem_unit;
 +	}
- }
- 
- static void cleanup(void)
++
++	if (info1.freeram > info2.freeram + 50 * 1024 * 1024 / memunit)
++		tst_res(TFAIL, "Likely kernel memory leak detected");
++	else
++		tst_res(TPASS, "No memory leak found");
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "7bdb157cdebb"},
++		{"CVE", "2020-25704"},
++		{}
++	}
++};
++
++#else /* HAVE_PERF_EVENT_ATTR */
++TST_TEST_TCONF("This system doesn't have <linux/perf_event.h> or "
++	"struct perf_event_attr is not defined.");
++#endif
 -- 
 2.32.0
 
