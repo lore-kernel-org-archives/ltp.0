@@ -1,69 +1,63 @@
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Date: Mon,  2 Aug 2021 17:46:45 -0400
-Subject: [LTP] [PATCH 7/7] syscalls/fanotify20: Test capture of multiple
- errors
-In-Reply-To: <20210802214645.2633028-1-krisman@collabora.com>
-References: <20210802214645.2633028-1-krisman@collabora.com>
-Message-ID: <20210802214645.2633028-8-krisman@collabora.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Tue, 3 Aug 2021 16:26:06 +0800
+Subject: [LTP] [PATCH] syscalls/madvise06: Add madvise WILLNEED performance
+ problem tag
+Message-ID: <1627979166-967-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When multiple FS errors occur, only the first is stored.  This testcase
-validates this behavior by issuing two different errors and making sure
-only the first is stored, while the second is simply accumulated in
-error_count.
+When running this case on 5.10-rc1 kernel, it will trigger the following failure
+......
+madvise06.c:74: TINFO:  memory.kmem.usage_in_bytes: 1752 Kb
+madvise06.c:208: TPASS: more than 102400 Kb were moved to the swap cache
+madvise06.c:217: TINFO: PageFault(madvice / no mem access): 102400
+madvise06.c:221: TINFO: PageFault(madvice / mem access): 105600
+madvise06.c:82: TINFO: After page access
+madvise06.c:84: TINFO:  Swap: 307540 Kb
+madvise06.c:86: TINFO:  SwapCached: 100480 Kb
+madvise06.c:88: TINFO:  Cached: 102056 Kb
+madvise06.c:74: TINFO:  memory.current: 204636 Kb
+madvise06.c:74: TINFO:  memory.swap.current: 411476 Kb
+madvise06.c:74: TINFO:  memory.kmem.usage_in_bytes: 1752 Kb
+madvise06.c:226: TFAIL: 3200 pages were faulted out of 2 max
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+It fails because of madvise WILLNEED performance problem, so add the introduced and
+fixed commit.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- .../kernel/syscalls/fanotify/fanotify20.c     | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ testcases/kernel/syscalls/madvise/madvise06.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-index 0c63e90edc3a..07040cb7fa7c 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify20.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-@@ -106,6 +106,18 @@ static void tcase2_trigger_lookup(void)
- 			ret, TCASE2_BAD_DIR, errno, EUCLEAN);
- }
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 63d8d5452..f2f65ff96 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -35,6 +35,12 @@
+  * faults. Two faults are allowed incase some tasklet or something
+  * else unexpected, but irrelevant procedure, registers a fault to
+  * our process.
++ *
++ * It also can reproduce the MADV_WILLNEED preformance problem.
++ * It was introduced since 5.9 kernel with the following commit
++ *   e6e88712e43b ("mm: optimise madvise WILLNEED")
++ * and fixed since 5.10-rc5 kernel with the following commit
++ *   66383800df9c ("mm: fix madvise WILLNEED performance problem").
+  */
  
-+static void tcase3_trigger(void)
-+{
-+	trigger_fs_abort();
-+	tcase2_trigger_lookup();
-+}
-+
-+static void tcase4_trigger(void)
-+{
-+	tcase2_trigger_lookup();
-+	trigger_fs_abort();
-+}
-+
- static const struct test_case {
- 	char *name;
- 	int error;
-@@ -130,6 +142,19 @@ static const struct test_case {
- 		.error_count = 1,
- 		.error = 0,
- 		.inode = &tcase2_bad_ino,
-+	},
-+	{
-+		.name = "Multiple error submission",
-+		.trigger_error = &tcase3_trigger,
-+		.error_count = 2,
-+		.error = EXT4_ERR_ESHUTDOWN,
-+	},
-+	{
-+		.name = "Multiple error submission 2",
-+		.trigger_error = &tcase4_trigger,
-+		.error_count = 2,
-+		.error = 0,
-+		.inode = &tcase2_bad_ino,
+ #include <errno.h>
+@@ -242,6 +248,8 @@ static struct tst_test test = {
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "55231e5c898c"},
+ 		{"linux-git", "8de15e920dc8"},
++		{"linux-git", "e6e88712e43b"},
++		{"linux-git", "66383800df9c"},
+ 		{}
  	}
  };
- 
 -- 
-2.32.0
+2.23.0
 
