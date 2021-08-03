@@ -1,85 +1,65 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 3 Aug 2021 12:08:11 +0300
-Subject: [LTP] [PATCH 6/7] syscalls/fanotify20: Test file event with
- broken inode
-In-Reply-To: <20210802214645.2633028-7-krisman@collabora.com>
-References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-7-krisman@collabora.com>
-Message-ID: <CAOQ4uxizX0ar7d9eYgazcenQcA7Ku7quEZOLbcaxKJiY0sTPLA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 3 Aug 2021 11:25:45 +0200
+Subject: [LTP] [PATCH v7 2/7] test/test_zero_hugepage.sh: Skip test on
+ read-only file system
+In-Reply-To: <20210802173536.19525-3-pvorel@suse.cz>
+References: <20210802173536.19525-1-pvorel@suse.cz>
+ <20210802173536.19525-3-pvorel@suse.cz>
+Message-ID: <YQkLmb3pUPY8cKP8@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> This test corrupts an inode entry with an invalid mode through debugfs
-> and then tries to access it.  This should result in a ext4 error, which
-> we monitor through the fanotify group.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Hi!
+> On GitHub Actions /proc/sys/vm/nr_hugepages is not allowed to be
+> changed:
+> 
+> ./test_zero_hugepage.sh: line 9: can't create /proc/sys/vm/nr_hugepages: Read-only file system
+> tst_hugepage.c:57: TBROK: Failed to open FILE '/proc/sys/vm/nr_hugepages' for writing: EROFS (30)
+> tst_sys_conf.c:102: TWARN: Failed to open FILE '/proc/sys/vm/nr_hugepages'
+
+Hmm, it's rather strange to have proc mounted RO but I guess that we
+can't do much about it. I guess that it wouldn't allow us to remount it
+RW, so there is not much we can do about it.
+
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  .../kernel/syscalls/fanotify/fanotify20.c     | 38 +++++++++++++++++++
->  1 file changed, 38 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> index e7ced28eb61d..0c63e90edc3a 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> @@ -76,6 +76,36 @@ static void trigger_fs_abort(void)
->                    MS_REMOUNT|MS_RDONLY, "abort");
->  }
->
-> +#define TCASE2_BASEDIR "tcase2"
-> +#define TCASE2_BAD_DIR TCASE2_BASEDIR"/bad_dir"
-> +
-> +static unsigned int tcase2_bad_ino;
-> +static void tcase2_prepare_fs(void)
-> +{
-> +       struct stat stat;
-> +
-> +       SAFE_MKDIR(MOUNT_PATH"/"TCASE2_BASEDIR, 0777);
-> +       SAFE_MKDIR(MOUNT_PATH"/"TCASE2_BAD_DIR, 0777);
-> +
-> +       SAFE_STAT(MOUNT_PATH"/"TCASE2_BAD_DIR, &stat);
-> +       tcase2_bad_ino = stat.st_ino;
-> +
-> +       SAFE_UMOUNT(MOUNT_PATH);
-> +       do_debugfs_request(tst_device->dev, "sif " TCASE2_BAD_DIR " mode 0xff");
-> +       SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
-> +}
-> +
-> +static void tcase2_trigger_lookup(void)
-> +{
-> +       int ret;
-> +
-> +       /* SAFE_OPEN cannot be used here because we expect it to fail. */
-> +       ret = open(MOUNT_PATH"/"TCASE2_BAD_DIR, O_RDONLY, 0);
-> +       if (ret != -1 && errno != EUCLEAN)
-> +               tst_res(TFAIL, "Unexpected lookup result(%d) of %s (%d!=%d)",
-> +                       ret, TCASE2_BAD_DIR, errno, EUCLEAN);
-> +}
-> +
->  static const struct test_case {
->         char *name;
->         int error;
-> @@ -92,6 +122,14 @@ static const struct test_case {
->                 .error_count = 1,
->                 .error = EXT4_ERR_ESHUTDOWN,
->                 .inode = NULL
-> +       },
-> +       {
-> +               .name = "Lookup of inode with invalid mode",
-> +               .prepare_fs = tcase2_prepare_fs,
-> +               .trigger_error = &tcase2_trigger_lookup,
-> +               .error_count = 1,
-> +               .error = 0,
-> +               .inode = &tcase2_bad_ino,
+> New in v7.
+> 
+>  lib/newlib_tests/test_zero_hugepage.sh | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/newlib_tests/test_zero_hugepage.sh b/lib/newlib_tests/test_zero_hugepage.sh
+> index 10113006b..8a462478e 100755
+> --- a/lib/newlib_tests/test_zero_hugepage.sh
+> +++ b/lib/newlib_tests/test_zero_hugepage.sh
+> @@ -1,12 +1,16 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+>  # Copyright (c) 2021 Yang Xu <xuyang2018.jy@fujitsu.com>
+> +# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+>  
+>  echo "Testing .request_hugepages = TST_NO_HUGEPAGES"
+>  
+>  orig_value=`cat /proc/sys/vm/nr_hugepages`
+>  
+> -echo "128" > /proc/sys/vm/nr_hugepages
+> +if ! echo "128" > /proc/sys/vm/nr_hugepages; then
+> +	echo "TCONF: failed to open /proc/sys/vm/nr_hugepages"
+> +	exit 32
+> +fi
 
-Why is error 0?
-What's the rationale?
+I wonder if we should rather check if proc is mounted readonly
+explicitly since this may hide all kinds of errors.
 
-Thanks,
-Amir.
+>  ./test_zero_hugepage
+>  
+> -- 
+> 2.32.0
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
