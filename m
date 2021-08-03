@@ -1,95 +1,194 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 3 Aug 2021 17:37:46 +0200
-Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
- protocol
-In-Reply-To: <80a6cbec-50b7-9912-d682-915a1076bbec@bell-sw.com>
-References: <20210714140716.1568-1-pvorel@suse.cz>
- <20210714140716.1568-3-pvorel@suse.cz>
- <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
- <YQBD4w2nKwY2G1l+@pevik>
- <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
- <YQg0LIXG8LK0OV74@pevik>
- <80a6cbec-50b7-9912-d682-915a1076bbec@bell-sw.com>
-Message-ID: <YQliykiyDtJwEKVK@pevik>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue,  3 Aug 2021 17:58:21 +0200
+Subject: [LTP] [PATCH v2 1/2] Add test for CVE 2020-25704
+Message-ID: <20210803155822.1973-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Fixes #740
 
-> Hi Petr,
-> On 02.08.2021 21:06, Petr Vorel wrote:
-> > Hi Alexey,
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-> >> Hi Petr,
-> >> On 27.07.2021 20:35, Petr Vorel wrote:
-> >>> Hi Alexey,
+Changes since v1:
+- Use memory statistics from /proc/meminfo instead of sysinfo()
 
-> >>>> On 14.07.2021 17:07, Petr Vorel wrote:
-> >>>>> net_stress.broken_ip runtest file is correct, but some users try to run
-> >>>>> tests manually.
+ runtest/cve                                   |  2 +
+ runtest/syscalls                              |  3 +
+ .../syscalls/perf_event_open/.gitignore       |  1 +
+ .../perf_event_open/perf_event_open.h         | 39 +++++++++
+ .../perf_event_open/perf_event_open03.c       | 84 +++++++++++++++++++
+ 5 files changed, 129 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/perf_event_open/perf_event_open.h
+ create mode 100644 testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
 
-> >>>>> Fixes: #843
-
-> >> ...
-> >>>>>  do_test()
-
-> >>>> The generic version looks fine:
-
-> >>>> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-
-> >>> I didn't understand whether you'd prefer to add TST_IPV6=6 (or TST_IPV6=) where
-> >>> needed or accept this patchset. Both would work.
-
-> >> I think for manual runs it is better to set TST_IPV6=6 in the test
-> >> so it will run the test rather the require passing some options.
-> > It looks like specifying TST_IPV6=6 is not enough, because tests are using
-> > $NS_ICMP_SENDER_DATA_MAXSIZE which is defined in tst_net.sh according to
-> > TST_IPV6. We can
-
-> > 1) overwrite NS_ICMP_SENDER_DATA_MAXSIZE="$NS_ICMPV6_SENDER_DATA_MAXSIZE"
-> > 2) check TST_IPV6 before running tst_net_parse_args and if set overwrite -6 flag
-
-> > But both are quite ugly, thus unless you have better idea I merge this patchset.
-
-
-> Are you sure that you are getting the wrong maxsize? if TST_IPV6=6
-> is set before the setup, in the test, why tst_net_setup() is setting
-> the IPv4 value?
-
-The problem is actually in IPv6, ns-icmpv6_sender does not support -c.
-IPv6 only is only broken_ip-ihl tests, the other 4 are IPv4 only.
-I tested variables after loading tst_net.sh, but that was later overwritten with
-getopt -6. But setting it in the test function works (you probably meant this).
-I still don't like having to specify 2 variables (yes both are needed), but it's
-not a big deal thus I'll merge this version.
-
-Kind regards,
-Petr
-
---- testcases/network/stress/broken_ip/broken_ip-checksum
-+++ testcases/network/stress/broken_ip/broken_ip-checksum
-@@ -10,7 +10,10 @@ TST_TESTFUNC="do_test"
+diff --git a/runtest/cve b/runtest/cve
+index 5b7bf5323..e0d3723de 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -67,3 +67,5 @@ cve-2020-25705 icmp_rate_limit01
+ cve-2020-29373 io_uring02
+ cve-2021-3444 bpf_prog05
+ cve-2021-26708 vsock01
++# Tests below may cause kernel memory leak
++cve-2020-25704 perf_event_open03
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b379b2d90..5e3ac517f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1737,3 +1737,6 @@ membarrier01 membarrier01
  
- do_test()
- {
--	tst_res TINFO "Sending ICMPv$TST_IPVER with wrong chksum field for $NS_DURATION sec"
-+	TST_IPV6=
-+	TST_IPVER=4
+ io_uring01 io_uring01
+ io_uring02 io_uring02
 +
-+	tst_res TINFO "Sending ICMPv4 with wrong chksum field for $NS_DURATION sec"
- 	tst_icmp -t $NS_DURATION -s "0 100 500 1000 $NS_ICMP_SENDER_DATA_MAXSIZE" -c
- 	tst_ping
- }
-
-
-> > Kind regards,
-> > Petr
-
-> >>> Kind regards,
-> >>> Petr
-
-
++# Tests below may cause kernel memory leak
++perf_event_open03 perf_event_open03
+diff --git a/testcases/kernel/syscalls/perf_event_open/.gitignore b/testcases/kernel/syscalls/perf_event_open/.gitignore
+index 057690063..a1e5987b6 100644
+--- a/testcases/kernel/syscalls/perf_event_open/.gitignore
++++ b/testcases/kernel/syscalls/perf_event_open/.gitignore
+@@ -1,2 +1,3 @@
+ /perf_event_open01
+ /perf_event_open02
++/perf_event_open03
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open.h b/testcases/kernel/syscalls/perf_event_open/perf_event_open.h
+new file mode 100644
+index 000000000..02f0dd72e
+--- /dev/null
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open.h
+@@ -0,0 +1,39 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (c) 2021 SUSE LLC <mdoucha@suse.cz>
++ *
++ * Common definitions for perf_event_open tests
++ */
++
++#ifndef _PERF_EVENT_OPEN_H
++#define _PERF_EVENT_OPEN_H
++
++#include <linux/types.h>
++#include <linux/perf_event.h>
++#include <inttypes.h>
++
++static int perf_event_open(struct perf_event_attr *event, pid_t pid,
++	int cpu, int group_fd, unsigned long flags)
++{
++	int ret;
++
++	ret = tst_syscall(__NR_perf_event_open, event, pid, cpu,
++		group_fd, flags);
++
++	if (ret != -1)
++		return ret;
++
++	tst_res(TINFO, "%s event.type: %"PRIu32
++		", event.config: %"PRIu64, __func__, (uint32_t)event->type,
++		(uint64_t)event->config);
++	if (errno == ENOENT || errno == ENODEV) {
++		tst_brk(TCONF | TERRNO, "%s type/config not supported",
++			__func__);
++	}
++	tst_brk(TBROK | TERRNO, "%s failed", __func__);
++
++	/* unreachable */
++	return -1;
++}
++
++#endif /* _PERF_EVENT_OPEN_H */
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
+new file mode 100644
+index 000000000..f58bea79e
+--- /dev/null
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
+@@ -0,0 +1,84 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 SUSE LLC <mdoucha@suse.cz>
++ *
++ * CVE-2020-25704
++ *
++ * Check for memory leak in PERF_EVENT_IOC_SET_FILTER ioctl command. Fixed in:
++ *
++ *  commit 7bdb157cdebbf95a1cd94ed2e01b338714075d00
++ *  Author: kiyin(??) <kiyin@tencent.com>
++ *  Date:   Wed Nov 4 08:23:22 2020 +0300
++ *
++ *  perf/core: Fix a memory leak in perf_event_parse_addr_filter()
++ */
++
++#include "config.h"
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++#if HAVE_PERF_EVENT_ATTR
++#include "perf_event_open.h"
++
++#define INTEL_PT_PATH "/sys/bus/event_source/devices/intel_pt/type"
++
++static int fd = -1;
++
++static void setup(void)
++{
++	struct perf_event_attr ev = {
++		.size = sizeof(struct perf_event_attr),
++		.exclude_kernel = 1,
++		.exclude_hv = 1,
++		.exclude_idle = 1
++	};
++
++	/* intel_pt is currently the only event source that supports filters */
++	if (access(INTEL_PT_PATH, F_OK))
++		tst_brk(TCONF, "intel_pt is not available");
++
++	SAFE_FILE_SCANF(INTEL_PT_PATH, "%d", &ev.type);
++	fd = perf_event_open(&ev, getpid(), -1, -1, 0);
++}
++
++static void run(void)
++{
++	long diff;
++	int i;
++
++	diff = SAFE_READ_MEMINFO("MemAvailable:");
++
++	/* leak about 100MB of RAM */
++	for (i = 0; i < 12000000; i++)
++		ioctl(fd, PERF_EVENT_IOC_SET_FILTER, "filter,0/0@abcd");
++
++	diff -= SAFE_READ_MEMINFO("MemAvailable:");
++
++	if (diff > 50 * 1024)
++		tst_res(TFAIL, "Likely kernel memory leak detected");
++	else
++		tst_res(TPASS, "No memory leak found");
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "7bdb157cdebb"},
++		{"CVE", "2020-25704"},
++		{}
++	}
++};
++
++#else /* HAVE_PERF_EVENT_ATTR */
++TST_TEST_TCONF("This system doesn't have <linux/perf_event.h> or "
++	"struct perf_event_attr is not defined.");
++#endif
+-- 
+2.32.0
 
