@@ -1,228 +1,356 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue,  3 Aug 2021 13:52:52 +0100
-Subject: [LTP] [PATCH v3 3/3] Add setsockopt08, CVE-2021-22555
-In-Reply-To: <20210803125252.16214-1-rpalethorpe@suse.com>
-References: <87czquna4l.fsf@suse.de>
- <20210803125252.16214-1-rpalethorpe@suse.com>
-Message-ID: <20210803125252.16214-3-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 3 Aug 2021 15:43:49 +0200
+Subject: [LTP] [PATCH] syscalls/readv02: Convert to new API and merge
+ readv03 into readv02.
+In-Reply-To: <1627624085-16182-1-git-send-email-daisl.fnst@fujitsu.com>
+References: <1627624085-16182-1-git-send-email-daisl.fnst@fujitsu.com>
+Message-ID: <YQlIFagVIrWXjmgY@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a copy and paste of Nicolai's reproducer. The main difference
-is that I moved some code around. Of course I also used LTP library
-features, but essentially it works the same.
+Hi!
+> -	/* Test case #1 */
+> +static struct iovec rd_iovec[MAX_IOVEC] = {
+>  	{buf2, -1},
+>  	{(buf2 + CHUNK), CHUNK},
+>  	{(buf2 + CHUNK * 2), CHUNK},
+> -
+> -	/* Test case #2 */
+>  	{(buf2 + CHUNK * 3), G_1},
+>  	{(buf2 + CHUNK * 4), G_1},
+>  	{(buf2 + CHUNK * 5), G_1},
+> -
+> -	/* Test case #3 */
+>  	{(caddr_t) - 1, CHUNK},
+>  	{(buf2 + CHUNK * 6), CHUNK},
+>  	{(buf2 + CHUNK * 8), CHUNK},
+> -
+> -	/* Test case #4 */
+> -	{(buf2 + CHUNK * 9), CHUNK}
+> +	{(buf2 + CHUNK * 9), CHUNK},
+> +	{buf1, K_1}
+>  };
 
-There are some hard coded values which I do not like. I guess these
-could be calculated or varied somehow. However I struggle to understand
-what the kernel is doing. This perhaps needs more investigation. We
-could try generalising this test and setsockopt03.
+It would be much easier to read the code if we split this iovec so that
+each test has it's own structure. There is absolutely no reason to keep
+them all together like that.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Fixes: #850
----
- runtest/cve                                   |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/setsockopt/.gitignore     |   1 +
- .../kernel/syscalls/setsockopt/setsockopt08.c | 156 ++++++++++++++++++
- 4 files changed, 159 insertions(+)
- create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt08.c
+I.e. we will have it as:
 
-diff --git a/runtest/cve b/runtest/cve
-index 8aa048a40..60bd22f01 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -65,4 +65,5 @@ cve-2020-14416 pty03
- cve-2020-25705 icmp_rate_limit01
- cve-2020-29373 io_uring02
- cve-2021-3444 bpf_prog05
-+cve-2021-22555 setsockopt08 -i 100
- cve-2021-26708 vsock01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b379b2d90..2222990fe 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1378,6 +1378,7 @@ setsockopt04 setsockopt04
- setsockopt05 setsockopt05
- setsockopt06 setsockopt06
- setsockopt07 setsockopt07
-+setsockopt08 setsockopt08
- 
- settimeofday01 settimeofday01
- settimeofday02 settimeofday02
-diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
-index 1ca5b836b..95a5e43f8 100644
---- a/testcases/kernel/syscalls/setsockopt/.gitignore
-+++ b/testcases/kernel/syscalls/setsockopt/.gitignore
-@@ -5,3 +5,4 @@
- /setsockopt05
- /setsockopt06
- /setsockopt07
-+/setsockopt08
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-new file mode 100644
-index 000000000..3513227a9
---- /dev/null
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-@@ -0,0 +1,156 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
-+ * Based on reproducer by Nicolai Stange based on PoC Andy Nguyen
-+ */
-+/*\
-+ * [Description]
-+ *
-+ * This will reproduce the bug on x86_64 in 32bit compatibility
-+ * mode. It is most reliable with KASAN enabled. Otherwise it relies
-+ * on the out-of-bounds write corrupting something which leads to a
-+ * crash. It will run in other scenarious, but is not a test for the
-+ * CVE.
-+ *
-+ * See https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html
-+ *
-+ * Also below is Nicolai's detailed description of the bug itself.
-+ *
-+ * The problem underlying CVE-2021-22555 fixed by upstream commit
-+ * b29c457a6511 ("netfilter: x_tables: fix compat match/target pad
-+ * out-of-bound write") is that the (now removed) padding zeroing code
-+ * in xt_compat_target_from_user() had been based on the premise that
-+ * the user specified ->u.user.target_size, which will be considered
-+ * for the target buffer allocation size, is greater or equal than
-+ * what's needed to fit the corresponding xt_target instance's
-+ * ->targetsize: if OTOH the user specified ->u.user.target_size is
-+ * too small, then the memset() destination address calculated by
-+ * adding ->targetsize to the payload start will not point at, but
-+ * into or even past the padding. For the table's last entry's target
-+ * record, this will result in an out-of-bounds write past the
-+ * destination buffer allocated for the converted table. The code
-+ * below will create a (compat) table such that the converted table's
-+ * calculated size will fit exactly into a slab size of 1024 bytes and
-+ * that the memset() in xt_compat_target_from_user() will write past
-+ * this slab.
-+ *
-+ * The table will consist of
-+ *  - the mandatory struct compat_ipt_replace header,
-+ *  - a single entry consisting of
-+ *    - the mandatory compat_ipt_entry header
-+ *    - a single 'state' match entry of appropriate size for
-+ *      controlling the out-of-bounds write when converting
-+ *      the target entry following next,
-+ *    - a single 'REJECT' target entry.
-+ * The kernel will transform this into a buffer containing (in
-+ * this order)
-+ * - a xt_table_info
-+ * - a single entry consisting of
-+ *   - its ipt_entry header
-+ *   - a single 'state' match entry
-+ *   - followed by a single 'REJECT' target entry.
-+ *
-+ * The expected sizes for the 'state' match entries as well as the
-+ * 'REJECT' target are the size of the base header struct (32 bytes)
-+ * plus the size of an unsigned int (4 bytes) each. In the course of
-+ * the compat => non-compat conversion, the kernel will insert four
-+ * bytes of padding after the unsigned int payload (c.f.  'off'
-+ * adjustments via xt_compat_match_offset() and
-+ * xt_compat_target_offset() in xt_compat_match_from_user() and
-+ * xt_compat_target_from_user() resp.). This code is based on the
-+ * premise that the user sets the given ->u.user.match_size or
-+ * ->u.user.target_size consistent to the COMPAT_XT_ALIGN()ed payload
-+ * size as specified by the corresponding xt_match instance's
-+ * ->matchsize or xt_target instance's ->targetsize. That is, the
-+ * padding gets inserted unconditionally during the transformation,
-+ * independent of the actual values of ->u.user.match_size or
-+ * ->u.user.target_size and the result ends up getting layed out with
-+ * proper alignment only if said values match the expectations. That's
-+ * not a problem in itself, but this unconditional insertion of
-+ * padding must be taken into account in the match_size calculation
-+ * below.
-+ *
-+ * For the match_size calculation below, note that the chosen
-+ * target slab size is 1024 and that
-+ *  - sizeof(xt_table_info) = 64
-+ *  - sizeof(ipt_entry) = 112
-+ *  - the kernel will insert four bytes of padding
-+ *    after the match and target entries each.
-+ *  - sizeof(struct xt_entry_target) = 32
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "lapi/ip_tables.h"
-+#include "lapi/namespaces_constants.h"
-+
-+static void *buffer;
-+
-+void setup(void)
-+{
-+	if (tst_kernel_bits() == 32 || sizeof(long) > 4) {
-+		tst_res(TCONF,
-+			"The vulnerability was only present in 32-bit compat mode");
-+	}
-+
-+	SAFE_UNSHARE(CLONE_NEWUSER);
-+	SAFE_UNSHARE(CLONE_NEWNET);
-+}
-+
-+void run(void)
-+{
-+	struct ipt_replace *ipt_replace = buffer;
-+	struct ipt_entry *ipt_entry = &ipt_replace->entries[0];
-+	struct xt_entry_match *xt_entry_match =
-+		(struct xt_entry_match *)&ipt_entry->elems[0];
-+	const size_t tgt_size = 32;
-+	const size_t match_size = 1024 - 64 - 112 - 4 - tgt_size - 4;
-+	struct xt_entry_target *xt_entry_tgt =
-+		((struct xt_entry_target *) (&ipt_entry->elems[0] + match_size));
-+	int fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+
-+	xt_entry_match->u.user.match_size = (u_int16_t)match_size;
-+	strcpy(xt_entry_match->u.user.name, "state");
-+
-+	xt_entry_tgt->u.user.target_size = (u_int16_t)tgt_size;
-+	strcpy(xt_entry_tgt->u.user.name, "REJECT");
-+
-+	ipt_entry->target_offset =
-+		(__builtin_offsetof(struct ipt_entry, elems) + match_size);
-+	ipt_entry->next_offset = ipt_entry->target_offset + tgt_size;
-+
-+	strcpy(ipt_replace->name, "filter");
-+	ipt_replace->num_entries = 1;
-+	ipt_replace->num_counters = 1;
-+	ipt_replace->size = ipt_entry->next_offset;
-+
-+	TST_EXP_FAIL(setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1),
-+		     0,
-+		     "setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
-+		     fd, buffer);
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.forks_child = 1,
-+	.bufs = (struct tst_buffers []) {
-+		{&buffer, .size = 2048},
-+		{},
-+	},
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_NETFILTER_XT_MATCH_STATE",
-+		"CONFIG_IP_NF_TARGET_REJECT",
-+		"CONFIG_USER_NS=y",
-+		"CONFIG_NET_NS=y",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "b29c457a6511"},
-+		{"CVE", "2021-22555"},
-+		{}
-+	}
-+};
+static struct iovec invalid_iovec[] = {
+	{buf, -1},
+	{buf + CHUNK, CHUNK},
+	{buf + 2*CHUNK, CHUNK},
+};
+
+static struct iovec large_iovec[] = {
+	{buf2, G_1},
+	{buf2 + CHUNK, G_1},
+	{buf2 + CHUNK*2, G_1},
+};
+
+static struct iovec efault_iovec[] = {
+	{NULL, CHUNK},
+	{buf + CHUNK, CHUNK},
+	{buf + 2*CHUNK, CHUNK},
+};
+
+static struct iovec valid_iovec[] = {
+	{buf, CHUNK},
+};
+
+Also we can use the valid iovec for both EISDIR and EBADFD.
+
+static void setup(void)
+{
+	...
+	efault_iovec[0].iov_base = tst_get_bad_addr(NULL);
+	...
+}
+
+Also I do not think that we need three buffers, the buf3 is completely
+unused and there is no point in having special buffer for badfd test
+either.
+
+> -char f_name[K_1];
+> -
+> -int fd[4];
+> -char *buf_list[NBUFS];
+> -
+> -char *TCID = "readv02";
+> -int TST_TOTAL = 1;
+> -
+> -char *bad_addr = 0;
+> +static struct tcase {
+> +	int *fd;
+> +	void *buf;
+> +	int count;
+> +	int exp_error;
+> +} tcases[] = {
+> +	{&fd[0], rd_iovec, 1, EINVAL},
+> +	{&fd[1], rd_iovec + 6, 3, EFAULT},
+> +	{&fd[2], rd_iovec + 10, -1, EINVAL},
+> +	{&fd[3], rd_iovec + 10, 1, EISDIR},
+> +	{&badfd, rd_iovec + 9, 3, EBADF},
+> +};
+>  
+> -int init_buffs(char **);
+> -int fill_mem(char *, int, int);
+> -long l_seek(int, long, int);
+> -char *getenv();
+> -void setup();
+> -void cleanup();
+>  
+> -int main(int ac, char **av)
+> +void fill_mem(char *c_ptr, int c1, int c2)
+>  {
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> +	int count;
+>  
+> -	/* The following loop checks looping state if -i option given */
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +	for (count = 1; count <= K_1 / CHUNK; count++) {
+> +		if (count & 0x01) /* if odd */
+> +			memset(c_ptr, c1, CHUNK);
+> +		else /* if even */
+> +			memset(c_ptr, c2, CHUNK);
+> +	}
+> +	return;
+> +}
+>  
+> -		/* reset tst_count in case we are looping */
+> -		tst_count = 0;
+> +void init_buffs(char *pbufs[])
+> +{
+> +	int i;
+>  
+> -//test1:
+> -		if (readv(fd[0], rd_iovec, 1) < 0) {
+> -			if (errno != EINVAL) {
+> -				tst_resm(TFAIL, "readv() set an illegal errno:"
+> -					 " expected: EINVAL, got %d", errno);
+> -			} else {
+> -				tst_resm(TPASS, "got EINVAL");
+> -			}
+> -		} else {
+> -			tst_resm(TFAIL, "Error: readv returned a positive "
+> -				 "value");
+> +	for (i = 0; pbufs[i] != NULL; i++) {
+> +		switch (i) {
+> +		case 0:
+> +		case 1:
+> +			fill_mem(pbufs[i], 0, 1);
+> +			break;
+> +		case 2:
+> +			fill_mem(pbufs[i], 1, 0);
+> +			break;
+> +		default:
+> +			tst_brk(TBROK, "Error in init_buffs function");
+>  		}
+> +	}
+> +	return;
+> +}
+>  
+> -//test2:
+> -		l_seek(fd[0], CHUNK * 6, 0);
+> -		if (readv(fd[0], (rd_iovec + 6), 3) < 0) {
+> -			if (errno != EFAULT) {
+> -				tst_resm(TFAIL, "expected errno = EFAULT, "
+> -					 "got %d", errno);
+> -			} else {
+> -				tst_resm(TPASS, "got EFAULT");
+> -			}
+> -			if (memcmp((buf_list[0] + CHUNK * 6),
+> -				   (buf_list[1] + CHUNK * 6), CHUNK * 3) != 0) {
+> -				tst_resm(TFAIL, "Error: readv() partially "
+> -					 "overlaid buf[2]");
+> -			}
+> -		} else {
+> -			tst_resm(TFAIL, "Error: readv returned a positive "
+> -				 "value");
+> -		}
+> +static void verify_readv(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+>  
+> -//test3:
+> -		if (readv(fd[1], (rd_iovec + 9), 1) < 0) {
+> -			if (errno != EBADF) {
+> -				tst_resm(TFAIL, "expected errno = EBADF, "
+> -					 "got %d", errno);
+> -			} else {
+> -				tst_resm(TPASS, "got EBADF");
+> -			}
+> -		} else {
+> -			tst_resm(TFAIL, "Error: readv returned a positive "
+> -				 "value");
+> -		}
+> +	TST_EXP_FAIL2(readv(*tc->fd, tc->buf, tc->count), tc->exp_error,
+> +		"readv(%d, %p, %d)", *tc->fd, tc->buf, tc->count);
+>  
+> -//test4:
+> -		l_seek(fd[0], CHUNK * 10, 0);
+> -		if (readv(fd[0], (rd_iovec + 10), -1) < 0) {
+> -			if (errno != EINVAL) {
+> -				tst_resm(TFAIL, "expected errno = EINVAL, "
+> -					 "got %d", errno);
+> -			} else {
+> -				tst_resm(TPASS, "got EINVAL");
+> -			}
+> -		} else {
+> -			tst_resm(TFAIL, "Error: readv returned a positive "
+> -				 "value");
+> +	if (tc->exp_error == EFAULT) {
+> +		if (memcmp((buf_list[0] + CHUNK * 6),
+> +			(buf_list[1] + CHUNK * 6), CHUNK * 3)) {
+> +		    tst_res(TFAIL, "Error: readv() partially overlaid buf[2]");
+>  		}
+> -
+>  	}
+> -	close(fd[0]);
+> -	close(fd[1]);
+> -	cleanup();
+> -	tst_exit();
+> -
+>  }
+>  
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
+>  void setup(void)
+>  {
+> -	int nbytes;
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	/* make a temporary directory and cd to it */
+> -	tst_tmpdir();
+> +	int i;
+>  
+>  	buf_list[0] = buf1;
+>  	buf_list[1] = buf2;
+> @@ -201,84 +133,37 @@ void setup(void)
+>  
+>  	init_buffs(buf_list);
+>  
+> -	sprintf(f_name, "%s.%d", DATA_FILE, getpid());
+> +	for (i = 0; i < 3; i++) {
+> +		fd[i] = SAFE_OPEN(TEST_FILE[i], O_WRONLY | O_CREAT, 0666);
+> +		SAFE_WRITE(1, fd[i], buf_list[2], K_1);
+>  
+> -	if ((fd[0] = open(f_name, O_WRONLY | O_CREAT, 0666)) < 0) {
+> -		tst_brkm(TBROK, cleanup, "open failed: fname = %s, "
+> -			 "errno = %d", f_name, errno);
+> -	} else {
+> -		if ((nbytes = write(fd[0], buf_list[2], K_1)) != K_1) {
+> -			tst_brkm(TBROK, cleanup, "write failed: nbytes "
+> -				 "= %d " "errno = %d", nbytes, errno);
+> -		}
+> -	}
+> +		SAFE_CLOSE(fd[i]);
+>  
+> -	SAFE_CLOSE(cleanup, fd[0]);
+> -
+> -	if ((fd[0] = open(f_name, O_RDONLY, 0666)) < 0) {
+> -		tst_brkm(TBROK, cleanup, "open failed: fname = %s, "
+> -			 "errno = %d", f_name, errno);
+> +		fd[i] = SAFE_OPEN(TEST_FILE[i], O_RDONLY, 0666);
+>  	}
+> +	SAFE_LSEEK(fd[1], CHUNK * 6, 0);
+> +	SAFE_LSEEK(fd[2], CHUNK * 10, 0);
+
+Does these readv calls actually read anyting?
+
+Because as far as I can tell they just fail without actually reading
+anything, so there is no point in intializing the buffers and also there
+is no point in having three different files opened for the test either.
+
+> -	fd[1] = -1;		/* Invalid file descriptor */
+> +	rd_iovec[6].iov_base = tst_get_bad_addr(NULL);
+>  
+> -	bad_addr = mmap(0, 1, PROT_NONE,
+> -			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+> -	if (bad_addr == MAP_FAILED) {
+> -		tst_brkm(TBROK, cleanup, "mmap failed");
+> -	}
+> -	rd_iovec[6].iov_base = bad_addr;
+> +	SAFE_MKDIR(TEST_DIR, MODES);
+> +	fd[3] = SAFE_OPEN(TEST_DIR, O_RDONLY);
+>  }
+>  
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *	       completion or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -	SAFE_UNLINK(NULL, f_name);
+> -	tst_rmdir();
+> -
+> -}
+> -
+> -int init_buffs(char *pbufs[])
+> +static void cleanup(void)
+>  {
+>  	int i;
+>  
+> -	for (i = 0; pbufs[i] != NULL; i++) {
+> -		switch (i) {
+> -		case 0:
+> -		 /*FALLTHROUGH*/ case 1:
+> -			fill_mem(pbufs[i], 0, 1);
+> -			break;
+> -
+> -		case 2:
+> -			fill_mem(pbufs[i], 1, 0);
+> -			break;
+> -
+> -		default:
+> -			tst_brkm(TBROK, cleanup, "Error in init_buffs()");
+> -		}
+> -	}
+> -	return 0;
+> -}
+> -
+> -int fill_mem(char *c_ptr, int c1, int c2)
+> -{
+> -	int count;
+> -
+> -	for (count = 1; count <= K_1 / CHUNK; count++) {
+> -		if (count & 0x01) {	/* if odd */
+> -			memset(c_ptr, c1, CHUNK);
+> -		} else {	/* if even */
+> -			memset(c_ptr, c2, CHUNK);
+> -		}
+> +	for (i = 0; i < 4; i++) {
+> +		if (fd[i] > 0)
+> +			SAFE_CLOSE(fd[i]);
+>  	}
+> -	return 0;
+>  }
+>  
+> -long l_seek(int fdesc, long offset, int whence)
+> -{
+> -	SAFE_LSEEK(cleanup, fdesc, offset, whence);
+> -	return 0;
+> -}
+> +static struct tst_test test = {
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test = verify_readv,
+> +};
+
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
