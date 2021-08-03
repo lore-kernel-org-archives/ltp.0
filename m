@@ -1,11 +1,11 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 3 Aug 2021 12:04:13 +0300
+Date: Tue, 3 Aug 2021 12:08:11 +0300
 Subject: [LTP] [PATCH 6/7] syscalls/fanotify20: Test file event with
  broken inode
 In-Reply-To: <20210802214645.2633028-7-krisman@collabora.com>
 References: <20210802214645.2633028-1-krisman@collabora.com>
  <20210802214645.2633028-7-krisman@collabora.com>
-Message-ID: <CAOQ4uxg3MPfMeMPpzompend0n3rH3b1+fFbzUSHsMGRJX0ruEg@mail.gmail.com>
+Message-ID: <CAOQ4uxizX0ar7d9eYgazcenQcA7Ku7quEZOLbcaxKJiY0sTPLA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -45,8 +45,41 @@ On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
 > +
 > +       SAFE_STAT(MOUNT_PATH"/"TCASE2_BAD_DIR, &stat);
 > +       tcase2_bad_ino = stat.st_ino;
+> +
+> +       SAFE_UMOUNT(MOUNT_PATH);
+> +       do_debugfs_request(tst_device->dev, "sif " TCASE2_BAD_DIR " mode 0xff");
+> +       SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+> +}
+> +
+> +static void tcase2_trigger_lookup(void)
+> +{
+> +       int ret;
+> +
+> +       /* SAFE_OPEN cannot be used here because we expect it to fail. */
+> +       ret = open(MOUNT_PATH"/"TCASE2_BAD_DIR, O_RDONLY, 0);
+> +       if (ret != -1 && errno != EUCLEAN)
+> +               tst_res(TFAIL, "Unexpected lookup result(%d) of %s (%d!=%d)",
+> +                       ret, TCASE2_BAD_DIR, errno, EUCLEAN);
+> +}
+> +
+>  static const struct test_case {
+>         char *name;
+>         int error;
+> @@ -92,6 +122,14 @@ static const struct test_case {
+>                 .error_count = 1,
+>                 .error = EXT4_ERR_ESHUTDOWN,
+>                 .inode = NULL
+> +       },
+> +       {
+> +               .name = "Lookup of inode with invalid mode",
+> +               .prepare_fs = tcase2_prepare_fs,
+> +               .trigger_error = &tcase2_trigger_lookup,
+> +               .error_count = 1,
+> +               .error = 0,
+> +               .inode = &tcase2_bad_ino,
 
-Better use fanotify_save_fid(MOUNT_PATH"/"TCASE2_BAD_DIR, &tcase2_bad_fid)
+Why is error 0?
+What's the rationale?
 
 Thanks,
 Amir.
