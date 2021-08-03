@@ -1,61 +1,42 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Aug 2021 11:30:32 +0200
-Subject: [LTP] [PATCH v7 1/7] lib: Print Summary: into stderr
-In-Reply-To: <20210802173536.19525-2-pvorel@suse.cz>
-References: <20210802173536.19525-1-pvorel@suse.cz>
- <20210802173536.19525-2-pvorel@suse.cz>
-Message-ID: <YQkMuOHjZ4HHO+QQ@yuki>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 03 Aug 2021 10:35:54 +0100
+Subject: [LTP] [PATCH v2 2/2] Add setsockopt08, CVE-2021-22555
+In-Reply-To: <731330a9-f374-2908-538e-3bb115897ab0@suse.cz>
+References: <20210803070520.30885-1-rpalethorpe@suse.com>
+ <20210803083836.8612-1-rpalethorpe@suse.com>
+ <20210803083836.8612-2-rpalethorpe@suse.com>
+ <731330a9-f374-2908-538e-3bb115897ab0@suse.cz>
+Message-ID: <87czquna4l.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I wonder if this change can break anything but I guess that it's
-unlikely.
+Hi,
 
-Also while you are at it can you also fix tags? We do print help() to
-stderr but tags that follow go into stdout which is rather starnge.
+Martin Doucha <mdoucha@suse.cz> writes:
 
-And the failure hints are written to stdout as well, which should be
-fixed as well.
+> Hi,
+> since this vulnerability is in the compat syscall wrappers, you should
+> also copy the arch bits check from setsockopt03 setup().
 
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> The same as in v6.
-> 
->  lib/tst_test.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index c7c77596c..d15c8c054 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -734,12 +734,12 @@ static void do_exit(int ret)
->  		if (results->broken)
->  			ret |= TBROK;
->  
-> -		printf("\nSummary:\n");
-> -		printf("passed   %d\n", results->passed);
-> -		printf("failed   %d\n", results->failed);
-> -		printf("broken   %d\n", results->broken);
-> -		printf("skipped  %d\n", results->skipped);
-> -		printf("warnings %d\n", results->warnings);
-> +		fprintf(stderr, "\nSummary:\n");
-> +		fprintf(stderr, "passed   %d\n", results->passed);
-> +		fprintf(stderr, "failed   %d\n", results->failed);
-> +		fprintf(stderr, "broken   %d\n", results->broken);
-> +		fprintf(stderr, "skipped  %d\n", results->skipped);
-> +		fprintf(stderr, "warnings %d\n", results->warnings);
->  	}
->  
->  	do_cleanup();
-> -- 
-> 2.32.0
-> 
++1
+
+Will roll another patch after a delay.
+
+>
+> On 03. 08. 21 10:38, Richard Palethorpe via ltp wrote:
+>> This is a copy and paste of Nicolai's reproducer. The main difference
+>> is that I moved some code around. Of course I also used LTP library
+>> features, but essentially it works the same.
+>> 
+>> There are some hard coded values which I do not like. I guess these
+>> could be calculated or varied somehow. However I struggle to understand
+>> what the kernel is doing. This perhaps needs more investigation. We
+>> could try generalising this test and setsockopt03
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
