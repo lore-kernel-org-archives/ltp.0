@@ -1,56 +1,36 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 3 Aug 2021 11:56:31 +0300
-Subject: [LTP] [PATCH 3/7] syscalls/fanotify20: Validate incoming FID in
- FAN_FS_ERROR
-In-Reply-To: <20210802214645.2633028-4-krisman@collabora.com>
-References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-4-krisman@collabora.com>
-Message-ID: <CAOQ4uxjMfJM4FM4tWJWgjbK4a2K1hNJdEBRvwQTh9+5su2N0Tw@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 3 Aug 2021 10:59:53 +0200
+Subject: [LTP] [PATCH v2 2/2] Add setsockopt08, CVE-2021-22555
+In-Reply-To: <20210803083836.8612-2-rpalethorpe@suse.com>
+References: <20210803070520.30885-1-rpalethorpe@suse.com>
+ <20210803083836.8612-1-rpalethorpe@suse.com>
+ <20210803083836.8612-2-rpalethorpe@suse.com>
+Message-ID: <731330a9-f374-2908-538e-3bb115897ab0@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Verify the FID provided in the event.  If the testcase has a null inode,
-> this is assumed to be a superblock error (i.e. null FH).
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> ---
->  .../kernel/syscalls/fanotify/fanotify20.c     | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> index fd5cfb8744f1..d8d788ae685f 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> @@ -40,6 +40,14 @@
->
->  #define FAN_EVENT_INFO_TYPE_ERROR      4
->
-> +#ifndef FILEID_INVALID
-> +#define        FILEID_INVALID          0xff
-> +#endif
-> +
-> +#ifndef FILEID_INO32_GEN
-> +#define FILEID_INO32_GEN       1
-> +#endif
-> +
->  struct fanotify_event_info_error {
->         struct fanotify_event_info_header hdr;
->         __s32 error;
-> @@ -57,6 +65,9 @@ static const struct test_case {
->         char *name;
->         int error;
->         unsigned int error_count;
-> +
-> +       /* inode can be null for superblock errors */
-> +       unsigned int *inode;
+Hi,
+since this vulnerability is in the compat syscall wrappers, you should
+also copy the arch bits check from setsockopt03 setup().
 
-Any reason not to use fanotify_fid_t * like fanotify16.c?
+On 03. 08. 21 10:38, Richard Palethorpe via ltp wrote:
+> This is a copy and paste of Nicolai's reproducer. The main difference
+> is that I moved some code around. Of course I also used LTP library
+> features, but essentially it works the same.
+> 
+> There are some hard coded values which I do not like. I guess these
+> could be calculated or varied somehow. However I struggle to understand
+> what the kernel is doing. This perhaps needs more investigation. We
+> could try generalising this test and setsockopt03
 
-Thanks,
-Amir.
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
