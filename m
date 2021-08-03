@@ -1,77 +1,41 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue,  3 Aug 2021 17:58:22 +0200
-Subject: [LTP] [PATCH v2 2/2] perf_event_open02: Use common
- perf_event_open() wrapper
-In-Reply-To: <20210803155822.1973-1-mdoucha@suse.cz>
-References: <20210803155822.1973-1-mdoucha@suse.cz>
-Message-ID: <20210803155822.1973-2-mdoucha@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 3 Aug 2021 18:22:04 +0200
+Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
+ protocol
+In-Reply-To: <YQliykiyDtJwEKVK@pevik>
+References: <20210714140716.1568-1-pvorel@suse.cz>
+ <20210714140716.1568-3-pvorel@suse.cz>
+ <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
+ <YQBD4w2nKwY2G1l+@pevik>
+ <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
+ <YQg0LIXG8LK0OV74@pevik>
+ <80a6cbec-50b7-9912-d682-915a1076bbec@bell-sw.com>
+ <YQliykiyDtJwEKVK@pevik>
+Message-ID: <YQltLFTp3mRPqjQR@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+Hi Alexey,
 
-Changes since v1: None
+> --- testcases/network/stress/broken_ip/broken_ip-checksum
+> +++ testcases/network/stress/broken_ip/broken_ip-checksum
+> @@ -10,7 +10,10 @@ TST_TESTFUNC="do_test"
 
- .../perf_event_open/perf_event_open02.c       | 28 +------------------
- 1 file changed, 1 insertion(+), 27 deletions(-)
+>  do_test()
+>  {
+> -	tst_res TINFO "Sending ICMPv$TST_IPVER with wrong chksum field for $NS_DURATION sec"
+> +	TST_IPV6=
+> +	TST_IPVER=4
+> +
+> +	tst_res TINFO "Sending ICMPv4 with wrong chksum field for $NS_DURATION sec"
+>  	tst_icmp -t $NS_DURATION -s "0 100 500 1000 $NS_ICMP_SENDER_DATA_MAXSIZE" -c
+>  	tst_ping
+>  }
 
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-index eead421ac..7200d35e3 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-@@ -29,7 +29,6 @@
- 
- #define _GNU_SOURCE
- #include <errno.h>
--#include <inttypes.h>
- #include <sched.h>
- #include <signal.h>
- #include <stddef.h>
-@@ -47,8 +46,7 @@
- #include "lapi/syscalls.h"
- 
- #if HAVE_PERF_EVENT_ATTR
--#include <linux/types.h>
--#include <linux/perf_event.h>
-+#include "perf_event_open.h"
- 
- #define MAX_CTRS	1000
- 
-@@ -67,30 +65,6 @@ static int tsk0 = -1, hwfd[MAX_CTRS], tskfd[MAX_CTRS];
- static int volatile work_done;
- static unsigned int est_loops;
- 
--static int perf_event_open(struct perf_event_attr *event, pid_t pid,
--	int cpu, int group_fd, unsigned long flags)
--{
--	int ret;
--
--	ret = tst_syscall(__NR_perf_event_open, event, pid, cpu,
--		group_fd, flags);
--
--	if (ret != -1)
--		return ret;
--
--	tst_res(TINFO, "perf_event_open event.type: %"PRIu32
--		", event.config: %"PRIu64, (uint32_t)event->type,
--		(uint64_t)event->config);
--	if (errno == ENOENT || errno == ENODEV) {
--		tst_brk(TCONF | TERRNO,
--			"perf_event_open type/config not supported");
--	}
--	tst_brk(TBROK | TERRNO, "perf_event_open failed");
--
--	/* unreachable */
--	return -1;
--}
--
- static void all_counters_set(int state)
- {
- 	if (prctl(state) == -1)
--- 
-2.32.0
+FYI merged commit which implements this.
 
+Kind regards,
+Petr
