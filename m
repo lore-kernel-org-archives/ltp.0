@@ -1,57 +1,68 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 2 Aug 2021 20:06:36 +0200
-Subject: [LTP] [PATCH 2/2] broken_ip: TCONF when test run on unsupported
- protocol
-In-Reply-To: <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
-References: <20210714140716.1568-1-pvorel@suse.cz>
- <20210714140716.1568-3-pvorel@suse.cz>
- <57d4c109-d01a-2c7f-39c7-41013e70abf9@bell-sw.com>
- <YQBD4w2nKwY2G1l+@pevik>
- <b0638d98-88d5-76d7-78a1-631c801d88ad@bell-sw.com>
-Message-ID: <YQg0LIXG8LK0OV74@pevik>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Tue, 3 Aug 2021 06:56:32 +0200
+Subject: [LTP] [PATCH v2] lib: tst_device: Allow more control over the
+ device size
+In-Reply-To: <20210802121702.3905-1-chrubis@suse.cz>
+References: <20210802121702.3905-1-chrubis@suse.cz>
+Message-ID: <56b919e1-68b3-de56-4e6a-70d699a281e6@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Cyril,
 
-> Hi Petr,
-> On 27.07.2021 20:35, Petr Vorel wrote:
-> > Hi Alexey,
+On 8/2/2021 2:17 PM, Cyril Hrubis wrote:
+> There is actually no reason for lower limit on the device size, and we
+> can safely allow the tests to request smaller device than the default
+> hardcoded in the library. The backing file is preallocated without
+> actually writing to it as long as the underlying filesystem supports it
+> so the speedup will be minimal if measurable but we will at least spare
+> some space which needs to be reserved on the filesystem which is still a
+> good thing.
+>
+> The test may end up with a device that is bigger than the requsted size
+> in a case that a real device was passed to the LTP for the testrun.  So
+> tests should be able to cope with that and that's also the reason why
+> the turning knob is still called dev_min_size.
+>
+> Also currently we use the dev_min_size only to increase the device size
+> for a few tests so this change is safe and cannot break anything.
+>
+> CC: Joerg Vehlow <lkml@jv-coder.de>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>
+> v2: Updated both places where we compute the device size as pointed out
+>      by Joerg
+>
+>   lib/tst_device.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index c91c6cd55..73e70d26e 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -278,7 +278,7 @@ int tst_dev_sync(int fd)
+>   
+>   const char *tst_acquire_loop_device(unsigned int size, const char *filename)
+>   {
+> -	unsigned int acq_dev_size = MAX(size, DEV_SIZE_MB);
+> +	unsigned int acq_dev_size = size ? size : DEV_SIZE_MB;
+>   
+>   	if (tst_prealloc_file(filename, 1024 * 1024, acq_dev_size)) {
+>   		tst_resm(TWARN | TERRNO, "Failed to create %s", filename);
+> @@ -300,7 +300,7 @@ const char *tst_acquire_device__(unsigned int size)
+>   	unsigned int acq_dev_size;
+>   	uint64_t ltp_dev_size;
+>   
+> -	acq_dev_size = MAX(size, DEV_SIZE_MB);
+> +	acq_dev_size = size ? size : DEV_SIZE_MB;
+>   
+>   	dev = getenv("LTP_DEV");
+>   
 
-> >> On 14.07.2021 17:07, Petr Vorel wrote:
-> >>> net_stress.broken_ip runtest file is correct, but some users try to run
-> >>> tests manually.
+Thanks, looks good now. Tested with the squashfs test.
 
-> >>> Fixes: #843
-
-> ...
-> >>>  do_test()
-
-> >> The generic version looks fine:
-
-> >> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-
-> > I didn't understand whether you'd prefer to add TST_IPV6=6 (or TST_IPV6=) where
-> > needed or accept this patchset. Both would work.
-
-> I think for manual runs it is better to set TST_IPV6=6 in the test
-> so it will run the test rather the require passing some options.
-It looks like specifying TST_IPV6=6 is not enough, because tests are using
-$NS_ICMP_SENDER_DATA_MAXSIZE which is defined in tst_net.sh according to
-TST_IPV6. We can
-
-1) overwrite NS_ICMP_SENDER_DATA_MAXSIZE="$NS_ICMPV6_SENDER_DATA_MAXSIZE"
-2) check TST_IPV6 before running tst_net_parse_args and if set overwrite -6 flag
-
-But both are quite ugly, thus unless you have better idea I merge this patchset.
-
-Kind regards,
-Petr
-
-> > Kind regards,
-> > Petr
-
-
+Joerg
