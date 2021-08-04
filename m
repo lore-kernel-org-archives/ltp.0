@@ -1,20 +1,20 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 4 Aug 2021 08:27:46 +0300
-Subject: [LTP] [PATCH 6/7] syscalls/fanotify20: Test file event with
- broken inode
-In-Reply-To: <87k0l1hkuz.fsf@collabora.com>
+Date: Wed, 4 Aug 2021 08:39:55 +0300
+Subject: [LTP] [PATCH 3/7] syscalls/fanotify20: Validate incoming FID in
+ FAN_FS_ERROR
+In-Reply-To: <87fsvphksu.fsf@collabora.com>
 References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-7-krisman@collabora.com>
- <CAOQ4uxizX0ar7d9eYgazcenQcA7Ku7quEZOLbcaxKJiY0sTPLA@mail.gmail.com>
- <87k0l1hkuz.fsf@collabora.com>
-Message-ID: <CAOQ4uxis23+T3=+R+9rKkxtZLtS4S4LJ6RBgG0AEHsg4=MJyRA@mail.gmail.com>
+ <20210802214645.2633028-4-krisman@collabora.com>
+ <CAOQ4uxjMfJM4FM4tWJWgjbK4a2K1hNJdEBRvwQTh9+5su2N0Tw@mail.gmail.com>
+ <87fsvphksu.fsf@collabora.com>
+Message-ID: <CAOQ4uxj_WwDPxZv0nr9+Hh+pim6+2onaBdFq_BR-qK=xz+8yUg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 4, 2021 at 7:52 AM Gabriel Krisman Bertazi
+On Wed, Aug 4, 2021 at 7:54 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
 > Amir Goldstein <amir73il@gmail.com> writes:
@@ -22,96 +22,59 @@ On Wed, Aug 4, 2021 at 7:52 AM Gabriel Krisman Bertazi
 > > On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
 > > <krisman@collabora.com> wrote:
 > >>
-> >> This test corrupts an inode entry with an invalid mode through debugfs
-> >> and then tries to access it.  This should result in a ext4 error, which
-> >> we monitor through the fanotify group.
+> >> Verify the FID provided in the event.  If the testcase has a null inode,
+> >> this is assumed to be a superblock error (i.e. null FH).
 > >>
 > >> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 > >> ---
-> >>  .../kernel/syscalls/fanotify/fanotify20.c     | 38 +++++++++++++++++++
-> >>  1 file changed, 38 insertions(+)
+> >>  .../kernel/syscalls/fanotify/fanotify20.c     | 51 +++++++++++++++++++
+> >>  1 file changed, 51 insertions(+)
 > >>
 > >> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> >> index e7ced28eb61d..0c63e90edc3a 100644
+> >> index fd5cfb8744f1..d8d788ae685f 100644
 > >> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
 > >> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> >> @@ -76,6 +76,36 @@ static void trigger_fs_abort(void)
-> >>                    MS_REMOUNT|MS_RDONLY, "abort");
-> >>  }
+> >> @@ -40,6 +40,14 @@
 > >>
-> >> +#define TCASE2_BASEDIR "tcase2"
-> >> +#define TCASE2_BAD_DIR TCASE2_BASEDIR"/bad_dir"
+> >>  #define FAN_EVENT_INFO_TYPE_ERROR      4
+> >>
+> >> +#ifndef FILEID_INVALID
+> >> +#define        FILEID_INVALID          0xff
+> >> +#endif
 > >> +
-> >> +static unsigned int tcase2_bad_ino;
-> >> +static void tcase2_prepare_fs(void)
-> >> +{
-> >> +       struct stat stat;
+> >> +#ifndef FILEID_INO32_GEN
+> >> +#define FILEID_INO32_GEN       1
+> >> +#endif
 > >> +
-> >> +       SAFE_MKDIR(MOUNT_PATH"/"TCASE2_BASEDIR, 0777);
-> >> +       SAFE_MKDIR(MOUNT_PATH"/"TCASE2_BAD_DIR, 0777);
-> >> +
-> >> +       SAFE_STAT(MOUNT_PATH"/"TCASE2_BAD_DIR, &stat);
-> >> +       tcase2_bad_ino = stat.st_ino;
-> >> +
-> >> +       SAFE_UMOUNT(MOUNT_PATH);
-> >> +       do_debugfs_request(tst_device->dev, "sif " TCASE2_BAD_DIR " mode 0xff");
-> >> +       SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
-> >> +}
-> >> +
-> >> +static void tcase2_trigger_lookup(void)
-> >> +{
-> >> +       int ret;
-> >> +
-> >> +       /* SAFE_OPEN cannot be used here because we expect it to fail. */
-> >> +       ret = open(MOUNT_PATH"/"TCASE2_BAD_DIR, O_RDONLY, 0);
-> >> +       if (ret != -1 && errno != EUCLEAN)
-> >> +               tst_res(TFAIL, "Unexpected lookup result(%d) of %s (%d!=%d)",
-> >> +                       ret, TCASE2_BAD_DIR, errno, EUCLEAN);
-> >> +}
-> >> +
-> >>  static const struct test_case {
+> >>  struct fanotify_event_info_error {
+> >>         struct fanotify_event_info_header hdr;
+> >>         __s32 error;
+> >> @@ -57,6 +65,9 @@ static const struct test_case {
 > >>         char *name;
 > >>         int error;
-> >> @@ -92,6 +122,14 @@ static const struct test_case {
-> >>                 .error_count = 1,
-> >>                 .error = EXT4_ERR_ESHUTDOWN,
-> >>                 .inode = NULL
-> >> +       },
-> >> +       {
-> >> +               .name = "Lookup of inode with invalid mode",
-> >> +               .prepare_fs = tcase2_prepare_fs,
-> >> +               .trigger_error = &tcase2_trigger_lookup,
-> >> +               .error_count = 1,
-> >> +               .error = 0,
-> >> +               .inode = &tcase2_bad_ino,
+> >>         unsigned int error_count;
+> >> +
+> >> +       /* inode can be null for superblock errors */
+> >> +       unsigned int *inode;
 > >
-> > Why is error 0?
-> > What's the rationale?
+> > Any reason not to use fanotify_fid_t * like fanotify16.c?
 >
-> Hi Amir,
->
-> That is specific to Ext4.  Some ext4 conditions report bogus error codes.  I will
-> come up with a kernel patch changing it.
->
+> No reason other than I didn't notice they existed. Sorry. I will get
+> this fixed.
 
-Well, I would not expect a FAN_FS_ERROR event to ever have 0 error
-value. Since this test practically only tests ext4, I do not think it
-is reasonable
-for the test to VERIFY a bug. It is fine to write this test with expectations
-that are not met and let it fail.
+No problem. That's what review is for ;-)
 
-But a better plan would probably be to merge the patches up to 5 to test
-FAN_FS_ERROR and then add more test cases after ext4 is fixed
-Either that or you fix the ext4 problem along with FAN_FS_ERROR.
+BTW, unless anyone is specifically interested I don't think there
+is a reason to re post the test patches before the submission request.
+Certainly not for the small fixes that I requested.
 
-Forgot to say that the test needs to declare .needs_cmds "debugfs".
+I do request that you post a link to a branch with the fixed test
+so that we can experiment with the kernel patches.
 
-In any case, as far as prerequisite to merging FAN_FS_ERROR
-your WIP tests certainly suffice.
-Please keep your test branch around so we can use it to validate
-the kernel patches.
-I usually hold off on submitting LTP tests for inclusion until at least -rc3
-after kernel patches have been merged.
+I've also CC'ed Matthew who may want to help with review of the test
+and man page that you posted in the cover letter [1].
 
 Thanks,
 Amir.
+
+[1] https://lore.kernel.org/linux-ext4/20210802214645.2633028-1-krisman@collabora.com/T/#m9cf637c6aca94e28390f61deac5a53afbc9e88ae
