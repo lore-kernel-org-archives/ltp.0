@@ -1,32 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 3 Aug 2021 18:46:46 +0200
-Subject: [LTP] [PATCH v7 2/7] test/test_zero_hugepage.sh: Skip test on
- read-only file system
-In-Reply-To: <YQkqY3Mdmv4cYsFx@yuki>
-References: <20210802173536.19525-1-pvorel@suse.cz>
- <20210802173536.19525-3-pvorel@suse.cz> <YQkLmb3pUPY8cKP8@yuki>
- <YQkps5nZ8gHJSaUQ@pevik> <YQkqY3Mdmv4cYsFx@yuki>
-Message-ID: <YQly9swcBhrmqgnB@pevik>
+From: Ian May <ian.s.may@gmail.com>
+Date: Wed,  4 Aug 2021 00:42:16 +0000
+Subject: [LTP] [PATCH] syscalls/shmget03: Stat and skip existing shared
+ segments
+Message-ID: <20210804004216.2754304-1-ian.may@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > > I wonder if we should rather check if proc is mounted readonly
-> > > explicitly since this may hide all kinds of errors.
-> > Sure, makes sense, I'll adapt it in v8. It's just not a fun to write tests which
-> > you cannot debug on VM, but just pushing to git :(.
+From: Ian May <ian.s.may@gmail.com>
 
-> Well I guess that you can remount proc RO on your testing machine with
-> something as:
+Run a SHM_STAT prior to the creation of the shared memory segment.
+This allows for not failing unexpectedly and still exhausting the
+proper max shared segments.
 
-> mount -o remount,ro /proc
-Indeed one (very old one) of many of my VMs didn't yell "mount: /proc: mount
-point is busy." and actually allowed remount /proc to ro. Nice, thanks for a
-tip!
+Signed-off-by: Ian May <ian.s.may@gmail.com>
+---
+ testcases/kernel/syscalls/ipc/shmget/shmget03.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+index efbc465e1..fe91b6191 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+@@ -34,6 +34,7 @@ static void verify_shmget(void)
+ static void setup(void)
+ {
+ 	int res, num;
++	struct shmid_ds buf;
+ 
+ 	shmkey = GETIPCKEY();
+ 
+@@ -41,6 +42,8 @@ static void setup(void)
+ 
+ 	queues = SAFE_MALLOC(maxshms * sizeof(int));
+ 	for (num = 0; num < maxshms; num++) {
++		if(shmctl(num, SHM_STAT, &buf) != -1)
++			continue;
+ 		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
+ 		if (res == -1)
+ 			tst_brk(TBROK | TERRNO, "shmget failed unexpectedly");
+-- 
+2.25.1
 
