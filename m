@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 4 Aug 2021 16:10:37 +0200
-Subject: [LTP] [PATCH v8 1/7] lib: Print everything to stderr
-In-Reply-To: <20210804092407.16015-2-pvorel@suse.cz>
+Date: Wed, 4 Aug 2021 16:12:02 +0200
+Subject: [LTP] [PATCH v8 2/7] test/test_zero_hugepage.sh: Skip test on
+ read-only /proc
+In-Reply-To: <20210804092407.16015-3-pvorel@suse.cz>
 References: <20210804092407.16015-1-pvorel@suse.cz>
- <20210804092407.16015-2-pvorel@suse.cz>
-Message-ID: <YQqf3SkFQe8QsFr2@yuki>
+ <20210804092407.16015-3-pvorel@suse.cz>
+Message-ID: <YQqgMq8KnNRAn8MX@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
