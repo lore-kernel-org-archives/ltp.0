@@ -1,80 +1,170 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 4 Aug 2021 08:39:55 +0300
-Subject: [LTP] [PATCH 3/7] syscalls/fanotify20: Validate incoming FID in
- FAN_FS_ERROR
-In-Reply-To: <87fsvphksu.fsf@collabora.com>
-References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-4-krisman@collabora.com>
- <CAOQ4uxjMfJM4FM4tWJWgjbK4a2K1hNJdEBRvwQTh9+5su2N0Tw@mail.gmail.com>
- <87fsvphksu.fsf@collabora.com>
-Message-ID: <CAOQ4uxj_WwDPxZv0nr9+Hh+pim6+2onaBdFq_BR-qK=xz+8yUg@mail.gmail.com>
+From: sujiaxun <sujiaxun@uniontech.com>
+Date: Wed,  4 Aug 2021 14:07:36 +0800
+Subject: [LTP] [PATCH] [1/6] syscalls/sysfs: Convert sysfs01 to the new API
+Message-ID: <20210804060736.10234-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 4, 2021 at 7:54 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Amir Goldstein <amir73il@gmail.com> writes:
->
-> > On Tue, Aug 3, 2021 at 12:47 AM Gabriel Krisman Bertazi
-> > <krisman@collabora.com> wrote:
-> >>
-> >> Verify the FID provided in the event.  If the testcase has a null inode,
-> >> this is assumed to be a superblock error (i.e. null FH).
-> >>
-> >> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> >> ---
-> >>  .../kernel/syscalls/fanotify/fanotify20.c     | 51 +++++++++++++++++++
-> >>  1 file changed, 51 insertions(+)
-> >>
-> >> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> >> index fd5cfb8744f1..d8d788ae685f 100644
-> >> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
-> >> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> >> @@ -40,6 +40,14 @@
-> >>
-> >>  #define FAN_EVENT_INFO_TYPE_ERROR      4
-> >>
-> >> +#ifndef FILEID_INVALID
-> >> +#define        FILEID_INVALID          0xff
-> >> +#endif
-> >> +
-> >> +#ifndef FILEID_INO32_GEN
-> >> +#define FILEID_INO32_GEN       1
-> >> +#endif
-> >> +
-> >>  struct fanotify_event_info_error {
-> >>         struct fanotify_event_info_header hdr;
-> >>         __s32 error;
-> >> @@ -57,6 +65,9 @@ static const struct test_case {
-> >>         char *name;
-> >>         int error;
-> >>         unsigned int error_count;
-> >> +
-> >> +       /* inode can be null for superblock errors */
-> >> +       unsigned int *inode;
-> >
-> > Any reason not to use fanotify_fid_t * like fanotify16.c?
->
-> No reason other than I didn't notice they existed. Sorry. I will get
-> this fixed.
+Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+---
+ testcases/kernel/syscalls/sysfs/sysfs01.c | 124 +++-------------------
+ 1 file changed, 16 insertions(+), 108 deletions(-)
 
-No problem. That's what review is for ;-)
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
+index 85052dc2b..086d4a048 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs01.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
+@@ -1,129 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: sysfs01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for sysfs(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *    This is a Phase I test for the sysfs(2) system call.
+- *    This test is carried out for option 1 for sysfs(2).
+- *    It is intended to provide a limited exposure of the system call.
+- *
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * sysfs01 [-c n]  [-e] [-i n] [-I x] [-p x] [-t] [-h] [-f] [-p]
+- *  where:
+- *	-c n : run n copies simultaneously.
+- *	-e   : Turn on errno logging.
+- *	-i n : Execute test n times.
+- *	-I x : Execute test for x seconds.
+- *	-p   : Pause for SIGUSR1 before starting
+- *	-P x : Pause for x seconds between iterations.
+- *	-t   : Turn on syscall timing.
++
++/*\
++ * [DESCRIPTION]
+  *
+- *RESTRICTIONS:
+- *There is no glibc or libc support
+- *Kernel should be compiled with proc filesystem support
+- ******************************************************************************/
++ *This testcase tests sysfs(2) for option 1
++ */
 
-BTW, unless anyone is specifically interested I don't think there
-is a reason to re post the test patches before the submission request.
-Certainly not for the small fixes that I requested.
+ #include <errno.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
+-#include "test.h"
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
 
-I do request that you post a link to a branch with the fixed test
-so that we can experiment with the kernel patches.
+-static void setup();
+-static void cleanup();
 
-I've also CC'ed Matthew who may want to help with review of the test
-and man page that you posted in the cover letter [1].
+-char *TCID = "sysfs01";
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
++static void verify_sysfs01(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
 
-Thanks,
-Amir.
+ 		/* option 1, buf holds fs name */
+-		TEST(ltp_syscall(__NR_sysfs, 1, "proc"));
++		TEST(tst_syscall(__NR_sysfs, 1, "proc"));
 
-[1] https://lore.kernel.org/linux-ext4/20210802214645.2633028-1-krisman@collabora.com/T/#m9cf637c6aca94e28390f61deac5a53afbc9e88ae
+ 		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "sysfs(2) Failed for "
+-				 "option 1 and set errno to %d", TEST_ERRNO);
++		if (TST_RET == -1) {
++			tst_res(TFAIL, "sysfs(2) Failed for "
++				 "option 1 and set errno to %d", TST_ERR);
+ 		} else {
+-			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
++			tst_res(TPASS, "sysfs(2) Passed for " "option 1");
+ 		}
+-	}			/*End of TEST_LOOPING */
+-
+-	/*Clean up and exit */
+-	cleanup();
+-	tst_exit();
+-
+-}
+-
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+
+ }
+
+-/*
+- * cleanup() - Performs one time cleanup for this test at
+- * completion or premature exit
+- */
+-
+-void cleanup(void)
+-{
+-
+-}
++static struct tst_test test = {
++	.test_all = verify_sysfs01,
++};
+--
+2.20.1
+
+
+
