@@ -1,77 +1,22 @@
-From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Date: Wed,  4 Aug 2021 12:39:18 +0300
-Subject: [LTP] [PATCH v3] shmget02: check if CONFIG_HUGETLBFS enabled in
- kernel
-Message-ID: <20210804093918.1087-1-bogdan.lezhepekov@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 4 Aug 2021 12:01:14 +0200
+Subject: [LTP] [PATCH v2] lib: tst_device: Allow more control over the
+ device size
+In-Reply-To: <56b919e1-68b3-de56-4e6a-70d699a281e6@jv-coder.de>
+References: <20210802121702.3905-1-chrubis@suse.cz>
+ <56b919e1-68b3-de56-4e6a-70d699a281e6@jv-coder.de>
+Message-ID: <YQplakJQvS1YNdsQ@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Two tests call shmget with a flag SHM_HUGETLB, trying to
-allocate the segment using "huge" pages. The hugetlbpage
-support needs to be enabled in kernel (CONFIG_HUGETLBFS),
-otherwise shmget returns EINVAL.
+Hi!
+> Thanks, looks good now. Tested with the squashfs test.
 
-Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
----
- .../kernel/syscalls/ipc/shmget/shmget02.c     | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Pushed, thanks.
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-index 66a4b94ee..7616178be 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-@@ -32,10 +32,13 @@
- #include <sys/shm.h>
- #include <grp.h>
- #include "tst_safe_sysv_ipc.h"
-+#include "tst_kconfig.h"
- #include "tst_test.h"
- #include "libnewipc.h"
- #include "lapi/shm.h"
- 
-+#define CONFIG_HUGETLBFS "CONFIG_HUGETLBFS"
-+
- static int shm_id = -1;
- static key_t shmkey, shmkey1;
- static struct passwd *pw;
-@@ -60,6 +63,17 @@ static struct tcase {
- 	{&shmkey1, SHM_SIZE, IPC_CREAT | SHM_HUGETLB, 0, 0, ENOMEM}
- };
- 
-+static int hugetlbfs_supported(void)
-+{
-+	struct tst_kconfig_var kconfig = {
-+		.id = CONFIG_HUGETLBFS,
-+		.id_len = sizeof(CONFIG_HUGETLBFS)-1,
-+	};
-+
-+	tst_kconfig_read(&kconfig, 1);
-+	return kconfig.choice == 'y';
-+}
-+
- static void do_test(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
-@@ -94,6 +108,16 @@ static void setup(void)
- 	SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &rl);
- 	shm_id = SAFE_SHMGET(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL);
- 	pw = SAFE_GETPWNAM("nobody");
-+
-+	if (!hugetlbfs_supported()) {
-+
-+		tst_res(TINFO, "SHM_HUGETLB not supported by kernel");
-+
-+		for (int i = 0; i < ARRAY_SIZE(tcases); i++) {
-+			if (tcases[i].flags & SHM_HUGETLB)
-+				tcases[i].exp_err = EINVAL;
-+		}
-+	}
- }
- 
- static void cleanup(void)
 -- 
-2.32.0
-
+Cyril Hrubis
+chrubis@suse.cz
