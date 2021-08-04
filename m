@@ -1,63 +1,114 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  4 Aug 2021 11:24:07 +0200
-Subject: [LTP] [PATCH v8 2/7] test/test_zero_hugepage.sh: Skip test on
- read-only /proc
+Date: Wed,  4 Aug 2021 11:24:06 +0200
+Subject: [LTP] [PATCH v8 1/7] lib: Print everything to stderr
 In-Reply-To: <20210804092407.16015-1-pvorel@suse.cz>
 References: <20210804092407.16015-1-pvorel@suse.cz>
-Message-ID: <20210804092407.16015-3-pvorel@suse.cz>
+Message-ID: <20210804092407.16015-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-or /proc/sys. On GitHub Actions /proc/sys/vm/nr_hugepages is not allowed
-to be changed:
+ie.e hint, tags, summary to unify the behavior with tst_{brk,res}()
+which printed into stderr from the beginning.
 
-./test_zero_hugepage.sh: line 9: can't create /proc/sys/vm/nr_hugepages: Read-only file system
-tst_hugepage.c:57: TBROK: Failed to open FILE '/proc/sys/vm/nr_hugepages' for writing: EROFS (30)
-tst_sys_conf.c:102: TWARN: Failed to open FILE '/proc/sys/vm/nr_hugepages'
-
-There are several /proc subdirectories mounted as read only:
-$ grep '^proc /proc.* proc ro' /proc/mounts
-proc /proc/bus proc ro,nosuid,nodev,noexec,relatime 0 0
-proc /proc/fs proc ro,nosuid,nodev,noexec,relatime 0 0
-proc /proc/irq proc ro,nosuid,nodev,noexec,relatime 0 0
-proc /proc/sys proc ro,nosuid,nodev,noexec,relatime 0 0
-proc /proc/sysrq-trigger proc ro,nosuid,nodev,noexec,relatime 0 0
+Initial motivation was issue in GitHub Actions, where stdout and stderr
+are probably block buffered and flushed at different times. The result
+was mangled summary into other test output.
 
 Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 Changes v7->v8:
-* check for readonly fs instead TCONF on any error during writing to
-/proc/sys/vm/nr_hugepages (Cyril)
+* print more items in lib into stderr (Cyril)
 
- lib/newlib_tests/test_zero_hugepage.sh | 6 ++++++
- 1 file changed, 6 insertions(+)
+ lib/tst_test.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/lib/newlib_tests/test_zero_hugepage.sh b/lib/newlib_tests/test_zero_hugepage.sh
-index 10113006b..d270e686c 100755
---- a/lib/newlib_tests/test_zero_hugepage.sh
-+++ b/lib/newlib_tests/test_zero_hugepage.sh
-@@ -1,11 +1,17 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2021 Yang Xu <xuyang2018.jy@fujitsu.com>
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index c7c77596c..8a6a112ef 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -488,23 +488,23 @@ static void print_test_tags(void)
+ 	if (!tags)
+ 		return;
  
- echo "Testing .request_hugepages = TST_NO_HUGEPAGES"
+-	printf("\nTags\n");
+-	printf("----\n");
++	fprintf(stderr, "\nTags\n");
++	fprintf(stderr, "----\n");
  
- orig_value=`cat /proc/sys/vm/nr_hugepages`
+ 	for (i = 0; tags[i].name; i++) {
+ 		if (!strcmp(tags[i].name, "CVE"))
+-			printf(CVE_DB_URL "%s\n", tags[i].value);
++			fprintf(stderr, CVE_DB_URL "%s\n", tags[i].value);
+ 		else if (!strcmp(tags[i].name, "linux-git"))
+-			printf(LINUX_GIT_URL "%s\n", tags[i].value);
++			fprintf(stderr, LINUX_GIT_URL "%s\n", tags[i].value);
+ 		else if (!strcmp(tags[i].name, "linux-stable-git"))
+-			printf(LINUX_STABLE_GIT_URL "%s\n", tags[i].value);
++			fprintf(stderr, LINUX_STABLE_GIT_URL "%s\n", tags[i].value);
+ 		else if (!strcmp(tags[i].name, "glibc-git"))
+-			printf(GLIBC_GIT_URL "%s\n", tags[i].value);
++			fprintf(stderr, GLIBC_GIT_URL "%s\n", tags[i].value);
+ 		else
+-			printf("%s: %s\n", tags[i].name, tags[i].value);
++			fprintf(stderr, "%s: %s\n", tags[i].name, tags[i].value);
+ 	}
  
-+if grep -q -E '^proc /proc(/sys)? proc ro' /proc/mounts; then
-+	echo "TCONF: /proc or /proc/sys mounted as read-only"
-+	exit 32
-+fi
-+
- echo "128" > /proc/sys/vm/nr_hugepages
+-	printf("\n");
++	fprintf(stderr, "\n");
+ }
  
- ./test_zero_hugepage
+ static void check_option_collision(void)
+@@ -674,9 +674,9 @@ int tst_parse_float(const char *str, float *val, float min, float max)
+ static void print_colored(const char *str)
+ {
+ 	if (tst_color_enabled(STDOUT_FILENO))
+-		printf("%s%s%s", ANSI_COLOR_YELLOW, str, ANSI_COLOR_RESET);
++		fprintf(stderr, "%s%s%s", ANSI_COLOR_YELLOW, str, ANSI_COLOR_RESET);
+ 	else
+-		printf("%s", str);
++		fprintf(stderr, "%s", str);
+ }
+ 
+ static void print_failure_hint(const char *tag, const char *hint,
+@@ -694,12 +694,12 @@ static void print_failure_hint(const char *tag, const char *hint,
+ 		if (!strcmp(tags[i].name, tag)) {
+ 			if (!hint_printed) {
+ 				hint_printed = 1;
+-				printf("\n");
++				fprintf(stderr, "\n");
+ 				print_colored("HINT: ");
+-				printf("You _MAY_ be %s, see:\n\n", hint);
++				fprintf(stderr, "You _MAY_ be %s, see:\n\n", hint);
+ 			}
+ 
+-			printf("%s%s\n", url, tags[i].value);
++			fprintf(stderr, "%s%s\n", url, tags[i].value);
+ 		}
+ 	}
+ }
+@@ -734,12 +734,12 @@ static void do_exit(int ret)
+ 		if (results->broken)
+ 			ret |= TBROK;
+ 
+-		printf("\nSummary:\n");
+-		printf("passed   %d\n", results->passed);
+-		printf("failed   %d\n", results->failed);
+-		printf("broken   %d\n", results->broken);
+-		printf("skipped  %d\n", results->skipped);
+-		printf("warnings %d\n", results->warnings);
++		fprintf(stderr, "\nSummary:\n");
++		fprintf(stderr, "passed   %d\n", results->passed);
++		fprintf(stderr, "failed   %d\n", results->failed);
++		fprintf(stderr, "broken   %d\n", results->broken);
++		fprintf(stderr, "skipped  %d\n", results->skipped);
++		fprintf(stderr, "warnings %d\n", results->warnings);
+ 	}
+ 
+ 	do_cleanup();
 -- 
 2.32.0
 
