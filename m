@@ -1,72 +1,60 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Wed, 4 Aug 2021 01:45:32 +0000
-Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
- resources
-In-Reply-To: <60FF9EFA.308@fujitsu.com>
-References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
- <20210712075223.10682-2-aleksei.kodanev@bell-sw.com> <YPkkZ0Zq9DyHKBaT@pevik>
- <YPlhMeRRsNnemT05@yuki> <YPlsK8fsMI8T+H7c@pevik> <YPlsVD2gbIiX8JJk@yuki>
- <60FA81E4.3060709@fujitsu.com> <YPq0749ZnnGsAV2q@pevik>
- <60FF9EFA.308@fujitsu.com>
-Message-ID: <6109F156.7090002@fujitsu.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Wed, 4 Aug 2021 09:51:07 +0800
+Subject: [LTP] [PATCH v6,
+ 0/4] cgroup/cgroup_regression_test: Fix umount failure
+Message-ID: <20210804015053.GA21545@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Petr
-> Hi Petr
->> Hi all,
->>
->>> Hi Cyril, Petr
->>>> Hi!
->>>>>> I think that we allready discussed this in another thread:
->>
->>>>>> https://lists.linux.it/pipermail/ltp/2021-July/023831.html
->>
->>>>> Thanks, I forgot this. In that case my approach (not using<=, but
->>>>> count
->>>>> segments in /proc/sysvipc/shm before testing) might be more precise.
->>>>> But no strong feeling about that, both solutions fix the test,
->>>>> let's chose one
->>>>> and merge.
->>
->>>> As I said previously, there are many SysV IPC tests that do expect that
->>>> nobody will add/remove IPC shm/queue/semaphores during the testrun and
->>>> some of the testcases cannot even be implemented without this
->>>> expectation.
->>
->>>> Hence I wouldn't complicate the test here and just count how many
->>>> segments are there at the start and be done with it.
->>> Agree.
->>
->>> A possible solution(alter get_used_queues api in new ipc lib and add
->>> file parametrers, so we can use this api for msgget03) I have mentioned
->>> in the previous email, the url as below:
->>> https://lists.linux.it/pipermail/ltp/2021-July/023653.html
->> LGTM. Or use /proc/sysvipc/shm instead of /proc/sysvipc/msg in
->> get_used_queues()
->> as you noted get_used_queues() has not been used yet.
-> I rename get_used_queues to get_used_sysvipc_cnt. see attached patch.
-Any idea about the attached patch(it was in previous eamil)?
+The test sequence
+	mount -t cgroup -o <controllers> <path>
+	mkdir <path>/<dir>
+	rmdir <path>/<dir>
+	umount <path>
+	mount -t cgroup -o <controllers> <path>
+would easily fail at the last mount with -EBUSY on certain platform.
 
-ps:more and more people sent patch to fix this problme, I don't want to 
-see many patches for this problem. Let's choose a solution to fix this 
-problem.
+Adding a little delay between "rmdir" and "umount" could fix the problem,
+so use tst_umount API instead of umount in "rmdir, umount" sequence.
 
-Best Regards
-Yang Xu
->>
->> BTW searching where get_used_queues() appeared, I see [LTP] [PATCH v3
->> 1/4]
->> syscalls/ipc: add newipc library for new API [1], but if I'm not mistaken
->> get_used_queues() was not used even there, maybe it was in some previous
->> versions.
-> Yes, no new api case use GET_USED_QUEUES api.
->>
->> Kind regards,
->> Petr
->>
->> [1] https://lists.linux.it/pipermail/ltp/2016-December/003239.html
->
+tst_umount API is ambiguous when checking for whether a device is mounted.
+Modify it to check an actual mount point instead of device
+and reject anything that does not start with '/' as an argument.
+
+Changes since v1
+- Use "tst_umount" instead of "sync" as suggested
+- Make "tst_umount" work with argument that has terminating slash
+
+Changes since v2
+- Filter out the trailing slash instead of using mountpoint command
+
+Changes since v3
+- Filter out the trailing slash only in grep command
+- Add comment in the test script
+
+Changes since v4
+- Remove unnecessary stderr redirection
+
+Changes since v5
+- Make tst_umount to only accept absolute mount point as an argument
+- Modify tests that use tst_umount to pass mount point in instead of device
+
+Leo Yu-Chi Liang (4):
+  lib: tst_umount: umount a mount point instead of device
+  doc: change the default behavior of tst_umount
+  cgroup/cgroup_regression_test: Fix umount failure
+  Make argument to tst_umount an absolute path
+
+ doc/shell-test-api.txt                         |  8 ++++----
+ .../cgroup/cgroup_regression_test.sh           | 10 +++++-----
+ .../fs/quota_remount/quota_remount_test01.sh   |  2 +-
+ .../integrity/ima/tests/evm_overlay.sh         |  2 +-
+ .../tracing/dynamic_debug/dynamic_debug01.sh   |  2 +-
+ testcases/lib/tst_test.sh                      | 18 +++++++++++-------
+ 6 files changed, 23 insertions(+), 19 deletions(-)
+
+-- 
+2.17.0
