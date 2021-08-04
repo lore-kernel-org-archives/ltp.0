@@ -1,60 +1,72 @@
 From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Wed, 4 Aug 2021 01:23:12 +0000
-Subject: [LTP] [PATCH] syscalls/madvise06: Add madvise WILLNEED
- performance problem tag
-In-Reply-To: <YQkpwAieJwTCzK+c@yuki>
-References: <1627979166-967-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YQkpwAieJwTCzK+c@yuki>
-Message-ID: <6109EC1B.1040502@fujitsu.com>
+Date: Wed, 4 Aug 2021 01:45:32 +0000
+Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
+ resources
+In-Reply-To: <60FF9EFA.308@fujitsu.com>
+References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
+ <20210712075223.10682-2-aleksei.kodanev@bell-sw.com> <YPkkZ0Zq9DyHKBaT@pevik>
+ <YPlhMeRRsNnemT05@yuki> <YPlsK8fsMI8T+H7c@pevik> <YPlsVD2gbIiX8JJk@yuki>
+ <60FA81E4.3060709@fujitsu.com> <YPq0749ZnnGsAV2q@pevik>
+ <60FF9EFA.308@fujitsu.com>
+Message-ID: <6109F156.7090002@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
-> Hi!
->> diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
->> index 63d8d5452..f2f65ff96 100644
->> --- a/testcases/kernel/syscalls/madvise/madvise06.c
->> +++ b/testcases/kernel/syscalls/madvise/madvise06.c
->> @@ -35,6 +35,12 @@
->>    * faults. Two faults are allowed incase some tasklet or something
->>    * else unexpected, but irrelevant procedure, registers a fault to
->>    * our process.
->> + *
->> + * It also can reproduce the MADV_WILLNEED preformance problem.
->> + * It was introduced since 5.9 kernel with the following commit
->> + *   e6e88712e43b ("mm: optimise madvise WILLNEED")
->> + * and fixed since 5.10-rc5 kernel with the following commit
->> + *   66383800df9c ("mm: fix madvise WILLNEED performance problem").
->>    */
+Hi Cyril, Petr
+> Hi Petr
+>> Hi all,
 >>
->>   #include<errno.h>
->> @@ -242,6 +248,8 @@ static struct tst_test test = {
->>   	.tags = (const struct tst_tag[]) {
->>   		{"linux-git", "55231e5c898c"},
->>   		{"linux-git", "8de15e920dc8"},
->> +		{"linux-git", "e6e88712e43b"},
->> +		{"linux-git", "66383800df9c"},
->
-> We only put patches that fixed the problem into the tags since we use
-> these to print failure hints about missing kernel patches.
-Oh, yes. Thanks for your review, I merged this patch with removing 
-introduced patch tag.
+>>> Hi Cyril, Petr
+>>>> Hi!
+>>>>>> I think that we allready discussed this in another thread:
+>>
+>>>>>> https://lists.linux.it/pipermail/ltp/2021-July/023831.html
+>>
+>>>>> Thanks, I forgot this. In that case my approach (not using<=, but
+>>>>> count
+>>>>> segments in /proc/sysvipc/shm before testing) might be more precise.
+>>>>> But no strong feeling about that, both solutions fix the test,
+>>>>> let's chose one
+>>>>> and merge.
+>>
+>>>> As I said previously, there are many SysV IPC tests that do expect that
+>>>> nobody will add/remove IPC shm/queue/semaphores during the testrun and
+>>>> some of the testcases cannot even be implemented without this
+>>>> expectation.
+>>
+>>>> Hence I wouldn't complicate the test here and just count how many
+>>>> segments are there at the start and be done with it.
+>>> Agree.
+>>
+>>> A possible solution(alter get_used_queues api in new ipc lib and add
+>>> file parametrers, so we can use this api for msgget03) I have mentioned
+>>> in the previous email, the url as below:
+>>> https://lists.linux.it/pipermail/ltp/2021-July/023653.html
+>> LGTM. Or use /proc/sysvipc/shm instead of /proc/sysvipc/msg in
+>> get_used_queues()
+>> as you noted get_used_queues() has not been used yet.
+> I rename get_used_queues to get_used_sysvipc_cnt. see attached patch.
+Any idea about the attached patch(it was in previous eamil)?
+
+ps:more and more people sent patch to fix this problme, I don't want to 
+see many patches for this problem. Let's choose a solution to fix this 
+problem.
 
 Best Regards
 Yang Xu
->
-> Other than that it looks fine.
->
->>   		{}
->>   	}
->>   };
->> --
->> 2.23.0
 >>
+>> BTW searching where get_used_queues() appeared, I see [LTP] [PATCH v3
+>> 1/4]
+>> syscalls/ipc: add newipc library for new API [1], but if I'm not mistaken
+>> get_used_queues() was not used even there, maybe it was in some previous
+>> versions.
+> Yes, no new api case use GET_USED_QUEUES api.
 >>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+>> Kind regards,
+>> Petr
+>>
+>> [1] https://lists.linux.it/pipermail/ltp/2016-December/003239.html
 >
