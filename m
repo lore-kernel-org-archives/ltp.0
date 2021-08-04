@@ -1,33 +1,38 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 4 Aug 2021 17:45:12 +0200
-Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
- resources
-In-Reply-To: <YQqor4LiNK4/Xrbe@yuki>
-References: <20210712075223.10682-1-aleksei.kodanev@bell-sw.com>
- <20210712075223.10682-2-aleksei.kodanev@bell-sw.com>
- <YPkkZ0Zq9DyHKBaT@pevik> <YPlhMeRRsNnemT05@yuki>
- <YPlsK8fsMI8T+H7c@pevik> <YPlsVD2gbIiX8JJk@yuki>
- <60FA81E4.3060709@fujitsu.com> <YPq0749ZnnGsAV2q@pevik>
- <60FF9EFA.308@fujitsu.com> <YQqor4LiNK4/Xrbe@yuki>
-Message-ID: <YQq2CCtBvBDbkY4e@pevik>
+Date: Wed, 4 Aug 2021 17:52:19 +0200
+Subject: [LTP] [PATCH 1/1] doc: Specify linux-stable-git rule
+In-Reply-To: <20210715065805.14086-1-pvorel@suse.cz>
+References: <20210715065805.14086-1-pvorel@suse.cz>
+Message-ID: <YQq3s+33ceaJmvR7@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu, Cyril,
+Hi all,
 
-> Other than the very minor differencies I would do in naming the
-> variables and function this looks good to me.
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/c-test-api.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Agree with all Cyril's suggestions for rename.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> index 45784195b..9d26a483d 100644
+> --- a/doc/c-test-api.txt
+> +++ b/doc/c-test-api.txt
+> @@ -2205,6 +2205,10 @@ struct tst_test test = {
+>  };
+>  -------------------------------------------------------------------------------
 
-I suppose you just merge it fixed version, right?
-Because now we discuss under Alexey's "[v2,2/2] msgget03: don't depend on
-existed shared resources" patch.
+> +NOTE: We don't track all backports to stable kernel but just those which are
+> +      stable branch specific (unique), i.e. no commit in mainline. Example of
+> +      commits: c4a23c852e80, cac68d12c531.
+> +
+>  Glibc git commit in a regression test for a glibc bug:
+>  [source,c]
+>  -------------------------------------------------------------------------------
+Any comment on this? I should have marked it as [RFC].
 
 Kind regards,
 Petr
-
