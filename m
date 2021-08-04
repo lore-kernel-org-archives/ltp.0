@@ -1,35 +1,50 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  4 Aug 2021 11:24:06 +0200
-Subject: [LTP] [PATCH v8 1/7] lib: Print everything to stderr
-In-Reply-To: <20210804092407.16015-1-pvorel@suse.cz>
-References: <20210804092407.16015-1-pvorel@suse.cz>
-Message-ID: <20210804092407.16015-2-pvorel@suse.cz>
+Date: Wed,  4 Aug 2021 11:24:05 +0200
+Subject: [LTP] [PATCH v8 0/7] Run tests in CI
+Message-ID: <20210804092407.16015-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ie.e hint, tags, summary to unify the behavior with tst_{brk,res}()
-which printed into stderr from the beginning.
+Hi,
 
-Initial motivation was issue in GitHub Actions, where stdout and stderr
-are probably block buffered and flushed at different times. The result
-was mangled summary into other test output.
+* print more items in lib into stderr (Cyril, 1st commit)
+* check for readonly fs instead TCONF on any error during writing to
+/proc/sys/vm/nr_hugepages (Cyril, 2nd commit)
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Changes v7->v8:
-* print more items in lib into stderr (Cyril)
+NOTE: sending just these 2 patches which are different
 
- lib/tst_test.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+Tested:
+https://github.com/pevik/ltp/actions/runs/1097004804
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index c7c77596c..8a6a112ef 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
+Diff to v7
+
+diff --git lib/newlib_tests/test_zero_hugepage.sh lib/newlib_tests/test_zero_hugepage.sh
+index 8a462478e..d270e686c 100755
+--- lib/newlib_tests/test_zero_hugepage.sh
++++ lib/newlib_tests/test_zero_hugepage.sh
+@@ -7,11 +7,13 @@ echo "Testing .request_hugepages = TST_NO_HUGEPAGES"
+ 
+ orig_value=`cat /proc/sys/vm/nr_hugepages`
+ 
+-if ! echo "128" > /proc/sys/vm/nr_hugepages; then
+-	echo "TCONF: failed to open /proc/sys/vm/nr_hugepages"
++if grep -q -E '^proc /proc(/sys)? proc ro' /proc/mounts; then
++	echo "TCONF: /proc or /proc/sys mounted as read-only"
+ 	exit 32
+ fi
+ 
++echo "128" > /proc/sys/vm/nr_hugepages
++
+ ./test_zero_hugepage
+ 
+ echo $orig_value > /proc/sys/vm/nr_hugepages
+diff --git lib/tst_test.c lib/tst_test.c
+index d15c8c054..8a6a112ef 100644
+--- lib/tst_test.c
++++ lib/tst_test.c
 @@ -488,23 +488,23 @@ static void print_test_tags(void)
  	if (!tags)
  		return;
@@ -90,25 +105,28 @@ index c7c77596c..8a6a112ef 100644
  		}
  	}
  }
-@@ -734,12 +734,12 @@ static void do_exit(int ret)
- 		if (results->broken)
- 			ret |= TBROK;
- 
--		printf("\nSummary:\n");
--		printf("passed   %d\n", results->passed);
--		printf("failed   %d\n", results->failed);
--		printf("broken   %d\n", results->broken);
--		printf("skipped  %d\n", results->skipped);
--		printf("warnings %d\n", results->warnings);
-+		fprintf(stderr, "\nSummary:\n");
-+		fprintf(stderr, "passed   %d\n", results->passed);
-+		fprintf(stderr, "failed   %d\n", results->failed);
-+		fprintf(stderr, "broken   %d\n", results->broken);
-+		fprintf(stderr, "skipped  %d\n", results->skipped);
-+		fprintf(stderr, "warnings %d\n", results->warnings);
- 	}
- 
- 	do_cleanup();
+
+Petr Vorel (7):
+  lib: Print everything to stderr
+  test/test_zero_hugepage.sh: Skip test on read-only /proc
+  lib: Add script for running tests
+  make: Add make test{, -c, -shell} targets
+  build.sh: Add support for make test{,-c,-shell}
+  CI: Run also make test-c, test-shell
+  ci: Install iproute2
+
+ .github/workflows/ci.yml               |  10 ++
+ Makefile                               |  23 +++
+ build.sh                               |  24 +++-
+ ci/debian.sh                           |   1 +
+ ci/fedora.sh                           |   1 +
+ ci/tumbleweed.sh                       |   1 +
+ lib/newlib_tests/runtest.sh            | 190 +++++++++++++++++++++++++
+ lib/newlib_tests/test_zero_hugepage.sh |   6 +
+ lib/tst_test.c                         |  38 ++---
+ 9 files changed, 274 insertions(+), 20 deletions(-)
+ create mode 100755 lib/newlib_tests/runtest.sh
+
 -- 
 2.32.0
 
