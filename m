@@ -1,214 +1,78 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Thu,  5 Aug 2021 15:34:05 +0800
-Subject: [LTP] [PATCH] [2/4] syscalls/chroot02: Convert to new API
-Message-ID: <20210805073405.15310-1-zhanglianjie@uniontech.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu,  5 Aug 2021 09:35:37 +0100
+Subject: [LTP] [PATCH v4 1/3] API: TST_EXP_FAIL: Allow passing when errno is
+ not set
+In-Reply-To: <87a6lwmm6c.fsf@suse.de>
+References: <87a6lwmm6c.fsf@suse.de>
+Message-ID: <20210805083539.20634-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+TEST() sets errno to zero. So if something does not set errno on
+failure it will be zero. It is normal for functions not to use errno,
+some standard libraries are the exception.
 
-diff --git a/testcases/kernel/syscalls/chroot/chroot02.c b/testcases/kernel/syscalls/chroot/chroot02.c
-index e483ca4b5..ac8bff304 100644
---- a/testcases/kernel/syscalls/chroot/chroot02.c
-+++ b/testcases/kernel/syscalls/chroot/chroot02.c
-@@ -1,148 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+The original code will not allow for a pass result if errno is not
+set. So we can just remove the branch to allow that. It's not clear
+what the original intention was.
 
--/*
-- * NAME
-- *	chroot02.c
-- *
-- * DESCRIPTION
-- *	Test functionality of chroot(2)
-- *
-- * ALGORITHM
-- *	Change root directory and then stat a file.
-- *
-- * USAGE:  <for command-line>
-- *  chroot02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-+/*\
-+ * [DESCRIPTION]
-  *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *	04/2003 Modified by Manoj Iyer - manjo@mail.utexas.edu
-- *	Change testcase to chroot into a temporary directory
-- *	and stat() a known file.
-- *
-- * RESTRICTIONS
-- *	NONE
-+ * Change root directory and then stat a file.
-  */
--
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/wait.h>
-+#include <stdio.h>
-+#include <stdlib.h>
- #include <errno.h>
--#include "test.h"
-+#include <sys/stat.h>
- #include <fcntl.h>
--
--char *TCID = "chroot02";
--int TST_TOTAL = 1;
--int fileHandle = 0;
-+#include "tst_test.h"
+This also changes the trailing '\' indentation to tabs. However this
+is correct and the rest of the file is wrong.
 
- #define TMP_FILENAME	"chroot02_testfile"
-+int fileHandle = 0;
- struct stat buf;
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
--void setup(void);
--void cleanup(void);
--
--int main(int ac, char **av)
-+static void verify_chroot(void)
- {
--	int lc;
- 	int pid, status, retval;
+V4:
+* Check for EINVAL.
+* Unconditionally check TST_ERR == ERRNO.
+  (redundant/irrelevant due to the above change, but we still should do it IMO)
 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	/* Check for looping state if -i option is given */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup, "Could not fork");
--		}
-+	if ((pid = SAFE_FORK()) == -1) {
-+		tst_brk(TBROK, "Could not fork");
-+	}
+V3:
+* Add fix for TST_EXP_FAIL which prevented the test from
+  passing on a non buggy system.
+* TCONF but continue on non 32-bit compat mode
+* Add Fixes trailer
 
--		if (pid == 0) {
--			retval = 0;
-+	if (pid == 0) {
-+		retval = 0;
+V2:
+* Add mising lapi header
 
--			if (chroot(tst_get_tmpdir()) == -1) {
--				perror("chroot failed");
-+		if (chroot(tst_get_tmpdir()) == -1) {
-+			perror("chroot failed");
-+			retval = 1;
-+		} else {
-+			if (stat("/" TMP_FILENAME, &buf) == -1) {
- 				retval = 1;
--			} else {
--				if (stat("/" TMP_FILENAME, &buf) == -1) {
--					retval = 1;
--					perror("stat failed");
--				}
-+				perror("stat failed");
- 			}
--
--			exit(retval);
- 		}
+ include/tst_test_macros.h | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
--		/* parent */
--		wait(&status);
--		/* make sure the child returned a good exit status */
--		if (WIFSIGNALED(status) ||
--		    (WIFEXITED(status) && WEXITSTATUS(status) != 0))
--			tst_resm(TFAIL, "chroot functionality incorrect");
--		else
--			tst_resm(TPASS, "chroot functionality correct");
-+		exit(retval);
- 	}
-
--	cleanup();
--	tst_exit();
-+	/* parent */
-+	SAFE_WAIT(&status);
-+	/* make sure the child returned a good exit status */
-+	if (WIFSIGNALED(status) ||
-+			(WIFEXITED(status) && WEXITSTATUS(status) != 0))
-+		tst_res(TFAIL, "chroot functionality incorrect");
-+	else
-+		tst_res(TPASS, "chroot functionality correct");
-
- }
-
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
-+static void setup(void)
- {
--	tst_require_root();
--
--	tst_tmpdir();
- 	if ((fileHandle = creat(TMP_FILENAME, 0777)) == -1)
--		tst_brkm(TBROK, cleanup, "failed to create temporary file "
--			 TMP_FILENAME);
-+		tst_brk(TBROK, "failed to create temporary file "
-+				TMP_FILENAME);
- 	if (stat(TMP_FILENAME, &buf) != 0)
--		tst_brkm(TBROK, cleanup, TMP_FILENAME " does not exist");
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+		tst_brk(TBROK, TMP_FILENAME " does not exist");
- }
-
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
--	/*
--	 * print timing stats if that option was specified.
--	 * print errno log if that option was specified.
--	 */
- 	close(fileHandle);
--
--	tst_rmdir();
--
- }
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.setup = setup,
-+	.test_all = verify_chroot,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_tmpdir = 1,
-+};
---
-2.20.1
-
-
+diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+index 41886fbbc..cd65d8d0d 100644
+--- a/include/tst_test_macros.h
++++ b/include/tst_test_macros.h
+@@ -137,17 +137,15 @@ extern void *TST_RET_PTR;
+ 			break;                                                 \
+ 		}                                                              \
+ 		                                                               \
+-		if (ERRNO) {                                                   \
+-			if (TST_ERR == ERRNO) {                                \
+-				TST_MSG_(TPASS | TTERRNO, " ",                 \
+-				         #SCALL, ##__VA_ARGS__);               \
+-				TST_PASS = 1;                                  \
+-			} else {                                               \
+-				TST_MSGP_(TFAIL | TTERRNO, " expected %s",     \
+-				          tst_strerrno(ERRNO),                 \
+-				          #SCALL, ##__VA_ARGS__);              \
+-			}                                                      \
+-		}                                                              \
++		if (TST_ERR == ERRNO) {					\
++			TST_MSG_(TPASS | TTERRNO, " ",			\
++				 #SCALL, ##__VA_ARGS__);		\
++			TST_PASS = 1;					\
++		} else {						\
++			TST_MSGP_(TFAIL | TTERRNO, " expected %s",	\
++				  tst_strerrno(ERRNO),			\
++				  #SCALL, ##__VA_ARGS__);		\
++		}							\
+ 	} while (0)
+ 
+ #define TST_EXP_FAIL(SCALL, ERRNO, ...) TST_EXP_FAIL_(TST_RET == 0, SCALL, ERRNO, __VA_ARGS__)
+-- 
+2.31.1
 
