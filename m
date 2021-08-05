@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 5 Aug 2021 11:46:13 +0200
-Subject: [LTP] [PATCH] [1/4] syscalls/chroot01: Convert to new API
-In-Reply-To: <20210805073339.15027-1-zhanglianjie@uniontech.com>
-References: <20210805073339.15027-1-zhanglianjie@uniontech.com>
-Message-ID: <YQuzZYA3B3zBuVKh@yuki>
+Date: Thu, 5 Aug 2021 11:52:36 +0200
+Subject: [LTP] [PATCH] [2/4] syscalls/chroot02: Convert to new API
+In-Reply-To: <20210805073405.15310-1-zhanglianjie@uniontech.com>
+References: <20210805073405.15310-1-zhanglianjie@uniontech.com>
+Message-ID: <YQu05CxhjG8f5EJT@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,125 +11,178 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
+> +/*\
+> + * [DESCRIPTION]
+>   *
+> - * HISTORY
+> - *	07/2001 Ported by Wayne Boyer
+> - *	04/2003 Modified by Manoj Iyer - manjo@mail.utexas.edu
+
+We usually move this part just after the IBM copyright.
+
+> - *	Change testcase to chroot into a temporary directory
+> - *	and stat() a known file.
+> - *
+> - * RESTRICTIONS
+> - *	NONE
+> + * Change root directory and then stat a file.
+>   */
+> -
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
+> -#include <sys/wait.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+>  #include <errno.h>
+> -#include "test.h"
+> +#include <sys/stat.h>
+>  #include <fcntl.h>
+> -
+> -char *TCID = "chroot02";
+> -int TST_TOTAL = 1;
+> -int fileHandle = 0;
+> +#include "tst_test.h"
+> 
+>  #define TMP_FILENAME	"chroot02_testfile"
+> +int fileHandle = 0;
+
+Uff, just use fd as we do everywhere else, also it should be static and
+moreover global variables are already initialized to 0 so this really
+should be just:
+
+static int fd;
+
+>  struct stat buf;
+
+static as well.
+
+> -void setup(void);
+> -void cleanup(void);
+> -
+> -int main(int ac, char **av)
 > +static void verify_chroot(void)
 >  {
 > -	int lc;
-> +	TEST(chroot(path));
+>  	int pid, status, retval;
 > 
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
 > -	setup();
 > -
+> -	/* Check for looping state if -i option is given */
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
+> -		/* reset tst_count in case we are looping */
 > -		tst_count = 0;
 > -
-> -		TEST(chroot(path));
-> -
-> -		if (TEST_RETURN != -1)
-> -			tst_resm(TFAIL, "call succeeded unexpectedly");
-> -		else if (errno != EPERM)
-> -			tst_resm(TFAIL | TTERRNO, "chroot failed unexpectedly");
-> -		else
-> -			tst_resm(TPASS, "chroot set errno to EPERM.");
-> -	}
-> -	cleanup();
-> -
-> -	tst_exit();
-> +	if (TST_RET != -1)
-> +		tst_res(TFAIL, "call succeeded unexpectedly");
-> +	else if (errno != EPERM)
-> +		tst_res(TFAIL | TTERRNO, "chroot failed unexpectedly");
-> +	else
-> +		tst_res(TPASS, "chroot set errno to EPERM.");
+> -		if ((pid = FORK_OR_VFORK()) == -1) {
+> -			tst_brkm(TBROK, cleanup, "Could not fork");
+> -		}
+> +	if ((pid = SAFE_FORK()) == -1) {
+> +		tst_brk(TBROK, "Could not fork");
+> +	}
 
-Just use the TST_EXP_FAIL() here instead.
+Again SAFE_ macros cannot fail.
+
+> -		if (pid == 0) {
+> -			retval = 0;
+> +	if (pid == 0) {
+> +		retval = 0;
+> 
+> -			if (chroot(tst_get_tmpdir()) == -1) {
+> -				perror("chroot failed");
+> +		if (chroot(tst_get_tmpdir()) == -1) {
+> +			perror("chroot failed");
+> +			retval = 1;
+
+This should be TST_EXP_PASS().
+
+> +		} else {
+> +			if (stat("/" TMP_FILENAME, &buf) == -1) {
+>  				retval = 1;
+> -			} else {
+> -				if (stat("/" TMP_FILENAME, &buf) == -1) {
+> -					retval = 1;
+> -					perror("stat failed");
+> -				}
+> +				perror("stat failed");
+>  			}
+> -
+> -			exit(retval);
+>  		}
+> 
+> -		/* parent */
+> -		wait(&status);
+> -		/* make sure the child returned a good exit status */
+> -		if (WIFSIGNALED(status) ||
+> -		    (WIFEXITED(status) && WEXITSTATUS(status) != 0))
+> -			tst_resm(TFAIL, "chroot functionality incorrect");
+> -		else
+> -			tst_resm(TPASS, "chroot functionality correct");
+> +		exit(retval);
+>  	}
+> 
+> -	cleanup();
+> -	tst_exit();
+> +	/* parent */
+> +	SAFE_WAIT(&status);
+> +	/* make sure the child returned a good exit status */
+> +	if (WIFSIGNALED(status) ||
+> +			(WIFEXITED(status) && WEXITSTATUS(status) != 0))
+> +		tst_res(TFAIL, "chroot functionality incorrect");
+> +	else
+> +		tst_res(TPASS, "chroot functionality correct");
+
+New library testcases can call tst_res() from a child processes so there
+is no reason to propagate the test result via process exit value. The
+child should use tst_res() instead of the perror() calls and the parent
+should just call tst_reap_children().
 
 >  }
 > 
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
 > -void setup(void)
 > +static void setup(void)
 >  {
 > -	tst_require_root();
 > -
 > -	tst_tmpdir();
->  	path = tst_get_tmpdir();
-> +	if (path == NULL)
-> +		tst_brk(TBROK | TERRNO, "tst_get_tmpdir failed");
-
-Hmm I guess that we should add tst_brkm() to the lib/tst_tmpdir.c
-instead to check if the strdup has failed, which would be far easier
-than adding error handling to all tests.
-
-Something as:
-
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 0c39eb89f..35b376478 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -108,12 +108,18 @@ int tst_tmpdir_created(void)
-
- char *tst_get_tmpdir(void)
- {
-+       char *ret;
-+
-        if (TESTDIR == NULL) {
-                tst_brkm(TBROK, NULL, "you must call tst_tmpdir() first");
-                return NULL;
-        }
-
--       return strdup(TESTDIR);
-+       ret = strdup(TESTDIR);
-+       if (!ret)
-+               tst_brkm(TBROK, NULL, "strdup() failed");
-+
-+       return ret;
- }
-
-
-> -	if ((ltpuser = getpwnam(nobody_uid)) == NULL)
-> -		tst_brkm(TBROK | TERRNO, cleanup,
-> -			 "getpwnam(\"nobody\") failed");
+>  	if ((fileHandle = creat(TMP_FILENAME, 0777)) == -1)
+> -		tst_brkm(TBROK, cleanup, "failed to create temporary file "
+> -			 TMP_FILENAME);
+> +		tst_brk(TBROK, "failed to create temporary file "
+> +				TMP_FILENAME);
+>  	if (stat(TMP_FILENAME, &buf) != 0)
+> -		tst_brkm(TBROK, cleanup, TMP_FILENAME " does not exist");
 > -
-> -	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +	if ((ltpuser = SAFE_GETPWNAM(nobody_uid)) == NULL)
-> +		tst_brk(TBROK | TERRNO, "getpwnam(\"nobody\") failed");
-
-SAFE_SETEUID() cannot fail, there is no need to check the return value.
-
-
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
 > -
 > -	TEST_PAUSE;
-> +	SAFE_SETEUID(ltpuser->pw_uid);
+> +		tst_brk(TBROK, TMP_FILENAME " does not exist");
+
+We do have SAFE_CREAT() and SAFE_STAT() please use them here as well.
+
 >  }
 > 
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *	       completion or premature exit.
+> - */
 > -void cleanup(void)
 > +static void cleanup(void)
 >  {
-> -	SAFE_SETEUID(NULL, 0);
-> +	SAFE_SETEUID(0);
+> -	/*
+> -	 * print timing stats if that option was specified.
+> -	 * print errno log if that option was specified.
+> -	 */
+>  	close(fileHandle);
 
-There is actually no need to reset the UID in new library tests, since
-the cleanup for temporary directory is carried on with the test library
-process.
+You should use SAFE_CLOSE() here as well.
 
-> -	free(path);
+> -
 > -	tst_rmdir();
-> +	if (path) {
-> +		free(path);
-> +		path = NULL;
-> +	}
-
-free(NULL) is no-op, no need for the if () here.
-
-All that has to be done in the cleanup is actually:
-
-static void cleanup(void)
-{
-	free(path);
-}
-
+> -
 >  }
 > +
 > +static struct tst_test test = {
@@ -137,6 +190,7 @@ static void cleanup(void)
 > +	.setup = setup,
 > +	.test_all = verify_chroot,
 > +	.needs_root = 1,
+> +	.forks_child = 1,
 > +	.needs_tmpdir = 1,
 > +};
 > --
