@@ -1,18 +1,29 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 5 Aug 2021 14:09:30 +0200
-Subject: [LTP] [PATCH] Replace uppercase description tags
-In-Reply-To: <20210805120622.81918-1-lkml@jv-coder.de>
-References: <20210805120622.81918-1-lkml@jv-coder.de>
-Message-ID: <YQvU+v8kAGG1f39A@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 5 Aug 2021 21:03:44 +0800
+Subject: [LTP] [PATCH v1 1/3] libs/libnewipc: Alter get_used_queues api
+In-Reply-To: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <CAEemH2cf2b+xhrfD+BGVhZ59T4wOm=N+KxhYdVKhhQ9aF441YQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+Hi Xu,
+
+I have just gone through all of the discussions on this topic
+and am feeling this method is not quite perfect but currently
+I have no better idea.
+
+So, I agree to apply the method and see how it performs in
+real test executing.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210805/81f576c7/attachment.htm>
