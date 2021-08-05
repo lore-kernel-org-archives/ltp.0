@@ -1,7 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Thu,  5 Aug 2021 15:33:39 +0800
-Subject: [LTP] [PATCH] [1/4] syscalls/chroot01: Convert to new API
-Message-ID: <20210805073339.15027-1-zhanglianjie@uniontech.com>
+Date: Thu,  5 Aug 2021 15:34:05 +0800
+Subject: [LTP] [PATCH] [2/4] syscalls/chroot02: Convert to new API
+Message-ID: <20210805073405.15310-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,11 +10,11 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/chroot/chroot01.c b/testcases/kernel/syscalls/chroot/chroot01.c
-index a1db5e157..37c73c756 100644
---- a/testcases/kernel/syscalls/chroot/chroot01.c
-+++ b/testcases/kernel/syscalls/chroot/chroot01.c
-@@ -1,116 +1,63 @@
+diff --git a/testcases/kernel/syscalls/chroot/chroot02.c b/testcases/kernel/syscalls/chroot/chroot02.c
+index e483ca4b5..ac8bff304 100644
+--- a/testcases/kernel/syscalls/chroot/chroot02.c
++++ b/testcases/kernel/syscalls/chroot/chroot02.c
+@@ -1,148 +1,78 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -37,52 +37,54 @@ index a1db5e157..37c73c756 100644
 
 -/*
 - * NAME
-- * 	chroot01.c
+- *	chroot02.c
 - *
 - * DESCRIPTION
-- *	Testcase to check the whether chroot sets errno to EPERM.
-+/*\
-+ * [DESCRIPTION]
-  *
+- *	Test functionality of chroot(2)
+- *
 - * ALGORITHM
-- *	As a non-root user attempt to perform chroot() to a directory. The
-- *	chroot() call should fail with EPERM
+- *	Change root directory and then stat a file.
 - *
 - * USAGE:  <for command-line>
-- *  chroot01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  chroot02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
-- *
++/*\
++ * [DESCRIPTION]
+  *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
+- *	04/2003 Modified by Manoj Iyer - manjo@mail.utexas.edu
+- *	Change testcase to chroot into a temporary directory
+- *	and stat() a known file.
 - *
 - * RESTRICTIONS
-- * 	Must be run as non-root user.
-+ * Testcase to check the whether chroot sets errno to EPERM.
-+ * As a non-root user attempt to perform chroot() to a directory. The
-+ * chroot() call should fail with EPERM
+- *	NONE
++ * Change root directory and then stat a file.
   */
-
--#include <stdio.h>
--#include <errno.h>
--#include "test.h"
--#include "safe_macros.h"
-+#include <stdlib.h>
- #include <pwd.h>
 -
--char *TCID = "chroot01";
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/wait.h>
++#include <stdio.h>
++#include <stdlib.h>
+ #include <errno.h>
+-#include "test.h"
++#include <sys/stat.h>
+ #include <fcntl.h>
+-
+-char *TCID = "chroot02";
 -int TST_TOTAL = 1;
--int fail;
+-int fileHandle = 0;
 +#include "tst_test.h"
 
- char *path;
--
- char nobody_uid[] = "nobody";
- struct passwd *ltpuser;
+ #define TMP_FILENAME	"chroot02_testfile"
++int fileHandle = 0;
+ struct stat buf;
 
 -void setup(void);
 -void cleanup(void);
@@ -91,73 +93,110 @@ index a1db5e157..37c73c756 100644
 +static void verify_chroot(void)
  {
 -	int lc;
-+	TEST(chroot(path));
+ 	int pid, status, retval;
 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
+-	/* Check for looping state if -i option is given */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
+-		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		TEST(chroot(path));
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "Could not fork");
+-		}
++	if ((pid = SAFE_FORK()) == -1) {
++		tst_brk(TBROK, "Could not fork");
++	}
+
+-		if (pid == 0) {
+-			retval = 0;
++	if (pid == 0) {
++		retval = 0;
+
+-			if (chroot(tst_get_tmpdir()) == -1) {
+-				perror("chroot failed");
++		if (chroot(tst_get_tmpdir()) == -1) {
++			perror("chroot failed");
++			retval = 1;
++		} else {
++			if (stat("/" TMP_FILENAME, &buf) == -1) {
+ 				retval = 1;
+-			} else {
+-				if (stat("/" TMP_FILENAME, &buf) == -1) {
+-					retval = 1;
+-					perror("stat failed");
+-				}
++				perror("stat failed");
+ 			}
 -
--		if (TEST_RETURN != -1)
--			tst_resm(TFAIL, "call succeeded unexpectedly");
--		else if (errno != EPERM)
--			tst_resm(TFAIL | TTERRNO, "chroot failed unexpectedly");
+-			exit(retval);
+ 		}
+
+-		/* parent */
+-		wait(&status);
+-		/* make sure the child returned a good exit status */
+-		if (WIFSIGNALED(status) ||
+-		    (WIFEXITED(status) && WEXITSTATUS(status) != 0))
+-			tst_resm(TFAIL, "chroot functionality incorrect");
 -		else
--			tst_resm(TPASS, "chroot set errno to EPERM.");
--	}
+-			tst_resm(TPASS, "chroot functionality correct");
++		exit(retval);
+ 	}
+
 -	cleanup();
--
 -	tst_exit();
-+	if (TST_RET != -1)
-+		tst_res(TFAIL, "call succeeded unexpectedly");
-+	else if (errno != EPERM)
-+		tst_res(TFAIL | TTERRNO, "chroot failed unexpectedly");
++	/* parent */
++	SAFE_WAIT(&status);
++	/* make sure the child returned a good exit status */
++	if (WIFSIGNALED(status) ||
++			(WIFEXITED(status) && WEXITSTATUS(status) != 0))
++		tst_res(TFAIL, "chroot functionality incorrect");
 +	else
-+		tst_res(TPASS, "chroot set errno to EPERM.");
++		tst_res(TPASS, "chroot functionality correct");
 
  }
 
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
 -void setup(void)
 +static void setup(void)
  {
 -	tst_require_root();
 -
 -	tst_tmpdir();
- 	path = tst_get_tmpdir();
-+	if (path == NULL)
-+		tst_brk(TBROK | TERRNO, "tst_get_tmpdir failed");
-
--	if ((ltpuser = getpwnam(nobody_uid)) == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "getpwnam(\"nobody\") failed");
+ 	if ((fileHandle = creat(TMP_FILENAME, 0777)) == -1)
+-		tst_brkm(TBROK, cleanup, "failed to create temporary file "
+-			 TMP_FILENAME);
++		tst_brk(TBROK, "failed to create temporary file "
++				TMP_FILENAME);
+ 	if (stat(TMP_FILENAME, &buf) != 0)
+-		tst_brkm(TBROK, cleanup, TMP_FILENAME " does not exist");
 -
--	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+	if ((ltpuser = SAFE_GETPWNAM(nobody_uid)) == NULL)
-+		tst_brk(TBROK | TERRNO, "getpwnam(\"nobody\") failed");
-
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
-+	SAFE_SETEUID(ltpuser->pw_uid);
++		tst_brk(TBROK, TMP_FILENAME " does not exist");
  }
 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- */
 -void cleanup(void)
 +static void cleanup(void)
  {
--	SAFE_SETEUID(NULL, 0);
-+	SAFE_SETEUID(0);
-
--	free(path);
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+ 	close(fileHandle);
+-
 -	tst_rmdir();
-+	if (path) {
-+		free(path);
-+		path = NULL;
-+	}
+-
  }
 +
 +static struct tst_test test = {
@@ -165,6 +204,7 @@ index a1db5e157..37c73c756 100644
 +	.setup = setup,
 +	.test_all = verify_chroot,
 +	.needs_root = 1,
++	.forks_child = 1,
 +	.needs_tmpdir = 1,
 +};
 --
