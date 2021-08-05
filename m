@@ -1,57 +1,49 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 17 Aug 2021 12:53:34 +0100
-Subject: [LTP] [PATCH 3/3] Add test for CVE 2018-13405
-In-Reply-To: <f1b416ce-cacf-55be-a7cd-bcff821d0ec7@suse.cz>
-References: <20210806154557.19551-1-mdoucha@suse.cz>
- <20210806154557.19551-3-mdoucha@suse.cz> <87sfz8l68q.fsf@suse.de>
- <f1b416ce-cacf-55be-a7cd-bcff821d0ec7@suse.cz>
-Message-ID: <87pmucl22p.fsf@suse.de>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 5 Aug 2021 14:27:35 +0800
+Subject: [LTP] [PATCH] userns/userns08.c: Enable userns in
+ max_user_namespaces file
+Message-ID: <1628144855-5924-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Martin,
+On old distros ie centos7, the default value of max_user_namespaces is set to 0.
+Enable it by increasing this value.
 
-Martin Doucha <mdoucha@suse.cz> writes:
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/containers/userns/userns08.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> On 17. 08. 21 12:23, Richard Palethorpe wrote:
->> Hello Martin,
->> 
->> Martin Doucha <mdoucha@suse.cz> writes:
->>> +static void setup(void)
->>> +{
->>> +	struct stat buf;
->>> +	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
->>> +	struct group *ltpgroup = SAFE_GETGRNAM("bin");
->> 
->> These might not exist on some systems. I think you can just pick
->> arbitrary UID/GID numbers instead. No need to check the user/group
->> databases.
->
-> I'm planning to rewrite this test after the first two patches get
-> merged. See previous discussion under the creat08 patch.
-
-Ah, yes, sorry.
-
->
->
->>> +static void cleanup(void)
->>> +{
->>> +	SAFE_SETREUID(-1, orig_uid);
->> 
->> Why are you doing this? I am assuming the temp dir will be deleted by
->> the parent process.
->
-> That assumption is incorrect.
->
-> https://github.com/linux-test-project/ltp/commit/3833d44a2ba3773359d3b35a2108af691d75b4f9
-
-This looks different as we call semctl in the cleanup callback. It
-appears the testdir/tempdir cleanup is done from the parent
-process. i.e. from do_exit() which is only called if pid == lib_pid.
-
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index aedfc6c4e..0910ea7d4 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -120,6 +120,11 @@ static void setup(void)
+ 
+ 	SAFE_WRITE(fd, 1, "\n", 1);
+ 	SAFE_CLOSE(fd);
++
++	/* The default value of max_user_namespaces is set to 0 on some distros,
++	 * We need to change the default value to call clone().
++	 */
++	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ }
+ 
+ static struct tst_test test = {
+@@ -133,6 +138,10 @@ static struct tst_test test = {
+ 		"CONFIG_USER_NS",
+ 		NULL
+ 	},
++	.save_restore = (const char * const[]) {
++		"?/proc/sys/user/max_user_namespaces",
++		NULL,
++	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "d2f007dbe7e4"},
+ 		{"CVE", "CVE-2018-18955"},
 -- 
-Thank you,
-Richard.
+2.23.0
+
