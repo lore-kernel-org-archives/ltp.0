@@ -1,66 +1,59 @@
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Thu, 5 Aug 2021 11:48:42 +0800
-Subject: [LTP] [PATCH v1 2/3] syscalls/shmget03: Create shared memory
- segment dynamically instead of hardcode
+Date: Thu, 5 Aug 2021 11:48:43 +0800
+Subject: [LTP] [PATCH v1 3/3] syscalls/msgget03: Create message queues
+ dynamically instead of hardcode
 In-Reply-To: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <1628135323-3722-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <1628135323-3722-3-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Before this patch, we don't consider this situation that system has consumed shared memory
-segments. So we hit the ENOSPC error unexpectedly in setup.
-
-Use GET_USED_SEGMENTS() to get the used shared memory segments, so we can trigger the
-ENOSPC error correctly(just hit the limit) even current environment has consumed some
-shared memory segments.
-
-I don't use this api in verify function since we don't support run cases in parallel and
-we should assume this situation that this case is the only case to use(free or alloc) sysv
-ipc resource at that time.
+It is the same problem as shmget03. Use the same way to fix this problem
+that hit the ENOSPC problem unexpectedly in setup.
 
 Fixes: #842
-Fixes: 4dc493b44 ("syscalls/shmget*: Convert into new api")
+Fixes: 19a07c445 ("ipc/msgget03: Make sure we get ENOSPC error after..")
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/ipc/shmget/shmget03.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/ipc/msgget/msgget03.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-index efbc465e1..8b157e439 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-@@ -22,7 +22,7 @@
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+index ab5714cdc..711886e17 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+@@ -21,7 +21,7 @@
+ #include "tst_safe_sysv_ipc.h"
  #include "libnewipc.h"
  
+-static int maxmsgs, queue_cnt;
++static int maxmsgs, queue_cnt, used_cnt;
  static int *queues;
--static int maxshms, queue_cnt;
-+static int maxshms, queue_cnt, used_cnt;
- static key_t shmkey;
+ static key_t msgkey;
  
- static void verify_shmget(void)
-@@ -36,11 +36,13 @@ static void setup(void)
- 	int res, num;
+@@ -37,11 +37,15 @@ static void setup(void)
  
- 	shmkey = GETIPCKEY();
--
-+	used_cnt = GET_USED_SEGMENTS();
-+	tst_res(TINFO, "Current environment %d shared memory segments are already in use",
+ 	msgkey = GETIPCKEY();
+ 
++	used_cnt = GET_USED_QUEUES();
++	tst_res(TINFO, "Current environment %d message queues are already in use",
 +		used_cnt);
- 	SAFE_FILE_SCANF("/proc/sys/kernel/shmmni", "%i", &maxshms);
++
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/msgmni", "%i", &maxmsgs);
  
--	queues = SAFE_MALLOC(maxshms * sizeof(int));
--	for (num = 0; num < maxshms; num++) {
-+	queues = SAFE_MALLOC((maxshms - used_cnt) * sizeof(int));
-+	for (num = 0; num < maxshms - used_cnt; num++) {
- 		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
+-	queues = SAFE_MALLOC(maxmsgs * sizeof(int));
++	queues = SAFE_MALLOC((maxmsgs - used_cnt) * sizeof(int));
+ 
+-	for (num = 0; num < maxmsgs; num++) {
++	for (num = 0; num < maxmsgs - used_cnt; num++) {
+ 		res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
  		if (res == -1)
- 			tst_brk(TBROK | TERRNO, "shmget failed unexpectedly");
+ 			tst_brk(TBROK | TERRNO, "msgget failed unexpectedly");
 -- 
 2.23.0
 
