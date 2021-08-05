@@ -1,78 +1,138 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  5 Aug 2021 09:35:37 +0100
-Subject: [LTP] [PATCH v4 1/3] API: TST_EXP_FAIL: Allow passing when errno is
- not set
-In-Reply-To: <87a6lwmm6c.fsf@suse.de>
+Date: Thu,  5 Aug 2021 09:35:38 +0100
+Subject: [LTP] [PATCH v4 2/3] API: Add lapi/ip_tables.h and use it in
+ setsockopt03
+In-Reply-To: <20210805083539.20634-1-rpalethorpe@suse.com>
 References: <87a6lwmm6c.fsf@suse.de>
-Message-ID: <20210805083539.20634-1-rpalethorpe@suse.com>
+ <20210805083539.20634-1-rpalethorpe@suse.com>
+Message-ID: <20210805083539.20634-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-TEST() sets errno to zero. So if something does not set errno on
-failure it will be zero. It is normal for functions not to use errno,
-some standard libraries are the exception.
-
-The original code will not allow for a pass result if errno is not
-set. So we can just remove the branch to allow that. It's not clear
-what the original intention was.
-
-This also changes the trailing '\' indentation to tabs. However this
-is correct and the rest of the file is wrong.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
+ include/lapi/ip_tables.h                      | 46 +++++++++++++++++++
+ .../kernel/syscalls/setsockopt/setsockopt03.c | 39 +---------------
+ 2 files changed, 48 insertions(+), 37 deletions(-)
+ create mode 100644 include/lapi/ip_tables.h
 
-V4:
-* Check for EINVAL.
-* Unconditionally check TST_ERR == ERRNO.
-  (redundant/irrelevant due to the above change, but we still should do it IMO)
-
-V3:
-* Add fix for TST_EXP_FAIL which prevented the test from
-  passing on a non buggy system.
-* TCONF but continue on non 32-bit compat mode
-* Add Fixes trailer
-
-V2:
-* Add mising lapi header
-
- include/tst_test_macros.h | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
-
-diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-index 41886fbbc..cd65d8d0d 100644
---- a/include/tst_test_macros.h
-+++ b/include/tst_test_macros.h
-@@ -137,17 +137,15 @@ extern void *TST_RET_PTR;
- 			break;                                                 \
- 		}                                                              \
- 		                                                               \
--		if (ERRNO) {                                                   \
--			if (TST_ERR == ERRNO) {                                \
--				TST_MSG_(TPASS | TTERRNO, " ",                 \
--				         #SCALL, ##__VA_ARGS__);               \
--				TST_PASS = 1;                                  \
--			} else {                                               \
--				TST_MSGP_(TFAIL | TTERRNO, " expected %s",     \
--				          tst_strerrno(ERRNO),                 \
--				          #SCALL, ##__VA_ARGS__);              \
--			}                                                      \
--		}                                                              \
-+		if (TST_ERR == ERRNO) {					\
-+			TST_MSG_(TPASS | TTERRNO, " ",			\
-+				 #SCALL, ##__VA_ARGS__);		\
-+			TST_PASS = 1;					\
-+		} else {						\
-+			TST_MSGP_(TFAIL | TTERRNO, " expected %s",	\
-+				  tst_strerrno(ERRNO),			\
-+				  #SCALL, ##__VA_ARGS__);		\
-+		}							\
- 	} while (0)
+diff --git a/include/lapi/ip_tables.h b/include/lapi/ip_tables.h
+new file mode 100644
+index 000000000..e91238ffd
+--- /dev/null
++++ b/include/lapi/ip_tables.h
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#ifndef LAPI_IP_TABLES__
++#define LAPI_IP_TABLES__
++
++#include "config.h"
++
++#include <linux/netfilter_ipv4/ip_tables.h>
++
++#ifndef HAVE_STRUCT_XT_ENTRY_MATCH
++struct xt_entry_match {
++	union {
++		struct {
++			uint16_t match_size;
++			char name[29];
++			uint8_t revision;
++		} user;
++		struct {
++			uint16_t match_size;
++			void *match;
++		} kernel;
++		uint16_t match_size;
++	} u;
++	unsigned char data[0];
++};
++#endif
++
++#ifndef HAVE_STRUCT_XT_ENTRY_TARGET
++struct xt_entry_target {
++	union {
++		struct {
++			uint16_t target_size;
++			char name[29];
++			uint8_t revision;
++		} user;
++		struct {
++			uint16_t target_size;
++			void *target;
++		} kernel;
++		uint16_t target_size;
++	} u;
++	unsigned char data[0];
++};
++#endif
++
++#endif
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt03.c b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
+index 3d49628d6..1434475db 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt03.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
+@@ -21,12 +21,13 @@
+ #include <netinet/in.h>
+ #include <net/if.h>
+ #include <limits.h>
+-#include <linux/netfilter_ipv4/ip_tables.h>
  
- #define TST_EXP_FAIL(SCALL, ERRNO, ...) TST_EXP_FAIL_(TST_RET == 0, SCALL, ERRNO, __VA_ARGS__)
+ #include "tst_test.h"
+ #include "tst_safe_net.h"
+ #include "tst_kernel.h"
+ 
++#include "lapi/ip_tables.h"
++
+ #define TOO_SMALL_OFFSET 74
+ #define OFFSET_OVERWRITE 0xFFFF
+ #define NEXT_OFFSET (sizeof(struct ipt_entry)		\
+@@ -34,42 +35,6 @@
+ 		     + sizeof(struct xt_entry_target))
+ #define PADDING (OFFSET_OVERWRITE - NEXT_OFFSET)
+ 
+-#ifndef HAVE_STRUCT_XT_ENTRY_MATCH
+-struct xt_entry_match {
+-	union {
+-		struct {
+-			uint16_t match_size;
+-			char name[29];
+-			uint8_t revision;
+-		} user;
+-		struct {
+-			uint16_t match_size;
+-			void *match;
+-		} kernel;
+-		uint16_t match_size;
+-	} u;
+-	unsigned char data[0];
+-};
+-#endif
+-
+-#ifndef HAVE_STRUCT_XT_ENTRY_TARGET
+-struct xt_entry_target {
+-	union {
+-		struct {
+-			uint16_t target_size;
+-			char name[29];
+-			uint8_t revision;
+-		} user;
+-		struct {
+-			uint16_t target_size;
+-			void *target;
+-		} kernel;
+-		uint16_t target_size;
+-	} u;
+-	unsigned char data[0];
+-};
+-#endif
+-
+ struct payload {
+ 	struct ipt_replace repl;
+ 	struct ipt_entry ent;
 -- 
 2.31.1
 
