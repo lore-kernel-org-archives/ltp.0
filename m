@@ -1,166 +1,36 @@
-From: sujiaxun <sujiaxun@uniontech.com>
-Date: Thu,  5 Aug 2021 19:03:49 +0800
-Subject: [LTP] [PATCH] [3/6] syscalls/sysfs: Convert sysfs03 to the new API
-Message-ID: <20210805110349.16615-1-sujiaxun@uniontech.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 5 Aug 2021 13:54:43 +0200
+Subject: [LTP] [PATCH] [1/6] syscalls/sysfs: Convert sysfs01 to the new
+ API
+In-Reply-To: <20210804060736.10234-1-sujiaxun@uniontech.com>
+References: <20210804060736.10234-1-sujiaxun@uniontech.com>
+Message-ID: <YQvRg1O7kakkm30M@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
----
- testcases/kernel/syscalls/sysfs/sysfs03.c | 122 +++-------------------
- 1 file changed, 16 insertions(+), 106 deletions(-)
+Hi!
+> +		TEST(tst_syscall(__NR_sysfs, 1, "proc"));
+> 
+>  		/* check return code */
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL, "sysfs(2) Failed for "
+> -				 "option 1 and set errno to %d", TEST_ERRNO);
+> +		if (TST_RET == -1) {
+> +			tst_res(TFAIL, "sysfs(2) Failed for "
+> +				 "option 1 and set errno to %d", TST_ERR);
+>  		} else {
+> -			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
+> +			tst_res(TPASS, "sysfs(2) Passed for " "option 1");
+>  		}
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c b/testcases/kernel/syscalls/sysfs/sysfs03.c
-index 98bd5c692..54e5488c8 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs03.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
-@@ -1,125 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-  */
--/**************************************************************************
-- *
-- *    TEST IDENTIFIER	: sysfs03
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for sysfs(2)
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
-- *
-- *    SIGNALS
-- *	Uses SIGUSR1 to pause before test if option set.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *    This is a Phase I test for the sysfs(2) system call.
-- *    It is intended to provide a limited exposure of the system call.
-- *    This testcase tests sysfs(2) for option 3
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- * sysfs03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-p] [-f]
-- * where:
-- *	-c n : Run n copies simultaneously
-- *	-e   : Turn on errno logging.
-- *	-i n : Execute test n times.
-- *	-I x : Execute test for x seconds.
-- *	-p   : Pause for SIGUSR1 before starting
-- *	-P x : Pause for x seconds between iterations.
-- *	-t   : Turn on syscall timing.
-- *
-- *RESTRICTIONS:
-- *There is no glibc or libc support
-- *****************************************************************************/
-+
-+/*
-+ * [DESCRIPTION]
-+ * This test is run for option 3 for sysfs(2)
-+ */
+This could be just:
 
- #include <errno.h>
- #include <unistd.h>
- #include <sys/syscall.h>
--#include "test.h"
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
+	TST_EXP_POSSITIVE(tst_syscall(__NR_sysfs, 1, "proc"),
+	                  "sysfs(1, "proc")");
 
--static void setup();
--static void cleanup();
--
--char *TCID = "sysfs03";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
-+static void verify_sysfs03(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
-
--	setup();
-
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(ltp_syscall(__NR_sysfs, 3));
-+		TEST(tst_syscall(__NR_sysfs, 3));
-
- 		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "sysfs(2) Failed for"
-+		if (TST_RET == -1) {
-+			tst_res(TFAIL, "sysfs(2) Failed for"
- 				 " option 3 and returned"
--				 " %d as error number", TEST_ERRNO);
-+				 " %d as error number", TST_ERR);
- 		} else {
--			tst_resm(TPASS, "sysfs(2) Passed for option 3");
-+			tst_res(TPASS, "sysfs(2) Passed for option 3");
- 		}
--	}			/*End of TEST_LOOPING */
--
--	/*Clean up and exit */
--	cleanup();
--	tst_exit();
--
- }
-
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--/*
-- * cleanup() - Performs one time cleanup for this test at
-- * completion or premature exit
-- */
--void cleanup(void)
--{
--
--}
-+static struct tst_test test = {
-+	.test_all = verify_sysfs03
-+};
---
-2.20.1
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
