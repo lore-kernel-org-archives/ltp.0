@@ -1,51 +1,35 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Aug 2021 16:29:49 +0200
-Subject: [LTP] [PATCH] [COMMITTED] lapi/ip_tables.h: Fix build on older
- distributions
-Message-ID: <20210805142949.10834-1-chrubis@suse.cz>
+Date: Thu, 5 Aug 2021 16:51:42 +0200
+Subject: [LTP] [PATCH v4 3/3] Add setsockopt08, CVE-2021-22555
+In-Reply-To: <20210805083539.20634-3-rpalethorpe@suse.com>
+References: <87a6lwmm6c.fsf@suse.de>
+ <20210805083539.20634-1-rpalethorpe@suse.com>
+ <20210805083539.20634-3-rpalethorpe@suse.com>
+Message-ID: <YQv6/oHmYUVeb63S@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On older distributions the linux/netfilter_ipv4/ip_tables.h does not
-include a header that would define IFNAMSIZ and the build fails.
+Hi!
+> +#include "tst_test.h"
+> +#include "tst_safe_net.h"
+> +#include "lapi/ip_tables.h"
 
-This effectivelly moves the #include <net/if.h> from the setsockopt03.c
-to the lapi/ip_tables.h which fixes the build.
+I've fixed the failure on Centos with missing IFNAMSIZ but this still
+fails to compile on ubuntu xenial because the tst_safe_net.h pull in
+netinet/in.h and lapi/ip_tables.h pulls in linux/in.h and on old enough
+systems these two headers does not like to be included at the same time.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Fixes: 5684bec6b480 (API: Add lapi/ip_tables.h and use it in setsockopt03)
----
- include/lapi/ip_tables.h                            | 1 +
- testcases/kernel/syscalls/setsockopt/setsockopt03.c | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+I'm not sure how to fix this, either we drop the include to
+linux/netfilter_ipv4/ip_tables.h completely or we add a configure check
+if netinet/in.h and linux/in.h could be included at the same time and
+ifdef the linux/netfilter_ipv4/ip_tables.h with that check.
 
-diff --git a/include/lapi/ip_tables.h b/include/lapi/ip_tables.h
-index e91238ffd..3ac62141c 100644
---- a/include/lapi/ip_tables.h
-+++ b/include/lapi/ip_tables.h
-@@ -5,6 +5,7 @@
- 
- #include "config.h"
- 
-+#include <net/if.h>
- #include <linux/netfilter_ipv4/ip_tables.h>
- 
- #ifndef HAVE_STRUCT_XT_ENTRY_MATCH
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt03.c b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
-index 1434475db..b7a4447ba 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt03.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
-@@ -19,7 +19,6 @@
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <netinet/in.h>
--#include <net/if.h>
- #include <limits.h>
- 
- #include "tst_test.h"
+Either way both looks like a hack, if anyone has a better idea please
+suggest it.
+
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
