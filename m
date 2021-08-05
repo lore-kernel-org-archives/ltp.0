@@ -1,7 +1,7 @@
 From: sujiaxun <sujiaxun@uniontech.com>
-Date: Thu,  5 Aug 2021 18:42:29 +0800
-Subject: [LTP] [PATCH] [2/6] syscalls/sysfs: Convert sysfs02 to the new API
-Message-ID: <20210805104229.10826-1-sujiaxun@uniontech.com>
+Date: Thu,  5 Aug 2021 19:03:49 +0800
+Subject: [LTP] [PATCH] [3/6] syscalls/sysfs: Convert sysfs03 to the new API
+Message-ID: <20210805110349.16615-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,14 +10,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
 ---
- testcases/kernel/syscalls/sysfs/sysfs02.c | 121 +++-------------------
- 1 file changed, 16 insertions(+), 105 deletions(-)
+ testcases/kernel/syscalls/sysfs/sysfs03.c | 122 +++-------------------
+ 1 file changed, 16 insertions(+), 106 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs02.c b/testcases/kernel/syscalls/sysfs/sysfs02.c
-index e9065dda7..6316d0bd0 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs02.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs02.c
-@@ -1,127 +1,38 @@
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c b/testcases/kernel/syscalls/sysfs/sysfs03.c
+index 98bd5c692..54e5488c8 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs03.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
+@@ -1,125 +1,35 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -37,7 +37,7 @@ index e9065dda7..6316d0bd0 100644
   */
 -/**************************************************************************
 - *
-- *    TEST IDENTIFIER	: sysfs02
+- *    TEST IDENTIFIER	: sysfs03
 - *
 - *    EXECUTED BY	: anyone
 - *
@@ -54,7 +54,7 @@ index e9065dda7..6316d0bd0 100644
 - *    DESCRIPTION
 - *    This is a Phase I test for the sysfs(2) system call.
 - *    It is intended to provide a limited exposure of the system call.
-- *    This test is run for option 2 for sysfs(2)
+- *    This testcase tests sysfs(2) for option 3
 - *
 - *	Setup:
 - *	  Setup signal handling.
@@ -71,9 +71,9 @@ index e9065dda7..6316d0bd0 100644
 - *	  Print errno log and/or timing stats if options given
 - *
 - * USAGE:  <for command-line>
-- * sysfs02  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-t] [-p] [-f]
+- * sysfs03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-p] [-f]
 - * where:
-- *	-c n : run n copies simultaneously
+- *	-c n : Run n copies simultaneously
 - *	-e   : Turn on errno logging.
 - *	-i n : Execute test n times.
 - *	-I x : Execute test for x seconds.
@@ -87,7 +87,7 @@ index e9065dda7..6316d0bd0 100644
 +
 +/*
 + * [DESCRIPTION]
-+ * This test is run for option 2 for sysfs(2)
++ * This test is run for option 3 for sysfs(2)
 + */
 
  #include <errno.h>
@@ -100,45 +100,43 @@ index e9065dda7..6316d0bd0 100644
 -static void setup();
 -static void cleanup();
 -
--char *TCID = "sysfs02";
+-char *TCID = "sysfs03";
 -int TST_TOTAL = 1;
-
+-
 -int main(int ac, char **av)
-+static void verify_sysfs02(void)
++static void verify_sysfs03(void)
  {
- 	int lc;
- 	char buf[40];		/* 40 bytes suffice to store fs name */
-
+-	int lc;
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
--
+
 -	setup();
--
+
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
- 		/*option 2 buf holds fs name */
--		TEST(ltp_syscall(__NR_sysfs, 2, 0, buf));
-+		TEST(tst_syscall(__NR_sysfs, 2, 0, buf));
+-		TEST(ltp_syscall(__NR_sysfs, 3));
++		TEST(tst_syscall(__NR_sysfs, 3));
 
  		/* check return code */
 -		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "sysfs(2) Failed for "
+-			tst_resm(TFAIL, "sysfs(2) Failed for"
 +		if (TST_RET == -1) {
-+			tst_res(TFAIL, "sysfs(2) Failed for "
- 				 "option 2 and returned"
++			tst_res(TFAIL, "sysfs(2) Failed for"
+ 				 " option 3 and returned"
 -				 " %d as error number", TEST_ERRNO);
 +				 " %d as error number", TST_ERR);
  		} else {
--			tst_resm(TPASS, "sysfs(2) Passed for option 2");
-+			tst_res(TPASS, "sysfs(2) Passed for option 2");
+-			tst_resm(TPASS, "sysfs(2) Passed for option 3");
++			tst_res(TPASS, "sysfs(2) Passed for option 3");
  		}
 -	}			/*End of TEST_LOOPING */
 -
 -	/*Clean up and exit */
 -	cleanup();
--
 -	tst_exit();
+-
  }
 
 -/* setup() - performs all ONE TIME setup for this test */
@@ -159,7 +157,7 @@ index e9065dda7..6316d0bd0 100644
 -
 -}
 +static struct tst_test test = {
-+	.test_all = verify_sysfs02,
++	.test_all = verify_sysfs03
 +};
 --
 2.20.1
