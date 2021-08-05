@@ -1,37 +1,34 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Thu,  5 Aug 2021 14:28:12 +0800
-Subject: [LTP] [PATCH] include/tst_test: Expose tst_tmpdir and tst_rmdir to
- newlib tests.
-Message-ID: <20210805062812.7363-1-zhanglianjie@uniontech.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 5 Aug 2021 08:36:08 +0200
+Subject: [LTP] [PATCH v2 2/2] msgget03: don't depend on existed shared
+ resources
+In-Reply-To: <610B5E7D.1070104@fujitsu.com>
+References: <20210712075223.10682-2-aleksei.kodanev@bell-sw.com>
+ <YPkkZ0Zq9DyHKBaT@pevik> <YPlhMeRRsNnemT05@yuki>
+ <YPlsK8fsMI8T+H7c@pevik> <YPlsVD2gbIiX8JJk@yuki>
+ <60FA81E4.3060709@fujitsu.com> <YPq0749ZnnGsAV2q@pevik>
+ <60FF9EFA.308@fujitsu.com> <YQqor4LiNK4/Xrbe@yuki>
+ <610B5E7D.1070104@fujitsu.com>
+Message-ID: <YQuG2CllvzVqdw8L@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Hi Xu,
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index ce4e007cf..0e0806c93 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -303,6 +303,14 @@ void tst_set_timeout(int timeout);
-  * Returns path to the test temporary directory in a newly allocated buffer.
-  */
- char *tst_get_tmpdir(void);
-+/*
-+ * Make the temporary directory and change to the temporary directory.
-+ */
-+void tst_tmpdir(void);
-+/*
-+ * Remove the temporary directory.
-+ */
-+void tst_rmdir(void);
+> >> -	if (used_queues<  0) {
+> >> -		tst_brk(TBROK, "can't read /proc/sysvipc/msg to get "
+> >> -			"used message queues at %s:%d", file, lineno);
+> >> +	if (used_cnt<  0) {
+> >> +		tst_brk(TBROK, "can't read %s to get used message queues "
+> >> +			"at %s:%d", sysvipc_file, file, lineno);
+> >>   	}
+> I also modify this info.
+> message queues => sysvipc resource total
++1. nit: I'd also move "at" at the previous line (better for grep).
 
- #ifndef TST_NO_DEFAULT_MAIN
-
---
-2.20.1
-
-
+Kind regards,
+Petr
 
