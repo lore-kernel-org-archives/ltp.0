@@ -1,81 +1,66 @@
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Thu, 5 Aug 2021 11:48:41 +0800
-Subject: [LTP] [PATCH v1 1/3] libs/libnewipc: Alter get_used_queues api
-Message-ID: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Thu, 5 Aug 2021 11:48:42 +0800
+Subject: [LTP] [PATCH v1 2/3] syscalls/shmget03: Create shared memory
+ segment dynamically instead of hardcode
+In-Reply-To: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <1628135323-3722-2-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Rename get_used_queues as get_used_sysvipc and add a proc file argument, so we can use
-GET_USED_QUEQUES() and GET_USED_SEGMENTS() to get the corresponding used sysvipc resource
-total. Since no new api cases used get_used_queues(), we don't need to change anything.
+Before this patch, we don't consider this situation that system has consumed shared memory
+segments. So we hit the ENOSPC error unexpectedly in setup.
 
+Use GET_USED_SEGMENTS() to get the used shared memory segments, so we can trigger the
+ENOSPC error correctly(just hit the limit) even current environment has consumed some
+shared memory segments.
+
+I don't use this api in verify function since we don't support run cases in parallel and
+we should assume this situation that this case is the only case to use(free or alloc) sysv
+ipc resource at that time.
+
+Fixes: #842
+Fixes: 4dc493b44 ("syscalls/shmget*: Convert into new api")
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/libnewipc.h           |  6 ++++--
- libs/libltpnewipc/libnewipc.c | 16 ++++++++--------
- 2 files changed, 12 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/ipc/shmget/shmget03.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/libnewipc.h b/include/libnewipc.h
-index 075364f85..52e054c51 100644
---- a/include/libnewipc.h
-+++ b/include/libnewipc.h
-@@ -49,9 +49,11 @@ key_t getipckey(const char *file, const int lineno);
- #define GETIPCKEY() \
- 	getipckey(__FILE__, __LINE__)
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+index efbc465e1..8b157e439 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+@@ -22,7 +22,7 @@
+ #include "libnewipc.h"
  
--int get_used_queues(const char *file, const int lineno);
-+int get_used_sysvipc(const char *file, const int lineno, const char *sysvipc_file);
- #define GET_USED_QUEUES() \
--	get_used_queues(__FILE__, __LINE__)
-+	get_used_sysvipc(__FILE__, __LINE__, "/proc/sysvipc/msg")
-+#define GET_USED_SEGMENTS() \
-+	get_used_sysvipc(__FILE__, __LINE__, "/proc/sysvipc/shm")
+ static int *queues;
+-static int maxshms, queue_cnt;
++static int maxshms, queue_cnt, used_cnt;
+ static key_t shmkey;
  
- void *probe_free_addr(const char *file, const int lineno);
- #define PROBE_FREE_ADDR() \
-diff --git a/libs/libltpnewipc/libnewipc.c b/libs/libltpnewipc/libnewipc.c
-index d0974bbe0..583291ee0 100644
---- a/libs/libltpnewipc/libnewipc.c
-+++ b/libs/libltpnewipc/libnewipc.c
-@@ -48,25 +48,25 @@ key_t getipckey(const char *file, const int lineno)
- 	return key;
- }
+ static void verify_shmget(void)
+@@ -36,11 +36,13 @@ static void setup(void)
+ 	int res, num;
  
--int get_used_queues(const char *file, const int lineno)
-+int get_used_sysvipc(const char *file, const int lineno, const char *sysvipc_file)
- {
- 	FILE *fp;
--	int used_queues = -1;
-+	int used = -1;
- 	char buf[BUFSIZE];
+ 	shmkey = GETIPCKEY();
+-
++	used_cnt = GET_USED_SEGMENTS();
++	tst_res(TINFO, "Current environment %d shared memory segments are already in use",
++		used_cnt);
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/shmmni", "%i", &maxshms);
  
--	fp = safe_fopen(file, lineno, NULL, "/proc/sysvipc/msg", "r");
-+	fp = safe_fopen(file, lineno, NULL, sysvipc_file, "r");
- 
- 	while (fgets(buf, BUFSIZE, fp) != NULL)
--		used_queues++;
-+		used++;
- 
- 	fclose(fp);
- 
--	if (used_queues < 0) {
--		tst_brk(TBROK, "can't read /proc/sysvipc/msg to get "
--			"used message queues@%s:%d", file, lineno);
-+	if (used < 0) {
-+		tst_brk(TBROK, "can't read %s to get used sysvipc resource total "
-+			"at %s:%d", sysvipc_file, file, lineno);
- 	}
- 
--	return used_queues;
-+	return used;
- }
- 
- void *probe_free_addr(const char *file, const int lineno)
+-	queues = SAFE_MALLOC(maxshms * sizeof(int));
+-	for (num = 0; num < maxshms; num++) {
++	queues = SAFE_MALLOC((maxshms - used_cnt) * sizeof(int));
++	for (num = 0; num < maxshms - used_cnt; num++) {
+ 		res = shmget(shmkey + num, SHM_SIZE, IPC_CREAT | IPC_EXCL | SHM_RW);
+ 		if (res == -1)
+ 			tst_brk(TBROK | TERRNO, "shmget failed unexpectedly");
 -- 
 2.23.0
 
