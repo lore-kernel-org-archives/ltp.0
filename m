@@ -1,29 +1,41 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 5 Aug 2021 21:03:44 +0800
-Subject: [LTP] [PATCH v1 1/3] libs/libnewipc: Alter get_used_queues api
-In-Reply-To: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <CAEemH2cf2b+xhrfD+BGVhZ59T4wOm=N+KxhYdVKhhQ9aF441YQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu,  5 Aug 2021 15:32:22 +0200
+Subject: [LTP] [PATCH] [COMMITTED] lib/tst_test: Fix 'discards const' warning
+Message-ID: <20210805133222.10589-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_test.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I have just gone through all of the discussions on this topic
-and am feeling this method is not quite perfect but currently
-I have no better idea.
-
-So, I agree to apply the method and see how it performs in
-real test executing.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 8a6a112ef..1bdea769a 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -882,7 +882,7 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 	}
+ }
+ 
+-static char *limit_tmpfs_mount_size(const char *mnt_data,
++static const char *limit_tmpfs_mount_size(const char *mnt_data,
+ 		char *buf, size_t buf_size, const char *fs_type)
+ {
+ 	if (strcmp(fs_type, "tmpfs"))
+@@ -908,7 +908,8 @@ static const char *get_device_name(const char *fs_type)
+ 
+ static void prepare_device(void)
+ {
+-	char *mnt_data, buf[1024];
++	const char *mnt_data;
++	char buf[1024];
+ 
+ 	if (tst_test->format_device) {
+ 		SAFE_MKFS(tdev.dev, tdev.fs_type, tst_test->dev_fs_opts,
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210805/81f576c7/attachment.htm>
+2.31.1
+
