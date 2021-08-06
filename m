@@ -1,37 +1,46 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Fri, 6 Aug 2021 01:50:16 +0000
-Subject: [LTP] [PATCH v1 1/3] libs/libnewipc: Alter get_used_queues api
-In-Reply-To: <CAEemH2cf2b+xhrfD+BGVhZ59T4wOm=N+KxhYdVKhhQ9aF441YQ@mail.gmail.com>
-References: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <CAEemH2cf2b+xhrfD+BGVhZ59T4wOm=N+KxhYdVKhhQ9aF441YQ@mail.gmail.com>
-Message-ID: <610C9567.8050302@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri,  6 Aug 2021 10:56:59 +0800
+Subject: [LTP] [COMMITTED] setsockopt08: includes netinet/in.h
+Message-ID: <20210806025659.1962902-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
-> Hi Xu,
->
-> I have just gone through all of the discussions on this topic
-> and am feeling this method is not quite perfect but currently
-> I have no better idea.
-I guess a better idea should be using .sysvipc flag. But here, we  use 
-the easiest way to slove this problem. In the future, we can add this 
-feature.
->
-> So, I agree to apply the method and see how it performs in
-> real test executing.
-Thanks. Let's listen whether have user complains about these two cases
-after this fix.
->
-> Reviewed-by: Li Wang <liwang@redhat.com <mailto:liwang@redhat.com>>
-Thanks for your review. I have pushed this patchset.
+We have to put netinet/in.h on the top to get rid of conflict
+of glibc and kernel headers for old unbuntu.
 
-Best Regards
-Yang Xu
->
-> --
-> Regards,
-> Li Wang
+  -----------
+  /usr/include/linux/in.h:28:3: error: redeclaration of enumerator 'IPPROTO_IP'
+        IPPROTO_IP = 0,  /* Dummy protocol for TCP  */
+   ^
+  /usr/include/netinet/in.h:42:5: note: previous definition of 'IPPROTO_IP' was here
+       IPPROTO_IP = 0,    /* Dummy protocol for TCP.  */
+  ...
+  -----------
+
+See: https://www.mail-archive.com/netdev@vger.kernel.org/msg132711.html
+
+Fixes: ebf3a4fbd39a (Add setsockopt08, CVE-2021-22555)
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/setsockopt/setsockopt08.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+index f758dcbdc..f7052f27b 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+@@ -79,6 +79,8 @@
+  *  - sizeof(struct xt_entry_target) = 32
+  */
+ 
++#include <netinet/in.h>
++
+ #include "tst_test.h"
+ #include "tst_safe_net.h"
+ #include "lapi/ip_tables.h"
+-- 
+2.31.1
+
