@@ -1,10 +1,10 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Fri,  6 Aug 2021 19:47:23 +0300
-Subject: [LTP] [PATCH v2 09/16] syscalls/sched_rr_get_interval01: use
+Date: Fri,  6 Aug 2021 19:47:24 +0300
+Subject: [LTP] [PATCH v2 10/16] syscalls/sched_rr_get_interval02: use
  sys_sched_*()
 In-Reply-To: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
 References: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210806164730.51040-10-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210806164730.51040-11-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,15 +13,15 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../syscalls/sched_rr_get_interval/sched_rr_get_interval01.c  | 4 ++--
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval02.c  | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
-index 5da5fe51d..447242159 100644
---- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
-+++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
-@@ -11,9 +11,9 @@
-  * timeslice tuning knob in milliseconds").
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
+index 9a0b8673d..15e4a3053 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
+@@ -8,9 +8,9 @@
+  * for tv_sec & tv_nsec.
   */
  
 -#include <sched.h>
@@ -29,17 +29,17 @@ index 5da5fe51d..447242159 100644
  #include "tst_timer.h"
 +#include "tst_sched.h"
  
- #define PROC_SCHED_RR_TIMESLICE_MS	"/proc/sys/kernel/sched_rr_timeslice_ms"
- static int proc_flag;
-@@ -41,7 +41,7 @@ static void setup(void)
+ static struct tst_ts tp;
+ 
+@@ -35,7 +35,7 @@ static void setup(void)
  
  	tp.type = tv->ts_type;
  
--	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1)
-+	if ((sys_sched_setscheduler(0, SCHED_RR, &p)) == -1)
+-	if ((sched_setscheduler(0, SCHED_FIFO, &p)) == -1)
++	if ((sys_sched_setscheduler(0, SCHED_FIFO, &p)) == -1)
  		tst_res(TFAIL | TERRNO, "sched_setscheduler() failed");
+ }
  
- 	proc_flag = !access(PROC_SCHED_RR_TIMESLICE_MS, F_OK);
 -- 
 2.25.1
 
