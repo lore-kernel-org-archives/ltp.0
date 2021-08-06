@@ -1,70 +1,64 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 06 Aug 2021 11:52:58 +0100
-Subject: [LTP] [COMMITTED] setsockopt08: includes netinet/in.h
-In-Reply-To: <CAEemH2eCbTeTziGetR-mBRP9rB=0S2CvZNuDv-3DehksKUyu8A@mail.gmail.com>
-References: <20210806025659.1962902-1-liwang@redhat.com>
- <YQzLUUKbLcoJjRVb@pevik> <YQzOxg35JjpDOj7X@pevik>
- <CAEemH2cNk-L1kRRHy=vvLVjcEm0HPQXaz8fJR00M1TyzoJAynw@mail.gmail.com>
- <YQ0C1givEZ8/H7hN@pevik>
- <CAEemH2eCbTeTziGetR-mBRP9rB=0S2CvZNuDv-3DehksKUyu8A@mail.gmail.com>
-Message-ID: <874kc2n8tx.fsf@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri,  6 Aug 2021 12:19:38 +0100
+Subject: [LTP] [PATCH] setsockopt08: Handle ENOPROTOOPT even with compatible
+ config
+Message-ID: <20210806111938.12007-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hell Li,
+One or more necessary modules can be missing even if they are present
+in the config.
 
-Li Wang <liwang@redhat.com> writes:
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ .../kernel/syscalls/setsockopt/setsockopt08.c | 24 +++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
->> > The conflict happened early in tst_test.h and I guess some header files
->> > between line#14 to line#44 probably involves <linux/if.h>, but I'm not
->> sure
->> > which one is the culprit.
->> Interesting, really something in in tst_test.h with combination of
->> lapi/ip_tables.h. This combination is only in 2 tests, setsockopt0{3,8}.c,
->> setsockopt03.c already had <netinet/in.h>.
->>
->
-> I eventually caught that "tst_capability.h" is the key point.
-> To includes <netinet/in.h> before that can avoid the conflict.
->
-> But still not sure how it made things broken (i.e. where includes
->  <linux/if.h>).
->
->
->> > If we simply put the <netinet/in.h> at the top of tst_test.h, the
->> > conflict disappears
->> > as well.
->> > See experiment commit:
->> >
->> https://github.com/wangli5665/ltp/commit/0155df479811d9a51f30e09accb330238607f73d
->>
->> I'd be for adding it there, with comment why it's there. We can prevent
->> problems
->> with failing another test in the future. (+ remove it from both tests).
->>
->
-> I'm OK with this fix.
->
-> @Cyril, @Richard, what do you think? any other thoughts?
-
-We need to clean up our headers, which is a bigger problem. Most tests
-do not need all the stuff in tst_test.h. It is just a load of unecessary
-work.
-
-Cleaning up the headers is a big challenge. It would be easier if we
-know what will break older distros. So I suggest adding something like:
-
-#ifdef _X_H
-# error "You should include X before Y ..."
-#endif
-
-to one or more headers.
-
-Otherwise I'm fine with the above solution as a "temporary" fix.
-
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+index 33892f9b1..d3cd5b5b2 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+@@ -110,6 +110,7 @@ void run(void)
+ 	struct xt_entry_target *xt_entry_tgt =
+ 		((struct xt_entry_target *) (&ipt_entry->elems[0] + match_size));
+ 	int fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
++	int result;
+ 
+ 	xt_entry_match->u.user.match_size = (u_int16_t)match_size;
+ 	strcpy(xt_entry_match->u.user.name, "state");
+@@ -126,10 +127,25 @@ void run(void)
+ 	ipt_replace->num_counters = 1;
+ 	ipt_replace->size = ipt_entry->next_offset;
+ 
+-	TST_EXP_FAIL(setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1),
+-		     EINVAL,
+-		     "setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
+-		     fd, buffer);
++	errno = 0;
++	if (setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1) == -1) {
++		switch (errno) {
++		case EINVAL:
++			result = TPASS;
++			break;
++		case ENOPROTOOPT:
++			result = TCONF;
++			break;
++		default:
++			result = TFAIL;
++		}
++	} else {
++		result = TFAIL;
++	}
++
++	tst_res(result | TERRNO,
++		"setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
++		fd, buffer);
+ 
+ 	SAFE_CLOSE(fd);
+ }
 -- 
-Thank you,
-Richard.
+2.31.1
+
