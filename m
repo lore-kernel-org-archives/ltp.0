@@ -1,8 +1,8 @@
 From: sujiaxun <sujiaxun@uniontech.com>
-Date: Fri,  6 Aug 2021 14:24:56 +0800
+Date: Fri,  6 Aug 2021 14:25:15 +0800
 Subject: [LTP] [PATCH] [v2,
- 1/6] syscalls/sysfs: Convert sysfs01 to the new API
-Message-ID: <20210806062456.11678-1-sujiaxun@uniontech.com>
+ 2/6] syscalls/sysfs: Convert sysfs02 to the new API
+Message-ID: <20210806062515.11784-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,14 +11,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
 ---
- testcases/kernel/syscalls/sysfs/sysfs01.c | 132 +++-------------------
- 1 file changed, 17 insertions(+), 115 deletions(-)
+ testcases/kernel/syscalls/sysfs/sysfs02.c | 132 +++-------------------
+ 1 file changed, 18 insertions(+), 114 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
-index 85052dc2b..35195e95f 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs01.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
-@@ -1,129 +1,31 @@
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs02.c b/testcases/kernel/syscalls/sysfs/sysfs02.c
+index e9065dda7..31794d9c0 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs02.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs02.c
+@@ -1,127 +1,31 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -38,7 +38,7 @@ index 85052dc2b..35195e95f 100644
   */
 -/**************************************************************************
 - *
-- *    TEST IDENTIFIER	: sysfs01
+- *    TEST IDENTIFIER	: sysfs02
 - *
 - *    EXECUTED BY	: anyone
 - *
@@ -54,9 +54,8 @@ index 85052dc2b..35195e95f 100644
 - *
 - *    DESCRIPTION
 - *    This is a Phase I test for the sysfs(2) system call.
-- *    This test is carried out for option 1 for sysfs(2).
 - *    It is intended to provide a limited exposure of the system call.
-- *
+- *    This test is run for option 2 for sysfs(2)
 - *
 - *	Setup:
 - *	  Setup signal handling.
@@ -73,9 +72,9 @@ index 85052dc2b..35195e95f 100644
 - *	  Print errno log and/or timing stats if options given
 - *
 - * USAGE:  <for command-line>
-- * sysfs01 [-c n]  [-e] [-i n] [-I x] [-p x] [-t] [-h] [-f] [-p]
-- *  where:
-- *	-c n : run n copies simultaneously.
+- * sysfs02  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-t] [-p] [-f]
+- * where:
+- *	-c n : run n copies simultaneously
 - *	-e   : Turn on errno logging.
 - *	-i n : Execute test n times.
 - *	-I x : Execute test for x seconds.
@@ -85,15 +84,16 @@ index 85052dc2b..35195e95f 100644
 - *
 - *RESTRICTIONS:
 - *There is no glibc or libc support
-- *Kernel should be compiled with proc filesystem support
-- ******************************************************************************/
-+
+- *****************************************************************************/
+
 +/*
 + * [DESCRIPTION]
-+ * This test is run for option 1 for sysfs(2).
-+ * Translate the filesystem identifier string fsname into a filesystem type index.
-+ */
-
++ * This test is run for option 2 for sysfs(2).
++ * Translate the filesystem type index fs_index into a null-terminated filesystem
++ * identifier string. This string will be written to the buffer pointed to by buf.
++ * Make sure that buf has enough space to accept the string.
++*/
++
  #include <errno.h>
  #include <unistd.h>
  #include <sys/syscall.h>
@@ -104,13 +104,13 @@ index 85052dc2b..35195e95f 100644
 -static void setup();
 -static void cleanup();
 -
--char *TCID = "sysfs01";
+-char *TCID = "sysfs02";
 -int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void verify_sysfs01(void)
- {
+-{
 -	int lc;
+-	char buf[40];		/* 40 bytes suffice to store fs name */
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -120,51 +120,50 @@ index 85052dc2b..35195e95f 100644
 -
 -		tst_count = 0;
 -
--		/* option 1, buf holds fs name */
--		TEST(ltp_syscall(__NR_sysfs, 1, "proc"));
+-		/*option 2 buf holds fs name */
+-		TEST(ltp_syscall(__NR_sysfs, 2, 0, buf));
 -
 -		/* check return code */
 -		if (TEST_RETURN == -1) {
 -			tst_resm(TFAIL, "sysfs(2) Failed for "
--				 "option 1 and set errno to %d", TEST_ERRNO);
+-				 "option 2 and returned"
+-				 " %d as error number", TEST_ERRNO);
 -		} else {
--			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
+-			tst_resm(TPASS, "sysfs(2) Passed for option 2");
 -		}
 -	}			/*End of TEST_LOOPING */
 -
 -	/*Clean up and exit */
 -	cleanup();
+-
 -	tst_exit();
-+        /* option 1, buf holds fs name */
-+        TST_EXP_POSITIVE(tst_syscall(__NR_sysfs, 1, "proc"),
-+                        "sysfs(1,'proc')");
-
-+        if (TST_PASS == 1)
-+            tst_res(TPASS, "sysfs(2) Passed for " "option 1");
- }
-
+-}
+-
 -/* setup() - performs all ONE TIME setup for this test */
 -void setup(void)
--{
--
++static void verify_sysfs02(void)
+ {
++    char buf[40];       /* 40 bytes suffice to store fs name */
+
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
-+static struct tst_test test = {
-+    .test_all = verify_sysfs01,
-+};
++    /*option 2 buf holds fs name */
++    TST_EXP_PASS(tst_syscall(__NR_sysfs, 2, 0, buf),
++                "sysfs(2,0,buf)");
+ }
 
--}
--
 -/*
 - * cleanup() - Performs one time cleanup for this test at
 - * completion or premature exit
 - */
--
 -void cleanup(void)
 -{
 -
 -}
++static struct tst_test test = {
++    .test_all = verify_sysfs02,
++};
 --
 2.20.1
 
