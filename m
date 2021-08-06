@@ -1,7 +1,7 @@
 From: sujiaxun <sujiaxun@uniontech.com>
-Date: Fri,  6 Aug 2021 19:31:00 +0800
-Subject: [LTP] [PATCH] [5/6] syscalls/sysfs: Convert sysfs05 to the new API
-Message-ID: <20210806113100.8785-1-sujiaxun@uniontech.com>
+Date: Fri,  6 Aug 2021 19:31:15 +0800
+Subject: [LTP] [PATCH] [6/6] syscalls/sysfs: Convert sysfs06 to the new API
+Message-ID: <20210806113115.8852-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,14 +10,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
 ---
- testcases/kernel/syscalls/sysfs/sysfs05.c | 176 +++++-----------------
- 1 file changed, 40 insertions(+), 136 deletions(-)
+ testcases/kernel/syscalls/sysfs/sysfs06.c | 185 +++++-----------------
+ 1 file changed, 44 insertions(+), 141 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
-index 8f8bb356e..354e86a60 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs05.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
-@@ -1,153 +1,57 @@
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c b/testcases/kernel/syscalls/sysfs/sysfs06.c
+index d9a8cd51c..118ebca3c 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs06.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs06.c
+@@ -1,162 +1,65 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -56,7 +56,8 @@ index 8f8bb356e..354e86a60 100644
 - *    DESCRIPTION
 - *	This test case checks whether sysfs(2) system call returns
 - *	appropriate error number for invalid
-- *	option and for invalid filesystem name.
+- *	option and for invalid filesystem index and when
+- *	buffer is out of address space
 - *
 - *	Setup:
 - *	  Setup signal handling.
@@ -65,7 +66,7 @@ index 8f8bb356e..354e86a60 100644
 - *	Test:
 - *	  Loop if the proper options are given.
 - *	  Execute system call with invaid option parameter and for
-- *	  invalid filesystem name
+- *	  invalid filesystem index
 - *	  Check return code, if system call fails with errno == expected errno
 - *		Issue syscall passed with expected errno
 - *	  Otherwise,
@@ -75,7 +76,7 @@ index 8f8bb356e..354e86a60 100644
 - *	  Do cleanup for the test.
 - *
 - * USAGE:  <for command-line>
-- *  sysfs05 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-f] [-h] [-p]
+- *  sysfs06 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
 - *  where:
 - *	-c n : Run n copies simultaneously
 - *	-e   : Turn on errno logging.
@@ -87,17 +88,18 @@ index 8f8bb356e..354e86a60 100644
 - *
 - *RESTRICTIONS:
 - *There is no libc or glibc support
-- *Kernel must be compiled with ext2 support
 - *****************************************************************************/
 +
 +/*
 + * [DESCRIPTION]
-+ * This test case checks whether sysfs(2) system call returns appropriate
-+ * error number for invalid option and for invalid filesystem name.
++ * This test case checks whether sysfs(2) system call return appropriate
++ * error number for invalid option and for invalid filesystem index and
++ * when  buffer is out of address space.
 + */
 
  #include <errno.h>
  #include <sys/syscall.h>
+ #include <sys/mman.h>
 -#include "test.h"
 +#include "tst_test.h"
  #include "lapi/syscalls.h"
@@ -105,10 +107,10 @@ index 8f8bb356e..354e86a60 100644
 -static void setup();
 -static void cleanup();
 -
--char *TCID = "sysfs05";
--static int option[3] = { 1, 4, 1 };	/* valid and invalid option */
-+static int option[3] = { 1, 4, 1 }; /* valid and invalid option */
- static char *fsname[] = { "ext0", " ext2", (char *)-1 };
+-char *TCID = "sysfs06";
++char *bad_addr = 0;
+ static int option[3] = { 2, 4, 2 };	/* valid and invalid option */
+ static int fsindex[3] = { 10000, 0, 1 };	/*invalid and valid fsindex */
 
 -static struct test_case_t {
 -	char *err_desc;		/*error description */
@@ -117,23 +119,25 @@ index 8f8bb356e..354e86a60 100644
 -} testcase[] = {
 -	{
 -	"Invalid option", EINVAL, "EINVAL"}, {
--	"Invalid filesystem name", EINVAL, "EINVAL "}, {
--	"Address is out of your address space", EFAULT, "EFAULT "}
+-	"fs_index is out of bounds", EINVAL, "EINVAL"}, {
+-	"buf is outside your accessible address space", EFAULT, "EFAULT"}
 +static struct test_case {
 +    char *err_desc;     /*error description */
 +    int exp_errno;      /* expected error number */
 +    char *exp_errval;   /*Expected errorvalue string */
 +} tcases[] = {
 +    {
-+    "Invalid option", EINVAL, "EINVAL "}, {
-+    "Invalid filesystem name", EINVAL, "EINVAL "}, {
-+    "Address is out of your address space", EFAULT, "EFAULT "}
++    "Invalid option", EINVAL, "EINVAL"}, {
++    "fs_index is out of bounds", EINVAL, "EINVAL"}, {
++    "buf is outside your accessible address space", EFAULT, "EFAULT"}
  };
 
 -int TST_TOTAL = ARRAY_SIZE(testcase);
 -
+-char *bad_addr = 0;
+-
 -int main(int ac, char **av)
-+static void verify_sysfs05(unsigned int nr)
++static void verify_sysfs06(unsigned int nr)
  {
 -	int lc, i;
 -
@@ -146,7 +150,8 @@ index 8f8bb356e..354e86a60 100644
 -		for (i = 0; i < TST_TOTAL; i++) {
 -
 -			tst_count = 0;
--			TEST(ltp_syscall(__NR_sysfs, option[i], fsname[i]));
+-			TEST(ltp_syscall
+-			     (__NR_sysfs, option[i], fsindex[i], bad_addr));
 -
 -			/* check return code */
 -			if ((TEST_RETURN == -1)
@@ -163,24 +168,6 @@ index 8f8bb356e..354e86a60 100644
 -					 testcase[i].exp_errno,
 -					 testcase[i].exp_errval, TEST_ERRNO);
 -			}
-+    TEST(tst_syscall(__NR_sysfs, option[nr], fsname[nr]));
-+
-+    /* check return code */
-+    if ((TST_RET == -1)
-+        && (TST_ERR == tcases[nr].exp_errno)) {
-+            tst_res(TPASS,
-+                 "sysfs(2) expected failure;"
-+                 " Got errno - %s : %s",
-+                 tcases[nr].exp_errval,
-+                 tcases[nr].err_desc);
-+    } else {
-+        tst_res(TFAIL, "sysfs(2) failed to produce"
-+                 " expected error; %d, errno"
-+                 ": %s and got %d",
-+                 tcases[nr].exp_errno,
-+                 tcases[nr].exp_errval, TST_ERR);
-+    }
-
 -		}		/*End of TEST LOOPS */
 -	}
 -
@@ -189,14 +176,39 @@ index 8f8bb356e..354e86a60 100644
 -
 -	tst_exit();
 -}				/*End of main */
--
++    TEST(tst_syscall(__NR_sysfs, option[nr], fsindex[nr], bad_addr));
++
++    /* check return code */
++    if ((TST_RET == -1)
++        && (TST_ERR == tcases[nr].exp_errno)) {
++        tst_res(TPASS,
++             "sysfs(2) expected failure;"
++             " Got errno - %s : %s",
++             tcases[nr].exp_errval,
++             tcases[nr].err_desc);
++    } else {
++        tst_res(TFAIL, "sysfs(2) failed to produce"
++             " expected error; %d, errno"
++             ": %s and got %d",
++             tcases[nr].exp_errno,
++             tcases[nr].exp_errval, TST_ERR);
++    }
++}
+
 -/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
--{
+ void setup(void)
+ {
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
+-
+-	bad_addr =
+-	    mmap(0, 1, PROT_NONE, MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0,
+-		 0);
+-	if (bad_addr == MAP_FAILED)
+-		tst_brkm(TBROK, cleanup, "mmap failed");
++    bad_addr = tst_get_bad_addr(NULL);
  }
 
 -/*
@@ -207,12 +219,14 @@ index 8f8bb356e..354e86a60 100644
 -{
 +static struct tst_test test = {
 +    .tcnt = ARRAY_SIZE(tcases),
-+    .test = verify_sysfs05,
++    .setup = setup,
++    .test = verify_sysfs06,
 +};
 
 -}
 --
 2.20.1
+
 
 
 
