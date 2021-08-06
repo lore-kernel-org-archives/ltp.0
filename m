@@ -1,10 +1,10 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Fri,  6 Aug 2021 19:47:16 +0300
-Subject: [LTP] [PATCH v2 02/16] syscalls/sched_getparam01: use
+Date: Fri,  6 Aug 2021 19:47:17 +0300
+Subject: [LTP] [PATCH v2 03/16] syscalls/sched_getparam03: use
  libc/sys_sched_*()
 In-Reply-To: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
 References: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210806164730.51040-3-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210806164730.51040-4-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,61 +13,55 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../syscalls/sched_getparam/sched_getparam01.c  | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ .../syscalls/sched_getparam/sched_getparam03.c      | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-index efb697707..46cf946a5 100644
---- a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-+++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
-@@ -21,22 +21,28 @@
- #include <stdlib.h>
- #include <sys/types.h>
- #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+index 19ecaf147..3cbfae149 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+@@ -17,14 +17,19 @@
+  */
+ 
+ #include <errno.h>
 -#include <sched.h>
  #include "tst_test.h"
 +#include "tst_sched.h"
-+
+ 
+ static struct sched_param param;
+ static pid_t unused_pid;
+ static pid_t zero_pid;
+ static pid_t inval_pid = -1;
+ 
 +static struct sched_variants variants[] = {
-+	{ .sched_getparam = libc_sched_getparam, .desc = "libc" },
-+	{ .sched_getparam = sys_sched_getparam, .desc = "syscall" },
++	{ .sched_getparam = libc_sched_getparam, .desc = "libc"},
++	{ .sched_getparam = sys_sched_getparam, .desc = "syscall"},
 +};
- 
- static pid_t pids[2] = {0, 0};
- 
++
+ static struct test_case_t {
+ 	char *desc;
+ 	pid_t *pid;
+@@ -42,17 +47,21 @@ static struct test_case_t {
  static void verify_sched_getparam(unsigned int n)
  {
- 	pid_t child_pid;
+ 	struct test_case_t *tc = &test_cases[n];
 +	struct sched_variants *tv = &variants[tst_variant];
- 	struct sched_param param = {
- 		.sched_priority = 100,
- 	};
  
- 	child_pid = SAFE_FORK();
- 	if (!child_pid) {
--		TST_EXP_PASS_SILENT(sched_getparam(pids[n], &param),
--				    "sched_getparam(%d)", pids[n]);
-+		TST_EXP_PASS_SILENT(tv->sched_getparam(pids[n], &param),
-+				   "sched_getparam(%d)", pids[n]);
- 		if (!TST_PASS)
- 			exit(0);
- 
-@@ -59,12 +65,17 @@ static void verify_sched_getparam(unsigned int n)
+-	TST_EXP_FAIL(sched_getparam(*(tc->pid), tc->p), tc->exp_errno, "%s", tc->desc);
++	TST_EXP_FAIL(tv->sched_getparam(*(tc->pid), tc->p), tc->exp_errno,
++		     "%s", tc->desc);
+ }
  
  static void setup(void)
  {
-+	struct sched_variants *tv = &variants[tst_variant];
-+
-+	tst_res(TINFO, "Testing %s variant", tv->desc);
-+
- 	pids[1] = getpid();
++	tst_res(TINFO, "Testing %s variant", variants[tst_variant].desc);
+ 	unused_pid = tst_get_unused_pid();
  }
  
  static struct tst_test test = {
- 	.forks_child = 1,
  	.setup = setup,
 +	.test_variants = ARRAY_SIZE(variants),
- 	.tcnt = ARRAY_SIZE(pids),
+ 	.tcnt = ARRAY_SIZE(test_cases),
  	.test = verify_sched_getparam,
  };
 -- 
