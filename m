@@ -1,9 +1,9 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Fri,  6 Aug 2021 19:47:21 +0300
-Subject: [LTP] [PATCH v2 07/16] syscalls/sched_setparam04: convert to new API
+Date: Fri,  6 Aug 2021 19:47:22 +0300
+Subject: [LTP] [PATCH v2 08/16] syscalls/sched_setparam05: convert to new API
 In-Reply-To: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
 References: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210806164730.51040-8-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210806164730.51040-9-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +12,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../sched_setparam/sched_setparam04.c         | 167 ++++--------------
- 1 file changed, 36 insertions(+), 131 deletions(-)
+ .../sched_setparam/sched_setparam05.c         | 192 ++++--------------
+ 1 file changed, 36 insertions(+), 156 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c b/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
-index f6e017d3d..1c00f5eb6 100644
---- a/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
-+++ b/testcases/kernel/syscalls/sched_setparam/sched_setparam04.c
-@@ -1,34 +1,14 @@
+diff --git a/testcases/kernel/syscalls/sched_setparam/sched_setparam05.c b/testcases/kernel/syscalls/sched_setparam/sched_setparam05.c
+index 53db641d7..c6c9d9bdd 100644
+--- a/testcases/kernel/syscalls/sched_setparam/sched_setparam05.c
++++ b/testcases/kernel/syscalls/sched_setparam/sched_setparam05.c
+@@ -1,176 +1,56 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
 + * Copyright (c) 2021, BELLSOFT. All rights reserved.
@@ -33,192 +33,204 @@ index f6e017d3d..1c00f5eb6 100644
 - * WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
 + * AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
   */
-- /*******************************************************************
+-/**********************************************************
 - *
-- *    TEST IDENTIFIER   : sched_setparam04
+- *    TEST IDENTIFIER	: sched_setparam05
 - *
-- *    EXECUTED BY       : anyone
+- *    EXECUTED BY	: root/superuser
 - *
-- *    TEST TITLE        : testing error conditions for sched_setparam(2)
+- *    TEST TITLE	: verify that sched_setparam() fails if the user does
+- *			  not have proper privilages
 - *
-- *    TEST CASE TOTAL   : 4
+- *    TEST CASE TOTAL	: 1
 - *
-- *    AUTHOR            : Saji Kumar.V.R <saji.kumar@wipro.com>
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	Verify that sched_setparam() fails if the user does
+- *	not have proper privilages
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- *	 Fork a child
+- *
+- *	 CHILD:
+- *	  Changes euid to "nobody" user.
+- *	  Try to Change scheduling priority for parent
+- *	  If call failed with errno = EPERM,
+- *		Test passed
+- *	  else
+- *		Test failed
+- *
+- *	 PARENT:
+- *		wait for child to finish
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  sched_setparam05 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
 +
 +/*\
 + * [Description]
   *
-- *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
-+ * Testing error conditions for sched_setparam(2)
-  *
-  * DESCRIPTION
-  * 	Verify that,
-@@ -41,129 +21,54 @@
-  *   4) sched_setparam(2) returns -1 sets errno to EINVAL if the
-  *	value for p.sched_priority is other than 0 for scheduling
-  *	policy, SCHED_OTHER
-- *
-- * ALGORITHM
-- * Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if (system call failed (return=-1)) &
-- *			   (errno set == expected errno)
-- *              Issue sys call fails with expected return value and errno.
-- *   Otherwise,
-- *      Issue sys call returns unexpected value.
-- *
-- *  Cleanup:
-- *        Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- *  sched_setparam04 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *		where,  -c n : Run n copies concurrently.
-- *			-e   : Turn on errno logging.
-- *			-h   : Show help screen
-- *			-f   : Turn off functional testing
-- *			-i n : Execute test n times.
-- *			-I x : Execute test for x seconds.
-- *			-p   : Pause for SIGUSR1 before starting
-- *			-P x : Pause for x seconds between iterations.
-- *			-t   : Turn on syscall timing.
-- *
-- *********************************************************************/
--
--#include <errno.h>
--#include <sched.h>
--#include <pwd.h>
--#include "test.h"
--
--static void cleanup(void);
--static void setup(void);
+- ****************************************************************/
++ * Verify that sched_setparam() fails if the user does not have proper
++ * privileges.
 + */
  
--static struct sched_param param = { 0 };
--static struct sched_param param1 = { 1 };
+-#include <errno.h>
+-#include <sched.h>
++#include <stdlib.h>
+ #include <pwd.h>
+-#include <sys/wait.h>
+-#include "test.h"
+-
+-static void setup();
+-static void cleanup();
+ 
+-char *TCID = "sched_setparam05";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
 +#include "tst_sched.h"
  
--char *TCID = "sched_setparam04";
-+static struct sched_param p = { .sched_priority = 0 };
-+static struct sched_param p1 = { .sched_priority = 1 };
- 
- static pid_t unused_pid;
- static pid_t inval_pid = -1;
- static pid_t zero_pid;
- 
--static struct test_case_t {
+-static struct sched_param param = { 0 };
 +static struct sched_variants variants[] = {
 +	{ .sched_setparam = libc_sched_setparam, .desc = "libc" },
 +	{ .sched_setparam = sys_sched_setparam,  .desc = "syscall" },
 +};
-+
-+static struct test_cases_t {
- 	char *desc;
- 	pid_t *pid;
- 	struct sched_param *p;
- 	int exp_errno;
--	char err_desc[10];
--} test_cases[] = {
-+} tcases[] = {
- 	{
--	"test with non-existing pid", &unused_pid, &param, ESRCH, "ESRCH"}, {
--	"test invalid pid value", &inval_pid, &param, EINVAL, "EINVAL"}, {
--	"test with invalid address for p", &zero_pid, NULL, EINVAL, "EINVAL"}, {
--	"test with invalid p.sched_priority", &zero_pid, &param1, EINVAL,
--		    "EINVAL"}
-+	"test with non-existing pid", &unused_pid, &p, ESRCH}, {
-+	"test invalid pid value", &inval_pid, &p, EINVAL,}, {
-+	"test with invalid address for p", &zero_pid, NULL, EINVAL}, {
-+	"test with invalid p.sched_priority", &zero_pid, &p1, EINVAL}
- };
  
--int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+-static char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
 -
 -int main(int ac, char **av)
-+static void setup(void)
++static void run(void)
  {
--	int lc, ind;
++	struct sched_variants *tv = &variants[tst_variant];
++	pid_t child_pid = SAFE_FORK();
+ 
+-	int lc;
+-	int status;
+-	pid_t child_pid;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();		/* global setup */
+-	setup();
 -
--	/* The following loop checks looping state if -i option given */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
-+	tst_res(TINFO, "Testing %s variant", variants[tst_variant].desc);
- 
--		for (ind = 0; ind < TST_TOTAL; ind++) {
--			/*
--			 * call the system call with the TEST() macro
--			 */
--			TEST(sched_setparam(*(test_cases[ind].pid),
--					    test_cases[ind].p));
 -
--			if ((TEST_RETURN == -1) &&
--			    (TEST_ERRNO == test_cases[ind].exp_errno)) {
--				tst_resm(TPASS, "expected failure; Got %s",
--					 test_cases[ind].err_desc);
+-		tst_count = 0;
+-
+-		switch (child_pid = FORK_OR_VFORK()) {
+-
+-		case -1:
+-			/* fork() failed */
+-			tst_resm(TFAIL, "fork() failed");
+-			continue;
+-
+-		case 0:
+-			/* Child */
+-
+-			/* Switch to nobody user */
+-			if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
+-				tst_brkm(TBROK, NULL, "'%s' user not present", nobody_uid);
+-			}
+-			if (seteuid(ltpuser->pw_uid) == -1) {
+-				tst_resm(TWARN, "seteuid failed to to set the effective uid to %d",
+-					 ltpuser->pw_uid);
+-				exit(1);
+-			}
+-
+-			/*
+-			 * Call sched_setparam(2) with pid = getppid()
+-			 */
+-			TEST(sched_setparam(getppid(), &param));
++	if (!child_pid) {
++		struct sched_param p = { .sched_priority = 0 };
++		struct passwd *pw = SAFE_GETPWNAM("nobody");
+ 
+-			if ((TEST_RETURN == -1) && (TEST_ERRNO == EPERM)) {
+-				exit(0);
+-			}
++		SAFE_SETEUID(pw->pw_uid);
++		TST_EXP_FAIL(tv->sched_setparam(getppid(), &p), EPERM,
++			     "sched_setparam(%d, 0)", getppid());
+ 
+-			tst_resm(TWARN | TTERRNO,
+-				 "Test failed, sched_setparam()"
+-				 " returned : %ld", TEST_RETURN);
+-			exit(1);
+-
+-		default:
+-			/* Parent */
+-			if ((waitpid(child_pid, &status, 0)) < 0) {
+-				tst_resm(TFAIL, "wait() failed");
+-				continue;
+-			}
+-			if ((WIFEXITED(status)) && (WEXITSTATUS(status) == 0)) {
+-				tst_resm(TPASS, "Test passed, Got EPERM");
 -			} else {
--				tst_resm(TFAIL, "Call failed to produce "
--					 "expected error;  Expected errno: %d "
--					 "Got : %d, %s",
--					 test_cases[ind].exp_errno,
--					 TEST_ERRNO, strerror(TEST_ERRNO));
+-				tst_resm(TFAIL, "Test Failed");
 -			}
 -		}
--	}
--
++		exit(0);
+ 	}
+ 
 -	cleanup();
--
 -	tst_exit();
-+	unused_pid = tst_get_unused_pid();
++	tst_reap_children();
  }
  
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
+-/* setup() - performs all ONE TIME setup for this test */
 -void setup(void)
-+static void run(unsigned int n)
++static void setup(void)
  {
--	unused_pid = tst_get_unused_pid(cleanup);
 -
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_require_root();
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
-+	struct sched_variants *tv = &variants[tst_variant];
-+	struct test_cases_t *tc = &tcases[n];
- 
-+	TST_EXP_FAIL(tv->sched_setparam(*tc->pid, tc->p), tc->exp_errno, "%s", tc->desc);
+-
++	tst_res(TINFO, "Testing %s variant", variants[tst_variant].desc);
  }
  
 -/*
-- * cleanup() -  performs all the ONE TIME cleanup for this test at completion
-- *		or premature exit.
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
 - */
 -void cleanup(void)
 -{
--
 -}
 +static struct tst_test test = {
++	.needs_root = 1,
++	.forks_child = 1,
 +	.setup = setup,
-+	.test = run,
 +	.test_variants = ARRAY_SIZE(variants),
-+	.tcnt = ARRAY_SIZE(tcases),
++	.test_all = run,
 +};
 -- 
 2.25.1
