@@ -1,50 +1,59 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 6 Aug 2021 06:40:36 +0200
-Subject: [LTP] [PATCH] lib/tst_tmpdir: tst_get_tmpdir() add error handing
-In-Reply-To: <20210806032131.25721-1-zhanglianjie@uniontech.com>
-References: <20210806032131.25721-1-zhanglianjie@uniontech.com>
-Message-ID: <b208d879-0d31-ff16-4ef0-d363e9a65c51@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 6 Aug 2021 07:40:33 +0200
+Subject: [LTP] [COMMITTED] setsockopt08: includes netinet/in.h
+In-Reply-To: <20210806025659.1962902-1-liwang@redhat.com>
+References: <20210806025659.1962902-1-liwang@redhat.com>
+Message-ID: <YQzLUUKbLcoJjRVb@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+Hi Li,
 
-On 8/6/2021 5:21 AM, zhanglianjie wrote:
-> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
->
-> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-> index 0c39eb89f..f006e4893 100644
-> --- a/lib/tst_tmpdir.c
-> +++ b/lib/tst_tmpdir.c
-> @@ -108,12 +108,18 @@ int tst_tmpdir_created(void)
->
->   char *tst_get_tmpdir(void)
->   {
-> +	char *ret = NULL;
+> We have to put netinet/in.h on the top to get rid of conflict
+> of glibc and kernel headers for old unbuntu.
+
+>   -----------
+>   /usr/include/linux/in.h:28:3: error: redeclaration of enumerator 'IPPROTO_IP'
+>         IPPROTO_IP = 0,  /* Dummy protocol for TCP  */
+>    ^
+>   /usr/include/netinet/in.h:42:5: note: previous definition of 'IPPROTO_IP' was here
+>        IPPROTO_IP = 0,    /* Dummy protocol for TCP.  */
+>   ...
+>   -----------
+
+> See: https://www.mail-archive.com/netdev@vger.kernel.org/msg132711.html
+
+Thanks for fixing it, it's not a first time we got hit by this.
+I wonder where <linux/in.h> is included. It's not directly in setsockopt08.c,
+it must be in our lapi header. But it's not in tst_safe_net.h, not in
+safe_net_fn.h nor in tst_net.h and both actually include <netinet/in.h>, thus it must be
+before. But there is only tst_test.h.
+
+I'm asking because it'd be better to add <netinet/in.h> into header before
+<linux/in.h>.
+
+Kind regards,
+Petr
+
+> Fixes: ebf3a4fbd39a (Add setsockopt08, CVE-2021-22555)
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/syscalls/setsockopt/setsockopt08.c | 2 ++
+>  1 file changed, 2 insertions(+)
+
+> diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+> index f758dcbdc..f7052f27b 100644
+> --- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+> +++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+> @@ -79,6 +79,8 @@
+>   *  - sizeof(struct xt_entry_target) = 32
+>   */
+
+> +#include <netinet/in.h>
 > +
->   	if (TESTDIR == NULL) {
->   		tst_brkm(TBROK, NULL, "you must call tst_tmpdir() first");
->   		return NULL;
->   	}
->
-> -	return strdup(TESTDIR);
-> +	ret = strdup(TESTDIR);
-Is a failing strdup here really a thing? The only reason strdup should 
-be able to fail is with ENOMEM.
-The only way tst_brkm will work, if strdup fails here is, if TESTDIR is 
-an extremely huge string (the NULL case is already handled above).
-> +	if (!ret)
-> +		tst_brkm(TBROK, NULL, "strdup() failed");
-> +
-> +	return ret;
->   }
->
->   const char *tst_get_startwd(void)
-> --
-> 2.20.1
->
->
-Joerg
+>  #include "tst_test.h"
+>  #include "tst_safe_net.h"
+>  #include "lapi/ip_tables.h"
