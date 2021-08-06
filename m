@@ -1,10 +1,10 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Fri,  6 Aug 2021 19:47:28 +0300
-Subject: [LTP] [PATCH v2 14/16] syscalls/sched_setscheduler03: use
- libc/sys_sched_*()
+Date: Fri,  6 Aug 2021 19:47:29 +0300
+Subject: [LTP] [PATCH v2 15/16] syscalls/sched_getscheduler01: convert to
+ new API
 In-Reply-To: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
 References: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210806164730.51040-15-aleksei.kodanev@bell-sw.com>
+Message-ID: <20210806164730.51040-16-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,31 +13,86 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 ---
- .../sched_setscheduler/sched_setscheduler03.c | 39 ++++++++++++-------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+ .../sched_getscheduler/sched_getscheduler01.c | 154 ++++++------------
+ 1 file changed, 50 insertions(+), 104 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c
-index 9045d0366..01385a08d 100644
---- a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c
-+++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c
-@@ -17,19 +17,30 @@
- #include <stdio.h>
+diff --git a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
+index f6bdf1a1b..ebef6c3a5 100644
+--- a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
++++ b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler01.c
+@@ -1,129 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) 2021, BELLSOFT. All rights reserved.
++ * Copyright (c) International Business Machines  Corp., 2001
+  */
+ 
+-/*
+- * NAME
+- *	sched_getscheduler01.C
++/*\
++ * [Description]
+  *
+- * DESCRIPTION
+- *	Testcase to check sched_getscheduler() returns correct return value
++ * Testcase to check sched_getscheduler() returns correct return value.
+  *
+- * ALGORTIHM
+- *	Call sched_setcheduler() to set the scheduling policy of the current
+- *	process. Then call sched_getscheduler() to ensure that this is same
+- *	as what set by the previous call to sched_setscheduler().
++ * [Algorithm]
+  *
+- *	Use SCHED_RR, SCHED_FIFO, SCHED_OTHER as the scheduling policies for
+- *	sched_setscheduler().
++ * Call sched_setcheduler() to set the scheduling policy of the current
++ * process. Then call sched_getscheduler() to ensure that this is same
++ * as what set by the previous call to sched_setscheduler().
+  *
+- * USAGE:  <for command-line>
+- *  sched_getscheduler01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
++ * Use SCHED_RR, SCHED_FIFO, SCHED_OTHER as the scheduling policies for
++ * sched_setscheduler().
+  *
+- * RESTRICTION
+- *	Must run test as root.
+  */
+ 
  #include <errno.h>
- #include <pwd.h>
 -#include <sched.h>
- #include <sys/time.h>
- #include <sys/resource.h>
- #include <sys/wait.h>
- #include <stdlib.h>
+ #include <stdio.h>
+-#include "test.h"
+-
+-char *TCID = "sched_getscheduler01";
+-int TST_TOTAL = 3;
  
- #include "tst_test.h"
+-void setup(void);
+-void cleanup(void);
++#include "tst_test.h"
 +#include "tst_sched.h"
- 
- #define RLIMIT_NICE_NORMAL 20
- 
- static pid_t zero_pid;
- static struct sched_param param[1] = { {0} };
- 
++
 +static struct sched_variants variants[] = {
 +	{ .sched_setscheduler = libc_sched_setscheduler,
 +	  .sched_getscheduler = libc_sched_getscheduler,
@@ -48,68 +103,103 @@ index 9045d0366..01385a08d 100644
 +	  .desc = "syscall"
 +	},
 +};
-+
- struct test_case_t {
- 	pid_t *pid;
+ 
+-struct test_case_t {
+-	int prio;
++struct test_cases_t {
++	int priority;
  	int policy;
-@@ -92,26 +103,25 @@ static void l_rlimit_setup(const int type, struct rlimit *limit)
+-} TC[] = {
+-	/* set scheduling policy to SCHED_RR */
+-	{
+-	1, SCHED_RR},
+-	    /* set scheduling policy to SCHED_OTHER */
+-	{
+-	0, SCHED_OTHER},
+-	    /* set scheduling policy to SCHED_FIFO */
+-	{
+-	1, SCHED_FIFO}
++} tcases[] = {
++	{1, SCHED_RR},
++	{0, SCHED_OTHER},
++	{1, SCHED_FIFO}
+ };
  
- static void verify_fn(unsigned int i)
+-int main(int ac, char **av)
++static void run(unsigned int n)
  {
--	tst_res(TINFO,
--		"Verifying case[%d]: policy = %d, priority = %d",
-+	struct sched_variants *tv = &variants[tst_variant];
-+
-+	tst_res(TINFO, "Verifying case[%d]: policy = %d, priority = %d",
- 		i + 1, cases[i].policy, cases[i].sched_param->sched_priority);
- 
--	TEST(sched_setscheduler(*cases[i].pid, cases[i].policy,
--					cases[i].sched_param));
--	if (TST_RET)
--		tst_res(TFAIL | TTERRNO, "case[%d] expected: %d, got: ",
--			i + 1, cases[i].error);
--	else
--		tst_res(TPASS, "case[%d] succeeded", i + 1);
-+	TST_EXP_PASS(tv->sched_setscheduler(*cases[i].pid, cases[i].policy,
-+		     cases[i].sched_param));
- }
- 
- static void setup(void)
- {
-+	struct sched_variants *tv = &variants[tst_variant];
- 	uid_t ruid, euid, suid;
- 	struct rlimit limit;
- 	struct passwd *pw;
- 	uid_t nobody_uid;
- 
-+	tst_res(TINFO, "Testing %s variant", tv->desc);
-+
- 	pw = SAFE_GETPWNAM("nobody");
- 	nobody_uid = pw->pw_uid;
- 	l_rlimit_show(RLIMIT_NICE, &limit);
-@@ -129,11 +139,9 @@ static void setup(void)
- 	l_rlimit_setup(RLIMIT_NICE, &limit);
- 
- 	tst_res(TINFO, "Setting init sched policy to SCHED_OTHER");
--	if (sched_setscheduler(0, SCHED_OTHER, &param[0]) != 0)
--		tst_res(TFAIL | TERRNO,
--			 "ERROR sched_setscheduler: (0, SCHED_OTHER, param)");
+-	int lc;
+-	int i;
+-	struct sched_param param;
 -
--	if (sched_getscheduler(0) != SCHED_OTHER)
-+	TST_EXP_PASS_SILENT(tv->sched_setscheduler(0, SCHED_OTHER, &param[0]),
-+			    "sched_setscheduler(0, SCHED_OTHER, 0)");
-+	if (tv->sched_getscheduler(0) != SCHED_OTHER)
- 		tst_res(TFAIL | TERRNO, "ERROR sched_setscheduler");
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
++	struct sched_variants *tv = &variants[tst_variant];
++	struct test_cases_t *tc = &tcases[n];
++	struct sched_param p = { .sched_priority = tc->priority };
  
- 	tst_res(TINFO, "Setting euid to nobody to drop privilege");
-@@ -159,6 +167,7 @@ static void do_test(unsigned int i)
+-		for (i = 0; i < TST_TOTAL; i++) {
++	TST_EXP_PASS_SILENT(tv->sched_setscheduler(0, tc->policy, &p));
+ 
+-			param.sched_priority = TC[i].prio;
+-
+-			if (sched_setscheduler(0, TC[i].policy, &param) == -1)
+-				tst_brkm(TBROK, cleanup,
+-					 "sched_setscheduler failed");
+-
+-			TEST(sched_getscheduler(0));
+-
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL, "call failed unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_RETURN != TC[i].policy)
+-				tst_resm(TFAIL,
+-					 "policy value returned is not "
+-					 "correct");
+-			else
+-				tst_resm(TPASS,
+-					 "policy value returned is correct");
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	TEST(tv->sched_getscheduler(0));
++	if (TST_RET == tc->policy)
++		tst_res(TPASS, "got expected policy %d", tc->policy);
++	else
++		tst_res(TFAIL | TERRNO, "got policy %ld, expected %d", TST_RET, tc->policy);
  }
  
- static struct tst_test test = {
+-void setup(void)
++static void setup(void)
+ {
+-
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	tst_res(TINFO, "Testing %s variant", variants[tst_variant].desc);
+ }
+ 
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.needs_root = 1,
++	.setup = setup,
 +	.test_variants = ARRAY_SIZE(variants),
- 	.tcnt = ARRAY_SIZE(cases),
- 	.test = do_test,
- 	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++};
 -- 
 2.25.1
 
