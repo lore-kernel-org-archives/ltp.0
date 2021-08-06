@@ -1,7 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri,  6 Aug 2021 15:24:21 +0800
-Subject: [LTP] [PATCH 3/4] syscalls/chmod03: Convert to new API
-Message-ID: <20210806072421.8892-1-zhanglianjie@uniontech.com>
+Date: Fri,  6 Aug 2021 15:24:38 +0800
+Subject: [LTP] [PATCH 4/4] syscalls/chmod04: Convert to new API
+Message-ID: <20210806072438.9093-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,13 +10,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/chmod/chmod03.c b/testcases/kernel/syscalls/chmod/chmod03.c
-index f53e437e4..1e1d829da 100644
---- a/testcases/kernel/syscalls/chmod/chmod03.c
-+++ b/testcases/kernel/syscalls/chmod/chmod03.c
-@@ -1,23 +1,12 @@
+diff --git a/testcases/kernel/syscalls/chmod/chmod04.c b/testcases/kernel/syscalls/chmod/chmod04.c
+index cbc13cf61..4a72a4aa6 100644
+--- a/testcases/kernel/syscalls/chmod/chmod04.c
++++ b/testcases/kernel/syscalls/chmod/chmod04.c
+@@ -1,24 +1,12 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
+- *
   *   Copyright (c) International Business Machines  Corp., 2001
   *
 - *   This program is free software;  you can redistribute it and/or modify
@@ -36,15 +37,15 @@ index f53e437e4..1e1d829da 100644
   */
 
 -/*
-- * Test Name: chmod03
+- * Test Name: chmod04
 +/*\
 + * [Description]
   *
   * Test Description:
-  *  Verify that, chmod(2) will succeed to change the mode of a file
-@@ -31,56 +20,10 @@
-  *  chmod() should return value 0 on success and succeeds to change
-  *  the mode of specified file with sticky bit set on it.
+  *  Verify that, chmod(2) will succeed to change the mode of a directory
+@@ -32,55 +20,10 @@
+  *  chmod() should return value 0 on success and succeeds to set sticky bit
+  *  on the specified directory.
   *
 - * Algorithm:
 - *  Setup:
@@ -68,9 +69,8 @@ index f53e437e4..1e1d829da 100644
 - *   Delete the temporary directory created.
 - *
 - * Usage:  <for command-line>
-- *  chmod03 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *  chmod04 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
 - *             -f   : Turn off functionality Testing.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
@@ -98,29 +98,29 @@ index f53e437e4..1e1d829da 100644
 -#include "safe_macros.h"
 +#include "tst_test.h"
 
- #define FILE_MODE       S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+ #define DIR_MODE 	S_IRWXU | S_IRWXG | S_IRWXO
  #define PERMS		01777	/*
-@@ -89,95 +32,53 @@
+@@ -89,103 +32,55 @@
  				 */
- #define TESTFILE	"testfile"
+ #define TESTDIR		"testdir_4"
 
--char *TCID = "chmod03";
+-char *TCID = "chmod04";
 -int TST_TOTAL = 1;
 -char nobody_uid[] = "nobody";
 -struct passwd *ltpuser;
+-
+-void setup();
+-void cleanup();
 +static char nobody_uid[] = "nobody";
 +static struct passwd *ltpuser;
 
--void setup();			/* Main setup function for the test */
--void cleanup();			/* Main cleanup function for the test */
--
 -int main(int ac, char **av)
 +static void verify_chmod(void)
  {
- 	struct stat stat_buf;
+ 	struct stat stat_buf;	/* stat struct. */
 -	int lc;
- 	mode_t file_mode;
-
+ 	mode_t dir_mode;	/* mode permissions set on testdirectory */
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
@@ -129,36 +129,55 @@ index f53e437e4..1e1d829da 100644
 -
 -		tst_count = 0;
 -
--		TEST(chmod(TESTFILE, PERMS));
+-		/*
+-		 * Call chmod(2) with mode argument to
+-		 * set sticky bit on TESTDIR
+-		 */
+-		TEST(chmod(TESTDIR, PERMS));
 -
 -		if (TEST_RETURN == -1) {
 -			tst_resm(TFAIL | TTERRNO, "chmod(%s, %#o) failed",
--				 TESTFILE, PERMS);
+-				 TESTDIR, PERMS);
 -			continue;
 -		}
--		if (stat(TESTFILE, &stat_buf) < 0) {
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "stat(%s) failed", TESTFILE);
--		}
-+	TST_EXP_PASS_SILENT(chmod(TESTFILE, PERMS), "chmod(%s, %#o) failed",
-+		TESTFILE, PERMS);
+-
++	/*
++		* Call chmod(2) with mode argument to
++		* set sticky bit on TESTDIR
++		*/
++	TST_EXP_PASS_SILENT(chmod(TESTDIR, PERMS), "chmod(%s, %#o) failed",
++		TESTDIR, PERMS);
 +	if (TST_PASS) {
-+		SAFE_STAT(TESTFILE, &stat_buf);
- 		file_mode = stat_buf.st_mode;
+ 		/*
+-		 * Get the file information using
+-		 * stat(2).
+-		 */
+-		if (stat(TESTDIR, &stat_buf) < 0) {
+-			tst_brkm(TFAIL, cleanup,
+-				 "stat(2) of %s failed, errno:%d",
+-				 TESTDIR, TEST_ERRNO);
+-		}
++			* Get the file information using
++			* stat(2).
++			*/
++		SAFE_STAT(TESTDIR, &stat_buf);
+ 		dir_mode = stat_buf.st_mode;
 
- 		/* Verify STICKY BIT set on testfile */
- 		if ((file_mode & PERMS) != PERMS) {
--			tst_resm(TFAIL, "%s: Incorrect modes 0%3o, "
--				 "Expected 0777", TESTFILE, file_mode);
-+			tst_res(TFAIL, "%s: Incorrect modes 0%3o, "
-+					"Expected 0777", TESTFILE, file_mode);
- 		} else {
+ 		/* Verify STICKY BIT SET on directory */
+ 		if ((dir_mode & PERMS) == PERMS) {
 -			tst_resm(TPASS, "Functionality of "
 -				 "chmod(%s, %#o) successful",
--				 TESTFILE, PERMS);
+-				 TESTDIR, PERMS);
 +			tst_res(TPASS, "Functionality of "
 +					"chmod(%s, %#o) successful",
-+					TESTFILE, PERMS);
++					TESTDIR, PERMS);
+ 		} else {
+-			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+-				 "Expected 0%03o",
+-				 TESTDIR, dir_mode, PERMS);
++			tst_res(TFAIL, "%s: Incorrect modes 0%03o, "
++					"Expected 0%03o",
++					TESTDIR, dir_mode, PERMS);
  		}
  	}
 -
@@ -166,46 +185,41 @@ index f53e437e4..1e1d829da 100644
 -	tst_exit();
  }
 
--void setup(void)
-+static void setup(void)
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *  Create a temporary directory and cd to it.
+- *  Create another test directory under temporary directory.
+- */
+ void setup(void)
  {
- 	int fd;
-
+-
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	tst_require_root();
 -	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--	SAFE_SETUID(NULL, ltpuser->pw_uid);
+-	if (setuid(ltpuser->pw_uid) == -1)
+-		tst_resm(TINFO | TERRNO, "setuid(%u) failed", ltpuser->pw_uid);
 -
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
+-
 +	ltpuser = SAFE_GETPWNAM(nobody_uid);
 +	SAFE_SETEUID(ltpuser->pw_uid);
-
  	/*
- 	 * Create a test file under temporary directory with specified
- 	 * mode permissios and set the ownership of the test file to the
- 	 * uid/gid of guest user.
+ 	 * Create a test directory under temporary directory with specified
+ 	 * mode permissios.
  	 */
--	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %#o) failed",
--			 TESTFILE, FILE_MODE);
--	}
-+	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, FILE_MODE);
-
--	SAFE_CLOSE(cleanup, fd);
-+	SAFE_CLOSE(fd);
+-	SAFE_MKDIR(cleanup, TESTDIR, DIR_MODE);
++	SAFE_MKDIR(TESTDIR, DIR_MODE);
  }
 
 -/*
 - * void
 - * cleanup() - performs all ONE TIME cleanup for this test at
 - *		completion or premature exit.
-- *  Delete the testfile and temporary directory created in setup().
+- *  Remove the test directory and temporary directory created in setup().
 - */
 -void cleanup(void)
 -{
