@@ -1,70 +1,172 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 6 Aug 2021 07:55:18 +0200
-Subject: [LTP] [COMMITTED] setsockopt08: includes netinet/in.h
-In-Reply-To: <YQzLUUKbLcoJjRVb@pevik>
-References: <20210806025659.1962902-1-liwang@redhat.com>
- <YQzLUUKbLcoJjRVb@pevik>
-Message-ID: <YQzOxg35JjpDOj7X@pevik>
+From: sujiaxun <sujiaxun@uniontech.com>
+Date: Fri,  6 Aug 2021 14:24:56 +0800
+Subject: [LTP] [PATCH] [v2,
+ 1/6] syscalls/sysfs: Convert sysfs01 to the new API
+Message-ID: <20210806062456.11678-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Cyril,
+Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+---
+ testcases/kernel/syscalls/sysfs/sysfs01.c | 132 +++-------------------
+ 1 file changed, 17 insertions(+), 115 deletions(-)
 
-> Hi Li,
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
+index 85052dc2b..35195e95f 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs01.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
+@@ -1,129 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: sysfs01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for sysfs(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *    This is a Phase I test for the sysfs(2) system call.
+- *    This test is carried out for option 1 for sysfs(2).
+- *    It is intended to provide a limited exposure of the system call.
+- *
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * sysfs01 [-c n]  [-e] [-i n] [-I x] [-p x] [-t] [-h] [-f] [-p]
+- *  where:
+- *	-c n : run n copies simultaneously.
+- *	-e   : Turn on errno logging.
+- *	-i n : Execute test n times.
+- *	-I x : Execute test for x seconds.
+- *	-p   : Pause for SIGUSR1 before starting
+- *	-P x : Pause for x seconds between iterations.
+- *	-t   : Turn on syscall timing.
+- *
+- *RESTRICTIONS:
+- *There is no glibc or libc support
+- *Kernel should be compiled with proc filesystem support
+- ******************************************************************************/
++
++/*
++ * [DESCRIPTION]
++ * This test is run for option 1 for sysfs(2).
++ * Translate the filesystem identifier string fsname into a filesystem type index.
++ */
 
-> > We have to put netinet/in.h on the top to get rid of conflict
-> > of glibc and kernel headers for old unbuntu.
+ #include <errno.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
+-#include "test.h"
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
 
-> >   -----------
-> >   /usr/include/linux/in.h:28:3: error: redeclaration of enumerator 'IPPROTO_IP'
-> >         IPPROTO_IP = 0,  /* Dummy protocol for TCP  */
-> >    ^
-> >   /usr/include/netinet/in.h:42:5: note: previous definition of 'IPPROTO_IP' was here
-> >        IPPROTO_IP = 0,    /* Dummy protocol for TCP.  */
-> >   ...
-> >   -----------
+-static void setup();
+-static void cleanup();
+-
+-char *TCID = "sysfs01";
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
++static void verify_sysfs01(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/* option 1, buf holds fs name */
+-		TEST(ltp_syscall(__NR_sysfs, 1, "proc"));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "sysfs(2) Failed for "
+-				 "option 1 and set errno to %d", TEST_ERRNO);
+-		} else {
+-			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
+-		}
+-	}			/*End of TEST_LOOPING */
+-
+-	/*Clean up and exit */
+-	cleanup();
+-	tst_exit();
++        /* option 1, buf holds fs name */
++        TST_EXP_POSITIVE(tst_syscall(__NR_sysfs, 1, "proc"),
++                        "sysfs(1,'proc')");
 
-> > See: https://www.mail-archive.com/netdev@vger.kernel.org/msg132711.html
++        if (TST_PASS == 1)
++            tst_res(TPASS, "sysfs(2) Passed for " "option 1");
+ }
 
-> Thanks for fixing it, it's not a first time we got hit by this.
-> I wonder where <linux/in.h> is included. It's not directly in setsockopt08.c,
-> it must be in our lapi header. But it's not in tst_safe_net.h, not in
-> safe_net_fn.h nor in tst_net.h and both actually include <netinet/in.h>, thus it must be
-> before. But there is only tst_test.h.
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++static struct tst_test test = {
++    .test_all = verify_sysfs01,
++};
 
-> I'm asking because it'd be better to add <netinet/in.h> into header before
-> <linux/in.h>.
+-}
+-
+-/*
+- * cleanup() - Performs one time cleanup for this test at
+- * completion or premature exit
+- */
+-
+-void cleanup(void)
+-{
+-
+-}
+--
+2.20.1
 
-OK, it's in lapi/ip_tables.h, which includes <linux/netfilter_ipv4/ip_tables.h>
-which includes <linux/if.h>. But I wonder why inclusion of <netinet/in.h> from
-safe_net_fn.h or in tst_net.h does not work. Anyway, I'll test including
-<netinet/in.h> in include/lapi/ip_tables.h helps.
 
-Kind regards,
-Petr
 
-> Kind regards,
-> Petr
-
-> > Fixes: ebf3a4fbd39a (Add setsockopt08, CVE-2021-22555)
-> > Signed-off-by: Li Wang <liwang@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/setsockopt/setsockopt08.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-
-> > diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-> > index f758dcbdc..f7052f27b 100644
-> > --- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-> > +++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-> > @@ -79,6 +79,8 @@
-> >   *  - sizeof(struct xt_entry_target) = 32
-> >   */
-
-> > +#include <netinet/in.h>
-> > +
-> >  #include "tst_test.h"
-> >  #include "tst_safe_net.h"
-> >  #include "lapi/ip_tables.h"
