@@ -1,60 +1,70 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri, 6 Aug 2021 13:42:22 +0800
-Subject: [LTP] [PATCH] lib/tst_tmpdir: tst_get_tmpdir() add error handing
-In-Reply-To: <b208d879-0d31-ff16-4ef0-d363e9a65c51@jv-coder.de>
-References: <20210806032131.25721-1-zhanglianjie@uniontech.com>
- <b208d879-0d31-ff16-4ef0-d363e9a65c51@jv-coder.de>
-Message-ID: <d550840f-f0dc-0e9d-aa2a-54970ca7619e@uniontech.com>+661201FF716C5BBC
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 6 Aug 2021 07:55:18 +0200
+Subject: [LTP] [COMMITTED] setsockopt08: includes netinet/in.h
+In-Reply-To: <YQzLUUKbLcoJjRVb@pevik>
+References: <20210806025659.1962902-1-liwang@redhat.com>
+ <YQzLUUKbLcoJjRVb@pevik>
+Message-ID: <YQzOxg35JjpDOj7X@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-> On 8/6/2021 5:21 AM, zhanglianjie wrote:
->> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
->>
->> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
->> index 0c39eb89f..f006e4893 100644
->> --- a/lib/tst_tmpdir.c
->> +++ b/lib/tst_tmpdir.c
->> @@ -108,12 +108,18 @@ int tst_tmpdir_created(void)
->>
->> ? char *tst_get_tmpdir(void)
->> ? {
->> +??? char *ret = NULL;
->> +
->> ????? if (TESTDIR == NULL) {
->> ????????? tst_brkm(TBROK, NULL, "you must call tst_tmpdir() first");
->> ????????? return NULL;
->> ????? }
->>
->> -??? return strdup(TESTDIR);
->> +??? ret = strdup(TESTDIR);
-> Is a failing strdup here really a thing? The only reason strdup should 
-> be able to fail is with ENOMEM.
-> The only way tst_brkm will work, if strdup fails here is, if TESTDIR is 
-> an extremely huge string (the NULL case is already handled above).
-If don?t consider a very huge string, you don?t need to modify it here. 
-This is a habitual judgment.
-Thank you for your review.
->> +??? if (!ret)
->> +??????? tst_brkm(TBROK, NULL, "strdup() failed");
->> +
->> +??? return ret;
->> ? }
->>
->> ? const char *tst_get_startwd(void)
->> -- 
->> 2.20.1
->>
->>
-> Joerg
-> 
+Hi Li, Cyril,
 
--- 
-Regards,
-Zhang Lianjie
+> Hi Li,
 
+> > We have to put netinet/in.h on the top to get rid of conflict
+> > of glibc and kernel headers for old unbuntu.
 
+> >   -----------
+> >   /usr/include/linux/in.h:28:3: error: redeclaration of enumerator 'IPPROTO_IP'
+> >         IPPROTO_IP = 0,  /* Dummy protocol for TCP  */
+> >    ^
+> >   /usr/include/netinet/in.h:42:5: note: previous definition of 'IPPROTO_IP' was here
+> >        IPPROTO_IP = 0,    /* Dummy protocol for TCP.  */
+> >   ...
+> >   -----------
+
+> > See: https://www.mail-archive.com/netdev@vger.kernel.org/msg132711.html
+
+> Thanks for fixing it, it's not a first time we got hit by this.
+> I wonder where <linux/in.h> is included. It's not directly in setsockopt08.c,
+> it must be in our lapi header. But it's not in tst_safe_net.h, not in
+> safe_net_fn.h nor in tst_net.h and both actually include <netinet/in.h>, thus it must be
+> before. But there is only tst_test.h.
+
+> I'm asking because it'd be better to add <netinet/in.h> into header before
+> <linux/in.h>.
+
+OK, it's in lapi/ip_tables.h, which includes <linux/netfilter_ipv4/ip_tables.h>
+which includes <linux/if.h>. But I wonder why inclusion of <netinet/in.h> from
+safe_net_fn.h or in tst_net.h does not work. Anyway, I'll test including
+<netinet/in.h> in include/lapi/ip_tables.h helps.
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
+
+> > Fixes: ebf3a4fbd39a (Add setsockopt08, CVE-2021-22555)
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > ---
+> >  testcases/kernel/syscalls/setsockopt/setsockopt08.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+
+> > diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+> > index f758dcbdc..f7052f27b 100644
+> > --- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+> > +++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+> > @@ -79,6 +79,8 @@
+> >   *  - sizeof(struct xt_entry_target) = 32
+> >   */
+
+> > +#include <netinet/in.h>
+> > +
+> >  #include "tst_test.h"
+> >  #include "tst_safe_net.h"
+> >  #include "lapi/ip_tables.h"
