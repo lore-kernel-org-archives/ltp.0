@@ -1,60 +1,45 @@
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Date: Thu, 05 Aug 2021 17:50:11 -0400
-Subject: [LTP] [PATCH 6/7] syscalls/fanotify20: Test file event with
- broken inode
-In-Reply-To: <CAOQ4uxis23+T3=+R+9rKkxtZLtS4S4LJ6RBgG0AEHsg4=MJyRA@mail.gmail.com>
- (Amir Goldstein's message of "Wed, 4 Aug 2021 08:27:46 +0300")
-References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-7-krisman@collabora.com>
- <CAOQ4uxizX0ar7d9eYgazcenQcA7Ku7quEZOLbcaxKJiY0sTPLA@mail.gmail.com>
- <87k0l1hkuz.fsf@collabora.com>
- <CAOQ4uxis23+T3=+R+9rKkxtZLtS4S4LJ6RBgG0AEHsg4=MJyRA@mail.gmail.com>
-Message-ID: <87tuk3ef3g.fsf@collabora.com>
+From: sujiaxun <sujiaxun@uniontech.com>
+Date: Fri, 6 Aug 2021 09:22:06 +0800
+Subject: [LTP] [PATCH] [1/6] syscalls/sysfs: Convert sysfs01 to the new
+ API
+In-Reply-To: <YQvRg1O7kakkm30M@yuki>
+References: <20210804060736.10234-1-sujiaxun@uniontech.com>
+ <YQvRg1O7kakkm30M@yuki>
+Message-ID: <7da55dc8-edd4-e392-b5b5-d2adce0cfaa2@uniontech.com>+56F90A5CBDF7C3AD
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Okay, thank you for your meticulous guidance, I will revise and submit 
+it again according to your suggestions.
 
-Hi Amir,
-
-thanks for the review.
-
-Amir Goldstein <amir73il@gmail.com> writes:
-> Well, I would not expect a FAN_FS_ERROR event to ever have 0 error
-> value. Since this test practically only tests ext4, I do not think it
-> is reasonable
-> for the test to VERIFY a bug. It is fine to write this test with expectations
-> that are not met and let it fail.
-
-This gave me a good chuckle. :)  I will check for a
-EXT4_ERR_EFSCORRUPTED and propose a fix on ext4.
-
->
-> But a better plan would probably be to merge the patches up to 5 to test
-> FAN_FS_ERROR and then add more test cases after ext4 is fixed
-> Either that or you fix the ext4 problem along with FAN_FS_ERROR.
->
-> Forgot to say that the test needs to declare .needs_cmds "debugfs".
->
-> In any case, as far as prerequisite to merging FAN_FS_ERROR
-> your WIP tests certainly suffice.
-> Please keep your test branch around so we can use it to validate
-> the kernel patches.
-> I usually hold off on submitting LTP tests for inclusion until at least -rc3
-> after kernel patches have been merged.
-
-As requested, I will not send a new version of the test for now. I
-published them on the following unstable branch:
-
-  https://gitlab.collabora.com/krisman/ltp -b fan-fs-error
-
-The v1, as submitted in this thread is also available at:
-
-  https://gitlab.collabora.com/krisman/ltp -b fan-fs-error-v1
-
-Thanks,
+? 2021/8/5 ??7:54, Cyril Hrubis ??:
+> Hi!
+>> +		TEST(tst_syscall(__NR_sysfs, 1, "proc"));
+>>
+>>   		/* check return code */
+>> -		if (TEST_RETURN == -1) {
+>> -			tst_resm(TFAIL, "sysfs(2) Failed for "
+>> -				 "option 1 and set errno to %d", TEST_ERRNO);
+>> +		if (TST_RET == -1) {
+>> +			tst_res(TFAIL, "sysfs(2) Failed for "
+>> +				 "option 1 and set errno to %d", TST_ERR);
+>>   		} else {
+>> -			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
+>> +			tst_res(TPASS, "sysfs(2) Passed for " "option 1");
+>>   		}
+> 
+> This could be just:
+> 
+> 	TST_EXP_POSSITIVE(tst_syscall(__NR_sysfs, 1, "proc"),
+> 	                  "sysfs(1, "proc")");
+> 
 
 -- 
-Gabriel Krisman Bertazi
+Kind regards,
+
+sujiaxun
+
+
