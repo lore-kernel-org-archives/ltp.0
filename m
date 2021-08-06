@@ -1,232 +1,178 @@
-From: sujiaxun <sujiaxun@uniontech.com>
-Date: Fri,  6 Aug 2021 19:31:15 +0800
-Subject: [LTP] [PATCH] [6/6] syscalls/sysfs: Convert sysfs06 to the new API
-Message-ID: <20210806113115.8852-1-sujiaxun@uniontech.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri,  6 Aug 2021 17:45:57 +0200
+Subject: [LTP] [PATCH 3/3] Add test for CVE 2018-13405
+In-Reply-To: <20210806154557.19551-1-mdoucha@suse.cz>
+References: <20210806154557.19551-1-mdoucha@suse.cz>
+Message-ID: <20210806154557.19551-3-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/sysfs/sysfs06.c | 185 +++++-----------------
- 1 file changed, 44 insertions(+), 141 deletions(-)
+ runtest/cve                                |   1 +
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/creat/.gitignore |   1 +
+ testcases/kernel/syscalls/creat/creat09.c  | 115 +++++++++++++++++++++
+ 4 files changed, 118 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/creat/creat09.c
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c b/testcases/kernel/syscalls/sysfs/sysfs06.c
-index d9a8cd51c..118ebca3c 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs06.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs06.c
-@@ -1,162 +1,65 @@
+diff --git a/runtest/cve b/runtest/cve
+index c27f58d8d..42c8eedbe 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -55,6 +55,7 @@ cve-2018-1000001 realpath01
+ cve-2018-1000199 ptrace08
+ cve-2018-1000204 ioctl_sg01
+ cve-2018-12896 timer_settime03
++cve-2018-13405 creat09
+ cve-2018-18445 bpf_prog04
+ cve-2018-18559 bind06
+ cve-2018-18955 userns08
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9af5aa5c0..161794f2a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -136,6 +136,7 @@ creat05 creat05
+ creat06 creat06
+ creat07 creat07
+ creat08 creat08
++creat09 creat09
+ 
+ delete_module01 delete_module01
+ delete_module02 delete_module02
+diff --git a/testcases/kernel/syscalls/creat/.gitignore b/testcases/kernel/syscalls/creat/.gitignore
+index a39e63590..caafc02b6 100644
+--- a/testcases/kernel/syscalls/creat/.gitignore
++++ b/testcases/kernel/syscalls/creat/.gitignore
+@@ -6,3 +6,4 @@
+ /creat07
+ /creat07_child
+ /creat08
++/creat09
+diff --git a/testcases/kernel/syscalls/creat/creat09.c b/testcases/kernel/syscalls/creat/creat09.c
+new file mode 100644
+index 000000000..6255d8784
+--- /dev/null
++++ b/testcases/kernel/syscalls/creat/creat09.c
+@@ -0,0 +1,115 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-  */
--/**************************************************************************
-- *
-- *    TEST IDENTIFIER	: sysfs(2)
-- *
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Test checking for basic error conditions
-- *				 for sysfs(2)
-- *
-- *    TEST CASE TOTAL	: 3
-- *
-- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
-- *
-- *    SIGNALS
-- *	Uses SIGUSR1 to pause before test if option set.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This test case checks whether sysfs(2) system call returns
-- *	appropriate error number for invalid
-- *	option and for invalid filesystem index and when
-- *	buffer is out of address space
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	  Loop if the proper options are given.
-- *	  Execute system call with invaid option parameter and for
-- *	  invalid filesystem index
-- *	  Check return code, if system call fails with errno == expected errno
-- *		Issue syscall passed with expected errno
-- *	  Otherwise,
-- *	  Issue syscall failed to produce expected errno
-- *
-- *	Cleanup:
-- *	  Do cleanup for the test.
-- *
-- * USAGE:  <for command-line>
-- *  sysfs06 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *  where:
-- *	-c n : Run n copies simultaneously
-- *	-e   : Turn on errno logging.
-- *	-i n : Execute test n times.
-- *	-I x : Execute test for x seconds.
-- *	-p   : Pause for SIGUSR1 before starting
-- *	-P x : Pause for x seconds between iterations.
-- *	-t   : Turn on syscall timing.
-- *
-- *RESTRICTIONS:
-- *There is no libc or glibc support
-- *****************************************************************************/
-+
 +/*
-+ * [DESCRIPTION]
-+ * This test case checks whether sysfs(2) system call return appropriate
-+ * error number for invalid option and for invalid filesystem index and
-+ * when  buffer is out of address space.
++ * Copyright (c) 2021 SUSE LLC <mdoucha@suse.cz>
++ *
++ * CVE-2018-13405
++ *
++ * Check for possible privilege escalation through creating files with setgid
++ * bit set inside a setgid directory owned by a group which the user does not
++ * belong to. Fixed in:
++ *
++ *  commit 0fa3ecd87848c9c93c2c828ef4c3a8ca36ce46c7
++ *  Author: Linus Torvalds <torvalds@linux-foundation.org>
++ *  Date:   Tue Jul 3 17:10:19 2018 -0700
++ *
++ *  Fix up non-directory creation in SGID directories
 + */
-
- #include <errno.h>
- #include <sys/syscall.h>
- #include <sys/mman.h>
--#include "test.h"
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
-
--static void setup();
--static void cleanup();
--
--char *TCID = "sysfs06";
-+char *bad_addr = 0;
- static int option[3] = { 2, 4, 2 };	/* valid and invalid option */
- static int fsindex[3] = { 10000, 0, 1 };	/*invalid and valid fsindex */
-
--static struct test_case_t {
--	char *err_desc;		/*error description */
--	int exp_errno;		/* expected error number */
--	char *exp_errval;	/*Expected errorvalue string */
--} testcase[] = {
--	{
--	"Invalid option", EINVAL, "EINVAL"}, {
--	"fs_index is out of bounds", EINVAL, "EINVAL"}, {
--	"buf is outside your accessible address space", EFAULT, "EFAULT"}
-+static struct test_case {
-+    char *err_desc;     /*error description */
-+    int exp_errno;      /* expected error number */
-+    char *exp_errval;   /*Expected errorvalue string */
-+} tcases[] = {
-+    {
-+    "Invalid option", EINVAL, "EINVAL"}, {
-+    "fs_index is out of bounds", EINVAL, "EINVAL"}, {
-+    "buf is outside your accessible address space", EFAULT, "EFAULT"}
- };
-
--int TST_TOTAL = ARRAY_SIZE(testcase);
--
--char *bad_addr = 0;
--
--int main(int ac, char **av)
-+static void verify_sysfs06(unsigned int nr)
- {
--	int lc, i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			tst_count = 0;
--			TEST(ltp_syscall
--			     (__NR_sysfs, option[i], fsindex[i], bad_addr));
--
--			/* check return code */
--			if ((TEST_RETURN == -1)
--			    && (TEST_ERRNO == testcase[i].exp_errno)) {
--				tst_resm(TPASS,
--					 "sysfs(2) expected failure;"
--					 " Got errno - %s : %s",
--					 testcase[i].exp_errval,
--					 testcase[i].err_desc);
--			} else {
--				tst_resm(TFAIL, "sysfs(2) failed to produce"
--					 " expected error; %d, errno"
--					 ": %s and got %d",
--					 testcase[i].exp_errno,
--					 testcase[i].exp_errval, TEST_ERRNO);
--			}
--		}		/*End of TEST LOOPS */
--	}
--
--	/*Clean up and exit */
--	cleanup();
--
--	tst_exit();
--}				/*End of main */
-+    TEST(tst_syscall(__NR_sysfs, option[nr], fsindex[nr], bad_addr));
 +
-+    /* check return code */
-+    if ((TST_RET == -1)
-+        && (TST_ERR == tcases[nr].exp_errno)) {
-+        tst_res(TPASS,
-+             "sysfs(2) expected failure;"
-+             " Got errno - %s : %s",
-+             tcases[nr].exp_errval,
-+             tcases[nr].err_desc);
-+    } else {
-+        tst_res(TFAIL, "sysfs(2) failed to produce"
-+             " expected error; %d, errno"
-+             ": %s and got %d",
-+             tcases[nr].exp_errno,
-+             tcases[nr].exp_errval, TST_ERR);
-+    }
++#include <stdlib.h>
++#include <sys/types.h>
++#include <pwd.h>
++#include "tst_test.h"
++
++#define MODE_RWX        0777
++#define MODE_SGID       (S_ISGID|0777)
++
++#define WORKDIR		"testdir"
++#define CREAT_FILE	WORKDIR "/creat.tmp"
++#define OPEN_FILE	WORKDIR "/open.tmp"
++
++static uid_t orig_uid;
++static gid_t bin_gid;
++static int fd = -1;
++
++static void setup(void)
++{
++	struct stat buf;
++	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
++	struct group *ltpgroup = SAFE_GETGRNAM("bin");
++
++	orig_uid = getuid();
++	bin_gid = ltpgroup->gr_gid;
++
++	/* Create directories and set permissions */
++	SAFE_MKDIR(WORKDIR, MODE_RWX);
++	SAFE_CHOWN(WORKDIR, ltpuser->pw_uid, bin_gid);
++	SAFE_CHMOD(WORKDIR, MODE_SGID);
++	SAFE_STAT(WORKDIR, &buf);
++
++	if (!(buf.st_mode & S_ISGID))
++		tst_brk(TBROK, "%s: Setgid bit not set", WORKDIR);
++
++	if (buf.st_gid != bin_gid) {
++		tst_brk(TBROK, "%s: Incorrect group, %u != %u", WORKDIR,
++			buf.st_gid, bin_gid);
++	}
++
++	/* Switch user */
++	ltpgroup = SAFE_GETGRNAM_FALLBACK("nobody", "nogroup");
++	SAFE_SETGID(ltpgroup->gr_gid);
++	SAFE_SETREUID(-1, ltpuser->pw_uid);
 +}
-
--/* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	bad_addr =
--	    mmap(0, 1, PROT_NONE, MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0,
--		 0);
--	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK, cleanup, "mmap failed");
-+    bad_addr = tst_get_bad_addr(NULL);
- }
-
--/*
--* cleanup() - Performs one time cleanup for this test at
--* completion or premature exit
--*/
--void cleanup(void)
--{
++
++static void file_test(const char *name, gid_t gid)
++{
++	struct stat buf;
++
++	SAFE_STAT(name, &buf);
++
++	if (buf.st_gid != gid) {
++		tst_res(TFAIL, "%s: Incorrect group, %u != %u", name,
++			buf.st_gid, gid);
++	} else {
++		tst_res(TPASS, "%s: Owned by correct group", name);
++	}
++
++	if (buf.st_mode & S_ISGID)
++		tst_res(TFAIL, "%s: Setgid bit is set", name);
++	else
++		tst_res(TPASS, "%s: Setgid bit not set", name);
++}
++
++static void run(void)
++{
++	fd = SAFE_CREAT(CREAT_FILE, MODE_SGID);
++	SAFE_CLOSE(fd);
++	file_test(CREAT_FILE, bin_gid);
++
++	fd = SAFE_OPEN(OPEN_FILE, O_CREAT | O_EXCL | O_RDWR, MODE_SGID);
++	file_test(OPEN_FILE, bin_gid);
++	SAFE_CLOSE(fd);
++
++	/* Cleanup between loops */
++	tst_purge_dir(WORKDIR);
++}
++
++static void cleanup(void)
++{
++	SAFE_SETREUID(-1, orig_uid);
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
 +static struct tst_test test = {
-+    .tcnt = ARRAY_SIZE(tcases),
-+    .setup = setup,
-+    .test = verify_sysfs06,
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "0fa3ecd87848"},
++		{"CVE", "2018-13405"},
++		{}
++	},
 +};
-
--}
---
-2.20.1
-
-
-
+-- 
+2.32.0
 
