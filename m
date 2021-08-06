@@ -1,45 +1,37 @@
-From: sujiaxun <sujiaxun@uniontech.com>
-Date: Fri, 6 Aug 2021 09:22:06 +0800
-Subject: [LTP] [PATCH] [1/6] syscalls/sysfs: Convert sysfs01 to the new
- API
-In-Reply-To: <YQvRg1O7kakkm30M@yuki>
-References: <20210804060736.10234-1-sujiaxun@uniontech.com>
- <YQvRg1O7kakkm30M@yuki>
-Message-ID: <7da55dc8-edd4-e392-b5b5-d2adce0cfaa2@uniontech.com>+56F90A5CBDF7C3AD
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Fri, 6 Aug 2021 01:50:16 +0000
+Subject: [LTP] [PATCH v1 1/3] libs/libnewipc: Alter get_used_queues api
+In-Reply-To: <CAEemH2cf2b+xhrfD+BGVhZ59T4wOm=N+KxhYdVKhhQ9aF441YQ@mail.gmail.com>
+References: <1628135323-3722-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <CAEemH2cf2b+xhrfD+BGVhZ59T4wOm=N+KxhYdVKhhQ9aF441YQ@mail.gmail.com>
+Message-ID: <610C9567.8050302@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Okay, thank you for your meticulous guidance, I will revise and submit 
-it again according to your suggestions.
+Hi Li
+> Hi Xu,
+>
+> I have just gone through all of the discussions on this topic
+> and am feeling this method is not quite perfect but currently
+> I have no better idea.
+I guess a better idea should be using .sysvipc flag. But here, we  use 
+the easiest way to slove this problem. In the future, we can add this 
+feature.
+>
+> So, I agree to apply the method and see how it performs in
+> real test executing.
+Thanks. Let's listen whether have user complains about these two cases
+after this fix.
+>
+> Reviewed-by: Li Wang <liwang@redhat.com <mailto:liwang@redhat.com>>
+Thanks for your review. I have pushed this patchset.
 
-? 2021/8/5 ??7:54, Cyril Hrubis ??:
-> Hi!
->> +		TEST(tst_syscall(__NR_sysfs, 1, "proc"));
->>
->>   		/* check return code */
->> -		if (TEST_RETURN == -1) {
->> -			tst_resm(TFAIL, "sysfs(2) Failed for "
->> -				 "option 1 and set errno to %d", TEST_ERRNO);
->> +		if (TST_RET == -1) {
->> +			tst_res(TFAIL, "sysfs(2) Failed for "
->> +				 "option 1 and set errno to %d", TST_ERR);
->>   		} else {
->> -			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
->> +			tst_res(TPASS, "sysfs(2) Passed for " "option 1");
->>   		}
-> 
-> This could be just:
-> 
-> 	TST_EXP_POSSITIVE(tst_syscall(__NR_sysfs, 1, "proc"),
-> 	                  "sysfs(1, "proc")");
-> 
-
--- 
-Kind regards,
-
-sujiaxun
-
-
+Best Regards
+Yang Xu
+>
+> --
+> Regards,
+> Li Wang
