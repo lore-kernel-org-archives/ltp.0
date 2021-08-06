@@ -1,64 +1,178 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri,  6 Aug 2021 12:19:38 +0100
-Subject: [LTP] [PATCH] setsockopt08: Handle ENOPROTOOPT even with compatible
- config
-Message-ID: <20210806111938.12007-1-rpalethorpe@suse.com>
+From: sujiaxun <sujiaxun@uniontech.com>
+Date: Fri,  6 Aug 2021 19:30:44 +0800
+Subject: [LTP] [PATCH] [4/6] syscalls/sysfs: Convert sysfs04 to the new API
+Message-ID: <20210806113044.8688-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-One or more necessary modules can be missing even if they are present
-in the config.
-
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
 ---
- .../kernel/syscalls/setsockopt/setsockopt08.c | 24 +++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/sysfs/sysfs04.c | 140 ++++------------------
+ 1 file changed, 24 insertions(+), 116 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-index 33892f9b1..d3cd5b5b2 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-@@ -110,6 +110,7 @@ void run(void)
- 	struct xt_entry_target *xt_entry_tgt =
- 		((struct xt_entry_target *) (&ipt_entry->elems[0] + match_size));
- 	int fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+	int result;
- 
- 	xt_entry_match->u.user.match_size = (u_int16_t)match_size;
- 	strcpy(xt_entry_match->u.user.name, "state");
-@@ -126,10 +127,25 @@ void run(void)
- 	ipt_replace->num_counters = 1;
- 	ipt_replace->size = ipt_entry->next_offset;
- 
--	TST_EXP_FAIL(setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1),
--		     EINVAL,
--		     "setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
--		     fd, buffer);
-+	errno = 0;
-+	if (setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1) == -1) {
-+		switch (errno) {
-+		case EINVAL:
-+			result = TPASS;
-+			break;
-+		case ENOPROTOOPT:
-+			result = TCONF;
-+			break;
-+		default:
-+			result = TFAIL;
-+		}
-+	} else {
-+		result = TFAIL;
-+	}
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs04.c b/testcases/kernel/syscalls/sysfs/sysfs04.c
+index 6356a89c8..64b1eaf8c 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs04.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs04.c
+@@ -1,129 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: sysfs04
+- *
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Test checking for basic error conditions
+- *				 for sysfs(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	This test case checks whether sysfs(2) system call  returns
+- *	appropriate error number for invalid
+- *	option.
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	  Loop if the proper options are given.
+- *	  Execute system call with invaid  option parameter
+- *
+- *	  Check return code, if system call fails with errno == expected errno
+- *		Issue syscall passed with expected errno
+- *	  Otherwise,
+- *	  Issue syscall failed to produce expected errno
+- *
+- *	Cleanup:
+- *	  Do cleanup for the test.
+- *
+- * USAGE:  <for command-line>
+- * sysfs04  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- * where:
+- *	-c n : run n copies simultaneously
+- *	-e   : Turn on errno logging.
+- *	-i n : Execute test n times.
+- *	-I x : Execute test for x seconds.
+- *	-p   : Pause for SIGUSR1 before starting
+- *	-P x : Pause for x seconds between iterations.
+- *	-t   : Turn on syscall timing.
+- *
+- *RESTRICTIONS:
+- *No libc or glibc support
+- *****************************************************************************/
 +
-+	tst_res(result | TERRNO,
-+		"setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
-+		fd, buffer);
- 
- 	SAFE_CLOSE(fd);
++/*
++ * [DESCRIPTION]
++ * This test case checks whether sysfs(2) system call returns
++ * appropriate error number for invalid option.
++ */
+
+ #include <errno.h>
+-#include  <sys/syscall.h>
+-#include "test.h"
++#include <sys/syscall.h>
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
+
+ #define INVALID_OPTION 100
+-static void setup();
+-static void cleanup();
+-
+-char *TCID = "sysfs04";
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+
+-		tst_count = 0;
+-		TEST(ltp_syscall(__NR_sysfs, INVALID_OPTION));
+-
+-		/* check return code */
+-		if ((TEST_RETURN == -1) && (TEST_ERRNO == EINVAL)) {
+-			tst_resm(TPASS, "sysfs(2) expected failure;"
+-				 " Got errno - EINVAL :" " Invalid option");
+-		} else {
+-			tst_resm(TFAIL, "sysfs(2) failed to produce"
+-				 " expected error; %d, errno"
+-				 " : EINVAL and got %d", EINVAL, TEST_ERRNO);
+-		}
+-	}
+-
+-	/*Clean up and exit */
+-	cleanup();
+-	tst_exit();
+-
+-}				/*End of main */
+-
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
++static void verify_sysfs04(void)
+ {
+
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++    TST_EXP_FAIL(tst_syscall(__NR_sysfs, INVALID_OPTION),
++				EINVAL,"sysfs(INVALID_OPTION)");
++
++    if (TST_PASS) {
++        tst_res(TPASS, "sysfs(2) expected failure;"
++             " Got errno - EINVAL :" " Invalid option");
++    } else {
++         tst_res(TFAIL, "sysfs(2) failed to produce"
++              " expected error; %d, errno"
++              " : EINVAL and got %d", EINVAL, TST_ERR);
++    }
  }
--- 
-2.31.1
+
+-/*
+-* cleanup() - Performs one time cleanup for this test at
+-* completion or premature exit
+-*/
+-void cleanup(void)
+-{
+-
+-}
++static struct tst_test test = {
++    .test_all = verify_sysfs04
++};
+--
+2.20.1
+
+
 
