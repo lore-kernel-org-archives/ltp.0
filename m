@@ -1,240 +1,67 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri,  6 Aug 2021 15:24:38 +0800
-Subject: [LTP] [PATCH 4/4] syscalls/chmod04: Convert to new API
-Message-ID: <20210806072438.9093-1-zhanglianjie@uniontech.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 06 Aug 2021 08:26:04 +0100
+Subject: [LTP] [PATCH v4 3/3] Add setsockopt08, CVE-2021-22555
+In-Reply-To: <YQv/lZ858UReF5Vs@yuki>
+References: <87a6lwmm6c.fsf@suse.de>
+ <20210805083539.20634-1-rpalethorpe@suse.com>
+ <20210805083539.20634-3-rpalethorpe@suse.com> <YQv6/oHmYUVeb63S@yuki>
+ <YQv/lZ858UReF5Vs@yuki>
+Message-ID: <877dgzm3ub.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Hello Cyril,
 
-diff --git a/testcases/kernel/syscalls/chmod/chmod04.c b/testcases/kernel/syscalls/chmod/chmod04.c
-index cbc13cf61..4a72a4aa6 100644
---- a/testcases/kernel/syscalls/chmod/chmod04.c
-+++ b/testcases/kernel/syscalls/chmod/chmod04.c
-@@ -1,24 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   07/2001 Ported by Wayne Boyer
-  */
+Cyril Hrubis <chrubis@suse.cz> writes:
 
--/*
-- * Test Name: chmod04
-+/*\
-+ * [Description]
-  *
-  * Test Description:
-  *  Verify that, chmod(2) will succeed to change the mode of a directory
-@@ -32,55 +20,10 @@
-  *  chmod() should return value 0 on success and succeeds to set sticky bit
-  *  on the specified directory.
-  *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  chmod04 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  This test should be run by 'non-super-user' only.
-- *
-  */
+> Hi!
+>> > +#include "tst_test.h"
+>> > +#include "tst_safe_net.h"
+>> > +#include "lapi/ip_tables.h"
+>> 
+>> I've fixed the failure on Centos with missing IFNAMSIZ but this still
+>> fails to compile on ubuntu xenial because the tst_safe_net.h pull in
+>> netinet/in.h and lapi/ip_tables.h pulls in linux/in.h and on old enough
+>> systems these two headers does not like to be included at the same time.
+>> 
+>> I'm not sure how to fix this, either we drop the include to
+>> linux/netfilter_ipv4/ip_tables.h completely or we add a configure check
+>> if netinet/in.h and linux/in.h could be included at the same time and
+>> ifdef the linux/netfilter_ipv4/ip_tables.h with that check.
+>> 
+>> Either way both looks like a hack, if anyone has a better idea please
+>> suggest it.
+>
+> Uff and it looks like setsockopt03 does include the same headers so this
+> could probably be fixed by another shuffle, but I will have to figure
+> out what has to be moved and where.
 
--#include <stdio.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
- #include <pwd.h>
--
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
+Looking in libc-compat.h we have:
 
- #define DIR_MODE 	S_IRWXU | S_IRWXG | S_IRWXO
- #define PERMS		01777	/*
-@@ -89,103 +32,55 @@
- 				 */
- #define TESTDIR		"testdir_4"
+/* Coordinate with glibc netinet/in.h header. */
+#if defined(_NETINET_IN_H)
 
--char *TCID = "chmod04";
--int TST_TOTAL = 1;
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
--
--void setup();
--void cleanup();
-+static char nobody_uid[] = "nobody";
-+static struct passwd *ltpuser;
-
--int main(int ac, char **av)
-+static void verify_chmod(void)
- {
- 	struct stat stat_buf;	/* stat struct. */
--	int lc;
- 	mode_t dir_mode;	/* mode permissions set on testdirectory */
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call chmod(2) with mode argument to
--		 * set sticky bit on TESTDIR
--		 */
--		TEST(chmod(TESTDIR, PERMS));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "chmod(%s, %#o) failed",
--				 TESTDIR, PERMS);
--			continue;
--		}
--
-+	/*
-+		* Call chmod(2) with mode argument to
-+		* set sticky bit on TESTDIR
-+		*/
-+	TST_EXP_PASS_SILENT(chmod(TESTDIR, PERMS), "chmod(%s, %#o) failed",
-+		TESTDIR, PERMS);
-+	if (TST_PASS) {
- 		/*
--		 * Get the file information using
--		 * stat(2).
--		 */
--		if (stat(TESTDIR, &stat_buf) < 0) {
--			tst_brkm(TFAIL, cleanup,
--				 "stat(2) of %s failed, errno:%d",
--				 TESTDIR, TEST_ERRNO);
--		}
-+			* Get the file information using
-+			* stat(2).
-+			*/
-+		SAFE_STAT(TESTDIR, &stat_buf);
- 		dir_mode = stat_buf.st_mode;
-
- 		/* Verify STICKY BIT SET on directory */
- 		if ((dir_mode & PERMS) == PERMS) {
--			tst_resm(TPASS, "Functionality of "
--				 "chmod(%s, %#o) successful",
--				 TESTDIR, PERMS);
-+			tst_res(TPASS, "Functionality of "
-+					"chmod(%s, %#o) successful",
-+					TESTDIR, PERMS);
- 		} else {
--			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
--				 "Expected 0%03o",
--				 TESTDIR, dir_mode, PERMS);
-+			tst_res(TFAIL, "%s: Incorrect modes 0%03o, "
-+					"Expected 0%03o",
-+					TESTDIR, dir_mode, PERMS);
- 		}
- 	}
--
--	cleanup();
--	tst_exit();
- }
-
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and cd to it.
-- *  Create another test directory under temporary directory.
-- */
- void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_require_root();
--	ltpuser = getpwnam(nobody_uid);
--	if (setuid(ltpuser->pw_uid) == -1)
--		tst_resm(TINFO | TERRNO, "setuid(%u) failed", ltpuser->pw_uid);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
-+	ltpuser = SAFE_GETPWNAM(nobody_uid);
-+	SAFE_SETEUID(ltpuser->pw_uid);
- 	/*
- 	 * Create a test directory under temporary directory with specified
- 	 * mode permissios.
- 	 */
--	SAFE_MKDIR(cleanup, TESTDIR, DIR_MODE);
-+	SAFE_MKDIR(TESTDIR, DIR_MODE);
- }
-
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- *  Remove the test directory and temporary directory created in setup().
-- */
--void cleanup(void)
--{
--
--	tst_rmdir();
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = verify_chmod,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
-
--}
---
-2.20.1
+/* GLIBC headers included first so don't define anything
+ * that would already be defined. */
+#define __UAPI_DEF_IN_ADDR		0
+...
 
 
+I suppose we may be able to do something similar. In tst_safe_net.h we
+could check if _LINUX_IN_H is defined before including
+netinet/in.h. Then include lapi/ip_tables.h first. Maybe even put
 
+#ifdef _NETINET_IN_H
+# error "incompatible system header ..."
+#endif
+
+in lapi/ip_tables.h
+
+IDK if this may break some existing tests.
+
+-- 
+Thank you,
+Richard.
