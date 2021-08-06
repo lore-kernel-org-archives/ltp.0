@@ -1,7 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri,  6 Aug 2021 11:21:31 +0800
-Subject: [LTP] [PATCH] lib/tst_tmpdir: tst_get_tmpdir() add error handing
-Message-ID: <20210806032131.25721-1-zhanglianjie@uniontech.com>
+Date: Fri,  6 Aug 2021 11:59:52 +0800
+Subject: [LTP] [PATCH] [v2,1/4] syscalls/chroot01: Convert to new API
+Message-ID: <20210806035952.18150-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,30 +10,153 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 0c39eb89f..f006e4893 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -108,12 +108,18 @@ int tst_tmpdir_created(void)
+diff --git a/testcases/kernel/syscalls/chroot/chroot01.c b/testcases/kernel/syscalls/chroot/chroot01.c
+index a1db5e157..bddbf0db5 100644
+--- a/testcases/kernel/syscalls/chroot/chroot01.c
++++ b/testcases/kernel/syscalls/chroot/chroot01.c
+@@ -1,116 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
 
- char *tst_get_tmpdir(void)
+-/*
+- * NAME
+- * 	chroot01.c
+- *
+- * DESCRIPTION
+- *	Testcase to check the whether chroot sets errno to EPERM.
+- *
+- * ALGORITHM
+- *	As a non-root user attempt to perform chroot() to a directory. The
+- *	chroot() call should fail with EPERM
++/*\
++ * [DESCRIPTION]
+  *
+- * USAGE:  <for command-line>
+- *  chroot01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS
+- * 	Must be run as non-root user.
++ * Testcase to check the whether chroot sets errno to EPERM.
++ * As a non-root user attempt to perform chroot() to a directory. The
++ * chroot() call should fail with EPERM
+  */
+
+-#include <stdio.h>
+-#include <errno.h>
+-#include "test.h"
+-#include "safe_macros.h"
++#include <stdlib.h>
+ #include <pwd.h>
++#include "tst_test.h"
+
+-char *TCID = "chroot01";
+-int TST_TOTAL = 1;
+-int fail;
+-
+-char *path;
+-
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
++static char *path;
++static char nobody_uid[] = "nobody";
++static struct passwd *ltpuser;
+
+-void setup(void);
+-void cleanup(void);
+-
+-int main(int ac, char **av)
++static void verify_chroot(void)
  {
-+	char *ret = NULL;
-+
- 	if (TESTDIR == NULL) {
- 		tst_brkm(TBROK, NULL, "you must call tst_tmpdir() first");
- 		return NULL;
- 	}
-
--	return strdup(TESTDIR);
-+	ret = strdup(TESTDIR);
-+	if (!ret)
-+		tst_brkm(TBROK, NULL, "strdup() failed");
-+
-+	return ret;
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(chroot(path));
+-
+-		if (TEST_RETURN != -1)
+-			tst_resm(TFAIL, "call succeeded unexpectedly");
+-		else if (errno != EPERM)
+-			tst_resm(TFAIL | TTERRNO, "chroot failed unexpectedly");
+-		else
+-			tst_resm(TPASS, "chroot set errno to EPERM.");
+-	}
+-	cleanup();
+-
+-	tst_exit();
+-
++	TST_EXP_FAIL(chroot(path), EPERM, "chroot set errno to EPERM.");
  }
 
- const char *tst_get_startwd(void)
+-void setup(void)
++static void setup(void)
+ {
+-	tst_require_root();
+-
+-	tst_tmpdir();
+ 	path = tst_get_tmpdir();
+-
+-	if ((ltpuser = getpwnam(nobody_uid)) == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "getpwnam(\"nobody\") failed");
+-
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	ltpuser = SAFE_GETPWNAM(nobody_uid);
++	SAFE_SETEUID(ltpuser->pw_uid);
+ }
+
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	SAFE_SETEUID(NULL, 0);
+-
+ 	free(path);
+-	tst_rmdir();
+ }
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.setup = setup,
++	.test_all = verify_chroot,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++};
++
 --
 2.20.1
 
