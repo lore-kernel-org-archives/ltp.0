@@ -1,156 +1,77 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Fri,  6 Aug 2021 19:47:30 +0300
-Subject: [LTP] [PATCH v2 16/16] syscalls/sched_getscheduler02: convert to
- new API
-In-Reply-To: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
-References: <20210806164730.51040-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210806164730.51040-17-aleksei.kodanev@bell-sw.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 9 Aug 2021 12:03:15 +0800
+Subject: [LTP] [COMMITTED] setsockopt08: includes netinet/in.h
+In-Reply-To: <874kc2n8tx.fsf@suse.de>
+References: <20210806025659.1962902-1-liwang@redhat.com>
+ <YQzLUUKbLcoJjRVb@pevik> <YQzOxg35JjpDOj7X@pevik>
+ <CAEemH2cNk-L1kRRHy=vvLVjcEm0HPQXaz8fJR00M1TyzoJAynw@mail.gmail.com>
+ <YQ0C1givEZ8/H7hN@pevik>
+ <CAEemH2eCbTeTziGetR-mBRP9rB=0S2CvZNuDv-3DehksKUyu8A@mail.gmail.com>
+ <874kc2n8tx.fsf@suse.de>
+Message-ID: <CAEemH2dXGdWoA1CLoxYnVkkN1pNL3mZzU4XU=zwX_1dvpK9RcA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
----
- .../sched_getscheduler/sched_getscheduler02.c | 109 ++++--------------
- 1 file changed, 24 insertions(+), 85 deletions(-)
+Hi Richard,
 
-diff --git a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
-index c43240108..effd18adb 100644
---- a/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
-+++ b/testcases/kernel/syscalls/sched_getscheduler/sched_getscheduler02.c
-@@ -1,106 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) 2021, BELLSOFT. All rights reserved.
-+ * Copyright (c) International Business Machines  Corp., 2001
-  */
- 
--/*
-- * NAME
-- *	sched_getscheduler02.C
-- *
-- * DESCRIPTION
-- *	To check for the errno ESRCH
-+/*\
-+ * [Description]
-  *
-- * ALGORITHM
-- *	Pass an invalid pid to sched_getscheduler() and test for ESRCH.
-- *
-- * USAGE:  <for command-line>
-- *  sched_getscheduler02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * RESTRICTION
-- *	None
-+ * Pass an invalid pid to sched_getscheduler() and test for ESRCH.
-  */
- 
- #include <stdio.h>
--#include <sched.h>
- #include <errno.h>
--#include "test.h"
- 
--char *TCID = "sched_getscheduler02";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
-+#include "tst_sched.h"
- 
- static pid_t unused_pid;
- 
--void setup(void);
--void cleanup(void);
-+static struct sched_variants variants[] = {
-+	{ .sched_getscheduler = libc_sched_getscheduler, .desc = "libc" },
-+	{ .sched_getscheduler = sys_sched_getscheduler, .desc = "syscall" },
-+};
- 
--int main(int ac, char **av)
-+static void setup(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		TEST(sched_getscheduler(unused_pid));
--
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "sched_getscheduler(2) passed "
--				 "unexpectedly");
--			continue;
--		}
--
--		if (errno != ESRCH) {
--			tst_resm(TFAIL, "Expected ESRCH, got %d", errno);
--		} else {
--			tst_resm(TPASS, "call failed with ESRCH");
--		}
--	}
--	cleanup();
--	tst_exit();
-+	tst_res(TINFO, "Testing %s variant", variants[tst_variant].desc);
- 
-+	unused_pid = tst_get_unused_pid();
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
-+static void run(void)
- {
--	unused_pid = tst_get_unused_pid(cleanup);
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	struct sched_variants *tv = &variants[tst_variant];
- 
--	TEST_PAUSE;
-+	TST_EXP_FAIL(tv->sched_getscheduler(unused_pid), ESRCH,
-+		     "sched_getscheduler(%d)", unused_pid);
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup(void)
--{
--
--}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_variants = ARRAY_SIZE(variants),
-+	.test_all = run,
-+};
+
+> >> I'd be for adding it there, with comment why it's there. We can prevent
+> >> problems
+> >> with failing another test in the future. (+ remove it from both tests).
+> >>
+> >
+> > I'm OK with this fix.
+> >
+> > @Cyril, @Richard, what do you think? any other thoughts?
+>
+> We need to clean up our headers, which is a bigger problem. Most tests
+> do not need all the stuff in tst_test.h. It is just a load of unecessary
+> work.
+>
+
+Yes, I agree. It benefits for long-term maintenance of LTP.
+So maybe a good start is to be more strict in review new
+patches especially on the includes header check.
+
+
+>
+> Cleaning up the headers is a big challenge. It would be easier if we
+> know what will break older distros. So I suggest adding something like:
+>
+> #ifdef _X_H
+> # error "You should include X before Y ..."
+> #endif
+>
+>
+Hmm, it's right, but I'm afraid we have to define that in many places
+because include headers are sometimes dispersive or singly.
+
+I.e.
+
+We need to define the above hint duplicated for everywhere if includes
+the <netinet/in.h>, to avoid include <linux/in.h> before it. This will
+look a bit messy I feel.
+
+$ git grep netinet/in.h
+lapi/netinet_in.h:#include <netinet/in.h>
+old/old_safe_net.h:#include <netinet/in.h>
+safe_net_fn.h:#include <netinet/in.h>
+tst_net.h:#include <netinet/in.h>
+tst_safe_net.h:#include <netinet/in.h>
+
+
+> to one or more headers.
+>
+> Otherwise I'm fine with the above solution as a "temporary" fix.
+>
+
+
 -- 
-2.25.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210809/12a4a456/attachment.htm>
