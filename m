@@ -1,68 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 9 Aug 2021 16:28:38 +0200
-Subject: [LTP] [PATCH] [4/4] syscalls/chroot04: Convert to new API
-In-Reply-To: <20210806040046.18836-1-zhanglianjie@uniontech.com>
-References: <20210806040046.18836-1-zhanglianjie@uniontech.com>
-Message-ID: <YRE7luQRhPpa3TbT@yuki>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 09 Aug 2021 21:12:42 +0100
+Subject: [LTP] Review of C static analyses tools
+In-Reply-To: <20210728123412.31858-1-rpalethorpe@suse.com>
+References: <20210728123412.31858-1-rpalethorpe@suse.com>
+Message-ID: <871r72ml6t.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with similar changes as in chroot01.c, thanks.
+Hello All,
 
-Full diff:
+For anyone interested I have written a review of the tools we tried
+using: https://richiejp.com/custom-c-static-analyses-tools.
 
-diff --git a/testcases/kernel/syscalls/chroot/chroot04.c b/testcases/kernel/syscalls/chroot/chroot04.c
-index b65b09d79..ed0f66323 100644
---- a/testcases/kernel/syscalls/chroot/chroot04.c
-+++ b/testcases/kernel/syscalls/chroot/chroot04.c
-@@ -7,9 +7,13 @@
-   */
- 
- /*\
-- * [DESCRIPTION]
-+ * [Description]
-  *
-- *	Testcase to check that chroot sets errno to EACCES.
-+ * Testcase to check that chroot sets errno to EACCES.
-+ *
-+ * As a non-root user attempt to perform chroot() to a directory that the user
-+ * does not have a search permission for. The chroot() call should fail with
-+ * EACESS.
-  */
- 
- #include <stdio.h>
-@@ -17,21 +21,19 @@
- #include "tst_test.h"
- 
- #define TEST_TMPDIR	"chroot04_tmpdir"
--static char nobody_uid[] = "nobody";
--static struct passwd *ltpuser;
- 
- static void verify_chroot(void)
- {
--	TST_EXP_FAIL(chroot(TEST_TMPDIR), EACCES, "got EACCESS as expected");
-+	TST_EXP_FAIL(chroot(TEST_TMPDIR), EACCES, "no search permission chroot()");
- }
- 
- static void setup(void)
- {
--	/*
--	 * create a temporary directory
--	 */
-+	struct passwd *ltpuser;
-+
- 	SAFE_MKDIR(TEST_TMPDIR, 0222);
--	ltpuser = SAFE_GETPWNAM(nobody_uid);
-+
-+	ltpuser = SAFE_GETPWNAM("nobody");
- 	SAFE_SETEUID(ltpuser->pw_uid);
- }
- 
+If you see any mistakes or have any other suggestions, please let me
+know!
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
