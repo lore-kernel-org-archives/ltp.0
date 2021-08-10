@@ -1,8 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 10 Aug 2021 23:15:18 +0800
-Subject: [LTP] [PATCH v2 1/4] syscalls/chmod01: Convert to new API and add
- directory tests
-Message-ID: <20210810151518.27618-1-zhanglianjie@uniontech.com>
+Date: Tue, 10 Aug 2021 23:15:35 +0800
+Subject: [LTP] [PATCH v2 2/4] syscalls/chmod02: Remove the testcase
+Message-ID: <20210810151535.27829-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,86 +10,74 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/chmod/chmod01.c b/testcases/kernel/syscalls/chmod/chmod01.c
-index 55ddf8a73..4dd39efca 100644
---- a/testcases/kernel/syscalls/chmod/chmod01.c
-+++ b/testcases/kernel/syscalls/chmod/chmod01.c
-@@ -1,159 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *
-  *   Copyright (c) International Business Machines  Corp., 2001
-+ *   07/2001 Ported by Wayne Boyer
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9af5aa5c0..1e627ab47 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -63,7 +63,6 @@ chdir04 chdir04
 
+ chmod01 chmod01
+ chmod01A symlink01 -T chmod01
+-chmod02 chmod02
+ chmod03 chmod03
+ chmod04 chmod04
+ chmod05 chmod05
+diff --git a/testcases/kernel/syscalls/chmod/.gitignore b/testcases/kernel/syscalls/chmod/.gitignore
+index 4e856df43..072fa5b80 100644
+--- a/testcases/kernel/syscalls/chmod/.gitignore
++++ b/testcases/kernel/syscalls/chmod/.gitignore
+@@ -1,5 +1,4 @@
+ /chmod01
+-/chmod02
+ /chmod03
+ /chmod04
+ /chmod05
+diff --git a/testcases/kernel/syscalls/chmod/chmod02.c b/testcases/kernel/syscalls/chmod/chmod02.c
+deleted file mode 100644
+index 94a77aeb1..000000000
+--- a/testcases/kernel/syscalls/chmod/chmod02.c
++++ /dev/null
+@@ -1,107 +0,0 @@
 -/*
-- * Test Name: chmod01
-+/*\
-+ * [Description]
-  *
-  * Test Description:
-  *  Verify that, chmod(2) succeeds when used to change the mode permissions
-- *  of a file.
-+ *  of a file or directory.
-  *
-  * Expected Result:
-  *  chmod(2) should return 0 and the mode permissions set on file should match
-  *  the specified mode.
-  *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- * Usage:  <for command-line>
-- *  chmod01 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
 - *
-- * RESTRICTIONS:
-- *  None.
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
-  */
-
--#include <stdio.h>
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- */
+-
+-/*
+- * AUTHOR	: William Roske
+- * CO-PILOT	: Dave Fenner
+- * DATE STARTED	: 03/30/92
+- *
+- *  Calls chmod(2) with different modes and expects success.
+- */
+-
 -#include <sys/types.h>
 -#include <sys/stat.h>
 -#include <fcntl.h>
@@ -100,39 +87,20 @@ index 55ddf8a73..4dd39efca 100644
 -
 -#include "test.h"
 -#include "safe_macros.h"
-+#include "tst_test.h"
-
--#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-+#define MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
- #define TESTFILE	"testfile"
-+#define TESTDIR		"testdir_1"
-
--char *TCID = "chmod01";
--int TST_TOTAL = 8;
-+static int modes[] = { 0, 07, 070, 0700, 0777, 02777, 04777, 06777 };
-
--int modes[] = { 0, 07, 070, 0700, 0777, 02777, 04777, 06777 };
-+static struct variant {
-+	char *name;
-+	unsigned int mode_mask;
-+	char *desc;
-+} variants[] = {
-+	{TESTFILE, S_IFREG, "verify permissions of file"},
-+	{TESTDIR, S_IFDIR, "verify permissions of directory"},
-+};
-
--void setup();
--void cleanup();
+-
+-static int modes[] = { 0, 07, 070, 0700, 0777, 02777, 04777, 06777 };
+-
+-char *TCID = "chmod02";
+-int TST_TOTAL = ARRAY_SIZE(modes);
+-
+-#define FNAME "test_file"
+-
+-static void setup(void);
+-static void cleanup(void);
 -
 -int main(int ac, char **av)
-+static void verify_chmod(unsigned int n)
- {
- 	struct stat stat_buf;
--	int lc;
--	int i;
--	int mode;
--
--	TST_TOTAL = sizeof(modes) / sizeof(int);
+-{
+-	int lc, i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -143,87 +111,40 @@ index 55ddf8a73..4dd39efca 100644
 -		tst_count = 0;
 -
 -		for (i = 0; i < TST_TOTAL; i++) {
--			mode = modes[i];
 -
--			TEST(chmod(TESTFILE, mode));
+-			TEST(chmod(FNAME, modes[i]));
 -
 -			if (TEST_RETURN == -1) {
 -				tst_resm(TFAIL | TTERRNO,
--					 "chmod(%s, %#o) failed", TESTFILE,
--					 mode);
--				continue;
+-					 "chmod(%s, %#o) failed", FNAME, modes[i]);
+-			} else {
+-				tst_resm(TPASS,
+-					 "chmod(%s, %#o) returned %ld",
+-					 FNAME, modes[i], TEST_RETURN);
 -			}
--			if (stat(TESTFILE, &stat_buf) < 0)
--				tst_brkm(TFAIL | TERRNO, cleanup,
--					 "stat(%s) failed", TESTFILE);
--			stat_buf.st_mode &= ~S_IFREG;
--
--			if (stat_buf.st_mode == (unsigned int)mode)
--				tst_resm(TPASS, "Functionality of "
--					 "chmod(%s, %#o) successful",
--					 TESTFILE, mode);
--			else
--				tst_resm(TFAIL, "%s: Incorrect "
--					 "modes 0%03o, Expected 0%03o",
--					 TESTFILE, stat_buf.st_mode,
--					 mode);
 -		}
+-
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	int mode = modes[n];
-+	struct variant *tc = &variants[tst_variant];
-+
-+	TST_EXP_PASS(chmod(tc->name, mode), "chmod(%s, %04o)",
-+	tc->name, mode);
-+	if (!TST_PASS)
-+		return;
-+
-+	SAFE_STAT(tc->name, &stat_buf);
-+	stat_buf.st_mode &= ~tc->mode_mask;
-+
-+	if (stat_buf.st_mode == (unsigned int)mode)
-+		tst_res(TPASS, "stat(%s) mode=%04o",
-+				tc->name, stat_buf.st_mode);
-+	else
-+		tst_res(TFAIL, "stat(%s) mode=%04o",
-+				tc->name, stat_buf.st_mode);
- }
-
--void setup(void)
-+static void setup(void)
- {
--	int fd;
+-}
 -
+-static void setup(void)
+-{
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
 -
--	fd = SAFE_OPEN(cleanup, TESTFILE, O_RDWR | O_CREAT, FILE_MODE);
--	SAFE_CLOSE(cleanup, fd);
+-	SAFE_FILE_PRINTF(cleanup, FNAME, "File content\n");
+-}
 -
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
-+	if (tst_variant)
-+		SAFE_MKDIR(variants[tst_variant].name, MODE);
-+	else
-+		SAFE_TOUCH(variants[tst_variant].name, MODE, NULL);
- }
-
--void cleanup(void)
+-static void cleanup(void)
 -{
 -	tst_rmdir();
 -}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_variants = ARRAY_SIZE(variants),
-+	.tcnt = ARRAY_SIZE(modes),
-+	.test = verify_chmod,
-+	.needs_tmpdir = 1,
-+};
-+
 --
 2.20.1
 
