@@ -1,7 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 10 Aug 2021 23:15:35 +0800
-Subject: [LTP] [PATCH v2 2/4] syscalls/chmod02: Remove the testcase
-Message-ID: <20210810151535.27829-1-zhanglianjie@uniontech.com>
+Date: Tue, 10 Aug 2021 23:15:47 +0800
+Subject: [LTP] [PATCH v2 3/4] syscalls/chmod03: Convert to new API
+Message-ID: <20210810151547.27984-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,97 +10,135 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 9af5aa5c0..1e627ab47 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -63,7 +63,6 @@ chdir04 chdir04
+diff --git a/testcases/kernel/syscalls/chmod/chmod03.c b/testcases/kernel/syscalls/chmod/chmod03.c
+index f53e437e4..755c8437c 100644
+--- a/testcases/kernel/syscalls/chmod/chmod03.c
++++ b/testcases/kernel/syscalls/chmod/chmod03.c
+@@ -1,183 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *   Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   07/2001 Ported by Wayne Boyer
+  */
 
- chmod01 chmod01
- chmod01A symlink01 -T chmod01
--chmod02 chmod02
- chmod03 chmod03
- chmod04 chmod04
- chmod05 chmod05
-diff --git a/testcases/kernel/syscalls/chmod/.gitignore b/testcases/kernel/syscalls/chmod/.gitignore
-index 4e856df43..072fa5b80 100644
---- a/testcases/kernel/syscalls/chmod/.gitignore
-+++ b/testcases/kernel/syscalls/chmod/.gitignore
-@@ -1,5 +1,4 @@
- /chmod01
--/chmod02
- /chmod03
- /chmod04
- /chmod05
-diff --git a/testcases/kernel/syscalls/chmod/chmod02.c b/testcases/kernel/syscalls/chmod/chmod02.c
-deleted file mode 100644
-index 94a77aeb1..000000000
---- a/testcases/kernel/syscalls/chmod/chmod02.c
-+++ /dev/null
-@@ -1,107 +0,0 @@
 -/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- * Test Name: chmod03
++/*\
++ * [Description]
+  *
+  * Test Description:
+- *  Verify that, chmod(2) will succeed to change the mode of a file
++ *  Verify that, chmod(2) will succeed to change the mode of a file or directory
+  *  and set the sticky bit on it if invoked by non-root (uid != 0)
+  *  process with the following constraints,
+- *	- the process is the owner of the file.
++ *	- the process is the owner of the file or directory.
+  *	- the effective group ID or one of the supplementary group ID's of the
+- *	  process is equal to the group ID of the file.
++ *	  process is equal to the group ID of the file or directory.
+  *
+  * Expected Result:
+  *  chmod() should return value 0 on success and succeeds to change
+  *  the mode of specified file with sticky bit set on it.
+  *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
 - *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory created.
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- * Usage:  <for command-line>
+- *  chmod03 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
 - *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- * RESTRICTIONS:
+- *  This test should be run by 'non-super-user' only.
 - *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- */
--
--/*
-- * AUTHOR	: William Roske
-- * CO-PILOT	: Dave Fenner
-- * DATE STARTED	: 03/30/92
-- *
-- *  Calls chmod(2) with different modes and expects success.
-- */
--
+  */
+
+-#include <stdio.h>
 -#include <sys/types.h>
 -#include <sys/stat.h>
 -#include <fcntl.h>
 -#include <errno.h>
 -#include <string.h>
 -#include <signal.h>
--
+ #include <pwd.h>
++#include "tst_test.h"
+
 -#include "test.h"
 -#include "safe_macros.h"
++#define FILE_MODE   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
++#define DIR_MODE 	S_IRWXU | S_IRWXG | S_IRWXO
++#define PERMS		01777
+
+-#define FILE_MODE       S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+-#define PERMS		01777	/*
+-				 * Mode permissions of test file with sticky
+-				 * bit set.
+-				 */
+ #define TESTFILE	"testfile"
++#define TESTDIR		"testdir_3"
+
+-char *TCID = "chmod03";
+-int TST_TOTAL = 1;
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
 -
--static int modes[] = { 0, 07, 070, 0700, 0777, 02777, 04777, 06777 };
--
--char *TCID = "chmod02";
--int TST_TOTAL = ARRAY_SIZE(modes);
--
--#define FNAME "test_file"
--
--static void setup(void);
--static void cleanup(void);
--
+-void setup();			/* Main setup function for the test */
+-void cleanup();			/* Main cleanup function for the test */
++static struct tcase {
++	char *name;
++	char *desc;
++} tcases[] = {
++	{TESTFILE, "verify permissions of file"},
++	{TESTDIR, "verify permissions of directory"},
++};
+
 -int main(int ac, char **av)
--{
--	int lc, i;
++static void verify_chmod(unsigned int n)
+ {
+ 	struct stat stat_buf;
+-	int lc;
+-	mode_t file_mode;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -109,41 +147,104 @@ index 94a77aeb1..000000000
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(chmod(FNAME, modes[i]));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL | TTERRNO,
--					 "chmod(%s, %#o) failed", FNAME, modes[i]);
--			} else {
--				tst_resm(TPASS,
--					 "chmod(%s, %#o) returned %ld",
--					 FNAME, modes[i], TEST_RETURN);
--			}
++	struct tcase *tc = &tcases[n];
+
+-		TEST(chmod(TESTFILE, PERMS));
++	TST_EXP_PASS(chmod(tc->name, PERMS), "chmod(%s, %04o)",
++		tc->name, PERMS);
++	if (!TST_PASS)
++		return;
+
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "chmod(%s, %#o) failed",
+-				 TESTFILE, PERMS);
+-			continue;
 -		}
--
--	}
+-		if (stat(TESTFILE, &stat_buf) < 0) {
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "stat(%s) failed", TESTFILE);
+-		}
+-		file_mode = stat_buf.st_mode;
++	SAFE_STAT(tc->name, &stat_buf);
+
+-		/* Verify STICKY BIT set on testfile */
+-		if ((file_mode & PERMS) != PERMS) {
+-			tst_resm(TFAIL, "%s: Incorrect modes 0%3o, "
+-				 "Expected 0777", TESTFILE, file_mode);
+-		} else {
+-			tst_resm(TPASS, "Functionality of "
+-				 "chmod(%s, %#o) successful",
+-				 TESTFILE, PERMS);
+-		}
++	if ((stat_buf.st_mode & PERMS) != PERMS) {
++		tst_res(TFAIL, "stat(%s) mode=%04o",
++			tc->name, stat_buf.st_mode);
++	} else {
++		tst_res(TPASS, "stat(%s) mode=%04o",
++			tc->name, stat_buf.st_mode);
+ 	}
 -
 -	cleanup();
 -	tst_exit();
--}
+ }
+
+-void setup(void)
++static void setup(void)
+ {
+-	int fd;
 -
--static void setup(void)
--{
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	tst_require_root();
+-	ltpuser = getpwnam(nobody_uid);
+-	if (ltpuser == NULL)
+-		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
+-	SAFE_SETUID(NULL, ltpuser->pw_uid);
 -
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
 -
--	SAFE_FILE_PRINTF(cleanup, FNAME, "File content\n");
--}
+-	/*
+-	 * Create a test file under temporary directory with specified
+-	 * mode permissios and set the ownership of the test file to the
+-	 * uid/gid of guest user.
+-	 */
+-	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, %#o) failed",
+-			 TESTFILE, FILE_MODE);
+-	}
 -
--static void cleanup(void)
+-	SAFE_CLOSE(cleanup, fd);
++	char nobody_uid[] = "nobody";
++	struct passwd *ltpuser;
++
++	ltpuser = SAFE_GETPWNAM(nobody_uid);
++	SAFE_SETEUID(ltpuser->pw_uid);
++
++	SAFE_TOUCH(TESTFILE, FILE_MODE, NULL);
++	SAFE_MKDIR(TESTDIR, DIR_MODE);
+ }
+
+-/*
+- * void
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- *  Delete the testfile and temporary directory created in setup().
+- */
+-void cleanup(void)
 -{
+-
 -	tst_rmdir();
++static struct tst_test test = {
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_chmod,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++};
+
 -}
 --
 2.20.1
