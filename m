@@ -1,9 +1,11 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Aug 2021 12:17:09 +0200
-Subject: [LTP] [PATCH 2/4] syscalls/chmod02: Convert to new API
-In-Reply-To: <20210806072405.8695-1-zhanglianjie@uniontech.com>
-References: <20210806072405.8695-1-zhanglianjie@uniontech.com>
-Message-ID: <YRJSJapihLk8eG1H@yuki>
+From: sujiaxun <sujiaxun@uniontech.com>
+Date: Tue, 10 Aug 2021 18:58:20 +0800
+Subject: [LTP] [PATCH] [v2,
+ 1/6] syscalls/sysfs: Convert sysfs01 to the new API
+In-Reply-To: <YRJM9PffB27VBngU@yuki>
+References: <20210806062456.11678-1-sujiaxun@uniontech.com>
+ <YRJM9PffB27VBngU@yuki>
+Message-ID: <69afbc39-4c9d-dbab-beb2-4ff43d733818@uniontech.com>+471E3BCBDC0A2083
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,62 +13,169 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/kernel/syscalls/chmod/chmod02.c b/testcases/kernel/syscalls/chmod/chmod02.c
-> index 94a77aeb1..e69f6b4e0 100644
-> --- a/testcases/kernel/syscalls/chmod/chmod02.c
-> +++ b/testcases/kernel/syscalls/chmod/chmod02.c
-> @@ -1,107 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
->   *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
+I checked with "checkpatch.pl -f" and there were no errors or warnings. 
+I use "git am" to apply the patch normally without any warning. How did 
+you check that there are spaces.
 
-FYI this is GPL-2.0 as well.
-
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * Further, this software is distributed without any warranty that it is
-> - * free of the rightful claim of any third person regarding infringement
-> - * or the like.  Any license provided herein, whether implied or
-> - * otherwise, applies only to this software file.  Patent licenses, if
-> - * any, provided herein do not apply to combinations of this program with
-> - * other software, or any other product whatsoever.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-> - * Mountain View, CA  94043, or:
-> - *
-> - * http://www.sgi.com
-> - *
-> - * For further information regarding this notice, see:
-> - *
-> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-> - */
-> -
-> -/*
->   * AUTHOR	: William Roske
->   * CO-PILOT	: Dave Fenner
->   * DATE STARTED	: 03/30/92
-> + */
-> +
-> +/*\
-> + * [Description]
->   *
->   *  Calls chmod(2) with different modes and expects success.
->   */
-
-And the test actually does not add anything since chmod01.c covers this
-and even checks the mode by doing stat() on the file. So we can actually
-remove this test instead since it's redundant.
+? 2021/8/10 ??5:55, Cyril Hrubis ??:
+> Hi!
+>> diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
+>> index 85052dc2b..35195e95f 100644
+>> --- a/testcases/kernel/syscalls/sysfs/sysfs01.c
+>> +++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
+>> @@ -1,129 +1,31 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>   /*
+>>    * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+>> - *
+>> - * This program is free software; you can redistribute it and/or modify it
+>> - * under the terms of version 2 of the GNU General Public License as
+>> - * published by the Free Software Foundation.
+> 
+> Note that the original is GPL-2.0 not GPL-2.0-or-later. Please stick to
+> the original licence when replacing the old text with SPDX identifier.
+> 
+>> - * This program is distributed in the hope that it would be useful, but
+>> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+>> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>> - *
+>> - * You should have received a copy of the GNU General Public License along
+>> - * with this program; if not, write the Free Software Foundation, Inc.,
+>> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>> - *
+>>    */
+>> -/**************************************************************************
+>> - *
+>> - *    TEST IDENTIFIER	: sysfs01
+>> - *
+>> - *    EXECUTED BY	: anyone
+>> - *
+>> - *    TEST TITLE	: Basic test for sysfs(2)
+>> - *
+>> - *    TEST CASE TOTAL	: 1
+>> - *
+>> - *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+>> - *
+>> - *    SIGNALS
+>> - *	Uses SIGUSR1 to pause before test if option set.
+>> - *	(See the parse_opts(3) man page).
+>> - *
+>> - *    DESCRIPTION
+>> - *    This is a Phase I test for the sysfs(2) system call.
+>> - *    This test is carried out for option 1 for sysfs(2).
+>> - *    It is intended to provide a limited exposure of the system call.
+>> - *
+>> - *
+>> - *	Setup:
+>> - *	  Setup signal handling.
+>> - *	  Pause for SIGUSR1 if option specified.
+>> - *
+>> - *	Test:
+>> - *	 Loop if the proper options are given.
+>> - *	  Execute system call
+>> - *	  Check return code, if system call failed (return=-1)
+>> - *		Log the errno and Issue a FAIL message.
+>> - *	  Otherwise, Issue a PASS message.
+>> - *
+>> - *	Cleanup:
+>> - *	  Print errno log and/or timing stats if options given
+>> - *
+>> - * USAGE:  <for command-line>
+>> - * sysfs01 [-c n]  [-e] [-i n] [-I x] [-p x] [-t] [-h] [-f] [-p]
+>> - *  where:
+>> - *	-c n : run n copies simultaneously.
+>> - *	-e   : Turn on errno logging.
+>> - *	-i n : Execute test n times.
+>> - *	-I x : Execute test for x seconds.
+>> - *	-p   : Pause for SIGUSR1 before starting
+>> - *	-P x : Pause for x seconds between iterations.
+>> - *	-t   : Turn on syscall timing.
+>> - *
+>> - *RESTRICTIONS:
+>> - *There is no glibc or libc support
+>> - *Kernel should be compiled with proc filesystem support
+>> - ******************************************************************************/
+>> +
+>> +/*
+>> + * [DESCRIPTION]
+> 
+> This should be [Description]
+> 
+>> + * This test is run for option 1 for sysfs(2).
+>> + * Translate the filesystem identifier string fsname into a filesystem type index.
+>> + */
+>>
+>>   #include <errno.h>
+>>   #include <unistd.h>
+>>   #include <sys/syscall.h>
+>> -#include "test.h"
+>> +#include "tst_test.h"
+>>   #include "lapi/syscalls.h"
+>>
+>> -static void setup();
+>> -static void cleanup();
+>> -
+>> -char *TCID = "sysfs01";
+>> -int TST_TOTAL = 1;
+>> -
+>> -int main(int ac, char **av)
+>> +static void verify_sysfs01(void)
+>>   {
+>> -	int lc;
+>> -
+>> -	tst_parse_opts(ac, av, NULL, NULL);
+>> -
+>> -	setup();
+>> -
+>> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> -
+>> -		tst_count = 0;
+>> -
+>> -		/* option 1, buf holds fs name */
+>> -		TEST(ltp_syscall(__NR_sysfs, 1, "proc"));
+>> -
+>> -		/* check return code */
+>> -		if (TEST_RETURN == -1) {
+>> -			tst_resm(TFAIL, "sysfs(2) Failed for "
+>> -				 "option 1 and set errno to %d", TEST_ERRNO);
+>> -		} else {
+>> -			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
+>> -		}
+>> -	}			/*End of TEST_LOOPING */
+>> -
+>> -	/*Clean up and exit */
+>> -	cleanup();
+>> -	tst_exit();
+>> +        /* option 1, buf holds fs name */
+>> +        TST_EXP_POSITIVE(tst_syscall(__NR_sysfs, 1, "proc"),
+>> +                        "sysfs(1,'proc')");
+>>
+>> +        if (TST_PASS == 1)
+>> +            tst_res(TPASS, "sysfs(2) Passed for " "option 1");
+>>   }
+>>
+>> -/* setup() - performs all ONE TIME setup for this test */
+>> -void setup(void)
+>> -{
+>> -
+>> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>> -
+>> -	TEST_PAUSE;
+>> +static struct tst_test test = {
+>> +    .test_all = verify_sysfs01,
+>> +};
+> 
+> There whitespaces are wrong here, you really should use checkpatch.pl
+> to check for common problems before sending a patchset.
+> 
+> It's a good idea to go over contribution checklist as well:
+> 
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#6-test-contribution-checklist
+> 
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+
+sujiaxun
+
+
