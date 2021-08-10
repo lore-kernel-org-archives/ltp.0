@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Aug 2021 13:20:37 +0200
-Subject: [LTP] [PATCH 3/4] syscalls/chmod03: Convert to new API
-In-Reply-To: <20210806072421.8892-1-zhanglianjie@uniontech.com>
-References: <20210806072421.8892-1-zhanglianjie@uniontech.com>
-Message-ID: <YRJhBYJP1yAzuY8+@yuki>
+Date: Tue, 10 Aug 2021 13:28:07 +0200
+Subject: [LTP] [PATCH] [4/6] syscalls/sysfs: Convert sysfs04 to the new
+ API
+In-Reply-To: <20210806113044.8688-1-sujiaxun@uniontech.com>
+References: <20210806113044.8688-1-sujiaxun@uniontech.com>
+Message-ID: <YRJix5xULruF+kz2@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,166 +12,177 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-First of all, the chmod03 and chmod04 are nearly identical, the only
-difference seems to be that one of them works with directory and the
-second one with a file. We should merge these two tests into a one.
-
-> diff --git a/testcases/kernel/syscalls/chmod/chmod03.c b/testcases/kernel/syscalls/chmod/chmod03.c
-> index f53e437e4..1e1d829da 100644
-> --- a/testcases/kernel/syscalls/chmod/chmod03.c
-> +++ b/testcases/kernel/syscalls/chmod/chmod03.c
-> @@ -1,23 +1,12 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 >  /*
->   *   Copyright (c) International Business Machines  Corp., 2001
->   *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
+>   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
 > - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+
+THis is another case of GPL-2.0 so please fix the SPDX identifier.
+
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 > - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *   07/2001 Ported by Wayne Boyer
->   */
-> 
-> -/*
-> - * Test Name: chmod03
-> +/*\
-> + * [Description]
->   *
->   * Test Description:
->   *  Verify that, chmod(2) will succeed to change the mode of a file
-> @@ -31,56 +20,10 @@
->   *  chmod() should return value 0 on success and succeeds to change
->   *  the mode of specified file with sticky bit set on it.
->   *
-> - * Algorithm:
-> - *  Setup:
-> - *   Setup signal handling.
-> - *   Create temporary directory.
-> - *   Pause for SIGUSR1 if option specified.
-> - *
-> - *  Test:
-> - *   Loop if the proper options are given.
-> - *   Execute system call
-> - *   Check return code, if system call failed (return=-1)
-> - *   	Log the errno and Issue a FAIL message.
-> - *   Otherwise,
-> - *   	Verify the Functionality of system call
-> - *      if successful,
-> - *      	Issue Functionality-Pass message.
-> - *      Otherwise,
-> - *		Issue Functionality-Fail message.
-> - *  Cleanup:
-> - *   Print errno log and/or timing stats if options given
-> - *   Delete the temporary directory created.
-> - *
-> - * Usage:  <for command-line>
-> - *  chmod03 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -e   : Turn on errno logging.
-> - *             -f   : Turn off functionality Testing.
-> - *	       -i n : Execute test n times.
-> - *	       -I x : Execute test for x seconds.
-> - *	       -P x : Pause for x seconds between iterations.
-> - *	       -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> - *	07/2001 Ported by Wayne Boyer
-> - *
-> - * RESTRICTIONS:
-> - *  This test should be run by 'non-super-user' only.
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 > - *
 >   */
+> -/**************************************************************************
+> - *
+> - *    TEST IDENTIFIER	: sysfs04
+> - *
+> - *
+> - *    EXECUTED BY	: anyone
+> - *
+> - *    TEST TITLE	: Test checking for basic error conditions
+> - *				 for sysfs(2)
+> - *
+> - *    TEST CASE TOTAL	: 1
+> - *
+> - *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+> - *
+> - *    SIGNALS
+> - *	Uses SIGUSR1 to pause before test if option set.
+> - *	(See the parse_opts(3) man page).
+> - *
+> - *    DESCRIPTION
+> - *	This test case checks whether sysfs(2) system call  returns
+> - *	appropriate error number for invalid
+> - *	option.
+> - *
+> - *	Setup:
+> - *	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *
+> - *	Test:
+> - *	  Loop if the proper options are given.
+> - *	  Execute system call with invaid  option parameter
+> - *
+> - *	  Check return code, if system call fails with errno == expected errno
+> - *		Issue syscall passed with expected errno
+> - *	  Otherwise,
+> - *	  Issue syscall failed to produce expected errno
+> - *
+> - *	Cleanup:
+> - *	  Do cleanup for the test.
+> - *
+> - * USAGE:  <for command-line>
+> - * sysfs04  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+> - * where:
+> - *	-c n : run n copies simultaneously
+> - *	-e   : Turn on errno logging.
+> - *	-i n : Execute test n times.
+> - *	-I x : Execute test for x seconds.
+> - *	-p   : Pause for SIGUSR1 before starting
+> - *	-P x : Pause for x seconds between iterations.
+> - *	-t   : Turn on syscall timing.
+> - *
+> - *RESTRICTIONS:
+> - *No libc or glibc support
+> - *****************************************************************************/
+> +
+> +/*
+> + * [DESCRIPTION]
+
+Should be [Description] and also the special documentation comment has
+to start with /*\
+
+> + * This test case checks whether sysfs(2) system call returns
+> + * appropriate error number for invalid option.
+> + */
 > 
-> -#include <stdio.h>
-> -#include <sys/types.h>
-> -#include <sys/stat.h>
-> -#include <fcntl.h>
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
->  #include <pwd.h>
-> -
+>  #include <errno.h>
+> -#include  <sys/syscall.h>
 > -#include "test.h"
-> -#include "safe_macros.h"
+> +#include <sys/syscall.h>
 > +#include "tst_test.h"
+>  #include "lapi/syscalls.h"
 > 
->  #define FILE_MODE       S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
->  #define PERMS		01777	/*
-> @@ -89,95 +32,53 @@
->  				 */
->  #define TESTFILE	"testfile"
-> 
-> -char *TCID = "chmod03";
+>  #define INVALID_OPTION 100
+> -static void setup();
+> -static void cleanup();
+> -
+> -char *TCID = "sysfs04";
 > -int TST_TOTAL = 1;
-> -char nobody_uid[] = "nobody";
-> -struct passwd *ltpuser;
-> +static char nobody_uid[] = "nobody";
-> +static struct passwd *ltpuser;
-
-There is no need to keep these as global variables if they are used only
-in the setup.
-
-> -void setup();			/* Main setup function for the test */
-> -void cleanup();			/* Main cleanup function for the test */
 > -
 > -int main(int ac, char **av)
-> +static void verify_chmod(void)
->  {
->  	struct stat stat_buf;
+> -{
 > -	int lc;
->  	mode_t file_mode;
-> 
+> -
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
 > -	setup();
 > -
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		TEST(chmod(TESTFILE, PERMS));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL | TTERRNO, "chmod(%s, %#o) failed",
-> -				 TESTFILE, PERMS);
-> -			continue;
-> -		}
-> -		if (stat(TESTFILE, &stat_buf) < 0) {
-> -			tst_brkm(TFAIL | TERRNO, cleanup,
-> -				 "stat(%s) failed", TESTFILE);
-> -		}
-> +	TST_EXP_PASS_SILENT(chmod(TESTFILE, PERMS), "chmod(%s, %#o) failed",
-> +		TESTFILE, PERMS);
-> +	if (TST_PASS) {
-> +		SAFE_STAT(TESTFILE, &stat_buf);
->  		file_mode = stat_buf.st_mode;
 > 
->  		/* Verify STICKY BIT set on testfile */
->  		if ((file_mode & PERMS) != PERMS) {
-> -			tst_resm(TFAIL, "%s: Incorrect modes 0%3o, "
-> -				 "Expected 0777", TESTFILE, file_mode);
-> +			tst_res(TFAIL, "%s: Incorrect modes 0%3o, "
-> +					"Expected 0777", TESTFILE, file_mode);
->  		} else {
-> -			tst_resm(TPASS, "Functionality of "
-> -				 "chmod(%s, %#o) successful",
-> -				 TESTFILE, PERMS);
-> +			tst_res(TPASS, "Functionality of "
-> +					"chmod(%s, %#o) successful",
-> +					TESTFILE, PERMS);
->  		}
->  	}
+> -		tst_count = 0;
+> -		TEST(ltp_syscall(__NR_sysfs, INVALID_OPTION));
+> -
+> -		/* check return code */
+> -		if ((TEST_RETURN == -1) && (TEST_ERRNO == EINVAL)) {
+> -			tst_resm(TPASS, "sysfs(2) expected failure;"
+> -				 " Got errno - EINVAL :" " Invalid option");
+> -		} else {
+> -			tst_resm(TFAIL, "sysfs(2) failed to produce"
+> -				 " expected error; %d, errno"
+> -				 " : EINVAL and got %d", EINVAL, TEST_ERRNO);
+> -		}
+> -	}
+> -
+> -	/*Clean up and exit */
+> -	cleanup();
+> -	tst_exit();
+> -
+> -}				/*End of main */
+> -
+> -/* setup() - performs all ONE TIME setup for this test */
+> -void setup(void)
+> +static void verify_sysfs04(void)
+>  {
+> 
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +    TST_EXP_FAIL(tst_syscall(__NR_sysfs, INVALID_OPTION),
+> +				EINVAL,"sysfs(INVALID_OPTION)");
+> +
+> +    if (TST_PASS) {
+> +        tst_res(TPASS, "sysfs(2) expected failure;"
+> +             " Got errno - EINVAL :" " Invalid option");
+> +    } else {
+> +         tst_res(TFAIL, "sysfs(2) failed to produce"
+> +              " expected error; %d, errno"
+> +              " : EINVAL and got %d", EINVAL, TST_ERR);
+> +    }
 
-Most of the comments for chmod01 apply here as well.
+The TST_EXP_FAIL() _does_ print the pass/fail messages for you, there is
+absolutelly no reason to print them manually.
+
+>  }
+> 
+> -/*
+> -* cleanup() - Performs one time cleanup for this test at
+> -* completion or premature exit
+> -*/
+> -void cleanup(void)
+> -{
+> -
+> -}
+> +static struct tst_test test = {
+> +    .test_all = verify_sysfs04
+> +};
+> --
+> 2.20.1
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
