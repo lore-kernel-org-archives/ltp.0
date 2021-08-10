@@ -1,157 +1,204 @@
-From: Eric W. Biederman <ebiederm@xmission.com>
-Date: Mon, 09 Aug 2021 15:43:56 -0500
-Subject: [LTP] [PATCH v4] ucounts: add missing data type changes
-In-Reply-To: <CA+G9fYv+Azmu+_YUv6+C6RRM990k0FhUc0hgSJKssubmsWfvhA@mail.gmail.com>
- (Naresh Kamboju's message of "Fri, 6 Aug 2021 16:06:51 +0530")
-References: <20210730062854.3601635-1-svens@linux.ibm.com>
- <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain> <875ywlat5e.fsf@disp2133>
- <94478003-8259-4b57-6d93-5a07e0750946@kernel.org>
- <87v94jalck.fsf@disp2133>
- <56b7c0fe-f2e1-7c4f-eb1b-1d9793dea5a8@kernel.org>
- <CA+G9fYv+Azmu+_YUv6+C6RRM990k0FhUc0hgSJKssubmsWfvhA@mail.gmail.com>
-Message-ID: <8735rijqlv.fsf_-_@disp2133>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Tue, 10 Aug 2021 09:52:35 +0800
+Subject: [LTP] [PATCH v3, 2/4] syscalls/chroot02: Convert to new API
+Message-ID: <20210810015235.20965-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
-changed the data type of ucounts/ucounts_max to long, but missed to
-adjust a few other places. This is noticeable on big endian platforms
-from user space because the /proc/sys/user/max_*_names files all
-contain 0.
+diff --git a/testcases/kernel/syscalls/chroot/chroot02.c b/testcases/kernel/syscalls/chroot/chroot02.c
+index e483ca4b5..cf365ce01 100644
+--- a/testcases/kernel/syscalls/chroot/chroot02.c
++++ b/testcases/kernel/syscalls/chroot/chroot02.c
+@@ -1,148 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   07/2001 Ported by Wayne Boyer
++ *	 04/2003 Modified by Manoj Iyer - manjo@mail.utexas.edu
+  */
 
-v4 - Made the min and max constants long so the sysctl values
-     are actually settable on little endian machines.
-     -- EWB
+-/*
+- * NAME
+- *	chroot02.c
+- *
+- * DESCRIPTION
+- *	Test functionality of chroot(2)
+- *
+- * ALGORITHM
+- *	Change root directory and then stat a file.
+- *
+- * USAGE:  <for command-line>
+- *  chroot02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *	04/2003 Modified by Manoj Iyer - manjo@mail.utexas.edu
+- *	Change testcase to chroot into a temporary directory
+- *	and stat() a known file.
++/*\
++ * [Description]
+  *
+- * RESTRICTIONS
+- *	NONE
++ * - Create a file in the temporary directory;
++ * - Change the root to this temporary directory;
++ * - Check whether this file can be accessed in the new root directory;
+  */
 
-Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Acked-by: Alexey Gladkov <legion@kernel.org>
-v1: https://lkml.kernel.org/r/20210721115800.910778-1-svens@linux.ibm.com
-v2: https://lkml.kernel.org/r/20210721125233.1041429-1-svens@linux.ibm.com
-v3: https://lkml.kernel.org/r/20210730062854.3601635-1-svens@linux.ibm.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
----
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include "test.h"
+-#include <fcntl.h>
+-
+-char *TCID = "chroot02";
+-int TST_TOTAL = 1;
+-int fileHandle = 0;
++#include <stdlib.h>
++#include "tst_test.h"
 
-Thanks everyone for testing and helping find the cause of this bug.  I
-will push this out to linux-next shortly.
+ #define TMP_FILENAME	"chroot02_testfile"
+-struct stat buf;
+-
+-void setup(void);
+-void cleanup(void);
++static struct stat buf;
++static char *path;
 
- fs/notify/fanotify/fanotify_user.c | 17 +++++++++++------
- fs/notify/inotify/inotify_user.c   | 17 +++++++++++------
- kernel/ucount.c                    | 19 +++++++++++--------
- 3 files changed, 33 insertions(+), 20 deletions(-)
-
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 64864fb40b40..28b67cb9458d 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -54,22 +54,27 @@ static int fanotify_max_queued_events __read_mostly;
- 
- #include <linux/sysctl.h>
- 
-+static long ft_zero = 0;
-+static long ft_int_max = INT_MAX;
+-int main(int ac, char **av)
++static void verify_chroot(void)
+ {
+-	int lc;
+-	int pid, status, retval;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	/* Check for looping state if -i option is given */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "Could not fork");
+-		}
+-
+-		if (pid == 0) {
+-			retval = 0;
+-
+-			if (chroot(tst_get_tmpdir()) == -1) {
+-				perror("chroot failed");
+-				retval = 1;
+-			} else {
+-				if (stat("/" TMP_FILENAME, &buf) == -1) {
+-					retval = 1;
+-					perror("stat failed");
+-				}
+-			}
+-
+-			exit(retval);
+-		}
+-
+-		/* parent */
+-		wait(&status);
+-		/* make sure the child returned a good exit status */
+-		if (WIFSIGNALED(status) ||
+-		    (WIFEXITED(status) && WEXITSTATUS(status) != 0))
+-			tst_resm(TFAIL, "chroot functionality incorrect");
+-		else
+-			tst_resm(TPASS, "chroot functionality correct");
++	if (!SAFE_FORK()) {
++		TST_EXP_PASS(chroot(path), "chroot(%s)", path);
++		if (!TST_PASS)
++			return;
 +
- struct ctl_table fanotify_table[] = {
- 	{
- 		.procname	= "max_user_groups",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &ft_zero,
-+		.extra2		= &ft_int_max,
- 	},
- 	{
- 		.procname	= "max_user_marks",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &ft_zero,
-+		.extra2		= &ft_int_max,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 98f61b31745a..62051247f6d2 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -55,22 +55,27 @@ struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
- 
- #include <linux/sysctl.h>
- 
-+static long it_zero = 0;
-+static long it_int_max = INT_MAX;
-+
- struct ctl_table inotify_table[] = {
- 	{
- 		.procname	= "max_user_instances",
- 		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &it_zero,
-+		.extra2		= &it_int_max,
- 	},
- 	{
- 		.procname	= "max_user_watches",
- 		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &it_zero,
-+		.extra2		= &it_int_max,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 77be3bbe3cc4..bb51849e6375 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -58,14 +58,17 @@ static struct ctl_table_root set_root = {
- 	.permissions = set_permissions,
- };
- 
--#define UCOUNT_ENTRY(name)				\
--	{						\
--		.procname	= name,			\
--		.maxlen		= sizeof(int),		\
--		.mode		= 0644,			\
--		.proc_handler	= proc_dointvec_minmax,	\
--		.extra1		= SYSCTL_ZERO,		\
--		.extra2		= SYSCTL_INT_MAX,	\
-+static long ue_zero = 0;
-+static long ue_int_max = INT_MAX;
-+
-+#define UCOUNT_ENTRY(name)					\
-+	{							\
-+		.procname	= name,				\
-+		.maxlen		= sizeof(long),			\
-+		.mode		= 0644,				\
-+		.proc_handler	= proc_doulongvec_minmax,	\
-+		.extra1		= &ue_zero,			\
-+		.extra2		= &ue_int_max,			\
++		TST_EXP_PASS(stat("/" TMP_FILENAME, &buf), "stat(/%s)", TMP_FILENAME);
  	}
- static struct ctl_table user_table[] = {
- 	UCOUNT_ENTRY("max_user_namespaces"),
--- 
+-
+-	cleanup();
+-	tst_exit();
+-
+ }
+
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
+-void setup(void)
++static void setup(void)
+ {
+-	tst_require_root();
+-
+-	tst_tmpdir();
+-	if ((fileHandle = creat(TMP_FILENAME, 0777)) == -1)
+-		tst_brkm(TBROK, cleanup, "failed to create temporary file "
+-			 TMP_FILENAME);
+-	if (stat(TMP_FILENAME, &buf) != 0)
+-		tst_brkm(TBROK, cleanup, TMP_FILENAME " does not exist");
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	path = tst_get_tmpdir();
++	SAFE_TOUCH(TMP_FILENAME, 0666, NULL);
++	SAFE_STAT(TMP_FILENAME, &buf);
+ }
+
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/*
+-	 * print timing stats if that option was specified.
+-	 * print errno log if that option was specified.
+-	 */
+-	close(fileHandle);
++	free(path);
++}
+
+-	tst_rmdir();
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.setup = setup,
++	.test_all = verify_chroot,
++	.needs_root = 1,
++	.forks_child = 1,
++	.needs_tmpdir = 1,
++};
+
+-}
+--
 2.20.1
+
+
 
