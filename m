@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Aug 2021 11:55:28 +0200
+Date: Tue, 10 Aug 2021 11:55:52 +0200
 Subject: [LTP] [PATCH] [v2,
- 2/6] syscalls/sysfs: Convert sysfs02 to the new API
-In-Reply-To: <20210806062515.11784-1-sujiaxun@uniontech.com>
-References: <20210806062515.11784-1-sujiaxun@uniontech.com>
-Message-ID: <YRJNEH0KsNanYN4P@yuki>
+ 3/6] syscalls/sysfs: Convert sysfs03 to the new API
+In-Reply-To: <20210806062538.12014-1-sujiaxun@uniontech.com>
+References: <20210806062538.12014-1-sujiaxun@uniontech.com>
+Message-ID: <YRJNKBmDvahMhfst@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Same problems here.
+And here as well.
 
 -- 
 Cyril Hrubis
