@@ -1,53 +1,50 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 11 Aug 2021 12:12:11 +0200
-Subject: [LTP] [PATCH] device-drivers/cpufreq_boost: skip test on
- virtual machines
-In-Reply-To: <aaf8acb9-f28f-b550-ccbc-8feb5aad17b0@canonical.com>
-References: <20210623080157.26424-1-krzysztof.kozlowski@canonical.com>
- <2a08d5c4-c002-7284-03d1-ff4441f8c9c5@canonical.com> <YNMdNqGiGXOgby6v@yuki>
- <aaf8acb9-f28f-b550-ccbc-8feb5aad17b0@canonical.com>
-Message-ID: <34c93a03-ca56-1648-5db0-4f15d617b4d9@canonical.com>
+Date: Wed, 11 Aug 2021 12:14:40 +0200
+Subject: [LTP] [PATCH v4 0/4] syscalls/msgstress: fixes for small systems
+In-Reply-To: <20210629121047.100391-1-krzysztof.kozlowski@canonical.com>
+References: <20210629121047.100391-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <dfe1bdd0-3131-ca3f-5a06-6ba427681f65@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 23/06/2021 17:33, Krzysztof Kozlowski wrote:
-> On 23/06/2021 13:38, Cyril Hrubis wrote:
->> Hi!
->>>> diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
->>>> index b9739db37cb7..67917b3fea25 100644
->>>> --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
->>>> +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
->>>> @@ -90,6 +90,9 @@ static void setup(void)
->>>>  	unsigned int i;
->>>>  	tst_require_root();
->>>>  
->>>> +	if (tst_is_virt(VIRT_ANY))
->>>> +		tst_brkm(TCONF, NULL, "running in a virtual machine, overclock not reliably measureable");
->>>> +
->>>>  	for (i = 0; i < ARRAY_SIZE(cdrv); ++i) {
->>>>  		fd = open(cdrv[i].file, O_RDWR);
->>>>  		if (fd == -1)
->>>>
->>>
->>> Optionally, under virtual machine the test failure could be converted to
->>> accepted pass. This would still allow to test CPUfreq boosting
->>> interface. Any preferences?
->>
->> I wonder what is the likehood of actually dicovering a bug by writing to
->> the cpufreq boost file from within a VM, I guess that it's non-zero at
->> least.
+On 29/06/2021 14:10, Krzysztof Kozlowski wrote:
+> Hi,
 > 
-> It's a test of kernel interface and whether the driver accepts input via
-> sysfs... so not much of a real cpufreq test. Indeed maybe better to skip
-> the test explicitly instead of giving some false hopes that cpufreq is
-> being tested.
+> Changes since v3:
+> 1. Adjust subject of patch 2/4.
+> 2. Don't use TEST() macro in 2/4.
+> 3. Remove debug messages in 2/4.
+> 4. Return unsigned int in get_session_uid() as it cannot fail in 2/4.
+> 
+> Changes since v2:
+> 1. Resend due to messed up previous submission.
+> 
+> Changes since v1:
+> 1. Move the code reading cgroups session limit to lib/tst_pid.c to
+>    existing tst_get_free_pids_().
+> 2. Allow reading session limits from cgroups v2.
+> 3. Add patch 1/4 - typo fix.
+> 4. Add patch 4/4 with the buffer/reserve of pids.
 
-Hi Cyril and all,
 
-Anything stops this patch from being applied?
+Any comments on this set?
+
+> 
+> Krzysztof Kozlowski (4):
+>   include/tst_pid.h: fix language typo (subtraction)
+>   tst_pid.c: fix fork failure on small memory systems
+>   syscalls/msgstress03: fix fork failure on small memory systems
+>   syscalls/msgstress: tune limit of processes for small machines
+> 
+>  include/tst_pid.h                             |  6 +-
+>  lib/tst_pid.c                                 | 72 ++++++++++++++++++-
+>  .../syscalls/ipc/msgstress/msgstress03.c      | 15 +++-
+>  3 files changed, 89 insertions(+), 4 deletions(-)
+> 
+
 
 Best regards,
 Krzysztof
