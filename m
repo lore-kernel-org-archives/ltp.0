@@ -1,77 +1,27 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 11 Aug 2021 08:24:30 +0100
-Subject: [LTP] [PATCH v2] setsockopt08: Handle ENOPROTOOPT even with
- compatible config
-In-Reply-To: <20210806111938.12007-1-rpalethorpe@suse.com>
-References: <20210806111938.12007-1-rpalethorpe@suse.com>
-Message-ID: <20210811072430.13560-1-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 11 Aug 2021 11:21:45 +0200
+Subject: [LTP] [PATCH] [v3,
+ 1/6] syscalls/sysfs: Convert sysfs01 to the new API
+In-Reply-To: <20210811024759.17858-1-sujiaxun@uniontech.com>
+References: <20210811024759.17858-1-sujiaxun@uniontech.com>
+Message-ID: <YROWqa27tFmwjCqk@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-One or more necessary modules can be missing even if they are present
-in the config.
+Hi!
+> +	/* option 1, buf holds fs name */
+> +	TST_EXP_POSITIVE(tst_syscall(__NR_sysfs, 1, "proc"), "sysfs(1,'proc')");
+> 
+> +	if (TST_PASS == 1)
+> +		tst_res(TPASS, "sysfs(2) Passed for option 1");
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+Ah, TST_EXP_POSITIVE() does not produce TPASS message, that should be
+fixed so that we don't have to add the TPASS message manually here. I
+will send a patch.
 
-V2:
-* Use tst_brk with TCONF
-
- .../kernel/syscalls/setsockopt/setsockopt08.c | 24 +++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-index 33892f9b1..7afb98403 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-@@ -101,6 +101,8 @@ void setup(void)
- 
- void run(void)
- {
-+	const char *const res_fmt_str =
-+		"setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)";
- 	struct ipt_replace *ipt_replace = buffer;
- 	struct ipt_entry *ipt_entry = &ipt_replace->entries[0];
- 	struct xt_entry_match *xt_entry_match =
-@@ -110,6 +112,7 @@ void run(void)
- 	struct xt_entry_target *xt_entry_tgt =
- 		((struct xt_entry_target *) (&ipt_entry->elems[0] + match_size));
- 	int fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+	int result;
- 
- 	xt_entry_match->u.user.match_size = (u_int16_t)match_size;
- 	strcpy(xt_entry_match->u.user.name, "state");
-@@ -126,10 +129,23 @@ void run(void)
- 	ipt_replace->num_counters = 1;
- 	ipt_replace->size = ipt_entry->next_offset;
- 
--	TST_EXP_FAIL(setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1),
--		     EINVAL,
--		     "setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
--		     fd, buffer);
-+	errno = 0;
-+	if (setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1) == -1) {
-+		switch (errno) {
-+		case EINVAL:
-+			result = TPASS;
-+			break;
-+		case ENOPROTOOPT:
-+			tst_brk(TCONF | TERRNO, res_fmt_str, fd, buffer);
-+			return;
-+		default:
-+			result = TFAIL;
-+		}
-+	} else {
-+		result = TFAIL;
-+	}
-+
-+	tst_res(result | TERRNO, res_fmt_str, fd, buffer);
- 
- 	SAFE_CLOSE(fd);
- }
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
