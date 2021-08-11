@@ -1,30 +1,27 @@
-From: sujiaxun <sujiaxun@uniontech.com>
-Date: Wed, 11 Aug 2021 20:46:41 +0800
-Subject: [LTP] [PATCH] [6/6] syscalls/sysfs: Convert sysfs06 to the new
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 11 Aug 2021 15:30:39 +0200
+Subject: [LTP] [PATCH 3/4] epoll_wait: Convert epoll_wait03 to the new
  API
-In-Reply-To: <YRJkpZCn1Oii1xFM@yuki>
-References: <20210806113115.8852-1-sujiaxun@uniontech.com>
- <YRJkpZCn1Oii1xFM@yuki>
-Message-ID: <dc227537-981b-58b9-f971-1ec1d92b3a99@uniontech.com>+161142CB4BD7C9FA
+In-Reply-To: <20210809083903.161596-4-xieziyao@huawei.com>
+References: <20210809083903.161596-1-xieziyao@huawei.com>
+ <20210809083903.161596-4-xieziyao@huawei.com>
+Message-ID: <YRPQ/zpKDGbc+9nz@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thank you for your careful review. I have followed your suggestion and 
-made changes and completed the submission.
+Hi!
+> + * 1. epoll_wait fails with EBADF if epfd is not a valid file descriptor.
+> + * 2. epoll_wait fails with EINVAL if epfd is not an epoll file descriptor.
+> + * 3. epoll_wait fails with EINVAL if maxevents is less than zero.
 
-? 2021/8/10 ??7:36, Cyril Hrubis ??:
-> Hi!
-> And this is nearly the same as sysfs05, the only test that is missing in
-> sysfs05 is fs index out of bounds. So we should add that test to
-> sysfs05 and remove sysfs06.
-> 
+I've changed this list to be use dashes instead of numbers, since that
+is how the rest of the testcases documents subtests in lists.
+
+And pushed the whole patchset, nice work, thanks.
 
 -- 
-Kind regards,
-
-sujiaxun
-
-
+Cyril Hrubis
+chrubis@suse.cz
