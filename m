@@ -1,27 +1,53 @@
 From: sujiaxun <sujiaxun@uniontech.com>
-Date: Wed, 11 Aug 2021 20:22:35 +0800
-Subject: [LTP] [PATCH] [v2,
- 5/6] syscalls/sysfs: Convert sysfs05 to the new API
-Message-ID: <20210811122235.1627-1-sujiaxun@uniontech.com>
+Date: Wed, 11 Aug 2021 20:22:59 +0800
+Subject: [LTP] [PATCH] [v2,6/6] syscalls/sysfs: remove sysfs06
+Message-ID: <20210811122259.1881-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+sysfs06 is nearly the same as sysfs05, the only test that is missing in
+sysfs05 is fs index out of bounds.  Add that test to sysfs05 and remove sysfs06.
+
 Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
 ---
- testcases/kernel/syscalls/sysfs/sysfs05.c | 173 +++++-----------------
- 1 file changed, 37 insertions(+), 136 deletions(-)
+ runtest/syscalls                           |   1 -
+ testcases/kernel/syscalls/sysfs/.gitignore |   1 -
+ testcases/kernel/syscalls/sysfs/sysfs06.c  | 162 ---------------------
+ 3 files changed, 164 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/sysfs/sysfs06.c
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
-index 8f8bb356e..e5ed050f2 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs05.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
-@@ -1,153 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9af5aa5c0..3f44b8084 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1537,7 +1537,6 @@ sysfs02 sysfs02
+ sysfs03 sysfs03
+ sysfs04 sysfs04
+ sysfs05 sysfs05
+-sysfs06 sysfs06
+
+ sysinfo01 sysinfo01
+ sysinfo02 sysinfo02
+diff --git a/testcases/kernel/syscalls/sysfs/.gitignore b/testcases/kernel/syscalls/sysfs/.gitignore
+index d38a4336d..acca41170 100644
+--- a/testcases/kernel/syscalls/sysfs/.gitignore
++++ b/testcases/kernel/syscalls/sysfs/.gitignore
+@@ -3,4 +3,3 @@
+ /sysfs03
+ /sysfs04
+ /sysfs05
+-/sysfs06
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c b/testcases/kernel/syscalls/sysfs/sysfs06.c
+deleted file mode 100644
+index d9a8cd51c..000000000
+--- a/testcases/kernel/syscalls/sysfs/sysfs06.c
++++ /dev/null
+@@ -1,162 +0,0 @@
+-/*
+- * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -35,7 +61,7 @@ index 8f8bb356e..e5ed050f2 100644
 - * with this program; if not, write the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
-  */
+- */
 -/**************************************************************************
 - *
 - *    TEST IDENTIFIER	: sysfs(2)
@@ -57,7 +83,8 @@ index 8f8bb356e..e5ed050f2 100644
 - *    DESCRIPTION
 - *	This test case checks whether sysfs(2) system call returns
 - *	appropriate error number for invalid
-- *	option and for invalid filesystem name.
+- *	option and for invalid filesystem index and when
+- *	buffer is out of address space
 - *
 - *	Setup:
 - *	  Setup signal handling.
@@ -66,7 +93,7 @@ index 8f8bb356e..e5ed050f2 100644
 - *	Test:
 - *	  Loop if the proper options are given.
 - *	  Execute system call with invaid option parameter and for
-- *	  invalid filesystem name
+- *	  invalid filesystem index
 - *	  Check return code, if system call fails with errno == expected errno
 - *		Issue syscall passed with expected errno
 - *	  Otherwise,
@@ -76,7 +103,7 @@ index 8f8bb356e..e5ed050f2 100644
 - *	  Do cleanup for the test.
 - *
 - * USAGE:  <for command-line>
-- *  sysfs05 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-f] [-h] [-p]
+- *  sysfs06 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
 - *  where:
 - *	-c n : Run n copies simultaneously
 - *	-e   : Turn on errno logging.
@@ -88,27 +115,20 @@ index 8f8bb356e..e5ed050f2 100644
 - *
 - *RESTRICTIONS:
 - *There is no libc or glibc support
-- *Kernel must be compiled with ext2 support
 - *****************************************************************************/
-+
-+/*\
-+ * [Description]
-+ * This test case checks whether sysfs(2) system call returns appropriate
-+ * error number for invalid option and for invalid filesystem name and fs index out of bounds.
-+ */
-
- #include <errno.h>
- #include <sys/syscall.h>
+-
+-#include <errno.h>
+-#include <sys/syscall.h>
+-#include <sys/mman.h>
 -#include "test.h"
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
+-#include "lapi/syscalls.h"
 -
 -static void setup();
 -static void cleanup();
 -
--char *TCID = "sysfs05";
--static int option[3] = { 1, 4, 1 };	/* valid and invalid option */
--static char *fsname[] = { "ext0", " ext2", (char *)-1 };
+-char *TCID = "sysfs06";
+-static int option[3] = { 2, 4, 2 };	/* valid and invalid option */
+-static int fsindex[3] = { 10000, 0, 1 };	/*invalid and valid fsindex */
 -
 -static struct test_case_t {
 -	char *err_desc;		/*error description */
@@ -117,29 +137,16 @@ index 8f8bb356e..e5ed050f2 100644
 -} testcase[] = {
 -	{
 -	"Invalid option", EINVAL, "EINVAL"}, {
--	"Invalid filesystem name", EINVAL, "EINVAL "}, {
--	"Address is out of your address space", EFAULT, "EFAULT "}
-+
-+char *bad_addr;
-+
-+static struct test_case {
-+	int option;
-+	char *fsname;
-+	int fsindex;
-+	char *err_desc;
-+	int exp_errno;
-+} tcases[] = {
-+	{1, "ext0", 0, "Invalid filesystem name", EINVAL},
-+	{4, "ext4", 0, "Invalid option", EINVAL},
-+	{1, (char *)-1, 0, "Address is out of your address space", EFAULT},
-+	{2, NULL, 1000, "fs_index is out of bounds", EINVAL}
- };
-
+-	"fs_index is out of bounds", EINVAL, "EINVAL"}, {
+-	"buf is outside your accessible address space", EFAULT, "EFAULT"}
+-};
+-
 -int TST_TOTAL = ARRAY_SIZE(testcase);
 -
+-char *bad_addr = 0;
+-
 -int main(int ac, char **av)
-+static void verify_sysfs05(unsigned int nr)
- {
+-{
 -	int lc, i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
@@ -151,15 +158,9 @@ index 8f8bb356e..e5ed050f2 100644
 -		for (i = 0; i < TST_TOTAL; i++) {
 -
 -			tst_count = 0;
--			TEST(ltp_syscall(__NR_sysfs, option[i], fsname[i]));
-+
-+	if (nr < 3)
-+		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tcases[nr].option, tcases[nr].fsname),
-+					tcases[nr].exp_errno, "%s", tcases[nr].err_desc);
-+	else
-+		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tcases[nr].option, tcases[nr].fsindex, bad_addr),
-+					tcases[nr].exp_errno, "%s", tcases[nr].err_desc);
-
+-			TEST(ltp_syscall
+-			     (__NR_sysfs, option[i], fsindex[i], bad_addr));
+-
 -			/* check return code */
 -			if ((TEST_RETURN == -1)
 -			    && (TEST_ERRNO == testcase[i].exp_errno)) {
@@ -175,7 +176,6 @@ index 8f8bb356e..e5ed050f2 100644
 -					 testcase[i].exp_errno,
 -					 testcase[i].exp_errval, TEST_ERRNO);
 -			}
--
 -		}		/*End of TEST LOOPS */
 -	}
 -
@@ -184,30 +184,29 @@ index 8f8bb356e..e5ed050f2 100644
 -
 -	tst_exit();
 -}				/*End of main */
-+}
-
+-
 -/* setup() - performs all ONE TIME setup for this test */
- void setup(void)
- {
+-void setup(void)
+-{
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
-+	bad_addr = tst_get_bad_addr(NULL);
- }
-
+-
+-	bad_addr =
+-	    mmap(0, 1, PROT_NONE, MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0,
+-		 0);
+-	if (bad_addr == MAP_FAILED)
+-		tst_brkm(TBROK, cleanup, "mmap failed");
+-}
+-
 -/*
 -* cleanup() - Performs one time cleanup for this test at
 -* completion or premature exit
 -*/
 -void cleanup(void)
 -{
-+static struct tst_test test = {
-+	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_sysfs05,
-+};
-
+-
 -}
 --
 2.20.1
