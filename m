@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Aug 2021 15:30:39 +0200
-Subject: [LTP] [PATCH 3/4] epoll_wait: Convert epoll_wait03 to the new
- API
-In-Reply-To: <20210809083903.161596-4-xieziyao@huawei.com>
-References: <20210809083903.161596-1-xieziyao@huawei.com>
- <20210809083903.161596-4-xieziyao@huawei.com>
-Message-ID: <YRPQ/zpKDGbc+9nz@yuki>
+Date: Wed, 11 Aug 2021 15:47:00 +0200
+Subject: [LTP] [PATCH 1/2] epoll_pwait: Add invalid sigmask test for
+ epoll_pwait04
+In-Reply-To: <20210810110024.106436-2-xieziyao@huawei.com>
+References: <20210810110024.106436-1-xieziyao@huawei.com>
+ <20210810110024.106436-2-xieziyao@huawei.com>
+Message-ID: <YRPU1K78DU9sul4y@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +13,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> + * 1. epoll_wait fails with EBADF if epfd is not a valid file descriptor.
-> + * 2. epoll_wait fails with EINVAL if epfd is not an epoll file descriptor.
-> + * 3. epoll_wait fails with EINVAL if maxevents is less than zero.
+> +static void run(void)
+> +{
+> +	TST_EXP_FAIL(do_epoll_pwait(efd, &e, 1, -1, tst_get_bad_addr(NULL)),
+> +		     EFAULT, "with an invalid sigmask pointer");
 
-I've changed this list to be use dashes instead of numbers, since that
-is how the rest of the testcases documents subtests in lists.
+The tst_get_bad_addr() allocates memory so I've moved it to the test
+setup() so that the test does not get out of memory with large enough -i
+option.
 
-And pushed the whole patchset, nice work, thanks.
+
+Patchset pushed, good work, thanks.
 
 -- 
 Cyril Hrubis
