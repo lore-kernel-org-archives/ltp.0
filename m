@@ -1,27 +1,63 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Aug 2021 11:21:45 +0200
-Subject: [LTP] [PATCH] [v3,
- 1/6] syscalls/sysfs: Convert sysfs01 to the new API
-In-Reply-To: <20210811024759.17858-1-sujiaxun@uniontech.com>
-References: <20210811024759.17858-1-sujiaxun@uniontech.com>
-Message-ID: <YROWqa27tFmwjCqk@yuki>
+Date: Wed, 11 Aug 2021 11:21:49 +0200
+Subject: [LTP] [PATCH] tst_test_macros.h: Make TST_EXP_POSSITIVE() print
+ TPASS as well
+Message-ID: <20210811092149.11287-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	/* option 1, buf holds fs name */
-> +	TST_EXP_POSITIVE(tst_syscall(__NR_sysfs, 1, "proc"), "sysfs(1,'proc')");
-> 
-> +	if (TST_PASS == 1)
-> +		tst_res(TPASS, "sysfs(2) Passed for option 1");
+So that it could be used in the tests.
 
-Ah, TST_EXP_POSITIVE() does not produce TPASS message, that should be
-fixed so that we don't have to add the TPASS message manually here. I
-will send a patch.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: sujiaxun <sujiaxun@uniontech.com>
+---
+ include/tst_test_macros.h | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
+diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+index cd65d8d0d..d9d7f930f 100644
+--- a/include/tst_test_macros.h
++++ b/include/tst_test_macros.h
+@@ -46,7 +46,7 @@ extern void *TST_RET_PTR;
+ 	tst_res_(__FILE__, __LINE__, RES, \
+ 		TST_FMT_(TST_2_(dummy, ##__VA_ARGS__, SCALL) FMT, __VA_ARGS__), PAR)
+ 
+-#define TST_EXP_POSITIVE(SCALL, ...)                                           \
++#define TST_EXP_POSITIVE_(SCALL, ...)                                          \
+ 	do {                                                                   \
+ 		TEST(SCALL);                                                   \
+ 		                                                               \
+@@ -68,7 +68,17 @@ extern void *TST_RET_PTR;
+                                                                                \
+ 	} while (0)
+ 
+-#define TST_EXP_FD_SILENT(SCALL, ...)	TST_EXP_POSITIVE(SCALL, __VA_ARGS__)
++#define TST_EXP_POSITIVE(SCALL, ...)                               \
++	do {                                                       \
++		TST_EXP_POSITIVE_(SCALL, __VA_ARGS__);             \
++		                                                   \
++		if (TST_PASS) {                                    \
++			TST_MSGP_(TPASS, " returned %ld",          \
++			          TST_RET, #SCALL, ##__VA_ARGS__); \
++		}                                                  \
++	} while (0)
++
++#define TST_EXP_FD_SILENT(SCALL, ...)	TST_EXP_POSITIVE_(SCALL, __VA_ARGS__)
+ 
+ #define TST_EXP_FD(SCALL, ...)                                                 \
+ 	do {                                                                   \
+@@ -79,7 +89,7 @@ extern void *TST_RET_PTR;
+ 				#SCALL, ##__VA_ARGS__);                        \
+ 	} while (0)
+ 
+-#define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_POSITIVE(SCALL, __VA_ARGS__)
++#define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_POSITIVE_(SCALL, __VA_ARGS__)
+ 
+ #define TST_EXP_PID(SCALL, ...)                                                \
+ 	do {                                                                   \
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
