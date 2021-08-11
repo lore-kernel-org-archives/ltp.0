@@ -1,123 +1,221 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 11 Aug 2021 15:42:55 +0100
-Subject: [LTP] [RESEND PATCH 1/4] controllers/memcg: account per-node
- kernel memory
-In-Reply-To: <20210811101058.36695-2-krzysztof.kozlowski@canonical.com>
-References: <20210811101058.36695-1-krzysztof.kozlowski@canonical.com>
- <20210811101058.36695-2-krzysztof.kozlowski@canonical.com>
-Message-ID: <87v94ckpow.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 11 Aug 2021 17:06:59 +0200
+Subject: [LTP] [PATCH] lapi: Fix guards
+In-Reply-To: <20210810151631.17420-1-chrubis@suse.cz>
+References: <20210810151631.17420-1-chrubis@suse.cz>
+Message-ID: <5eff1cf9-239a-ad37-7931-99a632e6dad1@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Krzysztof,
+Hi,
+one small nit below but otherwise looks good.
 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> writes:
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-> Recent Linux kernels () charge groups also with kernel memory.  This is
-> not limited only to process-allocated memory but also cgroup-handling
-> code memory as well.
->
-> For example since kernel v5.9 with commit 3e38e0aaca9e ("mm: memcg:
-> charge memcg percpu memory to the parent cgroup") creating a subgroup
-> causes several kernel allocations towards this group.
->
-> These additional kernel memory allocations are proportional to number of
-> CPUs and number of nodes.
->
-> On c4.8xlarge AWS instance with 36 cores in two nodes with v5.11 Linux
-> kernel the memcg_subgroup_charge and memcg_use_hierarchy_test tests were
-> failing:
->
->     memcg_use_hierarchy_test 1 TINFO: timeout per run is 0h 5m 0s
->     memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
->     memcg_use_hierarchy_test 1 TINFO: test if one of the ancestors goes over its limit, the proces will be killed
->     mkdir: cannot create directory ?subgroup?: Cannot allocate memory
->     /home/ubuntu/ltp-install/testcases/bin/memcg_use_hierarchy_test.sh: 26: cd: can't cd to subgroup
->     memcg_use_hierarchy_test 1 TINFO: Running memcg_process --mmap-lock1 -s 8192
->     memcg_use_hierarchy_test 1 TFAIL: process  is not killed
->     rmdir: failed to remove 'subgroup': No such file or directory
->
-> The kernel was unable to create the subgroup (mkdir returned -ENOMEM)
-> due to this additional per-node kernel memory allocations.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On 10. 08. 21 17:16, Cyril Hrubis wrote:
+> This fixes several problems with guards in lapi and unifies them to be
+> in format LAPI_FOO_H__ as well.
+> 
+> Problems fixed:
+> 
+> - Some guard identifiers started with reserved double underscore
+> - A few headers had incomplete or missing guards
+> - Quite a bit did just used SYSCALL_H which probably isn't unique enough
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 > ---
->  .../controllers/memcg/functional/memcg_lib.sh | 44 +++++++++++++++++++
->  .../memcg/functional/memcg_subgroup_charge.sh |  8 +---
->  .../functional/memcg_use_hierarchy_test.sh    |  8 +++-
->  3 files changed, 52 insertions(+), 8 deletions(-)
->
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> index dad66c798e19..700e9e367bff 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> @@ -63,6 +63,50 @@ memcg_require_hierarchy_disabled()
->  	fi
->  }
+>  include/lapi/abisize.h              | 6 +++---
+>  include/lapi/acct.h                 | 6 +++---
+>  include/lapi/bpf.h                  | 6 +++---
+>  include/lapi/capability.h           | 6 +++---
+>  include/lapi/common_timers.h        | 6 +++---
+>  include/lapi/cpuset.h               | 6 +++---
+>  include/lapi/cryptouser.h           | 6 +++---
+>  include/lapi/execveat.h             | 6 +++---
+>  include/lapi/fallocate.h            | 6 +++---
+>  include/lapi/fcntl.h                | 6 +++---
+>  include/lapi/fnmatch.h              | 6 +++---
+>  include/lapi/fs.h                   | 6 +++---
+>  include/lapi/fsmount.h              | 6 +++---
+>  include/lapi/getrandom.h            | 6 +++---
+>  include/lapi/if_alg.h               | 6 +++---
+>  include/lapi/if_ether.h             | 6 +++---
+>  include/lapi/if_packet.h            | 6 +++---
+>  include/lapi/init_module.h          | 6 +++---
+>  include/lapi/io_pgetevents.h        | 6 +++---
+>  include/lapi/io_uring.h             | 6 +++---
+>  include/lapi/ioctl.h                | 6 +++---
+>  include/lapi/ioctl_ns.h             | 6 +++---
+>  include/lapi/iovec.h                | 6 +++---
+>  include/lapi/ip_tables.h            | 2 +-
+>  include/lapi/ipcbuf.h               | 6 +++---
+>  include/lapi/keyctl.h               | 6 +++---
+>  include/lapi/loop.h                 | 6 +++---
+>  include/lapi/membarrier.h           | 6 +++---
+>  include/lapi/memfd.h                | 6 +++---
+>  include/lapi/mkdirat.h              | 6 +++---
+>  include/lapi/mlock2.h               | 2 +-
+>  include/lapi/mount.h                | 6 +++---
+>  include/lapi/msg.h                  | 7 ++++---
+>  include/lapi/msgbuf.h               | 6 +++---
+>  include/lapi/name_to_handle_at.h    | 6 +++---
+>  include/lapi/namespaces_constants.h | 6 +++---
+>  include/lapi/numaif.h               | 6 +++---
+>  include/lapi/openat2.h              | 6 +++---
+>  include/lapi/personality.h          | 6 +++---
+>  include/lapi/pidfd_open.h           | 6 +++---
+>  include/lapi/pidfd_send_signal.h    | 6 +++---
+>  include/lapi/posix_clocks.h         | 6 +++---
+>  include/lapi/posix_types.h          | 6 +++---
+>  include/lapi/prctl.h                | 2 +-
+>  include/lapi/preadv2.h              | 6 +++---
+>  include/lapi/pwritev2.h             | 6 +++---
+>  include/lapi/readdir.h              | 6 +++---
+>  include/lapi/readlinkat.h           | 6 +++---
+>  include/lapi/renameat.h             | 6 +++---
+>  include/lapi/rt_sigaction.h         | 6 +++---
+>  include/lapi/sched.h                | 6 +++---
+>  include/lapi/seccomp.h              | 6 +++---
+>  include/lapi/securebits.h           | 6 +++---
+>  include/lapi/seek.h                 | 6 +++---
+>  include/lapi/sem.h                  | 6 +++---
+>  include/lapi/sembuf.h               | 6 +++---
+>  include/lapi/shmbuf.h               | 6 +++---
+>  include/lapi/signal.h               | 6 +++---
+>  include/lapi/socket.h               | 6 +++---
+>  include/lapi/splice.h               | 6 +++---
+>  include/lapi/stat.h                 | 7 ++++---
+>  include/lapi/sync_file_range.h      | 6 +++---
+>  include/lapi/syncfs.h               | 6 +++---
+>  include/lapi/syscalls/regen.sh      | 4 ++--
+>  include/lapi/tee.h                  | 6 +++---
+>  include/lapi/termbits.h             | 2 +-
+>  include/lapi/timerfd.h              | 6 +++---
+>  include/lapi/tty.h                  | 6 +++---
+>  include/lapi/ustat.h                | 6 +++---
+>  include/lapi/utime.h                | 5 +++--
+>  include/lapi/utsname.h              | 5 +++++
+>  include/lapi/vm_sockets.h           | 6 +++---
+>  include/lapi/vmsplice.h             | 6 +++---
+>  include/lapi/xfrm.h                 | 2 +-
+>  74 files changed, 215 insertions(+), 207 deletions(-)
+> 
+> diff --git a/include/lapi/abisize.h b/include/lapi/abisize.h
+> index 9e6622ca1..d19d73f0b 100644
+> --- a/include/lapi/abisize.h
+> +++ b/include/lapi/abisize.h
+> @@ -5,8 +5,8 @@
+>   *  Petr Vorel <petr.vorel@gmail.com>
+>   */
 >  
-> +# Kernel memory allocated for the process is also charged.  It might depend on
-> +# the number of CPUs and number of nodes. For example on kernel v5.11
-> +# additionally total_cpus (plus 1 or 2) pages are charged to the group via
-> +# kernel memory.  For a two-node machine, additional 108 pages kernel memory
-> +# are charged to the group.
-> +#
-> +# Adjust the limit to account such per-CPU and per-node kernel memory.
-> +# $1 - variable name with limit to adjust
-> +memcg_adjust_limit_for_kmem()
-> +{
-> +	[ $# -ne 1 ] && tst_brk TBROK "memcg_adjust_limit_for_kmem expects 1 parameter"
-> +	eval "local _limit=\$$1"
+> -#ifndef ABISIZE_H__
+> -#define ABISIZE_H__
+> +#ifndef LAPI_ABISIZE_H__
+> +#define LAPI_ABISIZE_H__
+>  
+>  /* __WORDSIZE replacement */
+>  #if defined(__LP64__) || defined(_LP64)
+> @@ -28,4 +28,4 @@
+>       (defined(__aarch64__) && defined(__ILP32__)) || \
+>       defined(TST_ABI64)
+>  
+> -#endif /* ABISIZE_H__ */
+> +#endif /* LAPI_ABISIZE_H__ */
+> diff --git a/include/lapi/acct.h b/include/lapi/acct.h
+> index c81b78b44..6c521118e 100644
+> --- a/include/lapi/acct.h
+> +++ b/include/lapi/acct.h
+> @@ -1,7 +1,7 @@
+>  //SPDX-License-Identifier: GPL-2.0-or-later
+>  
+> -#ifndef LAPI_ACCT_H
+> -#define LAPI_ACCT_H
+> +#ifndef LAPI_ACCT_H__
+> +#define LAPI_ACCT_H__
+>  
+>  #include <sys/types.h>
+>  #include "config.h"
+> @@ -71,4 +71,4 @@ enum {
+>  # endif
+>  #endif /* HAVE_STRUCT_ACCT_V3 */
+>  
+> -#endif /* LAPI_ACCT_H */
+> +#endif /* LAPI_ACCT_H__ */
+> diff --git a/include/lapi/bpf.h b/include/lapi/bpf.h
+> index 5ae25293b..0e4527b8b 100644
+> --- a/include/lapi/bpf.h
+> +++ b/include/lapi/bpf.h
+> @@ -8,8 +8,8 @@
+>   * some eBPF testing without any external dependencies.
+>   */
+>  
+> -#ifndef BPF_H
+> -# define BPF_H
+> +#ifndef LAPI_BPF_H__
+> +#define LAPI_BPF_H__
+>  
+>  #include <stdint.h>
+>  
+> @@ -590,4 +590,4 @@ static inline int bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
+>  }
+>  /* End copy from tools/lib/bpf */
+>  
+> -#endif	/* BPF_H */
+> +#endif	/* LAPI_BPF_H__ */
+> diff --git a/include/lapi/capability.h b/include/lapi/capability.h
+> index 95cb6819b..c6470f389 100644
+> --- a/include/lapi/capability.h
+> +++ b/include/lapi/capability.h
+> @@ -3,8 +3,8 @@
+>   * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
+>   */
+>  
+> -#ifndef LAPI_CAPABILITY_H
+> -#define LAPI_CAPABILITY_H
+> +#ifndef LAPI_CAPABILITY_H__
+> +#define LAPI_CAPABILITY_H__
+>  
+>  #include "config.h"
+>  
+> @@ -52,4 +52,4 @@
+>  # define CAP_TO_MASK(x)      (1 << ((x) & 31))
+>  #endif
+>  
+> -#endif
+> +#endif /* LAPI_CAPABILITY_H__ */
+> diff --git a/include/lapi/common_timers.h b/include/lapi/common_timers.h
+> index e50f698d6..74f9ca67f 100644
+> --- a/include/lapi/common_timers.h
+> +++ b/include/lapi/common_timers.h
+> @@ -4,8 +4,8 @@
+>   * Keep all the common defines/checks for the timer tests here
+>   */
+>  
+> -#ifndef __COMMON_TIMERS_H__
+> -#define __COMMON_TIMERS_H__
+> +#ifndef LAPI_COMMON_TIMERS_H__
+> +#define LAPI_COMMON_TIMERS_H__
+>  
+>  #include "config.h"
+>  #include "lapi/syscalls.h"
+> @@ -78,4 +78,4 @@ static inline int have_cputime_timers(void)
+>   */
+>  typedef int kernel_timer_t;
+>  
+> -#endif
+> +#endif /* LAPI_COMMON_TIMERS__ */
 
-Could we do this a simpler way?
-
-It would be much easier to read if we just returned the value which
-needed to be added.
-
-> +
-> +	# Total number of CPUs
-> +	local total_cpus=`tst_ncpus`
-> +
-> +	# Get the number of NODES
-
-Is it acceptable or necessary to use /sys/devices/system/node/possible
-(or online) instead?
-
-> +	if [ -f "/sys/devices/system/node/has_high_memory" ]; then
-> +		local mem_string="`cat /sys/devices/system/node/has_high_memory`"
-> +	else
-> +		local mem_string="`cat /sys/devices/system/node/has_normal_memory`"
-> +	fi
-> +
-> +	local total_nodes="`echo $mem_string | tr ',' ' '`"
-> +	local count=0
-> +	for item in $total_nodes; do
-> +		local delta=1
-> +		if [ "${item#*-*}" != "$item" ]; then
-> +			delta=$((${item#*-*} - ${item%*-*} + 1))
-> +		fi
-> +		count=$((count + $delta))
-> +	done
-
-Or perhaps we could count the number of 'node[0-9]+' directories? I
-think that would be easier to understand.
-
-> +	total_nodes=$count
-> +	# Additional nodes impose charging the kmem, not having regular one node
-> +	local node_mem=0
-> +	if [ $total_nodes -gt 1 ]; then
-> +		node_mem=$((total_nodes - 1))
-> +		node_mem=$((node_mem * PAGESIZE * 128))
-> +	fi
-> +
-> +	eval "$1='$((_limit + 4 * PAGESIZE + total_cpus * PAGESIZE + node_mem))'"
-> +	return 0
-> +}
-
-Otherwise looks good.
+This should be:
+#endif /* LAPI_COMMON_TIMERS_H__ */
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
