@@ -1,8 +1,8 @@
 From: sujiaxun <sujiaxun@uniontech.com>
-Date: Wed, 11 Aug 2021 10:48:32 +0800
-Subject: [LTP] [PATCH] [v3,
- 3/6] syscalls/sysfs: Convert sysfs03 to the new API
-Message-ID: <20210811024832.18083-1-sujiaxun@uniontech.com>
+Date: Wed, 11 Aug 2021 10:48:48 +0800
+Subject: [LTP] [PATCH] [v2,
+ 4/6] syscalls/sysfs: Convert sysfs04 to the new API
+Message-ID: <20210811024848.18265-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,14 +11,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
 ---
- testcases/kernel/syscalls/sysfs/sysfs03.c | 125 +++-------------------
- 1 file changed, 15 insertions(+), 110 deletions(-)
+ testcases/kernel/syscalls/sysfs/sysfs04.c | 129 +++-------------------
+ 1 file changed, 15 insertions(+), 114 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c b/testcases/kernel/syscalls/sysfs/sysfs03.c
-index 98bd5c692..8e53e92d8 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs03.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
-@@ -1,125 +1,30 @@
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs04.c b/testcases/kernel/syscalls/sysfs/sysfs04.c
+index 6356a89c8..f2ede1375 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs04.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs04.c
+@@ -1,129 +1,30 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -38,11 +38,13 @@ index 98bd5c692..8e53e92d8 100644
   */
 -/**************************************************************************
 - *
-- *    TEST IDENTIFIER	: sysfs03
+- *    TEST IDENTIFIER	: sysfs04
+- *
 - *
 - *    EXECUTED BY	: anyone
 - *
-- *    TEST TITLE	: Basic test for sysfs(2)
+- *    TEST TITLE	: Test checking for basic error conditions
+- *				 for sysfs(2)
 - *
 - *    TEST CASE TOTAL	: 1
 - *
@@ -53,28 +55,30 @@ index 98bd5c692..8e53e92d8 100644
 - *	(See the parse_opts(3) man page).
 - *
 - *    DESCRIPTION
-- *    This is a Phase I test for the sysfs(2) system call.
-- *    It is intended to provide a limited exposure of the system call.
-- *    This testcase tests sysfs(2) for option 3
+- *	This test case checks whether sysfs(2) system call  returns
+- *	appropriate error number for invalid
+- *	option.
 - *
 - *	Setup:
 - *	  Setup signal handling.
 - *	  Pause for SIGUSR1 if option specified.
 - *
 - *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
+- *	  Loop if the proper options are given.
+- *	  Execute system call with invaid  option parameter
+- *
+- *	  Check return code, if system call fails with errno == expected errno
+- *		Issue syscall passed with expected errno
+- *	  Otherwise,
+- *	  Issue syscall failed to produce expected errno
 - *
 - *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
+- *	  Do cleanup for the test.
 - *
 - * USAGE:  <for command-line>
-- * sysfs03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-p] [-f]
+- * sysfs04  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
 - * where:
-- *	-c n : Run n copies simultaneously
+- *	-c n : run n copies simultaneously
 - *	-e   : Turn on errno logging.
 - *	-i n : Execute test n times.
 - *	-I x : Execute test for x seconds.
@@ -83,30 +87,31 @@ index 98bd5c692..8e53e92d8 100644
 - *	-t   : Turn on syscall timing.
 - *
 - *RESTRICTIONS:
-- *There is no glibc or libc support
+- *No libc or glibc support
 - *****************************************************************************/
 +
 +/*\
 + * [Description]
-+ * This test is run for option 3 for sysfs(2).
-+ * Return the total number of filesystem types currently present in the kernel.
++ * This test case checks whether sysfs(2) system call returns
++ * appropriate error number for invalid option.
 + */
 
  #include <errno.h>
- #include <unistd.h>
- #include <sys/syscall.h>
+-#include  <sys/syscall.h>
 -#include "test.h"
++#include <sys/syscall.h>
 +#include "tst_test.h"
  #include "lapi/syscalls.h"
 
+ #define INVALID_OPTION 100
 -static void setup();
 -static void cleanup();
--
--char *TCID = "sysfs03";
+
+-char *TCID = "sysfs04";
 -int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void verify_sysfs03(void)
++static void verify_sysfs04(void)
  {
 -	int lc;
 -
@@ -117,48 +122,47 @@ index 98bd5c692..8e53e92d8 100644
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
--
--		TEST(ltp_syscall(__NR_sysfs, 3));
+-		TEST(ltp_syscall(__NR_sysfs, INVALID_OPTION));
 -
 -		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "sysfs(2) Failed for"
--				 " option 3 and returned"
--				 " %d as error number", TEST_ERRNO);
+-		if ((TEST_RETURN == -1) && (TEST_ERRNO == EINVAL)) {
+-			tst_resm(TPASS, "sysfs(2) expected failure;"
+-				 " Got errno - EINVAL :" " Invalid option");
 -		} else {
--			tst_resm(TPASS, "sysfs(2) Passed for option 3");
+-			tst_resm(TFAIL, "sysfs(2) failed to produce"
+-				 " expected error; %d, errno"
+-				 " : EINVAL and got %d", EINVAL, TEST_ERRNO);
 -		}
--	}			/*End of TEST_LOOPING */
+-	}
 
 -	/*Clean up and exit */
 -	cleanup();
 -	tst_exit();
-+	TST_EXP_POSITIVE(tst_syscall(__NR_sysfs, 3), "sysfs(3)");
++	TST_EXP_FAIL(tst_syscall(__NR_sysfs, INVALID_OPTION),
++				EINVAL, "sysfs(INVALID_OPTION)");
 
--}
+-}				/*End of main */
 -
 -/* setup() - performs all ONE TIME setup for this test */
 -void setup(void)
 -{
-+	if (TST_PASS == 1)
-+		tst_res(TPASS, "sysfs(2) Passed for option 3");
-
+-
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
  }
 
 -/*
-- * cleanup() - Performs one time cleanup for this test at
-- * completion or premature exit
-- */
+-* cleanup() - Performs one time cleanup for this test at
+-* completion or premature exit
+-*/
 -void cleanup(void)
 -{
--
--}
 +static struct tst_test test = {
-+	.test_all = verify_sysfs03,
++	.test_all = verify_sysfs04,
 +};
+
+-}
 --
 2.20.1
 
