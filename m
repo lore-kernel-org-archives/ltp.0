@@ -1,11 +1,11 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 12 Aug 2021 10:51:24 +0100
-Subject: [LTP] [PATCH v2 3/4] controllers/memcg: fail early to avoid
- possible false-positives
-In-Reply-To: <20210812080242.16972-4-krzysztof.kozlowski@canonical.com>
+Date: Thu, 12 Aug 2021 10:51:48 +0100
+Subject: [LTP] [PATCH v2 4/4] controllers/memcg: check status of
+ commands using interface
+In-Reply-To: <20210812080242.16972-5-krzysztof.kozlowski@canonical.com>
 References: <20210812080242.16972-1-krzysztof.kozlowski@canonical.com>
- <20210812080242.16972-4-krzysztof.kozlowski@canonical.com>
-Message-ID: <874kbvm1nn.fsf@suse.de>
+ <20210812080242.16972-5-krzysztof.kozlowski@canonical.com>
+Message-ID: <871r6zm1mz.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,7 +14,6 @@ To: ltp@lists.linux.it
 
 
 Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-
 
 -- 
 Thank you,
