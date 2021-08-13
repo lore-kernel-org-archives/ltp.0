@@ -1,176 +1,89 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri, 13 Aug 2021 15:27:31 +0800
-Subject: [LTP] [PATCH 7/7] syscalls/clone07: Remove the testcase
-Message-ID: <20210813072731.22500-1-zhanglianjie@uniontech.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 13 Aug 2021 14:45:54 +0200
+Subject: [LTP] [PATCH] [v4,
+ 5/6] syscalls/sysfs: Convert sysfs05 to the new API
+In-Reply-To: <20210813033507.18781-1-sujiaxun@uniontech.com>
+References: <20210813033507.18781-1-sujiaxun@uniontech.com>
+Message-ID: <YRZpgsgh2N2csZ9s@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-As clone02 now covers both file and directory.
+Hi!
+Pushed with a few changes, thanks.
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+The main change is that we do pass a valid buffer for the cases where
+option != 1. That is because the order of checks in kernel is not
+guaranteed. So if we pass bad_address as well as invalid index the
+kernel can return either one of EINVAL or EFAULT. If we want to get
+specific error we have to make sure that all parameters but one are
+correct.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 9aafba932..9bfcd7a91 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -109,7 +109,6 @@ clone03 clone03
- clone04 clone04
- clone05 clone05
- clone06 clone06
--clone07 clone07
- clone08 clone08
- clone09 clone09
+Also while strictly not an error LKML coding style prefers curly braces
+around multiline blocks even if they are a single function.
+
+Full diff:
+
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
+index 3586453cf..bfcead7db 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs05.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
+@@ -5,6 +5,7 @@
  
-diff --git a/testcases/kernel/syscalls/clone/.gitignore b/testcases/kernel/syscalls/clone/.gitignore
-index 900cac19c..ffa85db57 100644
---- a/testcases/kernel/syscalls/clone/.gitignore
-+++ b/testcases/kernel/syscalls/clone/.gitignore
-@@ -4,6 +4,5 @@
- /clone04
- /clone05
- /clone06
--/clone07
- /clone08
- /clone09
-diff --git a/testcases/kernel/syscalls/clone/clone07.c b/testcases/kernel/syscalls/clone/clone07.c
-deleted file mode 100644
-index 4b2e04ee7..000000000
---- a/testcases/kernel/syscalls/clone/clone07.c
-+++ /dev/null
-@@ -1,128 +0,0 @@
--/*
-- * Copyright (c) International Business Machines  Corp., 2003.
-- * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- */
--/*
-- *	This is a test for a glibc bug for the clone(2) system call.
-- */
+ /*\
+  * [Description]
++ *
+  * This test case checks whether sysfs(2) system call returns appropriate
+  * error number for invalid option and for invalid filesystem name and fs index out of bounds.
+  */
+@@ -12,8 +13,6 @@
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
+-static char *bad_addr;
 -
--#if defined UCLINUX && !__THROW
--/* workaround for libc bug */
--#define __THROW
--#endif
--
--#include <errno.h>
--#include <sched.h>
--#include <sys/wait.h>
--#include "test.h"
--#include "clone_platform.h"
--
--#define TRUE 1
--#define FALSE 0
--
--static void setup();
--static int do_child();
--
--char *TCID = "clone07";
--int TST_TOTAL = 1;
--
--static void sigsegv_handler(int);
--static void sigusr2_handler(int);
--static int child_pid;
--static int fail = FALSE;
--
--int main(int ac, char **av)
--{
--
--	int lc, status;
--	void *child_stack;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		child_stack = malloc(CHILD_STACK_SIZE);
--		if (child_stack == NULL)
--			tst_brkm(TBROK, NULL,
--				 "Cannot allocate stack for child");
--
--		child_pid = ltp_clone(SIGCHLD, do_child, NULL,
--				      CHILD_STACK_SIZE, child_stack);
--
--		if (child_pid < 0)
--			tst_brkm(TBROK | TERRNO, NULL, "clone failed");
--
--		if ((wait(&status)) == -1)
--			tst_brkm(TBROK | TERRNO, NULL,
--				 "wait failed, status: %d", status);
--
--		free(child_stack);
--	}
--
--	if (fail == FALSE)
--		tst_resm(TPASS,
--			 "Use of return() in child did not cause SIGSEGV");
+ static struct test_case {
+ 	int option;
+ 	char *fsname;
+@@ -22,27 +21,29 @@ static struct test_case {
+ 	int exp_errno;
+ } tcases[] = {
+ 	{1, "ext0", 0, "Invalid filesystem name", EINVAL},
+-	{4, "ext4", 0, "Invalid option", EINVAL},
+-	{1, (char *)-1, 0, "Address is out of your address space", EFAULT},
++	{4, NULL, 0, "Invalid option", EINVAL},
++	{1, NULL, 0, "Address is out of your address space", EFAULT},
+ 	{2, NULL, 1000, "fs_index is out of bounds", EINVAL}
+ };
+ 
+ static void verify_sysfs05(unsigned int nr)
+ {
+ 	struct test_case *tc = &tcases[nr];
++	char buf[1024];
+ 
+-	if (tc->option == 1)
++	if (tc->option == 1) {
+ 		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tc->option, tc->fsname),
+ 					tc->exp_errno, "%s", tc->err_desc);
 -	else
--		tst_resm(TFAIL, "Use of return() in child caused SIGSEGV");
+-		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tc->option, tc->fsindex, bad_addr),
++	} else {
++		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tc->option, tc->fsindex, buf),
+ 					tc->exp_errno, "%s", tc->err_desc);
 -
--	tst_exit();
--}
--
--static void setup(void)
--{
--	struct sigaction def_act;
--	struct sigaction act;
--
--	TEST_PAUSE;
--
--	act.sa_handler = sigsegv_handler;
--	act.sa_flags = SA_RESTART;
--	sigemptyset(&act.sa_mask);
--	if ((sigaction(SIGSEGV, &act, NULL)) == -1)
--		tst_resm(TWARN | TERRNO,
--			 "sigaction() for SIGSEGV failed in test_setup()");
--
--	/* Setup signal handler for SIGUSR2 */
--	def_act.sa_handler = sigusr2_handler;
--	def_act.sa_flags = SA_RESTART | SA_RESETHAND;
--	sigemptyset(&def_act.sa_mask);
--
--	if ((sigaction(SIGUSR2, &def_act, NULL)) == -1)
--		tst_resm(TWARN | TERRNO,
--			 "sigaction() for SIGUSR2 failed in test_setup()");
--}
--
--static int do_child(void)
--{
--	return 0;
--}
--
--static void sigsegv_handler(int sig)
--{
--	if (child_pid == 0) {
--		kill(getppid(), SIGUSR2);
--		_exit(42);
--	}
--}
--
--/* sig_default_handler() - Default handler for parent */
--static void sigusr2_handler(int sig)
--{
--	if (child_pid != 0)
--		fail = TRUE;
--}
++	}
+ }
+ 
+ static void setup(void)
+ {
+ 	unsigned int i;
++	char *bad_addr;
+ 
+ 	bad_addr = tst_get_bad_addr(NULL);
+ 
+
 -- 
-2.20.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
