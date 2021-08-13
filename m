@@ -1,7 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri, 13 Aug 2021 15:26:57 +0800
-Subject: [LTP] [PATCH 5/7] syscalls/clone05: Convert to new API
-Message-ID: <20210813072657.21976-1-zhanglianjie@uniontech.com>
+Date: Fri, 13 Aug 2021 15:27:20 +0800
+Subject: [LTP] [PATCH 6/7] syscalls/clone06: Convert to new API
+Message-ID: <20210813072720.22318-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,16 +10,15 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/clone/clone05.c b/testcases/kernel/syscalls/clone/clone05.c
-index 494b772dd..7e8253bfe 100644
---- a/testcases/kernel/syscalls/clone/clone05.c
-+++ b/testcases/kernel/syscalls/clone/clone05.c
-@@ -1,103 +1,63 @@
+diff --git a/testcases/kernel/syscalls/clone/clone06.c b/testcases/kernel/syscalls/clone/clone06.c
+index 99e7f3864..5ed3bf897 100644
+--- a/testcases/kernel/syscalls/clone/clone06.c
++++ b/testcases/kernel/syscalls/clone/clone06.c
+@@ -1,35 +1,18 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
   * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
-  * Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -36,39 +35,46 @@ index 494b772dd..7e8253bfe 100644
   */
 
 -/*
+- *	Test to verify inheritance of environment variables by child.
 +/*\
 + * [Description]
-  * Call clone() with CLONE_VFORK flag set. verify that
-  * execution of parent is suspended until child finishes
++ * Test to verify inheritance of environment variables by child.
   */
 
- #define _GNU_SOURCE
-
+-#if defined UCLINUX && !__THROW
+-/* workaround for libc bug */
+-#define __THROW
+-#endif
+-
 -#include <errno.h>
++#include <stdio.h>
 +#include <stdlib.h>
  #include <sched.h>
 -#include <sys/wait.h>
+-#include <fcntl.h>
 -#include "test.h"
 +#include "tst_test.h"
  #include "clone_platform.h"
 
--char *TCID = "clone05";
--int TST_TOTAL = 1;
--
--static void setup(void);
--static void cleanup(void);
--static int child_fn(void *);
--
- static int child_exited = 0;
+ #define MAX_LINE_LENGTH 256
+@@ -39,102 +22,56 @@ static void cleanup(void);
+ static int child_environ();
+
+ static int pfd[2];
 +static void *child_stack;
 
+-char *TCID = "clone06";
+-int TST_TOTAL = 1;
+-
 -int main(int ac, char **av)
-+static int child_fn(void *unused __attribute__((unused)))
++static int child_environ(void *arg LTP_ATTRIBUTE_UNUSED)
  {
-+	int i;
++	char var[MAX_LINE_LENGTH];
 
 -	int lc, status;
 -	void *child_stack;
+-	char *parent_env;
+-	char buff[MAX_LINE_LENGTH];
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -81,48 +87,75 @@ index 494b772dd..7e8253bfe 100644
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		TEST(ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, child_fn, NULL,
--		               CHILD_STACK_SIZE, child_stack));
+-		if ((pipe(pfd)) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "pipe() failed");
 -
--		if ((TEST_RETURN != -1) && (child_exited))
+-		TEST(ltp_clone(SIGCHLD, child_environ, NULL, CHILD_STACK_SIZE,
+-			       child_stack));
+-
+-		if (TEST_RETURN == -1)
+-			tst_brkm(TFAIL | TTERRNO, cleanup, "clone failed");
+-
+-		/* close write end from parent */
+-		if ((close(pfd[1])) == -1)
+-			tst_resm(TWARN | TERRNO, "close(pfd[1]) failed");
+-
+-		/* Read env var from read end */
+-		if ((read(pfd[0], buff, sizeof(buff))) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "read from pipe failed");
++	sprintf(var, "%s", getenv("TERM") ? : "");
+
+-		/* Close read end from parent */
+-		if ((close(pfd[0])) == -1)
+-			tst_resm(TWARN | TERRNO, "close(pfd[0]) failed");
++	SAFE_CLOSE(pfd[0]);
++	SAFE_WRITE(1, pfd[1], var, sizeof(var));
++	SAFE_CLOSE(pfd[1]);
++
++	exit(0);
++}
+
+-		parent_env = getenv("TERM") ? : "";
++static void verify_clone(void)
++{
++	char *parent_env;
++	char buff[MAX_LINE_LENGTH];
+
+-		if ((strcmp(buff, parent_env)) == 0)
 -			tst_resm(TPASS, "Test Passed");
 -		else
 -			tst_resm(TFAIL, "Test Failed");
-+	for (i = 0; i < 100; i++) {
-+		sched_yield();
-+		usleep(1000);
-+	}
++	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, child_environ, NULL, CHILD_STACK_SIZE,
++				child_stack));
 
 -		if ((wait(&status)) == -1)
 -			tst_brkm(TBROK | TERRNO, cleanup,
 -				 "wait failed, status: %d", status);
-+	child_exited = 1;
-+	_exit(0);
-+}
-
--		child_exited = 0;
 -	}
-+static void verify_clone(void)
-+{
-+	TST_EXP_POSITIVE(ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, child_fn, NULL,
-+					CHILD_STACK_SIZE, child_stack), "clone with vfork");
++	tst_reap_children();
 
 -	free(child_stack);
 +	if (!TST_PASS)
 +		return;
++
++	SAFE_CLOSE(pfd[1]);
++	SAFE_READ(1, pfd[0], buff, sizeof(buff));
++	SAFE_CLOSE(pfd[0]);
 
 -	cleanup();
 -	tst_exit();
-+	TST_EXP_PASS(!child_exited);
++	parent_env = getenv("TERM") ? : "";
++	TST_EXP_PASS(strcmp(buff, parent_env),
++				"verify environment variables by child");
  }
 
  static void setup(void)
  {
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
--
 -	TEST_PAUSE;
 +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+	child_exited = 0;
++	SAFE_PIPE(pfd);
  }
 
  static void cleanup(void)
@@ -130,18 +163,31 @@ index 494b772dd..7e8253bfe 100644
 +	free(child_stack);
  }
 
--static int child_fn(void *unused __attribute__((unused)))
+-/*
+- *	Function executed by child.
+- *	Gets the value for environment variable,TERM &
+- *	writes it to  a pipe.
+- */
+-static int child_environ(void)
 -{
--	int i;
 -
--	/* give the kernel scheduler chance to run the parent */
--	for (i = 0; i < 100; i++) {
--		sched_yield();
--		usleep(1000);
--	}
+-	char var[MAX_LINE_LENGTH];
 -
--	child_exited = 1;
--	_exit(1);
+-	/* Close read end from child */
+-	if ((close(pfd[0])) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "close(pfd[0]) failed");
+-
+-	if ((sprintf(var, "%s", getenv("TERM") ? : "")) < 0)
+-		tst_resm(TWARN | TERRNO, "sprintf() failed");
+-
+-	if ((write(pfd[1], var, MAX_LINE_LENGTH)) == -1)
+-		tst_resm(TWARN | TERRNO, "write to pipe failed");
+-
+-	/* Close write end of pipe from child */
+-	if ((close(pfd[1])) == -1)
+-		tst_resm(TWARN | TERRNO, "close(pfd[1]) failed");
+-
+-	exit(0);
 -}
 +static struct tst_test test = {
 +	.setup = setup,
