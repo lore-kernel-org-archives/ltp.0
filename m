@@ -1,7 +1,7 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri, 13 Aug 2021 15:26:36 +0800
-Subject: [LTP] [PATCH 3/7] syscalls/clone03: Convert to new API
-Message-ID: <20210813072636.21590-1-zhanglianjie@uniontech.com>
+Date: Fri, 13 Aug 2021 15:26:47 +0800
+Subject: [LTP] [PATCH 4/7] syscalls/clone04: Convert to new API
+Message-ID: <20210813072647.21802-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,11 +10,11 @@ To: ltp@lists.linux.it
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/clone/clone03.c b/testcases/kernel/syscalls/clone/clone03.c
-index f4216ead8..b80c60bc4 100644
---- a/testcases/kernel/syscalls/clone/clone03.c
-+++ b/testcases/kernel/syscalls/clone/clone03.c
-@@ -1,147 +1,68 @@
+diff --git a/testcases/kernel/syscalls/clone/clone04.c b/testcases/kernel/syscalls/clone/clone04.c
+index 647bde560..fba4f186c 100644
+--- a/testcases/kernel/syscalls/clone/clone04.c
++++ b/testcases/kernel/syscalls/clone/clone04.c
+@@ -1,110 +1,46 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -28,180 +28,131 @@ index f4216ead8..b80c60bc4 100644
 - * WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 - *
   */
--/*
-+
-+/*\
-+ * [Description]
-  *	Check for equality of pid of child & return value of clone(2)
-- *	Test:
-- *	 Open a pipe.
-- *	 Loop if the proper options are given.
-- *	  Call clone(2) called without SIGCHLD
-- *
-- *	  CHILD:
-- *		writes the pid to pipe
-- *	  PARENT:
-- *		reads child'd pid from pipe
-- *		if child's pid == return value from clone(2)
-- *			Test passed
-- *		else
-- *			test failed
-  */
--
+- /*
+-  *     Verify that,
+-  *      clone(2) returns -1 and sets errno to EINVAL if
+-  *     child stack is set to a zero value(NULL)
+-  */
+
 -#if defined UCLINUX && !__THROW
 -/* workaround for libc bug */
 -#define __THROW
 -#endif
--
--#include <errno.h>
++/*\
++ * [Description]
++ * Verify that,
++ * clone(2) returns -1 and sets errno to EINVAL if
++ * child stack is set to a zero value(NULL)
++ */
+
 -#include <sched.h>
+-#include <errno.h>
 -#include <sys/wait.h>
 -#include "test.h"
--
-+#include <stdio.h>
 +#include <stdlib.h>
 +#include "tst_test.h"
  #include "clone_platform.h"
 
--static void setup(void);
 -static void cleanup(void);
+-static void setup(void);
 -static int child_fn();
 -
- static int pfd[2];
-+static void *child_stack;
+-static void *child_stack;
++static int child_fn(void *arg LTP_ATTRIBUTE_UNUSED);
 
--char *TCID = "clone03";
--int TST_TOTAL = 1;
+-static struct test_case_t {
+-	int (*child_fn) ();
+-	void **child_stack;
++static struct tcase {
++	int (*child_fn)(void *arg);
++	void *child_stack;
+ 	int exp_errno;
+ 	char err_desc[10];
+-} test_cases[] = {
+-	{
+-child_fn, NULL, EINVAL, "EINVAL"},};
++} tcases[] = {
++	{child_fn, NULL, EINVAL, "EINVAL"},
++};
+
+-char *TCID = "clone04";
+-int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
 -
 -int main(int ac, char **av)
 +static int child_fn(void *arg LTP_ATTRIBUTE_UNUSED)
  {
-+	char pid[10];
-+
-+	sprintf(pid, "%d", getpid());
-
--	int lc;
--	void *child_stack;
--	char buff[10];
--	int child_pid, status;
+-	int lc, ind;
+-	void *test_stack;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	/* Allocate stack for child */
--	child_stack = malloc(CHILD_STACK_SIZE);
--	if (child_stack == NULL)
--		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
--
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		if ((pipe(pfd)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
+-		for (ind = 0; ind < TST_TOTAL; ind++) {
+-			if (test_cases[ind].child_stack == NULL) {
+-				test_stack = NULL;
+-			} else if (*test_cases[ind].child_stack == NULL) {
+-				tst_resm(TWARN, "Can not allocate stack for child, skipping test case");
+-				continue;
+-			} else {
+-				test_stack = child_stack;
+-			}
 -
--		TEST(ltp_clone(SIGCHLD, child_fn, NULL, CHILD_STACK_SIZE,
--			       child_stack));
+-			TEST(ltp_clone(0, test_cases[ind].child_fn, NULL,
+-				       CHILD_STACK_SIZE, test_stack));
 -
--		if (TEST_RETURN == -1)
--			tst_brkm(TFAIL | TTERRNO, cleanup, "clone() failed");
--
--		/* close write end from parent */
--		if ((close(pfd[1])) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "close(pfd[1]) failed");
--
--		/* Read pid from read end */
--		if ((read(pfd[0], buff, sizeof(buff))) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "read from pipe failed");
-+	SAFE_CLOSE(pfd[0]);
-+	SAFE_WRITE(1, pfd[1], pid, sizeof(pid));
-+	SAFE_CLOSE(pfd[1]);
-
--		/* Close read end from parent */
--		if ((close(pfd[0])) == -1)
--			tst_resm(TWARN | TERRNO, "close(pfd[0]) failed");
-+	exit(0);
-+}
-
--		/* Get child's pid from pid string */
--		child_pid = atoi(buff);
-+static void verify_clone(void)
-+{
-+	char buff[10];
-+	int child_pid;
-
--		if (TEST_RETURN == child_pid)
--			tst_resm(TPASS, "Test passed");
--		else
--			tst_resm(TFAIL, "Test failed");
-+	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, child_fn, NULL, CHILD_STACK_SIZE,
-+				child_stack));
-
--		if ((wait(&status)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "wait failed, status: %d", status);
+-			if ((TEST_RETURN == -1) &&
+-			    (TEST_ERRNO == test_cases[ind].exp_errno)) {
+-				tst_resm(TPASS, "expected failure; Got %s",
+-					 test_cases[ind].err_desc);
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "Failed to produce expected error, expected errno: %d and result: -1, got result %ld",
+-					 test_cases[ind].exp_errno, TEST_RETURN);
+-			}
+-		}
 -	}
-+	if (!TST_PASS)
-+		return;
-+
-+	tst_reap_children();
-
--	free(child_stack);
-+	SAFE_CLOSE(pfd[1]);
-+	SAFE_READ(1, pfd[0], buff, sizeof(buff));
-+	SAFE_CLOSE(pfd[0]);
-+	child_pid = atoi(buff);
-
+-
 -	cleanup();
 -	tst_exit();
-+	TST_EXP_PASS(!(TST_RET == child_pid), "pid(%d)", child_pid);
++	exit(0);
  }
 
- static void setup(void)
+-static void setup(void)
++static void verify_clone(unsigned int nr)
  {
--	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -	TEST_PAUSE;
-+	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+	SAFE_PIPE(pfd);
++	struct tcase *tc = &tcases[nr];
+
+-	child_stack = malloc(CHILD_STACK_SIZE);
++	TST_EXP_FAIL(ltp_clone(0, tc->child_fn, NULL,
++				CHILD_STACK_SIZE, tc->child_stack),
++				tc->exp_errno, "%s", tc->err_desc);
  }
 
- static void cleanup(void)
- {
-+	free(child_stack);
- }
-
+-static void cleanup(void)
+-{
+-	free(child_stack);
+-}
+-
 -static int child_fn(void)
 -{
--	char pid[10];
--
--	/* Close read end from child */
--	if ((close(pfd[0])) == -1)
--		perror("close(pfd[0]) failed");
--
--	sprintf(pid, "%d", getpid());
--
--	/* Write pid string to pipe */
--	if ((write(pfd[1], pid, sizeof(pid))) == -1)
--		perror("write to pipe failed");
--
--	/* Close write end of pipe from child */
--	if ((close(pfd[1])) == -1)
--		perror("close(pfd[1]) failed");
--
 -	exit(1);
 -}
 +static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = verify_clone,
-+	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_clone,
 +};
+\ No newline at end of file
 --
 2.20.1
 
