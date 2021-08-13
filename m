@@ -1,24 +1,49 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri, 13 Aug 2021 15:27:20 +0800
-Subject: [LTP] [PATCH 6/7] syscalls/clone06: Convert to new API
-Message-ID: <20210813072720.22318-1-zhanglianjie@uniontech.com>
+Date: Fri, 13 Aug 2021 15:27:31 +0800
+Subject: [LTP] [PATCH 7/7] syscalls/clone07: Remove the testcase
+Message-ID: <20210813072731.22500-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+As clone02 now covers both file and directory.
+
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/clone/clone06.c b/testcases/kernel/syscalls/clone/clone06.c
-index 99e7f3864..5ed3bf897 100644
---- a/testcases/kernel/syscalls/clone/clone06.c
-+++ b/testcases/kernel/syscalls/clone/clone06.c
-@@ -1,35 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-  * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9aafba932..9bfcd7a91 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -109,7 +109,6 @@ clone03 clone03
+ clone04 clone04
+ clone05 clone05
+ clone06 clone06
+-clone07 clone07
+ clone08 clone08
+ clone09 clone09
+ 
+diff --git a/testcases/kernel/syscalls/clone/.gitignore b/testcases/kernel/syscalls/clone/.gitignore
+index 900cac19c..ffa85db57 100644
+--- a/testcases/kernel/syscalls/clone/.gitignore
++++ b/testcases/kernel/syscalls/clone/.gitignore
+@@ -4,6 +4,5 @@
+ /clone04
+ /clone05
+ /clone06
+-/clone07
+ /clone08
+ /clone09
+diff --git a/testcases/kernel/syscalls/clone/clone07.c b/testcases/kernel/syscalls/clone/clone07.c
+deleted file mode 100644
+index 4b2e04ee7..000000000
+--- a/testcases/kernel/syscalls/clone/clone07.c
++++ /dev/null
+@@ -1,128 +0,0 @@
+-/*
+- * Copyright (c) International Business Machines  Corp., 2003.
+- * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -32,170 +57,119 @@ index 99e7f3864..5ed3bf897 100644
 - * with this program; if not, write the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
-  */
-
+- */
 -/*
-- *	Test to verify inheritance of environment variables by child.
-+/*\
-+ * [Description]
-+ * Test to verify inheritance of environment variables by child.
-  */
-
+- *	This is a test for a glibc bug for the clone(2) system call.
+- */
+-
 -#if defined UCLINUX && !__THROW
 -/* workaround for libc bug */
 -#define __THROW
 -#endif
 -
 -#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
- #include <sched.h>
+-#include <sched.h>
 -#include <sys/wait.h>
--#include <fcntl.h>
 -#include "test.h"
-+#include "tst_test.h"
- #include "clone_platform.h"
-
- #define MAX_LINE_LENGTH 256
-@@ -39,102 +22,56 @@ static void cleanup(void);
- static int child_environ();
-
- static int pfd[2];
-+static void *child_stack;
-
--char *TCID = "clone06";
+-#include "clone_platform.h"
+-
+-#define TRUE 1
+-#define FALSE 0
+-
+-static void setup();
+-static int do_child();
+-
+-char *TCID = "clone07";
 -int TST_TOTAL = 1;
 -
+-static void sigsegv_handler(int);
+-static void sigusr2_handler(int);
+-static int child_pid;
+-static int fail = FALSE;
+-
 -int main(int ac, char **av)
-+static int child_environ(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-+	char var[MAX_LINE_LENGTH];
-
+-{
+-
 -	int lc, status;
 -	void *child_stack;
--	char *parent_env;
--	char buff[MAX_LINE_LENGTH];
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	child_stack = malloc(CHILD_STACK_SIZE);
--	if (child_stack == NULL)
--		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
--
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
+-		child_stack = malloc(CHILD_STACK_SIZE);
+-		if (child_stack == NULL)
+-			tst_brkm(TBROK, NULL,
+-				 "Cannot allocate stack for child");
 -
--		if ((pipe(pfd)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "pipe() failed");
+-		child_pid = ltp_clone(SIGCHLD, do_child, NULL,
+-				      CHILD_STACK_SIZE, child_stack);
 -
--		TEST(ltp_clone(SIGCHLD, child_environ, NULL, CHILD_STACK_SIZE,
--			       child_stack));
+-		if (child_pid < 0)
+-			tst_brkm(TBROK | TERRNO, NULL, "clone failed");
 -
--		if (TEST_RETURN == -1)
--			tst_brkm(TFAIL | TTERRNO, cleanup, "clone failed");
--
--		/* close write end from parent */
--		if ((close(pfd[1])) == -1)
--			tst_resm(TWARN | TERRNO, "close(pfd[1]) failed");
--
--		/* Read env var from read end */
--		if ((read(pfd[0], buff, sizeof(buff))) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "read from pipe failed");
-+	sprintf(var, "%s", getenv("TERM") ? : "");
-
--		/* Close read end from parent */
--		if ((close(pfd[0])) == -1)
--			tst_resm(TWARN | TERRNO, "close(pfd[0]) failed");
-+	SAFE_CLOSE(pfd[0]);
-+	SAFE_WRITE(1, pfd[1], var, sizeof(var));
-+	SAFE_CLOSE(pfd[1]);
-+
-+	exit(0);
-+}
-
--		parent_env = getenv("TERM") ? : "";
-+static void verify_clone(void)
-+{
-+	char *parent_env;
-+	char buff[MAX_LINE_LENGTH];
-
--		if ((strcmp(buff, parent_env)) == 0)
--			tst_resm(TPASS, "Test Passed");
--		else
--			tst_resm(TFAIL, "Test Failed");
-+	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, child_environ, NULL, CHILD_STACK_SIZE,
-+				child_stack));
-
 -		if ((wait(&status)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
+-			tst_brkm(TBROK | TERRNO, NULL,
 -				 "wait failed, status: %d", status);
+-
+-		free(child_stack);
 -	}
-+	tst_reap_children();
-
--	free(child_stack);
-+	if (!TST_PASS)
-+		return;
-+
-+	SAFE_CLOSE(pfd[1]);
-+	SAFE_READ(1, pfd[0], buff, sizeof(buff));
-+	SAFE_CLOSE(pfd[0]);
-
--	cleanup();
+-
+-	if (fail == FALSE)
+-		tst_resm(TPASS,
+-			 "Use of return() in child did not cause SIGSEGV");
+-	else
+-		tst_resm(TFAIL, "Use of return() in child caused SIGSEGV");
+-
 -	tst_exit();
-+	parent_env = getenv("TERM") ? : "";
-+	TST_EXP_PASS(strcmp(buff, parent_env),
-+				"verify environment variables by child");
- }
-
- static void setup(void)
- {
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
-+	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+	SAFE_PIPE(pfd);
- }
-
- static void cleanup(void)
- {
-+	free(child_stack);
- }
-
--/*
-- *	Function executed by child.
-- *	Gets the value for environment variable,TERM &
-- *	writes it to  a pipe.
-- */
--static int child_environ(void)
--{
--
--	char var[MAX_LINE_LENGTH];
--
--	/* Close read end from child */
--	if ((close(pfd[0])) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "close(pfd[0]) failed");
--
--	if ((sprintf(var, "%s", getenv("TERM") ? : "")) < 0)
--		tst_resm(TWARN | TERRNO, "sprintf() failed");
--
--	if ((write(pfd[1], var, MAX_LINE_LENGTH)) == -1)
--		tst_resm(TWARN | TERRNO, "write to pipe failed");
--
--	/* Close write end of pipe from child */
--	if ((close(pfd[1])) == -1)
--		tst_resm(TWARN | TERRNO, "close(pfd[1]) failed");
--
--	exit(0);
 -}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = verify_clone,
-+	.cleanup = cleanup,
-+};
-\ No newline@end of file
---
+-
+-static void setup(void)
+-{
+-	struct sigaction def_act;
+-	struct sigaction act;
+-
+-	TEST_PAUSE;
+-
+-	act.sa_handler = sigsegv_handler;
+-	act.sa_flags = SA_RESTART;
+-	sigemptyset(&act.sa_mask);
+-	if ((sigaction(SIGSEGV, &act, NULL)) == -1)
+-		tst_resm(TWARN | TERRNO,
+-			 "sigaction() for SIGSEGV failed in test_setup()");
+-
+-	/* Setup signal handler for SIGUSR2 */
+-	def_act.sa_handler = sigusr2_handler;
+-	def_act.sa_flags = SA_RESTART | SA_RESETHAND;
+-	sigemptyset(&def_act.sa_mask);
+-
+-	if ((sigaction(SIGUSR2, &def_act, NULL)) == -1)
+-		tst_resm(TWARN | TERRNO,
+-			 "sigaction() for SIGUSR2 failed in test_setup()");
+-}
+-
+-static int do_child(void)
+-{
+-	return 0;
+-}
+-
+-static void sigsegv_handler(int sig)
+-{
+-	if (child_pid == 0) {
+-		kill(getppid(), SIGUSR2);
+-		_exit(42);
+-	}
+-}
+-
+-/* sig_default_handler() - Default handler for parent */
+-static void sigusr2_handler(int sig)
+-{
+-	if (child_pid != 0)
+-		fail = TRUE;
+-}
+-- 
 2.20.1
 
 
