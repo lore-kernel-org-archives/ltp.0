@@ -1,169 +1,221 @@
 From: sujiaxun <sujiaxun@uniontech.com>
-Date: Fri, 13 Aug 2021 10:34:25 +0800
-Subject: [LTP] [PATCH] [v2,
+Date: Fri, 13 Aug 2021 11:35:07 +0800
+Subject: [LTP] [PATCH] [v4,
  5/6] syscalls/sysfs: Convert sysfs05 to the new API
-In-Reply-To: <YRUaxQjWFSw9Y4J1@yuki>
-References: <20210811122235.1627-1-sujiaxun@uniontech.com>
- <YRUaxQjWFSw9Y4J1@yuki>
-Message-ID: <763339a3-f4ca-f316-572f-db633fb6f7c9@uniontech.com>+FC4C7902D91DBA65
+Message-ID: <20210813033507.18781-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Okay thank you. I will carefully modify and resubmit.
+Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+---
+ testcases/kernel/syscalls/sysfs/sysfs05.c | 177 +++++-----------------
+ 1 file changed, 42 insertions(+), 135 deletions(-)
 
-? 2021/8/12 ??8:57, Cyril Hrubis ??:
-> Hi!
->> -char *TCID = "sysfs05";
->> -static int option[3] = { 1, 4, 1 };	/* valid and invalid option */
->> -static char *fsname[] = { "ext0", " ext2", (char *)-1 };
->> -
->> -static struct test_case_t {
->> -	char *err_desc;		/*error description */
->> -	int exp_errno;		/* expected error number */
->> -	char *exp_errval;	/*Expected errorvalue string */
->> -} testcase[] = {
->> -	{
->> -	"Invalid option", EINVAL, "EINVAL"}, {
->> -	"Invalid filesystem name", EINVAL, "EINVAL "}, {
->> -	"Address is out of your address space", EFAULT, "EFAULT "}
->> +
->> +char *bad_addr;
->> +
->> +static struct test_case {
->> +	int option;
->> +	char *fsname;
->> +	int fsindex;
->> +	char *err_desc;
->> +	int exp_errno;
->> +} tcases[] = {
->> +	{1, "ext0", 0, "Invalid filesystem name", EINVAL},
->> +	{4, "ext4", 0, "Invalid option", EINVAL},
->> +	{1, (char *)-1, 0, "Address is out of your address space", EFAULT},
->> +	{2, NULL, 1000, "fs_index is out of bounds", EINVAL}
->>   };
->>
->> -int TST_TOTAL = ARRAY_SIZE(testcase);
->> -
->> -int main(int ac, char **av)
->> +static void verify_sysfs05(unsigned int nr)
->>   {
->> -	int lc, i;
->> -
->> -	tst_parse_opts(ac, av, NULL, NULL);
->> -
->> -	setup();
->> -
->> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> -
->> -		for (i = 0; i < TST_TOTAL; i++) {
->> -
->> -			tst_count = 0;
->> -			TEST(ltp_syscall(__NR_sysfs, option[i], fsname[i]));
->> +
->> +	if (nr < 3)
->> +		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tcases[nr].option, tcases[nr].fsname),
->> +					tcases[nr].exp_errno, "%s", tcases[nr].err_desc);
->> +	else
->> +		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tcases[nr].option, tcases[nr].fsindex, bad_addr),
->> +					tcases[nr].exp_errno, "%s", tcases[nr].err_desc);
-> 
-> Depending on the index here is ugly hack and there is absolutelly no
-> reason to do so. We can switch on the option easily instead with:
-> 
-> 	if (tcases[nr].option == 1) {
-> 		/* call with fsname */
-> 	} else {
-> 		/* call with fs index */
-> 	}
-> 
-> 
-> Also tests usually store a pointer to the current testcases at the start
-> of the verify function to make the code slightly shorter as:
-> 
-> static void verify_foo(unsigned int n)
-> {
-> 	struct tcase *tc = &tcases[n];
-> 
-> 	if (tc->option == 1) {
-> 
-> ...
-> 
-> }
-> 
->> -			/* check return code */
->> -			if ((TEST_RETURN == -1)
->> -			    && (TEST_ERRNO == testcase[i].exp_errno)) {
->> -				tst_resm(TPASS,
->> -					 "sysfs(2) expected failure;"
->> -					 " Got errno - %s : %s",
->> -					 testcase[i].exp_errval,
->> -					 testcase[i].err_desc);
->> -			} else {
->> -				tst_resm(TFAIL, "sysfs(2) failed to produce"
->> -					 " expected error; %d, errno"
->> -					 ": %s and got %d",
->> -					 testcase[i].exp_errno,
->> -					 testcase[i].exp_errval, TEST_ERRNO);
->> -			}
->> -
->> -		}		/*End of TEST LOOPS */
->> -	}
->> -
->> -	/*Clean up and exit */
->> -	cleanup();
->> -
->> -	tst_exit();
->> -}				/*End of main */
->> +}
->>
->> -/* setup() - performs all ONE TIME setup for this test */
->>   void setup(void)
-> 
-> missing static
-> 
->>   {
->> -
->> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->> -
->> -	TEST_PAUSE;
->> +	bad_addr = tst_get_bad_addr(NULL);
-> 
-> Isn't the bad address unused here?
-> 
-> What we should do instead is to loop over the tcases array here and set
-> the fsname to the bad address when exp_errno is set to EFAULT.
-> 
->>   }
->>
->> -/*
->> -* cleanup() - Performs one time cleanup for this test at
->> -* completion or premature exit
->> -*/
->> -void cleanup(void)
->> -{
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.tcnt = ARRAY_SIZE(tcases),
->> +	.test = verify_sysfs05,
->> +};
->>
->> -}
->> --
->> 2.20.1
->>
->>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
+index 8f8bb356e..3586453cf 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs05.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
+@@ -1,153 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: sysfs(2)
+- *
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Test checking for basic error conditions
+- *				 for sysfs(2)
+- *
+- *    TEST CASE TOTAL	: 3
+- *
+- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	This test case checks whether sysfs(2) system call returns
+- *	appropriate error number for invalid
+- *	option and for invalid filesystem name.
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	  Loop if the proper options are given.
+- *	  Execute system call with invaid option parameter and for
+- *	  invalid filesystem name
+- *	  Check return code, if system call fails with errno == expected errno
+- *		Issue syscall passed with expected errno
+- *	  Otherwise,
+- *	  Issue syscall failed to produce expected errno
+- *
+- *	Cleanup:
+- *	  Do cleanup for the test.
+- *
+- * USAGE:  <for command-line>
+- *  sysfs05 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-f] [-h] [-p]
+- *  where:
+- *	-c n : Run n copies simultaneously
+- *	-e   : Turn on errno logging.
+- *	-i n : Execute test n times.
+- *	-I x : Execute test for x seconds.
+- *	-p   : Pause for SIGUSR1 before starting
+- *	-P x : Pause for x seconds between iterations.
+- *	-t   : Turn on syscall timing.
+- *
+- *RESTRICTIONS:
+- *There is no libc or glibc support
+- *Kernel must be compiled with ext2 support
+- *****************************************************************************/
 
--- 
-Kind regards,
+-#include <errno.h>
+-#include <sys/syscall.h>
+-#include "test.h"
+-#include "lapi/syscalls.h"
+-
+-static void setup();
+-static void cleanup();
++/*\
++ * [Description]
++ * This test case checks whether sysfs(2) system call returns appropriate
++ * error number for invalid option and for invalid filesystem name and fs index out of bounds.
++ */
 
-sujiaxun
+-char *TCID = "sysfs05";
+-static int option[3] = { 1, 4, 1 };	/* valid and invalid option */
+-static char *fsname[] = { "ext0", " ext2", (char *)-1 };
++#include "tst_test.h"
++#include "lapi/syscalls.h"
+
+-static struct test_case_t {
+-	char *err_desc;		/*error description */
+-	int exp_errno;		/* expected error number */
+-	char *exp_errval;	/*Expected errorvalue string */
+-} testcase[] = {
+-	{
+-	"Invalid option", EINVAL, "EINVAL"}, {
+-	"Invalid filesystem name", EINVAL, "EINVAL "}, {
+-	"Address is out of your address space", EFAULT, "EFAULT "}
++static char *bad_addr;
++
++static struct test_case {
++	int option;
++	char *fsname;
++	int fsindex;
++	char *err_desc;
++	int exp_errno;
++} tcases[] = {
++	{1, "ext0", 0, "Invalid filesystem name", EINVAL},
++	{4, "ext4", 0, "Invalid option", EINVAL},
++	{1, (char *)-1, 0, "Address is out of your address space", EFAULT},
++	{2, NULL, 1000, "fs_index is out of bounds", EINVAL}
+ };
+
+-int TST_TOTAL = ARRAY_SIZE(testcase);
+-
+-int main(int ac, char **av)
++static void verify_sysfs05(unsigned int nr)
+ {
+-	int lc, i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			tst_count = 0;
+-			TEST(ltp_syscall(__NR_sysfs, option[i], fsname[i]));
++	struct test_case *tc = &tcases[nr];
+
+-			/* check return code */
+-			if ((TEST_RETURN == -1)
+-			    && (TEST_ERRNO == testcase[i].exp_errno)) {
+-				tst_resm(TPASS,
+-					 "sysfs(2) expected failure;"
+-					 " Got errno - %s : %s",
+-					 testcase[i].exp_errval,
+-					 testcase[i].err_desc);
+-			} else {
+-				tst_resm(TFAIL, "sysfs(2) failed to produce"
+-					 " expected error; %d, errno"
+-					 ": %s and got %d",
+-					 testcase[i].exp_errno,
+-					 testcase[i].exp_errval, TEST_ERRNO);
+-			}
++	if (tc->option == 1)
++		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tc->option, tc->fsname),
++					tc->exp_errno, "%s", tc->err_desc);
++	else
++		TST_EXP_FAIL(tst_syscall(__NR_sysfs, tc->option, tc->fsindex, bad_addr),
++					tc->exp_errno, "%s", tc->err_desc);
+
+-		}		/*End of TEST LOOPS */
+-	}
+-
+-	/*Clean up and exit */
+-	cleanup();
+-
+-	tst_exit();
+-}				/*End of main */
++}
+
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
++static void setup(void)
+ {
++	unsigned int i;
+
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	bad_addr = tst_get_bad_addr(NULL);
+
+-	TEST_PAUSE;
++	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
++		if (tcases[i].exp_errno == EFAULT)
++			tcases[i].fsname = bad_addr;
++	}
+ }
+
+-/*
+-* cleanup() - Performs one time cleanup for this test at
+-* completion or premature exit
+-*/
+-void cleanup(void)
+-{
++static struct tst_test test = {
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_sysfs05,
++};
+
+-}
+--
+2.20.1
+
 
 
