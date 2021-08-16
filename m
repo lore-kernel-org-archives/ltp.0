@@ -1,67 +1,44 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 16 Aug 2021 12:16:50 +0100
-Subject: [LTP] [PATCH v4 1/2] setsockopt08: Handle ENOPROTOOPT even with
- compatible config
-In-Reply-To: <20210812064741.4246-1-rpalethorpe@suse.com>
+Date: Mon, 16 Aug 2021 12:16:51 +0100
+Subject: [LTP] [PATCH v4 2/2] setsockopt08: Avoid confusion by removing TCONF
+In-Reply-To: <20210816111651.29860-1-rpalethorpe@suse.com>
 References: <20210812064741.4246-1-rpalethorpe@suse.com>
-Message-ID: <20210816111651.29860-1-rpalethorpe@suse.com>
+ <20210816111651.29860-1-rpalethorpe@suse.com>
+Message-ID: <20210816111651.29860-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-One or more necessary modules can be missing even if they are present
-in the config.
+When not in compat mode this only tests that bad offsets result in
+EINVAL. When in compat mode, we also test for the vulnerability.
+
+Therefor I view this as two tests. The TCONF was supposed to indicate
+the configuration didn't allow one of these tests. However it just
+caused confusion with multiple people asking me to change it to
+tst_brk.
+
+So change it to TINFO.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: Martin Doucha <mdoucha@suse.cz>
 ---
-
-V4: Add TINFO patch
-
- .../kernel/syscalls/setsockopt/setsockopt08.c      | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/setsockopt/setsockopt08.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-index 33892f9b1..20abe85b4 100644
+index 20abe85b4..1ffc69178 100644
 --- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
 +++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
-@@ -101,6 +101,8 @@ void setup(void)
- 
- void run(void)
+@@ -91,7 +91,7 @@ static void *buffer;
+ void setup(void)
  {
-+	const char *const res_fmt_str =
-+		"setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)";
- 	struct ipt_replace *ipt_replace = buffer;
- 	struct ipt_entry *ipt_entry = &ipt_replace->entries[0];
- 	struct xt_entry_match *xt_entry_match =
-@@ -110,6 +112,7 @@ void run(void)
- 	struct xt_entry_target *xt_entry_tgt =
- 		((struct xt_entry_target *) (&ipt_entry->elems[0] + match_size));
- 	int fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+	int result;
+ 	if (tst_kernel_bits() == 32 || sizeof(long) > 4) {
+-		tst_res(TCONF,
++		tst_res(TINFO,
+ 			"The vulnerability was only present in 32-bit compat mode");
+ 	}
  
- 	xt_entry_match->u.user.match_size = (u_int16_t)match_size;
- 	strcpy(xt_entry_match->u.user.name, "state");
-@@ -126,10 +129,13 @@ void run(void)
- 	ipt_replace->num_counters = 1;
- 	ipt_replace->size = ipt_entry->next_offset;
- 
--	TST_EXP_FAIL(setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1),
--		     EINVAL,
--		     "setsockopt(%d, IPPROTO_IP, IPT_SO_SET_REPLACE, %p, 1)",
--		     fd, buffer);
-+	TEST(setsockopt(fd, IPPROTO_IP, IPT_SO_SET_REPLACE, buffer, 1));
-+
-+	if (TST_RET == -1 && TST_ERR == ENOPROTOOPT)
-+		tst_brk(TCONF | TTERRNO, res_fmt_str, fd, buffer);
-+
-+	result = (TST_RET == -1 && TST_ERR == EINVAL) ? TPASS : TFAIL;
-+	tst_res(result | TTERRNO, res_fmt_str, fd, buffer);
- 
- 	SAFE_CLOSE(fd);
- }
 -- 
 2.31.1
 
