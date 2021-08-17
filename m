@@ -1,108 +1,77 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Tue, 17 Aug 2021 14:49:23 +0800
-Subject: [LTP] [PATCH 6/7] epoll_create: Add test for epoll_create01
+Date: Tue, 17 Aug 2021 14:49:18 +0800
+Subject: [LTP] [PATCH 1/7] epoll_ctl: Add docparse formatting and cleanup
+ for epoll_ctl01
 In-Reply-To: <20210817064924.127970-1-xieziyao@huawei.com>
 References: <20210817064924.127970-1-xieziyao@huawei.com>
-Message-ID: <20210817064924.127970-7-xieziyao@huawei.com>
+Message-ID: <20210817064924.127970-2-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Verify that epoll_create return a nonnegative file descriptor on success.
+Add docparse formatting and fix warnings from checkpatch.pl for
+epoll_ctl01.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_create/.gitignore   |  1 +
- .../kernel/syscalls/epoll_create/Makefile     |  9 +++++
- .../syscalls/epoll_create/epoll_create01.c    | 40 +++++++++++++++++++
- 4 files changed, 51 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_create/.gitignore
- create mode 100644 testcases/kernel/syscalls/epoll_create/Makefile
- create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create01.c
+ .../kernel/syscalls/epoll_ctl/epoll_ctl01.c   | 28 +++++++++----------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f6fe140b2..2540905a0 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -156,6 +156,7 @@ dup205 dup205
- dup3_01 dup3_01
- dup3_02 dup3_02
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+index e199ac6ac..099a0f8dd 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+@@ -4,25 +4,22 @@
+  * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+  */
 
-+epoll_create01 epoll_create01
- epoll_create1_01 epoll_create1_01
- epoll_create1_02 epoll_create1_02
- epoll01 epoll-ltp
-diff --git a/testcases/kernel/syscalls/epoll_create/.gitignore b/testcases/kernel/syscalls/epoll_create/.gitignore
-new file mode 100644
-index 000000000..0ed4d940a
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/.gitignore
-@@ -0,0 +1 @@
-+epoll_create01
-diff --git a/testcases/kernel/syscalls/epoll_create/Makefile b/testcases/kernel/syscalls/epoll_create/Makefile
-new file mode 100644
-index 000000000..0e0d8c56f
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
-+# Author: Xie Ziyao <xieziyao@huawei.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
-new file mode 100644
-index 000000000..53cb1dfe1
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
-+ * Author: Xie Ziyao <xieziyao@huawei.com>
-+ */
-+
+-/*
+- * Test Name: epoll_ctl01.c
 +/*\
 + * [Description]
-+ *
-+ * Verify that epoll_create return a nonnegative file descriptor on success.
-+ *
-+ * The size argument informed the kernel of the number of file descriptors
-+ * that the caller expected to add to the epoll instance, but it is no longer
-+ * required.
-+ */
-+
+  *
+- * Description:
+- *    Testcase to check the basic functionality of the epoll_ctl(2).
+- * 1) when epoll_ctl(2) succeeds to register fd on the epoll instance and
+- *    associates event with fd, epoll_wait(2) will get registered fd and
+- *    event correctly.
+- * 2) when epoll_ctl(2) succeeds to chage event which is related to fd,
+- *    epoll_wait(2) will get chaged event correctly.
+- * 3) when epoll_ctl(2) succeeds to deregister fd from the epoll instance
+- *    epoll_wait(2) won't get deregistered fd and event.
++ * Check the basic functionality of the epoll_ctl:
+  *
++ * - When epoll_ctl succeeds to register fd on the epoll instance and associates
++ * event with fd, epoll_wait will get registered fd and event correctly.
++ * - When epoll_ctl succeeds to change event which is related to fd, epoll_wait
++ * will get changed event correctly.
++ * - When epoll_ctl succeeds to deregister fd from the epoll instance epoll_wait
++ * won't get deregistered fd and event.
+  */
+
+-#include <sys/epoll.h>
+ #include <poll.h>
+-#include <string.h>
+-#include <errno.h>
 +#include <sys/epoll.h>
 +
-+#include "tst_test.h"
-+#include "lapi/epoll.h"
-+#include "lapi/syscalls.h"
+ #include "tst_test.h"
+
+ static int epfd;
+@@ -88,9 +85,10 @@ static void check_epoll_ctl(int opt, int exp_num)
+
+ 	while (events) {
+ 		int events_matched = 0;
+-		memset(res_evs, 0, sizeof(res_evs));
+
++		memset(res_evs, 0, sizeof(res_evs));
+ 		res = epoll_wait(epfd, res_evs, 2, -1);
 +
-+static int tc[] = {1, INT_MAX};
-+
-+static void run(unsigned int n)
-+{
-+	int fd;
-+
-+	fd = tst_syscall(__NR_epoll_create, tc[n]);
-+	if (fd < 0)
-+		tst_brk(TFAIL | TERRNO, "epoll_create(%d) failed", tc[n]);
-+	tst_res(TPASS, "epoll_create(%d)", tc[n]);
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tc),
-+	.test = run,
-+};
+ 		if (res <= 0) {
+ 			tst_res(TFAIL | TERRNO, "epoll_wait() returned %i",
+ 				res);
 --
 2.17.1
 
