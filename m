@@ -1,54 +1,51 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Tue, 17 Aug 2021 14:49:20 +0800
-Subject: [LTP] [PATCH 3/7] epoll_ctl: Add test for epoll_ctl03
+Date: Tue, 17 Aug 2021 14:49:24 +0800
+Subject: [LTP] [PATCH 7/7] epoll_create: Add test for epoll_create02
 In-Reply-To: <20210817064924.127970-1-xieziyao@huawei.com>
 References: <20210817064924.127970-1-xieziyao@huawei.com>
-Message-ID: <20210817064924.127970-4-xieziyao@huawei.com>
+Message-ID: <20210817064924.127970-8-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check that epoll_ctl returns zero with different combinations of events on
-success.
+Verify that epoll_create returns -1 and set errno to EINVAL if size is
+not positive.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
  runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_ctl/.gitignore      |  5 +-
- .../kernel/syscalls/epoll_ctl/epoll_ctl03.c   | 75 +++++++++++++++++++
- 3 files changed, 79 insertions(+), 2 deletions(-)
- create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
+ .../kernel/syscalls/epoll_create/.gitignore   |  1 +
+ .../syscalls/epoll_create/epoll_create02.c    | 37 +++++++++++++++++++
+ 3 files changed, 39 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create02.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7d308dcec..b28d19ac7 100644
+index 2540905a0..d5a1e86e8 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -160,6 +160,7 @@ epoll_create1_01 epoll_create1_01
+@@ -157,6 +157,7 @@ dup3_01 dup3_01
+ dup3_02 dup3_02
+
+ epoll_create01 epoll_create01
++epoll_create02 epoll_create02
+ epoll_create1_01 epoll_create1_01
+ epoll_create1_02 epoll_create1_02
  epoll01 epoll-ltp
- epoll_ctl01 epoll_ctl01
- epoll_ctl02 epoll_ctl02
-+epoll_ctl03 epoll_ctl03
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
- epoll_wait03 epoll_wait03
-diff --git a/testcases/kernel/syscalls/epoll_ctl/.gitignore b/testcases/kernel/syscalls/epoll_ctl/.gitignore
-index 634470a06..2b50d924c 100644
---- a/testcases/kernel/syscalls/epoll_ctl/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_ctl/.gitignore
-@@ -1,2 +1,3 @@
--/epoll_ctl01
--/epoll_ctl02
-+epoll_ctl01
-+epoll_ctl02
-+epoll_ctl03
-diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
+diff --git a/testcases/kernel/syscalls/epoll_create/.gitignore b/testcases/kernel/syscalls/epoll_create/.gitignore
+index 0ed4d940a..5c16cfa8c 100644
+--- a/testcases/kernel/syscalls/epoll_create/.gitignore
++++ b/testcases/kernel/syscalls/epoll_create/.gitignore
+@@ -1 +1,2 @@
+ epoll_create01
++epoll_create02
+diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create02.c b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
 new file mode 100644
-index 000000000..f80bef93e
+index 000000000..bbc493906
 --- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
-@@ -0,0 +1,75 @@
++++ b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
+@@ -0,0 +1,37 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
@@ -58,71 +55,33 @@ index 000000000..f80bef93e
 +/*\
 + * [Description]
 + *
-+ * Check that epoll_ctl returns zero with different combinations of events on
-+ * success.
++ * Verify that epoll_create returns -1 and set errno to EINVAL if size is not
++ * positive.
 + */
 +
-+#include <poll.h>
 +#include <sys/epoll.h>
 +
 +#include "tst_test.h"
++#include "lapi/epoll.h"
++#include "lapi/syscalls.h"
 +
-+#define WIDTH_EPOLL_EVENTS 256
++static struct test_case_t {
++	int size;
++	int exp_err;
++} tc[] = {
++	{0, EINVAL},
++	{-1, EINVAL}
++};
 +
-+static int epfd, fds[2];
-+static struct epoll_event events = {.events = EPOLLIN};
-+
-+static void run_all(void)
++static void run(unsigned int n)
 +{
-+	unsigned int index, events_bitmap;
-+
-+	for (index = 0; index < WIDTH_EPOLL_EVENTS; index++) {
-+		events_bitmap = ((EPOLLIN * ((index & 0x01) >> 0)) |
-+				(EPOLLOUT * ((index & 0x02) >> 1)) |
-+				(EPOLLPRI * ((index & 0x04) >> 2)) |
-+				(EPOLLERR * ((index & 0x08) >> 3)) |
-+				(EPOLLHUP * ((index & 0x10) >> 4)) |
-+				(EPOLLET * ((index & 0x20) >> 5)) |
-+				(EPOLLONESHOT * ((index & 0x40) >> 6)) |
-+				(EPOLLRDHUP * ((index & 0x80) >> 7)));
-+
-+		events.events = events_bitmap;
-+		TST_EXP_PASS(epoll_ctl(epfd, EPOLL_CTL_MOD, fds[0], &events),
-+			     "epoll_ctl(..., EPOLL_CTL_MOD, ...) with events.events=%x",
-+			     events.events);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	epfd = epoll_create(1);
-+	if (epfd == -1)
-+		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
-+
-+	SAFE_PIPE(fds);
-+	events.data.fd = fds[0];
-+
-+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &events))
-+		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (epfd)
-+		SAFE_CLOSE(epfd);
-+
-+	if (fds[0])
-+		SAFE_CLOSE(fds[0]);
-+
-+	if (fds[1])
-+		SAFE_CLOSE(fds[1]);
++	TST_EXP_FAIL(tst_syscall(__NR_epoll_create, tc[n].size),
++		     tc[n].exp_err, "create(%d)", tc[n].size);
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_all,
-+	.min_kver = "2.6.17",
++	.tcnt = ARRAY_SIZE(tc),
++	.test = run,
 +};
 --
 2.17.1
