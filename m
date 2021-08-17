@@ -1,88 +1,44 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Tue, 17 Aug 2021 14:49:24 +0800
-Subject: [LTP] [PATCH 7/7] epoll_create: Add test for epoll_create02
-In-Reply-To: <20210817064924.127970-1-xieziyao@huawei.com>
-References: <20210817064924.127970-1-xieziyao@huawei.com>
-Message-ID: <20210817064924.127970-8-xieziyao@huawei.com>
+Date: Tue, 17 Aug 2021 14:49:17 +0800
+Subject: [LTP] [PATCH 0/7] epoll: Add more basic test for epoll_{create,
+ create1, ctl}
+Message-ID: <20210817064924.127970-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Verify that epoll_create returns -1 and set errno to EINVAL if size is
-not positive.
+Xie Ziyao (7):
+  epoll_ctl: Add docparse formatting and cleanup for epoll_ctl01
+  epoll_ctl: Add docparse formatting and cleanup for epoll_ctl02
+  epoll_ctl: Add test for epoll_ctl03
+  epoll_create1: Add docparse formatting and cleanup for
+    epoll_create1_01
+  epoll_create1: Add test for epoll_create1_02
+  epoll_create: Add test for epoll_create01
+  epoll_create: Add test for epoll_create02
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_create/.gitignore   |  1 +
- .../syscalls/epoll_create/epoll_create02.c    | 37 +++++++++++++++++++
- 3 files changed, 39 insertions(+)
+ runtest/syscalls                              |  4 +
+ .../kernel/syscalls/epoll_create/.gitignore   |  2 +
+ .../kernel/syscalls/epoll_create/Makefile     |  9 ++
+ .../syscalls/epoll_create/epoll_create01.c    | 40 +++++++++
+ .../syscalls/epoll_create/epoll_create02.c    | 37 ++++++++
+ .../kernel/syscalls/epoll_create1/.gitignore  |  3 +-
+ .../syscalls/epoll_create1/epoll_create1_01.c | 53 ++++++-----
+ .../syscalls/epoll_create1/epoll_create1_02.c | 38 ++++++++
+ .../kernel/syscalls/epoll_ctl/.gitignore      |  5 +-
+ .../kernel/syscalls/epoll_ctl/epoll_ctl01.c   | 28 +++---
+ .../kernel/syscalls/epoll_ctl/epoll_ctl02.c   | 87 +++++++------------
+ .../kernel/syscalls/epoll_ctl/epoll_ctl03.c   | 75 ++++++++++++++++
+ 12 files changed, 280 insertions(+), 101 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/epoll_create/.gitignore
+ create mode 100644 testcases/kernel/syscalls/epoll_create/Makefile
+ create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create01.c
  create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create02.c
+ create mode 100644 testcases/kernel/syscalls/epoll_create1/epoll_create1_02.c
+ create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2540905a0..d5a1e86e8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -157,6 +157,7 @@ dup3_01 dup3_01
- dup3_02 dup3_02
-
- epoll_create01 epoll_create01
-+epoll_create02 epoll_create02
- epoll_create1_01 epoll_create1_01
- epoll_create1_02 epoll_create1_02
- epoll01 epoll-ltp
-diff --git a/testcases/kernel/syscalls/epoll_create/.gitignore b/testcases/kernel/syscalls/epoll_create/.gitignore
-index 0ed4d940a..5c16cfa8c 100644
---- a/testcases/kernel/syscalls/epoll_create/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_create/.gitignore
-@@ -1 +1,2 @@
- epoll_create01
-+epoll_create02
-diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create02.c b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
-new file mode 100644
-index 000000000..bbc493906
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
-+ * Author: Xie Ziyao <xieziyao@huawei.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that epoll_create returns -1 and set errno to EINVAL if size is not
-+ * positive.
-+ */
-+
-+#include <sys/epoll.h>
-+
-+#include "tst_test.h"
-+#include "lapi/epoll.h"
-+#include "lapi/syscalls.h"
-+
-+static struct test_case_t {
-+	int size;
-+	int exp_err;
-+} tc[] = {
-+	{0, EINVAL},
-+	{-1, EINVAL}
-+};
-+
-+static void run(unsigned int n)
-+{
-+	TST_EXP_FAIL(tst_syscall(__NR_epoll_create, tc[n].size),
-+		     tc[n].exp_err, "create(%d)", tc[n].size);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tc),
-+	.test = run,
-+};
 --
 2.17.1
 
