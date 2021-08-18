@@ -1,55 +1,44 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Wed, 18 Aug 2021 09:57:09 +0000
-Subject: [LTP] [PATCH] userns/userns08.c: Enable userns in
- max_user_namespaces file
-In-Reply-To: <1628144855-5924-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1628144855-5924-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <611CD984.4080706@fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Aug 2021 12:01:35 +0200
+Subject: [LTP] [PATCH 3/3] commands: Drop which01.sh
+In-Reply-To: <8589e81b-4c45-e62e-297a-ef6a3cd548dc@jv-coder.de>
+References: <20210818091224.27578-1-pvorel@suse.cz>
+ <20210818091224.27578-4-pvorel@suse.cz>
+ <8589e81b-4c45-e62e-297a-ef6a3cd548dc@jv-coder.de>
+Message-ID: <YRzaf3jq02zM306Y@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Hi Joerg,
 
-My machine's time is wrong, so I sent this patch today but the email's
-date is 8.5(It may lose your attention).
+> Hi Petr,
 
-Best Regards
-Yang Xu
-> On old distros ie centos7, the default value of max_user_namespaces is set to 0.
-> Enable it by increasing this value.
-> 
-> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
-> ---
->   testcases/kernel/containers/userns/userns08.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
-> index aedfc6c4e..0910ea7d4 100644
-> --- a/testcases/kernel/containers/userns/userns08.c
-> +++ b/testcases/kernel/containers/userns/userns08.c
-> @@ -120,6 +120,11 @@ static void setup(void)
-> 
->   	SAFE_WRITE(fd, 1, "\n", 1);
->   	SAFE_CLOSE(fd);
-> +
-> +	/* The default value of max_user_namespaces is set to 0 on some distros,
-> +	 * We need to change the default value to call clone().
-> +	 */
-> +	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
->   }
-> 
->   static struct tst_test test = {
-> @@ -133,6 +138,10 @@ static struct tst_test test = {
->   		"CONFIG_USER_NS",
->   		NULL
->   	},
-> +	.save_restore = (const char * const[]) {
-> +		"?/proc/sys/user/max_user_namespaces",
-> +		NULL,
-> +	},
->   	.tags = (const struct tst_tag[]) {
->   		{"linux-git", "d2f007dbe7e4"},
->   		{"CVE", "CVE-2018-18955"},
+> On 8/18/2021 11:12 AM, Petr Vorel wrote:
+> > "which" has been discontinued after 2.21 release in 2015 due this (git
+> > repository is empty [1]).
+> I am a bit against dropping this. which is widely used and I think as long
+> as it is available, it should behave as expected.
+First, thanks for your review of all patchset.
+
+I should have marked this commit as RFC. I have no problem to postpone
+deleting this test fairly long time (even for 1-2 years).
+
+But, if we really want to test basic shell commands (IMHO they should be part of
+particular shell implementation code and most of these projects have it: e.g.
+bash, busybox, coreutils, util-linux, ...), in this particular test it'd be more
+useful to test "type" or "command" than "which", which code hasn't been changed
+since 2015. Looking into openSUSE code [1], there is no patch on "which"
+command.
+
+Also, I might be a bit too aggressive when removing tests for legacy code, but
+in this case Debian has deprecated "which" from it's basic tools [2], proving
+there is a push to use "type" / "command -v" at least in some distros.
+
+Kind regards,
+Petr
+
+[1] https://build.opensuse.org/package/show/Base:System/which
+[2] https://salsa.debian.org/debian/debianutils/-/commit/3a8dd10b4502f7bae8fc6973c13ce23fc9da7efb
