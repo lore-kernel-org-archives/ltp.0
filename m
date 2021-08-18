@@ -1,35 +1,48 @@
-From: Egor Petrov <egor.petrov@oracle.com>
-Date: Wed, 18 Aug 2021 14:04:40 +0300
-Subject: [LTP] [PATCH] Fixed SELinux path check in tst_get_enforce()
-Message-ID: <20210818110440.285-1-egor.petrov@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Aug 2021 14:26:12 +0200
+Subject: [LTP] [PATCH 1/1] doc: Specify linux-stable-git rule
+In-Reply-To: <90123400-26a0-706d-7bb4-e4a8e962f669@suse.cz>
+References: <20210715065805.14086-1-pvorel@suse.cz> <YQq3s+33ceaJmvR7@pevik>
+ <90123400-26a0-706d-7bb4-e4a8e962f669@suse.cz>
+Message-ID: <YRz8ZH1RbF8qaNPs@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_get_enforce() ignored the output from tst_get_selinux_dir() and
-returned an empty string on systems with valid SELinux path while
-expected to return path to the SELinux enforce. Fixed it.
+Hi Martin,
 
-Signed-off-by: Egor Petrov <egor.petrov@oracle.com>
----
- testcases/lib/tst_security.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On 04. 08. 21 17:52, Petr Vorel wrote:
+> > Hi all,
 
-diff --git a/testcases/lib/tst_security.sh b/testcases/lib/tst_security.sh
-index 7ae6ddb61..05640234e 100644
---- a/testcases/lib/tst_security.sh
-+++ b/testcases/lib/tst_security.sh
-@@ -135,7 +135,7 @@ tst_get_selinux_dir()
- tst_get_enforce()
- {
- 	local dir=$(tst_get_selinux_dir)
--	[ -z "$dir" ] || return
-+	[ -z "$dir" ] && return
- 
- 	local f="$dir/enforce"
- 	[ -f "$f" ] && echo "$f"
--- 
-2.32.0.windows.2
+> >> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> >> ---
+> >>  doc/c-test-api.txt | 4 ++++
+> >>  1 file changed, 4 insertions(+)
 
+> >> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> >> index 45784195b..9d26a483d 100644
+> >> --- a/doc/c-test-api.txt
+> >> +++ b/doc/c-test-api.txt
+> >> @@ -2205,6 +2205,10 @@ struct tst_test test = {
+> >>  };
+> >>  -------------------------------------------------------------------------------
+
+> >> +NOTE: We don't track all backports to stable kernel but just those which are
+> >> +      stable branch specific (unique), i.e. no commit in mainline. Example of
+> >> +      commits: c4a23c852e80, cac68d12c531.
+> >> +
+> >>  Glibc git commit in a regression test for a glibc bug:
+> >>  [source,c]
+> >>  -------------------------------------------------------------------------------
+> > Any comment on this? I should have marked it as [RFC].
+
+> Looks good to me.
+
+> Acked-by: Martin Doucha <mdoucha@suse.cz>
+
+Thx, merged!
+
+Kind regards,
+Petr
