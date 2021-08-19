@@ -1,48 +1,22 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Aug 2021 14:26:12 +0200
-Subject: [LTP] [PATCH 1/1] doc: Specify linux-stable-git rule
-In-Reply-To: <90123400-26a0-706d-7bb4-e4a8e962f669@suse.cz>
-References: <20210715065805.14086-1-pvorel@suse.cz> <YQq3s+33ceaJmvR7@pevik>
- <90123400-26a0-706d-7bb4-e4a8e962f669@suse.cz>
-Message-ID: <YRz8ZH1RbF8qaNPs@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 19 Aug 2021 11:40:55 +0800
+Subject: [LTP] [PATCH] Fixed SELinux path check in tst_get_enforce()
+In-Reply-To: <20210818110440.285-1-egor.petrov@oracle.com>
+References: <20210818110440.285-1-egor.petrov@oracle.com>
+Message-ID: <CAEemH2cC36KjDTu7Z_WPxxcP+66EUT_8gtGU9XHQ-3gV46i47w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi Egor,
 
-> On 04. 08. 21 17:52, Petr Vorel wrote:
-> > Hi all,
+Patch applied, thanks!
 
-> >> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> >> ---
-> >>  doc/c-test-api.txt | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-
-> >> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-> >> index 45784195b..9d26a483d 100644
-> >> --- a/doc/c-test-api.txt
-> >> +++ b/doc/c-test-api.txt
-> >> @@ -2205,6 +2205,10 @@ struct tst_test test = {
-> >>  };
-> >>  -------------------------------------------------------------------------------
-
-> >> +NOTE: We don't track all backports to stable kernel but just those which are
-> >> +      stable branch specific (unique), i.e. no commit in mainline. Example of
-> >> +      commits: c4a23c852e80, cac68d12c531.
-> >> +
-> >>  Glibc git commit in a regression test for a glibc bug:
-> >>  [source,c]
-> >>  -------------------------------------------------------------------------------
-> > Any comment on this? I should have marked it as [RFC].
-
-> Looks good to me.
-
-> Acked-by: Martin Doucha <mdoucha@suse.cz>
-
-Thx, merged!
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210819/f956c6a0/attachment-0001.htm>
