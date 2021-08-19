@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Aug 2021 17:55:59 +0200
-Subject: [LTP] [PATCH v4 0/4] syscalls/msgstress: fixes for small systems
-In-Reply-To: <dfe1bdd0-3131-ca3f-5a06-6ba427681f65@canonical.com>
+Date: Thu, 19 Aug 2021 17:58:33 +0200
+Subject: [LTP] [PATCH v4 3/4] syscalls/msgstress03: fix fork failure on
+ small memory systems
+In-Reply-To: <20210629121047.100391-4-krzysztof.kozlowski@canonical.com>
 References: <20210629121047.100391-1-krzysztof.kozlowski@canonical.com>
- <dfe1bdd0-3131-ca3f-5a06-6ba427681f65@canonical.com>
-Message-ID: <YR5/D1AO14T9f1Kt@yuki>
+ <20210629121047.100391-4-krzysztof.kozlowski@canonical.com>
+Message-ID: <YR5/qcQyAiFjmVR0@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,10 +13,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Any comments on this set?
+> +	free_pids = tst_get_free_pids(cleanup);
+> +	if (free_pids < 0) {
+> +		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
+> +	} else if (!free_pids) {
+> +		tst_brkm(TBROK, cleanup, "No free pids");
+> +	}
 
-Sorry for the delay. I've pushed the first two patches, I will comment
-the rest.
+This looks like copy&paste from msgstress04.c, can we please move this
+snippet to the library function instead?
+
+> +	if (nprocs >= free_pids) {
+> +		tst_resm(TINFO,
+> +			 "Requested number of processes higher than limit (%d > %d), "
+> +			 "setting to %d", nprocs, free_pids, free_pids);
+> +		nprocs = free_pids;
+> +	}
+> +
+>  	srand(getpid());
+>  	tid = -1;
+>  
+> -- 
+> 2.27.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
