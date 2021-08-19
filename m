@@ -1,56 +1,74 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 19 Aug 2021 11:59:22 +0800
-Subject: [LTP] [PATCH 1/3] tst_test.sh: Simplify tst_cmd_available()
-In-Reply-To: <YRzVpQT1zYOvxlWe@pevik>
+Date: Thu, 19 Aug 2021 13:49:59 +0800
+Subject: [LTP] [PATCH 3/3] commands: Drop which01.sh
+In-Reply-To: <YRzaf3jq02zM306Y@pevik>
 References: <20210818091224.27578-1-pvorel@suse.cz>
- <20210818091224.27578-2-pvorel@suse.cz>
- <7ac7a1d6-2d97-f8f5-8d60-040eb0753681@jv-coder.de> <YRzVpQT1zYOvxlWe@pevik>
-Message-ID: <CAEemH2es_CzWugkyOworVLFe+ZbtFxpYXK5HjdE_g_w4wHvzVQ@mail.gmail.com>
+ <20210818091224.27578-4-pvorel@suse.cz>
+ <8589e81b-4c45-e62e-297a-ef6a3cd548dc@jv-coder.de> <YRzaf3jq02zM306Y@pevik>
+Message-ID: <CAEemH2eyyT4STv1NyUnc1hp39z-x3vsetc8z3hVKqs=uaMqGMA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 18, 2021 at 5:41 PM Petr Vorel <pvorel@suse.cz> wrote:
+On Wed, Aug 18, 2021 at 6:01 PM Petr Vorel <pvorel@suse.cz> wrote:
 
 > Hi Joerg,
 >
-> ...
-> > > +   type $1 >/dev/null 2>&1
-> > I guess there was a reason, why command was used here in the first place.
-> > Iirc type is often a shell builtin, that can have different behavior,
-> while
-> > command -v is posix and should be extremely portable.
-> > So maybe it is better to use "command -v" instead of type here. I hope
-> most
-> > distributions have a command-command...
-> Well, I wrote that code, in dba1d50cb :). IMHO both are POSIX and both are
-> shell
-> builtin.
+> > Hi Petr,
+>
+> > On 8/18/2021 11:12 AM, Petr Vorel wrote:
+> > > "which" has been discontinued after 2.21 release in 2015 due this (git
+> > > repository is empty [1]).
+> > I am a bit against dropping this. which is widely used and I think as
+> long
+> > as it is available, it should behave as expected.
+> First, thanks for your review of all patchset.
+>
+> I should have marked this commit as RFC. I have no problem to postpone
+> deleting this test fairly long time (even for 1-2 years).
 >
 
-Another reason, I guess, is `command -v ` looks to match the function name
-more:).
-But it depends on you, I'm OK with any of them.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
+I just have a look at which01.sh that is written by the new API and so far
+so good.
+Maybe we can reserve it for a bit long time.
 
 
 
 >
-> I tested it on all implementations and the only difference is that both
-> "type"
-> and "command -v" on dash and busybox sh returns 127 on missing command,
-> the rest
-> return 1.
+> But, if we really want to test basic shell commands (IMHO they should be
+> part of
+> particular shell implementation code and most of these projects have it:
+> e.g.
+> bash, busybox, coreutils, util-linux, ...), in this particular test it'd
+> be more
+> useful to test "type" or "command" than "which", which code hasn't been
+> changed
+> since 2015. Looking into openSUSE code [1], there is no patch on "which"
+> command.
 >
-
-Sounds great!
+> Also, I might be a bit too aggressive when removing tests for legacy code,
+> but
+> in this case Debian has deprecated "which" from it's basic tools [2],
+> proving
+> there is a push to use "type" / "command -v" at least in some distros.
+>
+> Kind regards,
+> Petr
+>
+> [1] https://build.opensuse.org/package/show/Base:System/which
+> [2]
+> https://salsa.debian.org/debian/debianutils/-/commit/3a8dd10b4502f7bae8fc6973c13ce23fc9da7efb
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210819/e923ea43/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210819/a65632c2/attachment.htm>
