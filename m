@@ -1,43 +1,19 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 20 Aug 2021 12:21:19 +0200
-Subject: [LTP] [PATCH 3/7] syscalls/fanotify20: Validate incoming FID in
- FAN_FS_ERROR
-In-Reply-To: <CAOQ4uxj_WwDPxZv0nr9+Hh+pim6+2onaBdFq_BR-qK=xz+8yUg@mail.gmail.com>
-References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-4-krisman@collabora.com>
- <CAOQ4uxjMfJM4FM4tWJWgjbK4a2K1hNJdEBRvwQTh9+5su2N0Tw@mail.gmail.com>
- <87fsvphksu.fsf@collabora.com>
- <CAOQ4uxj_WwDPxZv0nr9+Hh+pim6+2onaBdFq_BR-qK=xz+8yUg@mail.gmail.com>
-Message-ID: <YR+CH2+GYzwU2/SG@pevik>
+Date: Fri, 20 Aug 2021 12:37:22 +0200
+Subject: [LTP] [PATCH 1/3] network/tcp_cc: check sch_netem driver in the
+ lib
+In-Reply-To: <20210804120446.32835-1-aleksei.kodanev@bell-sw.com>
+References: <20210804120446.32835-1-aleksei.kodanev@bell-sw.com>
+Message-ID: <YR+F4uxJgcx4+q9B@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi Alexey,
 
-> No problem. That's what review is for ;-)
-
-> BTW, unless anyone is specifically interested I don't think there
-> is a reason to re post the test patches before the submission request.
-> Certainly not for the small fixes that I requested.
-
-> I do request that you post a link to a branch with the fixed test
-> so that we can experiment with the kernel patches.
-
-> I've also CC'ed Matthew who may want to help with review of the test
-> and man page that you posted in the cover letter [1].
-
-@Amir Thanks a lot for your review, agree with all you mentioned.
-
-@Gabriel Thanks for your contribution. I'd also consider squashing some of the
-commits.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
-
-> Thanks,
-> Amir.
-
-> [1] https://lore.kernel.org/linux-ext4/20210802214645.2633028-1-krisman@collabora.com/T/#m9cf637c6aca94e28390f61deac5a53afbc9e88ae
