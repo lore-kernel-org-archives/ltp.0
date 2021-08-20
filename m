@@ -1,75 +1,69 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Fri, 20 Aug 2021 12:00:26 +0200
-Subject: [LTP] [PATCH v5 1/3] lib/tst_pid: simplify error handling by
- callers of tst_get_free_pids()
+Date: Fri, 20 Aug 2021 12:00:27 +0200
+Subject: [LTP] [PATCH v5 2/3] syscalls/msgstress03: fix fork failure on
+ small memory systems
 In-Reply-To: <20210820100028.97487-1-krzysztof.kozlowski@canonical.com>
 References: <20210820100028.97487-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210820100028.97487-2-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210820100028.97487-3-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Handle errors of getting free pids directly in the library instead of
-tst_get_free_pids() caller.
+Running syscalls/msgstress03 on a system with less than ~4 GB of RAM fails:
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+    msgstress03    1  TFAIL  :  msgstress03.c:155: 	Fork failed (may be OK if under stress)
+
+In dmesg:
+
+    LTP: starting msgstress03
+    cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
+
+The reason is cgroups pid limit set by systemd user.slice.  The limit is
+set for login session, also for root user.  For example on 2 GB RAM
+machine it is set as:
+    /sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max:5207
+
+Read the maximum number of pids and adjust the test limit.  For 2 GB RAM
+machine with systemd this will result in:
+
+    msgstress03    0  TINFO  :  Found limit of processes 5056 (from /sys/fs/cgroup/pids/user.slice/user-1000.slice/pids.max)
+    msgstress03    0  TINFO  :  Requested number of processes higher than user session limit (10000 > 4556), setting to 4556
+
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- lib/tst_pid.c                                         | 9 ++++++---
- testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 6 ------
- 2 files changed, 6 insertions(+), 9 deletions(-)
+ testcases/kernel/syscalls/ipc/msgstress/msgstress03.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index c408172675a7..23753988ca57 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -107,15 +107,14 @@ int tst_get_free_pids_(void (*cleanup_fn) (void))
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+index 294b401b1b38..3cb70ab18a80 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+@@ -78,7 +78,7 @@ static void usage(void)
  
- 	f = popen("ps -eT | wc -l", "r");
- 	if (!f) {
--		tst_resm(TBROK, "Could not run 'ps' to calculate used " "pids");
-+		tst_brkm(TBROK, cleanup_fn, "Could not run 'ps' to calculate used pids");
- 		return -1;
- 	}
- 	rc = fscanf(f, "%i", &used_pids);
- 	pclose(f);
+ int main(int argc, char **argv)
+ {
+-	int i, j, ok, pid;
++	int i, j, ok, pid, free_pids;
+ 	int count, status;
+ 	struct sigaction act;
  
- 	if (rc != 1 || used_pids < 0) {
--		tst_resm(TBROK, "Could not read output of 'ps' to "
--			 "calculate used pids");
-+		tst_brkm(TBROK, cleanup_fn, "Could not read output of 'ps' to calculate used pids");
- 		return -1;
+@@ -109,6 +109,14 @@ int main(int argc, char **argv)
+ 		}
  	}
  
-@@ -128,5 +127,9 @@ int tst_get_free_pids_(void (*cleanup_fn) (void))
- 	/* max_pids contains the maximum PID + 1,
- 	 * used_pids contains used PIDs + 1,
- 	 * so this additional '1' is eliminated by the substraction */
-+	if (used_pids >= max_pids) {
-+		tst_brkm(TBROK, cleanup_fn, "No free pids");
-+		return 0;
++	free_pids = tst_get_free_pids(cleanup);
++	if (nprocs >= free_pids) {
++		tst_resm(TINFO,
++			 "Requested number of processes higher than limit (%d > %d), "
++			 "setting to %d", nprocs, free_pids, free_pids);
++		nprocs = free_pids;
 +	}
- 	return max_pids - used_pids;
- }
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-index f1c124990cb1..b9ebf9035c6d 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-@@ -413,12 +413,6 @@ void setup(void)
- 	tst_resm(TINFO, "Found %d available message queues", MSGMNI);
++
+ 	srand(getpid());
+ 	tid = -1;
  
- 	free_pids = tst_get_free_pids(cleanup);
--	if (free_pids < 0) {
--		tst_brkm(TBROK, cleanup, "Can't obtain free_pid count");
--	} else if (!free_pids) {
--		tst_brkm(TBROK, cleanup, "No free pids");
--	}
--
- 	/* We don't use more than a half of available pids.
- 	 * For each child we fork up to 2*maxnkids grandchildren. */
- 	maxnprocs = (free_pids / 2) / (1 + 2 * maxnkids);
 -- 
 2.30.2
 
