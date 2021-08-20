@@ -1,37 +1,30 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 20 Aug 2021 14:29:23 +0200
-Subject: [LTP] [PATCH 3/3] network/tst_net.sh: extend the pattern in
- tst_ping_opt_unsupported()
-In-Reply-To: <682fbc24-5b58-aacf-a3cc-8648ea52be33@bell-sw.com>
-References: <20210804120446.32835-1-aleksei.kodanev@bell-sw.com>
- <20210804120446.32835-3-aleksei.kodanev@bell-sw.com>
- <YR+H7ar8cYin8mHe@pevik>
- <682fbc24-5b58-aacf-a3cc-8648ea52be33@bell-sw.com>
-Message-ID: <YR+gIw3PNm7osPsJ@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 20 Aug 2021 14:44:31 +0200
+Subject: [LTP] [PATCH v4 3/4] syscalls/msgstress03: fix fork failure on
+ small memory systems
+In-Reply-To: <79cc6f86-1317-9044-147e-8c1bfa2efdd6@canonical.com>
+References: <20210629121047.100391-1-krzysztof.kozlowski@canonical.com>
+ <20210629121047.100391-4-krzysztof.kozlowski@canonical.com>
+ <YR5/qcQyAiFjmVR0@yuki> <YR6AlmzBA35qo81r@yuki>
+ <79cc6f86-1317-9044-147e-8c1bfa2efdd6@canonical.com>
+Message-ID: <YR+jr+cRL00GJz2h@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+> > And we do have a patchset that converts msgstress* to new library as
+> > well which merges msgstress03 and msgstress01. I will try to have a look
+> > into that as well.
+> > 
+> > http://patchwork.ozlabs.org/project/ltp/list/?series=233661
+> 
+> The question then would be who should rebase on whose work :)
 
-> Hi Petr,
-> On 20.08.2021 13:46, Petr Vorel wrote:
-> > Hi Alexey,
+Given that the patchset is not ready, I will push your fixes first.
 
-> >> -	ping $@ 2>&1 | grep -q "invalid option"
-> >> +	ping $@ 2>&1 | grep -qE "(invalid|unrecognized) option"
-
-> > Which implementation needs it? Both ping from iputils and busybox report
-> > "invalid option".
-
-
-> It's busybox/ping that is using musl libc getopt():
-> misc/getopt.c:			__getopt_msg(argv[0], ": unrecognized option: ", optchar, k);
-
-Ah, thx for info.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
