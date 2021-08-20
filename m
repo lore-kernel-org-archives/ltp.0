@@ -1,9 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 20 Aug 2021 12:59:14 +0200
-Subject: [LTP] [PATCH v2 1/2] shell: Add checkpoints api for new lib
-In-Reply-To: <20210812043807.3497492-1-lkml@jv-coder.de>
+Date: Fri, 20 Aug 2021 13:01:07 +0200
+Subject: [LTP] [PATCH v2 2/2] pec: Improve reliability
+In-Reply-To: <20210812043807.3497492-2-lkml@jv-coder.de>
 References: <20210812043807.3497492-1-lkml@jv-coder.de>
-Message-ID: <YR+LAmVDEUcZ51Wt@pevik>
+ <20210812043807.3497492-2-lkml@jv-coder.de>
+Message-ID: <YR+Lc8aBnK6KBOnW@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,19 +13,8 @@ To: ltp@lists.linux.it
 
 Hi Joerg,
 
-LGTM, good idea.
-
-But I'd rename $LTP_IPC_PATH to $TST_IPC_PATH to follow conventions to new API
-(There are also some LTP_* definitions in the legacy C API which were renamed as
-TST_* in the new API).
-
-
-> +	if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "${LTP_IPC_PATH}" ]; then
-nit (remove unnecessary {}):
-    if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "$TST_IPC_PATH" ]; then
-> +		rm ${LTP_IPC_PATH}
-and here:
-		rm $TST_IPC_PATH
+I suppose this one is superseded by adding volatile by Martin's fix in
+b1e7776bf ("connectors/pec_listener: Make exit_flag volatile")
 
 Kind regards,
 Petr
