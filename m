@@ -1,10 +1,10 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 23 Aug 2021 06:31:43 +0200
-Subject: [LTP] [PATCH v2 2/2] pec: Improve reliability
-In-Reply-To: <YR+Lc8aBnK6KBOnW@pevik>
+Date: Mon, 23 Aug 2021 06:36:05 +0200
+Subject: [LTP] [PATCH v2 1/2] shell: Add checkpoints api for new lib
+In-Reply-To: <YR+LAmVDEUcZ51Wt@pevik>
 References: <20210812043807.3497492-1-lkml@jv-coder.de>
- <20210812043807.3497492-2-lkml@jv-coder.de> <YR+Lc8aBnK6KBOnW@pevik>
-Message-ID: <d6443e3f-9859-82ff-7ba0-f8842cd2f437@jv-coder.de>
+ <YR+LAmVDEUcZ51Wt@pevik>
+Message-ID: <3b97b712-f9d3-c5d1-66ce-0f98f5f1cb4f@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,19 +13,27 @@ To: ltp@lists.linux.it
 
 Hi Petr,
 
-On 8/20/2021 1:01 PM, Petr Vorel wrote:
+On 8/20/2021 12:59 PM, Petr Vorel wrote:
 > Hi Joerg,
 >
-> I suppose this one is superseded by adding volatile by Martin's fix in
-> b1e7776bf ("connectors/pec_listener: Make exit_flag volatile")
-No, not at all.
-The first issue is a timing issue between the event generator -> kernel 
--> pec_listener,
-that cannot be fixed by a volatile, only by correct synchronization.
-The second issue is also unrelated.
+> LGTM, good idea.
+>
+> But I'd rename $LTP_IPC_PATH to $TST_IPC_PATH to follow conventions to new API
+> (There are also some LTP_* definitions in the legacy C API which were renamed as
+> TST_* in the new API).
+This would also require changing the C API, because the environment 
+variable is used for communicating with it.
+I we want this, I guess it could be done in another changeset.
+>
+>
+>> +	if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "${LTP_IPC_PATH}" ]; then
+> nit (remove unnecessary {}):
+Could be changed while merging.
+>      if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "$TST_IPC_PATH" ]; then
+>> +		rm ${LTP_IPC_PATH}
+> and here:
+> 		rm $TST_IPC_PATH
+>
 
-Martin's fix is only for the rare case, where the exit_flag could be 
-optimized out by the compiler,
-which would have made the event_listener run forever instead of terminating.
 
 Joerg
