@@ -1,72 +1,31 @@
-From: Leo Liang <ycliang@andestech.com>
-Date: Mon, 23 Aug 2021 11:21:15 +0800
-Subject: [LTP] [PATCH v6,
- 0/4] cgroup/cgroup_regression_test: Fix umount failure
-In-Reply-To: <20210804015053.GA21545@andestech.com>
-References: <20210804015053.GA21545@andestech.com>
-Message-ID: <YSMUK+St5DsIf9O/@ubuntu02>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 23 Aug 2021 06:31:43 +0200
+Subject: [LTP] [PATCH v2 2/2] pec: Improve reliability
+In-Reply-To: <YR+Lc8aBnK6KBOnW@pevik>
+References: <20210812043807.3497492-1-lkml@jv-coder.de>
+ <20210812043807.3497492-2-lkml@jv-coder.de> <YR+Lc8aBnK6KBOnW@pevik>
+Message-ID: <d6443e3f-9859-82ff-7ba0-f8842cd2f437@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Petr,
 
-A gentel ping.
-If there's any modification needs to be made, please let me know.
-Thanks!
+On 8/20/2021 1:01 PM, Petr Vorel wrote:
+> Hi Joerg,
+>
+> I suppose this one is superseded by adding volatile by Martin's fix in
+> b1e7776bf ("connectors/pec_listener: Make exit_flag volatile")
+No, not at all.
+The first issue is a timing issue between the event generator -> kernel 
+-> pec_listener,
+that cannot be fixed by a volatile, only by correct synchronization.
+The second issue is also unrelated.
 
-Best regards,
-Leo
+Martin's fix is only for the rare case, where the exit_flag could be 
+optimized out by the compiler,
+which would have made the event_listener run forever instead of terminating.
 
-On Wed, Aug 04, 2021 at 09:51:07AM +0800, Leo Liang wrote:
-> The test sequence
-> 	mount -t cgroup -o <controllers> <path>
-> 	mkdir <path>/<dir>
-> 	rmdir <path>/<dir>
-> 	umount <path>
-> 	mount -t cgroup -o <controllers> <path>
-> would easily fail at the last mount with -EBUSY on certain platform.
-> 
-> Adding a little delay between "rmdir" and "umount" could fix the problem,
-> so use tst_umount API instead of umount in "rmdir, umount" sequence.
-> 
-> tst_umount API is ambiguous when checking for whether a device is mounted.
-> Modify it to check an actual mount point instead of device
-> and reject anything that does not start with '/' as an argument.
-> 
-> Changes since v1
-> - Use "tst_umount" instead of "sync" as suggested
-> - Make "tst_umount" work with argument that has terminating slash
-> 
-> Changes since v2
-> - Filter out the trailing slash instead of using mountpoint command
-> 
-> Changes since v3
-> - Filter out the trailing slash only in grep command
-> - Add comment in the test script
-> 
-> Changes since v4
-> - Remove unnecessary stderr redirection
-> 
-> Changes since v5
-> - Make tst_umount to only accept absolute mount point as an argument
-> - Modify tests that use tst_umount to pass mount point in instead of device
-> 
-> Leo Yu-Chi Liang (4):
->   lib: tst_umount: umount a mount point instead of device
->   doc: change the default behavior of tst_umount
->   cgroup/cgroup_regression_test: Fix umount failure
->   Make argument to tst_umount an absolute path
-> 
->  doc/shell-test-api.txt                         |  8 ++++----
->  .../cgroup/cgroup_regression_test.sh           | 10 +++++-----
->  .../fs/quota_remount/quota_remount_test01.sh   |  2 +-
->  .../integrity/ima/tests/evm_overlay.sh         |  2 +-
->  .../tracing/dynamic_debug/dynamic_debug01.sh   |  2 +-
->  testcases/lib/tst_test.sh                      | 18 +++++++++++-------
->  6 files changed, 23 insertions(+), 19 deletions(-)
-> 
-> -- 
-> 2.17.0
+Joerg
