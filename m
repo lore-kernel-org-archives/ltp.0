@@ -1,21 +1,21 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 23 Aug 2021 15:54:10 +0200
+Date: Mon, 23 Aug 2021 15:58:25 +0200
 Subject: [LTP] [PATCH v6,
- 2/4] doc: change the default behavior of tst_umount
-In-Reply-To: <20210804015336.GA22694@andestech.com>
-References: <20210804015336.GA22694@andestech.com>
-Message-ID: <YSOognf90zkmAW2a@pevik>
+ 4/4] Make argument to tst_umount an absolute path
+In-Reply-To: <20210804015539.GA22997@andestech.com>
+References: <20210804015539.GA22997@andestech.com>
+Message-ID: <YSOpgaQUx4cmuxpb@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Leo,
 
-> Modify tst_umount to umount TST_MNTPOINT by default.
-nit: I'd add "in previous commit"
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+unfortunately not all tests has been fixed.
+df01.sh uses tst_umount as a cleanup function with the default TST_MNTPOINT,
+thus we should change it => I'll comment that in the first patch.
 
 Kind regards,
 Petr
