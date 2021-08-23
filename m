@@ -1,45 +1,72 @@
-From: Matthew Bobrowski <repnop@google.com>
-Date: Sat, 21 Aug 2021 07:58:07 +1000
-Subject: [LTP] [PATCH 3/7] syscalls/fanotify20: Validate incoming FID in
- FAN_FS_ERROR
-In-Reply-To: <YR+CH2+GYzwU2/SG@pevik>
-References: <20210802214645.2633028-1-krisman@collabora.com>
- <20210802214645.2633028-4-krisman@collabora.com>
- <CAOQ4uxjMfJM4FM4tWJWgjbK4a2K1hNJdEBRvwQTh9+5su2N0Tw@mail.gmail.com>
- <87fsvphksu.fsf@collabora.com>
- <CAOQ4uxj_WwDPxZv0nr9+Hh+pim6+2onaBdFq_BR-qK=xz+8yUg@mail.gmail.com>
- <YR+CH2+GYzwU2/SG@pevik>
-Message-ID: <YSAlb7XGUNoc73ZJ@google.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Mon, 23 Aug 2021 11:21:15 +0800
+Subject: [LTP] [PATCH v6,
+ 0/4] cgroup/cgroup_regression_test: Fix umount failure
+In-Reply-To: <20210804015053.GA21545@andestech.com>
+References: <20210804015053.GA21545@andestech.com>
+Message-ID: <YSMUK+St5DsIf9O/@ubuntu02>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hey Gabriel,
+Hi,
 
-On Fri, Aug 20, 2021 at 12:21:19PM +0200, Petr Vorel wrote:
-> Hi all,
-> 
-> > No problem. That's what review is for ;-)
-> 
-> > BTW, unless anyone is specifically interested I don't think there
-> > is a reason to re post the test patches before the submission request.
-> > Certainly not for the small fixes that I requested.
-> 
-> > I do request that you post a link to a branch with the fixed test
-> > so that we can experiment with the kernel patches.
-> 
-> > I've also CC'ed Matthew who may want to help with review of the test
-> > and man page that you posted in the cover letter [1].
-> 
-> @Amir Thanks a lot for your review, agree with all you mentioned.
-> 
-> @Gabriel Thanks for your contribution. I'd also consider squashing some of the
-> commits.
+A gentel ping.
+If there's any modification needs to be made, please let me know.
+Thanks!
 
-Is the FAN_FS_ERROR feature to be included within the 5.15 release? If so,
-I may need to do some shuffling around as these LTP tests collide with the
-ones I author for the FAN_REPORT_PIDFD series.
+Best regards,
+Leo
 
-/M
+On Wed, Aug 04, 2021 at 09:51:07AM +0800, Leo Liang wrote:
+> The test sequence
+> 	mount -t cgroup -o <controllers> <path>
+> 	mkdir <path>/<dir>
+> 	rmdir <path>/<dir>
+> 	umount <path>
+> 	mount -t cgroup -o <controllers> <path>
+> would easily fail at the last mount with -EBUSY on certain platform.
+> 
+> Adding a little delay between "rmdir" and "umount" could fix the problem,
+> so use tst_umount API instead of umount in "rmdir, umount" sequence.
+> 
+> tst_umount API is ambiguous when checking for whether a device is mounted.
+> Modify it to check an actual mount point instead of device
+> and reject anything that does not start with '/' as an argument.
+> 
+> Changes since v1
+> - Use "tst_umount" instead of "sync" as suggested
+> - Make "tst_umount" work with argument that has terminating slash
+> 
+> Changes since v2
+> - Filter out the trailing slash instead of using mountpoint command
+> 
+> Changes since v3
+> - Filter out the trailing slash only in grep command
+> - Add comment in the test script
+> 
+> Changes since v4
+> - Remove unnecessary stderr redirection
+> 
+> Changes since v5
+> - Make tst_umount to only accept absolute mount point as an argument
+> - Modify tests that use tst_umount to pass mount point in instead of device
+> 
+> Leo Yu-Chi Liang (4):
+>   lib: tst_umount: umount a mount point instead of device
+>   doc: change the default behavior of tst_umount
+>   cgroup/cgroup_regression_test: Fix umount failure
+>   Make argument to tst_umount an absolute path
+> 
+>  doc/shell-test-api.txt                         |  8 ++++----
+>  .../cgroup/cgroup_regression_test.sh           | 10 +++++-----
+>  .../fs/quota_remount/quota_remount_test01.sh   |  2 +-
+>  .../integrity/ima/tests/evm_overlay.sh         |  2 +-
+>  .../tracing/dynamic_debug/dynamic_debug01.sh   |  2 +-
+>  testcases/lib/tst_test.sh                      | 18 +++++++++++-------
+>  6 files changed, 23 insertions(+), 19 deletions(-)
+> 
+> -- 
+> 2.17.0
