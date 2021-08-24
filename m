@@ -1,83 +1,78 @@
 From: Leo Liang <ycliang@andestech.com>
-Date: Tue, 24 Aug 2021 20:19:12 +0800
-Subject: [LTP] [PATCH v7,
- 3/4] cgroup/cgroup_regression_test: Fix umount failure
-Message-ID: <YSTjwAfGj6GYtX+r@ubuntu02>
+Date: Tue, 24 Aug 2021 20:19:56 +0800
+Subject: [LTP] [PATCH v7, 4/4] Make argument to tst_umount an absolute path
+Message-ID: <YSTj7CB6PdG2HZsQ@ubuntu02>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test sequence
-	mount -t cgroup -o <controllers> <path>
-	mkdir <path>/<dir>
-	rmdir <path>/<dir>
-	umount <path>
-	mount -t cgroup -o <controllers> <path>
-would easily fail at the last mount with -EBUSY on certain platform.
+tst_umount only takes mount point as an argument,
+so modify the argument to an absolute path for tst_umount.
 
-The reason is that this test sequence would have the chance of
-missing a release code path when doing rmdir and umount.
-
-Adding a little delay between "rmdir" and "umount" could fix the problem,
-so use tst_umount API instead of umount in "rmdir, umount" sequence.
-
-Fixes: #839
+df01.sh uses tst_umount as clean up function,
+modify its default TST_MNTPOINT to $PWD/mntpoint in tst_test.sh
 
 Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
 ---
- .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ testcases/kernel/fs/quota_remount/quota_remount_test01.sh    | 2 +-
+ testcases/kernel/security/integrity/ima/tests/evm_overlay.sh | 2 +-
+ testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh    | 2 +-
+ testcases/lib/tst_test.sh                                    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index 1f7f3820e..592a1d3b1 100755
---- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -145,7 +145,7 @@ test2()
+diff --git a/testcases/kernel/fs/quota_remount/quota_remount_test01.sh b/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
+index e84716c03..1b4bdbb99 100755
+--- a/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
++++ b/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
+@@ -32,7 +32,7 @@ do_setup()
+ do_clean()
+ {
+ 	[ "$mounted" ] || return
+-	tst_umount $MNTDIR
++	tst_umount $PWD/$MNTDIR
+ 	mounted=
+ }
+ 
+diff --git a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+index 9d86778b6..23a5ec556 100755
+--- a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
++++ b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+@@ -83,7 +83,7 @@ cleanup()
+ {
+ 	[ -n "$mounted" ] || return 0
+ 
+-	tst_umount $TST_DEVICE
++	tst_umount $TST_MNTPOINT
+ 
+ 	TST_DEVICE="$device_backup"
+ 	TST_FS_TYPE="$fs_type_backup"
+diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+index 7f06c2488..fd5ee06c8 100755
+--- a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
++++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+@@ -38,7 +38,7 @@ mount_debugfs()
+ 		if ! grep -q debugfs /proc/filesystems ; then
+ 			tst_res TCONF "debugfs not supported"
+ 		fi
+-		DEBUGFS_PATH="./tst_debug"
++		DEBUGFS_PATH="$PWD/tst_debug"
+ 		mkdir "$DEBUGFS_PATH"
+ 		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
+ 			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 33015616d..ab9c5c6b9 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -632,7 +632,7 @@ tst_run()
+ 		cd "$TST_TMPDIR"
  	fi
  
- 	rmdir cgroup/0 cgroup/1
--	umount cgroup/
-+	tst_umount $PWD/cgroup
- }
+-	TST_MNTPOINT="${TST_MNTPOINT:-mntpoint}"
++	TST_MNTPOINT="${TST_MNTPOINT:-$PWD/mntpoint}"
+ 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
  
- #---------------------------------------------------------------------------
-@@ -193,7 +193,7 @@ test3()
- 	wait $pid2 2>/dev/null
- 
- 	rmdir $cpu_subsys_path/0 2> /dev/null
--	umount cgroup/ 2> /dev/null
-+	tst_umount $PWD/cgroup
- 	check_kernel_bug
- }
- 
-@@ -222,7 +222,7 @@ test4()
- 	mount -t cgroup -o none,name=foo cgroup cgroup/
- 	mkdir cgroup/0
- 	rmdir cgroup/0
--	umount cgroup/
-+	tst_umount $PWD/cgroup
- 
- 	if dmesg | grep -q "MAX_LOCKDEP_SUBCLASSES too low"; then
- 		tst_res TFAIL "lockdep BUG was found"
-@@ -254,7 +254,7 @@ test5()
- 	mount -t cgroup none cgroup 2> /dev/null
- 	mkdir cgroup/0
- 	rmdir cgroup/0
--	umount cgroup/ 2> /dev/null
-+	tst_umount $PWD/cgroup
- 	check_kernel_bug
- }
- 
-@@ -290,7 +290,7 @@ test6()
- 
- 	mount -t cgroup -o ns xxx cgroup/ > /dev/null 2>&1
- 	rmdir cgroup/[1-9]* > /dev/null 2>&1
--	umount cgroup/
-+	tst_umount $PWD/cgroup
- 	check_kernel_bug
- }
- 
+ 		TST_DEVICE=$(tst_device acquire)
 -- 
 2.17.0
