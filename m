@@ -1,78 +1,54 @@
-From: Leo Liang <ycliang@andestech.com>
-Date: Tue, 24 Aug 2021 20:19:56 +0800
-Subject: [LTP] [PATCH v7, 4/4] Make argument to tst_umount an absolute path
-Message-ID: <YSTj7CB6PdG2HZsQ@ubuntu02>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 24 Aug 2021 13:46:25 +0100
+Subject: [LTP] [PATCH 1/3] tst_test_macros: Fix TST_EXP_*() default
+ message
+In-Reply-To: <CAEemH2dpz577XH6q2fEw7uHYOvOORs8NLT_CroRvOnoAK2jQnw@mail.gmail.com>
+References: <20210823150520.25614-1-chrubis@suse.cz>
+ <20210823150520.25614-2-chrubis@suse.cz>
+ <CAEemH2dYcF=N3F=MZXPVLgBHBa3Xt=iT8ACeQ4_9THXu-kyYtA@mail.gmail.com>
+ <YSSyVtSF6UmqYlu4@yuki>
+ <CAEemH2dpz577XH6q2fEw7uHYOvOORs8NLT_CroRvOnoAK2jQnw@mail.gmail.com>
+Message-ID: <87mtp7ko2m.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_umount only takes mount point as an argument,
-so modify the argument to an absolute path for tst_umount.
+Hello,
 
-df01.sh uses tst_umount as clean up function,
-modify its default TST_MNTPOINT to $PWD/mntpoint in tst_test.sh
+Li Wang <liwang@redhat.com> writes:
 
-Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
----
- testcases/kernel/fs/quota_remount/quota_remount_test01.sh    | 2 +-
- testcases/kernel/security/integrity/ima/tests/evm_overlay.sh | 2 +-
- testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh    | 2 +-
- testcases/lib/tst_test.sh                                    | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+> On Tue, Aug 24, 2021 at 4:48 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+>> Hi!
+>> > Patchset looks good from the code layer though it is a bit complicate
+>> > in 2/3 stringify handling, but that should be acceptable.
+>> >
+>> > My only hesitating is about ##__VA_ARGS__, because it says that is still
+>> > as GNU's extension but have not got into standard C.
+>>
+>> Note that we have been using it in the header from the start. There were
+>> just a few places where it was missing, mostly in the variants that have
+>> been added later.
+>>
+>
+> Ah great, I was neglect that point.  Hence it should be safe enough.
+>
+> -- 
+> Regards,
+> Li Wang
 
-diff --git a/testcases/kernel/fs/quota_remount/quota_remount_test01.sh b/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
-index e84716c03..1b4bdbb99 100755
---- a/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
-+++ b/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
-@@ -32,7 +32,7 @@ do_setup()
- do_clean()
- {
- 	[ "$mounted" ] || return
--	tst_umount $MNTDIR
-+	tst_umount $PWD/$MNTDIR
- 	mounted=
- }
- 
-diff --git a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-index 9d86778b6..23a5ec556 100755
---- a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-@@ -83,7 +83,7 @@ cleanup()
- {
- 	[ -n "$mounted" ] || return 0
- 
--	tst_umount $TST_DEVICE
-+	tst_umount $TST_MNTPOINT
- 
- 	TST_DEVICE="$device_backup"
- 	TST_FS_TYPE="$fs_type_backup"
-diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
-index 7f06c2488..fd5ee06c8 100755
---- a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
-+++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
-@@ -38,7 +38,7 @@ mount_debugfs()
- 		if ! grep -q debugfs /proc/filesystems ; then
- 			tst_res TCONF "debugfs not supported"
- 		fi
--		DEBUGFS_PATH="./tst_debug"
-+		DEBUGFS_PATH="$PWD/tst_debug"
- 		mkdir "$DEBUGFS_PATH"
- 		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
- 			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 33015616d..ab9c5c6b9 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -632,7 +632,7 @@ tst_run()
- 		cd "$TST_TMPDIR"
- 	fi
- 
--	TST_MNTPOINT="${TST_MNTPOINT:-mntpoint}"
-+	TST_MNTPOINT="${TST_MNTPOINT:-$PWD/mntpoint}"
- 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
- 
- 		TST_DEVICE=$(tst_device acquire)
+There is also __VA_OPT__(,) which can't be confused with concatenation.
+
+I'm not sure we should use it thought, it seems like it was only
+recently added to other compilers. Still might be a good idea to link to
+the following page somewhere:
+
+https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html#Variadic-Macros
+
+LGTM otherwise!
+
 -- 
-2.17.0
+Thank you,
+Richard.
