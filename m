@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Aug 2021 14:58:08 +0200
+Date: Tue, 24 Aug 2021 15:01:00 +0200
 Subject: [LTP] [PATCH v7,
- 2/4] doc: change the default behavior of tst_umount
-In-Reply-To: <YSTjfqHs/vgYmU2l@ubuntu02>
-References: <YSTjfqHs/vgYmU2l@ubuntu02>
-Message-ID: <YSTs4BQEoGMIRpaz@yuki>
+ 3/4] cgroup/cgroup_regression_test: Fix umount failure
+In-Reply-To: <YSTjwAfGj6GYtX+r@ubuntu02>
+References: <YSTjwAfGj6GYtX+r@ubuntu02>
+Message-ID: <YSTtjMtFnfKo6l9/@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
