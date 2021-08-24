@@ -1,33 +1,64 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 24 Aug 2021 14:11:24 +0200
-Subject: [LTP] [PATCH 2/3] network/tst_net.sh: fix busybox/sysctl in
- tst_set_sysctl()
-In-Reply-To: <48500320-6cc6-591a-fc3d-708e88fd8640@bell-sw.com>
-References: <20210804120446.32835-1-aleksei.kodanev@bell-sw.com>
- <20210804120446.32835-2-aleksei.kodanev@bell-sw.com>
- <YR+HXE01R1RE8TTH@pevik>
- <48500320-6cc6-591a-fc3d-708e88fd8640@bell-sw.com>
-Message-ID: <YSTh7DeKY5J0SSyv@pevik>
+From: Leo Liang <ycliang@andestech.com>
+Date: Tue, 24 Aug 2021 20:12:31 +0800
+Subject: [LTP] [PATCH v7,
+ 0/4] cgroup/cgroup_regression_test: Fix umount failure
+Message-ID: <YSTiLyXItnm6UdyR@ubuntu02>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+The test sequence
+	mount -t cgroup -o <controllers> <path>
+	mkdir <path>/<dir>
+	rmdir <path>/<dir>
+	umount <path>
+	mount -t cgroup -o <controllers> <path>
+would easily fail at the last mount with -EBUSY on certain platform.
 
-..
-> >> -	tst_net_run $safe $rparam "sysctl -q -w $name=$value"
-> >> +	tst_net_run $safe $rparam "sysctl -q -w" "$name=$value"
+Adding a little delay between "rmdir" and "umount" could fix the problem,
+so use tst_umount API instead of umount in "rmdir, umount" sequence.
 
-> > I wonder if it were a bit clearer if we moves all params to second arg:
-> > 	tst_net_run $safe "sysctl" "$name=$value -q -w"
+tst_umount API is ambiguous when checking for whether a device is mounted.
+Modify it to check an actual mount point instead of device
+and reject anything that does not start with '/' as an argument.
 
-> OK, but changed to "sysctl" "-q -w $name=$value" because the other
-> options should also be placed before the key/value pair:
+Changes since v1
+- Use "tst_umount" instead of "sync" as suggested
+- Make "tst_umount" work with argument that has terminating slash
 
->     Usage: sysctl -p [-enq] [FILE...] / [-enqaw] [KEY[=VALUE]]...
-Thanks for addressing it!
+Changes since v2
+- Filter out the trailing slash instead of using mountpoint command
 
-Kind regards,
-Petr
+Changes since v3
+- Filter out the trailing slash only in grep command
+- Add comment in the test script
+
+Changes since v4
+- Remove unnecessary stderr redirection
+
+Changes since v5
+- Make tst_umount to only accept absolute mount point as an argument
+- Modify tests that use tst_umount to pass mount point in instead of device
+
+Changes since v6
+- Use grep instead of "bashism [[]]" to determine if the argument starts with '/'
+- Change the default TST_MNTPOINT to $PWD/mntpoint
+
+Leo Yu-Chi Liang (4):
+  lib: tst_umount: umount a mount point instead of a device
+  doc: change the default behavior of tst_umount
+  cgroup/cgroup_regression_test: Fix umount failure
+  Make argument to tst_umount an absolute path
+
+ doc/shell-test-api.txt                        |  8 ++++----
+ .../cgroup/cgroup_regression_test.sh          | 10 +++++-----
+ .../fs/quota_remount/quota_remount_test01.sh  |  2 +-
+ .../integrity/ima/tests/evm_overlay.sh        |  2 +-
+ .../tracing/dynamic_debug/dynamic_debug01.sh  |  2 +-
+ testcases/lib/tst_test.sh                     | 20 +++++++++++--------
+ 6 files changed, 24 insertions(+), 20 deletions(-)
+
+-- 
+2.17.0
