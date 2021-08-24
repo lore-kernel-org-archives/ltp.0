@@ -1,31 +1,44 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 24 Aug 2021 09:27:24 +0200
-Subject: [LTP] [PATCH v2 2/2] pec: Improve reliability
-In-Reply-To: <YSSRrEzZ2uSacXEM@pevik>
-References: <20210812043807.3497492-1-lkml@jv-coder.de>
- <20210812043807.3497492-2-lkml@jv-coder.de> <YR+Lc8aBnK6KBOnW@pevik>
- <d6443e3f-9859-82ff-7ba0-f8842cd2f437@jv-coder.de> <YSSRrEzZ2uSacXEM@pevik>
-Message-ID: <5441d7fb-3a76-0160-8f48-b9c78be875dd@jv-coder.de>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 24 Aug 2021 15:35:20 +0800
+Subject: [LTP] [PATCH 1/3] tst_test_macros: Fix TST_EXP_*() default
+ message
+In-Reply-To: <20210823150520.25614-2-chrubis@suse.cz>
+References: <20210823150520.25614-1-chrubis@suse.cz>
+ <20210823150520.25614-2-chrubis@suse.cz>
+Message-ID: <CAEemH2dYcF=N3F=MZXPVLgBHBa3Xt=iT8ACeQ4_9THXu-kyYtA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+On Mon, Aug 23, 2021 at 11:05 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-On 8/24/2021 8:29 AM, Petr Vorel wrote:
-> Hi Joerg,
+> We have to erase the last comma because otherwise we pass down one more
+> empty parameter to the TST_EXP_*_() macros which then causes the FMT
+> string to be empty and we end up with an empty default message.
 >
-> FYI, this patch breaks build:
->
-> make[1]: Leaving directory 'ltp.git/lib'
-> /usr/lib64/gcc/x86_64-suse-linux/11/../../../../x86_64-suse-linux/bin/ld: ../../../../lib/libltp.a(tst_checkpoint.o):ltp.git/lib/tst_checkpoint.c:36: multiple definition of `tst_futexes'; /tmp/ccITQEiq.o:ltp.git/testcases/kernel/connectors/pec/event_generator.c:168: first defined here
-> collect2: error: ld returned 1 exit status
-> make: *** [../../../../include/mk/rules.mk:37: event_generator] Error 1
-Strange that it builds on my system... The symbol is indeed duplicated 
-and a leftover from experimenting.
-The declaration in event_generator.c can be removed.
-Should I post a v3?
 
-Joerg
+
+Patchset looks good from the code layer though it is a bit complicate
+in 2/3 stringify handling, but that should be acceptable.
+
+My only hesitating is about ##__VA_ARGS__, because it says that is still
+as GNU's extension but have not got into standard C.
+
+So I especially run with GitHub CI and got pretty compiling results, then I
+have
+a positive attitude on applying these patches unless there is someone who
+blames it broken something in a general (but I guess the possibility is
+very little).
+https://github.com/wangli5665/ltp/runs/3408080506
+
+Feel free to add my reviews:
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210824/294f5d33/attachment.htm>
