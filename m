@@ -1,72 +1,41 @@
 From: Leo Liang <ycliang@andestech.com>
-Date: Tue, 24 Aug 2021 20:16:59 +0800
-Subject: [LTP] [PATCH v7,
- 1/4] lib: tst_umount: umount a mount point instead of a device
-Message-ID: <YSTjO2rjk9sWRSWD@ubuntu02>
+Date: Tue, 24 Aug 2021 20:18:06 +0800
+Subject: [LTP] [PATCH v7, 2/4] doc: change the default behavior of tst_umount
+Message-ID: <YSTjfqHs/vgYmU2l@ubuntu02>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current check inside tst_umount for whehter a device is mounted is ambiguous.
-Fix it by checking for the existance of the exact mount point the fs is mounted upon,
-and use the mount point instead of the device to do the umount process.
-This patch make tst_umount umount TST_MNTPOINT by default,
-and reject any argument that does not start with '/'.
+Modify tst_umount to umount TST_MNTPOINT by default in previous commit.
+Modify the document accordingly.
 
 Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/tst_test.sh | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ doc/shell-test-api.txt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 78e2760e7..33015616d 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -279,31 +279,35 @@ tst_mount()
+diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
+index bf297ab07..ecdbe9e6a 100644
+--- a/doc/shell-test-api.txt
++++ b/doc/shell-test-api.txt
+@@ -515,11 +515,11 @@ The 'tst_mount' mounts '$TST_DEVICE' of '$TST_FS_TYPE' (optional) to
+ '$TST_MNT_PARAMS'. The '$TST_MNTPOINT' directory is created if it didn't
+ exist prior to the function call.
  
- tst_umount()
- {
--	local device="${1:-$TST_DEVICE}"
-+	local mntpoint="${1:-$TST_MNTPOINT}"
- 	local i=0
+-If the path passed (optional, defaults to '$TST_DEVICE') to the 'tst_umount' is
++If the path passed (optional, defaults to '$TST_MNTPOINT') to the 'tst_umount' is
+ not mounted (present in '/proc/mounts') it's noop.
+-Otherwise it retries to umount the filesystem a few times on a failure, which
+-is a workaround since there are a daemons dumb enough to probe all newly
+-mounted filesystems, which prevents them from umounting shortly after they
++Otherwise it retries to umount the filesystem a few times on failure.
++This is a workaround since there are daemons dumb enough to probe all newly
++mounted filesystems, and prevents them from being umounted shortly after they
+ were mounted.
  
--	[ -z "$device" ] && return
-+	[ -z "$mntpoint" ] && return
- 
--	if ! grep -q "$device" /proc/mounts; then
--		tst_res TINFO "The $device is not mounted, skipping umount"
-+	if ! echo "$mntpoint" | grep -q ^/; then
-+		tst_brk TCONF "The '$mntpoint' is not an absolute path"
-+	fi
-+
-+	if ! grep -q "${mntpoint%/}" /proc/mounts; then
-+		tst_res TINFO "The '$mntpoint' is not mounted upon, skipping umount"
- 		return
- 	fi
- 
- 	while [ "$i" -lt 50 ]; do
--		if umount "$device" > /dev/null; then
-+		if umount "$mntpoint" > /dev/null; then
- 			return
- 		fi
- 
- 		i=$((i+1))
- 
--		tst_res TINFO "umount($device) failed, try $i ..."
-+		tst_res TINFO "umount($mntpoint) failed, try $i ..."
- 		tst_res TINFO "Likely gvfsd-trash is probing newly mounted "\
- 		              "fs, kill it to speed up tests."
- 
- 		tst_sleep 100ms
- 	done
- 
--	tst_res TWARN "Failed to umount($device) after 50 retries"
-+	tst_res TWARN "Failed to umount($mntpoint) after 50 retries"
- }
- 
- tst_mkfs()
+ ROD and ROD_SILENT
 -- 
 2.17.0
