@@ -1,64 +1,72 @@
 From: Leo Liang <ycliang@andestech.com>
-Date: Tue, 24 Aug 2021 20:12:31 +0800
+Date: Tue, 24 Aug 2021 20:16:59 +0800
 Subject: [LTP] [PATCH v7,
- 0/4] cgroup/cgroup_regression_test: Fix umount failure
-Message-ID: <YSTiLyXItnm6UdyR@ubuntu02>
+ 1/4] lib: tst_umount: umount a mount point instead of a device
+Message-ID: <YSTjO2rjk9sWRSWD@ubuntu02>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test sequence
-	mount -t cgroup -o <controllers> <path>
-	mkdir <path>/<dir>
-	rmdir <path>/<dir>
-	umount <path>
-	mount -t cgroup -o <controllers> <path>
-would easily fail at the last mount with -EBUSY on certain platform.
+Current check inside tst_umount for whehter a device is mounted is ambiguous.
+Fix it by checking for the existance of the exact mount point the fs is mounted upon,
+and use the mount point instead of the device to do the umount process.
+This patch make tst_umount umount TST_MNTPOINT by default,
+and reject any argument that does not start with '/'.
 
-Adding a little delay between "rmdir" and "umount" could fix the problem,
-so use tst_umount API instead of umount in "rmdir, umount" sequence.
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-tst_umount API is ambiguous when checking for whether a device is mounted.
-Modify it to check an actual mount point instead of device
-and reject anything that does not start with '/' as an argument.
-
-Changes since v1
-- Use "tst_umount" instead of "sync" as suggested
-- Make "tst_umount" work with argument that has terminating slash
-
-Changes since v2
-- Filter out the trailing slash instead of using mountpoint command
-
-Changes since v3
-- Filter out the trailing slash only in grep command
-- Add comment in the test script
-
-Changes since v4
-- Remove unnecessary stderr redirection
-
-Changes since v5
-- Make tst_umount to only accept absolute mount point as an argument
-- Modify tests that use tst_umount to pass mount point in instead of device
-
-Changes since v6
-- Use grep instead of "bashism [[]]" to determine if the argument starts with '/'
-- Change the default TST_MNTPOINT to $PWD/mntpoint
-
-Leo Yu-Chi Liang (4):
-  lib: tst_umount: umount a mount point instead of a device
-  doc: change the default behavior of tst_umount
-  cgroup/cgroup_regression_test: Fix umount failure
-  Make argument to tst_umount an absolute path
-
- doc/shell-test-api.txt                        |  8 ++++----
- .../cgroup/cgroup_regression_test.sh          | 10 +++++-----
- .../fs/quota_remount/quota_remount_test01.sh  |  2 +-
- .../integrity/ima/tests/evm_overlay.sh        |  2 +-
- .../tracing/dynamic_debug/dynamic_debug01.sh  |  2 +-
- testcases/lib/tst_test.sh                     | 20 +++++++++++--------
- 6 files changed, 24 insertions(+), 20 deletions(-)
-
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 78e2760e7..33015616d 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -279,31 +279,35 @@ tst_mount()
+ 
+ tst_umount()
+ {
+-	local device="${1:-$TST_DEVICE}"
++	local mntpoint="${1:-$TST_MNTPOINT}"
+ 	local i=0
+ 
+-	[ -z "$device" ] && return
++	[ -z "$mntpoint" ] && return
+ 
+-	if ! grep -q "$device" /proc/mounts; then
+-		tst_res TINFO "The $device is not mounted, skipping umount"
++	if ! echo "$mntpoint" | grep -q ^/; then
++		tst_brk TCONF "The '$mntpoint' is not an absolute path"
++	fi
++
++	if ! grep -q "${mntpoint%/}" /proc/mounts; then
++		tst_res TINFO "The '$mntpoint' is not mounted upon, skipping umount"
+ 		return
+ 	fi
+ 
+ 	while [ "$i" -lt 50 ]; do
+-		if umount "$device" > /dev/null; then
++		if umount "$mntpoint" > /dev/null; then
+ 			return
+ 		fi
+ 
+ 		i=$((i+1))
+ 
+-		tst_res TINFO "umount($device) failed, try $i ..."
++		tst_res TINFO "umount($mntpoint) failed, try $i ..."
+ 		tst_res TINFO "Likely gvfsd-trash is probing newly mounted "\
+ 		              "fs, kill it to speed up tests."
+ 
+ 		tst_sleep 100ms
+ 	done
+ 
+-	tst_res TWARN "Failed to umount($device) after 50 retries"
++	tst_res TWARN "Failed to umount($mntpoint) after 50 retries"
+ }
+ 
+ tst_mkfs()
 -- 
 2.17.0
