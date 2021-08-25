@@ -1,9 +1,7 @@
 From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Wed, 25 Aug 2021 15:39:29 +0000
-Subject: [LTP] [PATCH 1/4 v2] api: Add a IS_BIT_SET() macro in tst_bitmap.h
-In-Reply-To: <20210825153932.138396-1-ziyaoxie@outlook.com>
-References: <20210825153932.138396-1-ziyaoxie@outlook.com>
-Message-ID: <OSZP286MB0871E8F61CE0773AF89CF35FCCC69@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+Date: Wed, 25 Aug 2021 15:39:28 +0000
+Subject: [LTP] [PATCH 0/4 v2] epoll: Add tests for epoll_{create, ctl}
+Message-ID: <OSZP286MB08710D473C99D3B97231379ECCC69@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,40 +10,32 @@ To: ltp@lists.linux.it
 
 From: "Xie Ziyao" <ziyaoxie@outlook.com>
 
-Add a IS_BIT_SET() macro in tst_bitmap.h to check whether the n-th bit
-of val is set.
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
----
 v1->v2:
-1. Add a IS_BIT_SET() macro in tst_bitmap.h.
+1. Add a IS_BIT_SET() macro to check whether the n-th bit of val is set.
+2. Use TST_EXP_FD() to check whether fd is valid in epoll_create01.
 
- include/tst_bitmap.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+"Xie Ziyao" (4):
+  api: Add a IS_BIT_SET() macro in tst_bitmap.h
+  epoll_ctl: Add test for epoll_ctl03
+  epoll_create: Add test for epoll_create01
+  epoll_create: Add test for epoll_create02
+
+ include/tst_bitmap.h                          | 15 ++++
+ runtest/syscalls                              |  3 +
+ .../kernel/syscalls/epoll_create/.gitignore   |  2 +
+ .../kernel/syscalls/epoll_create/Makefile     |  9 +++
+ .../syscalls/epoll_create/epoll_create01.c    | 37 +++++++++
+ .../syscalls/epoll_create/epoll_create02.c    | 37 +++++++++
+ .../kernel/syscalls/epoll_ctl/.gitignore      |  5 +-
+ .../kernel/syscalls/epoll_ctl/epoll_ctl03.c   | 78 +++++++++++++++++++
+ 8 files changed, 184 insertions(+), 2 deletions(-)
  create mode 100644 include/tst_bitmap.h
+ create mode 100644 testcases/kernel/syscalls/epoll_create/.gitignore
+ create mode 100644 testcases/kernel/syscalls/epoll_create/Makefile
+ create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create01.c
+ create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create02.c
+ create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
 
-diff --git a/include/tst_bitmap.h b/include/tst_bitmap.h
-new file mode 100644
-index 000000000..528a2bdaa
---- /dev/null
-+++ b/include/tst_bitmap.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ * Copyright (c) Linux Test Project, 2021
-+ * Author: Xie Ziyao <ziyaoxie@outlook.com>
-+ */
-+
-+#ifndef TST_BITMAP_H__
-+#define TST_BITMAP_H__
-+
-+/*
-+ * Check whether the n-th bit of val is set
-+ * @return 0: the n-th bit of val is 0, 1: the n-th bit of val is 1
-+ */
-+#define IS_BIT_SET(val, n) (((val) & (1<<(n))) >> (n))
-+
-+#endif /* TST_BITMAP_H__ */
 --
 2.25.1
 
