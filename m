@@ -1,37 +1,79 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 25 Aug 2021 12:23:44 +0200
-Subject: [LTP] [PATCH 0/3] New API: Rename LTP_IPC_PATH -> TST_IPC_PATH
-In-Reply-To: <YSYLVsq/UshH9wFx@yuki>
-References: <20210825080933.12949-1-pvorel@suse.cz> <YSYGy3cewt9Sseb/@yuki>
- <YSYIt9TqTBU0AVKk@pevik> <YSYLVsq/UshH9wFx@yuki>
-Message-ID: <YSYaMDCCTwwC8NW+@pevik>
+From: Jeff Layton <jlayton@kernel.org>
+Date: Wed, 25 Aug 2021 06:32:38 -0400
+Subject: [LTP] [fs]  f7e33bdbd6: ltp.ftruncate04_64.fail
+In-Reply-To: <20210825051710.GA5358@xsang-OptiPlex-9020>
+References: <20210825051710.GA5358@xsang-OptiPlex-9020>
+Message-ID: <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Joerg,
+On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
+> 
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
+> https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
+> 
+> 
+> in testcase: ltp
+> version: ltp-x86_64-14c1f76-1_20210821
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: ext4
+> 	test: syscalls-07
+> 	ucode: 0xe2
+> 
+> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> test-url: http://linux-test-project.github.io/
+> 
+> 
+> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
 
-> Hi!
-> > > As it is it's pretty clear where the environment variable comes from, if
-> > > we rename it to TST_IPC_PATH it's not obvious that this has been
-> > > exported by LTP test.
-> > I was thinking about it as well (just forget to write that into cover letter).
+[...]
 
-> > > Generally things that are visible on the running system tends to be
-> > > prefixed with LTP_ or ltp_ rather than TST_ or tst_...
-> > Sure. I just thought that LTP_ is for variables which are expected to be set by
-> > user. But let's keep the old name. How about the first commit (cleanup)?
+> <<<test_start>>>
+> tag=ftruncate04_64 stime=1629792639
+> cmdline="ftruncate04_64"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+> tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> mke2fs 1.44.5 (15-Dec-2018)
+> tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
+> ftruncate04.c:116: TINFO: Child locks file
+> ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
+> ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
+> ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> ftruncate04.c:127: TINFO: Child unlocks file
+> ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
+> ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
+> ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> 
+> Summary:
+> passed   4
+> failed   2
+> broken   0
+> skipped  0
+> warnings 0
 
-> There is no such rule I guess.
+I think this failed because of the above, which is expected now that we
+ignore the "mand" mount option (and mandatory locking support is gone).
 
-> It has been case by case, for instance we do have KCONFIG_PATH which we
-> agreed on with the testing community to be a canonical variable name
-> that is shared between different frameworks.
+Oliver, you may need to update the expected test output for this test.
 
-Ah, thanks for info. Obviously there cannot be rules for everything :).
-Thanks both for your time.
+Thanks,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-Kind regards,
-Petr
