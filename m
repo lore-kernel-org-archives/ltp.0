@@ -1,29 +1,23 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 25 Aug 2021 09:17:26 +0200
-Subject: [LTP] [PATCH v7,
- 4/4] Make argument to tst_umount an absolute path
-In-Reply-To: <YSTvNANtOqYxNZSe@yuki>
-References: <YSTj7CB6PdG2HZsQ@ubuntu02>
- <YSTvNANtOqYxNZSe@yuki>
-Message-ID: <YSXuhovPqvZiZ4VL@pevik>
+From: Leo Liang <ycliang@andestech.com>
+Date: Wed, 25 Aug 2021 15:29:25 +0800
+Subject: [LTP] [PATCH 1/1] doc: TST_MNTPOINT should be full path
+In-Reply-To: <20210825071420.5751-1-pvorel@suse.cz>
+References: <20210825071420.5751-1-pvorel@suse.cz>
+Message-ID: <YSXxVXk1sdea7wnX@ubuntu02>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Leo,
+On Wed, Aug 25, 2021 at 09:14:20AM +0200, Petr Vorel wrote:
+> Document changed behavior in 205a43dfb ("Make argument to tst_umount an
+> absolute path").
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/shell-test-api.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-> Hi!
-> >  	[ "$mounted" ] || return
-> > -	tst_umount $MNTDIR
-> > +	tst_umount $PWD/$MNTDIR
-
-> I guess that we should have the $PWD/$MNTDIR inside of double quotes
-> just to be extra careful.
-Thanks for catching problems, updated and merged.
-
-I also post yet additional update of docs (TST_MNTPOINT should be full path).
-
-Kind regards,
-Petr
+Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
