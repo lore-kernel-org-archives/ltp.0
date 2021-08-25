@@ -1,9 +1,7 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 25 Aug 2021 06:49:21 +0200
-Subject: [LTP] [PATCH v3 2/2] pec: Improve reliability
-In-Reply-To: <20210825044921.1237802-1-lkml@jv-coder.de>
-References: <20210825044921.1237802-1-lkml@jv-coder.de>
-Message-ID: <20210825044921.1237802-2-lkml@jv-coder.de>
+Date: Wed, 25 Aug 2021 06:49:20 +0200
+Subject: [LTP] [PATCH v3 1/2] shell: Add checkpoints api for new lib
+Message-ID: <20210825044921.1237802-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,408 +10,149 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-This fixes two problems:
-1. It was possible, that the event listener was terminated,
-before all events were recorded.
-The listener now terminates, after receiving the exit event of the generator.
-This also gets rid of the 100ms sleep in cn_pec.sh by
-using proper synchronization points.
-2. Sometimes exit events were generated in the wrong order,
-Adding a short delay seems to solve this. While this adds in a new sleep,
-it is just a 1 ms for default the execution.
+The checkpoint api is even mentioned in shell-test-api.txt,
+but with the old library used.
+This also fixes the documentation.
 
-Reported-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+memcg_lib.sh must be adapted in the same commit, because it already sets
+TST_NEEDS_CHECKPOINTS=1 and had the ipc initialization code. This would
+run the ipc initialization code twice.
+
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
 
 Changes to v2:
- - Removed useless declaration of tst_futexes in event_generator
+ - Removed unecessary curly braces
 
- testcases/kernel/connectors/pec/cn_pec.sh     | 36 ++++---
- .../kernel/connectors/pec/event_generator.c   | 96 ++++++++++---------
- .../kernel/connectors/pec/pec_listener.c      | 56 ++++++++++-
- 3 files changed, 127 insertions(+), 61 deletions(-)
+ doc/shell-test-api.txt                        |  4 +-
+ .../controllers/memcg/functional/memcg_lib.sh |  8 ----
+ testcases/lib/tst_test.sh                     | 45 ++++++++++++++++++-
+ 3 files changed, 46 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/connectors/pec/cn_pec.sh b/testcases/kernel/connectors/pec/cn_pec.sh
-index 9b85a5c81..74e94dc5e 100755
---- a/testcases/kernel/connectors/pec/cn_pec.sh
-+++ b/testcases/kernel/connectors/pec/cn_pec.sh
-@@ -16,12 +16,16 @@ TST_PARSE_ARGS=parse_args
- TST_USAGE=usage
- TST_NEEDS_ROOT=1
- TST_NEEDS_TMPDIR=1
-+TST_NEEDS_CHECKPOINTS=1
- TST_TEST_DATA="fork exec exit uid gid"
+diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
+index bf297ab07..8d1bab5a1 100644
+--- a/doc/shell-test-api.txt
++++ b/doc/shell-test-api.txt
+@@ -729,14 +729,14 @@ The shell library provides an implementation of the checkpoint interface
+ compatible with the C version. All 'TST_CHECKPOINT_*' functions are available.
  
- . tst_test.sh
+ In order to initialize checkpoints '$TST_NEEDS_CHECKPOINTS' must be set to '1'
+-before the inclusion of 'test.sh':
++before the inclusion of 'tst_test.sh':
  
- num_events=10
+ [source,sh]
+ -------------------------------------------------------------------------------
+ #!/bin/sh
  
-+LISTENER_ID=0
-+GENERATOR_ID=1
-+
- usage()
- {
- 	cat << EOF
-@@ -67,27 +71,31 @@ setup()
- test()
- {
- 	local event=$2
--	local expected_events lis_rc pid fd_act failed act_nevents exp act
-+	local gen_pid list_pid gen_rc lis_rc
-+	local expected_events fd_act failed act_nevents exp act
+ TST_NEEDS_CHECKPOINTS=1
+-. test.sh
++. tst_test.sh
+ -------------------------------------------------------------------------------
  
- 	tst_res TINFO "Testing $2 event (nevents=$num_events)"
- 
--	pec_listener >lis_$event.log 2>lis_$event.err &
--	pid=$!
--	# wait for pec_listener to start listening
--	tst_sleep 100ms
-+	event_generator -n $num_events -e $event -c $GENERATOR_ID >gen.log &
-+	gen_pid=$!
-+
-+	pec_listener -p $gen_pid -c $LISTENER_ID >lis.log &
-+	lis_pid=$!
- 
--	ROD event_generator -n $num_events -e $event \>gen_$event.log 2\>gen_$event.err
-+	TST_CHECKPOINT_WAIT $LISTENER_ID
-+	TST_CHECKPOINT_WAKE $GENERATOR_ID
- 
--	kill -s INT $pid 2> /dev/null
--	wait $pid
-+	wait $gen_pid
-+	gen_rc=$?
-+	wait $lis_pid
- 	lis_rc=$?
- 
--	if [ ! -s gen_$event.log ]; then
--		tst_brk TBROK "failed to generate process events: $(cat gen_$event.err)"
-+	if [ $gen_rc -ne 0 ]; then
-+		tst_brk TBROK "failed to execute event_generator"
+ Since both the implementations are compatible, it's also possible to start
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index ee14a29fa..355acb6a6 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -104,14 +104,6 @@ memcg_setup()
+ 		tst_brk TCONF "Either kernel does not support Memory Resource Controller or feature not enabled"
  	fi
  
- 	if [ $lis_rc -ne 0 ]; then
--		tst_brk TBROK "failed to execute the listener: $(cat lis_$event.err)"
-+		tst_brk TBROK "failed to execute pec_listener"
+-	# Setup IPC
+-	LTP_IPC_PATH="/dev/shm/ltp_${TCID}_$$"
+-	LTP_IPC_SIZE=$PAGESIZE
+-	ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$LTP_IPC_SIZE" count=1
+-	ROD_SILENT chmod 600 "$LTP_IPC_PATH"
+-	export LTP_IPC_PATH
+-	# Setup IPC end
+-
+ 	ROD mkdir /dev/memcg
+ 	ROD mount -t cgroup -omemory memcg /dev/memcg
+ 
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 78e2760e7..b45f84c4f 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -49,6 +49,10 @@ _tst_do_exit()
+ 		[ "$TST_TMPDIR_RHOST" = 1 ] && tst_cleanup_rhost
  	fi
  
- 	# The listener writes the same messages as the generator, but it can
-@@ -104,7 +112,7 @@ test()
- 
- 	fd_act=$(free_fd)
- 	[ -z "$fd_act" ] && tst_brk TBROK "No free filehandle found"
--	eval "exec ${fd_act}<lis_$event.log"
-+	eval "exec ${fd_act}<lis.log"
- 
- 	failed=0
- 	act_nevents=0
-@@ -122,7 +130,7 @@ test()
- 			tst_res TFAIL "Event was not detected by the event listener: $exp"
- 			break
- 		fi
--	done <gen_$event.log
-+	done <gen.log
- 
- 	eval "exec ${fd_act}<&-"
- 
-@@ -134,7 +142,7 @@ test()
- 		fi
- 	else
- 		# TFAIL message is already printed in the loop above
--		cat lis_$event.log
-+		cat lis.log
- 	fi
- }
- 
-diff --git a/testcases/kernel/connectors/pec/event_generator.c b/testcases/kernel/connectors/pec/event_generator.c
-index 62e341268..4945058ff 100644
---- a/testcases/kernel/connectors/pec/event_generator.c
-+++ b/testcases/kernel/connectors/pec/event_generator.c
-@@ -24,17 +24,16 @@ static struct tst_test test = {
- 	.forks_child = 1
- };
- 
--#define DEFAULT_EVENT_NUM       1
-+static uid_t ltp_uid;
-+static gid_t ltp_gid;
-+static const char *ltp_user = "nobody";
-+static char *prog_name;
- 
--unsigned long nr_event = DEFAULT_EVENT_NUM;
-+static int checkpoint_id = -1;
-+static int nr_event = 1;
- 
--uid_t ltp_uid;
--gid_t ltp_gid;
--const char *ltp_user = "nobody";
-+static void (*gen_event)(void);
- 
--char **exec_argv;
--
--void (*gen_event) (void);
- static void usage(int status) LTP_ATTRIBUTE_NORETURN;
- 
- /*
-@@ -47,45 +46,29 @@ static void usage(int status)
- 	FILE *stream = (status ? stderr : stdout);
- 
- 	fprintf(stream,
--		"Usage: event_generator -e fork|exit|exec|uid|gid [-n nr_event]\n");
-+		"Usage: event_generator -e fork|exit|exec|uid|gid [-n nr_event] [-c checkpoint_id]\n");
- 
- 	exit(status);
- }
- 
- /*
-  * Generate exec event.
-- *
-- * We can't just exec nr_event times, because the current process image
-- * will be replaced with the new process image, so we use environment
-- * variable as event counters, as it will be inherited after exec.
-  */
- static void gen_exec(void)
- {
--	char *val;
- 	char buf[10];
--	unsigned long nr_exec;
--
--	/* get the event counter */
--	val = getenv("NR_EXEC");
--	if (!val) {
--		nr_exec = 0;
--		setenv("NR_EXEC", "1", 1);
--	} else {
--		nr_exec = atoi(val);
--		snprintf(buf, 10, "%lu", nr_exec + 1);
--		setenv("NR_EXEC", buf, 1);
--	}
--
--	/* stop generate exec event */
--	if (nr_exec >= nr_event)
--		return;
- 
- 	/* fflush is needed before exec */
- 	printf("exec pid: %d\n", getpid());
- 	fflush(stdout);
- 
--	/* Note: This expects the full path to self in exec_argv[0]! */
--	SAFE_EXECVP(exec_argv[0], exec_argv);
-+	/*
-+	 * Decrease number of events to generate.
-+	 * Don't pass checkpoint_id here. It is only used for synchronizing with
-+	 * the shell script, before the first exec.
-+	 */
-+	sprintf(buf, "%u", nr_event - 1);
-+	SAFE_EXECLP(prog_name, prog_name, "-e", "exec", "-n", buf, NULL);
- }
- 
- /*
-@@ -135,9 +118,8 @@ static inline void gen_gid(void)
- static void process_options(int argc, char **argv)
- {
- 	int c;
--	char *end;
- 
--	while ((c = getopt(argc, argv, "e:n:h")) != -1) {
-+	while ((c = getopt(argc, argv, "e:n:c:h")) != -1) {
- 		switch (c) {
- 			/* which event to generate */
- 		case 'e':
-@@ -158,17 +140,21 @@ static void process_options(int argc, char **argv)
- 			break;
- 			/* number of event to generate */
- 		case 'n':
--			nr_event = strtoul(optarg, &end, 10);
--			if (*end != '\0' || nr_event == 0) {
--				fprintf(stderr, "wrong -n argument!");
--				exit(1);
-+			if (tst_parse_int(optarg, &nr_event, 0, INT_MAX)) {
-+				fprintf(stderr, "invalid value for nr_event");
-+				usage(1);
-+			}
-+			break;
-+		case 'c':
-+			if (tst_parse_int(optarg, &checkpoint_id, 0, INT_MAX)) {
-+				fprintf(stderr, "invalid value for checkpoint_id");
-+				usage(1);
- 			}
- 			break;
- 			/* help */
- 		case 'h':
- 			usage(0);
- 		default:
--			fprintf(stderr, "unknown option!\n");
- 			usage(1);
- 		}
- 	}
-@@ -181,9 +167,11 @@ static void process_options(int argc, char **argv)
- 
- int main(int argc, char **argv)
- {
--	unsigned long i;
-+	int i;
- 	struct passwd *ent;
- 
-+	prog_name = argv[0];
++	if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "$LTP_IPC_PATH" ]; then
++		rm $LTP_IPC_PATH
++	fi
 +
- 	tst_test = &test;
+ 	_tst_cleanup_timer
  
- 	process_options(argc, argv);
-@@ -196,13 +184,21 @@ int main(int argc, char **argv)
- 	ltp_uid = ent->pw_uid;
- 	ltp_gid = ent->pw_gid;
- 
--	/* special processing for gen_exec, see comments above gen_exec() */
--	if (gen_event == gen_exec) {
--		exec_argv = argv;
--
--		gen_exec();
-+	/* ready to generate events */
-+	if (checkpoint_id != -1) {
-+		tst_reinit();
-+		TST_CHECKPOINT_WAIT(checkpoint_id);
-+	}
- 
--		/* won't reach here */
-+	if (gen_event == gen_exec) {
-+		/*
-+		 * The nr_event events are generated,
-+		 * by recursively replacing ourself with
-+		 * a fresh copy, decrementing the number of events
-+		 * for each execution
-+		 */
-+		if (nr_event != 0)
-+			gen_exec();
- 		return 0;
- 	}
- 
-@@ -225,6 +221,14 @@ int main(int argc, char **argv)
- 				fprintf(stderr, "Child process did not terminate with 0\n");
- 				return 1;
- 			}
-+			/*
-+			 * We need a tiny sleep here, so the kernel can generate
-+			 * exit events in the correct order.
-+			 * Otherwise it can happen, that exit events are generated
-+			 * out-of-order.
-+			 */
-+			if (gen_event == gen_exit)
-+				usleep(100);
- 		}
- 	}
- 
-diff --git a/testcases/kernel/connectors/pec/pec_listener.c b/testcases/kernel/connectors/pec/pec_listener.c
-index 2707ea8fb..21ae53e87 100644
---- a/testcases/kernel/connectors/pec/pec_listener.c
-+++ b/testcases/kernel/connectors/pec/pec_listener.c
-@@ -19,6 +19,9 @@
- #include <signal.h>
- #include <linux/types.h>
- #include <linux/netlink.h>
-+#include <tst_checkpoint.h>
-+#define TST_NO_DEFAULT_MAIN
-+#include <tst_test.h>
- 
- #ifndef NETLINK_CONNECTOR
- 
-@@ -52,9 +55,13 @@ static __u32 seq;
- 
- static volatile int exit_flag;
- static struct sigaction sigint_action;
-+static pid_t terminate_pid;
-+static int checkpoint_id = -1;
- 
- struct nlmsghdr *nlhdr;
- 
-+static void usage(int status) LTP_ATTRIBUTE_NORETURN;
-+
- /*
-  * Handler for signal int. Set exit flag.
-  *
-@@ -176,6 +183,7 @@ static void process_event(struct nlmsghdr *nlhdr)
- 
- 	pe = (struct proc_event *)msg->data;
- 
-+	//printf("TS: %llu\n", pe->timestamp_ns);
- 	switch (pe->what) {
- 	case PROC_EVENT_NONE:
- 		printf("none err: %u\n", pe->event_data.ack.err);
-@@ -203,6 +211,9 @@ static void process_event(struct nlmsghdr *nlhdr)
- 		       pe->event_data.exit.process_pid,
- 		       pe->event_data.exit.exit_code,
- 		       pe->event_data.exit.exit_signal);
-+			if (terminate_pid
-+				&& terminate_pid == pe->event_data.exec.process_pid)
-+				exit_flag = 1;
- 		break;
- 	default:
- 		printf("unknown event\n");
-@@ -210,7 +221,42 @@ static void process_event(struct nlmsghdr *nlhdr)
- 	}
+ 	if [ $TST_FAIL -gt 0 ]; then
+@@ -255,6 +259,27 @@ TST_RTNL_CHK()
+ 	tst_brk TBROK "$@ failed: $output"
  }
  
--int main(void)
-+static void usage(int status)
++TST_CHECKPOINT_WAIT()
 +{
-+	FILE *stream = (status ? stderr : stdout);
-+
-+	fprintf(stream, "Usage: pec_listener [-p terminate_pid] [-c checkpoint_id]\n");
-+
-+	exit(status);
++	ROD tst_checkpoint wait 10000 "$1"
 +}
 +
-+static void parse_args(int argc, char * const argv[])
++TST_CHECKPOINT_WAKE()
 +{
-+	int c;
-+
-+	while ((c = getopt(argc, argv, "p:c:h")) != -1) {
-+		switch (c) {
-+		case 'p':
-+			if (tst_parse_int(optarg, &terminate_pid, 0, INT_MAX)) {
-+				fprintf(stderr, "Invalid value for terminate pid\n");
-+				exit(1);
-+			}
-+			break;
-+		case 'c':
-+			if (tst_parse_int(optarg, &checkpoint_id, 0, INT_MAX)) {
-+				fprintf(stderr, "invalid value for checkpoint_id");
-+				usage(1);
-+			}
-+			break;
-+		case 'h':
-+			usage(0);
-+		default:
-+			usage(1);
-+		}
-+	}
++	ROD tst_checkpoint wake 10000 "$1" 1
 +}
 +
-+int main(int argc, char * const argv[])
++TST_CHECKPOINT_WAKE2()
++{
++	ROD tst_checkpoint wake 10000 "$1" "$2"
++}
++
++TST_CHECKPOINT_WAKE_AND_WAIT()
++{
++	TST_CHECKPOINT_WAKE "$1"
++	TST_CHECKPOINT_WAIT "$1"
++}
++
+ tst_mount()
  {
- 	int ret;
- 	int sd;
-@@ -218,6 +264,8 @@ int main(void)
- 	struct sockaddr_nl src_addr;
- 	struct pollfd pfd;
+ 	local mnt_opt mnt_err
+@@ -549,6 +574,20 @@ tst_set_timeout()
+ 	_tst_setup_timer
+ }
  
-+	parse_args(argc, argv);
++_tst_init_checkpoints()
++{
++	local pagesize
 +
- 	sigint_action.sa_flags = SA_RESETHAND;
- 	sigint_action.sa_handler = &sigint_handler;
- 	sigaction(SIGINT, &sigint_action, NULL);
-@@ -257,6 +305,12 @@ int main(void)
- 		exit(1);
- 	}
++	LTP_IPC_PATH="/dev/shm/ltp_${TST_ID}_$$"
++	pagesize=$(tst_getconf PAGESIZE)
++	if [ $? -ne 0 ]; then
++		tst_brk TBROK "tst_getconf PAGESIZE failed"
++	fi
++	ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$pagesize" count=1
++	ROD_SILENT chmod 600 "$LTP_IPC_PATH"
++	export LTP_IPC_PATH
++}
++
+ tst_run()
+ {
+ 	local _tst_i
+@@ -568,7 +607,9 @@ tst_run()
+ 			IPV6|IPV6_FLAG|IPVER|TEST_DATA|TEST_DATA_IFS);;
+ 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
+ 			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG|NETLOAD_CLN_NUMBER);;
+-			NET_SKIP_VARIABLE_INIT);;
++			NET_SKIP_VARIABLE_INIT|NEEDS_CHECKPOINTS);;
++			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
++			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
+ 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+ 			esac
+ 		done
+@@ -643,6 +684,8 @@ tst_run()
  
-+	/* ready to receive events */
-+	if (checkpoint_id != -1) {
-+		tst_reinit();
-+		TST_CHECKPOINT_WAKE(0);
-+	}
+ 	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
+ 
++	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
 +
- 	/* Receive msg from PEC */
- 	pfd.fd = sd;
- 	pfd.events = POLLIN;
+ 	if [ -n "$TST_SETUP" ]; then
+ 		if type $TST_SETUP >/dev/null 2>/dev/null; then
+ 			TST_DO_CLEANUP=1
 -- 
 2.25.1
 
