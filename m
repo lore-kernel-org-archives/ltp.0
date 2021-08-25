@@ -1,9 +1,9 @@
 From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Wed, 25 Aug 2021 15:39:31 +0000
-Subject: [LTP] [PATCH 3/4 v2] epoll_create: Add test for epoll_create01
+Date: Wed, 25 Aug 2021 15:39:32 +0000
+Subject: [LTP] [PATCH 4/4 v2] epoll_create: Add test for epoll_create02
 In-Reply-To: <20210825153932.138396-1-ziyaoxie@outlook.com>
 References: <20210825153932.138396-1-ziyaoxie@outlook.com>
-Message-ID: <OSZP286MB08714234AC4DFA511FF003C2CCC69@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+Message-ID: <OSZP286MB0871452D0FEE65A20447AAB1CCC69@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,62 +12,41 @@ To: ltp@lists.linux.it
 
 From: "Xie Ziyao" <ziyaoxie@outlook.com>
 
-Verify that epoll_create return a nonnegative file descriptor on success.
+Verify that epoll_create returns -1 and set errno to EINVAL if size is
+not positive.
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
 ---
-v1->v2:
-1. Use TST_EXP_FD() to check whether fd is valid.
-
  runtest/syscalls                              |  1 +
  .../kernel/syscalls/epoll_create/.gitignore   |  1 +
- .../kernel/syscalls/epoll_create/Makefile     |  9 +++++
- .../syscalls/epoll_create/epoll_create01.c    | 37 +++++++++++++++++++
- 4 files changed, 48 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_create/.gitignore
- create mode 100644 testcases/kernel/syscalls/epoll_create/Makefile
- create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create01.c
+ .../syscalls/epoll_create/epoll_create02.c    | 37 +++++++++++++++++++
+ 3 files changed, 39 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create02.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index f6fe140b2..2540905a0 100644
+index 2540905a0..d5a1e86e8 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -156,6 +156,7 @@ dup205 dup205
- dup3_01 dup3_01
+@@ -157,6 +157,7 @@ dup3_01 dup3_01
  dup3_02 dup3_02
 
-+epoll_create01 epoll_create01
+ epoll_create01 epoll_create01
++epoll_create02 epoll_create02
  epoll_create1_01 epoll_create1_01
  epoll_create1_02 epoll_create1_02
  epoll01 epoll-ltp
 diff --git a/testcases/kernel/syscalls/epoll_create/.gitignore b/testcases/kernel/syscalls/epoll_create/.gitignore
-new file mode 100644
-index 000000000..0ed4d940a
---- /dev/null
+index 0ed4d940a..5c16cfa8c 100644
+--- a/testcases/kernel/syscalls/epoll_create/.gitignore
 +++ b/testcases/kernel/syscalls/epoll_create/.gitignore
-@@ -0,0 +1 @@
-+epoll_create01
-diff --git a/testcases/kernel/syscalls/epoll_create/Makefile b/testcases/kernel/syscalls/epoll_create/Makefile
+@@ -1 +1,2 @@
+ epoll_create01
++epoll_create02
+diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create02.c b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
 new file mode 100644
-index 000000000..ad856cee4
+index 000000000..00df07922
 --- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2021
-+# Author: Xie Ziyao <ziyaoxie@outlook.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
-new file mode 100644
-index 000000000..54fd0810d
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
++++ b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
 @@ -0,0 +1,37 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -78,11 +57,8 @@ index 000000000..54fd0810d
 +/*\
 + * [Description]
 + *
-+ * Verify that epoll_create return a nonnegative file descriptor on success.
-+ *
-+ * The size argument informed the kernel of the number of file descriptors
-+ * that the caller expected to add to the epoll instance, but it is no longer
-+ * required.
++ * Verify that epoll_create returns -1 and set errno to EINVAL if size is not
++ * positive.
 + */
 +
 +#include <sys/epoll.h>
@@ -91,15 +67,18 @@ index 000000000..54fd0810d
 +#include "lapi/epoll.h"
 +#include "lapi/syscalls.h"
 +
-+static int tc[] = {1, INT_MAX};
++static struct test_case_t {
++	int size;
++	int exp_err;
++} tc[] = {
++	{0, EINVAL},
++	{-1, EINVAL}
++};
 +
 +static void run(unsigned int n)
 +{
-+	TST_EXP_FD(tst_syscall(__NR_epoll_create, tc[n]), "epoll_create(%d)", tc[n]);
-+
-+	if (!TST_PASS)
-+		return;
-+	SAFE_CLOSE(TST_PASS);
++	TST_EXP_FAIL(tst_syscall(__NR_epoll_create, tc[n].size),
++		     tc[n].exp_err, "create(%d)", tc[n].size);
 +}
 +
 +static struct tst_test test = {
