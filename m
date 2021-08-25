@@ -1,39 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Aug 2021 16:54:37 +0200
-Subject: [LTP] [PATCH 1/1] doc: TST_MNTPOINT should be full path
-In-Reply-To: <20210825071420.5751-1-pvorel@suse.cz>
-References: <20210825071420.5751-1-pvorel@suse.cz>
-Message-ID: <YSZZrdiYVCUa2zeI@yuki>
+From: Xie Ziyao <ziyaoxie@outlook.com>
+Date: Wed, 25 Aug 2021 15:39:29 +0000
+Subject: [LTP] [PATCH 1/4 v2] api: Add a IS_BIT_SET() macro in tst_bitmap.h
+In-Reply-To: <20210825153932.138396-1-ziyaoxie@outlook.com>
+References: <20210825153932.138396-1-ziyaoxie@outlook.com>
+Message-ID: <OSZP286MB0871E8F61CE0773AF89CF35FCCC69@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Document changed behavior in 205a43dfb ("Make argument to tst_umount an
-> absolute path").
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  doc/shell-test-api.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
-> index ecdbe9e6a..afc01dd01 100644
-> --- a/doc/shell-test-api.txt
-> +++ b/doc/shell-test-api.txt
-> @@ -515,8 +515,8 @@ The 'tst_mount' mounts '$TST_DEVICE' of '$TST_FS_TYPE' (optional) to
->  '$TST_MNT_PARAMS'. The '$TST_MNTPOINT' directory is created if it didn't
->  exist prior to the function call.
->  
-> -If the path passed (optional, defaults to '$TST_MNTPOINT') to the 'tst_umount' is
-> -not mounted (present in '/proc/mounts') it's noop.
-> +If the path passed (optional, should be full path, defaults to '$TST_MNTPOINT')
-                                  ^          ^
-				  must     absolute
+From: "Xie Ziyao" <ziyaoxie@outlook.com>
 
+Add a IS_BIT_SET() macro in tst_bitmap.h to check whether the n-th bit
+of val is set.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
+---
+v1->v2:
+1. Add a IS_BIT_SET() macro in tst_bitmap.h.
+
+ include/tst_bitmap.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 include/tst_bitmap.h
+
+diff --git a/include/tst_bitmap.h b/include/tst_bitmap.h
+new file mode 100644
+index 000000000..528a2bdaa
+--- /dev/null
++++ b/include/tst_bitmap.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ * Copyright (c) Linux Test Project, 2021
++ * Author: Xie Ziyao <ziyaoxie@outlook.com>
++ */
++
++#ifndef TST_BITMAP_H__
++#define TST_BITMAP_H__
++
++/*
++ * Check whether the n-th bit of val is set
++ * @return 0: the n-th bit of val is 0, 1: the n-th bit of val is 1
++ */
++#define IS_BIT_SET(val, n) (((val) & (1<<(n))) >> (n))
++
++#endif /* TST_BITMAP_H__ */
+--
+2.25.1
+
