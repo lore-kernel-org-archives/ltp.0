@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Aug 2021 16:43:03 +0200
-Subject: [LTP] [PATCH 6/7] syscalls/clone06: Convert to new API
-In-Reply-To: <20210813072720.22318-1-zhanglianjie@uniontech.com>
-References: <20210813072720.22318-1-zhanglianjie@uniontech.com>
-Message-ID: <YSZW978RDyWd2UcY@yuki>
+Date: Wed, 25 Aug 2021 16:54:37 +0200
+Subject: [LTP] [PATCH 1/1] doc: TST_MNTPOINT should be full path
+In-Reply-To: <20210825071420.5751-1-pvorel@suse.cz>
+References: <20210825071420.5751-1-pvorel@suse.cz>
+Message-ID: <YSZZrdiYVCUa2zeI@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,32 +11,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +	if (!TST_PASS)
-> +		return;
-> +
-> +	SAFE_CLOSE(pfd[1]);
-> +	SAFE_READ(1, pfd[0], buff, sizeof(buff));
-> +	SAFE_CLOSE(pfd[0]);
+> Document changed behavior in 205a43dfb ("Make argument to tst_umount an
+> absolute path").
 > 
-> -	cleanup();
-> -	tst_exit();
-> +	parent_env = getenv("TERM") ? : "";
-> +	TST_EXP_PASS(strcmp(buff, parent_env),
-> +				"verify environment variables by child");
-
-This is misuse as well. I guess TST_EXP_VAL() could be useable in this
-case as well.
-
->  }
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/shell-test-api.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->  static void setup(void)
->  {
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -	TEST_PAUSE;
-> +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-> +	SAFE_PIPE(pfd);
+> diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
+> index ecdbe9e6a..afc01dd01 100644
+> --- a/doc/shell-test-api.txt
+> +++ b/doc/shell-test-api.txt
+> @@ -515,8 +515,8 @@ The 'tst_mount' mounts '$TST_DEVICE' of '$TST_FS_TYPE' (optional) to
+>  '$TST_MNT_PARAMS'. The '$TST_MNTPOINT' directory is created if it didn't
+>  exist prior to the function call.
+>  
+> -If the path passed (optional, defaults to '$TST_MNTPOINT') to the 'tst_umount' is
+> -not mounted (present in '/proc/mounts') it's noop.
+> +If the path passed (optional, should be full path, defaults to '$TST_MNTPOINT')
+                                  ^          ^
+				  must     absolute
 
-Here as well it would be easier to use a shared memory as IPC.
 
 -- 
 Cyril Hrubis
