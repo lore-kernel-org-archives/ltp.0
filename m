@@ -1,9 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 25 Aug 2021 10:09:32 +0200
-Subject: [LTP] [PATCH 2/3] C API: Rename LTP_IPC_PATH -> TST_IPC_PATH
+Date: Wed, 25 Aug 2021 10:09:33 +0200
+Subject: [LTP] [PATCH 3/3] shell API: Rename LTP_IPC_PATH -> TST_IPC_PATH
 In-Reply-To: <20210825080933.12949-1-pvorel@suse.cz>
 References: <20210825080933.12949-1-pvorel@suse.cz>
-Message-ID: <20210825080933.12949-3-pvorel@suse.cz>
+Message-ID: <20210825080933.12949-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,48 +12,47 @@ To: ltp@lists.linux.it
 
 To follow the conventions in the new API.
 
-Update also C API docs.
-
-NOTE: IPC is not supported in the legacy API.
+Keep the old name in the legacy API.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/c-test-api.txt | 2 +-
- include/tst_test.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ testcases/lib/tst_test.sh | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 3127018a4..a092bc572 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -654,7 +654,7 @@ int main(void)
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index acf62c9ac..b68fae0b8 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -49,8 +49,8 @@ _tst_do_exit()
+ 		[ "$TST_TMPDIR_RHOST" = 1 ] && tst_cleanup_rhost
+ 	fi
  
- The 'tst_res()' function can be also used from binaries started by 'exec()',
- the parent test process has to set the '.child_needs_reinit' flag so that the
--library prepares for it and has to make sure the 'LTP_IPC_PATH' environment
-+library prepares for it and has to make sure the 'TST_IPC_PATH' environment
- variable is passed down, then the very fist thing the program has to call in
- 'main()' is 'tst_reinit()' that sets up the IPC.
+-	if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "$LTP_IPC_PATH" ]; then
+-		rm $LTP_IPC_PATH
++	if [ -n "$TST_NEEDS_CHECKPOINTS" -a -f "$TST_IPC_PATH" ]; then
++		rm $TST_IPC_PATH
+ 	fi
  
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 27ebed94e..4c0749865 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -275,12 +275,12 @@ struct tst_test {
- void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
-                     __attribute__ ((noreturn));
+ 	_tst_cleanup_timer
+@@ -582,14 +582,14 @@ _tst_init_checkpoints()
+ {
+ 	local pagesize
  
--#define IPC_ENV_VAR "LTP_IPC_PATH"
-+#define IPC_ENV_VAR "TST_IPC_PATH"
+-	LTP_IPC_PATH="/dev/shm/ltp_${TST_ID}_$$"
++	TST_IPC_PATH="/dev/shm/ltp_${TST_ID}_$$"
+ 	pagesize=$(tst_getconf PAGESIZE)
+ 	if [ $? -ne 0 ]; then
+ 		tst_brk TBROK "tst_getconf PAGESIZE failed"
+ 	fi
+-	ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$pagesize" count=1
+-	ROD_SILENT chmod 600 "$LTP_IPC_PATH"
+-	export LTP_IPC_PATH
++	ROD_SILENT dd if=/dev/zero of="$TST_IPC_PATH" bs="$pagesize" count=1
++	ROD_SILENT chmod 600 "$TST_IPC_PATH"
++	export TST_IPC_PATH
+ }
  
- /*
-  * Does library initialization for child processes started by exec()
-  *
-- * The LTP_IPC_PATH variable must be passed to the program environment.
-+ * The TST_IPC_PATH variable must be passed to the program environment.
-  */
- void tst_reinit(void);
- 
+ tst_run()
 -- 
 2.32.0
 
