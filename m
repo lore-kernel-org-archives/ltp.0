@@ -1,90 +1,52 @@
-From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Wed, 25 Aug 2021 15:39:32 +0000
-Subject: [LTP] [PATCH 4/4 v2] epoll_create: Add test for epoll_create02
-In-Reply-To: <20210825153932.138396-1-ziyaoxie@outlook.com>
-References: <20210825153932.138396-1-ziyaoxie@outlook.com>
-Message-ID: <OSZP286MB0871452D0FEE65A20447AAB1CCC69@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Thu, 26 Aug 2021 10:02:33 +0800
+Subject: [LTP] [PATCH 3/7] epoll_ctl: Add test for epoll_ctl03
+In-Reply-To: <YSUSj8qaWPfMF1/w@yuki>
+References: <20210817064924.127970-1-xieziyao@huawei.com>
+ <20210817064924.127970-4-xieziyao@huawei.com> <YSUSj8qaWPfMF1/w@yuki>
+Message-ID: <c4cfffb4-c58a-8f34-5254-fbfadcc68ab8@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: "Xie Ziyao" <ziyaoxie@outlook.com>
+Hi, Cyril,
 
-Verify that epoll_create returns -1 and set errno to EINVAL if size is
-not positive.
+>> +static void run_all(void)
+>> +{
+>> +	unsigned int index, events_bitmap;
+>> +
+>> +	for (index = 0; index < WIDTH_EPOLL_EVENTS; index++) {
+>> +		events_bitmap = ((EPOLLIN * ((index & 0x01) >> 0)) |
+>> +				(EPOLLOUT * ((index & 0x02) >> 1)) |
+>> +				(EPOLLPRI * ((index & 0x04) >> 2)) |
+>> +				(EPOLLERR * ((index & 0x08) >> 3)) |
+>> +				(EPOLLHUP * ((index & 0x10) >> 4)) |
+>> +				(EPOLLET * ((index & 0x20) >> 5)) |
+>> +				(EPOLLONESHOT * ((index & 0x40) >> 6)) |
+>> +				(EPOLLRDHUP * ((index & 0x80) >> 7)));
+> 
+> I guess that we can as well add a IS_BIT_SET() macro that would do:
+> 
+> #define IS_BIT_SET(val, bit) (((val) & (1<<(bit))) >> (bit))
+Looks good, thanks. I've added this macro to include/tst_bitmap.h in the 
+v2 patchset, other changes have also been applied.
 
-Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
----
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_create/.gitignore   |  1 +
- .../syscalls/epoll_create/epoll_create02.c    | 37 +++++++++++++++++++
- 3 files changed, 39 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_create/epoll_create02.c
+Besides, I've used a different outlook email to submit and hope it 
+doesn't cause misunderstandings.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2540905a0..d5a1e86e8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -157,6 +157,7 @@ dup3_01 dup3_01
- dup3_02 dup3_02
+> 
+> And use that here instead.
+> 
+> Otherwise it looks good.
+> 
 
- epoll_create01 epoll_create01
-+epoll_create02 epoll_create02
- epoll_create1_01 epoll_create1_01
- epoll_create1_02 epoll_create1_02
- epoll01 epoll-ltp
-diff --git a/testcases/kernel/syscalls/epoll_create/.gitignore b/testcases/kernel/syscalls/epoll_create/.gitignore
-index 0ed4d940a..5c16cfa8c 100644
---- a/testcases/kernel/syscalls/epoll_create/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_create/.gitignore
-@@ -1 +1,2 @@
- epoll_create01
-+epoll_create02
-diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create02.c b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
-new file mode 100644
-index 000000000..00df07922
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Linux Test Project, 2021
-+ * Author: Xie Ziyao <ziyaoxie@outlook.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that epoll_create returns -1 and set errno to EINVAL if size is not
-+ * positive.
-+ */
-+
-+#include <sys/epoll.h>
-+
-+#include "tst_test.h"
-+#include "lapi/epoll.h"
-+#include "lapi/syscalls.h"
-+
-+static struct test_case_t {
-+	int size;
-+	int exp_err;
-+} tc[] = {
-+	{0, EINVAL},
-+	{-1, EINVAL}
-+};
-+
-+static void run(unsigned int n)
-+{
-+	TST_EXP_FAIL(tst_syscall(__NR_epoll_create, tc[n].size),
-+		     tc[n].exp_err, "create(%d)", tc[n].size);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tc),
-+	.test = run,
-+};
---
-2.25.1
+Please see: https://patchwork.ozlabs.org/project/ltp/list/?series=259628
 
+Thanks for your review.
+
+-- 
+Best Regards,
+Xie Ziyao
+E-mail:ziyaoxie@outlook.com
