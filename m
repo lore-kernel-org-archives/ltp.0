@@ -1,74 +1,31 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Thu, 26 Aug 2021 12:36:07 +0300
-Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
-In-Reply-To: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
-Message-ID: <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Thu, 26 Aug 2021 11:50:22 +0200
+Subject: [LTP] [PATCH v5 3/3] syscalls/msgstress: tune limit of
+ processes for small machines
+In-Reply-To: <YR+vZjqYBh/f6yAZ@yuki>
+References: <20210820100028.97487-1-krzysztof.kozlowski@canonical.com>
+ <20210820100028.97487-4-krzysztof.kozlowski@canonical.com>
+ <YR+vZjqYBh/f6yAZ@yuki>
+Message-ID: <5342909d-f4fd-6d6d-80b9-4bd230ff7370@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 26.08.2021 08:26, suy.fnst@fujitsu.com wrote:
-> While running mpls02.sh -6 in our slow test box with kernel
-> version > v5.11, we found the test hangs at ping6 occasionally:
+On 20/08/2021 15:34, Cyril Hrubis wrote:
+> Hi!
+>> Forking the exactly amount of processes as the limit (either from
+>> max_pids or from cgroups) is risky - OS might be doing some work and
 > 
->   + grep -q 'invalid option'
->   + for size in ${msg_sizes:-"56"}
->   + EXPECT_PASS ping6 -I fd00:23::2 -c 500 -s 10 -f fd00:23::1
->   '>/dev/null'
->   + _tst_expect_pass tst_res ping6 -I fd00:23::2 -c 500 -s 10 -f
->   fd00:23::1 '>/dev/null'
->   + local fnc=tst_res
->   + shift
->   + tst_rod ping6 -I fd00:23::2 -c 500 -s 10 -f fd00:23::1 '>/dev/null'
-> 
-> The weird part is that manual ping6 works in the meantime.
-> 
-> Then we found that adding `sleep 1` at end of mpls02.sh/setup() make
-> the test pass in 100%. Dig depper in the problem, ftrace catched during
-> the 1 second shows (The test started at [ 3979.485488]):
-> 
->  3981.210701 |   2) kworker-24742  |               |  addrconf_dad_work() {
->  3981.210712 |   2) kworker-24742  |               |    addrconf_dad_completed() {
->  3981.210712 |   2) kworker-24742  |   0.417 us    |      addrconf_del_dad_work();
->  3981.210713 |   2) kworker-24742  |               |      __ipv6_ifa_notify() {
->  3981.210716 |   2) kworker-24742  |   1.097 us    |        inet6_fill_ifaddr();
->  3981.210730 |   2) kworker-24742  |               |        ip6_ins_rt() {
->  3981.210731 |   2) kworker-24742  |               |          fib6_add() {
-> 
-> In kernel, addrconf_dad_work() is delegated by inet6_addr_add() to do
-> route related jobs in a delayed workqueue . Hence, there is tiny period
-> we need to wait for it. Adding the `sleep 1` seems suffcient for now.
+> This comment does not seem to match the code. We apply the reserve to
+> the cgroup limit only. If we wanted to make sure that the reserve is
+> applied even in the case where there is no systemd cgroup we would have
+> to apply it in the tst_get_free_pids_() just before we check if
+> used_pids >= max_pids instead.
 
-What is happening in the ping6, it is OK for it to hang on this?
+You are right. I'll move it to tst_get_free_pids_ to handle such case.
 
-Adding nodad to loopback might only change the flags (remove tentative
-if ifa_flags==IFA_F_NODAD), the delayed dad work should be completed in
-addrconf_dad_begin() for it anyway... but will it make any difference
-for ping6 to change the test as below?
 
-ip addr add $ip_loc/$mask dev lo nodad
-tst_rhost_run -s -c "ip addr add $ip_rmt/$mask dev lo nodad"
-
-> Signed-off-by: Su Yue <suy.fnst@fujitsu.com>
-> ---
->  testcases/network/mpls/mpls02.sh | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/testcases/network/mpls/mpls02.sh b/testcases/network/mpls/mpls02.sh
-> index 2fd3ec5bf4ba..75f5fca32f9a 100755
-> --- a/testcases/network/mpls/mpls02.sh
-> +++ b/testcases/network/mpls/mpls02.sh
-> @@ -35,6 +35,8 @@ setup()
->  	tst_rhost_run -s -c "ip addr add $ip_rmt/$mask dev lo"
->  	tst_rhost_run -s -c "ip route add $ip_loc/$mask encap mpls 60 via inet$TST_IPV6 $(tst_ipaddr)"
->  	tst_rhost_run -s -c "ip -f mpls route add 50 dev lo"
-> +
-> +	sleep 1
->  }
->  
->  do_test()
-> 
-
+Best regards,
+Krzysztof
