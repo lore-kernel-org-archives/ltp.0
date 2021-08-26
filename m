@@ -1,19 +1,19 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Aug 2021 14:02:30 +0200
-Subject: [LTP] [PATCH v2 1/4] Add tst_get_free_gid() helper function to
- LTP library
-In-Reply-To: <20210826112212.26394-1-mdoucha@suse.cz>
-References: <20210826112212.26394-1-mdoucha@suse.cz>
-Message-ID: <YSeC1nOZAtwnrRde@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 26 Aug 2021 14:40:40 +0200
+Subject: [LTP] [PATCH v6] syscalls/msgstress: tune limit of processes
+ for small machines
+In-Reply-To: <20210826102708.23721-1-krzysztof.kozlowski@canonical.com>
+References: <20210826102708.23721-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <YSeLyPEZ5tk1VcKP@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi!
+Applied, thanks.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
