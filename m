@@ -1,55 +1,27 @@
-From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Fri, 27 Aug 2021 20:03:47 +0800
-Subject: [LTP] [PATCH] epoll_creat01: Replace TST_PASS with TST_RET
-In-Reply-To: <OSZP286MB087168E8DE5E0E49C9F90E27CCC89@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
-References: <OSZP286MB087168E8DE5E0E49C9F90E27CCC89@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
-Message-ID: <OSZP286MB0871564CA6D3D879E4E9B94DCCC89@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 27 Aug 2021 14:06:12 +0200
+Subject: [LTP] [PATCH v3 2/8] Add 'make check' to the build system
+In-Reply-To: <20210728123412.31858-3-rpalethorpe@suse.com>
+References: <20210728123412.31858-1-rpalethorpe@suse.com>
+ <20210728123412.31858-3-rpalethorpe@suse.com>
+Message-ID: <YSjVND0kRfXGQe6g@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Richie,
 
-> In TST_EXP_FD(), the value of TST_RET is the returned fd, not TST_PASS.
->
-> Fixes: 081f940b2df00 ("epoll_create: Add test for epoll_create01")
-> Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
-> ---
->   testcases/kernel/syscalls/epoll_create/epoll_create01.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
-> index 54fd0810d..29ac3763e 100644
-> --- a/testcases/kernel/syscalls/epoll_create/epoll_create01.c
-> +++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
-> @@ -26,9 +26,8 @@ static void run(unsigned int n)
->   {
->   	TST_EXP_FD(tst_syscall(__NR_epoll_create, tc[n]), "epoll_create(%d)", tc[n]);
->
-> -	if (!TST_PASS)
-> -		return;
-> -	SAFE_CLOSE(TST_PASS);
-> +	if (TST_RET)
-> +		SAFE_CLOSE(TST_RET);
+I see 'make check' requires all to have headers/dependencies installed, is that wanted?
 
-This patch fixes the incorrect use of TST_PASS in commit 081f940 
-("epoll_create: Add test for epoll_create01"), which I noticed when 
-reviewing the merged commit.
+$ make check
+...
+route-change-netlink.c:13:11: error: unable to open 'libmnl/libmnl.h'
 
-Sorry for this minor mistake.
+<libmnl/libmnl.h> is guarded by #ifdef HAVE_LIBMNL (config.h). Maybe there is a
+way to pass it to sparse. But that'd silently prevent to check code we want to
+check, thus it's probably better to just require to have everything installed.
 
-
->   }
->
->   static struct tst_test test = {
-> --
-> 2.25.1
->
->
--- 
-Best Regards,
-Xie Ziyao
-E-mail: ziyaoxie@outlook.com
-
+Kind regards,
+Petr
