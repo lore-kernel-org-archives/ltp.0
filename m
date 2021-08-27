@@ -1,38 +1,59 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Fri, 27 Aug 2021 11:34:17 +0300
-Subject: [LTP] [PATCH] network/netstress: fix stdout/stderr log file flags
- and mode
-Message-ID: <20210827083417.67579-1-aleksei.kodanev@bell-sw.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Fri, 27 Aug 2021 11:20:07 +0200
+Subject: [LTP] [PATCH v3 2/2] controllers/cpuacct: fix rmdir failures on
+ early test abort
+In-Reply-To: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
+References: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <20210827092007.20889-2-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* fix access mode for stdout/stderr
+The "testpath" variable is assigned at the end of setup(), so if test
+exits early, the "rmdir $testpath" is wrong:
 
-* add a write bit to the mode so that the next time the server
-  starts, it doesn't fail with EACCES because the log file
-  already exists and has read-only permissions.
+    cpuacct 1 TCONF: not enough of memory on this system (less than 3840 MB)
+    cpuacct 1 TINFO: removing created directories
+    rmdir: missing operand
+    Try 'rmdir --help' for more information.
 
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
 ---
- testcases/network/netstress/netstress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index c46bc86c3..03b1563dc 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -723,7 +723,7 @@ static void move_to_background(void)
- 	close(STDOUT_FILENO);
- 	close(STDERR_FILENO);
+Changes since v2:
+1. None.
+
+Changes since v1:
+1. None.
+---
+ testcases/kernel/controllers/cpuacct/cpuacct.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+index cde2ea948cee..d2250fdd339d 100755
+--- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
++++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+@@ -131,12 +131,13 @@ cleanup()
+ {
+ 	tst_res TINFO "removing created directories"
  
--	int fd = SAFE_OPEN(log_path, O_CREAT | O_TRUNC | O_RDONLY, 00444);
-+	int fd = SAFE_OPEN(log_path, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+-	if [ -d "$testpath/subgroup_1" ]; then
+-		rmdir $testpath/subgroup_*
++	if [ "$testpath" ]; then
++		if [ -d "$testpath/subgroup_1" ]; then
++			rmdir $testpath/subgroup_*
++		fi
++		rmdir $testpath
+ 	fi
  
- 	SAFE_DUP(fd);
- }
+-	rmdir $testpath
+-
+ 	if [ "$mounted" -ne 1 ]; then
+ 		tst_res TINFO "Umounting cpuacct"
+ 		umount $mount_point
 -- 
-2.25.1
+2.30.2
 
