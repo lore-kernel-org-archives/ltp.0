@@ -1,50 +1,37 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 27 Aug 2021 11:35:43 +0100
-Subject: [LTP] [PATCH] userns/userns08.c: Enable userns in
- max_user_namespaces file
-In-Reply-To: <1628144855-5924-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1628144855-5924-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <87h7fbkwe8.fsf@suse.de>
+From: Xie Ziyao <ziyaoxie@outlook.com>
+Date: Fri, 27 Aug 2021 11:57:15 +0000
+Subject: [LTP] [PATCH] epoll_creat01: Replace TST_PASS with TST_RET
+Message-ID: <OSZP286MB087168E8DE5E0E49C9F90E27CCC89@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Yang,
+In TST_EXP_FD(), the value of TST_RET is the returned fd, not TST_PASS.
 
-Yang Xu <xuyang2018.jy@fujitsu.com> writes:
+Fixes: 081f940b2df00 ("epoll_create: Add test for epoll_create01")
+Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
+---
+ testcases/kernel/syscalls/epoll_create/epoll_create01.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> On old distros ie centos7, the default value of max_user_namespaces is set to 0.
-> Enable it by increasing this value.
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+index 54fd0810d..29ac3763e 100644
+--- a/testcases/kernel/syscalls/epoll_create/epoll_create01.c
++++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+@@ -26,9 +26,8 @@ static void run(unsigned int n)
+ {
+ 	TST_EXP_FD(tst_syscall(__NR_epoll_create, tc[n]), "epoll_create(%d)", tc[n]);
 
-Looks good, except for very minor point below.
+-	if (!TST_PASS)
+-		return;
+-	SAFE_CLOSE(TST_PASS);
++	if (TST_RET)
++		SAFE_CLOSE(TST_RET);
+ }
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+ static struct tst_test test = {
+--
+2.25.1
 
-> ---
->  testcases/kernel/containers/userns/userns08.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
-> index aedfc6c4e..0910ea7d4 100644
-> --- a/testcases/kernel/containers/userns/userns08.c
-> +++ b/testcases/kernel/containers/userns/userns08.c
-> @@ -120,6 +120,11 @@ static void setup(void)
->  
->  	SAFE_WRITE(fd, 1, "\n", 1);
->  	SAFE_CLOSE(fd);
-> +
-> +	/* The default value of max_user_namespaces is set to 0 on some distros,
-> +	 * We need to change the default value to call clone().
-> +	 */
-
-We don't need inline comments like this. In this case the commit message
-and git-blame is fine. Other times the style guide requests it goes in
-the comment at the top.
-
--- 
-Thank you,
-Richard.
