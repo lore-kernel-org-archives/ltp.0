@@ -1,126 +1,108 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Fri, 27 Aug 2021 11:20:06 +0200
-Subject: [LTP] [PATCH v3 1/2] controllers/cpuacct: skip cpuacct_100_100 on
- small memory systems
-Message-ID: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 27 Aug 2021 17:27:54 +0800
+Subject: [LTP] [PATCH] tst_test_macros.h: Add TST_EXP_VAL macro
+In-Reply-To: <20210827023042.26143-1-zhanglianjie@uniontech.com>
+References: <20210827023042.26143-1-zhanglianjie@uniontech.com>
+Message-ID: <CAEemH2eVmWa-D+joV6E1F8RwYvrao-GK+jjU-+g6kyQOhhOSXg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Running cpuacct_100_100 on a system with less than ~4 GB of RAM fails:
+Hi Lianjie,
 
-    cpuacct 1 TINFO: timeout per run is 0h 5m 0s
-    cpuacct 1 TINFO: cpuacct: /sys/fs/cgroup/cpu,cpuacct
-    cpuacct 1 TINFO: Creating 100 subgroups each with 100 processes
-    testcases/bin/cpuacct.sh: 0: Cannot fork
+Some queries:
 
-In dmesg:
+Do we have test scenarios for making use of these macros?
 
-    LTP: starting cpuacct_100_100 (cpuacct.sh 100 100)
-    cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
+And can you write a test to verify the macros you added at the same time?
+(just like what we had done in test_macros0*.c)
 
-The reason is cgroups pid limit set by systemd user.slice.  For example
-on 2 GB RAM machine it is set as:
-    /sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max:5207
+Btw, you should keep the code indent consistent with the original.
+(especially for backlash \)
 
-Add a check for both free memory and maximum number of pids (when using
-systemd) to skip the test.  Systems not using systemd might still fail.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Fri, Aug 27, 2021 at 10:31 AM zhanglianjie <zhanglianjie@uniontech.com>
+wrote:
 
----
+> Add TST_EXP_VAL to determine whether the return value
+> is equal to the given value.
+>
+> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+>
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index 50598aa15..d23455362 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -132,6 +132,34 @@ extern void *TST_RET_PTR;
+>                         TST_MSG_(TPASS, " passed", #SCALL,
+> ##__VA_ARGS__);     \
+>         } while (0)
+>     \
+>
+> +
+> +#define TST_EXP_VAL_SILENT_(SCALL, SSCALL, VAL, ...)                    \
+> +       do {
+>   \
+> +               TEST(SCALL);
+>       \
+> +                                                                        \
+> +               TST_PASS = 0;
+>      \
+> +                                                                        \
+> +               if (TST_RET != VAL) {
+>      \
+> +                       TST_MSGP_(TFAIL | TTERRNO, " retval not %ld",
+>          \
+> +                                 (long )VAL, SSCALL, ##__VA_ARGS__);
+>          \
+> +                       break;
+>           \
+> +               }
+>      \
+> +                                                                        \
+> +               TST_PASS = 1;
+>      \
+> +                                                                        \
+> +       } while (0)
+> +
+> +#define TST_EXP_VAL_SILENT(SCALL, VAL, ...) TST_EXP_VAL_SILENT_(SCALL,
+> #SCALL, VAL, ##__VA_ARGS__)
+> +
+> +#define TST_EXP_VAL(SCALL, VAL, ...)                                    \
+> +       do {
+>   \
+> +               TST_EXP_VAL_SILENT(SCALL, VAL, ##__VA_ARGS__);
+>       \
+> +                                                                        \
+> +               if (TST_PASS)
+>      \
+> +                       TST_MSG_(TPASS, " passed", #SCALL,
+> ##__VA_ARGS__);          \
+> +                                                                        \
+> +       } while(0)
+> +
+>  #define TST_EXP_FAIL_(PASS_COND, SCALL, SSCALL, ERRNO, ...)
+>       \
+>         do {
+>      \
+>                 TEST(SCALL);
+>      \
+> --
+> 2.20.1
+>
+>
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
 
-Changes since v2:
-1. Correct realuid->real_uid typo.
-2. Correct handling dash shell tests for return value.
-3. Correct handling numbers - infinite.
-
-Changes since v1:
-1. Add checking for pids.
-2. Accurately check the memory constraints.
----
- .../kernel/controllers/cpuacct/cpuacct.sh     | 60 +++++++++++++++++++
- 1 file changed, 60 insertions(+)
-
-diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-index 323aa7513bf4..cde2ea948cee 100755
---- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
-+++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-@@ -38,12 +38,72 @@ OPTIONS
- EOF
- }
- 
-+check_free_memory()
-+{
-+	local memneeded
-+	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
-+
-+	if [ $? -ne 0 ]; then
-+		local memcached
-+
-+		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
-+		test $? -eq 0 || return 0
-+
-+		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
-+		test $? -eq 0 || return 0
-+
-+		memfree=$((memfree + memcached))
-+	fi
-+
-+	# On x86_64, each 100 of processes were using ~16 MB of memory,
-+	# so try to estimate the needed free memory based on this.
-+	memneeded=$((max * nbprocess * 16384 / 100))
-+
-+	if [ $memfree -lt $memneeded ]; then
-+		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
-+	fi
-+	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
-+
-+	return 0
-+}
-+
-+check_limits()
-+{
-+	local real_uid="$SUDO_UID"
-+	local tasksneeded=$((max * nbprocess + 100))
-+
-+	if [ "$real_uid" = "" ]; then
-+		real_uid=`id -u`
-+		test $? -eq 0 || return 0
-+	fi
-+
-+	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
-+	test $? -eq 0 || return 0
-+
-+	# Check for number for cases like TasksMax=infinity
-+	[ -n "$tasksmax" ] && [ "$tasksmax" -eq "$tasksmax" ] 2>/dev/null
-+	test $? -eq 0 || return 0
-+
-+	if [ $tasksmax -le $tasksneeded ]; then
-+		tst_brk TCONF "limit of tasks is too low (approximate need $tasksneeded, limit $tasksmax)"
-+	fi
-+	tst_res TINFO "task limit fulfilled (approximate need $tasksneeded, limit $tasksmax)"
-+
-+	return 0
-+}
-+
- setup()
- {
- 	if ! grep -q -w cpuacct /proc/cgroups; then
- 		tst_brk TCONF "cpuacct not supported on this system"
- 	fi
- 
-+	check_limits
-+	# Don't bother with memory limit checks on smaller tests
-+	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
-+		check_free_memory
-+	fi
-+
- 	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
- 	tst_res TINFO "cpuacct: $mount_point"
- 	if [ "$mount_point" = "" ]; then
 -- 
-2.30.2
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210827/0939a580/attachment-0001.htm>
