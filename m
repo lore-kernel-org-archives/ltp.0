@@ -1,104 +1,107 @@
-From: suy.fnst@fujitsu.com <suy.fnst@fujitsu.com>
-Date: Mon, 30 Aug 2021 09:26:58 +0000
-Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
-In-Reply-To: <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
-Message-ID: <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 30 Aug 2021 17:55:00 +0800
+Subject: [LTP] [PATCH v2] tst_test_macros.h: Add TST_EXP_VAL macro
+In-Reply-To: <20210830070951.27803-1-zhanglianjie@uniontech.com>
+References: <20210830070951.27803-1-zhanglianjie@uniontech.com>
+Message-ID: <CAEemH2cJt3Ku90f2CUkypr-55H3dwEUpnO7-QcsyJbRRfVH2nw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-  I found that it's indeed related to ipv6 DAD as you said.
-Calling
-`ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
-or tst_wait_ipv6_dad() at end of the setup both solves the problem.
-However there is one super strange part that the tentative address is
-the local link adress of the ltp_ns_veth1:
+On Mon, Aug 30, 2021 at 3:10 PM zhanglianjie <zhanglianjie@uniontech.com>
+wrote:
 
-5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
-    link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet 10.0.0.1/24 scope global ltp_ns_veth1
-       valid_lft forever preferred_lft forever
-    inet6 fd00:1:1:1::1/64 scope global nodad
-       valid_lft forever preferred_lft forever
-    inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative       <-------------------
-       valid_lft forever preferred_lft forever
-
-However, there is no place using the address in mpls02 test.
-It makes me wonder how could it be possible to trigger the issue..
-
-Thanks!
---
-Su
-________________________________________
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Sent: Thursday, August 26, 2021 17:36
-To: Su, Yue/? ?; ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
-
-On 26.08.2021 08:26, suy.fnst@fujitsu.com wrote:
-> While running mpls02.sh -6 in our slow test box with kernel
-> version > v5.11, we found the test hangs at ping6 occasionally:
+> Add TST_EXP_VAL to determine whether the return value
+> is equal to the given value.
 >
->   + grep -q 'invalid option'
->   + for size in ${msg_sizes:-"56"}
->   + EXPECT_PASS ping6 -I fd00:23::2 -c 500 -s 10 -f fd00:23::1
->   '>/dev/null'
->   + _tst_expect_pass tst_res ping6 -I fd00:23::2 -c 500 -s 10 -f
->   fd00:23::1 '>/dev/null'
->   + local fnc=tst_res
->   + shift
->   + tst_rod ping6 -I fd00:23::2 -c 500 -s 10 -f fd00:23::1 '>/dev/null'
+> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 >
-> The weird part is that manual ping6 works in the meantime.
->
-> Then we found that adding `sleep 1` at end of mpls02.sh/setup() make
-> the test pass in 100%. Dig depper in the problem, ftrace catched during
-> the 1 second shows (The test started at [ 3979.485488]):
->
->  3981.210701 |   2) kworker-24742  |               |  addrconf_dad_work() {
->  3981.210712 |   2) kworker-24742  |               |    addrconf_dad_completed() {
->  3981.210712 |   2) kworker-24742  |   0.417 us    |      addrconf_del_dad_work();
->  3981.210713 |   2) kworker-24742  |               |      __ipv6_ifa_notify() {
->  3981.210716 |   2) kworker-24742  |   1.097 us    |        inet6_fill_ifaddr();
->  3981.210730 |   2) kworker-24742  |               |        ip6_ins_rt() {
->  3981.210731 |   2) kworker-24742  |               |          fib6_add() {
->
-> In kernel, addrconf_dad_work() is delegated by inet6_addr_add() to do
-> route related jobs in a delayed workqueue . Hence, there is tiny period
-> we need to wait for it. Adding the `sleep 1` seems suffcient for now.
+ Reviewed-by: Li Wang <liwang@redhat.com>
 
-What is happening in the ping6, it is OK for it to hang on this?
 
-Adding nodad to loopback might only change the flags (remove tentative
-if ifa_flags==IFA_F_NODAD), the delayed dad work should be completed in
-addrconf_dad_begin() for it anyway... but will it make any difference
-for ping6 to change the test as below?
-
-ip addr add $ip_loc/$mask dev lo nodad
-tst_rhost_run -s -c "ip addr add $ip_rmt/$mask dev lo nodad"
-
-> Signed-off-by: Su Yue <suy.fnst@fujitsu.com>
-> ---
->  testcases/network/mpls/mpls02.sh | 2 ++
->  1 file changed, 2 insertions(+)
 >
-> diff --git a/testcases/network/mpls/mpls02.sh b/testcases/network/mpls/mpls02.sh
-> index 2fd3ec5bf4ba..75f5fca32f9a 100755
-> --- a/testcases/network/mpls/mpls02.sh
-> +++ b/testcases/network/mpls/mpls02.sh
-> @@ -35,6 +35,8 @@ setup()
->       tst_rhost_run -s -c "ip addr add $ip_rmt/$mask dev lo"
->       tst_rhost_run -s -c "ip route add $ip_loc/$mask encap mpls 60 via inet$TST_IPV6 $(tst_ipaddr)"
->       tst_rhost_run -s -c "ip -f mpls route add 50 dev lo"
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index 50598aa15..0ccc01f49 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -132,6 +132,34 @@ extern void *TST_RET_PTR;
+>                         TST_MSG_(TPASS, " passed", #SCALL,
+> ##__VA_ARGS__);     \
+>         } while (0)
+>     \
+>
 > +
-> +     sleep 1
->  }
+> +#define TST_EXP_VAL_SILENT_(SCALL, SSCALL, VAL, ...)
+>      \
+> +       do {
+>      \
+> +               TEST(SCALL);
+>      \
+> +
+>     \
+> +               TST_PASS = 0;
+>     \
+> +
+>     \
+> +               if (TST_RET != VAL) {
+>     \
+> +                       TST_MSGP_(TFAIL | TTERRNO, " retval not %ld",
+>     \
+> +                                 (long )VAL, SSCALL, ##__VA_ARGS__);
+>     \
+> +                       break;
+>      \
+> +               }
+>     \
+> +
+>     \
+> +               TST_PASS = 1;
+>     \
+> +
+>     \
+> +       } while (0)
+> +
+> +#define TST_EXP_VAL_SILENT(SCALL, VAL, ...) TST_EXP_VAL_SILENT_(SCALL,
+> #SCALL, VAL, ##__VA_ARGS__)
+> +
+> +#define TST_EXP_VAL(SCALL, VAL, ...)
+>      \
+> +       do {
+>      \
+> +               TST_EXP_VAL_SILENT(SCALL, VAL, ##__VA_ARGS__);
+>      \
+> +
+>     \
+> +               if (TST_PASS)
+>     \
+> +                       TST_MSG_(TPASS, " passed", #SCALL,
+> ##__VA_ARGS__);     \
+> +
+>     \
+> +       } while(0)
+> +
+>  #define TST_EXP_FAIL_(PASS_COND, SCALL, SSCALL, ERRNO, ...)
+>       \
+>         do {
+>      \
+>                 TEST(SCALL);
+>      \
+> --
+> 2.20.1
 >
->  do_test()
+>
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 >
 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210830/f0150db9/attachment.htm>
