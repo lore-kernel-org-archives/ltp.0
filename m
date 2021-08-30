@@ -1,122 +1,141 @@
-From: John Stultz <john.stultz@linaro.org>
-Date: Fri, 27 Aug 2021 21:29:59 +0000
-Subject: [LTP] [RFC][PATCH] memcg/control: Fix dropped messages from fifo to
- avoid leaving mem_process running
-Message-ID: <20210827212959.1633818-1-john.stultz@linaro.org>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Mon, 30 Aug 2021 14:35:31 +0800
+Subject: [LTP] [PATCH] tst_test_macros.h: Add TST_EXP_VAL macro
+In-Reply-To: <CAEemH2eVmWa-D+joV6E1F8RwYvrao-GK+jjU-+g6kyQOhhOSXg@mail.gmail.com>
+References: <20210827023042.26143-1-zhanglianjie@uniontech.com>
+ <CAEemH2eVmWa-D+joV6E1F8RwYvrao-GK+jjU-+g6kyQOhhOSXg@mail.gmail.com>
+Message-ID: <0bbec91d-0224-0e3a-7c24-f61b591f7782@uniontech.com>+8CB652FAC992B520
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-(Sorry for the resend, had to subscribe to the list)
+Hi,
 
-In testing with AOSP, I ran across some odd behavior where
-the memcg_control_test.sh would get stuck in zombie state,
-and the mem_process process would be stuck running.
+For example, it is necessary to determine whether TST_RET and child_pid 
+are equal :
 
-After some debugging, I found mem_process was not getting
-the quit message ("x") over the status_pipe fifo, and would
-keep running after the test was finished.
-
-In the memcg_control_test.sh script, there is some curious
-behavior, as after it sends the allocate message ("m") and
-then checks to see if the mem_process has been killed, if it
-was not killed, it again sends the allocate ("m") message,
-which I don't quite understand the reason for:
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/control/memcg_control_test.sh#L72
-
-The memcg_control_test.sh then immediately sends the quit
-message ("x"):
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/control/memcg_control_test.sh#L73
-
-Which is what the mem_process was not receiving.
-
-Removing the second allocate ("m") message seemed to avoid the
-problem. And digging further this seems to be due to the fact
-that the mem_process is open/read/closing the fifo each loop
-iteration:
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/control/mem_process.c#L109
-
-My understanding is fifos only function when both sides are
-open, having two commands sent quickly in succession, the first
-will be read but as the fifo is then closed, the second message
-may get dropped before the fifo is re-opened and read from.
-
-Thus to avoid this, this patch reworks the fifo handling so
-the mem_process will create the fifo, open it, and then
-do its main loop processing keeping the fifo open.
-
-Once it receieves a quit message, it will then close and
-remove the fifo.
-
-So far this has resolved the issue for me.
-I don't pretend to be a fifo expert, so feedback or suggestions
-for other approaches would be welcome!
-
-Cc: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: Jan Stancek <jstancek@redhat.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: YongQin Liu <yongqin.liu@linaro.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- .../controllers/memcg/control/mem_process.c      | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/control/mem_process.c b/testcases/kernel/controllers/memcg/control/mem_process.c
-index efe2fb3e3..6c1b36ca6 100644
---- a/testcases/kernel/controllers/memcg/control/mem_process.c
-+++ b/testcases/kernel/controllers/memcg/control/mem_process.c
-@@ -101,25 +101,20 @@ void mem_map(void)
- /*
-  * done: retrieve instructions from the named pipe
-  */
--char action(void)
-+char action(int fd)
- {
- 	char ch;
--	int fd;
--
--	if ((fd = open(STATUS_PIPE, O_RDONLY)) == -1)
--		err(6, "Error opening named pipe");
+TST_EXP_POSITIVE(ltp_clone(SIGCHLD, child_fn, NULL, CHILD_STACK_SIZE, 
  
- 	if (read(fd, &ch, 1) == -1)
- 		err(7, "Error reading named pipe");
- 
--	close(fd);
--
- 	return ch;
- }
- 
- int main(int argc, char **argv)
- {
- 	int ret;
-+	int fd;
- 	char ch;
- 
- 	process_options(argc, argv);
-@@ -129,13 +124,18 @@ int main(int argc, char **argv)
- 	if (ret == -1 && errno != EEXIST)
- 		errx(1, "Error creating named pipe");
- 
-+	if ((fd = open(STATUS_PIPE, O_RDONLY)) == -1)
-+		err(6, "Error opening named pipe");
-+
- 	do {
--		ch = action();
-+		ch = action(fd);
- 
- 		if (ch == 'm')
- 			mem_map();
- 	} while (ch != 'x');
- 
-+	close(fd);
-+
- 	remove(STATUS_PIPE);
- 
- 	return 0;
+
+               child_stack));
+
+TST_EXP_PASS(!(TST_RET == child_pid), "pid(%d)", child_pid);
+
+Can be changed to:
+
+TST_EXP_VAL(TST_RET, child_pid);
+
+
+
+On 2021-08-27 17:27, Li Wang wrote:
+> Hi Lianjie,
+> 
+> Some queries:
+> 
+> Do we have test scenarios?for making use of these macros?
+> 
+> And can you write a test to verify the macros you added at the same time?
+> (just like what we had done in test_macros0*.c)
+> 
+> Btw, you should keep the code indent consistent with the original.
+> (especially for backlash \)
+I will resubmit and add a test_macros0*.c.
+> 
+> 
+> On Fri, Aug 27, 2021 at 10:31 AM zhanglianjie 
+> <zhanglianjie@uniontech.com <mailto:zhanglianjie@uniontech.com>> wrote:
+> 
+>     Add TST_EXP_VAL to determine whether the return value
+>     is equal to the given value.
+> 
+>     Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com
+>     <mailto:zhanglianjie@uniontech.com>>
+> 
+>     diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+>     index 50598aa15..d23455362 100644
+>     --- a/include/tst_test_macros.h
+>     +++ b/include/tst_test_macros.h
+>     @@ -132,6 +132,34 @@ extern void *TST_RET_PTR;
+>      ? ? ? ? ? ? ? ? ? ? ? ? TST_MSG_(TPASS, " passed", #SCALL,
+>     ##__VA_ARGS__);? ? ?\
+>      ? ? ? ? } while (0)                                               
+>      ? ? ? ? ? ? \
+> 
+>     +
+>     +#define TST_EXP_VAL_SILENT_(SCALL, SSCALL, VAL, ...)               
+>      ? ? \
+>     +? ? ? ?do {                                                       
+>      ? ? ? ? \
+>     +? ? ? ? ? ? ? ?TEST(SCALL);                                       
+>      ? ? ? ? ? ? \
+>     +                                                                   
+>      ? ? \
+>     +? ? ? ? ? ? ? ?TST_PASS = 0;                                       
+>      ? ? ? ? ? ?\
+>     +                                                                   
+>      ? ? \
+>     +? ? ? ? ? ? ? ?if (TST_RET != VAL) {                               
+>      ? ? ? ? ? ?\
+>     +? ? ? ? ? ? ? ? ? ? ? ?TST_MSGP_(TFAIL | TTERRNO, " retval not
+>     %ld",? ? ? ? ? ? ? ?\
+>     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?(long )VAL, SSCALL,
+>     ##__VA_ARGS__);? ? ? ? ? ? ? ?\
+>     +? ? ? ? ? ? ? ? ? ? ? ?break;                                     
+>      ? ? ? ? ? ? ? ? \
+>     +? ? ? ? ? ? ? ?}                                                   
+>      ? ? ? ? ? ?\
+>     +                                                                   
+>      ? ? \
+>     +? ? ? ? ? ? ? ?TST_PASS = 1;                                       
+>      ? ? ? ? ? ?\
+>     +                                                                   
+>      ? ? \
+>     +? ? ? ?} while (0)
+>     +
+>     +#define TST_EXP_VAL_SILENT(SCALL, VAL, ...)
+>     TST_EXP_VAL_SILENT_(SCALL, #SCALL, VAL, ##__VA_ARGS__)
+>     +
+>     +#define TST_EXP_VAL(SCALL, VAL, ...)                               
+>      ? ? \
+>     +? ? ? ?do {                                                       
+>      ? ? ? ? \
+>     +? ? ? ? ? ? ? ?TST_EXP_VAL_SILENT(SCALL, VAL, ##__VA_ARGS__);     
+>      ? ? ? ? ? ? \
+>     +                                                                   
+>      ? ? \
+>     +? ? ? ? ? ? ? ?if (TST_PASS)                                       
+>      ? ? ? ? ? ?\
+>     +? ? ? ? ? ? ? ? ? ? ? ?TST_MSG_(TPASS, " passed", #SCALL,
+>     ##__VA_ARGS__);? ? ? ? ? \
+>     +                                                                   
+>      ? ? \
+>     +? ? ? ?} while(0)
+>     +
+>      ?#define TST_EXP_FAIL_(PASS_COND, SCALL, SSCALL, ERRNO, ...)       
+>      ? ? ? ? ? ? \
+>      ? ? ? ? do {                                                       
+>      ? ? ? ? ? ?\
+>      ? ? ? ? ? ? ? ? TEST(SCALL);                                       
+>      ? ? ? ? ? ?\
+>     --
+>     2.20.1
+> 
+> 
+> 
+> 
+>     -- 
+>     Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> 
+> 
+> -- 
+> Regards,
+> Li Wang
+
 -- 
-2.25.1
+Regards,
+Zhang Lianjie
+
 
