@@ -1,80 +1,45 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 30 Aug 2021 15:17:29 +0200
-Subject: [LTP] [PATCH 1/2] Add verbose setup to creat08, creat09 and open10
-Message-ID: <20210830131730.31935-1-mdoucha@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 30 Aug 2021 15:33:26 +0200
+Subject: [LTP] [PATCH 2/2] Add CHECK_NOFLAGS and checkpatch.pl to 'make
+ check'
+In-Reply-To: <YSjXX6NWbDzu5X9m@pevik>
+References: <20210827095210.23602-1-rpalethorpe@suse.com>
+ <20210827095210.23602-2-rpalethorpe@suse.com>
+ <YSjXX6NWbDzu5X9m@pevik>
+Message-ID: <YSzeJvfWZja/oKnR@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These tests are sensitive to proper UID/GID configuration so print
-the detected values for debugging purposes in case of test failure.
+Hi!
+> > Add another check command type. CHECK_NOFLAGS just takes the source
+> > file name as an argument. By default it is set to
+> > scripts/checkpatch.pl which is probably the only thing we want to use
+> > it for. OTOH you can set it to clang-tidy instead.
+> The same we could do with checkbashisms for tests using new shell API.
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- lib/tst_uid.c                             | 5 ++++-
- testcases/kernel/syscalls/creat/creat08.c | 2 ++
- testcases/kernel/syscalls/creat/creat09.c | 2 ++
- testcases/kernel/syscalls/open/open10.c   | 2 ++
- 4 files changed, 10 insertions(+), 1 deletion(-)
+This would be a good idea as well.
 
-diff --git a/lib/tst_uid.c b/lib/tst_uid.c
-index a73cafa46..2163b1494 100644
---- a/lib/tst_uid.c
-+++ b/lib/tst_uid.c
-@@ -23,8 +23,11 @@ gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
- 		if (ret == skip || getgrgid(ret))
- 			continue;
- 
--		if (errno == 0 || errno == ENOENT || errno == ESRCH)
-+		if (errno == 0 || errno == ENOENT || errno == ESRCH) {
-+			tst_res_(file, lineno, TINFO | TERRNO,
-+				"Found unused GID %d", (int)ret);
- 			return ret;
-+		}
- 
- 		tst_brk_(file, lineno, TBROK|TERRNO, "Group ID lookup failed");
- 		return (gid_t)-1;
-diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
-index 4392f198a..91581dbf8 100644
---- a/testcases/kernel/syscalls/creat/creat08.c
-+++ b/testcases/kernel/syscalls/creat/creat08.c
-@@ -41,6 +41,8 @@ static void setup(void)
- 	orig_uid = getuid();
- 	nobody_uid = ltpuser->pw_uid;
- 	nobody_gid = ltpuser->pw_gid;
-+	tst_res(TINFO, "User nobody: uid = %d, gid = %d", (int)nobody_uid,
-+		(int)nobody_gid);
- 	free_gid = tst_get_free_gid(nobody_gid);
- 	tmpdir = tst_get_tmpdir();
- }
-diff --git a/testcases/kernel/syscalls/creat/creat09.c b/testcases/kernel/syscalls/creat/creat09.c
-index 1de16d636..53ab202c1 100644
---- a/testcases/kernel/syscalls/creat/creat09.c
-+++ b/testcases/kernel/syscalls/creat/creat09.c
-@@ -41,6 +41,8 @@ static void setup(void)
- 	struct stat buf;
- 	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
- 
-+	tst_res(TINFO, "User nobody: uid = %d, gid = %d", (int)ltpuser->pw_uid,
-+		(int)ltpuser->pw_gid);
- 	free_gid = tst_get_free_gid(ltpuser->pw_gid);
- 
- 	/* Create directories and set permissions */
-diff --git a/testcases/kernel/syscalls/open/open10.c b/testcases/kernel/syscalls/open/open10.c
-index e3804c74f..d2d3729d2 100644
---- a/testcases/kernel/syscalls/open/open10.c
-+++ b/testcases/kernel/syscalls/open/open10.c
-@@ -39,6 +39,8 @@ static void setup(void)
- 	orig_uid = getuid();
- 	nobody_uid = ltpuser->pw_uid;
- 	nobody_gid = ltpuser->pw_gid;
-+	tst_res(TINFO, "User nobody: uid = %d, gid = %d", (int)nobody_uid,
-+		(int)nobody_gid);
- 	free_gid = tst_get_free_gid(nobody_gid);
- 	tmpdir = tst_get_tmpdir();
- }
+> > It is run with '-' because of the large number of errors it presently
+> > produces. Also of course, check errors are not actually fatal. If we
+> > wish to stop on errors in the future (e.g. for CI) then a "strict"
+> > option can be introduced.
+> 
+> Thanks for doing this!
+> 
+> Could it be possible to run it only for tests which use new API? Otherwise it
+> takes long time before we can use it in CI due lots of output from tests using
+> legacy API:
+> 
+> tst_record_childstatus.c:1: WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+> => tst_record_childstatus.c uses test.h.
+
+Well I do see this to be mainly targetting development so that everyone
+can do 'make check' before submitting. So I would like to get this
+merged ASAP and we can try to make it work with CI later on.
+
 -- 
-2.32.0
-
+Cyril Hrubis
+chrubis@suse.cz
