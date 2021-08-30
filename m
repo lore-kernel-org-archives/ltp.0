@@ -1,27 +1,122 @@
 From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Mon, 30 Aug 2021 19:16:35 +0800
-Subject: [LTP] [PATCH 0/3] epoll: Add new testcases for epoll_ctl
-Message-ID: <OSZP286MB0871850A0D09CD5926C0C55FCCCB9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+Date: Mon, 30 Aug 2021 19:16:36 +0800
+Subject: [LTP] [PATCH 1/3] epoll_ctl: Add test for epoll_ctl04
+In-Reply-To: <20210830111638.66371-1-ziyaoxie@outlook.com>
+References: <20210830111638.66371-1-ziyaoxie@outlook.com>
+Message-ID: <OSZP286MB08715F437E34B8DC078D293ACCCB9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Xie Ziyao (3):
-  epoll_ctl: Add test for epoll_ctl04
-  epoll_ctl: Add test for epoll_ctl05
-  epoll_ctl02: Add test for fd not supporting epoll
+Verify that the maximum number of nesting allowed inside epoll sets is
+5, otherwise epoll_ctl fails with EINVAL.
 
- runtest/syscalls                              |  2 +
- .../kernel/syscalls/epoll_ctl/.gitignore      |  2 +
- .../kernel/syscalls/epoll_ctl/epoll_ctl02.c   |  8 ++-
- .../kernel/syscalls/epoll_ctl/epoll_ctl04.c   | 69 ++++++++++++++++++
- .../kernel/syscalls/epoll_ctl/epoll_ctl05.c   | 71 +++++++++++++++++++
- 5 files changed, 150 insertions(+), 2 deletions(-)
+Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
+---
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/epoll_ctl/.gitignore      |  1 +
+ .../kernel/syscalls/epoll_ctl/epoll_ctl04.c   | 69 +++++++++++++++++++
+ 3 files changed, 71 insertions(+)
  create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
- create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 75bb6571d..100ca932f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -165,6 +165,7 @@ epoll01 epoll-ltp
+ epoll_ctl01 epoll_ctl01
+ epoll_ctl02 epoll_ctl02
+ epoll_ctl03 epoll_ctl03
++epoll_ctl04 epoll_ctl04
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+diff --git a/testcases/kernel/syscalls/epoll_ctl/.gitignore b/testcases/kernel/syscalls/epoll_ctl/.gitignore
+index 2b50d924c..f78db4002 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/.gitignore
++++ b/testcases/kernel/syscalls/epoll_ctl/.gitignore
+@@ -1,3 +1,4 @@
+ epoll_ctl01
+ epoll_ctl02
+ epoll_ctl03
++epoll_ctl04
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
+new file mode 100644
+index 000000000..fce754e96
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Linux Test Project, 2021
++ * Author: Xie Ziyao <ziyaoxie@outlook.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify that the maximum number of nesting allowed inside epoll sets is 5,
++ * otherwise epoll_ctl fails with EINVAL.
++ */
++
++#include <poll.h>
++#include <sys/epoll.h>
++
++#include "tst_test.h"
++
++#define MAX_DEPTH 5
++
++static int epfd, new_epfd;
++static int fd[2];
++
++static struct epoll_event events = {.events = EPOLLIN};
++
++static void setup(void)
++{
++	int depth;
++
++	SAFE_PIPE(fd);
++
++	for (depth = 0, epfd = fd[0]; depth < MAX_DEPTH; depth++) {
++		new_epfd = epoll_create(1);
++		if (new_epfd == -1)
++			tst_brk(TBROK | TERRNO, "fail to create epoll instance");
++
++		events.data.fd = epfd;
++		if (epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events))
++			tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++
++		epfd = new_epfd;
++	}
++}
++
++static void cleanup(void)
++{
++	if (fd[0])
++		SAFE_CLOSE(fd[0]);
++
++	if (fd[1])
++		SAFE_CLOSE(fd[1]);
++}
++
++static void verify_epoll_ctl(void)
++{
++	new_epfd = epoll_create(1);
++	if (new_epfd == -1)
++		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
++
++	events.data.fd = epfd;
++	TST_EXP_FAIL(epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events), EINVAL,
++		     "epoll_clt(..., EPOLL_CTL_ADD, ...) with number of nesting is 5");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_epoll_ctl,
++};
 --
 2.25.1
 
