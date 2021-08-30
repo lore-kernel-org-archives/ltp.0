@@ -1,120 +1,53 @@
-From: John Stultz <john.stultz@linaro.org>
-Date: Fri, 27 Aug 2021 05:31:15 +0000
-Subject: [LTP] [RFC][PATCH] memcg/control: Fix dropped messages from fifo to
- avoid leaving mem_process running
-Message-ID: <20210827053115.3172009-1-john.stultz@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 30 Aug 2021 16:50:11 +0200
+Subject: [LTP] [PATCH] epoll_creat01: Replace TST_PASS with TST_RET
+In-Reply-To: <OSZP286MB087168E8DE5E0E49C9F90E27CCC89@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+References: <OSZP286MB087168E8DE5E0E49C9F90E27CCC89@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+Message-ID: <YSzwIwm7q533tlpD@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In testing with AOSP, I ran across some odd behavior where
-the memcg_control_test.sh would get stuck in zombie state,
-and the mem_process process would be stuck running.
+Hi!
+> diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+> index 54fd0810d..29ac3763e 100644
+> --- a/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+> +++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+> @@ -26,9 +26,8 @@ static void run(unsigned int n)
+>  {
+>  	TST_EXP_FD(tst_syscall(__NR_epoll_create, tc[n]), "epoll_create(%d)", tc[n]);
+> 
+> -	if (!TST_PASS)
+> -		return;
+> -	SAFE_CLOSE(TST_PASS);
+> +	if (TST_RET)
+> +		SAFE_CLOSE(TST_RET);
+>  }
 
-After some debugging, I found mem_process was not getting
-the quit message ("x") over the status_pipe fifo, and would
-keep running after the test was finished.
+Isn't this broken as well?
 
-In the memcg_control_test.sh script, there is some curious
-behavior, as after it sends the allocate message ("m") and
-then checks to see if the mem_process has been killed, if it
-was not killed, it again sends the allocate ("m") message,
-which I don't quite understand the reason for:
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/control/memcg_control_test.sh#L72
+As far as I can tell the if (!TST_PASS) part in the test is correct and
+we only have to change the TST_PASS to TST_RET in the SAFE_CLOSE().
 
-The memcg_control_test.sh then immediately sends the quit
-message ("x"):
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/control/memcg_control_test.sh#L73
+So we should apply:
 
-Which is what the mem_process was not receiving.
+diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+index 54fd0810d..3ef5b5cac 100644
+--- a/testcases/kernel/syscalls/epoll_create/epoll_create01.c
++++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+@@ -28,7 +28,7 @@ static void run(unsigned int n)
 
-Removing the second allocate ("m") message seemed to avoid the
-problem. And digging further this seems to be due to the fact
-that the mem_process is open/read/closing the fifo each loop
-iteration:
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/control/mem_process.c#L109
-
-My understanding is fifos only function when both sides are
-open, having two commands sent quickly in succession, the first
-will be read but as the fifo is then closed, the second message
-may get dropped before the fifo is re-opened and read from.
-
-Thus to avoid this, this patch reworks the fifo handling so
-the mem_process will create the fifo, open it, and then
-do its main loop processing keeping the fifo open.
-
-Once it receieves a quit message, it will then close and
-remove the fifo.
-
-So far this has resolved the issue for me.
-I don't pretend to be a fifo expert, so feedback or suggestions
-for other approaches would be welcome!
-
-Cc: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: Jan Stancek <jstancek@redhat.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: YongQin Liu <yongqin.liu@linaro.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- .../controllers/memcg/control/mem_process.c      | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/control/mem_process.c b/testcases/kernel/controllers/memcg/control/mem_process.c
-index efe2fb3e3..6c1b36ca6 100644
---- a/testcases/kernel/controllers/memcg/control/mem_process.c
-+++ b/testcases/kernel/controllers/memcg/control/mem_process.c
-@@ -101,25 +101,20 @@ void mem_map(void)
- /*
-  * done: retrieve instructions from the named pipe
-  */
--char action(void)
-+char action(int fd)
- {
- 	char ch;
--	int fd;
--
--	if ((fd = open(STATUS_PIPE, O_RDONLY)) == -1)
--		err(6, "Error opening named pipe");
- 
- 	if (read(fd, &ch, 1) == -1)
- 		err(7, "Error reading named pipe");
- 
--	close(fd);
--
- 	return ch;
+        if (!TST_PASS)
+                return;
+-       SAFE_CLOSE(TST_PASS);
++       SAFE_CLOSE(TST_RET);
  }
- 
- int main(int argc, char **argv)
- {
- 	int ret;
-+	int fd;
- 	char ch;
- 
- 	process_options(argc, argv);
-@@ -129,13 +124,18 @@ int main(int argc, char **argv)
- 	if (ret == -1 && errno != EEXIST)
- 		errx(1, "Error creating named pipe");
- 
-+	if ((fd = open(STATUS_PIPE, O_RDONLY)) == -1)
-+		err(6, "Error opening named pipe");
-+
- 	do {
--		ch = action();
-+		ch = action(fd);
- 
- 		if (ch == 'm')
- 			mem_map();
- 	} while (ch != 'x');
- 
-+	close(fd);
-+
- 	remove(STATUS_PIPE);
- 
- 	return 0;
--- 
-2.25.1
 
+ static struct tst_test test = {
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
