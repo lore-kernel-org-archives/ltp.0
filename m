@@ -1,125 +1,66 @@
 From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Mon, 30 Aug 2021 19:16:37 +0800
-Subject: [LTP] [PATCH 2/3] epoll_ctl: Add test for epoll_ctl05
+Date: Mon, 30 Aug 2021 19:16:38 +0800
+Subject: [LTP] [PATCH 3/3] epoll_ctl02: Add test for fd not supporting epoll
 In-Reply-To: <20210830111638.66371-1-ziyaoxie@outlook.com>
 References: <20210830111638.66371-1-ziyaoxie@outlook.com>
-Message-ID: <OSZP286MB087162F01AEBEB096D291779CCCB9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+Message-ID: <OSZP286MB0871D15C101A02A134430703CCCB9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Verify that epoll_ctl() fails with ELOOP if fd refers to an epoll
-instance and this EPOLL_CTL_ADD operation would result in a circular
-loop of epoll instances monitoring one another.
+Verify that epoll_ctl() fails with EPERM if fd does not support epoll.
+This error can occur if fd refers to, for example, a regular file or a
+directory.
 
 Signed-off-by: Xie Ziyao <ziyaoxie@outlook.com>
 ---
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_ctl/.gitignore      |  1 +
- .../kernel/syscalls/epoll_ctl/epoll_ctl05.c   | 71 +++++++++++++++++++
- 3 files changed, 73 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 100ca932f..4c6b75dfa 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -166,6 +166,7 @@ epoll_ctl01 epoll_ctl01
- epoll_ctl02 epoll_ctl02
- epoll_ctl03 epoll_ctl03
- epoll_ctl04 epoll_ctl04
-+epoll_ctl05 epoll_ctl05
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
- epoll_wait03 epoll_wait03
-diff --git a/testcases/kernel/syscalls/epoll_ctl/.gitignore b/testcases/kernel/syscalls/epoll_ctl/.gitignore
-index f78db4002..3e05f2e1f 100644
---- a/testcases/kernel/syscalls/epoll_ctl/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_ctl/.gitignore
-@@ -2,3 +2,4 @@ epoll_ctl01
- epoll_ctl02
- epoll_ctl03
- epoll_ctl04
-+epoll_ctl05
-diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
-new file mode 100644
-index 000000000..d03009cf3
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Linux Test Project, 2021
-+ * Author: Xie Ziyao <ziyaoxie@outlook.com>
-+ */
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+index 4872fcacb..fe16ad1cb 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+@@ -7,9 +7,10 @@
+ /*\
+  * [Description]
+  *
+- * Verify that epoll_cnt() fails with:
++ * Verify that epoll_ctl() fails with:
+  *
+  * - EBADF if epfd is an invalid fd.
++ * - EPERM if fd does not support epoll.
+  * - EBADF if fd is an invalid fd.
+  * - EINVAL if op is not supported.
+  * - EINVAL if fd is the same as epfd.
+@@ -25,7 +26,7 @@
+ #include "tst_test.h"
+
+ static int epfd;
+-static int fd[2];
++static int fd[2], unsupported_fd;
+ static int inv = -1;
+
+ static struct epoll_event events[2] = {
+@@ -42,6 +43,7 @@ static struct testcase {
+ 	const char *desc;
+ } tc[] = {
+ 	{&inv, EPOLL_CTL_ADD, &fd[1], &events[1], EBADF, "epfd is an invalid fd"},
++	{&epfd, EPOLL_CTL_ADD, &unsupported_fd, &events[1], EPERM, "fd does not support epoll"},
+ 	{&epfd, EPOLL_CTL_ADD, &inv, &events[1], EBADF, "fd is an invalid fd"},
+ 	{&epfd, -1, &fd[1], &events[1], EINVAL, "op is not supported"},
+ 	{&epfd, EPOLL_CTL_ADD, &epfd, &events[1], EINVAL, "fd is the same as epfd"},
+@@ -53,6 +55,8 @@ static struct testcase {
+
+ static void setup(void)
+ {
++	unsupported_fd = SAFE_OPEN(".", O_RDONLY|O_DIRECTORY, 0);
 +
-+/*\
-+ * [Description]
-+ *
-+ * Verify that epoll_ctl() fails with ELOOP if fd refers to an epoll instance
-+ * and this EPOLL_CTL_ADD operation would result in a circular loop of epoll
-+ * instances monitoring one another.
-+ */
-+
-+#include <poll.h>
-+#include <sys/epoll.h>
-+
-+#include "tst_test.h"
-+
-+#define MAX_DEPTH 5
-+
-+static int epfd, origin_epfd, new_epfd;
-+static int fd[2];
-+
-+static struct epoll_event events = {.events = EPOLLIN};
-+
-+static void setup(void)
-+{
-+	int i;
-+
-+	SAFE_PIPE(fd);
-+
-+	for (i = 0, epfd = fd[0]; i < MAX_DEPTH; i++, epfd = new_epfd) {
-+		new_epfd = epoll_create(1);
-+		if (new_epfd == -1)
-+			tst_brk(TBROK | TERRNO, "fail to create epoll instance");
-+
-+		if (i == 0)
-+			origin_epfd = new_epfd;
-+
-+		events.data.fd = epfd;
-+		if (epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events))
-+			tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
-+	}
-+
-+	events.data.fd = fd[0];
-+	if (epoll_ctl(origin_epfd, EPOLL_CTL_DEL, fd[0], &events))
-+		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_DEL, ...)");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd[0])
-+		SAFE_CLOSE(fd[0]);
-+
-+	if (fd[1])
-+		SAFE_CLOSE(fd[1]);
-+}
-+
-+static void verify_epoll_ctl(void)
-+{
-+	events.data.fd = epfd;
-+	TST_EXP_FAIL(epoll_ctl(origin_epfd, EPOLL_CTL_ADD, epfd, &events),
-+		     ELOOP, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_epoll_ctl,
-+};
+ 	epfd = epoll_create(2);
+ 	if (epfd == -1)
+ 		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
 --
 2.25.1
 
