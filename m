@@ -1,10 +1,10 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 31 Aug 2021 17:19:11 +0800
-Subject: [LTP] [PATCH v3] tst_test_macros.h: Add TST_EXP_VAL macro
-In-Reply-To: <CAEemH2c1cwsxiqg7p+E0NvNg1Qw2j8+mYQYVqre0r1y_LiF9Pg@mail.gmail.com>
-References: <20210831014358.28459-1-zhanglianjie@uniontech.com>
- <CAEemH2c1cwsxiqg7p+E0NvNg1Qw2j8+mYQYVqre0r1y_LiF9Pg@mail.gmail.com>
-Message-ID: <04c5fdac-3930-e160-ab15-45f66a83f401@uniontech.com>+993BC5525893FADA
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 31 Aug 2021 10:19:29 +0100
+Subject: [LTP] [PATCH 2/2] cfs_bandwidth01: Add misssing needs_kconfigs
+In-Reply-To: <20210831090002.1431298-2-lkml@jv-coder.de>
+References: <20210831090002.1431298-1-lkml@jv-coder.de>
+ <20210831090002.1431298-2-lkml@jv-coder.de>
+Message-ID: <87bl5ekm3i.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,20 +12,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
-thank you.
 
-On 2021-08-31 17:01, Li Wang wrote:
-> Hi Lianjie, Cyril,
-> 
-> I have revised the order of the macros and pushed them.
-> (put them on the top of TST_EXP_PASS_* to make the whole more readable)
-> 
-> -- 
-> Regards,
-> Li Wang
+LGTM, thanks.
+
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 -- 
-Regards,
-Zhang Lianjie
-
-
+Thank you,
+Richard.
