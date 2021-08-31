@@ -1,29 +1,34 @@
-From: Xie Ziyao <ziyaoxie@outlook.com>
-Date: Tue, 31 Aug 2021 12:19:44 +0800
-Subject: [LTP] [PATCH] gettid:Convert gettid01 to new API
-In-Reply-To: <OSZP286MB08712631399F14EC1329DFEDCCCC9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
-References: <20210831024617.246758-1-threefifteen.wangkunfeng@huawei.com>
- <OSZP286MB08712631399F14EC1329DFEDCCCC9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
-Message-ID: <OSZP286MB087197527B5E59DC13C2195CCCCC9@OSZP286MB0871.JPNP286.PROD.OUTLOOK.COM>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Tue, 31 Aug 2021 07:45:57 +0200
+Subject: [LTP] [PATCH] broken_ip: Fix runtest for broken_ip4-plen
+Message-ID: <20210831054557.944172-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
->> --- a/testcases/kernel/syscalls/gettid/gettid01.c
->> +++ b/testcases/kernel/syscalls/gettid/gettid01.c
->> @@ -1,3 +1,4 @@
->> +// SPDX-License-Identifier: GPL-2.0
-> The license here should be GPL-2.0-later.
-Sorry, GPL-2.0-or-later.
->> ? /*
->> ?? * Crackerjack Project
->> ?? *
+Fixes: 5d8f9dfd6b8 ("broken_ip: Remove duplicate broken_ip-totlen")
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+---
+ runtest/net_stress.broken_ip | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/runtest/net_stress.broken_ip b/runtest/net_stress.broken_ip
+index 75791986e..a5536c0c2 100644
+--- a/runtest/net_stress.broken_ip
++++ b/runtest/net_stress.broken_ip
+@@ -6,7 +6,7 @@
+ broken_ip4-version broken_ip-version.sh
+ broken_ip4-ihl broken_ip-ihl.sh
+ broken_ip4-fragment broken_ip-fragment.sh
+-broken_ip6-plen broken_ip-plen.sh
++broken_ip4-plen broken_ip-plen.sh
+ broken_ip4-protcol broken_ip-protcol.sh
+ broken_ip4-checksum broken_ip-checksum.sh
+ broken_ip4-dstaddr broken_ip-dstaddr.sh
 -- 
-Best Regards,
-Xie Ziyao
-E-mail: ziyaoxie@outlook.com
+2.25.1
 
