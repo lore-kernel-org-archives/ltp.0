@@ -1,32 +1,135 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 31 Aug 2021 10:00:29 +0800
-Subject: [LTP] [PATCH] test_macros05: Add TST_EXP_VAL_* test
-Message-ID: <20210831020029.12897-1-zhanglianjie@uniontech.com>
+From: Wang Kunfeng <threefifteen.wangkunfeng@huawei.com>
+Date: Tue, 31 Aug 2021 10:46:17 +0800
+Subject: [LTP] [PATCH] gettid:Convert gettid01 to new API
+Message-ID: <20210831024617.246758-1-threefifteen.wangkunfeng@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Convert gettid01 to new API
 
-diff --git a/lib/newlib_tests/test_macros05.c b/lib/newlib_tests/test_macros05.c
-index a164f23ac..fda1410a2 100644
---- a/lib/newlib_tests/test_macros05.c
-+++ b/lib/newlib_tests/test_macros05.c
-@@ -26,6 +26,9 @@ static int fail_fn_should_not_be_seen_in_output(void)
+Signed-off-by: Wang Kunfeng <threefifteen.wangkunfeng@huawei.com>
+---
+ testcases/kernel/syscalls/gettid/gettid01.c | 95 ++++-----------------
+ 1 file changed, 15 insertions(+), 80 deletions(-)
 
- static void do_test(void)
+diff --git a/testcases/kernel/syscalls/gettid/gettid01.c b/testcases/kernel/syscalls/gettid/gettid01.c
+index 7e5b6b175..2e45be588 100644
+--- a/testcases/kernel/syscalls/gettid/gettid01.c
++++ b/testcases/kernel/syscalls/gettid/gettid01.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Crackerjack Project
+  *
+@@ -6,91 +7,25 @@
+  *            Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,
+  *            Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; either version 2
+- * of the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+- *
+- * $Id: gettid01.c,v 1.5 2009/10/26 14:55:47 subrata_modak Exp $
+- *
++ * Porting from Crackerjack to LTP is done
++ * by Masatake YAMATO <yamato@redhat.com>
+  */
+
+-/* Porting from Crackerjack to LTP is done
+-   by Masatake YAMATO <yamato@redhat.com> */
++/*\
++ * [Description]
++ *
++ * Basic test for gettid() function.
++ */
+
+ #include <sys/types.h>
+-#include <linux/unistd.h>
+-#include <errno.h>
+-
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
+-
+-char *TCID = "gettid01";
+-
+-int TST_TOTAL = 1;
+-
+-pid_t my_gettid(void)
+-{
+-	return (pid_t) syscall(__NR_gettid);
+-}
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
++#include "tst_test.h"
++#include "lapi/syscalls.h"
+
+-	setup();
+-
+-	/*
+-	 * The following loop checks looping state if -c option given
+-	 */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(my_gettid());
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "gettid() Failed, errno=%d: %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS, "gettid() returned %ld",
+-				 TEST_RETURN);
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
+-void setup(void)
++static void verify_gettid(void)
  {
-+	TST_EXP_VAL(MACRO_FAIL(), -2);
-+	TST_EXP_VAL_SILENT(MACRO_FAIL(), -2);
-+
- 	TST_EXP_FAIL(MACRO_FAIL(), EINVAL);
- 	TST_EXP_FAIL2(MACRO_FAIL(), EINVAL);
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
++	TST_EXP_POSITIVE(tst_syscall(__NR_gettid), "gettid()");
+ }
 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = verify_gettid,
++};
 --
-2.20.1
-
-
+2.17.1
 
