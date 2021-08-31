@@ -1,49 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Aug 2021 11:51:04 +0200
-Subject: [LTP] [PATCH v2 2/4] bpf: Print full verification log
-In-Reply-To: <20210831091005.25361-2-rpalethorpe@suse.com>
-References: <YSz36VZ18+N4YsM/@yuki>
- <20210831091005.25361-1-rpalethorpe@suse.com>
- <20210831091005.25361-2-rpalethorpe@suse.com>
-Message-ID: <YS37iPx2tWsy0FF5@yuki>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Tue, 31 Aug 2021 10:09:06 +0000
+Subject: [LTP] [PATCH] userns/userns08.c: Enable userns in
+ max_user_namespaces file
+In-Reply-To: <87h7fbkwe8.fsf@suse.de>
+References: <1628144855-5924-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <87h7fbkwe8.fsf@suse.de>
+Message-ID: <612DFFDE.5050800@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/bpf/bpf_common.c b/testcases/kernel/syscalls/bpf/bpf_common.c
-> index ba0829a75..aac235cac 100644
-> --- a/testcases/kernel/syscalls/bpf/bpf_common.c
-> +++ b/testcases/kernel/syscalls/bpf/bpf_common.c
-> @@ -3,6 +3,8 @@
->   * Copyright (c) 2019-2020 Linux Test Project
->   */
->  
-> +#include <stdio.h>
+Hi  Richard
+> Hello Yang,
+> 
+> Yang Xu<xuyang2018.jy@fujitsu.com>  writes:
+> 
+>> On old distros ie centos7, the default value of max_user_namespaces is set to 0.
+>> Enable it by increasing this value.
+>>
+>> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+> 
+> Looks good, except for very minor point below.
+> 
+> Reviewed-by: Richard Palethorpe<rpalethorpe@suse.com>
+> 
+>> ---
+>>   testcases/kernel/containers/userns/userns08.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+>> index aedfc6c4e..0910ea7d4 100644
+>> --- a/testcases/kernel/containers/userns/userns08.c
+>> +++ b/testcases/kernel/containers/userns/userns08.c
+>> @@ -120,6 +120,11 @@ static void setup(void)
+>>
+>>   	SAFE_WRITE(fd, 1, "\n", 1);
+>>   	SAFE_CLOSE(fd);
+>> +
+>> +	/* The default value of max_user_namespaces is set to 0 on some distros,
+>> +	 * We need to change the default value to call clone().
+>> +	 */
+> 
+> We don't need inline comments like this. In this case the commit message
+> and git-blame is fine. Other times the style guide requests it goes in
+> the comment at the top.
 
-I've removed this now unused include.
+Thanks for your review. I have pushed the v2 patch with your
+reviewed-by(increase this value in more userns cases.)
 
->  #define TST_NO_DEFAULT_MAIN
->  #include "tst_test.h"
->  #include "bpf_common.h"
-> @@ -118,8 +120,10 @@ int bpf_load_prog(union bpf_attr *const attr, const char *const log)
->  	if (ret != -1)
->  		tst_brk(TBROK, "Invalid bpf() return value: %d", ret);
->  
-> -	if (log[0] != 0)
-> -		tst_brk(TBROK | TERRNO, "Failed verification: %s", log);
-> +	if (log[0] != 0) {
-> +		tst_printf("%s\n", log);
-> +		tst_brk(TBROK | TERRNO, "Failed verification");
-> +	}
->  
->  	tst_brk(TBROK | TERRNO, "Failed to load program");
->  	return ret;
-
-And pushed the whole patchset, thanks.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best Regards
+Yang Xu
+> 
