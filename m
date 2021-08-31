@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Aug 2021 14:29:15 +0200
-Subject: [LTP] [PATCH 1/1] lib/tests: Remove tst_fuzzy_sync02
-In-Reply-To: <20210831121250.17557-1-pvorel@suse.cz>
-References: <20210831121250.17557-1-pvorel@suse.cz>
-Message-ID: <YS4gm3i/PIX6Zgoh@yuki>
+Date: Tue, 31 Aug 2021 14:30:23 +0200
+Subject: [LTP] [PATCH 1/1] utils: Remove kernbench-0.42
+In-Reply-To: <YS3zmWfGvZnTlefF@pevik>
+References: <20210831090837.30245-1-pvorel@suse.cz> <YS3yOSp5U0OS+CVd@yuki>
+ <YS3zmWfGvZnTlefF@pevik>
+Message-ID: <YS4g39blGm67dTxy@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,9 +12,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Sounds good to me:
+> > Unlike other scripts you proposed to remove this one is used by the
+> > power_management test as a workload. Just do 'git grep kernbench'
+> Ah, I'm sorry, I made a typo when grepping. Marking it as rejected.
+> 
+> BTW I was looking into other power_management_tests_exclusive tests (the others,
+> which use ebizzy-0.3) because not only on VM but even when running them on my
+> laptop all tests TCONF: System is not a multi socket & multi core & hyper-threaded.
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Well these test should be reviewed and fixed/deleted, but we can't do
+anything about their dependencies before we decide what to do with
+them...
 
 -- 
 Cyril Hrubis
