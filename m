@@ -1,34 +1,26 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 31 Aug 2021 07:45:57 +0200
-Subject: [LTP] [PATCH] broken_ip: Fix runtest for broken_ip4-plen
-Message-ID: <20210831054557.944172-1-lkml@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 31 Aug 2021 08:09:34 +0200
+Subject: [LTP] [RFC PATCH 1/1] scripts: Remove legacy script tests
+In-Reply-To: <YSzYSkufvSNNwZQP@yuki>
+References: <20210827123254.16883-1-pvorel@suse.cz> <YSjhgaJE3v8odUhF@pevik>
+ <YSzYSkufvSNNwZQP@yuki>
+Message-ID: <YS3Hnn6b4QAWAaPa@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Hi Cyril,
 
-Fixes: 5d8f9dfd6b8 ("broken_ip: Remove duplicate broken_ip-totlen")
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
- runtest/net_stress.broken_ip | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi!
+> > and I suppose, we could remove also detect_distro.sh (we have lsb-release
+> > nowadays) and git2changelog.sh (we write release notes manually).
 
-diff --git a/runtest/net_stress.broken_ip b/runtest/net_stress.broken_ip
-index 75791986e..a5536c0c2 100644
---- a/runtest/net_stress.broken_ip
-+++ b/runtest/net_stress.broken_ip
-@@ -6,7 +6,7 @@
- broken_ip4-version broken_ip-version.sh
- broken_ip4-ihl broken_ip-ihl.sh
- broken_ip4-fragment broken_ip-fragment.sh
--broken_ip6-plen broken_ip-plen.sh
-+broken_ip4-plen broken_ip-plen.sh
- broken_ip4-protcol broken_ip-protcol.sh
- broken_ip4-checksum broken_ip-checksum.sh
- broken_ip4-dstaddr broken_ip-dstaddr.sh
--- 
-2.25.1
+> Looks good.
+Thanks, merged!
 
+I'll send another patch to remove detect_distro.sh and git2changelog.sh.
+
+Kind regards,
+Petr
