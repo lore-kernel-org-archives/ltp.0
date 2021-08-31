@@ -1,50 +1,67 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 31 Aug 2021 10:10:03 +0100
-Subject: [LTP] [PATCH v2 2/4] bpf: Print full verification log
-In-Reply-To: <20210831091005.25361-1-rpalethorpe@suse.com>
+Date: Tue, 31 Aug 2021 10:10:02 +0100
+Subject: [LTP] [PATCH v2 1/4] API: Add tst_printf to avoid specifying the
+ output FD in tests
+In-Reply-To: <YSz36VZ18+N4YsM/@yuki>
 References: <YSz36VZ18+N4YsM/@yuki>
- <20210831091005.25361-1-rpalethorpe@suse.com>
-Message-ID: <20210831091005.25361-2-rpalethorpe@suse.com>
+Message-ID: <20210831091005.25361-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The log never falls within the 1024 byte limit imposed by format
-string buffer. So print it separately with dprintf.
+In bpf_common.h we have to print the verifier log with
+dprintf(STDERR_FILENO, ...)  because it is usually too large for
+tst_{res,brk}(). As these functions use sprintf() and write() to allow
+printing in signal handlers.
+
+We can hide the STDERR_FILENO part in the library. Just incase we want
+to change the fileno at some point.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/kernel/syscalls/bpf/bpf_common.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/bpf/bpf_common.c b/testcases/kernel/syscalls/bpf/bpf_common.c
-index ba0829a75..aac235cac 100644
---- a/testcases/kernel/syscalls/bpf/bpf_common.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_common.c
-@@ -3,6 +3,8 @@
-  * Copyright (c) 2019-2020 Linux Test Project
-  */
+V2: Add this patch and use tst_printf
+
+ include/tst_test.h | 3 +++
+ lib/tst_test.c     | 9 +++++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 27ebed94e..5e3619698 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -79,6 +79,9 @@ void tst_brk_(const char *file, const int lineno, int ttype,
+ 		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+ 	})
  
-+#include <stdio.h>
++void tst_printf(const char *const fmt, ...)
++		__attribute__((nonnull(1), format (printf, 1, 2)));
 +
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "bpf_common.h"
-@@ -118,8 +120,10 @@ int bpf_load_prog(union bpf_attr *const attr, const char *const log)
- 	if (ret != -1)
- 		tst_brk(TBROK, "Invalid bpf() return value: %d", ret);
+ /* flush stderr and stdout */
+ void tst_flush(void);
  
--	if (log[0] != 0)
--		tst_brk(TBROK | TERRNO, "Failed verification: %s", log);
-+	if (log[0] != 0) {
-+		tst_printf("%s\n", log);
-+		tst_brk(TBROK | TERRNO, "Failed verification");
-+	}
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index b61aa8b03..4224353da 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -360,6 +360,15 @@ void tst_brk_(const char *file, const int lineno, int ttype,
+ 	va_end(va);
+ }
  
- 	tst_brk(TBROK | TERRNO, "Failed to load program");
- 	return ret;
++void tst_printf(const char *const fmt, ...)
++{
++	va_list va;
++
++	va_start(va, fmt);
++	vdprintf(STDERR_FILENO, fmt, va);
++	va_end(va);
++}
++
+ static void check_child_status(pid_t pid, int status)
+ {
+ 	int ret;
 -- 
 2.31.1
 
