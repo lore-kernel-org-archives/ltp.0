@@ -1,76 +1,30 @@
 From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 31 Aug 2021 09:44:43 +0800
-Subject: [LTP] [PATCH v2] tst_test_macros: Add test_macros06 tests
-Message-ID: <20210831014443.29166-1-zhanglianjie@uniontech.com>
+Date: Tue, 31 Aug 2021 10:00:29 +0800
+Subject: [LTP] [PATCH] test_macros05: Add TST_EXP_VAL_* test
+Message-ID: <20210831020029.12897-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test the TST_EXP_VAL and TST_EXP_VAL_SILENT macros.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index a0bad78c1..cf467b5a0 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -42,6 +42,7 @@ test_macros02
- test_macros03
- test_macros04
- test_macros05
-+test_macros06
- tst_fuzzy_sync01
- tst_fuzzy_sync02
- tst_fuzzy_sync03
-diff --git a/lib/newlib_tests/test_macros06.c b/lib/newlib_tests/test_macros06.c
-new file mode 100644
-index 000000000..ac21e4126
---- /dev/null
-+++ b/lib/newlib_tests/test_macros06.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 zhanglianjie <zhanglianjie@uniontech.com>
-+ */
+diff --git a/lib/newlib_tests/test_macros05.c b/lib/newlib_tests/test_macros05.c
+index a164f23ac..fda1410a2 100644
+--- a/lib/newlib_tests/test_macros05.c
++++ b/lib/newlib_tests/test_macros05.c
+@@ -26,6 +26,9 @@ static int fail_fn_should_not_be_seen_in_output(void)
+
+ static void do_test(void)
+ {
++	TST_EXP_VAL(MACRO_FAIL(), -2);
++	TST_EXP_VAL_SILENT(MACRO_FAIL(), -2);
 +
-+/*
-+ * Test TST_EXP_VAL and TST_EXP_VAL_SILENT macro.
-+ */
-+
-+#include "tst_test.h"
-+
-+static int fail_val(void)
-+{
-+	errno = EINVAL;
-+	return 42;
-+}
-+
-+static int pass_val(void)
-+{
-+	return 42;
-+}
-+
-+static void do_test(void)
-+{
-+	tst_res(TINFO, "Testing TST_EXP_VAL macro");
-+	TST_EXP_VAL(fail_val(), 40, "fail_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+	TST_EXP_VAL(pass_val(), 42, "pass_val()");
-+	tst_res(TINFO, "TST_PASS = %i", TST_PASS);
-+
-+	tst_res(TINFO, "Testing TST_EXP_VAL_SILENT macro");
-+	TST_EXP_VAL_SILENT(fail_val(), 40, "fail_val()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_VAL_SILENT(fail_val, ...)", TST_PASS);
-+	TST_EXP_VAL_SILENT(pass_val(), 42, "pass_val()");
-+	tst_res(TINFO, "TST_PASS = %i from TST_EXP_VAL_SILENT(pass_val, ...)", TST_PASS);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
+ 	TST_EXP_FAIL(MACRO_FAIL(), EINVAL);
+ 	TST_EXP_FAIL2(MACRO_FAIL(), EINVAL);
+
 --
 2.20.1
 
