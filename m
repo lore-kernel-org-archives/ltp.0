@@ -1,54 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 31 Aug 2021 14:12:50 +0200
-Subject: [LTP] [PATCH 1/1] lib/tests: Remove tst_fuzzy_sync02
-Message-ID: <20210831121250.17557-1-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 31 Aug 2021 13:25:53 +0100
+Subject: [LTP] [PATCH 1/2] docs: rm explicit reference to checkpatch.pl
+Message-ID: <20210831122554.14590-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_fuzzy_sync02 is not stable enough [1]:
+It is included in `make check` now.
 
-../../include/tst_fuzzy_sync.h:346: TINFO: loop = 10001, delay_bias = 3960
-../../include/tst_fuzzy_sync.h:335: TINFO: start_a - start_b: { avg = -8859ns, avg_dev =    66ns, dev_ratio = 0.01 }
-../../include/tst_fuzzy_sync.h:335: TINFO: end_a - start_a  : { avg = 17160ns, avg_dev =    85ns, dev_ratio = 0.00 }
-../../include/tst_fuzzy_sync.h:335: TINFO: end_b - start_b  : { avg = 18474ns, avg_dev =    55ns, dev_ratio = 0.00 }
-../../include/tst_fuzzy_sync.h:335: TINFO: end_a - end_b    : { avg = -10173ns, avg_dev =   124ns, dev_ratio = 0.01 }
-../../include/tst_fuzzy_sync.h:335: TINFO: spins            : { avg =  2751  , avg_dev =    31  , dev_ratio = 0.01 }
-../../include/tst_fuzzy_sync.h:685: TINFO: Exceeded execution loops, requesting exit
-tst_fuzzy_sync02.c:169: TFAIL: 2| =:48
-...
-runtest TINFO: === C TEST RESULTS ===
-...
-runtest TINFO: 1x TFAIL: tst_fuzzy_sync02
-
-Both tst_fuzzy_sync0{1,2} occasionally fails (restart helps). But
-tst_fuzzy_sync03 is stable thus we have at least smoke test for fuzzy
-sync.
-
-[1] https://github.com/linux-test-project/ltp/runs/3471271675
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- lib/newlib_tests/runtest.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ doc/maintainer-patch-review-checklist.txt | 3 +--
+ doc/test-writing-guidelines.txt           | 5 ++---
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
-index 70fbffb6c..05c76228b 100755
---- a/lib/newlib_tests/runtest.sh
-+++ b/lib/newlib_tests/runtest.sh
-@@ -2,8 +2,8 @@
- # Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+index 58662bed1..c8ace80f7 100644
+--- a/doc/maintainer-patch-review-checklist.txt
++++ b/doc/maintainer-patch-review-checklist.txt
+@@ -38,8 +38,7 @@ New test should
+ ### C tests
+ * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+ * Test binaries are added into corresponding '.gitignore' files
+-* Check coding style with
+-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl] and `make check`
++* Check coding style with `make check`
+   (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#21-c-coding-style[C coding style])
+ * Docparse documentation
+ * If a test is a regression test it should include tags
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 340c80cc6..e95373e84 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -305,12 +305,11 @@ NOTE: See also
+       https://github.com/linux-test-project/ltp/wiki/Maintainer-Patch-Review-Checklist[Maintainer Patch Review Checklist].
  
- LTP_C_API_TESTS="${LTP_C_API_TESTS:-test05 test07 test09 test12 test15 test18
--tst_bool_expr test_exec test_timer tst_res_hexd tst_strstatus tst_fuzzy_sync02
--tst_fuzzy_sync03 test_zero_hugepage.sh}"
-+tst_bool_expr test_exec test_timer tst_res_hexd tst_strstatus tst_fuzzy_sync03
-+test_zero_hugepage.sh}"
+ 1. Test compiles and runs fine (check with `-i 10` too)
+-2. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
+-   does not report any errors
++2. `make check` does not emit any warnings for the test you are working on
++   (hint: run it in the test's directory and/or use `make check-$TCID`)
+ 3. The runtest entires are in place
+ 4. Test binaries are added into corresponding '.gitignore' files
+ 5. Patches apply over the latest git
+-6. 'make check' does not emit any warnings
  
- LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh shell/net/*.sh}"
- 
+ 6.1 About .gitignore files
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- 
-2.33.0
+2.31.1
 
