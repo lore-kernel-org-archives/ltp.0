@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Aug 2021 10:38:29 +0200
-Subject: [LTP] [PATCH 1/2] Vendor checkpatch.pl from kernel next-20210826
-In-Reply-To: <20210827095210.23602-1-rpalethorpe@suse.com>
+Date: Tue, 31 Aug 2021 10:41:50 +0200
+Subject: [LTP] [PATCH 2/2] Add CHECK_NOFLAGS and checkpatch.pl to 'make
+ check'
+In-Reply-To: <20210827095210.23602-2-rpalethorpe@suse.com>
 References: <20210827095210.23602-1-rpalethorpe@suse.com>
-Message-ID: <YS3qhaYSnq3gNFb7@yuki>
+ <20210827095210.23602-2-rpalethorpe@suse.com>
+Message-ID: <YS3rTs3V+Ta2SlAT@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,6 +14,10 @@ To: ltp@lists.linux.it
 
 Hi!
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+I guess that we should update the Test Contribution Checklist in the
+test-writing-guidelines.txt and remove the point 2 about checkpath and
+move the point 6 about make check to the second place in the list.
 
 -- 
 Cyril Hrubis
