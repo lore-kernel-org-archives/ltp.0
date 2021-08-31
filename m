@@ -1,50 +1,31 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 31 Aug 2021 10:18:37 +0100
-Subject: [LTP] [PATCH 1/2] cfs_bandwidth01: Fix cleanup on failure in
- set_cpu_quota
-In-Reply-To: <20210831090002.1431298-1-lkml@jv-coder.de>
-References: <20210831090002.1431298-1-lkml@jv-coder.de>
-Message-ID: <87eeaakm4y.fsf@suse.de>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Tue, 31 Aug 2021 17:19:11 +0800
+Subject: [LTP] [PATCH v3] tst_test_macros.h: Add TST_EXP_VAL macro
+In-Reply-To: <CAEemH2c1cwsxiqg7p+E0NvNg1Qw2j8+mYQYVqre0r1y_LiF9Pg@mail.gmail.com>
+References: <20210831014358.28459-1-zhanglianjie@uniontech.com>
+ <CAEemH2c1cwsxiqg7p+E0NvNg1Qw2j8+mYQYVqre0r1y_LiF9Pg@mail.gmail.com>
+Message-ID: <04c5fdac-3930-e160-ab15-45f66a83f401@uniontech.com>+993BC5525893FADA
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Joerg,
+Hi,
+thank you.
 
-Joerg Vehlow <lkml@jv-coder.de> writes:
-
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
->
-> If set_cpu_quota failed, mk_cpu_cgroup did not return
-> and cg_workers[n] was not set. This lead to a failure during
-> cleanup, because the worker cgroups were not deleted.
->
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
->  .../sched/cfs-scheduler/cfs_bandwidth01.c       | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
->
-> diff --git a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-> index 9301ee458..e8032d65a 100644
-> --- a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-> +++ b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-> @@ -57,17 +57,14 @@ static void set_cpu_quota(const struct tst_cgroup_group *const cg,
->  		tst_cgroup_group_name(cg), quota_us, period_us);
->  }
->  
-> -static struct tst_cgroup_group *
-> -mk_cpu_cgroup(const struct tst_cgroup_group *const cg_parent,
-> +static void mk_cpu_cgroup(struct tst_cgroup_group **cg,
-> +          const struct tst_cgroup_group *const cg_parent,
-
-Seems like there are spaces instead of a tab at the start.
-
-Otherwise LGTM, thanks.
-
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+On 2021-08-31 17:01, Li Wang wrote:
+> Hi Lianjie, Cyril,
+> 
+> I have revised the order of the macros and pushed them.
+> (put them on the top of TST_EXP_PASS_* to make the whole more readable)
+> 
+> -- 
+> Regards,
+> Li Wang
 
 -- 
-Thank you,
-Richard.
+Regards,
+Zhang Lianjie
+
+
