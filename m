@@ -1,82 +1,96 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 1 Sep 2021 16:10:20 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/pread01: Convert to new API
-In-Reply-To: <1629200697-14878-1-git-send-email-daisl.fnst@fujitsu.com>
-References: <1629200697-14878-1-git-send-email-daisl.fnst@fujitsu.com>
-Message-ID: <YS+JzGce6YVJ3N8T@pevik>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Wed, 1 Sep 2021 16:23:15 +0200
+Subject: [LTP] [PATCH v3 1/2] controllers/cpuacct: skip cpuacct_100_100
+ on small memory systems
+In-Reply-To: <YS99h3rPMLeSEFv5@yuki>
+References: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
+ <YS99h3rPMLeSEFv5@yuki>
+Message-ID: <440b0bcf-63b5-bb78-6a0b-565a5266d9da@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Dai,
+On 01/09/2021 15:17, Cyril Hrubis wrote:
+> Hi!
+>> +check_free_memory()
+>> +{
+>> +	local memneeded
+>> +	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
+>> +
+>> +	if [ $? -ne 0 ]; then
+>> +		local memcached
+>> +
+>> +		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
+>> +		test $? -eq 0 || return 0
+>> +
+>> +		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
+>> +		test $? -eq 0 || return 0
+>> +
+>> +		memfree=$((memfree + memcached))
+>> +	fi
+>> +
+>> +	# On x86_64, each 100 of processes were using ~16 MB of memory,
+>> +	# so try to estimate the needed free memory based on this.
+>> +	memneeded=$((max * nbprocess * 16384 / 100))
+>> +
+>> +	if [ $memfree -lt $memneeded ]; then
+>> +		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
+>> +	fi
+>> +	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
+>> +
+>> +	return 0
+>> +}
+>> +
+>> +check_limits()
+>> +{
+>> +	local real_uid="$SUDO_UID"
+>> +	local tasksneeded=$((max * nbprocess + 100))
+>> +
+>> +	if [ "$real_uid" = "" ]; then
+>> +		real_uid=`id -u`
+>> +		test $? -eq 0 || return 0
+>> +	fi
+>> +
+>> +	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
+>> +	test $? -eq 0 || return 0
+>> +
+>> +	# Check for number for cases like TasksMax=infinity
+>> +	[ -n "$tasksmax" ] && [ "$tasksmax" -eq "$tasksmax" ] 2>/dev/null
+>> +	test $? -eq 0 || return 0
+> 
+> Well we do have a C implementation of this now, it would be better to
+> have the logic in one place and just call the C function to collect the
+> number of pids.
+> 
+> If we add tst_get_free_pids.c to the testcases/lib/ directory with:
+> 
+> #define TST_NO_DEFAULT_MAIN
+> #include <stdio.h>
+> #include <tst_test.h>
+> 
+> extern struct tst_test *tst_test;
+> 
+> static struct tst_test test = {
+> };
+> 
+> int main(void)
+> {
+> 	/* force messages to be printed from new library */
+>         tst_test = &test;
+> 
+>         printf("%i\n", tst_get_free_pids());
+> 
+>         return 0;
+> }
+> 
+> We can do FREE_PIDS=$(tst_get_free_pids) here and then just compare the numbers.
+> 
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+I'll move this piece, as you suggested. The free memory limits is okay
+to stay here?
 
-with similar notes mentioned at pwrite01 [1].
-Thus posting just diff of proposed changes here.
 
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/1629294657-28375-1-git-send-email-daisl.fnst@fujitsu.com/
-
-diff --git testcases/kernel/syscalls/pread/pread01.c testcases/kernel/syscalls/pread/pread01.c
-index fc773f45c..d11ca58f8 100644
---- testcases/kernel/syscalls/pread/pread01.c
-+++ testcases/kernel/syscalls/pread/pread01.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-+ * Copyright (c) Linux Test Project, 2021
-  * Copyright (c) International Business Machines  Corp., 2001
-  * 07/2001 Ported by Wayne Boyer
-  */
-@@ -7,10 +8,9 @@
- /*\
-  * [Description]
-  *
-- *  Verify the functionality of pread() by writing known data using pwrite()
-- *  to the file at various specified offsets and later read from the file from
-- *  various specified offsets, comparing the data read aganist the data
-- *  written.
-+ * Verify the functionality of pread() by writing known data using pwrite()
-+ * to the file at various specified offsets and later read from the file from
-+ * various specified offsets, comparing the data read against the data written.
-  */
- 
- #include <stdlib.h>
-@@ -26,8 +26,8 @@
- #define NBUFS           4
- 
- static int fildes;
--char *write_buf[NBUFS];
--char *read_buf[NBUFS];
-+static char *write_buf[NBUFS];
-+static char *read_buf[NBUFS];
- 
- static void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
- {
-@@ -59,21 +59,16 @@ static void compare_bufers(void)
- static void verify_pread(void)
- {
- 	SAFE_PREAD(1, fildes, read_buf[2], K1, K2);
--
- 	l_seek(fildes, 0, SEEK_CUR, K4);
--
- 	l_seek(fildes, 0, SEEK_SET, 0);
- 
- 	SAFE_PREAD(1, fildes, read_buf[3], K1, K3);
--
- 	l_seek(fildes, 0, SEEK_CUR, 0);
- 
- 	SAFE_READ(1, fildes, read_buf[0], K1);
--
- 	l_seek(fildes, 0, SEEK_CUR, K1);
- 
- 	SAFE_PREAD(1, fildes, read_buf[1], K1, K1);
--
- 	l_seek(fildes, 0, SEEK_CUR, K1);
- 
- 	compare_bufers();
+Best regards,
+Krzysztof
