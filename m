@@ -1,10 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 1 Sep 2021 15:53:30 +0200
+Date: Wed, 1 Sep 2021 16:08:00 +0200
 Subject: [LTP] [PATCH] syscalls/pread01: Convert to new API
-In-Reply-To: <YS998a/fPdH5aZh8@pevik>
+In-Reply-To: <1629294657-28375-1-git-send-email-daisl.fnst@fujitsu.com>
 References: <1629294657-28375-1-git-send-email-daisl.fnst@fujitsu.com>
- <YS998a/fPdH5aZh8@pevik>
-Message-ID: <YS+F2vm0SVSLvyjU@pevik>
+Message-ID: <YS+JQLNhte4E3jxM@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,67 +12,32 @@ To: ltp@lists.linux.it
 
 Hi Dai,
 
-> ...
-> > +static void verify_pwrite(void)
+> diff --git a/testcases/kernel/syscalls/pwrite/pwrite01.c b/testcases/kernel/syscalls/pwrite/pwrite01.c
 ...
+> -/*
+> - * Test Name: pwrite01
+> +/*\
+> + * [Description]
+>   *
+> - * Test Description:
+>   *  Verify the functionality of pwrite() by writing known data using pwrite()
+>   *  to the file at various specified offsets and later read from the file from
+>   *  various specified offsets, comparing the data written aganist the data
+>   *  read using read().
 
-> your code:
-> static void verify_pread(void)
-> {
-> 	SAFE_PREAD(1, fildes, read_buf[2], K1, K2);
+You kept 2 spaces between * and text. That'll lead in docparse formatting (which
+uses markdown) to formatted as code, which is wrong. It must be without space:
 
-> 	l_seek(fildes, 0, SEEK_CUR, K4);
+/*\
+ * [Description]
+ *
+ * Verify the functionality of pwrite() by writing known data using pwrite()
+ * to the file at various specified offsets and later read from the file from
+ * various specified offsets, comparing the data written aganist the data
+ * read using read().
+ */
 
-> 	l_seek(fildes, 0, SEEK_SET, 0);
+Again, I have already prepared fixes, just wait for others to review.
 
-> 	SAFE_PREAD(1, fildes, read_buf[3], K1, K3);
-
-> 	l_seek(fildes, 0, SEEK_CUR, 0);
-
-> 	SAFE_READ(1, fildes, read_buf[0], K1);
-
-> 	l_seek(fildes, 0, SEEK_CUR, K1);
-
-> 	SAFE_PREAD(1, fildes, read_buf[1], K1, K1);
-
-> 	l_seek(fildes, 0, SEEK_CUR, K1);
-
-> 	compare_bufers();
-
-> 	l_seek(fildes, K4, SEEK_SET, K4);
-> }
-
-> nit: having blank line after each line?
-
-> how about something like:
-
-> static void verify_pread(void)
-> {
-> 	SAFE_PREAD(1, fildes, read_buf[2], K1, K2);
-> 	l_seek(fildes, 0, SEEK_CUR, K4);
-> 	l_seek(fildes, 0, SEEK_SET, 0);
-
-> 	SAFE_PREAD(1, fildes, read_buf[3], K1, K3);
-> 	l_seek(fildes, 0, SEEK_CUR, 0);
-
-> 	SAFE_READ(1, fildes, read_buf[0], K1);
-> 	l_seek(fildes, 0, SEEK_CUR, K1);
-
-> 	SAFE_PREAD(1, fildes, read_buf[1], K1, K1);
-> 	l_seek(fildes, 0, SEEK_CUR, K1);
-
-> 	compare_bufers();
-
-> 	l_seek(fildes, K4, SEEK_SET, K4);
-> }
-
-I'm sorry, this was meant to be mentioned at patch, which changes pread01.c [1],
-not here. I got confused by your wrong subject. But most of the code is similar,
-thus can apply here.
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/1629200697-14878-1-git-send-email-daisl.fnst@fujitsu.com/
-
-> The rest LGTM.
-
-> Kind regards,
-> Petr
+Kind regards,
+Petr
