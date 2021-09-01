@@ -1,12 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 1 Sep 2021 19:55:00 +0200
-Subject: [LTP] [PATCH v3 1/2] controllers/cpuacct: skip cpuacct_100_100
+Date: Wed, 1 Sep 2021 20:14:48 +0200
+Subject: [LTP] [PATCH v5 2/3] controllers/cpuacct: skip cpuacct_100_100
  on small memory systems
-In-Reply-To: <440b0bcf-63b5-bb78-6a0b-565a5266d9da@canonical.com>
-References: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
- <YS99h3rPMLeSEFv5@yuki>
- <440b0bcf-63b5-bb78-6a0b-565a5266d9da@canonical.com>
-Message-ID: <YS++dM4sC2Do8rDM@yuki>
+In-Reply-To: <20210901151655.95760-2-krzysztof.kozlowski@canonical.com>
+References: <20210901151655.95760-1-krzysztof.kozlowski@canonical.com>
+ <20210901151655.95760-2-krzysztof.kozlowski@canonical.com>
+Message-ID: <YS/DGPyHmEHnRSZk@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,11 +13,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I'll move this piece, as you suggested. The free memory limits is okay
-> to stay here?
+> +check_limits()
+> +{
+> +	local tasksneeded=$((max * nbprocess + 100))
 
-There is no such API in the C library yet, so unless you want to add it
-it can stay where it is.
+We allready have some reserve for the system in the tst_get_free_pids()
+so shouldn't this be just max * nbprocess ?
+
 
 -- 
 Cyril Hrubis
