@@ -1,56 +1,25 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed,  1 Sep 2021 17:16:55 +0200
-Subject: [LTP] [PATCH v5 3/3] controllers/cpuacct: fix rmdir failures on
- early test abort
-In-Reply-To: <20210901151655.95760-1-krzysztof.kozlowski@canonical.com>
-References: <20210901151655.95760-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <20210901151655.95760-3-krzysztof.kozlowski@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 1 Sep 2021 19:55:00 +0200
+Subject: [LTP] [PATCH v3 1/2] controllers/cpuacct: skip cpuacct_100_100
+ on small memory systems
+In-Reply-To: <440b0bcf-63b5-bb78-6a0b-565a5266d9da@canonical.com>
+References: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
+ <YS99h3rPMLeSEFv5@yuki>
+ <440b0bcf-63b5-bb78-6a0b-565a5266d9da@canonical.com>
+Message-ID: <YS++dM4sC2Do8rDM@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The "testpath" variable is assigned at the end of setup(), so if test
-exits early, the "rmdir $testpath" is wrong:
+Hi!
+> I'll move this piece, as you suggested. The free memory limits is okay
+> to stay here?
 
-    cpuacct 1 TCONF: not enough of memory on this system (less than 3840 MB)
-    cpuacct 1 TINFO: removing created directories
-    rmdir: missing operand
-    Try 'rmdir --help' for more information.
+There is no such API in the C library yet, so unless you want to add it
+it can stay where it is.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
----
-
-Changes since v1:
-1. None.
----
- testcases/kernel/controllers/cpuacct/cpuacct.sh | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-index 39f880a53996..e95d4b53f936 100755
---- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
-+++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
-@@ -120,12 +120,13 @@ cleanup()
- {
- 	tst_res TINFO "removing created directories"
- 
--	if [ -d "$testpath/subgroup_1" ]; then
--		rmdir $testpath/subgroup_*
-+	if [ "$testpath" ]; then
-+		if [ -d "$testpath/subgroup_1" ]; then
-+			rmdir $testpath/subgroup_*
-+		fi
-+		rmdir $testpath
- 	fi
- 
--	rmdir $testpath
--
- 	if [ "$mounted" -ne 1 ]; then
- 		tst_res TINFO "Umounting cpuacct"
- 		umount $mount_point
 -- 
-2.30.2
-
+Cyril Hrubis
+chrubis@suse.cz
