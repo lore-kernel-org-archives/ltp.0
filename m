@@ -1,96 +1,73 @@
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Wed, 1 Sep 2021 16:23:15 +0200
-Subject: [LTP] [PATCH v3 1/2] controllers/cpuacct: skip cpuacct_100_100
- on small memory systems
-In-Reply-To: <YS99h3rPMLeSEFv5@yuki>
-References: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
- <YS99h3rPMLeSEFv5@yuki>
-Message-ID: <440b0bcf-63b5-bb78-6a0b-565a5266d9da@canonical.com>
+Date: Wed,  1 Sep 2021 16:51:25 +0200
+Subject: [LTP] [PATCH v4 1/3] lib: add tst_get_free_pids helper program
+Message-ID: <20210901145127.92315-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 01/09/2021 15:17, Cyril Hrubis wrote:
-> Hi!
->> +check_free_memory()
->> +{
->> +	local memneeded
->> +	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
->> +
->> +	if [ $? -ne 0 ]; then
->> +		local memcached
->> +
->> +		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
->> +		test $? -eq 0 || return 0
->> +
->> +		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
->> +		test $? -eq 0 || return 0
->> +
->> +		memfree=$((memfree + memcached))
->> +	fi
->> +
->> +	# On x86_64, each 100 of processes were using ~16 MB of memory,
->> +	# so try to estimate the needed free memory based on this.
->> +	memneeded=$((max * nbprocess * 16384 / 100))
->> +
->> +	if [ $memfree -lt $memneeded ]; then
->> +		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
->> +	fi
->> +	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
->> +
->> +	return 0
->> +}
->> +
->> +check_limits()
->> +{
->> +	local real_uid="$SUDO_UID"
->> +	local tasksneeded=$((max * nbprocess + 100))
->> +
->> +	if [ "$real_uid" = "" ]; then
->> +		real_uid=`id -u`
->> +		test $? -eq 0 || return 0
->> +	fi
->> +
->> +	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
->> +	test $? -eq 0 || return 0
->> +
->> +	# Check for number for cases like TasksMax=infinity
->> +	[ -n "$tasksmax" ] && [ "$tasksmax" -eq "$tasksmax" ] 2>/dev/null
->> +	test $? -eq 0 || return 0
-> 
-> Well we do have a C implementation of this now, it would be better to
-> have the logic in one place and just call the C function to collect the
-> number of pids.
-> 
-> If we add tst_get_free_pids.c to the testcases/lib/ directory with:
-> 
-> #define TST_NO_DEFAULT_MAIN
-> #include <stdio.h>
-> #include <tst_test.h>
-> 
-> extern struct tst_test *tst_test;
-> 
-> static struct tst_test test = {
-> };
-> 
-> int main(void)
-> {
-> 	/* force messages to be printed from new library */
->         tst_test = &test;
-> 
->         printf("%i\n", tst_get_free_pids());
-> 
->         return 0;
-> }
-> 
-> We can do FREE_PIDS=$(tst_get_free_pids) here and then just compare the numbers.
-> 
+Add a tst_get_free_pids helper program so shell code can get limit of
+tasks/PIDs in the system without duplicating that code.
 
-I'll move this piece, as you suggested. The free memory limits is okay
-to stay here?
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ testcases/lib/.gitignore          |  1 +
+ testcases/lib/Makefile            |  2 +-
+ testcases/lib/tst_get_free_pids.c | 19 +++++++++++++++++++
+ 3 files changed, 21 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/lib/tst_get_free_pids.c
 
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index a2e9f1ef0c08..5a0e8cba2ee7 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -2,6 +2,7 @@
+ /tst_checkpoint
+ /tst_device
+ /tst_getconf
++/tst_get_free_pids
+ /tst_get_median
+ /tst_get_unused_port
+ /tst_kvcmp
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index 38813e640ab1..179b474795d3 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -11,6 +11,6 @@ INSTALL_TARGETS		:= *.sh
+ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+ 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
+-			   tst_get_median tst_hexdump
++			   tst_get_median tst_hexdump tst_get_free_pids
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_get_free_pids.c b/testcases/lib/tst_get_free_pids.c
+new file mode 100644
+index 000000000000..276ce994b67a
+--- /dev/null
++++ b/testcases/lib/tst_get_free_pids.c
+@@ -0,0 +1,19 @@
++
++#define TST_NO_DEFAULT_MAIN
++#include <stdio.h>
++#include <tst_test.h>
++
++extern struct tst_test *tst_test;
++
++static struct tst_test test = {
++};
++
++int main(void)
++{
++	/* force messages to be printed from new library */
++	tst_test = &test;
++
++	printf("%i\n", tst_get_free_pids());
++
++	return 0;
++}
+-- 
+2.30.2
 
-Best regards,
-Krzysztof
