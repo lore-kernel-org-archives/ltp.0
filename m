@@ -1,120 +1,151 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 1 Sep 2021 15:17:59 +0200
-Subject: [LTP] [PATCH v3 1/2] controllers/cpuacct: skip cpuacct_100_100
- on small memory systems
-In-Reply-To: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
-References: <20210827092007.20889-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <YS99h3rPMLeSEFv5@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 1 Sep 2021 15:19:45 +0200
+Subject: [LTP] [PATCH] syscalls/pread01: Convert to new API
+In-Reply-To: <1629294657-28375-1-git-send-email-daisl.fnst@fujitsu.com>
+References: <1629294657-28375-1-git-send-email-daisl.fnst@fujitsu.com>
+Message-ID: <YS998a/fPdH5aZh8@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +check_free_memory()
-> +{
-> +	local memneeded
-> +	local memfree=`awk '/MemAvailable/ {print $2}' /proc/meminfo`
-> +
-> +	if [ $? -ne 0 ]; then
-> +		local memcached
-> +
-> +		memfree=`awk '/MemFree/ {print $2}' /proc/meminfo`
-> +		test $? -eq 0 || return 0
-> +
-> +		memcached=`awk '/MemCached/ {print $2}' /proc/meminfo`
-> +		test $? -eq 0 || return 0
-> +
-> +		memfree=$((memfree + memcached))
-> +	fi
-> +
-> +	# On x86_64, each 100 of processes were using ~16 MB of memory,
-> +	# so try to estimate the needed free memory based on this.
-> +	memneeded=$((max * nbprocess * 16384 / 100))
-> +
-> +	if [ $memfree -lt $memneeded ]; then
-> +		tst_brk TCONF "not enough of free memory on this system (approximate need $memneeded kB, free $memfree kB)"
-> +	fi
-> +	tst_res TINFO "memory requirements fulfilled (approximate need $memneeded kB, free $memfree kB)"
-> +
-> +	return 0
-> +}
-> +
-> +check_limits()
-> +{
-> +	local real_uid="$SUDO_UID"
-> +	local tasksneeded=$((max * nbprocess + 100))
-> +
-> +	if [ "$real_uid" = "" ]; then
-> +		real_uid=`id -u`
-> +		test $? -eq 0 || return 0
-> +	fi
-> +
-> +	local tasksmax=`systemctl show user-${real_uid}.slice | awk -F '=' '/TasksMax/ {print $2}'`
-> +	test $? -eq 0 || return 0
-> +
-> +	# Check for number for cases like TasksMax=infinity
-> +	[ -n "$tasksmax" ] && [ "$tasksmax" -eq "$tasksmax" ] 2>/dev/null
-> +	test $? -eq 0 || return 0
+Hi Dai,
 
-Well we do have a C implementation of this now, it would be better to
-have the logic in one place and just call the C function to collect the
-number of pids.
+LGTM, few notes below, I can fix everything before merge.
 
-If we add tst_get_free_pids.c to the testcases/lib/ directory with:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-#define TST_NO_DEFAULT_MAIN
-#include <stdio.h>
-#include <tst_test.h>
+> Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/pwrite/pwrite01.c | 336 +++++-----------------------
+>  1 file changed, 57 insertions(+), 279 deletions(-)
 
-extern struct tst_test *tst_test;
+> diff --git a/testcases/kernel/syscalls/pwrite/pwrite01.c b/testcases/kernel/syscalls/pwrite/pwrite01.c
+> index 937160a..83b0bdf 100644
+> --- a/testcases/kernel/syscalls/pwrite/pwrite01.c
+> +++ b/testcases/kernel/syscalls/pwrite/pwrite01.c
+> @@ -1,86 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> + * Copyright (c) International Business Machines  Corp., 2001
+As you haven't added your license, I'll add LTP project license.
+> + * 07/2001 Ported by Wayne Boyer
+>   */
 
-static struct tst_test test = {
-};
+...
+> +/*\
+> + * [Description]
+>   *
+> - * Test Description:
+>   *  Verify the functionality of pwrite() by writing known data using pwrite()
+>   *  to the file at various specified offsets and later read from the file from
+>   *  various specified offsets, comparing the data written aganist the data
+typo: aganist -> against. Going to fix it before merge.
+>   *  read using read().
 
-int main(void)
+...
+> -#define _XOPEN_SOURCE 500
+>  #define TEMPFILE	"pwrite_file"
+>  #define K1              1024
+>  #define K2              (K1 * 2)
+> @@ -88,249 +25,90 @@
+>  #define K4              (K1 * 4)
+>  #define NBUFS           4
+
+You kept using kilobyte constants. IMHO it'd be more readable just to use numeric (1024, 2048, 3072, 4096), but
+let's keep it.
+
+
+> -char *TCID = "pwrite01";
+> -int TST_TOTAL = 1;
+> -int fildes;			/* file descriptor for tempfile */
+> -char *write_buf[NBUFS];		/* buffer to hold data to be written */
+> +static int fildes;
+> +char *write_buf[NBUFS];
+> +char *read_buf[NBUFS];
+write_buf and read_buf should also be static.
+
+...
+> +static void verify_pwrite(void)
+>  {
+> +	SAFE_PWRITE(1, fildes, write_buf[0], K1, 0);
+> +	l_seek(fildes, 0, SEEK_CUR, 0);
+> +	l_seek(fildes, K1 / 2, SEEK_SET, K1 / 2);
+
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +	SAFE_PWRITE(1, fildes, write_buf[2], K1, K2);
+> +	l_seek(fildes, 0, SEEK_CUR, K1 / 2);
+> +	l_seek(fildes, K3, SEEK_SET, K3);
+
+> -	TEST_PAUSE;
+> +	SAFE_WRITE(1, fildes, write_buf[3], K1);
+> +	l_seek(fildes, 0, SEEK_CUR, K4);
+
+> -	/* Allocate/Initialize the write buffer with known data */
+> -	init_buffers();
+> +	SAFE_PWRITE(1, fildes, write_buf[1], K1, K1);
+
+> -	tst_tmpdir();
+> +	check_file_contents();
+
+> -	/* Creat a temporary file used for mapping */
+> -	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
+> -		tst_brkm(TBROK, cleanup, "open() on %s Failed, errno=%d : %s",
+> -			 TEMPFILE, errno, strerror(errno));
+> -	}
+> +	l_seek(fildes, 0, SEEK_SET, 0);
+your code:
+static void verify_pread(void)
 {
-	/* force messages to be printed from new library */
-        tst_test = &test;
+	SAFE_PREAD(1, fildes, read_buf[2], K1, K2);
 
-        printf("%i\n", tst_get_free_pids());
+	l_seek(fildes, 0, SEEK_CUR, K4);
 
-        return 0;
+	l_seek(fildes, 0, SEEK_SET, 0);
+
+	SAFE_PREAD(1, fildes, read_buf[3], K1, K3);
+
+	l_seek(fildes, 0, SEEK_CUR, 0);
+
+	SAFE_READ(1, fildes, read_buf[0], K1);
+
+	l_seek(fildes, 0, SEEK_CUR, K1);
+
+	SAFE_PREAD(1, fildes, read_buf[1], K1, K1);
+
+	l_seek(fildes, 0, SEEK_CUR, K1);
+
+	compare_bufers();
+
+	l_seek(fildes, K4, SEEK_SET, K4);
 }
 
-We can do FREE_PIDS=$(tst_get_free_pids) here and then just compare the numbers.
+nit: having blank line after each line?
 
-> +	if [ $tasksmax -le $tasksneeded ]; then
-> +		tst_brk TCONF "limit of tasks is too low (approximate need $tasksneeded, limit $tasksmax)"
-> +	fi
-> +	tst_res TINFO "task limit fulfilled (approximate need $tasksneeded, limit $tasksmax)"
-> +
-> +	return 0
-> +}
-> +
->  setup()
->  {
->  	if ! grep -q -w cpuacct /proc/cgroups; then
->  		tst_brk TCONF "cpuacct not supported on this system"
->  	fi
->  
-> +	check_limits
-> +	# Don't bother with memory limit checks on smaller tests
-> +	if [ $max -ge 100 ] && [ $nbprocess -ge 100 ]; then
-> +		check_free_memory
-> +	fi
-> +
->  	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
->  	tst_res TINFO "cpuacct: $mount_point"
->  	if [ "$mount_point" = "" ]; then
-> -- 
-> 2.30.2
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+how about something like:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+static void verify_pread(void)
+{
+	SAFE_PREAD(1, fildes, read_buf[2], K1, K2);
+	l_seek(fildes, 0, SEEK_CUR, K4);
+	l_seek(fildes, 0, SEEK_SET, 0);
+
+	SAFE_PREAD(1, fildes, read_buf[3], K1, K3);
+	l_seek(fildes, 0, SEEK_CUR, 0);
+
+	SAFE_READ(1, fildes, read_buf[0], K1);
+	l_seek(fildes, 0, SEEK_CUR, K1);
+
+	SAFE_PREAD(1, fildes, read_buf[1], K1, K1);
+	l_seek(fildes, 0, SEEK_CUR, K1);
+
+	compare_bufers();
+
+	l_seek(fildes, K4, SEEK_SET, K4);
+}
+
+The rest LGTM.
+
+Kind regards,
+Petr
