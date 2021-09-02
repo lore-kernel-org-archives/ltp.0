@@ -1,49 +1,59 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 2 Sep 2021 19:32:55 +0530
-Subject: [LTP] ftruncate04: WARNING: the mand mount option is being
- deprecated and will be removed in v5.15!
-Message-ID: <CA+G9fYs=GY7eQSEc08PHdaT1WtzZtaxD3Fc8jpu1Dy4g=o5Xtg@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 2 Sep 2021 17:09:55 +0200
+Subject: [LTP] [PATCH 0/4] checkbashisms.pl in make check + fixed docs
+In-Reply-To: <015140e9-0eba-4057-4a91-35d958af2bb8@jv-coder.de>
+References: <20210902103740.19446-1-pvorel@suse.cz>
+ <015140e9-0eba-4057-4a91-35d958af2bb8@jv-coder.de>
+Message-ID: <YTDpQxDDPY3HCli6@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-While running LTP syscalls test case ftruncate04 found this warning.
+Hi Joerg,
 
-[  136.115071] loop0: detected capacity change from 0 to 524288
-tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-tst_test.c:889: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.8 (1-Jan-2018)
-[  136.250270] EXT4-fs (loop0): mounting ext2 file system using the
-ext4 subsystem
-[  136.255226] ext2 filesystem being mounted at
-/tmp/ltp-GKVnWFZH5N/nTMmf9/mntpoint supports timestamps until 2038
-(0x7fffffff)
-[  136.258936] ======================================================
-[  136.258936] WARNING: the mand mount option is being deprecated and
-[  136.258936]          will be removed in v5.15!
-[  136.258936] ======================================================
-tst_test.c:1313: TINFO: Timeout per run is 0h 15m 00s
-[  136.266703] EXT4-fs (loop0): re-mounted. Opts: (null). Quota mode: none.
-[  136.267843] ext2 filesystem being remounted at
-/tmp/ltp-GKVnWFZH5N/nTMmf9/mntpoint supports timestamps until 2038
-(0x7fffffff)
-ftruncate04.c:116: TINFO: Child locks file
-ftruncate04.c:60: TPASS: ftruncate() offset before lock failed with EAGAIN
-ftruncate04.c:60: TPASS: ftruncate() offset in lock failed with EAGAIN
-ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-ftruncate04.c:127: TINFO: Child unlocks file
-ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
-ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
-ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> Hi
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> one general question about this: How to we want to handle false-positives?
+Good point, thanks! Generally we can disable things which does not work for us.
+I'd be pragmatic, if something works on most of shells and let's disable it,
+just not disable needed test just due one false positive.
 
-Full test log link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14-rc6-389-g95dc72bb9c03/testrun/5607838/suite/linux-log-parser/test/check-kernel-warning-3410862/log
+> e.g.:
 
-Test case link,
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/ftruncate/ftruncate04.c
+> $ checkbashisms testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> possible bashism in
+> testcases/kernel/controllers/memcg/functional/memcg_lib.sh line 387 ('(('
+> should be '$(('):
+> ??????? local limit_down=$(( PAGESIZE * ((limit + PAGESIZE - 1) / PAGESIZE)
+> ))
 
-- Naresh
+> This is obviously a false positive, but could probably be adding a space
+> between the brackets.
+
+The only thing how to get away this was to introduce another variable:
+	local limit_psize=$((limit + PAGESIZE - 1))
+	local limit_down=$((PAGESIZE * (limit_psize / PAGESIZE)))
+
+I'm not sure if it's not POSIX, but works because supported by all shells
+(similar case to 'typo' not being POSIX but POSIX extensions). Maybe we should
+report it.
+
+> or
+
+> $ checkbashisms testcases/kernel/connectors/pec/cn_pec.sh
+> possible bashism in testcases/kernel/connectors/pec/cn_pec.sh line 127
+> (should be >word 2>&1):
+> ??????????????? done <&${fd_act}
+
+> This one is just a false positive and I have no clue how to prevent this.
+> I think the script does not like the <&, but this is posix...
+The same here, I'm not sure if it's POSIX. &> definitely is not POSIX.
+I remember we were talking about it. Can we avoid it somehow?
+
+Kind regards,
+Petr
+
+
+> Joerg
