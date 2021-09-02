@@ -1,40 +1,147 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 1 Sep 2021 20:38:03 +0200
-Subject: [LTP] [PATCH v5 2/3] controllers/cpuacct: skip cpuacct_100_100
- on small memory systems
-In-Reply-To: <YS/DGPyHmEHnRSZk@yuki>
-References: <20210901151655.95760-1-krzysztof.kozlowski@canonical.com>
- <20210901151655.95760-2-krzysztof.kozlowski@canonical.com>
- <YS/DGPyHmEHnRSZk@yuki>
-Message-ID: <YS/Iiy7xWGZJEayN@pevik>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Thu,  2 Sep 2021 09:08:14 +0800
+Subject: [LTP] [PATCH v2 1/7] syscalls/clone01: Convert to new API
+Message-ID: <20210902010814.32448-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > +check_limits()
-> > +{
-> > +	local tasksneeded=$((max * nbprocess + 100))
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-> We allready have some reserve for the system in the tst_get_free_pids()
-> so shouldn't this be just max * nbprocess ?
+diff --git a/testcases/kernel/syscalls/clone/clone01.c b/testcases/kernel/syscalls/clone/clone01.c
+index e490b4e77..ed7ef60a3 100644
+--- a/testcases/kernel/syscalls/clone/clone01.c
++++ b/testcases/kernel/syscalls/clone/clone01.c
+@@ -1,90 +1,63 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
 
-Yes:
-lib/tst_pid.c
+-/*
+- *	This is a test for the clone(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
++/*\
++ * [Description]
++ *
++ * Basic clone() test.
++ *
++ * Use clone() to create a child process, and wait for the child process to exit,
++ * verify that the child process pid is correct.
+  */
 
-/* Leave some available processes for the OS */
-#define PIDS_RESERVE 50
+-#if defined UCLINUX && !__THROW
+-/* workaround for libc bug */
+-#define __THROW
+-#endif
+-
+-#include <errno.h>
+-#include <sched.h>
+-#include <sys/wait.h>
+-#include "test.h"
+-#include "safe_macros.h"
++#include <stdlib.h>
++#include "tst_test.h"
+ #include "clone_platform.h"
 
-I suppose 50 is enough, but if 100 is experienced to be needed I'd update PIDS_RESERVE.
+-static void setup(void);
+-static void cleanup(void);
+-static int do_child();
++static void *child_stack;
 
-Also, because you introduced use of awk, I'd add TST_NEEDS_CMDS="awk". Or is it
-that common even on embedded systems that we don't bother?
+-char *TCID = "clone01";
+-int TST_TOTAL = 1;
++static int do_child(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++	exit(0);
++}
 
-NOTE: all changes can be done during merge, we just need to agree on it.
+-int main(int ac, char **av)
++static void verify_clone(void)
+ {
+-	void *child_stack;
+ 	int status, child_pid;
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, do_child, NULL,
++		CHILD_STACK_SIZE, child_stack), "clone()");
 
-Kind regards,
-Petr
+-	child_stack = malloc(CHILD_STACK_SIZE);
+-	if (child_stack == NULL)
+-		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
++	child_pid = SAFE_WAIT(&status);
+
+-	tst_count = 0;
+-
+-	TEST(ltp_clone(SIGCHLD, do_child, NULL, CHILD_STACK_SIZE, child_stack));
+-	if (TEST_RETURN == -1)
+-		tst_resm(TFAIL | TTERRNO, "clone failed");
+-
+-	child_pid = SAFE_WAIT(cleanup, &status);
+-
+-	if (TEST_RETURN == child_pid)
+-		tst_resm(TPASS, "clone returned %ld", TEST_RETURN);
++	if (TST_RET == child_pid)
++		tst_res(TPASS, "clone returned %ld", TST_RET);
+ 	else
+-		tst_resm(TFAIL, "clone returned %ld, wait returned %d",
+-			 TEST_RETURN, child_pid);
+-
+-	free(child_stack);
+-
+-	cleanup();
++		tst_res(TFAIL, "clone returned %ld, wait returned %d",
++			 TST_RET, child_pid);
+
+-	tst_exit();
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++		tst_res(TPASS, "Child exited with 0");
++	else
++		tst_res(TFAIL, "Child %s", tst_strstatus(status));
+ }
+
+ static void setup(void)
+ {
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
++	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
+ }
+
+ static void cleanup(void)
+ {
++	free(child_stack);
+ }
+
+-static int do_child(void)
+-{
+-	exit(0);
+-}
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_clone,
++	.forks_child = 1,
++};
+--
+2.20.1
+
+
+
