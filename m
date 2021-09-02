@@ -1,52 +1,73 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu, 2 Sep 2021 10:24:01 +0200
-Subject: [LTP] [PATCH v5 3/3] controllers/cpuacct: fix rmdir failures on
- early test abort
-In-Reply-To: <YTCI3O7Et+VvYJfc@pevik>
-References: <20210901151655.95760-1-krzysztof.kozlowski@canonical.com>
- <20210901151655.95760-3-krzysztof.kozlowski@canonical.com>
- <YTCI3O7Et+VvYJfc@pevik>
-Message-ID: <21179557-f1d9-4129-533e-eac6bfe8684b@canonical.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Thu, 2 Sep 2021 12:07:42 +0300
+Subject: [LTP] [PATCH 1/1] net/route: Rewrite route-rmmod to new API
+In-Reply-To: <YS9u/k/b7lM/l1ki@pevik>
+References: <20201116220325.413764-1-pvorel@suse.cz>
+ <689bea29-9717-1b2a-a53f-4b3a7f9f4e9b@oracle.com> <YS9u/k/b7lM/l1ki@pevik>
+Message-ID: <a07de84c-5251-9e46-afac-84544247534b@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02/09/2021 10:18, Petr Vorel wrote:
-> Hi Krzysztof,
+Hi Petr,
+On 01.09.2021 15:15, Petr Vorel wrote:
+> Hi Alexey,
 > 
 > ...
->> -	if [ -d "$testpath/subgroup_1" ]; then
->> -		rmdir $testpath/subgroup_*
->> +	if [ "$testpath" ]; then
->> +		if [ -d "$testpath/subgroup_1" ]; then
->> +			rmdir $testpath/subgroup_*
->> +		fi
->> +		rmdir $testpath
->>  	fi
+>>> diff --git a/testcases/network/stress/route/route-rmmod.sh b/testcases/network/stress/route/route-rmmod.sh
+> ...
+>>> +setup()
+>>> +{
+>>> +	tst_res TINFO "adding IPv$TST_IPVER route destination and delete network driver $ROUTE_CHANGE_IP times"
+>>> +}
 > 
->> -	rmdir $testpath
->> -
+>> It is probably unsafe to go straight to the do_test() and removing
+>> the veth... it would be nice to check that it is indeed using default
+>> ltp netns, and veth not used for other interfaces, TCONF otherwise...
 > 
-> LGTM, but how about use `rm -rf' instead?
+>> Perhaps in init_ltp_netspace(), create a special symlink in the if block,
+>> where the default ltp netns created:
 > 
-> e.g.
+>> if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
+>>    ...
+>>    ROD ln -s /var/run/netns/ltp_ns /var/run/netns/ltp_ns_default
+>>    ...
+>> }
 > 
-> if [ "$testpath" ]; then
-> 	rm -rf $testpath
-> fi
+>> then check via this function:
 > 
-> That could simplify checks. Or is it needed to use `rmdir' to make sure there is
-> no content in the directory? I suppose check like this is needed in cleanup,
-> thus no problem to use `rm -rf'.
+>> is_ltp_ns_default()
+>> {
+>> 	test -f /var/run/netns/ltp_ns_default
+>> }
+> 
+> 
+>> BTW, why not using add_macvlan() in route_lib.sh (or gre, vxlan, etc.)
+>> and remove that driver, so that this test can be run with custom setup, and
+>> with remote host setup?
+> 
+> Looking into this old patch, it looked to me quite bad approach to move
+> add_macvlan() into tst_net.sh to be reused (you didn't suggested that, that's
+> what I'd do to prevent the duplicity).
 
-It isn't the point of this patch. I don't add here rmdir - all this code
-was here before. The only thing added here is to check whether the
-"testpath" variable is set or not.
+Why not move add_macvlan() to the virt_lib.sh, I think this lib is better
+suited for creating macvlan?
 
-I think using rm -rf should work, but anyway it's a separate commit :)
+> 
+> But much better approach would be IMHO to move virt_add() and virt_add_rhost()
+> from virt_lib.sh to tst_net.sh and adjust it not to be too tight to virt_lib.sh.
+> I suppose $virt_type should became $2 (second parameter).
+> 
+> Also there could be moved from virt_lib.sh to tst_net.sh: e.g. add flag
+> TST_NET_ADD_VIRT_TYPE (e.g. macvlan, gre, ...) and doing setup and cleanup
+> there. We could reduce code and document which virt drivers are used.
+> 
+> route-change-netlink-if is the only test which needs to call tst_init_iface()
+> (to add routes), virt_lib.sh does not need it.
+> 
+> Kind regards,
+> Petr
+> 
 
-
-Best regards,
-Krzysztof
