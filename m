@@ -1,48 +1,55 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 2 Sep 2021 06:37:52 +0000
-Subject: [LTP] [PATCH] syscalls/creat09: Add another linux tag
-In-Reply-To: <1630564446-3393-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1630564446-3393-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <61307148.1050605@fujitsu.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Thu, 2 Sep 2021 10:06:54 +0200
+Subject: [LTP] [PATCH v5 2/3] controllers/cpuacct: skip cpuacct_100_100
+ on small memory systems
+In-Reply-To: <YS/Iiy7xWGZJEayN@pevik>
+References: <20210901151655.95760-1-krzysztof.kozlowski@canonical.com>
+ <20210901151655.95760-2-krzysztof.kozlowski@canonical.com>
+ <YS/DGPyHmEHnRSZk@yuki> <YS/Iiy7xWGZJEayN@pevik>
+Message-ID: <0e06b0e8-6e6e-6755-60f9-56580f7917a3@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/creat/creat09.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
+On 01/09/2021 20:38, Petr Vorel wrote:
+>> Hi!
+>>> +check_limits()
+>>> +{
+>>> +	local tasksneeded=$((max * nbprocess + 100))
 > 
-> diff --git a/testcases/kernel/syscalls/creat/creat09.c b/testcases/kernel/syscalls/creat/creat09.c
-> index 53ab202c1..9b88acd1a 100644
-> --- a/testcases/kernel/syscalls/creat/creat09.c
-> +++ b/testcases/kernel/syscalls/creat/creat09.c
-> @@ -18,6 +18,16 @@
->    *  Date:   Tue Jul 3 17:10:19 2018 -0700
->    *
->    *  Fix up non-directory creation in SGID directories
-> + *
-> + * This fix is incomplete if file is on xfs filesystem.
-> + *
-> + * Fixed in:
-> + *
-> + *  commit 01ea173e103edd5ec41acec65b9261b87e123fc2
-> + *  Author: Christoph Hellwig<hch@lst.de>
-> + *  Date:   Fri Jan 22 16:48:18 2021 -0800
-> + *
-> + *  xfs: fix up non-directory creation in SGID directories
->    */
+>> We allready have some reserve for the system in the tst_get_free_pids()
+>> so shouldn't this be just max * nbprocess ?
 > 
->   #include<stdlib.h>
-> @@ -112,6 +122,7 @@ static struct tst_test test = {
->   	.tags = (const struct tst_tag[]) {
->   		{"linux-git", "0fa3ecd87848"},
->   		{"CVE", "2018-13405"},
-> +		{"linux-git", "01ea173e103e"}
-Sorry, I miss comma here.
->   		{}
->   	},
->   };
+> Yes:
+> lib/tst_pid.c
+> 
+> /* Leave some available processes for the OS */
+> #define PIDS_RESERVE 50
+> 
+> I suppose 50 is enough, but if 100 is experienced to be needed I'd update PIDS_RESERVE.
+
+Indeed, it's a duplicated reserve now. Let's dtop 100 here and use
+existing PIDS_RESERVE.
+
+> 
+> Also, because you introduced use of awk, I'd add TST_NEEDS_CMDS="awk". Or is it
+> that common even on embedded systems that we don't bother?
+
+Even though most of Busybox installations have awk, it might be still
+missing in some specific setup, so TST_NEEDS_CMDS="awk" seems reasonable.
+
+> 
+> NOTE: all changes can be done during merge, we just need to agree on it.
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> Kind regards,
+> Petr
+> 
+
+
+
+Best regards,
+Krzysztof
