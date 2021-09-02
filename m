@@ -1,70 +1,107 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 2 Sep 2021 15:12:19 +0530
-Subject: [LTP] [PATCH] syscalls/aarch64: Remove 32 bit only syscalls
-In-Reply-To: <20210902093655.6104-1-lkml@jv-coder.de>
-References: <20210902093655.6104-1-lkml@jv-coder.de>
-Message-ID: <20210902094219.xy73hs5ccafkrysr@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  2 Sep 2021 12:37:37 +0200
+Subject: [LTP] [PATCH 1/4] doc: Mention make check
+In-Reply-To: <20210902103740.19446-1-pvorel@suse.cz>
+References: <20210902103740.19446-1-pvorel@suse.cz>
+Message-ID: <20210902103740.19446-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-+Arnd
+and our version of checkpatch.pl instead of suggesting to use upstream
+on remaining places (just to be consistent).
 
-On 02-09-21, 11:36, Joerg Vehlow wrote:
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> 
-> These syscalls are not available in 64 bit builds of linux.
-> See: <linux>/include/uapi/asm-generic/unistd.h
-> 
-> With the syscall defined, the test clock_gettim04 fails with
-> ../../../../include/tst_timer.h:216: TCONF: syscall(403) __NR_clock_gettime64 not supported
-> 
-> Fixes: 59d278d61ed90117607f389326e0816a14dbf53c ("lapi/syscalls: Update syscall numbers")
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
-> 
-> I am not 100% sure, how the syscall table for aarch64 is generated.
-> There are also compat version for some of the 32 bit only 64 bit syscalls,
-> but I think they are only available, when running an 32 bit arm application.
-> 
->  include/lapi/syscalls/aarch64.in | 20 --------------------
->  1 file changed, 20 deletions(-)
-> 
-> diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-> index 5a2816099..a47185954 100644
-> --- a/include/lapi/syscalls/aarch64.in
-> +++ b/include/lapi/syscalls/aarch64.in
-> @@ -278,26 +278,6 @@ statx 291
->  io_pgetevents 292
->  rseq 293
->  kexec_file_load 294
-> -clock_gettime64 403
-> -clock_settime64 404
-> -clock_adjtime64 405
-> -clock_getres_time64 406
-> -clock_nanosleep_time64 407
-> -timer_gettime64 408
-> -timer_settime64 409
-> -timerfd_gettime64 410
-> -timerfd_settime64 411
-> -utimensat_time64 412
-> -pselect6_time64 413
-> -ppoll_time64 414
-> -io_pgetevents_time64 416
-> -recvmmsg_time64 417
-> -mq_timedsend_time64 418
-> -mq_timedreceive_time64 419
-> -semtimedop_time64 420
-> -rt_sigtimedwait_time64 421
-> -futex_time64 422
-> -sched_rr_get_interval_time64 423
->  pidfd_send_signal 424
->  io_uring_setup 425
->  io_uring_enter 426
-> -- 
-> 2.25.1
+Fixes: 4c1e61cc7 ("docs: rm explicit reference to checkpatch.pl")
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/c-test-tutorial-simple.txt  | 21 ++++++++++-----------
+ doc/test-writing-guidelines.txt | 10 +++++-----
+ 2 files changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/doc/c-test-tutorial-simple.txt b/doc/c-test-tutorial-simple.txt
+index aa6d19f8d..bacf2f1d9 100644
+--- a/doc/c-test-tutorial-simple.txt
++++ b/doc/c-test-tutorial-simple.txt
+@@ -228,12 +228,12 @@ the lines starting with a +++.
+ --------------------------------------------------------------------------------
+  statvfs01 statvfs01
+  statvfs02 statvfs02
+- 
++
+ +statx01 statx01
+ +
+  stime01 stime01
+  stime02 stime02
+- 
++
+ --------------------------------------------------------------------------------
+ 
+ The +runtest+ files are in a two column format. The first column is the test
+@@ -306,12 +306,11 @@ Wiki]).
+ 
+ Is your +.gitignore+ correct?
+ 
+-3.3 Run checkpatch.pl on the source file
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++3.3 Run make check
++~~~~~~~~~~~~~~~~~~
+ 
+-The LTP follows the Linux style guidelines where possible. Check what happens
+-if you run +kernel/linux/scripts/checkpatch.pl --no-tree -f statx01.c+ and
+-correct any style issues.
++Check coding style with `make check`
++ (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#21-c-coding-style[C coding style])
+ 
+ 3.4 Install the LTP and run the test with runtest
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -767,7 +766,7 @@ failing due to some faulty logic.
+ 6.1 What is wrong with the switch statement?
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-Were you paying attention? Also see the output of +checkpatch.pl+.
++Were you paying attention? Also see the output of +make check+.
+ 
+ 6.2 Test a feature unique to statx
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -795,9 +794,9 @@ of fallback logic in the build system. We can now get our test ready for
+ submission.
+ 
+ The first thing you need to do before considering submitting your test is run
+-+scripts/checkpatch.pl --no-tree -f+ on +statx01.c+. Again, we use the kernel
+-style guidelines where possible. Next you should create a new branch, this
+-will allow you to reshape your commit history without fear.
+++make check-statx01+ or + make check+ in the test's directory. Again, we use
++the kernel style guidelines where possible. Next you should create a new
++branch, this will allow you to reshape your commit history without fear.
+ 
+ After that we have the pleasure of doing an interactive 'rebase' to clean up
+ our commit history. In its current form the test only really needs a single
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 12fe4922a..8053f0cb0 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -125,13 +125,13 @@ LTP adopted Linux kernel coding style. If you aren't familiar with its rules
+ locate 'linux/Documentation/CodingStyle' in the kernel sources and read it,
+ it's a well written introduction.
+ 
+-There is also
++Run `make check` in the test's directory and/or use `make check-$TCID`,
++it uses (among other checks) our vendored version of
+ https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
+-script from kernel git tree which can be used to check your patches before the
+-submission. Please use reasonably recent one.
++script from kernel git tree.
+ 
+-NOTE: If checkpatch.pl does not report any problems, the code still may be wrong
+-      as the tool only looks for common mistakes.
++NOTE: If `make check` does not report any problems, the code still may be wrong
++      as all tools used for checking only look for common mistakes.
+ 
+ 2.2 Shell coding style
+ ^^^^^^^^^^^^^^^^^^^^^^
 -- 
-viresh
+2.33.0
+
