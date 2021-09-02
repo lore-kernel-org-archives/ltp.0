@@ -1,10 +1,10 @@
 From: QI Fuli <fukuri.sai@gmail.com>
-Date: Thu,  2 Sep 2021 20:58:45 +0900
-Subject: [LTP] [PATCH 1/5] syscalls/dup2/dup201: Convert dup201 to the new
+Date: Thu,  2 Sep 2021 20:58:46 +0900
+Subject: [LTP] [PATCH 2/5] syscalls/dup2/dup202: Convert dup202 to the new
  API
 In-Reply-To: <20210902115849.72382-1-qi.fuli@fujitsu.com>
 References: <20210902115849.72382-1-qi.fuli@fujitsu.com>
-Message-ID: <20210902115849.72382-2-qi.fuli@fujitsu.com>
+Message-ID: <20210902115849.72382-3-qi.fuli@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,14 +15,14 @@ From: QI Fuli <qi.fuli@fujitsu.com>
 
 Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 ---
- testcases/kernel/syscalls/dup2/dup201.c | 161 +++++-------------------
- 1 file changed, 34 insertions(+), 127 deletions(-)
+ testcases/kernel/syscalls/dup2/dup202.c | 175 +++++++-----------------
+ 1 file changed, 48 insertions(+), 127 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
-index 4fa34466a..231c262bf 100644
---- a/testcases/kernel/syscalls/dup2/dup201.c
-+++ b/testcases/kernel/syscalls/dup2/dup201.c
-@@ -1,87 +1,30 @@
+diff --git a/testcases/kernel/syscalls/dup2/dup202.c b/testcases/kernel/syscalls/dup2/dup202.c
+index c87769fa9..16f8b2add 100644
+--- a/testcases/kernel/syscalls/dup2/dup202.c
++++ b/testcases/kernel/syscalls/dup2/dup202.c
+@@ -1,65 +1,22 @@
 -/*
 - *
 - *   Copyright (c) International Business Machines  Corp., 2001
@@ -45,88 +45,86 @@ index 4fa34466a..231c262bf 100644
  
  /*
 - * NAME
-- *	dup201.c
+- *	dup202.c
 + * Copyright (c) International Business Machines  Corp., 2001
   *
 - * DESCRIPTION
 + * DESCRIPTION:
-  *	Negative tests for dup2() with bad fd (EBADF)
+  *	Is the access mode the same for both file descriptors?
+  *		0: read only ?	"0444"
+  *		1: write only ? "0222"
+  *		2: read/write ? "0666"
   *
 - * ALGORITHM
-- * 	Setup:
-- *	a.	Setup signal handling.
-- *	b.	Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	a.	Loop if the proper options are given.
-- *	b.	Loop through the test cases
-- * 	c.	Execute dup2() system call
-- *	d.	Check return code, if system call failed (return=-1), test
-- *		for EBADF.
-- *
-- * 	Cleanup:
-- * 	a.	Print errno log and/or timing stats if options given
+- *	Creat a file with each access mode; dup each file descriptor;
+- *	stat each file descriptor and compare modes of each pair
 - *
 - * USAGE:  <for command-line>
-- *  dup201 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  dup202 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
 - *
 - * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *	01/2002 Removed EMFILE test - Paul Larson
++ * HISTORY:
+  *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS
-- * 	NONE
-+ * HISTORY:
-+ * 	07/2001 Ported by Wayne Boyer
-+ * 	01/2002 Removed EMFILE test - Paul Larson
+- *	None
   */
  
 -#include <sys/types.h>
--#include <fcntl.h>
+-#include <sys/stat.h>
  #include <errno.h>
--#include <sys/time.h>
--#include <sys/resource.h>
--#include <unistd.h>
--#include <signal.h>
+-#include <fcntl.h>
+ #include <stdio.h>
 -#include "test.h"
+-#include "safe_macros.h"
+-
+-char *TCID = "dup202";
+-int TST_TOTAL = 3;
 -
 -void setup(void);
 -void cleanup(void);
--
--char *TCID = "dup201";
--int TST_TOTAL = 4;
 +#include "tst_test.h"
++#include "tst_safe_macros.h"
  
- int maxfd;
- int goodfd = 5;
- int badfd = -1;
- int mystdout = 0;
+ char testfile[40];
+ int fail;
+@@ -68,100 +25,64 @@ int newfd;
+ /* set these to a known index into our local file descriptor table */
+ int duprdo = 10, dupwro = 20, duprdwr = 30;
  
 -struct test_case_t {
 +static struct tcase {
- 	int *ofd;
  	int *nfd;
- 	int error;
- 	void (*setupfunc) ();
+ 	mode_t mode;
 -} TC[] = {
-+} tcases[] = {
- 	/* First fd argument is less than 0 - EBADF */
- 	{&badfd, &goodfd, EBADF, NULL},
- 	    /* First fd argument is getdtablesize() - EBADF */
-@@ -92,72 +35,36 @@ struct test_case_t {
- 	{&mystdout, &maxfd, EBADF, NULL},
++} tcases[]= {
+ 	/* The first test creat(es) a file with mode 0444 */
+-	{
+-	&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
++	{&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
+ 	    /* The second test creat(es) a file with mode 0222 */
+-	{
+-	&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
++	{&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
+ 	    /* The third test creat(es) a file with mode 0666 */
+-	{
+-	&duprdwr,
+-		    (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)}
++	{&duprdwr, (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)},
  };
  
 -int main(int ac, char **av)
--{
++void setup(void)
+ {
 -	int lc;
--	int i;
+-	int i, ofd;
+-	struct stat oldbuf, newbuf;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -137,51 +135,92 @@ index 4fa34466a..231c262bf 100644
 -		tst_count = 0;
 -
 -		/* loop through the test cases */
--
 -		for (i = 0; i < TST_TOTAL; i++) {
 -
--			/* call the test case setup routine if necessary */
--			if (TC[i].setupfunc != NULL)
--				(*TC[i].setupfunc) ();
+-			if ((ofd = creat(testfile, TC[i].mode)) == -1)
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "creat failed");
 -
--			TEST(dup2(*TC[i].ofd, *TC[i].nfd));
+-			TEST(dup2(ofd, *TC[i].nfd));
 -
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "call failed unexpectedly");
 -				continue;
 -			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS,
--					 "failed as expected - errno = %d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "failed unexpectedly; "
--					 "expected %d: %s", TC[i].error,
--					 strerror(TC[i].error));
--			}
++	(void)umask(0);
++	sprintf(testfile, "dup202.%d", getpid());
++}
+ 
+-			/* stat the original file */
+-			SAFE_FSTAT(cleanup, ofd, &oldbuf);
++static void run(unsigned int i)
++{
++	int ofd;
++	struct stat oldbuf, newbuf;
++	struct tcase *tc = tcases + i;
+ 
+-			/* stat the duped file */
+-			SAFE_FSTAT(cleanup, *TC[i].nfd, &newbuf);
++	ofd = creat(testfile, tc->mode);
++	if (ofd == -1)
++		tst_brk(TBROK | TERRNO, "creat failed");
+ 
+-			if (oldbuf.st_mode != newbuf.st_mode)
+-				tst_resm(TFAIL, "original and dup "
+-					 "modes do not match");
+-			else
+-				tst_resm(TPASS, "fstat shows new and "
+-					 "old modes are the same");
++	TEST(dup2(ofd, *tc->nfd));
+ 
+-			/* remove the file so that we can use it again */
+-			if (close(*TC[i].nfd) == -1)
+-				perror("close failed");
+-			if (close(ofd) == -1)
+-				perror("close failed");
+-			if (unlink(testfile) == -1)
+-				perror("unlink failed");
 -		}
--	}
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "call failed unexpectedly");
++		return;
+ 	}
+ 
 -	cleanup();
--
 -	tst_exit();
 -}
 -
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - */
- void setup(void)
- {
+-void setup(void)
+-{
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
++	/* stat the original file */
++	SAFE_FSTAT(ofd, &oldbuf);
+ 
 -	TEST_PAUSE;
--
++	/* stat the duped file */
++	SAFE_FSTAT(*tc->nfd, &newbuf);
+ 
 -	tst_tmpdir();
++	if (oldbuf.st_mode != newbuf.st_mode)
++		tst_res(TFAIL, "original and dup modes do not match");
++	else
++		tst_res(TPASS, "fstat shows new and old modes are the same");
+ 
+-	(void)umask(0);
 -
- 	/* get some test specific values */
- 	maxfd = getdtablesize();
+-	sprintf(testfile, "dup202.%d", getpid());
++	/* remove the file so that we can use it again */
++	if (close(*tc->nfd) == -1)
++		perror("close failed");
++	if (close(ofd) == -1)
++		perror("close failed");
++	if (unlink(testfile) == -1)
++		perror("unlink failed");
  }
  
 -/*
@@ -189,28 +228,9 @@ index 4fa34466a..231c262bf 100644
 - *	       completion or premature exit.
 - */
 -void cleanup(void)
-+static void run(unsigned int i)
- {
+-{
 -	tst_rmdir();
-+	struct tcase *tc = tcases + i;
-+
-+	if (tc->setupfunc)
-+		tc->setupfunc();
-+
-+	TEST(dup2(*tc->ofd, *tc->nfd));
-+
-+	if (TST_RET == -1) {
-+		if (TST_ERR == tc->error)
-+			tst_res(TPASS, "failed as expected - errno = %d : %s",
-+				TST_ERR, strerror(TST_ERR));
-+		else
-+			tst_res(TFAIL | TTERRNO, "failed unexpectedly; "
-+				"expected %d: %s", tc->error,
-+				strerror(tc->error));
-+	} else
-+		tst_res(TFAIL, "call succeeded unexpectedly");
- }
-+
+-}
 +static struct tst_test test = {
 +	.needs_tmpdir = 1,
 +	.tcnt = ARRAY_SIZE(tcases),
