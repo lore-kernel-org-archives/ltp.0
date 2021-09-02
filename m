@@ -1,73 +1,63 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Thu, 2 Sep 2021 12:07:42 +0300
-Subject: [LTP] [PATCH 1/1] net/route: Rewrite route-rmmod to new API
-In-Reply-To: <YS9u/k/b7lM/l1ki@pevik>
-References: <20201116220325.413764-1-pvorel@suse.cz>
- <689bea29-9717-1b2a-a53f-4b3a7f9f4e9b@oracle.com> <YS9u/k/b7lM/l1ki@pevik>
-Message-ID: <a07de84c-5251-9e46-afac-84544247534b@bell-sw.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Thu,  2 Sep 2021 11:36:55 +0200
+Subject: [LTP] [PATCH] syscalls/aarch64: Remove 32 bit only syscalls
+Message-ID: <20210902093655.6104-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 01.09.2021 15:15, Petr Vorel wrote:
-> Hi Alexey,
-> 
-> ...
->>> diff --git a/testcases/network/stress/route/route-rmmod.sh b/testcases/network/stress/route/route-rmmod.sh
-> ...
->>> +setup()
->>> +{
->>> +	tst_res TINFO "adding IPv$TST_IPVER route destination and delete network driver $ROUTE_CHANGE_IP times"
->>> +}
-> 
->> It is probably unsafe to go straight to the do_test() and removing
->> the veth... it would be nice to check that it is indeed using default
->> ltp netns, and veth not used for other interfaces, TCONF otherwise...
-> 
->> Perhaps in init_ltp_netspace(), create a special symlink in the if block,
->> where the default ltp netns created:
-> 
->> if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
->>    ...
->>    ROD ln -s /var/run/netns/ltp_ns /var/run/netns/ltp_ns_default
->>    ...
->> }
-> 
->> then check via this function:
-> 
->> is_ltp_ns_default()
->> {
->> 	test -f /var/run/netns/ltp_ns_default
->> }
-> 
-> 
->> BTW, why not using add_macvlan() in route_lib.sh (or gre, vxlan, etc.)
->> and remove that driver, so that this test can be run with custom setup, and
->> with remote host setup?
-> 
-> Looking into this old patch, it looked to me quite bad approach to move
-> add_macvlan() into tst_net.sh to be reused (you didn't suggested that, that's
-> what I'd do to prevent the duplicity).
+From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-Why not move add_macvlan() to the virt_lib.sh, I think this lib is better
-suited for creating macvlan?
+These syscalls are not available in 64 bit builds of linux.
+See: <linux>/include/uapi/asm-generic/unistd.h
 
-> 
-> But much better approach would be IMHO to move virt_add() and virt_add_rhost()
-> from virt_lib.sh to tst_net.sh and adjust it not to be too tight to virt_lib.sh.
-> I suppose $virt_type should became $2 (second parameter).
-> 
-> Also there could be moved from virt_lib.sh to tst_net.sh: e.g. add flag
-> TST_NET_ADD_VIRT_TYPE (e.g. macvlan, gre, ...) and doing setup and cleanup
-> there. We could reduce code and document which virt drivers are used.
-> 
-> route-change-netlink-if is the only test which needs to call tst_init_iface()
-> (to add routes), virt_lib.sh does not need it.
-> 
-> Kind regards,
-> Petr
-> 
+With the syscall defined, the test clock_gettim04 fails with
+../../../../include/tst_timer.h:216: TCONF: syscall(403) __NR_clock_gettime64 not supported
+
+Fixes: 59d278d61ed90117607f389326e0816a14dbf53c ("lapi/syscalls: Update syscall numbers")
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+---
+
+I am not 100% sure, how the syscall table for aarch64 is generated.
+There are also compat version for some of the 32 bit only 64 bit syscalls,
+but I think they are only available, when running an 32 bit arm application.
+
+ include/lapi/syscalls/aarch64.in | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 5a2816099..a47185954 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -278,26 +278,6 @@ statx 291
+ io_pgetevents 292
+ rseq 293
+ kexec_file_load 294
+-clock_gettime64 403
+-clock_settime64 404
+-clock_adjtime64 405
+-clock_getres_time64 406
+-clock_nanosleep_time64 407
+-timer_gettime64 408
+-timer_settime64 409
+-timerfd_gettime64 410
+-timerfd_settime64 411
+-utimensat_time64 412
+-pselect6_time64 413
+-ppoll_time64 414
+-io_pgetevents_time64 416
+-recvmmsg_time64 417
+-mq_timedsend_time64 418
+-mq_timedreceive_time64 419
+-semtimedop_time64 420
+-rt_sigtimedwait_time64 421
+-futex_time64 422
+-sched_rr_get_interval_time64 423
+ pidfd_send_signal 424
+ io_uring_setup 425
+ io_uring_enter 426
+-- 
+2.25.1
 
