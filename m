@@ -1,10 +1,7 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Sat, 4 Sep 2021 00:34:47 +0200
-Subject: [LTP] [RFC][PATCH 1/2] sched/process.c: Always use pointer to
- stderr
-In-Reply-To: <20210903214811.61727-1-petr.vorel@gmail.com>
-References: <20210903214811.61727-1-petr.vorel@gmail.com>
-Message-ID: <YTKjB5iDSECjZCSn@pevik>
+Date: Sat, 4 Sep 2021 00:41:48 +0200
+Subject: [LTP] Rewrite fmtmsg01.c
+Message-ID: <YTKkrHbMHeKCJiTr@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,10 +10,15 @@ To: ltp@lists.linux.it
 
 Hi,
 
-compilation tested:
-https://github.com/pevik/ltp/actions/runs/1199503613
+I'm going to rewrite testcases/kernel/syscalls/fmtmsg/fmtmsg01.c which tests
+addseverity() and fmtmsg(). The reason is that addseverity() is not POSIX,
+thus not in musl. Taking an usual approach (*) is not enough, because the test
+logic depends on all tests being run. Thus just hope the test is valid (thus
+worth of cleanup).
 
-Runtime tested only on glibc (I'll test musl as well).
+(*) check with autotools whether addseverity() available and comment out parts
+which test it; + TCONF test if fmtmsg() is not available - uclibc.
 
 Kind regards,
 Petr
+
