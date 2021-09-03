@@ -1,67 +1,141 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 3 Sep 2021 14:20:28 +0200
-Subject: [LTP] [PATCH] syscalls/aarch64: Remove 32 bit only syscalls
-In-Reply-To: <CAK8P3a3wOfFnN5UQ6MC0z+PtCSmMz_3NFmatAuD1Lb6jH7J+YA@mail.gmail.com>
-References: <20210902093655.6104-1-lkml@jv-coder.de>
- <20210902094219.xy73hs5ccafkrysr@vireshk-i7>
- <CAK8P3a3jH=4gq7gg64E-L158d8QZCpPjEaKBZiEY+mE+jN61Fw@mail.gmail.com>
- <84a0c4aa-4faf-4271-36c4-5570f8c3a004@jv-coder.de>
- <YTG/MERCvZkBalov@pevik>
- <CAK8P3a3wOfFnN5UQ6MC0z+PtCSmMz_3NFmatAuD1Lb6jH7J+YA@mail.gmail.com>
-Message-ID: <YTITDDicfJpDabDy@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 3 Sep 2021 21:49:18 +0800
+Subject: [LTP] [RFC PATCH] copy_file_range03: comparing timestamp with
+ tst_timespec_diff
+In-Reply-To: <20210902104551.58293-1-liwang@redhat.com>
+References: <20210902104551.58293-1-liwang@redhat.com>
+Message-ID: <CAEemH2fjkZCzY11kGB39W4sSYq2XeoZNHGQ-h8xWn+BwMeymxg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On Fri, Sep 3, 2021 at 6:22 AM Petr Vorel <pvorel@suse.cz> wrote:
+[Cc Amir, Thomas if they have better advice on this]
 
-> > Hi all,
+On Thu, Sep 2, 2021 at 6:46 PM Li Wang <liwang@redhat.com> wrote:
 
-> > > Hi Arnd,
+> The st_mtime field is defined as st_mtim.tv_sec for backward
+> compatibility in struct stat, which might not precise enough
+> for timestamp comparing.
+>
+> Similar issue as:
+>   https://lists.linux.it/pipermail/ltp/2020-November/019982.html
+>
+> Here switch to timespec diff (with compare nanosecond as well) to
+> get rid of this kind of rare faliure:
+>
+>    7    tst_test.c:1345: TINFO: Timeout per run is 0h 05m 00s
+>    8    copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+>    9    copy_file_range03.c:48: TPASS: copy_file_range sucessfully updated
+> the timestamp
+>    10   tst_test.c:1345: TINFO: Timeout per run is 0h 05m 00s
+>    11   copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+>    12   copy_file_range03.c:46: TFAIL: copy_file_range did not update
+> timestamp.
+>
 
-> > > On 9/2/2021 8:32 PM, Arnd Bergmann wrote:
+After digging into syscall copy_file_range (which mainly call
+the splice_direct_to_actor), I found it relies on the specific
+filesystem (my platform is XFS) to complete the timestamps
+updating.
 
-> > > > > > I am not 100% sure, how the syscall table for aarch64 is generated.
-> > > > > > There are also compat version for some of the 32 bit only 64 bit syscalls,
-> > > > > > but I think they are only available, when running an 32 bit arm application.
-> > > > The syscall table for aarch64 is generated from the kernel's
-> > > > include/uapi/asm-generic/unistd.h, which has a number of #ifdefs in
-> > > > it. A lot of these are disabled on aarch64 since they refer to older or
-> > > > 32-bit-only calls.
+For XFS, the ?file_modified? code path is via
+file_update_time() --> current_time() --> timestamp_truncate()
+to get a truncated current time for use.
 
-> > > > https://marcin.juszkiewicz.com.pl/download/tables/syscalls.html has a table
-> > > > with the correct set of syscalls for each architecture, and scripts to generate
-> > > > them from both the old asm-generic/unistd.h method (now only still used on
-> > > > modern architectures) and the newer syscall.tbl format (used on older
-> > > > architectures)
-> > @Arnd: thanks a lot for this table and explanations! I would not expect this
-> > kind of error in kernel sources.
+Then, I guess, there is also potential to get a round-down value,
+then apply it to the dest_file as timestamp, reflect to the userland,
+it shows time no change in 1 second elapsed.
 
-> I don't see anything wrong in the kernel sources here, just a little misleading
-> when read by a human rather than a compiler.
+So another improvement is to let it wait a bit more than 1 second
+to counteract the rounded-down nanosecond.
 
-> > When I changed / reviewed syscall numbers for LTP, I usually compared with
-> > kernel and musl sources. I never noticed change, but now I see for
-> > clock_gettime64 it's in musl only for arm (arch/arm/bits/syscall.h.in), but in
-> > kernel it's not only for arm, but also for arm64:
-> > arm64/include/asm/unistd.h:30:#define __NR_compat_clock_gettime64       403
+I'd add the below change in the patch V2 to make the test more robust.
 
-> This is a kernel-internal definition that is used to build the 32-bit VDSO. The
-> file is not made available to user space applications.
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+@@ -32,7 +32,7 @@ static void verify_copy_file_range_timestamp(void)
+        struct timespec timestamp1, timestamp2, diff;
 
-Thanks for info!
+        timestamp1 = get_timestamp(fd_dest);
+-       usleep(1000000);
++       usleep(1500000);
 
-> The file you need to look at for arm64 is include/uapi/asm-generic/unistd.h.
-> As I said, that file has a lot of #ifdefs and other magic in it, but I suppose
-> we could come up with a script to process it with /usr/bin/unifdef to only
-> get the parts you are interested in. Ideally though we would just
-> convert it into the modern machine-readable syscall.tbl format.
+        offset = 0;
+        TEST(sys_copy_file_range(fd_src, &offset,
 
-+1
 
-Kind regards,
-Petr
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  .../syscalls/copy_file_range/copy_file_range03.c  | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+> b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+> index 253eb57ad..5d055e6ba 100644
+> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+> @@ -12,25 +12,26 @@
+>  #define _GNU_SOURCE
+>
+>  #include "tst_test.h"
+> +#include "tst_timer.h"
+>  #include "copy_file_range.h"
+>
+>  static int fd_src;
+>  static int fd_dest;
+>
+> -unsigned long get_timestamp(int fd)
+> +struct timespec get_timestamp(int fd)
+>  {
+>         struct stat filestat;
+>
+>         fstat(fd, &filestat);
+> -       return filestat.st_mtime;
+> +       return filestat.st_mtim;
+>  }
+>
+>  static void verify_copy_file_range_timestamp(void)
+>  {
+>         loff_t offset;
+> -       unsigned long timestamp, updated_timestamp;
+> +       struct timespec timestamp1, timestamp2, diff;
+>
+> -       timestamp = get_timestamp(fd_dest);
+> +       timestamp1 = get_timestamp(fd_dest);
+>         usleep(1000000);
+>
+>         offset = 0;
+> @@ -40,9 +41,11 @@ static void verify_copy_file_range_timestamp(void)
+>                 tst_brk(TBROK | TTERRNO,
+>                                 "copy_file_range unexpectedly failed");
+>
+> -       updated_timestamp = get_timestamp(fd_dest);
+> +       timestamp2 = get_timestamp(fd_dest);
+>
+> -       if (timestamp == updated_timestamp)
+> +       diff = tst_timespec_diff(timestamp1, timestamp2);
+> +
+> +       if (!diff.tv_sec && !diff.tv_nsec)
+>                 tst_brk(TFAIL, "copy_file_range did not update
+> timestamp.");
+>
+>         tst_res(TPASS, "copy_file_range sucessfully updated the
+> timestamp");
+> --
+> 2.31.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
 
->         Arnd
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210903/7f0e8f49/attachment-0001.htm>
