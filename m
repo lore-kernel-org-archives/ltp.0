@@ -2,83 +2,83 @@ Return-Path: <SRS0=V1t1=NZ=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2315C433F5
-	for <ltp@archiver.kernel.org>; Fri,  3 Sep 2021 21:48:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84E1DC433EF
+	for <ltp@archiver.kernel.org>; Fri,  3 Sep 2021 22:35:04 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F4E46101A
-	for <ltp@archiver.kernel.org>; Fri,  3 Sep 2021 21:48:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2F4E46101A
+	by mail.kernel.org (Postfix) with ESMTPS id A49A26101A
+	for <ltp@archiver.kernel.org>; Fri,  3 Sep 2021 22:35:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A49A26101A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 955B23C956C
-	for <ltp@archiver.kernel.org>; Fri,  3 Sep 2021 23:48:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 569193C9589
+	for <ltp@archiver.kernel.org>; Sat,  4 Sep 2021 00:35:00 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA9603C2833
- for <ltp@lists.linux.it>; Fri,  3 Sep 2021 23:48:20 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
+ by picard.linux.it (Postfix) with ESMTPS id 1E59C3C2836
+ for <ltp@lists.linux.it>; Sat,  4 Sep 2021 00:34:51 +0200 (CEST)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9365B600648
- for <ltp@lists.linux.it>; Fri,  3 Sep 2021 23:48:19 +0200 (CEST)
-Received: by mail-ej1-x62d.google.com with SMTP id bt14so786689ejb.3
- for <ltp@lists.linux.it>; Fri, 03 Sep 2021 14:48:19 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 26D3A201109
+ for <ltp@lists.linux.it>; Sat,  4 Sep 2021 00:34:51 +0200 (CEST)
+Received: by mail-wr1-x430.google.com with SMTP id v10so692543wrd.4
+ for <ltp@lists.linux.it>; Fri, 03 Sep 2021 15:34:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=JHyjp6uNgGzjTpRdbryMjQOx5eZNMcVET424vBDZVQo=;
- b=GSyzAPgCDttCzUNLMW81r3FhacvddzxrKa+H+D+sOT4HkgWotYOLVcJZPZG1ELl5tJ
- 7CzyN4MVdNUT9UNhIZAQPaknL7DHVr66wFFiTOvJtxHOUbL/t2tY0Tq+M0JMq5BURl+D
- x7OkdXgqaTegnX026Zd6RDstOTxNWFNYtw7bZnx77KrQpW7nnTXpHzFtJHvPpvAsjwM0
- ANT5fTXDy5bySHVxdKGmvG+ELNPobvzUG97hczlgfvu71u/93gCG5CydDittDHFBpvZb
- dfVROc+7BRGm3ykKYzhOsaFWpYciumGJ3YmtjKqXpXyQuIdGJU9B/WiZy+4X5mtPryyu
- M9aA==
+ h=date:from:to:subject:message-id:reply-to:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=K1hovczy328QSBUpaVYie2BiKQL1tjJkRYXDJSyTNDk=;
+ b=AXo/CQXu44EBeW5QQ1K/a2tzJ/kYCCJOUc4VECNxcDVe9Iz+qxDtPVmCyuyJ/qx2fm
+ AarEIcp/V7CvBl73T5w4lzC89sRDheKp16DLRPhXIlBfdWe7oFdsEChincrrfEUBB7sG
+ h2M9bLpMxI14KI/aIbckyfseUNiIKituLUE3Ch5G60UQxBCsDwi6CBLeczXmMSCuAa1T
+ LrVULCzWsL+PtcAfwy+oJCCvzyZQzR3H5chtLtectichegQ+Im1QSN4K92ThoFYRPGd7
+ Gb1sf9Arq+3B16Dg/nPXmo+/ERp2dti4L7XEMTnd7Bh0DeUqiWW7ksQmf6FHTh5jeDZ1
+ jxUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=JHyjp6uNgGzjTpRdbryMjQOx5eZNMcVET424vBDZVQo=;
- b=nkzuILDiPVrj0VGuLNOlb5v15CbhT73LwQZZv1I9Uz9WPeQlLZIAmiqOLCaZ7Z9uXl
- ydABhIiSSo8vfOKXCRDrf+EXunOLqXTPsbDDCyXJz6jqmcpN6Zj6vN+zGLgdi0wUEI6I
- GH8+YjOEml9huPMIICXIJKXZrCtT8dePnWOV3GYtwEhuHFNKkwue6KO0UqVYWArglFbu
- O6VhhEqPuwJgLqjRMxm8YHb45AgGpUjt0ZZde9/7b/bZzLScz3HijgyTfww8F+X60Mt0
- OxxUNUfrFjBDxnUWHi6q/AWoD9mqXojU/6iJzrmJ+n/NRM3hY7VJjDOCLIIu+HkYXrhP
- WRhg==
-X-Gm-Message-State: AOAM531JIv+c6hKcYeSrDwBRYNS74WIDakTZFXx6fdeFwsCzPVRNs7MK
- 1kT+HG+4nMRhfk8bS4cWiHrEt1U2PXad7A==
-X-Google-Smtp-Source: ABdhPJzL6JXgi03cjJIttZ28a90TGSLHYkmVv1ett8t0YWcTGZR33U1xiukOaQ3qGKwzJTb6e6lcCw==
-X-Received: by 2002:a17:906:5855:: with SMTP id
- h21mr1007644ejs.230.1630705699117; 
- Fri, 03 Sep 2021 14:48:19 -0700 (PDT)
-Received: from localhost.localdomain (gw1.ms-free.net. [185.243.124.10])
- by smtp.gmail.com with ESMTPSA id o26sm157070eje.24.2021.09.03.14.48.18
+ h=x-gm-message-state:date:from:to:subject:message-id:reply-to
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=K1hovczy328QSBUpaVYie2BiKQL1tjJkRYXDJSyTNDk=;
+ b=kezvyorQjroGNAHC0dY7U2Jk61H7v0kKEDrsexd10fJJlzlOrbWlfK0cMgHf7EyYiu
+ narx6Z9gfqqYgB/uuhQ/lP6Lea/1Wx7SoSwymzakVH++rhDecntBdJGjsQ4/L0UTaWC5
+ 4WzUV4LwzytB+icXfmRny0FUbSM0TXGu0SoGvYuAGA0S/NsOT8fPaR8CpMmnlwVBXx/F
+ tW1VAWO+mxGn4gG77rUqTNAe7AOZ9+BVm4He8EG9gBUXY4rHnLpaMoFW/qc2tGL4rzad
+ 2lMANAmk3kuPfv5fH7aPRhC+hM/e9r6FEED5+jjfbA77iZpzcWnUWS9jimmxxF3b6tcF
+ 7w+A==
+X-Gm-Message-State: AOAM530SKaozKnM1z2V8rPWX9B3zhFQ3wOktjw2NhT+52cnO34IppWb7
+ tf+YGA/0gKqhW5jphewlv7lgNd9eEFV6pA==
+X-Google-Smtp-Source: ABdhPJwr7c10O7OLroVZsAah7M2KXDYs0BqYV1HDHL00Krkos9YAz5WL/LI7Ojzi68sOdknm30SaqQ==
+X-Received: by 2002:adf:c148:: with SMTP id w8mr1187665wre.317.1630708490694; 
+ Fri, 03 Sep 2021 15:34:50 -0700 (PDT)
+Received: from pevik (gw1.ms-free.net. [185.243.124.10])
+ by smtp.gmail.com with ESMTPSA id g1sm637261wmk.2.2021.09.03.15.34.49
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 03 Sep 2021 14:48:18 -0700 (PDT)
+ Fri, 03 Sep 2021 15:34:50 -0700 (PDT)
+Date: Sat, 4 Sep 2021 00:34:47 +0200
 From: Petr Vorel <petr.vorel@gmail.com>
 To: ltp@lists.linux.it
-Date: Fri,  3 Sep 2021 23:48:11 +0200
-Message-ID: <20210903214811.61727-2-petr.vorel@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210903214811.61727-1-petr.vorel@gmail.com>
+Message-ID: <YTKjB5iDSECjZCSn@pevik>
 References: <20210903214811.61727-1-petr.vorel@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20210903214811.61727-1-petr.vorel@gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] ci/alpine: Enable process.c
+Subject: Re: [LTP] [RFC][PATCH 1/2] sched/process.c: Always use pointer to
+ stderr
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,34 +90,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210903214811.p_its7CeMZ0C2Ls8wuzAG1z3u1ZdhUwywgE7zplJtvI@z>
+Message-ID: <20210903223447.bDLtpY7MjPOuuUu3waYs5ljVOvZXgrfgLkex_nRau84@z>
 
-Fixed in previous commit.
+Hi,
 
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
- ci/alpine.sh | 1 -
- 1 file changed, 1 deletion(-)
+compilation tested:
+https://github.com/pevik/ltp/actions/runs/1199503613
 
-diff --git a/ci/alpine.sh b/ci/alpine.sh
-index deb9cfdcf..d93a57616 100755
---- a/ci/alpine.sh
-+++ b/ci/alpine.sh
-@@ -33,7 +33,6 @@ cat /etc/os-release
- echo "WARNING: remove unsupported tests (until they're fixed)"
- cd $(dirname $0)/..
- rm -rfv \
--	testcases/kernel/sched/process_stress/process.c \
- 	testcases/kernel/syscalls/confstr/confstr01.c \
- 	testcases/kernel/syscalls/fmtmsg/fmtmsg01.c \
- 	testcases/kernel/syscalls/getcontext/getcontext01.c \
--- 
-2.33.0
+Runtime tested only on glibc (I'll test musl as well).
 
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
