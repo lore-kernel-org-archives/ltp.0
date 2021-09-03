@@ -1,47 +1,46 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 3 Sep 2021 06:28:42 +0200
-Subject: [LTP] [PATCH 0/4] checkbashisms.pl in make check + fixed docs
-In-Reply-To: <YTDpQxDDPY3HCli6@pevik>
-References: <20210902103740.19446-1-pvorel@suse.cz>
- <015140e9-0eba-4057-4a91-35d958af2bb8@jv-coder.de> <YTDpQxDDPY3HCli6@pevik>
-Message-ID: <16028467-ecd5-ecc0-26d7-b7a617045970@jv-coder.de>
+Date: Fri, 3 Sep 2021 06:33:08 +0200
+Subject: [LTP] [PATCH] syscalls/aarch64: Remove 32 bit only syscalls
+In-Reply-To: <CAK8P3a3jH=4gq7gg64E-L158d8QZCpPjEaKBZiEY+mE+jN61Fw@mail.gmail.com>
+References: <20210902093655.6104-1-lkml@jv-coder.de>
+ <20210902094219.xy73hs5ccafkrysr@vireshk-i7>
+ <CAK8P3a3jH=4gq7gg64E-L158d8QZCpPjEaKBZiEY+mE+jN61Fw@mail.gmail.com>
+Message-ID: <84a0c4aa-4faf-4271-36c4-5570f8c3a004@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-H Petr,
+Hi Arnd,
 
-On 9/2/2021 5:09 PM, Petr Vorel wrote:
+On 9/2/2021 8:32 PM, Arnd Bergmann wrote:
 >
->> $ checkbashisms testcases/kernel/connectors/pec/cn_pec.sh
->> possible bashism in testcases/kernel/connectors/pec/cn_pec.sh line 127
->> (should be >word 2>&1):
->>  ??????????????? done <&${fd_act}
->> This one is just a false positive and I have no clue how to prevent this.
->> I think the script does not like the <&, but this is posix...
-> The same here, I'm not sure if it's POSIX. &> definitely is not POSIX.
-> I remember we were talking about it. Can we avoid it somehow?
-<&n is the only way to use the file handle n for input. <n would use the 
-file n.
-See: 
-https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_07_05
+>>> I am not 100% sure, how the syscall table for aarch64 is generated.
+>>> There are also compat version for some of the 32 bit only 64 bit syscalls,
+>>> but I think they are only available, when running an 32 bit arm application.
+> The syscall table for aarch64 is generated from the kernel's
+> include/uapi/asm-generic/unistd.h, which has a number of #ifdefs in
+> it. A lot of these are disabled on aarch64 since they refer to older or
+> 32-bit-only calls.
+>
+> https://marcin.juszkiewicz.com.pl/download/tables/syscalls.html has a table
+> with the correct set of syscalls for each architecture, and scripts to generate
+> them from both the old asm-generic/unistd.h method (now only still used on
+> modern architectures) and the newer syscall.tbl format (used on older
+> architectures)
+Thanks for this explanation, I already found this site, but wasn't sure 
+if it is "correct".
+>
+> It would be good to finally convert asm-generic/unistd.h to the new format
+> in order to automatically generate tables like the one used by ltp. In the
+> meantime, please double-check all architectures against Marcin's tables.
+> The same problem likely also exists elsewhere, e.g. for rv64.
 
-checkbashisms has no problems if n is a number, not a variable. There is 
-nothing in the standard about n being a variable, but I guess this 
-should be posix as well.
-Furthermore the suggested fix "(should be >word 2>&1)" clearly shows, 
-that checkbashisms thinks, this is &>.
-
-I don't see another way to implement this (but using an implementation 
-in c). And I am not really happy to bend my code around bugs in a tool, 
-that is supposed to ensure better code.
-I'd rather try to fix checkbashims in this case. Even the ((-case should 
-be fixed, after checking if it is posix. The suggestion (replace with 
-"$((") indicates at least a bug in the tool.
-To be honest, I am a bit disappointed from this tool. It doesn't seem to 
-be tested very well... Probably barely good enough for scripting in the 
-kernel.
+@all
+After Arnd's explanation, I guess this patch is correct and can be merged?
+Other architectures and the remaining syscalls should be checked as well.
+Maybe we can integrate Marcin's tool for extraction into ltp?
+See: https://github.com/hrw/syscalls-table
 
 Joerg
