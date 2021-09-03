@@ -1,83 +1,67 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  3 Sep 2021 13:09:20 +0200
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Use command -v instead of type
-Message-ID: <20210903110920.28178-1-pvorel@suse.cz>
+Date: Fri, 3 Sep 2021 14:20:28 +0200
+Subject: [LTP] [PATCH] syscalls/aarch64: Remove 32 bit only syscalls
+In-Reply-To: <CAK8P3a3wOfFnN5UQ6MC0z+PtCSmMz_3NFmatAuD1Lb6jH7J+YA@mail.gmail.com>
+References: <20210902093655.6104-1-lkml@jv-coder.de>
+ <20210902094219.xy73hs5ccafkrysr@vireshk-i7>
+ <CAK8P3a3jH=4gq7gg64E-L158d8QZCpPjEaKBZiEY+mE+jN61Fw@mail.gmail.com>
+ <84a0c4aa-4faf-4271-36c4-5570f8c3a004@jv-coder.de>
+ <YTG/MERCvZkBalov@pevik>
+ <CAK8P3a3wOfFnN5UQ6MC0z+PtCSmMz_3NFmatAuD1Lb6jH7J+YA@mail.gmail.com>
+Message-ID: <YTITDDicfJpDabDy@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to avoid checkbashisms warnings.
+> On Fri, Sep 3, 2021 at 6:22 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-`type' is part of POSIX, but as part of the X/Open Systems Interfaces
-option (XSI) [1]. As Stephen Kitt noted [2] quoting man checkbashisms(1):
+> > Hi all,
 
-    Note that the definition of a bashism in this context roughly
-    equates to "a shell feature that is not required to be supported
-    by POSIX"; this means that some issues flagged may be permitted
-    under optional sections of POSIX, such as XSI or User Portability.
+> > > Hi Arnd,
 
-=> `type' is flagged because it is an optional feature.
+> > > On 9/2/2021 8:32 PM, Arnd Bergmann wrote:
 
-`command -v' is POSIX (no XSI extension) [3] and we already started to
-using it instead of which (e7302676f, f6cac3660).
+> > > > > > I am not 100% sure, how the syscall table for aarch64 is generated.
+> > > > > > There are also compat version for some of the 32 bit only 64 bit syscalls,
+> > > > > > but I think they are only available, when running an 32 bit arm application.
+> > > > The syscall table for aarch64 is generated from the kernel's
+> > > > include/uapi/asm-generic/unistd.h, which has a number of #ifdefs in
+> > > > it. A lot of these are disabled on aarch64 since they refer to older or
+> > > > 32-bit-only calls.
 
-[1] https://pubs.opengroup.org/onlinepubs/9699919799/utilities/type.html
-[2] https://unix.stackexchange.com/a/667293
-[3] https://pubs.opengroup.org/onlinepubs/9699919799/utilities/command.html
+> > > > https://marcin.juszkiewicz.com.pl/download/tables/syscalls.html has a table
+> > > > with the correct set of syscalls for each architecture, and scripts to generate
+> > > > them from both the old asm-generic/unistd.h method (now only still used on
+> > > > modern architectures) and the newer syscall.tbl format (used on older
+> > > > architectures)
+> > @Arnd: thanks a lot for this table and explanations! I would not expect this
+> > kind of error in kernel sources.
 
-Cc: Stephen Kitt <steve@sk2.org>
-Suggested-by: Adam Katz <khopesh@apache.org>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+> I don't see anything wrong in the kernel sources here, just a little misleading
+> when read by a human rather than a compiler.
 
-this is a replacement to the original patch [4], which removed 'type'
-from checkbashisms. While other issues reported by Joerg [5] are likely
-checkbashisms false positives / bugs, this one is valid, thus I'd start
-using command -v.
+> > When I changed / reviewed syscall numbers for LTP, I usually compared with
+> > kernel and musl sources. I never noticed change, but now I see for
+> > clock_gettime64 it's in musl only for arm (arch/arm/bits/syscall.h.in), but in
+> > kernel it's not only for arm, but also for arm64:
+> > arm64/include/asm/unistd.h:30:#define __NR_compat_clock_gettime64       403
+
+> This is a kernel-internal definition that is used to build the 32-bit VDSO. The
+> file is not made available to user space applications.
+
+Thanks for info!
+
+> The file you need to look at for arm64 is include/uapi/asm-generic/unistd.h.
+> As I said, that file has a lot of #ifdefs and other magic in it, but I suppose
+> we could come up with a script to process it with /usr/bin/unifdef to only
+> get the parts you are interested in. Ideally though we would just
+> convert it into the modern machine-readable syscall.tbl format.
+
++1
 
 Kind regards,
 Petr
 
-[4] https://patchwork.ozlabs.org/project/ltp/patch/20210902115837.2199-1-pvorel@suse.cz/
-[5] https://patchwork.ozlabs.org/comment/2745374/
-
- testcases/lib/tst_test.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index acf62c9ac..8f69b0551 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -30,7 +30,7 @@ _tst_do_exit()
- 	TST_DO_EXIT=1
- 
- 	if [ -n "$TST_DO_CLEANUP" -a -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
--		if type $TST_CLEANUP >/dev/null 2>/dev/null; then
-+		if command -v $TST_CLEANUP >/dev/null 2>/dev/null; then
- 			$TST_CLEANUP
- 		else
- 			tst_res TWARN "TST_CLEANUP=$TST_CLEANUP declared, but function not defined (or cmd not found)"
-@@ -691,7 +691,7 @@ tst_run()
- 	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
- 
- 	if [ -n "$TST_SETUP" ]; then
--		if type $TST_SETUP >/dev/null 2>/dev/null; then
-+		if command -v $TST_SETUP >/dev/null 2>/dev/null; then
- 			TST_DO_CLEANUP=1
- 			$TST_SETUP
- 		else
-@@ -723,7 +723,7 @@ _tst_run_tests()
- 
- 	TST_DO_CLEANUP=1
- 	for _tst_i in $(seq ${TST_CNT:-1}); do
--		if type ${TST_TESTFUNC}1 > /dev/null 2>&1; then
-+		if command -v ${TST_TESTFUNC}1 > /dev/null 2>&1; then
- 			_tst_run_test "$TST_TESTFUNC$_tst_i" $_tst_i "$_tst_data"
- 		else
- 			_tst_run_test "$TST_TESTFUNC" $_tst_i "$_tst_data"
--- 
-2.33.0
-
+>         Arnd
