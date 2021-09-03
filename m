@@ -1,144 +1,93 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri,  3 Sep 2021 17:48:43 +0200
-Subject: [LTP] [PATCH 2/7] Simplify syscalls/mkdir02
+Date: Fri,  3 Sep 2021 17:48:42 +0200
+Subject: [LTP] [PATCH 1/7] chmod05,
+ fchmod05: Use free GID instead of "bin" group
 In-Reply-To: <20210903154848.18705-1-mdoucha@suse.cz>
 References: <20210903154848.18705-1-mdoucha@suse.cz>
-Message-ID: <20210903154848.18705-3-mdoucha@suse.cz>
+Message-ID: <20210903154848.18705-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-mkdir02 does a lot of unnecessary fork()ing left over from the old version.
-The same test can be done with just user "nobody", one unused GID and no
-fork()ing at all.
+The bin user group does not exist on some systems which will cause test
+failure. Set test directory ownership to any unused GID instead.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/mkdir/mkdir02.c | 77 +++++++----------------
- 1 file changed, 24 insertions(+), 53 deletions(-)
+ testcases/kernel/syscalls/chmod/chmod05.c   | 7 ++++---
+ testcases/kernel/syscalls/fchmod/fchmod05.c | 7 ++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir02.c b/testcases/kernel/syscalls/mkdir/mkdir02.c
-index f09e3c33d..2cb199c56 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir02.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir02.c
-@@ -9,85 +9,57 @@
-  *  bit is set in the parent directory.
-  */
- 
--#include <errno.h>
- #include <sys/stat.h>
- #include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
+index 6a6a0ae21..f5b9d51e7 100644
+--- a/testcases/kernel/syscalls/chmod/chmod05.c
++++ b/testcases/kernel/syscalls/chmod/chmod05.c
+@@ -37,6 +37,7 @@
  #include <pwd.h>
--#include <sys/wait.h>
--#include <unistd.h>
--#include <stdlib.h>
+ 
  #include "tst_test.h"
 +#include "tst_uid.h"
  
- #define TESTDIR1	"testdir1"
- #define TESTDIR2	"testdir1/testdir2"
- 
--static uid_t nobody_uid, bin_uid;
--static gid_t nobody_gid, bin_gid;
-+static gid_t free_gid;
- 
- static void verify_mkdir(void)
- {
--	struct stat buf1, buf2;
--	pid_t pid;
-+	struct stat statbuf;
- 	int fail = 0;
- 
--	pid = SAFE_FORK();
--	if (pid == 0) {
--		SAFE_SETREGID(bin_gid, bin_gid);
--		SAFE_SETREUID(bin_uid, bin_uid);
--		SAFE_MKDIR(TESTDIR2, 0777);
-+	SAFE_MKDIR(TESTDIR2, 0777);
-+	SAFE_STAT(TESTDIR2, &statbuf);
- 
--		SAFE_STAT(TESTDIR2, &buf2);
--		SAFE_STAT(TESTDIR1, &buf1);
--
--		if (buf2.st_gid != buf1.st_gid) {
--			tst_res(TFAIL,
--				"New dir FAILED to inherit GID have %d expected %d",
--				buf2.st_gid, buf1.st_gid);
--			fail = 1;
--		}
--
--		if (!(buf2.st_mode & S_ISGID)) {
--			tst_res(TFAIL, "New dir FAILED to inherit S_ISGID");
--			fail = 1;
--		}
--
--		if (!fail)
--			tst_res(TPASS, "New dir inherited GID and S_ISGID");
-+	if (statbuf.st_gid != free_gid) {
-+		tst_res(TFAIL,
-+			"New dir FAILED to inherit GID: has %d, expected %d",
-+			statbuf.st_gid, free_gid);
-+		fail = 1;
-+	}
- 
--		exit(0);
-+	if (!(statbuf.st_mode & S_ISGID)) {
-+		tst_res(TFAIL, "New dir FAILED to inherit S_ISGID");
-+		fail = 1;
- 	}
- 
--	tst_reap_children();
-+	if (!fail)
-+		tst_res(TPASS, "New dir inherited GID and S_ISGID");
-+
- 	SAFE_RMDIR(TESTDIR2);
- }
- 
- 
+ #define MODE_RWX	(mode_t)(S_IRWXU | S_IRWXG | S_IRWXO)
+ #define DIR_MODE	(mode_t)(S_ISVTX | S_ISGID | S_IFDIR)
+@@ -69,10 +70,10 @@ static void test_chmod(void)
  static void setup(void)
  {
--	struct passwd *pw;
--	struct stat buf;
--	pid_t pid;
-+	struct passwd *pw = SAFE_GETPWNAM("nobody");
+ 	struct passwd *nobody_u;
+-	struct group *bin_gr;
++	gid_t free_gid;
  
--	pw = SAFE_GETPWNAM("nobody");
--	nobody_uid = pw->pw_uid;
--	nobody_gid = pw->pw_gid;
--	pw = SAFE_GETPWNAM("bin");
--	bin_uid = pw->pw_uid;
--	bin_gid = pw->pw_gid;
-+	free_gid = tst_get_free_gid(pw->pw_gid);
+ 	nobody_u = SAFE_GETPWNAM("nobody");
+-	bin_gr = SAFE_GETGRNAM("bin");
++	free_gid = tst_get_free_gid(nobody_u->pw_gid);
  
- 	umask(0);
-+	SAFE_MKDIR(TESTDIR1, 0777);
-+	SAFE_CHMOD(TESTDIR1, 0777 | S_ISGID);
-+	SAFE_CHOWN(TESTDIR1, getuid(), free_gid);
+ 	/*
+ 	 * Create a test directory under temporary directory with specified
+@@ -83,7 +84,7 @@ static void setup(void)
+ 	if (setgroups(1, &nobody_u->pw_gid) == -1)
+ 		tst_brk(TBROK | TERRNO, "setgroups to nobody's gid failed");
  
--	pid = SAFE_FORK();
--	if (pid == 0) {
--		SAFE_SETREGID(nobody_gid, nobody_gid);
--		SAFE_SETREUID(nobody_uid, nobody_uid);
--		SAFE_MKDIR(TESTDIR1, 0777);
--		SAFE_STAT(TESTDIR1, &buf);
--		SAFE_CHMOD(TESTDIR1, buf.st_mode | S_ISGID);
--		exit(0);
--	}
--
--	tst_reap_children();
-+	SAFE_SETREGID(pw->pw_gid, pw->pw_gid);
-+	SAFE_SETREUID(pw->pw_uid, pw->pw_uid);
- }
+-	SAFE_CHOWN(TESTDIR, nobody_u->pw_uid, bin_gr->gr_gid);
++	SAFE_CHOWN(TESTDIR, nobody_u->pw_uid, free_gid);
  
- static struct tst_test test = {
-@@ -95,5 +67,4 @@ static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
- 	.test_all = verify_mkdir,
--	.forks_child = 1,
- };
+ 	/* change to nobody:nobody */
+ 	SAFE_SETEGID(nobody_u->pw_gid);
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
+index f75b9bf36..0c731d601 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod05.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
+@@ -20,6 +20,7 @@
+ #include <errno.h>
+ 
+ #include "tst_test.h"
++#include "tst_uid.h"
+ #include "fchmod.h"
+ 
+ #define PERMS_DIR	043777
+@@ -50,10 +51,10 @@ static void verify_fchmod(void)
+ static void setup(void)
+ {
+ 	struct passwd *ltpuser;
+-	struct group *ltpgroup;
++	gid_t free_gid;
+ 
+ 	ltpuser = SAFE_GETPWNAM("nobody");
+-	ltpgroup = SAFE_GETGRNAM("bin");
++	free_gid = tst_get_free_gid(ltpuser->pw_gid);
+ 
+ 	SAFE_MKDIR(TESTDIR, DIR_MODE);
+ 
+@@ -62,7 +63,7 @@ static void setup(void)
+ 			tst_strerrno(TST_ERR));
+ 	}
+ 
+-	SAFE_CHOWN(TESTDIR, ltpuser->pw_uid, ltpgroup->gr_gid);
++	SAFE_CHOWN(TESTDIR, ltpuser->pw_uid, free_gid);
+ 
+ 	SAFE_SETEGID(ltpuser->pw_gid);
+ 	SAFE_SETEUID(ltpuser->pw_uid);
 -- 
 2.33.0
 
