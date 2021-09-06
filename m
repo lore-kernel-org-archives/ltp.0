@@ -6,75 +6,74 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 102D7C433F5
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 14:56:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D59B6C433EF
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 15:17:25 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EB1B6023B
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 14:56:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2EB1B6023B
+	by mail.kernel.org (Postfix) with ESMTPS id 2375560F12
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 15:17:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2375560F12
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 24FDC3C952D
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 16:56:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AF963C25B5
- for <ltp@lists.linux.it>; Mon,  6 Sep 2021 16:55:53 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id E5D6D3C94E2
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 17:17:22 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A4F2F600856
- for <ltp@lists.linux.it>; Mon,  6 Sep 2021 16:55:52 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2D6B03C05A0
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 17:17:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E4E531A009BB
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 17:17:11 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CF144200D6;
- Mon,  6 Sep 2021 14:55:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 259E62217D;
+ Mon,  6 Sep 2021 15:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1630940151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1630941431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/K0WWD0ZHDvYRVppdWa2cvApCuJKRGQCAylWzr2dWxE=;
- b=WGb602GjDWNyqZDUlB9OswCxqWQYXFZ+jBLykIOOaQayrKqP74DIpffgZD0G9Vje/UlwYr
- jwe11U9GXpcCxS3CrvT/A0p5+LcFw4cUIt4xQK+qm11urOeKQRvGe0UHPF59gTvqttmbk/
- Up7gkvepjuZVkw4xE0zA426QDEE22Ko=
+ bh=vexp+N8Hq1xxmQYQQhmLlptBktyNUduMIMuVM1VKDco=;
+ b=Y+Ske27KlEb6JRhMDDrcXcozJIkJjXXKxMjLyyvBxkWIc5kOr+bEc9zYe9Cbf9kVbTtp09
+ Sutio8kd99DJjGl/4r5UH8ayjCJcBzH2+ERmgzE7WD0L8EPDrvmtgKf4FJl1bSCy4gOMmR
+ L639WHjBTpdBUIqTK3KEfPKRsdkqn98=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1630940151;
+ s=susede2_ed25519; t=1630941431;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/K0WWD0ZHDvYRVppdWa2cvApCuJKRGQCAylWzr2dWxE=;
- b=npRn0l5Uph/sVFtW3aZonn8Q3w8WILRYIwN3loj/BofNeihG/qOm9BVV05fL3M0ongpSZs
- EEGg1toKeNpkKvCA==
+ bh=vexp+N8Hq1xxmQYQQhmLlptBktyNUduMIMuVM1VKDco=;
+ b=47SfKevAVBSBKvbvUg+zsZflUeQnIq5kAONwjw+S4/RbOZsBTFFaLejAjAJfIRHJcukcjB
+ OajCyjqwmp2DUhAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3D9713C29;
- Mon,  6 Sep 2021 14:55:51 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0AC8A13C29;
+ Mon,  6 Sep 2021 15:17:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id sYvuKvcrNmGiZgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 06 Sep 2021 14:55:51 +0000
-Date: Mon, 6 Sep 2021 16:56:02 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id QjzPAfcwNmGBbAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 06 Sep 2021 15:17:11 +0000
+Date: Mon, 6 Sep 2021 17:17:22 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: John Stultz <john.stultz@linaro.org>
-Message-ID: <YTYsApB9X3s+EGU8@yuki>
-References: <20210827212959.1633818-1-john.stultz@linaro.org>
+To: Wang Kunfeng <threefifteen.wangkunfeng@huawei.com>
+Message-ID: <YTYxAnd1FDGq/nTW@yuki>
+References: <20210826090511.106853-1-threefifteen.wangkunfeng@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210827212959.1633818-1-john.stultz@linaro.org>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20210826090511.106853-1-threefifteen.wangkunfeng@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC][PATCH] memcg/control: Fix dropped messages from
- fifo to avoid leaving mem_process running
+Subject: Re: [LTP] [PATCH] getuid: Convert getuid01 and getuid03 to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,17 +85,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Suren Baghdasaryan <surenb@google.com>,
- YongQin Liu <yongqin.liu@linaro.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- ltp@lists.linux.it, Todd Kjos <tkjos@google.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210906145602.EW6RWsgrk1opuXY9vGOXA8UOwdntl8bjQM8EEtYlKm8@z>
+Message-ID: <20210906151722.YpFEG1CKitZAdGJGbu6GYKQfst1edmofg_-17cz_NSY@z>
 
 Hi!
-Good catch, applied, thanks.
+Looks good, but there is no value in keeping the getuid01.c because it
+tests same assertion that is covered in getuid03.c as well.
+
+So I would keep only getuid01.c and moved the functionality from
+getuid03.c there.
 
 -- 
 Cyril Hrubis
