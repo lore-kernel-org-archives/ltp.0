@@ -2,65 +2,89 @@ Return-Path: <SRS0=3a48=N4=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB666C433EF
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 09:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B49C433FE
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 10:35:52 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB05F60F3A
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 09:29:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EB05F60F3A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=163.com
+	by mail.kernel.org (Postfix) with ESMTPS id A382F61051
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 10:35:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A382F61051
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6B9493C267F
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 11:29:30 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 854973C951E
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 12:35:49 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D66253C24BE
- for <ltp@lists.linux.it>; Mon,  6 Sep 2021 11:29:18 +0200 (CEST)
-Received: from mail-m971.mail.163.com (mail-m971.mail.163.com [123.126.97.1])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id 51E8D10009E2
- for <ltp@lists.linux.it>; Mon,  6 Sep 2021 11:29:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=M6E+0
- n/fsdc0FO4pX7j5itM+LGptirELFTROpGoWolY=; b=DTlmsAJOoOcD0On/t0fo1
- iklhe+i8Zrxnx+fmJBDgZQZ3rRimai0zVkIfXhanRPAk3gj7Tdaa8Y+p/ewjHo2O
- DcwzbSqUogffcpranyyffcWgUHv/k/BmM2akj+MF0+jxMTEchIMqbkSo8sNogOf4
- X0jHsLYEoU3Z/f/f7ylLKg=
-Received: from [172.20.10.4] (unknown [122.96.46.176])
- by smtp1 (Coremail) with SMTP id GdxpCgB3p21j3zVh0zJHAQ--.1841S2;
- Mon, 06 Sep 2021 17:29:09 +0800 (CST)
-To: QI Fuli <fukuri.sai@gmail.com>, ltp@lists.linux.it
-References: <20210902115849.72382-1-qi.fuli@fujitsu.com>
- <20210902115849.72382-2-qi.fuli@fujitsu.com>
-From: Xiao Yang <ice_yangxiao@163.com>
-Message-ID: <169c8ba3-fbc3-f628-f5cc-b157d4aada85@163.com>
-Date: Mon, 6 Sep 2021 17:29:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ by picard.linux.it (Postfix) with ESMTPS id 16C413C077E
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 12:35:38 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C4EEE200AE4
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 12:35:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1630924535;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2e8s5OEHxYVD8kI3qGCPQoTafewqlZuu/Gc75/51cEs=;
+ b=EHsQUz/agujy8u51OQ49f8/5azVa+sQLD4OioJC2LOuJtlpX4xG1+n/+kpVpSpPVv6IkAO
+ 4OiizF1hLGGCZdn3gFo9mW4XmgkGK+HUP+nPky084wb9Q2C54JDoefQYrZgqtSPLLQaXJ6
+ l+CVKZdq7GKCjl5rYA97pH6fG3xF+vY=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-MWNM4BegNC-vA6UjX6sS8Q-1; Mon, 06 Sep 2021 06:35:32 -0400
+X-MC-Unique: MWNM4BegNC-vA6UjX6sS8Q-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ f64-20020a2538430000b0290593bfc4b046so7899003yba.9
+ for <ltp@lists.linux.it>; Mon, 06 Sep 2021 03:35:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2e8s5OEHxYVD8kI3qGCPQoTafewqlZuu/Gc75/51cEs=;
+ b=rcwZDmuSeaFkEdle7b4PwW0VtMQB6HH/iqDVXNKFmqESIVGKPpNNzBVDPRqu3Ie1+g
+ aq+/AltKeKiIs7qUTsSaPLFoQzLZbUOat7XVWsGJLTH94VtC0JUT4mDBZcW4oWWjcQhL
+ a8JMw+p1zKqI2w9GN53X/GTIcUSk1fbW+/HW3n9OjIDPx2HRtvP72ygZ7CPLTmiN6uXC
+ rprE9TNYOZI7hN7s7hAuEjlKvN36BwBYLwkuRvmxsnkO7M5gFGgrljbrZ8akVqTcphZI
+ r1gz95HBR4UgrqnBhCp3M5XnTSVWbWAVHtORfjB478gn+guG64d4D2XsFxIGC8/aAMUK
+ XcDQ==
+X-Gm-Message-State: AOAM5316wUXux36e3n+245FgstWg5cGbI1TTHCMzjdhG69tsR+afNGP/
+ QAJSotLLG2nQMV1mWvC7tj00M+YPv5k/V+fUqaVAdBMJjVmCSQcHvoerOLJH7UpKNNVchTuHXt7
+ qzETGpgdGsnEq19XHf5dRpHmhNuI=
+X-Received: by 2002:a25:e6d2:: with SMTP id
+ d201mr15363079ybh.396.1630924531565; 
+ Mon, 06 Sep 2021 03:35:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyq55Htv0a/VMoTLBXuvwWoueRvwyWpRvCI2gTsYKaNbh38cWp8/lXygGQ99XZ171PcR1FLNggid/cBck3jXuU=
+X-Received: by 2002:a25:e6d2:: with SMTP id
+ d201mr15363054ybh.396.1630924531274; 
+ Mon, 06 Sep 2021 03:35:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210902115849.72382-2-qi.fuli@fujitsu.com>
-Content-Language: en-US
-X-CM-TRANSID: GdxpCgB3p21j3zVh0zJHAQ--.1841S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jry3Kr4xXw1xur1DXw4DXFb_yoW7ArWxpF
- 9rAwsFkF4kJF109a1Ivw4UZFW8Zrn5try8Kr45ZwsYvF13Jry7trsYgasxWFykGrZIg3yf
- Xa1v9rs5Ja1UtF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jm6wtUUUUU=
-X-Originating-IP: [122.96.46.176]
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbBIw8GXl3l-PycMAABsh
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20210906060020.3219023-1-liwang@redhat.com>
+ <YTXYixG37nBTzhXk@yuki>
+In-Reply-To: <YTXYixG37nBTzhXk@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 6 Sep 2021 18:35:19 +0800
+Message-ID: <CAEemH2frfyGCsZAsam7CgGfW-BC1ah9YQZz=H=meJMM+zrTnAw@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] syscalls/dup2/dup201: Convert dup201 to the
- new API
+Subject: Re: [LTP] [PATCH v2] copy_file_range03: comparing timestamp in
+ tst_timespec_diff
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,239 +96,164 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: QI Fuli <qi.fuli@fujitsu.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1168200709=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210906092907.0zBYqQlf05KydRPnAH-2UrdgJdJw5wQMs02pfw-D9fo@z>
+Message-ID: <20210906103519.NjyycIn-N2LO3ogm1z_uF0mFQpq5FCf4FEsU2VJstHo@z>
 
-On 9/2/21 7:58 PM, QI Fuli wrote:
-> From: QI Fuli <qi.fuli@fujitsu.com>
+--===============1168200709==
+Content-Type: multipart/alternative; boundary="00000000000057acb305cb513542"
+
+--00000000000057acb305cb513542
+Content-Type: text/plain; charset="UTF-8"
+
+On Mon, Sep 6, 2021 at 4:59 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> > -     updated_timestamp = get_timestamp(fd_dest);
+> > +     timestamp2 = get_timestamp(fd_dest);
+> >
+> > -     if (timestamp == updated_timestamp)
+> > +     diff = tst_timespec_diff(timestamp1, timestamp2);
+> > +
+> > +     if (!diff.tv_sec && !diff.tv_nsec)
+> >               tst_brk(TFAIL, "copy_file_range did not update
+> timestamp.");
 >
-> Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/dup2/dup201.c | 161 +++++-------------------
->   1 file changed, 34 insertions(+), 127 deletions(-)
+> So as we changed the code to sleep for 1.5 sec I guess that we can
+> expect the difference to be at least 1 second because:
 >
-> diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
-> index 4fa34466a..231c262bf 100644
-> --- a/testcases/kernel/syscalls/dup2/dup201.c
-> +++ b/testcases/kernel/syscalls/dup2/dup201.c
-> @@ -1,87 +1,30 @@
-> -/*
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - */
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->   
->   /*
-> - * NAME
-> - *	dup201.c
-> + * Copyright (c) International Business Machines  Corp., 2001
->    *
-> - * DESCRIPTION
-> + * DESCRIPTION:
->    *	Negative tests for dup2() with bad fd (EBADF)
->    *
-> - * ALGORITHM
-> - * 	Setup:
-> - *	a.	Setup signal handling.
-> - *	b.	Pause for SIGUSR1 if option specified.
-> - *
-> - * 	Test:
-> - *	a.	Loop if the proper options are given.
-> - *	b.	Loop through the test cases
-> - * 	c.	Execute dup2() system call
-> - *	d.	Check return code, if system call failed (return=-1), test
-> - *		for EBADF.
-> - *
-> - * 	Cleanup:
-> - * 	a.	Print errno log and/or timing stats if options given
-> - *
-> - * USAGE:  <for command-line>
-> - *  dup201 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -e   : Turn on errno logging.
-> - *             -i n : Execute test n times.
-> - *             -I x : Execute test for x seconds.
-> - *             -P x : Pause for x seconds between iterations.
-> - *             -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> - *	07/2001 Ported by Wayne Boyer
-> - *	01/2002 Removed EMFILE test - Paul Larson
-> - *
-> - * RESTRICTIONS
-> - * 	NONE
-> + * HISTORY:
-> + * 	07/2001 Ported by Wayne Boyer
-> + * 	01/2002 Removed EMFILE test - Paul Larson
->    */
->   
-> -#include <sys/types.h>
-> -#include <fcntl.h>
->   #include <errno.h>
-> -#include <sys/time.h>
-> -#include <sys/resource.h>
-> -#include <unistd.h>
+> - the minimal granularity is 1s in which case we will get exactly 1s in
+>   the diff
+>
+> - if the granularity is greater, we will get a bit more than 1s
+>
+> So I would go for something as:
+>
+>         long long diff_us = tst_timespec_diff_us(timestamp2, timestamp1);
+>
+>         if (diff_us >= 1000000 && diff_us <= 2000000)
+>                 tst_res(TPASS, "...");
+>
+> Which expects that the difference between timestamps is in a sane range
+> not that it just have been changed.
+>
 
-Hi Qi,
+Theoretically, this is correct, but I'm fearing that the process might
+cost more time on performing with different system loads.
 
-Please keep <unistd.h> for dup2() and getdtablesize().
+This means 'diff_us <= 2000000' is an unreliable condition to
+many virtual machines. That largely depends on the system
+scheduler at that moment as well.
 
-> -#include <signal.h>
-> -#include "test.h"
-> -
-> -void setup(void);
-> -void cleanup(void);
-> -
-> -char *TCID = "dup201";
-> -int TST_TOTAL = 4;
-> +#include "tst_test.h"
->   
->   int maxfd;
->   int goodfd = 5;
->   int badfd = -1;
->   int mystdout = 0;
-Please add static prefix.
->   
-> -struct test_case_t {
-> +static struct tcase {
->   	int *ofd;
->   	int *nfd;
->   	int error;
->   	void (*setupfunc) ();
-> -} TC[] = {
-> +} tcases[] = {
->   	/* First fd argument is less than 0 - EBADF */
->   	{&badfd, &goodfd, EBADF, NULL},
->   	    /* First fd argument is getdtablesize() - EBADF */
-> @@ -92,72 +35,36 @@ struct test_case_t {
->   	{&mystdout, &maxfd, EBADF, NULL},
->   };
->   
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/* loop through the test cases */
-> -
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> -
-> -			/* call the test case setup routine if necessary */
-> -			if (TC[i].setupfunc != NULL)
-> -				(*TC[i].setupfunc) ();
-> -
-> -			TEST(dup2(*TC[i].ofd, *TC[i].nfd));
-> -
-> -			if (TEST_RETURN != -1) {
-> -				tst_resm(TFAIL, "call succeeded unexpectedly");
-> -				continue;
-> -			}
-> -
-> -			if (TEST_ERRNO == TC[i].error) {
-> -				tst_resm(TPASS,
-> -					 "failed as expected - errno = %d : %s",
-> -					 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			} else {
-> -				tst_resm(TFAIL | TTERRNO,
-> -					 "failed unexpectedly; "
-> -					 "expected %d: %s", TC[i].error,
-> -					 strerror(TC[i].error));
-> -			}
-> -		}
-> -	}
-> -	cleanup();
-> -
-> -	tst_exit();
-> -}
-> -
-> -/*
-> - * setup() - performs all ONE TIME setup for this test.
-> - */
->   void setup(void)
->   {
-Please add static prefix.
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
->   	/* get some test specific values */
->   	maxfd = getdtablesize();
->   }
->   
-> -/*
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *	       completion or premature exit.
-> - */
-> -void cleanup(void)
-> +static void run(unsigned int i)
->   {
-> -	tst_rmdir();
-> +	struct tcase *tc = tcases + i;
-> +
-> +	if (tc->setupfunc)
-> +		tc->setupfunc();
 
-tc->setupfunc always NULL so you can remove it directly.
 
-> +
-> +	TEST(dup2(*tc->ofd, *tc->nfd));
-> +
-> +	if (TST_RET == -1) {
-> +		if (TST_ERR == tc->error)
-> +			tst_res(TPASS, "failed as expected - errno = %d : %s",
-> +				TST_ERR, strerror(TST_ERR));
-> +		else
-> +			tst_res(TFAIL | TTERRNO, "failed unexpectedly; "
-> +				"expected %d: %s", tc->error,
-> +				strerror(tc->error));
-> +	} else
-> +		tst_res(TFAIL, "call succeeded unexpectedly");
-It is simpler to call TST_EXP_FAIL2() here.
->   }
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
+>
+> >       tst_res(TPASS, "copy_file_range sucessfully updated the
+> timestamp");
+> > --
+> > 2.31.1
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+>
 
-It seems that we don't need any temp file.
+-- 
+Regards,
+Li Wang
 
-Best Regards,
+--00000000000057acb305cb513542
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Xiao Yang
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Sep 6, 2021 at 4:59 PM Cyril Hrubis &lt;<a =
+href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0updated_timestamp =3D get_timestamp(fd_dest);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0timestamp2 =3D get_timestamp(fd_dest);<br>
+&gt;=C2=A0 <br>
+&gt; -=C2=A0 =C2=A0 =C2=A0if (timestamp =3D=3D updated_timestamp)<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0diff =3D tst_timespec_diff(timestamp1, timestamp2=
+);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (!diff.tv_sec &amp;&amp; !diff.tv_nsec)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TFAIL, &=
+quot;copy_file_range did not update timestamp.&quot;);<br>
+<br>
+So as we changed the code to sleep for 1.5 sec I guess that we can<br>
+expect the difference to be at least 1 second because:<br>
+<br>
+- the minimal granularity is 1s in which case we will get exactly 1s in<br>
+=C2=A0 the diff<br>
+<br>
+- if the granularity is greater, we will get a bit more than 1s<br>
+<br>
+So I would go for something as:<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 long long diff_us =3D tst_timespec_diff_us(time=
+stamp2, timestamp1);<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (diff_us &gt;=3D 1000000 &amp;&amp; diff_us =
+&lt;=3D 2000000)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TPASS, &quo=
+t;...&quot;);<br>
+<br>
+Which expects that the difference between timestamps is in a sane range<br>
+not that it just have been changed.<br></blockquote><div><br></div><div><di=
+v class=3D"gmail_default" style=3D"font-size:small">Theoretically, this is =
+correct, but I&#39;m fearing that the process might</div><div class=3D"gmai=
+l_default" style=3D"font-size:small">cost more time on performing with diff=
+erent system loads.</div><div class=3D"gmail_default" style=3D"font-size:sm=
+all"><br></div><div class=3D"gmail_default" style=3D"font-size:small">This =
+means &#39;diff_us &lt;=3D 2000000&#39; is an unreliable condition to</div>=
+<div class=3D"gmail_default" style=3D"font-size:small">many virtual machine=
+s. That largely depends on the system</div><div class=3D"gmail_default" sty=
+le=3D"font-size:small">scheduler at that moment as well.</div><br></div><di=
+v>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px=
+ 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TPASS, &quot;copy_file_range sucessf=
+ully updated the timestamp&quot;);<br>
+&gt; -- <br>
+&gt; 2.31.1<br>
+&gt; <br>
+&gt; <br>
+&gt; -- <br>
+&gt; Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=
+=3D"noreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><b=
+r>
+<br>
+-- <br>
+Cyril Hrubis<br>
+<a href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a><br=
+>
+<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
+Wang<br></div></div></div></div>
 
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.setup = setup,
-> +};
+--00000000000057acb305cb513542--
+
+
+--===============1168200709==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1168200709==--
+
