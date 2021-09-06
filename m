@@ -1,34 +1,33 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 6 Sep 2021 14:40:11 +0200
-Subject: [LTP] [PATCH 3/7] Add user/group ID lookup helper functions
-In-Reply-To: <YTYH4DdeUqsYeglK@yuki>
+Date: Mon, 6 Sep 2021 14:47:37 +0200
+Subject: [LTP] [PATCH 4/7] syscalls/kill05: Use any two unprivileged
+ users
+In-Reply-To: <YTYJUPFc75TuOJSb@yuki>
 References: <20210903154848.18705-1-mdoucha@suse.cz>
- <20210903154848.18705-4-mdoucha@suse.cz> <YTYH4DdeUqsYeglK@yuki>
-Message-ID: <528952e4-bebf-617e-4d3f-0aea39797584@suse.cz>
+ <20210903154848.18705-5-mdoucha@suse.cz> <YTYJUPFc75TuOJSb@yuki>
+Message-ID: <77fd98d9-5257-c1da-a01b-77d8cc1b6bce@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06. 09. 21 14:21, Cyril Hrubis wrote:
+On 06. 09. 21 14:28, Cyril Hrubis wrote:
 > Hi!
->> +	if (!ret) {
->> +		if (errno) {
->> +			tst_brk_(file, lineno, TBROK | TERRNO,
->> +				"getpwent() failed");
->> +		} else {
->> +			tst_brk_(file, lineno, TBROK,
->> +				"getpwent() failed: end of file");
->> +		}
+>> Usernames such as "bin" may not exist on some systems. Find and use any two
+>> unprivileged user IDs for the test instead of specific named users.
 > 
-> I'm not sure if "no more users in the /etc/passwd" should be reported as
-> an error.
+> I do wonder if we have to lookup the UIDs in this case. As long as I
+> understand the test correctly we are testing that no signals are send to
+> a process if the sender real of effective UID do not match either of
+> real and saved set UIDs of the receiving process. If my understanding is
+> correct we can just take two arbitrary UIDs that != 0 and the test
+> should work just fine.
 
-The alternative would be that pretty much every test that calls
-SAFE_GETPWENT() in setup() will need to check for NULL and explicitly
-call tst_brk(). I don't see any use for allowing SAFE_GETPWENT() to
-return NULL outside cleanup().
+We could just use UID 1 and 2 for this test but I'd rather not assume
+that set*uid() functions allow setting unused UIDs. Even if it works
+now, it could easily break in the future or on some special system auth
+backends.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
