@@ -1,34 +1,86 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Mon, 6 Sep 2021 11:12:38 +0800
-Subject: [LTP] [COMMITTED] runtest/cve: Fix wrong cve tag
-Message-ID: <1630897958-2160-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon,  6 Sep 2021 14:00:20 +0800
+Subject: [LTP] [PATCH v2] copy_file_range03: comparing timestamp in
+ tst_timespec_diff
+Message-ID: <20210906060020.3219023-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-can_bcm01 is designed to test cve-2021-3609 instead of cve-2021-6309.
+The st_mtime field is defined as st_mtim.tv_sec for backward
+compatibility in struct stat, which might not precise enough
+for timestamp comparing.
 
-Fixes: 027ea6171c40 ("Add test for CVE 2021-3609")
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Here switch to timespec diff (with compare nanosecond as well) to
+get rid of this kind of rare faliure:
+
+   7	tst_test.c:1345: TINFO: Timeout per run is 0h 05m 00s
+   8	copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+   9	copy_file_range03.c:48: TPASS: copy_file_range sucessfully updated the timestamp
+   10	tst_test.c:1345: TINFO: Timeout per run is 0h 05m 00s
+   11	copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+   12	copy_file_range03.c:46: TFAIL: copy_file_range did not update timestamp.
+
+Also, raise the sleep time to 1.5 sec to make test more robust.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runtest/cve | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../copy_file_range/copy_file_range03.c         | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/runtest/cve b/runtest/cve
-index 357b88feb..01211b5aa 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -67,7 +67,7 @@ cve-2020-14416 pty03
- cve-2020-25705 icmp_rate_limit01
- cve-2020-29373 io_uring02
- cve-2021-3444 bpf_prog05
--cve-2021-6309 can_bcm01
-+cve-2021-3609 can_bcm01
- cve-2021-22555 setsockopt08 -i 100
- cve-2021-26708 vsock01
- # Tests below may cause kernel memory leak
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+index 253eb57ad..5950c80c1 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+@@ -12,26 +12,27 @@
+ #define _GNU_SOURCE
+ 
+ #include "tst_test.h"
++#include "tst_timer.h"
+ #include "copy_file_range.h"
+ 
+ static int fd_src;
+ static int fd_dest;
+ 
+-unsigned long get_timestamp(int fd)
++struct timespec get_timestamp(int fd)
+ {
+ 	struct stat filestat;
+ 
+ 	fstat(fd, &filestat);
+-	return filestat.st_mtime;
++	return filestat.st_mtim;
+ }
+ 
+ static void verify_copy_file_range_timestamp(void)
+ {
+ 	loff_t offset;
+-	unsigned long timestamp, updated_timestamp;
++	struct timespec timestamp1, timestamp2, diff;
+ 
+-	timestamp = get_timestamp(fd_dest);
+-	usleep(1000000);
++	timestamp1 = get_timestamp(fd_dest);
++	usleep(1500000);
+ 
+ 	offset = 0;
+ 	TEST(sys_copy_file_range(fd_src, &offset,
+@@ -40,9 +41,11 @@ static void verify_copy_file_range_timestamp(void)
+ 		tst_brk(TBROK | TTERRNO,
+ 				"copy_file_range unexpectedly failed");
+ 
+-	updated_timestamp = get_timestamp(fd_dest);
++	timestamp2 = get_timestamp(fd_dest);
+ 
+-	if (timestamp == updated_timestamp)
++	diff = tst_timespec_diff(timestamp1, timestamp2);
++
++	if (!diff.tv_sec && !diff.tv_nsec)
+ 		tst_brk(TFAIL, "copy_file_range did not update timestamp.");
+ 
+ 	tst_res(TPASS, "copy_file_range sucessfully updated the timestamp");
 -- 
-2.23.0
+2.31.1
 
