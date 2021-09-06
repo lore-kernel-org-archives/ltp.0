@@ -1,41 +1,52 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  6 Sep 2021 10:35:45 +0200
-Subject: [LTP] [PATCH] ftruncate04: require CONFIG_MANDATORY_FILE_LOCKING=y
-Message-ID: <77a5903b5ddf8b63c1acc6c24e4d3195590e8628.1630917312.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 6 Sep 2021 10:59:55 +0200
+Subject: [LTP] [PATCH v2] copy_file_range03: comparing timestamp in
+ tst_timespec_diff
+In-Reply-To: <20210906060020.3219023-1-liwang@redhat.com>
+References: <20210906060020.3219023-1-liwang@redhat.com>
+Message-ID: <YTXYixG37nBTzhXk@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-commit f7e33bdbd6d1 ("fs: remove mandatory file locking support")
-removed mandatory file locking support, but mount option
-is still allowed and produces no error. There's a warning
-in dmesg but it's pr_warn_once() so we can't rely to always
-find it there.
+Hi!
+> -	updated_timestamp = get_timestamp(fd_dest);
+> +	timestamp2 = get_timestamp(fd_dest);
+>  
+> -	if (timestamp == updated_timestamp)
+> +	diff = tst_timespec_diff(timestamp1, timestamp2);
+> +
+> +	if (!diff.tv_sec && !diff.tv_nsec)
+>  		tst_brk(TFAIL, "copy_file_range did not update timestamp.");
 
-Make the test check also for CONFIG_MANDATORY_FILE_LOCKING=y.
+So as we changed the code to sleep for 1.5 sec I guess that we can
+expect the difference to be at least 1 second because:
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/ftruncate/ftruncate04.c | 4 ++++
- 1 file changed, 4 insertions(+)
+- the minimal granularity is 1s in which case we will get exactly 1s in
+  the diff
 
-diff --git a/testcases/kernel/syscalls/ftruncate/ftruncate04.c b/testcases/kernel/syscalls/ftruncate/ftruncate04.c
-index ad5c7bbb90ef..c832ceaa659d 100644
---- a/testcases/kernel/syscalls/ftruncate/ftruncate04.c
-+++ b/testcases/kernel/syscalls/ftruncate/ftruncate04.c
-@@ -168,6 +168,10 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_MANDATORY_FILE_LOCKING=y",
-+		NULL
-+	},
- 	.test_all = verify_ftruncate,
- 	.setup = setup,
- 	.needs_checkpoints = 1,
+- if the granularity is greater, we will get a bit more than 1s
+
+So I would go for something as:
+
+	long long diff_us = tst_timespec_diff_us(timestamp2, timestamp1);
+
+	if (diff_us >= 1000000 && diff_us <= 2000000)
+		tst_res(TPASS, "...");
+
+Which expects that the difference between timestamps is in a sane range
+not that it just have been changed.
+
+>  	tst_res(TPASS, "copy_file_range sucessfully updated the timestamp");
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.27.0
-
+Cyril Hrubis
+chrubis@suse.cz
