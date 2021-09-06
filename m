@@ -2,95 +2,73 @@ Return-Path: <SRS0=3a48=N4=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55A70C433EF
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 03:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E20BBC433EF
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 06:00:39 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5211160F3A
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 03:13:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5211160F3A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3511060F92
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 06:00:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3511060F92
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D0B123C980D
-	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 05:13:07 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id CEEA83C9521
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 08:00:36 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4B4E83C2BB5
- for <ltp@lists.linux.it>; Mon,  6 Sep 2021 05:12:57 +0200 (CEST)
-Received: from mail1.bemta26.messagelabs.com (mail1.bemta26.messagelabs.com
- [85.158.142.4])
+ by picard.linux.it (Postfix) with ESMTPS id 509723C2532
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 08:00:28 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0CF2F1400330
- for <ltp@lists.linux.it>; Mon,  6 Sep 2021 05:12:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1630897975; i=@fujitsu.com;
- bh=h6dG/GqYTVm0An5CG1+DmugLS4iMJluAi7LqG+tcJWE=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=aeNRMFHhFs6Tg6ZUKtYs6frLC2fBDOSjyQTgfTHeNVQFKWdpW6h6FaWqMTfsC2Quo
- ajHj3N8YShqe119+zkcweXRWgaLjhsLJDQJhsMIMrtJLnZnZTWz2AqfThrxYDb1edY
- Tsv4Sxnby6efEo8eMurVOZVMphikRv/CVTOr+IqwF50XkOJSE8V3x76lzbSS+dAnwR
- o/QAkt9Gix7Stw0edzKr0y7rAgXHPFbD7J3JRQdV6JQ3hRg1eQV75PBf14/b32W30d
- +NHrZYIixWXU+aGM4mrRf/5oxrfKZPZCtaZX5GQLGo7CKbayCpzwLqHLcY8rw+Xrqb
- bDlfeVHIX4Rfg==
-Received: from [100.113.2.146] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-a.eu-central-1.aws.symcld.net id DC/0B-29868-73785316;
- Mon, 06 Sep 2021 03:12:55 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRWlGSWpSXmKPExsViZ8MxVdes3TT
- RYPcZQ4sV33cwOjB67Pu9jjWAMYo1My8pvyKBNeP7wjXMBW2sFY3nljE2MK5n6WLk4hASaGaS
- aO95xw7h7GaUeP9hC3MXIycHm4CmxLPOBWC2iICEREfDW3YQm1lAXWL5pF9MILawgLHEnc7tj
- CA2i4CKxKS+C0A2BwevgIfExxPVIGEJAQWJKQ/fg43hFRCUODnzCQvEGAmJgy9eMEPUKEpc6v
- jGCGFXSMya1cY0gZF3FpKWWUhaFjAyrWK0TCrKTM8oyU3MzNE1NDDQNTQ01jXUNTIy00us0k3
- USy3VTU7NKylKBMrqJZYX6xVX5ibnpOjlpZZsYgQGWEoh46MdjKdff9A7xCjJwaQkyqthZ5oo
- xJeUn1KZkVicEV9UmpNafIhRhoNDSYLXvgUoJ1iUmp5akZaZAwx2mLQEB4+SCO+aRqA0b3FBY
- m5xZjpE6hSjopQ479JWoIQASCKjNA+uDRZhlxhlpYR5GRkYGIR4ClKLcjNLUOVfMYpzMCoJ85
- q0AU3hycwrgZv+CmgxE9DitocmIItLEhFSUg1MKxq3SWjIblX8cPP8uaetT7dHTLhYn5kw4Yu
- dwQZB7b+dOQlGpVxa3AnLOPwvPQt75/9Xt3Dq9xRF83Cj7I0Pa84XtRgXyN5YnhSXYtW4fZl1
- rchq8dN3y7KtTj48LXX7gKh8mKHf/pk7te9t4wpw/sq46MVDNx6J7TP255jZvnm1skgmc23GP
- Mmmqw+DDF+s/Otw49sLz/P7uZ4/9vFhlrn8ap/+1+8s13j1/wtM3P397XrxU+V/T63m0kib0S
- 3v3LXqnVnaTofmKbJn7ypar+IpyD0jcmnlx4++YYprKpgXmyyLmHdXymOibZj8S+Y+m47VS99
- e7rm4w/bet4BZL4ujoyPfu6r/2Opq+S9TVomlOCPRUIu5qDgRAE4TogkrAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-8.tower-232.messagelabs.com!1630897974!237652!1
-X-Originating-IP: [62.60.8.149]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.4; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 3569 invoked from network); 6 Sep 2021 03:12:54 -0000
-Received: from unknown (HELO mailhost2.uk.fujitsu.com) (62.60.8.149)
- by server-8.tower-232.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 6 Sep 2021 03:12:54 -0000
-Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
- by mailhost2.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 1863CnMn023210
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
- for <ltp@lists.linux.it>; Mon, 6 Sep 2021 04:12:54 +0100
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Mon, 6 Sep 2021 04:12:47 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Mon, 6 Sep 2021 11:12:38 +0800
-Message-ID: <1630897958-2160-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E943E2001DF
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 08:00:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1630908025;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=RQhpTobqpYowBsAXhNYziQjZCcZCZz9fmnbJDiEIM+8=;
+ b=aAiYUZ2pBOtIuQ4ZaTJhqbmjpu0IYopN2sm9cIUI6plbMeBYBgQTuTlGB+hnNWikgAE7dI
+ IVuDWyeQfm7DIRbdODnCe+mCs21sKI65U+8Ksy5BObDd6neWGBvNIxbWq4CBy7KxeyQycw
+ N6yFoH2bkK7VMx8m21fNORx03oTvoIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-kO35IdJhPV2wJHZ8iA3erg-1; Mon, 06 Sep 2021 02:00:23 -0400
+X-MC-Unique: kO35IdJhPV2wJHZ8iA3erg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
+ [10.5.11.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF115835DEC
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 06:00:22 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com (unknown [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 28B525D740
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 06:00:21 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Mon,  6 Sep 2021 14:00:20 +0800
+Message-ID: <20210906060020.3219023-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [COMMITTED] runtest/cve: Fix wrong cve tag
+Subject: [LTP] [PATCH v2] copy_file_range03: comparing timestamp in
+ tst_timespec_diff
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,31 +84,82 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210906031238.qDttJVRHhb8UwsbYtOB2mgLJsAGXwpFUsJlGNHqXesQ@z>
+Message-ID: <20210906060020.Q4c2SRSNjzf_w4nIHWjrjShGbRjQcR0lnBWBfCg1NuI@z>
 
-can_bcm01 is designed to test cve-2021-3609 instead of cve-2021-6309.
+The st_mtime field is defined as st_mtim.tv_sec for backward
+compatibility in struct stat, which might not precise enough
+for timestamp comparing.
 
-Fixes: 027ea6171c40 ("Add test for CVE 2021-3609")
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Here switch to timespec diff (with compare nanosecond as well) to
+get rid of this kind of rare faliure:
+
+   7	tst_test.c:1345: TINFO: Timeout per run is 0h 05m 00s
+   8	copy_file_range.h:36: TINFO: Testing libc copy_file_range()
+   9	copy_file_range03.c:48: TPASS: copy_file_range sucessfully updated the timestamp
+   10	tst_test.c:1345: TINFO: Timeout per run is 0h 05m 00s
+   11	copy_file_range.h:39: TINFO: Testing __NR_copy_file_range syscall
+   12	copy_file_range03.c:46: TFAIL: copy_file_range did not update timestamp.
+
+Also, raise the sleep time to 1.5 sec to make test more robust.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runtest/cve | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../copy_file_range/copy_file_range03.c         | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/runtest/cve b/runtest/cve
-index 357b88feb..01211b5aa 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -67,7 +67,7 @@ cve-2020-14416 pty03
- cve-2020-25705 icmp_rate_limit01
- cve-2020-29373 io_uring02
- cve-2021-3444 bpf_prog05
--cve-2021-6309 can_bcm01
-+cve-2021-3609 can_bcm01
- cve-2021-22555 setsockopt08 -i 100
- cve-2021-26708 vsock01
- # Tests below may cause kernel memory leak
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+index 253eb57ad..5950c80c1 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
+@@ -12,26 +12,27 @@
+ #define _GNU_SOURCE
+ 
+ #include "tst_test.h"
++#include "tst_timer.h"
+ #include "copy_file_range.h"
+ 
+ static int fd_src;
+ static int fd_dest;
+ 
+-unsigned long get_timestamp(int fd)
++struct timespec get_timestamp(int fd)
+ {
+ 	struct stat filestat;
+ 
+ 	fstat(fd, &filestat);
+-	return filestat.st_mtime;
++	return filestat.st_mtim;
+ }
+ 
+ static void verify_copy_file_range_timestamp(void)
+ {
+ 	loff_t offset;
+-	unsigned long timestamp, updated_timestamp;
++	struct timespec timestamp1, timestamp2, diff;
+ 
+-	timestamp = get_timestamp(fd_dest);
+-	usleep(1000000);
++	timestamp1 = get_timestamp(fd_dest);
++	usleep(1500000);
+ 
+ 	offset = 0;
+ 	TEST(sys_copy_file_range(fd_src, &offset,
+@@ -40,9 +41,11 @@ static void verify_copy_file_range_timestamp(void)
+ 		tst_brk(TBROK | TTERRNO,
+ 				"copy_file_range unexpectedly failed");
+ 
+-	updated_timestamp = get_timestamp(fd_dest);
++	timestamp2 = get_timestamp(fd_dest);
+ 
+-	if (timestamp == updated_timestamp)
++	diff = tst_timespec_diff(timestamp1, timestamp2);
++
++	if (!diff.tv_sec && !diff.tv_nsec)
+ 		tst_brk(TFAIL, "copy_file_range did not update timestamp.");
+ 
+ 	tst_res(TPASS, "copy_file_range sucessfully updated the timestamp");
 -- 
-2.23.0
+2.31.1
 
 
 -- 
