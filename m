@@ -1,88 +1,96 @@
-Return-Path: <SRS0=z5ZV=N2=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=3a48=N4=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25AF3C433F5
-	for <ltp@archiver.kernel.org>; Sat,  4 Sep 2021 02:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55A70C433EF
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 03:13:11 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 208E960FE6
-	for <ltp@archiver.kernel.org>; Sat,  4 Sep 2021 02:40:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 208E960FE6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5211160F3A
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 03:13:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5211160F3A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD8D83C98E1
-	for <ltp@archiver.kernel.org>; Sat,  4 Sep 2021 04:40:20 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D0B123C980D
+	for <ltp@archiver.kernel.org>; Mon,  6 Sep 2021 05:13:07 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B3B93C2831
- for <ltp@lists.linux.it>; Sat,  4 Sep 2021 04:40:11 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ by picard.linux.it (Postfix) with ESMTPS id 4B4E83C2BB5
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 05:12:57 +0200 (CEST)
+Received: from mail1.bemta26.messagelabs.com (mail1.bemta26.messagelabs.com
+ [85.158.142.4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AF9D21A01759
- for <ltp@lists.linux.it>; Sat,  4 Sep 2021 04:40:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1630723208;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Jjv/uwwvuRPr7UdVj08Zmbk1Ihb0gO8p3gz0lzjv6vs=;
- b=aA5cVhyglq22muXdCbuZ+rh6wm1vikYyuz4rtoUkZTPFFyJ0dQwlUJ6csWgp7fmiR0o5CY
- EPDQY9hHUNHo3LQ3d9Cx4Sqm+zLXc3QCt1ZxQuV29iEL+CKD0gmbYg/+Rcv/y/z+Y9gKJb
- OGXufmyah1OX1PhwHPLkRcSDsXs1gng=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-KKHtQHbyNoKuhK8I3Cdaew-1; Fri, 03 Sep 2021 22:40:04 -0400
-X-MC-Unique: KKHtQHbyNoKuhK8I3Cdaew-1
-Received: by mail-yb1-f197.google.com with SMTP id
- a62-20020a254d410000b0290592f360b0ccso1233139ybb.14
- for <ltp@lists.linux.it>; Fri, 03 Sep 2021 19:40:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Jjv/uwwvuRPr7UdVj08Zmbk1Ihb0gO8p3gz0lzjv6vs=;
- b=SwXbtkGn6ANaEr+2oB9W/Wv+pq8P6wptiH5dcwc3dmffV0uIEM+RYR7hMcsLMV0gFy
- Etnou8xPYmIDRtZ+2bE3ee7+5nhvndqubVVOkVVFkbri0D+IJlLl53mty+f1acn4vnIj
- GFuUKUAt9w9VYtMLsTduSvkhan/Vnx9xmfA8cNgd1yEZK1PpvM3+Tid4std3eW2HYYgo
- OGHOTQQ8jM7vEROURkKyIc5cUWm2Keh6eicH/wtgwjFDmZ8GWXznMOVF6iaRxSfx4/jX
- S7IcpUvpOmiN++f6smBdx0fxsvw2sZ6ABfeESfPkz8T/ti0mv2RxpwXVsNiR/G9uUdGS
- x9Uw==
-X-Gm-Message-State: AOAM530nXyLdhxEsfuDf1j3CyemO7YiyC+8WLhPvznYKrwGFnOdMOLda
- 4NyD2eDLSd4lINTIQyl08Hf+Uo/1OmlYToCrVJ9XS/8qGs4KgJe5+XI9hFqNcP6xO/Nxj8DH2Vo
- 44rJJymtQoU+slVInVNXn5aMdZEc=
-X-Received: by 2002:a25:6902:: with SMTP id e2mr2840179ybc.526.1630723203734; 
- Fri, 03 Sep 2021 19:40:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyFWlsyzHYtPsHseBB9zaps5vGDgERB7Pz3O7J5e+BEznOHu/7BwCnY7UZnHQTCdCye8fopjLN/d4bs7xiROFE=
-X-Received: by 2002:a25:6902:: with SMTP id e2mr2840158ybc.526.1630723203405; 
- Fri, 03 Sep 2021 19:40:03 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0CF2F1400330
+ for <ltp@lists.linux.it>; Mon,  6 Sep 2021 05:12:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1630897975; i=@fujitsu.com;
+ bh=h6dG/GqYTVm0An5CG1+DmugLS4iMJluAi7LqG+tcJWE=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=aeNRMFHhFs6Tg6ZUKtYs6frLC2fBDOSjyQTgfTHeNVQFKWdpW6h6FaWqMTfsC2Quo
+ ajHj3N8YShqe119+zkcweXRWgaLjhsLJDQJhsMIMrtJLnZnZTWz2AqfThrxYDb1edY
+ Tsv4Sxnby6efEo8eMurVOZVMphikRv/CVTOr+IqwF50XkOJSE8V3x76lzbSS+dAnwR
+ o/QAkt9Gix7Stw0edzKr0y7rAgXHPFbD7J3JRQdV6JQ3hRg1eQV75PBf14/b32W30d
+ +NHrZYIixWXU+aGM4mrRf/5oxrfKZPZCtaZX5GQLGo7CKbayCpzwLqHLcY8rw+Xrqb
+ bDlfeVHIX4Rfg==
+Received: from [100.113.2.146] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-4.bemta.az-a.eu-central-1.aws.symcld.net id DC/0B-29868-73785316;
+ Mon, 06 Sep 2021 03:12:55 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRWlGSWpSXmKPExsViZ8MxVdes3TT
+ RYPcZQ4sV33cwOjB67Pu9jjWAMYo1My8pvyKBNeP7wjXMBW2sFY3nljE2MK5n6WLk4hASaGaS
+ aO95xw7h7GaUeP9hC3MXIycHm4CmxLPOBWC2iICEREfDW3YQm1lAXWL5pF9MILawgLHEnc7tj
+ CA2i4CKxKS+C0A2BwevgIfExxPVIGEJAQWJKQ/fg43hFRCUODnzCQvEGAmJgy9eMEPUKEpc6v
+ jGCGFXSMya1cY0gZF3FpKWWUhaFjAyrWK0TCrKTM8oyU3MzNE1NDDQNTQ01jXUNTIy00us0k3
+ USy3VTU7NKylKBMrqJZYX6xVX5ibnpOjlpZZsYgQGWEoh46MdjKdff9A7xCjJwaQkyqthZ5oo
+ xJeUn1KZkVicEV9UmpNafIhRhoNDSYLXvgUoJ1iUmp5akZaZAwx2mLQEB4+SCO+aRqA0b3FBY
+ m5xZjpE6hSjopQ479JWoIQASCKjNA+uDRZhlxhlpYR5GRkYGIR4ClKLcjNLUOVfMYpzMCoJ85
+ q0AU3hycwrgZv+CmgxE9DitocmIItLEhFSUg1MKxq3SWjIblX8cPP8uaetT7dHTLhYn5kw4Yu
+ dwQZB7b+dOQlGpVxa3AnLOPwvPQt75/9Xt3Dq9xRF83Cj7I0Pa84XtRgXyN5YnhSXYtW4fZl1
+ rchq8dN3y7KtTj48LXX7gKh8mKHf/pk7te9t4wpw/sq46MVDNx6J7TP255jZvnm1skgmc23GP
+ Mmmqw+DDF+s/Otw49sLz/P7uZ4/9vFhlrn8ap/+1+8s13j1/wtM3P397XrxU+V/T63m0kib0S
+ 3v3LXqnVnaTofmKbJn7ypar+IpyD0jcmnlx4++YYprKpgXmyyLmHdXymOibZj8S+Y+m47VS99
+ e7rm4w/bet4BZL4ujoyPfu6r/2Opq+S9TVomlOCPRUIu5qDgRAE4TogkrAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-8.tower-232.messagelabs.com!1630897974!237652!1
+X-Originating-IP: [62.60.8.149]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.4; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 3569 invoked from network); 6 Sep 2021 03:12:54 -0000
+Received: from unknown (HELO mailhost2.uk.fujitsu.com) (62.60.8.149)
+ by server-8.tower-232.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 6 Sep 2021 03:12:54 -0000
+Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
+ by mailhost2.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 1863CnMn023210
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
+ for <ltp@lists.linux.it>; Mon, 6 Sep 2021 04:12:54 +0100
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Mon, 6 Sep 2021 04:12:47 +0100
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Mon, 6 Sep 2021 11:12:38 +0800
+Message-ID: <1630897958-2160-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20210903214811.61727-1-petr.vorel@gmail.com>
-In-Reply-To: <20210903214811.61727-1-petr.vorel@gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 4 Sep 2021 10:39:50 +0800
-Message-ID: <CAEemH2cMAMK5pi_mY7PPLaZun71Nv6JYyyQBSJePXaPyPgxKVg@mail.gmail.com>
-To: Petr Vorel <petr.vorel@gmail.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC][PATCH 1/2] sched/process.c: Always use pointer to
- stderr
+Subject: [LTP] [COMMITTED] runtest/cve: Fix wrong cve tag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,236 +102,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1244672071=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210904023950.sdOl8V9j5px1aeacOcwX0kDLM5FsgNWlWu7epSR_OKk@z>
+Message-ID: <20210906031238.qDttJVRHhb8UwsbYtOB2mgLJsAGXwpFUsJlGNHqXesQ@z>
 
---===============1244672071==
-Content-Type: multipart/alternative; boundary="000000000000442bd405cb22555a"
+can_bcm01 is designed to test cve-2021-3609 instead of cve-2021-6309.
 
---000000000000442bd405cb22555a
-Content-Type: text/plain; charset="UTF-8"
+Fixes: 027ea6171c40 ("Add test for CVE 2021-3609")
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/cve | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sat, Sep 4, 2021 at 5:48 AM Petr Vorel <petr.vorel@gmail.com> wrote:
-
-> which was previously used for non-linux OS (not relevant to LTP thus not
-> used in LTP), for linux stderr directly was used.
->
-> This fixes compilation on MUSL which does not like assignment to stderr:
->
-> process.c:553:14: error: assignment of read-only variable 'stderr'
->   553 |      debugfp = fopen(foo, "a+");
->       |              ^
->
-> NOTE: needed to initialization in main(), because C standard does not
-> require stdin, stdout and stderr to be constants (at least not C99),
-> otherwise it fails to compile:
->
-> process.c:144:15: error: initializer element is not constant
->
-> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> ---
-> Hi,
->
-> not really sure why anything needs to be assigned to stderr and whether
-> this is a correct approach. Comments are welcome.
->
-
-Hmm, I guess that the original purpose is to redirect stderr to
-another destination. But it made a mistake which assigns new
-FILE stream to stderr, AFAIK, we should not do like that.
-A recomened way is:
-    FILE *debugfp = freopen(foo, "w", stderr );
-
-Or, it just wants to make compatible but forget that definition in use then.
-
-
-Anyway, your fix looks good.
-Reviewed-by: Li Wang <liwang@redhat.com>
-
-
-
->
-> Kind regards,
-> Petr
->
->  testcases/kernel/sched/process_stress/process.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
->
-> diff --git a/testcases/kernel/sched/process_stress/process.c
-> b/testcases/kernel/sched/process_stress/process.c
-> index a5ff80987..11837c3cb 100644
-> --- a/testcases/kernel/sched/process_stress/process.c
-> +++ b/testcases/kernel/sched/process_stress/process.c
-> @@ -141,13 +141,8 @@ timer_t timer;                     /* timer structure
-> */
->
->  Pinfo *shmaddr;                        /* Start address  of shared memory
-> */
->
-> -#ifndef _LINUX
-> -FILE *errfp = stderr;          /* error file pointer, probably not
-> necessary */
-> -FILE *debugfp = stderr;                /* debug file pointer, used if
-> AUSDEBUG set */
-> -#else
-> -#define errfp stderr
-> -#define debugfp stderr
-> -#endif
-> +FILE *errfp;
-> +FILE *debugfp;
->
->  struct envstruct *edat = envdata;      /* pointer to environment data */
->
-> @@ -1221,6 +1216,9 @@ void doit(void)
->  /* main */
->  int main(int argc, char *argv[])
->  {
-> +       errfp = stderr;
-> +       debugfp = stderr;
-> +
->         extern Pinfo *shmaddr;  /* start address of shared memory */
->
->         prtln();
-> --
-> 2.33.0
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
-
+diff --git a/runtest/cve b/runtest/cve
+index 357b88feb..01211b5aa 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -67,7 +67,7 @@ cve-2020-14416 pty03
+ cve-2020-25705 icmp_rate_limit01
+ cve-2020-29373 io_uring02
+ cve-2021-3444 bpf_prog05
+-cve-2021-6309 can_bcm01
++cve-2021-3609 can_bcm01
+ cve-2021-22555 setsockopt08 -i 100
+ cve-2021-26708 vsock01
+ # Tests below may cause kernel memory leak
 -- 
-Regards,
-Li Wang
-
---000000000000442bd405cb22555a
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Sat, Sep 4, 2021 at 5:48 AM Petr Vorel &lt;<a hr=
-ef=3D"mailto:petr.vorel@gmail.com" target=3D"_blank">petr.vorel@gmail.com</=
-a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0p=
-x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">wh=
-ich was previously used for non-linux OS (not relevant to LTP thus not<br>
-used in LTP), for linux stderr directly was used.<br>
-<br>
-This fixes compilation on MUSL which does not like assignment to stderr:<br=
->
-<br>
-process.c:553:14: error: assignment of read-only variable &#39;stderr&#39;<=
-br>
-=C2=A0 553 |=C2=A0 =C2=A0 =C2=A0 debugfp =3D fopen(foo, &quot;a+&quot;);<br=
->
-=C2=A0 =C2=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^<br=
->
-<br>
-NOTE: needed to initialization in main(), because C standard does not<br>
-require stdin, stdout and stderr to be constants (at least not C99),<br>
-otherwise it fails to compile:<br>
-<br>
-process.c:144:15: error: initializer element is not constant<br>
-<br>
-Signed-off-by: Petr Vorel &lt;<a href=3D"mailto:petr.vorel@gmail.com" targe=
-t=3D"_blank">petr.vorel@gmail.com</a>&gt;<br>
----<br>
-Hi,<br>
-<br>
-not really sure why anything needs to be assigned to stderr and whether<br>
-this is a correct approach. Comments are welcome.<br></blockquote><div><br>=
-</div><div><div class=3D"gmail_default" style=3D"font-size:small">Hmm, I gu=
-ess that the original purpose is to redirect stderr to</div><div class=3D"g=
-mail_default" style=3D"font-size:small">another destination. But it made a =
-mistake which=C2=A0assigns new</div><div class=3D"gmail_default" style=3D"f=
-ont-size:small">FILE stream to stderr, AFAIK, we should not do like that.</=
-div><div class=3D"gmail_default" style=3D"font-size:small">A recomened way =
-is:</div><div class=3D"gmail_default" style=3D"font-size:small">=C2=A0 =C2=
-=A0 FILE *<span class=3D"gmail_default">debugfp</span>=C2=A0=3D freopen(<sp=
-an class=3D"gmail_default">foo</span>, &quot;w&quot;, stderr );<br></div></=
-div><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div c=
-lass=3D"gmail_default" style=3D"font-size:small">Or, it just wants to make =
-compatible but forget that definition in use then.</div><div><br></div><div=
-><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">Anyw=
-ay,=C2=A0your fix looks good.</div><div class=3D"gmail_default" style=3D"fo=
-nt-size:small"></div><div class=3D"gmail_default" style=3D"font-size:small"=
->Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_b=
-lank">liwang@redhat.com</a>&gt;</div><br></div><div>=C2=A0</div><blockquote=
- class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px so=
-lid rgb(204,204,204);padding-left:1ex">
-<br>
-Kind regards,<br>
-Petr<br>
-<br>
-=C2=A0testcases/kernel/sched/process_stress/process.c | 12 +++++-------<br>
-=C2=A01 file changed, 5 insertions(+), 7 deletions(-)<br>
-<br>
-diff --git a/testcases/kernel/sched/process_stress/process.c b/testcases/ke=
-rnel/sched/process_stress/process.c<br>
-index a5ff80987..11837c3cb 100644<br>
---- a/testcases/kernel/sched/process_stress/process.c<br>
-+++ b/testcases/kernel/sched/process_stress/process.c<br>
-@@ -141,13 +141,8 @@ timer_t timer;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* timer structure */<br>
-<br>
-=C2=A0Pinfo *shmaddr;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* Start address=C2=A0 of shared memory */<=
-br>
-<br>
--#ifndef _LINUX<br>
--FILE *errfp =3D stderr;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* error file po=
-inter, probably not necessary */<br>
--FILE *debugfp =3D stderr;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 /* debug file pointer, used if AUSDEBUG set */<br>
--#else<br>
--#define errfp stderr<br>
--#define debugfp stderr<br>
--#endif<br>
-+FILE *errfp;<br>
-+FILE *debugfp;<br>
-<br>
-=C2=A0struct envstruct *edat =3D envdata;=C2=A0 =C2=A0 =C2=A0 /* pointer to=
- environment data */<br>
-<br>
-@@ -1221,6 +1216,9 @@ void doit(void)<br>
-=C2=A0/* main */<br>
-=C2=A0int main(int argc, char *argv[])<br>
-=C2=A0{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0errfp =3D stderr;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0debugfp =3D stderr;<br>
-+<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 extern Pinfo *shmaddr;=C2=A0 /* start address o=
-f shared memory */<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 prtln();<br>
--- <br>
-2.33.0<br>
-<br>
-<br>
--- <br>
-Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
-oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
-<br>
-</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
-><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div>=
-</div>
-
---000000000000442bd405cb22555a--
-
-
---===============1244672071==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.23.0
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1244672071==--
-
