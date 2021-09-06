@@ -1,8 +1,8 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon,  6 Sep 2021 13:56:53 +0530
+Date: Mon,  6 Sep 2021 14:04:43 +0530
 Subject: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
  test case route4-change-dst
-Message-ID: <20210906082654.81452-1-naresh.kamboju@linaro.org>
+Message-ID: <20210906083444.82394-1-naresh.kamboju@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
