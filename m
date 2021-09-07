@@ -1,77 +1,85 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 7 Sep 2021 19:09:55 +0800
-Subject: [LTP] [PATCH v2 1/7] syscalls/clone01: Convert to new API
-In-Reply-To: <YTBo6ZS2GKWb8edF@pevik>
-References: <20210902010814.32448-1-zhanglianjie@uniontech.com>
- <YTBo6ZS2GKWb8edF@pevik>
-Message-ID: <1997ecb5-b3d3-fab5-05cf-115414714311@uniontech.com>+6A238C8E2B32DFED
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue,  7 Sep 2021 13:32:18 +0200
+Subject: [LTP] [PATCH v2 1/5] Add user/group ID lookup helper functions
+Message-ID: <20210907113222.5156-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-Thank you I will resubmit.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-On 2021-09-02 14:02, Petr Vorel wrote:
-> Hi zhanglianjie,
-> 
-> ...
->> +static void verify_clone(void)
->>   {
->> -	void *child_stack;
->>   	int status, child_pid;
-> 
->> -	tst_parse_opts(ac, av, NULL, NULL);
->> -
->> -	setup();
->> +	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, do_child, NULL,
-> Shouldn't be TST_EXP_PID_SILENT()
-> Because TST_EXP_POSITIVE() prints extra TPASS which is useless:
-> 
-> clone01.c:31: TPASS: clone() returned 11556
-> clone01.c:37: TPASS: clone returned 11556
-> clone01.c:43: TPASS: Child exited with 0
-> 
-> but with TST_EXP_PID_SILENT():
-> clone01.c:37: TPASS: clone returned 11986
-> clone01.c:43: TPASS: Child exited with 0
-> 
-> and on deliberate error (using -1 as flag):
-> clone01.c:31: TFAIL: clone() failed: EINVAL (22)
-> clone01.c:34: TBROK: wait(0x7ffed515f3ec) failed: ECHILD (10)
-> 
->> +		CHILD_STACK_SIZE, child_stack), "clone()");
-> 
->> -	child_stack = malloc(CHILD_STACK_SIZE);
->> -	if (child_stack == NULL)
->> -		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
->> +	child_pid = SAFE_WAIT(&status);
-> 
->> -	tst_count = 0;
->> -
->> -	TEST(ltp_clone(SIGCHLD, do_child, NULL, CHILD_STACK_SIZE, child_stack));
->> -	if (TEST_RETURN == -1)
->> -		tst_resm(TFAIL | TTERRNO, "clone failed");
->> -
->> -	child_pid = SAFE_WAIT(cleanup, &status);
->> -
->> -	if (TEST_RETURN == child_pid)
->> -		tst_resm(TPASS, "clone returned %ld", TEST_RETURN);
->> +	if (TST_RET == child_pid)
-> 	if (child_pid ==  TST_RET)
-> 
-> => run `make check-clone01' to see this error (and run make check-* for other
-> tests).
-> 
-> 
-> Kind regards,
-> Petr
-> 
+Changes since v1:
+- Remove SAFE_GETPWENT() and SAFE_GETGRENT()
+- Generate linear sequence of IDs in tst_get_uid/gid() without checking
+  whether the UID/GID exists
+- Add support for extending partially filled UID/GID buffer in
+  tst_get_uid/gid()
 
+ include/tst_uid.h |  9 +++++++++
+ lib/tst_uid.c     | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
+
+diff --git a/include/tst_uid.h b/include/tst_uid.h
+index 7135a9cad..b653d0a1e 100644
+--- a/include/tst_uid.h
++++ b/include/tst_uid.h
+@@ -15,4 +15,13 @@
+ gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip);
+ #define tst_get_free_gid(skip) tst_get_free_gid_(__FILE__, __LINE__, (skip))
+ 
++/*
++ * Get a specific number of unique existing non-root user or group IDs.
++ * The "start" parameter is the number of buffer entries that are already
++ * filled and will not be modified. The function will fill the remaining
++ * (size-start) entries with unique UID/GID values.
++ */
++void tst_get_uids(uid_t *buf, unsigned int start, unsigned int size);
++void tst_get_gids(gid_t *buf, unsigned int start, unsigned int size);
++
+ #endif /* TST_UID_H_ */
+diff --git a/lib/tst_uid.c b/lib/tst_uid.c
+index dd719d312..08855ba46 100644
+--- a/lib/tst_uid.c
++++ b/lib/tst_uid.c
+@@ -36,3 +36,35 @@ gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
+ 	tst_brk_(file, lineno, TBROK, "No free group ID found");
+ 	return (gid_t)-1;
+ }
++
++void tst_get_uids(uid_t *buf, unsigned int start, unsigned int count)
++{
++	unsigned int i, j;
++	uid_t id;
++
++	for (i = start, id = 1; i < count; id++) {
++		for (j = 0; j < start; j++) {
++			if (buf[j] == id)
++				break;
++		}
++
++		if (j >= start)
++			buf[i++] = id;
++	}
++}
++
++void tst_get_gids(gid_t *buf, unsigned int start, unsigned int count)
++{
++	unsigned int i, j;
++	gid_t id;
++
++	for (i = start, id = 1; i < count; id++) {
++		for (j = 0; j < start; j++) {
++			if (buf[j] == id)
++				break;
++		}
++
++		if (j >= start)
++			buf[i++] = id;
++	}
++}
 -- 
-Regards,
-Zhang Lianjie
-
+2.33.0
 
