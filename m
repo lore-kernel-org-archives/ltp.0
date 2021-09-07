@@ -1,194 +1,45 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Tue, 7 Sep 2021 09:36:24 +0000
-Subject: [LTP] [PATCH 4/5] syscalls/dup2/dup204: Convert dup204 to the
- new API
-In-Reply-To: <20210902115849.72382-5-qi.fuli@fujitsu.com>
-References: <20210902115849.72382-1-qi.fuli@fujitsu.com>
- <20210902115849.72382-5-qi.fuli@fujitsu.com>
-Message-ID: <6137328D.5020009@fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 7 Sep 2021 11:54:26 +0200
+Subject: [LTP] [PATCH] openposix: make use of tst_process_state_wait3
+In-Reply-To: <20210907025258.3294914-1-liwang@redhat.com>
+References: <20210907025258.3294914-1-liwang@redhat.com>
+Message-ID: <YTc20vtM2HbhTVTg@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Qi
+Hi!
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> index 04ef0a2cc..554714695 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> @@ -17,6 +17,7 @@
+>  #include <stdlib.h>
+>  #include <errno.h>
+>  #include "posixtest.h"
+> +#include "proc.h"
+>  
+>  #define SLEEPSEC 30
+>  
+> @@ -88,7 +89,7 @@ int main(void)
+>  		/* parent here */
+>  		int i;
+>  
+> -		sleep(1);
+> +		tst_process_state_wait3(pid, 'S', 1);
 
-I think we can merge this case into dup202 directly.
-So dup202 not only check modes doesn't change but also check inode 
-number doesn't change.
+This test is actually the only one that looks at the remining time as
+returned by clock_nanosleep() so it may make a sense to keep the
+sleep(1) in this test so that the remaining time is smaller than the
+sleep time by some reasonable margin. But I guess that the test will
+work fine without it as well.
 
-Best Regards
-Yang Xu
-> From: QI Fuli<qi.fuli@fujitsu.com>
->
-> Signed-off-by: QI Fuli<qi.fuli@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/dup2/dup204.c | 135 ++++++------------------
->   1 file changed, 35 insertions(+), 100 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/dup2/dup204.c b/testcases/kernel/syscalls/dup2/dup204.c
-> index a357bc17e..3fd6b0832 100644
-> --- a/testcases/kernel/syscalls/dup2/dup204.c
-> +++ b/testcases/kernel/syscalls/dup2/dup204.c
-> @@ -1,118 +1,25 @@
-> -/*
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - */
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->
->   /*
-> - * NAME
-> - *	dup204.c
-> + * Copyright (c) International Business Machines  Corp., 2001
->    *
-> - * DESCRIPTION
-> + * DESCRIPTION:
->    *	Testcase to check the basic functionality of dup2(2).
-> - *
-> - * ALGORITHM
-> - *	attempt to call dup2() on read/write ends of a pipe
-> - *
-> - * USAGE:<for command-line>
-> - *  dup204 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -f   : Turn off functionality Testing.
-> - *             -i n : Execute test n times.
-> - *             -I x : Execute test for x seconds.
-> - *             -P x : Pause for x seconds between iterations.
-> - *             -t   : Turn on syscall timing.
-> - *
-> - * RESTRICTION
-> - *	NONE
->    */
->
->   #ifndef _GNU_SOURCE
->   #define _GNU_SOURCE
->   #endif
-> -#include<sys/types.h>
-> -#include<fcntl.h>
-> -#include<sys/stat.h>
-> -#include<errno.h>
-> -#include<signal.h>
-> -#include<string.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -
-> -void setup();
-> -void cleanup();
-> -
-> -char *TCID = "dup204";
-> -int TST_TOTAL = 2;
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
->
->   int fd[2];
->   int nfd[2];
->
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	int i;
-> -	struct stat oldbuf, newbuf;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/* loop through the test cases */
-> -		for (i = 0; i<  TST_TOTAL; i++) {
-> -			TEST(dup2(fd[i], nfd[i]));
-> -
-> -			if (TEST_RETURN == -1) {
-> -				tst_resm(TFAIL, "call failed unexpectedly");
-> -				continue;
-> -			}
-> -
-> -			SAFE_FSTAT(cleanup, fd[i],&oldbuf);
-> -			SAFE_FSTAT(cleanup, nfd[i],&newbuf);
-> -
-> -			if (oldbuf.st_ino != newbuf.st_ino)
-> -				tst_resm(TFAIL, "original and duped "
-> -					 "inodes do not match");
-> -			else
-> -				tst_resm(TPASS, "original and duped "
-> -					 "inodes are the same");
-> -
-> -			SAFE_CLOSE(cleanup, TEST_RETURN);
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
->   void setup(void)
->   {
->   	fd[0] = -1;
-> -
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
-> -	SAFE_PIPE(cleanup, fd);
-> +	SAFE_PIPE(fd);
->   }
->
->   void cleanup(void)
-> @@ -123,6 +30,34 @@ void cleanup(void)
->   		close(fd[i]);
->   		close(nfd[i]);
->   	}
-> +}
-> +
-> +static void run(unsigned int i)
-> +{
-> +	struct stat oldbuf, newbuf;
-> +
-> +	TEST(dup2(fd[i], nfd[i]));
->
-> -	tst_rmdir();
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL, "call failed unexpectedly");
-> +		return;
-> +	}
-> +
-> +	SAFE_FSTAT(fd[i],&oldbuf);
-> +	SAFE_FSTAT(nfd[i],&newbuf);
-> +
-> +	if (oldbuf.st_ino != newbuf.st_ino)
-> +		tst_res(TFAIL, "original and duped inodes do not match");
-> +	else
-> +		tst_res(TPASS, "original and duped inodes are the same");
-> +
-> +	SAFE_CLOSE(TST_RET);
->   }
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.tcnt = 2,
-> +	.test = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +};
+The rest is obviously fine.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
