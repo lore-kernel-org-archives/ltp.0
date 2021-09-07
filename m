@@ -2,65 +2,86 @@ Return-Path: <SRS0=89zk=N5=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5DCBC433EF
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 01:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3FF3C433F5
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 02:21:04 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A405B60E77
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 01:46:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A405B60E77
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=163.com
+	by mail.kernel.org (Postfix) with ESMTPS id E9B9660E52
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 02:21:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9B9660E52
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A44783C951C
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 03:46:31 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4F2493C977E
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 04:21:02 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D7533C2639
- for <ltp@lists.linux.it>; Tue,  7 Sep 2021 03:46:21 +0200 (CEST)
-Received: from mail-m971.mail.163.com (mail-m971.mail.163.com [123.126.97.1])
- by in-2.smtp.seeweb.it (Postfix) with ESMTP id 4ED81600C60
- for <ltp@lists.linux.it>; Tue,  7 Sep 2021 03:46:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=576uQ
- nYZ11vtvsjRLsoWfSqiwBN1Y28yLPRxmbiYwPs=; b=g/lxRkJ7fF0EVRU0nxyBs
- Z+Zn9hb9580rK3Y4Cu7ALTaD2QLB6+Ml0aqgaSqFmtwNcsp1MR1JZGBN0hhHXw4S
- qDH2ESv6l7a3OkGEK8B9P7gS/90d0QpYQ5abv7PPKwuXKCpeLmmRbLOR3T4iiHWP
- sbbDRVfjRY4BssDQIxVMKg=
-Received: from [172.20.10.4] (unknown [122.96.46.110])
- by smtp1 (Coremail) with SMTP id GdxpCgB3mXJaxDZhIei7AQ--.43S2;
- Tue, 07 Sep 2021 09:46:07 +0800 (CST)
-To: QI Fuli <fukuri.sai@gmail.com>, ltp@lists.linux.it
-References: <20210902115849.72382-1-qi.fuli@fujitsu.com>
- <20210902115849.72382-3-qi.fuli@fujitsu.com>
-From: Xiao Yang <ice_yangxiao@163.com>
-Message-ID: <2b48d7f0-86ce-9deb-2b3c-cee3799682eb@163.com>
-Date: Tue, 7 Sep 2021 09:46:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ by picard.linux.it (Postfix) with ESMTPS id EFA863C2E47
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 04:20:53 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4900B1A00363
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 04:20:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1630981249;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9pOGrJaGzxB2tQOLNRGdmPO3yaIO8vd0DAk9dhJrRHc=;
+ b=YdGzEcabf0Cw6/Rm6X2T+uuT+55WmBVPM9g2RxzV0S7Rgyr0bTSArNY3zEvXFYAFWQ5L5E
+ 3kedbYrs0azRPSNRZV3kZve8Fs/vitpxmI54Sj1b2hMMwK6lBLUykIQ7PqclCzbG40IKBT
+ tqWkeyvWqKeEiMm2uxhHO0V+HxIYFcw=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-21-4fBr2NqdOTibd7RysK1pCA-1; Mon, 06 Sep 2021 22:20:47 -0400
+X-MC-Unique: 4fBr2NqdOTibd7RysK1pCA-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ b9-20020a5b07890000b0290558245b7eabso9812234ybq.10
+ for <ltp@lists.linux.it>; Mon, 06 Sep 2021 19:20:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=9pOGrJaGzxB2tQOLNRGdmPO3yaIO8vd0DAk9dhJrRHc=;
+ b=cfFIDFYZE1ckzm0L8ECCg40eJLmkhJrSA12MytE0qqGv7iev5gSsPHnS3QUpRb80el
+ k6kNGRMURhtv+ijSrTLL2SDbkNFwAucHZUlZamfGSPlMwJdi3TR29BghLtwKf3RCbs+O
+ 6v1aJ6GcVIKlTqh4LMBnQpzHvV/TeTYEG+ocR0O/j20hNVkbI3M6gzRO7fNzXY0h+uH8
+ IjpdzV5tG2MIsTdeCn/ojs15Od5fbIutGCy2/zANMP+t3BE47Mvfe79Ud3MLg+eaPxfP
+ XGv2JJutJsmxBJqFEw9fo6z1GmTl/bQJTbaqaQtiRU8qaf4FtBWB2c8IsVxD1gH8D3WS
+ qPeg==
+X-Gm-Message-State: AOAM530Ud/VT2SAnNub5/Al6jY7qDKNvk7mRoEgaPvICJz3iT1j1zG+N
+ B98E1fsM//I+O+vj6QuYtYq3iylwd9g++KOgWzhkuNlgYDlwwOOfEAJNcb1GrHodyve2K6YZGvQ
+ PKNE5zSExF4AocIk5akV38a+XO6M=
+X-Received: by 2002:a25:ba41:: with SMTP id z1mr19560280ybj.169.1630981247372; 
+ Mon, 06 Sep 2021 19:20:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxq8McoMI06O5U93UzJnvgnZk6RA60sDf1gtAhUWswBId8FMkF1jsAqAN9sh/NkI6jqANDzeLQNQl2SXj0Wn6s=
+X-Received: by 2002:a25:ba41:: with SMTP id z1mr19560260ybj.169.1630981247123; 
+ Mon, 06 Sep 2021 19:20:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210902115849.72382-3-qi.fuli@fujitsu.com>
-Content-Language: en-US
-X-CM-TRANSID: GdxpCgB3mXJaxDZhIei7AQ--.43S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jry3Kr45uF4xJw1rAF4rAFb_yoWxXF1xpF
- 9xGw17KFWDJFy09Fs7Xw43XF1FvanxXr1jgw1jv3ZY9r4fAryrtFsagryxJFykCrZ3Xa4F
- gF45Xr93Gw4DtFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jx3kZUUUUU=
-X-Originating-IP: [122.96.46.110]
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiEB8HXl8YHOJRXgAAsg
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <77a5903b5ddf8b63c1acc6c24e4d3195590e8628.1630917312.git.jstancek@redhat.com>
+In-Reply-To: <77a5903b5ddf8b63c1acc6c24e4d3195590e8628.1630917312.git.jstancek@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 7 Sep 2021 10:20:35 +0800
+Message-ID: <CAEemH2cZNzOawYPHQGgeLGVxob37=0kbJyQz=NSvBM0uGpANSg@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/5] syscalls/dup2/dup202: Convert dup202 to the
- new API
+Subject: Re: [LTP] [PATCH] ftruncate04: require
+ CONFIG_MANDATORY_FILE_LOCKING=y
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,260 +93,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: QI Fuli <qi.fuli@fujitsu.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1015615216=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210907014602.48IsBHRfrgkrnjAiy0xYCk1_U5H9KGn90uLg_-RmO14@z>
+Message-ID: <20210907022035.piT7d42ozLmvfBuGBbcG0NKtQZuAU_oOh-Rw7vWvGiY@z>
 
-On 9/2/21 7:58 PM, QI Fuli wrote:
-> From: QI Fuli <qi.fuli@fujitsu.com>
+--===============1015615216==
+Content-Type: multipart/alternative; boundary="000000000000ded71c05cb5e690a"
+
+--000000000000ded71c05cb5e690a
+Content-Type: text/plain; charset="UTF-8"
+
+On Mon, Sep 6, 2021 at 4:36 PM Jan Stancek <jstancek@redhat.com> wrote:
+
+> commit f7e33bdbd6d1 ("fs: remove mandatory file locking support")
+> removed mandatory file locking support, but mount option
+> is still allowed and produces no error. There's a warning
+> in dmesg but it's pr_warn_once() so we can't rely to always
+> find it there.
 >
-> Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/dup2/dup202.c | 175 +++++++-----------------
->   1 file changed, 48 insertions(+), 127 deletions(-)
+> Make the test check also for CONFIG_MANDATORY_FILE_LOCKING=y.
 >
-> diff --git a/testcases/kernel/syscalls/dup2/dup202.c b/testcases/kernel/syscalls/dup2/dup202.c
-> index c87769fa9..16f8b2add 100644
-> --- a/testcases/kernel/syscalls/dup2/dup202.c
-> +++ b/testcases/kernel/syscalls/dup2/dup202.c
-> @@ -1,65 +1,22 @@
-> -/*
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - */
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->   
->   /*
-> - * NAME
-> - *	dup202.c
-> + * Copyright (c) International Business Machines  Corp., 2001
->    *
-> - * DESCRIPTION
-> + * DESCRIPTION:
 
-Hi Qi,
+I'm wondering, if the SUT without CONFIG_MANDATORY_FILE_LOCKING
+enabling, why the mount-check in setup() didn't report EPERM?
 
-Please use the new format of description so that it can be caught by doc 
-parse:
+And, should we drop the mount-check for EPERM from setup after adding
+this .needs_kconfigs?
 
----------------------------------------------
+-- 
+Regards,
+Li Wang
 
-/*\
+--000000000000ded71c05cb5e690a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  [Description]
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Sep 6, 2021 at 4:36 PM Jan Stancek &lt;<a h=
+ref=3D"mailto:jstancek@redhat.com">jstancek@redhat.com</a>&gt; wrote:<br></=
+div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">commit f7e33bdbd6d1 (=
+&quot;fs: remove mandatory file locking support&quot;)<br>
+removed mandatory file locking support, but mount option<br>
+is still allowed and produces no error. There&#39;s a warning<br>
+in dmesg but it&#39;s pr_warn_once() so we can&#39;t rely to always<br>
+find it there.<br>
+<br>
+Make the test check also for CONFIG_MANDATORY_FILE_LOCKING=3Dy.<br></blockq=
+uote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:sm=
+all">I&#39;m wondering, if the SUT without CONFIG_MANDATORY_FILE_LOCKING</d=
+iv><div class=3D"gmail_default" style=3D"font-size:small">enabling, why the=
+ mount-check in setup() didn&#39;t report EPERM?</div><div class=3D"gmail_d=
+efault" style=3D"font-size:small"><br></div><div class=3D"gmail_default" st=
+yle=3D"font-size:small">And, should we drop the mount-check for=C2=A0EPERM =
+from setup after adding</div><div class=3D"gmail_default" style=3D"font-siz=
+e:small">this .needs_kconfigs?</div></div></div><div><br></div>-- <br><div =
+dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></d=
+iv><div>Li Wang<br></div></div></div></div>
 
----------------------------------------------
+--000000000000ded71c05cb5e690a--
 
->    *	Is the access mode the same for both file descriptors?
->    *		0: read only ?	"0444"
->    *		1: write only ? "0222"
->    *		2: read/write ? "0666"
->    *
-> - * ALGORITHM
-> - *	Creat a file with each access mode; dup each file descriptor;
-> - *	stat each file descriptor and compare modes of each pair
-> - *
-> - * USAGE:  <for command-line>
-> - *  dup202 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -f   : Turn off functionality Testing.
-> - *             -i n : Execute test n times.
-> - *             -I x : Execute test for x seconds.
-> - *             -P x : Pause for x seconds between iterations.
-> - *             -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> + * HISTORY:
->    *	07/2001 Ported by Wayne Boyer
-Remove it.
-> - *
-> - * RESTRICTIONS
-> - *	None
->    */
->   
-> -#include <sys/types.h>
-> -#include <sys/stat.h>
->   #include <errno.h>
-> -#include <fcntl.h>
->   #include <stdio.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -
-> -char *TCID = "dup202";
-> -int TST_TOTAL = 3;
-> -
-> -void setup(void);
-> -void cleanup(void);
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
->   
->   char testfile[40];
->   int fail;
-> @@ -68,100 +25,64 @@ int newfd;
->   /* set these to a known index into our local file descriptor table */
->   int duprdo = 10, dupwro = 20, duprdwr = 30;
->   
-> -struct test_case_t {
-> +static struct tcase {
->   	int *nfd;
->   	mode_t mode;
-> -} TC[] = {
-> +} tcases[]= {
->   	/* The first test creat(es) a file with mode 0444 */
-> -	{
-> -	&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
-> +	{&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
->   	    /* The second test creat(es) a file with mode 0222 */
-> -	{
-> -	&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
-> +	{&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
->   	    /* The third test creat(es) a file with mode 0666 */
-> -	{
-> -	&duprdwr,
-> -		    (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)}
-> +	{&duprdwr, (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)},
->   };
->   
-> -int main(int ac, char **av)
-> +void setup(void)
->   {
-> -	int lc;
-> -	int i, ofd;
-> -	struct stat oldbuf, newbuf;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/* loop through the test cases */
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> -
-> -			if ((ofd = creat(testfile, TC[i].mode)) == -1)
-> -				tst_brkm(TBROK | TERRNO, cleanup,
-> -					 "creat failed");
-> -
-> -			TEST(dup2(ofd, *TC[i].nfd));
-> -
-> -			if (TEST_RETURN == -1) {
-> -				tst_resm(TFAIL | TTERRNO,
-> -					 "call failed unexpectedly");
-> -				continue;
-> -			}
-> +	(void)umask(0);
-> +	sprintf(testfile, "dup202.%d", getpid());
-> +}
->   
-> -			/* stat the original file */
-> -			SAFE_FSTAT(cleanup, ofd, &oldbuf);
-> +static void run(unsigned int i)
-> +{
-> +	int ofd;
-> +	struct stat oldbuf, newbuf;
-> +	struct tcase *tc = tcases + i;
->   
-> -			/* stat the duped file */
-> -			SAFE_FSTAT(cleanup, *TC[i].nfd, &newbuf);
-> +	ofd = creat(testfile, tc->mode);
-> +	if (ofd == -1)
-> +		tst_brk(TBROK | TERRNO, "creat failed");
-Call SAFE_OPEN() directly.
->   
-> -			if (oldbuf.st_mode != newbuf.st_mode)
-> -				tst_resm(TFAIL, "original and dup "
-> -					 "modes do not match");
-> -			else
-> -				tst_resm(TPASS, "fstat shows new and "
-> -					 "old modes are the same");
-> +	TEST(dup2(ofd, *tc->nfd));
->   
-> -			/* remove the file so that we can use it again */
-> -			if (close(*TC[i].nfd) == -1)
-> -				perror("close failed");
-> -			if (close(ofd) == -1)
-> -				perror("close failed");
-> -			if (unlink(testfile) == -1)
-> -				perror("unlink failed");
-> -		}
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "call failed unexpectedly");
-> +		return;
->   	}
->   
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -/*
-> - * setup() - performs all ONE TIME setup for this test.
-> - */
-> -void setup(void)
-> -{
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	/* stat the original file */
-> +	SAFE_FSTAT(ofd, &oldbuf);
->   
-> -	TEST_PAUSE;
-> +	/* stat the duped file */
-> +	SAFE_FSTAT(*tc->nfd, &newbuf);
->   
-> -	tst_tmpdir();
-> +	if (oldbuf.st_mode != newbuf.st_mode)
-> +		tst_res(TFAIL, "original and dup modes do not match");
-> +	else
-> +		tst_res(TPASS, "fstat shows new and old modes are the same");
->   
-> -	(void)umask(0);
-> -
-> -	sprintf(testfile, "dup202.%d", getpid());
-> +	/* remove the file so that we can use it again */
-> +	if (close(*tc->nfd) == -1)
-> +		perror("close failed");
-It is safe to call SAFE_CLOSE().
-> +	if (close(ofd) == -1)
-> +		perror("close failed");
-It is safe to call SAFE_CLOSE().
-> +	if (unlink(testfile) == -1)
-> +		perror("unlink failed");
-unlink() is unnecessary if you call SAFE_OPEN() before.
->   }
->   
-> -/*
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *	       completion or premature exit.
-> - */
-> -void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.setup = setup,
-> +};
+
+--===============1015615216==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1015615216==--
+
