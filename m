@@ -1,85 +1,90 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue,  7 Sep 2021 13:32:18 +0200
-Subject: [LTP] [PATCH v2 1/5] Add user/group ID lookup helper functions
-Message-ID: <20210907113222.5156-1-mdoucha@suse.cz>
+Date: Tue,  7 Sep 2021 13:32:19 +0200
+Subject: [LTP] [PATCH v2 2/5] syscalls/kill05: Use any two unprivileged users
+In-Reply-To: <20210907113222.5156-1-mdoucha@suse.cz>
+References: <20210907113222.5156-1-mdoucha@suse.cz>
+Message-ID: <20210907113222.5156-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Usernames such as "bin" may not exist on some systems. Find and use any two
+unprivileged user IDs for the test instead of specific named users.
+
+Includes minor code style cleanup in wait_for_flag().
+
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1:
-- Remove SAFE_GETPWENT() and SAFE_GETGRENT()
-- Generate linear sequence of IDs in tst_get_uid/gid() without checking
-  whether the UID/GID exists
-- Add support for extending partially filled UID/GID buffer in
-  tst_get_uid/gid()
+Changes since v1: Update to new tst_uid API
 
- include/tst_uid.h |  9 +++++++++
- lib/tst_uid.c     | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ testcases/kernel/syscalls/kill/kill05.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/include/tst_uid.h b/include/tst_uid.h
-index 7135a9cad..b653d0a1e 100644
---- a/include/tst_uid.h
-+++ b/include/tst_uid.h
-@@ -15,4 +15,13 @@
- gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip);
- #define tst_get_free_gid(skip) tst_get_free_gid_(__FILE__, __LINE__, (skip))
+diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
+index e694126f6..8ec71be49 100644
+--- a/testcases/kernel/syscalls/kill/kill05.c
++++ b/testcases/kernel/syscalls/kill/kill05.c
+@@ -24,8 +24,9 @@
+ #include "libnewipc.h"
+ #include "tst_safe_sysv_ipc.h"
+ #include "tst_safe_macros.h"
++#include "tst_uid.h"
  
-+/*
-+ * Get a specific number of unique existing non-root user or group IDs.
-+ * The "start" parameter is the number of buffer entries that are already
-+ * filled and will not be modified. The function will fill the remaining
-+ * (size-start) entries with unique UID/GID values.
-+ */
-+void tst_get_uids(uid_t *buf, unsigned int start, unsigned int size);
-+void tst_get_gids(gid_t *buf, unsigned int start, unsigned int size);
+-static uid_t nobody_uid, bin_uid;
++static uid_t test_users[2];
+ static int *flag;
+ static int shm_id = -1;
+ static key_t shm_key;
+@@ -35,8 +36,8 @@ static void wait_for_flag(int value)
+ 	while (1) {
+ 		if (*flag == value)
+ 			break;
+-		else
+-			usleep(100);
 +
- #endif /* TST_UID_H_ */
-diff --git a/lib/tst_uid.c b/lib/tst_uid.c
-index dd719d312..08855ba46 100644
---- a/lib/tst_uid.c
-+++ b/lib/tst_uid.c
-@@ -36,3 +36,35 @@ gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
- 	tst_brk_(file, lineno, TBROK, "No free group ID found");
- 	return (gid_t)-1;
++		usleep(100);
+ 	}
  }
-+
-+void tst_get_uids(uid_t *buf, unsigned int start, unsigned int count)
-+{
-+	unsigned int i, j;
-+	uid_t id;
-+
-+	for (i = start, id = 1; i < count; id++) {
-+		for (j = 0; j < start; j++) {
-+			if (buf[j] == id)
-+				break;
-+		}
-+
-+		if (j >= start)
-+			buf[i++] = id;
-+	}
-+}
-+
-+void tst_get_gids(gid_t *buf, unsigned int start, unsigned int count)
-+{
-+	unsigned int i, j;
-+	gid_t id;
-+
-+	for (i = start, id = 1; i < count; id++) {
-+		for (j = 0; j < start; j++) {
-+			if (buf[j] == id)
-+				break;
-+		}
-+
-+		if (j >= start)
-+			buf[i++] = id;
-+	}
-+}
+ 
+@@ -47,14 +48,14 @@ static void do_master_child(void)
+ 	*flag = 0;
+ 	pid1 = SAFE_FORK();
+ 	if (pid1 == 0) {
+-		SAFE_SETREUID(nobody_uid, nobody_uid);
++		SAFE_SETREUID(test_users[0], test_users[0]);
+ 		*flag = 1;
+ 		wait_for_flag(2);
+ 
+ 		exit(0);
+ 	}
+ 
+-	SAFE_SETREUID(bin_uid, bin_uid);
++	SAFE_SETREUID(test_users[1], test_users[1]);
+ 	wait_for_flag(1);
+ 	TEST(kill(pid1, SIGKILL));
+ 
+@@ -85,17 +86,10 @@ static void verify_kill(void)
+ 
+ static void setup(void)
+ {
+-	struct passwd *pw;
+-
+ 	shm_key = GETIPCKEY();
+ 	shm_id = SAFE_SHMGET(shm_key, getpagesize(), 0666 | IPC_CREAT);
+ 	flag = SAFE_SHMAT(shm_id, 0, 0);
+-
+-	pw = SAFE_GETPWNAM("nobody");
+-	nobody_uid = pw->pw_uid;
+-
+-	pw = SAFE_GETPWNAM("bin");
+-	bin_uid = pw->pw_uid;
++	tst_get_uids(test_users, 0, 2);
+ }
+ 
+ static void cleanup(void)
 -- 
 2.33.0
 
