@@ -1,174 +1,56 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue,  7 Sep 2021 10:52:58 +0800
-Subject: [LTP] [PATCH] openposix: make use of tst_process_state_wait3
-Message-ID: <20210907025258.3294914-1-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 7 Sep 2021 07:38:26 +0200
+Subject: [LTP] [PATCH] ftruncate04: require
+ CONFIG_MANDATORY_FILE_LOCKING=y
+In-Reply-To: <CAEemH2cZNzOawYPHQGgeLGVxob37=0kbJyQz=NSvBM0uGpANSg@mail.gmail.com>
+References: <77a5903b5ddf8b63c1acc6c24e4d3195590e8628.1630917312.git.jstancek@redhat.com>
+ <CAEemH2cZNzOawYPHQGgeLGVxob37=0kbJyQz=NSvBM0uGpANSg@mail.gmail.com>
+Message-ID: <CAASaF6weZ3DTLCRkpYfBbYwT+0b2EdDvm6Z0Q--oDyYC2fY+1w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Replaces that sleep 1 sec with a wait until child process state
-changes to 'S' (sleeping).
+On Tue, Sep 7, 2021 at 4:20 AM Li Wang <liwang@redhat.com> wrote:
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- .../conformance/interfaces/clock_nanosleep/1-3.c               | 3 ++-
- .../conformance/interfaces/clock_nanosleep/1-4.c               | 3 ++-
- .../conformance/interfaces/clock_nanosleep/1-5.c               | 3 ++-
- .../conformance/interfaces/clock_nanosleep/10-1.c              | 3 ++-
- .../conformance/interfaces/clock_nanosleep/2-2.c               | 3 ++-
- .../conformance/interfaces/clock_nanosleep/2-3.c               | 3 ++-
- .../conformance/interfaces/clock_nanosleep/9-1.c               | 3 ++-
- 7 files changed, 14 insertions(+), 7 deletions(-)
+>
+>
+> On Mon, Sep 6, 2021 at 4:36 PM Jan Stancek <jstancek@redhat.com> wrote:
+>
+>> commit f7e33bdbd6d1 ("fs: remove mandatory file locking support")
+>> removed mandatory file locking support, but mount option
+>> is still allowed and produces no error. There's a warning
+>> in dmesg but it's pr_warn_once() so we can't rely to always
+>> find it there.
+>>
+>> Make the test check also for CONFIG_MANDATORY_FILE_LOCKING=y.
+>>
+>
+> I'm wondering, if the SUT without CONFIG_MANDATORY_FILE_LOCKING
+> enabling, why the mount-check in setup() didn't report EPERM?
+>
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c
-index 98de93a9e..e2fdc4c37 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c
-@@ -22,6 +22,7 @@
- #include <unistd.h>
- #include <sys/wait.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 30
- 
-@@ -63,7 +64,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGABRT) != 0) {
- 			printf("Could not raise signal being tested\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c
-index 9808c5c4f..ca3d0798f 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c
-@@ -14,6 +14,7 @@
- #include <unistd.h>
- #include <sys/wait.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 30
- 
-@@ -36,7 +37,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGABRT) != 0) {
- 			printf("Could not raise signal being tested\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-index 46f26163d..263d98a08 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-@@ -18,6 +18,7 @@
- #include <sys/wait.h>
- #include <stdlib.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 5
- 
-@@ -52,7 +53,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGSTOP) != 0) {
- 			printf("Could not raise SIGSTOP\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c
-index f6adcc938..9fae578b4 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c
-@@ -15,6 +15,7 @@
- #include <sys/wait.h>
- #include <errno.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 30
- 
-@@ -59,7 +60,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGABRT) != 0) {
- 			printf("Could not raise signal being tested\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c
-index 330618877..8cafb3bf0 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c
-@@ -23,6 +23,7 @@
- #include <unistd.h>
- #include <sys/wait.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 30
- 
-@@ -71,7 +72,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGABRT) != 0) {
- 			printf("Could not raise signal being tested\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c
-index 06a79a96d..3938f44b7 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c
-@@ -16,6 +16,7 @@
- #include <unistd.h>
- #include <sys/wait.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 30
- 
-@@ -45,7 +46,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGABRT) != 0) {
- 			printf("Could not raise signal being tested\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-index 04ef0a2cc..554714695 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-@@ -17,6 +17,7 @@
- #include <stdlib.h>
- #include <errno.h>
- #include "posixtest.h"
-+#include "proc.h"
- 
- #define SLEEPSEC 30
- 
-@@ -88,7 +89,7 @@ int main(void)
- 		/* parent here */
- 		int i;
- 
--		sleep(1);
-+		tst_process_state_wait3(pid, 'S', 1);
- 
- 		if (kill(pid, SIGABRT) != 0) {
- 			printf("Could not raise signal being tested\n");
--- 
-2.31.1
+Because kernel commit f7e33bdbd6d1 removed that code, it generates
+warning message instead.
 
+
+>
+> And, should we drop the mount-check for EPERM from setup after adding
+> this .needs_kconfigs?
+>
+
+I'd keep it, it doesn't hurt anything and older kernels could get EPERM
+for other reason (like running test in namespace where you don't have
+CAP_SYS_ADMIN)
+
+
+
+>
+> --
+> Regards,
+> Li Wang
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210907/b1de7d4a/attachment.htm>
