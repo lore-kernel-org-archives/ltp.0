@@ -2,86 +2,72 @@ Return-Path: <SRS0=89zk=N5=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ABF2C433FE
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 02:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88261C433F5
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 02:53:21 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 650D6610C8
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 02:40:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 650D6610C8
+	by mail.kernel.org (Postfix) with ESMTPS id 36FC760F92
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 02:53:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 36FC760F92
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 790203C9782
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 04:40:46 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id D4C763C952A
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 04:53:16 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7C4E3C2849
- for <ltp@lists.linux.it>; Tue,  7 Sep 2021 04:40:37 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 95BC33C2639
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 04:53:07 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F0A00140054E
- for <ltp@lists.linux.it>; Tue,  7 Sep 2021 04:40:36 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 73D26600732
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 04:53:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1630982435;
+ s=mimecast20190719; t=1630983185;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hTsh7OT8ZGEUXjTnY/FkjRRaK3xBvU+xKiTE9/coxhk=;
- b=T2iSimBcfKOaPse76TT66uFlaEzmGelLb6L5rOE0IzBPoPIJk4Zg/xEUQR/1rYe7Lf5cJ4
- 2OaDjD9dphTuBahaS3G2aO5qlcvD+GKe1ihv8wq6MjDJ3RXbOI3utCuRlqN0llhMAspxmx
- F2lPSUEpET4IZEtpqOAs3AOXhjiLD+M=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-9zYtNvaMO2SIzB1kSeAbYQ-1; Mon, 06 Sep 2021 22:40:34 -0400
-X-MC-Unique: 9zYtNvaMO2SIzB1kSeAbYQ-1
-Received: by mail-yb1-f197.google.com with SMTP id
- f8-20020a2585480000b02905937897e3daso9973637ybn.2
- for <ltp@lists.linux.it>; Mon, 06 Sep 2021 19:40:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to;
- bh=hTsh7OT8ZGEUXjTnY/FkjRRaK3xBvU+xKiTE9/coxhk=;
- b=fL467WzcC4gw9XrAxfTrHLKdnt1iEHe+l0ovOYs3xstTUmIDyp2CW44a/KYq36hIQB
- K9WSELENjcNZ8vysFalZkXVhYpX+JHznib1EZYDLvav26m1Ol36Of+PGTm6xXFys4/pv
- LKKCehqy6S0w25rS9OpaypydVT/pFdnKn7srEcaWouHLeYKi8eHG0TOjtt7H3Ttf0XXc
- bdtO4QAlKxCIclhQOBE6QCmFdH9qhByDa7B5Mf3NgNmQZNWFhhZAFjB+3PAL491wSjXh
- ojHnc8UoDtnD4VY90zOSYXQPwF6GWkOdbVyxcPMQ34qLqzUQFmXe5b5Ifck7rOZpKwut
- avMQ==
-X-Gm-Message-State: AOAM533YWIMtBvzi2IXVaKeqgx6OvZrlP2Bb86K1egH7BXHKkL444c5w
- 8wpwBvZkdztBFVJ8hArwqhzXzjh8ls64hq68w2CaAB6eUr7a/dLAwJl8z2TACxHLqIdaNPEzi/K
- 6Sa5gBFoE3D85ncMpRZSFyx/cktQ=
-X-Received: by 2002:a25:b941:: with SMTP id s1mr19526792ybm.304.1630982433407; 
- Mon, 06 Sep 2021 19:40:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFa5hyAi8uUUuqDbG2DArrqK8s7A+isieh39Lwv2ISVmpVBP+rUWRnNXNJFWrPegLvESrlJtAYO58SXuxd8F0=
-X-Received: by 2002:a25:b941:: with SMTP id s1mr19526767ybm.304.1630982433144; 
- Mon, 06 Sep 2021 19:40:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210817104625.2559362-1-liwang@redhat.com>
-In-Reply-To: <20210817104625.2559362-1-liwang@redhat.com>
+ content-transfer-encoding:content-transfer-encoding;
+ bh=KWQEZR5TPvspL8xH4/e0swr82MdewjfB81bDplnN0tU=;
+ b=LCUIZnbGRHc+0dJBnKls/+WuuB6pfHNo+OzOX+ptH01O8B0bChEObhSN5rO9gxzXDADixf
+ MUigKwvoUzsMCBPmaGIkT3k5tM2eZWRJOk23qQzcSGuE2dz0+lV1U5OIV3CZfJ0fAKW7tI
+ O8jtg0XsnACWuCiTPHIjc/0H0lVQ02A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-lEpYUuzGO2GNJr4CG7n8mw-1; Mon, 06 Sep 2021 22:53:03 -0400
+X-MC-Unique: lEpYUuzGO2GNJr4CG7n8mw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
+ [10.5.11.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6943A801A93
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 02:53:02 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com (unknown [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 965FC1ABDF
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 02:53:00 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 7 Sep 2021 10:40:21 +0800
-Message-ID: <CAEemH2fOWt1SjoTyqcWFkSyGf_S28FsPreLrKcUvOHu0pRz9OQ@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>
+To: ltp@lists.linux.it
+Date: Tue,  7 Sep 2021 10:52:58 +0800
+Message-ID: <20210907025258.3294914-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
- defallocate size
+Subject: [LTP] [PATCH] openposix: make use of tst_process_state_wait3
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,56 +79,176 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0396410915=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210907024021.HIjLXUNx18r7aC84EWhgJl8mGw0s-vIfdx1kbngpYgw@z>
+Message-ID: <20210907025258.px4jsAuV592p22GPs1LvF_El0Abtupu_FFrhExXMHGo@z>
 
---===============0396410915==
-Content-Type: multipart/alternative; boundary="000000000000901d7005cb5eb029"
+Replaces that sleep 1 sec with a wait until child process state
+changes to 'S' (sleeping).
 
---000000000000901d7005cb5eb029
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ .../conformance/interfaces/clock_nanosleep/1-3.c               | 3 ++-
+ .../conformance/interfaces/clock_nanosleep/1-4.c               | 3 ++-
+ .../conformance/interfaces/clock_nanosleep/1-5.c               | 3 ++-
+ .../conformance/interfaces/clock_nanosleep/10-1.c              | 3 ++-
+ .../conformance/interfaces/clock_nanosleep/2-2.c               | 3 ++-
+ .../conformance/interfaces/clock_nanosleep/2-3.c               | 3 ++-
+ .../conformance/interfaces/clock_nanosleep/9-1.c               | 3 ++-
+ 7 files changed, 14 insertions(+), 7 deletions(-)
 
-Ping~
-
-This patch is only to increase the test blocks to make it robust,
-it's no harmful and actually changes nothing from code logic.
-
-I will merge this if no objection by the end of this week.
-
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c
+index 98de93a9e..e2fdc4c37 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-3.c
+@@ -22,6 +22,7 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 30
+ 
+@@ -63,7 +64,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGABRT) != 0) {
+ 			printf("Could not raise signal being tested\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c
+index 9808c5c4f..ca3d0798f 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-4.c
+@@ -14,6 +14,7 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 30
+ 
+@@ -36,7 +37,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGABRT) != 0) {
+ 			printf("Could not raise signal being tested\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
+index 46f26163d..263d98a08 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
+@@ -18,6 +18,7 @@
+ #include <sys/wait.h>
+ #include <stdlib.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 5
+ 
+@@ -52,7 +53,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGSTOP) != 0) {
+ 			printf("Could not raise SIGSTOP\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c
+index f6adcc938..9fae578b4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/10-1.c
+@@ -15,6 +15,7 @@
+ #include <sys/wait.h>
+ #include <errno.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 30
+ 
+@@ -59,7 +60,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGABRT) != 0) {
+ 			printf("Could not raise signal being tested\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c
+index 330618877..8cafb3bf0 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-2.c
+@@ -23,6 +23,7 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 30
+ 
+@@ -71,7 +72,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGABRT) != 0) {
+ 			printf("Could not raise signal being tested\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c
+index 06a79a96d..3938f44b7 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/2-3.c
+@@ -16,6 +16,7 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 30
+ 
+@@ -45,7 +46,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGABRT) != 0) {
+ 			printf("Could not raise signal being tested\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+index 04ef0a2cc..554714695 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+@@ -17,6 +17,7 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include "posixtest.h"
++#include "proc.h"
+ 
+ #define SLEEPSEC 30
+ 
+@@ -88,7 +89,7 @@ int main(void)
+ 		/* parent here */
+ 		int i;
+ 
+-		sleep(1);
++		tst_process_state_wait3(pid, 'S', 1);
+ 
+ 		if (kill(pid, SIGABRT) != 0) {
+ 			printf("Could not raise signal being tested\n");
 -- 
-Regards,
-Li Wang
-
---000000000000901d7005cb5eb029
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Ping~</div><div class=3D"gmail_default" style=3D"font-size:sm=
-all"><br></div><div class=3D"gmail_default" style=3D"font-size:small">This =
-patch is only to increase the test blocks to make it robust,</div><div clas=
-s=3D"gmail_default" style=3D"font-size:small">it&#39;s no harmful and actua=
-lly changes nothing from code logic.</div><div class=3D"gmail_default" styl=
-e=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-=
-size:small">I will merge this if no objection by the end of this=C2=A0week.=
-</div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature=
-"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div=
-></div>
-
---000000000000901d7005cb5eb029--
-
-
---===============0396410915==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.31.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0396410915==--
-
