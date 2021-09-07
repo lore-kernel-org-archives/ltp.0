@@ -7,84 +7,83 @@ X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF355C433EF
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 09:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44182C433EF
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 09:27:45 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBB3D61101
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 09:14:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBB3D61101
+	by mail.kernel.org (Postfix) with ESMTPS id 52183610F8
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 09:27:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 52183610F8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 617023C3174
-	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 11:14:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 4185B3C773D
+	for <ltp@archiver.kernel.org>; Tue,  7 Sep 2021 11:27:42 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C23E3C222D
- for <ltp@lists.linux.it>; Tue,  7 Sep 2021 11:14:18 +0200 (CEST)
-Received: from esa16.fujitsucc.c3s2.iphmx.com (esa16.fujitsucc.c3s2.iphmx.com
- [216.71.158.33])
+ by picard.linux.it (Postfix) with ESMTPS id 18A683C222D
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 11:27:30 +0200 (CEST)
+Received: from esa14.fujitsucc.c3s2.iphmx.com (esa14.fujitsucc.c3s2.iphmx.com
+ [68.232.156.101])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 96846600CFA
- for <ltp@lists.linux.it>; Tue,  7 Sep 2021 11:14:17 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C3C4960117B
+ for <ltp@lists.linux.it>; Tue,  7 Sep 2021 11:27:29 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1631006058; x=1662542058;
+ t=1631006851; x=1662542851;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=4Cri2pv/GpytaiyK4GzMDY3TWQoGxHZ20OHUVMrL5WM=;
- b=gqA/1+9bR0v80bM4FmJQqq6dE50InHgei0VeoiJpk7FAsd13JkK/ADRY
- mRgdxipkUZOl2na0UYRi/2Dh1Nj578Kw664H3EO1qadxCSfmjnzXV6EhH
- kItUqWIuyMPskt0tpZGH7FLdqszZO+8BkfcLF2OQzGD/6g100/R/pbKyq
- p7gBDDGM1b2NbgfT62NWfXzV4qx/KG+0akZibwXw8QWGAZTTz5r/xCbkS
- pGwV8sxcdLIr22EkEOisvam5jR+cHhqL7kr5cufK8X6Kwv0Egv7L+ZuYK
- KNBkRCc1NPo7J5b6roeKuquTIIL/wHp3k1LWsp/dDb12FCCX2yTTwDaNj A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="38648978"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624287600"; d="scan'208";a="38648978"
-Received: from mail-os2jpn01lp2050.outbound.protection.outlook.com (HELO
- JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.50])
+ bh=9BGRrIAlP4nn+vbd+rjk3o4ODPTGS14TW6T9aECRjo0=;
+ b=GZvQDYF8LZk87Tyw6sO8XFt/uJp6kciBzxV3+WErnsEgVfpmflQiLujM
+ +OFi9RB1Gu7t4ez75fksxGc4x8s7GSTX/5wNiMwnGeIqQ3hGTLNiHROWN
+ 7N41hP4+1mmOMlFxh9Jz1wQCJsNZC1JMsvVfkjDhG1Mt0Y3MsV+mWrccR
+ zefRBalxoBovExtkgq1402j4S2790UAl9g+jpE2sP6u0MoSB6WffsAMCo
+ P4qxKHILvXUqblxT55fKcdhXB3Bn2F0IF2gHTcVRQDP8Sc/yRZ9P7l3wq
+ 2iGvIBQHEa7mgw8iqwB0tIpwqLwFyc39AgMALQW7ZWC16BnkLh1wm8Tm/ g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="38584614"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624287600"; d="scan'208";a="38584614"
+Received: from mail-hk2apc01lp2058.outbound.protection.outlook.com (HELO
+ APC01-HK2-obe.outbound.protection.outlook.com) ([104.47.124.58])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Sep 2021 18:14:15 +0900
+ 07 Sep 2021 18:27:28 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W2Z9ZbepCvUJwejb/wluyYwnWDkMGXXic8GtKcjT/sFchYp2Ujn/mrmG8QL5T5z4/hDbFpEwqowecf9tM80kk0BjA60YOl1J/ZHt2vXAQdzhgO5sFeBvLvFguUH/h1HuxD/xaKDO4tf/9/p7T0WxRjQc07ujfWW57DMmhDk+HO1L7mz2c4RHOQqzhst1f8s13QmU/1FnNfSy5/69W8N+D3T6BPcrTRblzScGllQ27VuhPzKo91ydwR8w0vjRtP+z29O1PcxURKlma/01Uls5cbs6plPrs6aLoSCl4eQd2OYyBoIsJhHxqUb8d5TgtwPsMp4v93j8Oe6/esWNJaRy6g==
+ b=P3j1+RvgVv+MwJ3AZbeFT2sOmPVQD2rVEsqaoj1LpyK2ZDPB/M/PN3uyhgvu74nzEnKrcW3qACk9Nd32rdBBHTOdcsca4swgBuEbZpShUy7YbIv7weeqEIitmutn4YrNcomR4aQN1xl7cSB+bESEgEqkx8C0CiHUl57312NvbmC+Hv2EAJfvO3M6U0vxxbp3I0rR8mcpyjNCMSLzB89OCjPLdriBKDXf0DZkO7pcWdaxE8S6vPNdkmXPBTXRBqmbuE6ObUncN6noWvNhgmeVrY1gHH1r8PeyC232FSHwpE5ZsCatnOLR2UErK2RE9ib3c4372qUXrslQNHUQd5apCw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=4Cri2pv/GpytaiyK4GzMDY3TWQoGxHZ20OHUVMrL5WM=;
- b=N9gcr4q8uH9Wx5LhBXDdQ3t/3Ydw8iJ1fhCYmRsO6I+jUip4endF8gtmNHN920jGNnFV5jZjVr46U4w+vVQr2mHL2zlTrPDPqhT1DF16OS+y42dt/rTDTpxcwvac3gdiYJjhgcHBnyqVU97BHxfV/KNJpiXpIVTmhM0zc15NHVCHfvAJEhJWBJvHHzdEzxJSZC74M4a831cPBvB4lB2k0/Akdtc29+Mt32i1LLbZT/aRQlfCf5upA2IlF/Dwhu6IYP2pG99BDIApQV6NqiVa7hOk/JopRyCslxzezhC8/LLGRuzhzS7bbS10yMGidIvUqA7mdhm/ix/+Nzn8kERKwg==
+ bh=9BGRrIAlP4nn+vbd+rjk3o4ODPTGS14TW6T9aECRjo0=;
+ b=Zwn9fnIFNCi5mjHt5IP+5ouIJGscKTHjl2I/S/vIW4GOJ1hlEB73ilqEysd0aN606Aj9lyoPnte6Tq9DtVGwZH3RrPBZQvPPySNqzgpt3KX3kb2W+gDlYN56F//yKHRXcZtg+XXUM9A2ZX6xxr0GmjHUtIo6MWFc2q8Bpdzlw+Ztf7/8WrNxMj4X8SNSJkzb+jq0V5h8Dml5kE7JDHgtF29imxyeGKZXYweKZx+MBgnlYeX042+8lkFiz5R8eXTfP4wlIEH92EQAsVMxnL4k78p/g6uQmA8/BMthuab4+5xyZx3pLYLfZau+R8iOwoq/Y4sshfOTc192z+TVr/ZljA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Cri2pv/GpytaiyK4GzMDY3TWQoGxHZ20OHUVMrL5WM=;
- b=Tl2Qf1y8io7rGY7HBG9mlmKPOKCtyntTrhFjWXD7GBOTavLVXaDZKUSetRz8buuIOXf1qZ0YFxxmDcAW/VIDwRUf25EHdubXa/0i6IuWP7Vl7NysCZEgcuXp06wv1qx+y4Sp7GZr82NRo63CAJPE/Fomt6EbCdZq0F+PIXm7yhc=
+ bh=9BGRrIAlP4nn+vbd+rjk3o4ODPTGS14TW6T9aECRjo0=;
+ b=Rqk/9AbKUgUdCPilBtyae0oCz05xK9i8J6DjoMLrl7jCKSN8wG6JL1oaXpA3lAUq4xVLfT5SEA5jW7ifiXp8Sa/seDZfdzpoEQtTvXba+0bAxhal0emmQ9BG1C0RvRtd0cglqDQvAprhPqI4JfTxLh1reDct2oYeIuA0sPJ9u8c=
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TYAPR01MB6282.jpnprd01.prod.outlook.com (2603:1096:402:3f::10) with
+ by TY2PR01MB4204.jpnprd01.prod.outlook.com (2603:1096:404:e0::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20; Tue, 7 Sep
- 2021 09:14:12 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.23; Tue, 7 Sep
+ 2021 09:27:24 +0000
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::783d:cf1b:a4b9:5791]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::783d:cf1b:a4b9:5791%6]) with mapi id 15.20.4478.026; Tue, 7 Sep 2021
- 09:14:12 +0000
+ 09:27:24 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
 To: QI Fuli <fukuri.sai@gmail.com>
-Thread-Topic: [LTP] [PATCH 2/5] syscalls/dup2/dup202: Convert dup202 to the
+Thread-Topic: [LTP] [PATCH 3/5] syscalls/dup2/dup203: Convert dup203 to the
  new API
-Thread-Index: AQHXn/IE2dyWv4B5KUGElWamHL8ZZquYUZcA
-Date: Tue, 7 Sep 2021 09:14:12 +0000
-Message-ID: <61372D6C.5020003@fujitsu.com>
+Thread-Index: AQHXn/IKANfZeI79rk6nOKViv0Tb5auYVUcA
+Date: Tue, 7 Sep 2021 09:27:24 +0000
+Message-ID: <61373084.4070104@fujitsu.com>
 References: <20210902115849.72382-1-qi.fuli@fujitsu.com>
- <20210902115849.72382-3-qi.fuli@fujitsu.com>
-In-Reply-To: <20210902115849.72382-3-qi.fuli@fujitsu.com>
+ <20210902115849.72382-4-qi.fuli@fujitsu.com>
+In-Reply-To: <20210902115849.72382-4-qi.fuli@fujitsu.com>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -92,66 +91,66 @@ X-MS-TNEF-Correlator:
 authentication-results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a3726ed6-c7b0-4063-53ce-08d971dfdb5e
-x-ms-traffictypediagnostic: TYAPR01MB6282:
+x-ms-office365-filtering-correlation-id: a3983527-80e2-4ffd-0f22-08d971e1b391
+x-ms-traffictypediagnostic: TY2PR01MB4204:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB6282B42EB58CD7BFEAAF5C2CFDD39@TYAPR01MB6282.jpnprd01.prod.outlook.com>
+x-microsoft-antispam-prvs: <TY2PR01MB42041FF9997D2B47E6AB1C7AFDD39@TY2PR01MB4204.jpnprd01.prod.outlook.com>
 x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rtyh0mjB0BUEDRbsF9lDE/CVpedT3eLYjzfJu6xGKHChpbnML4FiRbe0KLP9JfF33gf62h+kkOyTLLBEIWIeWSIIJPRA1kcpl5mwKbb6GUS3iTjzvcbmuS03uLQnAZH8Db4EOY8XDW433jbdanIx/Z8PanTgTbXNTSq+nRN5ZXVJ3oL1mcJzUoAf7t1OgIQwN93NqxRX5UpqAFrqkf6vtOG7bkI/mBx+5Yg0isKdBhN+GFXxkpGCWp1sEr5wN4KdlMVX4SBIM715hs/v1iBrN37k6mFqDCk3+iUlNsiO++C+n3Q9/aS/u9W4Pkt9MLbxoukfXHEtc4j7k0nlaLe4E6iBD8pidtzWoHxnc2/yJcYcGOlYnekxV4hpXvL2CM1qqxdQ3Vok1ohqxYRxco7VO8gdSwhLvBgJkwPxbqbnsJ0AjqMCj6mQCjS5GLK+fkasfe0jfkaR0Vt1bYsCUH4LUUCqWCcj/jOCYubYFwMMC1WaL420VNKD69IiHLb1RIiYkW/RArBUf5/8ektSlUk7X3eeZrgxa2cWKVONtQEiqGX0ov14DRlVzlbbMk1JQ0UeL14QPXYCH1jaYcFSkV+9Te+KmLneD5dEqQuSZAWMUT4/OKw3v8W1HoqUOoxtO9mRWiY05/R2x7new0T2z6nHJbsM9PmBbCdPxTwxXFClLeERa6R7hR0WgVuuci/9n6+c0Xc0n2LZCtgPHzHlyyJBJSEmB5LZmY00YQVv/XaB6qY=
+x-microsoft-antispam-message-info: B84HOA4I0cVNQGMiyOUMWzcpucUk1TxYQwgRjU2iyAP6irT09rPcV9kQWuv/sDJglq/fcmRbmKqQLuhzOdevTQhmlxWDaAGOaUGKv0Vk11PJ0e3EHzWcOcxi5cnUJ9600nHVddYRTD03qTik90dHcq9VLN/WwQck/vVkpkIlxxbkl3+rDQZvkfBhaQnUQ51Z5PPkWCkcZgbY/ibhFOrwefHkv4yxXjxmInCX7gs26MaImWi9v97d7fY8EcSqbbZhTtrtzwgH0QhYDZ3dpF009yQ9fi+3Qrp+1w/j8jMlf/d8n1TPLg2B2Ua2wl+VvFCd0NbE3UOYJxb9M2mNn4yFgsayOpN7yHh29UEz1vGmdzt0e0+j5hgxSiDLB9UzceymtiujpxWy3JPDzPc7B/nOlKUQ9EFs4675cCy/fSPoupBkkvQ3D0EV5dkRW0MvPV6OMHZU46+av/L4KslhYmdCiSstY25areCZmNrkPPUPT6EA8mysSh35xTznE9uhTluSctg2GQAzv0ULl0toBcL89F6JphIIaojsji0l3n2mG+AHtdvu4eLcLafpjLgWRijsQGa7pYPcJZgyOTYyDhnjnFKODoxBaSfydo775r50WTputZVXNTqhEqURrp4Kwpt/k+MWLJl4s1efbDusBOMaH+HLL9uCyKNJvzQOBUifUqHJfaEt1KFIuoScbRArARy8vWPjZpYvHCHMKiNalNDIkqD/6C1G0dXsuGWchNBGT37dfUis+ylawcnAKTULws09
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(366004)(91956017)(66446008)(64756008)(66556008)(66476007)(2616005)(85182001)(6486002)(66946007)(54906003)(6506007)(2906002)(76116006)(186003)(6512007)(71200400001)(26005)(86362001)(33656002)(478600001)(38100700002)(122000001)(83380400001)(38070700005)(6916009)(87266011)(8936002)(5660300002)(8676002)(4326008)(107886003)(36756003)(316002)(2004002);
+ SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(5660300002)(83380400001)(8936002)(2906002)(66476007)(6916009)(71200400001)(54906003)(6512007)(122000001)(2616005)(316002)(85182001)(8676002)(66946007)(6486002)(478600001)(38100700002)(4326008)(36756003)(6506007)(91956017)(38070700005)(64756008)(76116006)(66446008)(186003)(86362001)(87266011)(26005)(107886003)(66556008)(2004002)(62816006);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?MUowVmxhTXB6Ti8xOGIrRy9DQk9keFg0b2p3dWs3M0kvSmtlUktQWDNNbnN1?=
- =?gb2312?B?L3h3bXZ6ZzNCeW94VkI1WjAxWnZKUHFmYnN0ZmNWcmxhVDNWdFdTbVdxcE84?=
- =?gb2312?B?bTYxaDJpb0t3L25tSFNhWjVmMmlmWUVtMU45TnBjTXZyakVZUXpUMmlnNHZ6?=
- =?gb2312?B?S0NweXA5RFhxcFdwbmE0UU54dkJMYmFsajRONlcvRXZ5c3hFTWlDdDhmbjk2?=
- =?gb2312?B?YlhKWXVRbEZmOE9LS3ZtYXVIYjhkeHg0RWdIQ21QVm1ZZ2FZdWZCWVFYbk9k?=
- =?gb2312?B?TTM3RFN6TFNOSHpOdTBtVVNGbFVWa1NlY2IvN0FQbUxrQ2xVdklOa2wzWGxR?=
- =?gb2312?B?SDRJaVhiWUFHL2R3c2RmallvVVRrVERZWC9nNVl6ZkxuWXVDQVoxSUVkalRy?=
- =?gb2312?B?dlBjaEZSTXdza0NSUjhpSUFrR1hrWHJHcFFwd3Q4MTVpc1ZyWkNGOEh2OVQx?=
- =?gb2312?B?a2crZ084bFpFcExCYjVPRWRubnY2aC9EakhHK0l2UmVaU1dKNVlLKzdjMU9Q?=
- =?gb2312?B?STZJSHQ4RXE4c0Q1SmtrUmpDME5GYUkycU5XNUh6a0QwMlBpVzJvN0wwZHpM?=
- =?gb2312?B?SHZTNmJBNmgwejhvWEZtaStWT0hTSkNTRTZQZS9BVkk0YVM2QlFZaXQwanVw?=
- =?gb2312?B?RWEvK2dDMU8zdXlUZnlmdS9TU1JVQ1lYdXlQaXdMdlJDUlNkUjZJaGlYUXdD?=
- =?gb2312?B?SDRXNlRabW5ZZVVTOEs3YjVvQmJ5T3RSWDAwSDZwb21wSVRjOTBTN3pCZ2JB?=
- =?gb2312?B?Q3dPSmJrbzhpT3ExMVdyMGhsSk5qbmtFY0pxN2RnOGxicHlwdGx3Vm14Zy9y?=
- =?gb2312?B?dXdXNnhBK0RwNlFmOFB3Rkc0eE9yOTNobkxqMjE2RGVjSVJYWGE1Rkt1cDA0?=
- =?gb2312?B?MEllK1JVMEF1RmdoYmNtbUE0czYvWlVoRkQzVmprYjZpRFkxeGJaRVJ4QkMv?=
- =?gb2312?B?YlFmTTI5cUgwb2YvYnJoMnIvTWRqL1NjSEZkbnJ6aWZoS1VndkFmblh1NU9v?=
- =?gb2312?B?TzY0Uk9TRTYrTWhpQ0dnL0tiSW5VK2RoREl5TGpHT25mVVZYWGhtVWVIdEZz?=
- =?gb2312?B?K3dEb3ZvSzdSRXBVcExJNTNSRldOUlQ1SWtONW53V3c1RlRBS0lsREoyRXc1?=
- =?gb2312?B?MlNKeGRXYzNyckx3bXNqVmZaaDJqNlNqdFAreTBBS2FjYTQyNGM5amZNa2ph?=
- =?gb2312?B?Q29oOXhhRkhLM3BwdHJjL3J4ZDhiekhNZ21HTHZmdnN2SkliV1o1VjZaelRO?=
- =?gb2312?B?NFgxOVUvTGJCZnVOTHpQazdYVjAyR09PSlBacWV6OVZ1U213OFd4TmNjVjFp?=
- =?gb2312?B?QVd2Z05HaDNZNEdGdmlCbzVoWWU2WjFmMW5PMG9XUWcxMmVxeHVydHhGVktr?=
- =?gb2312?B?bHFVQUQrVUhtQkYrQjJUY2Z0NjRMbW1MVTZ3MDd1czJZVjEwT3VyTngrRDY0?=
- =?gb2312?B?aG9EYWlVUktjOFNZdStITDdmbVZsdVo5Z1FCejlrSE9jcVhyTXRCRmJ0ZmlZ?=
- =?gb2312?B?bWNaL2Z6bGJ4NTFueFpVckovQlpveWg3WDRtVGJGQWY1bXF3RWhtM29EMWQ0?=
- =?gb2312?B?UW1yQVpXSGFqL1doLzllSVFiLytUMExaa0t3K1htZHRJVi9wcEJRVnpIQVIw?=
- =?gb2312?B?OGN4Q3FmSEdvZ0NZaWNJUGR1SHRhanpqaWNKMWdrRm11ZFJIa1BnSmhOYnU2?=
- =?gb2312?B?Zk1CZEplTkh1UW56ekVJMUpRLzBacFNscU9zL2dXRXZPZE40NldpRUpzSlE2?=
- =?gb2312?B?MFRTeU9wNG96T1JNMDBYTGVCaFJoWFJqcGt6T09uZm5OdnVocW44WG40Ujlo?=
- =?gb2312?B?OUM1TjJnQmtUS3gzR0piUT09?=
-Content-ID: <E1B41456154DCF4298C866A9F6428959@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?eGNkUVNKQVJWN1ZHYUdHSCswNFFDemNvK01jcVhTZzlvR1FYMlRmUFVIM2d4?=
+ =?gb2312?B?azF3V2Z3ODNGTGFoa1FPdVF5ZWFabDRoZHdPOER6bHhxbUtRQXQrR3N4b1pO?=
+ =?gb2312?B?aUFRbGhBaEd6T21qSEpYMTR4c3ExWi9ONEc0QW8yTEpSQ2hNbFAzb2h6Qkhy?=
+ =?gb2312?B?Y2tQNkpIREJDR0pFaCtabTl1VFUzVmc3d1ZKcUZXam83SU96R3V4MGlvV1JB?=
+ =?gb2312?B?NXFEb3luTGVaeGdGRTAwSmdtSGFPK1ZzTnNicytDMGcvZ25aSTNpWkN1TDRj?=
+ =?gb2312?B?SWorM3JLK2ZhWXV2SEJKajJjeTA2TFRBeWJReEo1cjVBQjZ4ZXc1WXdLTmJx?=
+ =?gb2312?B?TWJDTGhUdk1KUE1pMm9zWWs3R3VYSHRnOCtTMUljRHRwaGRlclB1UXllU2Yx?=
+ =?gb2312?B?YXFFNlVmckdzMjNkRHNLNDAxVDdRVUtzUVJTU0lZbjJIMWdERXFzd1FBZFBo?=
+ =?gb2312?B?UmkxUDVOb0hGQnRnYXhCT2trS29PWUF2SHJGZVhWMTdnZDFzMjJBK2pwMTlq?=
+ =?gb2312?B?clRrLzhqdDBuSThQaEgrTG1uSTdRSHMzTnpjdGx3M3NuTG13bUZNTlhLbE12?=
+ =?gb2312?B?d3M3bk0wYjltcm5ZNml5U25EY3ZtWGlwVUgxemRyWTFyeTNheHB1ZHhaTXB4?=
+ =?gb2312?B?b0tlN2Nhc1hQNXVyWUwzVnZzTG9JQkpFOFRtQU1FTldmTk80aVVrcWk5Vzhh?=
+ =?gb2312?B?Nm1DaTViOHZmajNjU0ZtR2lLYXp6Z1pyeTZYZE4zemVudWRnVy9vMGJBRDV0?=
+ =?gb2312?B?K0ZWd01yYTNyT3VmcTJVRFZXMFRyY1hDWGJ4MG56TEsvZ3dwRDREYmtaZ1dq?=
+ =?gb2312?B?VlV5UFJBUWVBWm5UbUFUMk1HalNRSTZ1YlMralVsMGJSTk5FRVVUWDBKeXlO?=
+ =?gb2312?B?SlpRQ1NTRnpVbnhDcis2WkJoYmttVXBFR3h3dFhKMkU1QkJOM2tscWVWaE5j?=
+ =?gb2312?B?QXJJUktRK1o3aHVaMlJ3T29Sc1NWb3RwZU8wSXdSRmRuazZWN0xJelorRFhp?=
+ =?gb2312?B?dHJUWllKcHBoOVhBbGhpdVJscmRrRkszWkRDQmk2cEVsY3NPeVJjV3VEa0Zo?=
+ =?gb2312?B?NUQxSFAyQzQrdEQySEE5Z3F3ZFl2ejZnMkhZMmV0STg5bWNJRUpjd3cyNTFL?=
+ =?gb2312?B?bG9CdUp6M0Z6ZWp3ZDZISk8wcU1XMS9hZThsT3pTWmlkSGlXUnlrUEszQnda?=
+ =?gb2312?B?aGFlN3hmeU5UYUFqMnZMdHMvZmpFUTA0WGZuYlBzbFVZTkNnazU0YU1sOTVz?=
+ =?gb2312?B?VmNCTEVESVcwNkQ5WU5PQnVxNHVWckxPWnRHT0t6VC9UaUd1cHFvYm1lN0pk?=
+ =?gb2312?B?L0ltb2F5UFBTNzZQejA2S2pCUWdqazYreURHcTY3S1g2aWw3VEg2T1B2dElZ?=
+ =?gb2312?B?ME55QWhPK0o3elhLZCt5Y2sxaWZaSmFYWVZGT25rT0VTa3pDZEh3QVdJdHdt?=
+ =?gb2312?B?VWJRbldxY2loaW9LcnZFNFZzbTcyRnhRL1pHQ3QwdVlKbmh5Qkl3Zi80OTc2?=
+ =?gb2312?B?VEZqbXVLL0F3UjY1UU9ubkdGUkR3QWhwbTF4R1lBc2dLMDZhaHI2ZmRkMmph?=
+ =?gb2312?B?WDlJS1RIQjJxd0hWVW5pMlZuVTZ3YU56YjFGSmFreFN6T0VFSll3cmZXQUtQ?=
+ =?gb2312?B?TkRTNitIc25JaUZ5bzdva0dJSE15L2tybHRWQ21Dd0FqV2JibmFvME1qem4v?=
+ =?gb2312?B?Nzh6VS9BUDVLeUhqd24vbThoVVYwU1MvVDh2eEEwdnBMcWl5N3c3MU12blhV?=
+ =?gb2312?B?RDJETlpOUGFjRkV1WUVMeTlkZW5WOWxZWkx6RjBaNzc3dEZsL2hYdzFabHZv?=
+ =?gb2312?B?VU1yMW1JUGg0YWdkU0VjUT09?=
+Content-ID: <49D1702829390D4D8C7D5FE9466A51E6@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3726ed6-c7b0-4063-53ce-08d971dfdb5e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 09:14:12.0518 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3983527-80e2-4ffd-0f22-08d971e1b391
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 09:27:24.3306 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n2Uw4bZtXxQtJQGl/o/MDYGzvYA+K28QprBa4eOwc/erfRqEI7a6Ll7Am5TgP78aO1KFvZGwO8XFs6u1SAXQQAn3dm7zn5aPvwcNSEB47EA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB6282
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: KttGzxT+mN4b+0j1SNITROdkxX0uDyIMelm6pWj+02ll7XAqidHPK4a4T9mqUrBl8/s+RXrY25BKE7KiDhrn1n+97pjwKJqvP8yZGwZ8SrY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4204
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/5] syscalls/dup2/dup202: Convert dup202 to the
+Subject: Re: [LTP] [PATCH 3/5] syscalls/dup2/dup203: Convert dup203 to the
  new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -170,21 +169,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210907091412.gCtBc7LJdQnP0LLyby1tWf1w0lluAih04_U1wxHL_lw@z>
+Message-ID: <20210907092724.CmadYcRTNwaJcsFlSmIx7wwk2Ep6Qqnd9scwAoAMUWE@z>
 
 Hi Qi
+
+Please use some safe macros.
+And the run function is too long and I think we can divide it into two 
+function(may be in a verify function with differnt arguments like dup202.c).
+
+Best Regards
+Yang Xu
 > From: QI Fuli<qi.fuli@fujitsu.com>
 >
 > Signed-off-by: QI Fuli<qi.fuli@fujitsu.com>
 > ---
->   testcases/kernel/syscalls/dup2/dup202.c | 175 +++++++-----------------
->   1 file changed, 48 insertions(+), 127 deletions(-)
+>   testcases/kernel/syscalls/dup2/dup203.c | 291 +++++++++---------------
+>   1 file changed, 112 insertions(+), 179 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/dup2/dup202.c b/testcases/kernel/syscalls/dup2/dup202.c
-> index c87769fa9..16f8b2add 100644
-> --- a/testcases/kernel/syscalls/dup2/dup202.c
-> +++ b/testcases/kernel/syscalls/dup2/dup202.c
-> @@ -1,65 +1,22 @@
+> diff --git a/testcases/kernel/syscalls/dup2/dup203.c b/testcases/kernel/syscalls/dup2/dup203.c
+> index e6f281adf..a2cbcc8f9 100644
+> --- a/testcases/kernel/syscalls/dup2/dup203.c
+> +++ b/testcases/kernel/syscalls/dup2/dup203.c
+> @@ -1,208 +1,141 @@
 > -/*
 > - *
 > - *   Copyright (c) International Business Machines  Corp., 2001
@@ -207,22 +213,21 @@ Hi Qi
 >
 >   /*
 > - * NAME
-> - *	dup202.c
+> - *	dup203.c
 > + * Copyright (c) International Business Machines  Corp., 2001
 >    *
 > - * DESCRIPTION
 > + * DESCRIPTION:
->    *	Is the access mode the same for both file descriptors?
->    *		0: read only ?	"0444"
->    *		1: write only ? "0222"
->    *		2: read/write ? "0666"
+>    *	Testcase to check the basic functionality of dup2().
+> + *	1. Attempt to dup2() on an open file descriptor.
+> + *	2. Attempt to dup2() on a close file descriptor.
 >    *
 > - * ALGORITHM
-> - *	Creat a file with each access mode; dup each file descriptor;
-> - *	stat each file descriptor and compare modes of each pair
+> - *	1.	Attempt to dup2() on an open file descriptor.
+> - *	2.	Attempt to dup2() on a close file descriptor.
 > - *
 > - * USAGE:<for command-line>
-> - *  dup202 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *  dup203 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 > - *     where,  -c n : Run n copies concurrently.
 > - *             -f   : Turn off functionality Testing.
 > - *             -i n : Execute test n times.
@@ -235,60 +240,33 @@ Hi Qi
 >    *	07/2001 Ported by Wayne Boyer
 > - *
 > - * RESTRICTIONS
-> - *	None
+> - *	NONE
 >    */
 >
-> -#include<sys/types.h>
-> -#include<sys/stat.h>
->   #include<errno.h>
 > -#include<fcntl.h>
->   #include<stdio.h>
+> -#include<sys/param.h>
+>   #include<errno.h>
+> -#include<string.h>
 > -#include "test.h"
 > -#include "safe_macros.h"
-> -
-> -char *TCID = "dup202";
-> -int TST_TOTAL = 3;
-> -
-> -void setup(void);
-> -void cleanup(void);
+> +#include<stdio.h>
 > +#include "tst_test.h"
 > +#include "tst_safe_macros.h"
 >
->   char testfile[40];
->   int fail;
-> @@ -68,100 +25,64 @@ int newfd;
->   /* set these to a known index into our local file descriptor table */
->   int duprdo = 10, dupwro = 20, duprdwr = 30;
-please use static prefix.
->
-> -struct test_case_t {
-> +static struct tcase {
->   	int *nfd;
->   	mode_t mode;
-> -} TC[] = {
-> +} tcases[]= {
->   	/* The first test creat(es) a file with mode 0444 */
-These commets are useless because we have said it in the top commet.
-> -	{
-> -	&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
-> +	{&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
->   	    /* The second test creat(es) a file with mode 0222 */
-> -	{
-> -	&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
-> +	{&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
->   	    /* The third test creat(es) a file with mode 0666 */
-> -	{
-> -	&duprdwr,
-> -		    (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)}
-> +	{&duprdwr, (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)},
->   };
->
+> -void setup(void);
+> -void cleanup(void);
+> -
+> -char *TCID = "dup203";
+> -int TST_TOTAL = 1;
+> -
 > -int main(int ac, char **av)
-> +void setup(void)
+> +static void run(void)
 >   {
+>   	int fd0, fd1, fd2, rval;
+>   	char filename0[40], filename1[40];
+>   	char buf[40];
+>
 > -	int lc;
-> -	int i, ofd;
-> -	struct stat oldbuf, newbuf;
 > -
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
@@ -297,69 +275,214 @@ These commets are useless because we have said it in the top commet.
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > -
 > -		tst_count = 0;
+>   //block1:
+> -		tst_resm(TINFO, "Enter block 1");
+> -		tst_resm(TINFO, "Test duping over an open fd");
 > -
-> -		/* loop through the test cases */
-> -		for (i = 0; i<  TST_TOTAL; i++) {
+> -		sprintf(filename0, "dup202.file0.%d\n", getpid());
+> -		sprintf(filename1, "dup202.file1.%d\n", getpid());
+> -		unlink(filename0);
+> -		unlink(filename1);
 > -
-> -			if ((ofd = creat(testfile, TC[i].mode)) == -1)
-> -				tst_brkm(TBROK | TERRNO, cleanup,
-> -					 "creat failed");
+> -		if ((fd0 = creat(filename0, 0666)) == -1)
+> -			tst_brkm(TBROK, cleanup, "cannot create first file");
+> -		if (write(fd0, filename0, strlen(filename0)) == -1)
+> -			tst_brkm(TBROK, cleanup, "filename0: write(2) failed");
 > -
-> -			TEST(dup2(ofd, *TC[i].nfd));
+> -		if ((fd1 = creat(filename1, 0666)) == -1)
+> -			tst_brkm(TBROK, cleanup, "Cannot create second file");
+> -		if (write(fd1, filename1, strlen(filename1)) == -1)
+> -			tst_brkm(TBROK, cleanup, "filename1: write(2) failed");
 > -
-> -			if (TEST_RETURN == -1) {
-> -				tst_resm(TFAIL | TTERRNO,
-> -					 "call failed unexpectedly");
-> -				continue;
+> -		SAFE_CLOSE(cleanup, fd0);
+> -		if ((fd0 = open(filename0, O_RDONLY)) == -1)
+> -			tst_brkm(TBROK, cleanup, "open(2) on filename0 failed");
+> -
+> -		SAFE_CLOSE(cleanup, fd1);
+> -		if ((fd1 = open(filename1, O_RDONLY)) == -1)
+> -			tst_brkm(TBROK, cleanup, "open(2) on filename1 failed");
+> -
+> -		TEST(dup2(fd0, fd1));
+> -
+> -		if ((fd2 = TEST_RETURN) == -1) {
+> -			tst_resm(TFAIL, "call failed unexpectedly");
+> -		} else {
+> -			if (fd1 != fd2) {
+> -				tst_resm(TFAIL, "file descriptors don't match");
+> -				break;
 > -			}
-> +	(void)umask(0);
-umask(0) is enough.
-> +	sprintf(testfile, "dup202.%d", getpid());
-> +}
+> -
+> -			memset(buf, 0, sizeof(buf));
+> -			if (read(fd2, buf, sizeof(buf)) == -1)
+> -				tst_brkm(TBROK, cleanup, "read(2) failed");
+> -			if (strcmp(buf, filename0) != 0)
+> -				tst_resm(TFAIL, "read from file got bad data");
+> -			tst_resm(TPASS, "dup2 test 1 functionality is correct");
+> +	tst_res(TINFO, "Enter block 1");
+> +	tst_res(TINFO, "Test duping over an open fd");
+> +
+> +	sprintf(filename0, "dup202.file0.%d\n", getpid());
+> +	sprintf(filename1, "dup202.file1.%d\n", getpid());
+> +	unlink(filename0);
+> +	unlink(filename1);
+> +
+> +	fd0 = creat(filename0, 0666);
+> +	if (fd0 == -1)
+> +		tst_brk(TBROK, "cannot create first file");
+> +	if (write(fd0, filename0, strlen(filename0)) == -1)
+> +		tst_brk(TBROK, "filename0: write(2) failed");
+> +
+> +	fd1 = creat(filename1, 0666);
+> +	if (fd1 == -1)
+> +		tst_brk(TBROK, "Cannot create second file");
+> +	if (write(fd1, filename1, strlen(filename1)) == -1)
+> +		tst_brk(TBROK, "filename1: write(2) failed");
+> +
+> +	SAFE_CLOSE(fd0);
+> +	fd0 = open(filename0, O_RDONLY);
+> +	if (fd0 == -1)
+> +		tst_brk(TBROK, "open(2) on filename0 failed");
+> +
+> +	SAFE_CLOSE(fd1);
+> +	fd1 = open(filename1, O_RDONLY);
+> +	if (fd1 == -1)
+> +		tst_brk(TBROK, "open(2) on filename1 failed");
+> +
+> +	TEST(dup2(fd0, fd1));
+> +
+> +	fd2 = TST_RET;
+> +	if (fd2 == -1)
+> +		tst_res(TFAIL, "call failed unexpectedly");
+> +	else {
+> +		if (fd1 != fd2) {
+> +			tst_res(TFAIL, "file descriptors don't match");
+> +			return;
+>   		}
 >
-> -			/* stat the original file */
-> -			SAFE_FSTAT(cleanup, ofd,&oldbuf);
-> +static void run(unsigned int i)
-> +{
-> +	int ofd;
-> +	struct stat oldbuf, newbuf;
-> +	struct tcase *tc = tcases + i;
+> -		close(fd0);
+> -		close(fd1);
+> -		close(fd2);
+> -		unlink(filename0);
+> -		unlink(filename1);
+> -
+> -		tst_resm(TINFO, "Exit block 1");
+> -
+> -//block2:
+> -		tst_resm(TINFO, "Enter block 2");
+> -		tst_resm(TINFO, "Test close on exec flag");
+> +		memset(buf, 0, sizeof(buf));
+> +		if (read(fd2, buf, sizeof(buf)) == -1)
+> +			tst_brk(TBROK, "read(2) failed");
+> +		if (strcmp(buf, filename0) != 0)
+> +			tst_res(TFAIL, "read from file got bad data");
+> +		tst_res(TPASS, "dup2 test 1 functionality is correct");
+> +	}
 >
-> -			/* stat the duped file */
-> -			SAFE_FSTAT(cleanup, *TC[i].nfd,&newbuf);
-> +	ofd = creat(testfile, tc->mode);
-> +	if (ofd == -1)
-> +		tst_brk(TBROK | TERRNO, "creat failed");
+> -		sprintf(filename0, "dup02.%d\n", getpid());
+> -		unlink(filename0);
+> +	close(fd0);
+> +	close(fd1);
+> +	close(fd2);
+> +	unlink(filename0);
+> +	unlink(filename1);
 >
-> -			if (oldbuf.st_mode != newbuf.st_mode)
-> -				tst_resm(TFAIL, "original and dup "
-> -					 "modes do not match");
-> -			else
-> -				tst_resm(TPASS, "fstat shows new and "
-> -					 "old modes are the same");
-> +	TEST(dup2(ofd, *tc->nfd));
->
-> -			/* remove the file so that we can use it again */
-> -			if (close(*TC[i].nfd) == -1)
-> -				perror("close failed");
-> -			if (close(ofd) == -1)
-> -				perror("close failed");
-> -			if (unlink(testfile) == -1)
-> -				perror("unlink failed");
+> -		if ((fd0 = creat(filename0, 0666)) == -1) {
+> -			tst_brkm(TBROK, cleanup, "Cannot create first file");
 > -		}
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "call failed unexpectedly");
-> +		return;
+> -		if (fcntl(fd0, F_SETFD, 1) == -1) {
+> -			tst_brkm(TBROK, cleanup, "setting close on exec flag "
+> -				 "on fd0 failed");
+> -		}
+> +	tst_res(TINFO, "Exit block 1");
+>
+> -		if ((fd2 = creat(filename1, 0666)) == -1) {
+> -			tst_brkm(TBROK, cleanup, "Cannot create second file");
+> +//block2:
+> +	tst_res(TINFO, "Enter block 2");
+> +	tst_res(TINFO, "Test close on exec flag");
+> +
+> +	sprintf(filename0, "dup02.%d\n", getpid());
+> +	unlink(filename0);
+> +
+> +	fd0 = creat(filename0, 0666);
+> +	if (fd0 == -1)
+> +		tst_brk(TBROK, "Cannot create first file");
+> +	if (fcntl(fd0, F_SETFD, 1) == -1)
+> +		tst_brk(TBROK, "setting close on exec flag on fd0 failed");
+> +
+> +	fd2 = creat(filename1, 0666);
+> +	if (fd2 == -1)
+> +		tst_brk(TBROK, "Cannot create second file");
+> +
+> +	/* SAFE_CLOSE() sets the fd to -1 avoid it here */
+> +	rval = fd2;
+> +	SAFE_CLOSE(rval);
+> +
+> +	TEST(dup2(fd0, fd2));
+> +
+> +	fd1 = TST_RET;
+> +	if (fd1 == -1)
+> +		tst_res(TFAIL, "call failed unexpectedly");
+> +	else {
+> +		if (fd1 != fd2) {
+> +			tst_res(TFAIL, "bad dup2 descriptor %d", fd1);
+> +			return;
+>   		}
+>
+> -		/* SAFE_CLOSE() sets the fd to -1 avoid it here */
+> -		rval = fd2;
+> -		SAFE_CLOSE(cleanup, rval);
+> -
+> -		TEST(dup2(fd0, fd2));
+> -
+> -		if ((fd1 = TEST_RETURN) == -1) {
+> -			tst_resm(TFAIL, "call failed unexpectedly");
+> -		} else {
+> -			if (fd1 != fd2) {
+> -				tst_resm(TFAIL, "bad dup2 descriptor %d", fd1);
+> -				break;
+> -			}
+> -
+> -			if ((rval = fcntl(fd1, F_GETFD, 0)) != 0) {
+> -				tst_resm(TBROK | TERRNO,
+> -					 "fcntl F_GETFD on fd1 failed; expected a "
+> -					 "return value of 0x0, got %#x", rval);
+> -				break;
+> -			}
+> -			if ((rval = (fcntl(fd0, F_GETFL, 0)&  O_ACCMODE)) !=
+> -			    O_WRONLY) {
+> -				tst_resm(TFAIL, "fctnl F_GETFL bad rval on fd0 "
+> -					 "Expected %#x got %#x", O_WRONLY,
+> -					 rval);
+> -			}
+> -			tst_resm(TPASS, "dup2 test 2 functionality is correct");
+> +		rval = fcntl(fd1, F_GETFD, 0);
+> +		if (rval != 0) {
+> +			tst_res(TFAIL | TERRNO,
+> +				"fcntl F_GETFD on fd1 failed; expected a "
+> +				"return value of 0x0, got %#x", rval);
+> +			return;
+>   		}
+> -
+> -		close(fd0);
+> -		close(fd1);
+> -
+> -		unlink(filename0);
+> -		unlink(filename1);
+> -		tst_resm(TINFO, "Exit block 2");
+> +		rval = fcntl(fd0, F_GETFL, 0);
+> +		if ((rval&  O_ACCMODE) != O_WRONLY)
+> +			tst_res(TFAIL, "fctnl F_GETFL bad rval on fd0 "
+> +				"Expected %#x got %#x", O_WRONLY, rval);
+> +		tst_res(TPASS, "dup2 test 2 functionality is correct");
 >   	}
-We can use SAFE_DUP2 here.
-
-Best Regards
-Yang Xu
 >
 > -	cleanup();
 > -	tst_exit();
 > -}
-> -
+> +	close(fd0);
+> +	close(fd1);
+>
 > -/*
 > - * setup() - performs all ONE TIME setup for this test.
 > - */
@@ -367,29 +490,13 @@ Yang Xu
 > -{
 > -
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	/* stat the original file */
-> +	SAFE_FSTAT(ofd,&oldbuf);
->
-> -	TEST_PAUSE;
-> +	/* stat the duped file */
-> +	SAFE_FSTAT(*tc->nfd,&newbuf);
->
-> -	tst_tmpdir();
-> +	if (oldbuf.st_mode != newbuf.st_mode)
-> +		tst_res(TFAIL, "original and dup modes do not match");
-> +	else
-> +		tst_res(TPASS, "fstat shows new and old modes are the same");
->
-> -	(void)umask(0);
 > -
-> -	sprintf(testfile, "dup202.%d", getpid());
-> +	/* remove the file so that we can use it again */
-> +	if (close(*tc->nfd) == -1)
-> +		perror("close failed");
-> +	if (close(ofd) == -1)
-> +		perror("close failed");
-> +	if (unlink(testfile) == -1)
-> +		perror("unlink failed");
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> +	unlink(filename0);
+> +	unlink(filename1);
+> +	tst_res(TINFO, "Exit block 2");
 >   }
 >
 > -/*
@@ -402,9 +509,7 @@ Yang Xu
 > -}
 > +static struct tst_test test = {
 > +	.needs_tmpdir = 1,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.setup = setup,
+> +	.test_all = run,
 > +};
 
 -- 
