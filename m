@@ -1,54 +1,59 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 8 Sep 2021 09:24:26 +0800
-Subject: [LTP] [PATCH] openposix: make use of tst_process_state_wait3
-In-Reply-To: <YTc20vtM2HbhTVTg@yuki>
-References: <20210907025258.3294914-1-liwang@redhat.com>
- <YTc20vtM2HbhTVTg@yuki>
-Message-ID: <CAEemH2e66Yfkobgy1D7mDGmK3YkmWx0240imVroCDay66VBmUg@mail.gmail.com>
+Date: Wed, 8 Sep 2021 11:29:54 +0800
+Subject: [LTP] [PATCH] open_posix: Add failure handling of fork()
+In-Reply-To: <20210905031113.2740-1-zhaogongyi@huawei.com>
+References: <20210905031113.2740-1-zhaogongyi@huawei.com>
+Message-ID: <CAEemH2ebjS-4UVQGhVuArkzDeS3n1A82wPxVDfGHQ=0Jt+Q4qQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 7, 2021 at 5:54 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Tue, Sep 7, 2021 at 8:41 PM Zhao Gongyi <zhaogongyi@huawei.com> wrote:
 
-> Hi!
-> > diff --git
-> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-> > index 04ef0a2cc..554714695 100644
-> > ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-> > +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
-> > @@ -17,6 +17,7 @@
-> >  #include <stdlib.h>
-> >  #include <errno.h>
-> >  #include "posixtest.h"
-> > +#include "proc.h"
-> >
-> >  #define SLEEPSEC 30
-> >
-> > @@ -88,7 +89,7 @@ int main(void)
-> >               /* parent here */
-> >               int i;
-> >
-> > -             sleep(1);
-> > +             tst_process_state_wait3(pid, 'S', 1);
+> When fork() failed and transfer the return value(-1) to kill(),
+> kill(-1, SIGSTOP) would freeze the system, so it is very serious
+> in this cases and should be avoided.
 >
-> This test is actually the only one that looks at the remining time as
-> returned by clock_nanosleep() so it may make a sense to keep the
-> sleep(1) in this test so that the remaining time is smaller than the
-> sleep time by some reasonable margin. But I guess that the test will
-> work fine without it as well.
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> ---
+>  .../conformance/interfaces/clock_nanosleep/1-5.c               | 3 +++
+>  .../conformance/interfaces/nanosleep/3-2.c                     | 3 +++
+>  .../conformance/interfaces/sigaction/10-1.c                    | 3 +++
+>  .../conformance/interfaces/sigaction/11-1.c                    | 3 +++
+>  .../conformance/interfaces/sigaction/9-1.c                     | 3 +++
+>  5 files changed, 15 insertions(+)
+>
+> diff --git
+> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
+> index 46f26163d..a87585884 100644
+> ---
+> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
+> +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
+> @@ -48,6 +48,9 @@ int main(void)
+>                         return CHILDFAIL;
+>                 }
+>                 return CHILDFAIL;
+> +       } else if (pid < 0) {
+> +               printf("fork() did not return success\n");
+> +               return PTS_UNRESOLVED;
 >
 
-Good point, I have retrieved that 1 sec sleep and applied. Thanks!
+Can we do the error check following the fork() instantly?
+Insert pid<0 with a 'else if' looks a bit strange here.
+
+Normally convention like:
+
+pid = fork();
+ if (pid < 0)
+    do error handle ...
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210908/2aceeefd/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210908/6793832e/attachment.htm>
