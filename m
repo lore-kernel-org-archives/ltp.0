@@ -1,59 +1,45 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 8 Sep 2021 11:29:54 +0800
-Subject: [LTP] [PATCH] open_posix: Add failure handling of fork()
-In-Reply-To: <20210905031113.2740-1-zhaogongyi@huawei.com>
-References: <20210905031113.2740-1-zhaogongyi@huawei.com>
-Message-ID: <CAEemH2ebjS-4UVQGhVuArkzDeS3n1A82wPxVDfGHQ=0Jt+Q4qQ@mail.gmail.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Wed, 8 Sep 2021 07:22:50 +0000
+Subject: [LTP] [COMMITTED] runtest/cve: Fix wrong cve tag
+In-Reply-To: <1630897958-2160-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1630897958-2160-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <613864D4.5030400@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 7, 2021 at 8:41 PM Zhao Gongyi <zhaogongyi@huawei.com> wrote:
+Hi Cyril, Martin
 
-> When fork() failed and transfer the return value(-1) to kill(),
-> kill(-1, SIGSTOP) would freeze the system, so it is very serious
-> in this cases and should be avoided.
->
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+In fact, Look the following url:
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-3609
+
+It said nothing and seems this cve number doesn't exist.
+
+Do you know what happen?
+
+Best Regards
+Yang Xu
+
+> can_bcm01 is designed to test cve-2021-3609 instead of cve-2021-6309.
+> 
+> Fixes: 027ea6171c40 ("Add test for CVE 2021-3609")
+> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
 > ---
->  .../conformance/interfaces/clock_nanosleep/1-5.c               | 3 +++
->  .../conformance/interfaces/nanosleep/3-2.c                     | 3 +++
->  .../conformance/interfaces/sigaction/10-1.c                    | 3 +++
->  .../conformance/interfaces/sigaction/11-1.c                    | 3 +++
->  .../conformance/interfaces/sigaction/9-1.c                     | 3 +++
->  5 files changed, 15 insertions(+)
->
-> diff --git
-> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-> index 46f26163d..a87585884 100644
-> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/1-5.c
-> @@ -48,6 +48,9 @@ int main(void)
->                         return CHILDFAIL;
->                 }
->                 return CHILDFAIL;
-> +       } else if (pid < 0) {
-> +               printf("fork() did not return success\n");
-> +               return PTS_UNRESOLVED;
->
-
-Can we do the error check following the fork() instantly?
-Insert pid<0 with a 'else if' looks a bit strange here.
-
-Normally convention like:
-
-pid = fork();
- if (pid < 0)
-    do error handle ...
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210908/6793832e/attachment.htm>
+>   runtest/cve | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/runtest/cve b/runtest/cve
+> index 357b88feb..01211b5aa 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -67,7 +67,7 @@ cve-2020-14416 pty03
+>   cve-2020-25705 icmp_rate_limit01
+>   cve-2020-29373 io_uring02
+>   cve-2021-3444 bpf_prog05
+> -cve-2021-6309 can_bcm01
+> +cve-2021-3609 can_bcm01
+>   cve-2021-22555 setsockopt08 -i 100
+>   cve-2021-26708 vsock01
+>   # Tests below may cause kernel memory leak
