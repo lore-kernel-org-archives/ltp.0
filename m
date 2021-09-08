@@ -1,14 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Sep 2021 15:03:49 +0200
-Subject: [LTP] [PATCH] device-drivers/cpufreq_boost: skip test on
- virtual machines
-In-Reply-To: <34c93a03-ca56-1648-5db0-4f15d617b4d9@canonical.com>
-References: <20210623080157.26424-1-krzysztof.kozlowski@canonical.com>
- <2a08d5c4-c002-7284-03d1-ff4441f8c9c5@canonical.com>
- <YNMdNqGiGXOgby6v@yuki>
- <aaf8acb9-f28f-b550-ccbc-8feb5aad17b0@canonical.com>
- <34c93a03-ca56-1648-5db0-4f15d617b4d9@canonical.com>
-Message-ID: <YTi0tWLUaTOTeRcB@yuki>
+Date: Wed, 8 Sep 2021 15:37:45 +0200
+Subject: [LTP] [PATCH] lib: memutils: don't pollute entire system memory
+ to avoid OoM
+In-Reply-To: <20210624132226.84611-1-krzysztof.kozlowski@canonical.com>
+References: <20210624132226.84611-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <YTi8qQOZU3NriZvZ@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,11 +12,19 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Hi Cyril and all,
-> 
-> Anything stops this patch from being applied?
+I guess that this is another bug that should be fixed before the
+release. I still think that the memory pollution is a best effort
+operation and that we should be more conservative with the reserve. I
+would go for a few percents of the free memory just to be extra sure
+that we do not cause memory pressure.
 
-Thanks for the reminded, pushed.
+If we go for 2% we will add following;
+
+safety = MAX(safety, info.freeram / 50);
+
+Also it looks like info.freeram is the same as MemFree: from
+/proc/meminfo, I guess that this is not wrong, since memory that have
+been used in buffers is dirty enough for our case.
 
 -- 
 Cyril Hrubis
