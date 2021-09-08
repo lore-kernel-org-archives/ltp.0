@@ -1,38 +1,54 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 8 Sep 2021 09:21:59 +0800
-Subject: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
- defallocate size
-In-Reply-To: <CAASaF6wWvezTpRcvewaaUF_-duEuQA1Oh2vEd9W-xC+AhGX12A@mail.gmail.com>
-References: <20210817104625.2559362-1-liwang@redhat.com>
- <CAEemH2fOWt1SjoTyqcWFkSyGf_S28FsPreLrKcUvOHu0pRz9OQ@mail.gmail.com>
- <CAASaF6wWvezTpRcvewaaUF_-duEuQA1Oh2vEd9W-xC+AhGX12A@mail.gmail.com>
-Message-ID: <CAEemH2eNd86tGcmLXBu9ScJHymFcdxNiTN53eC9NciQ9Qu+9fw@mail.gmail.com>
+Date: Wed, 8 Sep 2021 09:24:26 +0800
+Subject: [LTP] [PATCH] openposix: make use of tst_process_state_wait3
+In-Reply-To: <YTc20vtM2HbhTVTg@yuki>
+References: <20210907025258.3294914-1-liwang@redhat.com>
+ <YTc20vtM2HbhTVTg@yuki>
+Message-ID: <CAEemH2e66Yfkobgy1D7mDGmK3YkmWx0240imVroCDay66VBmUg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 7, 2021 at 4:00 PM Jan Stancek <jstancek@redhat.com> wrote:
+On Tue, Sep 7, 2021 at 5:54 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
+> Hi!
+> > diff --git
+> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> > index 04ef0a2cc..554714695 100644
+> > ---
+> a/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> > +++
+> b/testcases/open_posix_testsuite/conformance/interfaces/clock_nanosleep/9-1.c
+> > @@ -17,6 +17,7 @@
+> >  #include <stdlib.h>
+> >  #include <errno.h>
+> >  #include "posixtest.h"
+> > +#include "proc.h"
+> >
+> >  #define SLEEPSEC 30
+> >
+> > @@ -88,7 +89,7 @@ int main(void)
+> >               /* parent here */
+> >               int i;
+> >
+> > -             sleep(1);
+> > +             tst_process_state_wait3(pid, 'S', 1);
 >
->
-> On Tue, Sep 7, 2021 at 4:40 AM Li Wang <liwang@redhat.com> wrote:
->
->> Ping~
->>
->> This patch is only to increase the test blocks to make it robust,
->> it's no harmful and actually changes nothing from code logic.
->>
->
-> Acked-by: Jan Stancek <jstancek@redhat.com>
+> This test is actually the only one that looks at the remining time as
+> returned by clock_nanosleep() so it may make a sense to keep the
+> sleep(1) in this test so that the remaining time is smaller than the
+> sleep time by some reasonable margin. But I guess that the test will
+> work fine without it as well.
 >
 
-Thanks for ACK, pushed.
+Good point, I have retrieved that 1 sec sleep and applied. Thanks!
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210908/5f06f6be/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210908/2aceeefd/attachment-0001.htm>
