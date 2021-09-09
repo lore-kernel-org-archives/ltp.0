@@ -1,111 +1,274 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu,  9 Sep 2021 15:33:14 +0200
-Subject: [LTP] [PATCH v2] controllers: detect previous test failure on
- cgroup mounts
-Message-ID: <20210909133314.30997-1-krzysztof.kozlowski@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 9 Sep 2021 16:09:15 +0200
+Subject: [LTP] [PATCH v2] kernel/irq: Add irqbalance01
+In-Reply-To: <20210831114406.8527-1-rpalethorpe@suse.com>
+References: <878s0ikl6d.fsf@suse.de>
+ <20210831114406.8527-1-rpalethorpe@suse.com>
+Message-ID: <YToVi5LHQa7z6CEm@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The failure of memcg_stress_test.sh cleanup went unnoticed (except
-echo message) and caused further cgroup_fj and memcg_control_test
-failures because of unclean cgroups. Flow is usually like:
+Hi!
+> +static void collect_irq_info(void)
+> +{
+> +	char *buf = NULL, *c, *first_row;
+> +	char path[PATH_MAX];
+> +	size_t size = 1024;
+> +	size_t ret, row, col;
+> +	long acc;
+> +	unsigned int cpu_total, mask_pos;
+> +	int fd = SAFE_OPEN("/proc/interrupts", O_RDONLY);
+> +
+> +	nr_cpus = 0;
+> +	nr_irqs = 0;
+> +
+> +	do {
+> +		size *= 2;
+> +		buf = SAFE_REALLOC(buf, size);
+> +		SAFE_LSEEK(fd, 0, SEEK_SET);
+> +		ret = SAFE_READ(0, fd, buf, size - 1);
+> +	} while (ret >= size - 1);
 
-1. memcg_stress_test succeeds but actually the /dev/memcg was not
-   cleaned up. Notice lack of any error message due to 2>/dev/null.
+And actually this does not seem to work as expected for me, it reads
+about half of the table, stops shortly before 4096. I guess that we
+cannot really read it in one read() like this and that we are supposed
+to read it one $PAGE_SIZE at a time instead. So we need a loop that
+increases by $PAGE_SIZE and we would pass buf+len to the read, until the
+read returns bytes read.
 
-     memcg_stress_test 1 TINFO: Testing 150 cgroups, using 1273 MB, interval 5
-     memcg_stress_test 1 TINFO: Starting cgroups
-     memcg_stress_test 1 TINFO: Testing cgroups for 900s
-     memcg_stress_test 1 TINFO: Killing groups
-     tag=memcg_stress stime=1626770787 dur=903 exit=exited stat=2 core=no cu=19 cs=12
+> +	SAFE_CLOSE(fd);
+> +
+> +	if (ret < 1)
+> +		tst_brk(TBROK, "Empty /proc/interrupts?");
+> +
+> +	buf[ret] = '\0';
+> +
+> +	/* Count CPUs, header columns are like /CPU[0-9]+/ */
+> +	for (c = buf; *c != '\0' && *c != '\n'; c++) {
+> +		if (!strncmp(c, "CPU", 3))
+> +			nr_cpus++;
+> +	}
+> +
+> +	c++;
+> +	first_row = c;
+> +	/* Count IRQs, real IRQs start with /[0-9]+:/ */
+> +	while (*c != '\0') {
+> +		switch (*c) {
+> +		case ' ':
+> +		case '\t':
+> +		case '\n':
+> +		case '0' ... '9':
+> +			c++;
+> +			break;
+> +		case ':':
+> +			nr_irqs++;
+> +			/* fall-through */
+> +		default:
+> +			while (*c != '\n' && *c != '\0')
+> +				c++;
+> +		}
+> +	}
+> +
+> +	tst_res(TINFO, "Found %u CPUS, %u IRQs", nr_cpus, nr_irqs);
+> +
+> +	irq_ids = SAFE_REALLOC(irq_ids, nr_irqs * sizeof(*irq_ids));
+> +	irq_stats = SAFE_REALLOC(irq_stats, nr_cpus * (nr_irqs + 1) * sizeof(*irq_stats));
+> +	irq_affinity = SAFE_REALLOC(irq_affinity, nr_cpus * nr_irqs * sizeof(*irq_affinity));
+> +
+> +	c = first_row;
+> +	acc = -1;
+> +	row = col = 0;
+> +	/* Parse columns containing IRQ counts and IRQ IDs into acc. Ignore everything else. */
+> +	while (*c != '\0') {
+> +		switch (*c) {
+> +		case ' ':
+> +		case '\t':
+> +			if (acc >= 0) {
+> +				irq_stats[row * nr_cpus + col] = acc;
+> +				acc = -1;
+> +				col++;
+> +			}
+> +			break;
+> +		case '\n':
+> +			col = 0;
+> +			row++;
+> +			break;
+> +		case '0' ... '9':
+> +			if (acc == -1)
+> +				acc = 0;
+> +
+> +			acc *= 10;
+> +			acc += *c - '0';
+> +			break;
+> +		case ':':
+> +			irq_ids[row] = acc;
+> +			acc = -1;
+> +			break;
+> +		default:
+> +			acc = -1;
+> +			while (*c != '\n' && *c != '\0')
+> +				c++;
+> +			continue;
+> +		}
+> +
+> +		c++;
+> +	}
+> +
+> +	for (col = 0; col < nr_cpus; col++) {
+> +		cpu_total = 0;
+> +
+> +		for (row = 0; row < nr_irqs; row++)
+> +			cpu_total += irq_stats[row * nr_cpus + col];
+> +
+> +		irq_stats[row * nr_cpus + col] = cpu_total;
+> +	}
+> +
+> +	/* Read the CPU affinity masks for each IRQ. See bitmap_string() in the kernel (%*pb) */
+> +	for (row = 0; row < nr_irqs; row++) {
+> +		sprintf(path, "/proc/irq/%u/smp_affinity", irq_ids[row]);
+> +		ret = SAFE_FILE_READAT(0, path, buf, size);
+> +		if (ret < 1)
+> +			tst_brk(TBROK, "Empty /proc/irq/%u/smp_affinity?", irq_ids[row]);
+> +		c = buf;
+> +		col = 0;
+> +
+> +		while (*c != '\0') {
+> +			switch (*c) {
+> +			case '\n':
+> +			case ' ':
+> +			case ',':
+> +				c++;
+> +				continue;
+> +			case '0' ... '9':
+> +				acc = *c - '0';
+> +				break;
+> +			case 'a' ... 'f':
+> +				acc = 10 + *c - 'a';
+> +				break;
+> +			default:
+> +				tst_res(TINFO, "%u/smp_affnity: %s", irq_ids[row], buf);
+> +				tst_brk(TBROK, "Wasn't expecting 0x%02x", *c);
+> +			}
+> +
+> +			for (mask_pos = 0; mask_pos < 4; mask_pos++) {
+> +				if (mask_pos + col >= nr_cpus)
+> +					break;
+> +
+> +				irq_affinity[row * nr_cpus + (nr_cpus - 1 - col - mask_pos)] =
+> +					(acc & (8 >> mask_pos)) ? ALLOW : DENY;
+> +			}
+> +
+> +			col += mask_pos;
+> +			c++;
+> +		}
+> +	}
 
-2. memcg_control_test has false-positive. It succeeds but actually no
-   test was done due to /dev/memcg pollution from previous test:
+Actually having a closer look this whole parsing looks wrong and the
+reason why it does not work for me is that my machine has nr_cpus that
+is not power of two i.e. 12 in this case and the size of the mask seems
+to be rounded to 32 bits when presented in the proc files. I would have
+expected that the kernel would choose the closest power of two i.e. 16,
+but that does not seem to be the case here.
 
-     mkdir: cannot create directory ?/tmp/ltp-q8DjShPJeB/mnt/1?: File exists
-     memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit imposed by the topmost group is enforced
-     sh: echo: I/O error
-     /opt/ltp/testcases/bin/memcg_control_test.sh: 86: /opt/ltp/testcases/bin/memcg_control_test.sh: cannot create /tmp/ltp-q8DjShPJeB/mnt/1/memory.memsw.limit_in_bytes:
-     Permission denied
-     rmdir: failed to remove 'sub': Device or resource busy
-     rmdir: failed to remove '/tmp/ltp-q8DjShPJeB/mnt/1': Device or resource busy
-     memcg_control    1  TPASS  :  memcg_control: passed
-     tag=memcg_control stime=1626771695 dur=6 exit=exited stat=0 core=no cu=2 cs=1
+I guess that it would be actually easier to read the whole affinity into
+a string and then parse it from the end instead.
 
-3. cgroup_fj_function2_memory fails with a cryptic message of mounting a
-   path with new line (because /dev/memcg was not cleaned up before):
+> +	free(buf);
+> +}
+> +
+> +static void print_irq_info(void)
+> +{
+> +	size_t row, col;
+> +	unsigned int count;
+> +	enum affinity aff;
+> +
+> +	for (row = 0; row < nr_irqs; row++) {
+> +		tst_printf("%5u:", irq_ids[row]);
+> +
+> +		for (col = 0; col < nr_cpus; col++) {
+> +			count = irq_stats[row * nr_cpus + col];
+> +			aff = irq_affinity[row * nr_cpus + col] == ALLOW ? '+' : '-';
+> +
+> +			tst_printf("%10u%c", count, aff);
+> +		}
+> +
+> +		tst_printf("\n");
+> +	}
+> +
+> +	tst_printf("Total:");
+> +
+> +	for (col = 0; col < nr_cpus; col++)
+> +		tst_printf("%11u", irq_stats[row * nr_cpus + col]);
+> +
+> +	tst_printf("\n");
+> +}
+> +
+> +static void evidence_of_change(void)
+> +{
+> +	size_t row, col, changed = 0;
+> +
+> +	for (row = 0; row < nr_irqs; row++) {
+> +		for (col = 0; col < nr_cpus; col++) {
+> +			if (!irq_stats[row * nr_cpus + col])
+> +				continue;
+> +
+> +			if (irq_affinity[row * nr_cpus + col] == ALLOW)
+> +				continue;
+> +
+> +			changed++;
+> +		}
+> +	}
+> +
+> +	tst_res(changed ? TPASS : TFAIL,
+> +		"Heuristic: Detected %zu irq-cpu pairs have been dissallowed",
+> +		changed);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	collect_irq_info();
+> +	print_irq_info();
+> +
+> +	if (nr_cpus < 1)
+> +		tst_brk(TBROK, "No CPUs found in /proc/interrupts?");
+> +
+> +	if (nr_irqs < 1)
+> +		tst_brk(TBROK, "No IRQs found in /proc/interrupts?");
+> +}
+> +
+> +static void run(void)
+> +{
+> +	collect_irq_info();
+> +
+> +	evidence_of_change();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (irq_ids)
+> +		free(irq_ids);
+> +	if (irq_stats)
+> +		free(irq_stats);
+> +	if (irq_affinity)
+> +		free(irq_affinity);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.min_cpus = 2,
+> +};
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-     cgroup_fj_function2_memory 1 TINFO: Subsystem memory is mounted at /sys/fs/cgroup/memory
-     /dev/memcg
-     mkdir: cannot create directory ?/sys/fs/cgroup/memory?: File exists
-     cgroup_fj_function2_memory 1 TBROK: mkdir /sys/fs/cgroup/memory
-     /dev/memcg/ltp failed
-     cgroup_fj_function2_memory 1 TINFO: Removing all ltp subgroups...
-     find: ?/sys/fs/cgroup/memory\n/dev/memcg/ltp/?: No such file or directory
-
-The actual failure was in memcg_stress_test executed before other tests,
-however it went unnoticed.  Debugging such failures is difficult as
-result of failing test depends on running another which did not report a
-failure.  Instead, detect unclean cgroups mounts and explicitly test it.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
----
-
-Changes since v1:
-1. Do not modify control/memcg_control_test.sh as it does not seem
-   ready.
----
- .../kernel/controllers/cgroup_fj/cgroup_fj_common.sh      | 4 ++--
- .../kernel/controllers/memcg/stress/memcg_stress_test.sh  | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-index 5594fe9de426..53ab637e8910 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-@@ -123,10 +123,10 @@ cleanup()
-     fi
- 
-     if grep -q "$mount_point" /proc/mounts; then
--        umount "$mount_point"
-+        EXPECT_PASS umount "$mount_point"
-     fi
- 
-     if [ -e "$mount_point" ]; then
--        rmdir "$mount_point"
-+        EXPECT_PASS rmdir "$mount_point"
-     fi
- }
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index c2501e164018..8f7a0eb9dc37 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -44,8 +44,8 @@ setup()
- cleanup()
- {
- 	if [ -e /dev/memcg ]; then
--		umount /dev/memcg 2> /dev/null
--		rmdir /dev/memcg 2> /dev/null
-+		EXPECT_PASS umount /dev/memcg
-+		EXPECT_PASS rmdir /dev/memcg
- 	fi
- }
- 
-@@ -53,8 +53,8 @@ do_mount()
- {
- 	cleanup
- 
--	mkdir /dev/memcg 2> /dev/null
--	mount -t cgroup -omemory memcg /dev/memcg
-+	EXPECT_PASS mkdir /dev/memcg
-+	EXPECT_PASS mount -t cgroup -omemory memcg /dev/memcg
- }
- 
- # $1 Number of cgroups
 -- 
-2.30.2
-
+Cyril Hrubis
+chrubis@suse.cz
