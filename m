@@ -1,75 +1,31 @@
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu, 9 Sep 2021 12:19:45 +0200
-Subject: [LTP] [PATCH] controllers: detect previous test failure on
- cgroup mounts
-In-Reply-To: <YTjTAG4bFHce9QTu@yuki>
-References: <20210720150520.17612-1-krzysztof.kozlowski@canonical.com>
- <YTjTAG4bFHce9QTu@yuki>
-Message-ID: <bf3e06a6-08f2-37d4-1104-d0b5f5621bdf@canonical.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 9 Sep 2021 12:21:30 +0200
+Subject: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
+ test case route4-change-dst
+In-Reply-To: <20210906083444.82394-1-naresh.kamboju@linaro.org>
+References: <20210906083444.82394-1-naresh.kamboju@linaro.org>
+Message-ID: <YTngKohBcpQK7l5r@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 08/09/2021 17:13, Cyril Hrubis wrote:
-> Hi!
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>  .../kernel/controllers/cgroup_fj/cgroup_fj_common.sh   |  4 ++--
->>  .../controllers/memcg/control/memcg_control_test.sh    | 10 ++++++----
->>  .../controllers/memcg/stress/memcg_stress_test.sh      |  8 ++++----
->>  3 files changed, 12 insertions(+), 10 deletions(-)
->>
->> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
->> index 5594fe9de426..53ab637e8910 100755
->> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
->> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
->> @@ -123,10 +123,10 @@ cleanup()
->>      fi
->>  
->>      if grep -q "$mount_point" /proc/mounts; then
->> -        umount "$mount_point"
->> +        EXPECT_PASS umount "$mount_point"
->>      fi
->>  
->>      if [ -e "$mount_point" ]; then
->> -        rmdir "$mount_point"
->> +        EXPECT_PASS rmdir "$mount_point"
->>      fi
->>  }
->> diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->> index 4d9f1bb5d586..626f5e676831 100644
->> --- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->> +++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->> @@ -53,6 +53,8 @@ STATUS_PIPE="$TMP/status_pipe"
->>  PASS=0
->>  FAIL=1
->>  
->> +. test.sh
-> 
-> We cannot casually include the test.sh in testcases that does not use
-> the shell library as that will change the behavior of the tst_ commands.
-> 
-> Due to historicall reason we have two sets of tst_resm/tst_brkm/..., one
-> set are actuall binaries with the tst_foo name and the second set is
-> provided by the test.sh library. It's unfortunate but the binary
-> commands are still used in a few places and it's hard to even find out
-> where, since we have to look for shell scripts that does not source
-> (even indirectly test.sh) but use the tst_resm interfaces.
-> 
-> So unless you have reviewed the test carefully and made sure that it
-> works well with the test.sh library this will possibly introduce subtle
-> breakage.
+Hi Naresh,
 
-I tested the change but I think I did not review it in mentioned aspect.
+> The test case route4-change-dst fails intermittently creating
+> the problem for smoketest results verdict. route4-change-dst
+> is a stress test should not be a part of smoketest. because of
+> these issues removing route4-change-dst from the smoketest.
+Could you please be more specific about the failure?
 
-> 
-> The changes in the other two shell scripts looks good.
-> 
-
-I'll send a v2 with a reduced scope of changes.
+I'm not against adding ping tests into smoketest runtest file,
+although just on might be enough. ping02.sh is the fastest from all 3 tests,
+maybe add it. Also -6 for IPv6 would be good (to detect problems with IPv6 setup).
 
 
-Best regards,
-Krzysztof
+But route-change-dst.sh is quick (actually 2 times faster than ping01) that it's
+not really a stress test in the default configuration, thus I'd prefer to keep it.
+
+Kind regards,
+Petr
