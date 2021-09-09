@@ -1,48 +1,54 @@
 From: pvorel <pvorel@suse.de>
-Date: Thu, 09 Sep 2021 17:53:17 +0200
-Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
-In-Reply-To: <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
- <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
-Message-ID: <0acf816462d49d8a6004c87e36b05d1b@suse.de>
+Date: Thu, 09 Sep 2021 18:32:42 +0200
+Subject: [LTP] [PATCH 8/8] syscalls/setresuid03: Convert to new API
+In-Reply-To: <20210909155126.2720-8-mdoucha@suse.cz>
+References: <20210909155126.2720-1-mdoucha@suse.cz>
+ <20210909155126.2720-8-mdoucha@suse.cz>
+Message-ID: <287a9879ef8b3342cb88225e4e319733@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Su, Alexey,
+Hi Martin,
 
-On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
-> Hi,
->   I found that it's indeed related to ipv6 DAD as you said.
-> Calling
-> `ip netns exec ltp_ns sysctl -n 
-> net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
-> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
-> However there is one super strange part that the tentative address is
-> the local link adress of the ltp_ns_veth1:
+LGTM, nits below.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> The original test looks up specific usernames which may not exist on 
+> some
+> systems. Use any two non-root UIDs instead.
++1
+
+> +static void run(unsigned int n)
+>  {
+> -	tst_require_root();
+> +	const struct test_data_t *tc = test_data + n;
 > 
-> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
-> state UP group default qlen 1000
->     link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
->     inet 10.0.0.1/24 scope global ltp_ns_veth1
->        valid_lft forever preferred_lft forever
->     inet6 fd00:1:1:1::1/64 scope global nodad
->        valid_lft forever preferred_lft forever
->     inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
-> <-------------------
->        valid_lft forever preferred_lft forever
-> 
-> However, there is no place using the address in mpls02 test.
-> It makes me wonder how could it be possible to trigger the issue..
-
-I wonder if test still needs be fixed to work on all setups.
-
-Petr
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	TEST(SETRESUID(*tc->real_uid, *tc->eff_uid, *tc->sav_uid));
+It's a second test where we could use TST_EXP_FAIL_SILENT() if we had it 
+defined.
+Maybe I'll add it.
 
 > 
-> Thanks!
-> --
-> Su
+> -	if (getpwnam("nobody") == NULL) {
+> -		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
+> +	if (TST_RET != -1) {
+> +		tst_res(TFAIL | TTERRNO, "%s returned unexpected value %ld",
+> +			tc->test_msg, TST_RET);
+> +		return;
+>  	}
+> 
+> -	if (getpwnam("bin") == NULL) {
+> -		tst_brkm(TBROK, NULL, "bin must be a valid user.");
+> +	if (TST_ERR != tc->exp_errno) {
+nit: checkpatch complains (TST_ERR should be second)
+
+> +		tst_res(TFAIL | TTERRNO, "%s returned unexpected error",
+> +			tc->test_msg);
+> +		return;
+>  	}
+> 
