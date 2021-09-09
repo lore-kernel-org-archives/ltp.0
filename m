@@ -2,91 +2,78 @@ Return-Path: <SRS0=gXt9=N7=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72D90C433F5
-	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 13:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F23CC433F5
+	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 14:09:17 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CE616109F
-	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 13:33:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7CE616109F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 545C6610CE
+	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 14:09:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 545C6610CE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 52F303C93B2
-	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 15:33:34 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id BD70D3C9158
+	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 16:09:13 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 97F023C8D61
- for <ltp@lists.linux.it>; Thu,  9 Sep 2021 15:33:24 +0200 (CEST)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id 0A50C3C21FF
+ for <ltp@lists.linux.it>; Thu,  9 Sep 2021 16:09:03 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 89ABD10013A6
- for <ltp@lists.linux.it>; Thu,  9 Sep 2021 15:33:23 +0200 (CEST)
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03CD22010EF
+ for <ltp@lists.linux.it>; Thu,  9 Sep 2021 16:09:02 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 227E040263
- for <ltp@lists.linux.it>; Thu,  9 Sep 2021 13:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631194400;
- bh=ga4D/K+Dsv65rPlBlypmiyuTLBJRcvlRfX2W5lY5S9A=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
- b=O5g1vB4yR3QtqJtSoRpZy1htt9LX4ZbxaEEqxXchtN3cH9g4TCGCsET8ZJseEvCbv
- WA+nC7C3GWS4FBPB05K3GSpKdmRiu+maGWh/JM7N9bwQcdxo4gziBGbBIQYqph4Cad
- S+edk7GS51r425fkW0RENEiIcuqcUbc5EHUiiMXbwirJKxPyEWZjC9OVT3cUvDE5qo
- yfxLcI+r64rNBnNBj1eH9xA0CaPc69jsoUO7ZfkpPcnlJOVhKc/REQXISee6fg3gvv
- UItKiu6HPRGHQlJtWZOS7/LyjK96gu7Hsd+ZtOyzqm6LLoklSy8J73L1rTxmP1EbsS
- h5UTrbe4/d+aw==
-Received: by mail-wr1-f69.google.com with SMTP id
- p18-20020a5d4e12000000b0015940dc586aso511982wrt.6
- for <ltp@lists.linux.it>; Thu, 09 Sep 2021 06:33:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ga4D/K+Dsv65rPlBlypmiyuTLBJRcvlRfX2W5lY5S9A=;
- b=U8Z7H84pfCKkbyGawhU1E/FYukxbCaMUZpH10wpe3kzPaouhvVfkKXo8qXO+o8DDcP
- 3ZWwdbbs13/0NdMchmx34Yk9Lma4HN4EKAykLSXUYvDwyM5PhNja4go4q7N47NQFMQx5
- 2BIXP7rWnbopkyLs1XGwxf1ioPnVD94u/Eo7iJKml8f8u8InjHYl7wKHbj3TuXVryDVm
- oUAVD5gydKEtW1FdD40kT6oreUhFI2u7QMgcZfUZH9GIWIUrKGRrjQyJKq+x3jkIlk7y
- WY6Z3st4O4IYlCWONefRSFKFc0yCFTGxhdtNKJ+YUduDJWe/+2vAo0CwCcMLC43pewmo
- igWA==
-X-Gm-Message-State: AOAM532gPH8F1NslntAwYiKW96NowFFrLooCvdix8a1t2yqCe7fNWbZD
- A8+8vG5BDn703C2HVI3srBw2vkWPlhWGMX98RXV07R1yvmVA4Lq3etteKVJt/OIPSpQw7Lngril
- IXp64BIGrhf/XIBntztt3GZNurMCU
-X-Received: by 2002:a5d:4647:: with SMTP id j7mr3660185wrs.149.1631194399345; 
- Thu, 09 Sep 2021 06:33:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyr5DM0vRNQHCj08WMvbp8hGiC31PBMMvUEcNWJs0OwGqIVty3JXX8+63W9XOmwY2IR92xsiw==
-X-Received: by 2002:a5d:4647:: with SMTP id j7mr3660149wrs.149.1631194399082; 
- Thu, 09 Sep 2021 06:33:19 -0700 (PDT)
-Received: from kozik-lap.lan ([79.98.113.31])
- by smtp.gmail.com with ESMTPSA id 129sm1605577wmz.26.2021.09.09.06.33.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 09 Sep 2021 06:33:18 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To: ltp@lists.linux.it
-Date: Thu,  9 Sep 2021 15:33:14 +0200
-Message-ID: <20210909133314.30997-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D16992237D;
+ Thu,  9 Sep 2021 14:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1631196540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cVgg4LMKZ1TqZcRS9uEUk7J69HBHQRNOk0kq7JFfIJI=;
+ b=BevOpdN2H1CvQBTQMCiQ+fOnf5ZkYDF1Kl379EfJIWmS8xr7bqczJmV/fuNUNnw2JL7hEA
+ nag5amoHY8MR+SZGnpLLDEml8vyJTWQqbtzITerIQvpB03Eq9nJ2IDcdnv6iLqhtXd2N3R
+ Nejr1bNgiIOtVJJaTc6JyRuzXH0cq9A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1631196540;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cVgg4LMKZ1TqZcRS9uEUk7J69HBHQRNOk0kq7JFfIJI=;
+ b=TVP0ycXlo9I8mmaHWIdcMrjz2nuAc+Pj8q8ZdOtzHEQAbTIMXvX6DLwdThQYvQFQpTOWxK
+ FPSGxTcSnyc0dtCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B91E113C53;
+ Thu,  9 Sep 2021 14:09:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id KiWXLXwVOmFILQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 09 Sep 2021 14:09:00 +0000
+Date: Thu, 9 Sep 2021 16:09:15 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Message-ID: <YToVi5LHQa7z6CEm@yuki>
+References: <878s0ikl6d.fsf@suse.de>
+ <20210831114406.8527-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20210831114406.8527-1-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] controllers: detect previous test failure on
- cgroup mounts
+Subject: Re: [LTP] [PATCH v2] kernel/irq: Add irqbalance01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,82 +85,275 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: nhorman@gmail.com, Thomas Gleixner <tglx@linutronix.de>, anton@deadbeef.mx,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210909133314.evGCJHveiCHme6KHwawEoKCBO6UL3kd14MI4maHdvJU@z>
+Message-ID: <20210909140915.RgAz9zCNs4kDttcOahCcU0y4bhctdZL3irs5eWd9W4Q@z>
 
-VGhlIGZhaWx1cmUgb2YgbWVtY2dfc3RyZXNzX3Rlc3Quc2ggY2xlYW51cCB3ZW50IHVubm90aWNl
-ZCAoZXhjZXB0CmVjaG8gbWVzc2FnZSkgYW5kIGNhdXNlZCBmdXJ0aGVyIGNncm91cF9maiBhbmQg
-bWVtY2dfY29udHJvbF90ZXN0CmZhaWx1cmVzIGJlY2F1c2Ugb2YgdW5jbGVhbiBjZ3JvdXBzLiBG
-bG93IGlzIHVzdWFsbHkgbGlrZToKCjEuIG1lbWNnX3N0cmVzc190ZXN0IHN1Y2NlZWRzIGJ1dCBh
-Y3R1YWxseSB0aGUgL2Rldi9tZW1jZyB3YXMgbm90CiAgIGNsZWFuZWQgdXAuIE5vdGljZSBsYWNr
-IG9mIGFueSBlcnJvciBtZXNzYWdlIGR1ZSB0byAyPi9kZXYvbnVsbC4KCiAgICAgbWVtY2dfc3Ry
-ZXNzX3Rlc3QgMSBUSU5GTzogVGVzdGluZyAxNTAgY2dyb3VwcywgdXNpbmcgMTI3MyBNQiwgaW50
-ZXJ2YWwgNQogICAgIG1lbWNnX3N0cmVzc190ZXN0IDEgVElORk86IFN0YXJ0aW5nIGNncm91cHMK
-ICAgICBtZW1jZ19zdHJlc3NfdGVzdCAxIFRJTkZPOiBUZXN0aW5nIGNncm91cHMgZm9yIDkwMHMK
-ICAgICBtZW1jZ19zdHJlc3NfdGVzdCAxIFRJTkZPOiBLaWxsaW5nIGdyb3VwcwogICAgIHRhZz1t
-ZW1jZ19zdHJlc3Mgc3RpbWU9MTYyNjc3MDc4NyBkdXI9OTAzIGV4aXQ9ZXhpdGVkIHN0YXQ9MiBj
-b3JlPW5vIGN1PTE5IGNzPTEyCgoyLiBtZW1jZ19jb250cm9sX3Rlc3QgaGFzIGZhbHNlLXBvc2l0
-aXZlLiBJdCBzdWNjZWVkcyBidXQgYWN0dWFsbHkgbm8KICAgdGVzdCB3YXMgZG9uZSBkdWUgdG8g
-L2Rldi9tZW1jZyBwb2xsdXRpb24gZnJvbSBwcmV2aW91cyB0ZXN0OgoKICAgICBta2RpcjogY2Fu
-bm90IGNyZWF0ZSBkaXJlY3Rvcnkg4oCYL3RtcC9sdHAtcThEalNoUEplQi9tbnQvMeKAmTogRmls
-ZSBleGlzdHMKICAgICBtZW1jZ19jb250cm9sICAgIDAgIFRJTkZPICA6ICBUZXN0ICMxOiBDaGVj
-a2luZyBpZiB0aGUgbWVtb3J5IHVzYWdlIGxpbWl0IGltcG9zZWQgYnkgdGhlIHRvcG1vc3QgZ3Jv
-dXAgaXMgZW5mb3JjZWQKICAgICBzaDogZWNobzogSS9PIGVycm9yCiAgICAgL29wdC9sdHAvdGVz
-dGNhc2VzL2Jpbi9tZW1jZ19jb250cm9sX3Rlc3Quc2g6IDg2OiAvb3B0L2x0cC90ZXN0Y2FzZXMv
-YmluL21lbWNnX2NvbnRyb2xfdGVzdC5zaDogY2Fubm90IGNyZWF0ZSAvdG1wL2x0cC1xOERqU2hQ
-SmVCL21udC8xL21lbW9yeS5tZW1zdy5saW1pdF9pbl9ieXRlczoKICAgICBQZXJtaXNzaW9uIGRl
-bmllZAogICAgIHJtZGlyOiBmYWlsZWQgdG8gcmVtb3ZlICdzdWInOiBEZXZpY2Ugb3IgcmVzb3Vy
-Y2UgYnVzeQogICAgIHJtZGlyOiBmYWlsZWQgdG8gcmVtb3ZlICcvdG1wL2x0cC1xOERqU2hQSmVC
-L21udC8xJzogRGV2aWNlIG9yIHJlc291cmNlIGJ1c3kKICAgICBtZW1jZ19jb250cm9sICAgIDEg
-IFRQQVNTICA6ICBtZW1jZ19jb250cm9sOiBwYXNzZWQKICAgICB0YWc9bWVtY2dfY29udHJvbCBz
-dGltZT0xNjI2NzcxNjk1IGR1cj02IGV4aXQ9ZXhpdGVkIHN0YXQ9MCBjb3JlPW5vIGN1PTIgY3M9
-MQoKMy4gY2dyb3VwX2ZqX2Z1bmN0aW9uMl9tZW1vcnkgZmFpbHMgd2l0aCBhIGNyeXB0aWMgbWVz
-c2FnZSBvZiBtb3VudGluZyBhCiAgIHBhdGggd2l0aCBuZXcgbGluZSAoYmVjYXVzZSAvZGV2L21l
-bWNnIHdhcyBub3QgY2xlYW5lZCB1cCBiZWZvcmUpOgoKICAgICBjZ3JvdXBfZmpfZnVuY3Rpb24y
-X21lbW9yeSAxIFRJTkZPOiBTdWJzeXN0ZW0gbWVtb3J5IGlzIG1vdW50ZWQgYXQgL3N5cy9mcy9j
-Z3JvdXAvbWVtb3J5CiAgICAgL2Rldi9tZW1jZwogICAgIG1rZGlyOiBjYW5ub3QgY3JlYXRlIGRp
-cmVjdG9yeSDigJgvc3lzL2ZzL2Nncm91cC9tZW1vcnnigJk6IEZpbGUgZXhpc3RzCiAgICAgY2dy
-b3VwX2ZqX2Z1bmN0aW9uMl9tZW1vcnkgMSBUQlJPSzogbWtkaXIgL3N5cy9mcy9jZ3JvdXAvbWVt
-b3J5CiAgICAgL2Rldi9tZW1jZy9sdHAgZmFpbGVkCiAgICAgY2dyb3VwX2ZqX2Z1bmN0aW9uMl9t
-ZW1vcnkgMSBUSU5GTzogUmVtb3ZpbmcgYWxsIGx0cCBzdWJncm91cHMuLi4KICAgICBmaW5kOiDi
-gJgvc3lzL2ZzL2Nncm91cC9tZW1vcnlcbi9kZXYvbWVtY2cvbHRwL+KAmTogTm8gc3VjaCBmaWxl
-IG9yIGRpcmVjdG9yeQoKVGhlIGFjdHVhbCBmYWlsdXJlIHdhcyBpbiBtZW1jZ19zdHJlc3NfdGVz
-dCBleGVjdXRlZCBiZWZvcmUgb3RoZXIgdGVzdHMsCmhvd2V2ZXIgaXQgd2VudCB1bm5vdGljZWQu
-ICBEZWJ1Z2dpbmcgc3VjaCBmYWlsdXJlcyBpcyBkaWZmaWN1bHQgYXMKcmVzdWx0IG9mIGZhaWxp
-bmcgdGVzdCBkZXBlbmRzIG9uIHJ1bm5pbmcgYW5vdGhlciB3aGljaCBkaWQgbm90IHJlcG9ydCBh
-CmZhaWx1cmUuICBJbnN0ZWFkLCBkZXRlY3QgdW5jbGVhbiBjZ3JvdXBzIG1vdW50cyBhbmQgZXhw
-bGljaXRseSB0ZXN0IGl0LgoKU2lnbmVkLW9mZi1ieTogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6
-eXN6dG9mLmtvemxvd3NraUBjYW5vbmljYWwuY29tPgoKLS0tCgpDaGFuZ2VzIHNpbmNlIHYxOgox
-LiBEbyBub3QgbW9kaWZ5IGNvbnRyb2wvbWVtY2dfY29udHJvbF90ZXN0LnNoIGFzIGl0IGRvZXMg
-bm90IHNlZW0KICAgcmVhZHkuCi0tLQogLi4uL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXBfZmov
-Y2dyb3VwX2ZqX2NvbW1vbi5zaCAgICAgIHwgNCArKy0tCiAuLi4va2VybmVsL2NvbnRyb2xsZXJz
-L21lbWNnL3N0cmVzcy9tZW1jZ19zdHJlc3NfdGVzdC5zaCAgfCA4ICsrKystLS0tCiAyIGZpbGVz
-IGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cF9mai9jZ3JvdXBfZmpfY29tbW9uLnNo
-IGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXBfZmovY2dyb3VwX2ZqX2NvbW1v
-bi5zaAppbmRleCA1NTk0ZmU5ZGU0MjYuLjUzYWI2MzdlODkxMCAxMDA3NTUKLS0tIGEvdGVzdGNh
-c2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXBfZmovY2dyb3VwX2ZqX2NvbW1vbi5zaAorKysg
-Yi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cF9mai9jZ3JvdXBfZmpfY29tbW9u
-LnNoCkBAIC0xMjMsMTAgKzEyMywxMCBAQCBjbGVhbnVwKCkKICAgICBmaQogCiAgICAgaWYgZ3Jl
-cCAtcSAiJG1vdW50X3BvaW50IiAvcHJvYy9tb3VudHM7IHRoZW4KLSAgICAgICAgdW1vdW50ICIk
-bW91bnRfcG9pbnQiCisgICAgICAgIEVYUEVDVF9QQVNTIHVtb3VudCAiJG1vdW50X3BvaW50Igog
-ICAgIGZpCiAKICAgICBpZiBbIC1lICIkbW91bnRfcG9pbnQiIF07IHRoZW4KLSAgICAgICAgcm1k
-aXIgIiRtb3VudF9wb2ludCIKKyAgICAgICAgRVhQRUNUX1BBU1Mgcm1kaXIgIiRtb3VudF9wb2lu
-dCIKICAgICBmaQogfQpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9t
-ZW1jZy9zdHJlc3MvbWVtY2dfc3RyZXNzX3Rlc3Quc2ggYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRy
-b2xsZXJzL21lbWNnL3N0cmVzcy9tZW1jZ19zdHJlc3NfdGVzdC5zaAppbmRleCBjMjUwMWUxNjQw
-MTguLjhmN2EwZWI5ZGMzNyAxMDA3NTUKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVy
-cy9tZW1jZy9zdHJlc3MvbWVtY2dfc3RyZXNzX3Rlc3Quc2gKKysrIGIvdGVzdGNhc2VzL2tlcm5l
-bC9jb250cm9sbGVycy9tZW1jZy9zdHJlc3MvbWVtY2dfc3RyZXNzX3Rlc3Quc2gKQEAgLTQ0LDgg
-KzQ0LDggQEAgc2V0dXAoKQogY2xlYW51cCgpCiB7CiAJaWYgWyAtZSAvZGV2L21lbWNnIF07IHRo
-ZW4KLQkJdW1vdW50IC9kZXYvbWVtY2cgMj4gL2Rldi9udWxsCi0JCXJtZGlyIC9kZXYvbWVtY2cg
-Mj4gL2Rldi9udWxsCisJCUVYUEVDVF9QQVNTIHVtb3VudCAvZGV2L21lbWNnCisJCUVYUEVDVF9Q
-QVNTIHJtZGlyIC9kZXYvbWVtY2cKIAlmaQogfQogCkBAIC01Myw4ICs1Myw4IEBAIGRvX21vdW50
-KCkKIHsKIAljbGVhbnVwCiAKLQlta2RpciAvZGV2L21lbWNnIDI+IC9kZXYvbnVsbAotCW1vdW50
-IC10IGNncm91cCAtb21lbW9yeSBtZW1jZyAvZGV2L21lbWNnCisJRVhQRUNUX1BBU1MgbWtkaXIg
-L2Rldi9tZW1jZworCUVYUEVDVF9QQVNTIG1vdW50IC10IGNncm91cCAtb21lbW9yeSBtZW1jZyAv
-ZGV2L21lbWNnCiB9CiAKICMgJDEgTnVtYmVyIG9mIGNncm91cHMKLS0gCjIuMzAuMgoKCi0tIApN
-YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi!
+> +static void collect_irq_info(void)
+> +{
+> +	char *buf = NULL, *c, *first_row;
+> +	char path[PATH_MAX];
+> +	size_t size = 1024;
+> +	size_t ret, row, col;
+> +	long acc;
+> +	unsigned int cpu_total, mask_pos;
+> +	int fd = SAFE_OPEN("/proc/interrupts", O_RDONLY);
+> +
+> +	nr_cpus = 0;
+> +	nr_irqs = 0;
+> +
+> +	do {
+> +		size *= 2;
+> +		buf = SAFE_REALLOC(buf, size);
+> +		SAFE_LSEEK(fd, 0, SEEK_SET);
+> +		ret = SAFE_READ(0, fd, buf, size - 1);
+> +	} while (ret >= size - 1);
+
+And actually this does not seem to work as expected for me, it reads
+about half of the table, stops shortly before 4096. I guess that we
+cannot really read it in one read() like this and that we are supposed
+to read it one $PAGE_SIZE at a time instead. So we need a loop that
+increases by $PAGE_SIZE and we would pass buf+len to the read, until the
+read returns bytes read.
+
+> +	SAFE_CLOSE(fd);
+> +
+> +	if (ret < 1)
+> +		tst_brk(TBROK, "Empty /proc/interrupts?");
+> +
+> +	buf[ret] = '\0';
+> +
+> +	/* Count CPUs, header columns are like /CPU[0-9]+/ */
+> +	for (c = buf; *c != '\0' && *c != '\n'; c++) {
+> +		if (!strncmp(c, "CPU", 3))
+> +			nr_cpus++;
+> +	}
+> +
+> +	c++;
+> +	first_row = c;
+> +	/* Count IRQs, real IRQs start with /[0-9]+:/ */
+> +	while (*c != '\0') {
+> +		switch (*c) {
+> +		case ' ':
+> +		case '\t':
+> +		case '\n':
+> +		case '0' ... '9':
+> +			c++;
+> +			break;
+> +		case ':':
+> +			nr_irqs++;
+> +			/* fall-through */
+> +		default:
+> +			while (*c != '\n' && *c != '\0')
+> +				c++;
+> +		}
+> +	}
+> +
+> +	tst_res(TINFO, "Found %u CPUS, %u IRQs", nr_cpus, nr_irqs);
+> +
+> +	irq_ids = SAFE_REALLOC(irq_ids, nr_irqs * sizeof(*irq_ids));
+> +	irq_stats = SAFE_REALLOC(irq_stats, nr_cpus * (nr_irqs + 1) * sizeof(*irq_stats));
+> +	irq_affinity = SAFE_REALLOC(irq_affinity, nr_cpus * nr_irqs * sizeof(*irq_affinity));
+> +
+> +	c = first_row;
+> +	acc = -1;
+> +	row = col = 0;
+> +	/* Parse columns containing IRQ counts and IRQ IDs into acc. Ignore everything else. */
+> +	while (*c != '\0') {
+> +		switch (*c) {
+> +		case ' ':
+> +		case '\t':
+> +			if (acc >= 0) {
+> +				irq_stats[row * nr_cpus + col] = acc;
+> +				acc = -1;
+> +				col++;
+> +			}
+> +			break;
+> +		case '\n':
+> +			col = 0;
+> +			row++;
+> +			break;
+> +		case '0' ... '9':
+> +			if (acc == -1)
+> +				acc = 0;
+> +
+> +			acc *= 10;
+> +			acc += *c - '0';
+> +			break;
+> +		case ':':
+> +			irq_ids[row] = acc;
+> +			acc = -1;
+> +			break;
+> +		default:
+> +			acc = -1;
+> +			while (*c != '\n' && *c != '\0')
+> +				c++;
+> +			continue;
+> +		}
+> +
+> +		c++;
+> +	}
+> +
+> +	for (col = 0; col < nr_cpus; col++) {
+> +		cpu_total = 0;
+> +
+> +		for (row = 0; row < nr_irqs; row++)
+> +			cpu_total += irq_stats[row * nr_cpus + col];
+> +
+> +		irq_stats[row * nr_cpus + col] = cpu_total;
+> +	}
+> +
+> +	/* Read the CPU affinity masks for each IRQ. See bitmap_string() in the kernel (%*pb) */
+> +	for (row = 0; row < nr_irqs; row++) {
+> +		sprintf(path, "/proc/irq/%u/smp_affinity", irq_ids[row]);
+> +		ret = SAFE_FILE_READAT(0, path, buf, size);
+> +		if (ret < 1)
+> +			tst_brk(TBROK, "Empty /proc/irq/%u/smp_affinity?", irq_ids[row]);
+> +		c = buf;
+> +		col = 0;
+> +
+> +		while (*c != '\0') {
+> +			switch (*c) {
+> +			case '\n':
+> +			case ' ':
+> +			case ',':
+> +				c++;
+> +				continue;
+> +			case '0' ... '9':
+> +				acc = *c - '0';
+> +				break;
+> +			case 'a' ... 'f':
+> +				acc = 10 + *c - 'a';
+> +				break;
+> +			default:
+> +				tst_res(TINFO, "%u/smp_affnity: %s", irq_ids[row], buf);
+> +				tst_brk(TBROK, "Wasn't expecting 0x%02x", *c);
+> +			}
+> +
+> +			for (mask_pos = 0; mask_pos < 4; mask_pos++) {
+> +				if (mask_pos + col >= nr_cpus)
+> +					break;
+> +
+> +				irq_affinity[row * nr_cpus + (nr_cpus - 1 - col - mask_pos)] =
+> +					(acc & (8 >> mask_pos)) ? ALLOW : DENY;
+> +			}
+> +
+> +			col += mask_pos;
+> +			c++;
+> +		}
+> +	}
+
+Actually having a closer look this whole parsing looks wrong and the
+reason why it does not work for me is that my machine has nr_cpus that
+is not power of two i.e. 12 in this case and the size of the mask seems
+to be rounded to 32 bits when presented in the proc files. I would have
+expected that the kernel would choose the closest power of two i.e. 16,
+but that does not seem to be the case here.
+
+I guess that it would be actually easier to read the whole affinity into
+a string and then parse it from the end instead.
+
+> +	free(buf);
+> +}
+> +
+> +static void print_irq_info(void)
+> +{
+> +	size_t row, col;
+> +	unsigned int count;
+> +	enum affinity aff;
+> +
+> +	for (row = 0; row < nr_irqs; row++) {
+> +		tst_printf("%5u:", irq_ids[row]);
+> +
+> +		for (col = 0; col < nr_cpus; col++) {
+> +			count = irq_stats[row * nr_cpus + col];
+> +			aff = irq_affinity[row * nr_cpus + col] == ALLOW ? '+' : '-';
+> +
+> +			tst_printf("%10u%c", count, aff);
+> +		}
+> +
+> +		tst_printf("\n");
+> +	}
+> +
+> +	tst_printf("Total:");
+> +
+> +	for (col = 0; col < nr_cpus; col++)
+> +		tst_printf("%11u", irq_stats[row * nr_cpus + col]);
+> +
+> +	tst_printf("\n");
+> +}
+> +
+> +static void evidence_of_change(void)
+> +{
+> +	size_t row, col, changed = 0;
+> +
+> +	for (row = 0; row < nr_irqs; row++) {
+> +		for (col = 0; col < nr_cpus; col++) {
+> +			if (!irq_stats[row * nr_cpus + col])
+> +				continue;
+> +
+> +			if (irq_affinity[row * nr_cpus + col] == ALLOW)
+> +				continue;
+> +
+> +			changed++;
+> +		}
+> +	}
+> +
+> +	tst_res(changed ? TPASS : TFAIL,
+> +		"Heuristic: Detected %zu irq-cpu pairs have been dissallowed",
+> +		changed);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	collect_irq_info();
+> +	print_irq_info();
+> +
+> +	if (nr_cpus < 1)
+> +		tst_brk(TBROK, "No CPUs found in /proc/interrupts?");
+> +
+> +	if (nr_irqs < 1)
+> +		tst_brk(TBROK, "No IRQs found in /proc/interrupts?");
+> +}
+> +
+> +static void run(void)
+> +{
+> +	collect_irq_info();
+> +
+> +	evidence_of_change();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (irq_ids)
+> +		free(irq_ids);
+> +	if (irq_stats)
+> +		free(irq_stats);
+> +	if (irq_affinity)
+> +		free(irq_affinity);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.min_cpus = 2,
+> +};
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
