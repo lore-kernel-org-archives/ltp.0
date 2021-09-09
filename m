@@ -1,99 +1,111 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Sep 2021 14:41:38 +0200
-Subject: [LTP] [PATCH v2] kernel/irq: Add irqbalance01
-In-Reply-To: <20210831114406.8527-1-rpalethorpe@suse.com>
-References: <878s0ikl6d.fsf@suse.de>
- <20210831114406.8527-1-rpalethorpe@suse.com>
-Message-ID: <YToBAshr0Y94qcVU@yuki>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date: Thu,  9 Sep 2021 15:33:14 +0200
+Subject: [LTP] [PATCH v2] controllers: detect previous test failure on
+ cgroup mounts
+Message-ID: <20210909133314.30997-1-krzysztof.kozlowski@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	/* Read the CPU affinity masks for each IRQ. See bitmap_string() in the kernel (%*pb) */
-> +	for (row = 0; row < nr_irqs; row++) {
-> +		sprintf(path, "/proc/irq/%u/smp_affinity", irq_ids[row]);
-> +		ret = SAFE_FILE_READAT(0, path, buf, size);
-> +		if (ret < 1)
-> +			tst_brk(TBROK, "Empty /proc/irq/%u/smp_affinity?", irq_ids[row]);
-> +		c = buf;
-> +		col = 0;
-> +
-> +		while (*c != '\0') {
-> +			switch (*c) {
-> +			case '\n':
-> +			case ' ':
-> +			case ',':
-> +				c++;
-> +				continue;
-> +			case '0' ... '9':
-> +				acc = *c - '0';
-> +				break;
-> +			case 'a' ... 'f':
-> +				acc = 10 + *c - 'a';
-> +				break;
-> +			default:
-> +				tst_res(TINFO, "%u/smp_affnity: %s", irq_ids[row], buf);
-> +				tst_brk(TBROK, "Wasn't expecting 0x%02x", *c);
-> +			}
-> +
-> +			for (mask_pos = 0; mask_pos < 4; mask_pos++) {
-> +				if (mask_pos + col >= nr_cpus)
-> +					break;
-> +
-> +				irq_affinity[row * nr_cpus + (nr_cpus - 1 - col - mask_pos)] =
-> +					(acc & (8 >> mask_pos)) ? ALLOW : DENY;
-> +			}
+The failure of memcg_stress_test.sh cleanup went unnoticed (except
+echo message) and caused further cgroup_fj and memcg_control_test
+failures because of unclean cgroups. Flow is usually like:
 
-The mask here is actually wrong, since we go backward in the
-irq_affinity array the bitmask has to grow not shrink so this should be
-(acc & (1<<mask_pos))
+1. memcg_stress_test succeeds but actually the /dev/memcg was not
+   cleaned up. Notice lack of any error message due to 2>/dev/null.
 
-> +			col += mask_pos;
-> +			c++;
-> +		}
-> +	}
-> +
-> +	free(buf);
-> +}
-> +
-> +static void print_irq_info(void)
-> +{
-> +	size_t row, col;
-> +	unsigned int count;
-> +	enum affinity aff;
+     memcg_stress_test 1 TINFO: Testing 150 cgroups, using 1273 MB, interval 5
+     memcg_stress_test 1 TINFO: Starting cgroups
+     memcg_stress_test 1 TINFO: Testing cgroups for 900s
+     memcg_stress_test 1 TINFO: Killing groups
+     tag=memcg_stress stime=1626770787 dur=903 exit=exited stat=2 core=no cu=19 cs=12
 
-It would be nice if we printed the CPUX header here as well so that it's
-clear which column describes which CPU.
+2. memcg_control_test has false-positive. It succeeds but actually no
+   test was done due to /dev/memcg pollution from previous test:
 
-> +	for (row = 0; row < nr_irqs; row++) {
-> +		tst_printf("%5u:", irq_ids[row]);
-> +
-> +		for (col = 0; col < nr_cpus; col++) {
-> +			count = irq_stats[row * nr_cpus + col];
-> +			aff = irq_affinity[row * nr_cpus + col] == ALLOW ? '+' : '-';
-> +
-> +			tst_printf("%10u%c", count, aff);
-> +		}
-> +
-> +		tst_printf("\n");
-> +	}
-> +
-> +	tst_printf("Total:");
-> +
-> +	for (col = 0; col < nr_cpus; col++)
-> +		tst_printf("%11u", irq_stats[row * nr_cpus + col]);
-                               ^
-			       And I would change this to "%10u " so
-			       that the value aligns with the rest of
-			       the numbers in the columns.
-> +	tst_printf("\n");
-> +}
+     mkdir: cannot create directory ?/tmp/ltp-q8DjShPJeB/mnt/1?: File exists
+     memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit imposed by the topmost group is enforced
+     sh: echo: I/O error
+     /opt/ltp/testcases/bin/memcg_control_test.sh: 86: /opt/ltp/testcases/bin/memcg_control_test.sh: cannot create /tmp/ltp-q8DjShPJeB/mnt/1/memory.memsw.limit_in_bytes:
+     Permission denied
+     rmdir: failed to remove 'sub': Device or resource busy
+     rmdir: failed to remove '/tmp/ltp-q8DjShPJeB/mnt/1': Device or resource busy
+     memcg_control    1  TPASS  :  memcg_control: passed
+     tag=memcg_control stime=1626771695 dur=6 exit=exited stat=0 core=no cu=2 cs=1
 
-Otherwise the rest looks good.
+3. cgroup_fj_function2_memory fails with a cryptic message of mounting a
+   path with new line (because /dev/memcg was not cleaned up before):
 
+     cgroup_fj_function2_memory 1 TINFO: Subsystem memory is mounted at /sys/fs/cgroup/memory
+     /dev/memcg
+     mkdir: cannot create directory ?/sys/fs/cgroup/memory?: File exists
+     cgroup_fj_function2_memory 1 TBROK: mkdir /sys/fs/cgroup/memory
+     /dev/memcg/ltp failed
+     cgroup_fj_function2_memory 1 TINFO: Removing all ltp subgroups...
+     find: ?/sys/fs/cgroup/memory\n/dev/memcg/ltp/?: No such file or directory
+
+The actual failure was in memcg_stress_test executed before other tests,
+however it went unnoticed.  Debugging such failures is difficult as
+result of failing test depends on running another which did not report a
+failure.  Instead, detect unclean cgroups mounts and explicitly test it.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+---
+
+Changes since v1:
+1. Do not modify control/memcg_control_test.sh as it does not seem
+   ready.
+---
+ .../kernel/controllers/cgroup_fj/cgroup_fj_common.sh      | 4 ++--
+ .../kernel/controllers/memcg/stress/memcg_stress_test.sh  | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+index 5594fe9de426..53ab637e8910 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+@@ -123,10 +123,10 @@ cleanup()
+     fi
+ 
+     if grep -q "$mount_point" /proc/mounts; then
+-        umount "$mount_point"
++        EXPECT_PASS umount "$mount_point"
+     fi
+ 
+     if [ -e "$mount_point" ]; then
+-        rmdir "$mount_point"
++        EXPECT_PASS rmdir "$mount_point"
+     fi
+ }
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index c2501e164018..8f7a0eb9dc37 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -44,8 +44,8 @@ setup()
+ cleanup()
+ {
+ 	if [ -e /dev/memcg ]; then
+-		umount /dev/memcg 2> /dev/null
+-		rmdir /dev/memcg 2> /dev/null
++		EXPECT_PASS umount /dev/memcg
++		EXPECT_PASS rmdir /dev/memcg
+ 	fi
+ }
+ 
+@@ -53,8 +53,8 @@ do_mount()
+ {
+ 	cleanup
+ 
+-	mkdir /dev/memcg 2> /dev/null
+-	mount -t cgroup -omemory memcg /dev/memcg
++	EXPECT_PASS mkdir /dev/memcg
++	EXPECT_PASS mount -t cgroup -omemory memcg /dev/memcg
+ }
+ 
+ # $1 Number of cgroups
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.2
+
