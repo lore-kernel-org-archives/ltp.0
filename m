@@ -1,21 +1,20 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 9 Sep 2021 13:00:10 +0200
-Subject: [LTP] [PATCH] network/netstress: fix stdout/stderr log file
- flags and mode
-In-Reply-To: <20210827083417.67579-1-aleksei.kodanev@bell-sw.com>
-References: <20210827083417.67579-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <YTnpOnOxqzWeKLQu@pevik>
+Date: Thu, 9 Sep 2021 13:40:43 +0200
+Subject: [LTP] [PATCH] tst_wallclock: Prevent fail on read-only
+ /etc/localtime
+In-Reply-To: <YS8zFoKhGSHCh9eC@pevik>
+References: <20210901051704.1672590-1-lkml@jv-coder.de>
+ <YS8zFoKhGSHCh9eC@pevik>
+Message-ID: <YTnyu7cPAqcBenG3@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Joerg, all,
 
-good catch!
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+merged, thanks!
 
 Kind regards,
 Petr
