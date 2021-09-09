@@ -2,93 +2,132 @@ Return-Path: <SRS0=gXt9=N7=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 044B7C433EF
-	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 16:34:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CED0C433F5
+	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 16:51:51 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A4006113A
-	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 16:34:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A4006113A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 551436115B
+	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 16:51:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 551436115B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vpitech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DEBD03C91A6
-	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 18:34:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 67C063C8D8B
- for <ltp@lists.linux.it>; Thu,  9 Sep 2021 18:33:53 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F24B8600815
- for <ltp@lists.linux.it>; Thu,  9 Sep 2021 18:33:52 +0200 (CEST)
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71])
+	by picard.linux.it (Postfix) with ESMTP id 61B8D3C8D8A
+	for <ltp@archiver.kernel.org>; Thu,  9 Sep 2021 18:51:48 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7490D3F302
- for <ltp@lists.linux.it>; Thu,  9 Sep 2021 16:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631205232;
- bh=TtcNJL6x44ndm3xibUbYyp5tWk5g94OyGxV5OByUKF0=;
- h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
- MIME-Version;
- b=M1Ed2C1Mw7sSqxHAQ3LtcH4nzaGwfEpq/gOg3a1GWvPBswKObTTXc2Vg0Ic5T+l8e
- bIUaSj0T0uvIddOmYsg4jf6xHwcdceFYjb87Jmwr5QQHpd/sNy1+WMdStgJTEW5N9S
- Fbe8kI2VG8/l91L9hGdYxye5qcRLKNR59ZKxbN8wZA5zwmPK894mtXsyTST6NBYHlY
- m4uLYDBj9wribz6rzXsPUWznFlNLp7Py2gRlshT5raQHJrgiVByDU6BvyZRaozf+1c
- NBHvgyab+6A+a+c8Qn+qNafhGkiKip27eALMEG7GU7PTVx/WsTNOK+FkUzc+lpeuPH
- 2X3qV/qXIE9xw==
-Received: by mail-wm1-f71.google.com with SMTP id
- v2-20020a7bcb420000b02902e6b108fcf1so1090883wmj.8
- for <ltp@lists.linux.it>; Thu, 09 Sep 2021 09:33:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=TtcNJL6x44ndm3xibUbYyp5tWk5g94OyGxV5OByUKF0=;
- b=aqNDBEOdgf7XkE2IbFumDxQH9z25EqgYQ7ozqI0WAeB27zeYtLkNmFTUiUm/sL4u1h
- 18x3e5tzgiucuXowfaqj47eZBU+QD5erVh8mDKF9hr9rgKNElEHWg/5o3iKWQwX05E8T
- Fr13fC10EAgJJQexHt9U9GTxOxOLR8q+ONf6pF/bq9AOyH/QR4oMaJ/mt4dkF5ryGpvO
- lAHleaBSDUQcsGU6HFMSdYWR/Qjq0UeJzit7qxgsZL9I5bwI/CfJKlZdxilyQPovMXHc
- 066suTQ4yCo49REfHa8J7dMog2Ut3Zrxulsh3FzYZ3V7RVGkkbteAK4OtG317cT6rtc4
- AYMQ==
-X-Gm-Message-State: AOAM5312+9QLJ2rQtO1vPRtFJkrNDBr+aXi+OlzFsd0wBZk5rX2C8PEX
- mgft4zXBrV2Tcr2R/BQWIaxOyI4+4J9X+MMuhBwpykg3VD2jKEjPkUCcHGPemiiHK98BiyhV/Bf
- cEfkCy73aFNY5QKbuSS5AHepIovUJ
-X-Received: by 2002:a5d:570c:: with SMTP id a12mr4684877wrv.117.1631205231805; 
- Thu, 09 Sep 2021 09:33:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwlcwIuKyDh8TKGmYaz5u1rx6dhN2J8z/w7+FLqBF2zBxvytjVJkkvZoEWXVO8LP1oJg3gdJw==
-X-Received: by 2002:a5d:570c:: with SMTP id a12mr4684855wrv.117.1631205231580; 
- Thu, 09 Sep 2021 09:33:51 -0700 (PDT)
-Received: from kozik-lap.lan ([79.98.113.201])
- by smtp.gmail.com with ESMTPSA id n3sm1741944wmh.30.2021.09.09.09.33.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 09 Sep 2021 09:33:47 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To: ltp@lists.linux.it
-Date: Thu,  9 Sep 2021 18:33:26 +0200
-Message-ID: <20210909163326.42598-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
-References: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
+ by picard.linux.it (Postfix) with ESMTPS id 40CA73C21F8
+ for <ltp@lists.linux.it>; Thu,  9 Sep 2021 18:51:39 +0200 (CEST)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on2075.outbound.protection.outlook.com [40.107.243.75])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 13E7E200973
+ for <ltp@lists.linux.it>; Thu,  9 Sep 2021 18:51:37 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HqTvTpZAxlgot6vH5Ym89NXfnJSOz1zxib+U1Dm5t8DHFW7FdhCaKXpwsDELbgpkIIdgomCLFOiMz3Xipnm35NQrpdYkGutjSHlfNMI/Oya/7tlDcm2uIYOgxnoHyoOuIUHO+CTiobx16xyi0730Sv0X4LWxg0xTAEXNPfxthiHo4leyWTWmFhogMPTlHgZokPrrH7k23yDIa3jjPif6NdoRP+QD58FSOGqsaS7n10EGJmKeM57IMEswSSSvIoouNjUCuq+5BgpOIW/yUQnQqvII4pUB0vb7t3OKYzpO5d/ff8u68ZWF7FjuppSi0BpexI/BOvrzCrsc+W3eBLRNGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
+ bh=+T9DtiRWoLup4+CsDkgKyFxaAqMBUsAQ6Y3jexeiyME=;
+ b=BAD7HrWh4HvueNSKxkJa6fCb6ZPWSbve1XHvqArE9wtCnnVcVWq0QJfCqNnnCm8f34QajtirocawtQjbQ0L1+hs4BwQux+nSG06OUP9fzhlNFf2t+cK4e+MjdFRqqvb7ySvwP1xeTVIYf5KNBrtGcxSmm5r483WOF6/ft/e/RmtmnUVUZPHr9UI+Y/JTvEr6ZUiNTW2ExgM12IDo0TsxirQH5pzMWVigepRMlePX4t7Duw7WLoYNOEVGSKarVrnSTvJJK3SUjprLVmh7jnrxY+W98ZNDCMYz0sC5OxkQGPxEkfGKVtPSAYsDx2zv2/vWg8OyK3Jfq2gyroWjnfZ+SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vpitech.com; dmarc=pass action=none header.from=vpitech.com;
+ dkim=pass header.d=vpitech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=vpitech.onmicrosoft.com; s=selector2-vpitech-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+T9DtiRWoLup4+CsDkgKyFxaAqMBUsAQ6Y3jexeiyME=;
+ b=lwTJSqdszhM+1RnNpo6Ud0ey4oqfmlxrjtzezCS90mU6151V0Mxs4084HNXFhbJU48agRTLYF8WfqDRIRQCgnpbMyfp22lwBRuQvUcNTgfimq67XyBWLVzH8ew7JVhmM2XbAVGPsVF7e8zg9FgmLxNdTeej6yvKskF7E9vb+EVc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=vpitech.com;
+Received: from MW2PR07MB3980.namprd07.prod.outlook.com (2603:10b6:907:a::32)
+ by MW4PR07MB8667.namprd07.prod.outlook.com (2603:10b6:303:104::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15; Thu, 9 Sep
+ 2021 16:51:34 +0000
+Received: from MW2PR07MB3980.namprd07.prod.outlook.com
+ ([fe80::cc48:9777:4f07:6014]) by MW2PR07MB3980.namprd07.prod.outlook.com
+ ([fe80::cc48:9777:4f07:6014%4]) with mapi id 15.20.4478.026; Thu, 9 Sep 2021
+ 16:51:34 +0000
+From: Alex Henrie <alexh@vpitech.com>
+To: linux-integrity@vger.kernel.org, ltp@lists.linux.it, zohar@linux.ibm.com,
+ pvorel@suse.cz, alexhenrie24@gmail.com
+Date: Thu,  9 Sep 2021 10:51:11 -0600
+Message-ID: <20210909165111.51038-2-alexh@vpitech.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210909165111.51038-1-alexh@vpitech.com>
+References: <20210909165111.51038-1-alexh@vpitech.com>
+X-ClientProxiedBy: MWHPR22CA0050.namprd22.prod.outlook.com
+ (2603:10b6:300:12a::12) To MW2PR07MB3980.namprd07.prod.outlook.com
+ (2603:10b6:907:a::32)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Received: from demeter.ad.vpitech.com (66.60.105.30) by
+ MWHPR22CA0050.namprd22.prod.outlook.com (2603:10b6:300:12a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
+ Transport; Thu, 9 Sep 2021 16:51:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45706093-7d39-42b5-19b9-08d973b2152c
+X-MS-TrafficTypeDiagnostic: MW4PR07MB8667:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW4PR07MB866724479844D2497C51BD37B8D59@MW4PR07MB8667.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:231;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a8k+G2xX1w4WRF9EKgm4H9PfD1OpQYeiGoPhjfNFHQNuzc4lfMoUnjBe6sZiWVVUSywGIHsd/crC13TR8aVQUrGap+CZLhmLcMir2DYAGF0yVYNq4ANRavhVWiMr8bTDFVH2j+zD+m2dL1OVXjdLpb6oE8LusWxUWD8MnDggOOz75rHCA7uGzXYycImrNduTsUWNwyLtEYNKPIWxDXbH0b/l7gCMNpni4LBBb3uB6Kk7O58AaKr+Ij5bQqBJuNI7L9uMqQP62j/5y0W77Vb3fup85bqhKvzGPL0LlOf8AoYyBWsOukgme3cYRIkYOb6RHs+6kfKUEgekYollXSSTJRNqZxMoc9WitrLD0BQd1RNa+LYwt8qF7WAytqhU6tQaKEPfYLYnH0yLbpMmfI6WRplt3iv1+H2J4hNjVJREN9/ijMq1dP3NWTcItAk4y9EWUaBbjEu0jvzQm/+ccCyuIhbsgzM0hsn7TOcNXGJhjiODohD6eqav4+bNO07lK529jyBLTQ5g49RH8wihf9YGzn2zPF+MPgWThVBZKp1QI5+LnmWOZYXdSpaU0oTVznF/HOcB0ndsf70BVuC4wD60W0bsoBSMeZIgCAfsEUiFHd7QIHVO1gxhUFWXlFHZ/mvoT5Bb5X4VvdqwjdHbWMvHB6MS5kRqrvY4QoGTQhCVBe6Z5k+IOEC1+IC9beE8DKgEwNCNqdicwESA1vthINQU5g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MW2PR07MB3980.namprd07.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(346002)(136003)(376002)(39840400004)(396003)(2616005)(2906002)(36756003)(66476007)(66556008)(52116002)(86362001)(6666004)(478600001)(1076003)(8936002)(66946007)(956004)(7696005)(5660300002)(8676002)(6486002)(107886003)(38350700002)(38100700002)(186003)(4326008)(316002)(83380400001)(26005);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eJG9YAytUjUNRf0RJpUXPq0z3ZQX1NsPanqxOBwZhv2d/KAQ52N1G0e5UiJO?=
+ =?us-ascii?Q?q3GAtp0f1mp9qsM3t7EDL5EhgGQYLHWSL7wwuPdrDgt4P35jVRX+Ma/iNB/X?=
+ =?us-ascii?Q?e+sV/lApenIgCkSYGtHij5acTh9wRUjaH4y4See/cu3Nktr9LaURXmviWPQP?=
+ =?us-ascii?Q?sT7v/PnDUOek/d++PRF31vXld/QoRj8CKapaDKOLUDEyYroKRlPNfzA42hvq?=
+ =?us-ascii?Q?7I4RGAf5NASlBHPpNqJ+NnM02UB2SP/ysGk2UeSv5PoOQnPEofIVaGsAa3ZO?=
+ =?us-ascii?Q?RbyRfuby9zEvLePyTUdmzNG1p5kmfNjpG/X82ADXMs9NabvspyOr8ea1HzE+?=
+ =?us-ascii?Q?Hz6s+wgVYVffhtKpgM6DxUY8w+bmb8MzJrN532/P2UbaCHGsfB43Hr7BqbXC?=
+ =?us-ascii?Q?/LgMJul3oUiWBgGLKGpIe1eX1QT1W/cLsh0BaaSp7Q+zYT1xVHWwJAEs1z0+?=
+ =?us-ascii?Q?VTBdS2U/umdA5jmjCsYPJ0ENHU6NTOzL2iE2MJvHFVmDqi5UBlFJGUanc3au?=
+ =?us-ascii?Q?YnSbDBmt7z3Gl31msZqbmU9egRQx9T2WBAOsvydr8sTz2nZU59aR//y6DOvL?=
+ =?us-ascii?Q?7bz1+vTO3R31HCJbX9ldMxBd42OKecC+RCVX74nuQxI2XiS+5R3mlvl2K+C8?=
+ =?us-ascii?Q?8yfTzjkx2rUFZ6cShbJYScwegI8mQY/oA8VNHNP7jd1ITkZ5pABGNX2C97jj?=
+ =?us-ascii?Q?s2cCNl0cekUxqt4ogqe/uoWIcZlfdmE8Ducr92jz4PqGoN0IdmUjy5ROfCIw?=
+ =?us-ascii?Q?R2NGSYWzCHhc+sDWSOdAcFtj2RwTPpYuoGY7wvBsmBcA7u5lW6+gTfZK0G1z?=
+ =?us-ascii?Q?xerOiMg33D0itAaa8tQTlfVqTuNBFuvR6ePU/qqvcd7Hnc4AGs58he4qtTuP?=
+ =?us-ascii?Q?jVGpUFwKSpvecmUuUHR8UZzOzx1ImWZspq+yie4OV3a97Brj7jTXJNmYqeoY?=
+ =?us-ascii?Q?8onbP88CQPxmelhqboW7ydNPPXaJiVqncx/3t50y3VknWaxhrLmSKqedF2J3?=
+ =?us-ascii?Q?NZg+J8B1UhvOyPx+E8gcDcI4+vyYBZiq0HwjsgD+83HhfiK/prIMDEkJWNy9?=
+ =?us-ascii?Q?NlVZ4myyH0hNMrRwJfM54onYxmWICx9OCGDNVf7pTPpEPdWjFfaoKxLMXanF?=
+ =?us-ascii?Q?rilAQIZRtURKp5t/V+iTetHllKQQezs1KCatqN4H5ETfV93syRJstlL+lRES?=
+ =?us-ascii?Q?gShb7kgqVsw/uMEI+sqghNr6vLCSRm4OMGCn6eCdJSAfbFKj3zDYazyzU+ih?=
+ =?us-ascii?Q?BmKHXSoZj54am8vOcpzEIMLqJJ8WvEi64EIV2j24XFzp5I99QCffsAJ6YUQ+?=
+ =?us-ascii?Q?9B5RAu7u9XMrDSRFOzEHEuKN?=
+X-OriginatorOrg: vpitech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45706093-7d39-42b5-19b9-08d973b2152c
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR07MB3980.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 16:51:34.7439 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 130d6264-38b7-4474-a9bf-511ff1224fac
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +jIanzir6D3sdzB6IabrORkJSBu3iCsC8UGELB1sLjPIgE+fSadEtrAZkCYdC5TmkZ2qbi/Hbku2p/11eJu92A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR07MB8667
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] rtc01: add workaround for broken CMOS RTC on
- Microsoft Hyper-V cloud
+Subject: [LTP] [PATCH ltp] IMA: Add tests for uid, gid, fowner,
+ and fgroup options
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,87 +143,88 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210909163326.nOZQr2CoqnENB6fSfYBVnBhUrRATM7Mqv4ggVl5OZIk@z>
+Message-ID: <20210909165111.GWQcmgrhvoOL0dBwZ0rMXluq91VOu_M-2loXjbJghfg@z>
 
-rtc01 fails on missed alarm on multiple different Azure instances if the
-alarm is set for the next minute:
+Requires "ima: add gid support".
 
-  rtc01 0 TINFO : RTC READ TEST:
-  rtc01 1 TPASS : RTC READ TEST Passed
-  rtc01 0 TINFO : Current RTC date/time is 11-6-2021, 09:00:58.
-  rtc01 0 TINFO : RTC ALARM TEST :
-  rtc01 0 TINFO : Alarm time set to 09:01:03.
-  rtc01 0 TINFO : Waiting 5 seconds for the alarm...
-  rtc01 2 TFAIL : rtc01.c:151: Timed out waiting for the alarm
-
-Reproduced easily with rtcwake:
-
-  $ rtcwake -d rtc0 -m on -s 50 -v
-
-If alarm is set for now+60 seconds, it works fine.  Clearly Microsoft
-Hyper-V cloud instances have a broken CMOS RTC which unfortunately
-cannot be easily fixed.  Adding simple workaround to extend the time to
-60 seconds allows to avoid false positives in expense of longer testing
-time.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Alex Henrie <alexh@vpitech.com>
 ---
- testcases/kernel/device-drivers/rtc/rtc01.c | 25 +++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ .../integrity/ima/tests/ima_measurements.sh   | 37 ++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/rtc/rtc01.c b/testcases/kernel/device-drivers/rtc/rtc01.c
-index ebd15306d583..51b144f201ad 100644
---- a/testcases/kernel/device-drivers/rtc/rtc01.c
-+++ b/testcases/kernel/device-drivers/rtc/rtc01.c
-@@ -64,6 +64,23 @@ void read_alarm_test(void)
- 	unsigned long data;
- 	fd_set rfds;
- 	struct timeval tv;
-+	unsigned int alarm_sec = 5;
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+index 1927e937c..3c1bcbf88 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -8,6 +8,7 @@
+ 
+ TST_NEEDS_CMDS="awk cut sed"
+ TST_SETUP="setup"
++TST_CLEANUP="cleanup"
+ TST_CNT=3
+ TST_NEEDS_DEVICE=1
+ 
+@@ -20,6 +21,13 @@ setup()
+ 	TEST_FILE="$PWD/test.txt"
+ 	POLICY="$IMA_DIR/policy"
+ 	[ -f "$POLICY" ] || tst_res TINFO "not using default policy"
 +
-+	if (tst_is_virt(VIRT_HYPERV)) {
-+		/*
-+		 * Microsoft Hyper-V hypervisor has broken CMOS RTC which
-+		 * does not generate interrupts if alarm is set for 5-59
-+		 * seconds from now and it advances to next the minute
-+		 * (e.g. 10:12:57 -> 10:13:02).
-+		 * However alarm set to fire in 60 seconds (and more) works
-+		 * fine.
-+		 *
-+		 * This was confirmed on different Linux kernels (from v4.15 up
-+		 * to v5.14.2) and instances (Standard_B1ms, Standard_B4ms,
-+		 * Standard_D4s_v3, Standard_D8d_v4).
-+		 */
-+		alarm_sec = 60;
-+	}
++	cat $IMA_POLICY > policy-original
++}
++
++cleanup()
++{
++	cat policy-original > $IMA_POLICY
+ }
  
- 	tst_resm(TINFO, "RTC READ TEST:");
+ ima_check()
+@@ -103,7 +111,7 @@ test3()
+ 	local file="$dir/test.txt"
  
-@@ -82,8 +99,8 @@ void read_alarm_test(void)
+ 	# Default policy does not measure user files
+-	tst_res TINFO "verify not measuring user files"
++	tst_res TINFO "verify not measuring user files by default"
+ 	tst_check_cmds sudo || return
  
- 	tst_resm(TINFO, "RTC ALARM TEST :");
+ 	if ! id $user >/dev/null 2>/dev/null; then
+@@ -116,9 +124,34 @@ test3()
+ 	cd $dir
+ 	# need to read file to get updated $ASCII_MEASUREMENTS
+ 	sudo -n -u $user sh -c "echo $(date) user file > $file; cat $file > /dev/null"
++	EXPECT_FAIL "grep $file $ASCII_MEASUREMENTS"
+ 	cd ..
  
--	/* Set Alarm to 5 Seconds */
--	rtc_tm.tm_sec += 5;
-+	/* Set Alarm to 5 (or more) seconds */
-+	rtc_tm.tm_sec += alarm_sec;
- 	if (rtc_tm.tm_sec >= 60) {
- 		rtc_tm.tm_sec %= 60;
- 		rtc_tm.tm_min++;
-@@ -127,9 +144,9 @@ void read_alarm_test(void)
- 		return;
- 	}
+-	EXPECT_FAIL "grep $file $ASCII_MEASUREMENTS"
++	tst_res TINFO "verify measuring user files when requested via uid"
++	ROD echo "measure uid=$(id -u $user)" \> $IMA_POLICY
++	ROD echo "$(date) uid test" \> $TEST_FILE
++	sudo -n -u $user sh -c "cat $TEST_FILE > /dev/null"
++	ima_check
++
++	tst_res TINFO "verify measuring user files when requested via gid"
++	ROD echo "measure gid=$(id -g $user)" \> $IMA_POLICY
++	ROD echo "$(date) gid test" \> $TEST_FILE
++	sudo -n -u $user sh -c "cat $TEST_FILE > /dev/null"
++	ima_check
++
++	tst_res TINFO "verify measuring user files when requested via fowner"
++	ROD echo "measure fowner=$(id -u $user)" \> $IMA_POLICY
++	ROD echo "$(date) fowner test" \> $TEST_FILE
++	chown $user $TEST_FILE
++	cat $TEST_FILE > /dev/null
++	ima_check
++
++	tst_res TINFO "verify measuring user files when requested via fgroup"
++	ROD echo "measure fgroup=$(id -g $user)" \> $IMA_POLICY
++	ROD echo "$(date) fgroup test" \> $TEST_FILE
++	chgrp $(id -g $user) $TEST_FILE
++	cat $TEST_FILE > /dev/null
++	ima_check
+ }
  
--	tst_resm(TINFO, "Waiting 5 seconds for the alarm...");
-+	tst_resm(TINFO, "Waiting %u seconds for the alarm...", alarm_sec+1);
- 
--	tv.tv_sec = 6;		/* set 6 seconds as the time out */
-+	tv.tv_sec = alarm_sec+1;		/* set 5+1 seconds as the time out */
- 	tv.tv_usec = 0;
- 
- 	FD_ZERO(&rfds);
+ tst_run
 -- 
-2.30.2
+2.33.0
 
 
 -- 
