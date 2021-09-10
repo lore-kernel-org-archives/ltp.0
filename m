@@ -7,94 +7,83 @@ X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14478C433F5
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 08:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A755DC433EF
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 08:39:42 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2463961186
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 08:35:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2463961186
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id C6B99611BF
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 08:39:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6B99611BF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bell-sw.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5A3D83C8CCE
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 10:35:50 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D6F373C8C75
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 10:39:39 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DCC253C20F4
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 10:35:40 +0200 (CEST)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2D6843C21F5
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 10:39:31 +0200 (CEST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D91761001442
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 10:35:39 +0200 (CEST)
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E964F3F07E
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 08:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631262933;
- bh=6pMBmBTaXkxyABYtIsuCy7OiVqB57CfZQGGeZXTarGY=;
- h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
- In-Reply-To:Content-Type;
- b=DJnDghnqJLluRbJ/uoCFINo3Blsco4IntgeN3egqJ5qufJivrkpE5SgPFKQxN1QIR
- cny5cqi0z7E9BGKIDgbYEQzyRaMxB4yB6nlhRlsOSt4JjjBCRu1KRp6IHx8gmJZk8+
- oX1/JKpGKH+fb67sRFaJksVeLYcjlKN81X3zdzrpEHS2BuPCP6MutOVCsSjo7XfOBo
- spHoxbdIMFGXTx2kTw8wylVwrTzDOHNcP8hYd5rrrHHEyXiNphCtuIHRzyAL4STl1C
- Mz44Y7Oa9sZ/sM5ouYbOzBs4DwAqsgP9rxGte5buVxzm7dV0Pi+5oCe5fXLKC3XhYE
- hFwMeUJN6Tlag==
-Received: by mail-wm1-f70.google.com with SMTP id
- c2-20020a7bc8420000b0290238db573ab7so627792wml.5
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 01:35:33 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5933E60210A
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 10:39:30 +0200 (CEST)
+Received: by mail-lf1-x12a.google.com with SMTP id s10so2513939lfr.11
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 01:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bell-sw-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=ZirMEoloR79YWCiS++WJKSd9c0lM6359W9XkSdYk5V4=;
+ b=M+CUP4juwr/gOoJNv0oZVDsuKwVvSi35czcW3FMd4GlMoA0fUKNJ/QiKjyUj+4JfgJ
+ Z1JUyxuDYKcaHI+Q+Yqql/XNgYEIfXC2xS/mMSvFDVY8d5GTSUb/RFUSYwmtbHFSJoFq
+ eDeN093k/MwHn14UnrYgX43SeTvxGtvUhnAmnJjZ4Q3wVtqsLtzi1o5NnsX3uyrx3BLy
+ sfqHnoUUTpVZBr1Dg9j+kNZ/C1oxvTqRfEYkrZKoBu0TUX94Q9rboDt2ShFHZVRKW3km
+ 6RazLiYT00u7ELczXx0BnPOyIahTOhG9gAg74biNIOmoCLaCTxz0Q9bGdZ7HerUkASr/
+ HF6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=6pMBmBTaXkxyABYtIsuCy7OiVqB57CfZQGGeZXTarGY=;
- b=3PaDz26OHfWJih1gf3MvL8VcplrCkwOg/NFSXox/lETLLY9O1bK1UnAn0oS4cZfDZ7
- 7XXHlR08nqgsYmxWoeIMSfsstA0ILKlXuN+iWKHqbI+uCmyWfG506P8zbO0XNExkwoBb
- SuYkeHYUwpV7wZ9DfYDn2yfMNfh2NDSIYDldz/ncpw9P04VHWbqwCwOvVxY9wQpcqBHD
- /2pr3zjH4Y3KhgY7oTsdtxR4MUGRXZ2Aibk/WKZqHQPXwgt3AIxH2gvh0yecDob2y2kV
- uL5lwl+8w0YVFBxLEym/knMMLY60JvfejVY0Gs1FnMbVkRQnghOveveCDCWrxct0bZaN
- GYEg==
-X-Gm-Message-State: AOAM53139D5TxguFYQuIWU7h3T/BdTC5iJw3qHJKHGhNHQ9/J+qPXGX3
- 0STma7wMiwk7BPm5+otb+sJS58kzw6LwSPGl4e8M1vFa1K6wNKC8+euYZMz5r0EiZmL4xbHSjXQ
- icCs9EtuqFHIKHWjdaMl/YAltUYR5
-X-Received: by 2002:a1c:1cc:: with SMTP id 195mr7220967wmb.188.1631262933328; 
- Fri, 10 Sep 2021 01:35:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzEp2LwV8ONkxBQ6qACZG0bwDZ9ezybRhImxLtSbV6JKzwMF0SM6hfyfcfx/jvcaLVh753PRg==
-X-Received: by 2002:a1c:1cc:: with SMTP id 195mr7220955wmb.188.1631262933163; 
- Fri, 10 Sep 2021 01:35:33 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.113.74])
- by smtp.gmail.com with ESMTPSA id m18sm1353945wrn.85.2021.09.10.01.35.32
+ bh=ZirMEoloR79YWCiS++WJKSd9c0lM6359W9XkSdYk5V4=;
+ b=Gwsh6ILCX7U44gbUHntF9nG3lmHiyCXpHD6QNwP5Pf9NQ2Xs4kI/z98UDd/88wQ2FF
+ M9nOmYQkxkp7INNZIWWosCpXfZAy7SEwA1TSJvRJOK/sa00lSiGxtKGZd2fQpdYmlRQs
+ 8g45flCcgjs3CoSrImGGqK+wJUrxG6BoZZTbUnNYhfVIB9Hh3qd0qrTmYlioIVEIHx+r
+ wa5ms1Se3TBf8jg2tl1qzobh2i+qlq+WnKEpTX4JI7YRuD9smcFaJrOLrRF7P3vl8lPk
+ JYK6saQWysOGHelmOFPdYIqovwqb2YGYGt2GaQx2eprraqk8p4yTtlbIY+EWPNip0Xdg
+ wb5A==
+X-Gm-Message-State: AOAM531tiKBXuQ7tYfHLmgRYLGrvP4RQQwvJV0+d4MZX4QgiBu8Z+fRt
+ bl6ZPHby6T2aCpWXbpQLKs+AYGd/sGOw
+X-Google-Smtp-Source: ABdhPJzcZkGDojJeZOPSSNxfgADfYyzmJr/itZWaq6ltShuqOCsRnLcuueApkdmlhGlTQTVefugnvA==
+X-Received: by 2002:a05:6512:220c:: with SMTP id
+ h12mr2949344lfu.398.1631263169513; 
+ Fri, 10 Sep 2021 01:39:29 -0700 (PDT)
+Received: from [192.168.1.52] ([95.161.221.177])
+ by smtp.gmail.com with ESMTPSA id j20sm467188lfu.165.2021.09.10.01.39.29
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 10 Sep 2021 01:35:32 -0700 (PDT)
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
- <20210909163326.42598-2-krzysztof.kozlowski@canonical.com>
- <YTsYqBJP8oWiuEGQ@yuki>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <d50543f0-6e41-8911-e24b-ba0ae61185fa@canonical.com>
-Date: Fri, 10 Sep 2021 10:35:32 +0200
+ Fri, 10 Sep 2021 01:39:29 -0700 (PDT)
+To: pvorel <pvorel@suse.de>, suy.fnst@fujitsu.com
+References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
+ <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <0acf816462d49d8a6004c87e36b05d1b@suse.de>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Message-ID: <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+Date: Fri, 10 Sep 2021 11:39:29 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YTsYqBJP8oWiuEGQ@yuki>
+In-Reply-To: <0acf816462d49d8a6004c87e36b05d1b@suse.de>
 Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] rtc01: add workaround for broken CMOS RTC on
- Microsoft Hyper-V cloud
+Subject: Re: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,44 +96,44 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210910083532.h8bwdegMTBCTSolwrhqaaGVwh7KC9zSFaQ3jX86dDtk@z>
+Message-ID: <20210910083929.MjtSDkamEipR8hHlS5bdrC-c_rE2xoc3e5zMmzgn3rg@z>
 
-On 10/09/2021 10:34, Cyril Hrubis wrote:
-> Hi!
->> rtc01 fails on missed alarm on multiple different Azure instances if the
->> alarm is set for the next minute:
->>
->>   rtc01 0 TINFO : RTC READ TEST:
->>   rtc01 1 TPASS : RTC READ TEST Passed
->>   rtc01 0 TINFO : Current RTC date/time is 11-6-2021, 09:00:58.
->>   rtc01 0 TINFO : RTC ALARM TEST :
->>   rtc01 0 TINFO : Alarm time set to 09:01:03.
->>   rtc01 0 TINFO : Waiting 5 seconds for the alarm...
->>   rtc01 2 TFAIL : rtc01.c:151: Timed out waiting for the alarm
->>
->> Reproduced easily with rtcwake:
->>
->>   $ rtcwake -d rtc0 -m on -s 50 -v
->>
->> If alarm is set for now+60 seconds, it works fine.  Clearly Microsoft
->> Hyper-V cloud instances have a broken CMOS RTC which unfortunately
->> cannot be easily fixed.  Adding simple workaround to extend the time to
->> 60 seconds allows to avoid false positives in expense of longer testing
->> time.
-> 
-> I do not think that adding workarounds for a broken platforms into
-> testcases is a right thing to do.
-
-I am actually also not sure, but the broken platform is one of three
-main cloud providers. :)
-
-
-Best regards,
-Krzysztof
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gMDkuMDkuMjAyMSAxODo1MywgcHZvcmVsIHdyb3RlOgo+IEhpIFN1LCBBbGV4ZXksCj4gCj4g
+T24gMjAyMS0wOC0zMCAxMToyNiwgc3V5LmZuc3RAZnVqaXRzdS5jb20gd3JvdGU6Cj4+IEhpLAo+
+PiDCoCBJIGZvdW5kIHRoYXQgaXQncyBpbmRlZWQgcmVsYXRlZCB0byBpcHY2IERBRCBhcyB5b3Ug
+c2FpZC4KPj4gQ2FsbGluZwo+PiBgaXAgbmV0bnMgZXhlYyBsdHBfbnMgc3lzY3RsIC1uIG5ldC5p
+cHY2LmNvbmYubHRwX25zX3ZldGgxLmFjY2VwdF9kYWQ9MGAKPj4gb3IgdHN0X3dhaXRfaXB2Nl9k
+YWQoKSBhdCBlbmQgb2YgdGhlIHNldHVwIGJvdGggc29sdmVzIHRoZSBwcm9ibGVtLgo+PiBIb3dl
+dmVyIHRoZXJlIGlzIG9uZSBzdXBlciBzdHJhbmdlIHBhcnQgdGhhdCB0aGUgdGVudGF0aXZlIGFk
+ZHJlc3MgaXMKPj4gdGhlIGxvY2FsIGxpbmsgYWRyZXNzIG9mIHRoZSBsdHBfbnNfdmV0aDE6Cj4+
+Cj4+IDU6IGx0cF9uc192ZXRoMUBpZjQ6IDxCUk9BRENBU1QsVVAsTE9XRVJfVVA+IG10dSAxNTAw
+IHFkaXNjIG5vcXVldWUKPj4gc3RhdGUgVVAgZ3JvdXAgZGVmYXVsdCBxbGVuIDEwMDAKPj4gwqDC
+oMKgIGxpbmsvZXRoZXIgZjI6OGY6MjQ6ZDQ6YmE6MjYgYnJkIGZmOmZmOmZmOmZmOmZmOmZmIGxp
+bmstbmV0bnNpZCAwCj4+IMKgwqDCoCBpbmV0IDEwLjAuMC4xLzI0IHNjb3BlIGdsb2JhbCBsdHBf
+bnNfdmV0aDEKPj4gwqDCoMKgwqDCoMKgIHZhbGlkX2xmdCBmb3JldmVyIHByZWZlcnJlZF9sZnQg
+Zm9yZXZlcgo+PiDCoMKgwqAgaW5ldDYgZmQwMDoxOjE6MTo6MS82NCBzY29wZSBnbG9iYWwgbm9k
+YWQKPj4gwqDCoMKgwqDCoMKgIHZhbGlkX2xmdCBmb3JldmVyIHByZWZlcnJlZF9sZnQgZm9yZXZl
+cgo+PiDCoMKgwqAgaW5ldDYgZmU4MDo6ZjA4ZjoyNGZmOmZlZDQ6YmEyNi82NCBzY29wZSBsaW5r
+IHRlbnRhdGl2ZQo+PiA8LS0tLS0tLS0tLS0tLS0tLS0tLQo+PiDCoMKgwqDCoMKgwqAgdmFsaWRf
+bGZ0IGZvcmV2ZXIgcHJlZmVycmVkX2xmdCBmb3JldmVyCj4+Cj4+IEhvd2V2ZXIsIHRoZXJlIGlz
+IG5vIHBsYWNlIHVzaW5nIHRoZSBhZGRyZXNzIGluIG1wbHMwMiB0ZXN0Lj4+IEl0IG1ha2VzIG1l
+IHdvbmRlciBob3cgY291bGQgaXQgYmUgcG9zc2libGUgdG8gdHJpZ2dlciB0aGUgaXNzdWUuLgoK
+TG9va3MgbGlrZSB0aGUgcHJvYmxlbSBoZXJlIGluIHRoZSBuZWlnaGJvciBkaXNjb3Zlcnkgb2Yg
+ZmQwMDoxOjE6MTo6Mgp1c2luZyBsaW5rLWxvY2FsIGFkZHJlc3MsIGFuZCB2aWNlIHZlcnNlIGZv
+ciB0aGUgb3RoZXIgc2lkZS4gbXBscyBpcwp1c2luZyB0aGUgZm9sbG93aW5nIHJvdXRlIHdpdGgg
+dGhlIGFkZHJlc3M6CgpmZDAwOjIzOjoyICBlbmNhcCBtcGxzICA2MCB2aWEgZmQwMDoxOjE6MTo6
+MiBkZXYgbHRwX25zX3ZldGgxIG1ldHJpYyAxMDI0IHByZWYgbWVkaXVtCnNvIHRoZSBhZGRyZXNz
+IHRoZXJlIHNob3VsZCBiZSBpbiBhIHJlYWNoYWJsZSBzdGF0ZS4uLgoKQWRkaW5nIGl0IG1hbnVh
+bGx5IGluIHNldHVwIG1pZ2h0IGZpeCB0aGUgdGVzdCBhcyB3ZWxsOgoKUk9EIGlwIG5laWdoIHJl
+cGxhY2UgJCh0c3RfaXBhZGRyIHJob3N0KSBsbGFkZHIgJCh0c3RfaHdhZGRyIHJob3N0KSBkZXYg
+JCh0c3RfaWZhY2UpIG51ZCByZWFjaGFibGUKdHN0X3Job3N0X3J1biAtcyAtYyAiaXAgbmVpZ2gg
+cmVwbGFjZSAkKHRzdF9pcGFkZHIpIGxsYWRkciAkKHRzdF9od2FkZHIpIGRldiAkKHRzdF9pZmFj
+ZSByaG9zdCkgbnVkIHJlYWNoYWJsZSIKCj4gCj4gSSB3b25kZXIgaWYgdGVzdCBzdGlsbCBuZWVk
+cyBiZSBmaXhlZCB0byB3b3JrIG9uIGFsbCBzZXR1cHMuCj4gCgpJIHRoaW5rIHdlIGNvdWxkIHNl
+dCBhY2NlcHRfZGFkIHRvIDAgaW4gZ2VuZXJpYyBzZXR1cCBvZiB0aGUKdGVzdCBpbnRlcmZhY2Vz
+LCBpbiB0c3RfbmV0LnNoL3RzdF9pbml0X2lmYWNlKCkuCgotLSAKTWFpbGluZyBsaXN0IGluZm86
+IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
