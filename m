@@ -1,92 +1,42 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Sep 2021 09:33:25 +0200
-Subject: [LTP] [PATCH ltp] IMA: Add tests for uid, gid, fowner,
- and fgroup options
-In-Reply-To: <20210909183545.a33cb2c25f13eb2a1d7b64ac@vpitech.com>
-References: <20210909165111.51038-1-alexh@vpitech.com>
- <20210909165111.51038-2-alexh@vpitech.com> <YTpswsqlDS5tI7NC@pevik>
- <20210909183545.a33cb2c25f13eb2a1d7b64ac@vpitech.com>
-Message-ID: <YTsKRfSj7lAxKfQH@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 10 Sep 2021 10:34:48 +0200
+Subject: [LTP] [PATCH 2/2] rtc01: add workaround for broken CMOS RTC on
+ Microsoft Hyper-V cloud
+In-Reply-To: <20210909163326.42598-2-krzysztof.kozlowski@canonical.com>
+References: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
+ <20210909163326.42598-2-krzysztof.kozlowski@canonical.com>
+Message-ID: <YTsYqBJP8oWiuEGQ@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alex,
+Hi!
+> rtc01 fails on missed alarm on multiple different Azure instances if the
+> alarm is set for the next minute:
+> 
+>   rtc01 0 TINFO : RTC READ TEST:
+>   rtc01 1 TPASS : RTC READ TEST Passed
+>   rtc01 0 TINFO : Current RTC date/time is 11-6-2021, 09:00:58.
+>   rtc01 0 TINFO : RTC ALARM TEST :
+>   rtc01 0 TINFO : Alarm time set to 09:01:03.
+>   rtc01 0 TINFO : Waiting 5 seconds for the alarm...
+>   rtc01 2 TFAIL : rtc01.c:151: Timed out waiting for the alarm
+> 
+> Reproduced easily with rtcwake:
+> 
+>   $ rtcwake -d rtc0 -m on -s 50 -v
+> 
+> If alarm is set for now+60 seconds, it works fine.  Clearly Microsoft
+> Hyper-V cloud instances have a broken CMOS RTC which unfortunately
+> cannot be easily fixed.  Adding simple workaround to extend the time to
+> 60 seconds allows to avoid false positives in expense of longer testing
+> time.
 
-> On Thu, 9 Sep 2021 22:21:22 +0200
-> Petr Vorel <pvorel@suse.cz> wrote:
+I do not think that adding workarounds for a broken platforms into
+testcases is a right thing to do.
 
-> > > Requires "ima: add gid support".
-> > I haven't test the patch yet, but LTP supports (unlike kselftest) various kernel
-> > versions. Thus there should be some check to prevent old kernels failing.
-> > You could certainly wrap new things with if tst_kvcmp. If there is a chance new
-> > functionality can be detected, we prefer it because various features are
-> > sometimes backported to enterprise distros' kernels.
-
-> > Also, adding new test ima_measurements02.sh with TST_MIN_KVER would also work,
-> > although for IMA tests I usually kept everything in a single file.
-
-> I'll add a tst_kvcmp check under the assumption that this feature will
-> be added before Linux 5.15.
-+1. Please let me know when you manage to get this mainlined (merged into Mimi's
-tree is enough), we should also add the commit hash of this feature.
-
-> > > +++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-> > > @@ -8,6 +8,7 @@
-
-> > >  TST_NEEDS_CMDS="awk cut sed"
-> > You should add sudo:
-
-> > TST_NEEDS_CMDS="awk cut sed sudo"
-
-> Will do.
-+1
-
-> > >  TST_SETUP="setup"
-> > > +TST_CLEANUP="cleanup"
-> > >  TST_CNT=3
-> > >  TST_NEEDS_DEVICE=1
-
-> > > @@ -20,6 +21,13 @@ setup()
-> > >  	TEST_FILE="$PWD/test.txt"
-> > >  	POLICY="$IMA_DIR/policy"
-> > >  	[ -f "$POLICY" ] || tst_res TINFO "not using default policy"
-> > > +
-> > > +	cat $IMA_POLICY > policy-original
-> > This might not work if CONFIG_IMA_READ_POLICY is not set. There is
-> > check_policy_readable() helper in ima_setup.sh. Is it really needed anyway?
-
-> It looks like CONFIG_IMA_WRITE_POLICY only makes it possible to add new
-> rules at runtime, not remove them, so the cleanup code didn't actually
-> work. I'll remove it.
-
-FYI I have on my TODO list loading policy before testing [1].
-
-> > > +}
-> > > +
-> > > +cleanup()
-> > > +{
-> > > +	cat policy-original > $IMA_POLICY
-> > Again, this will not work if CONFIG_IMA_WRITE_POLICY not set.
-> > And this is very likely not to be set.
-
-> The new tests require the policy to be writable. I'll move the
-> check_policy_writable function from ima_policy.sh to ima_setup.sh and
-> use it in ima_measurements.sh as well.
-
-+1.
-
-FYI there is IMA specific README.md [2], in case anything needs to be updated.
-
-> Thanks for the feedback,
-yw. Thanks for taking care about testing!
-
-Kind regards,
-Petr
-
-> -Alex
-
-[1] https://github.com/linux-test-project/ltp/issues/720
-[2] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/security/integrity/ima/README.md
+-- 
+Cyril Hrubis
+chrubis@suse.cz
