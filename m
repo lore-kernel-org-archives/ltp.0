@@ -1,66 +1,77 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Sep 2021 11:36:15 +0200
-Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
-In-Reply-To: <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
- <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <0acf816462d49d8a6004c87e36b05d1b@suse.de>
- <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
-Message-ID: <YTsnD0Uw4argiGOJ@pevik>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 10 Sep 2021 16:26:14 +0530
+Subject: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
+ test case route4-change-dst
+In-Reply-To: <YTngKohBcpQK7l5r@pevik>
+References: <20210906083444.82394-1-naresh.kamboju@linaro.org>
+ <YTngKohBcpQK7l5r@pevik>
+Message-ID: <CA+G9fYsiHOBCDb8gub7FVfETydGy0JwDNUDkazTqPo=qhhcvwA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 09.09.2021 18:53, pvorel wrote:
-> > Hi Su, Alexey,
+Hi Petr,
 
-> > On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
-> >> Hi,
-> >> ? I found that it's indeed related to ipv6 DAD as you said.
-> >> Calling
-> >> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
-> >> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
-> >> However there is one super strange part that the tentative address is
-> >> the local link adress of the ltp_ns_veth1:
+On Thu, 9 Sept 2021 at 15:51, Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Naresh,
+>
+> > The test case route4-change-dst fails intermittently creating
+> > the problem for smoketest results verdict. route4-change-dst
+> > is a stress test should not be a part of smoketest. because of
+> > these issues removing route4-change-dst from the smoketest.
+> Could you please be more specific about the failure?
 
-> >> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
-> >> state UP group default qlen 1000
-> >> ??? link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-> >> ??? inet 10.0.0.1/24 scope global ltp_ns_veth1
-> >> ?????? valid_lft forever preferred_lft forever
-> >> ??? inet6 fd00:1:1:1::1/64 scope global nodad
-> >> ?????? valid_lft forever preferred_lft forever
-> >> ??? inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
-> >> <-------------------
-> >> ?????? valid_lft forever preferred_lft forever
+Test log,
 
-> >> However, there is no place using the address in mpls02 test.>> It makes me wonder how could it be possible to trigger the issue..
+route-change-dst 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+route-change-dst 1 TINFO: add local addr 10.0.0.2/24
+route-change-dst 1 TINFO: add local addr fd00:1:1:1::2/64
+route-change-dst 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+[   54.413187] IPv6: ADDRCONF(NETDEV_CHANGE): ltp_ns_veth2: link becomes ready
+route-change-dst 1 TINFO: add remote addr 10.0.0.1/24
+route-change-dst 1 TINFO: add remote addr fd00:1:1:1::1/64
+route-change-dst 1 TINFO: Network config (local -- remote):
+route-change-dst 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+route-change-dst 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+route-change-dst 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+route-change-dst 1 TINFO: timeout per run is 0h 15m 0s
+route-change-dst 1 TINFO: change IPv4 route destination 100 times
+route-change-dst 1 TINFO: testing route '10.23.1.0/24'
+bind: Cannot assign requested address
+route-change-dst 1 TFAIL: ping -c1 -I 10.0.0.2 10.23.1.1 >/dev/null
+failed unexpectedly
+route-change-dst 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+route-change-dst 1 TINFO: add local addr 10.0.0.2/24
+route-change-dst 1 TINFO: add local addr fd00:1:1:1::2/64
+route-change-dst 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+route-change-dst 1 TINFO: add remote addr 10.0.0.1/24
+route-change-dst 1 TINFO: add remote addr fd00:1:1:1::1/64
 
-> Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
-> using link-local address, and vice verse for the other side. mpls is
-> using the following route with the address:
-
-> fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1024 pref medium
-> so the address there should be in a reachable state...
-
-Thanks for info! I wonder if it's a bug in mpls or elsewhere. WDYT?
-
-> Adding it manually in setup might fix the test as well:
-
-> ROD ip neigh replace $(tst_ipaddr rhost) lladdr $(tst_hwaddr rhost) dev $(tst_iface) nud reachable
-> tst_rhost_run -s -c "ip neigh replace $(tst_ipaddr) lladdr $(tst_hwaddr) dev $(tst_iface rhost) nud reachable"
-
-> > I wonder if test still needs be fixed to work on all setups.
+Summary:
+passed   0
+failed   1
 
 
-> I think we could set accept_dad to 0 in generic setup of the
-> test interfaces, in tst_net.sh/tst_init_iface().
-Unless it's a bug we'd hide by setting it, I'd be for this general solution.
+>
+> I'm not against adding ping tests into smoketest runtest file,
+> although just on might be enough. ping02.sh is the fastest from all 3 tests,
+> maybe add it. Also -6 for IPv6 would be good (to detect problems with IPv6 setup).
 
-It'd be nice to get it fixed before release.
+I will add
+ping602 ping02.sh -6
 
-Kind regards,
-Petr
+>
+> But route-change-dst.sh is quick (actually 2 times faster than ping01) that it's
+> not really a stress test in the default configuration, thus I'd prefer to keep it.
+
+The actual problem with route-change-dst.sh is an intermittent failure
+test case.
+
+Here is the link showing intermittent failure.  (click on the loadmore button)
+https://qa-reports.linaro.org/_/comparetest/?project=136&suite=ltp-smoketest-tests&test=route4-change-dst
+
+
+- Naresh
