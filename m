@@ -1,37 +1,66 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 10 Sep 2021 11:14:15 +0200
-Subject: [LTP] [PATCH 1/2] rtc01: add space to beginning of comments
-In-Reply-To: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
-References: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
-Message-ID: <YTsh5wcAbNDjJQpi@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 10 Sep 2021 11:36:15 +0200
+Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
+In-Reply-To: <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
+ <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <0acf816462d49d8a6004c87e36b05d1b@suse.de>
+ <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+Message-ID: <YTsnD0Uw4argiGOJ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Improve readability of comments - no functional change.
+> On 09.09.2021 18:53, pvorel wrote:
+> > Hi Su, Alexey,
 
-Actually some of the comments are really commenting the obvious so it
-would be better just to remove most.
+> > On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
+> >> Hi,
+> >> ? I found that it's indeed related to ipv6 DAD as you said.
+> >> Calling
+> >> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
+> >> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
+> >> However there is one super strange part that the tentative address is
+> >> the local link adress of the ltp_ns_veth1:
 
-For instance this:
+> >> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
+> >> state UP group default qlen 1000
+> >> ??? link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+> >> ??? inet 10.0.0.1/24 scope global ltp_ns_veth1
+> >> ?????? valid_lft forever preferred_lft forever
+> >> ??? inet6 fd00:1:1:1::1/64 scope global nodad
+> >> ?????? valid_lft forever preferred_lft forever
+> >> ??? inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
+> >> <-------------------
+> >> ?????? valid_lft forever preferred_lft forever
 
-	/* Read and alarm tests */
-	read_alarm_test();
+> >> However, there is no place using the address in mpls02 test.>> It makes me wonder how could it be possible to trigger the issue..
 
-How does the comment here add any value?
+> Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
+> using link-local address, and vice verse for the other side. mpls is
+> using the following route with the address:
 
-And I would say that it's mostly the same for the ioclt() calls as well,
-the constants do have reasonable names so I guess that in cases like
-this:
+> fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1024 pref medium
+> so the address there should be in a reachable state...
 
-	/* Read current alarm time */
-	ret = ioctl(rtc_fd, RTC_ALM_READ, &rtc_tm);
+Thanks for info! I wonder if it's a bug in mpls or elsewhere. WDYT?
 
-it's kind of obvious that we do read the alarm even without the comment.
+> Adding it manually in setup might fix the test as well:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ROD ip neigh replace $(tst_ipaddr rhost) lladdr $(tst_hwaddr rhost) dev $(tst_iface) nud reachable
+> tst_rhost_run -s -c "ip neigh replace $(tst_ipaddr) lladdr $(tst_hwaddr) dev $(tst_iface rhost) nud reachable"
+
+> > I wonder if test still needs be fixed to work on all setups.
+
+
+> I think we could set accept_dad to 0 in generic setup of the
+> test interfaces, in tst_net.sh/tst_init_iface().
+Unless it's a bug we'd hide by setting it, I'd be for this general solution.
+
+It'd be nice to get it fixed before release.
+
+Kind regards,
+Petr
