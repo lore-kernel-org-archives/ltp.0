@@ -1,77 +1,75 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 10 Sep 2021 16:26:14 +0530
-Subject: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
- test case route4-change-dst
-In-Reply-To: <YTngKohBcpQK7l5r@pevik>
-References: <20210906083444.82394-1-naresh.kamboju@linaro.org>
- <YTngKohBcpQK7l5r@pevik>
-Message-ID: <CA+G9fYsiHOBCDb8gub7FVfETydGy0JwDNUDkazTqPo=qhhcvwA@mail.gmail.com>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Fri, 10 Sep 2021 08:03:35 -0300
+Subject: [LTP] [PATCH 2/2] rtc01: add workaround for broken CMOS RTC on
+ Microsoft Hyper-V cloud
+In-Reply-To: <d50543f0-6e41-8911-e24b-ba0ae61185fa@canonical.com>
+References: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
+ <20210909163326.42598-2-krzysztof.kozlowski@canonical.com>
+ <YTsYqBJP8oWiuEGQ@yuki>
+ <d50543f0-6e41-8911-e24b-ba0ae61185fa@canonical.com>
+Message-ID: <YTs7h87f8bWd+/od@mussarela>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+On Fri, Sep 10, 2021 at 10:35:32AM +0200, Krzysztof Kozlowski wrote:
+> On 10/09/2021 10:34, Cyril Hrubis wrote:
+> > Hi!
+> >> rtc01 fails on missed alarm on multiple different Azure instances if the
+> >> alarm is set for the next minute:
+> >>
+> >>   rtc01 0 TINFO : RTC READ TEST:
+> >>   rtc01 1 TPASS : RTC READ TEST Passed
+> >>   rtc01 0 TINFO : Current RTC date/time is 11-6-2021, 09:00:58.
+> >>   rtc01 0 TINFO : RTC ALARM TEST :
+> >>   rtc01 0 TINFO : Alarm time set to 09:01:03.
+> >>   rtc01 0 TINFO : Waiting 5 seconds for the alarm...
+> >>   rtc01 2 TFAIL : rtc01.c:151: Timed out waiting for the alarm
+> >>
+> >> Reproduced easily with rtcwake:
+> >>
+> >>   $ rtcwake -d rtc0 -m on -s 50 -v
+> >>
+> >> If alarm is set for now+60 seconds, it works fine.  Clearly Microsoft
+> >> Hyper-V cloud instances have a broken CMOS RTC which unfortunately
+> >> cannot be easily fixed.  Adding simple workaround to extend the time to
+> >> 60 seconds allows to avoid false positives in expense of longer testing
+> >> time.
+> > 
+> > I do not think that adding workarounds for a broken platforms into
+> > testcases is a right thing to do.
+> 
+> I am actually also not sure, but the broken platform is one of three
+> main cloud providers. :)
+> 
 
-On Thu, 9 Sept 2021 at 15:51, Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Naresh,
->
-> > The test case route4-change-dst fails intermittently creating
-> > the problem for smoketest results verdict. route4-change-dst
-> > is a stress test should not be a part of smoketest. because of
-> > these issues removing route4-change-dst from the smoketest.
-> Could you please be more specific about the failure?
+The test here is doing the right thing, verifying that the driver behaves as
+documented and expected. The kernel should be doing any workarounds/quirks
+necessary to make the RTC interface behave as expected.
 
-Test log,
+Once that is done, I think it would be valuable to add to the test the specific
+scenario where this is failing. That is, add the specific test where the alarm
+seconds is behind the date seconds.
 
-route-change-dst 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
-route-change-dst 1 TINFO: add local addr 10.0.0.2/24
-route-change-dst 1 TINFO: add local addr fd00:1:1:1::2/64
-route-change-dst 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
-[   54.413187] IPv6: ADDRCONF(NETDEV_CHANGE): ltp_ns_veth2: link becomes ready
-route-change-dst 1 TINFO: add remote addr 10.0.0.1/24
-route-change-dst 1 TINFO: add remote addr fd00:1:1:1::1/64
-route-change-dst 1 TINFO: Network config (local -- remote):
-route-change-dst 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
-route-change-dst 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
-route-change-dst 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
-route-change-dst 1 TINFO: timeout per run is 0h 15m 0s
-route-change-dst 1 TINFO: change IPv4 route destination 100 times
-route-change-dst 1 TINFO: testing route '10.23.1.0/24'
-bind: Cannot assign requested address
-route-change-dst 1 TFAIL: ping -c1 -I 10.0.0.2 10.23.1.1 >/dev/null
-failed unexpectedly
-route-change-dst 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
-route-change-dst 1 TINFO: add local addr 10.0.0.2/24
-route-change-dst 1 TINFO: add local addr fd00:1:1:1::2/64
-route-change-dst 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
-route-change-dst 1 TINFO: add remote addr 10.0.0.1/24
-route-change-dst 1 TINFO: add remote addr fd00:1:1:1::1/64
+By the way, I have tested it and the reason 60 seconds work is because the
+seconds alarm value is most often after the current value. If you use 115, for
+example, it will most likely fail, unless you are within that 5 second range
+where it doesn't.
 
-Summary:
-passed   0
-failed   1
+The RTC CMOS driver has changed a lot over the years. I wonder if using proper
+UIE instead of simulating it with set_alarm would work. But, then,
+RTC_ALM_SET+RTC_AIE_ON would still fail.
 
+Also, of note, the VM instances are lacking an HPET, which is used instead of
+the old CMOS RTC when present.
 
->
-> I'm not against adding ping tests into smoketest runtest file,
-> although just on might be enough. ping02.sh is the fastest from all 3 tests,
-> maybe add it. Also -6 for IPv6 would be good (to detect problems with IPv6 setup).
+Cascardo.
 
-I will add
-ping602 ping02.sh -6
-
->
-> But route-change-dst.sh is quick (actually 2 times faster than ping01) that it's
-> not really a stress test in the default configuration, thus I'd prefer to keep it.
-
-The actual problem with route-change-dst.sh is an intermittent failure
-test case.
-
-Here is the link showing intermittent failure.  (click on the loadmore button)
-https://qa-reports.linaro.org/_/comparetest/?project=136&suite=ltp-smoketest-tests&test=route4-change-dst
-
-
-- Naresh
+> 
+> Best regards,
+> Krzysztof
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
