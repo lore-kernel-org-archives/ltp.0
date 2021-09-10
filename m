@@ -2,68 +2,97 @@ Return-Path: <SRS0=5PST=OA=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EEACC433EF
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 11:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BA44C433EF
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 12:46:56 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F1F6611AD
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 11:03:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6F1F6611AD
+	by mail.kernel.org (Postfix) with ESMTPS id 42419600AA
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 12:46:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 42419600AA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9421B3C6879
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 13:03:52 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 01BE83C20E2
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 13:03:43 +0200 (CEST)
-Received: from smtp-relay-canonical-1.canonical.com
- (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+	by picard.linux.it (Postfix) with ESMTP id A94503C8D04
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 14:46:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 07E33601416
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 13:03:42 +0200 (CEST)
-Received: from mussarela (1.general.cascardo.us.vpn [10.172.70.58])
+ by picard.linux.it (Postfix) with ESMTPS id 1927A3C2156
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 14:46:43 +0200 (CEST)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 496BB3F325; 
- Fri, 10 Sep 2021 11:03:39 +0000 (UTC)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 20EAF602210
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 14:46:41 +0200 (CEST)
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5983A40264
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 12:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631271820;
- bh=shSxEmbe/0cvJRkm1R2uinJx3VVK9s5H2fqVdUBGMaM=;
- h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
- Content-Type:In-Reply-To;
- b=bqqOhhrQcd4yHwYZRRwWbaHrEE8+CMzaQze/uvVQuu0i0PS1J3au2k8d19T+GTmje
- vjDt4mF2vxJnxC3Y7SifL9afUTRoFpCtuwYgNIXuBL5SQ09q3VjXnYLK4Q8eR84E+H
- PiXhsJpscE2PUCZBNRHNbnyAqvxD/yhaeVnHsmT3Tb/7mMp5fin67G0sXHtcHxRKcu
- TD9ke9h0KfDTpIVr8Ov1P06PFkhX+fu+TUopmtgvlWrss4DOghBoPF+1WWJ6S0xso6
- X0S+b1XmADir47zLFIw47A0G2hyWXwKIgawweKAyDIXVjeQXH13FRT6b3Ad4TvJGxT
- JQDZ6DjbHTNiQ==
-Date: Fri, 10 Sep 2021 08:03:35 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <YTs7h87f8bWd+/od@mussarela>
+ s=20210705; t=1631278001;
+ bh=dNRk6CVJc2m7MxqIryjWkppD4FIXm/b/Wl6jxT356gk=;
+ h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+ In-Reply-To:Content-Type;
+ b=AniDjGswIxdeAgMXl82YLOVoD83M6ygtp1qAC7Z9lKUiy3hyKLXAzRce9uTlBqgsa
+ 7LpfIEuyfMAbcUVKiZlppCdDWkekKSLZUg5TTJ85DFZVUW8fQzlV/11MFrI6FeMtQp
+ 7J5hplJMdlqrZHMOO7bSUTR+tLl2BW7JUpY7KxhnW/htFtNQuePgtOXOCjkLnJjLcR
+ G1a9K1q5GUYPgxwSyF4rrTX71TBOJfPwm+iY+C5sE8d7in8kfgSaBTRFp/sYt/p+5N
+ zaOtP5J/su90m92JouRWHdG2qXqZV+GzeI2ompcZzKoyn5kV70ECrZVMkZoF+MRvM2
+ XKObAjlJaacOg==
+Received: by mail-wr1-f72.google.com with SMTP id
+ t15-20020a5d42cf000000b001565f9c9ee8so479237wrr.2
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 05:46:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=dNRk6CVJc2m7MxqIryjWkppD4FIXm/b/Wl6jxT356gk=;
+ b=BjsaeoNkfdTtjExsA8SVR56sujOOIhwT54dakmqP0Qli2cUEg1qnqBoI5dTrxrUvW3
+ iAPaxFC9Q/kPcgb+xmRanmJvIkuAoUR+fYGzcpmpTXsYYX7DtK2JOrG3Xh3kSfgQ6wTV
+ I1YDELSGwfa4Sm5+LgY9fNAp6Wr2h7x7ECJUNDwXmbpHucqQHm5e5Xc0Lbw7Ts7BaTnt
+ uQxF7F6FmzsVH3ISNkD/xTrhPc9xxGNT2z4uZzGlwNRQ2U4xWZLBipRs3nGCkUiAQ8+n
+ ruj7SFtcDYP6+EAuquCiAjvehVpQ4mZwcQoSUFqgZdQLHeN6PtoArNbbbf4f+u0ZObTD
+ 2kuQ==
+X-Gm-Message-State: AOAM532GXGAdWZrBgWTeuM60KJAb9vny3pSfKrG4pfpZE+sokaJylEpl
+ V5b+ZIoUaTxVIA3Tw5Ow42GWAm+fjUI37yuoKTErHHqxrb+XbtcJPQuiSg1c4DSUUKeW4LUWp2H
+ kEbmZPhU0hmoBt7PcVuv4cT96RgPt
+X-Received: by 2002:a5d:53cd:: with SMTP id a13mr6627182wrw.33.1631278000706; 
+ Fri, 10 Sep 2021 05:46:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmCOopGYw40DiWrar+Omp7ong0Mlp1Z7vosuz0F3x+inqzu0rqnmplckByjS64CEUBf6C8Kg==
+X-Received: by 2002:a5d:53cd:: with SMTP id a13mr6627170wrw.33.1631278000570; 
+ Fri, 10 Sep 2021 05:46:40 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.201])
+ by smtp.gmail.com with ESMTPSA id o7sm4155148wmq.36.2021.09.10.05.46.39
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 10 Sep 2021 05:46:40 -0700 (PDT)
+To: Cyril Hrubis <chrubis@suse.cz>
 References: <20210909163326.42598-1-krzysztof.kozlowski@canonical.com>
- <20210909163326.42598-2-krzysztof.kozlowski@canonical.com>
- <YTsYqBJP8oWiuEGQ@yuki>
- <d50543f0-6e41-8911-e24b-ba0ae61185fa@canonical.com>
+ <YTsh5wcAbNDjJQpi@yuki>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <345237df-e2f6-fb46-213b-656e11622eb0@canonical.com>
+Date: Fri, 10 Sep 2021 14:46:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d50543f0-6e41-8911-e24b-ba0ae61185fa@canonical.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <YTsh5wcAbNDjJQpi@yuki>
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] rtc01: add workaround for broken CMOS RTC on
- Microsoft Hyper-V cloud
+Subject: Re: [LTP] [PATCH 1/2] rtc01: add space to beginning of comments
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,67 +109,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210910110335.Kd_WF4p_RVIDWdtbkal3gg0suLwVKMM-ZXA7CfuNlRA@z>
+Message-ID: <20210910124639.YswNHJId8IEVoBO9PIVvxEzo8GXU9_qhtbfj_-DKN6E@z>
 
-On Fri, Sep 10, 2021 at 10:35:32AM +0200, Krzysztof Kozlowski wrote:
-> On 10/09/2021 10:34, Cyril Hrubis wrote:
-> > Hi!
-> >> rtc01 fails on missed alarm on multiple different Azure instances if the
-> >> alarm is set for the next minute:
-> >>
-> >>   rtc01 0 TINFO : RTC READ TEST:
-> >>   rtc01 1 TPASS : RTC READ TEST Passed
-> >>   rtc01 0 TINFO : Current RTC date/time is 11-6-2021, 09:00:58.
-> >>   rtc01 0 TINFO : RTC ALARM TEST :
-> >>   rtc01 0 TINFO : Alarm time set to 09:01:03.
-> >>   rtc01 0 TINFO : Waiting 5 seconds for the alarm...
-> >>   rtc01 2 TFAIL : rtc01.c:151: Timed out waiting for the alarm
-> >>
-> >> Reproduced easily with rtcwake:
-> >>
-> >>   $ rtcwake -d rtc0 -m on -s 50 -v
-> >>
-> >> If alarm is set for now+60 seconds, it works fine.  Clearly Microsoft
-> >> Hyper-V cloud instances have a broken CMOS RTC which unfortunately
-> >> cannot be easily fixed.  Adding simple workaround to extend the time to
-> >> 60 seconds allows to avoid false positives in expense of longer testing
-> >> time.
-> > 
-> > I do not think that adding workarounds for a broken platforms into
-> > testcases is a right thing to do.
+On 10/09/2021 11:14, Cyril Hrubis wrote:
+> Hi!
+>> Improve readability of comments - no functional change.
 > 
-> I am actually also not sure, but the broken platform is one of three
-> main cloud providers. :)
+> Actually some of the comments are really commenting the obvious so it
+> would be better just to remove most.
 > 
-
-The test here is doing the right thing, verifying that the driver behaves as
-documented and expected. The kernel should be doing any workarounds/quirks
-necessary to make the RTC interface behave as expected.
-
-Once that is done, I think it would be valuable to add to the test the specific
-scenario where this is failing. That is, add the specific test where the alarm
-seconds is behind the date seconds.
-
-By the way, I have tested it and the reason 60 seconds work is because the
-seconds alarm value is most often after the current value. If you use 115, for
-example, it will most likely fail, unless you are within that 5 second range
-where it doesn't.
-
-The RTC CMOS driver has changed a lot over the years. I wonder if using proper
-UIE instead of simulating it with set_alarm would work. But, then,
-RTC_ALM_SET+RTC_AIE_ON would still fail.
-
-Also, of note, the VM instances are lacking an HPET, which is used instead of
-the old CMOS RTC when present.
-
-Cascardo.
-
+> For instance this:
 > 
-> Best regards,
-> Krzysztof
+> 	/* Read and alarm tests */
+> 	read_alarm_test();
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> How does the comment here add any value?
+> 
+> And I would say that it's mostly the same for the ioclt() calls as well,
+> the constants do have reasonable names so I guess that in cases like
+> this:
+> 
+> 	/* Read current alarm time */
+> 	ret = ioctl(rtc_fd, RTC_ALM_READ, &rtc_tm);
+> 
+> it's kind of obvious that we do read the alarm even without the comment.
+
+Good point but also I am not sure if removing these comments is worth
+patch on its own (without patch 2/2).
+
+
+Best regards,
+Krzysztof
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
