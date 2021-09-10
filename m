@@ -6,80 +6,72 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 722E0C433F5
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 09:36:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30EC0C433F5
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 10:56:40 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D5D7611B0
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 09:36:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D5D7611B0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 6AEAA606A5
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 10:56:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6AEAA606A5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 936383C8C72
-	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 11:36:30 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 056003C9690
+	for <ltp@archiver.kernel.org>; Fri, 10 Sep 2021 12:56:37 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D5023C2195
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 11:36:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9F0403C2170
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 12:56:27 +0200 (CEST)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 509A160140E
- for <ltp@lists.linux.it>; Fri, 10 Sep 2021 11:36:18 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 44BE722427;
- Fri, 10 Sep 2021 09:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1631266578;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9OJi27+mV4UBiqnKi/I6G7zm6peZdOmg22yAv27b7Bs=;
- b=JzPm+h4JlCQNSY6h82e9/BxJoMz37TuRqdMWusXJHDfObY/dWurzLrXmHXr1NEpTzVAvDB
- 2mPd3JUDYAgqR+eULb8kgYEI3CU0zhZAIXXflBpnoHloLRCpP9aMz5YfKbXJ583y4b7spL
- CldtgKzUSxsPh00pu62PE/BPfaXh1tk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1631266578;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9OJi27+mV4UBiqnKi/I6G7zm6peZdOmg22yAv27b7Bs=;
- b=rH3/CMjdKLSlYyHlw6D53zBDmo1hH9MUMhb+gc/jjfFtdho6YZaXlTqGSU7t+4gxlUevEt
- hmEWgcI5uhoyTDBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED11413D1D;
- Fri, 10 Sep 2021 09:36:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id v6iONxEnO2G/dwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 10 Sep 2021 09:36:17 +0000
-Date: Fri, 10 Sep 2021 11:36:15 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Message-ID: <YTsnD0Uw4argiGOJ@pevik>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
- <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <0acf816462d49d8a6004c87e36b05d1b@suse.de>
- <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 03FBF601416
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 12:56:26 +0200 (CEST)
+Received: by mail-ed1-x536.google.com with SMTP id t6so444894edi.9
+ for <ltp@lists.linux.it>; Fri, 10 Sep 2021 03:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=sMJH6HRBldw9J39XGvleIIiTsJkcwRtm+inOZIjbMRg=;
+ b=LwWlGloVWyIWihJhgr0dDuI+q4pvKbtq751wpd9XiHFPQ9JFqTtJHSxLgaEWqippmD
+ OxCKWfi+1fSApIJrcNeWKVApfyOBFeUDhclk1BDF9IO7zCOfVsxMdZsy6VGM0UfdlfZI
+ kIjUC5o0MX5zf0pZQxsc1UN+gy0RmtZvkTeHpIPD8sU2uCIMVDBeC3JYtODeNEJMl/5/
+ wte1Sc4ZE/GGzO5qQmr5gKnbFbs0K2lTB8XWILr8wLGafFoacVBI4TJqPvUTVTmvbNTC
+ QvwniQLW3Q/7peNiFPIFi16FaPODHrGV7kNLuQoqZlKMK4YW4/RPSgrTqNapq8gflH+/
+ OmvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=sMJH6HRBldw9J39XGvleIIiTsJkcwRtm+inOZIjbMRg=;
+ b=DOUaT3ce02jrxsjsqeVHhLyXCAPH6de8F50L5qtd+pe69jEEkFtYavpulJMzDnSqS2
+ 3cNZBTlO+sf3meZZtKxyqZ3IfQrxqTP4kiOCNxry264GDzfkr/aHEg5Lo6O2CxA77+aL
+ 4qpzNXkU1LaWHumqJZyobp0yywGy2+FzpVHpL/g4LV8lg2zRrdEMKQNYpF4Zmosg8Pre
+ ZI0vSXtpOjqdZjlQo7ae5dlUQxf3auuy/76vlrpG/Ic0Zn1DR2lq0EXh1Da9+SGJsLIT
+ hnbXGASdEMXVsfA/I+c9Lvpi15IAwKjOzOrM+JxQkqN+3dUmgmJlEnIqrsW202EXG1Bk
+ Y/Kg==
+X-Gm-Message-State: AOAM530T/iWQNIUUhYbrRHP24Uy+eEQVwgRqW7QW8FVb3L868YfK78k9
+ H5QnrzhQBNSgh+3RnecL5M3jMkJLy+cuZWM4cwz0Ew==
+X-Google-Smtp-Source: ABdhPJxJ70BXqmVXIFsBOEda98dM8PTqgygnW0hKyGxazpmTkOzpzOkSyKRsbhbHdgEUjECI2Os8Sjq8/hBLciNLgFA=
+X-Received: by 2002:aa7:dcd0:: with SMTP id w16mr6104447edu.288.1631271386343; 
+ Fri, 10 Sep 2021 03:56:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+References: <20210906083444.82394-1-naresh.kamboju@linaro.org>
+ <YTngKohBcpQK7l5r@pevik>
+In-Reply-To: <YTngKohBcpQK7l5r@pevik>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 10 Sep 2021 16:26:14 +0530
+Message-ID: <CA+G9fYsiHOBCDb8gub7FVfETydGy0JwDNUDkazTqPo=qhhcvwA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
+Subject: Re: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
+ test case route4-change-dst
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,71 +83,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: pvorel <pvorel@suse.de>, suy.fnst@fujitsu.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210910093615.JkDhxDDr57JkchVKTcR59_HofV6ZGpyg0RLf_SuITXA@z>
+Message-ID: <20210910105614.UPzu_yDpMPhstrJbazor6CHHfvlCnZHAYrcklrXZ_vI@z>
 
-> On 09.09.2021 18:53, pvorel wrote:
-> > Hi Su, Alexey,
+Hi Petr,
 
-> > On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
-> >> Hi,
-> >> =A0 I found that it's indeed related to ipv6 DAD as you said.
-> >> Calling
-> >> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=
-=3D0`
-> >> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
-> >> However there is one super strange part that the tentative address is
-> >> the local link adress of the ltp_ns_veth1:
+On Thu, 9 Sept 2021 at 15:51, Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Naresh,
+>
+> > The test case route4-change-dst fails intermittently creating
+> > the problem for smoketest results verdict. route4-change-dst
+> > is a stress test should not be a part of smoketest. because of
+> > these issues removing route4-change-dst from the smoketest.
+> Could you please be more specific about the failure?
 
-> >> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
-> >> state UP group default qlen 1000
-> >> =A0=A0=A0 link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netn=
-sid 0
-> >> =A0=A0=A0 inet 10.0.0.1/24 scope global ltp_ns_veth1
-> >> =A0=A0=A0=A0=A0=A0 valid_lft forever preferred_lft forever
-> >> =A0=A0=A0 inet6 fd00:1:1:1::1/64 scope global nodad
-> >> =A0=A0=A0=A0=A0=A0 valid_lft forever preferred_lft forever
-> >> =A0=A0=A0 inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
-> >> <-------------------
-> >> =A0=A0=A0=A0=A0=A0 valid_lft forever preferred_lft forever
+Test log,
 
-> >> However, there is no place using the address in mpls02 test.>> It make=
-s me wonder how could it be possible to trigger the issue..
+route-change-dst 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+route-change-dst 1 TINFO: add local addr 10.0.0.2/24
+route-change-dst 1 TINFO: add local addr fd00:1:1:1::2/64
+route-change-dst 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+[   54.413187] IPv6: ADDRCONF(NETDEV_CHANGE): ltp_ns_veth2: link becomes ready
+route-change-dst 1 TINFO: add remote addr 10.0.0.1/24
+route-change-dst 1 TINFO: add remote addr fd00:1:1:1::1/64
+route-change-dst 1 TINFO: Network config (local -- remote):
+route-change-dst 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+route-change-dst 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+route-change-dst 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+route-change-dst 1 TINFO: timeout per run is 0h 15m 0s
+route-change-dst 1 TINFO: change IPv4 route destination 100 times
+route-change-dst 1 TINFO: testing route '10.23.1.0/24'
+bind: Cannot assign requested address
+route-change-dst 1 TFAIL: ping -c1 -I 10.0.0.2 10.23.1.1 >/dev/null
+failed unexpectedly
+route-change-dst 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+route-change-dst 1 TINFO: add local addr 10.0.0.2/24
+route-change-dst 1 TINFO: add local addr fd00:1:1:1::2/64
+route-change-dst 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+route-change-dst 1 TINFO: add remote addr 10.0.0.1/24
+route-change-dst 1 TINFO: add remote addr fd00:1:1:1::1/64
 
-> Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
-> using link-local address, and vice verse for the other side. mpls is
-> using the following route with the address:
-
-> fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1024=
- pref medium
-> so the address there should be in a reachable state...
-
-Thanks for info! I wonder if it's a bug in mpls or elsewhere. WDYT?
-
-> Adding it manually in setup might fix the test as well:
-
-> ROD ip neigh replace $(tst_ipaddr rhost) lladdr $(tst_hwaddr rhost) dev $=
-(tst_iface) nud reachable
-> tst_rhost_run -s -c "ip neigh replace $(tst_ipaddr) lladdr $(tst_hwaddr) =
-dev $(tst_iface rhost) nud reachable"
-
-> > I wonder if test still needs be fixed to work on all setups.
+Summary:
+passed   0
+failed   1
 
 
-> I think we could set accept_dad to 0 in generic setup of the
-> test interfaces, in tst_net.sh/tst_init_iface().
-Unless it's a bug we'd hide by setting it, I'd be for this general solution.
+>
+> I'm not against adding ping tests into smoketest runtest file,
+> although just on might be enough. ping02.sh is the fastest from all 3 tests,
+> maybe add it. Also -6 for IPv6 would be good (to detect problems with IPv6 setup).
 
-It'd be nice to get it fixed before release.
+I will add
+ping602 ping02.sh -6
 
-Kind regards,
-Petr
+>
+> But route-change-dst.sh is quick (actually 2 times faster than ping01) that it's
+> not really a stress test in the default configuration, thus I'd prefer to keep it.
 
--- =
+The actual problem with route-change-dst.sh is an intermittent failure
+test case.
 
+Here is the link showing intermittent failure.  (click on the loadmore button)
+https://qa-reports.linaro.org/_/comparetest/?project=136&suite=ltp-smoketest-tests&test=route4-change-dst
+
+
+- Naresh
+
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
