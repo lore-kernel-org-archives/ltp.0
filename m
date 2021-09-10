@@ -1,9 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Sep 2021 15:08:16 +0200
-Subject: [LTP] [PATCH v2 3/7] ci/alpine: Enable process.c
+Date: Fri, 10 Sep 2021 15:08:15 +0200
+Subject: [LTP] [PATCH v2 2/7] sched/process.c: Open debugfp with freopen()
 In-Reply-To: <20210910130820.21141-1-pvorel@suse.cz>
 References: <20210910130820.21141-1-pvorel@suse.cz>
-Message-ID: <20210910130820.21141-4-pvorel@suse.cz>
+Message-ID: <20210910130820.21141-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,25 +12,68 @@ To: ltp@lists.linux.it
 
 From: Petr Vorel <petr.vorel@gmail.com>
 
-Fixed in 2 previous commits.
+i.e. use the recommended way.
 
+This fixes compilation on MUSL which does not like assignment to stderr:
+
+    process.c:551:14: error: assignment of read-only variable 'stderr'
+      551 |      debugfp = fopen(foo, "a+");
+          |              ^
+
+Also drop debugfp definition. It'd be more obvious to use FILE pointer
+for logging, but some debug functions are intended to use to log into
+both stderr and into the log files (or at least logging is before stderr
+is redirected into the log files), thus use stderr as file descriptor.
+
+Although not sure why part of the code is logged into stdout and other
+part into file, let's keep it.
+
+Suggested-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- ci/alpine.sh | 1 -
- 1 file changed, 1 deletion(-)
+ testcases/kernel/sched/process_stress/process.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/ci/alpine.sh b/ci/alpine.sh
-index deb9cfdcf..d93a57616 100755
---- a/ci/alpine.sh
-+++ b/ci/alpine.sh
-@@ -33,7 +33,6 @@ cat /etc/os-release
- echo "WARNING: remove unsupported tests (until they're fixed)"
- cd $(dirname $0)/..
- rm -rfv \
--	testcases/kernel/sched/process_stress/process.c \
- 	testcases/kernel/syscalls/confstr/confstr01.c \
- 	testcases/kernel/syscalls/fmtmsg/fmtmsg01.c \
- 	testcases/kernel/syscalls/getcontext/getcontext01.c \
+diff --git a/testcases/kernel/sched/process_stress/process.c b/testcases/kernel/sched/process_stress/process.c
+index 2dd501f2e..777cdecd4 100644
+--- a/testcases/kernel/sched/process_stress/process.c
++++ b/testcases/kernel/sched/process_stress/process.c
+@@ -141,12 +141,6 @@ timer_t timer;			/* timer structure */
+ 
+ Pinfo *shmaddr;			/* Start address  of shared memory */
+ 
+-#ifndef _LINUX
+-FILE *debugfp = stderr;		/* debug file pointer, used if AUSDEBUG set */
+-#else
+-#define debugfp stderr
+-#endif
+-
+ struct envstruct *edat = envdata;	/* pointer to environment data */
+ 
+ /* external function declarations */
+@@ -260,7 +254,7 @@ void debugout(char *fmt, ...)
+ 
+ 	if (AUSDEBUG) {
+ 		va_start(args, fmt);
+-		vfprintf(debugfp, fmt, args);
++		vfprintf(stderr, fmt, args);
+ 		va_end(args);
+ 	}
+ }
+@@ -546,7 +540,12 @@ int spawn(int val)
+ 			if (!pid) {	/* CHILD */
+ 				if (AUSDEBUG) {
+ 					sprintf(foo, "%sslot%d", SLOTDIR, tval);
+-					debugfp = fopen(foo, "a+");
++
++					if ((freopen(foo, "w", stderr)) == NULL) {
++						fprintf(stderr, "freopen(%s, w, stderr) failed: %s (%d)\n",
++								foo, strerror(errno), errno);
++						exit(1);
++					}
+ 				}
+ 				pinfo = put_proc_info(tval);
+ 
 -- 
 2.33.0
 
