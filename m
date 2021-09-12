@@ -1,30 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Sep 2021 21:05:23 +0200
-Subject: [LTP] [PATCH 8/8] syscalls/setresuid03: Convert to new API
-In-Reply-To: <YTtrwkSdUaQE/PnB@yuki>
-References: <20210909155126.2720-1-mdoucha@suse.cz>
- <20210909155126.2720-8-mdoucha@suse.cz>
- <287a9879ef8b3342cb88225e4e319733@suse.de> <YTtrwkSdUaQE/PnB@yuki>
-Message-ID: <YTuscwqkK552GHeR@pevik>
+From: suy.fnst@fujitsu.com <suy.fnst@fujitsu.com>
+Date: Sun, 12 Sep 2021 03:45:19 +0000
+Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
+In-Reply-To: <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
+ <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <0acf816462d49d8a6004c87e36b05d1b@suse.de>
+ <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+Message-ID: <TY2PR01MB2124763EE064506ED9C1322189D89@TY2PR01MB2124.jpnprd01.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi, Alexey
+  Thanks! It works! Could you send a patch for the fix?
+  You can add my
+  Tested-by: Su Yue <suy.fnst@fujitsu.com>
 
-> Hi!
-> > It's a second test where we could use TST_EXP_FAIL_SILENT() if we had it 
-> > defined.
 
-> Well the main point we test is that the call fails so I would just use
-> TST_EXP_FAIL() that produces TPASS/TFAIL and the have additional check
-> if the groups were changed or not.
+--
+Su
 
-> I can change the patche accordingly before applying if you agree.
+________________________________________
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Sent: Friday, September 10, 2021 16:39
+To: pvorel; Su, Yue/? ?
+Cc: ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
 
-You probably ask Martin. Certainly ok for me.
+On 09.09.2021 18:53, pvorel wrote:
+> Hi Su, Alexey,
+>
+> On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
+>> Hi,
+>>   I found that it's indeed related to ipv6 DAD as you said.
+>> Calling
+>> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
+>> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
+>> However there is one super strange part that the tentative address is
+>> the local link adress of the ltp_ns_veth1:
+>>
+>> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
+>> state UP group default qlen 1000
+>>     link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+>>     inet 10.0.0.1/24 scope global ltp_ns_veth1
+>>        valid_lft forever preferred_lft forever
+>>     inet6 fd00:1:1:1::1/64 scope global nodad
+>>        valid_lft forever preferred_lft forever
+>>     inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
+>> <-------------------
+>>        valid_lft forever preferred_lft forever
+>>
+>> However, there is no place using the address in mpls02 test.>> It makes me wonder how could it be possible to trigger the issue..
 
-Kind regards,
-Petr
+Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
+using link-local address, and vice verse for the other side. mpls is
+using the following route with the address:
+
+fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1024 pref medium
+so the address there should be in a reachable state...
+
+Adding it manually in setup might fix the test as well:
+
+ROD ip neigh replace $(tst_ipaddr rhost) lladdr $(tst_hwaddr rhost) dev $(tst_iface) nud reachable
+tst_rhost_run -s -c "ip neigh replace $(tst_ipaddr) lladdr $(tst_hwaddr) dev $(tst_iface rhost) nud reachable"
+
+>
+> I wonder if test still needs be fixed to work on all setups.
+>
+
+I think we could set accept_dad to 0 in generic setup of the
+test interfaces, in tst_net.sh/tst_init_iface().
