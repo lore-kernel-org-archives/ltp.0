@@ -1,54 +1,75 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Mon, 13 Sep 2021 15:39:35 +0300
-Subject: [LTP] [PATCH 2/2] lib/tst_net.sh: disable ipv6_dad work on test
- interfaces
-In-Reply-To: <20210913123935.10761-1-aleksei.kodanev@bell-sw.com>
-References: <20210913123935.10761-1-aleksei.kodanev@bell-sw.com>
-Message-ID: <20210913123935.10761-2-aleksei.kodanev@bell-sw.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 13 Sep 2021 14:55:58 +0200
+Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
+In-Reply-To: <289d5bea-8fd5-b009-18dc-5639f3a0c0d2@bell-sw.com>
+References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
+ <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
+ <0acf816462d49d8a6004c87e36b05d1b@suse.de>
+ <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com>
+ <YTsnD0Uw4argiGOJ@pevik>
+ <61ea98da-6746-2ad3-c2de-38e148cc9d4c@bell-sw.com>
+ <YT9EAQfa02ytbDPr@pevik>
+ <289d5bea-8fd5-b009-18dc-5639f3a0c0d2@bell-sw.com>
+Message-ID: <YT9KXlMO0ez/IJgD@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To fix intermittent issues with ping (in flood mode) [1] tests
-after initial test interfaces setup.
+> On 13.09.2021 15:28, Petr Vorel wrote:
+> >> Hi Petr,
+> >> On 10.09.2021 12:36, Petr Vorel wrote:
+> >>>> On 09.09.2021 18:53, pvorel wrote:
+> >>>>> Hi Su, Alexey,
 
-We're already adding IPv6 addresses with nodad option, but it
-should disable ipv6_dad for link-local addresses too, so that
-they are fully functional when tests start to use them.
+> >>>>> On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
+> >>>>>> Hi,
+> >>>>>> ? I found that it's indeed related to ipv6 DAD as you said.
+> >>>>>> Calling
+> >>>>>> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
+> >>>>>> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
+> >>>>>> However there is one super strange part that the tentative address is
+> >>>>>> the local link adress of the ltp_ns_veth1:
 
-It could also be tst_wait_ipv6_dad(), but it slows down a test
-setup.
+> >>>>>> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
+> >>>>>> state UP group default qlen 1000
+> >>>>>> ??? link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+> >>>>>> ??? inet 10.0.0.1/24 scope global ltp_ns_veth1
+> >>>>>> ?????? valid_lft forever preferred_lft forever
+> >>>>>> ??? inet6 fd00:1:1:1::1/64 scope global nodad
+> >>>>>> ?????? valid_lft forever preferred_lft forever
+> >>>>>> ??? inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
+> >>>>>> <-------------------
+> >>>>>> ?????? valid_lft forever preferred_lft forever
 
-[1]: https://github.com/iputils/iputils/issues/300
+> >>>>>> However, there is no place using the address in mpls02 test.>> It makes me wonder how could it be possible to trigger the issue..
 
-Tested-by: Su Yue <suy.fnst@fujitsu.com>
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
----
- testcases/lib/tst_net.sh | 2 ++
- 1 file changed, 2 insertions(+)
+> >>>> Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
+> >>>> using link-local address, and vice verse for the other side. mpls is
+> >>>> using the following route with the address:
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 7f2a1bab3..89d4c79ec 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -517,6 +517,7 @@ tst_init_iface()
- 		ip link set $iface down || return $?
- 		ip route flush dev $iface || return $?
- 		ip addr flush dev $iface || return $?
-+		sysctl -qw net.ipv6.conf.$iface.accept_dad=0 || return $?
- 		ip link set $iface up
- 		return $?
- 	fi
-@@ -528,6 +529,7 @@ tst_init_iface()
- 	tst_rhost_run -c "ip link set $iface down" || return $?
- 	tst_rhost_run -c "ip route flush dev $iface" || return $?
- 	tst_rhost_run -c "ip addr flush dev $iface" || return $?
-+	tst_rhost_run -c "sysctl -qw net.ipv6.conf.$iface.accept_dad=0" || return $?
- 	tst_rhost_run -c "ip link set $iface up"
- }
- 
--- 
-2.25.1
+> >>>> fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1024 pref medium
+> >>>> so the address there should be in a reachable state...
+
+> >>> Thanks for info! I wonder if it's a bug in mpls or elsewhere. WDYT?
+
+> >> https://github.com/iputils/iputils/issues/300
+> > Ah, thanks for pointing this.
+
+> >> So we should be careful with the flood option in ping, especially
+> >> if it is the first test to run after initial test interfaces setup.
+> >> For example, for mpls02, it is "icmp tcp udp".
+> > Flooding is done with -f or -i 0. IMHO we don't do that in tst_ping(),
+> > what am I missing? The bug is about flooding (-i 0) with zero packet size (-s 0,
+> > but maybe our use -s 10 would trigger the bug as well).
+
+> Actually, we do have -f option in tst_ping(), in $flood_opt var.
+Ah, I'm blind today, thanks :). I wonder if it's really enough for mpls to just
+move icmp in TST_TEST_DATA to the end (or just not being first). If it's
+working, feel free to add ack from my to the commit message.
+
+Kind regards,
+Petr
 
