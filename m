@@ -1,40 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Sep 2021 14:58:17 +0200
-Subject: [LTP] [RFC PATCH 1/1] sched: Remove process.c
-In-Reply-To: <20210913100022.14501-1-pvorel@suse.cz>
-References: <20210913100022.14501-1-pvorel@suse.cz>
-Message-ID: <YT9K6Xl9iP8sx2/y@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 13 Sep 2021 15:14:54 +0200
+Subject: [LTP] LTP: smoketest: route4-change-dst fails intermittently
+In-Reply-To: <cab131c0-877e-4781-6d0e-07a6e528b329@bell-sw.com>
+References: <CA+G9fYtJYK4C4q7v2VBgyHe1EdOeZ=auEytoKJr0gYThj8gS5w@mail.gmail.com>
+ <cab131c0-877e-4781-6d0e-07a6e528b329@bell-sw.com>
+Message-ID: <YT9OziyltlUo+Vnb@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Test was removed as buggy from the runtest file nearly 20 years ago in:
-> 576f1ee56 ("Removed a test that was not correctly running.")
-> 
-> Test is probably obsolete, not using even legacy API, non-zero exit:
-> 
-> $ ./process -d 8 -b 2 -t 1; echo $?
-> total number of process to be created nodesum (511) is greater
->  than the allowed SEMMSL value (250)
-> reseting the value of nodesum to SEMMSL
-> Terminated
-> 143
-> 
-> + leaving very high load after being terminated.
-> 
-> Reported-by: Li Wang <liwang@redhat.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> On 03.09.2021 09:33, Naresh Kamboju wrote:
+> > LTP smoketest  "route4-change-dst" fails intermittently on various
+> > devices and qemu.
+> > We do not want any intermittent failures on LTP smoketest.
+> > Shall i send a patch to delete this test case from runtest/smoketest ?
 
-I was looking at the test and while the idea seems to valid and
-interesting, the implementation is buggy, it does not take much to make
-it segfault and it tends to leave processes unterminated, so it would be
-probably easier to implement something from scratch.[
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> route4-change-dst is a stress test, perhaps replacing it with more
+> simple like ping01.sh or ping02.sh that still triggers LTP/tst_net
+> library check?
+I overlooked your suggestion. OK, I'll merge replacing route4-change-dst with
+ping02.sh -6.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> BTW, such tests may overlap with existed network setup on a test
+> machine, by default they are using 10.0.0.0/24. Changing defaults
+> is done via IPV4_LHOST and IPV4_RHOST environment variables.
+I wonder if using IPV4_NET16_UNUSED and IPV6_NET32_UNUSED would help. Unless we
+create a detection of whether they're actually unused (not sure even how to
+implement nmap like search which would be fast enough) there still can be a
+collision. But at least the addresses ranges in *UNUSED are less common.
+
+Kind regards,
+Petr
