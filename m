@@ -1,29 +1,47 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 13 Sep 2021 15:33:42 +0800
-Subject: [LTP] [PATCH v2 0/7] Cleanup sched/process.c
-In-Reply-To: <YT7+UU1d3llds9br@pevik>
-References: <20210910130820.21141-1-pvorel@suse.cz>
- <CAEemH2evPtStSndYb0viwt-+x+g4dB3FER366_KEjcRUn7pWYg@mail.gmail.com>
- <YT7wZrmi8Jc0YHfL@pevik>
- <CAEemH2cO31kSwK3=tk6krB8ZZYPPaP+c-+5D7FGRK2ofYSmbtg@mail.gmail.com>
- <YT7+UU1d3llds9br@pevik>
-Message-ID: <CAEemH2cnRbgMYWdo5ym0MHW+npoVEcfup9+0p+kW46sJV7aKWA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 13 Sep 2021 10:11:22 +0200
+Subject: [LTP] [mm/page]  ab19939a6a: ltp.msync04.fail
+In-Reply-To: <20210912123429.GA25450@xsang-OptiPlex-9020>
+References: <20210912123429.GA25450@xsang-OptiPlex-9020>
+Message-ID: <YT8HqsXsHFeMdDxS@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Ah, good catch! I didn't check it's not a binary which would be required.
-> I'll recheck it once again and send a patch to remove it then.
->
+Hi!
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: ab19939a6a5010cba4e9cb04dd8bee03c72edcbd ("mm/page-writeback: Fix performance when BDI's share of ratio is 0.")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: ltp
+> version: ltp-x86_64-14c1f76-1_20210907
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: xfs
+> 	test: syscalls-03
+> 	ucode: 0xe2
+> 
+> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> test-url: http://linux-test-project.github.io/
 
-Agree, it has obsoleted 20 years, I guess it probably not much sense to
-keep it.
+The msync04 test formats a device with a diffrent filesystems, for each
+filesystem it maps a file, writes to the mapped page and the checks a
+dirty bit in /proc/kpageflags before and after msync() on that page.
+
+This seems to be broken after this patch for ntfs over FUSE and it looks
+like the page does not have a dirty bit set right after it has been
+written to.
+
+Also I guess that we should increase the number of the pages we dirty or
+attempt to retry since a single page may be flushed to the storage if we
+are unlucky and the process is preempted between the write and the
+initial check for the dirty bit.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210913/d6384927/attachment.htm>
+Cyril Hrubis
+chrubis@suse.cz
