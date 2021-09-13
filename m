@@ -1,65 +1,75 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Mon, 13 Sep 2021 15:38:10 +0300
-Subject: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
-In-Reply-To: <YT9EAQfa02ytbDPr@pevik>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
- <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <0acf816462d49d8a6004c87e36b05d1b@suse.de>
- <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com> <YTsnD0Uw4argiGOJ@pevik>
- <61ea98da-6746-2ad3-c2de-38e148cc9d4c@bell-sw.com> <YT9EAQfa02ytbDPr@pevik>
-Message-ID: <289d5bea-8fd5-b009-18dc-5639f3a0c0d2@bell-sw.com>
+Date: Mon, 13 Sep 2021 15:39:34 +0300
+Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: ignore errors on rhost with -i
+ option in tst_net_run()
+Message-ID: <20210913123935.10761-1-aleksei.kodanev@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13.09.2021 15:28, Petr Vorel wrote:
->> Hi Petr,
->> On 10.09.2021 12:36, Petr Vorel wrote:
->>>> On 09.09.2021 18:53, pvorel wrote:
->>>>> Hi Su, Alexey,
-> 
->>>>> On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
->>>>>> Hi,
->>>>>> ? I found that it's indeed related to ipv6 DAD as you said.
->>>>>> Calling
->>>>>> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_dad=0`
->>>>>> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
->>>>>> However there is one super strange part that the tentative address is
->>>>>> the local link adress of the ltp_ns_veth1:
-> 
->>>>>> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
->>>>>> state UP group default qlen 1000
->>>>>> ??? link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
->>>>>> ??? inet 10.0.0.1/24 scope global ltp_ns_veth1
->>>>>> ?????? valid_lft forever preferred_lft forever
->>>>>> ??? inet6 fd00:1:1:1::1/64 scope global nodad
->>>>>> ?????? valid_lft forever preferred_lft forever
->>>>>> ??? inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
->>>>>> <-------------------
->>>>>> ?????? valid_lft forever preferred_lft forever
-> 
->>>>>> However, there is no place using the address in mpls02 test.>> It makes me wonder how could it be possible to trigger the issue..
-> 
->>>> Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
->>>> using link-local address, and vice verse for the other side. mpls is
->>>> using the following route with the address:
-> 
->>>> fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1024 pref medium
->>>> so the address there should be in a reachable state...
-> 
->>> Thanks for info! I wonder if it's a bug in mpls or elsewhere. WDYT?
-> 
->> https://github.com/iputils/iputils/issues/300
-> Ah, thanks for pointing this.
-> 
->> So we should be careful with the flood option in ping, especially
->> if it is the first test to run after initial test interfaces setup.
->> For example, for mpls02, it is "icmp tcp udp".
-> Flooding is done with -f or -i 0. IMHO we don't do that in tst_ping(),
-> what am I missing? The bug is about flooding (-i 0) with zero packet size (-s 0,
-> but maybe our use -s 10 would trigger the bug as well).
+Unfortanetly busysbox/sysctl with -e option only suppresses the
+warning about unknown keys and still returns exit code 1:
+    sysctl -h
+    ...
+    -e don't warn about unknown keys
 
-Actually, we do have -f option in tst_ping(), in $flood_opt var.
+As a result busy_poll01 fails on this error:
+
+    busy_poll01.sh
+    busy_poll01 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+    ...
+    busy_poll01 1 TINFO: set low latency busy poll to 50
+    busy_poll01 1 TBROK: 'sysctl -q -w '-e' net.core.busy_read=50' failed on '': ''
+
+So let's add a new option (-i) in tst_net_run() to ignore the
+error when running the command on "rhost".
+
+Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+---
+ testcases/lib/tst_net.sh | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 958d71e3d..7f2a1bab3 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -212,6 +212,7 @@ tst_rhost_run()
+ # -l LPARAM: parameter passed to CMD in lhost
+ # -r RPARAM: parameter passed to CMD in rhost
+ # -q: quiet mode (suppress failure warnings)
++# -i: ignore errors on rhost
+ # CMD: command to run (this must be binary, not shell builtin/function due
+ # tst_rhost_run() limitation)
+ # RETURN: 0 on success, 1 on missing CMD or exit code on lhost or rhost
+@@ -227,12 +228,13 @@ tst_net_run()
+ 	local quiet
+ 
+ 	local OPTIND
+-	while getopts l:qr:s opt; do
++	while getopts l:qr:si opt; do
+ 		case "$opt" in
+ 		l) lparams="$OPTARG" ;;
+ 		q) quiet=1 ;;
+ 		r) rparams="$OPTARG" ;;
+ 		s) lsafe="ROD"; rsafe="-s" ;;
++		i) rsafe="" ;;
+ 		*) tst_brk_ TBROK "tst_net_run: unknown option: $OPTARG" ;;
+ 		esac
+ 	done
+@@ -916,9 +918,9 @@ tst_set_sysctl()
+ 	[ "$3" = "safe" ] && safe="-s"
+ 
+ 	local rparam=
+-	[ "$TST_USE_NETNS" = "yes" ] && rparam="-r '-e'"
++	[ "$TST_USE_NETNS" = "yes" ] && rparam="-i -r '-e'"
+ 
+-	tst_net_run $safe $rparam "sysctl" "-q -w $name=$value"
++	tst_net_run $safe -q $rparam "sysctl" "-q -w $name=$value"
+ }
+ 
+ tst_cleanup_rhost()
+-- 
+2.25.1
+
