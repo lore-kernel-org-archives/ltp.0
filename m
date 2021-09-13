@@ -1,62 +1,37 @@
 From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Date: Mon, 13 Sep 2021 18:31:18 +0300
-Subject: [LTP] [PATCH v1] realtime:matrix_multi: main function to return
- exit status
-Message-ID: <20210913153118.25002-1-bogdan.lezhepekov@suse.com>
+Date: Mon, 13 Sep 2021 19:37:43 +0300
+Subject: [LTP] [PATCH v1 1/3] realtime:hrtimer-prio: fix misleading help
+ message
+Message-ID: <20210913163745.28108-1-bogdan.lezhepekov@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The original version always returned 0.
+The argument "-m" had been removed years ago, but the help
+message mistakenly offered to set "maximum timer
+latency in microseconds".
 
 Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
 ---
- testcases/realtime/func/matrix_mult/matrix_mult.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ testcases/realtime/func/hrtimer-prio/hrtimer-prio.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/testcases/realtime/func/matrix_mult/matrix_mult.c b/testcases/realtime/func/matrix_mult/matrix_mult.c
-index 61ab887fc..e702c0ff9 100644
---- a/testcases/realtime/func/matrix_mult/matrix_mult.c
-+++ b/testcases/realtime/func/matrix_mult/matrix_mult.c
-@@ -188,7 +188,7 @@ void *concurrent_thread(void *thread)
- 	return NULL;
+diff --git a/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c b/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c
+index 4ae49a713..cbc2343f6 100644
+--- a/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c
++++ b/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c
+@@ -76,9 +76,6 @@ void usage(void)
+ 	printf
+ 	    ("  -f#	   #:rt fifo priority of busy threads (1,98), defaults to %d\n",
+ 	     DEF_MED_PRIO);
+-	printf
+-	    ("  -m#	   #:maximum timer latency in microseconds, defaults to %d\n",
+-	     DEF_CRITERIA);
  }
  
--void main_thread(void)
-+int main_thread(void)
- {
- 	int ret, i, j;
- 	nsec_t start, end;
-@@ -308,7 +308,7 @@ void main_thread(void)
- 	     criteria);
- 	printf("Result: %s\n", ret ? "FAIL" : "PASS");
- 
--	return;
-+	return ret;
- }
- 
- int main(int argc, char *argv[])
-@@ -319,7 +319,7 @@ int main(int argc, char *argv[])
- 	numcpus = sysconf(_SC_NPROCESSORS_ONLN);
- 	/* the minimum avg concurrent multiplier to pass */
- 	criteria = pass_criteria * numcpus;
--	int new_iterations;
-+	int new_iterations, ret;
- 
- 	if (iterations <= 0) {
- 		fprintf(stderr, "iterations must be greater than zero\n");
-@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
- 	printf("Number of CPUs: %u\n", numcpus);
- 
- 	set_priority(PRIO);
--	main_thread();
-+	ret = main_thread();
- 
--	return 0;
-+	return ret;
- }
+ int parse_args(int c, char *v)
 -- 
 2.32.0
 
