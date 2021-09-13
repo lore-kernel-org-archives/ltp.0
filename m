@@ -2,91 +2,81 @@ Return-Path: <SRS0=2Bls=OD=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A06BC433F5
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 12:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9CD9C433EF
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 12:40:50 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67CBE60FBF
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 12:38:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 67CBE60FBF
+	by mail.kernel.org (Postfix) with ESMTPS id 3650260F6C
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 12:40:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3650260F6C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bell-sw.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 38A4E3C86BB
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 14:38:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 445D73C92A5
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 14:40:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89EBD3C1DF5
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 14:38:13 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
+ by picard.linux.it (Postfix) with ESMTPS id 53CCB3C86BB
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 14:40:38 +0200 (CEST)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5C00360035F
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 14:38:12 +0200 (CEST)
-Received: by mail-lf1-x12d.google.com with SMTP id x27so20788739lfu.5
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 05:38:12 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D3AA51A00FDF
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 14:40:37 +0200 (CEST)
+Received: by mail-lj1-x22a.google.com with SMTP id r3so17059978ljc.4
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 05:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=bell-sw-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=hAZY4HRBz13kVFO4Uz8Faf/hM2HBr7qOoUdGrcW4PzQ=;
- b=CiGfiT/Qu7wbYfLz9aJhUT/B4MbI9ItxgqtpHcP+H7X5byeHb0J8q7MuE5ReQEsk4G
- O7AoJHfftzDM93+NBXHUs58v9JdM2FhU8vbyu+XXdYe22KbYZLxNdFuK/Xor2tGlc+D6
- EVBlrv/feCn1/KXzaBTBDO8xHf5K8JUvCDZOOIB9Dnc9tKlZcSW0I5p/RS9X//+xndc1
- CqO+T+AW5lat999YVjCsYJC+ODRztadzy39DjqnJZoW63wp/K2KrifquxBtGnmfqYCSV
- W7359Sjcn/9VmGURc7I8OIE4jGvH6IETEECmyygl3sU+QPnYTDBAqTDwk6dAIoey5Lky
- ZXxw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ROqYq+MNuXYoF6btipNaurwRf9PPaunphTBJ0clPE9s=;
+ b=bPycLtauTf5YUUu+L6/ld/NFkpGZbo2JXQM2Uv6kRMxoWRbOBmCy30OwCf7udeDw1h
+ u4oH/7/N2G1MkH5jUetIAJhGM2ybAorAPaas0bn33Jbzv5BslkMXVqZ+SymzquayoYgE
+ gaZdH0Jjv3canWjs5Jh2pJ2NYOQWhIrm/kDZChueeFsAAc4FUJnudVmZytLznF5xm9CE
+ 6SWNJxjvx6F/ZR2IYEyl0WZNM1ccqwFWJptPG1EVslKy/Ygg6ml5/ff94z2MjImWcyAN
+ 3TqPkfp6wnMw0riCg95Zx8EJgxLGp9GyKSnvWM4wUOq1tuv8YB4sF40p/wOHyy8vt3T7
+ +RaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=hAZY4HRBz13kVFO4Uz8Faf/hM2HBr7qOoUdGrcW4PzQ=;
- b=NbfZ7I+0JJcfV8LPoFvsRVggm0Vmd2OF0FFGUoKd7605zJHxkfvxqmd8Bnc2f5Dbta
- aZ6XA94cdFFHp27BZDFVt+AtbxuPXMViU9ahAWvOHVSI7DkAW7nFprwxrJykdGUITKpt
- x8qf7DAHJW0kYiIjXQ6g9JUxY8AtVZidu4RHGhRXtkMGSAiMw3fE8rFWev2FOrrlL7Y6
- yX6Ji8yYyTrbIjlR4SNprGFC1GznCx4f3JJS0qiX5YPixzOoM2qF02PFPL0DVLHK+mo6
- 65yqIyeKEEOUROd0jwdWJ7mULGTvoA5JxPZN5A9SVUKiH1SyPf+pOtunC/a+m8Rt7dx4
- 45Pw==
-X-Gm-Message-State: AOAM533+GjQ8aaJ9qLXood1uNURvWCnuugjfShOdYT+RgCyzoct0ncmO
- PF3zPE2IGQZpOGevUdRMByYUWXNGR+iC
-X-Google-Smtp-Source: ABdhPJxrVcHJMKKkIH10SJDnzC5rH0CNbUgZpgLEEprjidiilOinWvHmvAeBwsrRsduf/lK5YDCl3Q==
-X-Received: by 2002:a05:6512:358f:: with SMTP id
- m15mr9098040lfr.36.1631536691439; 
- Mon, 13 Sep 2021 05:38:11 -0700 (PDT)
-Received: from [192.168.1.52] ([95.161.221.177])
- by smtp.gmail.com with ESMTPSA id k16sm818576lfj.231.2021.09.13.05.38.11
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 13 Sep 2021 05:38:11 -0700 (PDT)
-To: Petr Vorel <pvorel@suse.cz>
-References: <TY2PR01MB212429263FC238F44A2C1D7D89C79@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <410b2b2d-9633-7a57-527a-1663afe5f631@bell-sw.com>
- <TY2PR01MB21246C459BBCD763BD1C0CBD89CB9@TY2PR01MB2124.jpnprd01.prod.outlook.com>
- <0acf816462d49d8a6004c87e36b05d1b@suse.de>
- <8d93deac-eec1-5f87-57a5-c72b2f6e5973@bell-sw.com> <YTsnD0Uw4argiGOJ@pevik>
- <61ea98da-6746-2ad3-c2de-38e148cc9d4c@bell-sw.com> <YT9EAQfa02ytbDPr@pevik>
+ bh=ROqYq+MNuXYoF6btipNaurwRf9PPaunphTBJ0clPE9s=;
+ b=VJdrZJn75cBeVDmCMokYqu92qj+yoJgEjXBEgod1KB4uTMTU6290jf6Wi+Xqpbxucf
+ ZyErQuHrTTftdQHkiDYSbVP/b8hnRKmPVD6QEi2h+Rtkk0s3OY4SVLNYQo5Ct4bZWbHr
+ aMauBEy4CGrucKdXz/ns26RL38IaOQhYbH5CnzYmTxeQILEZ2K1TWQOv1BfYuiyOZMNt
+ haVqJtpSjGb23jrxJjN+x039OYkV/IDUQwEWy70blBPyWhz5nR7RdFbQTuVCaHN+CrSf
+ ZNwfEVaYjBYGwfzStt9xVgbLwiVBg3adMlxF26/LuboFOE3whK9UIwbUu8y5Pa3DniIw
+ vD2g==
+X-Gm-Message-State: AOAM531zzmsT5UjkBfnLoiuNaF3y502zdNxd0bIp8GfntaKeBZrvw+Ox
+ 9iGux8LUVV/ZIn0KibTmFAZaKAgAc2wD
+X-Google-Smtp-Source: ABdhPJz7DuoasOw0qzD5NqxBWRMEbBirPSsjTY33t/+63TP6Z07ARxTBef8W/YerqkV1IcBmEXhwCw==
+X-Received: by 2002:a2e:9e05:: with SMTP id e5mr10266011ljk.166.1631536836824; 
+ Mon, 13 Sep 2021 05:40:36 -0700 (PDT)
+Received: from localhost.localdomain ([95.161.221.177])
+ by smtp.gmail.com with ESMTPSA id z4sm814560lfd.298.2021.09.13.05.40.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Sep 2021 05:40:36 -0700 (PDT)
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Message-ID: <289d5bea-8fd5-b009-18dc-5639f3a0c0d2@bell-sw.com>
-Date: Mon, 13 Sep 2021 15:38:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+To: ltp@lists.linux.it
+Date: Mon, 13 Sep 2021 15:39:34 +0300
+Message-ID: <20210913123935.10761-1-aleksei.kodanev@bell-sw.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YT9EAQfa02ytbDPr@pevik>
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] network/mpls: sleep 1 after setup in mpls02
+Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: ignore errors on rhost with -i
+ option in tst_net_run()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,75 +88,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: suy.fnst@fujitsu.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210913123810.Ne5rNhIFxrRf9CIow22SFZtqIMAe4pvPX1aAwEOZREg@z>
+Message-ID: <20210913123934.iGnwhOKIl1PHTDTs5NP5CP8F3trs_y1XRg71s42_L68@z>
 
-On 13.09.2021 15:28, Petr Vorel wrote:
->> Hi Petr,
->> On 10.09.2021 12:36, Petr Vorel wrote:
->>>> On 09.09.2021 18:53, pvorel wrote:
->>>>> Hi Su, Alexey,
-> =
+Unfortanetly busysbox/sysctl with -e option only suppresses the
+warning about unknown keys and still returns exit code 1:
+    sysctl -h
+    ...
+    -e don't warn about unknown keys
 
->>>>> On 2021-08-30 11:26, suy.fnst@fujitsu.com wrote:
->>>>>> Hi,
->>>>>> =A0 I found that it's indeed related to ipv6 DAD as you said.
->>>>>> Calling
->>>>>> `ip netns exec ltp_ns sysctl -n net.ipv6.conf.ltp_ns_veth1.accept_da=
-d=3D0`
->>>>>> or tst_wait_ipv6_dad() at end of the setup both solves the problem.
->>>>>> However there is one super strange part that the tentative address is
->>>>>> the local link adress of the ltp_ns_veth1:
-> =
+As a result busy_poll01 fails on this error:
 
->>>>>> 5: ltp_ns_veth1@if4: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
->>>>>> state UP group default qlen 1000
->>>>>> =A0=A0=A0 link/ether f2:8f:24:d4:ba:26 brd ff:ff:ff:ff:ff:ff link-ne=
-tnsid 0
->>>>>> =A0=A0=A0 inet 10.0.0.1/24 scope global ltp_ns_veth1
->>>>>> =A0=A0=A0=A0=A0=A0 valid_lft forever preferred_lft forever
->>>>>> =A0=A0=A0 inet6 fd00:1:1:1::1/64 scope global nodad
->>>>>> =A0=A0=A0=A0=A0=A0 valid_lft forever preferred_lft forever
->>>>>> =A0=A0=A0 inet6 fe80::f08f:24ff:fed4:ba26/64 scope link tentative
->>>>>> <-------------------
->>>>>> =A0=A0=A0=A0=A0=A0 valid_lft forever preferred_lft forever
-> =
+    busy_poll01.sh
+    busy_poll01 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+    ...
+    busy_poll01 1 TINFO: set low latency busy poll to 50
+    busy_poll01 1 TBROK: 'sysctl -q -w '-e' net.core.busy_read=50' failed on '': ''
 
->>>>>> However, there is no place using the address in mpls02 test.>> It ma=
-kes me wonder how could it be possible to trigger the issue..
-> =
+So let's add a new option (-i) in tst_net_run() to ignore the
+error when running the command on "rhost".
 
->>>> Looks like the problem here in the neighbor discovery of fd00:1:1:1::2
->>>> using link-local address, and vice verse for the other side. mpls is
->>>> using the following route with the address:
-> =
+Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+---
+ testcases/lib/tst_net.sh | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
->>>> fd00:23::2  encap mpls  60 via fd00:1:1:1::2 dev ltp_ns_veth1 metric 1=
-024 pref medium
->>>> so the address there should be in a reachable state...
-> =
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 958d71e3d..7f2a1bab3 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -212,6 +212,7 @@ tst_rhost_run()
+ # -l LPARAM: parameter passed to CMD in lhost
+ # -r RPARAM: parameter passed to CMD in rhost
+ # -q: quiet mode (suppress failure warnings)
++# -i: ignore errors on rhost
+ # CMD: command to run (this must be binary, not shell builtin/function due
+ # tst_rhost_run() limitation)
+ # RETURN: 0 on success, 1 on missing CMD or exit code on lhost or rhost
+@@ -227,12 +228,13 @@ tst_net_run()
+ 	local quiet
+ 
+ 	local OPTIND
+-	while getopts l:qr:s opt; do
++	while getopts l:qr:si opt; do
+ 		case "$opt" in
+ 		l) lparams="$OPTARG" ;;
+ 		q) quiet=1 ;;
+ 		r) rparams="$OPTARG" ;;
+ 		s) lsafe="ROD"; rsafe="-s" ;;
++		i) rsafe="" ;;
+ 		*) tst_brk_ TBROK "tst_net_run: unknown option: $OPTARG" ;;
+ 		esac
+ 	done
+@@ -916,9 +918,9 @@ tst_set_sysctl()
+ 	[ "$3" = "safe" ] && safe="-s"
+ 
+ 	local rparam=
+-	[ "$TST_USE_NETNS" = "yes" ] && rparam="-r '-e'"
++	[ "$TST_USE_NETNS" = "yes" ] && rparam="-i -r '-e'"
+ 
+-	tst_net_run $safe $rparam "sysctl" "-q -w $name=$value"
++	tst_net_run $safe -q $rparam "sysctl" "-q -w $name=$value"
+ }
+ 
+ tst_cleanup_rhost()
+-- 
+2.25.1
 
->>> Thanks for info! I wonder if it's a bug in mpls or elsewhere. WDYT?
-> =
 
->> https://github.com/iputils/iputils/issues/300
-> Ah, thanks for pointing this.
-> =
-
->> So we should be careful with the flood option in ping, especially
->> if it is the first test to run after initial test interfaces setup.
->> For example, for mpls02, it is "icmp tcp udp".
-> Flooding is done with -f or -i 0. IMHO we don't do that in tst_ping(),
-> what am I missing? The bug is about flooding (-i 0) with zero packet size=
- (-s 0,
-> but maybe our use -s 10 would trigger the bug as well).
-
-Actually, we do have -f option in tst_ping(), in $flood_opt var.
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
