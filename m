@@ -7,59 +7,58 @@ X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6303EC433EF
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 16:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AC2C433FE
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 16:38:20 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A57B60F36
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 16:38:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A57B60F36
+	by mail.kernel.org (Postfix) with ESMTPS id 1585860EFF
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 16:38:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1585860EFF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A0BC3CA4F2
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 18:38:08 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2E08C3C927F
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 18:38:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 955143C92A3
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 18:37:52 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5C57D3C929E
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 18:37:53 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DC3CF1400DC7
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 18:37:51 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CFC761A0110D
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 18:37:52 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3A02521FA7;
- Mon, 13 Sep 2021 16:37:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 67E7321FA7;
+ Mon, 13 Sep 2021 16:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1631551071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1631551072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ukjfJreoMw53LXpC1is6zOLzl3+FYz1AmhI6dNJD7e4=;
- b=Fva338JhixxN1v2HEqQjQYnZ46xfRhk9Owb2a0ay7R0+rXp5TkWgF91BOyRfYzo2F2cLR+
- rw1KBSg7PGNcyS46jZkk7VbYLjdnR2eBIcQ/mTObWgLM8Ts00O1QPnirzEZDzCatFYCbCJ
- xuAQxHfBASTam3AkYM8iZ5qM8/0uVLw=
+ bh=JPUMtg2Lointp6mRSMf3FTSCY6iVWSKY0Anj9O0AaBM=;
+ b=qZeEoSm+Ztey6Gd2ZXJ/34f3swcvuplfe7197Ndqsuj+Lqt9H59vdNjvVKHvNf9MIrsl3j
+ Ydd6hjNrv6sfemMVW5Ai6Ik4k5vdZjAYacyG1NvlWRAmjDGC04AFn6fh8TIeiqPTC7+Xip
+ U+IBUVIWBTSRuBDy149RPtRC+vjcGoI=
 Received: from blezhepekov.udp.ovpn1.nue.suse.de (unknown [10.163.30.42])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 06786A3B81;
- Mon, 13 Sep 2021 16:37:50 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 352BAA3B8E;
+ Mon, 13 Sep 2021 16:37:52 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Mon, 13 Sep 2021 19:37:44 +0300
-Message-ID: <20210913163745.28108-2-bogdan.lezhepekov@suse.com>
+Date: Mon, 13 Sep 2021 19:37:45 +0300
+Message-ID: <20210913163745.28108-3-bogdan.lezhepekov@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210913163745.28108-1-bogdan.lezhepekov@suse.com>
 References: <20210913163745.28108-1-bogdan.lezhepekov@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 2/3] realtime:hrtimer-prio:run_auto: jump to
- current dir
+Subject: [LTP] [PATCH v1 3/3] realtime:profiles: support hrtimer-prio
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,27 +76,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210913163744.TqPyHBTJ1BKoBhSnVPhvoLCNPLYq6pM0fto64H5v-fI@z>
-
-The patch makes possible to run the test from LTP root dir.
+Message-ID: <20210913163745.8gDJufUUXg6fsWJuwSxIgmki2i0XwQk8ukqC8UoG-6I@z>
 
 Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
 ---
- testcases/realtime/func/hrtimer-prio/run_auto.sh | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/realtime/profiles/default | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/realtime/func/hrtimer-prio/run_auto.sh b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-index ec3d83a85..a20dbe540 100644
---- a/testcases/realtime/func/hrtimer-prio/run_auto.sh
-+++ b/testcases/realtime/func/hrtimer-prio/run_auto.sh
-@@ -2,6 +2,7 @@
+diff --git a/testcases/realtime/profiles/default b/testcases/realtime/profiles/default
+index b0bb6b890..440096fbe 100644
+--- a/testcases/realtime/profiles/default
++++ b/testcases/realtime/profiles/default
+@@ -46,11 +46,15 @@ func/matrix_mult		matrix_mult -c 0.75
+ # Default maxduration=0.5 s
+ func/thread_clock		tc-2 -c 0.5
  
- profile=${1:-default}
- 
-+cd $(dirname $0) # Move to test directory
- if [ ! $SCRIPTS_DIR ]; then
-         # assume we're running standalone
-         export SCRIPTS_DIR=../../scripts/
++# Pass if maximum timer latency is less than criterium (us).
++# Default latency=10 us
++func/hrtimer-prio       hrtimer-prio
++
+ # The below tests have no pass/fail criterium.
+ func/gtod_latency		gtod_latency
+ func/sched_jitter		sched_jitter
+-func/periodic_cpu_load		periodic_cpu_load
+-func/periodic_cpu_load		periodic_cpu_load_single
++func/periodic_cpu_load	periodic_cpu_load
++func/periodic_cpu_load	periodic_cpu_load_single
+ func/prio-wake			prio-wake
+ func/sched_football		sched_football
+ func/pi-tests			testpi-0
+@@ -60,4 +64,4 @@ func/pi-tests			testpi-4
+ func/pi-tests			testpi-5
+ func/pi-tests			testpi-6
+ func/pi-tests			sbrk_mutex
+-func/rt-migrate                 rt-migrate
++func/rt-migrate         rt-migrate
 -- 
 2.32.0
 
