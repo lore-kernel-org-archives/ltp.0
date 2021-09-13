@@ -2,79 +2,87 @@ Return-Path: <SRS0=2Bls=OD=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB079C433F5
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 07:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C276C433F5
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 07:34:13 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B92F604DA
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 07:31:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B92F604DA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 567D161004
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 07:34:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 567D161004
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8492B3C22F6
-	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 09:31:42 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 681C23C22F6
+	for <ltp@archiver.kernel.org>; Mon, 13 Sep 2021 09:34:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 49A973C1DC0
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 09:31:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A51623C1DC0
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 09:34:01 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AA1B71000D09
- for <ltp@lists.linux.it>; Mon, 13 Sep 2021 09:31:32 +0200 (CEST)
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A3E6421F95;
- Mon, 13 Sep 2021 07:31:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1631518291;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0DF9D200B8E
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 09:33:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1631518437;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=D/ss3h6pW+q+unN2XCYFs+Lvj1kqqRD0KQLZqmzUK2U=;
- b=o1ccTSxQj97DCQR4LCj0nyG5HhegL3yn39WkYf+3zjSPZd28Jq3AyDhxvQYvt4Krd6NmA7
- jNPCFt9x7teDddBn30/8HQzDO8iv0lXLufRsOTfwevtYtEDMHNmw5DI8h2kG+4mF17VScb
- 4DjXtQZ4ONKSphcuD7Zd2Nyrhuolw2U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1631518291;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=D/ss3h6pW+q+unN2XCYFs+Lvj1kqqRD0KQLZqmzUK2U=;
- b=YGhsv+JIQxRWyoZVR/FNwtsgIxM7nQ7TTKabFEDa04wfuiJwMShRXvXvGsTJGnFO3VS83c
- xs0U40+UsZTqn7Dw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 77AA6132AB;
- Mon, 13 Sep 2021 07:31:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id R8z/GlP+PmEzAQAAGKfGzw
- (envelope-from <pvorel@suse.cz>); Mon, 13 Sep 2021 07:31:31 +0000
-Date: Mon, 13 Sep 2021 09:31:29 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YT7+UU1d3llds9br@pevik>
+ bh=hpcF+RG8ZBaaixIiX+KjF1WPUYER5c+p13wApCxwZzk=;
+ b=RuV+mTWfI/HwYIqYLY1fqfX0NBQBO2w972Eq7CmD7uDlq0gAMcA7ZePXqEC8JdAmbWmyKm
+ IyiDKt8z9jtDD+tiKokBg6JbU1x+Q2Leob6hwTAnC1KAhfb3SUDEl1UgtB/YsWrVlHnTkI
+ +vYaCWRCceFRA7X4GPEpsv8s8/TEGsI=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-3OtdBhMTOqGKHqOo7KSyQg-1; Mon, 13 Sep 2021 03:33:54 -0400
+X-MC-Unique: 3OtdBhMTOqGKHqOo7KSyQg-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ j4-20020a258b84000000b005a203c5e066so11797219ybl.19
+ for <ltp@lists.linux.it>; Mon, 13 Sep 2021 00:33:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=hpcF+RG8ZBaaixIiX+KjF1WPUYER5c+p13wApCxwZzk=;
+ b=TsBkFWEd/ax1xY4+hba0uyjtiq2f3SU5ZSxbdmMLufPsjyPKNMeihU45OCYRvF5ege
+ T+2CSBOXIURYoaC6hVNJ0xSallILlbSq9n6uoOGB+trfJhcqlYLh1AS7VohkvNR/4o+5
+ w4SxpZ2K5DOPrW575cpvNq8akesWwFjacFM3Ro1NoIHVgKBMeYRu9y8LyDfRd3IKmF2c
+ DXbstTFR3Hw2SXzG9FGDyeoWekrHRbWKPFd2pQ7GWci4U/8ys9Av+BiKyyNII+8XpKo2
+ KTznF2zHx3rZVIz7mh+w7E62wca2UCXlmj4OSvedqODDYv9bTpKRBC3xglqxR0XknSBj
+ K2ww==
+X-Gm-Message-State: AOAM531HHOU0umBQPYvleF2LfiwoXYahxoWskkAzC7npnX5bCHk93Ajc
+ nHBuLLtXR2oKsygJbHOunGnm8BF8Y6GFMNyFoeFn5hRl1/emk+pqro+uhXavNMH1xstIst/ns4y
+ SSAJ5DFjv5pYh9uc2nR9kED4sFVQ=
+X-Received: by 2002:a25:2f48:: with SMTP id v69mr13325796ybv.339.1631518433904; 
+ Mon, 13 Sep 2021 00:33:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBuDLImBPblx+4zbAlCKbQ0jJ4f9CFWca7UM6/3b6AuwDYIhs/YCJAmPikxxHRGB5Jr7rFZ8hwP2M+SB0AAmI=
+X-Received: by 2002:a25:2f48:: with SMTP id v69mr13325771ybv.339.1631518433687; 
+ Mon, 13 Sep 2021 00:33:53 -0700 (PDT)
+MIME-Version: 1.0
 References: <20210910130820.21141-1-pvorel@suse.cz>
  <CAEemH2evPtStSndYb0viwt-+x+g4dB3FER366_KEjcRUn7pWYg@mail.gmail.com>
  <YT7wZrmi8Jc0YHfL@pevik>
  <CAEemH2cO31kSwK3=tk6krB8ZZYPPaP+c-+5D7FGRK2ofYSmbtg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2cO31kSwK3=tk6krB8ZZYPPaP+c-+5D7FGRK2ofYSmbtg@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+ <YT7+UU1d3llds9br@pevik>
+In-Reply-To: <YT7+UU1d3llds9br@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 13 Sep 2021 15:33:42 +0800
+Message-ID: <CAEemH2cnRbgMYWdo5ym0MHW+npoVEcfup9+0p+kW46sJV7aKWA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 0/7] Cleanup sched/process.c
 X-BeenThere: ltp@lists.linux.it
@@ -88,42 +96,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1994509583=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210913073129.Hgh6pP8guJa_9fmX_J-hfc6McdWxPPVR91lirSdbM8M@z>
+Message-ID: <20210913073342.6wtLfMrEuY0aJr6-NljF1J-erqM2SLRG9-PNjXiXDCY@z>
 
-> > > But I just wondering, is there a run test file to perform this test case?
-> > > I greped the runtest/* but find no file currently includes this:(.
+--===============1994509583==
+Content-Type: multipart/alternative; boundary="000000000000af582b05cbdb7cb0"
 
-> > IMHO it's in sched:
-> > $ git grep -w process runtest/
-> > runtest/sched:hackbench01 hackbench 50 process 1000
+--000000000000af582b05cbdb7cb0
+Content-Type: text/plain; charset="UTF-8"
+
+> Ah, good catch! I didn't check it's not a binary which would be required.
+> I'll recheck it once again and send a patch to remove it then.
+>
+
+Agree, it has obsoleted 20 years, I guess it probably not much sense to
+keep it.
+
+-- 
+Regards,
+Li Wang
+
+--000000000000af582b05cbdb7cb0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
+Ah, good catch! I didn&#39;t check it&#39;s not a binary which would be req=
+uired.<br>
+I&#39;ll recheck it once again and send a patch to remove it then.<br></blo=
+ckquote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size=
+:small">Agree, it has obsoleted=C2=A020 years, I guess it probably not much=
+ sense to keep it.</div></div><div><br></div></div>-- <br><div dir=3D"ltr" =
+class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li W=
+ang<br></div></div></div></div>
+
+--000000000000af582b05cbdb7cb0--
 
 
-> Hmm, here "process" is only a parameter to hackbench01, it
-> has no direct relevance to the process_stress/process.c.
-
-> After checking the history a while, I think that process_stress/process.c
-> is an independent test and obsoleted for a quite long time, maybe
-> we can add online back to runtest/sched file or just let is there until
-> someone converting to the new API.
-
-> commit 576f1ee560b2370818b49366bad581952af3dd70
-> Author: robbiew <robbiew>
-> Date:   Fri Feb 1 16:39:39 2002 +0000
-
->     Removed a test that was not correctly running.
-
-Ah, good catch! I didn't check it's not a binary which would be required.
-I'll recheck it once again and send a patch to remove it then.
-
-Kind regards,
-Petr
+--===============1994509583==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1994509583==--
+
