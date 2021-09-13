@@ -1,46 +1,54 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Sep 2021 16:51:20 +0200
-Subject: [LTP] [PATCH 8/8] syscalls/setresuid03: Convert to new API
-In-Reply-To: <3b789dc4-5232-a6d6-d864-7f75c5a0a030@suse.cz>
-References: <20210909155126.2720-1-mdoucha@suse.cz>
- <20210909155126.2720-8-mdoucha@suse.cz>
- <287a9879ef8b3342cb88225e4e319733@suse.de>
- <3b789dc4-5232-a6d6-d864-7f75c5a0a030@suse.cz>
-Message-ID: <YT9laHIulnmtBSgK@yuki>
+From: Miklos Szeredi <mszeredi@redhat.com>
+Date: Mon, 13 Sep 2021 16:59:51 +0200
+Subject: [LTP] [mm/page] ab19939a6a: ltp.msync04.fail
+In-Reply-To: <YT8HqsXsHFeMdDxS@yuki>
+References: <20210912123429.GA25450@xsang-OptiPlex-9020>
+ <YT8HqsXsHFeMdDxS@yuki>
+Message-ID: <CAOssrKdQ0XWqk1nbpRjRAO7E+t5+7qzXm1mkJPObkzsQrbAoKg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> -?????? if (getpwnam("bin") == NULL) {
-> >> -?????????????? tst_brkm(TBROK, NULL, "bin must be a valid user.");
-> >> +?????? if (TST_ERR != tc->exp_errno) {
-> > nit: checkpatch complains (TST_ERR should be second)
-> 
-> checkpatch.pl wrongly assumes that TST_ERR is a constant.
+On Mon, Sep 13, 2021 at 10:19 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > FYI, we noticed the following commit (built with gcc-9):
+> >
+> > commit: ab19939a6a5010cba4e9cb04dd8bee03c72edcbd ("mm/page-writeback: Fix performance when BDI's share of ratio is 0.")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> >
+> >
+> > in testcase: ltp
+> > version: ltp-x86_64-14c1f76-1_20210907
+> > with following parameters:
+> >
+> >       disk: 1HDD
+> >       fs: xfs
+> >       test: syscalls-03
+> >       ucode: 0xe2
+> >
+> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> > test-url: http://linux-test-project.github.io/
+>
+> The msync04 test formats a device with a diffrent filesystems, for each
+> filesystem it maps a file, writes to the mapped page and the checks a
+> dirty bit in /proc/kpageflags before and after msync() on that page.
+>
+> This seems to be broken after this patch for ntfs over FUSE and it looks
+> like the page does not have a dirty bit set right after it has been
+> written to.
+>
+> Also I guess that we should increase the number of the pages we dirty or
+> attempt to retry since a single page may be flushed to the storage if we
+> are unlucky and the process is preempted between the write and the
+> initial check for the dirty bit.
 
-Good catch, I guess that we will have to patch checkpatch to ignore
-macros that start with TST_, what about?
+Weird.  Does this reproduce 100% of the time?  If not, then I guess
+it's a race and we can ignore this report (or improve the test to make
+it less likely to trigger).
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 88cb294dc..87572b2f4 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5462,7 +5462,9 @@ sub process {
-                        my $comp = $3;
-                        my $to = $4;
-                        my $newcomp = $comp;
--                       if ($lead !~ /(?:$Operators|\.)\s*$/ &&
-+
-+                       if ($const !~ /^\QTST_/ &&
-+                           $lead !~ /(?:$Operators|\.)\s*$/ &&
-                            $to !~ /^(?:Constant|[A-Z_][A-Z0-9_]*)$/ &&
-                            WARN("CONSTANT_COMPARISON",
-                                 "Comparisons should place the constant on the right side of the test\n" . $herecurr) &&
+Thanks,
+Miklos
 
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
