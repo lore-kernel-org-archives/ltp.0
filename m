@@ -1,54 +1,62 @@
-From: Miklos Szeredi <mszeredi@redhat.com>
-Date: Mon, 13 Sep 2021 16:59:51 +0200
-Subject: [LTP] [mm/page] ab19939a6a: ltp.msync04.fail
-In-Reply-To: <YT8HqsXsHFeMdDxS@yuki>
-References: <20210912123429.GA25450@xsang-OptiPlex-9020>
- <YT8HqsXsHFeMdDxS@yuki>
-Message-ID: <CAOssrKdQ0XWqk1nbpRjRAO7E+t5+7qzXm1mkJPObkzsQrbAoKg@mail.gmail.com>
+From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Date: Mon, 13 Sep 2021 18:31:18 +0300
+Subject: [LTP] [PATCH v1] realtime:matrix_multi: main function to return
+ exit status
+Message-ID: <20210913153118.25002-1-bogdan.lezhepekov@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Sep 13, 2021 at 10:19 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: ab19939a6a5010cba4e9cb04dd8bee03c72edcbd ("mm/page-writeback: Fix performance when BDI's share of ratio is 0.")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
-> >
-> > in testcase: ltp
-> > version: ltp-x86_64-14c1f76-1_20210907
-> > with following parameters:
-> >
-> >       disk: 1HDD
-> >       fs: xfs
-> >       test: syscalls-03
-> >       ucode: 0xe2
-> >
-> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> > test-url: http://linux-test-project.github.io/
->
-> The msync04 test formats a device with a diffrent filesystems, for each
-> filesystem it maps a file, writes to the mapped page and the checks a
-> dirty bit in /proc/kpageflags before and after msync() on that page.
->
-> This seems to be broken after this patch for ntfs over FUSE and it looks
-> like the page does not have a dirty bit set right after it has been
-> written to.
->
-> Also I guess that we should increase the number of the pages we dirty or
-> attempt to retry since a single page may be flushed to the storage if we
-> are unlucky and the process is preempted between the write and the
-> initial check for the dirty bit.
+The original version always returned 0.
 
-Weird.  Does this reproduce 100% of the time?  If not, then I guess
-it's a race and we can ignore this report (or improve the test to make
-it less likely to trigger).
+Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+---
+ testcases/realtime/func/matrix_mult/matrix_mult.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Thanks,
-Miklos
+diff --git a/testcases/realtime/func/matrix_mult/matrix_mult.c b/testcases/realtime/func/matrix_mult/matrix_mult.c
+index 61ab887fc..e702c0ff9 100644
+--- a/testcases/realtime/func/matrix_mult/matrix_mult.c
++++ b/testcases/realtime/func/matrix_mult/matrix_mult.c
+@@ -188,7 +188,7 @@ void *concurrent_thread(void *thread)
+ 	return NULL;
+ }
+ 
+-void main_thread(void)
++int main_thread(void)
+ {
+ 	int ret, i, j;
+ 	nsec_t start, end;
+@@ -308,7 +308,7 @@ void main_thread(void)
+ 	     criteria);
+ 	printf("Result: %s\n", ret ? "FAIL" : "PASS");
+ 
+-	return;
++	return ret;
+ }
+ 
+ int main(int argc, char *argv[])
+@@ -319,7 +319,7 @@ int main(int argc, char *argv[])
+ 	numcpus = sysconf(_SC_NPROCESSORS_ONLN);
+ 	/* the minimum avg concurrent multiplier to pass */
+ 	criteria = pass_criteria * numcpus;
+-	int new_iterations;
++	int new_iterations, ret;
+ 
+ 	if (iterations <= 0) {
+ 		fprintf(stderr, "iterations must be greater than zero\n");
+@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
+ 	printf("Number of CPUs: %u\n", numcpus);
+ 
+ 	set_priority(PRIO);
+-	main_thread();
++	ret = main_thread();
+ 
+-	return 0;
++	return ret;
+ }
+-- 
+2.32.0
 
