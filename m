@@ -1,15 +1,17 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 13 Sep 2021 16:44:51 +0200
-Subject: [LTP] [PATCH v2 1/4] syscalls/setresgid03: Convert to new API
-Message-ID: <20210913144454.22992-1-mdoucha@suse.cz>
+Date: Mon, 13 Sep 2021 16:44:54 +0200
+Subject: [LTP] [PATCH v2 4/4] syscalls/setresuid03: Convert to new API
+In-Reply-To: <20210913144454.22992-1-mdoucha@suse.cz>
+References: <20210913144454.22992-1-mdoucha@suse.cz>
+Message-ID: <20210913144454.22992-4-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The original test needs user "bin" which may not exist on some systems. Use
-any non-root ID instead.
+The original test looks up specific usernames which may not exist on some
+systems. Use any two non-root UIDs instead.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
@@ -17,233 +19,225 @@ Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 Changes since v1:
 - use TST_EXP_FAIL() to simplify result validation
 
- .../kernel/syscalls/setresgid/setresgid03.c   | 264 ++++--------------
- 1 file changed, 56 insertions(+), 208 deletions(-)
+ .../kernel/syscalls/setresuid/setresuid03.c   | 263 ++++--------------
+ 1 file changed, 47 insertions(+), 216 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid03.c b/testcases/kernel/syscalls/setresgid/setresgid03.c
-index 78c89487b..7b5b3b4f4 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid03.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid03.c
-@@ -1,233 +1,81 @@
+diff --git a/testcases/kernel/syscalls/setresuid/setresuid03.c b/testcases/kernel/syscalls/setresuid/setresuid03.c
+index ea06e02bf..6761df1c3 100644
+--- a/testcases/kernel/syscalls/setresuid/setresuid03.c
++++ b/testcases/kernel/syscalls/setresuid/setresuid03.c
+@@ -1,245 +1,76 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
 - *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+  *   Copyright (c) International Business Machines  Corp., 2001
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
 - *
-+ *    AUTHOR: Madhu T L <madhu.tarikere@wipro.com>
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *	07/2001 ported by John George
 + * Copyright (C) 2021 SUSE LLC <mdoucha@suse.cz>
   */
--/**********************************************************
+ 
+-/*
+- * NAME
+- * 	setresuid03.c
 - *
-- *    TEST IDENTIFIER   : setresgid03
+- * DESCRIPTION
+- * 	Test that the setresuid system call sets the proper errno
+- *	values when a non-root user attempts to change the real, effective or
+- *	saved uid to a value other than one of the current uid, the current
+- *	effective uid of the current saved uid.  Also verify that setresuid
+- *	fails if an invalid uid value is given.
 - *
-- *    EXECUTED BY       : root / superuser
+- * ALGORITHM
 - *
-- *    TEST TITLE        : Checking error conditions for setresgid(2)
+- *	Setup:
+- *	  Setup signal handling
+- *	  Get user information.
+- *	  Pause for SIGUSER1 if option specified.
 - *
-- *    TEST CASE TOTAL   : 4
-- *
-- *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
-- *
-- *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *      Verify that,
-- *	1. setresgid(2) fails with EPERM for unprivileged user in setting
-- *	   saved group id.
-- *	2. setresgid(2) fails with EPERM for unprivileged user in setting
-- *	   effective group id.
-- *	3. setresgid(2) fails with EPERM for unprivileged user in setting
-- *	   real group id.
-- *	4. setresgid(2) fails with EPERM for unprivileged user in setting
-- *	   real/effective/saved group id.
-- *
-- *      Setup:
-- *	  Setup signal handling.
-- *	  Test caller is superuser
-- *	  Check existence of user id's root/bin/nobody
-- *	  Set real/effective/saved gid to nobody
-- *	  Set effective uid to nobody
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return value, errno and functionality, if success,
-- *		 Issue PASS message
-- *	Otherwise,
-- *		Issue FAIL message
-- *
+- *	Setup test values.
+- *	Loop if the proper options are given.
+- * 	For each test set execute the system call
+- * 	  Check that we received the expected result.
+- *	  Verify that the uid, euid and suid values are still correct.
 - *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
+- *	  Print errno log and/or timing stats if option given.
 - *
 - * USAGE:  <for command-line>
-- *  setresgid03 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
-- *		where,  -c n : Run n copies concurrently.
-- *			-e   : Turn on errno logging.
-- *			-f   : Turn off functional testing
-- *			-h   : Show help screen
-- *			-i n : Execute test n times.
-- *			-I x : Execute test for x seconds.
-- *			-p   : Pause for SIGUSR1 before starting
-- *			-P x : Pause for x seconds between iterations.
-- *			-t   : Turn on syscall timing.
-+
+- *	setresuid03 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *	where,  -c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
 +/*\
 + * [Description]
   *
-- ****************************************************************/
-+ * Verify that setresgid() fails with EPERM if unprivileged user tries to set
-+ * process group ID which requires higher permissions.
-+ */
+- * Restrictions
+- * 	This test must be run by root.
+- *	nobody and bin must be a valid users.
++ * Test that the setresuid system call sets the proper errno values when
++ * a non-root user attempts to change the real, effective or saved uid
++ * to a value other than one of the current uid, the current effective uid
++ * or the current saved uid.
+  */
  
 -#define _GNU_SOURCE 1
--#include <errno.h>
 -#include <pwd.h>
- #include <sys/types.h>
--#include <unistd.h>
+-#include <stdlib.h>
 -#include "test.h"
--#include "safe_macros.h"
--#include "compat_16.h"
-+#include <pwd.h>
- 
--#define EXP_RET_VAL	-1
--#define EXP_ERRNO	EPERM
--#define TEST_DESC	"unprivileged user"
+-#include <errno.h>
+-#include <sys/wait.h>
 +#include "tst_test.h"
 +#include "tst_uid.h"
 +#include "compat_tst_16.h"
  
- struct test_case_t {		/* test case structure */
--	uid_t *rgid;		/* real GID */
--	uid_t *egid;		/* effective GID */
--	uid_t *sgid;		/* saved GID */
--	struct passwd *exp_rgid;	/* Expected real GID */
--	struct passwd *exp_egid;	/* Expected effective GID */
--	struct passwd *exp_sgid;	/* Expected saved GID */
-+	gid_t *rgid;		/* real GID */
-+	gid_t *egid;		/* effective GID */
-+	gid_t *sgid;		/* saved GID */
-+	gid_t *exp_rgid;	/* Expected real GID */
-+	gid_t *exp_egid;	/* Expected effective GID */
-+	gid_t *exp_sgid;	/* Expected saved GID */
-+	char *desc;		/* Test description */
+-#include <compat_16.h>
++static uid_t root_uid, main_uid, other_uid, neg_one = -1;
+ 
+-TCID_DEFINE(setresuid03);
+-
+-uid_t neg_one = -1;
+-
+-/* flag to tell parent if child passed or failed. */
+-int flag = 0;
+-
+-uid_t root_pw_uid, nobody_pw_uid, bin_pw_uid;
+-char user1name[] = "nobody";
+-char user2name[] = "bin";
+-char rootname[] = "root";
+-
+-struct passwd nobody, bin, root;
+-
+-/*
+- * The following structure contains all test data.  Each structure in the array
+- * is used for a separate test.  The tests are executed in the for loop below.
+- */
+-
+-struct test_data_t {
++static struct test_data_t {
+ 	uid_t *real_uid;
+ 	uid_t *eff_uid;
+ 	uid_t *sav_uid;
+ 	int exp_errno;
+-	struct passwd *exp_real_usr;
+-	struct passwd *exp_eff_usr;
+-	struct passwd *exp_sav_usr;
++	uid_t *exp_real_uid;
++	uid_t *exp_eff_uid;
++	uid_t *exp_sav_uid;
+ 	char *test_msg;
+ } test_data[] = {
+-	{
+-	&nobody_pw_uid, &neg_one, &neg_one, EPERM, &root, &bin, &bin,
+-		    "After setresuid(root, -1, -1),"}, {
+-	&neg_one, &neg_one, &nobody_pw_uid, EPERM, &root, &bin, &bin,
+-		    "After setresuid(-1, -1, bin),"}, {
+-	&neg_one, &nobody_pw_uid, &neg_one, EPERM, &root, &bin, &bin,
+-		    "After setresuid(-1, -1, bin),"}
++	{&other_uid, &neg_one, &neg_one, EPERM, &root_uid, &main_uid,
++		&main_uid, "setresuid(other, -1, -1)"},
++	{&neg_one, &neg_one, &other_uid, EPERM, &root_uid, &main_uid,
++		&main_uid, "setresuid(-1, -1, other)"},
++	{&neg_one, &other_uid, &neg_one, EPERM, &root_uid, &main_uid,
++		&main_uid, "setresuid(-1, other, -1)"}
  };
  
--TCID_DEFINE(setresgid03);
--static int testno;
--static struct passwd nobody, bin, root;
--static uid_t nobody_gid, bin_gid, neg = -1;
+-int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
 -
--static int test_functionality(uid_t, uid_t, uid_t);
--static void setup(void);
--static void cleanup(void);
+-void setup(void);
+-void cleanup(void);
 -
--static struct test_case_t tdat[] = {
--	{&neg, &neg, &bin.pw_gid, &nobody, &nobody, &nobody},
--	{&neg, &bin.pw_gid, &neg, &nobody, &nobody, &nobody},
--	{&bin.pw_gid, &neg, &neg, &nobody, &nobody, &nobody},
--	{&bin.pw_gid, &bin.pw_gid, &bin.pw_gid, &nobody, &nobody, &nobody},
-+static gid_t nobody_gid, other_gid, neg = -1;
-+
-+static struct test_case_t test_cases[] = {
-+	{&neg, &neg, &other_gid, &nobody_gid, &nobody_gid, &nobody_gid,
-+		"setresgid(-1, -1, other)"},
-+	{&neg, &other_gid, &neg, &nobody_gid, &nobody_gid, &nobody_gid,
-+		"setresgid(-1, other, -1)"},
-+	{&other_gid, &neg, &neg, &nobody_gid, &nobody_gid, &nobody_gid,
-+		"setresgid(other, -1, -1)"},
-+	{&other_gid, &other_gid, &other_gid, &nobody_gid, &nobody_gid,
-+		&nobody_gid, "setresgid(other, other, other)"},
- };
- 
--int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
+-void
+-uid_verify(struct passwd *ru, struct passwd *eu, struct passwd *su, char *);
 -
--int main(int argc, char **argv)
+-int main(int ac, char **av)
 +static void setup(void)
  {
 -	int lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
++	uid_t test_users[2];
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
++	root_uid = getuid();
++	tst_get_uids(test_users, 0, 2);
++	main_uid = test_users[0];
++	other_uid = test_users[1];
+ 
 -	setup();
--
++	UID16_CHECK(root_uid, setresuid);
++	UID16_CHECK(main_uid, setresuid);
++	UID16_CHECK(other_uid, setresuid);
+ 
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		int i, pid;
+-
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
-+	gid_t test_groups[2];
-+	struct passwd *pw = SAFE_GETPWNAM("nobody");
- 
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
-+	nobody_gid = test_groups[0] = pw->pw_gid;
-+	tst_get_gids(test_groups, 1, 2);
-+	other_gid = test_groups[1];
- 
--			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
--				       *tdat[testno].sgid));
-+	GID16_CHECK(nobody_gid, setresgid);
-+	GID16_CHECK(other_gid, setresgid);
- 
--			if ((TEST_RETURN == EXP_RET_VAL) &&
--			    (TEST_ERRNO == EXP_ERRNO)) {
 -
--				if (!test_functionality
--				    (tdat[testno].exp_rgid->pw_gid,
--				     tdat[testno].exp_egid->pw_gid,
--				     tdat[testno].exp_sgid->pw_gid)) {
+-		/* set the appropriate ownership values */
+-		if (setresuid(root_pw_uid, bin_pw_uid, bin_pw_uid)
+-		    == -1) {
+-			tst_brkm(TFAIL, cleanup, "Initial setresuid failed");
+-		}
 -
--					tst_resm(TPASS, "setresgid() failed as "
--						 "expected for %s : errno %d",
--						 TEST_DESC, TEST_ERRNO);
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "fork failed");
+-		} else if (pid == 0) {	/* child */
+-
+-			for (i = 0; i < TST_TOTAL; i++) {
+-
+-				/* Set the real, effective or saved user id */
+-				TEST(SETRESUID(NULL, *test_data[i].real_uid,
+-					       *test_data[i].eff_uid,
+-					       *test_data[i].sav_uid));
+-
+-				if (TEST_RETURN == -1 && TEST_ERRNO ==
+-				    test_data[i].exp_errno) {
+-					tst_resm(TPASS, "setresuid(%d, %d, %d) "
+-						 "failed as expected.",
+-						 *test_data[i].real_uid,
+-						 *test_data[i].eff_uid,
+-						 *test_data[i].sav_uid);
 -				} else {
--					tst_resm(TFAIL, "Functionality test "
--						 "for setresgid() for %s failed",
--						 TEST_DESC);
+-					tst_resm(TFAIL, "setresuid(%d, %d, %d) "
+-						 "did not fail as expected.",
+-						 *test_data[i].real_uid,
+-						 *test_data[i].eff_uid,
+-						 *test_data[i].sav_uid);
+-					flag = -1;
 -				}
 -
--			} else {
--				tst_resm(TFAIL, "setresgid() returned "
--					 "unexpected results for %s ; returned"
--					 " %ld (expected %d), errno %d (expected"
--					 " %d)", TEST_DESC,
--					 TEST_RETURN, EXP_RET_VAL, TEST_ERRNO,
--					 EXP_ERRNO);
+-				uid_verify(test_data[i].exp_real_usr,
+-					   test_data[i].exp_eff_usr,
+-					   test_data[i].exp_sav_usr,
+-					   test_data[i].test_msg);
 -			}
+-			exit(flag);
+-		} else {	/* parent */
+-			tst_record_childstatus(cleanup, pid);
 -		}
 -	}
 -	cleanup();
--
 -	tst_exit();
--}
--
--static int test_functionality(uid_t exp_rgid, uid_t exp_egid, uid_t exp_sgid)
--{
--	uid_t cur_rgid, cur_egid, cur_sgid;
--
--	/* Get current real, effective and saved group id */
--	SAFE_GETRESGID(cleanup, &cur_rgid, &cur_egid, &cur_sgid);
--
--	if ((cur_rgid == exp_rgid) && (cur_egid == exp_egid)
--	    && (cur_sgid == exp_sgid)) {
--		return 0;
--	}
--	return 1;
-+	/* Set real/effective/saved gid to nobody */
-+	SAFE_SETRESGID(nobody_gid, nobody_gid, nobody_gid);
-+	SAFE_SETUID(pw->pw_uid);
++	SAFE_SETRESUID(root_uid, main_uid, main_uid);
  }
  
 -/*
@@ -253,50 +247,40 @@ index 78c89487b..7b5b3b4f4 100644
 -void setup(void)
 +static void run(unsigned int n)
  {
--	struct passwd *passwd_p;
--
 -	tst_require_root();
-+	const struct test_case_t *tc = test_cases + n;
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	if (getpwnam("nobody") == NULL) {
+-		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
+-	}
++	const struct test_data_t *tc = test_data + n;
  
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	TST_EXP_FAIL(SETRESGID(*tc->rgid, *tc->egid, *tc->sgid), EPERM, "%s",
-+		tc->desc);
+-	if (getpwnam("bin") == NULL) {
+-		tst_brkm(TBROK, NULL, "bin must be a valid user.");
+-	}
++	TST_EXP_FAIL(SETRESUID(*tc->real_uid, *tc->eff_uid, *tc->sav_uid),
++		tc->exp_errno, "%s", tc->test_msg);
  
--	if ((passwd_p = getpwnam("root")) == NULL) {
--		tst_brkm(TBROK, NULL, "getpwnam() failed for root");
+-	root = *(getpwnam("root"));
+-	UID16_CHECK((root_pw_uid = root.pw_uid), "setresuid", cleanup)
 +	if (!TST_PASS)
 +		return;
  
--	}
--	root = *passwd_p;
+-	nobody = *(getpwnam("nobody"));
+-	UID16_CHECK((nobody_pw_uid = nobody.pw_uid), "setresuid", cleanup)
 -
--	if ((passwd_p = getpwnam("bin")) == NULL) {
--		tst_brkm(TBROK, NULL, "bin user id doesn't exist");
+-	bin = *(getpwnam("bin"));
+-	UID16_CHECK((bin_pw_uid = bin.pw_uid), "setresuid", cleanup)
 -
--	}
--	bin = *passwd_p;
--	GID16_CHECK((bin_gid = bin.pw_gid), "setresgid", cleanup)
--
--	if ((passwd_p = getpwnam("nobody")) == NULL) {
--		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
--
--	}
--	nobody = *passwd_p;
--	GID16_CHECK((nobody_gid = nobody.pw_gid), "setresgid", cleanup)
--
--	/* Set real/effective/saved gid to nobody */
--	if (setresgid(nobody_gid, nobody_gid, nobody_gid) == -1) {
--		tst_brkm(TBROK, NULL, "setup() failed for setting while"
--			 " setting real/effective/saved gid");
--	}
--	/* Set euid to nobody */
--	SAFE_SETUID(NULL, nobody.pw_uid);
 -	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -c option.
+-	 * TEST_PAUSE contains the code to fork the test with the -i option.
+-	 * You want to make sure you do this before you create your temporary
+-	 * directory.
 -	 */
 -	TEST_PAUSE;
-+	tst_check_resgid(tc->desc, *tc->exp_rgid, *tc->exp_egid,
-+		*tc->exp_sgid);
++	tst_check_resuid(tc->test_msg, *tc->exp_real_uid, *tc->exp_eff_uid,
++		*tc->exp_sav_uid);
  }
  
 -/*
@@ -308,9 +292,30 @@ index 78c89487b..7b5b3b4f4 100644
 -{
 -
 -}
+-
+-void
+-uid_verify(struct passwd *ru, struct passwd *eu, struct passwd *su, char *when)
+-{
+-	uid_t cur_ru, cur_eu, cur_su;
+-	if (getresuid(&cur_ru, &cur_eu, &cur_su) != 0) {
+-		flag = -1;
+-		tst_brkm(TBROK, cleanup, "Set getresuid() failed");
+-	}
+-	if ((cur_ru != ru->pw_uid) || (cur_eu != eu->pw_uid) || (cur_su !=
+-								 su->pw_uid)) {
+-		tst_resm(TFAIL, "ERROR: %s real uid = %d; effective uid = %d; "
+-			 "saved uid = %d", when, cur_ru, cur_eu, cur_su);
+-		tst_resm(TINFO, "Expected: real uid = %d, effective uid = %d "
+-			 "saved uid = %d", ru->pw_uid, eu->pw_uid, su->pw_uid);
+-		flag = -1;
+-	} else {
+-		tst_resm(TINFO, "real uid = %d, effective uid = %d, and "
+-			 "saved uid = %d as expected", cur_ru, cur_eu, cur_su);
+-	}
+-}
 +static struct tst_test test = {
 +	.test = run,
-+	.tcnt = ARRAY_SIZE(test_cases),
++	.tcnt = ARRAY_SIZE(test_data),
 +	.setup = setup,
 +	.needs_root = 1,
 +};
