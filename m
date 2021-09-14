@@ -1,84 +1,52 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 14 Sep 2021 10:31:12 +0100
-Subject: [LTP] [PATCH] cpuset/cpuset_memory_pressure_test: Check whether
- the swap partition is configured
-In-Reply-To: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
-References: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
-Message-ID: <87v933jyfz.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 14 Sep 2021 11:35:18 +0200
+Subject: [LTP] [PATCH v2 2/4] syscalls/setresuid01: Convert to new API
+In-Reply-To: <20210913144454.22992-2-mdoucha@suse.cz>
+References: <20210913144454.22992-1-mdoucha@suse.cz>
+ <20210913144454.22992-2-mdoucha@suse.cz>
+Message-ID: <3a764f27-b453-0aab-4938-7b7b34496885@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-
-Zou Wei <zou_wei@huawei.com> writes:
-
-> --------------------------
->
-> 1. Fixed a bug where a null value is obtained because swap is not in
->    the fourth line of the free result
-> free -m
->         total        used        free      shared  buff/cache   available
-> Mem:   128135        3857      120633         158        3644      123219
-> Swap:    8191          82        8109
->
-> free -m
->         total       used       free     shared    buffers     cached
-> Mem:   419694       9464     410230        234        435       6005
-> -/+ buffers/cache:       3022     416671
-> Swap:    2053          0       2053
->
-> 2. If no swap partition is configured in the test environment,
->    the testcase will be failed:
->
-> cpuset_memory_pressure 7 TFAIL: sub group's memory_pressure
-> didn't have memory pressure rate.
-> cpuset_memory_pressure 9 TFAIL: root group's memory_pressure
-> didn't have memory pressure rate.
-> cpuset_memory_pressure 11 TFAIL: root group's memory_pressure
-> didn't have memory pressure rate.
->
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+On 13. 09. 21 16:44, Martin Doucha wrote:
+> The original test needs user "bin" which may not exist on some systems. Use
+> any non-root UID instead.
+> 
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 > ---
->  .../cpuset_memory_pressure_testset.sh                        | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-> index eddd7f6..2a2d2a1 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-> @@ -35,8 +35,16 @@ exit_status=0
->  # usable physical memory
->  py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
->  
-> -# free swap space
-> -sw_mem=$(free -m | awk '{if(NR==4) print $4}')
-> +# total swap space
-> +sw_mem=$(free -m | awk '{if(NR==4) print $2}')
-> +if [ -z $sw_mem ]; then
-> +	sw_mem=$(free -m | awk '{if(NR==3) print $2}')
-> +fi
+> 
+> Changes since v1: None
+> 
+>  .../kernel/syscalls/setresuid/setresuid01.c   | 256 ++++--------------
+>  1 file changed, 59 insertions(+), 197 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/setresuid/setresuid01.c b/testcases/kernel/syscalls/setresuid/setresuid01.c
+> index 9f448896b..e9eb8517e 100644
+> --- a/testcases/kernel/syscalls/setresuid/setresuid01.c
+> +++ b/testcases/kernel/syscalls/setresuid/setresuid01.c
+> @@ -1,221 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
 
-The original use of awk and free looks error prone. Perhaps it would be
-better to do?
-
-sw_mem=$(cat /proc/meminfo | awk '/SwapTotal/ { print $2 }')
-
-
-> +
-> +if [ $sw_mem -eq 0 ]; then
-> +	tst_resm TCONF "The size of the swap partition is zero."
-> +	exit 32
-> +fi
->  
->  # the memory which is going to be used
->  usemem=$((py_mem - 20))
-> -- 
-> 2.6.2
-
+Oops, I've accidentally copy-pasted the wrong SPDX header to all three
+setresuid tests. Patch 1 is correct as is but patches 2-4 should have
+GPL-2.0-or-later instead. Please update it before merge.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
