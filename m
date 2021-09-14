@@ -1,24 +1,47 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 Sep 2021 11:50:17 +0200
-Subject: [LTP] [PATCH 8/8] syscalls/setresuid03: Convert to new API
-In-Reply-To: <YUAt6/LvtDTVENJB@pevik>
-References: <20210909155126.2720-1-mdoucha@suse.cz>
- <20210909155126.2720-8-mdoucha@suse.cz>
- <287a9879ef8b3342cb88225e4e319733@suse.de>
- <3b789dc4-5232-a6d6-d864-7f75c5a0a030@suse.cz>
- <YT9laHIulnmtBSgK@yuki> <YUAt6/LvtDTVENJB@pevik>
-Message-ID: <YUBwWfOYeuzWetO9@yuki>
+Date: Tue, 14 Sep 2021 12:01:58 +0200
+Subject: [LTP] [PATCH] scripts/checkpatch.pl: Ignore TST_* in constant checks
+Message-ID: <20210914100158.744-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Yep, that works, thanks!
+The checkpatch.pl thinks that TST_RET etc are constants because it
+treats everything that is uppercase as a constant and hence complains at
+following code:
 
-Let me send a proper patch then.
+	if (TST_RET != tc->exp_errno)
+		tst_res(TFAIL, "...");
 
+In this case both sides of the comparsion are variables and the code
+is as it should be.
+
+So this commit disables the check for 'yoda comparsion' for constants if
+the identifier on the left starts with TST_.
+
+Reported-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ scripts/checkpatch.pl | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 88cb294dc..87572b2f4 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5462,7 +5462,9 @@ sub process {
+ 			my $comp = $3;
+ 			my $to = $4;
+ 			my $newcomp = $comp;
+-			if ($lead !~ /(?:$Operators|\.)\s*$/ &&
++
++			if ($const !~ /^\QTST_/ &&
++			    $lead !~ /(?:$Operators|\.)\s*$/ &&
+ 			    $to !~ /^(?:Constant|[A-Z_][A-Z0-9_]*)$/ &&
+ 			    WARN("CONSTANT_COMPARISON",
+ 				 "Comparisons should place the constant on the right side of the test\n" . $herecurr) &&
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.32.0
+
