@@ -1,40 +1,35 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 14 Sep 2021 17:45:30 +0530
-Subject: [LTP] LTP: smoketest: route4-change-dst fails intermittently
-In-Reply-To: <YUA4tLquwA3XRKfW@pevik>
-References: <CA+G9fYtJYK4C4q7v2VBgyHe1EdOeZ=auEytoKJr0gYThj8gS5w@mail.gmail.com>
- <YUA4tLquwA3XRKfW@pevik>
-Message-ID: <CA+G9fYtLzhDG+kz-4yigaV_Pxu2UvSa-azXNtzrbr5qv-MZZjw@mail.gmail.com>
+Date: Tue, 14 Sep 2021 17:54:24 +0530
+Subject: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
+ test case route4-change-dst
+Message-ID: <20210914122425.85129-1-naresh.kamboju@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 14 Sept 2021 at 11:22, Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Naresh, Alexey,
->
-> > LTP smoketest  "route4-change-dst" fails intermittently on various
-> > devices and qemu.
-> > We do not want any intermittent failures on LTP smoketest.
-> > Shall i send a patch to delete this test case from runtest/smoketest ?
->
-> > - Naresh
->
-> After Alexey merges DAD related fix [1] we can keep route test right?
+The test case route4-change-dst fails intermittently creating
+the problem for smoketest results verdict. route4-change-dst
+is a stress test should not be a part of smoketest. because of
+these issues removing route4-change-dst from the smoketest.
 
-No.
-We will delete " route4-change-dst".
+Suggested-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+---
+ runtest/smoketest | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Do we want to add ping02.sh -6 or replace route with test with ping02.sh?
-Yes. I replace it with
-ping02.sh -6
+diff --git a/runtest/smoketest b/runtest/smoketest
+index 7f395936e..dd689bd6f 100644
+--- a/runtest/smoketest
++++ b/runtest/smoketest
+@@ -12,5 +12,4 @@ stat04 symlink01 -T stat04
+ utime01A symlink01 -T utime01
+ rename01A symlink01 -T rename01
+ splice02 splice02 -s 20
+-route4-change-dst route-change-dst.sh
+ shell_test01 echo "SUCCESS" | shell_pipe01.sh
+-- 
+2.30.2
 
-- Naresh
-
->
-> Kind regards,
-> Petr
->
-> [1] https://patchwork.ozlabs.org/project/ltp/patch/20210913123935.10761-2-aleksei.kodanev@bell-sw.com/
