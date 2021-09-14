@@ -1,37 +1,32 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 14 Sep 2021 17:54:25 +0530
-Subject: [LTP] [PATCH 2/2] runtest/smoketest: Adding ping01 and ping02 test
- cases
-In-Reply-To: <20210914122425.85129-1-naresh.kamboju@linaro.org>
-References: <20210914122425.85129-1-naresh.kamboju@linaro.org>
-Message-ID: <20210914122425.85129-2-naresh.kamboju@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 14 Sep 2021 14:32:45 +0200
+Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove limiting of parent
+In-Reply-To: <20210914083444.23848-1-rpalethorpe@suse.com>
+References: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
+ <20210914083444.23848-1-rpalethorpe@suse.com>
+Message-ID: <YUCWbfn/cm2Cr2U5@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adding two ping test case to smoketest
-ping01 ping01.sh
-ping602 ping02.sh -6
+Hi!
+> It is not important how much memory is assigned to the parent
+> group. The stated purpose of the test is to check no memory is
+> assigned to the child group.
+> 
+> Also add the usage stats for the memcg_process because it appears
+> the test will fail because the starting memory counter already
+> includes some buffer/cache on linux-next. I'm not sure this
+> is exactly what happens, but displaying the stats might help.
 
-Suggested-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
----
- runtest/smoketest | 2 ++
- 1 file changed, 2 insertions(+)
+Uff just found that there is a similar patch from Joerg as well:
 
-diff --git a/runtest/smoketest b/runtest/smoketest
-index dd689bd6f..7bebe4a42 100644
---- a/runtest/smoketest
-+++ b/runtest/smoketest
-@@ -13,3 +13,5 @@ utime01A symlink01 -T utime01
- rename01A symlink01 -T rename01
- splice02 splice02 -s 20
- shell_test01 echo "SUCCESS" | shell_pipe01.sh
-+ping01 ping01.sh
-+ping602 ping02.sh -6
+http://patchwork.ozlabs.org/project/ltp/patch/20191106061808.67330-1-lkml@jv-coder.de/
+
+Either way we should merge one of them to get this finally fixed.
+
 -- 
-2.30.2
-
+Cyril Hrubis
+chrubis@suse.cz
