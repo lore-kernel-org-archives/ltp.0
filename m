@@ -1,36 +1,53 @@
-From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Date: Tue, 14 Sep 2021 07:13:32 +0000
-Subject: [LTP] [PATCH v1 3/3] realtime:profiles: support hrtimer-prio
-In-Reply-To: <YUA12gjIh0JVKh1L@pevik>
-References: <20210913163745.28108-1-bogdan.lezhepekov@suse.com>
- <20210913163745.28108-3-bogdan.lezhepekov@suse.com> <YUA12gjIh0JVKh1L@pevik>
-Message-ID: <VI1PR04MB4958098078E773F7C2B6531D93DA9@VI1PR04MB4958.eurprd04.prod.outlook.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 14 Sep 2021 10:14:02 +0200
+Subject: [LTP] [PATCH 1/1] ima_tpm.sh: Check TCONF in ima_boot_aggregate
+Message-ID: <20210914081402.5931-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+This fixes false positive when compiling LTP without openssl headers on
+system with TPM 1.2 without evmctl (or old version):
 
-Thank you for reviewing!
+ima_tpm 1 TINFO: verify boot aggregate
+ima_tpm 1 TINFO: using command: ima_boot_aggregate -f /sys/kernel/security/tpm0/binary_bios_measurements
+tst_test.c:881: TCONF: libcrypto and openssl development packages required
+ima_tpm 1 TFAIL: failed to get boot aggregate
 
--Bogdan
-________________________________
-From: Petr Vorel <pvorel@suse.cz>
-Sent: Tuesday, September 14, 2021 8:40
-To: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Cc: ltp@lists.linux.it <ltp@lists.linux.it>
-Subject: Re: [LTP] [PATCH v1 3/3] realtime:profiles: support hrtimer-prio
+For fixing we need to run TCONF in shell, because TCONF from C is not
+propagated to shell:
+tst_test.c:948: TCONF: libcrypto and openssl development packages required
+ima_tpm 1 TCONF: ima_boot_aggregate -f /sys/kernel/security/tpm0/binary_bios_measurements returned TCONF
 
-Hi Bogdan,
+Fixes: 0f86f185a ("ima_tpm.sh: Fix calculating boot aggregate")
 
-I moved whitespace change into separated commit and both merged.
-Thanks!
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/security/integrity/ima/tests/ima_tpm.sh | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+index 71083efd8..59df20cc1 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+@@ -208,7 +208,15 @@ test1_hw_tpm()
+ 			return
+ 		fi
+ 		tst_check_cmds ima_boot_aggregate || return
++
+ 		cmd="ima_boot_aggregate -f $tpm_bios"
++
++		# TCONF: libcrypto and openssl development packages required
++		$cmd
++		if [ $? -eq 32 ]; then
++			tst_res TCONF "$cmd returned TCONF"
++			return
++		fi
+ 	fi
+ 	tst_res TINFO "using command: $cmd"
+ 
+-- 
+2.33.0
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210914/10d32f9c/attachment.htm>
