@@ -7,70 +7,56 @@ X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BE5DC433F5
-	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 08:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95734C433F5
+	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 08:35:22 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E4FB604AC
-	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 08:14:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E4FB604AC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 73201610A6
+	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 08:35:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 73201610A6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 87D303C9246
-	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 10:14:17 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2A1953C923C
+	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 10:35:19 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C54EF3C05AE
- for <ltp@lists.linux.it>; Tue, 14 Sep 2021 10:14:08 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5F0693C1D5D
+ for <ltp@lists.linux.it>; Tue, 14 Sep 2021 10:35:10 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 379A81401202
- for <ltp@lists.linux.it>; Tue, 14 Sep 2021 10:14:07 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2B1B6220C9;
- Tue, 14 Sep 2021 08:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1631607247; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=s02qYm3z0BXjWGUwIU+Yocyx+My8FD9pMGl8OTpkgzA=;
- b=wirHJzJGUztGHUKZKqlgqQBCiVclUVmdqrHkvulrSnt+dUy5pvNG5nSfmrISzgvkEDOTZY
- hxzooW+qg+js5PSoG1ZHJ0vnCJCbl81S2rDlm6SBjU8UJXHPkrdp3S9knb033Ota6cjqkN
- NubQOQktBd0DswDiPY1K0k8lp5gfGlo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1631607247;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=s02qYm3z0BXjWGUwIU+Yocyx+My8FD9pMGl8OTpkgzA=;
- b=ngcnSnun36wtqHgBgzvQpI27pMlJloTGg8rSQF2ZslKYy6BR0QxRr5hoGOv8bUTClOoGSU
- s30AXBMlKfsQqtDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F09A313E55;
- Tue, 14 Sep 2021 08:14:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id DnA4OM5ZQGGUGwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 14 Sep 2021 08:14:06 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7392E1401200
+ for <ltp@lists.linux.it>; Tue, 14 Sep 2021 10:35:09 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 7420321E41;
+ Tue, 14 Sep 2021 08:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1631608508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=WBW8JpOpz5kC2rXsupL/10tyGyENOYJ1+ElmtrFUxQU=;
+ b=l805a1nlj+uY1U7jQlbL8Kpq6dV3lQOoGgOFs2bDpZxXF+ZzGc8W4h2Qh00MtyVt+42zsX
+ viSK29Fv251lgpW1ZBRa/bw5n12aLDlaZZHrS9DLoDqf4hZ8G4VtCbH+SgO4R3p/i73jDD
+ rEtoKovu4Yg1Ke3MyY3zWC4O2hvB+oA=
+Received: from g78.suse.de (unknown [10.163.24.38])
+ by relay2.suse.de (Postfix) with ESMTP id 27266A3B94;
+ Tue, 14 Sep 2021 08:35:08 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Tue, 14 Sep 2021 10:14:02 +0200
-Message-ID: <20210914081402.5931-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.33.0
+Date: Tue, 14 Sep 2021 09:34:43 +0100
+Message-ID: <20210914083444.23848-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
+References: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] ima_tpm.sh: Check TCONF in ima_boot_aggregate
+Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove limiting of parent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,54 +68,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>,
+ Joerg Vehlow <joerg.vehlow@aox-tech.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210914081402.-TNarYgBW_nJSykKirsEkkjm4zIjbTZUWvp4Pso0mbg@z>
+Message-ID: <20210914083443.I0Xq9qWRBXg3DE3aE8yG6Ap8ZduBpg8FMSggxSIkM1U@z>
 
-This fixes false positive when compiling LTP without openssl headers on
-system with TPM 1.2 without evmctl (or old version):
+It is not important how much memory is assigned to the parent
+group. The stated purpose of the test is to check no memory is
+assigned to the child group.
 
-ima_tpm 1 TINFO: verify boot aggregate
-ima_tpm 1 TINFO: using command: ima_boot_aggregate -f /sys/kernel/security/tpm0/binary_bios_measurements
-tst_test.c:881: TCONF: libcrypto and openssl development packages required
-ima_tpm 1 TFAIL: failed to get boot aggregate
+Also add the usage stats for the memcg_process because it appears
+the test will fail because the starting memory counter already
+includes some buffer/cache on linux-next. I'm not sure this
+is exactly what happens, but displaying the stats might help.
 
-For fixing we need to run TCONF in shell, because TCONF from C is not
-propagated to shell:
-tst_test.c:948: TCONF: libcrypto and openssl development packages required
-ima_tpm 1 TCONF: ima_boot_aggregate -f /sys/kernel/security/tpm0/binary_bios_measurements returned TCONF
-
-Fixes: 0f86f185a ("ima_tpm.sh: Fix calculating boot aggregate")
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Suggested-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Cc: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 ---
- testcases/kernel/security/integrity/ima/tests/ima_tpm.sh | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../controllers/memcg/functional/memcg_lib.sh    |  2 +-
+ .../memcg/functional/memcg_subgroup_charge.sh    | 16 +++++-----------
+ 2 files changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-index 71083efd8..59df20cc1 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-@@ -208,7 +208,15 @@ test1_hw_tpm()
- 			return
- 		fi
- 		tst_check_cmds ima_boot_aggregate || return
-+
- 		cmd="ima_boot_aggregate -f $tpm_bios"
-+
-+		# TCONF: libcrypto and openssl development packages required
-+		$cmd
-+		if [ $? -eq 32 ]; then
-+			tst_res TCONF "$cmd returned TCONF"
-+			return
-+		fi
- 	fi
- 	tst_res TINFO "using command: $cmd"
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index ac9ad8268..1b76b6597 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -240,7 +240,7 @@ signal_memcg_process()
  
+ 		loops=$((loops - 1))
+ 		if [ $loops -le 0 ]; then
+-			tst_brk TBROK "timed out on memory.usage_in_bytes"
++			tst_brk TBROK "timed out on memory.usage_in_bytes" $usage $usage_start $size
+ 		fi
+ 	done
+ }
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+index 3fa016102..cda624923 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+@@ -18,22 +18,16 @@ TST_CNT=3
+ MEM_TO_ALLOC=$((PAGESIZES * 2))
+ 
+ # Test the memory charge won't move to subgroup
+-# $1 - memory.limit_in_bytes in parent group
+-# $2 - memory.limit_in_bytes in sub group
++# $1 - memory.limit_in_bytes in sub group
+ test_subgroup()
+ {
+-	local limit_parent=$1
+-	local limit_subgroup=$2
++	local limit_subgroup=$1
+ 
+-	if [ $limit_parent -ne 0 ]; then
+-		limit_parent=$(memcg_adjust_limit_for_kmem $limit_parent)
+-	fi
+ 	if [ $limit_subgroup -ne 0 ]; then
+ 		limit_subgroup=$(memcg_adjust_limit_for_kmem $limit_subgroup)
+ 	fi
+ 
+ 	ROD mkdir subgroup
+-	EXPECT_PASS echo $limit_parent \> memory.limit_in_bytes
+ 	EXPECT_PASS echo $limit_subgroup \> subgroup/memory.limit_in_bytes
+ 
+ 	start_memcg_process --mmap-anon -s $MEM_TO_ALLOC
+@@ -60,17 +54,17 @@ test_subgroup()
+ test1()
+ {
+ 	tst_res TINFO "Test that group and subgroup have no relationship"
+-	test_subgroup $MEM_TO_ALLOC $((2 * MEM_TO_ALLOC))
++	test_subgroup $((2 * MEM_TO_ALLOC))
+ }
+ 
+ test2()
+ {
+-	test_subgroup $MEM_TO_ALLOC $MEM_TO_ALLOC
++	test_subgroup $MEM_TO_ALLOC
+ }
+ 
+ test3()
+ {
+-	test_subgroup $MEM_TO_ALLOC 0
++	test_subgroup 0
+ }
+ 
+ tst_run
 -- 
-2.33.0
+2.31.1
 
 
 -- 
