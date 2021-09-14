@@ -1,95 +1,84 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 14 Sep 2021 09:34:43 +0100
-Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove limiting of parent
-In-Reply-To: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
-References: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
-Message-ID: <20210914083444.23848-1-rpalethorpe@suse.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 14 Sep 2021 10:31:12 +0100
+Subject: [LTP] [PATCH] cpuset/cpuset_memory_pressure_test: Check whether
+ the swap partition is configured
+In-Reply-To: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
+References: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
+Message-ID: <87v933jyfz.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It is not important how much memory is assigned to the parent
-group. The stated purpose of the test is to check no memory is
-assigned to the child group.
+Hello,
 
-Also add the usage stats for the memcg_process because it appears
-the test will fail because the starting memory counter already
-includes some buffer/cache on linux-next. I'm not sure this
-is exactly what happens, but displaying the stats might help.
+Zou Wei <zou_wei@huawei.com> writes:
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Cc: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
----
- .../controllers/memcg/functional/memcg_lib.sh    |  2 +-
- .../memcg/functional/memcg_subgroup_charge.sh    | 16 +++++-----------
- 2 files changed, 6 insertions(+), 12 deletions(-)
+> --------------------------
+>
+> 1. Fixed a bug where a null value is obtained because swap is not in
+>    the fourth line of the free result
+> free -m
+>         total        used        free      shared  buff/cache   available
+> Mem:   128135        3857      120633         158        3644      123219
+> Swap:    8191          82        8109
+>
+> free -m
+>         total       used       free     shared    buffers     cached
+> Mem:   419694       9464     410230        234        435       6005
+> -/+ buffers/cache:       3022     416671
+> Swap:    2053          0       2053
+>
+> 2. If no swap partition is configured in the test environment,
+>    the testcase will be failed:
+>
+> cpuset_memory_pressure 7 TFAIL: sub group's memory_pressure
+> didn't have memory pressure rate.
+> cpuset_memory_pressure 9 TFAIL: root group's memory_pressure
+> didn't have memory pressure rate.
+> cpuset_memory_pressure 11 TFAIL: root group's memory_pressure
+> didn't have memory pressure rate.
+>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  .../cpuset_memory_pressure_testset.sh                        | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+> index eddd7f6..2a2d2a1 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+> @@ -35,8 +35,16 @@ exit_status=0
+>  # usable physical memory
+>  py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
+>  
+> -# free swap space
+> -sw_mem=$(free -m | awk '{if(NR==4) print $4}')
+> +# total swap space
+> +sw_mem=$(free -m | awk '{if(NR==4) print $2}')
+> +if [ -z $sw_mem ]; then
+> +	sw_mem=$(free -m | awk '{if(NR==3) print $2}')
+> +fi
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index ac9ad8268..1b76b6597 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -240,7 +240,7 @@ signal_memcg_process()
- 
- 		loops=$((loops - 1))
- 		if [ $loops -le 0 ]; then
--			tst_brk TBROK "timed out on memory.usage_in_bytes"
-+			tst_brk TBROK "timed out on memory.usage_in_bytes" $usage $usage_start $size
- 		fi
- 	done
- }
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-index 3fa016102..cda624923 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-@@ -18,22 +18,16 @@ TST_CNT=3
- MEM_TO_ALLOC=$((PAGESIZES * 2))
- 
- # Test the memory charge won't move to subgroup
--# $1 - memory.limit_in_bytes in parent group
--# $2 - memory.limit_in_bytes in sub group
-+# $1 - memory.limit_in_bytes in sub group
- test_subgroup()
- {
--	local limit_parent=$1
--	local limit_subgroup=$2
-+	local limit_subgroup=$1
- 
--	if [ $limit_parent -ne 0 ]; then
--		limit_parent=$(memcg_adjust_limit_for_kmem $limit_parent)
--	fi
- 	if [ $limit_subgroup -ne 0 ]; then
- 		limit_subgroup=$(memcg_adjust_limit_for_kmem $limit_subgroup)
- 	fi
- 
- 	ROD mkdir subgroup
--	EXPECT_PASS echo $limit_parent \> memory.limit_in_bytes
- 	EXPECT_PASS echo $limit_subgroup \> subgroup/memory.limit_in_bytes
- 
- 	start_memcg_process --mmap-anon -s $MEM_TO_ALLOC
-@@ -60,17 +54,17 @@ test_subgroup()
- test1()
- {
- 	tst_res TINFO "Test that group and subgroup have no relationship"
--	test_subgroup $MEM_TO_ALLOC $((2 * MEM_TO_ALLOC))
-+	test_subgroup $((2 * MEM_TO_ALLOC))
- }
- 
- test2()
- {
--	test_subgroup $MEM_TO_ALLOC $MEM_TO_ALLOC
-+	test_subgroup $MEM_TO_ALLOC
- }
- 
- test3()
- {
--	test_subgroup $MEM_TO_ALLOC 0
-+	test_subgroup 0
- }
- 
- tst_run
+The original use of awk and free looks error prone. Perhaps it would be
+better to do?
+
+sw_mem=$(cat /proc/meminfo | awk '/SwapTotal/ { print $2 }')
+
+
+> +
+> +if [ $sw_mem -eq 0 ]; then
+> +	tst_resm TCONF "The size of the swap partition is zero."
+> +	exit 32
+> +fi
+>  
+>  # the memory which is going to be used
+>  usemem=$((py_mem - 20))
+> -- 
+> 2.6.2
+
+
 -- 
-2.31.1
-
+Thank you,
+Richard.
