@@ -1,84 +1,101 @@
 From: Alex Henrie <alexh@vpitech.com>
-Date: Tue, 14 Sep 2021 10:15:02 -0600
-Subject: [LTP] [PATCH ltp v3 1/2] IMA: Move check_policy_writable to
- ima_setup.sh and rename it
-Message-ID: <20210914161503.97495-1-alexh@vpitech.com>
+Date: Tue, 14 Sep 2021 10:15:03 -0600
+Subject: [LTP] [PATCH ltp v3 2/2] IMA: Add tests for uid, gid, fowner,
+ and fgroup options
+In-Reply-To: <20210914161503.97495-1-alexh@vpitech.com>
+References: <20210914161503.97495-1-alexh@vpitech.com>
+Message-ID: <20210914161503.97495-2-alexh@vpitech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Requires "ima: add gid support".
+
 Signed-off-by: Alex Henrie <alexh@vpitech.com>
 ---
- .../security/integrity/ima/tests/ima_policy.sh   | 16 +++-------------
- .../security/integrity/ima/tests/ima_setup.sh    | 10 ++++++++++
- 2 files changed, 13 insertions(+), 13 deletions(-)
+v3:
+- Put new tests in their own function
+- Don't require sudo or CONFIG_IMA_READ_POLICY=y for all tests
+- Increase kernel version requirement for new tests to 5.16
+- Delete test file and recreate it with correct ownership for each test
+---
+ .../integrity/ima/tests/ima_measurements.sh   | 49 ++++++++++++++++++-
+ 1 file changed, 47 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-index 244cf081d..8924549df 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-@@ -11,19 +11,9 @@ TST_CNT=2
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+index 1927e937c..5d22d12d3 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -8,7 +8,7 @@
+ 
+ TST_NEEDS_CMDS="awk cut sed"
+ TST_SETUP="setup"
+-TST_CNT=3
++TST_CNT=4
+ TST_NEEDS_DEVICE=1
  
  . ima_setup.sh
+@@ -103,7 +103,7 @@ test3()
+ 	local file="$dir/test.txt"
  
--check_policy_writable()
--{
--	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
--
--	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
--	# CONFIG_IMA_READ_POLICY
--	echo "" 2> log > $IMA_POLICY
--	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
--}
--
- setup()
- {
--	check_policy_writable
-+	require_policy_writable
+ 	# Default policy does not measure user files
+-	tst_res TINFO "verify not measuring user files"
++	tst_res TINFO "verify not measuring user files by default"
+ 	tst_check_cmds sudo || return
  
- 	VALID_POLICY="$TST_DATAROOT/measure.policy"
- 	[ -f $VALID_POLICY ] || tst_brk TCONF "missing $VALID_POLICY"
-@@ -55,7 +45,7 @@ test1()
- 
- 	local p1
- 
--	check_policy_writable
-+	require_policy_writable
- 	load_policy $INVALID_POLICY & p1=$!
- 	wait "$p1"
- 	if [ $? -ne 0 ]; then
-@@ -71,7 +61,7 @@ test2()
- 
- 	local p1 p2 rc1 rc2
- 
--	check_policy_writable
-+	require_policy_writable
- 	load_policy $VALID_POLICY & p1=$!
- 	load_policy $VALID_POLICY & p2=$!
- 	wait "$p1"; rc1=$?
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 565f0bc3e..9c25d634d 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -73,6 +73,16 @@ require_policy_readable()
- 	fi
+ 	if ! id $user >/dev/null 2>/dev/null; then
+@@ -121,4 +121,49 @@ test3()
+ 	EXPECT_FAIL "grep $file $ASCII_MEASUREMENTS"
  }
  
-+require_policy_writable()
++test4()
 +{
-+	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
++	local user="nobody"
 +
-+	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
-+	# CONFIG_IMA_READ_POLICY
-+	echo "" 2> log > $IMA_POLICY
-+	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
++	tst_check_cmds chgrp chown sg sudo || return
++
++	# try to write to the policy, then check whether it can be written again
++	cat $IMA_POLICY > $IMA_POLICY 2> /dev/null
++	require_policy_writable
++
++	ROD rm -f $TEST_FILE
++	tst_res TINFO "verify measuring user files when requested via uid"
++	ROD echo "measure uid=$(id -u $user)" \> $IMA_POLICY
++	ROD echo "$(date) uid test" \> $TEST_FILE
++	sudo -n -u $user sh -c "cat $TEST_FILE > /dev/null"
++	ima_check
++
++	ROD rm -f $TEST_FILE
++	tst_res TINFO "verify measuring user files when requested via fowner"
++	ROD echo "measure fowner=$(id -u $user)" \> $IMA_POLICY
++	ROD echo "$(date) fowner test" \> $TEST_FILE
++	chown $user $TEST_FILE
++	cat $TEST_FILE > /dev/null
++	ima_check
++
++	if tst_kvcmp -lt 5.16; then
++		tst_brk TCONF "gid and fgroup options require kernel 5.16 or newer"
++	fi
++
++	ROD rm -f $TEST_FILE
++	tst_res TINFO "verify measuring user files when requested via gid"
++	ROD echo "measure gid=$(id -g $user)" \> $IMA_POLICY
++	ROD echo "$(date) gid test" \> $TEST_FILE
++	sudo sg $user "sh -c 'cat $TEST_FILE > /dev/null'"
++	ima_check
++
++	ROD rm -f $TEST_FILE
++	tst_res TINFO "verify measuring user files when requested via fgroup"
++	ROD echo "measure fgroup=$(id -g $user)" \> $IMA_POLICY
++	ROD echo "$(date) fgroup test" \> $TEST_FILE
++	chgrp $user $TEST_FILE
++	cat $TEST_FILE > /dev/null
++	ima_check
 +}
 +
- check_ima_policy_content()
- {
- 	local pattern="$1"
+ tst_run
 -- 
 2.33.0
 
