@@ -1,35 +1,37 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 14 Sep 2021 17:54:24 +0530
-Subject: [LTP] [PATCH 1/2] runtest/smoketest: Remove intermittent failed
- test case route4-change-dst
-Message-ID: <20210914122425.85129-1-naresh.kamboju@linaro.org>
+Date: Tue, 14 Sep 2021 17:54:25 +0530
+Subject: [LTP] [PATCH 2/2] runtest/smoketest: Adding ping01 and ping02 test
+ cases
+In-Reply-To: <20210914122425.85129-1-naresh.kamboju@linaro.org>
+References: <20210914122425.85129-1-naresh.kamboju@linaro.org>
+Message-ID: <20210914122425.85129-2-naresh.kamboju@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test case route4-change-dst fails intermittently creating
-the problem for smoketest results verdict. route4-change-dst
-is a stress test should not be a part of smoketest. because of
-these issues removing route4-change-dst from the smoketest.
+Adding two ping test case to smoketest
+ping01 ping01.sh
+ping602 ping02.sh -6
 
 Suggested-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Suggested-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 ---
- runtest/smoketest | 1 -
- 1 file changed, 1 deletion(-)
+ runtest/smoketest | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/runtest/smoketest b/runtest/smoketest
-index 7f395936e..dd689bd6f 100644
+index dd689bd6f..7bebe4a42 100644
 --- a/runtest/smoketest
 +++ b/runtest/smoketest
-@@ -12,5 +12,4 @@ stat04 symlink01 -T stat04
- utime01A symlink01 -T utime01
+@@ -13,3 +13,5 @@ utime01A symlink01 -T utime01
  rename01A symlink01 -T rename01
  splice02 splice02 -s 20
--route4-change-dst route-change-dst.sh
  shell_test01 echo "SUCCESS" | shell_pipe01.sh
++ping01 ping01.sh
++ping602 ping02.sh -6
 -- 
 2.30.2
 
