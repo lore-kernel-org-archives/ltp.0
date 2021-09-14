@@ -1,52 +1,37 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 14 Sep 2021 11:35:18 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/setresuid01: Convert to new API
-In-Reply-To: <20210913144454.22992-2-mdoucha@suse.cz>
-References: <20210913144454.22992-1-mdoucha@suse.cz>
- <20210913144454.22992-2-mdoucha@suse.cz>
-Message-ID: <3a764f27-b453-0aab-4938-7b7b34496885@suse.cz>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Tue, 14 Sep 2021 12:42:40 +0300
+Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: ignore errors on rhost with
+ -i option in tst_net_run()
+In-Reply-To: <YUA3UIvykJPNyyi4@pevik>
+References: <20210913123935.10761-1-aleksei.kodanev@bell-sw.com>
+ <YUA3UIvykJPNyyi4@pevik>
+Message-ID: <82b63456-0ba6-dedc-9688-cc74c40e4982@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13. 09. 21 16:44, Martin Doucha wrote:
-> The original test needs user "bin" which may not exist on some systems. Use
-> any non-root UID instead.
+Hi Petr,
+On 14.09.2021 08:46, Petr Vorel wrote:
+> Hi Alexey,
 > 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
+> good catch!
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 > 
-> Changes since v1: None
-> 
->  .../kernel/syscalls/setresuid/setresuid01.c   | 256 ++++--------------
->  1 file changed, 59 insertions(+), 197 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/setresuid/setresuid01.c b/testcases/kernel/syscalls/setresuid/setresuid01.c
-> index 9f448896b..e9eb8517e 100644
-> --- a/testcases/kernel/syscalls/setresuid/setresuid01.c
-> +++ b/testcases/kernel/syscalls/setresuid/setresuid01.c
-> @@ -1,221 +1,83 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
+> BTW are you going to send patch / report it to busybox? (I haven't find anything on ML)
 
-Oops, I've accidentally copy-pasted the wrong SPDX header to all three
-setresuid tests. Patch 1 is correct as is but patches 2-4 should have
-GPL-2.0-or-later instead. Please update it before merge.
+Looking at busybox history, seems expected from the beginning there:
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+commit 64309f8669f08f2c3c16a3b5bf82d9cae84ec388
+Author: Denis Vlasenko <vda.linux@googlemail.com>
+Date:   Thu Nov 29 06:40:28 2007 +0000
+
+    sysctl: add -e: supress warnings about invalid key (Jeremy Kerr <jk@ozlabs.org>)
+
+-e option unsets FLAG_SHOW_KEY_ERRORS.
+
+busybox/sysctl: "-e	Don't warn about unknown keys"
+(Though, -q option can be used for that, which was added later, in 2012)
+vs
+procps/sysctl:  "-e, --ignore         ignore unknown variables errors"
