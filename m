@@ -2,80 +2,82 @@ Return-Path: <SRS0=690a=OE=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0650C433F5
-	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 04:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12404C433EF
+	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 05:07:08 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1252A600CD
-	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 04:57:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1252A600CD
+	by mail.kernel.org (Postfix) with ESMTPS id 2777760240
+	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 05:07:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2777760240
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 16BAF3C89C6
-	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 06:57:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 601343C89D0
+	for <ltp@archiver.kernel.org>; Tue, 14 Sep 2021 07:07:05 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A738E3C1D56
- for <ltp@lists.linux.it>; Tue, 14 Sep 2021 06:56:52 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 1C9393C1D8F
+ for <ltp@lists.linux.it>; Tue, 14 Sep 2021 07:06:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AE72460126A
- for <ltp@lists.linux.it>; Tue, 14 Sep 2021 06:56:51 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 852E7200DA8
+ for <ltp@lists.linux.it>; Tue, 14 Sep 2021 07:06:54 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A7BA6220AC;
- Tue, 14 Sep 2021 04:56:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 80B521FDB5;
+ Tue, 14 Sep 2021 05:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1631595410;
+ t=1631596013;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=r2gdkk+ua9RnjZFAsZ21DBjsZTc798Wt2/+7snRDLf4=;
- b=uOVSMqLGzeV65bEl47YXbGSjmRyRuZYsWeiZG+/pdazdaE/TAPy95AVYh0CoQSHYV3M0qv
- PjIcQNCh0rONsVR+YUSpfLveIsoPUUWwvyAKFBKiLSmpEFNlvbv0JVfvczMnW+h/UADlWc
- 88D/xhnm3uZRT3IXqmP8OkN/vb1iyZ8=
+ bh=4noCOo03fHQU7WiE/QNaSp+PgatjwhePT2eYhlScHn4=;
+ b=2uHA7xJ5P+qtFWuZKkrxzL0bw4U7atoRb0N6ZFipXNmg2z/pTDTWZKfHhhuQGEVcZf2AKh
+ 5W2IPBeQb1R9T8WOLFGGVunwsHDAQYa5Hx37QGauisEj+13Cw5rSVSFbQbw8EpLL+r5C9l
+ WKKZ2raJPgNhR2BiXsM1Ve0isHD5sLA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1631595410;
+ s=susede2_ed25519; t=1631596013;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=r2gdkk+ua9RnjZFAsZ21DBjsZTc798Wt2/+7snRDLf4=;
- b=e/xdVsykg1rO4Utx23AizzB56dUpu8msJ8/LNFGea+zpUTDDgKY1DcK+sSo1Z7wlQXqqjB
- bw0ZzJbLkx62/oBQ==
+ bh=4noCOo03fHQU7WiE/QNaSp+PgatjwhePT2eYhlScHn4=;
+ b=NOQBIhLFAQq0adbvfEWKE2enWLrsa3vxkPNRe3MWPbM/7IqB7jhQ/pSECABROwE/KyrP4c
+ XNhD5D+8ESK074Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 61D0C13B56;
- Tue, 14 Sep 2021 04:56:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CAA613B56;
+ Tue, 14 Sep 2021 05:06:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Q7VZFJIrQGGWQgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 14 Sep 2021 04:56:50 +0000
-Date: Tue, 14 Sep 2021 06:56:48 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id l3MTFe0tQGHKRQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 14 Sep 2021 05:06:53 +0000
+Date: Tue, 14 Sep 2021 07:06:51 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YUArkFVjKxNUnAdO@pevik>
-References: <20210913100022.14501-1-pvorel@suse.cz>
- <CAEemH2ety5_Ps0J=Y_1wRhAqV3higYy=OVEnok69LGgadyC1PA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YUAt6/LvtDTVENJB@pevik>
+References: <20210909155126.2720-1-mdoucha@suse.cz>
+ <20210909155126.2720-8-mdoucha@suse.cz>
+ <287a9879ef8b3342cb88225e4e319733@suse.de>
+ <3b789dc4-5232-a6d6-d864-7f75c5a0a030@suse.cz>
+ <YT9laHIulnmtBSgK@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2ety5_Ps0J=Y_1wRhAqV3higYy=OVEnok69LGgadyC1PA@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <YT9laHIulnmtBSgK@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] sched: Remove process.c
+Subject: Re: [LTP] [PATCH 8/8] syscalls/setresuid03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,16 +90,41 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: LTP List <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210914045648.z-mMt7_sm0KD8lSCWNdAqpCOn6y7P6l_0yMdeaHrLJM@z>
+Message-ID: <20210914050651.9N0oKXbVfWoIgaePrkdB8ghGMiOxjuhfxNIunbKITNQ@z>
 
-Hi Li, Cyril,
+> Hi!
+> > >> -?????? if (getpwnam("bin") == NULL) {
+> > >> -?????????????? tst_brkm(TBROK, NULL, "bin must be a valid user.");
+> > >> +?????? if (TST_ERR != tc->exp_errno) {
+> > > nit: checkpatch complains (TST_ERR should be second)
 
-thanks a lot, merged!
+> > checkpatch.pl wrongly assumes that TST_ERR is a constant.
+
+> Good catch, I guess that we will have to patch checkpatch to ignore
+> macros that start with TST_, what about?
+
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 88cb294dc..87572b2f4 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -5462,7 +5462,9 @@ sub process {
+>                         my $comp = $3;
+>                         my $to = $4;
+>                         my $newcomp = $comp;
+> -                       if ($lead !~ /(?:$Operators|\.)\s*$/ &&
+> +
+> +                       if ($const !~ /^\QTST_/ &&
+> +                           $lead !~ /(?:$Operators|\.)\s*$/ &&
+>                             $to !~ /^(?:Constant|[A-Z_][A-Z0-9_]*)$/ &&
+>                             WARN("CONSTANT_COMPARISON",
+>                                  "Comparisons should place the constant on the right side of the test\n" . $herecurr) &&
+
+Yep, that works, thanks!
 
 Kind regards,
 Petr
