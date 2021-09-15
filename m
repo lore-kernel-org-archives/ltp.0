@@ -1,9 +1,9 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 15 Sep 2021 15:45:04 +0200
-Subject: [LTP] [PATCH 3/4] syscalls/setreuid05: Convert to new API
+Date: Wed, 15 Sep 2021 15:45:05 +0200
+Subject: [LTP] [PATCH 4/4] syscalls/utime03: Convert to new API
 In-Reply-To: <20210915134505.22771-1-mdoucha@suse.cz>
 References: <20210915134505.22771-1-mdoucha@suse.cz>
-Message-ID: <20210915134505.22771-3-mdoucha@suse.cz>
+Message-ID: <20210915134505.22771-4-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,309 +11,389 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 The original test looks up specific usernames which may not exist on some
-systems. Use any non-root UIDs instead.
+systems. Use any non-root UID instead.
 
-Also add verification that saved UID gets updated according to
-documentation.
+Also drop obsolete kernel version check for NFS and eliminate unnecessary
+sleep() calls.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- .../kernel/syscalls/setreuid/setreuid05.c     | 260 +++++++-----------
- 1 file changed, 92 insertions(+), 168 deletions(-)
+ testcases/kernel/syscalls/utime/utime03.c | 344 +++++-----------------
+ 1 file changed, 70 insertions(+), 274 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid05.c b/testcases/kernel/syscalls/setreuid/setreuid05.c
-index 39b30f950..4c1c94ee8 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid05.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid05.c
-@@ -1,197 +1,121 @@
+diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+index c5956712f..2b50dc1f6 100644
+--- a/testcases/kernel/syscalls/utime/utime03.c
++++ b/testcases/kernel/syscalls/utime/utime03.c
+@@ -1,299 +1,95 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) International Business Machines  Corp., 2001
 - *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
+- *   Copyright (c) International Business Machines  Corp., 2001
 - *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 - *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
 - *
-- * Ported by John George
-+ *    Ported by John George
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ *    07/2001 ported by John George
 + * Copyright (C) 2021 SUSE LLC <mdoucha@suse.cz>
   */
  
 -/*
+- * Test Name: utime03
+- *
+- * Test Description:
+- *  Verify that the system call utime() successfully sets the modification
+- *  and access times of a file to the current time, under the following
+- *  constraints,
+- *	- The times argument is null.
+- *	- The user ID of the process is not "root".
+- *	- The file is not owned by the user ID of the process.
+- *	- The user ID of the process has write access to the file.
+- *
+- * Expected Result:
+- *  utime succeeds returning zero and sets the access and modificatio
+- *  times of the file to the current time.
 +/*\
 + * [Description]
-+ *
-  * Test the setreuid() feature, verifying the role of the saved-set-uid
-  * and setreuid's effect on it.
+  *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *	Verify the Functionality of system call
+- *      if successful,
+- *		Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory created.
+- *
+- * Usage:  <for command-line>
+- *  utime03 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *	where,  -c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
+- *
+- * Restrictions:
+- *  This test should be run by root only.
+- *  nobody and bin must be valid users.
++ * Verify that the system call utime() successfully sets the modification
++ * and access times of a file to the current time, under the following
++ * constraints:
+  *
++ * - The times argument is NULL.
++ * - The user ID of the process is not "root".
++ * - The file is not owned by the user ID of the process.
++ * - The user ID of the process has write access to the file.
   */
  
 -#include <errno.h>
+-#include <fcntl.h>
 +#include <sys/types.h>
  #include <pwd.h>
- #include <stdlib.h>
+-#include <signal.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+ #include <utime.h>
 -#include <sys/wait.h>
--
--#include "test.h"
--#include "compat_16.h"
+ #include <sys/stat.h>
+-#include <sys/types.h>
+ #include <time.h>
  
--TCID_DEFINE(setreuid05);
+-#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
 +#include "tst_uid.h"
-+#include "compat_tst_16.h"
  
--static int fail = -1;
--static int pass;
--static uid_t neg_one = -1;
+ #define TEMP_FILE	"tmp_file"
+-#define FILE_MODE	S_IRWXU | S_IRGRP | S_IWGRP| S_IROTH | S_IWOTH
+-#define LTPUSER1	"nobody"
+-#define LTPUSER2	"bin"
 -
--static struct passwd nobody, daemonpw, root, bin;
-+static uid_t root_uid, nobody_uid, main_uid, other_uid, neg_one = -1;
+-char *TCID = "utime03";
+-int TST_TOTAL = 1;
+-time_t curr_time;		/* current time in seconds */
++#define FILE_MODE	0766
  
- struct test_data_t {
- 	uid_t *real_uid;
- 	uid_t *eff_uid;
--	int *exp_ret;
--	struct passwd *exp_real_usr;
--	struct passwd *exp_eff_usr;
--	char *test_msg;
-+	int exp_ret;
-+	uid_t *exp_real_uid;
-+	uid_t *exp_eff_uid;
-+	uid_t *exp_sav_uid;
-+	const char *test_msg;
- } test_data[] = {
--	{
--	&nobody.pw_uid, &root.pw_uid, &pass, &nobody, &root, "Initially"}, {
--	&neg_one, &nobody.pw_uid, &pass, &nobody, &nobody,
--		    "After setreuid(-1, nobody),"}, {
--	&neg_one, &root.pw_uid, &pass, &nobody, &root,
--		    "After setreuid(-1, root),"}, {
--	&daemonpw.pw_uid, &neg_one, &pass, &daemonpw, &root,
--		    "After setreuid(daemon, -1),"}, {
--	&neg_one, &bin.pw_uid, &pass, &daemonpw, &bin,
--		    "After setreuid(-1, bin),"}, {
--	&neg_one, &root.pw_uid, &fail, &daemonpw, &bin,
--		    "After setreuid(-1, root),"}, {
--	&neg_one, &nobody.pw_uid, &fail, &daemonpw, &bin,
--		    "After setreuid(-1, nobody),"}, {
--	&neg_one, &daemonpw.pw_uid, &pass, &daemonpw, &daemonpw,
--		    "After setreuid(-1, daemon),"}, {
--	&neg_one, &bin.pw_uid, &pass, &daemonpw, &bin,
--		    "After setreuid(-1, bin),"}, {
--	&bin.pw_uid, &daemonpw.pw_uid, &pass, &bin, &daemonpw,
--		    "After setreuid(bin, daemon),"}, {
--	&neg_one, &bin.pw_uid, &pass, &bin, &bin, "After setreuid(-1, bin),"},
--	{
--	&neg_one, &daemonpw.pw_uid, &pass, &bin, &daemonpw,
--		    "After setreuid(-1, daemon),"}, {
--	&daemonpw.pw_uid, &neg_one, &pass, &daemonpw, &daemonpw,
--		    "After setreuid(daemon, -1),"}, {
--	&neg_one, &bin.pw_uid, &fail, &daemonpw, &daemonpw,
--		    "After setreuid(-1, bin),"},};
+-struct passwd *ltpuser;		/* password struct for ltpusers */
+-uid_t user_uid;			/* user id of ltpuser */
+-gid_t group_gid;		/* group id of ltpuser */
+-int status;
++static uid_t root_uid, user_uid;
+ 
+-void setup();			/* Main setup function of test */
+-void cleanup();			/* cleanup function for the test */
 -
--int TST_TOTAL = ARRAY_SIZE(test_data);
--
--static void setup(void);
--static void cleanup(void);
--static void uid_verify(struct passwd *, struct passwd *, char *);
--
--int main(int argc, char **argv)
--{
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	struct stat stat_buf;	/* struct buffer to hold file info. */
 -	int lc;
+-	long type;
+-	time_t modf_time, access_time;
+-	time_t pres_time;	/* file modification/access/present time */
+-	pid_t pid;
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
+-	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	pass = 0;
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int i, pid;
--
--		tst_count = 0;
--
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup, "fork failed");
--		} else if (pid == 0) {	/* child */
--			for (i = 0; i < TST_TOTAL; i++) {
--				/* Set the real or effective user id */
--				TEST(SETREUID(cleanup, *test_data[i].real_uid,
--					      *test_data[i].eff_uid));
--
--				if (TEST_RETURN == *test_data[i].exp_ret) {
--					if (TEST_RETURN == neg_one) {
--						if (TEST_ERRNO != EPERM) {
--							tst_resm(TFAIL,
--								 "setreuid(%d, %d) "
--								 "did not set errno "
--								 "value as expected.",
--								 *test_data
--								 [i].real_uid,
--								 *test_data
--								 [i].eff_uid);
--							continue;
--						}
--						tst_resm(TPASS,
--							 "setreuid(%d, %d) "
--							 "failed as expected.",
--							 *test_data[i].real_uid,
--							 *test_data[i].eff_uid);
--					} else {
--						tst_resm(TPASS,
--							 "setreuid(%d, %d) "
--							 "succeeded as expected.",
--							 *test_data[i].real_uid,
--							 *test_data[i].eff_uid);
--					}
--				} else {
--					tst_resm(TFAIL, "setreuid(%d, %d) "
--						 "did not return as expected.",
--						 *test_data[i].real_uid,
--						 *test_data[i].eff_uid);
--				}
--
--				if (TEST_RETURN == -1) {
--				}
--				uid_verify(test_data[i].exp_real_usr,
--					   test_data[i].exp_eff_usr,
--					   test_data[i].test_msg);
--			}
--			tst_exit();
--		} else {	/* parent */
--			tst_record_childstatus(cleanup, pid);
--		}
+-	switch ((type = tst_fs_type(cleanup, "."))) {
+-	case TST_NFS_MAGIC:
+-		if (tst_kvercmp(2, 6, 18) < 0)
+-			tst_brkm(TCONF, cleanup, "Cannot do utime on a file"
+-				" on %s filesystem before 2.6.18",
+-				 tst_fs_type_name(type));
+-		break;
+-	case TST_V9FS_MAGIC:
+-		tst_brkm(TCONF, cleanup,
+-			 "Cannot do utime on a file on %s filesystem",
+-			 tst_fs_type_name(type));
+-		break;
 -	}
+-
+-	pid = FORK_OR_VFORK();
+-
+-	if (pid == -1) {
+-		tst_brkm(TBROK, cleanup, "fork() failed");
+-	} else if (pid == 0) {
+-		if ((ltpuser = getpwnam(LTPUSER1)) == NULL) {
+-			tst_brkm(TBROK, cleanup, "%s not found in /etc/passwd",
+-				 LTPUSER1);
+-		}
+-
+-		/* get uid/gid of user accordingly */
+-		user_uid = ltpuser->pw_uid;
+-
+-		seteuid(user_uid);
+-
+-		for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-			tst_count = 0;
+-
+-			/*
+-			 * Invoke utime(2) to set TEMP_FILE access and
+-			 * modification times to the current time.
+-			 */
+-			TEST(utime(TEMP_FILE, NULL));
+-
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL|TTERRNO,
+-					 "utime(%s) failed", TEMP_FILE);
+-			} else {
+-				/*
+-				 * Sleep for a second so that mod time
+-				 * and access times will be different
+-				 * from the current time.
+-				 */
+-				sleep(2);
+-
+-				/*
+-				 * Get the current time now, after
+-				 * calling utime(2)
+-				 */
+-				pres_time = time(NULL);
+-
+-				/*
+-				 * Get the modification and access
+-				 * times of temporary file using
+-				 * stat(2).
+-				 */
+-				SAFE_STAT(cleanup, TEMP_FILE, &stat_buf);
+-				modf_time = stat_buf.st_mtime;
+-				access_time = stat_buf.st_atime;
+-
+-				/* Now do the actual verification */
+-				if (modf_time <= curr_time ||
+-				    modf_time >= pres_time ||
+-				    access_time <= curr_time ||
+-				    access_time >= pres_time) {
+-					tst_resm(TFAIL, "%s access and "
+-						 "modification times "
+-						 "not set", TEMP_FILE);
+-				} else {
+-					tst_resm(TPASS, "Functionality "
+-						 "of utime(%s, NULL) "
+-						 "successful",
+-						 TEMP_FILE);
+-				}
+-			}
+-			tst_count++;	/* incr. TEST_LOOP counter */
+-		}
+-	} else {
+-		waitpid(pid, &status, 0);
+-		_exit(0);	/*
+-				 * Exit here and let the child clean up.
+-				 * This allows the errno information set
+-				 * by the TEST_ERROR_LOG macro and the
+-				 * PASS/FAIL status to be preserved for
+-				 * use during cleanup.
+-				 */
+-	}
+-
 -	cleanup();
 -	tst_exit();
--}
-+	{&nobody_uid, &root_uid, 0, &nobody_uid, &root_uid, &root_uid,
-+		"setreuid(nobody, root)"},
-+	{&neg_one, &nobody_uid, 0, &nobody_uid, &nobody_uid, &root_uid,
-+		"setreuid(-1, nobody)"},
-+	{&neg_one, &root_uid, 0, &nobody_uid, &root_uid, &root_uid,
-+		"setreuid(-1, root)"},
-+	{&main_uid, &neg_one, 0, &main_uid, &root_uid, &root_uid,
-+		"setreuid(main, -1)"},
-+	{&neg_one, &other_uid, 0, &main_uid, &other_uid, &other_uid,
-+		"setreuid(-1, other)"},
-+	{&neg_one, &root_uid, -1, &main_uid, &other_uid, &other_uid,
-+		"setreuid(-1, root)"},
-+	{&neg_one, &nobody_uid, -1, &main_uid, &other_uid, &other_uid,
-+		"setreuid(-1, nobody)"},
-+	{&neg_one, &main_uid, 0, &main_uid, &main_uid, &other_uid,
-+		"setreuid(-1, main)"},
-+	{&neg_one, &other_uid, 0, &main_uid, &other_uid, &other_uid,
-+		"setreuid(-1, other)"},
-+	{&other_uid, &main_uid, 0, &other_uid, &main_uid, &main_uid,
-+		"setreuid(other, main)"},
-+	{&neg_one, &other_uid, 0, &other_uid, &other_uid, &main_uid,
-+		"setreuid(-1, other)"},
-+	{&neg_one, &main_uid, 0, &other_uid, &main_uid, &main_uid,
-+		"setreuid(-1, main)"},
-+	{&main_uid, &neg_one, 0, &main_uid, &main_uid, &main_uid,
-+		"setreuid(main, -1)"},
-+	{&neg_one, &other_uid, -1, &main_uid, &main_uid, &main_uid,
-+		"setreuid(-1, other)"},
-+};
+-
++	struct passwd *pw;
++	uid_t test_users[2];
++	int fd;
++
++	root_uid = getuid();
++	pw = SAFE_GETPWNAM("nobody");
++	test_users[0] = pw->pw_uid;
++	tst_get_uids(test_users, 1, 2);
++	user_uid = test_users[1];
++
++	fd = SAFE_CREAT(TEMP_FILE, FILE_MODE);
++	SAFE_CLOSE(fd);
++
++	/* Override umask */
++	SAFE_CHMOD(TEMP_FILE, FILE_MODE);
++	SAFE_CHOWN(TEMP_FILE, pw->pw_uid, pw->pw_gid);
+ }
  
- static void setup(void)
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *  Create a temporary directory and change directory to it.
+- *  Create a test file under temporary directory and close it
+- *  Change the ownership of testfile to that of "bin" user.
+- *  Record the current time.
+- */
+-void setup(void)
++static void run(void)
  {
+-	int fildes;		/* file handle for temp file */
+-	char *tmpd = NULL;
+-
 -	tst_require_root();
 -
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
--	if (getpwnam("nobody") == NULL)
--		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -i option.
+-	 * You want to make sure you do this before you create your temporary
+-	 * directory.
+-	 */
+-	TEST_PAUSE;
 -
--	if (getpwnam("daemon") == NULL)
--		tst_brkm(TBROK, NULL, "daemon must be a valid user.");
+-	tst_tmpdir();
 -
--	if (getpwnam("bin") == NULL)
--		tst_brkm(TBROK, NULL, "bin must be a valid user.");
+-	/* get the name of the temporary directory */
+-	tmpd = SAFE_GETCWD(NULL, tmpd, 0);
 -
--	nobody = *(getpwnam("nobody"));
--	UID16_CHECK(nobody.pw_uid, setreuid, cleanup);
+-	/* Creat a temporary file under above directory */
+-	fildes = SAFE_CREAT(cleanup, TEMP_FILE, FILE_MODE);
 -
--	daemonpw = *(getpwnam("daemon"));
--	UID16_CHECK(daemonpw.pw_uid, setreuid, cleanup);
-+	uid_t test_users[3];
-+	struct passwd *pw;
+-	/* Close the temporary file created */
+-	SAFE_CLOSE(cleanup, fildes);
+-
+-	/*
+-	 * Make sure that specified Mode permissions set as
+-	 * umask value may be different.
+-	 */
+-	SAFE_CHMOD(cleanup, TEMP_FILE, FILE_MODE);
+-	SAFE_CHMOD(cleanup, tmpd, 0711);
+-
+-	ltpuser = SAFE_GETPWNAM(cleanup, LTPUSER2);
+-
+-	/* get uid/gid of user accordingly */
+-	user_uid = ltpuser->pw_uid;
+-	group_gid = ltpuser->pw_gid;
+-
+-	/*
+-	 * Change the ownership of test directory/file specified by
+-	 * pathname to that of user_uid and group_gid.
+-	 */
+-	SAFE_CHOWN(cleanup, TEMP_FILE, user_uid, group_gid);
++	struct utimbuf utbuf;
++	struct stat statbuf;
++	time_t mintime, maxtime;
 +
-+	root_uid = getuid();
-+	pw = SAFE_GETPWNAM("nobody");
-+	nobody_uid = test_users[0] = pw->pw_uid;
-+	tst_get_uids(test_users, 1, 3);
-+	main_uid = test_users[1];
-+	other_uid = test_users[2];
++	utbuf.modtime = time(0) - 5;
++	utbuf.actime = utbuf.modtime + 1;
++	TST_EXP_PASS_SILENT(utime(TEMP_FILE, &utbuf));
++	SAFE_STAT(TEMP_FILE, &statbuf);
 +
-+	UID16_CHECK(root_uid, setreuid);
-+	UID16_CHECK(nobody_uid, setreuid);
-+	UID16_CHECK(main_uid, setreuid);
-+	UID16_CHECK(other_uid, setreuid);
-+
-+	/* Make sure that saved UID is also set to root */
-+	SAFE_SETUID(root_uid);
-+}
- 
--	root = *(getpwnam("root"));
--	UID16_CHECK(root.pw_uid, setreuid, cleanup);
-+static void run_child(const struct test_data_t *tc)
-+{
-+	if (tc->exp_ret) {
-+		TST_EXP_FAIL(SETREUID(*tc->real_uid, *tc->eff_uid), EPERM,
-+			"%s", tc->test_msg);
-+	} else {
-+		TST_EXP_PASS(SETREUID(*tc->real_uid, *tc->eff_uid), "%s",
-+			tc->test_msg);
++	if (statbuf.st_atime != utbuf.actime ||
++		statbuf.st_mtime != utbuf.modtime) {
++		tst_res(TFAIL, "Could not set initial file times");
++		return;
 +	}
  
--	bin = *(getpwnam("bin"));
--	UID16_CHECK(bin.pw_uid, setreuid, cleanup);
-+	if (!TST_PASS)
-+		return;
+-	/* Get the current time */
+-	curr_time = time(NULL);
++	SAFE_SETEUID(user_uid);
++	mintime = time(0);
++	TST_EXP_PASS(utime(TEMP_FILE, NULL));
++	maxtime = time(0);
++	SAFE_SETEUID(root_uid);
++	SAFE_STAT(TEMP_FILE, &statbuf);
  
--	TEST_PAUSE;
-+	tst_check_resuid(tc->test_msg, *tc->exp_real_uid, *tc->exp_eff_uid,
-+		*tc->exp_sav_uid);
+-	/*
+-	 * Sleep for a second so that mod time and access times will be
+-	 * different from the current time
+-	 */
+-	sleep(2);		/* sleep(1) on IA64 sometimes sleeps < 1 sec!! */
++	if (statbuf.st_atime < mintime || statbuf.st_atime > maxtime)
++		tst_res(TFAIL, "utime() did not set expected atime");
+ 
++	if (statbuf.st_mtime < mintime || statbuf.st_mtime > maxtime)
++		tst_res(TFAIL, "utime() did not set expected mtime");
  }
  
--static void cleanup(void)
-+static void run(void)
- {
--}
-+	if (!SAFE_FORK()) {
-+		unsigned int i;
- 
--static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
+-/*
+- * void
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- *  Remove the test directory and testfile created in the setup.
+- */
+-void cleanup(void)
 -{
--	if ((getuid() != ru->pw_uid) || (geteuid() != eu->pw_uid)) {
--		tst_resm(TFAIL, "ERROR: %s real uid = %d; effective uid = %d",
--			 when, getuid(), geteuid());
--		tst_resm(TINFO, "Expected: real uid = %d; effective uid = %d",
--			 ru->pw_uid, eu->pw_uid);
-+		for (i = 0; i < ARRAY_SIZE(test_data); i++)
-+			run_child(test_data + i);
-+
-+		exit(0);
- 	}
-+
-+	tst_reap_children();
- }
-+
+-	seteuid(0);
+-
+-	tst_rmdir();
+-
+-}
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
 +	.needs_root = 1,
-+	.forks_child = 1,
++	.needs_tmpdir = 1,
++	.skip_filesystems = (const char *const[]) {
++		"v9",
++		NULL
++	}
 +};
 -- 
 2.33.0
