@@ -1,218 +1,113 @@
-From: QI Fuli <fukuri.sai@gmail.com>
-Date: Thu, 16 Sep 2021 00:51:52 +0900
-Subject: [LTP] [PATCH v2 4/4] syscalls/dup2/dup205: Convert to new API
-In-Reply-To: <20210915155152.8515-1-qi.fuli@fujitsu.com>
-References: <20210915155152.8515-1-qi.fuli@fujitsu.com>
-Message-ID: <20210915155152.8515-5-qi.fuli@fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 16 Sep 2021 00:40:28 +0200
+Subject: [LTP] [PATCH v2] tst_test: using SIGTERM to terminate process
+In-Reply-To: <20210519085812.27263-1-liwang@redhat.com>
+References: <20210519085812.27263-1-liwang@redhat.com>
+Message-ID: <YUJ2XA7W3JPODyNC@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: QI Fuli <qi.fuli@fujitsu.com>
+Hi Li, all,
 
-Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
----
- testcases/kernel/syscalls/dup2/dup205.c | 167 ++++++++----------------
- 1 file changed, 57 insertions(+), 110 deletions(-)
+> We'd better avoid using SIGINT for process terminating becuasue,
+> it has different behavoir on kind of shell.
 
-diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
-index 0b324531f..1f4796659 100644
---- a/testcases/kernel/syscalls/dup2/dup205.c
-+++ b/testcases/kernel/syscalls/dup2/dup205.c
-@@ -1,134 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
- /*
-+ * Copyright (c) International Business Machines  Corp., 2002
-  *
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-+ * Negative test for dup2() with max open file descriptors.
-  *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
- /* Ported from SPIE, section2/iosuite/dup6.c, by Airong Zhang */
- 
--/*======================================================================
--	=================== TESTPLAN SEGMENT ===================
-->KEYS:  < dup2()
-->WHAT:  < Does dup return -1 on the 21st file?
-->HOW:   < Create up to _NFILE files and check for -1 return on the
--	< next attempt
--	< Should check NOFILE as well as _NFILE.  19-Jun-84 Dale.
-->BUGS:  <
--======================================================================*/
--
--#include <sys/param.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <fcntl.h>
-+#include <stdlib.h>
- #include <stdio.h>
- #include <unistd.h>
--#include "test.h"
--
--char *TCID = "dup205";
--int TST_TOTAL = 1;
--int *fildes;
--int min;
--int local_flag;
--
--#define PASSED 1
--#define FAILED 0
--
--static void setup(void);
--static void cleanup(void);
--
--int main(int ac, char *av[])
--{
--	int ifile;
--	char pfilname[40];
--	int serrno;
--
--	int lc;
--
--	ifile = -1;
--
--	tst_parse_opts(ac, av, NULL, NULL);
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
- 
--	local_flag = PASSED;
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		sprintf(pfilname, "./dup205.%d\n", getpid());
--		unlink(pfilname);
--		serrno = 0;
--		if ((fildes[0] = creat(pfilname, 0666)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "creat failed");
--		else {
--			fildes[fildes[0]] = fildes[0];
--			for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
--				if ((fildes[ifile] = dup2(fildes[ifile - 1],
--							  ifile)) == -1) {
--					serrno = errno;
--					break;
--				} else {
--					if (fildes[ifile] != ifile) {
--						tst_brkm(TFAIL, cleanup,
--							 "got wrong descriptor "
--							 "number back (%d != %d)",
--							 fildes[ifile], ifile);
--					}
--				}
--			}	/* end for */
--			if (ifile < min) {
--				tst_resm(TFAIL, "Not enough files duped");
--				local_flag = FAILED;
--			} else if (ifile > min) {
--				tst_resm(TFAIL, "Too many files duped");
--				local_flag = FAILED;
--			}
--			if (serrno != EBADF && serrno != EMFILE &&
--			    serrno != EINVAL) {
--				tst_resm(TFAIL, "bad errno on dup2 failure");
--				local_flag = FAILED;
--			}
--		}
--		unlink(pfilname);
--		for (ifile = fildes[0]; ifile < min + 10; ifile++)
--			close(fildes[ifile]);
--		if (local_flag == PASSED) {
--			tst_resm(TPASS, "Test passed.");
--		} else {
--			tst_resm(TFAIL, "Test failed.");
--		}
--
--	}
--	cleanup();
--	tst_exit();
--}
-+static int *fildes;
-+static int min;
- 
- static void setup(void)
- {
--	tst_tmpdir();
--
- 	min = getdtablesize();	/* get number of files allowed open */
- 	fildes = malloc((min + 10) * sizeof(int));
- 	if (fildes == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
-+		tst_brk(TBROK | TERRNO, "malloc error");
- }
- 
- static void cleanup(void)
- {
- 	if (fildes != NULL)
- 		free(fildes);
--	tst_rmdir();
- }
-+
-+static void run(void)
-+{
-+	int ifile;
-+	char pfilname[40];
-+
-+	ifile = -1;
-+
-+	sprintf(pfilname, "./dup205.%d\n", getpid());
-+	unlink(pfilname);
-+
-+	fildes[0] = SAFE_CREAT(pfilname, 0666);
-+	fildes[fildes[0]] = fildes[0];
-+	for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
-+		TEST(dup2(fildes[ifile - 1], ifile));
-+		if ((fildes[ifile] = TST_RET) == -1)
-+			break;
-+		if (fildes[ifile] != ifile)
-+			tst_brk(TFAIL, "got wrong descriptor number back "
-+				"(%d != %d)", fildes[ifile], ifile);
-+	}	/* end for */
-+
-+	if (TST_ERR != EBADF)
-+		tst_res(TFAIL, "bad errno on dup2 failure");
-+
-+	if (ifile < min)
-+		tst_res(TFAIL, "Not enough files duped");
-+	else if (ifile > min)
-+		tst_res(TFAIL, "Too many files duped");
-+	else
-+		tst_res(TPASS, "Test passed.");
-+
-+	unlink(pfilname);
-+	for (ifile = fildes[0]; ifile < min + 10; ifile++)
-+		close(fildes[ifile]);
-+}
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
--- 
-2.31.1
+> From Joerg Vehlow's test:
 
+>  - bash does not seem to care about SIGINT delivery to background
+>    processes, but can be blocked using trap
+
+>  - zsh ignores SIGINT for background processes by default, but can be
+>    allowed using trap
+
+>  - dash and busybox sh ignore the signal to background processes, and
+>    this cannot be changed with trap
+
+> This patch cover the below situations:
+
+>  1. SIGINT (Ctrl^C) for terminating the main process and do cleanup
+>     correctly before a timeout
+
+>  2. Test finish normally and retrieves the _tst_timeout_process in the
+>     background via SIGTERM(sending by _tst_cleanup_timer)
+
+>  3. Test timed out occurs and _tst_kill_test sending SIGTERM to
+>     terminating all process, and the main process do cleanup work
+
+>  4. Test timed out occurs but still have process alive after _tst_kill_test
+>     sending SIGTERM, then sending SIGKILL to the whole group
+
+>  5. Test terminated by SIGTERM unexpectly (e.g. system shutdown or process
+>     manager) and do cleanup work as well
+
+> Co-authored-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Reviewed-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+...
+
+> +++ b/testcases/lib/tst_test.sh
+> @@ -21,7 +21,8 @@ export TST_LIB_LOADED=1
+>  . tst_security.sh
+
+>  # default trap function
+> -trap "tst_brk TBROK 'test interrupted or timed out'" INT
+> +trap "tst_brk TBROK 'test interrupted'" INT
+> +trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
+
+FYI this commit (merged as 4a6b8a697 ("tst_test: using SIGTERM to terminate process"))
+broke net_stress_interface tests, particularly tst_require_cmds() call (which
+calls tst_brk TCONF:
+
+# ./if-addr-adddel.sh -c ifconfig
+if-addr-adddel 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+if-addr-adddel 1 TINFO: add local addr 10.0.0.2/24
+if-addr-adddel 1 TINFO: add local addr fd00:1:1:1::2/64
+if-addr-adddel 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+if-addr-adddel 1 TINFO: add remote addr 10.0.0.1/24
+if-addr-adddel 1 TINFO: add remote addr fd00:1:1:1::1/64
+if-addr-adddel 1 TINFO: Network config (local -- remote):
+if-addr-adddel 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+if-addr-adddel 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+if-addr-adddel 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+if-addr-adddel 1 TINFO: timeout per run is 0h 5m 0s
+if-addr-adddel 1 TCONF: 'ifconfig' not found
+=> waits till timeout
+if-addr-adddel 1 TBROK: Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+if-addr-adddel 1 TWARN: test terminated
+
+Debugging it hangs in wait in _tst_cleanup_timer():
+
+kill -TERM $_tst_setup_timer_pid 2>/dev/null
+wait $_tst_setup_timer_pid 2>/dev/null
+
+because kill does not kill the test.
+
+The problem looks to be that unset actually does not work.
+trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
+
+It looks to be something setup specific, because I discovered this on SLES on
+both bash and dash. Running it on current Debian testing it works on both bash
+and dash. I checked shopt output on both, but don't see anything obvious. It
+must be something else.
+
+Kind regards,
+Petr
+
+>  _tst_do_exit()
+>  {
+> @@ -439,9 +440,9 @@ _tst_kill_test()
+>  {
+>  	local i=10
+
+> -	trap '' INT
+> -	tst_res TBROK "Test timeouted, sending SIGINT! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+> -	kill -INT -$pid
+> +	trap '' TERM
+> +	tst_res TBROK "Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+> +	kill -TERM -$pid
+>  	tst_sleep 100ms
+
+>  	while kill -0 $pid >/dev/null 2>&1 && [ $i -gt 0 ]; do
