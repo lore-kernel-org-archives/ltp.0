@@ -1,22 +1,33 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 15 Sep 2021 16:37:23 +0200
-Subject: [LTP] [PATCH 0/2] Two small fixes for kconfig parser
-Message-ID: <20210915143725.13170-1-chrubis@suse.cz>
+Date: Wed, 15 Sep 2021 16:37:24 +0200
+Subject: [LTP] [PATCH 1/2] lib: tst_kconfig: Fix typo Constrain -> Constraint
+In-Reply-To: <20210915143725.13170-1-chrubis@suse.cz>
+References: <20210915143725.13170-1-chrubis@suse.cz>
+Message-ID: <20210915143725.13170-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis (2):
-  lib: tst_kconfig: Fix typo Constrain -> Constraint
-  lib: tst_kconfig: Fix segfaults on variable value mismatch
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_kconfig.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- lib/newlib_tests/config07 | 5 +++++
- lib/tst_kconfig.c         | 6 +++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
- create mode 100644 lib/newlib_tests/config07
-
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index c2b85821b..c9de3017b 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -497,7 +497,7 @@ void tst_kconfig_check(const char *const kconfigs[])
+ 
+ 		if (val != 1) {
+ 			abort_test = 1;
+-			tst_res(TINFO, "Constrain '%s' not satisfied!", kconfigs[i]);
++			tst_res(TINFO, "Constraint '%s' not satisfied!", kconfigs[i]);
+ 			dump_vars(exprs[i]);
+ 		}
+ 
 -- 
 2.32.0
 
