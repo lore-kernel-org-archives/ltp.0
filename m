@@ -1,65 +1,49 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 15 Sep 2021 16:37:25 +0200
-Subject: [LTP] [PATCH 2/2] lib: tst_kconfig: Fix segfaults on variable value
- mismatch
-In-Reply-To: <20210915143725.13170-1-chrubis@suse.cz>
-References: <20210915143725.13170-1-chrubis@suse.cz>
-Message-ID: <20210915143725.13170-3-chrubis@suse.cz>
+Date: Wed, 15 Sep 2021 17:25:33 +0200
+Subject: [LTP] [PATCH] syscalls/shmctl05: Remove shm segment only when
+ created
+Message-ID: <20210915152533.20902-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If we add CONFIG_FOO=value to the test .needs_kconfig while the kernel
-config will not define the particular value we will blindly call
-strlen() on the val->val and end up with SegFault. Fix this by checking
-that the variable has value set first.
+We cannot remove the shm segment unconditionally. On kernels without
+SysV IPC support compiled in the test fails with following:
 
-Also initialize the val->val to NULL so that we get segfaults 100% of
-the time when we attempt to dereference the value when not defined.
+shmctl05.c:50: TCONF: syscall(396) __NR_shmctl not supported
+shmctl05.c:96: TWARN: shmget(61455, 4096, 0) failed: ENOENT (2)
+shmctl05.c:97: TWARN: shmctl(-1, 0, (nil)) failed: EINVAL (22)
 
-+ Test
-
+Fixes: 48d382e8daf2 (syscalls/shmctl05.c: Fix leak of shared memory segment)
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- lib/newlib_tests/config07 | 5 +++++
- lib/tst_kconfig.c         | 4 ++++
- 2 files changed, 9 insertions(+)
- create mode 100644 lib/newlib_tests/config07
+ testcases/kernel/syscalls/ipc/shmctl/shmctl05.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/lib/newlib_tests/config07 b/lib/newlib_tests/config07
-new file mode 100644
-index 000000000..dd67120f7
---- /dev/null
-+++ b/lib/newlib_tests/config07
-@@ -0,0 +1,5 @@
-+# The default hostaname value mismatch
-+CONFIG_MMU=y
-+CONFIG_EXT4_FS=m
-+CONFIG_PGTABLE_LEVELS=4
-+CONFIG_DEFAULT_HOSTNAME=m
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index c9de3017b..5af67b0a5 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -392,6 +392,7 @@ static inline unsigned int populate_vars(struct tst_expr *exprs[],
- 			strncpy(vars[cnt].id, j->tok, vars[cnt].id_len);
- 			vars[cnt].id[vars[cnt].id_len] = 0;
- 			vars[cnt].choice = 0;
-+			vars[cnt].val = NULL;
- 
- 			var = find_var(vars, cnt, vars[cnt].id);
- 
-@@ -435,6 +436,9 @@ static int map(struct tst_expr_tok *expr)
- 	if (choice != 'v')
- 		return var->choice == choice;
- 
-+	if (var->choice != 'v')
-+		return 0;
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+index ea7eef6f1..8569322dc 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+@@ -92,8 +92,16 @@ static void do_test(void)
+ static void cleanup(void)
+ {
+ 	int id;
 +
- 	if (strlen(var->val) != len)
- 		return 0;
+ 	tst_fzsync_pair_cleanup(&fzsync_pair);
+-	id = SAFE_SHMGET(0xF00F, 4096, 0);
++
++	id = shmget(0xF00F, 4096, 0);
++	if (id == -1) {
++		if (errno != ENOENT)
++			tst_res(TWARN | TERRNO, "shmget()");
++		return;
++	}
++
+ 	SAFE_SHMCTL(id, IPC_RMID, NULL);
+ }
  
 -- 
 2.32.0
