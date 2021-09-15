@@ -1,48 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Sep 2021 11:35:26 +0200
-Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: ignore errors on rhost with
- -i option in tst_net_run()
-In-Reply-To: <82b63456-0ba6-dedc-9688-cc74c40e4982@bell-sw.com>
-References: <20210913123935.10761-1-aleksei.kodanev@bell-sw.com>
- <YUA3UIvykJPNyyi4@pevik>
- <82b63456-0ba6-dedc-9688-cc74c40e4982@bell-sw.com>
-Message-ID: <YUG+XlCf83X4TP26@pevik>
+From: Dai Shili <daisl.fnst@fujitsu.com>
+Date: Wed, 15 Sep 2021 05:50:02 -0400
+Subject: [LTP] [PATCH] controllers/cpuacct: Fix deleting directories errors
+Message-ID: <1631699402-17607-1-git-send-email-daisl.fnst@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+To remove a directory hierarchy on a normal file system you can use rm command to
+remove all files from each subdirectory and then remove the parent directories.
+But a cgroup which doesn't have any children and is associated only with zombie processes
+is considered empty and can not be removed by rm.
+The following errors will be reported.
 
-> Hi Petr,
-> On 14.09.2021 08:46, Petr Vorel wrote:
-> > Hi Alexey,
+cpuacct 1 TINFO: removing created directories
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cgroup.procs': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpu.cfs_period_us': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpu.stat': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpuacct.usage_percpu_sys': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpu.shares': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpuacct.usage_percpu': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpuacct.stat': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/cpuacct.usage': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/subgroup_1/cgroup.procs': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/subgroup_1/cpu.cfs_period_us': Operation not permitted
+rm: cannot remove '/sys/fs/cgroup/cpu,cpuacct/ltp_cpuacct/subgroup_1/cpu.stat': Operation not permitted
+...
 
-> > good catch!
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+It's recommended to use rmdir command.
 
-> > BTW are you going to send patch / report it to busybox? (I haven't find anything on ML)
+[1] http://blog.tinola.com/?e=21
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/cgroup-v2.rst#n237
 
-> Looking at busybox history, seems expected from the beginning there:
+Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+---
+ testcases/kernel/controllers/cpuacct/cpuacct.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> commit 64309f8669f08f2c3c16a3b5bf82d9cae84ec388
-> Author: Denis Vlasenko <vda.linux@googlemail.com>
-> Date:   Thu Nov 29 06:40:28 2007 +0000
+diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+index 99258c2..f526d0f 100755
+--- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
++++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+@@ -122,7 +122,10 @@ cleanup()
+ 
+ 	if [ "$testpath" ]; then
+ 		tst_res TINFO "removing created directories"
+-		rm -rf $testpath
++		if [ -d "$testpath/subgroup_1" ]; then
++			rmdir $testpath/subgroup_*
++		fi
++			rmdir $testpath
+ 	fi
+ 
+ 	if [ "$mounted" -ne 1 ]; then
+-- 
+1.8.3.1
 
->     sysctl: add -e: supress warnings about invalid key (Jeremy Kerr <jk@ozlabs.org>)
-
-> -e option unsets FLAG_SHOW_KEY_ERRORS.
-
-> busybox/sysctl: "-e	Don't warn about unknown keys"
-> (Though, -q option can be used for that, which was added later, in 2012)
-> vs
-> procps/sysctl:  "-e, --ignore         ignore unknown variables errors"
-
-Hm, IMHO it'd be good change to -e have 0 exit status. Because that's the
-behavior in procps-ng (tested on 3.3.17).
-
-If you do it, please let me know and/or Cc me in your patch. Otherwise I'll do it.
-
-Kind regards,
-Petr
