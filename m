@@ -1,7 +1,9 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 15 Sep 2021 15:45:02 +0200
-Subject: [LTP] [PATCH 1/4] syscalls/setreuid02: Convert to new API
-Message-ID: <20210915134505.22771-1-mdoucha@suse.cz>
+Date: Wed, 15 Sep 2021 15:45:03 +0200
+Subject: [LTP] [PATCH 2/4] syscalls/setreuid03: Convert to new API
+In-Reply-To: <20210915134505.22771-1-mdoucha@suse.cz>
+References: <20210915134505.22771-1-mdoucha@suse.cz>
+Message-ID: <20210915134505.22771-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,21 +13,19 @@ To: ltp@lists.linux.it
 The original test looks up specific usernames which may not exist on some
 systems. Use any non-root UID instead.
 
-Also add verification that saved UID gets updated according to
-documentation.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- .../kernel/syscalls/setreuid/setreuid02.c     | 175 ++++++------------
- 1 file changed, 58 insertions(+), 117 deletions(-)
+ .../kernel/syscalls/setreuid/setreuid03.c     | 240 ++++++------------
+ 1 file changed, 77 insertions(+), 163 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid02.c b/testcases/kernel/syscalls/setreuid/setreuid02.c
-index 695386cbc..2fa4cbc80 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid02.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid02.c
-@@ -1,145 +1,86 @@
+diff --git a/testcases/kernel/syscalls/setreuid/setreuid03.c b/testcases/kernel/syscalls/setreuid/setreuid03.c
+index ecf30d6ec..e83a3586a 100644
+--- a/testcases/kernel/syscalls/setreuid/setreuid03.c
++++ b/testcases/kernel/syscalls/setreuid/setreuid03.c
+@@ -1,190 +1,104 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
+- *
   * Copyright (c) International Business Machines  Corp., 2001
 - *
 - * This program is free software;  you can redistribute it and/or modify
@@ -51,25 +51,30 @@ index 695386cbc..2fa4cbc80 100644
 +/*\
 + * [Description]
 + *
-  * Test setreuid() when executed by root.
+  * Test setreuid() when executed by an unpriviledged user.
   */
  
 -#include <errno.h>
 +#include <sys/types.h>
  #include <pwd.h>
 -#include <stdlib.h>
--#include <string.h>
 -
 -#include "test.h"
+-#include "safe_macros.h"
 -#include "compat_16.h"
+-
+-#define FAILED  1
+-
+-TCID_DEFINE(setreuid03);
  
--TCID_DEFINE(setreuid02);
+-static int fail = -1;
+-static int pass;
+-static uid_t neg_one = -1;
 +#include "tst_test.h"
 +#include "tst_uid.h"
 +#include "compat_tst_16.h"
  
--static uid_t neg_one = -1;
--static struct passwd nobody, daemonpw, root, bin;
+-static struct passwd nobody, bin, root;
 -
 -/*
 - * The following structure contains all test data.  Each structure in the array
@@ -80,90 +85,150 @@ index 695386cbc..2fa4cbc80 100644
  static struct test_data_t {
  	uid_t *real_uid;
  	uid_t *eff_uid;
+-	int *exp_ret;
 -	struct passwd *exp_real_usr;
 -	struct passwd *exp_eff_usr;
 -	char *test_msg;
++	int exp_ret;
 +	uid_t *exp_real_uid;
 +	uid_t *exp_eff_uid;
 +	uid_t *exp_sav_uid;
 +	const char *test_msg;
  } test_data[] = {
 -	{
--	&neg_one, &neg_one, &root, &root, "After setreuid(-1, -1),"}, {
--	&nobody.pw_uid, &neg_one, &nobody, &root, "After setreuid(nobody, -1)"},
+-	&nobody.pw_uid, &nobody.pw_uid, &pass, &nobody, &nobody,
+-		    "After setreuid(nobody, nobody),"}, {
+-	&neg_one, &nobody.pw_uid, &pass, &nobody, &nobody,
+-		    "After setreuid(-1, nobody),"}, {
+-	&nobody.pw_uid, &neg_one, &pass, &nobody, &nobody,
+-		    "After setreuid(nobody, -1),"}, {
+-	&neg_one, &neg_one, &pass, &nobody, &nobody, "After setreuid(-1, -1),"},
 -	{
--	&root.pw_uid, &neg_one, &root, &root, "After setreuid(root,-1),"}, {
--	&neg_one, &daemonpw.pw_uid, &root, &daemonpw,
--		    "After setreuid(-1, daemon)"}, {
--	&neg_one, &root.pw_uid, &root, &root, "After setreuid(-1,root),"}, {
--	&bin.pw_uid, &neg_one, &bin, &root, "After setreuid(bin, -1)"}, {
--&root.pw_uid, &neg_one, &root, &root, "After setreuid(-1, root)"},};
+-	&neg_one, &root.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(-1, root),"}, {
+-	&root.pw_uid, &neg_one, &fail, &nobody, &nobody,
+-		    "After setreuid(root, -1),"}, {
+-	&root.pw_uid, &root.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(root, root),"}, {
+-	&root.pw_uid, &nobody.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(root, nobody),"}, {
+-	&root.pw_uid, &bin.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(root, nobody),"}, {
+-	&bin.pw_uid, &root.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(bin, root),"}, {
+-	&bin.pw_uid, &neg_one, &fail, &nobody, &nobody,
+-		    "After setreuid(bin, -1),"}, {
+-	&bin.pw_uid, &bin.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(bin, bin,),"}, {
+-	&bin.pw_uid, &nobody.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(bin, nobody),"}, {
+-	&nobody.pw_uid, &bin.pw_uid, &fail, &nobody, &nobody,
+-		    "After setreuid(nobody, bin),"},};
 -
 -int TST_TOTAL = ARRAY_SIZE(test_data);
-+	{&neg_one, &neg_one, &root_uid, &root_uid, &root_uid,
-+		"setreuid(-1, -1)"},
-+	{&nobody_uid, &neg_one, &nobody_uid, &root_uid, &root_uid,
-+		"setreuid(nobody, -1)"},
-+	{&root_uid, &neg_one, &root_uid, &root_uid, &root_uid,
-+		"setreuid(root, -1)"},
-+	{&neg_one, &nobody_uid, &root_uid, &nobody_uid, &nobody_uid,
-+		"setreuid(-1, nobody)"},
-+	{&neg_one, &root_uid, &root_uid, &root_uid, &nobody_uid,
-+		"setreuid(-1, root)"},
-+	{&other_uid, &neg_one, &other_uid, &root_uid, &root_uid,
-+		"setreuid(other, -1)"},
-+	{&root_uid, &neg_one, &root_uid, &root_uid, &root_uid,
-+		"setreuid(root, -1)"},
-+};
- 
+-
 -static void setup(void);
 -static void cleanup(void);
--static void uid_verify(struct passwd *ru, struct passwd *eu, char *when);
--
+-static void uid_verify(struct passwd *, struct passwd *, char *);
++	{&nobody_uid, &nobody_uid, 0, &nobody_uid, &nobody_uid, &nobody_uid,
++		"setreuid(nobody, nobody)"},
++	{&neg_one, &nobody_uid, 0, &nobody_uid, &nobody_uid, &nobody_uid,
++		"setreuid(-1, nobody)"},
++	{&nobody_uid, &neg_one, 0, &nobody_uid, &nobody_uid, &nobody_uid,
++		"setreuid(nobody, -1)"},
++	{&neg_one, &neg_one, 0, &nobody_uid, &nobody_uid, &nobody_uid,
++		"setreuid(-1, -1)"},
++	{&neg_one, &root_uid, -1, &nobody_uid, &nobody_uid, &nobody_uid,
++		"setreuid(-1, root)"},
++	{&root_uid, &neg_one, -1, &nobody_uid, &nobody_uid, &nobody_uid,
++		"setreuid(root, -1)"},
++	{&root_uid, &root_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(root, root)"},
++	{&root_uid, &nobody_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(root, nobody)"},
++	{&root_uid, &other_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(root, other)"},
++	{&other_uid, &root_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(other, root)"},
++	{&other_uid, &neg_one, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(other, -1)"},
++	{&other_uid, &other_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(other, other)"},
++	{&other_uid, &nobody_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(other, nobody)"},
++	{&nobody_uid, &other_uid, -1, &nobody_uid, &nobody_uid,
++		&nobody_uid, "setreuid(nobody, other)"},
++};
+ 
 -int main(int ac, char **av)
 +static void setup(void)
  {
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		int i;
 +	uid_t test_users[2];
 +	struct passwd *pw;
  
--	setup();
+-		tst_count = 0;
 +	root_uid = getuid();
 +	pw = SAFE_GETPWNAM("nobody");
 +	nobody_uid = test_users[0] = pw->pw_uid;
 +	tst_get_uids(test_users, 1, 2);
 +	other_uid = test_users[1];
  
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int i;
+-		for (i = 0; i < TST_TOTAL; i++) {
 +	UID16_CHECK(root_uid, setreuid);
 +	UID16_CHECK(nobody_uid, setreuid);
 +	UID16_CHECK(other_uid, setreuid);
  
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
 -			/* Set the real or effective user id */
 -			TEST(SETREUID(cleanup, *test_data[i].real_uid,
 -				      *test_data[i].eff_uid));
 -
--			if (TEST_RETURN == -1) {
--				tst_resm(TBROK, "setreuid(%d, %d) failed",
+-			if (TEST_RETURN == *test_data[i].exp_ret) {
+-				if (TEST_RETURN == neg_one) {
+-					if (TEST_ERRNO != EPERM) {
+-						tst_resm(TFAIL,
+-							 "setreuid(%d, %d) "
+-							 "did not set errno "
+-							 "value as expected.",
+-							 *test_data[i].real_uid,
+-							 *test_data[i].eff_uid);
+-						continue;
+-					}
+-					tst_resm(TPASS, "setreuid(%d, %d) "
+-						 "failed as expected.",
+-						 *test_data[i].real_uid,
+-						 *test_data[i].eff_uid);
+-				} else {
+-					tst_resm(TPASS, "setreuid(%d, %d) "
+-						 "succeeded as expected.",
+-						 *test_data[i].real_uid,
+-						 *test_data[i].eff_uid);
+-				}
+-			} else {
+-				tst_resm(TFAIL, "setreuid(%d, %d) "
+-					 "did not return as expected.",
 -					 *test_data[i].real_uid,
 -					 *test_data[i].eff_uid);
--			} else {
--				uid_verify(test_data[i].exp_real_usr,
--					   test_data[i].exp_eff_usr,
--					   test_data[i].test_msg);
 -			}
+-
+-			if (TEST_RETURN == -1) {
+-			}
+-			uid_verify(test_data[i].exp_real_usr,
+-				   test_data[i].exp_eff_usr,
+-				   test_data[i].test_msg);
 -		}
 -	}
+-
 -	cleanup();
 -	tst_exit();
-+	/* Make sure that saved UID is also set to root */
-+	SAFE_SETUID(root_uid);
++	SAFE_SETUID(nobody_uid);
  }
  
 -static void setup(void)
@@ -176,33 +241,34 @@ index 695386cbc..2fa4cbc80 100644
 -	if (getpwnam("nobody") == NULL)
 -		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
 -
--	if (getpwnam("daemon") == NULL)
--		tst_brkm(TBROK, NULL, "daemon must be a valid user.");
--
 -	if (getpwnam("bin") == NULL)
 -		tst_brkm(TBROK, NULL, "bin must be a valid user.");
-+	const struct test_data_t *tc = test_data + n;
- 
+-
 -	root = *(getpwnam("root"));
 -	UID16_CHECK(root.pw_uid, setreuid, cleanup);
-+	TST_EXP_PASS_SILENT(SETREUID(*tc->real_uid, *tc->eff_uid), "%s",
-+		tc->test_msg);
- 
+-
 -	nobody = *(getpwnam("nobody"));
 -	UID16_CHECK(nobody.pw_uid, setreuid, cleanup);
-+	if (!TST_PASS)
-+		return;
- 
--	daemonpw = *(getpwnam("daemon"));
--	UID16_CHECK(daemonpw.pw_uid, setreuid, cleanup);
 -
 -	bin = *(getpwnam("bin"));
 -	UID16_CHECK(bin.pw_uid, setreuid, cleanup);
--
++	const struct test_data_t *tc = test_data + n;
++
++	if (tc->exp_ret) {
++		TST_EXP_FAIL(SETREUID(*tc->real_uid, *tc->eff_uid), EPERM,
++			"%s", tc->test_msg);
++	} else {
++		TST_EXP_PASS(SETREUID(*tc->real_uid, *tc->eff_uid), "%s",
++			tc->test_msg);
++	}
+ 
+-	SAFE_SETUID(NULL, nobody.pw_uid);
++	if (!TST_PASS)
++		return;
+ 
 -	TEST_PAUSE;
-+	if (tst_check_resuid(tc->test_msg, *tc->exp_real_uid, *tc->exp_eff_uid,
-+		*tc->exp_sav_uid))
-+		tst_res(TPASS, "%s works as expected", tc->test_msg);
++	tst_check_resuid(tc->test_msg, *tc->exp_real_uid, *tc->exp_eff_uid,
++		*tc->exp_sav_uid);
  }
  
 -static void cleanup(void)
@@ -214,11 +280,8 @@ index 695386cbc..2fa4cbc80 100644
 -	if ((getuid() != ru->pw_uid) || (geteuid() != eu->pw_uid)) {
 -		tst_resm(TFAIL, "ERROR: %s real uid = %d; effective uid = %d",
 -			 when, getuid(), geteuid());
--		tst_resm(TFAIL, "Expected: real uid = %d; effective uid = %d",
+-		tst_resm(TINFO, "Expected: real uid = %d; effective uid = %d",
 -			 ru->pw_uid, eu->pw_uid);
--	} else {
--		tst_resm(TPASS, "real or effective uid was modified as "
--			 "expected");
 -	}
 -}
 +static struct tst_test test = {
