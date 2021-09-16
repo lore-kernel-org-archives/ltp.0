@@ -1,9 +1,9 @@
 From: QI Fuli <fukuri.sai@gmail.com>
-Date: Thu, 16 Sep 2021 19:49:32 +0900
-Subject: [LTP] [PATCH v3 4/5] syscalls/dup2/dup205: Convert to new API
+Date: Thu, 16 Sep 2021 19:49:33 +0900
+Subject: [LTP] [PATCH v3 5/5] syscalls/dup2: rename dup205 to dup204
 In-Reply-To: <20210916104933.33409-1-qi.fuli@fujitsu.com>
 References: <20210916104933.33409-1-qi.fuli@fujitsu.com>
-Message-ID: <20210916104933.33409-5-qi.fuli@fujitsu.com>
+Message-ID: <20210916104933.33409-6-qi.fuli@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,202 +14,14 @@ From: QI Fuli <qi.fuli@fujitsu.com>
 
 Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 ---
- testcases/kernel/syscalls/dup2/dup205.c | 166 ++++++++----------------
- 1 file changed, 54 insertions(+), 112 deletions(-)
+ testcases/kernel/syscalls/dup2/{dup205.c => dup204.c} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename testcases/kernel/syscalls/dup2/{dup205.c => dup204.c} (100%)
 
-diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
-index 0b324531f..0e2766d53 100644
---- a/testcases/kernel/syscalls/dup2/dup205.c
-+++ b/testcases/kernel/syscalls/dup2/dup205.c
-@@ -1,134 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-+ * Copyright (c) International Business Machines  Corp., 2002
-  *
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-+ * Negative test for dup2() with max open file descriptors.
-  *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
- /* Ported from SPIE, section2/iosuite/dup6.c, by Airong Zhang */
- 
--/*======================================================================
--	=================== TESTPLAN SEGMENT ===================
-->KEYS:  < dup2()
-->WHAT:  < Does dup return -1 on the 21st file?
-->HOW:   < Create up to _NFILE files and check for -1 return on the
--	< next attempt
--	< Should check NOFILE as well as _NFILE.  19-Jun-84 Dale.
-->BUGS:  <
--======================================================================*/
--
--#include <sys/param.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <fcntl.h>
-+#include <stdlib.h>
- #include <stdio.h>
- #include <unistd.h>
--#include "test.h"
--
--char *TCID = "dup205";
--int TST_TOTAL = 1;
--int *fildes;
--int min;
--int local_flag;
--
--#define PASSED 1
--#define FAILED 0
--
--static void setup(void);
--static void cleanup(void);
--
--int main(int ac, char *av[])
--{
--	int ifile;
--	char pfilname[40];
--	int serrno;
--
--	int lc;
--
--	ifile = -1;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	local_flag = PASSED;
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
- 
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		sprintf(pfilname, "./dup205.%d\n", getpid());
--		unlink(pfilname);
--		serrno = 0;
--		if ((fildes[0] = creat(pfilname, 0666)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "creat failed");
--		else {
--			fildes[fildes[0]] = fildes[0];
--			for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
--				if ((fildes[ifile] = dup2(fildes[ifile - 1],
--							  ifile)) == -1) {
--					serrno = errno;
--					break;
--				} else {
--					if (fildes[ifile] != ifile) {
--						tst_brkm(TFAIL, cleanup,
--							 "got wrong descriptor "
--							 "number back (%d != %d)",
--							 fildes[ifile], ifile);
--					}
--				}
--			}	/* end for */
--			if (ifile < min) {
--				tst_resm(TFAIL, "Not enough files duped");
--				local_flag = FAILED;
--			} else if (ifile > min) {
--				tst_resm(TFAIL, "Too many files duped");
--				local_flag = FAILED;
--			}
--			if (serrno != EBADF && serrno != EMFILE &&
--			    serrno != EINVAL) {
--				tst_resm(TFAIL, "bad errno on dup2 failure");
--				local_flag = FAILED;
--			}
--		}
--		unlink(pfilname);
--		for (ifile = fildes[0]; ifile < min + 10; ifile++)
--			close(fildes[ifile]);
--		if (local_flag == PASSED) {
--			tst_resm(TPASS, "Test passed.");
--		} else {
--			tst_resm(TFAIL, "Test failed.");
--		}
--
--	}
--	cleanup();
--	tst_exit();
--}
-+static int *fildes;
-+static int min;
-+static char pfilname[40];
- 
- static void setup(void)
- {
--	tst_tmpdir();
--
- 	min = getdtablesize();	/* get number of files allowed open */
--	fildes = malloc((min + 10) * sizeof(int));
--	if (fildes == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
-+	fildes = SAFE_MALLOC((min + 10) * sizeof(int));
-+
-+	sprintf(pfilname, "./dup205.%d\n", getpid());
- }
- 
- static void cleanup(void)
- {
- 	if (fildes != NULL)
- 		free(fildes);
--	tst_rmdir();
- }
-+
-+static void run(void)
-+{
-+	int ifile;
-+
-+	ifile = -1;
-+
-+	fildes[0] = SAFE_CREAT(pfilname, 0666);
-+	fildes[fildes[0]] = fildes[0];
-+	for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
-+		TEST(dup2(fildes[ifile - 1], ifile));
-+		if ((fildes[ifile] = TST_RET) == -1)
-+			break;
-+		if (fildes[ifile] != ifile)
-+			tst_brk(TFAIL, "got wrong descriptor number back "
-+				"(%d != %d)", fildes[ifile], ifile);
-+	}	/* end for */
-+
-+	if (TST_ERR != EBADF)
-+		tst_res(TFAIL, "bad errno on dup2 failure");
-+
-+	if (ifile < min)
-+		tst_res(TFAIL, "Not enough files duped");
-+	else if (ifile > min)
-+		tst_res(TFAIL, "Too many files duped");
-+	else
-+		tst_res(TPASS, "Test passed.");
-+
-+	SAFE_CLOSE(fildes[0]);
-+	SAFE_UNLINK(pfilname);
-+}
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
+diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup204.c
+similarity index 100%
+rename from testcases/kernel/syscalls/dup2/dup205.c
+rename to testcases/kernel/syscalls/dup2/dup204.c
 -- 
 2.31.1
 
