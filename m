@@ -1,20 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 16 Sep 2021 15:06:19 +0200
-Subject: [LTP] [PATCH 2/2] lib: tst_kconfig: Fix segfaults on variable
- value mismatch
-In-Reply-To: <87r1dols56.fsf@suse.de>
-References: <20210915143725.13170-1-chrubis@suse.cz>
- <20210915143725.13170-3-chrubis@suse.cz> <87r1dols56.fsf@suse.de>
-Message-ID: <YUNBSwH9mYOMcGPV@yuki>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 16 Sep 2021 15:26:04 +0200
+Subject: [LTP] [PATCH 4/4] syscalls/utime03: Convert to new API
+In-Reply-To: <YUM+76XsQB57U3rE@yuki>
+References: <20210915134505.22771-1-mdoucha@suse.cz>
+ <20210915134505.22771-4-mdoucha@suse.cz> <YUM+76XsQB57U3rE@yuki>
+Message-ID: <1973857f-53fd-6f16-1f7d-d65a371f9c60@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Thanks for the review, pushed.
+On 16. 09. 21 14:56, Cyril Hrubis wrote:
+> Hi!
+>> +	mintime = time(0);
+>> +	TST_EXP_PASS(utime(TEMP_FILE, NULL));
+>> +	maxtime = time(0);
+> 
+> I wonder if this suffers the problem as the ipc timestamps:
+> 
+> https://github.com/linux-test-project/ltp/commit/d37bde3defa12556ba7399f4131996f8e490490a
+
+Possibly. Let's find out, we can always fix the test in the next release.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
