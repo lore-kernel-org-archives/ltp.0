@@ -2,81 +2,73 @@ Return-Path: <SRS0=//k7=OH=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D29A9C433EF
-	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 12:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB2B6C433EF
+	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 12:13:47 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A822B60F13
-	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 12:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A822B60F13
+	by mail.kernel.org (Postfix) with ESMTPS id C4E4C60F9C
+	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 12:13:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C4E4C60F9C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5083F3C9107
-	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 14:01:58 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 315DA3C884C
+	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 14:13:45 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 898AD3C1D17
- for <ltp@lists.linux.it>; Fri, 17 Sep 2021 14:01:48 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C4A7B3C1D17
+ for <ltp@lists.linux.it>; Fri, 17 Sep 2021 14:13:35 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 839931400E49
- for <ltp@lists.linux.it>; Fri, 17 Sep 2021 14:01:47 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A503222187;
- Fri, 17 Sep 2021 12:01:46 +0000 (UTC)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F411D6008DC
+ for <ltp@lists.linux.it>; Fri, 17 Sep 2021 14:13:34 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 478771FE6E;
+ Fri, 17 Sep 2021 12:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1631880106;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1631880814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=k/5EOzsGM6nQtu672ekPbAuo7rQAvduu3ow5Cim/r2s=;
- b=RNGasadQK8nqjPPD5TUJklwHWD5LTA+PA+f6KQ+6VlsRK710WhflpjRnL6BNtoi49M3dKe
- nYe6oTFG+9sRPfAh8hIn83/2ODWdkSHa1W/HH/fdKxuO1AiJJuM/zFTLbgMg0/G22LJAMf
- KQ+mwaPI56NOkJ4j9YjkkyJ3jYsOV0w=
+ bh=ce0dhYuZF8iH1ahdO1gFqxDTSsqLzOXS7SfUCTPjcGY=;
+ b=qHcpYaRngDtEfV86461CjMLdbL/d3/7kVV+kBB0UNIdc876p2ED36DDn58h87Qsy8j7MlK
+ tWbpGE2OgJsF9MipVfiQ66E/X4yEfO6DUJ2tcj+eHs9LXtlW0ZcAfaWZqNhwBMCGmEWWUE
+ LfHkxUxUbEuGbBaqaEKuU2nTRyuw/rw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1631880106;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1631880814;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=k/5EOzsGM6nQtu672ekPbAuo7rQAvduu3ow5Cim/r2s=;
- b=11b5k7x5byaejbmTiaMVGnA+Y9ZFXcrnI8koZ4x+IB70hKCdOaUl6M30ZHR/YgZGRVeUqs
- Gx0KtMJVso66EdCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EAD613AB8;
- Fri, 17 Sep 2021 12:01:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VdOHGaqDRGFDOgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 17 Sep 2021 12:01:46 +0000
-Date: Fri, 17 Sep 2021 14:01:44 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Alex Henrie <alexh@vpitech.com>
-Message-ID: <YUSDqLQ1xJX7PEja@pevik>
-References: <20210914161503.97495-1-alexh@vpitech.com>
- <20210914161503.97495-2-alexh@vpitech.com>
+ bh=ce0dhYuZF8iH1ahdO1gFqxDTSsqLzOXS7SfUCTPjcGY=;
+ b=V9Ml5E1H1a688V4ItoqJiJdy23i/X2Gyg2SqcMsBsPfM9sI13Lx87nXMKhrGA+A41m0ae8
+ o63lQsV0sCfEwMAA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+ by relay2.suse.de (Postfix) with ESMTP id 2BF9AA3B9C;
+ Fri, 17 Sep 2021 12:13:34 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id C68F41E0CA7; Fri, 17 Sep 2021 14:13:31 +0200 (CEST)
+Date: Fri, 17 Sep 2021 14:13:31 +0200
+From: Jan Kara <jack@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20210917121331.GA14905@quack2.suse.cz>
+References: <20210912123429.GA25450@xsang-OptiPlex-9020>
+ <YT8HqsXsHFeMdDxS@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210914161503.97495-2-alexh@vpitech.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <YT8HqsXsHFeMdDxS@yuki>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH ltp v3 2/2] IMA: Add tests for uid, gid, fowner,
- and fgroup options
+Subject: Re: [LTP] [mm/page]  ab19939a6a: ltp.msync04.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,161 +80,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Cc: Miklos Szeredi <mszeredi@redhat.com>, Jan Kara <jack@suse.cz>,
+ lkp@intel.com, Chi Wu <wuchi.zero@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@fb.com>,
+ lkp@lists.01.org, kernel test robot <oliver.sang@intel.com>,
+ Sedat Dilek <sedat.dilek@gmail.com>, Tejun Heo <tj@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210917120144.kSLuunr6ZET6CQq1Kw6Zu6quXSa5djpTJ0z7iPoyXIQ@z>
+Message-ID: <20210917121331.o7CnrwlK4Iu0xneiJ7JaIea1reBFJKlQ-uv0yOFxn7E@z>
 
-Hi Alex,
+On Mon 13-09-21 10:11:22, Cyril Hrubis wrote:
+> Hi!
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: ab19939a6a5010cba4e9cb04dd8bee03c72edcbd ("mm/page-writeback: Fix performance when BDI's share of ratio is 0.")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > 
+> > in testcase: ltp
+> > version: ltp-x86_64-14c1f76-1_20210907
+> > with following parameters:
+> > 
+> > 	disk: 1HDD
+> > 	fs: xfs
+> > 	test: syscalls-03
+> > 	ucode: 0xe2
+> > 
+> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> > test-url: http://linux-test-project.github.io/
+> 
+> The msync04 test formats a device with a diffrent filesystems, for each
+> filesystem it maps a file, writes to the mapped page and the checks a
+> dirty bit in /proc/kpageflags before and after msync() on that page.
+> 
+> This seems to be broken after this patch for ntfs over FUSE and it looks
+> like the page does not have a dirty bit set right after it has been
+> written to.
+> 
+> Also I guess that we should increase the number of the pages we dirty or
+> attempt to retry since a single page may be flushed to the storage if we
+> are unlucky and the process is preempted between the write and the
+> initial check for the dirty bit.
 
-> +test4()
-> +{
-> +	local user="nobody"
-> +
-> +	tst_check_cmds chgrp chown sg sudo || return
-> +
-> +	# try to write to the policy, then check whether it can be written again
-> +	cat $IMA_POLICY > $IMA_POLICY 2> /dev/null
-This is not needed because require_policy_writable call
+Yes, I agree. The most likely explanation I see for this is that the
+identified commit results in waking flush worker earlier so it may now
+succeed in cleaning the page before get_dirty_bit() in the LTP testcase
+manages to see it. This is a principial race in this testcase, you can
+perhaps make it less likely but not completely fix it AFAICT.
 
-> +	require_policy_writable
-> +
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via uid"
-> +	ROD echo "measure uid=$(id -u $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) uid test" \> $TEST_FILE
-> +	sudo -n -u $user sh -c "cat $TEST_FILE > /dev/null"
-> +	ima_check
-> +
-As I noted at first patch unfortunately we need another require_policy_writable
-call here.  Because we don't grep kernel config for CONFIG_IMA_WRITE_POLICY,
-we just try to write empty string (invalid), thus policy must be repeatedly
-checked (see ima_policy.sh). Because after first write to policy (ROD echo
-"measure uid=$(id -u $user)" \> $IMA_POLICY) policy will be removed on systems
-without CONFIG_IMA_WRITE_POLICY.
-
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via fowner"
-> +	ROD echo "measure fowner=$(id -u $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) fowner test" \> $TEST_FILE
-> +	chown $user $TEST_FILE
-> +	cat $TEST_FILE > /dev/null
-> +	ima_check
-> +
-> +	if tst_kvcmp -lt 5.16; then
-> +		tst_brk TCONF "gid and fgroup options require kernel 5.16 or newer"
-> +	fi
-> +
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via gid"
-> +	ROD echo "measure gid=$(id -g $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) gid test" \> $TEST_FILE
-> +	sudo sg $user "sh -c 'cat $TEST_FILE > /dev/null'"
-> +	ima_check
-> +
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via fgroup"
-> +	ROD echo "measure fgroup=$(id -g $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) fgroup test" \> $TEST_FILE
-> +	chgrp $user $TEST_FILE
-> +	cat $TEST_FILE > /dev/null
-> +	ima_check
-> +}
-> +
->  tst_run
-
-I still have 2 concerns about this patch (sorry that I didn't realise it before)
-
-1) repeated running of ima_measurements.sh is broken:
-ima_measurements 1 TINFO: verify adding record to the IMA measurement list
-ima_measurements 1 TBROK: failed to get algorithm/digest for '/tmp/LTP_ima_measurements.6WSmgkHZ13/test.txt': measurement record not found
-
-First run:
-ima_measurements 1 TINFO: timeout per run is 0h 5m 0s
-ima_measurements 1 TINFO: IMA kernel config:
-ima_measurements 1 TINFO: CONFIG_IMA=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
-ima_measurements 1 TINFO: CONFIG_IMA_LSM_RULES=y
-ima_measurements 1 TINFO: CONFIG_IMA_NG_TEMPLATE=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
-ima_measurements 1 TINFO: CONFIG_IMA_READ_POLICY=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=y
-ima_measurements 1 TINFO: CONFIG_IMA_TRUSTED_KEYRING=y
-ima_measurements 1 TINFO: CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
-ima_measurements 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-5.3.18-54-default root=UUID=478230c4-ef04-4f7e-ad47-733fd1f28a76 ima_policy=tcb splash=silent video=1024x768 plymouth.ignore-serial-consoles console=ttyS0 console=tty softlockup_panic=1 kernel.softlockup_panic=1 mitigations=auto ignore_loglevel
-ima_measurements 1 TINFO: verify adding record to the IMA measurement list
-ima_measurements 1 TINFO: computing digest for sha256 algorithm
-ima_measurements 1 TPASS: correct digest found
-ima_measurements 2 TINFO: verify updating record in the IMA measurement list
-ima_measurements 2 TINFO: computing digest for sha256 algorithm
-ima_measurements 2 TPASS: correct digest found
-ima_measurements 3 TINFO: verify not measuring user files by default
-ima_measurements 3 TPASS: grep /tmp/LTP_ima_measurements.ma8YpOrvRS/user/test.txt /sys/kernel/security/ima/ascii_runtime_measurements failed as expected
-ima_measurements 4 TINFO: verify measuring user files when requested via uid
-ima_measurements 4 TINFO: computing digest for sha256 algorithm
-ima_measurements 4 TPASS: correct digest found
-ima_measurements 4 TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
-
-Summary:
-passed   4
-failed   0
-broken   0
-skipped  1
-warnings 0
-
-Repeated run:
-ima_measurements 1 TINFO: timeout per run is 0h 5m 0s
-ima_measurements 1 TINFO: IMA kernel config:
-ima_measurements 1 TINFO: CONFIG_IMA=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
-ima_measurements 1 TINFO: CONFIG_IMA_LSM_RULES=y
-ima_measurements 1 TINFO: CONFIG_IMA_NG_TEMPLATE=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
-ima_measurements 1 TINFO: CONFIG_IMA_READ_POLICY=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=y
-ima_measurements 1 TINFO: CONFIG_IMA_TRUSTED_KEYRING=y
-ima_measurements 1 TINFO: CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
-ima_measurements 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-5.3.18-54-default root=UUID=478230c4-ef04-4f7e-ad47-733fd1f28a76 ima_policy=tcb splash=silent video=1024x768 plymouth.ignore-serial-consoles console=ttyS0 console=tty softlockup_panic=1 kernel.softlockup_panic=1 mitigations=auto ignore_loglevel
-ima_measurements 1 TINFO: verify adding record to the IMA measurement list
-ima_measurements 1 TBROK: failed to get algorithm/digest for '/tmp/LTP_ima_measurements.6WSmgkHZ13/test.txt': measurement record not found
-ima_measurements 1 TINFO: computing digest for  algorithm
-ima_measurements 1 TCONF: cannot compute digest for  algorithm
-ima_measurements 1 TINFO: AppArmor enabled, this may affect test results
-ima_measurements 1 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-ima_measurements 1 TINFO: loaded AppArmor profiles: none
-
-I need to have closer look what the problem is. It can be fixed by checking
-policy with require_policy_writable in the setup. But that's problem for missing
-coverage (TCONF for first 3 tests).
-
-2) writing policy in ima_measurement.sh leads to TCONF ima_policy.sh on systems
-without CONFIG_IMA_WRITE_POLICY. This has has no easy solution. Either we manage
-to load each policy for each overlay [1] or add support for reboot to LTP [2] and
-restart after each test or just some functionality will be skipped due policy
-disappear after writting.
-
-But still IMHO it'd be better to separate test4() into it's own file to not
-affect the original 3 tests in ima_measurement.sh (unless we fix the problem
-with repeated running of ima_measurement.sh).
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/issues/720
-[2] https://github.com/linux-test-project/ltp/issues/868
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
