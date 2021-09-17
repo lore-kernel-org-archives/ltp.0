@@ -2,85 +2,85 @@ Return-Path: <SRS0=//k7=OH=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.5 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A663C433F5
-	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 10:19:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92304C433EF
+	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 10:19:47 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C45CC6103C
-	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 10:19:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C45CC6103C
+	by mail.kernel.org (Postfix) with ESMTPS id D3E4A60F6D
+	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 10:19:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D3E4A60F6D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56BD43C8854
-	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 12:19:35 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EB1173C884F
+	for <ltp@archiver.kernel.org>; Fri, 17 Sep 2021 12:19:44 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D5E983C1D1D
- for <ltp@lists.linux.it>; Fri, 17 Sep 2021 12:19:25 +0200 (CEST)
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com
- [IPv6:2607:f8b0:4864:20::62e])
+ by picard.linux.it (Postfix) with ESMTPS id 932693C8849
+ for <ltp@lists.linux.it>; Fri, 17 Sep 2021 12:19:28 +0200 (CEST)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com
+ [IPv6:2607:f8b0:4864:20::633])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1EDE71400C5C
- for <ltp@lists.linux.it>; Fri, 17 Sep 2021 12:19:25 +0200 (CEST)
-Received: by mail-pl1-x62e.google.com with SMTP id bb10so5900191plb.2
- for <ltp@lists.linux.it>; Fri, 17 Sep 2021 03:19:25 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EC325600849
+ for <ltp@lists.linux.it>; Fri, 17 Sep 2021 12:19:27 +0200 (CEST)
+Received: by mail-pl1-x633.google.com with SMTP id v1so5862069plo.10
+ for <ltp@lists.linux.it>; Fri, 17 Sep 2021 03:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wmvGXuiV5Cu5Da4aWM+a5mt+QDgN/cLtf6UyzdXYbLg=;
- b=B05tBaCKsAb4Pu12XexZBfIYyykKNAQoKGNkcWoS2dc1gfTPZlUrO5KQC/KlMMckLl
- 2VLdNYKmrnNasw6JMA+7MFlV9vFSDhDOnrTbaS39Xe3pIckSkpT8n/0Q4RL81Hx6+ZaG
- yYm0OsIRephmKgyyBnFGRlkrybeEadT+nYy+fYO74zZR9xS0ubxwMDwDkhcimLs4D7O9
- NUvpdNVp0B1XtkCRY4FCE1jqJkhkMs8/EKclEOpyr5qIwpo+eMi6l9WTHzfEi9nXYGwu
- lD7E8hOFsdbW4jidDZNpkBXup1gV8d8h43cvsAmrKwbG0mIl008gSzYieYNi3kROr3OE
- xJCA==
+ bh=LiPkVNVEwEF7mIHDgJRAH/2Nwi0eigtvOAqIhFuQtA8=;
+ b=duvH8eBqXwjhKtyxaa0/H8SdihUawkOHjtqLgB9agCSCnPUIPbELtp51Txl2s+MCNH
+ pG3wtKaoNh/IgYNi8uaFaLqGlg7z1agccngUkEwfRhmaOSB8YC7+1mYXUsM2E0BHV7AR
+ zZtYcPBMQObIBvslhJ3fhQEwJg0mVbqhdcV72MLxbSASQAcFxcnBGXfDr52+DpGWZIH0
+ gIzYzI9ns+z3Jk1azRvtwp4MEP1I8ahSBpYzA6j6i6GtgyAvlhDlu/4uOH248UPVJY1B
+ /ZFeUmVfLMichjlbqW41hPnID/2H63kDvvSFbsi7y08+rigl4sGIslAgcvNLqhHY4wAv
+ tuxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wmvGXuiV5Cu5Da4aWM+a5mt+QDgN/cLtf6UyzdXYbLg=;
- b=1hT8LVw5rIoh2Mzo6ZAF+M1GaaB7odwMAglOxzsO5gtTTmcpQ6zURTQci7C5bjXoK9
- xiaDhbiOpa1AXt/DPiFnZYJK7aPed/W9hTeNy0/4a7Zco+x4RsKwuiVn707l+7F1p4vB
- kWsuHMMADl9qvsjPJxERUVNXU0NPS/VK8mRPbOo/5Ey5xDMDamkFVPaZKncZJUYfDFPB
- SVgAqIIbfyYlfBHRW7As8omA1GWv34k4gmBSP8d/y/QJGqSVLe311HLa/a2zfJ880dWP
- evr86lpu5iA3NGR+SOEUyiM8kz12ZRuXNsjyXFI/JCnrm3YyhDGSvU4m5mXRl/mcFPav
- rLmQ==
-X-Gm-Message-State: AOAM531m0I8xgkRRKZlyIY76vokJJhjcZQAfV0tV7oFj4O354EvnLKsw
- RUSI6Bc/E8dioxQ7+uNIJpmcmgSGmJ2PWdWu
-X-Google-Smtp-Source: ABdhPJyCPvN7sp0iQE/p6T3nOts8lhr9cMbHs0VPTjY46JYxgQMmOqbgbavQj0vGC2SFaHOCY0VR+g==
-X-Received: by 2002:a17:90a:14c4:: with SMTP id
- k62mr11467136pja.154.1631873963636; 
- Fri, 17 Sep 2021 03:19:23 -0700 (PDT)
+ bh=LiPkVNVEwEF7mIHDgJRAH/2Nwi0eigtvOAqIhFuQtA8=;
+ b=slvEMWwu5w0bxisVX6jp2GOdpLHn+d2zSaVM2Rvuaf5VotGhuWPoiLzqUb9YZcU9Lt
+ HGRsyPnymPQzJpqrYs1SWZvmwXJ97A0l8VzpPwoniJ67ShWVMB01wag5eEAVbHYEUUuY
+ 4EpgTX7GPRDMwhsIFlKpBanaHqgYCS4gHeo3YDFWHajVBlxNqnNziWMabC8VQa4G5YqV
+ fwnBR3PwVXUKqS59+E5n+NC9spuEemhe+SygSrNUFBucKL/5dA4vokdIk6KqwRSqrvAl
+ tjjqLyoWevbMQLC6gblpWBA5JrddqDYSS0QHl/5vZkUJVElOCoJ2t5hSlEPOEbM8DdvY
+ Z/tw==
+X-Gm-Message-State: AOAM533FX+KeFKJdW5dXCedQRhdr084dR1KCm+lS9ujThZHZdsn5pgjX
+ gPkPPTNM9Xqgc8H6yWHgyEN65yJUodEpynJe
+X-Google-Smtp-Source: ABdhPJxrNEvpsUiA1a0in9i+iQCfF8cI+y12043VTs6mht8dejpRhVUGS6Ppny/KC2+jOvOZihx3HA==
+X-Received: by 2002:a17:90a:1a4c:: with SMTP id
+ 12mr20307667pjl.195.1631873966448; 
+ Fri, 17 Sep 2021 03:19:26 -0700 (PDT)
 Received: from fedora34.. (125x103x255x1.ap125.ftth.ucom.ne.jp.
  [125.103.255.1])
- by smtp.gmail.com with ESMTPSA id l1sm10208453pju.15.2021.09.17.03.19.22
+ by smtp.gmail.com with ESMTPSA id l1sm10208453pju.15.2021.09.17.03.19.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Sep 2021 03:19:23 -0700 (PDT)
+ Fri, 17 Sep 2021 03:19:25 -0700 (PDT)
 From: QI Fuli <fukuri.sai@gmail.com>
 X-Google-Original-From: QI Fuli <qi.fuli@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Fri, 17 Sep 2021 19:19:06 +0900
-Message-ID: <20210917101907.2657-2-qi.fuli@fujitsu.com>
+Date: Fri, 17 Sep 2021 19:19:07 +0900
+Message-ID: <20210917101907.2657-3-qi.fuli@fujitsu.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210917101907.2657-1-qi.fuli@fujitsu.com>
 References: <20210917101907.2657-1-qi.fuli@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] syscalls/dup3_01: Rewrite and convert to new
- API
+Subject: [LTP] [PATCH v2 2/2] syscalls/dup3_02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,209 +93,172 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: QI Fuli <qi.fuli@fujitsu.com>
-Content-Type: multipart/mixed; boundary="===============0659732914=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210917101906.559qwBMB2919DeU6zuFOggLKkglRVnLU6UXzmTHy7_I@z>
-
---===============0659732914==
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
-
-From: QI Fuli <qi.fuli@fujitsu.com>
-
-    - divide into two testcases
-    - convert to new API
+Message-ID: <20210917101907.6vkRai1O5VKCtlWVvUCwjd-_CI5bmPKpw0RLJoJJ8Nk@z>
 
 Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 ---
- testcases/kernel/syscalls/dup3/dup3_01.c | 159 +++++++----------------
- 1 file changed, 47 insertions(+), 112 deletions(-)
+ testcases/kernel/syscalls/dup3/dup3_02.c | 118 ++++++-----------------
+ 1 file changed, 29 insertions(+), 89 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/dup3/dup3_01.c b/testcases/kernel/syscalls/dup3/dup3_01.c
-index 6a44ec809..3b3d9ae0d 100644
---- a/testcases/kernel/syscalls/dup3/dup3_01.c
-+++ b/testcases/kernel/syscalls/dup3/dup3_01.c
-@@ -1,120 +1,55 @@
--/******************************************************************************/
--/*                                                                            */
--/* Copyright (c) Ulrich Drepper <drepper@redhat.com>                          */
--/* Copyright (c) International Business Machines  Corp., 2009                 */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
--/*                                                                            */
--/******************************************************************************/
--/******************************************************************************/
--/*                                                                            */
--/* File:        dup3_01.c                                                     */
--/*                                                                            */
--/* Description: This Program tests the new system call introduced in 2.6.27.  */
--/*              Ulrich´s comment as in:                                       */
--/* http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=336dd1f70ff62d7dd8655228caed4c5bfc818c56 */
--/*              says:                                                         */
--/* This patch adds the new dup3 syscall.  It extends the old dup2 syscall by  */
--/* one parameter which is meant to hold a flag value.  Support for the        */
--/* O_CLOEXEC flag is added in this patch. The following test must be adjusted */
--/* for architectures other than x86 and x86-64 and in case the                */
--/* syscall numbers changed.                                                   */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* dup3_01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                               */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   dup3_01                                                       */
--/*                                                                            */
--/* Author:      Ulrich Drepper <drepper@redhat.com>                           */
--/*                                                                            */
--/* History:     Created - Jan 13 2009 - Ulrich Drepper <drepper@redhat.com>   */
--/*              Ported to LTP                                                 */
--/*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
--/******************************************************************************/
--#include <fcntl.h>
+diff --git a/testcases/kernel/syscalls/dup3/dup3_02.c b/testcases/kernel/syscalls/dup3/dup3_02.c
+index e49ec3575..08a741240 100644
+--- a/testcases/kernel/syscalls/dup3/dup3_02.c
++++ b/testcases/kernel/syscalls/dup3/dup3_02.c
+@@ -1,118 +1,58 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Ulrich Drepper <drepper@redhat.com>
-+ * Copyright (c) International Business Machines  Corp., 2009
-+ * Created - Jan 13 2009 - Ulrich Drepper <drepper@redhat.com>
-+ * Ported to LTP - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>
-+ */
+ /*
+  * Copyright (c) 2013 Fujitsu Ltd.
+  * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+-
+-/*
+- * Description:
+- * Verify that,
+- *  1. dup3() fails with -1 return value and sets errno to EINVAL
+- *     if flags contain an invalid value or oldfd was equal to newfd.
 +/*\
 + * [Description]
-+ * Testcase to check whether dup3() supports O_CLOEXEC flag.
-+ */
-+
-+#define _GNU_SOURCE
-+
- #include <stdio.h>
--#include <time.h>
--#include <unistd.h>
--#include <sys/syscall.h>
-+#include <stdbool.h>
++ * Test for various EINVAL error.
++ * - EINVAL - oldfd is equal to newfd W/O using O_CLOEXEC flag
++ * - EINVAL - oldfd is equal to newfd W/ using O_CLOEXEC flag
++ * - EINVAL - flags contain an invalid value
+  */
+ 
+ #define _GNU_SOURCE
+ 
+-#include <stdio.h>
  #include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <sys/types.h>
 -
 -#include "test.h"
+-#include "safe_macros.h"
 -#include "lapi/fcntl.h"
 -#include "lapi/syscalls.h"
 -
--char *TCID = "dup3_01";
--int TST_TOTAL = 1;
 -
--void cleanup(void)
--{
--	tst_rmdir();
--}
+-static void setup(void);
+-static void cleanup(void);
 -
--void setup(void)
--{
--	TEST_PAUSE;
--	tst_tmpdir();
--}
--
--int main(int argc, char *argv[])
+-#define INVALID_FLAG	-1
 +#include "tst_test.h"
 +#include "tst_safe_macros.h"
-+
+ 
+ static int old_fd;
+-static int new_fd;
++static int new_fd = -1;
+ 
+-static struct test_case_t {
 +static struct tcase {
-+	int o_flag;
-+	bool coe_flag;
-+	char *desc;
-+} tcases [] = {
-+	{0, true, "dup3(1, 4, 0)"},
-+	{O_CLOEXEC, false, "dup3(1, 4, O_CLOEXEC)"},
-+};
-+
+ 	int *oldfd;
+ 	int *newfd;
+ 	int flags;
+-	int exp_errno;
+-} test_cases[] = {
+-	{&old_fd, &old_fd, O_CLOEXEC, EINVAL},
+-	{&old_fd, &old_fd, 0, EINVAL},
+-	{&old_fd, &new_fd, INVALID_FLAG, EINVAL}
++} tcases[] = {
++	{&old_fd, &old_fd, O_CLOEXEC},
++	{&old_fd, &old_fd, 0},
++	{&old_fd, &new_fd, -1}
+ };
+ 
+-char *TCID = "dup3_02";
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-int main(int ac, char **av)
 +static void run(unsigned int i)
  {
--	int fd, coe;
-+	int fd, ret;
-+	struct tcase *tc = tcases + i;
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
-+	TEST(dup3(1, 4, tc->o_flag));
- 
--	if ((tst_kvercmp(2, 6, 27)) < 0)
--		tst_brkm(TCONF, NULL,
--			 "This test can only run on kernels that are 2.6.27 and higher");
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
 -	setup();
 -
--	fd = ltp_syscall(__NR_dup3, 1, 4, 0);
--	if (fd == -1) {
--		tst_brkm(TFAIL | TERRNO, cleanup, "dup3(0) failed");
--	}
--	coe = fcntl(fd, F_GETFD);
--	if (coe == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup, "fcntl failed");
-+	fd = TST_RET;
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "%s failed", tc->desc);
-+		return;
- 	}
--	if (coe & FD_CLOEXEC) {
--		tst_brkm(TFAIL, cleanup, "dup3(0) set close-on-exec flag");
--	}
--	close(fd);
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	struct tcase *tc = tcases + i;
  
--	fd = ltp_syscall(__NR_dup3, 1, 4, O_CLOEXEC);
--	if (fd == -1) {
--		tst_brkm(TFAIL | TERRNO, cleanup, "dup3(O_CLOEXEC) failed");
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(ltp_syscall(__NR_dup3, *(test_cases[i].oldfd),
+-			     *(test_cases[i].newfd), test_cases[i].flags));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "dup3 succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == test_cases[i].exp_errno) {
+-				tst_resm(TPASS | TTERRNO,
+-					 "dup3 failed as expected");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "dup3 failed unexpectedly; expected:"
+-					 "%d - %s", test_cases[i].exp_errno,
+-					 strerror(test_cases[i].exp_errno));
+-			}
+-		}
 -	}
--	coe = fcntl(fd, F_GETFD);
--	if (coe == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup, "fcntl failed");
--	}
--	if ((coe & FD_CLOEXEC) == 0) {
--		tst_brkm(TFAIL, cleanup,
--			 "dup3(O_CLOEXEC) set close-on-exec flag");
--	}
--	close(fd);
--	tst_resm(TPASS, "dup3(O_CLOEXEC) PASSED");
-+	ret = SAFE_FCNTL(fd, F_GETFD);
-+	if ((ret & FD_CLOEXEC) == tc->coe_flag)
-+		tst_res(TFAIL, "%s set close-on-exec flag", tc->desc);
-+	else
-+		tst_res(TPASS, "%s PASSED", tc->desc);
-+
-+	SAFE_CLOSE(fd);
-+};
- 
+-
 -	cleanup();
 -	tst_exit();
--}
++	TST_EXP_FAIL2(dup3(*tc->oldfd, *tc->newfd, tc->flags), EINVAL,
++		"dup3(%d, %d, %d)", *tc->oldfd, *tc->newfd, tc->flags);
+ }
+ 
+ static void setup(void)
+ {
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	tst_tmpdir();
+-
+-	TEST_PAUSE;
+-
+-	old_fd = SAFE_CREAT(cleanup, "testeinval.file", 0644);
+-	new_fd = -1;
++	old_fd = SAFE_CREAT("testeinval.file", 0644);
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (old_fd > 0)
+-		SAFE_CLOSE(NULL, old_fd);
+-
+-	tst_rmdir();
++		SAFE_CLOSE(old_fd);
+ }
++
 +static struct tst_test test = {
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.test = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
 +};
 -- 
 2.31.1
 
 
---===============0659732914==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0659732914==--
