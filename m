@@ -1,161 +1,56 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 17 Sep 2021 14:01:44 +0200
-Subject: [LTP] [PATCH ltp v3 2/2] IMA: Add tests for uid, gid, fowner,
- and fgroup options
-In-Reply-To: <20210914161503.97495-2-alexh@vpitech.com>
-References: <20210914161503.97495-1-alexh@vpitech.com>
- <20210914161503.97495-2-alexh@vpitech.com>
-Message-ID: <YUSDqLQ1xJX7PEja@pevik>
+From: Jan Kara <jack@suse.cz>
+Date: Fri, 17 Sep 2021 14:13:31 +0200
+Subject: [LTP] [mm/page]  ab19939a6a: ltp.msync04.fail
+In-Reply-To: <YT8HqsXsHFeMdDxS@yuki>
+References: <20210912123429.GA25450@xsang-OptiPlex-9020>
+ <YT8HqsXsHFeMdDxS@yuki>
+Message-ID: <20210917121331.GA14905@quack2.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alex,
+On Mon 13-09-21 10:11:22, Cyril Hrubis wrote:
+> Hi!
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: ab19939a6a5010cba4e9cb04dd8bee03c72edcbd ("mm/page-writeback: Fix performance when BDI's share of ratio is 0.")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > 
+> > in testcase: ltp
+> > version: ltp-x86_64-14c1f76-1_20210907
+> > with following parameters:
+> > 
+> > 	disk: 1HDD
+> > 	fs: xfs
+> > 	test: syscalls-03
+> > 	ucode: 0xe2
+> > 
+> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> > test-url: http://linux-test-project.github.io/
+> 
+> The msync04 test formats a device with a diffrent filesystems, for each
+> filesystem it maps a file, writes to the mapped page and the checks a
+> dirty bit in /proc/kpageflags before and after msync() on that page.
+> 
+> This seems to be broken after this patch for ntfs over FUSE and it looks
+> like the page does not have a dirty bit set right after it has been
+> written to.
+> 
+> Also I guess that we should increase the number of the pages we dirty or
+> attempt to retry since a single page may be flushed to the storage if we
+> are unlucky and the process is preempted between the write and the
+> initial check for the dirty bit.
 
-> +test4()
-> +{
-> +	local user="nobody"
-> +
-> +	tst_check_cmds chgrp chown sg sudo || return
-> +
-> +	# try to write to the policy, then check whether it can be written again
-> +	cat $IMA_POLICY > $IMA_POLICY 2> /dev/null
-This is not needed because require_policy_writable call
+Yes, I agree. The most likely explanation I see for this is that the
+identified commit results in waking flush worker earlier so it may now
+succeed in cleaning the page before get_dirty_bit() in the LTP testcase
+manages to see it. This is a principial race in this testcase, you can
+perhaps make it less likely but not completely fix it AFAICT.
 
-> +	require_policy_writable
-> +
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via uid"
-> +	ROD echo "measure uid=$(id -u $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) uid test" \> $TEST_FILE
-> +	sudo -n -u $user sh -c "cat $TEST_FILE > /dev/null"
-> +	ima_check
-> +
-As I noted at first patch unfortunately we need another require_policy_writable
-call here.  Because we don't grep kernel config for CONFIG_IMA_WRITE_POLICY,
-we just try to write empty string (invalid), thus policy must be repeatedly
-checked (see ima_policy.sh). Because after first write to policy (ROD echo
-"measure uid=$(id -u $user)" \> $IMA_POLICY) policy will be removed on systems
-without CONFIG_IMA_WRITE_POLICY.
-
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via fowner"
-> +	ROD echo "measure fowner=$(id -u $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) fowner test" \> $TEST_FILE
-> +	chown $user $TEST_FILE
-> +	cat $TEST_FILE > /dev/null
-> +	ima_check
-> +
-> +	if tst_kvcmp -lt 5.16; then
-> +		tst_brk TCONF "gid and fgroup options require kernel 5.16 or newer"
-> +	fi
-> +
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via gid"
-> +	ROD echo "measure gid=$(id -g $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) gid test" \> $TEST_FILE
-> +	sudo sg $user "sh -c 'cat $TEST_FILE > /dev/null'"
-> +	ima_check
-> +
-> +	ROD rm -f $TEST_FILE
-> +	tst_res TINFO "verify measuring user files when requested via fgroup"
-> +	ROD echo "measure fgroup=$(id -g $user)" \> $IMA_POLICY
-> +	ROD echo "$(date) fgroup test" \> $TEST_FILE
-> +	chgrp $user $TEST_FILE
-> +	cat $TEST_FILE > /dev/null
-> +	ima_check
-> +}
-> +
->  tst_run
-
-I still have 2 concerns about this patch (sorry that I didn't realise it before)
-
-1) repeated running of ima_measurements.sh is broken:
-ima_measurements 1 TINFO: verify adding record to the IMA measurement list
-ima_measurements 1 TBROK: failed to get algorithm/digest for '/tmp/LTP_ima_measurements.6WSmgkHZ13/test.txt': measurement record not found
-
-First run:
-ima_measurements 1 TINFO: timeout per run is 0h 5m 0s
-ima_measurements 1 TINFO: IMA kernel config:
-ima_measurements 1 TINFO: CONFIG_IMA=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
-ima_measurements 1 TINFO: CONFIG_IMA_LSM_RULES=y
-ima_measurements 1 TINFO: CONFIG_IMA_NG_TEMPLATE=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
-ima_measurements 1 TINFO: CONFIG_IMA_READ_POLICY=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=y
-ima_measurements 1 TINFO: CONFIG_IMA_TRUSTED_KEYRING=y
-ima_measurements 1 TINFO: CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
-ima_measurements 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-5.3.18-54-default root=UUID=478230c4-ef04-4f7e-ad47-733fd1f28a76 ima_policy=tcb splash=silent video=1024x768 plymouth.ignore-serial-consoles console=ttyS0 console=tty softlockup_panic=1 kernel.softlockup_panic=1 mitigations=auto ignore_loglevel
-ima_measurements 1 TINFO: verify adding record to the IMA measurement list
-ima_measurements 1 TINFO: computing digest for sha256 algorithm
-ima_measurements 1 TPASS: correct digest found
-ima_measurements 2 TINFO: verify updating record in the IMA measurement list
-ima_measurements 2 TINFO: computing digest for sha256 algorithm
-ima_measurements 2 TPASS: correct digest found
-ima_measurements 3 TINFO: verify not measuring user files by default
-ima_measurements 3 TPASS: grep /tmp/LTP_ima_measurements.ma8YpOrvRS/user/test.txt /sys/kernel/security/ima/ascii_runtime_measurements failed as expected
-ima_measurements 4 TINFO: verify measuring user files when requested via uid
-ima_measurements 4 TINFO: computing digest for sha256 algorithm
-ima_measurements 4 TPASS: correct digest found
-ima_measurements 4 TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
-
-Summary:
-passed   4
-failed   0
-broken   0
-skipped  1
-warnings 0
-
-Repeated run:
-ima_measurements 1 TINFO: timeout per run is 0h 5m 0s
-ima_measurements 1 TINFO: IMA kernel config:
-ima_measurements 1 TINFO: CONFIG_IMA=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
-ima_measurements 1 TINFO: CONFIG_IMA_LSM_RULES=y
-ima_measurements 1 TINFO: CONFIG_IMA_NG_TEMPLATE=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
-ima_measurements 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
-ima_measurements 1 TINFO: CONFIG_IMA_READ_POLICY=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
-ima_measurements 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=y
-ima_measurements 1 TINFO: CONFIG_IMA_TRUSTED_KEYRING=y
-ima_measurements 1 TINFO: CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY=y
-ima_measurements 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
-ima_measurements 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-5.3.18-54-default root=UUID=478230c4-ef04-4f7e-ad47-733fd1f28a76 ima_policy=tcb splash=silent video=1024x768 plymouth.ignore-serial-consoles console=ttyS0 console=tty softlockup_panic=1 kernel.softlockup_panic=1 mitigations=auto ignore_loglevel
-ima_measurements 1 TINFO: verify adding record to the IMA measurement list
-ima_measurements 1 TBROK: failed to get algorithm/digest for '/tmp/LTP_ima_measurements.6WSmgkHZ13/test.txt': measurement record not found
-ima_measurements 1 TINFO: computing digest for  algorithm
-ima_measurements 1 TCONF: cannot compute digest for  algorithm
-ima_measurements 1 TINFO: AppArmor enabled, this may affect test results
-ima_measurements 1 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-ima_measurements 1 TINFO: loaded AppArmor profiles: none
-
-I need to have closer look what the problem is. It can be fixed by checking
-policy with require_policy_writable in the setup. But that's problem for missing
-coverage (TCONF for first 3 tests).
-
-2) writing policy in ima_measurement.sh leads to TCONF ima_policy.sh on systems
-without CONFIG_IMA_WRITE_POLICY. This has has no easy solution. Either we manage
-to load each policy for each overlay [1] or add support for reboot to LTP [2] and
-restart after each test or just some functionality will be skipped due policy
-disappear after writting.
-
-But still IMHO it'd be better to separate test4() into it's own file to not
-affect the original 3 tests in ima_measurement.sh (unless we fix the problem
-with repeated running of ima_measurement.sh).
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/issues/720
-[2] https://github.com/linux-test-project/ltp/issues/868
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
