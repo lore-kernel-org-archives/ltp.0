@@ -1,80 +1,66 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Fri, 17 Sep 2021 09:59:23 +0000
-Subject: [LTP] [PATCH v3 4/5] syscalls/dup2/dup205: Convert to new API
-In-Reply-To: <OSZPR01MB64547BE94AEC979C8E0AFF1FF7DD9@OSZPR01MB6454.jpnprd01.prod.outlook.com>
-References: <20210916104933.33409-1-qi.fuli@fujitsu.com>
- <20210916104933.33409-5-qi.fuli@fujitsu.com>
- <bcc00ba4-2e7d-8ec3-2856-6cde6d45b587@163.com>
- <OSZPR01MB64547BE94AEC979C8E0AFF1FF7DD9@OSZPR01MB6454.jpnprd01.prod.outlook.com>
-Message-ID: <61446711.4020101@fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 17 Sep 2021 12:18:26 +0200
+Subject: [LTP] [PATCH v2] tst_test: using SIGTERM to terminate process
+In-Reply-To: <YURdMRsvyGRcF77X@pevik>
+References: <20210519085812.27263-1-liwang@redhat.com> <YUJ2XA7W3JPODyNC@pevik>
+ <YUJ7SC/FoA8wTaf2@pevik> <YURW7NKNSSr0J6pL@yuki>
+ <YURdMRsvyGRcF77X@pevik>
+Message-ID: <YURrcrX9RQYIMt4V@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All
->> Subject: Re: [LTP] [PATCH v3 4/5] syscalls/dup2/dup205: Convert to new API
+> Hi Cyril,
 
->>> +
->>> +	if (TST_ERR != EBADF)
->>> +		tst_res(TFAIL, "bad errno on dup2 failure");
->>
->> Hi Qi,
->>
->> Why do you only check EBADF? The old test checks three errno.
->
-> Thanks for the comments.
-> Both Xu and I got the failures with EBADF,
-> so I think that checking EINVAL and ENFILE is not necessary.
-Yes, My machine fails with EBADF.
-Look this case history, it said nothing about why need three checks.
-But kernel code in 4e1e018ecc6f ("PATCH] fix RLIM_NOFILE handling
-") ,
+> > Hi!
+> > > setup()
+> > > {
+> > > 	tst_brk TCONF "quit now!"
+> > > }
 
-it seems old kernel will return EINVAL when rlimit set to 0.
-Then will return ENFILE when rlimit set to 0.
+> > > do_test()
+> > > {
+> > > 	tst_res TPASS "pass :)"
+> > > }
 
+> > > tst_run
+> > > EOF
 
-And now it looks only fails with EBADF from kernel fs/file.c code.
+> > > # while true; do ./debug.sh; done
 
-> I wonder your opinion.
->>
->>> +
->>> +	if (ifile<  min)
->>> +		tst_res(TFAIL, "Not enough files duped");
->>> +	else if (ifile>  min)
->>> +		tst_res(TFAIL, "Too many files duped");
->>> +	else
->>> +		tst_res(TPASS, "Test passed.");
->>> +
->>> +	SAFE_CLOSE(fildes[0]);
->>
->> Why do you close only fildes[0]?
->
-> I did try close all fildes[ifile], and it occurred close(-1).
-> After talking with Xu, we think that close oldfd is enough.
-I think we don't need to close all filedes because dup2 can close newfd
-before reuse.  We should close them in cleanup function.
+> > I managed to reproduce this in dash. I bet that this is a bug where
+> > signal handler inside dash is temporarily disabled when we install the
+> > trap and if we manage to hit that window the signal is discarded. At
+> > least that is my working theory. After I've installed debug prints, in
+> > the cases where it hangs the signal was sent just before have installed
+> > the trap. And in some cases when the signal arrives the timer process is
+> > killed but the trap is not invoked. So it really looks like signal
+> > handling in dash is simply broken. Not sure what we can do about bugs
+> > like this apart from switching to a real programming language.
+Which version of bash and dash are you testing on?
 
-Best Regards
-Yang Xu
->
-> Best,
-> QI
->
->>
->> Best Regards,
->>
->> Xiao Yang
->>
->>> +	SAFE_UNLINK(pfilname);
->>> +}
->>> +
->>> +static struct tst_test test = {
->>> +	.needs_tmpdir = 1,
->>> +	.test_all = run,
->>> +	.setup = setup,
->>> +	.cleanup = cleanup,
->>> +};
->
+> Thanks for the debugging. *bash* is also affected, at least some releases.
+> I reproduced it also on some older SLES, with bash 4.4.
+dash 0.5.11.4 and 5.1.8 on my Tumbleweed laptop are OK.
+
+I tested it on various my VM:
+
+dash *failing*: 0.5.8 (SLES), 0.5.11.3 (Tumbleweed), 0.5.11+git20200708+dd9ef66-5 (Debian), 0.5.7-4+b1 (Debian)
+dash *OK*: 0.5.11.2 (SLES 15), 0.5.10.2 (CentOS)
+
+bash *failing*: 5.1.4-1.4 (Tumbleweed), 4.4-9.7.1 (SLES 15)
+bash *ok*: 4.4-17 (SLES 15), 4.3-83 (SLES 12), 4.3-11+deb8u (Debian), 5.1-2+b3
+(Debian), 4.2.46-34 (CentOS)
+
+I have no idea what it causes, whether really some bash and dash versions are
+buggy or it's reproducible only on certain environment.
+
+Any tip what to search for?
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
