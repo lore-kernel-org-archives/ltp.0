@@ -1,66 +1,198 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 17 Sep 2021 12:18:26 +0200
-Subject: [LTP] [PATCH v2] tst_test: using SIGTERM to terminate process
-In-Reply-To: <YURdMRsvyGRcF77X@pevik>
-References: <20210519085812.27263-1-liwang@redhat.com> <YUJ2XA7W3JPODyNC@pevik>
- <YUJ7SC/FoA8wTaf2@pevik> <YURW7NKNSSr0J6pL@yuki>
- <YURdMRsvyGRcF77X@pevik>
-Message-ID: <YURrcrX9RQYIMt4V@pevik>
+From: QI Fuli <fukuri.sai@gmail.com>
+Date: Fri, 17 Sep 2021 19:19:06 +0900
+Subject: [LTP] [PATCH v2 1/2] syscalls/dup3_01: Rewrite and convert to new
+ API
+In-Reply-To: <20210917101907.2657-1-qi.fuli@fujitsu.com>
+References: <20210917101907.2657-1-qi.fuli@fujitsu.com>
+Message-ID: <20210917101907.2657-2-qi.fuli@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi Cyril,
+From: QI Fuli <qi.fuli@fujitsu.com>
 
-> > Hi!
-> > > setup()
-> > > {
-> > > 	tst_brk TCONF "quit now!"
-> > > }
+    - divide into two testcases
+    - convert to new API
 
-> > > do_test()
-> > > {
-> > > 	tst_res TPASS "pass :)"
-> > > }
+Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
+---
+ testcases/kernel/syscalls/dup3/dup3_01.c | 159 +++++++----------------
+ 1 file changed, 47 insertions(+), 112 deletions(-)
 
-> > > tst_run
-> > > EOF
+diff --git a/testcases/kernel/syscalls/dup3/dup3_01.c b/testcases/kernel/syscalls/dup3/dup3_01.c
+index 6a44ec809..3b3d9ae0d 100644
+--- a/testcases/kernel/syscalls/dup3/dup3_01.c
++++ b/testcases/kernel/syscalls/dup3/dup3_01.c
+@@ -1,120 +1,55 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/* Copyright (c) Ulrich Drepper <drepper@redhat.com>                          */
+-/* Copyright (c) International Business Machines  Corp., 2009                 */
+-/*                                                                            */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or          */
+-/* (at your option) any later version.                                        */
+-/*                                                                            */
+-/* This program is distributed in the hope that it will be useful,            */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+-/* the GNU General Public License for more details.                           */
+-/*                                                                            */
+-/* You should have received a copy of the GNU General Public License          */
+-/* along with this program;  if not, write to the Free Software               */
+-/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+-/*                                                                            */
+-/******************************************************************************/
+-/******************************************************************************/
+-/*                                                                            */
+-/* File:        dup3_01.c                                                     */
+-/*                                                                            */
+-/* Description: This Program tests the new system call introduced in 2.6.27.  */
+-/*              Ulrich??s comment as in:                                       */
+-/* http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=336dd1f70ff62d7dd8655228caed4c5bfc818c56 */
+-/*              says:                                                         */
+-/* This patch adds the new dup3 syscall.  It extends the old dup2 syscall by  */
+-/* one parameter which is meant to hold a flag value.  Support for the        */
+-/* O_CLOEXEC flag is added in this patch. The following test must be adjusted */
+-/* for architectures other than x86 and x86-64 and in case the                */
+-/* syscall numbers changed.                                                   */
+-/*                                                                            */
+-/* Usage:  <for command-line>                                                 */
+-/* dup3_01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                               */
+-/*      where,  -c n : Run n copies concurrently.                             */
+-/*              -e   : Turn on errno logging.                                 */
+-/*              -i n : Execute test n times.                                  */
+-/*              -I x : Execute test for x seconds.                            */
+-/*              -P x : Pause for x seconds between iterations.                */
+-/*              -t   : Turn on syscall timing.                                */
+-/*                                                                            */
+-/* Total Tests: 1                                                             */
+-/*                                                                            */
+-/* Test Name:   dup3_01                                                       */
+-/*                                                                            */
+-/* Author:      Ulrich Drepper <drepper@redhat.com>                           */
+-/*                                                                            */
+-/* History:     Created - Jan 13 2009 - Ulrich Drepper <drepper@redhat.com>   */
+-/*              Ported to LTP                                                 */
+-/*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+-/******************************************************************************/
+-#include <fcntl.h>
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Ulrich Drepper <drepper@redhat.com>
++ * Copyright (c) International Business Machines  Corp., 2009
++ * Created - Jan 13 2009 - Ulrich Drepper <drepper@redhat.com>
++ * Ported to LTP - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>
++ */
++/*\
++ * [Description]
++ * Testcase to check whether dup3() supports O_CLOEXEC flag.
++ */
++
++#define _GNU_SOURCE
++
+ #include <stdio.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/syscall.h>
++#include <stdbool.h>
+ #include <errno.h>
+-
+-#include "test.h"
+-#include "lapi/fcntl.h"
+-#include "lapi/syscalls.h"
+-
+-char *TCID = "dup3_01";
+-int TST_TOTAL = 1;
+-
+-void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-
+-void setup(void)
+-{
+-	TEST_PAUSE;
+-	tst_tmpdir();
+-}
+-
+-int main(int argc, char *argv[])
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++
++static struct tcase {
++	int o_flag;
++	bool coe_flag;
++	char *desc;
++} tcases [] = {
++	{0, true, "dup3(1, 4, 0)"},
++	{O_CLOEXEC, false, "dup3(1, 4, O_CLOEXEC)"},
++};
++
++static void run(unsigned int i)
+ {
+-	int fd, coe;
++	int fd, ret;
++	struct tcase *tc = tcases + i;
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	TEST(dup3(1, 4, tc->o_flag));
+ 
+-	if ((tst_kvercmp(2, 6, 27)) < 0)
+-		tst_brkm(TCONF, NULL,
+-			 "This test can only run on kernels that are 2.6.27 and higher");
+-	setup();
+-
+-	fd = ltp_syscall(__NR_dup3, 1, 4, 0);
+-	if (fd == -1) {
+-		tst_brkm(TFAIL | TERRNO, cleanup, "dup3(0) failed");
+-	}
+-	coe = fcntl(fd, F_GETFD);
+-	if (coe == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "fcntl failed");
++	fd = TST_RET;
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "%s failed", tc->desc);
++		return;
+ 	}
+-	if (coe & FD_CLOEXEC) {
+-		tst_brkm(TFAIL, cleanup, "dup3(0) set close-on-exec flag");
+-	}
+-	close(fd);
+ 
+-	fd = ltp_syscall(__NR_dup3, 1, 4, O_CLOEXEC);
+-	if (fd == -1) {
+-		tst_brkm(TFAIL | TERRNO, cleanup, "dup3(O_CLOEXEC) failed");
+-	}
+-	coe = fcntl(fd, F_GETFD);
+-	if (coe == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "fcntl failed");
+-	}
+-	if ((coe & FD_CLOEXEC) == 0) {
+-		tst_brkm(TFAIL, cleanup,
+-			 "dup3(O_CLOEXEC) set close-on-exec flag");
+-	}
+-	close(fd);
+-	tst_resm(TPASS, "dup3(O_CLOEXEC) PASSED");
++	ret = SAFE_FCNTL(fd, F_GETFD);
++	if ((ret & FD_CLOEXEC) == tc->coe_flag)
++		tst_res(TFAIL, "%s set close-on-exec flag", tc->desc);
++	else
++		tst_res(TPASS, "%s PASSED", tc->desc);
++
++	SAFE_CLOSE(fd);
++};
+ 
+-	cleanup();
+-	tst_exit();
+-}
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++};
+-- 
+2.31.1
 
-> > > # while true; do ./debug.sh; done
-
-> > I managed to reproduce this in dash. I bet that this is a bug where
-> > signal handler inside dash is temporarily disabled when we install the
-> > trap and if we manage to hit that window the signal is discarded. At
-> > least that is my working theory. After I've installed debug prints, in
-> > the cases where it hangs the signal was sent just before have installed
-> > the trap. And in some cases when the signal arrives the timer process is
-> > killed but the trap is not invoked. So it really looks like signal
-> > handling in dash is simply broken. Not sure what we can do about bugs
-> > like this apart from switching to a real programming language.
-Which version of bash and dash are you testing on?
-
-> Thanks for the debugging. *bash* is also affected, at least some releases.
-> I reproduced it also on some older SLES, with bash 4.4.
-dash 0.5.11.4 and 5.1.8 on my Tumbleweed laptop are OK.
-
-I tested it on various my VM:
-
-dash *failing*: 0.5.8 (SLES), 0.5.11.3 (Tumbleweed), 0.5.11+git20200708+dd9ef66-5 (Debian), 0.5.7-4+b1 (Debian)
-dash *OK*: 0.5.11.2 (SLES 15), 0.5.10.2 (CentOS)
-
-bash *failing*: 5.1.4-1.4 (Tumbleweed), 4.4-9.7.1 (SLES 15)
-bash *ok*: 4.4-17 (SLES 15), 4.3-83 (SLES 12), 4.3-11+deb8u (Debian), 5.1-2+b3
-(Debian), 4.2.46-34 (CentOS)
-
-I have no idea what it causes, whether really some bash and dash versions are
-buggy or it's reproducible only on certain environment.
-
-Any tip what to search for?
-
-Kind regards,
-Petr
-
-> Kind regards,
-> Petr
