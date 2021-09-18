@@ -2,81 +2,84 @@ Return-Path: <SRS0=tzzg=OI=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CC72C433EF
-	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 12:11:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F7ADC433EF
+	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 12:12:02 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 617E061244
-	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 12:11:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 617E061244
+	by mail.kernel.org (Postfix) with ESMTPS id ADC426127A
+	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 12:12:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ADC426127A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0AB0B3C9085
-	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 14:11:49 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5A6BF3C8814
+	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 14:12:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6442D3C1D28
- for <ltp@lists.linux.it>; Sat, 18 Sep 2021 14:11:38 +0200 (CEST)
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com
- [IPv6:2607:f8b0:4864:20::42d])
+ by picard.linux.it (Postfix) with ESMTPS id 75C8C3C8972
+ for <ltp@lists.linux.it>; Sat, 18 Sep 2021 14:11:41 +0200 (CEST)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com
+ [IPv6:2607:f8b0:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E89BD1A003DB
- for <ltp@lists.linux.it>; Sat, 18 Sep 2021 14:11:37 +0200 (CEST)
-Received: by mail-pf1-x42d.google.com with SMTP id w19so11676522pfn.12
- for <ltp@lists.linux.it>; Sat, 18 Sep 2021 05:11:37 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9D7EC10000EA
+ for <ltp@lists.linux.it>; Sat, 18 Sep 2021 14:11:40 +0200 (CEST)
+Received: by mail-pf1-x429.google.com with SMTP id m26so11784260pff.3
+ for <ltp@lists.linux.it>; Sat, 18 Sep 2021 05:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=9+a/mDwQgzY+QFjZv0Dp1/ZZ5EL189wI5Q6n8OuE0F4=;
- b=q5+f9x7tsAiwoEz1kAzIzpCrdgQ5Flg9mEisxBuujkItoLhmOn2HcU4jto0dKbJDxQ
- BRnHloX0rE4NN8gW/vMG9K0LYVBw517JiOLpulSPCmVPZqSHn+kJ3xzJSIjW61vXsxOR
- JkUFUxSWDKIR0sGSA8ZXNEX9dHqhVaAJsIo3AVZZC0XOP7WjQ8tNpiGTnxlyIDRa4rnL
- 4tZ6nPZC4jI4A1P0obgOLXxGkgXE9fSOxHb9gTrnJWYt5D2zZmOpIxY4BRWN8U3wU85s
- sd2JR/AwIkB7EYTCf5EDvIEkgXfjIr0M4/hcKGczMgjhUYftb/RBmsoCE3NU0Wq1z83v
- ZMzw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=Rq2AWAUY6w04AFc57uJgaEno/xtKfr1k2NciRcXYkrc=;
+ b=SVqoTE4MirLn3/8RhuP+ljgjsKtnMg5bk6AzVKpmzjvVpnUJZsmvsvUbfUVoDTP+2M
+ WGN7WRitDgBSpIOVBgR1dph31kYHNG373TaOotCoJ/Lg5LXtH9HaqCv5vAFfO8RMqvxi
+ LKk/LOgKNCVnbA03w9m2NidcSHm7LzROWSyC6dKwmlOxxWocytlykQ+NkkBliGv9UADC
+ nwal4csuMLM/E5LYz+8NHm26n2hp6+4yD3DwRmN5tTLZIfC5XZ0Y/8Liu+dmXMzZiHWk
+ bB8kznItZcwyWt/rxGHaiGqUcJz7iH1eZxoNtUq7eRKrDgMf3pj5bb9GQyOnGxSP2txo
+ dOYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=9+a/mDwQgzY+QFjZv0Dp1/ZZ5EL189wI5Q6n8OuE0F4=;
- b=XsZuDFVWbzjynR3SEBW4Eo8CZqbUTOvEqobQI0RTtVj9aY892Wk964n0FYiBA/8rtw
- 1HUeqW20FIeQxYOXauVfRfk2q7tBAZhd98/+KOiKGBNzfKk/rvJtgw0Mw3b8zEQ672wt
- KVjjlYxnfA6fqFwuF1dKhiKVwxGaDfxr+0tqq4gyO8EIipNo1aHv2HlTAT67X9nYPcLb
- q6NWu2vN+tBWZLItTnyUFwmGOzytWYIIeiQ2wE21T/W7/Tq9mWI5eRpiwUbTZEZKatgx
- 1ihI2SP+X3McRrPF2Ab0afx7Pmmt/Rqrj0r53gDafj9OD9zjur5ywYxpsuW0ayA7fu+v
- eDRA==
-X-Gm-Message-State: AOAM532+Awyh34NBj94vFw6HMUvd4dq9K+eFQBWcQkMeejHDSAHbU0Lz
- 0Fu7nQfX8S1d1NHrpiy/Ugj/fUA19n3Y4wM3
-X-Google-Smtp-Source: ABdhPJzyDUEUEJgNoRY2ZqKb9tGLyM7FJgzgRk1PRMCPfPpvcossSjt1kJTonW/iEyvABJ5TNMDYAw==
-X-Received: by 2002:a05:6a00:983:b0:444:ac28:1ee1 with SMTP id
- u3-20020a056a00098300b00444ac281ee1mr8847950pfg.49.1631967096348; 
- Sat, 18 Sep 2021 05:11:36 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=Rq2AWAUY6w04AFc57uJgaEno/xtKfr1k2NciRcXYkrc=;
+ b=B4iR/Gv5O2xi91TQF4qEAFdrM6j54uNNhg2d9pEUMHlDI/aX++D/IJVHIgIEemRS2R
+ +fU67D0JGS0pAyUJT9of4C6uagIRx+Ri6opWklxuuTSJl6p3YJhZ/3b63jNp0FHk/aXS
+ pelsiQ17m1VJ3pMjjdaD95xG3YsbE87M4caE3pEpm/6A0U620QfB3sdR9O1pGEx4WYRB
+ NXjxPLC+7eZP1FZGWyrR+KPd/PwazqenW2EP+Kbf+MFAx7uoYRrcPR+iIrwQ57NtWYGi
+ 2Qzd82IwyHn1k0rXTYMTAumxx/EJMy0LbBKZAaYatl9bxiQ4iim00i37TSSZInZpoAp9
+ Y81w==
+X-Gm-Message-State: AOAM5328fBhwuWvHity7K6kIK+wOtV+E3QIg2xbYZ5BFlT1Bd5Hymcg4
+ UTdKnL+2SxAPNEZRXawHdSTUul7wT/bjX8or
+X-Google-Smtp-Source: ABdhPJy7j1eh9KMLcR7bT8V4sklVBCsiWHwR/oQXiL4pBY052okq8b13ptOfZZkUqhz+0B1s7jwLZw==
+X-Received: by 2002:a05:6a00:a8a:b029:30c:a10b:3e3f with SMTP id
+ b10-20020a056a000a8ab029030ca10b3e3fmr15430570pfl.40.1631967099111; 
+ Sat, 18 Sep 2021 05:11:39 -0700 (PDT)
 Received: from fedora34.. (125x103x255x1.ap125.ftth.ucom.ne.jp.
  [125.103.255.1])
- by smtp.gmail.com with ESMTPSA id g13sm9255556pfi.176.2021.09.18.05.11.34
+ by smtp.gmail.com with ESMTPSA id g13sm9255556pfi.176.2021.09.18.05.11.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Sep 2021 05:11:35 -0700 (PDT)
+ Sat, 18 Sep 2021 05:11:38 -0700 (PDT)
 From: QI Fuli <fukuri.sai@gmail.com>
 X-Google-Original-From: QI Fuli <qi.fuli@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Sat, 18 Sep 2021 21:11:09 +0900
-Message-ID: <20210918121114.10694-1-qi.fuli@fujitsu.com>
+Date: Sat, 18 Sep 2021 21:11:10 +0900
+Message-ID: <20210918121114.10694-2-qi.fuli@fujitsu.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210918121114.10694-1-qi.fuli@fujitsu.com>
+References: <20210918121114.10694-1-qi.fuli@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 0/5] Convert syscalls/dup2/dup2{01...05} to new API
+Subject: [LTP] [PATCH v5 1/5] syscalls/dup2/dup201: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,30 +96,216 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210918121109.hPIUYCBPJbv09w5mV0pTT8s2GOBELCesgOwv2h24xJ8@z>
+Message-ID: <20210918121110.BQuXm1ll5ULzYTKU2jGA4Bm6aA2mj-u8BAhJdUpsyXI@z>
 
 From: QI Fuli <qi.fuli@fujitsu.com>
 
-Convert syscalls/dup2/dup2{01...05} to new API
+Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
+---
+ testcases/kernel/syscalls/dup2/dup201.c | 174 +++++-------------------
+ 1 file changed, 33 insertions(+), 141 deletions(-)
 
-QI Fuli (5):
-  syscalls/dup2/dup201: Convert to new API
-  syscalls/dup2/dup202: Convert to new API and merge dup204 into dup202
-  syscalls/dup2/dup203: Convert to new API
-  syscalls/dup2/dup205: Convert to new API
-  syscalls/dup2: rename dup205 to dup204
-
- runtest/syscalls                          |   1 -
- testcases/kernel/syscalls/dup2/.gitignore |   1 -
- testcases/kernel/syscalls/dup2/Makefile   |   2 +-
- testcases/kernel/syscalls/dup2/dup201.c   | 174 +++-----------
- testcases/kernel/syscalls/dup2/dup202.c   | 210 ++++++-----------
- testcases/kernel/syscalls/dup2/dup203.c   | 266 +++++++---------------
- testcases/kernel/syscalls/dup2/dup204.c   | 165 +++++---------
- testcases/kernel/syscalls/dup2/dup205.c   | 134 -----------
- 8 files changed, 244 insertions(+), 709 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/dup2/dup205.c
-
+diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
+index 4fa34466a..cc1563115 100644
+--- a/testcases/kernel/syscalls/dup2/dup201.c
++++ b/testcases/kernel/syscalls/dup2/dup201.c
+@@ -1,163 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * 07/2001 Ported by Wayne Boyer
++ * 01/2002 Removed EMFILE test - Paul Larson
+  */
+-
+-/*
+- * NAME
+- *	dup201.c
+- *
+- * DESCRIPTION
+- *	Negative tests for dup2() with bad fd (EBADF)
+- *
+- * ALGORITHM
+- * 	Setup:
+- *	a.	Setup signal handling.
+- *	b.	Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	a.	Loop if the proper options are given.
+- *	b.	Loop through the test cases
+- * 	c.	Execute dup2() system call
+- *	d.	Check return code, if system call failed (return=-1), test
+- *		for EBADF.
+- *
+- * 	Cleanup:
+- * 	a.	Print errno log and/or timing stats if options given
++/*\
++ * [Description]
+  *
+- * USAGE:  <for command-line>
+- *  dup201 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
++ * Negative tests for dup2() with bad fd (EBADF)
+  *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *	01/2002 Removed EMFILE test - Paul Larson
++ * - First fd argument is less than 0
++ * - First fd argument is getdtablesize()
++ * - Second fd argument is less than 0
++ * - Second fd argument is getdtablesize()
+  *
+- * RESTRICTIONS
+- * 	NONE
+  */
+ 
+-#include <sys/types.h>
+-#include <fcntl.h>
+ #include <errno.h>
+-#include <sys/time.h>
+-#include <sys/resource.h>
+ #include <unistd.h>
+-#include <signal.h>
+-#include "test.h"
++#include "tst_test.h"
+ 
+-void setup(void);
+-void cleanup(void);
++static int maxfd, mystdout;
++static int goodfd = 5;
++static int badfd = -1;
+ 
+-char *TCID = "dup201";
+-int TST_TOTAL = 4;
+-
+-int maxfd;
+-int goodfd = 5;
+-int badfd = -1;
+-int mystdout = 0;
+-
+-struct test_case_t {
++static struct tcase {
+ 	int *ofd;
+ 	int *nfd;
+-	int error;
+-	void (*setupfunc) ();
+-} TC[] = {
+-	/* First fd argument is less than 0 - EBADF */
+-	{&badfd, &goodfd, EBADF, NULL},
+-	    /* First fd argument is getdtablesize() - EBADF */
+-	{&maxfd, &goodfd, EBADF, NULL},
+-	    /* Second fd argument is less than 0 - EBADF */
+-	{&mystdout, &badfd, EBADF, NULL},
+-	    /* Second fd argument is getdtablesize() - EBADF */
+-	{&mystdout, &maxfd, EBADF, NULL},
++} tcases[] = {
++	{&badfd, &goodfd},
++	{&maxfd, &goodfd},
++	{&mystdout, &badfd},
++	{&mystdout, &maxfd},
+ };
+ 
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/* loop through the test cases */
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			/* call the test case setup routine if necessary */
+-			if (TC[i].setupfunc != NULL)
+-				(*TC[i].setupfunc) ();
+-
+-			TEST(dup2(*TC[i].ofd, *TC[i].nfd));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS,
+-					 "failed as expected - errno = %d : %s",
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "failed unexpectedly; "
+-					 "expected %d: %s", TC[i].error,
+-					 strerror(TC[i].error));
+-			}
+-		}
+-	}
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+ 	/* get some test specific values */
+ 	maxfd = getdtablesize();
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- */
+-void cleanup(void)
++static void run(unsigned int i)
+ {
+-	tst_rmdir();
++	struct tcase *tc = tcases + i;
++
++	TST_EXP_FAIL2(dup2(*tc->ofd, *tc->nfd), EBADF,
++			"dup2(%d, %d)", *tc->ofd, *tc->nfd);
+ }
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.setup = setup,
++};
 -- 
 2.31.1
 
