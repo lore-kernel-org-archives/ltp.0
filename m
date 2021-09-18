@@ -8,58 +8,60 @@ X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03D2CC433EF
-	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 10:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1503DC433F5
+	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 10:25:11 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13964610E9
-	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 10:22:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 13964610E9
+	by mail.kernel.org (Postfix) with ESMTPS id 2FB3C61076
+	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 10:25:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2FB3C61076
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=163.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DC473C8806
-	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 12:22:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 453BF3C87FB
+	for <ltp@archiver.kernel.org>; Sat, 18 Sep 2021 12:25:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 43E6A3C1CD1
- for <ltp@lists.linux.it>; Sat, 18 Sep 2021 12:22:38 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 072BB3C1CD1
+ for <ltp@lists.linux.it>; Sat, 18 Sep 2021 12:24:57 +0200 (CEST)
 Received: from mail-m975.mail.163.com (mail-m975.mail.163.com [123.126.97.5])
- by in-7.smtp.seeweb.it (Postfix) with ESMTP id F404B2009B6
- for <ltp@lists.linux.it>; Sat, 18 Sep 2021 12:22:35 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id B82AC200B19
+ for <ltp@lists.linux.it>; Sat, 18 Sep 2021 12:24:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=hCmdu
- JHF1JUzW+oJ8AGkN4ev3zEQL9vvqCNSZJ2HbSc=; b=eQGLjuvmEnuaIP1oViVe2
- Ey8u8cVRuAra1RqOV+L/hdTTUyCzUNq3Yt0qNY5PwARRYUZdoehj5cb1HUfuedhB
- F9eNYxECNWc3mq5Z4vwZu1h4iF0EeqrzMV/jLTTcgn5Xig8BoZqpCdgTAjXool2j
- E1B2LUjzdQCiDiQVhgQg7Y=
+ s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=DtNBG
+ aEPqkQKmdT7D9kQsGM+NJjs2JqOSvCDRbXnIB4=; b=b7mCPkU8YMuBLmETc6WC5
+ qtIJgKX7qrZYdZQahqM30BaluTWEN6GVds2mSs6x+c2oGPm5kGPvTZ+hrE4qTyyw
+ bkBd4qmX1RPmRS8AmtPyKTo83oR8+lApeJL/quHZkiBd1euBgYeDzOYuRUYavJH/
+ wZMKt8GA+E7gdrFuZYILrk=
 Received: from [172.20.10.4] (unknown [122.96.47.73])
- by smtp5 (Coremail) with SMTP id HdxpCgAHTurlvUVh0q+5BQ--.4639S2;
- Sat, 18 Sep 2021 18:22:30 +0800 (CST)
+ by smtp5 (Coremail) with SMTP id HdxpCgAHTelxvkVh7vG5BQ--.5801S2;
+ Sat, 18 Sep 2021 18:24:49 +0800 (CST)
 To: QI Fuli <fukuri.sai@gmail.com>, ltp@lists.linux.it
 References: <20210918072609.8576-1-qi.fuli@fujitsu.com>
- <20210918072609.8576-4-qi.fuli@fujitsu.com>
+ <20210918072609.8576-3-qi.fuli@fujitsu.com>
 From: Xiao Yang <ice_yangxiao@163.com>
-Message-ID: <fa11ecee-5d20-f729-c80c-a8000addef52@163.com>
-Date: Sat, 18 Sep 2021 18:22:28 +0800
+Message-ID: <a2a62fbf-f1a1-30cf-d95a-a9f51cf4df9e@163.com>
+Date: Sat, 18 Sep 2021 18:24:48 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210918072609.8576-4-qi.fuli@fujitsu.com>
+In-Reply-To: <20210918072609.8576-3-qi.fuli@fujitsu.com>
 Content-Language: en-US
-X-CM-TRANSID: HdxpCgAHTurlvUVh0q+5BQ--.4639S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jry3Ww4xKFW5WryUGr4fuFg_yoWfJF1rpa
- 93Gw17Jrn3Jry0gr4Sv3yDGF1vvrsIqryFqw1Duw4Y9F1rXryrtrs3K3yrJF18JrZ5uF1f
- Wan8Wr9rAayDtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j-hL8UUUUU=
+X-CM-TRANSID: HdxpCgAHTelxvkVh7vG5BQ--.5801S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Jry3CFyxCFWrGw1ruw4fuFg_yoWDGw1UpF
+ 9rXry8GF4kJFy0kFZ2qw4UXa18C39xWF1UKw4UZanYgF4fJryrtF4SgF43Xa4kGrZ3Wa4r
+ WF45ur93Ja1jqF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j-eOJUUUUU=
 X-Originating-IP: [122.96.47.73]
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbBEgcSXl6idVUfYgAAs4
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbBQxESXl++NB135gAAsH
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/5] syscalls/dup2/dup203: Convert to new API
+Subject: Re: [LTP] [PATCH v4 2/5] syscalls/dup2/dup202: Convert to new API
+ and merge dup204 into dup202
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,25 +78,26 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20210918102228.-91lPiJGNXNUHbBGvgLXlHw7R5i4rTOuUmgdnSKcjeQ@z>
+Message-ID: <20210918102448.ve5p3O4fbre4vqUbY9j-vtYGNmdzONsPALFyuIga1lA@z>
+
 
 On 9/18/21 3:26 PM, QI Fuli wrote:
 > From: QI Fuli <qi.fuli@fujitsu.com>
 >
->   - divide original testcase into two
->   - check the content of file and FD_CLOEXEC flag on both open and close
->     file descriptors
+>   - merge dup204 (check whether the inode number are the same) into dup202
 >
 > Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 > ---
->   testcases/kernel/syscalls/dup2/dup203.c | 259 +++++++-----------------
->   1 file changed, 75 insertions(+), 184 deletions(-)
+>   testcases/kernel/syscalls/dup2/dup202.c | 205 ++++++++----------------
+>   testcases/kernel/syscalls/dup2/dup204.c | 128 ---------------
+>   2 files changed, 64 insertions(+), 269 deletions(-)
+>   delete mode 100644 testcases/kernel/syscalls/dup2/dup204.c
 >
-> diff --git a/testcases/kernel/syscalls/dup2/dup203.c b/testcases/kernel/syscalls/dup2/dup203.c
-> index e6f281adf..d920dcda0 100644
-> --- a/testcases/kernel/syscalls/dup2/dup203.c
-> +++ b/testcases/kernel/syscalls/dup2/dup203.c
-> @@ -1,208 +1,99 @@
+> diff --git a/testcases/kernel/syscalls/dup2/dup202.c b/testcases/kernel/syscalls/dup2/dup202.c
+> index c87769fa9..1d179f1d7 100644
+> --- a/testcases/kernel/syscalls/dup2/dup202.c
+> +++ b/testcases/kernel/syscalls/dup2/dup202.c
+> @@ -1,167 +1,90 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 >   /*
 > - *
@@ -119,17 +122,22 @@ On 9/18/21 3:26 PM, QI Fuli wrote:
 >   
 > -/*
 > - * NAME
-> - *	dup203.c
-> - *
+> - *	dup202.c
+> +/*\
+> + * [Description]
+>    *
 > - * DESCRIPTION
-> - *	Testcase to check the basic functionality of dup2().
+> - *	Is the access mode the same for both file descriptors?
+> - *		0: read only ?	"0444"
+> - *		1: write only ? "0222"
+> - *		2: read/write ? "0666"
 > - *
 > - * ALGORITHM
-> - *	1.	Attempt to dup2() on an open file descriptor.
-> - *	2.	Attempt to dup2() on a close file descriptor.
+> - *	Creat a file with each access mode; dup each file descriptor;
+> - *	stat each file descriptor and compare modes of each pair
 > - *
 > - * USAGE:  <for command-line>
-> - *  dup203 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *  dup202 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 > - *     where,  -c n : Run n copies concurrently.
 > - *             -f   : Turn off functionality Testing.
 > - *             -i n : Execute test n times.
@@ -141,49 +149,70 @@ On 9/18/21 3:26 PM, QI Fuli wrote:
 > - *	07/2001 Ported by Wayne Boyer
 > - *
 > - * RESTRICTIONS
-> - *	NONE
-> +/*\
-> + * [Description]
-> + * Testcase to check the basic functionality of dup2().
-Please add a new line here.
-> + * - Attempt to dup2() on an open file descriptor.
-> + * - Attempt to dup2() on a close file descriptor.
+> - *	None
+> + * Test whether the access mode and inode number are the same for both file
+> + * descriptors.
+> + * Is the access mode the same for both file descriptors?
+
+There two descriptions seem redundant.
+
+> + * - 0: read only ? "0444"
+> + * - 1: write only ? "0222"
+> + * - 2: read/write ? "0666"
 >    */
 >   
-> -#include <fcntl.h>
-> -#include <sys/param.h>
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
 >   #include <errno.h>
-> -#include <string.h>
+> -#include <fcntl.h>
+>   #include <stdio.h>
 > -#include "test.h"
 > -#include "safe_macros.h"
-> +#include <stdio.h>
+> -
+> -char *TCID = "dup202";
+> -int TST_TOTAL = 3;
 > +#include "tst_test.h"
 > +#include "tst_safe_macros.h"
 >   
 > -void setup(void);
 > -void cleanup(void);
-> +static char filename0[40], filename1[40];
+> -
+> -char testfile[40];
+> -int fail;
+> -int newfd;
+> +static char testfile[40];
 >   
-> -char *TCID = "dup203";
-> -int TST_TOTAL = 1;
+>   /* set these to a known index into our local file descriptor table */
+> -int duprdo = 10, dupwro = 20, duprdwr = 30;
+> +static int duprdo = 10, dupwro = 20, duprdwr = 30;
+>   
+> -struct test_case_t {
 > +static struct tcase {
-> +	char *desc;
-> +	int is_close;
-> +} tcases [] = {
-Please remove the space between 'tcases' and '[]'
-> +	{"Test duping over an open fd", 0},
-> +	{"Test duping over a close fd", 1},
-> +};
+>   	int *nfd;
+>   	mode_t mode;
+> -} TC[] = {
+> -	/* The first test creat(es) a file with mode 0444 */
+> -	{
+> -	&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
+> -	    /* The second test creat(es) a file with mode 0222 */
+> -	{
+> -	&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
+> -	    /* The third test creat(es) a file with mode 0666 */
+> -	{
+> -	&duprdwr,
+> -		    (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)}
+> +} tcases[]= {
+> +	{&duprdo, (S_IRUSR | S_IRGRP | S_IROTH)},
+> +	{&dupwro, (S_IWUSR | S_IWGRP | S_IWOTH)},
+> +	{&duprdwr, (S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH)},
+>   };
 >   
 > -int main(int ac, char **av)
-> +static void run(unsigned int i)
+> +static void setup(void)
 >   {
-> -	int fd0, fd1, fd2, rval;
-> -	char filename0[40], filename1[40];
-> +	int fd0, fd1, fd2, rval, rc = 0;
->   	char buf[40];
->   
 > -	int lc;
+> -	int i, ofd;
+> -	struct stat oldbuf, newbuf;
 > -
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
@@ -192,184 +221,103 @@ Please remove the space between 'tcases' and '[]'
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > -
 > -		tst_count = 0;
-> -//block1:
-> -		tst_resm(TINFO, "Enter block 1");
-> -		tst_resm(TINFO, "Test duping over an open fd");
 > -
-> -		sprintf(filename0, "dup202.file0.%d\n", getpid());
-> -		sprintf(filename1, "dup202.file1.%d\n", getpid());
-> -		unlink(filename0);
-> -		unlink(filename1);
+> -		/* loop through the test cases */
+> -		for (i = 0; i < TST_TOTAL; i++) {
 > -
-> -		if ((fd0 = creat(filename0, 0666)) == -1)
-> -			tst_brkm(TBROK, cleanup, "cannot create first file");
-> -		if (write(fd0, filename0, strlen(filename0)) == -1)
-> -			tst_brkm(TBROK, cleanup, "filename0: write(2) failed");
+> -			if ((ofd = creat(testfile, TC[i].mode)) == -1)
+> -				tst_brkm(TBROK | TERRNO, cleanup,
+> -					 "creat failed");
 > -
-> -		if ((fd1 = creat(filename1, 0666)) == -1)
-> -			tst_brkm(TBROK, cleanup, "Cannot create second file");
-> -		if (write(fd1, filename1, strlen(filename1)) == -1)
-> -			tst_brkm(TBROK, cleanup, "filename1: write(2) failed");
+> -			TEST(dup2(ofd, *TC[i].nfd));
 > -
-> -		SAFE_CLOSE(cleanup, fd0);
-> -		if ((fd0 = open(filename0, O_RDONLY)) == -1)
-> -			tst_brkm(TBROK, cleanup, "open(2) on filename0 failed");
-> -
-> -		SAFE_CLOSE(cleanup, fd1);
-> -		if ((fd1 = open(filename1, O_RDONLY)) == -1)
-> -			tst_brkm(TBROK, cleanup, "open(2) on filename1 failed");
-> -
-> -		TEST(dup2(fd0, fd1));
-> -
-> -		if ((fd2 = TEST_RETURN) == -1) {
-> -			tst_resm(TFAIL, "call failed unexpectedly");
-> -		} else {
-> -			if (fd1 != fd2) {
-> -				tst_resm(TFAIL, "file descriptors don't match");
-> -				break;
+> -			if (TEST_RETURN == -1) {
+> -				tst_resm(TFAIL | TTERRNO,
+> -					 "call failed unexpectedly");
+> -				continue;
 > -			}
 > -
-> -			memset(buf, 0, sizeof(buf));
-> -			if (read(fd2, buf, sizeof(buf)) == -1)
-> -				tst_brkm(TBROK, cleanup, "read(2) failed");
-> -			if (strcmp(buf, filename0) != 0)
-> -				tst_resm(TFAIL, "read from file got bad data");
-> -			tst_resm(TPASS, "dup2 test 1 functionality is correct");
+> -			/* stat the original file */
+> -			SAFE_FSTAT(cleanup, ofd, &oldbuf);
+> -
+> -			/* stat the duped file */
+> -			SAFE_FSTAT(cleanup, *TC[i].nfd, &newbuf);
+> -
+> -			if (oldbuf.st_mode != newbuf.st_mode)
+> -				tst_resm(TFAIL, "original and dup "
+> -					 "modes do not match");
+> -			else
+> -				tst_resm(TPASS, "fstat shows new and "
+> -					 "old modes are the same");
+> -
+> -			/* remove the file so that we can use it again */
+> -			if (close(*TC[i].nfd) == -1)
+> -				perror("close failed");
+> -			if (close(ofd) == -1)
+> -				perror("close failed");
+> -			if (unlink(testfile) == -1)
+> -				perror("unlink failed");
 > -		}
+> -	}
 > -
-> -		close(fd0);
-> -		close(fd1);
-> -		close(fd2);
-> -		unlink(filename0);
-> -		unlink(filename1);
-> -
-> -		tst_resm(TINFO, "Exit block 1");
-> -
-> -//block2:
-> -		tst_resm(TINFO, "Enter block 2");
-> -		tst_resm(TINFO, "Test close on exec flag");
-> +	struct tcase *tc = tcases + i;
-Please add a new line.
-> +	tst_res(TINFO, tc->desc);
->   
-> -		sprintf(filename0, "dup02.%d\n", getpid());
-> -		unlink(filename0);
-> +	fd0 = SAFE_CREAT(filename0, 0666);
-> +	SAFE_WRITE(1, fd0, filename0, strlen(filename0));
-I think we need a cleanup() function to clean up some resource when 
-SAFE_XXX() fails.
-> +	SAFE_CLOSE(fd0);
->   
-> -		if ((fd0 = creat(filename0, 0666)) == -1) {
-> -			tst_brkm(TBROK, cleanup, "Cannot create first file");
-> -		}
-> -		if (fcntl(fd0, F_SETFD, 1) == -1) {
-> -			tst_brkm(TBROK, cleanup, "setting close on exec flag "
-> -				 "on fd0 failed");
-> -		}
-> -
-> -		if ((fd2 = creat(filename1, 0666)) == -1) {
-> -			tst_brkm(TBROK, cleanup, "Cannot create second file");
-> -		}
-> +	fd1 = SAFE_CREAT(filename1, 0666);
-> +	SAFE_WRITE(1, fd1, filename1, strlen(filename1));
-> +	fd0 = SAFE_OPEN(filename0, O_RDONLY);
-> +	SAFE_FCNTL(fd0, F_SETFD, 1);
->   
-> +	if (tc->is_close) {
->   		/* SAFE_CLOSE() sets the fd to -1 avoid it here */
-> -		rval = fd2;
-> -		SAFE_CLOSE(cleanup, rval);
-> -
-> -		TEST(dup2(fd0, fd2));
-> -
-> -		if ((fd1 = TEST_RETURN) == -1) {
-> -			tst_resm(TFAIL, "call failed unexpectedly");
-> -		} else {
-> -			if (fd1 != fd2) {
-> -				tst_resm(TFAIL, "bad dup2 descriptor %d", fd1);
-> -				break;
-> -			}
-> -
-> -			if ((rval = fcntl(fd1, F_GETFD, 0)) != 0) {
-> -				tst_resm(TBROK | TERRNO,
-> -					 "fcntl F_GETFD on fd1 failed; expected a "
-> -					 "return value of 0x0, got %#x", rval);
-> -				break;
-> -			}
-> -			if ((rval = (fcntl(fd0, F_GETFL, 0) & O_ACCMODE)) !=
-> -			    O_WRONLY) {
-> -				tst_resm(TFAIL, "fctnl F_GETFL bad rval on fd0 "
-> -					 "Expected %#x got %#x", O_WRONLY,
-> -					 rval);
-> -			}
-> -			tst_resm(TPASS, "dup2 test 2 functionality is correct");
-> -		}
-> -
-> -		close(fd0);
-> -		close(fd1);
-> -
-> -		unlink(filename0);
-> -		unlink(filename1);
-> -		tst_resm(TINFO, "Exit block 2");
-> +		rval = fd1;
-> +		SAFE_CLOSE(rval);
-> +	}
-trailing whitespace
-> +
-> +	TEST(dup2(fd0, fd1));
-> +	fd2 = TST_RET;
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL, "call failed unexpectedly");
-> +		goto free;
-> +	}
-> +	if (fd1 != fd2) {
-> +		tst_res(TFAIL, "file descriptors don't match");
-> +		goto free;
->   	}
->   
 > -	cleanup();
 > -	tst_exit();
-> +	memset(buf, 0, sizeof(buf));
-> +	SAFE_READ(0, fd2, buf, sizeof(buf));
-> +	if (strcmp(buf, filename0) != 0)
-> +		tst_res(TFAIL, "read from file got bad data");
-> +	else
-> +		tst_res(TPASS, "test the content of file is correct");
-> +
-> +	rval = SAFE_FCNTL(fd2, F_GETFD, 0);
-It is simpler to use SAFE_FCNTL(fd2, F_GETFD) here.
-> +	if (rval != 0) {
-> +		tst_res(TFAIL, "fcntl F_GETFD on fd2 failed; expected a "
-> +			"return value of 0x0, got %#x", rval);
-> +		rc++;
-> +	}
-You can remove the rc variable directly.
-> +	if (!rc)
-> +		tst_res(TPASS, "test the FD_CLOEXEC flag is correct");
-> +free:
-> +	SAFE_CLOSE(fd0);
-> +	SAFE_CLOSE(fd1);
-> +	SAFE_UNLINK(filename0);
-> +	SAFE_UNLINK(filename1);
+> +	umask(0);
+> +	sprintf(testfile, "dup202.%d", getpid());
 >   }
 >   
 > -/*
 > - * setup() - performs all ONE TIME setup for this test.
 > - */
 > -void setup(void)
-> +static void setup(void)
+> +static void run(unsigned int i)
 >   {
-> +	int pid;
+> +	int ofd, nfd;
+> +	struct stat oldbuf, newbuf;
+> +	struct tcase *tc = tcases + i;
 >   
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 > -
 > -	TEST_PAUSE;
-> -
+> +	ofd = SAFE_CREAT(testfile, tc->mode);
+> +	nfd = *tc->nfd;
+>   
 > -	tst_tmpdir();
-> +	pid = getpid();
-> +	sprintf(filename0, "dup203.file0.%d\n", pid);
-> +	sprintf(filename1, "dup203.file1.%d\n", pid);
+> +	TEST(dup2(ofd, nfd));
+>   
+> -	(void)umask(0);
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "call failed unexpectedly");
+> +		goto free;
+> +	}
+>   
+> -	sprintf(testfile, "dup202.%d", getpid());
+> +	/* stat the original file */
+> +	SAFE_FSTAT(ofd, &oldbuf);
+I think we need a cleanup() function to clean up some resource when 
+SAFE_FSTAT () fails.
+> +
+> +	/* stat the duped file */
+> +	SAFE_FSTAT(nfd, &newbuf);
+> +
+> +	if (oldbuf.st_mode != newbuf.st_mode)
+> +		tst_res(TFAIL, "original(%o) and duped(%o) are not same mode",
+> +					oldbuf.st_mode, newbuf.st_mode);
+> +	else
+> +		tst_res(TPASS, "original(%o) and duped(%o) are the same mode",
+> +					oldbuf.st_mode, newbuf.st_mode);
+> +
+> +	if (oldbuf.st_ino != newbuf.st_ino)
+> +		tst_res(TFAIL, "original(%ld) and duped(%ld) are not same inode",
+> +					oldbuf.st_ino, newbuf.st_ino);
+> +	else
+> +		tst_res(TPASS, "original(%ld) and duped(%ld) are not same inode",
+> +					oldbuf.st_ino, newbuf.st_ino);
+> +
+> +	SAFE_CLOSE(nfd);
+> +free:
+> +	SAFE_CLOSE(ofd);
+> +	SAFE_UNLINK(testfile);
 >   }
 >   
 > -/*
@@ -381,11 +329,145 @@ You can remove the rc variable directly.
 > -	tst_rmdir();
 > -}
 > +static struct tst_test test = {
-> +	.setup = setup,
-> +	.tcnt = ARRAY_SIZE(tcases),
 > +	.needs_tmpdir = 1,
+> +	.tcnt = ARRAY_SIZE(tcases),
 > +	.test = run,
+> +	.setup = setup,
 > +};
+> diff --git a/testcases/kernel/syscalls/dup2/dup204.c b/testcases/kernel/syscalls/dup2/dup204.c
+> deleted file mode 100644
+> index a357bc17e..000000000
+> --- a/testcases/kernel/syscalls/dup2/dup204.c
+> +++ /dev/null
+> @@ -1,128 +0,0 @@
+> -/*
+> - *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - */
+> -
+> -/*
+> - * NAME
+> - *	dup204.c
+> - *
+> - * DESCRIPTION
+> - *	Testcase to check the basic functionality of dup2(2).
+> - *
+> - * ALGORITHM
+> - *	attempt to call dup2() on read/write ends of a pipe
+> - *
+> - * USAGE:  <for command-line>
+> - *  dup204 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -f   : Turn off functionality Testing.
+> - *             -i n : Execute test n times.
+> - *             -I x : Execute test for x seconds.
+> - *             -P x : Pause for x seconds between iterations.
+> - *             -t   : Turn on syscall timing.
+> - *
+> - * RESTRICTION
+> - *	NONE
+> - */
+> -
+> -#ifndef _GNU_SOURCE
+> -#define _GNU_SOURCE
+> -#endif
+> -#include <sys/types.h>
+> -#include <fcntl.h>
+> -#include <sys/stat.h>
+> -#include <errno.h>
+> -#include <signal.h>
+> -#include <string.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -
+> -void setup();
+> -void cleanup();
+> -
+> -char *TCID = "dup204";
+> -int TST_TOTAL = 2;
+> -
+> -int fd[2];
+> -int nfd[2];
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -	int i;
+> -	struct stat oldbuf, newbuf;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		/* loop through the test cases */
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -			TEST(dup2(fd[i], nfd[i]));
+> -
+> -			if (TEST_RETURN == -1) {
+> -				tst_resm(TFAIL, "call failed unexpectedly");
+> -				continue;
+> -			}
+> -
+> -			SAFE_FSTAT(cleanup, fd[i], &oldbuf);
+> -			SAFE_FSTAT(cleanup, nfd[i], &newbuf);
+> -
+> -			if (oldbuf.st_ino != newbuf.st_ino)
+> -				tst_resm(TFAIL, "original and duped "
+> -					 "inodes do not match");
+> -			else
+> -				tst_resm(TPASS, "original and duped "
+> -					 "inodes are the same");
+> -
+> -			SAFE_CLOSE(cleanup, TEST_RETURN);
+> -		}
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -}
+> -
+> -void setup(void)
+> -{
+> -	fd[0] = -1;
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	SAFE_PIPE(cleanup, fd);
+> -}
+> -
+> -void cleanup(void)
+> -{
+> -	int i;
+> -
+> -	for (i = 0; i < (int)ARRAY_SIZE(fd); i++) {
+> -		close(fd[i]);
+> -		close(nfd[i]);
+> -	}
+> -
+> -	tst_rmdir();
+> -}
 
 
 -- 
