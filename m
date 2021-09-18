@@ -1,10 +1,10 @@
 From: Xiao Yang <ice_yangxiao@163.com>
-Date: Sat, 18 Sep 2021 18:13:37 +0800
-Subject: [LTP] [PATCH v4 1/5] syscalls/dup2/dup201: Convert to new API
-In-Reply-To: <20210918072609.8576-2-qi.fuli@fujitsu.com>
+Date: Sat, 18 Sep 2021 18:22:28 +0800
+Subject: [LTP] [PATCH v4 3/5] syscalls/dup2/dup203: Convert to new API
+In-Reply-To: <20210918072609.8576-4-qi.fuli@fujitsu.com>
 References: <20210918072609.8576-1-qi.fuli@fujitsu.com>
- <20210918072609.8576-2-qi.fuli@fujitsu.com>
-Message-ID: <2f65abf3-ed10-0ee4-b863-baa52799b0d5@163.com>
+ <20210918072609.8576-4-qi.fuli@fujitsu.com>
+Message-ID: <fa11ecee-5d20-f729-c80c-a8000addef52@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,16 +14,20 @@ To: ltp@lists.linux.it
 On 9/18/21 3:26 PM, QI Fuli wrote:
 > From: QI Fuli <qi.fuli@fujitsu.com>
 >
+>   - divide original testcase into two
+>   - check the content of file and FD_CLOEXEC flag on both open and close
+>     file descriptors
+>
 > Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 > ---
->   testcases/kernel/syscalls/dup2/dup201.c | 175 +++++-------------------
->   1 file changed, 33 insertions(+), 142 deletions(-)
+>   testcases/kernel/syscalls/dup2/dup203.c | 259 +++++++-----------------
+>   1 file changed, 75 insertions(+), 184 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
-> index 4fa34466a..03f0bb4bd 100644
-> --- a/testcases/kernel/syscalls/dup2/dup201.c
-> +++ b/testcases/kernel/syscalls/dup2/dup201.c
-> @@ -1,163 +1,54 @@
+> diff --git a/testcases/kernel/syscalls/dup2/dup203.c b/testcases/kernel/syscalls/dup2/dup203.c
+> index e6f281adf..d920dcda0 100644
+> --- a/testcases/kernel/syscalls/dup2/dup203.c
+> +++ b/testcases/kernel/syscalls/dup2/dup203.c
+> @@ -1,208 +1,99 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 >   /*
 > - *
@@ -44,108 +48,75 @@ On 9/18/21 3:26 PM, QI Fuli wrote:
 > - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 > + * Copyright (c) International Business Machines  Corp., 2001
 > + * 07/2001 Ported by Wayne Boyer
-> + * 01/2002 Removed EMFILE test - Paul Larson
 >    */
-> -
+>   
 > -/*
 > - * NAME
-> - *	dup201.c
+> - *	dup203.c
 > - *
 > - * DESCRIPTION
-> - *	Negative tests for dup2() with bad fd (EBADF)
+> - *	Testcase to check the basic functionality of dup2().
 > - *
 > - * ALGORITHM
-> - * 	Setup:
-> - *	a.	Setup signal handling.
-> - *	b.	Pause for SIGUSR1 if option specified.
+> - *	1.	Attempt to dup2() on an open file descriptor.
+> - *	2.	Attempt to dup2() on a close file descriptor.
 > - *
-> - * 	Test:
-> - *	a.	Loop if the proper options are given.
-> - *	b.	Loop through the test cases
-> - * 	c.	Execute dup2() system call
-> - *	d.	Check return code, if system call failed (return=-1), test
-> - *		for EBADF.
-> - *
-> - * 	Cleanup:
-> - * 	a.	Print errno log and/or timing stats if options given
-> +/*\
-> + * [Description]
->    *
 > - * USAGE:  <for command-line>
-> - *  dup201 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+> - *  dup203 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 > - *     where,  -c n : Run n copies concurrently.
-> - *             -e   : Turn on errno logging.
+> - *             -f   : Turn off functionality Testing.
 > - *             -i n : Execute test n times.
 > - *             -I x : Execute test for x seconds.
 > - *             -P x : Pause for x seconds between iterations.
 > - *             -t   : Turn on syscall timing.
-> + * Negative tests for dup2() with bad fd (EBADF)
-
-Please add a new line here.
-
-> + * - First fd argument is less than 0
-> + * - First fd argument is getdtablesize()
-> + * - Second fd argument is less than 0
-> + * - Second fd argument is getdtablesize()
->    *
+> - *
 > - * HISTORY
 > - *	07/2001 Ported by Wayne Boyer
-> - *	01/2002 Removed EMFILE test - Paul Larson
 > - *
 > - * RESTRICTIONS
-> - * 	NONE
+> - *	NONE
+> +/*\
+> + * [Description]
+> + * Testcase to check the basic functionality of dup2().
+Please add a new line here.
+> + * - Attempt to dup2() on an open file descriptor.
+> + * - Attempt to dup2() on a close file descriptor.
 >    */
 >   
-> -#include <sys/types.h>
 > -#include <fcntl.h>
+> -#include <sys/param.h>
 >   #include <errno.h>
-> -#include <sys/time.h>
-> -#include <sys/resource.h>
->   #include <unistd.h>
-> -#include <signal.h>
+> -#include <string.h>
 > -#include "test.h"
-> -
+> -#include "safe_macros.h"
+> +#include <stdio.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+>   
 > -void setup(void);
 > -void cleanup(void);
-> -
-> -char *TCID = "dup201";
-> -int TST_TOTAL = 4;
-> +#include "tst_test.h"
+> +static char filename0[40], filename1[40];
 >   
-> -int maxfd;
-> -int goodfd = 5;
-> -int badfd = -1;
-> -int mystdout = 0;
-> +static int maxfd, mystdout;
-> +static int goodfd = 5;
-> +static int badfd = -1;
->   
-> -struct test_case_t {
+> -char *TCID = "dup203";
+> -int TST_TOTAL = 1;
 > +static struct tcase {
->   	int *ofd;
->   	int *nfd;
-> -	int error;
-> -	void (*setupfunc) ();
-> -} TC[] = {
-> -	/* First fd argument is less than 0 - EBADF */
-> -	{&badfd, &goodfd, EBADF, NULL},
-> -	    /* First fd argument is getdtablesize() - EBADF */
-> -	{&maxfd, &goodfd, EBADF, NULL},
-> -	    /* Second fd argument is less than 0 - EBADF */
-> -	{&mystdout, &badfd, EBADF, NULL},
-> -	    /* Second fd argument is getdtablesize() - EBADF */
-> -	{&mystdout, &maxfd, EBADF, NULL},
-> +} tcases[] = {
-> +	{&badfd, &goodfd},
-> +	{&maxfd, &goodfd},
-> +	{&mystdout, &badfd},
-> +	{&mystdout, &maxfd},
->   };
+> +	char *desc;
+> +	int is_close;
+> +} tcases [] = {
+Please remove the space between 'tcases' and '[]'
+> +	{"Test duping over an open fd", 0},
+> +	{"Test duping over a close fd", 1},
+> +};
 >   
 > -int main(int ac, char **av)
-> -{
+> +static void run(unsigned int i)
+>   {
+> -	int fd0, fd1, fd2, rval;
+> -	char filename0[40], filename1[40];
+> +	int fd0, fd1, fd2, rval, rc = 0;
+>   	char buf[40];
+>   
 > -	int lc;
-> -	int i;
 > -
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
@@ -154,54 +125,184 @@ Please add a new line here.
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > -
 > -		tst_count = 0;
+> -//block1:
+> -		tst_resm(TINFO, "Enter block 1");
+> -		tst_resm(TINFO, "Test duping over an open fd");
 > -
-> -		/* loop through the test cases */
+> -		sprintf(filename0, "dup202.file0.%d\n", getpid());
+> -		sprintf(filename1, "dup202.file1.%d\n", getpid());
+> -		unlink(filename0);
+> -		unlink(filename1);
 > -
-> -		for (i = 0; i < TST_TOTAL; i++) {
+> -		if ((fd0 = creat(filename0, 0666)) == -1)
+> -			tst_brkm(TBROK, cleanup, "cannot create first file");
+> -		if (write(fd0, filename0, strlen(filename0)) == -1)
+> -			tst_brkm(TBROK, cleanup, "filename0: write(2) failed");
 > -
-> -			/* call the test case setup routine if necessary */
-> -			if (TC[i].setupfunc != NULL)
-> -				(*TC[i].setupfunc) ();
+> -		if ((fd1 = creat(filename1, 0666)) == -1)
+> -			tst_brkm(TBROK, cleanup, "Cannot create second file");
+> -		if (write(fd1, filename1, strlen(filename1)) == -1)
+> -			tst_brkm(TBROK, cleanup, "filename1: write(2) failed");
 > -
-> -			TEST(dup2(*TC[i].ofd, *TC[i].nfd));
+> -		SAFE_CLOSE(cleanup, fd0);
+> -		if ((fd0 = open(filename0, O_RDONLY)) == -1)
+> -			tst_brkm(TBROK, cleanup, "open(2) on filename0 failed");
 > -
-> -			if (TEST_RETURN != -1) {
-> -				tst_resm(TFAIL, "call succeeded unexpectedly");
-> -				continue;
+> -		SAFE_CLOSE(cleanup, fd1);
+> -		if ((fd1 = open(filename1, O_RDONLY)) == -1)
+> -			tst_brkm(TBROK, cleanup, "open(2) on filename1 failed");
+> -
+> -		TEST(dup2(fd0, fd1));
+> -
+> -		if ((fd2 = TEST_RETURN) == -1) {
+> -			tst_resm(TFAIL, "call failed unexpectedly");
+> -		} else {
+> -			if (fd1 != fd2) {
+> -				tst_resm(TFAIL, "file descriptors don't match");
+> -				break;
 > -			}
 > -
-> -			if (TEST_ERRNO == TC[i].error) {
-> -				tst_resm(TPASS,
-> -					 "failed as expected - errno = %d : %s",
-> -					 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			} else {
-> -				tst_resm(TFAIL | TTERRNO,
-> -					 "failed unexpectedly; "
-> -					 "expected %d: %s", TC[i].error,
-> -					 strerror(TC[i].error));
-> -			}
+> -			memset(buf, 0, sizeof(buf));
+> -			if (read(fd2, buf, sizeof(buf)) == -1)
+> -				tst_brkm(TBROK, cleanup, "read(2) failed");
+> -			if (strcmp(buf, filename0) != 0)
+> -				tst_resm(TFAIL, "read from file got bad data");
+> -			tst_resm(TPASS, "dup2 test 1 functionality is correct");
 > -		}
-> -	}
+> -
+> -		close(fd0);
+> -		close(fd1);
+> -		close(fd2);
+> -		unlink(filename0);
+> -		unlink(filename1);
+> -
+> -		tst_resm(TINFO, "Exit block 1");
+> -
+> -//block2:
+> -		tst_resm(TINFO, "Enter block 2");
+> -		tst_resm(TINFO, "Test close on exec flag");
+> +	struct tcase *tc = tcases + i;
+Please add a new line.
+> +	tst_res(TINFO, tc->desc);
+>   
+> -		sprintf(filename0, "dup02.%d\n", getpid());
+> -		unlink(filename0);
+> +	fd0 = SAFE_CREAT(filename0, 0666);
+> +	SAFE_WRITE(1, fd0, filename0, strlen(filename0));
+I think we need a cleanup() function to clean up some resource when 
+SAFE_XXX() fails.
+> +	SAFE_CLOSE(fd0);
+>   
+> -		if ((fd0 = creat(filename0, 0666)) == -1) {
+> -			tst_brkm(TBROK, cleanup, "Cannot create first file");
+> -		}
+> -		if (fcntl(fd0, F_SETFD, 1) == -1) {
+> -			tst_brkm(TBROK, cleanup, "setting close on exec flag "
+> -				 "on fd0 failed");
+> -		}
+> -
+> -		if ((fd2 = creat(filename1, 0666)) == -1) {
+> -			tst_brkm(TBROK, cleanup, "Cannot create second file");
+> -		}
+> +	fd1 = SAFE_CREAT(filename1, 0666);
+> +	SAFE_WRITE(1, fd1, filename1, strlen(filename1));
+> +	fd0 = SAFE_OPEN(filename0, O_RDONLY);
+> +	SAFE_FCNTL(fd0, F_SETFD, 1);
+>   
+> +	if (tc->is_close) {
+>   		/* SAFE_CLOSE() sets the fd to -1 avoid it here */
+> -		rval = fd2;
+> -		SAFE_CLOSE(cleanup, rval);
+> -
+> -		TEST(dup2(fd0, fd2));
+> -
+> -		if ((fd1 = TEST_RETURN) == -1) {
+> -			tst_resm(TFAIL, "call failed unexpectedly");
+> -		} else {
+> -			if (fd1 != fd2) {
+> -				tst_resm(TFAIL, "bad dup2 descriptor %d", fd1);
+> -				break;
+> -			}
+> -
+> -			if ((rval = fcntl(fd1, F_GETFD, 0)) != 0) {
+> -				tst_resm(TBROK | TERRNO,
+> -					 "fcntl F_GETFD on fd1 failed; expected a "
+> -					 "return value of 0x0, got %#x", rval);
+> -				break;
+> -			}
+> -			if ((rval = (fcntl(fd0, F_GETFL, 0) & O_ACCMODE)) !=
+> -			    O_WRONLY) {
+> -				tst_resm(TFAIL, "fctnl F_GETFL bad rval on fd0 "
+> -					 "Expected %#x got %#x", O_WRONLY,
+> -					 rval);
+> -			}
+> -			tst_resm(TPASS, "dup2 test 2 functionality is correct");
+> -		}
+> -
+> -		close(fd0);
+> -		close(fd1);
+> -
+> -		unlink(filename0);
+> -		unlink(filename1);
+> -		tst_resm(TINFO, "Exit block 2");
+> +		rval = fd1;
+> +		SAFE_CLOSE(rval);
+> +	}
+trailing whitespace
+> +
+> +	TEST(dup2(fd0, fd1));
+> +	fd2 = TST_RET;
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL, "call failed unexpectedly");
+> +		goto free;
+> +	}
+> +	if (fd1 != fd2) {
+> +		tst_res(TFAIL, "file descriptors don't match");
+> +		goto free;
+>   	}
+>   
 > -	cleanup();
-> -
 > -	tst_exit();
-> -}
-> -
+> +	memset(buf, 0, sizeof(buf));
+> +	SAFE_READ(0, fd2, buf, sizeof(buf));
+> +	if (strcmp(buf, filename0) != 0)
+> +		tst_res(TFAIL, "read from file got bad data");
+> +	else
+> +		tst_res(TPASS, "test the content of file is correct");
+> +
+> +	rval = SAFE_FCNTL(fd2, F_GETFD, 0);
+It is simpler to use SAFE_FCNTL(fd2, F_GETFD) here.
+> +	if (rval != 0) {
+> +		tst_res(TFAIL, "fcntl F_GETFD on fd2 failed; expected a "
+> +			"return value of 0x0, got %#x", rval);
+> +		rc++;
+> +	}
+You can remove the rc variable directly.
+> +	if (!rc)
+> +		tst_res(TPASS, "test the FD_CLOEXEC flag is correct");
+> +free:
+> +	SAFE_CLOSE(fd0);
+> +	SAFE_CLOSE(fd1);
+> +	SAFE_UNLINK(filename0);
+> +	SAFE_UNLINK(filename1);
+>   }
+>   
 > -/*
 > - * setup() - performs all ONE TIME setup for this test.
 > - */
 > -void setup(void)
 > +static void setup(void)
 >   {
-> -
+> +	int pid;
+>   
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 > -
 > -	TEST_PAUSE;
 > -
 > -	tst_tmpdir();
-> -
->   	/* get some test specific values */
->   	maxfd = getdtablesize();
+> +	pid = getpid();
+> +	sprintf(filename0, "dup203.file0.%d\n", pid);
+> +	sprintf(filename1, "dup203.file1.%d\n", pid);
 >   }
 >   
 > -/*
@@ -209,18 +310,13 @@ Please add a new line here.
 > - *	       completion or premature exit.
 > - */
 > -void cleanup(void)
-> +static void run(unsigned int i)
->   {
+> -{
 > -	tst_rmdir();
-> +	struct tcase *tc = tcases + i;
-> +
-> +	TST_EXP_FAIL2(dup2(*tc->ofd, *tc->nfd), EBADF,
-> +			"dup2(%d, %d)", *tc->ofd, *tc->nfd);
->   }
-> +
+> -}
 > +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
 > +	.setup = setup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_tmpdir = 1,
+> +	.test = run,
 > +};
 
