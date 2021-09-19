@@ -1,10 +1,10 @@
 From: Xiao Yang <ice_yangxiao@163.com>
-Date: Sun, 19 Sep 2021 23:48:08 +0800
-Subject: [LTP] [PATCH v5 4/5] syscalls/dup2/dup205: Convert to new API
-In-Reply-To: <20210918121114.10694-5-qi.fuli@fujitsu.com>
+Date: Sun, 19 Sep 2021 23:48:45 +0800
+Subject: [LTP] [PATCH v5 1/5] syscalls/dup2/dup201: Convert to new API
+In-Reply-To: <20210918121114.10694-2-qi.fuli@fujitsu.com>
 References: <20210918121114.10694-1-qi.fuli@fujitsu.com>
- <20210918121114.10694-5-qi.fuli@fujitsu.com>
-Message-ID: <d5e3c2f5-1a32-af4c-cd63-518b997193d4@163.com>
+ <20210918121114.10694-2-qi.fuli@fujitsu.com>
+Message-ID: <95f79e4f-049f-4cbd-ddef-d00138a8c2d6@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,18 +16,18 @@ On 9/18/21 8:11 PM, QI Fuli wrote:
 >
 > Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 > ---
->   testcases/kernel/syscalls/dup2/dup205.c | 171 ++++++++----------------
->   1 file changed, 55 insertions(+), 116 deletions(-)
+>   testcases/kernel/syscalls/dup2/dup201.c | 174 +++++-------------------
+>   1 file changed, 33 insertions(+), 141 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
-> index 0b324531f..e6fc175c3 100644
-> --- a/testcases/kernel/syscalls/dup2/dup205.c
-> +++ b/testcases/kernel/syscalls/dup2/dup205.c
-> @@ -1,134 +1,73 @@
+> diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
+> index 4fa34466a..cc1563115 100644
+> --- a/testcases/kernel/syscalls/dup2/dup201.c
+> +++ b/testcases/kernel/syscalls/dup2/dup201.c
+> @@ -1,163 +1,55 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 >   /*
 > - *
-> - *   Copyright (c) International Business Machines  Corp., 2002
+> - *   Copyright (c) International Business Machines  Corp., 2001
 > - *
 > - *   This program is free software;  you can redistribute it and/or modify
 > - *   it under the terms of the GNU General Public License as published by
@@ -42,199 +42,183 @@ On 9/18/21 8:11 PM, QI Fuli wrote:
 > - *   You should have received a copy of the GNU General Public License
 > - *   along with this program;  if not, write to the Free Software
 > - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * Copyright (c) International Business Machines  Corp., 2002
-> + * Ported from SPIE, section2/iosuite/dup6.c, by Airong Zhang
+> + * Copyright (c) International Business Machines  Corp., 2001
+> + * 07/2001 Ported by Wayne Boyer
+> + * 01/2002 Removed EMFILE test - Paul Larson
 >    */
->   
-> -/* Ported from SPIE, section2/iosuite/dup6.c, by Airong Zhang */
 > -
-> -/*======================================================================
-> -	=================== TESTPLAN SEGMENT ===================
-> ->KEYS:  < dup2()
-> ->WHAT:  < Does dup return -1 on the 21st file?
-> ->HOW:   < Create up to _NFILE files and check for -1 return on the
-> -	< next attempt
-> -	< Should check NOFILE as well as _NFILE.  19-Jun-84 Dale.
-> ->BUGS:  <
-> -======================================================================*/
+> -/*
+> - * NAME
+> - *	dup201.c
+> - *
+> - * DESCRIPTION
+> - *	Negative tests for dup2() with bad fd (EBADF)
+> - *
+> - * ALGORITHM
+> - * 	Setup:
+> - *	a.	Setup signal handling.
+> - *	b.	Pause for SIGUSR1 if option specified.
+> - *
+> - * 	Test:
+> - *	a.	Loop if the proper options are given.
+> - *	b.	Loop through the test cases
+> - * 	c.	Execute dup2() system call
+> - *	d.	Check return code, if system call failed (return=-1), test
+> - *		for EBADF.
+> - *
+> - * 	Cleanup:
+> - * 	a.	Print errno log and/or timing stats if options given
 > +/*\
 > + * [Description]
-> + * Negative test for dup2() with max open file descriptors.
-> + */
+>    *
+> - * USAGE:  <for command-line>
+> - *  dup201 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -e   : Turn on errno logging.
+> - *             -i n : Execute test n times.
+> - *             -I x : Execute test for x seconds.
+> - *             -P x : Pause for x seconds between iterations.
+> - *             -t   : Turn on syscall timing.
+> + * Negative tests for dup2() with bad fd (EBADF)
+Please add a full stop.
+>    *
+> - * HISTORY
+> - *	07/2001 Ported by Wayne Boyer
+> - *	01/2002 Removed EMFILE test - Paul Larson
+> + * - First fd argument is less than 0
+> + * - First fd argument is getdtablesize()
+> + * - Second fd argument is less than 0
+> + * - Second fd argument is getdtablesize()
+>    *
+> - * RESTRICTIONS
+> - * 	NONE
+>    */
 >   
-> -#include <sys/param.h>
 > -#include <sys/types.h>
-> -#include <sys/stat.h>
-> -#include <errno.h>
 > -#include <fcntl.h>
-> +#include <stdlib.h>
->   #include <stdio.h>
+>   #include <errno.h>
+> -#include <sys/time.h>
+> -#include <sys/resource.h>
 >   #include <unistd.h>
+> -#include <signal.h>
 > -#include "test.h"
+> +#include "tst_test.h"
+>   
+> -void setup(void);
+> -void cleanup(void);
+> +static int maxfd, mystdout;
+> +static int goodfd = 5;
+> +static int badfd = -1;
+>   
+> -char *TCID = "dup201";
+> -int TST_TOTAL = 4;
 > -
-> -char *TCID = "dup205";
-> -int TST_TOTAL = 1;
-> -int *fildes;
-> -int min;
-> -int local_flag;
+> -int maxfd;
+> -int goodfd = 5;
+> -int badfd = -1;
+> -int mystdout = 0;
 > -
-> -#define PASSED 1
-> -#define FAILED 0
-> -
-> -static void setup(void);
-> -static void cleanup(void);
-> -
-> -int main(int ac, char *av[])
-> -{
-> -	int ifile;
-> -	char pfilname[40];
-> -	int serrno;
-> -
+> -struct test_case_t {
+> +static struct tcase {
+>   	int *ofd;
+>   	int *nfd;
+> -	int error;
+> -	void (*setupfunc) ();
+> -} TC[] = {
+> -	/* First fd argument is less than 0 - EBADF */
+> -	{&badfd, &goodfd, EBADF, NULL},
+> -	    /* First fd argument is getdtablesize() - EBADF */
+> -	{&maxfd, &goodfd, EBADF, NULL},
+> -	    /* Second fd argument is less than 0 - EBADF */
+> -	{&mystdout, &badfd, EBADF, NULL},
+> -	    /* Second fd argument is getdtablesize() - EBADF */
+> -	{&mystdout, &maxfd, EBADF, NULL},
+> +} tcases[] = {
+> +	{&badfd, &goodfd},
+> +	{&maxfd, &goodfd},
+> +	{&mystdout, &badfd},
+> +	{&mystdout, &maxfd},
+>   };
+>   
+> -int main(int ac, char **av)
+> +static void setup(void)
+>   {
 > -	int lc;
-> -
-> -	ifile = -1;
+> -	int i;
 > -
 > -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	local_flag = PASSED;
 > -
 > -	setup();
 > -
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
->   
-> -		sprintf(pfilname, "./dup205.%d\n", getpid());
-> -		unlink(pfilname);
-> -		serrno = 0;
-> -		if ((fildes[0] = creat(pfilname, 0666)) == -1)
-> -			tst_brkm(TBROK | TERRNO, cleanup, "creat failed");
-> -		else {
-> -			fildes[fildes[0]] = fildes[0];
-> -			for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
-> -				if ((fildes[ifile] = dup2(fildes[ifile - 1],
-> -							  ifile)) == -1) {
-> -					serrno = errno;
-> -					break;
-> -				} else {
-> -					if (fildes[ifile] != ifile) {
-> -						tst_brkm(TFAIL, cleanup,
-> -							 "got wrong descriptor "
-> -							 "number back (%d != %d)",
-> -							 fildes[ifile], ifile);
-> -					}
-> -				}
-> -			}	/* end for */
-> -			if (ifile < min) {
-> -				tst_resm(TFAIL, "Not enough files duped");
-> -				local_flag = FAILED;
-> -			} else if (ifile > min) {
-> -				tst_resm(TFAIL, "Too many files duped");
-> -				local_flag = FAILED;
-> -			}
-> -			if (serrno != EBADF && serrno != EMFILE &&
-> -			    serrno != EINVAL) {
-> -				tst_resm(TFAIL, "bad errno on dup2 failure");
-> -				local_flag = FAILED;
-> -			}
-> -		}
-> -		unlink(pfilname);
-> -		for (ifile = fildes[0]; ifile < min + 10; ifile++)
-> -			close(fildes[ifile]);
-> -		if (local_flag == PASSED) {
-> -			tst_resm(TPASS, "Test passed.");
-> -		} else {
-> -			tst_resm(TFAIL, "Test failed.");
-> -		}
 > -
+> -		tst_count = 0;
+> -
+> -		/* loop through the test cases */
+> -
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -
+> -			/* call the test case setup routine if necessary */
+> -			if (TC[i].setupfunc != NULL)
+> -				(*TC[i].setupfunc) ();
+> -
+> -			TEST(dup2(*TC[i].ofd, *TC[i].nfd));
+> -
+> -			if (TEST_RETURN != -1) {
+> -				tst_resm(TFAIL, "call succeeded unexpectedly");
+> -				continue;
+> -			}
+> -
+> -			if (TEST_ERRNO == TC[i].error) {
+> -				tst_resm(TPASS,
+> -					 "failed as expected - errno = %d : %s",
+> -					 TEST_ERRNO, strerror(TEST_ERRNO));
+> -			} else {
+> -				tst_resm(TFAIL | TTERRNO,
+> -					 "failed unexpectedly; "
+> -					 "expected %d: %s", TC[i].error,
+> -					 strerror(TC[i].error));
+> -			}
+> -		}
 > -	}
 > -	cleanup();
+> -
 > -	tst_exit();
 > -}
-> +static int *fildes;
-> +static int min;
-> +static char pfilname[40];
->   
->   static void setup(void)
->   {
+> -
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> -{
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
 > -	tst_tmpdir();
 > -
->   	min = getdtablesize();	/* get number of files allowed open */
-> -	fildes = malloc((min + 10) * sizeof(int));
-> -	if (fildes == NULL)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
-> +	fildes = SAFE_MALLOC((min + 10) * sizeof(int));
-Please initialize fildes to 0.
-> +	sprintf(pfilname, "./dup205.%d\n", getpid());
+>   	/* get some test specific values */
+>   	maxfd = getdtablesize();
 >   }
 >   
->   static void cleanup(void)
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *	       completion or premature exit.
+> - */
+> -void cleanup(void)
+> +static void run(unsigned int i)
 >   {
->   	if (fildes != NULL)
->   		free(fildes);
 > -	tst_rmdir();
+> +	struct tcase *tc = tcases + i;
+> +
+> +	TST_EXP_FAIL2(dup2(*tc->ofd, *tc->nfd), EBADF,
+> +			"dup2(%d, %d)", *tc->ofd, *tc->nfd);
 >   }
 > +
-> +static void run(void)
-> +{
-> +	int ifile = -1;
-> +
-> +	fildes[0] = SAFE_CREAT(pfilname, 0666);
-> +	fildes[fildes[0]] = fildes[0];
-> +	for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
-> +		TEST(dup2(fildes[ifile - 1], ifile));
-> +		if ((fildes[ifile] = TST_RET) == -1)
-> +			break;
-> +		if (fildes[ifile] != ifile)
-> +			tst_brk(TFAIL, "got wrong descriptor number back "
-> +				"(%d != %d)", fildes[ifile], ifile);
-> +	}
-> +
-> +	if (TST_ERR != EBADF && TST_ERR != EMFILE && TST_ERR != EINVAL) {
-> +		tst_res(TFAIL, "bad errno on dup2 failure");
-> +		goto close;
-> +	}
-> +
-> +	if (ifile < min)
-> +		tst_res(TFAIL, "Not enough files duped");
-> +	else if (ifile > min)
-> +		tst_res(TFAIL, "Too many files duped");
-> +	else
-> +		tst_res(TPASS, "Test passed.");
-
-I perfer to keep the previous logic:
-
-1) compare ifile and min firstly.
-
-2) check errno secondly.
-
-BTW: remove the full stop for "Test passed."
-
-> +
-> +close:
-> +	SAFE_UNLINK(pfilname);
-> +	for (ifile = fildes[0]; ifile < min + 10; ifile++)
-> +		close(fildes[ifile]);
-
-There is an very old issue that the fd of stdout is closed here.
-
-With this issue, dup205 -i 5 shows only one message:
-
-------------------------------
-
-tst_test.c:1353: TINFO: Timeout per run is 0h 05m 00s
-dup205.c:60: TPASS: Test passed.
-
-------------------------------
-
-Please close the fds which are not equal to 0.
-
-> +}
-> +
 > +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.test_all = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = run,
 > +	.setup = setup,
-> +	.cleanup = cleanup,
 > +};
 
