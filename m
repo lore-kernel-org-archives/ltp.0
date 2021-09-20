@@ -3,77 +3,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B95C433F5
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 085B6C433EF
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:58:56 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7642C60F6E
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:53:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7642C60F6E
+	by mail.kernel.org (Postfix) with ESMTPS id 2DB5D60FF2
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:58:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2DB5D60FF2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E97B3C871A
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 09:53:12 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 81FEB3C8633
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 09:58:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBE233C21F8
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:53:01 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 860ED3C1B0A
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:58:44 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1AD9F600103
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:53:00 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E46CB1000D1C
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:58:43 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 49FDF2003A;
- Mon, 20 Sep 2021 07:53:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 392832003E;
+ Mon, 20 Sep 2021 07:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632124380;
+ t=1632124723;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TYaJGXvrx6xJcAppyiC6g+uBZbmNOk3LJyheJzw49yk=;
- b=t667NROIvfplFUekqOO+xJdUkEA5pN1bisBWKQqBYCUXlpNqlu45TxlxYjy4Wg3kGeULmk
- 3+831VYn883KTJ4Yt46AhjPvceegbX8+lyC+kQdp+zbk+cttS+HD3rhEtePMOLMbLH2xF5
- gssikDegK2JNKytKrY9mq1nas+QNTRw=
+ bh=sQxtn7u/rjsL2z5ZFEF5FsbhPbFXcJtUag26EsL8lyM=;
+ b=1Am670/geRpuhxZ4XRq7BM/JDBCr3fgOEkeWUw6hBfhoPNud+3gV6rVpcCIE/e79vjFmzK
+ IXKnyCe4TzW2nIsR3xwHzbjJ3hE73dPcqYKbcHKq6qA2Xxs6k6DcX4MH3LkO7H9YCJTSg2
+ MK50buGaTNx4UNKC+q1EXZRhwjAZECE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632124380;
+ s=susede2_ed25519; t=1632124723;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TYaJGXvrx6xJcAppyiC6g+uBZbmNOk3LJyheJzw49yk=;
- b=vhqWK+5xK7xgxEtXNV4dgP8I9wOA+QKN/4ktAgwJoTpwg3xOXsFtBdxjUFvqrm+pVnZ06S
- 0EUxLNrlQ5cHMvCA==
+ bh=sQxtn7u/rjsL2z5ZFEF5FsbhPbFXcJtUag26EsL8lyM=;
+ b=ff3jpdtbommkFjh22SUxL/qg0QdKb1KHcEUkWJtEwWWPbqRpQEsSbEJA5s2oO/EVnqYfcT
+ 4Ng6i5tMWfKc08BA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 174C113ACC;
- Mon, 20 Sep 2021 07:52:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CA9B13ACC;
+ Mon, 20 Sep 2021 07:58:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id B1i5Ods9SGEZCQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 20 Sep 2021 07:52:59 +0000
-Date: Mon, 20 Sep 2021 09:52:57 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id tI+WATM/SGHUCwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 20 Sep 2021 07:58:43 +0000
+Date: Mon, 20 Sep 2021 09:58:41 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YUg92YO7x1wQO/qD@pevik>
+Message-ID: <YUg/Mce1aUSxeUHo@pevik>
 References: <20210917141719.5739-1-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20210917141719.5739-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] [RFC] lib: shell: Fix timeout process races
 X-BeenThere: ltp@lists.linux.it
@@ -96,66 +94,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-
-> There were actually several races in the shell library timeout handling.
-
-> This commit fixes hopefully all of them by:
-
-> * Reimplementing the backgroud timer in C
-+1
-
-> * Making sure that the timer has started before we leave test setup
-+1
-
-> The rewrite of the backround timer to C allows us to run all the timeout
-> logic in a single process, which simplifies the whole problem greatly
-> since previously we had chain of processes that estabilished signal
-> handlers to kill it's descendants, which in the end had a few races in
-> it.
-
-> The race that caused the problems is, as far as I can tell, in the way
-> how shell spawns it's children. I haven't checked the shell code, but I
-> guess that when shell runs a process in bacground it does vfork() +
-> exec() and because signals are ignored during the operation. If the
-> SIGTERM arrives at that point it gets lost.
-
-> That means that we created a race window in the shell library each time
-> we started a new process. The rewrite to C simplifies the code but we
-> still end up with a single place where this can happen and that is when
-> we execute the tst_timeout_kill binary. This is now fixed in the shell
-> library by waiting until the background process gets to a sleep state,
-> which means that the proces has been executed and waiting for the
-> timeout.
-
-> After these fixes I haven't been able to reproduce the hang with:
-
-> cat > debug.sh <<EOF
-> #!/bin/sh
-
-> TST_SETUP="setup"
-> TST_TESTFUNC="do_test"
-> . tst_test.sh
-
-> setup()
-> {
->         tst_brk TCONF "quit now!"
-> }
-
-> do_test()
-> {
->         tst_res TPASS "pass :)"
-> }
-
-> tst_run
-> EOF
-
-> # while true; do ./debug.sh; done
-I verified it's ok on both VM which were previously affected.
-
-After release I might write a test for tst_timeout_kill.c.
-Thanks for fixing it!
+...
+> +++ b/testcases/lib/.gitignore
+> @@ -14,3 +14,4 @@
+>  /tst_sleep
+>  /tst_supported_fs
+>  /tst_hexdump
+> +tst_timeout_kill
+nit: /tst_timeout_kill
 
 Kind regards,
 Petr
