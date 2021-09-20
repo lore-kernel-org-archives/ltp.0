@@ -2,57 +2,79 @@ Return-Path: <SRS0=cJ4o=OK=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51983C433F5
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 11:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C1B6C433F5
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 12:02:07 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54C8860F93
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 11:58:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 54C8860F93
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
+	by mail.kernel.org (Postfix) with ESMTPS id 76A2760EE2
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 12:02:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 76A2760EE2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B6AC83C8789
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 13:58:32 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B16303C17C6
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 13:58:22 +0200 (CEST)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+	by picard.linux.it (Postfix) with ESMTP id 5DB863C8790
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 14:02:04 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BB3E01A00119
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 13:58:21 +0200 (CEST)
-Received: from ubuntu.localdomain (unknown [188.192.255.100])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 57DFE9F93D;
- Mon, 20 Sep 2021 11:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1632139100; bh=qSPwQPkZixp7E/em7X8sjYv7ODzcoiBVWqAV83xOSWg=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=PUP2pKLd2SGPKb31vVtNxRiZlBCVetOAoGo+//qomVTiioU8aSfD71HTaSdiGlyzn
- lE/vJeDj6Ylk5dl2dGJL6GvIGvGtDPjLorgsmxxstCcL7qnAZn/0ywrfEWQUUCwsZq
- 0OqtC5mZeHyljzV0+jg0EKBMYjI13x02WcYcwh5s=
-From: Joerg Vehlow <lkml@jv-coder.de>
-To: ltp@lists.linux.it,
-	chrubis@suse.cz,
-	krzysztof.kozlowski@canonical.com
-Date: Mon, 20 Sep 2021 13:58:14 +0200
-Message-Id: <20210920115814.296041-1-lkml@jv-coder.de>
-X-Mailer: git-send-email 2.25.1
+ by picard.linux.it (Postfix) with ESMTPS id CF37B3C19F3
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 14:01:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 34D861400E54
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 14:01:54 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3AFBB200C8;
+ Mon, 20 Sep 2021 12:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1632139314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XnzaKFY9wseh/1uFFjV4bDumonOBM9UBNfjLg3mwNas=;
+ b=A8UyRAlygUvq/dap1GRaURPyDJfLNg8NenxgVsxt/+snrO0ipQysNsfESXXUs1bm1jWx2u
+ JJDdyjII+dx2Heh+EnACNxrgfqTWSlmz2G1WuslFRBRX/rfcihL5s/2Rha2euLDHxNCx0B
+ mQYqZOcSNeG5b5Y2y8aWtE3iCwJW27g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1632139314;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XnzaKFY9wseh/1uFFjV4bDumonOBM9UBNfjLg3mwNas=;
+ b=NivOC1ruSqSPhOzhZ4aLcEuhDE0Du1Z4ZTuqlIpFaXOBm3scAUggYVybnCXOHuiNZO5Gt/
+ PCz45E1gBfwm70BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2615513483;
+ Mon, 20 Sep 2021 12:01:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id FDvhCDJ4SGECHwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 20 Sep 2021 12:01:54 +0000
+Date: Mon, 20 Sep 2021 14:02:22 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Joerg Vehlow <lkml@jv-coder.de>
+Message-ID: <YUh4TsjTZeFh/UYO@yuki>
+References: <20210917141719.5739-1-chrubis@suse.cz>
+ <01fb50a1-8edb-77ac-fba4-b70965022b3f@jv-coder.de>
+ <YUg6BM39OKgI5Ovl@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YUg6BM39OKgI5Ovl@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_pid: Fix read_session_pids_limit if pids.max is
- max
+Subject: Re: [LTP] [PATCH] [RFC] lib: shell: Fix timeout process races
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,69 +86,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Hi!
+> > Shouldn't this be reused from the library instead of being reimplemented?
+> 
+> I wanted to avoid calling the tst_res() functions to keep things simple,
+> but I guess that there is no reason not to use it.
 
-The pids cgroup controller knob pids.max is allowed to be set to max.
-This lead to a failure, when SAFE_FILE_SCANF with "%d" was used.
+And there actuall was a reason, since we cannot do tst_res(TBROK,
+"..."); in the C library.
 
-If pids.max=max, we can assume unlimited pids
-=> read /proc/sys/kernel/pid_max
+And looking at the C library, we avoid using the tst_res() on timeouts
+as well, actually we just write to stderr because we do that from a
+signal handler context. So I guess that we can just print to stderr here
+instead.
 
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
-
-@Cyril: This should propably be merged before the release,
-because it breaks some tests (e.g. msgstress03 and msgstress04)
-
- lib/tst_pid.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index 897a1b96a..55a316429 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -28,6 +28,7 @@
- #include "test.h"
- #include "tst_pid.h"
- #include "old_safe_file_ops.h"
-+#include "tst_safe_macros.h"
- 
- #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
- #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
-@@ -69,6 +70,7 @@ static int read_session_pids_limit(const char *path_fmt, int uid,
- 				   void (*cleanup_fn) (void))
- {
- 	int max_pids, ret;
-+	char max_pid_value[100];
- 	char path[PATH_MAX];
- 
- 	ret = snprintf(path, sizeof(path), path_fmt, uid);
-@@ -80,8 +82,14 @@ static int read_session_pids_limit(const char *path_fmt, int uid,
- 		return -1;
- 	}
- 
--	SAFE_FILE_SCANF(cleanup_fn, path, "%d", &max_pids);
--	tst_resm(TINFO, "Found limit of processes %d (from %s)", max_pids, path);
-+	SAFE_FILE_SCANF(cleanup_fn, path, "%s", max_pid_value);
-+	if (strcmp(max_pid_value, "max") == 0) {
-+		SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
-+		tst_resm(TINFO, "Found limit of processes %d (from %s=max)", max_pids, path);
-+	} else {
-+		max_pids = SAFE_STRTOL(max_pid_value, 0, INT_MAX);
-+		tst_resm(TINFO, "Found limit of processes %d (from %s)", max_pids, path);
-+	}	
- 
- 	return max_pids;
- }
 -- 
-2.25.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
