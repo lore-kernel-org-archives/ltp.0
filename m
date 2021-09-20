@@ -2,60 +2,80 @@ Return-Path: <SRS0=cJ4o=OK=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8681C433F5
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B95C433F5
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:53:15 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4A7160F26
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:41:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4A7160F26
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
+	by mail.kernel.org (Postfix) with ESMTPS id 7642C60F6E
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:53:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7642C60F6E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71CB63C863E
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 09:41:30 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 5E97B3C871A
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 09:53:12 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C27AC3C1B0A
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:41:21 +0200 (CEST)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ by picard.linux.it (Postfix) with ESMTPS id BBE233C21F8
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:53:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D1AB8600157
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:41:20 +0200 (CEST)
-Received: from [192.168.178.40] (unknown [188.192.255.100])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 7D71C9F917;
- Mon, 20 Sep 2021 07:41:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1632123679; bh=kgTgFDM54QRkoTDupL8MyfsI9FITOsDYEP5osW2ZqeY=;
- h=Subject:To:From:Message-ID:Date:MIME-Version;
- b=Wg7yQVZvg9TG72MSRSMa6uG3z3WEuhVVHYPPGfwWG3GBsuL3vkk/Ql0YlriwbZql/
- 492ygQKJ5H9PE+SiLuzOzPRABgRMNobrlvmfgfasaCXFtlkO4eR9B3GPzcTTBCpmTD
- ucQrvPhAIZONB9RG659quoTpmVjsu1CYc/Jgtm0Y=
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1AD9F600103
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 09:53:00 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 49FDF2003A;
+ Mon, 20 Sep 2021 07:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1632124380;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TYaJGXvrx6xJcAppyiC6g+uBZbmNOk3LJyheJzw49yk=;
+ b=t667NROIvfplFUekqOO+xJdUkEA5pN1bisBWKQqBYCUXlpNqlu45TxlxYjy4Wg3kGeULmk
+ 3+831VYn883KTJ4Yt46AhjPvceegbX8+lyC+kQdp+zbk+cttS+HD3rhEtePMOLMbLH2xF5
+ gssikDegK2JNKytKrY9mq1nas+QNTRw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1632124380;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TYaJGXvrx6xJcAppyiC6g+uBZbmNOk3LJyheJzw49yk=;
+ b=vhqWK+5xK7xgxEtXNV4dgP8I9wOA+QKN/4ktAgwJoTpwg3xOXsFtBdxjUFvqrm+pVnZ06S
+ 0EUxLNrlQ5cHMvCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 174C113ACC;
+ Mon, 20 Sep 2021 07:52:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id B1i5Ods9SGEZCQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 20 Sep 2021 07:52:59 +0000
+Date: Mon, 20 Sep 2021 09:52:57 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-References: <YTim11sKKT8ioZBe@yuki> <YUCPJlim3QFcoibU@yuki>
- <f8854610-bf63-be57-bdb8-e4e16345e34a@jv-coder.de> <YUg6smoADvGb+zTI@yuki>
-From: Joerg Vehlow <lkml@jv-coder.de>
-Message-ID: <714a9a19-d002-26aa-8226-401ab167a805@jv-coder.de>
-Date: Mon, 20 Sep 2021 09:41:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+Message-ID: <YUg92YO7x1wQO/qD@pevik>
+References: <20210917141719.5739-1-chrubis@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <YUg6smoADvGb+zTI@yuki>
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20210917141719.5739-1-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP release planning
+Subject: Re: [LTP] [PATCH] [RFC] lib: shell: Fix timeout process races
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,31 +87,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi
+Hi Cyril,
 
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 
+> There were actually several races in the shell library timeout handling.
 
-On 9/20/2021 9:39 AM, Cyril Hrubis wrote:
-> Hi!
->> What about this patch?
->> https://lists.linux.it/pipermail/ltp/2021-September/024831.html
->>
->> Late reply, because of my vacation for the last two weeks.
-> That one is already in:
->
-> https://github.com/linux-test-project/ltp/commit/80659d062575912c6e589d42d53d3259e0f74571
-Sorry, I was only looking for "merged" message on the mailing list. I 
-guess I need another vacation :D
+> This commit fixes hopefully all of them by:
 
-Joerg
+> * Reimplementing the backgroud timer in C
++1
 
+> * Making sure that the timer has started before we leave test setup
++1
 
+> The rewrite of the backround timer to C allows us to run all the timeout
+> logic in a single process, which simplifies the whole problem greatly
+> since previously we had chain of processes that estabilished signal
+> handlers to kill it's descendants, which in the end had a few races in
+> it.
+
+> The race that caused the problems is, as far as I can tell, in the way
+> how shell spawns it's children. I haven't checked the shell code, but I
+> guess that when shell runs a process in bacground it does vfork() +
+> exec() and because signals are ignored during the operation. If the
+> SIGTERM arrives at that point it gets lost.
+
+> That means that we created a race window in the shell library each time
+> we started a new process. The rewrite to C simplifies the code but we
+> still end up with a single place where this can happen and that is when
+> we execute the tst_timeout_kill binary. This is now fixed in the shell
+> library by waiting until the background process gets to a sleep state,
+> which means that the proces has been executed and waiting for the
+> timeout.
+
+> After these fixes I haven't been able to reproduce the hang with:
+
+> cat > debug.sh <<EOF
+> #!/bin/sh
+
+> TST_SETUP="setup"
+> TST_TESTFUNC="do_test"
+> . tst_test.sh
+
+> setup()
+> {
+>         tst_brk TCONF "quit now!"
+> }
+
+> do_test()
+> {
+>         tst_res TPASS "pass :)"
+> }
+
+> tst_run
+> EOF
+
+> # while true; do ./debug.sh; done
+I verified it's ok on both VM which were previously affected.
+
+After release I might write a test for tst_timeout_kill.c.
+Thanks for fixing it!
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
