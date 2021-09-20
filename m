@@ -8,78 +8,80 @@ X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E035C433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 03:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE60BC433EF
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 03:38:27 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E907160FE6
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 03:38:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E907160FE6
+	by mail.kernel.org (Postfix) with ESMTPS id 6378560FF2
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 03:38:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6378560FF2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 73CE43C29E2
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 05:38:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D4A6A3C207C
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 05:38:25 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E14933C31F6
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 05:37:29 +0200 (CEST)
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com
- [IPv6:2607:f8b0:4864:20::536])
+ by picard.linux.it (Postfix) with ESMTPS id D06F23C2DB2
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 05:37:32 +0200 (CEST)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
+ [IPv6:2607:f8b0:4864:20::102e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 38E8A200275
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 05:37:29 +0200 (CEST)
-Received: by mail-pg1-x536.google.com with SMTP id h3so15971365pgb.7
- for <ltp@lists.linux.it>; Sun, 19 Sep 2021 20:37:29 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7C7901A0069C
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 05:37:31 +0200 (CEST)
+Received: by mail-pj1-x102e.google.com with SMTP id
+ nn5-20020a17090b38c500b0019af1c4b31fso11631444pjb.3
+ for <ltp@lists.linux.it>; Sun, 19 Sep 2021 20:37:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=U68Ql/MLGJ1D00I9dYDqSUExgIbxpDn1WIY28wFaM90=;
- b=AcDPAgamhVjRjeiQjYP8uhp3s48ul8/XeI0EDOzARl/FAz1cMExXyAsrSEl5Tq63AY
- QcdQltLFZ36nFYro42IcDeon1i3HvPE6vCYZN86CUIPm+9EkZliJi9TTq/ZiR92aWRWG
- a7LPcdXJnHzyiIrDL6hCtr19ShrowAPfYGmgcCtkspc1+OofdwbUdfW4oWIXSfz06RYV
- RZUQFl+Z8IDSr/oGykRlj9Rjuu9qaNwt/BQyo2KLqlzCiNKRRXbqJT4VJHV6ZVhe6Lcz
- CijrfXnj+j6mPRe3ytvmWAuyMv8I1iz2En/lNnMVzPtfpfGKxePJ2ra0Ll7m5jRpMiFB
- RVQA==
+ bh=n2QTp+lzQ3hv3mA8hPimA9uJDaQPOcOuc7Gyq/kxKCU=;
+ b=AtNk/iepBo4qrYhljbWppYoRucAV7wg5TRoLijQDuhsaeXkXJv8RNJGRIuD7ngQh2l
+ iW6WB2+jIiC6aLArH5e23QgQEvbISagxnuTa3RWj+rvHOmt/E/xJou9Ep0r6Lcjv5oQ2
+ sJKDeziQ4X/VSFoqvUJyLhGOkSMOECH47TH2IPJUmk7hrm1AwVv6rKAadXcX/fN7h+xh
+ WhTZgs56SR4LGdnPSCamNawr0fpsm9sh6Xg+NoCpUTJq4VLV4JRnJcV6GeL1oTKLcKeI
+ 4KOaa9OkcH+CndwCZCAOPZC0FN0CcGa58zWoMsaeiTu5PSGCTLDiQGLtkn35G46cCvYk
+ dYog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=U68Ql/MLGJ1D00I9dYDqSUExgIbxpDn1WIY28wFaM90=;
- b=EM4hEx2ZbPZUu1UAqtUagvEqe6ulJm0E6efzGKSppfsvNO4MTDxubkX4w2T6JhlMlc
- 8ETDOOxn/7z2pxdMoEqe31jKYpevrE+uOiPd51Z2uTbeOmnvKOyufSDQijKzwyzI+j6X
- ETC9/MN7Kgg1uwUn5H0+HdKZ8OxJ9UecKfStVULa1Nku7UbB0HG9WFur2DiAC+3Xbz1C
- 0pQdherpk29/wla7xSm0XtX0TmQRBYeiT/wC3kpsAE0RSL9IHz+qsIabM4cspTwwLs/u
- 1uXfIUJC7J2MwTvYP9RtFNGj3gJN5BDFkhvqbkkK8gu9M5k17buZfK0ie7zgdISZzzUi
- g2KQ==
-X-Gm-Message-State: AOAM532XZkjHoMa5RhRmiM3RAOP7Cy48Vg4h2Ccf1yV72I8wkFKC+wMh
- BdEVsdMUWlwOq3hqlnRqH5F2xVmcO2kk7A==
-X-Google-Smtp-Source: ABdhPJxUBQEZYld3V1V+1ymIImtIQ28cV49d75RvdaqBGPzG3/5cPrB8qQu3zvVXg+XYQCz5ndlpbw==
-X-Received: by 2002:a65:64d7:: with SMTP id t23mr21306678pgv.237.1632109047633; 
- Sun, 19 Sep 2021 20:37:27 -0700 (PDT)
+ bh=n2QTp+lzQ3hv3mA8hPimA9uJDaQPOcOuc7Gyq/kxKCU=;
+ b=ZtjHlUc+WLvCR2sDU8xCVR3D/rrzpzO1ATuYNkaNiGYzRt29sTAa6+23Pesj2VvGOQ
+ 9PMUdhzG9o/liNJFLfRboPgfhy44XLXV4HXzcDXwIsJRYv0ngfXKFl5e8b8GyO9GOMx2
+ Mg8EkbLCLtT7I2hWQSqUyWO7k98xJZJb4UcIa9N71nhmAwauoAvfDlYDNkKM+UZf3XYH
+ Lpdcfey75fxRshsGby7gTDpRGI+2N4AaCybz93cEMlw5NiJGWGEaGAnwgXftkBEe+w3W
+ 9pSKsax5PQ4mi1B0mxekmhZbP/GsdFNfkRm/RcU8TJ/wgJXAolKfhfsgd/aOQTva2xHL
+ X+Aw==
+X-Gm-Message-State: AOAM532pyr1nUrEuq84PcmxHRxhKilfLEtecNg0xzPs7v+C9c2KDx+8P
+ C8IWvQ9T+EPneE3HtxVMQkSLfUJAdyS0TQ==
+X-Google-Smtp-Source: ABdhPJyxUMM2KAdcB4SAC3PMRUcq7B8/C2eCJQOtC9bbDbMgS55GAcA06Gs1kCZt3KyqWgYtalCjDA==
+X-Received: by 2002:a17:902:be0f:b0:13a:95e:a51 with SMTP id
+ r15-20020a170902be0f00b0013a095e0a51mr20829051pls.44.1632109049945; 
+ Sun, 19 Sep 2021 20:37:29 -0700 (PDT)
 Received: from fedora34.. (125x103x255x1.ap125.ftth.ucom.ne.jp.
  [125.103.255.1])
- by smtp.gmail.com with ESMTPSA id v25sm11932301pfm.202.2021.09.19.20.37.26
+ by smtp.gmail.com with ESMTPSA id v25sm11932301pfm.202.2021.09.19.20.37.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 19 Sep 2021 20:37:27 -0700 (PDT)
+ Sun, 19 Sep 2021 20:37:29 -0700 (PDT)
 From: QI Fuli <fukuri.sai@gmail.com>
 X-Google-Original-From: QI Fuli <qi.fuli@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Mon, 20 Sep 2021 12:37:04 +0900
-Message-Id: <20210920033705.20544-5-qi.fuli@fujitsu.com>
+Date: Mon, 20 Sep 2021 12:37:05 +0900
+Message-Id: <20210920033705.20544-6-qi.fuli@fujitsu.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210920033705.20544-1-qi.fuli@fujitsu.com>
 References: <20210920033705.20544-1-qi.fuli@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 4/5] syscalls/dup2/dup204: Convert to new API
+Subject: [LTP] [PATCH v6 5/5] syscalls/dup2/dup205: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,27 +103,24 @@ From: QI Fuli <qi.fuli@fujitsu.com>
 
 Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 ---
- testcases/kernel/syscalls/dup2/dup204.c | 147 +++++++-----------------
- 1 file changed, 40 insertions(+), 107 deletions(-)
+ testcases/kernel/syscalls/dup2/dup205.c | 178 +++++++++---------------
+ 1 file changed, 62 insertions(+), 116 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/dup2/dup204.c b/testcases/kernel/syscalls/dup2/dup204.c
-index a357bc17e..c9304d5c3 100644
---- a/testcases/kernel/syscalls/dup2/dup204.c
-+++ b/testcases/kernel/syscalls/dup2/dup204.c
-@@ -1,128 +1,61 @@
+diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
+index 0b324531f..cd4254375 100644
+--- a/testcases/kernel/syscalls/dup2/dup205.c
++++ b/testcases/kernel/syscalls/dup2/dup205.c
+@@ -1,134 +1,80 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * [Description]
-  *
+- *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
 - *   (at your option) any later version.
-+ * Test whether the inode number are the same for both file descriptors.
-  *
+- *
 - *   This program is distributed in the hope that it will be useful,
 - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
 - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
@@ -130,150 +129,181 @@ index a357bc17e..c9304d5c3 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- *	dup204.c
-- *
-- * DESCRIPTION
-- *	Testcase to check the basic functionality of dup2(2).
-- *
-- * ALGORITHM
-- *	attempt to call dup2() on read/write ends of a pipe
-- *
-- * USAGE:  <for command-line>
-- *  dup204 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * RESTRICTION
-- *	NONE
++ * Copyright (c) International Business Machines  Corp., 2002
++ * Ported from SPIE, section2/iosuite/dup6.c, by Airong Zhang
   */
  
--#ifndef _GNU_SOURCE
--#define _GNU_SOURCE
--#endif
+-/* Ported from SPIE, section2/iosuite/dup6.c, by Airong Zhang */
+-
+-/*======================================================================
+-	=================== TESTPLAN SEGMENT ===================
+->KEYS:  < dup2()
+->WHAT:  < Does dup return -1 on the 21st file?
+->HOW:   < Create up to _NFILE files and check for -1 return on the
+-	< next attempt
+-	< Should check NOFILE as well as _NFILE.  19-Jun-84 Dale.
+->BUGS:  <
+-======================================================================*/
++/*\
++ * [Description]
++ * Negative test for dup2() with max open file descriptors.
++ */
+ 
+-#include <sys/param.h>
 -#include <sys/types.h>
--#include <fcntl.h>
 -#include <sys/stat.h>
 -#include <errno.h>
--#include <signal.h>
--#include <string.h>
+-#include <fcntl.h>
++#include <stdlib.h>
+ #include <stdio.h>
+ #include <unistd.h>
 -#include "test.h"
--#include "safe_macros.h"
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
- 
--void setup();
--void cleanup();
-+static int fd[2] = {-1, -1};
-+static int nfd[2] = {10, 20};
- 
--char *TCID = "dup204";
--int TST_TOTAL = 2;
 -
--int fd[2];
--int nfd[2];
+-char *TCID = "dup205";
+-int TST_TOTAL = 1;
+-int *fildes;
+-int min;
+-int local_flag;
 -
--int main(int ac, char **av)
-+static void setup(void)
- {
+-#define PASSED 1
+-#define FAILED 0
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-int main(int ac, char *av[])
+-{
+-	int ifile;
+-	char pfilname[40];
+-	int serrno;
+-
 -	int lc;
--	int i;
--	struct stat oldbuf, newbuf;
+-
+-	ifile = -1;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	local_flag = PASSED;
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
--		tst_count = 0;
--
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(dup2(fd[i], nfd[i]));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL, "call failed unexpectedly");
--				continue;
+-		sprintf(pfilname, "./dup205.%d\n", getpid());
+-		unlink(pfilname);
+-		serrno = 0;
+-		if ((fildes[0] = creat(pfilname, 0666)) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "creat failed");
+-		else {
+-			fildes[fildes[0]] = fildes[0];
+-			for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
+-				if ((fildes[ifile] = dup2(fildes[ifile - 1],
+-							  ifile)) == -1) {
+-					serrno = errno;
+-					break;
+-				} else {
+-					if (fildes[ifile] != ifile) {
+-						tst_brkm(TFAIL, cleanup,
+-							 "got wrong descriptor "
+-							 "number back (%d != %d)",
+-							 fildes[ifile], ifile);
+-					}
+-				}
+-			}	/* end for */
+-			if (ifile < min) {
+-				tst_resm(TFAIL, "Not enough files duped");
+-				local_flag = FAILED;
+-			} else if (ifile > min) {
+-				tst_resm(TFAIL, "Too many files duped");
+-				local_flag = FAILED;
 -			}
--
--			SAFE_FSTAT(cleanup, fd[i], &oldbuf);
--			SAFE_FSTAT(cleanup, nfd[i], &newbuf);
-+	SAFE_PIPE(fd);
-+}
- 
--			if (oldbuf.st_ino != newbuf.st_ino)
--				tst_resm(TFAIL, "original and duped "
--					 "inodes do not match");
--			else
--				tst_resm(TPASS, "original and duped "
--					 "inodes are the same");
-+static void cleanup(void)
-+{
-+	unsigned int i;
- 
--			SAFE_CLOSE(cleanup, TEST_RETURN);
+-			if (serrno != EBADF && serrno != EMFILE &&
+-			    serrno != EINVAL) {
+-				tst_resm(TFAIL, "bad errno on dup2 failure");
+-				local_flag = FAILED;
+-			}
 -		}
-+	for (i = 0; i < ARRAY_SIZE(fd); i++) {
-+		close(fd[i]);
-+		close(nfd[i]);
- 	}
--
+-		unlink(pfilname);
+-		for (ifile = fildes[0]; ifile < min + 10; ifile++)
+-			close(fildes[ifile]);
+-		if (local_flag == PASSED) {
+-			tst_resm(TPASS, "Test passed.");
+-		} else {
+-			tst_resm(TFAIL, "Test failed.");
+-		}
++#include "tst_test.h"
++#include "tst_safe_macros.h"
+ 
+-	}
 -	cleanup();
 -	tst_exit();
- }
- 
--void setup(void)
-+static void run(unsigned int i)
- {
--	fd[0] = -1;
-+	struct stat oldbuf, newbuf;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	TEST(dup2(fd[i], nfd[i]));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL, "call failed unexpectedly");
-+		return;
-+	}
- 
--	TEST_PAUSE;
-+	SAFE_FSTAT(fd[i], &oldbuf);
-+	SAFE_FSTAT(nfd[i], &newbuf);
- 
--	tst_tmpdir();
-+	if (oldbuf.st_ino != newbuf.st_ino)
-+		tst_res(TFAIL, "original inode(%ld) and duped inode(%ld) "
-+				"do not match", oldbuf.st_ino, newbuf.st_ino);
-+	else
-+		tst_res(TPASS, "original inode(%ld) and duped inode(%ld) "
-+				"are the same", oldbuf.st_ino, newbuf.st_ino);
- 
--	SAFE_PIPE(cleanup, fd);
-+	SAFE_CLOSE(TST_RET);
- }
- 
--void cleanup(void)
--{
--	int i;
--
--	for (i = 0; i < (int)ARRAY_SIZE(fd); i++) {
--		close(fd[i]);
--		close(nfd[i]);
--	}
--
--	tst_rmdir();
 -}
++static int *fildes;
++static int min;
++static char pfilname[40];
+ 
+ static void setup(void)
+ {
+-	tst_tmpdir();
+-
+ 	min = getdtablesize();	/* get number of files allowed open */
+-	fildes = malloc((min + 10) * sizeof(int));
+-	if (fildes == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
++	fildes = SAFE_MALLOC((min + 10) * sizeof(int));
++	memset(fildes, -1, (min + 10) * sizeof(int));
++	sprintf(pfilname, "./dup205.%d\n", getpid());
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (fildes != NULL)
+ 		free(fildes);
+-	tst_rmdir();
+ }
++
++static void run(void)
++{
++	int ifile = -1, rc = 0;
++
++	fildes[0] = SAFE_CREAT(pfilname, 0666);
++	fildes[fildes[0]] = fildes[0];
++	for (ifile = fildes[0] + 1; ifile < min + 10; ifile++) {
++		TEST(dup2(fildes[ifile - 1], ifile));
++		if ((fildes[ifile] = TST_RET) == -1)
++			break;
++		if (fildes[ifile] != ifile)
++			tst_brk(TFAIL, "got wrong descriptor number back "
++				"(%d != %d)", fildes[ifile], ifile);
++	}
++
++	if (ifile < min) {
++		tst_res(TFAIL, "Not enough files duped");
++		rc++;
++	} else if (ifile > min) {
++		tst_res(TFAIL, "Too many files duped");
++		rc++;
++	}
++	if (TST_ERR != EBADF && TST_ERR != EMFILE && TST_ERR != EINVAL) {
++		tst_res(TFAIL, "bad errno on dup2 failure");
++		rc++;
++	}
++
++	if (rc)
++		tst_res(TFAIL, "Test failed");
++	else
++		tst_res(TPASS, "Test passed");
++
++	SAFE_UNLINK(pfilname);
++	for (ifile = fildes[0]; ifile < min + 10; ifile++) {
++		if (fildes[ifile] > 0)
++			SAFE_CLOSE(fildes[ifile]);
++	}
++}
++
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(fd),
-+	.test = run,
++	.needs_tmpdir = 1,
++	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +};
