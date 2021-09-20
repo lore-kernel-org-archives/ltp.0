@@ -7,53 +7,55 @@ X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E57CC433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 04:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3BEAC433F5
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 05:20:23 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECBBA61056
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 04:51:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECBBA61056
+	by mail.kernel.org (Postfix) with ESMTPS id 3057460F48
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 05:20:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3057460F48
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 098B93C8736
-	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 06:51:46 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2DEA43C8781
+	for <ltp@archiver.kernel.org>; Mon, 20 Sep 2021 07:20:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE7F53C188A
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 06:51:35 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8D4223C1CC5
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 07:20:11 +0200 (CEST)
 Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AB94F1000A52
- for <ltp@lists.linux.it>; Mon, 20 Sep 2021 06:51:34 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BEF9E60090E
+ for <ltp@lists.linux.it>; Mon, 20 Sep 2021 07:20:10 +0200 (CEST)
 Received: from [192.168.178.40] (unknown [188.192.255.100])
- by mail.jv-coder.de (Postfix) with ESMTPSA id DF6A49FBF7;
- Mon, 20 Sep 2021 04:51:32 +0000 (UTC)
+ by mail.jv-coder.de (Postfix) with ESMTPSA id C2FDD9FBF7;
+ Mon, 20 Sep 2021 05:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1632113493; bh=KHzBU68DebHf9IO2I68ty4QjqxYuCGHJbBUH9EM+nxI=;
+ t=1632115209; bh=OHdH6PO3OmyGQrfHeDZ9JzG210AqWJTOVGtAzij4HD8=;
  h=Subject:To:From:Message-ID:Date:MIME-Version;
- b=VqPnB7azQzuIC3O2hP7dkVAPLUastw7iQc7gofidR1F7fV2Q9iIEZFPDQ1OoVMv0u
- KZonnClBRyH1lYnZgSLKztT5YvoPC86P21OgZxQON6yXoc9AR2k+sAZdi/IYl8L7F1
- 9GARGnNSu6N4qEzxKAZ0W/L93fvsUCD43/XOd+AU=
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
-References: <20210917141719.5739-1-chrubis@suse.cz>
+ b=T0+SB/U/5E5NC6bEEI7iVirxf0sasq9mkmElkYajwSWcA9wWaY5Bb+XBpHRFtWyhS
+ ZwqGSKWBhyzSzHsmbx0AY5sU4sdGEKWSoK2dzp01McS8SGSxIvuqGrGVyxQQBcP6JU
+ djy6lh3JdrE83pU9AALJnEtj1YPK1xSBRNwAj5/c=
+To: ltp@lists.linux.it, Richard Palethorpe <rpalethorpe@suse.com>
+References: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
+ <20210914083444.23848-1-rpalethorpe@suse.com>
 From: Joerg Vehlow <lkml@jv-coder.de>
-Message-ID: <01fb50a1-8edb-77ac-fba4-b70965022b3f@jv-coder.de>
-Date: Mon, 20 Sep 2021 06:51:46 +0200
+Message-ID: <940b657a-ae79-a9f3-c2aa-30d441ad1e4e@jv-coder.de>
+Date: Mon, 20 Sep 2021 07:20:23 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210917141719.5739-1-chrubis@suse.cz>
+In-Reply-To: <20210914083444.23848-1-rpalethorpe@suse.com>
 Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] [RFC] lib: shell: Fix timeout process races
+Subject: Re: [LTP] [PATCH] memcg_subgroup_charge: Remove limiting of parent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,6 +67,7 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -72,275 +75,95 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi
 
-Sorry for my late reply on this topic, I was on vacation.
+On 9/14/2021 10:34 AM, Richard Palethorpe via ltp wrote:
+> It is not important how much memory is assigned to the parent
+> group. The stated purpose of the test is to check no memory is
+> assigned to the child group.
+I still don't know why the test even wants to limit anything, when it is 
+just checking what is charged.
+So I would still vote for completely removing the limits and simplifying 
+to just one test case.
 
-On 9/17/2021 4:17 PM, Cyril Hrubis wrote:
-> There were actually several races in the shell library timeout handling.
->
-> This commit fixes hopefully all of them by:
->
-> * Reimplementing the backgroud timer in C
-I did that once, but at that point it was kinda rejected ;)
-See https://lists.linux.it/pipermail/ltp/2021-May/022445.html
-and https://lists.linux.it/pipermail/ltp/2021-May/022453.html
+But removing one limitation for now is a step in the right direction, so 
+I will not argue anymore :)
 
 >
-> * Making sure that the timer has started before we leave test setup
+> Also add the usage stats for the memcg_process because it appears
+> the test will fail because the starting memory counter already
+> includes some buffer/cache on linux-next. I'm not sure this
+> is exactly what happens, but displaying the stats might help.
 >
-> The rewrite of the backround timer to C allows us to run all the timeout
-> logic in a single process, which simplifies the whole problem greatly
-> since previously we had chain of processes that estabilished signal
-> handlers to kill it's descendants, which in the end had a few races in
-> it.
->
-> The race that caused the problems is, as far as I can tell, in the way
-> how shell spawns it's children. I haven't checked the shell code, but I
-> guess that when shell runs a process in bacground it does vfork() +
-> exec() and because signals are ignored during the operation. If the
-> SIGTERM arrives at that point it gets lost.
->
-> That means that we created a race window in the shell library each time
-> we started a new process. The rewrite to C simplifies the code but we
-> still end up with a single place where this can happen and that is when
-> we execute the tst_timeout_kill binary. This is now fixed in the shell
-> library by waiting until the background process gets to a sleep state,
-> which means that the proces has been executed and waiting for the
-> timeout.
->
-> After these fixes I haven't been able to reproduce the hang with:
->
-> cat > debug.sh <<EOF
-> #!/bin/sh
->
-> TST_SETUP="setup"
-> TST_TESTFUNC="do_test"
-> . tst_test.sh
->
-> setup()
-> {
->          tst_brk TCONF "quit now!"
-> }
->
-> do_test()
-> {
->          tst_res TPASS "pass :)"
-> }
->
-> tst_run
-> EOF
->
-> # while true; do ./debug.sh; done
->
-> Reported-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Suggested-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> Cc: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 > ---
->   testcases/lib/.gitignore         |  1 +
->   testcases/lib/Makefile           |  2 +-
->   testcases/lib/tst_test.sh        | 47 +++++-----------
->   testcases/lib/tst_timeout_kill.c | 93 ++++++++++++++++++++++++++++++++
->   4 files changed, 108 insertions(+), 35 deletions(-)
->   create mode 100644 testcases/lib/tst_timeout_kill.c
+>   .../controllers/memcg/functional/memcg_lib.sh    |  2 +-
+>   .../memcg/functional/memcg_subgroup_charge.sh    | 16 +++++-----------
+>   2 files changed, 6 insertions(+), 12 deletions(-)
 >
-> diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-> index 5a0e8cba2..f266a3e6b 100644
-> --- a/testcases/lib/.gitignore
-> +++ b/testcases/lib/.gitignore
-> @@ -14,3 +14,4 @@
->   /tst_sleep
->   /tst_supported_fs
->   /tst_hexdump
-> +tst_timeout_kill
-> diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-> index 179b47479..d6b4c7a91 100644
-> --- a/testcases/lib/Makefile
-> +++ b/testcases/lib/Makefile
-> @@ -11,6 +11,6 @@ INSTALL_TARGETS		:= *.sh
->   MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
->   			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
->   			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
-> -			   tst_get_median tst_hexdump tst_get_free_pids
-> +			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index ac9ad8268..1b76b6597 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -240,7 +240,7 @@ signal_memcg_process()
 >   
->   include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 8f69b0551..2556b28f5 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -474,27 +474,6 @@ _tst_multiply_timeout()
->   	return 0
+>   		loops=$((loops - 1))
+>   		if [ $loops -le 0 ]; then
+> -			tst_brk TBROK "timed out on memory.usage_in_bytes"
+> +			tst_brk TBROK "timed out on memory.usage_in_bytes" $usage $usage_start $size
+>   		fi
+>   	done
 >   }
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> index 3fa016102..cda624923 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> @@ -18,22 +18,16 @@ TST_CNT=3
+>   MEM_TO_ALLOC=$((PAGESIZES * 2))
 >   
-> -_tst_kill_test()
-> -{
-> -	local i=10
-> -
-> -	trap '' TERM
-> -	tst_res TBROK "Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
-> -	kill -TERM -$pid
-> -	tst_sleep 100ms
-> -
-> -	while kill -0 $pid >/dev/null 2>&1 && [ $i -gt 0 ]; do
-> -		tst_res TINFO "Test is still running, waiting ${i}s"
-> -		sleep 1
-> -		i=$((i-1))
-> -	done
-> -
-> -	if kill -0 $pid >/dev/null 2>&1; then
-> -		tst_res TBROK "Test still running, sending SIGKILL"
-> -		kill -KILL -$pid
+>   # Test the memory charge won't move to subgroup
+> -# $1 - memory.limit_in_bytes in parent group
+> -# $2 - memory.limit_in_bytes in sub group
+> +# $1 - memory.limit_in_bytes in sub group
+>   test_subgroup()
+>   {
+> -	local limit_parent=$1
+> -	local limit_subgroup=$2
+> +	local limit_subgroup=$1
+>   
+> -	if [ $limit_parent -ne 0 ]; then
+> -		limit_parent=$(memcg_adjust_limit_for_kmem $limit_parent)
 > -	fi
-> -}
-> -
->   _tst_cleanup_timer()
->   {
->   	if [ -n "$_tst_setup_timer_pid" ]; then
-> @@ -503,18 +482,6 @@ _tst_cleanup_timer()
+>   	if [ $limit_subgroup -ne 0 ]; then
+>   		limit_subgroup=$(memcg_adjust_limit_for_kmem $limit_subgroup)
 >   	fi
->   }
 >   
-> -_tst_timeout_process()
-> -{
-> -	local sleep_pid
-> -
-> -	sleep $sec &
-> -	sleep_pid=$!
-> -	trap "kill $sleep_pid; exit" TERM
-> -	wait $sleep_pid
-> -	trap - TERM
-> -	_tst_kill_test
-> -}
-> -
->   _tst_setup_timer()
+>   	ROD mkdir subgroup
+> -	EXPECT_PASS echo $limit_parent \> memory.limit_in_bytes
+>   	EXPECT_PASS echo $limit_subgroup \> subgroup/memory.limit_in_bytes
+>   
+>   	start_memcg_process --mmap-anon -s $MEM_TO_ALLOC
+> @@ -60,17 +54,17 @@ test_subgroup()
+>   test1()
 >   {
->   	TST_TIMEOUT=${TST_TIMEOUT:-300}
-> @@ -539,9 +506,21 @@ _tst_setup_timer()
->   
->   	_tst_cleanup_timer
->   
-> -	_tst_timeout_process &
-> +	tst_timeout_kill $sec $pid &
->   
->   	_tst_setup_timer_pid=$!
-> +
-> +	while true; do
-> +		local state
-> +
-> +		state=$(cut -d' ' -f3 "/proc/$_tst_setup_timer_pid/stat")
-Hmm maybe we could use the checkpoint api here instead. Wouldn't this be 
-more portable?
-> +
-> +		if [ "$state" = "S" ]; then
-> +			break;
-> +		fi
-> +
-> +		tst_sleep 1ms
-> +	done
+>   	tst_res TINFO "Test that group and subgroup have no relationship"
+> -	test_subgroup $MEM_TO_ALLOC $((2 * MEM_TO_ALLOC))
+> +	test_subgroup $((2 * MEM_TO_ALLOC))
 >   }
 >   
->   tst_require_root()
-> diff --git a/testcases/lib/tst_timeout_kill.c b/testcases/lib/tst_timeout_kill.c
-> new file mode 100644
-> index 000000000..6e97514f1
-> --- /dev/null
-> +++ b/testcases/lib/tst_timeout_kill.c
-> @@ -0,0 +1,93 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2021 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +#include <stdio.h>
-> +#include <signal.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <tst_res_flags.h>
-> +#include <tst_ansi_color.h>
-> +
-> +static void print_help(const char *name)
-> +{
-> +	fprintf(stderr, "usage: %s timeout pid\n", name);
-> +}
-> +
-> +static void print_msg(int type, const char *msg)
-> +{
-> +	const char *strtype = "";
-> +
-> +	switch (type) {
-> +	case TBROK:
-> +		strtype = "TBROK";
-> +	break;
-> +	case TINFO:
-> +		strtype = "TINFO";
-> +	break;
-> +	}
-> +
-> +	if (tst_color_enabled(STDERR_FILENO)) {
-> +		fprintf(stderr, "%s%s: %s%s\n", tst_ttype2color(type),
-> +			strtype, ANSI_COLOR_RESET, msg);
-> +	} else {
-> +		fprintf(stderr, "%s: %s\n", strtype, msg);
-> +	}
-> +}
-Shouldn't this be reused from the library instead of being reimplemented?
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int timeout, pid, ret, i;
-> +
-> +	if (argc != 3) {
-> +		print_help(argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	timeout = atoi(argv[1]);
-> +	pid = atoi(argv[2]);
-> +
-> +	if (timeout < 0) {
-> +		fprintf(stderr, "Invalid timeout '%s'", argv[1]);
-> +		print_help(argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	if (pid <= 1) {
-> +		fprintf(stderr, "Invalid pid '%s'", argv[2]);
-> +		print_help(argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	if (timeout)
-> +		sleep(timeout);
-> +
-> +	print_msg(TBROK, "Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1");
-> +
-> +	ret = kill(-pid, SIGTERM);
-> +	if (ret) {
-> +		print_msg(TBROK, "kill() failed");
-> +		return 1;
-> +	}
-> +
-> +	usleep(100000);
-> +
-> +	i = 10;
-> +
-> +	while (!kill(-pid, 0) && i-- > 0) {
-This was kill(pid, 0) in the original shell code. I am not sure if it is 
-important
-> +		print_msg(TINFO, "Test is still running...");
-> +		sleep(1);
-> +	}
-> +
-> +	if (!kill(-pid, 0)) {
-Here as well
-> +		print_msg(TBROK, "Test is still running, sending SIGKILL");
-> +		ret = kill(-pid, SIGKILL);
-> +		if (ret) {
-> +			print_msg(TBROK, "kill() failed");
-> +			return 1;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
+>   test2()
+>   {
+> -	test_subgroup $MEM_TO_ALLOC $MEM_TO_ALLOC
+> +	test_subgroup $MEM_TO_ALLOC
+>   }
+>   
+>   test3()
+>   {
+> -	test_subgroup $MEM_TO_ALLOC 0
+> +	test_subgroup 0
+>   }
+>   
+>   tst_run
 
 Joerg
 
