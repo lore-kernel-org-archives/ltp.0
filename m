@@ -2,79 +2,76 @@ Return-Path: <SRS0=nxZL=OL=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78A44C433EF
-	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 11:30:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4739AC433F5
+	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 11:33:32 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2F116115A
-	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 11:30:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2F116115A
+	by mail.kernel.org (Postfix) with ESMTPS id 5C05661166
+	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 11:33:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C05661166
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1FB73C879A
-	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 13:30:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 2BC7D3CA2B9
+	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 13:33:28 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C06D03C1C6E
- for <ltp@lists.linux.it>; Tue, 21 Sep 2021 13:30:13 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 415CC3C1C6E
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 13:33:19 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2A03C20077D
- for <ltp@lists.linux.it>; Tue, 21 Sep 2021 13:30:12 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CA0B71000B29
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 13:33:18 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 637982006E;
- Tue, 21 Sep 2021 11:30:12 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F26F82006E
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 11:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632223812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8P9Iy6trsrxzCGJwE081NzER8fzfBMZtObVksD0RHCk=;
- b=ync7RPrgWoFCkWogk3OyHajV3qiSFtaUfVAVANl42Px1HTNQ5hVPMU5bHR8PzNoIYfngYI
- n7aMNBbXdlFST8ylhAlucfotaLb3iKMmMwwtxIjqnxJTo8IRGhU+DdV9CpHmSaQfyqSyDB
- MEvwW2wZKElSTUPN7jHRCHuY8j0knUg=
+ t=1632223997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jZ/F0XqIh7hZS58J01b9S/1NKMssBx1fDhNAPqYayGI=;
+ b=Tkm4TKB+2zHfIK+UpWY6cRU60h2rmaHTb1mFJq9ghTFnAGZjKX9A2dw+NRxhClj91eJ7eU
+ FQut/7oMgUx0MHxjFfDHxNMSg6FrVabALFsPRtELhg5Azt0V09suB+5z8arHQCg4ofx8F1
+ IpZQ4/gS/f/WGviAPBrtDiPczBmTXR4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632223812;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8P9Iy6trsrxzCGJwE081NzER8fzfBMZtObVksD0RHCk=;
- b=lkNzD0jQTo7n0XjRETxjmAxN0nUzrMfbCeaEkShcxJqDN5ul2p2dWyCLXDfaMfeYequp4P
- rgVQVYvLjsD7i2BA==
+ s=susede2_ed25519; t=1632223997;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jZ/F0XqIh7hZS58J01b9S/1NKMssBx1fDhNAPqYayGI=;
+ b=F5+ZbekUlEobg/WdfItLU0z1YD2Y4dO++uPcKoEy6gV3uZT4q4WEeMfcUHIHdnGVf/kHjM
+ lNhNAurDam6v3yCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4F51213BC2;
- Tue, 21 Sep 2021 11:30:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4D1B13BC2
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 11:33:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ccxUE0TCSWGJfgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 21 Sep 2021 11:30:12 +0000
-Date: Tue, 21 Sep 2021 13:30:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YUnCYvtAZkO/LZIP@yuki>
-References: <20210920122146.31576-1-chrubis@suse.cz>
- <CAEemH2eRgUDNLmmzNF5cDaAXp7kMgPOBHeJeWqyStOiAq7QLHw@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id mHbbMv3CSWFYAQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 11:33:17 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 21 Sep 2021 13:33:16 +0200
+Message-Id: <20210921113317.16756-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2eRgUDNLmmzNF5cDaAXp7kMgPOBHeJeWqyStOiAq7QLHw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] lib: shell: Fix timeout process races
+Subject: [LTP] [PATCH 1/2] Add missig parentheses to TST_EXP_FAIL() errno
+ check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,26 +83,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> This 'pid' is the parent shell process id, so it obviously that
-> tst_timeout_kill
-> process would get signal SIGTERM as well.
-> 
-> I'm thinking maybe we should let tst_timeout_kill itself ignore SIGTERM
-> otherwise we have no chance to perform the following double-check code?
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ include/tst_test_macros.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I guess that signal(SIGTERM, SIG_IGN) a the start of the main() should
-fix it.
-
+diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+index 91671d1b8..4a023b700 100644
+--- a/include/tst_test_macros.h
++++ b/include/tst_test_macros.h
+@@ -176,7 +176,7 @@ extern void *TST_RET_PTR;
+ 			break;                                                 \
+ 		}                                                              \
+ 		                                                               \
+-		if (TST_ERR == ERRNO) {                                        \
++		if (TST_ERR == (ERRNO)) {                                      \
+ 			TST_MSG_(TPASS | TTERRNO, " ",                         \
+ 				 SSCALL, ##__VA_ARGS__);                       \
+ 			TST_PASS = 1;                                          \
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.33.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
