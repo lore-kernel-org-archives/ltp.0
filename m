@@ -7,70 +7,77 @@ X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F98AC433F5
-	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 16:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 891F7C433EF
+	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 16:21:21 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 523C060F70
-	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 16:21:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 523C060F70
+	by mail.kernel.org (Postfix) with ESMTPS id 189C361100
+	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 16:21:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 189C361100
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A3613CA2B2
-	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 18:21:10 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 995073CA2DC
+	for <ltp@archiver.kernel.org>; Tue, 21 Sep 2021 18:21:19 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16E4C3C21AC
+ by picard.linux.it (Postfix) with ESMTPS id 198BC3C2201
  for <ltp@lists.linux.it>; Tue, 21 Sep 2021 18:21:00 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5985C60069E
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5A71C6006DC
  for <ltp@lists.linux.it>; Tue, 21 Sep 2021 18:21:00 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9D9911FEF5
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BA6332017E
  for <ltp@lists.linux.it>; Tue, 21 Sep 2021 16:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1632241259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EvfDgcgBusCbv99IrQHltWvkCsZ5ocH8Jdd+Cn91IZc=;
- b=QFiX7IjD3/n+ZzlbMiVO8wO8F8EO0CzeON/6viBKffo4r93++nVQhIaRde/vT73fWXHaIA
- FH6KoAP+bnqdIJlqt2+hPGjKpyqY0Bu9pgJHXIyGpOqzzHfmxOUx/eknIAwjTJWQLkh4wK
- 895MUTPQahfWfVvcVQEU7rlMtQXb75c=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=LpuYsWr2GLl6v7/MNQKBBmkzhJBqRVYZt7EZcD90DfI=;
+ b=P3fEmz9i7eIhJxWnsFfUUk1bOdJt47bLLjvDUrZ2agTfVNMVrqAduHzY8qMhheKBP6qfs/
+ goopXSR7BNRMgPvf854Qw0yBjqwjXO1L5qHP4xm2R0AIWF8nMJP7kXYY7K1rcP7rrD0rAW
+ y6Hqyi4/zBTqK6mKMBfk6GPZpAusk7o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1632241259;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EvfDgcgBusCbv99IrQHltWvkCsZ5ocH8Jdd+Cn91IZc=;
- b=WV0bnueG3pODDWJrDceRE0izRjT70+wVHQoPKWczzj5NT6AzT+B8cv14ELEbxZgYgA35mP
- QrFpKUelSkontrCQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=LpuYsWr2GLl6v7/MNQKBBmkzhJBqRVYZt7EZcD90DfI=;
+ b=7dLbKJs7Y8kK/jaPY7wEcim4IUK1UgJT0HVnYEueHDjT3Y4S0hYYkVzjWHxYSkLkeK1Qo6
+ MPczt6xpl1K4mTAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8790013BD9
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A690613BD9
  for <ltp@lists.linux.it>; Tue, 21 Sep 2021 16:20:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8DFEH2sGSmGkGgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id mLGOJ2sGSmGkGgAAMHmgww
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 21 Sep 2021 16:20:59 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 21 Sep 2021 18:20:56 +0200
-Message-Id: <20210921162057.29598-1-mdoucha@suse.cz>
+Date: Tue, 21 Sep 2021 18:20:57 +0200
+Message-Id: <20210921162057.29598-2-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210921162057.29598-1-mdoucha@suse.cz>
+References: <20210921162057.29598-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] Add SAFE_TRY_FILE_PRINTF() helper function
+Subject: [LTP] [PATCH 2/2] Fix failures due to missing max_user_namespaces
+ procfile
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,113 +94,122 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SAFE_TRY_FILE_PRINTF() works just like SAFE_FILE_PRINTF() but it quietly
-returns if the path doesn't exist instead of terminating the test.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- include/safe_file_ops_fn.h  |  4 ++++
- include/tst_safe_file_ops.h |  5 +++++
- lib/safe_file_ops.c         | 34 ++++++++++++++++++++++++++--------
- 3 files changed, 35 insertions(+), 8 deletions(-)
+ testcases/cve/icmp_rate_limit01.c                   | 2 +-
+ testcases/kernel/containers/userns/userns08.c       | 2 +-
+ testcases/kernel/syscalls/bind/bind06.c             | 2 +-
+ testcases/kernel/syscalls/sendto/sendto03.c         | 2 +-
+ testcases/kernel/syscalls/setsockopt/setsockopt05.c | 2 +-
+ testcases/kernel/syscalls/setsockopt/setsockopt06.c | 2 +-
+ testcases/kernel/syscalls/setsockopt/setsockopt07.c | 2 +-
+ testcases/kernel/syscalls/setsockopt/setsockopt08.c | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
-index 6d680967b..e8ed85382 100644
---- a/include/safe_file_ops_fn.h
-+++ b/include/safe_file_ops_fn.h
-@@ -62,6 +62,10 @@ void safe_file_printf(const char *file, const int lineno,
-                       const char *path, const char *fmt, ...)
-                       __attribute__ ((format (printf, 5, 6)));
+diff --git a/testcases/cve/icmp_rate_limit01.c b/testcases/cve/icmp_rate_limit01.c
+index 913fba3eb..b3a237b30 100644
+--- a/testcases/cve/icmp_rate_limit01.c
++++ b/testcases/cve/icmp_rate_limit01.c
+@@ -58,7 +58,7 @@ static void setup(void)
+ 	for (i = 0; i < SRCADDR_COUNT; i++)
+ 		fds[i] = -1;
  
-+void safe_try_file_printf(const char *file, const int lineno,
-+	void (*cleanup_fn)(void), const char *path, const char *fmt, ...)
-+	__attribute__ ((format (printf, 5, 6)));
-+
- /*
-  * Safe function to copy files, no more system("cp ...") please.
-  */
-diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
-index 223eddd1f..62f6600ec 100644
---- a/include/tst_safe_file_ops.h
-+++ b/include/tst_safe_file_ops.h
-@@ -44,6 +44,11 @@
- 	safe_file_printf(__FILE__, __LINE__, NULL, \
- 	                 (path), (fmt), ## __VA_ARGS__)
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
  
-+/* Same as SAFE_FILE_PRINTF() but returns quietly if the path doesn't exist */
-+#define SAFE_TRY_FILE_PRINTF(path, fmt, ...) \
-+	safe_try_file_printf(__FILE__, __LINE__, NULL, \
-+		(path), (fmt), ## __VA_ARGS__)
-+
- #define SAFE_CP(src, dst) \
- 	safe_cp(__FILE__, __LINE__, NULL, (src), (dst))
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index 775561081..c141b1aca 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -121,7 +121,7 @@ static void setup(void)
+ 	SAFE_WRITE(fd, 1, "\n", 1);
+ 	SAFE_CLOSE(fd);
  
-diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
-index 249a512a1..f803691d8 100644
---- a/lib/safe_file_ops.c
-+++ b/lib/safe_file_ops.c
-@@ -250,11 +250,10 @@ err:
- 	return 1;
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
  }
  
--void safe_file_printf(const char *file, const int lineno,
--		      void (*cleanup_fn) (void),
--		      const char *path, const char *fmt, ...)
-+static void safe_file_vprintf(const char *file, const int lineno,
-+	void (*cleanup_fn)(void), const char *path, const char *fmt,
-+	va_list va)
- {
--	va_list va;
- 	FILE *f;
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/bind/bind06.c b/testcases/kernel/syscalls/bind/bind06.c
+index 4a85d5b0e..297311c04 100644
+--- a/testcases/kernel/syscalls/bind/bind06.c
++++ b/testcases/kernel/syscalls/bind/bind06.c
+@@ -34,7 +34,7 @@ static void setup(void)
+ 	int real_gid = getgid();
+ 	struct ifreq ifr;
  
- 	f = fopen(path, "w");
-@@ -265,16 +264,12 @@ void safe_file_printf(const char *file, const int lineno,
- 		return;
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
+diff --git a/testcases/kernel/syscalls/sendto/sendto03.c b/testcases/kernel/syscalls/sendto/sendto03.c
+index c99fb144f..217383993 100644
+--- a/testcases/kernel/syscalls/sendto/sendto03.c
++++ b/testcases/kernel/syscalls/sendto/sendto03.c
+@@ -43,7 +43,7 @@ static void setup(void)
+ 	int real_gid = getgid();
+ 	struct ifreq ifr;
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt05.c b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
+index a65ec6861..4b8b3d22e 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt05.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
+@@ -40,7 +40,7 @@ static void setup(void)
+ 	struct ifreq ifr;
+ 	socklen_t addrlen = sizeof(addr);
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt06.c b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
+index ee460cb18..12a80dee4 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt06.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
+@@ -35,7 +35,7 @@ static void setup(void)
+ 	int real_uid = getuid();
+ 	int real_gid = getgid();
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt07.c b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
+index 917cce0d2..d2c568e3e 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt07.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
+@@ -38,7 +38,7 @@ static void setup(void)
+ 	int real_uid = getuid();
+ 	int real_gid = getgid();
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+index e8035edb0..5b648d754 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+@@ -95,7 +95,7 @@ void setup(void)
+ 			"The vulnerability was only present in 32-bit compat mode");
  	}
  
--	va_start(va, fmt);
--
- 	if (vfprintf(f, fmt, va) < 0) {
- 		tst_brkm_(file, lineno, TBROK, cleanup_fn,
- 			"Failed to print to FILE '%s'", path);
- 		return;
- 	}
+-	SAFE_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
  
--	va_end(va);
--
- 	if (fclose(f)) {
- 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
- 			"Failed to close FILE '%s'", path);
-@@ -282,6 +277,29 @@ void safe_file_printf(const char *file, const int lineno,
- 	}
- }
- 
-+void safe_file_printf(const char *file, const int lineno,
-+	void (*cleanup_fn)(void), const char *path, const char *fmt, ...)
-+{
-+	va_list va;
-+
-+	va_start(va, fmt);
-+	safe_file_vprintf(file, lineno, cleanup_fn, path, fmt, va);
-+	va_end(va);
-+}
-+
-+void safe_try_file_printf(const char *file, const int lineno,
-+	void (*cleanup_fn)(void), const char *path, const char *fmt, ...)
-+{
-+	va_list va;
-+
-+	if (access(path, F_OK))
-+		return;
-+
-+	va_start(va, fmt);
-+	safe_file_vprintf(file, lineno, cleanup_fn, path, fmt, va);
-+	va_end(va);
-+}
-+
- //TODO: C implementation? better error condition reporting?
- int safe_cp(const char *file, const int lineno,
- 	     void (*cleanup_fn) (void), const char *src, const char *dst)
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+ 	SAFE_UNSHARE(CLONE_NEWNET);
 -- 
 2.33.0
 
