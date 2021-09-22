@@ -2,78 +2,87 @@ Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD67C433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9475FC433F5
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:13:41 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A310961168
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:02:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A310961168
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id C8689610A0
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:13:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C8689610A0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DB0093C8617
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:02:09 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2E4683C7713
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:13:39 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6D0D3C1C6E
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:02:00 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 18BE53C7595
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:13:30 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 056F41400C49
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:01:59 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 11037201D0;
- Wed, 22 Sep 2021 09:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632301319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7263C1000D52
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:13:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632302007;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8HRCq5znSmDN1/9yvqnjY9MJZzZgNHXMzx31PFvjW20=;
- b=hJ/Fh22YSZe4azcpvSmM57CLSg5wG9pUVVlmcM6GsepAV191K2bdsN3PNat2xrkLdv31MH
- UB/tq0Ub0As3q0BBM9aZo8XOerPmN+c6/QOe82bFn1jb2Lsq8XTEPoJIo2U0L60LtEFkQ4
- rOnCMWDIUG3gPDvPZ4rF9zvuydK9RJ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632301319;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8HRCq5znSmDN1/9yvqnjY9MJZzZgNHXMzx31PFvjW20=;
- b=/8sasW81O5QZDT8/lLMbGYkc613sT30irwhEi7sEEWWiH358i3mPopiqG83mrJ6plNU5tq
- UjYhSF73rgGr4SDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7B0B13D64;
- Wed, 22 Sep 2021 09:01:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OmcvLAbxSmFvIQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 22 Sep 2021 09:01:58 +0000
-Date: Wed, 22 Sep 2021 11:02:29 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YUrxJfAOO3+B8//7@yuki>
+ bh=hQVKgry5K8nSy4V1OqDPTREKEykS5MZ6M+0DalX6ISo=;
+ b=WZuKeOilB4f0ReVFLHKsXsR3RtnAea/mLJlMon4ZajR/VOogXLTj8oJ46IYbSkl3p7aRgD
+ 1hZTW0nsG9i72vyfqw03qPZEwrk9Pkrdm+1u3PnlfFmYswW6wKQ6uDiSGnJo6pzEnAwpYB
+ +V7gAbWJrE/vwrq2UxABGgoyo4G9JXc=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-373-ndw8joU1NY62l_dYHwPCrA-1; Wed, 22 Sep 2021 05:13:24 -0400
+X-MC-Unique: ndw8joU1NY62l_dYHwPCrA-1
+Received: by mail-qv1-f70.google.com with SMTP id
+ ib9-20020a0562141c8900b003671c3a1243so9328135qvb.21
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 02:13:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=hQVKgry5K8nSy4V1OqDPTREKEykS5MZ6M+0DalX6ISo=;
+ b=fvLubr9vKkjv0Rwqpo5FtQsagcUnfuLHirTXGfBw397XBt5zS56hiQF4fr/cAZWyM4
+ THIYZMbgM/63UYuLw4O2gVz3XueWFdPWCYYccKXNagFrcJQ7elC95tF+EQX/Sy5/VY/l
+ HaQKjjfch1ts7hu1sRKkr2Iud1ajs+gsy70saqbYWgBuHGurtat+78ocKReRjdcUofYK
+ PBU7b4yby19Hcj68McjazU7xKoyFWKbD2VNyrLaUsLq4oFeFHxoiVyyykbfPNxHRz0mm
+ UEGHFIkYH480AQSSJvYNJI5ncAjmx1LEMXUL7N4TIyA4tdFDoYJHgnFugePq/2EtD0RU
+ az0g==
+X-Gm-Message-State: AOAM532X0A7yfbPoIpwgeh6NwIHJcyHFmc/RelQdwBKgLgHWD3p74cKg
+ hirR5v2bIvIaI7ubaTA4JH5Iawu0ZyDK0x6fRsTt11k3uvT3eSzciLJo9d5tm0i4EWL2FwrBipe
+ g9DiV3aex9jNM5cS0VvBjEryNWGc=
+X-Received: by 2002:a25:94e:: with SMTP id u14mr19565700ybm.425.1632302003819; 
+ Wed, 22 Sep 2021 02:13:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjV2SVZN+6SeVZGVVlBxq9W7wxfLtThY4V9ElplxwFcpukq9V0VlHRe0ire3piYlh1bjMhueE/5dpGX7oDnDI=
+X-Received: by 2002:a25:94e:: with SMTP id u14mr19565675ybm.425.1632302003581; 
+ Wed, 22 Sep 2021 02:13:23 -0700 (PDT)
+MIME-Version: 1.0
 References: <20210920122146.31576-1-chrubis@suse.cz>
  <CAEemH2eRgUDNLmmzNF5cDaAXp7kMgPOBHeJeWqyStOiAq7QLHw@mail.gmail.com>
  <YUnCYvtAZkO/LZIP@yuki>
  <CAEemH2e0kHun++Y2w99N68WAhjFdQkSvkF-1UaDxjbkA1sBrAw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2e0kHun++Y2w99N68WAhjFdQkSvkF-1UaDxjbkA1sBrAw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+ <YUrxJfAOO3+B8//7@yuki>
+In-Reply-To: <YUrxJfAOO3+B8//7@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 22 Sep 2021 17:13:11 +0800
+Message-ID: <CAEemH2d=+h1k62SnVY8Rh=c0UGGEvvTQieW3YgUq8j2Mg6UW=g@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] lib: shell: Fix timeout process races
 X-BeenThere: ltp@lists.linux.it
@@ -88,68 +97,58 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1748805418=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > > This 'pid' is the parent shell process id, so it obviously that
-> > > tst_timeout_kill
-> > > process would get signal SIGTERM as well.
-> > >
-> > > I'm thinking maybe we should let tst_timeout_kill itself ignore SIGTERM
-> > > otherwise we have no chance to perform the following double-check code?
-> >
-> > I guess that signal(SIGTERM, SIG_IGN) a the start of the main() should
-> > fix it.
-> >
-> 
-> It works, but better put it behind of sleep(timeout).
-> 
-> Because we still need to guarantee tst_timeout_kill can be
-> stopped by _tst_cleanup_timer before timeout happening.
+--===============1748805418==
+Content-Type: multipart/alternative; boundary="000000000000170ec405cc91ed58"
 
-Right, of course we want the timeout killer to be killable before the
-timeout.
+--000000000000170ec405cc91ed58
+Content-Type: text/plain; charset="UTF-8"
 
-> --- a/testcases/lib/tst_timeout_kill.c
-> +++ b/testcases/lib/tst_timeout_kill.c
-> @@ -44,6 +44,8 @@ int main(int argc, char *argv[])
->         if (timeout)
->                 sleep(timeout);
-> 
-> +       signal(SIGTERM, SIG_IGN);
-> +
->         print_msg("Test timed out, sending SIGTERM!");
->         print_msg("If you are running on slow machine, try exporting
-> LTP_TIMEOUT_MUL > 1");
-> 
-> @@ -57,12 +59,12 @@ int main(int argc, char *argv[])
-> 
->         i = 10;
-> 
-> -       while (!kill(-pid, 0) && i-- > 0) {
-> +       while (!kill(pid, 0) && i-- > 0) {
->                 print_msg("Test is still running...");
->                 sleep(1);
->         }
-> 
-> -       if (!kill(-pid, 0)) {
-> +       if (!kill(pid, 0)) {
->                 print_msg("Test is still running, sending SIGKILL");
->                 ret = kill(-pid, SIGKILL);
->                 if (ret) {
+> Hmm, and of course this does not work since the timeout kill process is
+> around. Maybe we should make this process a separate process group from
+> the start, what about calling setpgid(0, 0) instead of setting up the
+> signal handler? That way we can send the signals to the whole process
+> group and make sure everything has been cleaned up.
+>
 
-Hmm, and of course this does not work since the timeout kill process is
-around. Maybe we should make this process a separate process group from
-the start, what about calling setpgid(0, 0) instead of setting up the
-signal handler? That way we can send the signals to the whole process
-group and make sure everything has been cleaned up.
+Agreed, that sounds like a great method.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+
+--000000000000170ec405cc91ed58
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
+Hmm, and of course this does not work since the timeout kill process is<br>
+around. Maybe we should make this process a separate process group from<br>
+the start, what about calling setpgid(0, 0) instead of setting up the<br>
+signal handler? That way we can send the signals to the whole process<br>
+group and make sure everything has been cleaned up.<br></blockquote><div><b=
+r></div><div><div class=3D"gmail_default" style=3D"font-size:small">Agreed,=
+ that sounds like a great method.</div></div></div><div><br></div>-- <br><d=
+iv dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br>=
+</div><div>Li Wang<br></div></div></div></div>
+
+--000000000000170ec405cc91ed58--
+
+
+--===============1748805418==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1748805418==--
+
