@@ -7,67 +7,64 @@ X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5AFEC433FE
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62A48C4321E
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:28 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EBD761107
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2EBD761107
+	by mail.kernel.org (Postfix) with ESMTPS id C2C9861131
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2C9861131
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vpitech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DA3B3CA20A
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 20:54:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 663143CA249
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 20:54:22 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 573893C2659
+ by picard.linux.it (Postfix) with ESMTPS id 649EB3CA205
  for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:53:54 +0200 (CEST)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 76E1B600BCB
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A12A41A00999
  for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:53:53 +0200 (CEST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=diDgG5w+rQrp3NF4c/ac7huU4NvhnAS7FItDPxIkDYmbG0FvnTG04PqQZssgVTUL8UD0vzDPMZ++cBkzpKlVYvZS+NotN+NPNLWtqNOpM4BQHVjxzSi7SAfUJMLWu+My5v/tA6vVKI39PK3K0CLGueSoF5YAosb470J0EjNeyZp1nPddFX13smUPxHKlDhiRWq4FDHPx/f+8LKgAPUrFvzIsTxFCre8aRUWKag91v1hQ6skS21uql7DtZKeNsDFQBLjNELsDliw8yZGzDN4SxixQqSe7Hn+IV7bcEaD6rdEC41CVW0scCyuZHgk7aLGdxYkXEf/GBHScKtvxFQT32g==
+ b=YRj8mKzgQcEOJgRaM/9or9Srz9j1hs3D8srLuA3P0CvC2lsF92UW17ONwtne8O3p4vRtEG2ZuZf6M8W70FNaqPukW3rWpx+FK1gVyiYMNNAhrQD8rzSUNkcqVOkDVUPM4B5HGH4V1wGuRm2HNlMpiho/lVF+UXNYf115yuhaKlsmUwng5Kvg+Uk2B0g5W1cNCMpZD0kiDnhNU8KO9X7MJq17bKAJKVjU2tKolTzs3M2dgrYs/dpB58tUbWjYxs4bGDvWilCmKhf67hCjPPAn7vuzxXmyP+PEbal1ShqwJRRcfVGiSO04TjhNQEjH+U/Wd8WOJQyjESuGkeelcbg+4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=oh8oFmUd3CL+XgW5TtKLjwn2JsiE9huahvp1HFni/BM=;
- b=H5ug2t5bZOnKTypisCcZrloUL1lwA3PsQQVPd2TI4FUnCFV59x1LAIptTbrbiy/PHWOH0lkqe41exZlP0v4GagpBKe+NnBjJX46dJ70wp14OAawJZ3zoqu9Ej3g59Q2DqRPG6ROceyB8jfnRVRL8JbjARLz8X9KqJiaDck+N1fHwx1ipCyCEsATnXc1yt3nTt69NNrYSJioBALX2QITHKEe7CQDVk+4L5ADyG9Qz++c1/hOYKdpHwsVLXOY5xiAISgChTaqJe0rFdW/fKaV1b+tknmLd2xrYlVmOMO0hKcL0QXqyUBNZ9K9vhHprHPdz9MFAkSE7WfYyfUG4VJgYUQ==
+ bh=aJx0bn5bjojlOxYp6On5sSFGejd5EZgnUMZmo5Q7nO0=;
+ b=e+Y1c3vxyKTI6Pbz6jlXlbqWh/aVNRc9sM8TelV2aIPg4ntmldoGU/i3rTly4P7xmSMnTJsJ/tjM0uhLgvdOdhtiXFMdkdxFjfHl599lyX2EF0Wikx/gwcuub+gincrGrQCT5Ppce9D+XT0kbXnIJEtH96eYyeukLl1sqAw2Bi8mK3Tjdd9MbHqINHaAPnDgLDuAplL54VnfAxPmKDiyhLoeMjZ3Kjkfl3V1blB2gcHH5oo/cRaf/4w9rcBuqZ60ZfWC6TXJzvFWCUfhj+BCWVypoPSHwMZw4UGlrST4uOhVDqic6719N2xvkGYY9e/qW8CzpAzhy4UapHk5Pp9lsw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vpitech.com; dmarc=pass action=none header.from=vpitech.com;
  dkim=pass header.d=vpitech.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=vpitech.onmicrosoft.com; s=selector2-vpitech-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oh8oFmUd3CL+XgW5TtKLjwn2JsiE9huahvp1HFni/BM=;
- b=NQXqj3NSiytMKAzluV8MMKMspsOzurJ7E3y2+6JpeqinFGIFQ5KZcGn8GaLH2w84z7KHzjLfIwX6kcDJQnWXYr43k5ZZFDVLUUCwmle/clt6qPE0+f3txjRwLpbSlL6WyvixY+BF3hOAAkqrdY5T552T7Bj0U0emcQAX1FB11tI=
+ bh=aJx0bn5bjojlOxYp6On5sSFGejd5EZgnUMZmo5Q7nO0=;
+ b=Xx4xARsYim5MC6u2rspx1GuA4u8i9N4XBW52RodHfo/lHpa4oAn50sMD8p6m6Z8QvNFuEVpOeAGZkjHsEzJ8ZwFFC6nDAw5UTYDbhkx4v4xh0MwXKStlqZjIm33THbIzt8nBAXOzTITmqq5QF/ZwEZvNs/FU2n9bz2l1Dmnsl50=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none
  header.from=vpitech.com;
 Received: from MW2PR07MB3980.namprd07.prod.outlook.com (2603:10b6:907:a::32)
- by CO2PR07MB2583.namprd07.prod.outlook.com (2603:10b6:102:a::14) with
+ by MW4PR07MB8649.namprd07.prod.outlook.com (2603:10b6:303:102::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
- 2021 18:53:50 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Wed, 22 Sep
+ 2021 18:53:49 +0000
 Received: from MW2PR07MB3980.namprd07.prod.outlook.com
  ([fe80::cc48:9777:4f07:6014]) by MW2PR07MB3980.namprd07.prod.outlook.com
  ([fe80::cc48:9777:4f07:6014%4]) with mapi id 15.20.4544.015; Wed, 22 Sep 2021
- 18:53:50 +0000
+ 18:53:49 +0000
 From: Alex Henrie <alexh@vpitech.com>
 To: linux-integrity@vger.kernel.org, ltp@lists.linux.it, zohar@linux.ibm.com,
  pvorel@suse.cz, alexhenrie24@gmail.com
-Date: Wed, 22 Sep 2021 12:52:32 -0600
-Message-Id: <20210922185232.492879-3-alexh@vpitech.com>
+Date: Wed, 22 Sep 2021 12:52:30 -0600
+Message-Id: <20210922185232.492879-1-alexh@vpitech.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210922185232.492879-1-alexh@vpitech.com>
-References: <20210922185232.492879-1-alexh@vpitech.com>
 X-ClientProxiedBy: MWHPR11CA0003.namprd11.prod.outlook.com
  (2603:10b6:301:1::13) To MW2PR07MB3980.namprd07.prod.outlook.com
  (2603:10b6:907:a::32)
@@ -75,59 +72,59 @@ MIME-Version: 1.0
 Received: from demeter.ad.vpitech.com (66.60.105.30) by
  MWHPR11CA0003.namprd11.prod.outlook.com (2603:10b6:301:1::13) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15 via Frontend Transport; Wed, 22 Sep 2021 18:53:49 +0000
+ 15.20.4544.15 via Frontend Transport; Wed, 22 Sep 2021 18:53:48 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d8d91ff-1b63-4df7-fd18-08d97dfa50d9
-X-MS-TrafficTypeDiagnostic: CO2PR07MB2583:
+X-MS-Office365-Filtering-Correlation-Id: 16af8fc4-7199-4144-6ef7-08d97dfa5013
+X-MS-TrafficTypeDiagnostic: MW4PR07MB8649:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO2PR07MB25830E517E87FC0404C8929FB8A29@CO2PR07MB2583.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:407;
+X-Microsoft-Antispam-PRVS: <MW4PR07MB8649231BEAEFF3D9719C608DB8A29@MW4PR07MB8649.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:962;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1GjR5QfPwH8jryZmh5a7oo467AluvD2KrZE1SJXR/0+DR4VJzaN5/wu07ZdPDqJwkP+LRFFqvb/S9euF9jZDV0e2+54w7ZbgNUP96IOXeGPLGnLD4OU9OdGMZgTfl754YlQRLpNn1cxFtZ9b4U9bsoHR1sSrBTS5ZG8WL0+qU/n/rWXMdvds08AdC5bOxaeOesd5ybLlmS6zMCls4oUAbMDmf41SpHIVD0L1wqypvZHjbyALi1TycnLjMftMVITQBsxm9AkmGPRnKMwvFRhfXYueW7Y0y8Dhm4fIBRjQwLYYjXrN86kWDy+m/Qx44c5Op/oWSmsqVf6WF0htt4r0b0iDnpaTyrshHkaNZKllG7KUKBQAyR0uOjTnaLqzy2MGS35tb58rzz+3O/5/m6O6yCtNMX4MLETYms8mI2sNGjbouKcPnNrX0Jaxdf4wNO7hDtkddt6f1rvJRt/rpOYah4ofnLRYg3y0tCBp/V73kgznnpHvhId9qnnt2pN+RdFGDuguiJwNykR4Z+27y2LQbHYQ8wHk8sVbaJx+OXijYQ+LrnMPby9g5dmpPK1RQ0/Ai0k2fCzNtbKWmBZz/PM+ZGfTs5Gy9W8KQCMZfppAepNUPwZZz+rfHn16gFDzd2s3AUGtk4wcBgacn4kKFXqvlI4oudUnTqtWsn+zxbCMEj8amkD6Yre4O6kWNfHKlNwyR9bGycPfIg63W9Kt6Kw6lA==
+X-Microsoft-Antispam-Message-Info: 6KnvqjnvgApau6QENced1+L+6BIjK6U3+tsdSgo9htVBY/wiCEeBDbSPNw+IbkB5cUGcWNZBeXbErefqNs6fw2cQCjCiSnheIUDIGsBKfy3bQbyWcMtrtNQLczi/4aOZANfhON5+mr8jclIptwrlSmnpngw6CfNATlqJurdJeGMx/x4sfY5AsSPRU/GUue5Gmc0v0WYAZ54rnz8S3HaUCf6aF46z6aoZPz4g9/of4VvMd5E/BsuHRsU8HEl6+tl/CNietCbyYZbm6ztOuK5bi7yV58jJuQLyHJcrj2jVoLVZqWovTUkm+n/zjg1EDuMv0Zg6Qe98qw+nrGnmUySB9mJyy2ce4xGAiw6S3xmhmW5xRidExusxIageKFiJE0Q0fWqnwSMp9BGnz629vP589bTDwXRZQ5+JCfzUpr1rplxpv3ORHj3nNkui4oyuKk/6Q6K548+6ZI6BoCrmrShiCl6KcJsHig7mjnwy/XEH2NEARg319XTRQEISi/QZsci1VnKaZp4oKftmflVZhdLwYZc3wrabBrHiqpnw5odB9r+nnVUj5jP4/LZ98+EyItCq1Mk+uUs9c2JQezEve788PCyLdsexlBDNSBL71k32nC5CCEyTQ89fnX53JQmFSKcYekXLiykDwvR4tBC3UXZR9BllxwMua2mZfdzdrq10+5aFzSD1iaglIHKN4N1GDobAefhG7tn3drqKo/C44fs0rw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:MW2PR07MB3980.namprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(39840400004)(346002)(396003)(376002)(136003)(366004)(66556008)(66946007)(66476007)(38100700002)(316002)(956004)(2616005)(6486002)(36756003)(8676002)(107886003)(26005)(8936002)(508600001)(86362001)(2906002)(7696005)(6666004)(52116002)(4326008)(1076003)(83380400001)(38350700002)(186003)(5660300002);
+ SFS:(136003)(346002)(396003)(366004)(39840400004)(376002)(1076003)(186003)(8936002)(38100700002)(86362001)(6486002)(6666004)(2906002)(4326008)(7696005)(107886003)(38350700002)(26005)(316002)(52116002)(8676002)(83380400001)(5660300002)(66476007)(956004)(2616005)(508600001)(66556008)(36756003)(66946007);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OpiHUth3sI0SsadPJ9NgZA7uGZLaPmz87tedD8tzQ7jur6Os916ws9I5uiGk?=
- =?us-ascii?Q?wcmZJPddkqRqsxzgNSc2VmpTkuOY6+z1/8JrJOo7uGn1r1Bn+JI+FPOFEB+d?=
- =?us-ascii?Q?6QuiCW++u2eAB/RoI5BXPocj4xSamuy1nifp2IXNF6/QdwbAlo8tfppH1Zhv?=
- =?us-ascii?Q?aeOzOu85ePCtVpllu7L3FjQER0dsJSJRI485MNWTZwW34tn0rN3JSa/2DnJp?=
- =?us-ascii?Q?3tV8SnVfJM32f8vzzeu8abKgEWh7BoEXHChhVIQu7FZSeAwstGV1mmqppyHq?=
- =?us-ascii?Q?WnUPtdDtsyTZopoWRMxTRLGI0UsjLt59N4/lBFC/n1LbJWCTkcE1kov6ejTe?=
- =?us-ascii?Q?0mW7E9K8/9MIOY0mho5jaC9iVHEd9DUafZdQnGWAOncURm2kcGkD+WtafPYN?=
- =?us-ascii?Q?eBG6oRJjmBnIv0cdgHX9oYYwvL6OWAuEyArnkmgSRhV96QlVAHsbn2Cyq1Kz?=
- =?us-ascii?Q?z9JZHydLl66kzy+0x0QU/p4v4VQ65XpWE9C93RadbWQmAFwYIXWh3QxTmbRr?=
- =?us-ascii?Q?BEhMU3jCGDE4F/mniJ7kZK/zoLMC6xm7wvKt9q1J7ISXtRrZDvEf+jluez0D?=
- =?us-ascii?Q?7A3rkDBOfRp65zxQ40M/qFGXKISAPbOlQxF/Tl99hb6q9sK8Ncg8dSbs5JAU?=
- =?us-ascii?Q?TyQ5FSAaUa9IBX1AaBkwhvniyIyIOVBuf4iWZoTKF7RTQ4k94PyhXpV5qJjr?=
- =?us-ascii?Q?PEp00wnsAAI8mzISQTriYEc74MNVw9xu+LasAMds8naXsD5LzTAioNIx38iS?=
- =?us-ascii?Q?0IQQyaKXS8AOkkltNVaBZR1amIZI7PU46oUTY9I2lw/JLyBlDNXS12VLgJSf?=
- =?us-ascii?Q?nTrpE7iNmG4P9vXjNX6K4yBaaJIUer6NrlfcQHjjYOFsYR3/QvrmfU7FyCjW?=
- =?us-ascii?Q?hmdf5b8hU7tpFSMELp53aNGhRnjyOIfCfqNtanYs846QXv0nLb6IQyp5va8i?=
- =?us-ascii?Q?9mamwgF3C+ywEKePaFNNcN7McUZr1rNMm5KRJFbuT2LYOpD06Qbmys2GBkcx?=
- =?us-ascii?Q?h3hRF/zGVty//l332+nsnqIs6CinAefFgK+SC+5ewegHGTH7wnv56vhDxk4+?=
- =?us-ascii?Q?tKUc4UbZbTc6+xV3D7iCZZGO85aOxyVBOtTdJyBNJgYzxJi3N3Kv6E80Kezh?=
- =?us-ascii?Q?ZJKDWs/9UmuvG/ZivBLtvUdPZGpGNPm7yUMQqUE4PwhBCE6/B9u5sJP2lo0y?=
- =?us-ascii?Q?I9HNM8dZCxTMRQ28AZ1JqAE86YKk983t0XAOFAOPsjTcwqsCXUWyGeKfWy0q?=
- =?us-ascii?Q?YP4hkt43OoiMgVz0tnDDt1Qza/K7LvStPr1bsThIort7uv/maxTuKQlabUdt?=
- =?us-ascii?Q?ooGZ4ZIsK1DS5pfgkIKsq85S?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YdIYobZXH9YZEm8rjhLMWyae/t+Z6gqM9RQBrz1EYG2SMSrqHz9VC1lQfnIB?=
+ =?us-ascii?Q?5dMhkx+fEoGQ8srYnXlkM/LQoFs0JUbiKIVX870Kxv2qGM7s+hoEH/t2Aa/0?=
+ =?us-ascii?Q?84VwvR1sBCIdXyesQJ3R3HttcfnTmCDd/5br2VXtnSkjYOuaC3sStDUz1eBt?=
+ =?us-ascii?Q?8jhzP0rxytqNFp1fwsJ4xAkPy4aQhHELY9htqDx0kC+wmJ/x7ESkr3e7GMxf?=
+ =?us-ascii?Q?C0ylPJ1tf+pe21cC1dbqCpsFpwXDrL31Ixl7S2IXwbFB+Pv7xDW7XZ0NESbl?=
+ =?us-ascii?Q?QrNB/fJizpB2pl8khmY6nfZWweiSCo3Jn6zK0oP4gIxhslUIVn2BOubGgboZ?=
+ =?us-ascii?Q?8IUGav5miStq1JeN+Q1jVlc+vrzV7fhqmRKkKaLOzTYvQVXad4L1BbCJIgrJ?=
+ =?us-ascii?Q?TwYmiTvS7F5a+2QEM2crWYjUxyPtDIfa17xr28fjV5yhm7s536HCvjfulgQ0?=
+ =?us-ascii?Q?IkbU4RmWf0ochntgzmxc6+OWq0hDpQFp2Wu73P4E/AwpYTMVZs/jnJtpC78M?=
+ =?us-ascii?Q?um3HKK255CTCO/vzksYCs6rOa2iA+YOLlxg81Jynbc8RBzaFkZHWoGTusfTj?=
+ =?us-ascii?Q?W2t1F/APr6GY4tSnYpDKYezQg3mMC1e+vScCoEHbOUoguHhdS0nEoVXj69my?=
+ =?us-ascii?Q?y91pbgDUIyGyNl2gQeXJ0YLK3LCQ6+MP1FlpGouIrs65mx4Uey7od6JWWD5o?=
+ =?us-ascii?Q?5HxfMzITcKy7TwvDBLRmkXVaGbHzkXqPYkU2kiIr6O/xjAlHEv9T103KsJYg?=
+ =?us-ascii?Q?rJaEVUpMDP3VmtWLVvi6iz7vudqr3cAht4HXWDR3sdOaIB+HES1MD6AtRSXn?=
+ =?us-ascii?Q?vMUTVgMcxJFmPiUUi0wsLt3WORtWzGDIpvqvKgv1G/r5y1o8sM+/B5p+GJId?=
+ =?us-ascii?Q?DhK4y5PA+C2MIT7ri3Nw1Wp0joY1q2GBbdAwYHaMpSHxQivjsLHoj3MzOXw/?=
+ =?us-ascii?Q?q/JZZT2dMBkLr1aNN+dRzxYbDAGLtdIDon4VxnLJIB66UR5Ab7SuAFZZtdBX?=
+ =?us-ascii?Q?CzWHE+DzN6SVXoO4LHX6uLvxmSYwfkVMhXYNJLOE2ju/dRdoil8A9qx9u/7c?=
+ =?us-ascii?Q?57qmfLJe7b58dqn8K4K1kHA+N7Y6GbxGCGxFAHR/reKarAjf8W56qyG9dC00?=
+ =?us-ascii?Q?ofPk2I/Ta0usXFURHq7Eiv/NnQksZC9vaHw0icDBMt5fl3wNG5ES7kqsN5Gg?=
+ =?us-ascii?Q?SKs+iYc/FllzOBFLEML/ZBNh5nx4UW8AmF8MEc9Z6uLXKDWqrtBFyPwrmGNC?=
+ =?us-ascii?Q?SzisOYkhOig9PzEosRnxC0RDoODiGlsfhcW85obeuxSbARpbRTIMOtMzuV4p?=
+ =?us-ascii?Q?IR19q1+mPf4PAnNbjlrDTXX5?=
 X-OriginatorOrg: vpitech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d8d91ff-1b63-4df7-fd18-08d97dfa50d9
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16af8fc4-7199-4144-6ef7-08d97dfa5013
 X-MS-Exchange-CrossTenant-AuthSource: MW2PR07MB3980.namprd07.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 18:53:50.2504 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 18:53:49.0051 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 130d6264-38b7-4474-a9bf-511ff1224fac
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hR/foyA6mOisOO5voDt0XQLz0/i76VtHA+nMWM3jz7HmoM2NBSzMk2hBz8WniwO36oqvSrQDIqbn3PB3DhlKCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR07MB2583
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-UserPrincipalName: 59q2Seoz3NaPNstytB+rdLl45RksKwbWG9MwAY0iyQuDGKpiwEYjHmat+la9cecLU1ZXl+2U49N+Wfck+fwqHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR07MB8649
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH ltp v7 3/3] IMA: Add tests for uid, gid, fowner,
- and fgroup options
+Subject: [LTP] [PATCH ltp v7 1/3] IMA: Move check_policy_writable() to
+ ima_setup.sh and rename it
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -144,100 +141,79 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Requires "ima: add gid support".
-
+Suggested-by: Petr Vorel <pvorel@suse.cz>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Alex Henrie <alexh@vpitech.com>
-[ pvorel: add test_file parameter to ima_check(), add
-verify_measurement() (DRY) ]
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-v7: Change "Copyright (c) 2021 VPI Technology" to "Copyright (c) 2021
-VPI Engineering" per internal feedback from VPI
----
- runtest/ima                                   |  1 +
- .../integrity/ima/tests/ima_conditionals.sh   | 62 +++++++++++++++++++
- 2 files changed, 63 insertions(+)
- create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
+ .../security/integrity/ima/tests/ima_policy.sh   | 16 +++-------------
+ .../security/integrity/ima/tests/ima_setup.sh    | 10 ++++++++++
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/runtest/ima b/runtest/ima
-index 29caa034a..01942eefa 100644
---- a/runtest/ima
-+++ b/runtest/ima
-@@ -6,4 +6,5 @@ ima_violations ima_violations.sh
- ima_keys ima_keys.sh
- ima_kexec ima_kexec.sh
- ima_selinux ima_selinux.sh
-+ima_conditionals ima_conditionals.sh
- evm_overlay evm_overlay.sh
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-new file mode 100755
-index 000000000..b76f7cb5a
---- /dev/null
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-@@ -0,0 +1,62 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 VPI Engineering
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+# Author: Alex Henrie <alexh@vpitech.com>
-+#
-+# Verify that conditional rules work.
-+
-+TST_NEEDS_CMDS="chgrp chown id sg sudo"
-+TST_CNT=1
-+TST_NEEDS_DEVICE=1
-+
-+. ima_setup.sh
-+
-+verify_measurement()
-+{
-+	local request="$1"
-+	local user="nobody"
-+	local test_file="$PWD/test.txt"
-+	local cmd="cat $test_file > /dev/null"
-+
-+	local value="$(id -u $user)"
-+	[ "$request" = 'gid' -o "$request" = 'fgroup' ] && value="$(id -g $user)"
-+
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+index 244cf081d..8924549df 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+@@ -11,19 +11,9 @@ TST_CNT=2
+ 
+ . ima_setup.sh
+ 
+-check_policy_writable()
+-{
+-	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
+-
+-	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
+-	# CONFIG_IMA_READ_POLICY
+-	echo "" 2> log > $IMA_POLICY
+-	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
+-}
+-
+ setup()
+ {
+-	check_policy_writable
 +	require_policy_writable
-+
-+	ROD rm -f $test_file
-+
-+	tst_res TINFO "verify measuring user files when requested via $request"
-+	ROD echo "measure $request=$value" \> $IMA_POLICY
-+	ROD echo "$(date) $request test" \> $test_file
-+
-+	case "$request" in
-+	fgroup)
-+		chgrp $user $test_file
-+		$cmd
-+	fowner)
-+		chown $user $test_file
-+		$cmd
-+		;;
-+	gid) sudo sg $user "sh -c '$cmd'";;
-+	uid) sudo -n -u $user sh -c "$cmd";;
-+	*) tst_brk TBROK "Invalid res type '$1'";;
-+	esac
-+
-+	ima_check $test_file
-+}
-+
-+test1()
+ 
+ 	VALID_POLICY="$TST_DATAROOT/measure.policy"
+ 	[ -f $VALID_POLICY ] || tst_brk TCONF "missing $VALID_POLICY"
+@@ -55,7 +45,7 @@ test1()
+ 
+ 	local p1
+ 
+-	check_policy_writable
++	require_policy_writable
+ 	load_policy $INVALID_POLICY & p1=$!
+ 	wait "$p1"
+ 	if [ $? -ne 0 ]; then
+@@ -71,7 +61,7 @@ test2()
+ 
+ 	local p1 p2 rc1 rc2
+ 
+-	check_policy_writable
++	require_policy_writable
+ 	load_policy $VALID_POLICY & p1=$!
+ 	load_policy $VALID_POLICY & p2=$!
+ 	wait "$p1"; rc1=$?
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 565f0bc3e..9c25d634d 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -73,6 +73,16 @@ require_policy_readable()
+ 	fi
+ }
+ 
++require_policy_writable()
 +{
-+	verify_measurement uid
-+	verify_measurement fowner
++	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
 +
-+	if tst_kvcmp -lt 5.16; then
-+		tst_brk TCONF "gid and fgroup options require kernel 5.16 or newer"
-+	fi
-+
-+	verify_measurement gid
-+	verify_measurement fgroup
++	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
++	# CONFIG_IMA_READ_POLICY
++	echo "" 2> log > $IMA_POLICY
++	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
 +}
 +
-+tst_run
+ check_ima_policy_content()
+ {
+ 	local pattern="$1"
 -- 
 2.33.0
 
