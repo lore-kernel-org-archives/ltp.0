@@ -2,90 +2,80 @@ Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1258BC43219
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 10:34:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A64D5C433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:47:52 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FDE16124A
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 10:34:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5FDE16124A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id C428561156
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:47:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C428561156
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D4F13CA150
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 12:34:47 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 9BF7E3CA211
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 13:47:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 25F303C2659
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 12:34:37 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 1C01F3C22CD
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 13:47:38 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 15FD91401207
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 12:34:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1632306875;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2E3C7600CC6
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 13:47:37 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2CF5A22213;
+ Wed, 22 Sep 2021 11:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1632311257;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/GmH9/aTUfHOXFZnZxwPZKs5aPgg4Q3Wc3g66PoONY8=;
- b=Eu9OoQ2vOlv9cMzC1YObj/IjhF701WQy+OnPNGp2XArVHthSltN6kmz2y6Avp54ygwJ/CM
- 6KHglQz76EMzldBr50osaTauXeRVlAq21BxthJZjkBl11F+8llPNoDOCVWfqXML+P31iPX
- SgrWLi8rfm5a62BeQWSqv/P/lUrjUbw=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-9RT2kSBDOWKxQdxSyBO0Vw-1; Wed, 22 Sep 2021 06:34:34 -0400
-X-MC-Unique: 9RT2kSBDOWKxQdxSyBO0Vw-1
-Received: by mail-qk1-f200.google.com with SMTP id
- j27-20020a05620a0a5b00b0042874883070so8576221qka.19
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 03:34:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=/GmH9/aTUfHOXFZnZxwPZKs5aPgg4Q3Wc3g66PoONY8=;
- b=YzIRmapTpf8eLTB4XaXbBOKAwPCQMe5VElJcJ7gx/2YJq7uMHRx1xfHPYVK+qngP3p
- D1ZBLwTilM3L8JR4BALW1SVb0eNeXHdU0mzpfbc70Vu4VEt8m+X+8INetJBCeS6NO4ne
- xvvJacBSiz389HqlUkP/EqJsXOUHLIkqN8X9Zv5x7fjUClAyX1zkMJq4xf3MaGtJiepg
- PSBm8PfzgI9y3EBzphc2vovIC6G0Pc/l8V5a0J9DWeviQnS28F39/QnL7UMHwEpLp5ol
- jHE1kAxW/+h2FxSEi7HxLPPHvVVFX0zTXLi0TEPvqBsUhLVa5QrDKYc+B+6MZK76f0Ef
- PYuA==
-X-Gm-Message-State: AOAM533OUEY9tgstz3gqZWfIgcW9PHtH3W/62xEYOm/GX1Xty19FI14D
- 6zjQYgrPfsN7GAGdwelqbLJwoC51VQ5NfaG/AOco4D/TArXwZMjRRQMdDdw9W1n3cD6vK7UZKqz
- TU27AiNdiycLNA5LeSSmWNWxARoY=
-X-Received: by 2002:a25:3f47:: with SMTP id m68mr902245yba.316.1632306873965; 
- Wed, 22 Sep 2021 03:34:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7Vw2BaLGAL29jpEo8FTkWza30XEUdeqbaqBdp9ZJZv2HfhIU8qrJPI7bELxggLJNV1BpPdVjyKCDILVYIn0E=
-X-Received: by 2002:a25:3f47:: with SMTP id m68mr902217yba.316.1632306873705; 
- Wed, 22 Sep 2021 03:34:33 -0700 (PDT)
+ bh=36IdXHp84eA5CEsGV/yfxQgW/yw20QXQ/3FNdo+o1yg=;
+ b=s4YSv0mRzORoRTAOpOWpRsC10u2/OTMoIiQFUiiAISGmJv66z0KsYOY3HQe3ukPE4mw2wx
+ TLjcIKFTNwt6pg29Pw9G2OjfIo43lyxIRqhM2RBUrfqGpgT+xZSjFCZY7E0g2Lm+b1wTdm
+ Q8Kn4gtNUR/vihG9GkuRbTnyTi+qhBI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1632311257;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=36IdXHp84eA5CEsGV/yfxQgW/yw20QXQ/3FNdo+o1yg=;
+ b=RHBIz4Mk5kwpH3KxjgN/lrzjlJI7/7seRWdb5TIFfKkF1KOQbXlnZdWWcW63+GKf6R25qI
+ pQC05g8gk56Ac5Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED87013D76;
+ Wed, 22 Sep 2021 11:47:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id la5iONgXS2H+BgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 22 Sep 2021 11:47:36 +0000
+Date: Wed, 22 Sep 2021 13:47:35 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Alex Henrie <alexh@vpitech.com>
+Message-ID: <YUsX1/4HmzHO01GW@pevik>
+References: <20210922020801.466936-1-alexh@vpitech.com>
+ <20210922020801.466936-2-alexh@vpitech.com>
 MIME-Version: 1.0
-References: <20210817104625.2559362-1-liwang@redhat.com>
- <20210921203349.GA2014441@maple.netwinder.org>
- <CAEemH2dMCmYDkZYxfaeJ_oQCCcHzeMgSOGVQ_wS6BwCrp0YiQw@mail.gmail.com>
- <YUrnljqYd5Hx/fi+@yuki>
- <CAEemH2dDRT-iQPH0a-Aip8OZDUpp2Z3_x4dgVBEg4tv_pyWvfw@mail.gmail.com>
- <YUr9676LXNi0xMs6@yuki>
-In-Reply-To: <YUr9676LXNi0xMs6@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 22 Sep 2021 18:34:21 +0800
-Message-ID: <CAEemH2c37Qx6uEG40utX8pGC2Gp0ZLtT_z194L4RVNm6N2CefQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20210922020801.466936-2-alexh@vpitech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
- defallocate size
+Subject: Re: [LTP] [PATCH ltp v5 2/3] IMA: Move ima_check to ima_setup.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,102 +87,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1117094655=="
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1117094655==
-Content-Type: multipart/alternative; boundary="0000000000005f4bd305cc930f02"
+> Signed-off-by: Alex Henrie <alexh@vpitech.com>
+> ---
+>  .../integrity/ima/tests/ima_measurements.sh   | 28 -------------------
+>  .../security/integrity/ima/tests/ima_setup.sh | 28 +++++++++++++++++++
+>  2 files changed, 28 insertions(+), 28 deletions(-)
 
---0000000000005f4bd305cc930f02
-Content-Type: text/plain; charset="UTF-8"
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+> index 1927e937c..807c5f57b 100755
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+> @@ -17,38 +17,10 @@ setup()
+>  {
+>  	require_ima_policy_cmdline "tcb"
 
-On Wed, Sep 22, 2021 at 5:56 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+> -	TEST_FILE="$PWD/test.txt"
+>  	POLICY="$IMA_DIR/policy"
+>  	[ -f "$POLICY" ] || tst_res TINFO "not using default policy"
+>  }
 
-> Hi!
-> > > Looking at the test I do not think there is a reason to allocate more
-> > > than a two or four blocks for the buffer. We just need to write() to
-> the
-> > > fallocated area in a loop one block at a time until it's full. I do not
-> > > think that it's a good idea to pass ~100MB buffer to a single write()
-> > > and expect it to succeed anyways.
-> > >
-> >
-> > Sounds practical.
-> >
-> > Btw, If we don't create such a larger buffer area, then we have to
-> > count the loop times must as equal to bufsize/blocksize. Otherwise,
-> > we can't guarantee the test behavior is correct.
->
-> Strangely enough we allready do exactly that for the second part of the
-> test.
->
+> -ima_check()
+> -{
+> -	local algorithm digest expected_digest line tmp
+> -
+> -	# need to read file to get updated $ASCII_MEASUREMENTS
+> -	cat $TEST_FILE > /dev/null
+> -
+> -	line="$(grep $TEST_FILE $ASCII_MEASUREMENTS | tail -1)"
+> -
+> -	if tmp=$(get_algorithm_digest "$line"); then
+> -		algorithm=$(echo "$tmp" | cut -d'|' -f1)
+> -		digest=$(echo "$tmp" | cut -d'|' -f2)
+> -	else
+> -		tst_res TBROK "failed to get algorithm/digest for '$TEST_FILE': $tmp"
+> -	fi
+> -
+> -	tst_res TINFO "computing digest for $algorithm algorithm"
+> -	expected_digest="$(compute_digest $algorithm $TEST_FILE)" || \
+> -		tst_brk TCONF "cannot compute digest for $algorithm algorithm"
+> -
+> -	if [ "$digest" = "$expected_digest" ]; then
+> -		tst_res TPASS "correct digest found"
+> -	else
+> -		tst_res TFAIL "digest not found"
+> -	fi
+> -}
+> -
+>  check_iversion_support()
+>  {
+>  	local device mount fs
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> index 9c25d634d..976c6a86c 100644
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -188,6 +188,7 @@ ima_setup()
+>  	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
+>  		tst_res TINFO "\$TMPDIR is on tmpfs => run on loop device"
+>  		mount_loop_device
+> +		TEST_FILE="$PWD/test.txt"
+This is wrong, it's causing error, unless you have $TMPDIR (usually /tmp) on
+tmpfs it's not defined and leads to error:
 
-That try one by one block after filling full of the FS because nobody knows
-when fails.
+ima_measurements 1 TINFO: verify adding record to the IMA measurement list
+tst_rod: Missing filename after >
+ima_measurements 1 TBROK: echo Wed Sep 22 12:24:17 CEST 2021 this is a test file > failed
 
-But as you suggested we can do that as well for the previous allocation :).
+And even on tmpfs it fails (maybe caused by old kernel 3.10):
 
-So, will you create a patch, or I do that tomorrow?
+ima_measurements 1 TINFO: $TMPDIR is on tmpfs => run on loop device
+ima_measurements 1 TINFO: Formatting /dev/loop0 with ext3 extra opts=''
+ima_measurements 1 TINFO: not using default policy
+ima_measurements 1 TINFO: verify adding record to the IMA measurement list
+ima_measurements 1 TBROK: failed to get algorithm/digest for '/tmp/LTP_ima_measurements.dLS7yCTHLY/mntpoint/test.txt': measurement record not found
+ima_measurements 1 TINFO: computing digest for  algorithm
+                                               ^
+                                               => notice space - algorithm not detected
+ima_measurements 1 TCONF: cannot compute digest for  algorithm
+                                               ^
+                                               => also here.
 
--- 
-Regards,
-Li Wang
+It's also wrong that $PWD is unique for each test and TMPDIR is removed after
+test, thus TEST_FILE will not exist for the second test (ima_conditionals.sh).
+Also, ima_setup(). Also, I put into ima_setup.sh IMA related variables.
+TEST_FILE is not that case thus I'd keep $TEST_FILE in ima_measurements.sh and
+define local test_file="$PWD/test.txt" in the only function in ima_conditionals.sh.
 
---0000000000005f4bd305cc930f02
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Also I intent do remove duplicity in ima_conditionals.sh, thus I'll send v6 in a minute.
 
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Wed, Sep 22, 2021 at 5:56 PM Cyril Hrubis &lt;<a=
- href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><b=
-lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
-ft:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
-&gt; &gt; Looking at the test I do not think there is a reason to allocate =
-more<br>
-&gt; &gt; than a two or four blocks for the buffer. We just need to write()=
- to the<br>
-&gt; &gt; fallocated area in a loop one block at a time until it&#39;s full=
-. I do not<br>
-&gt; &gt; think that it&#39;s a good idea to pass ~100MB buffer to a single=
- write()<br>
-&gt; &gt; and expect it to succeed anyways.<br>
-&gt; &gt;<br>
-&gt; <br>
-&gt; Sounds practical.<br>
-&gt; <br>
-&gt; Btw, If we don&#39;t create such a larger buffer area, then we have to=
-<br>
-&gt; count the loop times must as equal to bufsize/blocksize. Otherwise,<br=
->
-&gt; we can&#39;t guarantee the test behavior is correct.<br>
-<br>
-Strangely enough we allready do exactly that for the second part of the tes=
-t.<br></blockquote><div><br></div><div class=3D"gmail_default" style=3D"fon=
-t-size:small">That try=C2=A0one by one block after filling full of the FS b=
-ecause nobody knows when fails.=C2=A0</div><div class=3D"gmail_default" sty=
-le=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font=
--size:small">But as you suggested we can do that as well for the previous a=
-llocation :).</div><div class=3D"gmail_default" style=3D"font-size:small"><=
-br></div><div class=3D"gmail_default" style=3D"font-size:small">So, will yo=
-u create a patch, or I do that tomorrow?</div></div><div><br></div>-- <br><=
-div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br=
-></div><div>Li Wang<br></div></div></div></div>
-
---0000000000005f4bd305cc930f02--
-
-
---===============1117094655==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1117094655==--
-
