@@ -2,129 +2,130 @@ Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51BA6C433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 17:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C0FAC4167B
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:08 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3415F60EE5
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 17:06:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3415F60EE5
+	by mail.kernel.org (Postfix) with ESMTPS id 1ABBC61131
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1ABBC61131
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vpitech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4574C3CA20E
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 19:06:36 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id C50673CA267
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 20:54:02 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1442E3C2659
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 19:06:26 +0200 (CEST)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com
- (mail-bn7nam10on2083.outbound.protection.outlook.com [40.107.92.83])
+ by picard.linux.it (Postfix) with ESMTPS id A12963C2659
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:53:53 +0200 (CEST)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DD28C1A00CAB
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 19:06:25 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 417676006DD
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:53:52 +0200 (CEST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cdmRYtcTvcjRgPqSqYRDiraGopHG7DGZL5eu/xRph85rYOywsqQ3nJyMKgINB38rmwzCNslzZ4IKNwnd0Z/UHJye250TmsqRhhb9zkkIQyQWCLnH3VETy/0nL6rcn3ruR7BaJzDFP4z3FZ1VLMvw36ixdvPBZWlT2w7n6USOg1kUVBBLYXhod+vkPOiOU9JGXh7sYwEM1jmoDzr08Iw1bhdinSPaaoW8HPWkqV9vMY/9HtSuaXyFnZdrAhEo4HMoxD4AcN4yWQ0mx6UjSkD6TkNzdkYwHeNTNxag8nGr86DKSTbLhMah9ttEpbIgt5/MF9rtuyGzyzSHqBxCUhmuJg==
+ b=FSdoCzWKilIGI8szUboG53nCE8S81VUkLTSc8roWja1Fj49dRjlNm33EHBQoaCea9BqsvObv96cd2FJxtOMEZUJUEfKgWBe1p67FZ0gC4Ref1irQkh5yOhcnfRk46VobvTx4mErYAIz2eV3V3wI5cY5yYi9Dy628QYD7DNkOAnUjCVXQcHOIU11WcEtlT7p877k3ajAjtLmB/DGKcNqILLhon6CjIdbwY5WxJPZ2d9OaYJyp/MaRW77BDeI7r8C44roVxcLlBhS9xBcIjsOloA4SnUTZWAs0hoIqhpAddWNKtS8QGeYFKMeeDuTsuEkwvR59rrPgpT9SHcz5pl+XdA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=KSHsGEVQuDpoXHyl4plz+PLiTy/wuSO1p+SsZ2TqthI=;
- b=IPOPXHc56c6G81AVYHgm2uZ/1PV5LwQ6PFGhifZTzNJPgWH1m4ku7pjJub9n1NB913rXufq9x0iNrWKBhYbANPWVWoa/G+b+4LzlWcMuNr8UgQZ3eiXJBvzrNv1FflkAtjzaMoCIkADfP1J29wIl1QeQUW5GyDTWo/XlKzvPxsQSgAMXXh3U3LLlqX/1S4QP5hru1gH2knBIPpH7d6ZC8j0vGpI0icbZxbEncL6oamCPNGSZVuCCuA1vRoWYyxHzF2clTdBBsAqHIk3RlOFdvVE5IbjW0vTLufGn8UzJ5dHGFcrqH8552DUFdH68VcNP/hkewN1b9wybv55eGPb91w==
+ bh=FFVn1DKOblYdEdj04d4Cm2PlRNS0ICkUe5wxDKXg0Pw=;
+ b=VyuG5U6Ec9Y9HZTS1uE9I7byk3yOk9Y/eAJzDPv5oSb+BsVf2MddhHPWK7RjTdSmDQ/9UlH7XBjzuA+/x/zlE9PDT0O8n+p7QQSiC+La5x/2YEJ/BSNjKWfYmZCHW+q6ARRdmuWtmdWbV56sGmCcrE3ZSNe1MRkL9x0fDGgQuo+qDlTVSuikBBiOY/eocFfkv+iOaGrvIe3dPg6mkf+QRKHKXVav1FqkC8y3/atG2yGnWeLRsukrky1S6Ctww4jCpoFWmAaxk74VtLBGYydomj8zOEN5Tx36wClWkMdBSG1qfqpZpRH6g8t1Dtlv/aAwcaFQWM2Ud06arVYcBeNUXg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vpitech.com; dmarc=pass action=none header.from=vpitech.com;
  dkim=pass header.d=vpitech.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=vpitech.onmicrosoft.com; s=selector2-vpitech-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KSHsGEVQuDpoXHyl4plz+PLiTy/wuSO1p+SsZ2TqthI=;
- b=BlS8FoN2kC4GNhRmOEm0xT52VEJIUrd8A8m8vnGIHBUoUDZPeeYSLZSikIuwUUb/rz8FlSUs3jOdeMAbwxEmxzUTPCEjPBEKvjablMilJec8froFPRd4hzThactnY/WbztYT01s0oeU4cESF8yYPFL2qgPBQBTQ0uaMrIYwAC/w=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=vpitech.com;
+ bh=FFVn1DKOblYdEdj04d4Cm2PlRNS0ICkUe5wxDKXg0Pw=;
+ b=W8rnFp985Cv09zC8vNZQ8B/gWPz3tWbWi+OOFseIhFUlKE+Rhuv2FYAlRtnR8ajNf/pyjZfz127v3Op9wqpJuugOB5nVWQ86tYaCcVraO7KP8C+W266GdXNSS3Eh6Ve1izb01swCC/zRQOVKnoKPiTp5wfpxGdUep9XW4VVrKNA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=vpitech.com;
 Received: from MW2PR07MB3980.namprd07.prod.outlook.com (2603:10b6:907:a::32)
- by MWHPR07MB3184.namprd07.prod.outlook.com (2603:10b6:300:e2::20) with
+ by CO2PR07MB2583.namprd07.prod.outlook.com (2603:10b6:102:a::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Wed, 22 Sep
- 2021 17:06:22 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
+ 2021 18:53:49 +0000
 Received: from MW2PR07MB3980.namprd07.prod.outlook.com
  ([fe80::cc48:9777:4f07:6014]) by MW2PR07MB3980.namprd07.prod.outlook.com
  ([fe80::cc48:9777:4f07:6014%4]) with mapi id 15.20.4544.015; Wed, 22 Sep 2021
- 17:06:21 +0000
-Date: Wed, 22 Sep 2021 11:06:20 -0600
+ 18:53:49 +0000
 From: Alex Henrie <alexh@vpitech.com>
-To: Petr Vorel <pvorel@suse.cz>
-Message-Id: <20210922110620.cf7530d5120d2f0173ed2f05@vpitech.com>
-In-Reply-To: <20210922115310.5927-4-pvorel@suse.cz>
-References: <20210922115310.5927-1-pvorel@suse.cz>
- <20210922115310.5927-4-pvorel@suse.cz>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
-X-ClientProxiedBy: MWHPR14CA0012.namprd14.prod.outlook.com
- (2603:10b6:300:ae::22) To MW2PR07MB3980.namprd07.prod.outlook.com
+To: linux-integrity@vger.kernel.org, ltp@lists.linux.it, zohar@linux.ibm.com,
+ pvorel@suse.cz, alexhenrie24@gmail.com
+Date: Wed, 22 Sep 2021 12:52:31 -0600
+Message-Id: <20210922185232.492879-2-alexh@vpitech.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210922185232.492879-1-alexh@vpitech.com>
+References: <20210922185232.492879-1-alexh@vpitech.com>
+X-ClientProxiedBy: MWHPR11CA0003.namprd11.prod.outlook.com
+ (2603:10b6:301:1::13) To MW2PR07MB3980.namprd07.prod.outlook.com
  (2603:10b6:907:a::32)
 MIME-Version: 1.0
-Received: from demeter (66.60.105.30) by
- MWHPR14CA0012.namprd14.prod.outlook.com (2603:10b6:300:ae::22) with Microsoft
+Received: from demeter.ad.vpitech.com (66.60.105.30) by
+ MWHPR11CA0003.namprd11.prod.outlook.com (2603:10b6:301:1::13) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15 via Frontend Transport; Wed, 22 Sep 2021 17:06:21 +0000
+ 15.20.4544.15 via Frontend Transport; Wed, 22 Sep 2021 18:53:49 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 558cab13-a91b-4636-4f3d-08d97deb4d43
-X-MS-TrafficTypeDiagnostic: MWHPR07MB3184:
-X-Microsoft-Antispam-PRVS: <MWHPR07MB3184D42E2CD34E5CB1D474F1B8A29@MWHPR07MB3184.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
+X-MS-Office365-Filtering-Correlation-Id: cd74e3b9-b01d-45d3-2f04-08d97dfa507e
+X-MS-TrafficTypeDiagnostic: CO2PR07MB2583:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO2PR07MB25836B43D019A6908C085E3DB8A29@CO2PR07MB2583.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GQ7iS8odZS/1kUkasDnL+BSUsQULDDlXIk47J0/C/fEdXxk9RG3NgOz17VnxWXcYs2pPdzpcsJeVtRQdt+1IO/TDeCQQ18qibQ1OFglYgf76SRgewAR7zsClIU2MI8upwgAdhdPbdaZY9iCYyM35RQRQSETftTNqaiDRXERzd2uMTTjXNX3pSzz0M/oKCc2hL7dHmhHwRJMXFKDqs08T+l7YuWlpVf9/1AP9a6DLrlcjd++M6l8IFS5R5THbXlBbkFm4qwBpf1PUgBrzlCj+fXz4Nbu35KwmmQmJY/J3qUPeRXUcxj/MmhgUlpbbdDNJTAsy22hzJ5qKBsTejQ7/4/OWH4xPZ892y128Nt5503dcZGHDSQ4yvyQXqOCRAPiOZoPcBOQEJFJYCydn7RqFOhfCygjEVvwxhUTEfX5N2xgT1LL/7UJ5pRL0Kx5+krf5nTHqxi1scOPuKa3ASVttkbiz8z8mkH42iDOZ9AVHRCLJf6cG/KzMBRwfOHLGhuewmvI5L1BMwxzYlNAQbWvSv38wEGWRTeuRltwxY9NAVXASh1B6eV0fguCHnXhtV8CAk19+11SEJjrOupN7sVD3JZBuaUAH/WMYr67WV0WFfxODKpPtiuSJG0Nc+Qr431cOueU856SeXQd4jlRyCBdet78O2NJM27c7cppes3vUgkswlupnZQqdKF6HFH5/3mDtwsMOR2v9ACV6pBQpaqsSyA==
+X-Microsoft-Antispam-Message-Info: tfS1skhjd+cJL6KzAnUIe5xM13q75Y50JLqDzv8f7n6r/xE462gpklml6eXJizoDrMzxMhRb7RGfC9TFqWLgdbN+cjmDjvmvwn9voZDp6BpArpjt3i+z8nZV7mTBMhsFvelgeiTTvMaMemNSCellQfIlRzuqlsauXc8gE2U3+7Fe0469IH+JcXZffjR/GFKf+9OCWT4Y/OQV51yMb+3oVLCHij5RqzRzvL9LnvqtnjseVFZIflkUOewkumY3zj1RFxRaxZEqM6EXmFVi8ZA+Nd4cPvnKy59tvTs3yxlRsJ1Px00YNip3DFs/9NJafDDAJj8WONGZKpdJpwvhRD1lLsysg3twQARR6hjQQ5cFc1VYBOSB+rGtz9ZTx75lxwVCswuLvYRkbF+ood++cLn2hCkBmXbvV/mrVb+bi91uoqcz6R24OeEO2F3sHPvKJAhENpPvT/VDrg3Al3JclbYwtZ/Y6xm6N6Qeqj+cxPaCzcnsRkQIjPxc2BlBKjOcny2dLlkHghGqgsg2xcVF8u2ePU5cRE5ZyNv5Lr2gTwBXZFgb2mEl0EslqnESvSDzJt1o1pxreYbgYZQUYSL34yLW+QLMrcFHDWtce/Uyabw5X6Z+rmSjH5OhPI5MEi8H3RfFz/hREOhNZscS2oCbgKhcXS5w9G0vXjCysbzxJa9DfY2P36jhnKqOWk+fslBPYPc5hY32fFwnt2GBMbHDkma7DA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:MW2PR07MB3980.namprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(39840400004)(376002)(346002)(136003)(396003)(366004)(8676002)(8936002)(508600001)(6486002)(2906002)(6496006)(186003)(5660300002)(86362001)(6916009)(66556008)(66946007)(26005)(316002)(52116002)(4744005)(66476007)(1076003)(83380400001)(2616005)(956004)(36756003)(4326008)(38350700002)(38100700002);
+ SFS:(39840400004)(346002)(396003)(376002)(136003)(366004)(66556008)(66946007)(66476007)(38100700002)(316002)(956004)(2616005)(6486002)(36756003)(8676002)(107886003)(26005)(8936002)(508600001)(86362001)(2906002)(7696005)(6666004)(52116002)(4326008)(1076003)(83380400001)(38350700002)(186003)(5660300002);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R55dn6WfGp7x9PkTy/o0KzW3/jSuylsUd7Qwrmi1qwUbN2nwumBseRkyeHfy?=
- =?us-ascii?Q?VUmAmCZZ2Ltn39sO4C7UjIb5SIeTkkEXTSCnB/bh8quw6gun1zeu79djQhRb?=
- =?us-ascii?Q?YYgaQ8YW6YaWw23FurRC0AHEgv266NiiDMgsCUCaaUeEBlnTk8SAS620r+N9?=
- =?us-ascii?Q?Y3Roou1/z15rVFh84h52SZNGaqHE27a/xgxFRGVW/nio2UdBYdrh0r2hFEho?=
- =?us-ascii?Q?aAx3zYwPk/HEApAnhH4MGCISuhBhWiWNcbH0qFrWDIk1j5QwjyFuPtH6mB67?=
- =?us-ascii?Q?t7jGWdIAN2B/4P/gVAVdJli+E/j1thIEmAOgz4R0FawQ1jKmqwubpFwQtHki?=
- =?us-ascii?Q?9PPn0t2wlJZB0K38jXgZf8W+O2s02owqmH0GjUadnqQHmRVIqbAIIbSxb+hv?=
- =?us-ascii?Q?OhDbLjlFIOPecf03NGH6Id869q8H60ZfyaXTLO49AgHsdWSxSFJJcTDksUgB?=
- =?us-ascii?Q?WY8mCricn98CPa+0bQ5aD9w7cf06aMvaGfgpew1O/OK2gSDFmlJ8zQJelD4N?=
- =?us-ascii?Q?AeWkbUcOFYEbgFPTYY8d5X1/Em4jG/ScuxbvkwuWuIkA12r4RXqP79mQ7pnq?=
- =?us-ascii?Q?rruFKbX82+ijIHZMpgyOzP9nrzlS7/7XJccYreJf7H7hUYmc7pvHrf1gMlWo?=
- =?us-ascii?Q?IqH7sMf2jH6kEpyTrtTJrcpPzTcC0ajFSm2KyBie2oIq7qIX0ugrMGi9r8wp?=
- =?us-ascii?Q?M6xcwyZEXQxbhEvJMyoHYEmc4fCx7zY7RKqoIXvr9zzvZPYCaAlKjCUksKPp?=
- =?us-ascii?Q?8llsJJuh3W2GHQgQF88By4jRumGJFPj6k3Zyj6YCORpA3puw7ScF3SQP9zMY?=
- =?us-ascii?Q?b+3ZN+x51tygRhuiECIiwuuBspi2kTBcLcqj+ETz9rg4vv7Hr0w8YIf4QCST?=
- =?us-ascii?Q?Nr+Sbisg76U9ndz1dqMgQX8WlfdNLXnuLn0DK4TMoho79/JC2fdvojmLS64G?=
- =?us-ascii?Q?OL5y/0E0y2Mtt950Vf3laZwHn8YmGDydw1+CXCtchubBrf4L5QqPNfRjc5L3?=
- =?us-ascii?Q?FEV8h81Yncr7SaTPXtfiA7ceQucYEi7tyO3AXV6KvOpmW+ozYNOdjuAgswJD?=
- =?us-ascii?Q?K6bGOT0DLzDb98oT7LuyKaQdB5Ajj12hznRNUoS/cU6fmnb4P1NfyIj23IxA?=
- =?us-ascii?Q?WGdKS5hfBekC094glv2zH7FNWOhzE47ciPEsVOpfyfJ/h16G7lHCjqxuj2Oj?=
- =?us-ascii?Q?7Q1zisU7IQYRgKTo2S64SMQsUV9Yyz/xnOFcdgR/djqf4L0iuG3Fa+DdxQIU?=
- =?us-ascii?Q?zSPpSWGEJGSinxzrAwPPDxZI/4Vi/+tKf5T/qHpW3d2BsNxbKP3WLoXFCt5u?=
- =?us-ascii?Q?DHuJ07Z121Fl9IveSyNUjUNX?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QUE7OrTGC3HDRxpCw/7shjbyJZztanE2Vhrb80/uDNzBTS1wOpKl7ib7UyH5?=
+ =?us-ascii?Q?YiMA33wUsAvdqhYIxYZtTIHKzkHikWa4sjCqz3mabeP9Kfj3GPlw237Q8+oW?=
+ =?us-ascii?Q?NvS2//4oxB6Hx9dT8RjmxJvKjs4bCyhoWaix9/9taTSXDBewdgmAiTZE1G9a?=
+ =?us-ascii?Q?U7g7WDmz1VGVBw+f2ijp2NBX3oc9/t6rKnCjwux1AUiU/7tz8oWizn9pZpoc?=
+ =?us-ascii?Q?JiSxnbbvsFY42XgaEeOSuJphRyRxFFabR0HNy9PcC9fEeQ2PoMli5/ALMvka?=
+ =?us-ascii?Q?X51phcC2sibi0wvwkR7lWkYWkM3ueq+QRTFsbHImIpsWUJy/gD/A5FO/QTDu?=
+ =?us-ascii?Q?44zZ89CRZTpiA6g8xdOFKlwGO368MCTXAk21gLWBPMN6v3VtaggZ4DcfTHGr?=
+ =?us-ascii?Q?qvhQYPVWyCp5mX3hi1fZS3YNuHRqUSoLptbTxUwCaKFPA8l2IIZVaRS1gepe?=
+ =?us-ascii?Q?ysLuR4tGd14LCe4PI/gkewFtV84/lhK2ikFKJ4CwmpSGML9Y7GTztvn77Ytx?=
+ =?us-ascii?Q?COOCnYerYoEJo2a80JkRKiNybidGkGNGa5vtjkN/H7G0ITmV/ZUgP4aKRNm6?=
+ =?us-ascii?Q?1WbUKQyjB8P4q6VJ9IY7bgIuwtrMDCqbq8BtyPtnQUoZZu4PyweJT9KLWtyO?=
+ =?us-ascii?Q?dyZvHrZwzNgNW34a2Y8EnvOQ7b6Yrw3fRl32qaH9y0/o+Rr3WI7o9OHQDmTs?=
+ =?us-ascii?Q?OCDDH7FPYgkXiBMimXB4k30dOkNh77NO3rwasune+IGIBat3mbIxgNyWSqz+?=
+ =?us-ascii?Q?ri4Z/amIjEFhzAClz2ScPDrG7pK1QkNXXBOJwScHNqCpqh6j8NvIxNyBOrz+?=
+ =?us-ascii?Q?bIv4vwJGy15wTxs0buwDNpMCHy9ib6ooJrtfMTsMuH8vYPw9sZWbY8Maz8lc?=
+ =?us-ascii?Q?QdouU0Acf4DTuciXYzYn90bt6cahkc9C10Tesrs3VVht3czIz5xyLIKNt4AP?=
+ =?us-ascii?Q?1gyrifZ5k0bchKartRt28HDnIyru6F+mVu9VMeiXfBCxfn2O2irUC8ROkPVT?=
+ =?us-ascii?Q?rfLDUKgWA4ccXPfbcTsdB6KqW/VENjNymoEhof8WtCBETEZIFaKwUi8+tsyL?=
+ =?us-ascii?Q?8ohpvdrY3soVSeBBikQmB7b/t8+wL7HNVuNyDTSzGsvbRm1ffDJmqbTxXd0A?=
+ =?us-ascii?Q?TWVnIS+jE7XaZprZf3uYNWfz0ytk8VV+DplRgx1bWh1sctdMnmrBigQXZQtE?=
+ =?us-ascii?Q?AI94J21MgLIe3qaT4s5OaAjOnihRdf9zVH66gfbpb4Jf1fSWU6j1H0yiHNCd?=
+ =?us-ascii?Q?vBU36Vq/5i1OIGXreKB2VOBxs7psWGGsmloICT7UR+5cn7ElfloEihcmqZDM?=
+ =?us-ascii?Q?wESMe0y8+47/LCBNlmxjor7X?=
 X-OriginatorOrg: vpitech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 558cab13-a91b-4636-4f3d-08d97deb4d43
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd74e3b9-b01d-45d3-2f04-08d97dfa507e
 X-MS-Exchange-CrossTenant-AuthSource: MW2PR07MB3980.namprd07.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 17:06:21.8678 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 18:53:49.6458 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 130d6264-38b7-4474-a9bf-511ff1224fac
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DogjNPcTSUGy8NF6VaZXgQMVDPC2dEwxCAT5jIIqJHD1CzJGG/2kaxVY+wfGvTC0oLCdrwA+An6FJ7rTXVbxIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR07MB3184
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-UserPrincipalName: TKvVz3uA0QsFgwpsJBVIcutlB/Mm+fJnw7pOQ0dmsbQUH1XYp3fQp9iDsu/qgPfVghPQO/m5fyZgUnGp2rFeIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR07MB2583
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 3/3] IMA: Add tests for uid, gid, fowner,
- and fgroup options
+Subject: [LTP] [PATCH ltp v7 2/3] IMA: Move ima_check to ima_setup.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -136,29 +137,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, 22 Sep 2021 13:53:10 +0200
-Petr Vorel <pvorel@suse.cz> wrote:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Alex Henrie <alexh@vpitech.com>
+[ pvorel: add test_file parameter to ima_check(), keep $TEST_FILE in
+ima_measurements.sh ]
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .../integrity/ima/tests/ima_measurements.sh   | 31 ++-----------------
+ .../security/integrity/ima/tests/ima_setup.sh | 28 +++++++++++++++++
+ 2 files changed, 30 insertions(+), 29 deletions(-)
 
-> From: Alex Henrie <alexh@vpitech.com>
-> 
-> Requires "ima: add gid support".
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Alex Henrie <alexh@vpitech.com>
-> [ pvorel: add test_file parameter to ima_check(), add
-> verify_measurement() (DRY) ]
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+index ef8577d30..a83c416de 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -21,33 +21,6 @@ setup()
+ 	[ -f "$IMA_POLICY" ] || tst_res TINFO "not using default policy"
+ }
+ 
+-ima_check()
+-{
+-	local algorithm digest expected_digest line tmp
+-
+-	# need to read file to get updated $ASCII_MEASUREMENTS
+-	cat $TEST_FILE > /dev/null
+-
+-	line="$(grep $TEST_FILE $ASCII_MEASUREMENTS | tail -1)"
+-
+-	if tmp=$(get_algorithm_digest "$line"); then
+-		algorithm=$(echo "$tmp" | cut -d'|' -f1)
+-		digest=$(echo "$tmp" | cut -d'|' -f2)
+-	else
+-		tst_res TBROK "failed to get algorithm/digest for '$TEST_FILE': $tmp"
+-	fi
+-
+-	tst_res TINFO "computing digest for $algorithm algorithm"
+-	expected_digest="$(compute_digest $algorithm $TEST_FILE)" || \
+-		tst_brk TCONF "cannot compute digest for $algorithm algorithm"
+-
+-	if [ "$digest" = "$expected_digest" ]; then
+-		tst_res TPASS "correct digest found"
+-	else
+-		tst_res TFAIL "digest not found"
+-	fi
+-}
+-
+ check_iversion_support()
+ {
+ 	local device mount fs
+@@ -83,7 +56,7 @@ test1()
+ {
+ 	tst_res TINFO "verify adding record to the IMA measurement list"
+ 	ROD echo "$(date) this is a test file" \> $TEST_FILE
+-	ima_check
++	ima_check $TEST_FILE
+ }
+ 
+ test2()
+@@ -92,7 +65,7 @@ test2()
+ 	tst_res TINFO "verify updating record in the IMA measurement list"
+ 	check_iversion_support || return
+ 	ROD echo "$(date) modified file" \> $TEST_FILE
+-	ima_check
++	ima_check $TEST_FILE
+ }
+ 
+ test3()
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 9c25d634d..af7f3a5f5 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -279,6 +279,34 @@ get_algorithm_digest()
+ 	echo "$algorithm|$digest"
+ }
+ 
++ima_check()
++{
++	local test_file="$1"
++	local algorithm digest expected_digest line tmp
++
++	# need to read file to get updated $ASCII_MEASUREMENTS
++	cat $test_file > /dev/null
++
++	line="$(grep $test_file $ASCII_MEASUREMENTS | tail -1)"
++
++	if tmp=$(get_algorithm_digest "$line"); then
++		algorithm=$(echo "$tmp" | cut -d'|' -f1)
++		digest=$(echo "$tmp" | cut -d'|' -f2)
++	else
++		tst_res TBROK "failed to get algorithm/digest for '$test_file': $tmp"
++	fi
++
++	tst_res TINFO "computing digest for $algorithm algorithm"
++	expected_digest="$(compute_digest $algorithm $test_file)" || \
++		tst_brk TCONF "cannot compute digest for $algorithm algorithm"
++
++	if [ "$digest" = "$expected_digest" ]; then
++		tst_res TPASS "correct digest found"
++	else
++		tst_res TFAIL "digest not found"
++	fi
++}
++
+ # check_evmctl REQUIRED_TPM_VERSION
+ # return: 0: evmctl is new enough, 1: version older than required (or version < v0.9)
+ check_evmctl()
+-- 
+2.33.0
 
-Thanks Petr for taking over and making the changes you want directly,
-that makes my life much easier.
-
--Alex
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
