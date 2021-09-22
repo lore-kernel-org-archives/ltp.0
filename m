@@ -2,99 +2,86 @@ Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8725C433EF
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 05:40:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF564C433F5
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 06:35:08 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BC58611B0
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 05:40:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5BC58611B0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
+	by mail.kernel.org (Postfix) with ESMTPS id 233F761178
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 06:35:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 233F761178
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE1673C9AAE
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 07:40:35 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3E5423C7825
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 08:35:06 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 820BA3CA14F
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 07:40:14 +0200 (CEST)
-Received: from mail3.bemta25.messagelabs.com (mail3.bemta25.messagelabs.com
- [195.245.230.84])
+ by picard.linux.it (Postfix) with ESMTPS id 9A2013C2ADA
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 08:34:56 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BA623200DA8
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 07:40:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1632289210; i=@fujitsu.com;
- bh=hysPykdeQdYvbwP/Tcwj4l4Q5f4ZTG59zTYs2y8cKSs=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=i4pLxN78F4CXcBeiH6h/ayZbS5B8T9R9EILrj0H56i7kbWMUdD6oFp00rfzZ1wnYO
- cPGjYn6em2OJW+WU5z72wJ1LPhznaduScvFFUorEfFeDguM5UjHqjYVWAjZpxmuFLI
- peEP8Y9wUHlkav9GvcPHjEQODzSqViAXQy0TUZ3An6BPoCyCrPj71oBGIQDoZkxjUh
- wKAOwerNgTllcx6WELc5MsV0dvEoqCsvGJVpd9/kAcJuhI+2YmzyiwD6otHhJSPrIX
- 76yB/qcjTKjj9119HehQdOcDmt5Do26zUnE7TpQtukOUswN+vv8F2kObOM/nxuYGLB
- ko9aGwISqnjLw==
-Received: from [100.112.199.201] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-b.eu-west-1.aws.symcld.net id F8/0F-21838-AB1CA416;
- Wed, 22 Sep 2021 05:40:10 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRWlGSWpSXmKPExsViZ8MxRXfXQa9
- Eg74rPBYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bb/rXsBb8lKt6tO8TWwDhJtIuRi0NIoIVJ
- ou/zVxYIZw+jxPzv+1m7GDk52AQ0JZ51LmAGsUUEJCQ6Gt6yg9jMAuoSyyf9YgKxhQWcJbqWr
- wGLswioSnxfOgGsl1fAQ2LZyZ2MILaEgILElIfvweZwCnhKvHuxFywuBFRz4v91Noh6QYmTM5
- +wQMyXkDj44gUzRK+ixKWOb1BzKiRmzWpjmsDIPwtJyywkLQsYmVYxWiQVZaZnlOQmZuboGho
- Y6BoaGukaWprrGhqb6yVW6SbppZbqlqcWl+ga6iWWF+sVV+Ym56To5aWWbGIEBmRKwdHOHYy/
- Xn3QO8QoycGkJMrrru2VKMSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mC9+x+oJxgUWp6akVaZg4wO
- mDSEhw8SiK8AruA0rzFBYm5xZnpEKlTjLoczZOWb2cWYsnLz0uVEuctOQBUJABSlFGaBzcCFq
- mXGGWlhHkZGRgYhHgKUotyM0tQ5V8xinMwKgnzvt0HNIUnM68EbtMroCOYgI7gX+kBckRJIkJ
- KqoEp6mU+V0evW/eftb18v7dMNOYzbgzd93bj2zkObM6+O1K+PGfMPVHj8DbnrcOXtyzd600U
- +0+/8TpRf1og8KwM49sHKsHevP8CFlbEO0YG8Fdf4HN0CXvy82bUprWvX/2apGEzJyiy/6BWW
- +X1A9k71jQ/yNpw2YFz6m6JMAPZqrAGgU87TP5UHAjjdZtyr6tjQvCME7POxun46eV9Wtr/U+
- iljUinyJFfSw+JTew4ueiZyNR3XxRd+hOeetlksG2TtC/IXqF5N+Y7/8otqdtYJUtSnp2vKtg
- 49fjE7/afWjsXP18g96jibdhMD8Zrh7Zou2uGrXjA2bmmfekXjoI3W27N2KHA0FSr3634f766
- EktxRqKhFnNRcSIA50pb808DAAA=
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-14.tower-285.messagelabs.com!1632289209!237285!1
-X-Originating-IP: [62.60.8.148]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.4; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 9740 invoked from network); 22 Sep 2021 05:40:10 -0000
-Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
- by server-14.tower-285.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 22 Sep 2021 05:40:10 -0000
-Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
- by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 18M5e3Yi010435
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 06:40:09 +0100
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Wed, 22 Sep 2021 06:40:00 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Wed, 22 Sep 2021 13:39:42 +0800
-Message-ID: <1632289182-2191-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1632289182-2191-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1632289182-2191-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E7164600F06
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 08:34:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632292494;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=u6J7slUyD9fPETmKPLZmE6r0bVOMYNvu30bv+ofZWrA=;
+ b=TsL4m3W/GOQUhteHj9J5AiDv1jkdkTfnVNelyDFnhxvdvZoeoKJWhlEqv0cQn2VeuCBSAN
+ EqFZ3dlH8sN/6b4viAUp6C8mf5c4PVbcmALaxWujMchjty83nkWhD1PvR/sznWMuMhOTWi
+ Vc2rK2XG6Hb0KRDNWNqxZHd9mHbBR5Y=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-opuoRvbfMYOAAo5SF41-Fw-1; Wed, 22 Sep 2021 02:34:52 -0400
+X-MC-Unique: opuoRvbfMYOAAo5SF41-Fw-1
+Received: by mail-qt1-f199.google.com with SMTP id
+ w10-20020ac87e8a000000b002a68361412bso7008553qtj.7
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 23:34:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=u6J7slUyD9fPETmKPLZmE6r0bVOMYNvu30bv+ofZWrA=;
+ b=cEgJ19TZ8p8Rr8qJoBZ2AXUrPxM1eZwhI9u5wo6qVkpazFFwBWqKq0Aa1IzoY/NeBx
+ WAIoergaFO1Z/gFnhIFNa/bvVh5v0L/cklUlZrw+3wRVFFQ3az1aCRos/flVkitJKhwc
+ f0jO93++Uya+1+Zf2v5566lYUUAvmognGg1gIcxqF8u87esevToC0zg25MefQrh/oSA5
+ BxATRjJsKImXiLPW686w48h9MRSv/tOnUOB8TzN9UUtaavMFYbIHbF6MVGq5/IFIdGfF
+ 4R9qW8d4OGvEmJ5Un9wFgN1jMevTy08aWFUN4ygyodHb3I2U6flZ1IincbxJRTpRwqrG
+ As2A==
+X-Gm-Message-State: AOAM531zMXgsjBXIV6/1qy2jL0T/gHhTdQ32+GwdkdRozDMUJx82uy4y
+ RX1PNxpSQgzTbTd6g5fl4riyTPXZz/4FoiQkLcsel6jWM9RLBIqBQWuVprJjjNKNJNK5gWp4ur9
+ k0sknFBcvUCuiMXn1dXO9VaySvfA=
+X-Received: by 2002:a25:938e:: with SMTP id a14mr41961694ybm.144.1632292492191; 
+ Tue, 21 Sep 2021 23:34:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxAEy0rLU5MuYymlmEC5PAV+/0RuaWNeOC4ZsJTjqIjbGTx57pVrx0y5gv/cuvfV2EyZ9B1TUCuidWvDwlugNo=
+X-Received: by 2002:a25:938e:: with SMTP id a14mr41961676ybm.144.1632292491918; 
+ Tue, 21 Sep 2021 23:34:51 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <8b4c1fad2914aee00c8a160d1f9e482574b8e5ae.1632242721.git.jstancek@redhat.com>
+In-Reply-To: <8b4c1fad2914aee00c8a160d1f9e482574b8e5ae.1632242721.git.jstancek@redhat.com>
+From: Li Wang <liwan@redhat.com>
+Date: Wed, 22 Sep 2021 14:34:39 +0800
+Message-ID: <CAEemH2dQ7NyWSoSwEcyeug6phJKja5=affWzWxt0fQLvHrtODw@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 3/3] syscalls/dup207: Add file offset check test
+Subject: Re: [LTP] [PATCH] hugeshmat04: don't attach at specific address
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,135 +93,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0050103567=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since the two file descriptors refer to the same open file description, they share file offset.
-If the file offset is modified by using lseek(2) on one of the file descriptors, the offset is
-also changed for the other file descriptor.
+--===============0050103567==
+Content-Type: multipart/alternative; boundary="000000000000269b6205cc8fb64a"
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/dup2/.gitignore |  1 +
- testcases/kernel/syscalls/dup2/dup207.c   | 82 +++++++++++++++++++++++
- 3 files changed, 84 insertions(+)
- create mode 100644 testcases/kernel/syscalls/dup2/dup207.c
+--000000000000269b6205cc8fb64a
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 068fba456..b19316805 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -154,6 +154,7 @@ dup203 dup203
- dup204 dup204
- dup205 dup205
- dup206 dup206
-+dup207 dup207
- 
- dup3_01 dup3_01
- dup3_02 dup3_02
-diff --git a/testcases/kernel/syscalls/dup2/.gitignore b/testcases/kernel/syscalls/dup2/.gitignore
-index e2e008b58..f5938a182 100644
---- a/testcases/kernel/syscalls/dup2/.gitignore
-+++ b/testcases/kernel/syscalls/dup2/.gitignore
-@@ -4,3 +4,4 @@
- /dup204
- /dup205
- /dup206
-+/dup207
-diff --git a/testcases/kernel/syscalls/dup2/dup207.c b/testcases/kernel/syscalls/dup2/dup207.c
-new file mode 100644
-index 000000000..8badf4229
---- /dev/null
-+++ b/testcases/kernel/syscalls/dup2/dup207.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test whether the file offset are the same for both file descriptors.
-+ */
-+
-+#include <errno.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+
-+#define WRITE_STR "abcdefg"
-+
-+static int ofd = -1, nfd = 10;
-+
-+static struct tcase {
-+	off_t offset;
-+	size_t exp_size;
-+	/* 0 - change offset before dup2, 1 - change offset after dup2 */
-+	int flag;
-+	char *exp_data;
-+	char *desc;
-+} tcases[] = {
-+	{1, 6, 0, "bcdefg", "Test offset check when using lseek before dup2"},
-+	{2, 5, 1, "cdefg", "Test offset check when using lseek after dup2"},
-+};
-+
-+static void setup(void)
-+{
-+	char testfile[40];
-+
-+	sprintf(testfile, "dup207.%d", getpid());
-+	ofd = SAFE_OPEN(testfile, O_RDWR | O_CREAT, 0644);
-+	SAFE_WRITE(1, ofd, WRITE_STR, sizeof(WRITE_STR) - 1);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (ofd > 0)
-+		SAFE_CLOSE(ofd);
-+	close(nfd);
-+}
-+
-+static void run(unsigned int i)
-+{
-+	struct tcase *tc = tcases + i;
-+	char read_buf[20];
-+
-+	memset(read_buf, 0, sizeof(read_buf));
-+	tst_res(TINFO, "%s", tc->desc);
-+	if (!tc->flag)
-+		SAFE_LSEEK(ofd, tc->offset, SEEK_SET);
-+
-+	TEST(dup2(ofd, nfd));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "call failed unexpectedly");
-+		return;
-+	}
-+	if (tc->flag)
-+		SAFE_LSEEK(ofd, tc->offset, SEEK_SET);
-+
-+	SAFE_READ(1, nfd, read_buf, tc->exp_size);
-+	if (strncmp(read_buf, tc->exp_data, tc->exp_size))
-+		tst_res(TFAIL, "Expect %s, but get %s.", tc->exp_data, read_buf);
-+	else
-+		tst_res(TPASS, "Get expected buf %s", read_buf);
-+}
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
+On Wed, Sep 22, 2021 at 12:46 AM Jan Stancek <jstancek@redhat.com> wrote:
+
+> The test intermittently fails on ppc64le, when heap
+> happens to overlap with segment that the test is trying
+> to attach at 1GB boundary.
+>
+> Let the kernel find suitable address.
+>
+
+I'm not sure why the original way uses fixed address, but
+it should be fine to cancel that limitation.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+Or, maybe we can consider doing range_is_mapped check
+before using it.
+
 -- 
-2.23.0
+Regards,
+Li Wang
+
+--000000000000269b6205cc8fb64a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Wed, Sep 22, 2021 at 12:46 AM Jan Stancek &lt;<a=
+ href=3D"mailto:jstancek@redhat.com">jstancek@redhat.com</a>&gt; wrote:<br>=
+</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
+order-left:1px solid rgb(204,204,204);padding-left:1ex">The test intermitte=
+ntly fails on ppc64le, when heap<br>
+happens to overlap with segment that the test is trying<br>
+to attach at 1GB boundary.<br>
+<br>
+Let the kernel find suitable address.<br></blockquote><div><br></div><div><=
+div class=3D"gmail_default" style=3D"font-size:small">I&#39;m not sure why =
+the original way uses fixed address, but</div><div class=3D"gmail_default" =
+style=3D"font-size:small">it should be fine to cancel that limitation.</div=
+><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div clas=
+s=3D"gmail_default" style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a h=
+ref=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt;<br></div><div cl=
+ass=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gma=
+il_default" style=3D"font-size:small">Or, maybe we can consider doing range=
+_is_mapped check</div><div class=3D"gmail_default" style=3D"font-size:small=
+">before using it.</div></div></div><div><br></div>-- <br><div dir=3D"ltr" =
+class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr">Regards,<b=
+r>Li Wang<br></div></div></div></div></div>
+
+--000000000000269b6205cc8fb64a--
+
+
+--===============0050103567==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0050103567==--
+
