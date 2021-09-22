@@ -2,130 +2,87 @@ Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75163C433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 02:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CBE4C433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 04:31:32 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B140A61090
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 02:10:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B140A61090
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vpitech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 45613608FE
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 04:31:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 45613608FE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 30B513CA2AC
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 04:10:02 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0ED9C3C6AD8
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 06:31:28 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0AF6F3C1B0A
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 04:09:32 +0200 (CEST)
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com
- (mail-bn1nam07on2069.outbound.protection.outlook.com [40.107.212.69])
+ by picard.linux.it (Postfix) with ESMTPS id 47DC03C17CE
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 06:31:17 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E14710005ED
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 04:09:31 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S98XOJAj99CEhaiwnW8vkKvQO/ccnEnY6VuKTlSng5UKGWucqDCa8U/8as1VSNmjPmW+Cv2m3E8hvBP5H/f/+VlFRQvmCB+q3EN+dLmaqXzb5U1IVspJuwAOv3yTFJQwGz8A50UjT7K7g7jyshtohAV8K0Yvcld1oHcQcDGzwkVE3AKy38l8XslQVOqstfUIpA9C2vpT2AgMs6+YCkFIJmN4+eWznBsWgjliM7UVcjsYvUGk6G7CwodSOgs7gd+ofRs6NFPehFoAqW7e3KxPzMQRvg4F5a25lKahHZCiNE5b+QJLnCRS9AkmIcVriNZwUGocmcOi0XgWnfoEfXVIAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=94+usKn4g49TnEjBKT4BXod0UFimzkXERUq4i/vApW0=;
- b=l8DkTOl2nmrd/pLt6Itf2lZ65z1g17Qr/QWBxgOZHvt+WJd2BA86MFo3zvnYDiTgdiHi0H2qoWZXv3zlL8AsxXg9feZaEJdkLfs8eUls68V9nLuKAWkwtIqoOZrnSo0G6agvME0gogFgNDCZ5taRANsNlshqHvXzj1xyrBOyetzHho+VVTcS8jmiKwLxNrFzGE7D8aooXYz62H9lxN6ntVpBDd6ZzfnXWEzgkeukkwUxmxShGFAiT/ancNUsZlZdBynyr7rkt2hp4C4keTM2qoq2w2LPEb8XBzNjBRqK+HdAGjilJCoPgmdcHWaiA/WC+Vxqh3iYJ8DnMFB5z6YS8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vpitech.com; dmarc=pass action=none header.from=vpitech.com;
- dkim=pass header.d=vpitech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=vpitech.onmicrosoft.com; s=selector2-vpitech-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=94+usKn4g49TnEjBKT4BXod0UFimzkXERUq4i/vApW0=;
- b=PfOebaN+mV5Mg1WIrDH6d+u1alZsyrlou/iDlI7mAmFFl1jqF5PHfOoohvXP+iAvbrSVYJaRImlgjnYmwxREhDiqQvOy+22uGfiXUW/KpS+r5MfnP+fwvFQSz1YpgjJTYtAJfauP2c76z6ukpg3uvXep/I8PhbOyVmH3qrtD8Ro=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=vpitech.com;
-Received: from MW2PR07MB3980.namprd07.prod.outlook.com (2603:10b6:907:a::32)
- by MWHPR07MB3149.namprd07.prod.outlook.com (2603:10b6:300:e8::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Wed, 22 Sep
- 2021 02:09:24 +0000
-Received: from MW2PR07MB3980.namprd07.prod.outlook.com
- ([fe80::cc48:9777:4f07:6014]) by MW2PR07MB3980.namprd07.prod.outlook.com
- ([fe80::cc48:9777:4f07:6014%4]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 02:09:24 +0000
-From: Alex Henrie <alexh@vpitech.com>
-To: linux-integrity@vger.kernel.org, ltp@lists.linux.it, zohar@linux.ibm.com,
- pvorel@suse.cz, alexhenrie24@gmail.com
-Date: Tue, 21 Sep 2021 20:08:00 -0600
-Message-Id: <20210922020801.466936-2-alexh@vpitech.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210922020801.466936-1-alexh@vpitech.com>
-References: <20210922020801.466936-1-alexh@vpitech.com>
-X-ClientProxiedBy: MW4PR04CA0222.namprd04.prod.outlook.com
- (2603:10b6:303:87::17) To MW2PR07MB3980.namprd07.prod.outlook.com
- (2603:10b6:907:a::32)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6FF4320034B
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 06:31:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632285073;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SAg0iCuv+V19RWndikg8qr440OU5H3k5M340hRabmhw=;
+ b=X6jqpP/dYOjrHwEeuNOIFUFAvGV5OWidfGTS4yfLw5xVXPXpzhtHv2nKFdNVz7LfB+Nnl6
+ wnxyAVshGGhlMdZpWuriguesCeTudGsVYJjyGpW7D9fV+moophzHZuLYElqsoGmI+kqzFI
+ SdZ2qvmz7S/WSQF0HlTYB2JfrthG6aU=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-BLUeNSTOPJmcn_MpwjySIQ-1; Wed, 22 Sep 2021 00:31:10 -0400
+X-MC-Unique: BLUeNSTOPJmcn_MpwjySIQ-1
+Received: by mail-qv1-f71.google.com with SMTP id
+ h9-20020a05621413a900b0037a2d3eaf8fso9481831qvz.8
+ for <ltp@lists.linux.it>; Tue, 21 Sep 2021 21:31:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=SAg0iCuv+V19RWndikg8qr440OU5H3k5M340hRabmhw=;
+ b=ikKndL45ETuv/x9I0/qhg0A5ZCORyKsSA18d9bB67zFkzbG1l1nhU5jJToe1/PdGCV
+ d8y5DgNGi9R0xbb8lm3g2XR3lYCeIndF4hfsVfwr9W0KSFnqFqHpAq0jai/IlgnEcsVB
+ eDdL5Qp3uSyo3i8aeTVkqkED7IbEgZP0So/k7fsARXngp1etVAsSFPdJfurJaICLhOVw
+ TOaJENkrKEePNJrAx+TUD258ZbVG/YfdnAYBPd+eeFsCjBg591JWZ+7LmMtOX9gKsuuj
+ GBiVQO59OHDU98add3suHkZ+KbYeoIxA7Grh6cg6SuovTvgUb/rBUz+IFsWwvsTsbprt
+ z5Tg==
+X-Gm-Message-State: AOAM532GnCdBHmv7gJ266h564jO2245rmEuoW2vAxW5TZ6JvO75nh47Z
+ tCa3U90Uv7LSzMwYQ/KNoZ22IeKHg3gkEAbEwfXvQHYmvBumnFeeFsrd6CBNWNCONip29E5bPuc
+ 3cPJz8II2YvgxzPwBxJ/tZNPwZRM=
+X-Received: by 2002:a25:938e:: with SMTP id a14mr41492251ybm.144.1632285069934; 
+ Tue, 21 Sep 2021 21:31:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRJJCZRgm1Zmo2KvitTxhGZWaR9zeL6Lsz0PVTxn5NawGAhHxM5kbJ/ynJz2z7k0Sn6tt0ZP7dhtWJxZCym0Q=
+X-Received: by 2002:a25:938e:: with SMTP id a14mr41492232ybm.144.1632285069628; 
+ Tue, 21 Sep 2021 21:31:09 -0700 (PDT)
 MIME-Version: 1.0
-Received: from demeter.ad.vpitech.com (66.60.105.30) by
- MW4PR04CA0222.namprd04.prod.outlook.com (2603:10b6:303:87::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4523.14 via Frontend Transport; Wed, 22 Sep 2021 02:09:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c2d49815-71c9-4763-8b6d-08d97d6dff6e
-X-MS-TrafficTypeDiagnostic: MWHPR07MB3149:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR07MB3149781E61E7D7EF87C4E009B8A29@MWHPR07MB3149.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Pz2wpT49GXqs6fEC4jAN8zntuXePnUjb4nsziZErWYjkBX8N0OmF0gF6ollfT2WK1UO1c20qp0BvU9zvNIAtOCaPVXLVP6PnEcWQyvfwPY+860Ny22jfDDBJ0cpn3n9IH5sej5ac1ZY+Mu4Z5MLpdXBp6rnDFBeo8LR/bjMztdz+OAyyN1+cA+zI6KQT1NiitLMltVOrtGrK66Nyv+zi5VR18e5FXGYBM4s5pi99D7KBXm3feTN70cBXcnanJPiAtYPc26rxfztCnlT4qEczU5rrcb7qoFFttlAYu7Yvi7/OH9EK5lCRCGTKXkPcTwho9fkRWc9LCWCQfEbF3xrkHZ4tybSle9XCZJa6/z57g2dXPRcKuJhpnLVwAm1Rqe2/nyGLmhEHs4K0w/603HigY6yTveAgohENNsbcYwtdOqSAbv3tkGPSFf6iykV0rwWS7tjqR8mv2CMQYYofLsC+IYtcoMK3Nv1J5qDBoOX1qcerKgW/z2mJBzxXCtB4Ei5vwn5xsWMj+fO1ALH2CNoMLOnsFycFZgIj8tiimNdK8cxANIWQqiIiRe1MgRub6AolOzLTZiQ8nDGnDu4BHh/Y0TWVY8FPwqrLHQ6/u9pkAJaDr625ttUwDSQYZWML9rnPcvYUVklXNkKeZpHu6eeOEnBxAVIZqr3QtdZ1rtMh4cUZLF1JQX67E4DqgisPjhI6vjYO4D9ASvCETcLh/vz+hQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MW2PR07MB3980.namprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(346002)(39830400003)(136003)(376002)(396003)(366004)(66946007)(36756003)(66476007)(66556008)(1076003)(5660300002)(52116002)(7696005)(316002)(6666004)(2616005)(956004)(86362001)(2906002)(83380400001)(26005)(107886003)(508600001)(8676002)(8936002)(6486002)(186003)(38100700002)(38350700002)(4326008);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qOLFMxyGJ/iwhn7LmTClh6MIQq6FCtNbOZkF+lyFEoqhWI0F+XN+oekXCIzV?=
- =?us-ascii?Q?EA4ACfX904cc903F8OqFShAkG+E7hhMhy8JtW82geLsEVvY8raZ8qZAClLgP?=
- =?us-ascii?Q?EyWGddfq9EyJJbYGb9Q8NyO0mICTWO6pCwSue7TdaIgFJTFgOvp8/NN4Y1HE?=
- =?us-ascii?Q?4HUpfbed/eKH4ycK0vqurbzqCFPOto7iyneo/oJQD2BWWzY/FU6TwZe6mgr7?=
- =?us-ascii?Q?5XOujRnLK/tnvH0YXvouJsxfLpmoLOYaCoOIwDJ9yvHqt+f4lwS4PbU//My0?=
- =?us-ascii?Q?bWm22dMlA7xqT9IE3+2HsdQmT0RydtWc6ds59VuuSs1qCuJZ8vjELqpeW+03?=
- =?us-ascii?Q?+BNLqv2BbY0fC1Q9iEzITepNWmYj7K0aB6v4LLSj3a1ZD3iw7zhEo20BiUa7?=
- =?us-ascii?Q?kPLICL9/kGRiJ7dWbtKAY3XUi9YbmL7x2HEeb+yNBswSf8Jfc+EfeJXHXGFb?=
- =?us-ascii?Q?z7DkYByyKmMl6RQ3BOZ3npOljma6CiN1vBg41FyDjF188qKdfaDb3ilLhfm6?=
- =?us-ascii?Q?Xnh7V4dzBNBo7uVM8q4ysrkQrd8vvVpnTHUgNaBgDFh1dQRPkU6WqurquwaA?=
- =?us-ascii?Q?fgW2fsY52pmS+JbzPaPXmkqUNc/CIJouXI/5J2HzTTrFtSTNHoWYdUKQ/fA+?=
- =?us-ascii?Q?ZRarkvInxr886eSWIi3Xxn8BTRbsiYGgfmHFE5NNZve/rSzxMklkqg71kqtZ?=
- =?us-ascii?Q?0RGiBb311eNuw7YDT4qfkxAoQ5CLiLKtYqBpXzXQgBAfZEYcNcK++sktsmJP?=
- =?us-ascii?Q?nH7zGWvyEHWAnFBilYPDtvah5er6JX+B8ED1wCocD0o+FANCWWiEb/JsFceP?=
- =?us-ascii?Q?B2f+RMobGVeimkPwhVggtxAkze7wQKFeJBoyC85f8iLcp2I0GpL9PJdgZrlH?=
- =?us-ascii?Q?KygmYMQ79S9E4Dh6OaId/EeAk67dCvQpivT5iMnOMxTRKYtV+cHQcRLaAQiE?=
- =?us-ascii?Q?vnOukFYIsQoDQSMOJDYxJrZoBznD+NlGUgwVMOc6cR9MOal/mXQT3wqCoT2x?=
- =?us-ascii?Q?FQN/UNbm5Neh7Le06NAkUZoSutGFnrwfbD/Avi7nx/SkNaVyU5REJ9CHxph5?=
- =?us-ascii?Q?OO01FPiEBmluTgYnIlUR9kSaftShmMZhVQs4JL8TJh6RZGXPFpClfanr/7q0?=
- =?us-ascii?Q?bAws9hu3YwfJOGGm1wJVUpyLiEy+pa4+HwYOOxXbZJt17yBurxtne4JQKHup?=
- =?us-ascii?Q?BdN4YYJNP/u5bS9GvEE4ROpHjl89ExHIOFJsBPVM8ygPbjm+0spL1ALwvW4S?=
- =?us-ascii?Q?6NlJM/aGkuSKkEnCcHeLIGEaUzNG0m8v9BTxkZeIP9nbGsJQ/zYKm/uxtAbD?=
- =?us-ascii?Q?8JnHtigZzPJW3f6EYokS9Jie?=
-X-OriginatorOrg: vpitech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2d49815-71c9-4763-8b6d-08d97d6dff6e
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR07MB3980.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 02:09:24.2756 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 130d6264-38b7-4474-a9bf-511ff1224fac
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fSXk4eJm3M7vZysFfgSUHrZnECGB2b4h78eJEyB2oE1nZUrupW6lR/pN2ELDUNiHOuaOuKYwYyZJbeJmGLVl1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR07MB3149
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20210920122146.31576-1-chrubis@suse.cz>
+ <CAEemH2eRgUDNLmmzNF5cDaAXp7kMgPOBHeJeWqyStOiAq7QLHw@mail.gmail.com>
+ <YUnCYvtAZkO/LZIP@yuki>
+In-Reply-To: <YUnCYvtAZkO/LZIP@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 22 Sep 2021 12:30:57 +0800
+Message-ID: <CAEemH2e0kHun++Y2w99N68WAhjFdQkSvkF-1UaDxjbkA1sBrAw@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH ltp v5 2/3] IMA: Move ima_check to ima_setup.sh
+Subject: Re: [LTP] [PATCH v2] lib: shell: Fix timeout process races
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -137,109 +94,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0402422725=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Alex Henrie <alexh@vpitech.com>
----
- .../integrity/ima/tests/ima_measurements.sh   | 28 -------------------
- .../security/integrity/ima/tests/ima_setup.sh | 28 +++++++++++++++++++
- 2 files changed, 28 insertions(+), 28 deletions(-)
+--===============0402422725==
+Content-Type: multipart/alternative; boundary="000000000000bf701305cc8dfbce"
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-index 1927e937c..807c5f57b 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-@@ -17,38 +17,10 @@ setup()
- {
- 	require_ima_policy_cmdline "tcb"
- 
--	TEST_FILE="$PWD/test.txt"
- 	POLICY="$IMA_DIR/policy"
- 	[ -f "$POLICY" ] || tst_res TINFO "not using default policy"
- }
- 
--ima_check()
--{
--	local algorithm digest expected_digest line tmp
--
--	# need to read file to get updated $ASCII_MEASUREMENTS
--	cat $TEST_FILE > /dev/null
--
--	line="$(grep $TEST_FILE $ASCII_MEASUREMENTS | tail -1)"
--
--	if tmp=$(get_algorithm_digest "$line"); then
--		algorithm=$(echo "$tmp" | cut -d'|' -f1)
--		digest=$(echo "$tmp" | cut -d'|' -f2)
--	else
--		tst_res TBROK "failed to get algorithm/digest for '$TEST_FILE': $tmp"
--	fi
--
--	tst_res TINFO "computing digest for $algorithm algorithm"
--	expected_digest="$(compute_digest $algorithm $TEST_FILE)" || \
--		tst_brk TCONF "cannot compute digest for $algorithm algorithm"
--
--	if [ "$digest" = "$expected_digest" ]; then
--		tst_res TPASS "correct digest found"
--	else
--		tst_res TFAIL "digest not found"
--	fi
--}
--
- check_iversion_support()
- {
- 	local device mount fs
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 9c25d634d..976c6a86c 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -188,6 +188,7 @@ ima_setup()
- 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
- 		tst_res TINFO "\$TMPDIR is on tmpfs => run on loop device"
- 		mount_loop_device
-+		TEST_FILE="$PWD/test.txt"
- 	fi
- 
- 	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
-@@ -279,6 +280,33 @@ get_algorithm_digest()
- 	echo "$algorithm|$digest"
- }
- 
-+ima_check()
-+{
-+	local algorithm digest expected_digest line tmp
+--000000000000bf701305cc8dfbce
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, Sep 21, 2021 at 7:30 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> > This 'pid' is the parent shell process id, so it obviously that
+> > tst_timeout_kill
+> > process would get signal SIGTERM as well.
+> >
+> > I'm thinking maybe we should let tst_timeout_kill itself ignore SIGTERM
+> > otherwise we have no chance to perform the following double-check code?
+>
+> I guess that signal(SIGTERM, SIG_IGN) a the start of the main() should
+> fix it.
+>
+
+It works, but better put it behind of sleep(timeout).
+
+Because we still need to guarantee tst_timeout_kill can be
+stopped by _tst_cleanup_timer before timeout happening.
+
+
+--- a/testcases/lib/tst_timeout_kill.c
++++ b/testcases/lib/tst_timeout_kill.c
+@@ -44,6 +44,8 @@ int main(int argc, char *argv[])
+        if (timeout)
+                sleep(timeout);
+
++       signal(SIGTERM, SIG_IGN);
 +
-+	# need to read file to get updated $ASCII_MEASUREMENTS
-+	cat $TEST_FILE > /dev/null
-+
-+	line="$(grep $TEST_FILE $ASCII_MEASUREMENTS | tail -1)"
-+
-+	if tmp=$(get_algorithm_digest "$line"); then
-+		algorithm=$(echo "$tmp" | cut -d'|' -f1)
-+		digest=$(echo "$tmp" | cut -d'|' -f2)
-+	else
-+		tst_res TBROK "failed to get algorithm/digest for '$TEST_FILE': $tmp"
-+	fi
-+
-+	tst_res TINFO "computing digest for $algorithm algorithm"
-+	expected_digest="$(compute_digest $algorithm $TEST_FILE)" || \
-+		tst_brk TCONF "cannot compute digest for $algorithm algorithm"
-+
-+	if [ "$digest" = "$expected_digest" ]; then
-+		tst_res TPASS "correct digest found"
-+	else
-+		tst_res TFAIL "digest not found"
-+	fi
-+}
-+
- # check_evmctl REQUIRED_TPM_VERSION
- # return: 0: evmctl is new enough, 1: version older than required (or version < v0.9)
- check_evmctl()
+        print_msg("Test timed out, sending SIGTERM!");
+        print_msg("If you are running on slow machine, try exporting
+LTP_TIMEOUT_MUL > 1");
+
+@@ -57,12 +59,12 @@ int main(int argc, char *argv[])
+
+        i = 10;
+
+-       while (!kill(-pid, 0) && i-- > 0) {
++       while (!kill(pid, 0) && i-- > 0) {
+                print_msg("Test is still running...");
+                sleep(1);
+        }
+
+-       if (!kill(-pid, 0)) {
++       if (!kill(pid, 0)) {
+                print_msg("Test is still running, sending SIGKILL");
+                ret = kill(-pid, SIGKILL);
+                if (ret) {
+
+
 -- 
-2.33.0
+Regards,
+Li Wang
+
+--000000000000bf701305cc8dfbce
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Tue, Sep 21, 2021 at 7:30 PM Cyril Hrubis &lt;<a=
+ href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
+ft:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; This &#39;pid&#39; is the parent shell process id, so it obviously tha=
+t<br>
+&gt; tst_timeout_kill<br>
+&gt; process would get signal SIGTERM as well.<br>
+&gt; <br>
+&gt; I&#39;m thinking maybe we should let tst_timeout_kill itself ignore SI=
+GTERM<br>
+&gt; otherwise we have no chance to perform the following double-check code=
+?<br>
+<br>
+I guess that signal(SIGTERM, SIG_IGN) a the start of the main() should<br>
+fix it.<br></blockquote><div><br></div><div class=3D"gmail_default" style=
+=3D"font-size:small">It works, but better put it behind of sleep(timeout).=
+=C2=A0</div><div class=3D"gmail_default" style=3D"font-size:small"><br></di=
+v><div class=3D"gmail_default" style=3D"font-size:small">Because we still n=
+eed to=C2=A0guarantee=C2=A0tst_timeout_kill can be=C2=A0</div><div class=3D=
+"gmail_default" style=3D"font-size:small">stopped by _tst_cleanup_timer bef=
+ore timeout happening.</div><div class=3D"gmail_default" style=3D"font-size=
+:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small"><b=
+r></div><div class=3D"gmail_default" style=3D"font-size:small">--- a/testca=
+ses/lib/tst_timeout_kill.c<br>+++ b/testcases/lib/tst_timeout_kill.c<br>@@ =
+-44,6 +44,8 @@ int main(int argc, char *argv[])<br>=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 if (timeout)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ sleep(timeout);<br>=C2=A0<br>+ =C2=A0 =C2=A0 =C2=A0 signal(SIGTERM, SIG_IG=
+N);<br>+<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 print_msg(&quot;Test timed out, sen=
+ding SIGTERM!&quot;);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 print_msg(&quot;If you=
+ are running on slow machine, try exporting LTP_TIMEOUT_MUL &gt; 1&quot;);<=
+br>=C2=A0<br>@@ -57,12 +59,12 @@ int main(int argc, char *argv[])<br>=C2=A0=
+<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 i =3D 10;<br>=C2=A0<br>- =C2=A0 =C2=A0 =C2=
+=A0 while (!kill(-pid, 0) &amp;&amp; i-- &gt; 0) {<br>+ =C2=A0 =C2=A0 =C2=
+=A0 while (!kill(pid, 0) &amp;&amp; i-- &gt; 0) {<br>=C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 print_msg(&quot;Test is still running...=
+&quot;);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sleep(1=
+);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>=C2=A0<br>- =C2=A0 =C2=A0 =C2=A0 if =
+(!kill(-pid, 0)) {<br>+ =C2=A0 =C2=A0 =C2=A0 if (!kill(pid, 0)) {<br>=C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 print_msg(&quot;Test is s=
+till running, sending SIGKILL&quot;);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 ret =3D kill(-pid, SIGKILL);<br>=C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ret) {<br></div><div class=3D"gmail_=
+default" style=3D"font-size:small"><br></div></div><div><br></div>-- <br><d=
+iv dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br>=
+</div><div>Li Wang<br></div></div></div></div>
+
+--000000000000bf701305cc8dfbce--
+
+
+--===============0402422725==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0402422725==--
+
