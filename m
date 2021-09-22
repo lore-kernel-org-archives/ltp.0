@@ -7,75 +7,76 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9982C433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:40:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DD44C433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:40:46 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98D456105A
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:40:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 98D456105A
+	by mail.kernel.org (Postfix) with ESMTPS id 3DA6961211
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:40:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3DA6961211
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 497493CA14E
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:40:16 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E42B13C8615
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:40:44 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 282F03C6AD0
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:39:56 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8B0863C6A0B
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:40:34 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4C0CD200A11
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:39:55 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A949E6007AC
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:40:33 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 84F851FD49;
- Wed, 22 Sep 2021 09:39:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 06B471FD3D;
+ Wed, 22 Sep 2021 09:40:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632303595;
+ t=1632303633;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=por3sQRYTPEUH5NjXreejHuieiat8J9dboC43FuE0+4=;
- b=xN45OK5dusExl5qaAwwOXBK80L/ltj8uXM4F58YkO68x49SO9M7oO3FHWYpPzJjYusUisn
- 7yi8GukqXzclXJJBJiojLlpayGJauxRaRLXE49uEMg96Fxxl++LUEorI17JDAP44lPyIGd
- x+RoLvhnrx3iLRLOUdyDjdzAMePJ+5Q=
+ b=m5Cf1QojHFXwTdrgITOqj7WDhmwEBg0J/OiltPe6XT2dUV+kd838fZFe21sbdn9l+kse3n
+ 0ddzC5AmcvCj8FMBgIu77Fz+9KXangFWI0u0l1z/S1OJrx1yDDYtFtxcU5HtC+DtP/o0je
+ /vR3pwGlqUMKNNTMCnp1f8uYwirwVG4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632303595;
+ s=susede2_ed25519; t=1632303633;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=por3sQRYTPEUH5NjXreejHuieiat8J9dboC43FuE0+4=;
- b=t+/gfCL8MKoklHJaxO+Jp3aA/DaQbY0FPRPta44xRGbNmPnP3Og8nZRSlR/lGda5fM6Mts
- HN9vqVQXm1TtEFDw==
+ b=oHZhaqer9rTxOe1Y1zbCovsqxYPkchjr1VtxP3xuaZXOAGOf28XMpWGqOf949rjC3CBxLm
+ 36agWXT0lrT/XUCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4507913D6E;
- Wed, 22 Sep 2021 09:39:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8FDD13D6E;
+ Wed, 22 Sep 2021 09:40:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OvrnDev5SmEVOwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 22 Sep 2021 09:39:55 +0000
-Date: Wed, 22 Sep 2021 11:39:53 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id m/mELxD6SmGNOwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 22 Sep 2021 09:40:32 +0000
+Date: Wed, 22 Sep 2021 11:40:31 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YUr56WaRAM3L1Can@pevik>
+Message-ID: <YUr6D30eS7X/7BG2@pevik>
 References: <20210921162057.29598-1-mdoucha@suse.cz>
+ <20210921162057.29598-2-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210921162057.29598-1-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20210921162057.29598-2-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] Add SAFE_TRY_FILE_PRINTF() helper function
+Subject: Re: [LTP] [PATCH 2/2] Fix failures due to missing
+ max_user_namespaces procfile
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
