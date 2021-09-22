@@ -6,74 +6,81 @@ X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D96FC433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 14:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25620C433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 14:32:27 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61F7860F26
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 14:28:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 61F7860F26
+	by mail.kernel.org (Postfix) with ESMTPS id 17FD360FE6
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 14:32:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 17FD360FE6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5DFAD3CA24F
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 16:28:50 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 29FA73C808E
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 16:32:24 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8849E3C703D
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 16:28:41 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 23F833C703D
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 16:32:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6B0921400070
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 16:28:40 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 53C901A014D2
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 16:32:14 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A98B420204;
- Wed, 22 Sep 2021 14:28:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9879B22279;
+ Wed, 22 Sep 2021 14:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632320919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1632321133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9204RwDYvNIr29x8TdjhjT0V8p25+/G/ScI2zNT57h8=;
- b=W7a24g7QCNrskTTB3WjMRUrKwvDq58CxAeTX4FCUQzbNiLcdZZeSCKOU4GhP242qmLg0yC
- 4Kmv5HVd5DiNwnPDBNd++nqbvjUAt2u3gi49QglhGnKzrkwk1aZDs2XVAEd0pVBGLwiX4D
- D5y5CAgonvFsjgCyn3QX/6DKnW6jWp4=
+ bh=b/siuyuR+xBkptrbKFKr6Vz1Q6R4RL46AemHgfYXdy4=;
+ b=wVkI5g8Z99Dvrteq+ixBpr13HytIGYeTDB3sAxBa/UZ0VfreLvu9jIVGxVdU/xxMOVUdzd
+ ZMtrkY8KdetA4kmu4ZlS7co0KEMLvI8IgmEfBVFkhxtZHCmMQuHzy4uVPbIiFffkn6liKT
+ GGf31jHGbQ888YaEO9zV3EnZhMSPxzM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632320919;
+ s=susede2_ed25519; t=1632321133;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9204RwDYvNIr29x8TdjhjT0V8p25+/G/ScI2zNT57h8=;
- b=hGnGdq6ZGfqSdhpUiJZdpO7+LkKsTUAy/st1BnhyUSqjxK3MESKW01scl9ob7dONAOWLmK
- e2BvNgLgpEnHI6Cw==
+ bh=b/siuyuR+xBkptrbKFKr6Vz1Q6R4RL46AemHgfYXdy4=;
+ b=WslL2XhIkZndVheegXmrhi1n5ljdn3vVarXg8FbWjez2GS8kDFYUD0chu/1XXnf8OcJDD1
+ /at22A6UJgNXuVDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9648B13D85;
- Wed, 22 Sep 2021 14:28:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8581913D85;
+ Wed, 22 Sep 2021 14:32:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id PmksI5c9S2FpZgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 22 Sep 2021 14:28:39 +0000
-Date: Wed, 22 Sep 2021 16:29:11 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id nQayH20+S2FtaAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 22 Sep 2021 14:32:13 +0000
+Date: Wed, 22 Sep 2021 16:32:45 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwan@redhat.com>
-Message-ID: <YUs9tz0wjk2LJiAL@yuki>
-References: <8b4c1fad2914aee00c8a160d1f9e482574b8e5ae.1632242721.git.jstancek@redhat.com>
- <CAEemH2dQ7NyWSoSwEcyeug6phJKja5=affWzWxt0fQLvHrtODw@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <YUs+jf35Zqp8GjJl@yuki>
+References: <20210817104625.2559362-1-liwang@redhat.com>
+ <20210921203349.GA2014441@maple.netwinder.org>
+ <CAEemH2dMCmYDkZYxfaeJ_oQCCcHzeMgSOGVQ_wS6BwCrp0YiQw@mail.gmail.com>
+ <YUrnljqYd5Hx/fi+@yuki>
+ <CAEemH2dDRT-iQPH0a-Aip8OZDUpp2Z3_x4dgVBEg4tv_pyWvfw@mail.gmail.com>
+ <YUr9676LXNi0xMs6@yuki>
+ <CAEemH2c37Qx6uEG40utX8pGC2Gp0ZLtT_z194L4RVNm6N2CefQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2dQ7NyWSoSwEcyeug6phJKja5=affWzWxt0fQLvHrtODw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <CAEemH2c37Qx6uEG40utX8pGC2Gp0ZLtT_z194L4RVNm6N2CefQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] hugeshmat04: don't attach at specific address
+Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
+ defallocate size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,65 +99,25 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > The test intermittently fails on ppc64le, when heap
-> > happens to overlap with segment that the test is trying
-> > to attach at 1GB boundary.
+> > > Sounds practical.
+> > >
+> > > Btw, If we don't create such a larger buffer area, then we have to
+> > > count the loop times must as equal to bufsize/blocksize. Otherwise,
+> > > we can't guarantee the test behavior is correct.
 > >
-> > Let the kernel find suitable address.
+> > Strangely enough we allready do exactly that for the second part of the
+> > test.
 > >
 > 
-> I'm not sure why the original way uses fixed address, but
-> it should be fine to cancel that limitation.
+> That try one by one block after filling full of the FS because nobody knows
+> when fails.
+> 
+> But as you suggested we can do that as well for the previous allocation :).
+> 
+> So, will you create a patch, or I do that tomorrow?
 
-It seems to be regression test for:
-
-commit c5c99429fa57dcf6e05203ebe3676db1ec646793
-Author: Larry Woodman <lwoodman@redhat.com>
-Date:   Thu Jan 24 05:49:25 2008 -0800
-
-    fix hugepages leak due to pagetable page sharing
-
-    The shared page table code for hugetlb memory on x86 and x86_64
-    is causing a leak.  When a user of hugepages exits using this code
-    the system leaks some of the hugepages.
-
-    -------------------------------------------------------
-    Part of /proc/meminfo just before database startup:
-    HugePages_Total:  5500
-    HugePages_Free:   5500
-    HugePages_Rsvd:      0
-    Hugepagesize:     2048 kB
-
-    Just before shutdown:
-    HugePages_Total:  5500
-    HugePages_Free:   4475
-    HugePages_Rsvd:      0
-    Hugepagesize:     2048 kB
-
-    After shutdown:
-    HugePages_Total:  5500
-    HugePages_Free:   4988
-    HugePages_Rsvd:
-    0 Hugepagesize:     2048 kB
-    ----------------------------------------------------------
-
-    The problem occurs durring a fork, in copy_hugetlb_page_range().  It
-    locates the dst_pte using huge_pte_alloc().  Since huge_pte_alloc() calls
-    huge_pmd_share() it will share the pmd page if can, yet the main loop in
-    copy_hugetlb_page_range() does a get_page() on every hugepage.  This is a
-    violation of the shared hugepmd pagetable protocol and creates additional
-    referenced to the hugepages causing a leak when the unmap of the VMA
-    occurs.  We can skip the entire replication of the ptes when the hugepage
-    pagetables are shared.  The attached patch skips copying the ptes and the
-    get_page() calls if the hugetlbpage pagetable is shared.
-
-
-As far as I can tell there is no reason to allocate the memory on a
-fixed address to trigger this bug but it should be easy enough to check
-if the test fails on a kernel that has the two lines this patch adds
-commented before and after the change it test.
-
-Also can we pretty please add the commit hash to the test metadata?
+I will not manage today. So either you do it or I can do it tomorrow
+:-).
 
 -- 
 Cyril Hrubis
