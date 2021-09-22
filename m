@@ -2,74 +2,89 @@ Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F907C433FE
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:48:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E1CC433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:54:21 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9F80610A1
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:48:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9F80610A1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id D22B861100
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 09:54:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D22B861100
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 406E83C8618
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:48:18 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E4DB33C8616
+	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 11:54:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B6E83C176E
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:48:08 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id B85243C7713
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:54:09 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 206F6601158
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:48:07 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 52E281FD2F;
- Wed, 22 Sep 2021 09:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632304087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=rsJPwfr/Fc4sm4cien9Zz/kJMFTCp5RO28Vorh2v6KU=;
- b=ER4VPjS2ncuRbf+WvWwRDLhdCzz8rhe06ZWweQZxigwHHfXyHPP29NrS1GGsyV+qOJ7SOA
- 04XssW/mj8bnuOE7LYFtMRBdSsZZmEm3n6ungHk5oLVgi3Dj0EO51Yg4uc1PtUdzo8SWlC
- 75T7mDrlu4fdH6urWrR36ukDSdekSS8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632304087;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=rsJPwfr/Fc4sm4cien9Zz/kJMFTCp5RO28Vorh2v6KU=;
- b=whBBcCmqVUEwy8FM5qru4x1kCK+AY0hnDBD//ffZFooACLzHeMDM2bsibKJAXo8phhvwTO
- 6QIy9tYkFtbvOpDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38CC213D6E;
- Wed, 22 Sep 2021 09:48:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 3J+1DNf7SmHYPwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 22 Sep 2021 09:48:07 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 22 Sep 2021 11:48:38 +0200
-Message-Id: <20210922094838.21366-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.32.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 03E781A014A4
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 11:54:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632304447;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2yC2v+VsBqLuIhDCzc/3iN8BxG/KNRQsv1HY8c+TRAg=;
+ b=c/GZ77Afygcck70SY39Zg9UKFH9pn9crD9yUEj9UwH2GXGk4lvQ7Xsukk0HBSKtyedienX
+ 4C/eWL84/bWzyQPxXaP8oaVvgWblnWiVGLU3v9vZArmL8Rve0HJoKiX0cjBFGMOJrR0NqJ
+ ChlHJGeW7t91y4itNEd+ojK/rxoGQb0=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-z9GrHqqpM6WHfhlGVxirZw-1; Wed, 22 Sep 2021 05:54:06 -0400
+X-MC-Unique: z9GrHqqpM6WHfhlGVxirZw-1
+Received: by mail-qv1-f72.google.com with SMTP id
+ z6-20020a056214060600b0037a3f6bd9abso11079169qvw.3
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 02:54:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2yC2v+VsBqLuIhDCzc/3iN8BxG/KNRQsv1HY8c+TRAg=;
+ b=Em3NtIc8pqsORPlBVYLVRGc2FRm6y0lgdflaIdIxjhRms5W+o30KGbVDIZuoABoWrM
+ 01Z3SbB2ELlJ/Wsd72DtLPsga9STmMybC2shwnfqDCqZaSNG48pC9T6sSgbUROXjFW6W
+ NQMUGcwQ2ZcvriZxG/n0wBartNFkT45V9pGi49JTThqe4xUoprdPgcLO2mCD22aBVJVc
+ kZlDFdRcJX4rtDgCuDhEahZUbSYAJcXgMfNK/1QtbuZQxoiya9chorL1bgbhro7RqJd/
+ pSYf0PvHVsLsGjduCGpKFYjnEBZhmqFSsmP6WlMMsETrELFNXJfp5VHEoZ7vQYUxzbRG
+ 9Juw==
+X-Gm-Message-State: AOAM530vgLhyKvuZriAvYcEoe+SUJ+MgbcLGR0y9WPirPrQl1n4B4Sqi
+ aWbeSHfef4FRU7FanqI4jB96m+l6IbGDM0GmlEmifJW6pRm3X5jzhm5diMdbSqbbD+iK+1eW4QD
+ cpVaR9d3GCgI1qsHPUiiDTsCh8SU=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr694962yba.316.1632304445628; 
+ Wed, 22 Sep 2021 02:54:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0AjzoeXag0iMm6KZ/FOUg5RntbUyB5FGKc9OWB/qHXKcBSE3Jnu7d1jgcWNCrMgbywO/DxpUFjnC8EN+bCNU=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr694939yba.316.1632304445389; 
+ Wed, 22 Sep 2021 02:54:05 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <20210817104625.2559362-1-liwang@redhat.com>
+ <20210921203349.GA2014441@maple.netwinder.org>
+ <CAEemH2dMCmYDkZYxfaeJ_oQCCcHzeMgSOGVQ_wS6BwCrp0YiQw@mail.gmail.com>
+ <YUrnljqYd5Hx/fi+@yuki>
+In-Reply-To: <YUrnljqYd5Hx/fi+@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 22 Sep 2021 17:53:53 +0800
+Message-ID: <CAEemH2dDRT-iQPH0a-Aip8OZDUpp2Z3_x4dgVBEg4tv_pyWvfw@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] lib: shell: Fix timeout process races
+Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
+ defallocate size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,235 +96,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1070142384=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-There were actually several races in the shell library timeout handling.
+--===============1070142384==
+Content-Type: multipart/alternative; boundary="000000000000a21a1105cc927e98"
 
-This commit fixes hopefully all of them by:
+--000000000000a21a1105cc927e98
+Content-Type: text/plain; charset="UTF-8"
 
-* Reimplementing the backgroud timer in C
+On Wed, Sep 22, 2021 at 4:21 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-* Making sure that the timer has started before we leave test setup
+> Hi!
+> > > This change appears seems to be causing fallocate05 test to reliably
+> > > trigger OOM (out of memory) on my test machine, which has only 256MB
+> > > RAM.
+> > >
+> >
+> > Thanks for reporting the failure. We purposely increase the size of
+> > fallocate
+> > to reduce interference from metadata changing. But not clear how much
+> > size should be a proper value for a small system.
+> >
+> > Can you try with decrease the number of FALLOCATE_BLOCKS?
+> >
+> > i.e.
+> >
+> > #define FALLOCATE_BLOCKS 64
+> > #define DEALLOCATE_BLOCKS 16
+> >
+> > Or, what about other multiple sizes, test result?
+>
+> Looking at the test I do not think there is a reason to allocate more
+> than a two or four blocks for the buffer. We just need to write() to the
+> fallocated area in a loop one block at a time until it's full. I do not
+> think that it's a good idea to pass ~100MB buffer to a single write()
+> and expect it to succeed anyways.
+>
 
-The rewrite of the backround timer to C allows us to run all the timeout
-logic in a single process, which simplifies the whole problem greatly
-since previously we had chain of processes that estabilished signal
-handlers to kill it's descendants, which in the end had a few races in
-it.
+Sounds practical.
 
-The race that caused the problems is, as far as I can tell, in the way
-how shell spawns it's children. I haven't checked the shell code, but I
-guess that when shell runs a process in bacground it does vfork() +
-exec(). My guess that signals are disabled between vfork() and exec()
-and if the SIGTERM arrives at that point it gets lost.
+Btw, If we don't create such a larger buffer area, then we have to
+count the loop times must as equal to bufsize/blocksize. Otherwise,
+we can't guarantee the test behavior is correct.
 
-That means that we created a race window in the shell library each time
-we started a new process. The rewrite to C simplifies the code but we
-still end up with a single place where this can happen and that is when
-we execute the tst_timeout_kill binary. This is now fixed in the shell
-library by waiting until the background process gets to a sleep state.
-
-Reported-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/lib/.gitignore         |  1 +
- testcases/lib/Makefile           |  2 +-
- testcases/lib/tst_test.sh        | 47 ++++++-------------
- testcases/lib/tst_timeout_kill.c | 79 ++++++++++++++++++++++++++++++++
- 4 files changed, 94 insertions(+), 35 deletions(-)
- create mode 100644 testcases/lib/tst_timeout_kill.c
-
-v3:
-	add setpgid(0, 0) to the tst_timeout_kill so that it does not
-	kill itself when sending signal to the whole process group
-
-
-diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-index 5a0e8cba2..9625d9043 100644
---- a/testcases/lib/.gitignore
-+++ b/testcases/lib/.gitignore
-@@ -14,3 +14,4 @@
- /tst_sleep
- /tst_supported_fs
- /tst_hexdump
-+/tst_timeout_kill
-diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-index 179b47479..d6b4c7a91 100644
---- a/testcases/lib/Makefile
-+++ b/testcases/lib/Makefile
-@@ -11,6 +11,6 @@ INSTALL_TARGETS		:= *.sh
- MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
- 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
- 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
--			   tst_get_median tst_hexdump tst_get_free_pids
-+			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8f69b0551..2556b28f5 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -474,27 +474,6 @@ _tst_multiply_timeout()
- 	return 0
- }
- 
--_tst_kill_test()
--{
--	local i=10
--
--	trap '' TERM
--	tst_res TBROK "Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
--	kill -TERM -$pid
--	tst_sleep 100ms
--
--	while kill -0 $pid >/dev/null 2>&1 && [ $i -gt 0 ]; do
--		tst_res TINFO "Test is still running, waiting ${i}s"
--		sleep 1
--		i=$((i-1))
--	done
--
--	if kill -0 $pid >/dev/null 2>&1; then
--		tst_res TBROK "Test still running, sending SIGKILL"
--		kill -KILL -$pid
--	fi
--}
--
- _tst_cleanup_timer()
- {
- 	if [ -n "$_tst_setup_timer_pid" ]; then
-@@ -503,18 +482,6 @@ _tst_cleanup_timer()
- 	fi
- }
- 
--_tst_timeout_process()
--{
--	local sleep_pid
--
--	sleep $sec &
--	sleep_pid=$!
--	trap "kill $sleep_pid; exit" TERM
--	wait $sleep_pid
--	trap - TERM
--	_tst_kill_test
--}
--
- _tst_setup_timer()
- {
- 	TST_TIMEOUT=${TST_TIMEOUT:-300}
-@@ -539,9 +506,21 @@ _tst_setup_timer()
- 
- 	_tst_cleanup_timer
- 
--	_tst_timeout_process &
-+	tst_timeout_kill $sec $pid &
- 
- 	_tst_setup_timer_pid=$!
-+
-+	while true; do
-+		local state
-+
-+		state=$(cut -d' ' -f3 "/proc/$_tst_setup_timer_pid/stat")
-+
-+		if [ "$state" = "S" ]; then
-+			break;
-+		fi
-+
-+		tst_sleep 1ms
-+	done
- }
- 
- tst_require_root()
-diff --git a/testcases/lib/tst_timeout_kill.c b/testcases/lib/tst_timeout_kill.c
-new file mode 100644
-index 000000000..3e57944bb
---- /dev/null
-+++ b/testcases/lib/tst_timeout_kill.c
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+#include <stdio.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <string.h>
-+
-+static void print_help(const char *name)
-+{
-+	fprintf(stderr, "usage: %s timeout pid\n", name);
-+}
-+
-+#define print_msg(fmt, ...) fprintf(stderr, fmt "\n", ##__VA_ARGS__)
-+
-+int main(int argc, char *argv[])
-+{
-+	int timeout, pid, ret, i;
-+
-+	if (argc != 3) {
-+		print_help(argv[0]);
-+		return 1;
-+	}
-+
-+	timeout = atoi(argv[1]);
-+	pid = atoi(argv[2]);
-+
-+	if (timeout < 0) {
-+		fprintf(stderr, "Invalid timeout '%s'\n", argv[1]);
-+		print_help(argv[0]);
-+		return 1;
-+	}
-+
-+	if (pid <= 1) {
-+		fprintf(stderr, "Invalid pid '%s'\n", argv[2]);
-+		print_help(argv[0]);
-+		return 1;
-+	}
-+
-+	ret = setpgid(0, 0);
-+	if (ret)
-+		print_msg("setpgid() failed: %s", strerror(errno));
-+
-+	if (timeout)
-+		sleep(timeout);
-+
-+	print_msg("Test timed out, sending SIGTERM!");
-+	print_msg("If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1");
-+
-+	ret = kill(-pid, SIGTERM);
-+	if (ret) {
-+		print_msg("kill(%i) failed: %s", -pid, strerror(errno));
-+		return 1;
-+	}
-+
-+	usleep(100000);
-+
-+	i = 10;
-+
-+	while (!kill(-pid, 0) && i-- > 0) {
-+		print_msg("Test is still running...");
-+		sleep(1);
-+	}
-+
-+	if (!kill(-pid, 0)) {
-+		print_msg("Test is still running, sending SIGKILL");
-+		ret = kill(-pid, SIGKILL);
-+		if (ret) {
-+			print_msg("kill(%i) failed: %s", -pid, strerror(errno));
-+			return 1;
-+		}
-+	}
-+
-+	return 0;
-+}
 -- 
-2.32.0
+Regards,
+Li Wang
+
+--000000000000a21a1105cc927e98
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Wed, Sep 22, 2021 at 4:21 PM Cyril Hrubis &lt;<a=
+ href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; =
+wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; &gt; This change appears seems to be causing fallocate05 test to relia=
+bly<br>
+&gt; &gt; trigger OOM (out of memory) on my test machine, which has only 25=
+6MB<br>
+&gt; &gt; RAM.<br>
+&gt; &gt;<br>
+&gt; <br>
+&gt; Thanks for reporting the failure. We purposely increase the size of<br=
+>
+&gt; fallocate<br>
+&gt; to reduce interference from metadata changing. But not clear how much<=
+br>
+&gt; size should be a proper value for a small system.<br>
+&gt; <br>
+&gt; Can you try with decrease the number of FALLOCATE_BLOCKS?<br>
+&gt; <br>
+&gt; i.e.<br>
+&gt; <br>
+&gt; #define FALLOCATE_BLOCKS 64<br>
+&gt; #define DEALLOCATE_BLOCKS 16<br>
+&gt; <br>
+&gt; Or, what about other multiple sizes, test result?<br>
+<br>
+Looking at the test I do not think there is a reason to allocate more<br>
+than a two or four blocks for the buffer. We just need to write() to the<br=
+>
+fallocated area in a loop one block at a time until it&#39;s full. I do not=
+<br>
+think that it&#39;s a good idea to pass ~100MB buffer to a single write()<b=
+r>
+and expect it to succeed anyways.<br></blockquote><div><br></div><div><div =
+class=3D"gmail_default" style=3D"font-size:small">Sounds practical.</div><b=
+r></div><div><div class=3D"gmail_default" style=3D"font-size:small">Btw, If=
+ we don&#39;t create such a larger buffer area, then we have to</div><div c=
+lass=3D"gmail_default" style=3D"font-size:small">count the loop times must =
+as equal to bufsize/blocksize. Otherwise,=C2=A0</div></div><div class=3D"gm=
+ail_default" style=3D"font-size:small">we can&#39;t guarantee the test beha=
+vior is correct.</div></div><div><br></div>-- <br><div dir=3D"ltr"><div dir=
+=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000a21a1105cc927e98--
+
+
+--===============1070142384==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1070142384==--
+
