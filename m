@@ -2,61 +2,85 @@ Return-Path: <SRS0=3vE2=ON=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MIME_HTML_MOSTLY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83815C433EF
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 07:49:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B09FDC433F5
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:23:39 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E06561019
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 07:49:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8E06561019
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1414E60EE7
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:23:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1414E60EE7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ABF5A3C8F6A
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:49:32 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D507D3C8F70
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 10:23:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 64B6A3C2178
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 09:49:22 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3F3E83C79C0
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:23:27 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8B9CB1001283
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 09:49:20 +0200 (CEST)
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HFRyM2ZDDz8wSY;
- Thu, 23 Sep 2021 15:44:43 +0800 (CST)
-Received: from dggeml753-chm.china.huawei.com (10.1.199.152) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 23 Sep 2021 15:49:16 +0800
-Received: from dggeml753-chm.china.huawei.com ([10.1.199.152]) by
- dggeml753-chm.china.huawei.com ([10.1.199.152]) with mapi id 15.01.2308.008;
- Thu, 23 Sep 2021 15:49:16 +0800
-From: zhaogongyi <zhaogongyi@huawei.com>
-To: Li Wang <liwang@redhat.com>
-Thread-Topic: [LTP] [PATCH] open_posix: Add failure handling of fork()
-Thread-Index: AdewT1GHGx43o5ZwQXqrjWUEjF2G/w==
-Date: Thu, 23 Sep 2021 07:49:16 +0000
-Message-ID: <f0a49ef57e724b9586f8de36e2a2b2dd@huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AB8C71400537
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:23:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632385405;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LCJ1ucgEb8mGtcE6wna65r7eYodxkoaJyqDAapAhXx4=;
+ b=g23MaUP4i5TNTvf4k+xNYJUZjpfbbqOFDLyRHXuBI/3FYotbGGkmTBAfQEQl4xV4XqQhg0
+ 4oaUtb25g39iOaukWsZWkllQrrDPIQkAxkRDqhrILUeKtjw5sKstat7bYuDLU8xSKL8pN6
+ ZAnzPvimbFPKaSBPuE6DINQ4QXa0h1c=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38--bBk9OBDM6Kzc9CuqczURA-1; Thu, 23 Sep 2021 04:23:23 -0400
+X-MC-Unique: -bBk9OBDM6Kzc9CuqczURA-1
+Received: by mail-qt1-f197.google.com with SMTP id
+ o6-20020a05622a008600b002a6c2fbc853so2766774qtw.16
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 01:23:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=LCJ1ucgEb8mGtcE6wna65r7eYodxkoaJyqDAapAhXx4=;
+ b=k5Bh7yt4bOblJgrU6AM2dsv92XRb6eWEonM8HS+Aj/93E/BpyMx6ufifXmIv34Qk9v
+ g45aEecC6WPmB/pdbc+jtxnkhhkm/oGgSuLPEC+flFvWlquizMPv6fXgnbe0+Ubdx+mI
+ 7DrWRh2I4jA5YqY7lpy+7diDdJNA46jTZ60XDn0T2m9SNaWhEMXUunC10u4mgEd4aEuK
+ /pJa/Q5O2EPUeeFzdUo7lMGhMSWBque6hbDXOWgyjZZqUqv7bpJKjiwz2kNGJgBvPGsK
+ a6iNBeXbrjcc8/VqTVWX5qAa9n7Pv81jpcJV4Qa2TqsyGXeXztweUKlXjAQlVfYgL1uJ
+ LIyw==
+X-Gm-Message-State: AOAM533jdipr39B9kErIHcCfN+RLsz77e1LFahDocienklabIPXxK1Yn
+ wJjOMUyp/JC3MIgLtVySzesbyEP8k+cv6Dw4euaXHLR9JtI12PWmnxzsfYj9ezlbod0m6FQtv7k
+ YStD5jjkbem6rnLULMB44Vzb86RQ=
+X-Received: by 2002:a25:2f48:: with SMTP id v69mr4168970ybv.339.1632385403470; 
+ Thu, 23 Sep 2021 01:23:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJEj8frDnagjZHyAAeH0gFiucxSaqccT6uw4LwoYdLCdqkqxBLntM18kpK1TYJe1qgHAoOfpL4pT7CwZntMYw=
+X-Received: by 2002:a25:2f48:: with SMTP id v69mr4168937ybv.339.1632385403109; 
+ Thu, 23 Sep 2021 01:23:23 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20210920221212.8478-1-zhaogongyi@huawei.com>
+In-Reply-To: <20210920221212.8478-1-zhaogongyi@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 23 Sep 2021 16:23:11 +0800
+Message-ID: <CAEemH2e+_kfVatbd8X0zLx2GW+k2Ds4nCNSD2Re3mKX-F6GzbQ@mail.gmail.com>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] open_posix: Add failure handling of fork()
+Subject: Re: [LTP] [PATCH v2] open_posix: Add failure handling of fork()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,211 +93,57 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1250583314=="
+Content-Type: multipart/mixed; boundary="===============1763536506=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1250583314==
-Content-Language: zh-CN
-Content-Type: multipart/alternative;
-	boundary="_000_f0a49ef57e724b9586f8de36e2a2b2ddhuaweicom_"
+--===============1763536506==
+Content-Type: multipart/alternative; boundary="00000000000016deba05cca55812"
 
---_000_f0a49ef57e724b9586f8de36e2a2b2ddhuaweicom_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+--00000000000016deba05cca55812
+Content-Type: text/plain; charset="UTF-8"
 
-SGkgTGksDQoNCkkgaGF2ZSBtb2RpZmllZCB0aGUgcGF0Y2ggYXMgeW91ciByZXZpZXcsIHBsZWFz
-ZSBzZWU6IGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9sdHAvcGF0Y2gvMjAy
-MTA5MjAyMjEyMTIuODQ3OC0xLXpoYW9nb25neWlAaHVhd2VpLmNvbS8NCg0KVGhhbmtzIHNvIG11
-Y2ghDQoNCuWPkeS7tuS6ujogTGkgV2FuZyBbbWFpbHRvOmxpd2FuZ0ByZWRoYXQuY29tXQ0K5Y+R
-6YCB5pe26Ze0OiAyMDIx5bm0OeaciDjml6UgMTE6MzANCuaUtuS7tuS6ujogemhhb2dvbmd5aSA8
-emhhb2dvbmd5aUBodWF3ZWkuY29tPg0K5oqE6YCBOiBMVFAgTGlzdCA8bHRwQGxpc3RzLmxpbnV4
-Lml0Pg0K5Li76aKYOiBSZTogW0xUUF0gW1BBVENIXSBvcGVuX3Bvc2l4OiBBZGQgZmFpbHVyZSBo
-YW5kbGluZyBvZiBmb3JrKCkNCg0KDQoNCk9uIFR1ZSwgU2VwIDcsIDIwMjEgYXQgODo0MSBQTSBa
-aGFvIEdvbmd5aSA8emhhb2dvbmd5aUBodWF3ZWkuY29tPG1haWx0bzp6aGFvZ29uZ3lpQGh1YXdl
-aS5jb20+PiB3cm90ZToNCldoZW4gZm9yaygpIGZhaWxlZCBhbmQgdHJhbnNmZXIgdGhlIHJldHVy
-biB2YWx1ZSgtMSkgdG8ga2lsbCgpLA0Ka2lsbCgtMSwgU0lHU1RPUCkgd291bGQgZnJlZXplIHRo
-ZSBzeXN0ZW0sIHNvIGl0IGlzIHZlcnkgc2VyaW91cw0KaW4gdGhpcyBjYXNlcyBhbmQgc2hvdWxk
-IGJlIGF2b2lkZWQuDQoNClNpZ25lZC1vZmYtYnk6IFpoYW8gR29uZ3lpIDx6aGFvZ29uZ3lpQGh1
-YXdlaS5jb208bWFpbHRvOnpoYW9nb25neWlAaHVhd2VpLmNvbT4+DQotLS0NCiAuLi4vY29uZm9y
-bWFuY2UvaW50ZXJmYWNlcy9jbG9ja19uYW5vc2xlZXAvMS01LmMgICAgICAgICAgICAgICB8IDMg
-KysrDQogLi4uL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbmFub3NsZWVwLzMtMi5jICAgICAgICAg
-ICAgICAgICAgICAgfCAzICsrKw0KIC4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NpZ2FjdGlv
-bi8xMC0xLmMgICAgICAgICAgICAgICAgICAgIHwgMyArKysNCiAuLi4vY29uZm9ybWFuY2UvaW50
-ZXJmYWNlcy9zaWdhY3Rpb24vMTEtMS5jICAgICAgICAgICAgICAgICAgICB8IDMgKysrDQogLi4u
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2lnYWN0aW9uLzktMS5jICAgICAgICAgICAgICAgICAg
-ICAgfCAzICsrKw0KIDUgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFj
-ZXMvY2xvY2tfbmFub3NsZWVwLzEtNS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvY2xvY2tfbmFub3NsZWVwLzEtNS5jDQppbmRleCA0NmYy
-NjE2M2QuLmE4NzU4NTg4NCAxMDA2NDQNCi0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3Rz
-dWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Nsb2NrX25hbm9zbGVlcC8xLTUuYw0KKysrIGIv
-dGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvY2xv
-Y2tfbmFub3NsZWVwLzEtNS5jDQpAQCAtNDgsNiArNDgsOSBAQCBpbnQgbWFpbih2b2lkKQ0KICAg
-ICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIENISUxERkFJTDsNCiAgICAgICAgICAgICAgICB9
-DQogICAgICAgICAgICAgICAgcmV0dXJuIENISUxERkFJTDsNCisgICAgICAgfSBlbHNlIGlmIChw
-aWQgPCAwKSB7DQorICAgICAgICAgICAgICAgcHJpbnRmKCJmb3JrKCkgZGlkIG5vdCByZXR1cm4g
-c3VjY2Vzc1xuIik7DQorICAgICAgICAgICAgICAgcmV0dXJuIFBUU19VTlJFU09MVkVEOw0KDQpD
-YW4gd2UgZG8gdGhlIGVycm9yIGNoZWNrIGZvbGxvd2luZyB0aGUgZm9yaygpIGluc3RhbnRseT8N
-Ckluc2VydCBwaWQ8MCB3aXRoIGEgJ2Vsc2UgaWYnIGxvb2tzIGEgYml0IHN0cmFuZ2UgaGVyZS4N
-Cg0KTm9ybWFsbHkgY29udmVudGlvbiBsaWtlOg0KDQpwaWQgPSBmb3JrKCk7DQogaWYgKHBpZCA8
-IDApDQogICAgZG8gZXJyb3IgaGFuZGxlIC4uLg0KDQotLQ0KUmVnYXJkcywNCkxpIFdhbmcNCg==
+On Thu, Sep 23, 2021 at 3:42 PM Zhao Gongyi <zhaogongyi@huawei.com> wrote:
 
---_000_f0a49ef57e724b9586f8de36e2a2b2ddhuaweicom_
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: base64
+> When fork() failed and transfer the return value(-1) to kill(),
+> it would freeze the system, so it is very serious in this
+> cases and should be avoided.
+>
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+>
 
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIg
-Y29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjxtZXRhIG5hbWU9IkdlbmVyYXRv
-ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPg0KPHN0eWxl
-PjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6
-5a6L5L2TOw0KCXBhbm9zZS0xOjIgMSA2IDAgMyAxIDEgMSAxIDE7fQ0KQGZvbnQtZmFjZQ0KCXtm
-b250LWZhbWlseToiQ2FtYnJpYSBNYXRoIjsNCglwYW5vc2UtMToyIDQgNSAzIDUgNCA2IDMgMiA0
-O30NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6Q2FsaWJyaTsNCglwYW5vc2UtMToyIDE1IDUg
-MiAyIDIgNCAzIDIgNDt9DQpAZm9udC1mYWNlDQoJe2ZvbnQtZmFtaWx5OuW+rui9r+mbhem7kTsN
-CglwYW5vc2UtMToyIDExIDUgMyAyIDIgNCAyIDIgNDt9DQpAZm9udC1mYWNlDQoJe2ZvbnQtZmFt
-aWx5OiJcQOWui+S9kyI7DQoJcGFub3NlLTE6MiAxIDYgMCAzIDEgMSAxIDEgMTt9DQpAZm9udC1m
-YWNlDQoJe2ZvbnQtZmFtaWx5OiJcQOW+rui9r+mbhem7kSI7DQoJcGFub3NlLTE6MiAxMSA1IDMg
-MiAyIDQgMiAyIDQ7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8NCnAuTXNvTm9ybWFsLCBsaS5N
-c29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBjbTsNCgltYXJnaW4tYm90dG9tOi4w
-MDAxcHQ7DQoJZm9udC1zaXplOjEyLjBwdDsNCglmb250LWZhbWlseTrlrovkvZM7fQ0KYTpsaW5r
-LCBzcGFuLk1zb0h5cGVybGluaw0KCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7DQoJY29sb3I6Ymx1
-ZTsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lO30NCmE6dmlzaXRlZCwgc3Bhbi5Nc29IeXBl
-cmxpbmtGb2xsb3dlZA0KCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7DQoJY29sb3I6cHVycGxlOw0K
-CXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQ0Kc3Bhbi5FbWFpbFN0eWxlMTcNCgl7bXNvLXN0
-eWxlLXR5cGU6cGVyc29uYWwtcmVwbHk7DQoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMtc2Vy
-aWY7DQoJY29sb3I6IzFGNDk3RDt9DQouTXNvQ2hwRGVmYXVsdA0KCXttc28tc3R5bGUtdHlwZTpl
-eHBvcnQtb25seTsNCglmb250LWZhbWlseToiQ2FsaWJyaSIsc2Fucy1zZXJpZjt9DQpAcGFnZSBX
-b3JkU2VjdGlvbjENCgl7c2l6ZTo2MTIuMHB0IDc5Mi4wcHQ7DQoJbWFyZ2luOjcyLjBwdCA5MC4w
-cHQgNzIuMHB0IDkwLjBwdDt9DQpkaXYuV29yZFNlY3Rpb24xDQoJe3BhZ2U6V29yZFNlY3Rpb24x
-O30NCi0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+DQo8bzpzaGFwZWRlZmF1bHRz
-IHY6ZXh0PSJlZGl0IiBzcGlkbWF4PSIxMDI2IiAvPg0KPC94bWw+PCFbZW5kaWZdLS0+PCEtLVtp
-ZiBndGUgbXNvIDldPjx4bWw+DQo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRpdCI+DQo8bzppZG1h
-cCB2OmV4dD0iZWRpdCIgZGF0YT0iMSIgLz4NCjwvbzpzaGFwZWxheW91dD48L3htbD48IVtlbmRp
-Zl0tLT4NCjwvaGVhZD4NCjxib2R5IGxhbmc9IlpILUNOIiBsaW5rPSJibHVlIiB2bGluaz0icHVy
-cGxlIj4NCjxkaXYgY2xhc3M9IldvcmRTZWN0aW9uMSI+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48
-c3BhbiBsYW5nPSJFTi1VUyIgc3R5bGU9ImZvbnQtc2l6ZToxMC41cHQ7Zm9udC1mYW1pbHk6JnF1
-b3Q7Q2FsaWJyaSZxdW90OyxzYW5zLXNlcmlmO2NvbG9yOiMxRjQ5N0QiPkhpIExpLDxvOnA+PC9v
-OnA+PC9zcGFuPjwvcD4NCjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIiBz
-dHlsZT0iZm9udC1zaXplOjEwLjVwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNh
-bnMtc2VyaWY7Y29sb3I6IzFGNDk3RCI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPg0KPHAg
-Y2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gbGFuZz0iRU4tVVMiIHN0eWxlPSJmb250LXNpemU6MTAu
-NXB0O2ZvbnQtZmFtaWx5OiZxdW90O0NhbGlicmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMUY0
-OTdEIj5JIGhhdmUgbW9kaWZpZWQgdGhlIHBhdGNoIGFzIHlvdXIgcmV2aWV3LCBwbGVhc2Ugc2Vl
-Og0KPGEgaHJlZj0iaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wcm9qZWN0L2x0cC9wYXRj
-aC8yMDIxMDkyMDIyMTIxMi44NDc4LTEtemhhb2dvbmd5aUBodWF3ZWkuY29tLyI+DQpodHRwczov
-L3BhdGNod29yay5vemxhYnMub3JnL3Byb2plY3QvbHRwL3BhdGNoLzIwMjEwOTIwMjIxMjEyLjg0
-NzgtMS16aGFvZ29uZ3lpQGh1YXdlaS5jb20vPC9hPjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxw
-IGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIiBzdHlsZT0iZm9udC1zaXplOjEw
-LjVwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMtc2VyaWY7Y29sb3I6IzFG
-NDk3RCI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+
-PHNwYW4gbGFuZz0iRU4tVVMiIHN0eWxlPSJmb250LXNpemU6MTAuNXB0O2ZvbnQtZmFtaWx5OiZx
-dW90O0NhbGlicmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMUY0OTdEIj5UaGFua3Mgc28gbXVj
-aCE8bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBsYW5n
-PSJFTi1VUyIgc3R5bGU9ImZvbnQtc2l6ZToxMC41cHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJy
-aSZxdW90OyxzYW5zLXNlcmlmO2NvbG9yOiMxRjQ5N0QiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFu
-PjwvcD4NCjxkaXYgc3R5bGU9ImJvcmRlcjpub25lO2JvcmRlci1sZWZ0OnNvbGlkIGJsdWUgMS41
-cHQ7cGFkZGluZzowY20gMGNtIDBjbSA0LjBwdCI+DQo8ZGl2Pg0KPGRpdiBzdHlsZT0iYm9yZGVy
-Om5vbmU7Ym9yZGVyLXRvcDpzb2xpZCAjRTFFMUUxIDEuMHB0O3BhZGRpbmc6My4wcHQgMGNtIDBj
-bSAwY20iPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTox
-MS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q75b6u6L2v6ZuF6buRJnF1b3Q7LHNhbnMtc2VyaWYiPuWP
-keS7tuS6ujxzcGFuIGxhbmc9IkVOLVVTIj46PC9zcGFuPjwvc3Bhbj48L2I+PHNwYW4gbGFuZz0i
-RU4tVVMiIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O+W+rui9r+mb
-hem7kSZxdW90OyxzYW5zLXNlcmlmIj4gTGkgV2FuZyBbbWFpbHRvOmxpd2FuZ0ByZWRoYXQuY29t
-XQ0KPGJyPg0KPC9zcGFuPjxiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFt
-aWx5OiZxdW90O+W+rui9r+mbhem7kSZxdW90OyxzYW5zLXNlcmlmIj7lj5HpgIHml7bpl7Q8c3Bh
-biBsYW5nPSJFTi1VUyI+Ojwvc3Bhbj48L3NwYW4+PC9iPjxzcGFuIGxhbmc9IkVOLVVTIiBzdHls
-ZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDvlvq7ova/pm4Xpu5EmcXVvdDss
-c2Fucy1zZXJpZiI+IDIwMjE8L3NwYW4+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9u
-dC1mYW1pbHk6JnF1b3Q75b6u6L2v6ZuF6buRJnF1b3Q7LHNhbnMtc2VyaWYiPuW5tDxzcGFuIGxh
-bmc9IkVOLVVTIj45PC9zcGFuPuaciDxzcGFuIGxhbmc9IkVOLVVTIj44PC9zcGFuPuaXpTxzcGFu
-IGxhbmc9IkVOLVVTIj4NCiAxMTozMDxicj4NCjwvc3Bhbj48Yj7mlLbku7bkuro8c3BhbiBsYW5n
-PSJFTi1VUyI+Ojwvc3Bhbj48L2I+PHNwYW4gbGFuZz0iRU4tVVMiPiB6aGFvZ29uZ3lpICZsdDt6
-aGFvZ29uZ3lpQGh1YXdlaS5jb20mZ3Q7PGJyPg0KPC9zcGFuPjxiPuaKhOmAgTxzcGFuIGxhbmc9
-IkVOLVVTIj46PC9zcGFuPjwvYj48c3BhbiBsYW5nPSJFTi1VUyI+IExUUCBMaXN0ICZsdDtsdHBA
-bGlzdHMubGludXguaXQmZ3Q7PGJyPg0KPC9zcGFuPjxiPuS4u+mimDxzcGFuIGxhbmc9IkVOLVVT
-Ij46PC9zcGFuPjwvYj48c3BhbiBsYW5nPSJFTi1VUyI+IFJlOiBbTFRQXSBbUEFUQ0hdIG9wZW5f
-cG9zaXg6IEFkZCBmYWlsdXJlIGhhbmRsaW5nIG9mIGZvcmsoKTxvOnA+PC9vOnA+PC9zcGFuPjwv
-c3Bhbj48L3A+DQo8L2Rpdj4NCjwvZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gbGFu
-Zz0iRU4tVVMiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD4NCjxkaXY+DQo8ZGl2Pg0KPGRp
-dj4NCjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj48bzpwPiZuYnNwOzwv
-bzpwPjwvc3Bhbj48L3A+DQo8L2Rpdj4NCjwvZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNw
-YW4gbGFuZz0iRU4tVVMiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD4NCjxkaXY+DQo8ZGl2
-Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gbGFuZz0iRU4tVVMiPk9uIFR1ZSwgU2VwIDcs
-IDIwMjEgYXQgODo0MSBQTSBaaGFvIEdvbmd5aSAmbHQ7PGEgaHJlZj0ibWFpbHRvOnpoYW9nb25n
-eWlAaHVhd2VpLmNvbSI+emhhb2dvbmd5aUBodWF3ZWkuY29tPC9hPiZndDsgd3JvdGU6PG86cD48
-L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQo8YmxvY2txdW90ZSBzdHlsZT0iYm9yZGVyOm5vbmU7
-Ym9yZGVyLWxlZnQ6c29saWQgI0NDQ0NDQyAxLjBwdDtwYWRkaW5nOjBjbSAwY20gMGNtIDYuMHB0
-O21hcmdpbi1sZWZ0OjQuOHB0O21hcmdpbi1yaWdodDowY20iPg0KPHAgY2xhc3M9Ik1zb05vcm1h
-bCI+PHNwYW4gbGFuZz0iRU4tVVMiPldoZW4gZm9yaygpIGZhaWxlZCBhbmQgdHJhbnNmZXIgdGhl
-IHJldHVybiB2YWx1ZSgtMSkgdG8ga2lsbCgpLDxicj4NCmtpbGwoLTEsIFNJR1NUT1ApIHdvdWxk
-IGZyZWV6ZSB0aGUgc3lzdGVtLCBzbyBpdCBpcyB2ZXJ5IHNlcmlvdXM8YnI+DQppbiB0aGlzIGNh
-c2VzIGFuZCBzaG91bGQgYmUgYXZvaWRlZC48YnI+DQo8YnI+DQpTaWduZWQtb2ZmLWJ5OiBaaGFv
-IEdvbmd5aSAmbHQ7PGEgaHJlZj0ibWFpbHRvOnpoYW9nb25neWlAaHVhd2VpLmNvbSIgdGFyZ2V0
-PSJfYmxhbmsiPnpoYW9nb25neWlAaHVhd2VpLmNvbTwvYT4mZ3Q7PGJyPg0KLS0tPGJyPg0KJm5i
-c3A7Li4uL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvY2xvY2tfbmFub3NsZWVwLzEtNS5jJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwO3wgMyAmIzQz
-OyYjNDM7JiM0Mzs8YnI+DQombmJzcDsuLi4vY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9uYW5vc2xl
-ZXAvMy0yLmMmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsg
-Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7fCAzICYjNDM7JiM0MzsmIzQzOzxicj4NCiZuYnNw
-Oy4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NpZ2FjdGlvbi8xMC0xLmMmbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsg
-fCAzICYjNDM7JiM0MzsmIzQzOzxicj4NCiZuYnNwOy4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2Vz
-L3NpZ2FjdGlvbi8xMS0xLmMmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
-OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgfCAzICYjNDM7JiM0MzsmIzQzOzxicj4NCiZu
-YnNwOy4uLi9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3NpZ2FjdGlvbi85LTEuYyZuYnNwOyAmbmJz
-cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
-OyAmbmJzcDt8IDMgJiM0MzsmIzQzOyYjNDM7PGJyPg0KJm5ic3A7NSBmaWxlcyBjaGFuZ2VkLCAx
-NSBpbnNlcnRpb25zKCYjNDM7KTxicj4NCjxicj4NCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvb3Bl
-bl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9jbG9ja19uYW5vc2xlZXAv
-MS01LmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJm
-YWNlcy9jbG9ja19uYW5vc2xlZXAvMS01LmM8YnI+DQppbmRleCA0NmYyNjE2M2QuLmE4NzU4NTg4
-NCAxMDA2NDQ8YnI+DQotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9y
-bWFuY2UvaW50ZXJmYWNlcy9jbG9ja19uYW5vc2xlZXAvMS01LmM8YnI+DQomIzQzOyYjNDM7JiM0
-MzsgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
-cy9jbG9ja19uYW5vc2xlZXAvMS01LmM8YnI+DQpAQCAtNDgsNiAmIzQzOzQ4LDkgQEAgaW50IG1h
-aW4odm9pZCk8YnI+DQombmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAm
-bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyByZXR1cm4gQ0hJTERGQUlM
-Ozxicj4NCiZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAm
-bmJzcDsgfTxicj4NCiZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZu
-YnNwOyAmbmJzcDsgcmV0dXJuIENISUxERkFJTDs8YnI+DQomIzQzOyZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwO30gZWxzZSBpZiAocGlkICZsdDsgMCkgezxicj4NCiYjNDM7Jm5ic3A7ICZuYnNw
-OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwO3ByaW50ZigmcXVvdDtm
-b3JrKCkgZGlkIG5vdCByZXR1cm4gc3VjY2Vzc1xuJnF1b3Q7KTs8YnI+DQomIzQzOyZuYnNwOyAm
-bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDtyZXR1cm4gUFRT
-X1VOUkVTT0xWRUQ7PG86cD48L286cD48L3NwYW4+PC9wPg0KPC9ibG9ja3F1b3RlPg0KPGRpdj4N
-CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj48bzpwPiZuYnNwOzwvbzpw
-Pjwvc3Bhbj48L3A+DQo8L2Rpdj4NCjxkaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+
-PHNwYW4gbGFuZz0iRU4tVVMiPkNhbiB3ZSBkbyB0aGUgZXJyb3IgY2hlY2sgZm9sbG93aW5nIHRo
-ZSBmb3JrKCkgaW5zdGFudGx5PzxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPGRpdj4N
-CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj5JbnNlcnQgcGlkJmx0OzAg
-d2l0aCBhICdlbHNlIGlmJyBsb29rcyBhIGJpdCBzdHJhbmdlIGhlcmUuPG86cD48L286cD48L3Nw
-YW4+PC9wPg0KPC9kaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gbGFuZz0i
-RU4tVVMiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPGRpdj4NCjxwIGNs
-YXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj5Ob3JtYWxseSBjb252ZW50aW9uIGxp
-a2U6PG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9Ik1zb05v
-cm1hbCI+PHNwYW4gbGFuZz0iRU4tVVMiPiZuYnNwOzxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwv
-ZGl2Pg0KPGRpdj4NCjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj5waWQg
-PSBmb3JrKCk7PG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9
-Ik1zb05vcm1hbCI+PHNwYW4gbGFuZz0iRU4tVVMiPiZuYnNwO2lmIChwaWQgJmx0OyAwKTxvOnA+
-PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPGRpdj4NCjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxz
-cGFuIGxhbmc9IkVOLVVTIj4mbmJzcDsgJm5ic3A7IGRvIGVycm9yIGhhbmRsZSAuLi48bzpwPjwv
-bzpwPjwvc3Bhbj48L3A+DQo8L2Rpdj4NCjwvZGl2Pg0KPC9kaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9
-Ik1zb05vcm1hbCI+PHNwYW4gbGFuZz0iRU4tVVMiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwv
-cD4NCjwvZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gbGFuZz0iRU4tVVMiPi0tIDxv
-OnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxkaXY+DQo8ZGl2Pg0KPGRpdj4NCjxwIGNsYXNzPSJNc29O
-b3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj5SZWdhcmRzLDxvOnA+PC9vOnA+PC9zcGFuPjwvcD4N
-CjwvZGl2Pg0KPGRpdj4NCjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIj5M
-aSBXYW5nPG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQo8L2Rpdj4NCjwvZGl2Pg0KPC9k
-aXY+DQo8L2Rpdj4NCjwvZGl2Pg0KPC9ib2R5Pg0KPC9odG1sPg0K
+Reviewed-by: Li Wang <liwang@redhat.com>
 
---_000_f0a49ef57e724b9586f8de36e2a2b2ddhuaweicom_--
+-- 
+Regards,
+Li Wang
 
---===============1250583314==
+--00000000000016deba05cca55812
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Thu, Sep 23, 2021 at 3:42 PM Zhao Gongyi &lt;<a =
+href=3D"mailto:zhaogongyi@huawei.com">zhaogongyi@huawei.com</a>&gt; wrote:<=
+br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex">When fork() fail=
+ed and transfer the return value(-1) to kill(),<br>
+it would freeze the system, so it is very serious in this<br>
+cases and should be avoided.<br>
+<br>
+Signed-off-by: Zhao Gongyi &lt;<a href=3D"mailto:zhaogongyi@huawei.com" tar=
+get=3D"_blank">zhaogongyi@huawei.com</a>&gt;<br></blockquote><div>=C2=A0</d=
+iv><div><span class=3D"gmail_default" style=3D"font-size:small">Reviewed-by=
+: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt=
+;</span></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_s=
+ignature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></d=
+iv></div></div>
+
+--00000000000016deba05cca55812--
+
+
+--===============1763536506==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -283,4 +153,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1250583314==--
+--===============1763536506==--
+
