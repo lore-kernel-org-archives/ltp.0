@@ -7,47 +7,46 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F8D2C433EF
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3968FC433EF
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:30 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E952A6126A
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E952A6126A
+	by mail.kernel.org (Postfix) with ESMTPS id 5F9AA6126A
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F9AA6126A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7CAA23C8F62
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 10:53:16 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 0ACE73C8F98
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 10:53:28 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AB613C8F5E
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:53:04 +0200 (CEST)
-Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+ by picard.linux.it (Postfix) with ESMTPS id D54D43C8F9D
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:53:12 +0200 (CEST)
+Received: from smtpbg501.qq.com (smtpbg501.qq.com [203.205.250.101])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B3ED91001285
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:53:01 +0200 (CEST)
-X-QQ-mid: bizesmtp51t1632387174tvl61swz
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B22CA6008C0
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:53:10 +0200 (CEST)
+X-QQ-mid: bizesmtp51t1632387183tkvkja78
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by esmtp6.qq.com (ESMTP) with 
- id ; Thu, 23 Sep 2021 16:52:44 +0800 (CST)
+ id ; Thu, 23 Sep 2021 16:52:55 +0800 (CST)
 X-QQ-SSF: 0140000000000040C000B00B0000000
-X-QQ-FEAT: soIjdELXxCKpHyXG6E225tCqTPXQSTxoYB+1dWMwgNmhE1QYWaTy9W5ewNJgm
- OGDQh9pQlpZ3Ca8inJa25Dm/1DPb22CuR13JF2OMFpS/G0i2tlEqHnSxEOTwxsEPTZWpe6o
- oTEqUqoGmRDDfMeqYesyDlyZZrb+BIk+kDZS6EqqJu7L8zjytXWl8LD3WTAaKOxdYzam256
- WMEaa2nccyDDxutmejnsYfTGQ6zQOeyuQe9p+Z+EAi1ijWA7utO5/bYYC344hQ6T7QuuHQt
- rqQplp4dsIJC8JRHFcztEmoY8Pg+HrohR8D3eLsafsIl25VK5ro+md0qvkYqOSAnXzVk7n3
- wVwxUzMV1q82TexS0bS520ly45SWQ==
+X-QQ-FEAT: GtF2qqK1Zcu1PDYVldFyYV52XQ3q9p2t+6/BAjsVDH7ePQKFJn/EYcFNQxrMG
+ CbcXkWG+0JHL3ltxD7p0ex0MiRWAk7K+8dqqj05xNz6rLatR8dqT/QVH7z9NeOrf6LtryKD
+ rU0hfkpC4Gf9TdTrf0Xm6bl05B2B/kFgfzEzlpJ5CRKr6xMFg1TzDuQNYYwKY6BpDGsUb81
+ ZTj3228IbAEOQ5pbc4PX/RCGMdYXn/hdDdh2AsJPNM8sg1DgusW/dZ/HXD7eHpL3qr5RYl/
+ raW7sOxHpScYvCt8MNQEAiwBcHFSaC/DgbpSudqXdUR9JkW3yCTjNsy+xBpzoS33RhRA0No
+ KRQ4jJmvsp5CVJcRM32tn7zp4GarA==
 X-QQ-GoodBg: 2
 From: zhanglianjie <zhanglianjie@uniontech.com>
 To: ltp@lists.linux.it
-Date: Thu, 23 Sep 2021 16:52:21 +0800
-Message-Id: <20210923085224.868-2-zhanglianjie@uniontech.com>
+Date: Thu, 23 Sep 2021 16:52:22 +0800
+Message-Id: <20210923085224.868-3-zhanglianjie@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210923085224.868-1-zhanglianjie@uniontech.com>
 References: <20210923085224.868-1-zhanglianjie@uniontech.com>
@@ -55,9 +54,9 @@ MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
 X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/5] syscalls/clone03: Convert to new API
+Subject: [LTP] [PATCH v3 3/5] syscalls/clone05: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,15 +75,16 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-diff --git a/testcases/kernel/syscalls/clone/clone03.c b/testcases/kernel/syscalls/clone/clone03.c
-index f4216ead8..81d6ee649 100644
---- a/testcases/kernel/syscalls/clone/clone03.c
-+++ b/testcases/kernel/syscalls/clone/clone03.c
-@@ -1,147 +1,61 @@
+diff --git a/testcases/kernel/syscalls/clone/clone05.c b/testcases/kernel/syscalls/clone/clone05.c
+index 494b772dd..79e08b925 100644
+--- a/testcases/kernel/syscalls/clone/clone05.c
++++ b/testcases/kernel/syscalls/clone/clone05.c
+@@ -1,103 +1,63 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
   * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
+  * Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -99,69 +99,47 @@ index f4216ead8..81d6ee649 100644
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
   */
+
 -/*
-+
 +/*\
 + * [Description]
-  *	Check for equality of pid of child & return value of clone(2)
-- *	Test:
-- *	 Open a pipe.
-- *	 Loop if the proper options are given.
-- *	  Call clone(2) called without SIGCHLD
-- *
-- *	  CHILD:
-- *		writes the pid to pipe
-- *	  PARENT:
-- *		reads child'd pid from pipe
-- *		if child's pid == return value from clone(2)
-- *			Test passed
-- *		else
-- *			test failed
+  * Call clone() with CLONE_VFORK flag set. verify that
+  * execution of parent is suspended until child finishes
   */
--
--#if defined UCLINUX && !__THROW
--/* workaround for libc bug */
--#define __THROW
--#endif
--
+
+ #define _GNU_SOURCE
+
 -#include <errno.h>
--#include <sched.h>
++#include <stdlib.h>
+ #include <sched.h>
 -#include <sys/wait.h>
 -#include "test.h"
--
-+#include <stdio.h>
-+#include <stdlib.h>
 +#include "tst_test.h"
  #include "clone_platform.h"
 
--static void setup(void);
--static void cleanup(void);
--static int child_fn();
--
--static int pfd[2];
-+static void *child_stack;
-+static char *channel;
-
--char *TCID = "clone03";
+-char *TCID = "clone05";
 -int TST_TOTAL = 1;
 -
--int main(int ac, char **av)
-+static int child_fn(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-+	sprintf(channel, "%d", getpid());
-+	exit(0);
-+}
+-static void setup(void);
+-static void cleanup(void);
+-static int child_fn(void *);
+-
+-static int child_exited = 0;
++static int child_exited;
++static void *child_stack;
 
--	int lc;
+-int main(int ac, char **av)
++static int child_fn(void *unused LTP_ATTRIBUTE_UNUSED)
+ {
++	int i;
+
+-	int lc, status;
 -	void *child_stack;
--	char buff[10];
--	int child_pid, status;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	/* Allocate stack for child */
 -	child_stack = malloc(CHILD_STACK_SIZE);
 -	if (child_stack == NULL)
 -		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
@@ -169,95 +147,68 @@ index f4216ead8..81d6ee649 100644
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		if ((pipe(pfd)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
+-		TEST(ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, child_fn, NULL,
+-		               CHILD_STACK_SIZE, child_stack));
 -
--		TEST(ltp_clone(SIGCHLD, child_fn, NULL, CHILD_STACK_SIZE,
--			       child_stack));
--
--		if (TEST_RETURN == -1)
--			tst_brkm(TFAIL | TTERRNO, cleanup, "clone() failed");
--
--		/* close write end from parent */
--		if ((close(pfd[1])) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "close(pfd[1]) failed");
--
--		/* Read pid from read end */
--		if ((read(pfd[0], buff, sizeof(buff))) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "read from pipe failed");
-+static void verify_clone(void)
-+{
-+	int child_pid;
-
--		/* Close read end from parent */
--		if ((close(pfd[0])) == -1)
--			tst_resm(TWARN | TERRNO, "close(pfd[0]) failed");
-+	TST_EXP_PID_SILENT(ltp_clone(SIGCHLD, child_fn, NULL, CHILD_STACK_SIZE,
-+				child_stack));
-
--		/* Get child's pid from pid string */
--		child_pid = atoi(buff);
-+	if (!TST_PASS)
-+		return;
-
--		if (TEST_RETURN == child_pid)
--			tst_resm(TPASS, "Test passed");
+-		if ((TEST_RETURN != -1) && (child_exited))
+-			tst_resm(TPASS, "Test Passed");
 -		else
--			tst_resm(TFAIL, "Test failed");
-+	tst_reap_children();
+-			tst_resm(TFAIL, "Test Failed");
++	for (i = 0; i < 100; i++) {
++		sched_yield();
++		usleep(1000);
++	}
 
 -		if ((wait(&status)) == -1)
 -			tst_brkm(TBROK | TERRNO, cleanup,
 -				 "wait failed, status: %d", status);
++	child_exited = 1;
++	_exit(0);
++}
+
+-		child_exited = 0;
 -	}
-+	child_pid = atoi(channel);
++static void verify_clone(void)
++{
++	TST_EXP_PID_SILENT(ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, child_fn, NULL,
++					CHILD_STACK_SIZE, child_stack), "clone with vfork");
 
 -	free(child_stack);
--
++	if (!TST_PASS)
++		return;
+
 -	cleanup();
 -	tst_exit();
-+	TST_EXP_PASS(!(TST_RET == child_pid), "pid(%d)", child_pid);
++	TST_EXP_VAL(child_exited, 1);
  }
 
  static void setup(void)
  {
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
 -	TEST_PAUSE;
 +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+	channel = SAFE_MMAP(NULL, 10, PROT_READ | PROT_WRITE,
-+				MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++	child_exited = 0;
  }
 
  static void cleanup(void)
  {
--}
--
--static int child_fn(void)
--{
--	char pid[10];
--
--	/* Close read end from child */
--	if ((close(pfd[0])) == -1)
--		perror("close(pfd[0]) failed");
--
--	sprintf(pid, "%d", getpid());
--
--	/* Write pid string to pipe */
--	if ((write(pfd[1], pid, sizeof(pid))) == -1)
--		perror("write to pipe failed");
--
--	/* Close write end of pipe from child */
--	if ((close(pfd[1])) == -1)
--		perror("close(pfd[1]) failed");
 +	free(child_stack);
-
--	exit(1);
-+	if (channel)
-+		SAFE_MUNMAP(channel, 10);
  }
-+
+
+-static int child_fn(void *unused __attribute__((unused)))
+-{
+-	int i;
+-
+-	/* give the kernel scheduler chance to run the parent */
+-	for (i = 0; i < 100; i++) {
+-		sched_yield();
+-		usleep(1000);
+-	}
+-
+-	child_exited = 1;
+-	_exit(1);
+-}
 +static struct tst_test test = {
 +	.setup = setup,
 +	.test_all = verify_clone,
