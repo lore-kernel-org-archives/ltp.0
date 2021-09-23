@@ -2,81 +2,79 @@ Return-Path: <SRS0=3vE2=ON=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54C65C433F5
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 13:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B228C433F5
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 14:03:48 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F09760F24
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 13:44:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7F09760F24
+	by mail.kernel.org (Postfix) with ESMTPS id D6D4261090
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 14:03:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D6D4261090
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DBC4A3CA1F7
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 15:44:35 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C949E3CAB27
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 16:03:45 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8161E3C8FA0
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 15:44:15 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 07FE83C6E67
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 16:03:34 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D2B551001346
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 15:44:14 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E80B11400B94
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 16:03:33 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E96B322369
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 13:44:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 250852028E;
+ Thu, 23 Sep 2021 14:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632404653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1632405813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cD4D6ET/aYjIYFN4pVh77tQyTKMTAHQkDijo5GEonLo=;
- b=GYNqjY09tC00JUOB0e9PDO474ur8L1Pxzt309yxLXyAe0QrXCzQ5VgKEuOxbgVRy8JVBdj
- IeBCeP1Apcl0OtscqddbEoH3RsajkjaIbGtHKtaO4/McUQ0T3RrVW43aC79VPEGJ0bc/mt
- XnOxU6EB35yYt7LsPvY8ATHsQqsWgtM=
+ bh=EG3mXqwzvMq30nXUPxRAimOTax9ci3dJ3sqByWGEYzI=;
+ b=Vex/+KwSkHZnLpnLAhnOkAIg6au7qYAN89+0z4Q1Dsq19VPDKeLxLG3qQXu2WC4qb+00Qq
+ j+9l7UXDM6M6F0Tk+aYZTHqDm94yXWr7l7yV+Lkzsbh1ecdjcOvVW1HuWDUEN280ChF6Ij
+ YGIv04wN1oGzpsrABU/MC7zH1Upt7Fg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632404653;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1632405813;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cD4D6ET/aYjIYFN4pVh77tQyTKMTAHQkDijo5GEonLo=;
- b=pDuzmoeAKSwUNpAzlGoE1i0x0+o1y9EZTJosYWD3zXAuBRoV7KhEsLlkQF5lo/ANadBm7L
- UBbe+qRaA3zRnsCg==
+ bh=EG3mXqwzvMq30nXUPxRAimOTax9ci3dJ3sqByWGEYzI=;
+ b=RnMIWTIg3oP6rzWM4IT9ymKaNnb0tP/SKXrkoS4Y7WkXlJvwu/+GbQeRvFfMUjx61rTtvH
+ E2paSKOYLmt+qfCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DAAC513E7C
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 13:44:13 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0813013E6E;
+ Thu, 23 Sep 2021 14:03:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qIahNK2ETGGvVAAAMHmgww
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 13:44:13 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu, 23 Sep 2021 15:44:13 +0200
-Message-Id: <20210923134413.25174-2-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210923134413.25174-1-mdoucha@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id UsW0ADWJTGE1YQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 23 Sep 2021 14:03:33 +0000
+Date: Thu, 23 Sep 2021 16:04:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <YUyJVGDpNFXCd2Me@yuki>
 References: <20210923134413.25174-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20210923134413.25174-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] syscalls/utime03: Fix timestamp checks
+Subject: Re: [LTP] [PATCH v2 1/2] Rename get_ipc_timestamp() and move to
+ main LTP library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,46 +86,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The timestamps set by utime(path, NULL) may slightly lag behind time() return
-values. Use tst_get_fs_timestamp() to get the correct expected time range.
+Hi!
+> +/*
+> + * Returns current system time for file/IPC operations, which may slightly lag
+> + * behind time() return values.
+> + */
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- testcases/kernel/syscalls/utime/utime03.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I've added slightly longer (and hopefuly better) explanation why this
+happends here and pushed the patches, thanks.
 
-diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
-index f581273f7..48cc3bae7 100644
---- a/testcases/kernel/syscalls/utime/utime03.c
-+++ b/testcases/kernel/syscalls/utime/utime03.c
-@@ -26,6 +26,7 @@
- 
- #include "tst_test.h"
- #include "tst_uid.h"
-+#include "tst_clocks.h"
- 
- #define MNTPOINT	"mntpoint"
- #define TEMP_FILE	MNTPOINT"/tmp_file"
-@@ -71,9 +72,9 @@ static void run(void)
- 	}
- 
- 	SAFE_SETEUID(user_uid);
--	mintime = time(0);
-+	mintime = tst_get_fs_timestamp();
- 	TST_EXP_PASS(utime(TEMP_FILE, NULL));
--	maxtime = time(0);
-+	maxtime = tst_get_fs_timestamp();
- 	SAFE_SETEUID(root_uid);
- 	SAFE_STAT(TEMP_FILE, &statbuf);
- 
 -- 
-2.33.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
