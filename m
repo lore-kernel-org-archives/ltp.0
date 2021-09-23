@@ -7,76 +7,78 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C568C433FE
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42317C433F5
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:15:02 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 44C1660F9D
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:07:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 44C1660F9D
+	by mail.kernel.org (Postfix) with ESMTPS id AE9AC6124C
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:15:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AE9AC6124C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 948C13C8F67
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 11:07:10 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3B1D63C8F79
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 11:15:00 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 521943C8F57
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 11:14:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BE5A3C8F57
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 11:07:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 257FA6000E2
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 11:06:59 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D07E3201098
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 11:14:50 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 825D42234D;
- Thu, 23 Sep 2021 09:06:59 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A1D4C1FD77;
+ Thu, 23 Sep 2021 09:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1632388019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1632388489;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=y50+G6+MYcDWRrM8/wiVYTMUcopM8zB4RxLJcJMznQM=;
- b=U8itxtKKmrPfnk1zRAo+mIshd+o4Zg+RvpBCs8DPN3WIFJERC3tiiQrZj5BHKQ2wMxF0Wr
- hfClQfcJPpAui56tEwzjMVgH0Od73yagSvcjUz6Lahxsku6+VjGTve40o2wvW+TK+wXvOS
- cDzMdFeHM90fjUqJ6jg/YBX46VhAlTo=
+ bh=hjEblAiuGNbLAlz7cWIUzWMmxgmFSh7dc4Xmm8c/hlc=;
+ b=II5LAtdmSFIfgYb7p+C9dc9GpELTacSqcNWCM9Dw7UqydrQIR0cglyKiQSZrJNZr3NZcOm
+ CdLM9+PSuhrQ8fpgMZW03ynWaIjmHf+CZhOHBOsLF6EIl+mUC3aSoZLrW8imteoFYbDKr1
+ vdMM2ZQHweOz5GZyd/nUmylNojFagQw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1632388019;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1632388489;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=y50+G6+MYcDWRrM8/wiVYTMUcopM8zB4RxLJcJMznQM=;
- b=Ox6dzrbespqJ9toPinPz8S548orCH+3j7iFG+UByr0cmPNug2C5gNGEbW1ekGPFwWCkI0C
- vNQT7IL36rPx1NBA==
+ bh=hjEblAiuGNbLAlz7cWIUzWMmxgmFSh7dc4Xmm8c/hlc=;
+ b=wO07WqoB8a+0KayhCvAg0lnof9fBZRs39RYBwkc/NrwBmdoa2zJdxbWM6pXeyLpYYCTBPj
+ afEpYkvmGkET8WCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 556A713DCA;
- Thu, 23 Sep 2021 09:06:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59E3913DCA;
+ Thu, 23 Sep 2021 09:14:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id roI9FLNDTGFeMgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 23 Sep 2021 09:06:59 +0000
-Date: Thu, 23 Sep 2021 11:07:28 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <YUxD0Ah1IrSq4Flk@yuki>
-References: <8b4c1fad2914aee00c8a160d1f9e482574b8e5ae.1632242721.git.jstancek@redhat.com>
- <3190c9a0b45411eb9d6024267c264825c9faa32e.1632386756.git.jstancek@redhat.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id gBEDE4lFTGHBNgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 23 Sep 2021 09:14:49 +0000
+Date: Thu, 23 Sep 2021 11:14:47 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Alex Henrie <alexh@vpitech.com>
+Message-ID: <YUxFh1Gp231NftEY@pevik>
+References: <20210922115310.5927-1-pvorel@suse.cz>
+ <20210922115310.5927-4-pvorel@suse.cz>
+ <20210922110620.cf7530d5120d2f0173ed2f05@vpitech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <3190c9a0b45411eb9d6024267c264825c9faa32e.1632386756.git.jstancek@redhat.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20210922110620.cf7530d5120d2f0173ed2f05@vpitech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] hugeshmat04: try to find unmapped range for
- test
+Subject: Re: [LTP] [PATCH v6 3/3] IMA: Add tests for uid, gid, fowner,
+ and fgroup options
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,20 +90,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: liwan@redhat.com, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Great work.
+> On Wed, 22 Sep 2021 13:53:10 +0200
+> Petr Vorel <pvorel@suse.cz> wrote:
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > From: Alex Henrie <alexh@vpitech.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > Requires "ima: add gid support".
+
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > Signed-off-by: Alex Henrie <alexh@vpitech.com>
+> > [ pvorel: add test_file parameter to ima_check(), add
+> > verify_measurement() (DRY) ]
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+> Thanks Petr for taking over and making the changes you want directly,
+> that makes my life much easier.
+yw. FYI I'll merge v7 after it's merged into mainline, I expect it'll be in v5.16-rc1.
+Could you please notify me if I forget?
+
+I'll try to have look into kernel patch itself.
+
+Kind regards,
+Petr
+
+> -Alex
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
