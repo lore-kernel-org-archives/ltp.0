@@ -1,130 +1,94 @@
-Return-Path: <SRS0=R2VO=OM=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=3vE2=ON=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MIME_HTML_MOSTLY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62A48C4321E
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 053F2C433F5
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 03:00:51 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2C9861131
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 18:54:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2C9861131
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vpitech.com
+	by mail.kernel.org (Postfix) with ESMTPS id CD341610A1
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 03:00:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CD341610A1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 663143CA249
-	for <ltp@archiver.kernel.org>; Wed, 22 Sep 2021 20:54:22 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 754B33CA237
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 05:00:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 649EB3CA205
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:53:54 +0200 (CEST)
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
+ by picard.linux.it (Postfix) with ESMTPS id 963963C813A
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 05:00:37 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A12A41A00999
- for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:53:53 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YRj8mKzgQcEOJgRaM/9or9Srz9j1hs3D8srLuA3P0CvC2lsF92UW17ONwtne8O3p4vRtEG2ZuZf6M8W70FNaqPukW3rWpx+FK1gVyiYMNNAhrQD8rzSUNkcqVOkDVUPM4B5HGH4V1wGuRm2HNlMpiho/lVF+UXNYf115yuhaKlsmUwng5Kvg+Uk2B0g5W1cNCMpZD0kiDnhNU8KO9X7MJq17bKAJKVjU2tKolTzs3M2dgrYs/dpB58tUbWjYxs4bGDvWilCmKhf67hCjPPAn7vuzxXmyP+PEbal1ShqwJRRcfVGiSO04TjhNQEjH+U/Wd8WOJQyjESuGkeelcbg+4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=aJx0bn5bjojlOxYp6On5sSFGejd5EZgnUMZmo5Q7nO0=;
- b=e+Y1c3vxyKTI6Pbz6jlXlbqWh/aVNRc9sM8TelV2aIPg4ntmldoGU/i3rTly4P7xmSMnTJsJ/tjM0uhLgvdOdhtiXFMdkdxFjfHl599lyX2EF0Wikx/gwcuub+gincrGrQCT5Ppce9D+XT0kbXnIJEtH96eYyeukLl1sqAw2Bi8mK3Tjdd9MbHqINHaAPnDgLDuAplL54VnfAxPmKDiyhLoeMjZ3Kjkfl3V1blB2gcHH5oo/cRaf/4w9rcBuqZ60ZfWC6TXJzvFWCUfhj+BCWVypoPSHwMZw4UGlrST4uOhVDqic6719N2xvkGYY9e/qW8CzpAzhy4UapHk5Pp9lsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vpitech.com; dmarc=pass action=none header.from=vpitech.com;
- dkim=pass header.d=vpitech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=vpitech.onmicrosoft.com; s=selector2-vpitech-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aJx0bn5bjojlOxYp6On5sSFGejd5EZgnUMZmo5Q7nO0=;
- b=Xx4xARsYim5MC6u2rspx1GuA4u8i9N4XBW52RodHfo/lHpa4oAn50sMD8p6m6Z8QvNFuEVpOeAGZkjHsEzJ8ZwFFC6nDAw5UTYDbhkx4v4xh0MwXKStlqZjIm33THbIzt8nBAXOzTITmqq5QF/ZwEZvNs/FU2n9bz2l1Dmnsl50=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=vpitech.com;
-Received: from MW2PR07MB3980.namprd07.prod.outlook.com (2603:10b6:907:a::32)
- by MW4PR07MB8649.namprd07.prod.outlook.com (2603:10b6:303:102::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Wed, 22 Sep
- 2021 18:53:49 +0000
-Received: from MW2PR07MB3980.namprd07.prod.outlook.com
- ([fe80::cc48:9777:4f07:6014]) by MW2PR07MB3980.namprd07.prod.outlook.com
- ([fe80::cc48:9777:4f07:6014%4]) with mapi id 15.20.4544.015; Wed, 22 Sep 2021
- 18:53:49 +0000
-From: Alex Henrie <alexh@vpitech.com>
-To: linux-integrity@vger.kernel.org, ltp@lists.linux.it, zohar@linux.ibm.com,
- pvorel@suse.cz, alexhenrie24@gmail.com
-Date: Wed, 22 Sep 2021 12:52:30 -0600
-Message-Id: <20210922185232.492879-1-alexh@vpitech.com>
-X-Mailer: git-send-email 2.33.0
-X-ClientProxiedBy: MWHPR11CA0003.namprd11.prod.outlook.com
- (2603:10b6:301:1::13) To MW2PR07MB3980.namprd07.prod.outlook.com
- (2603:10b6:907:a::32)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D561E1400991
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 05:00:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632366034;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nt7WQ7c7KrmDQS+ftU72qfPMFpzzS6SlyVgp5JW+/HA=;
+ b=Fj77WgfFjUnsc5JFOWfqcQrrcuHxpBbHX5Ixq2o4qgaID+51vXmxIhgFC472Msm8iw+Yf2
+ pDiMSMoNj/aK0ZzyxSWktHyoDivugt5ybEs5elrEUpTvsv/0AqApFLz0zdQui4fDornZ+u
+ 5NUnqKJ/t2uT1BBpt3j8HugfOZAbw1w=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-cbIPXQl5PZa1bry9eUFO8A-1; Wed, 22 Sep 2021 23:00:30 -0400
+X-MC-Unique: cbIPXQl5PZa1bry9eUFO8A-1
+Received: by mail-qv1-f69.google.com with SMTP id
+ z6-20020a056214060600b0037a3f6bd9abso17178986qvw.3
+ for <ltp@lists.linux.it>; Wed, 22 Sep 2021 20:00:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=nt7WQ7c7KrmDQS+ftU72qfPMFpzzS6SlyVgp5JW+/HA=;
+ b=rCeo4w0R1Vb+sdneMScmP7kovdiwBKWBvKrLNTIM73pK6GY3iC7SM5nsJ+cINjd4Wf
+ qiPVMsKXe/Jyear/a+G86E/iET0bwkq4Bu2HDMvXaT/hSi4Q/GfvtSyh8ScFOjlsdKjl
+ Pn6SDDxjtW3aU4wA4+na1R9wR88EN560Nglwns+j9Mxt6BcV94v0Rrf6g+SLF6IWg/If
+ 5jvi06OYrWA6nKBndwPezCrKuC3emN/l7YkAHvNR7J04e9QKeaDbAJn0aS5vT7d4RaNG
+ ITFS0OMWszI1csFmqXpTxi6o4mfEtFA8Kk4MFAqVWPLIwx/ajk+JeOkmqdIcg0cDYUtv
+ ILZA==
+X-Gm-Message-State: AOAM530OsLQhFdXQBFUIYhDD4gpCDMcr6AjwNJqo6MU9ehBQNa57M8Iv
+ 7Z0Q6U+da6/fGnfz3zxbn95uPbFIjbX3DDoKq9KutbyAAM9El05F09qzc+NXvgR84GVo9xx+/Vg
+ 9z/07jOFmwg55AjDgKR2lvqrTXFc=
+X-Received: by 2002:a25:94e:: with SMTP id u14mr2922585ybm.425.1632366029899; 
+ Wed, 22 Sep 2021 20:00:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxK3ETSTzXxbAzHJA/+TV8V9D3IWqYx6sw4BfUVPYT83/UTu3XBE/gMT1zjF5KK1yB/NhNGMqrXbzTqFCMLIJU=
+X-Received: by 2002:a25:94e:: with SMTP id u14mr2922556ybm.425.1632366029635; 
+ Wed, 22 Sep 2021 20:00:29 -0700 (PDT)
 MIME-Version: 1.0
-Received: from demeter.ad.vpitech.com (66.60.105.30) by
- MWHPR11CA0003.namprd11.prod.outlook.com (2603:10b6:301:1::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15 via Frontend Transport; Wed, 22 Sep 2021 18:53:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 16af8fc4-7199-4144-6ef7-08d97dfa5013
-X-MS-TrafficTypeDiagnostic: MW4PR07MB8649:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW4PR07MB8649231BEAEFF3D9719C608DB8A29@MW4PR07MB8649.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:962;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6KnvqjnvgApau6QENced1+L+6BIjK6U3+tsdSgo9htVBY/wiCEeBDbSPNw+IbkB5cUGcWNZBeXbErefqNs6fw2cQCjCiSnheIUDIGsBKfy3bQbyWcMtrtNQLczi/4aOZANfhON5+mr8jclIptwrlSmnpngw6CfNATlqJurdJeGMx/x4sfY5AsSPRU/GUue5Gmc0v0WYAZ54rnz8S3HaUCf6aF46z6aoZPz4g9/of4VvMd5E/BsuHRsU8HEl6+tl/CNietCbyYZbm6ztOuK5bi7yV58jJuQLyHJcrj2jVoLVZqWovTUkm+n/zjg1EDuMv0Zg6Qe98qw+nrGnmUySB9mJyy2ce4xGAiw6S3xmhmW5xRidExusxIageKFiJE0Q0fWqnwSMp9BGnz629vP589bTDwXRZQ5+JCfzUpr1rplxpv3ORHj3nNkui4oyuKk/6Q6K548+6ZI6BoCrmrShiCl6KcJsHig7mjnwy/XEH2NEARg319XTRQEISi/QZsci1VnKaZp4oKftmflVZhdLwYZc3wrabBrHiqpnw5odB9r+nnVUj5jP4/LZ98+EyItCq1Mk+uUs9c2JQezEve788PCyLdsexlBDNSBL71k32nC5CCEyTQ89fnX53JQmFSKcYekXLiykDwvR4tBC3UXZR9BllxwMua2mZfdzdrq10+5aFzSD1iaglIHKN4N1GDobAefhG7tn3drqKo/C44fs0rw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MW2PR07MB3980.namprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(136003)(346002)(396003)(366004)(39840400004)(376002)(1076003)(186003)(8936002)(38100700002)(86362001)(6486002)(6666004)(2906002)(4326008)(7696005)(107886003)(38350700002)(26005)(316002)(52116002)(8676002)(83380400001)(5660300002)(66476007)(956004)(2616005)(508600001)(66556008)(36756003)(66946007);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YdIYobZXH9YZEm8rjhLMWyae/t+Z6gqM9RQBrz1EYG2SMSrqHz9VC1lQfnIB?=
- =?us-ascii?Q?5dMhkx+fEoGQ8srYnXlkM/LQoFs0JUbiKIVX870Kxv2qGM7s+hoEH/t2Aa/0?=
- =?us-ascii?Q?84VwvR1sBCIdXyesQJ3R3HttcfnTmCDd/5br2VXtnSkjYOuaC3sStDUz1eBt?=
- =?us-ascii?Q?8jhzP0rxytqNFp1fwsJ4xAkPy4aQhHELY9htqDx0kC+wmJ/x7ESkr3e7GMxf?=
- =?us-ascii?Q?C0ylPJ1tf+pe21cC1dbqCpsFpwXDrL31Ixl7S2IXwbFB+Pv7xDW7XZ0NESbl?=
- =?us-ascii?Q?QrNB/fJizpB2pl8khmY6nfZWweiSCo3Jn6zK0oP4gIxhslUIVn2BOubGgboZ?=
- =?us-ascii?Q?8IUGav5miStq1JeN+Q1jVlc+vrzV7fhqmRKkKaLOzTYvQVXad4L1BbCJIgrJ?=
- =?us-ascii?Q?TwYmiTvS7F5a+2QEM2crWYjUxyPtDIfa17xr28fjV5yhm7s536HCvjfulgQ0?=
- =?us-ascii?Q?IkbU4RmWf0ochntgzmxc6+OWq0hDpQFp2Wu73P4E/AwpYTMVZs/jnJtpC78M?=
- =?us-ascii?Q?um3HKK255CTCO/vzksYCs6rOa2iA+YOLlxg81Jynbc8RBzaFkZHWoGTusfTj?=
- =?us-ascii?Q?W2t1F/APr6GY4tSnYpDKYezQg3mMC1e+vScCoEHbOUoguHhdS0nEoVXj69my?=
- =?us-ascii?Q?y91pbgDUIyGyNl2gQeXJ0YLK3LCQ6+MP1FlpGouIrs65mx4Uey7od6JWWD5o?=
- =?us-ascii?Q?5HxfMzITcKy7TwvDBLRmkXVaGbHzkXqPYkU2kiIr6O/xjAlHEv9T103KsJYg?=
- =?us-ascii?Q?rJaEVUpMDP3VmtWLVvi6iz7vudqr3cAht4HXWDR3sdOaIB+HES1MD6AtRSXn?=
- =?us-ascii?Q?vMUTVgMcxJFmPiUUi0wsLt3WORtWzGDIpvqvKgv1G/r5y1o8sM+/B5p+GJId?=
- =?us-ascii?Q?DhK4y5PA+C2MIT7ri3Nw1Wp0joY1q2GBbdAwYHaMpSHxQivjsLHoj3MzOXw/?=
- =?us-ascii?Q?q/JZZT2dMBkLr1aNN+dRzxYbDAGLtdIDon4VxnLJIB66UR5Ab7SuAFZZtdBX?=
- =?us-ascii?Q?CzWHE+DzN6SVXoO4LHX6uLvxmSYwfkVMhXYNJLOE2ju/dRdoil8A9qx9u/7c?=
- =?us-ascii?Q?57qmfLJe7b58dqn8K4K1kHA+N7Y6GbxGCGxFAHR/reKarAjf8W56qyG9dC00?=
- =?us-ascii?Q?ofPk2I/Ta0usXFURHq7Eiv/NnQksZC9vaHw0icDBMt5fl3wNG5ES7kqsN5Gg?=
- =?us-ascii?Q?SKs+iYc/FllzOBFLEML/ZBNh5nx4UW8AmF8MEc9Z6uLXKDWqrtBFyPwrmGNC?=
- =?us-ascii?Q?SzisOYkhOig9PzEosRnxC0RDoODiGlsfhcW85obeuxSbARpbRTIMOtMzuV4p?=
- =?us-ascii?Q?IR19q1+mPf4PAnNbjlrDTXX5?=
-X-OriginatorOrg: vpitech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16af8fc4-7199-4144-6ef7-08d97dfa5013
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR07MB3980.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 18:53:49.0051 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 130d6264-38b7-4474-a9bf-511ff1224fac
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 59q2Seoz3NaPNstytB+rdLl45RksKwbWG9MwAY0iyQuDGKpiwEYjHmat+la9cecLU1ZXl+2U49N+Wfck+fwqHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR07MB8649
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <20210817104625.2559362-1-liwang@redhat.com>
+ <20210921203349.GA2014441@maple.netwinder.org>
+ <CAEemH2dMCmYDkZYxfaeJ_oQCCcHzeMgSOGVQ_wS6BwCrp0YiQw@mail.gmail.com>
+ <YUrnljqYd5Hx/fi+@yuki>
+ <CAEemH2dDRT-iQPH0a-Aip8OZDUpp2Z3_x4dgVBEg4tv_pyWvfw@mail.gmail.com>
+ <YUr9676LXNi0xMs6@yuki>
+ <CAEemH2c37Qx6uEG40utX8pGC2Gp0ZLtT_z194L4RVNm6N2CefQ@mail.gmail.com>
+ <YUs+jf35Zqp8GjJl@yuki> <20210922165218.GA3081072@maple.netwinder.org>
+In-Reply-To: <20210922165218.GA3081072@maple.netwinder.org>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 23 Sep 2021 11:00:17 +0800
+Message-ID: <CAEemH2cj3AJU01aUrodUh6WnSioyWmzC4U53gEumM9p7hnxmfw@mail.gmail.com>
+To: Ralph Siemsen <ralph.siemsen@linaro.org>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH ltp v7 1/3] IMA: Move check_policy_writable() to
- ima_setup.sh and rename it
+Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
+ defallocate size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -136,87 +100,272 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0983021507=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Alex Henrie <alexh@vpitech.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .../security/integrity/ima/tests/ima_policy.sh   | 16 +++-------------
- .../security/integrity/ima/tests/ima_setup.sh    | 10 ++++++++++
- 2 files changed, 13 insertions(+), 13 deletions(-)
+--===============0983021507==
+Content-Type: multipart/alternative; boundary="000000000000571af505cca0d5b0"
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-index 244cf081d..8924549df 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-@@ -11,19 +11,9 @@ TST_CNT=2
- 
- . ima_setup.sh
- 
--check_policy_writable()
--{
--	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
--
--	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
--	# CONFIG_IMA_READ_POLICY
--	echo "" 2> log > $IMA_POLICY
--	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
--}
--
- setup()
- {
--	check_policy_writable
-+	require_policy_writable
- 
- 	VALID_POLICY="$TST_DATAROOT/measure.policy"
- 	[ -f $VALID_POLICY ] || tst_brk TCONF "missing $VALID_POLICY"
-@@ -55,7 +45,7 @@ test1()
- 
- 	local p1
- 
--	check_policy_writable
-+	require_policy_writable
- 	load_policy $INVALID_POLICY & p1=$!
- 	wait "$p1"
- 	if [ $? -ne 0 ]; then
-@@ -71,7 +61,7 @@ test2()
- 
- 	local p1 p2 rc1 rc2
- 
--	check_policy_writable
-+	require_policy_writable
- 	load_policy $VALID_POLICY & p1=$!
- 	load_policy $VALID_POLICY & p2=$!
- 	wait "$p1"; rc1=$?
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 565f0bc3e..9c25d634d 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -73,6 +73,16 @@ require_policy_readable()
- 	fi
- }
- 
-+require_policy_writable()
-+{
-+	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
-+
-+	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
-+	# CONFIG_IMA_READ_POLICY
-+	echo "" 2> log > $IMA_POLICY
-+	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
-+}
-+
- check_ima_policy_content()
- {
- 	local pattern="$1"
+--000000000000571af505cca0d5b0
+Content-Type: text/plain; charset="UTF-8"
+
+On Thu, Sep 23, 2021 at 12:52 AM Ralph Siemsen <ralph.siemsen@linaro.org>
+wrote:
+
+> Hello,
+>
+> On Wed, Sep 22, 2021 at 04:32:45PM +0200, Cyril Hrubis wrote:
+> >>
+> >> That try one by one block after filling full of the FS because nobody
+> knows
+> >> when fails.
+> >>
+> >> But as you suggested we can do that as well for the previous allocation
+> :).
+> >>
+> >> So, will you create a patch, or I do that tomorrow?
+> >
+> >I will not manage today. So either you do it or I can do it tomorrow
+> >:-).
+>
+> I tried making a patch for this, which I can share. But after testing, I
+> am still seeing OOM. Upon further inspection, it seems to be coming from
+> tst_fill_fs() function, when operating on a tmpfs.  I see the message:
+>
+> tst_test.c:903: TINFO: Limiting tmpfs size to 512MB
+>
+> However the machine only has 256MB total, of which at best 200 MB is
+> available after kernel has booted.
+>
+> I'm now a bit confused as to why fallocate05 test worked previously.
+> With release 20210524 version, I see the following:
+>
+
+Ah, I see, that because we set the tmpfs size from the commit below,
+so you got 512MB tmpfs mount which is the root cause of OOM.
+
+commit c305a53c561d8517340daa27790a3624f2491b72
+Author: Li Wang <liwang@redhat.com>
+Date:   Fri Jul 9 15:52:03 2021 +0800
+
+    lib: limit the size of tmpfs in LTP
+
+    LTP mount and make use of the whole tmpfs of the test system,
+    generally, it's fine. But if a test (e.g fallocate06) try to
+    fill full in the filesystem, it takes too long to complete
+    testing on a large memory system.
+
+    This patch adds a new function limit_tmpfs_mount_size with
+    appending '-o size=xxM' to the mount options in prepare_device()
+    which helps limit the tmpfs mount size.
+A simple way to verify my assumption, you can try:
+
+--- a/testcases/kernel/syscalls/fallocate/fallocate05.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
+@@ -147,7 +147,7 @@ static void cleanup(void)
+ static struct tst_test test = {
+        .needs_root = 1,
+        .mount_device = 1,
+-       .dev_min_size = 512,
++       .dev_min_size = 64,
+        .mntpoint = MNTPOINT,
+        .all_filesystems = 1,
+        .setup = setup,
+
+
+>
+> tst_test.c:1379: TINFO: Testing on tmpfs
+> tst_test.c:888: TINFO: Skipping mkfs for TMPFS filesystem
+> tst_test.c:1311: TINFO: Timeout per run is 0h 15m 00s
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
+> tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
+> fallocate05.c:81: TPASS: write() wrote 65536 bytes
+> fallocate05.c:102: TINFO: fallocate()d 0 extra blocks on full FS
+> fallocate05.c:114: TPASS: fallocate() on full FS
+> fallocate05.c:130: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE |
+> FALLOC_FL_KEEP_SIZE)
+> fallocate05.c:136: TPASS: write()
+>
+> Whereas with the latest git version, it seems to create two more
+> additional files, before OOM kicks in:
+>
+
+Before the above commit, LTP took the whole tmpfs of SUT,
+so the test size depends on the real system situation.
+
+We  do the improvement because we don't want to use larger
+tmpfs size on a Huge RAM machine. But seems we neglect small
+systems :).
+
+
+
+>
+> tst_test.c:1421: TINFO: Testing on tmpfs
+> tst_test.c:922: TINFO: Skipping mkfs for TMPFS filesystem
+> tst_test.c:903: TINFO: Limiting tmpfs size to 512MB
+> tst_test.c:1353: TINFO: Timeout per run is 0h 15m 00s
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935
+> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786
+> <... OOM begins here ...>
+>
+> Any thoughts on what might be happening?
+>
+> Regards,
+> Ralph
+>
+>
+
 -- 
-2.33.0
+Regards,
+Li Wang
+
+--000000000000571af505cca0d5b0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Thu, Sep 23, 2021 at 12:52 AM Ralph Siemsen &lt;=
+<a href=3D"mailto:ralph.siemsen@linaro.org">ralph.siemsen@linaro.org</a>&gt=
+; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello,<=
+br>
+<br>
+On Wed, Sep 22, 2021 at 04:32:45PM +0200, Cyril Hrubis wrote:<br>
+&gt;&gt;<br>
+&gt;&gt; That try one by one block after filling full of the FS because nob=
+ody knows<br>
+&gt;&gt; when fails.<br>
+&gt;&gt;<br>
+&gt;&gt; But as you suggested we can do that as well for the previous alloc=
+ation :).<br>
+&gt;&gt;<br>
+&gt;&gt; So, will you create a patch, or I do that tomorrow?<br>
+&gt;<br>
+&gt;I will not manage today. So either you do it or I can do it tomorrow<br=
+>
+&gt;:-).<br>
+<br>
+I tried making a patch for this, which I can share. But after testing, I <b=
+r>
+am still seeing OOM. Upon further inspection, it seems to be coming from <b=
+r>
+tst_fill_fs() function, when operating on a tmpfs.=C2=A0 I see the message:=
+<br>
+<br>
+tst_test.c:903: TINFO: Limiting tmpfs size to 512MB<br>
+<br>
+However the machine only has 256MB total, of which at best 200 MB is <br>
+available after kernel has booted.<br>
+<br>
+I&#39;m now a bit confused as to why fallocate05 test worked previously. <b=
+r>
+With release 20210524 version, I see the following:<br></blockquote><div><b=
+r></div><div><div class=3D"gmail_default" style=3D"font-size:small">Ah, I s=
+ee, that because=C2=A0we set the tmpfs size from the commit below,</div><di=
+v class=3D"gmail_default" style=3D"font-size:small">so you got 512MB tmpfs =
+mount which is the root cause of OOM.</div><div class=3D"gmail_default" sty=
+le=3D"font-size:small"><br></div>commit c305a53c561d8517340daa27790a3624f24=
+91b72<br>Author: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">liwang@re=
+dhat.com</a>&gt;<br>Date: =C2=A0 Fri Jul 9 15:52:03 2021 +0800<br><br>=C2=
+=A0 =C2=A0 lib: limit the size of tmpfs in LTP<br>=C2=A0 =C2=A0 <br>=C2=A0 =
+=C2=A0 LTP mount and make use of the whole tmpfs of the test system,<br>=C2=
+=A0 =C2=A0 generally, it&#39;s fine. But if a test (e.g fallocate06) try to=
+<br>=C2=A0 =C2=A0 fill full in the filesystem, it takes too long to complet=
+e<br>=C2=A0 =C2=A0 testing on a large memory system.<br>=C2=A0 =C2=A0 <br>=
+=C2=A0 =C2=A0 This patch adds a new function limit_tmpfs_mount_size with<br=
+>=C2=A0 =C2=A0 appending &#39;-o size=3DxxM&#39; to the mount options in pr=
+epare_device()<br>=C2=A0 =C2=A0 which helps limit the tmpfs mount size.<br>=
+<div class=3D"gmail_default" style=3D"font-size:small"></div><div class=3D"=
+gmail_default" style=3D"font-size:small">A simple way to verify my assumpti=
+on, you can try:</div><div class=3D"gmail_default" style=3D"font-size:small=
+"><br></div>--- a/testcases/kernel/syscalls/fallocate/fallocate05.c<br>+++ =
+b/testcases/kernel/syscalls/fallocate/fallocate05.c<br>@@ -147,7 +147,7 @@ =
+static void cleanup(void)<br>=C2=A0static struct tst_test test =3D {<br>=C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 .needs_root =3D 1,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+.mount_device =3D 1,<br>- =C2=A0 =C2=A0 =C2=A0 .dev_min_size =3D 512,<br>+ =
+=C2=A0 =C2=A0 =C2=A0 .dev_min_size =3D 64,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .=
+mntpoint =3D MNTPOINT,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .all_filesystems =3D =
+1,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .setup =3D setup,<br><div class=3D"gmail_=
+default" style=3D"font-size:small"></div></div><div>=C2=A0</div><blockquote=
+ class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px so=
+lid rgb(204,204,204);padding-left:1ex">
+<br>
+tst_test.c:1379: TINFO: Testing on tmpfs<br>
+tst_test.c:888: TINFO: Skipping mkfs for TMPFS filesystem<br>
+tst_test.c:1311: TINFO: Timeout per run is 0h 15m 00s<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993<br>
+tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)<br>
+fallocate05.c:81: TPASS: write() wrote 65536 bytes<br>
+fallocate05.c:102: TINFO: fallocate()d 0 extra blocks on full FS<br>
+fallocate05.c:114: TPASS: fallocate() on full FS<br>
+fallocate05.c:130: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_S=
+IZE)<br>
+fallocate05.c:136: TPASS: write()<br>
+<br>
+Whereas with the latest git version, it seems to create two more <br>
+additional files, before OOM kicks in:<br></blockquote><div><br></div><div>=
+<div class=3D"gmail_default" style=3D"font-size:small">Before the above com=
+mit, LTP took the whole tmpfs of SUT,</div><div class=3D"gmail_default" sty=
+le=3D"font-size:small">so the test size depends on the real=C2=A0system sit=
+uation.=C2=A0</div><div class=3D"gmail_default" style=3D"font-size:small"><=
+br></div><div class=3D"gmail_default" style=3D"font-size:small">We=C2=A0 do=
+ the improvement because=C2=A0we don&#39;t want to use=C2=A0larger</div><di=
+v class=3D"gmail_default" style=3D"font-size:small">tmpfs size on a Huge RA=
+M machine. But seems we neglect=C2=A0small</div><div class=3D"gmail_default=
+" style=3D"font-size:small">systems :).</div><br></div><div>=C2=A0</div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+tst_test.c:1421: TINFO: Testing on tmpfs<br>
+tst_test.c:922: TINFO: Skipping mkfs for TMPFS filesystem<br>
+tst_test.c:903: TINFO: Limiting tmpfs size to 512MB<br>
+tst_test.c:1353: TINFO: Timeout per run is 0h 15m 00s<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935<br>
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786<br>
+&lt;... OOM begins here ...&gt;<br>
+<br>
+Any thoughts on what might be happening?<br>
+<br>
+Regards,<br>
+Ralph<br>
+<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
+Wang<br></div></div></div></div>
+
+--000000000000571af505cca0d5b0--
+
+
+--===============0983021507==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0983021507==--
+
