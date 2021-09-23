@@ -2,65 +2,88 @@ Return-Path: <SRS0=3vE2=ON=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-	HEADER_FROM_DIFFERENT_DOMAINS,INVALID_MSGID,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE6CC433F5
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:57:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB65BC433EF
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:05:08 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3ED3060FE8
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:57:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3ED3060FE8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 73F7B6127A
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 09:05:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 73F7B6127A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 99DBD3C8F70
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 10:57:12 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E74483C8F64
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 11:05:06 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B440C3C1C6E
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:57:02 +0200 (CEST)
-Received: from smtpbg506.qq.com (smtpbg506.qq.com [203.205.250.33])
+ by picard.linux.it (Postfix) with ESMTPS id 772263C79CA
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 11:04:56 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 726BD10007C5
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:56:59 +0200 (CEST)
-X-QQ-mid: bizesmtp33t1632387414t5jeki0e
-Received: from [10.4.23.19] (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Thu, 23 Sep 2021 16:56:53 +0800 (CST)
-X-QQ-SSF: 0140000000000040C000000B0000000
-X-QQ-FEAT: 3uawQE1sH+0vYNmszzwFMgxxns3ZIEhJ1upY2qRw+JY6iPzSbx7A+jscNppQ5
- B+skq9N8GYe6B+k8T8uWedr2VecQYh8cKu6lQ57gs/k6ACytKJjNAFZGWACVORkKjFBAzCz
- VF1atJjI5UwQJhHOF3P1zGHOFEmoDECA21Y4NdgMHBUyt/mU/tTTpl11TqiTYRvJ3yCUKFL
- iUQrAxuzZnPdPKxgZnGaj17KJnZWJ0f6Y5uZWV0viPK5qH7yCVWbiDAO05pg++9iGbucHox
- 2Ze+6vyhrgKje439VEwldMm+ZLZaCHb1X+J7iEazrzP93EWJsybCRBvcblifrV9mznvJD7I
- hnmCr5PKvXR181IGk5cWwZV4xjsUw==
-X-QQ-GoodBg: 2
-To: Petr Vorel <pvorel@suse.cz>
-References: <20210902010814.32448-1-zhanglianjie@uniontech.com>
- <YTBo6ZS2GKWb8edF@pevik>
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Message-ID: <c0a5fa20-dd40-161c-352f-407b8a2d6b08@uniontech.com>+216A607F335762E5
-Date: Thu, 23 Sep 2021 16:56:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F33D2200DF4
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 11:04:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632387894;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=eLYCKeHk1y9YOPpowRQkCuAN2eJ+aGlMXb5oxarNgpY=;
+ b=DkaEEeVqbBl92h/VICtQMcWzSbROhIV92wtMQsdnHDJZqGFYZk0ppdpTuziwaHakbkPxLx
+ t1gTTzPcVemrkbkRKI6VoH24+O2w8HknxmZPLSmKW71VDWbvsRuI3PDFt10Lp0i2DEyTMu
+ lfq6tAEe6LOeHSvNhmus+LoWvAyX5vo=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-eDjuIHQmPnOXDJxi8FlQ6g-1; Thu, 23 Sep 2021 05:04:53 -0400
+X-MC-Unique: eDjuIHQmPnOXDJxi8FlQ6g-1
+Received: by mail-qt1-f197.google.com with SMTP id
+ z16-20020ac86b90000000b0029eec160182so16372631qts.9
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 02:04:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=eLYCKeHk1y9YOPpowRQkCuAN2eJ+aGlMXb5oxarNgpY=;
+ b=tJtukbfZ8453/I7j4nYV+y7NlaO8+s3O5qIiZj14UaZzTFAR4KZoXuFUbU/Rwrjuut
+ 98ljiI7Ejo1ulZAr362Kdxgzdf2f5mVKF2Oe0tD8xE0PRK1iN3juqDsuRhbaFWJt1ArY
+ mPS+KfqjfUK+dBLYAZHnaZKsdZ1JJ2yl9PXZmKCABImBg5OhdFc0yFN+dOtcGuzsGfi0
+ ckcT4yL3yXjLKOOzVOmlMAhVHostrjEsm/xzeSoslBf5Bvg7uzbVPSoMMjP7l1XEGKhW
+ pXjtwv2lZakyYkD03z5fOdATbWZ5gAB+wsyXLOZN621YbrTQytGNeyGwrS/WNUHTOKbC
+ Vfxg==
+X-Gm-Message-State: AOAM5323Y7m+Lxgy7gx4LD7HptxGdDH8g8noqzvxIk1J7jApbRM4k9Yk
+ uFlqJ/nUHcow8ocNdFT76SYMnm7ULLBr66S+9RC4lbvbQto1T2uHqj2GeVD+vbJY+xs8snhZASW
+ pceaoJzIoXs8WfE/lpxmVVbadaQs=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr4481551yba.316.1632387892665; 
+ Thu, 23 Sep 2021 02:04:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1S8uci5olnfjRC4I9gZcnNzF/qYWdnarnzFs4BTy34e6FBygsSs8F4vPWbq+YzzlvADUvdivLWXMfa1vqbe8=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr4481513yba.316.1632387892346; 
+ Thu, 23 Sep 2021 02:04:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTBo6ZS2GKWb8edF@pevik>
-Content-Language: en-US
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <8b4c1fad2914aee00c8a160d1f9e482574b8e5ae.1632242721.git.jstancek@redhat.com>
+ <3190c9a0b45411eb9d6024267c264825c9faa32e.1632386756.git.jstancek@redhat.com>
+In-Reply-To: <3190c9a0b45411eb9d6024267c264825c9faa32e.1632386756.git.jstancek@redhat.com>
+From: Li Wang <liwan@redhat.com>
+Date: Thu, 23 Sep 2021 17:04:40 +0800
+Message-ID: <CAEemH2dPXLDYGktVcuszqhBFk7UENd908vTSj4Vo=L3LqjZAYA@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/7] syscalls/clone01: Convert to new API
+Subject: Re: [LTP] [PATCH v2] hugeshmat04: try to find unmapped range for
+ test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,78 +95,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0554896407=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-Please ignore other patches about clone testcases and just focus on 
-v3.thanks.
+--===============0554896407==
+Content-Type: multipart/alternative; boundary="0000000000007598b205cca5ec78"
 
+--0000000000007598b205cca5ec78
+Content-Type: text/plain; charset="UTF-8"
 
-On 2021-09-02 14:02, Petr Vorel wrote:
-> Hi zhanglianjie,
-> 
-> ...
->> +static void verify_clone(void)
->>   {
->> -	void *child_stack;
->>   	int status, child_pid;
-> 
->> -	tst_parse_opts(ac, av, NULL, NULL);
->> -
->> -	setup();
->> +	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, do_child, NULL,
-> Shouldn't be TST_EXP_PID_SILENT()
-> Because TST_EXP_POSITIVE() prints extra TPASS which is useless:
-> 
-> clone01.c:31: TPASS: clone() returned 11556
-> clone01.c:37: TPASS: clone returned 11556
-> clone01.c:43: TPASS: Child exited with 0
-> 
-> but with TST_EXP_PID_SILENT():
-> clone01.c:37: TPASS: clone returned 11986
-> clone01.c:43: TPASS: Child exited with 0
-> 
-> and on deliberate error (using -1 as flag):
-> clone01.c:31: TFAIL: clone() failed: EINVAL (22)
-> clone01.c:34: TBROK: wait(0x7ffed515f3ec) failed: ECHILD (10)
-> 
->> +		CHILD_STACK_SIZE, child_stack), "clone()");
-> 
->> -	child_stack = malloc(CHILD_STACK_SIZE);
->> -	if (child_stack == NULL)
->> -		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
->> +	child_pid = SAFE_WAIT(&status);
-> 
->> -	tst_count = 0;
->> -
->> -	TEST(ltp_clone(SIGCHLD, do_child, NULL, CHILD_STACK_SIZE, child_stack));
->> -	if (TEST_RETURN == -1)
->> -		tst_resm(TFAIL | TTERRNO, "clone failed");
->> -
->> -	child_pid = SAFE_WAIT(cleanup, &status);
->> -
->> -	if (TEST_RETURN == child_pid)
->> -		tst_resm(TPASS, "clone returned %ld", TEST_RETURN);
->> +	if (TST_RET == child_pid)
-> 	if (child_pid ==  TST_RET)
-> 
-> => run `make check-clone01' to see this error (and run make check-* for other
-> tests).
-> 
-> 
-> Kind regards,
-> Petr
-> 
+On Thu, Sep 23, 2021 at 4:50 PM Jan Stancek <jstancek@redhat.com> wrote:
+
+> The test intermittently fails on ppc64le, when heap
+> happens to overlap with segment that the test is trying
+> to attach at 1GB boundary.
+>
+> Try to find unmapped range. In my testing, address above 1GB appears
+> to be needed for reproducer to work. Also add kernel commit that fixed
+> it to metadata.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>
+
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 -- 
 Regards,
-Zhang Lianjie
+Li Wang
 
+--0000000000007598b205cca5ec78
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Thu, Sep 23, 2021 at 4:50 PM Jan Stancek &lt;<a =
+href=3D"mailto:jstancek@redhat.com">jstancek@redhat.com</a>&gt; wrote:<br><=
+/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
+rder-left:1px solid rgb(204,204,204);padding-left:1ex">The test intermitten=
+tly fails on ppc64le, when heap<br>
+happens to overlap with segment that the test is trying<br>
+to attach at 1GB boundary.<br>
+<br>
+Try to find unmapped range. In my testing, address above 1GB appears<br>
+to be needed for reproducer to work. Also add kernel commit that fixed<br>
+it to metadata.<br>
+<br>
+Signed-off-by: Jan Stancek &lt;<a href=3D"mailto:jstancek@redhat.com" targe=
+t=3D"_blank">jstancek@redhat.com</a>&gt;<br></blockquote><div><br></div><di=
+v class=3D"gmail_default" style=3D"font-size:small">Reviewed-by: Li Wang &l=
+t;<a href=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt;</div></div=
+><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=
+=3D"ltr"><div><div dir=3D"ltr">Regards,<br>Li Wang<br></div></div></div></d=
+iv></div>
+
+--0000000000007598b205cca5ec78--
+
+
+--===============0554896407==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0554896407==--
+
