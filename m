@@ -2,61 +2,65 @@ Return-Path: <SRS0=3vE2=ON=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+	HEADER_FROM_DIFFERENT_DOMAINS,INVALID_MSGID,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F986C433F5
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE6CC433F5
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:57:14 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1EEC61269
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E1EEC61269
+	by mail.kernel.org (Postfix) with ESMTPS id 3ED3060FE8
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 08:57:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3ED3060FE8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DD8B3C8FA5
-	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 10:53:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 99DBD3C8F70
+	for <ltp@archiver.kernel.org>; Thu, 23 Sep 2021 10:57:12 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D84D3C8F64
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:53:18 +0200 (CEST)
-Received: from smtpbg516.qq.com (smtpbg516.qq.com [203.205.250.54])
+ by picard.linux.it (Postfix) with ESMTPS id B440C3C1C6E
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:57:02 +0200 (CEST)
+Received: from smtpbg506.qq.com (smtpbg506.qq.com [203.205.250.33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 51F051001295
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:53:15 +0200 (CEST)
-X-QQ-mid: bizesmtp51t1632387191t8h0mgb3
-Received: from localhost.localdomain (unknown [58.240.82.166])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 726BD10007C5
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 10:56:59 +0200 (CEST)
+X-QQ-mid: bizesmtp33t1632387414t5jeki0e
+Received: from [10.4.23.19] (unknown [58.240.82.166])
  by esmtp6.qq.com (ESMTP) with 
- id ; Thu, 23 Sep 2021 16:53:07 +0800 (CST)
-X-QQ-SSF: 0140000000000040C000B00B0000000
-X-QQ-FEAT: SCIwIIlHPKlIoWDZuATvthFXW/WQRh5j0d8lG9WG3FEmtjfNA1tsbivs5XflI
- IdwEQAIvpUdzGknLUT5wF+iw0e2/13b6BzxQaG74EVna/AN9HjzL3m51M8bwt12RyW0cMK9
- Bz0ynvXp6K7dSdf0uKdeuUsczwvFHowsGU22uzC6vyERxsekvB5LDLYqdg8BhF9sJ+rvk11
- rzhXfjRe+7xHVnQRn6MjQYdKb13sHi7kno3nZraeIi2hkQjLINYidTHMrA1zoYabG9uFE0B
- LOyiDLUs0yspDQGymOiuJMDI0KU4DBUPHuAQeMQal6YXRBBis3raxNKn8zLvvtPvGDtid8i
- aSb4Nm1Qe+pMPS4frgUTCl9Llqdng==
+ id ; Thu, 23 Sep 2021 16:56:53 +0800 (CST)
+X-QQ-SSF: 0140000000000040C000000B0000000
+X-QQ-FEAT: 3uawQE1sH+0vYNmszzwFMgxxns3ZIEhJ1upY2qRw+JY6iPzSbx7A+jscNppQ5
+ B+skq9N8GYe6B+k8T8uWedr2VecQYh8cKu6lQ57gs/k6ACytKJjNAFZGWACVORkKjFBAzCz
+ VF1atJjI5UwQJhHOF3P1zGHOFEmoDECA21Y4NdgMHBUyt/mU/tTTpl11TqiTYRvJ3yCUKFL
+ iUQrAxuzZnPdPKxgZnGaj17KJnZWJ0f6Y5uZWV0viPK5qH7yCVWbiDAO05pg++9iGbucHox
+ 2Ze+6vyhrgKje439VEwldMm+ZLZaCHb1X+J7iEazrzP93EWJsybCRBvcblifrV9mznvJD7I
+ hnmCr5PKvXR181IGk5cWwZV4xjsUw==
 X-QQ-GoodBg: 2
+To: Petr Vorel <pvorel@suse.cz>
+References: <20210902010814.32448-1-zhanglianjie@uniontech.com>
+ <YTBo6ZS2GKWb8edF@pevik>
 From: zhanglianjie <zhanglianjie@uniontech.com>
-To: ltp@lists.linux.it
-Date: Thu, 23 Sep 2021 16:52:24 +0800
-Message-Id: <20210923085224.868-5-zhanglianjie@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210923085224.868-1-zhanglianjie@uniontech.com>
-References: <20210923085224.868-1-zhanglianjie@uniontech.com>
+Message-ID: <c0a5fa20-dd40-161c-352f-407b8a2d6b08@uniontech.com>+216A607F335762E5
+Date: Thu, 23 Sep 2021 16:56:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <YTBo6ZS2GKWb8edF@pevik>
+Content-Language: en-US
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
 X-QQ-Bgrelay: 1
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 5/5] syscalls/clone07: Convert to new API
+Subject: Re: [LTP] [PATCH v2 1/7] syscalls/clone01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,196 +72,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Hi,
+Please ignore other patches about clone testcases and just focus on 
+v3.thanks.
 
-diff --git a/testcases/kernel/syscalls/clone/clone07.c b/testcases/kernel/syscalls/clone/clone07.c
-index 4b2e04ee7..304810c40 100644
---- a/testcases/kernel/syscalls/clone/clone07.c
-+++ b/testcases/kernel/syscalls/clone/clone07.c
-@@ -1,86 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) International Business Machines  Corp., 2003.
-  * Copyright (c) 2012 Wanlong Gao <gaowanlong@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- */
--/*
-- *	This is a test for a glibc bug for the clone(2) system call.
-  */
 
--#if defined UCLINUX && !__THROW
--/* workaround for libc bug */
--#define __THROW
--#endif
-+/*\
-+ * [Description]
-+ * This is a test for a glibc bug for the clone(2) system call.
-+ */
+On 2021-09-02 14:02, Petr Vorel wrote:
+> Hi zhanglianjie,
+> 
+> ...
+>> +static void verify_clone(void)
+>>   {
+>> -	void *child_stack;
+>>   	int status, child_pid;
+> 
+>> -	tst_parse_opts(ac, av, NULL, NULL);
+>> -
+>> -	setup();
+>> +	TST_EXP_POSITIVE(ltp_clone(SIGCHLD, do_child, NULL,
+> Shouldn't be TST_EXP_PID_SILENT()
+> Because TST_EXP_POSITIVE() prints extra TPASS which is useless:
+> 
+> clone01.c:31: TPASS: clone() returned 11556
+> clone01.c:37: TPASS: clone returned 11556
+> clone01.c:43: TPASS: Child exited with 0
+> 
+> but with TST_EXP_PID_SILENT():
+> clone01.c:37: TPASS: clone returned 11986
+> clone01.c:43: TPASS: Child exited with 0
+> 
+> and on deliberate error (using -1 as flag):
+> clone01.c:31: TFAIL: clone() failed: EINVAL (22)
+> clone01.c:34: TBROK: wait(0x7ffed515f3ec) failed: ECHILD (10)
+> 
+>> +		CHILD_STACK_SIZE, child_stack), "clone()");
+> 
+>> -	child_stack = malloc(CHILD_STACK_SIZE);
+>> -	if (child_stack == NULL)
+>> -		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
+>> +	child_pid = SAFE_WAIT(&status);
+> 
+>> -	tst_count = 0;
+>> -
+>> -	TEST(ltp_clone(SIGCHLD, do_child, NULL, CHILD_STACK_SIZE, child_stack));
+>> -	if (TEST_RETURN == -1)
+>> -		tst_resm(TFAIL | TTERRNO, "clone failed");
+>> -
+>> -	child_pid = SAFE_WAIT(cleanup, &status);
+>> -
+>> -	if (TEST_RETURN == child_pid)
+>> -		tst_resm(TPASS, "clone returned %ld", TEST_RETURN);
+>> +	if (TST_RET == child_pid)
+> 	if (child_pid ==  TST_RET)
+> 
+> => run `make check-clone01' to see this error (and run make check-* for other
+> tests).
+> 
+> 
+> Kind regards,
+> Petr
+> 
 
--#include <errno.h>
- #include <sched.h>
--#include <sys/wait.h>
--#include "test.h"
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
- #include "clone_platform.h"
-
--#define TRUE 1
--#define FALSE 0
--
--static void setup();
--static int do_child();
--
--char *TCID = "clone07";
--int TST_TOTAL = 1;
--
--static void sigsegv_handler(int);
--static void sigusr2_handler(int);
- static int child_pid;
--static int fail = FALSE;
-+static int fail;
-+static void *child_stack;
-
--int main(int ac, char **av)
-+static int do_child(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-+	return 0;
-+}
-
--	int lc, status;
--	void *child_stack;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
-+static void sigsegv_handler(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	if (child_pid == 0) {
-+		kill(getppid(), SIGUSR2);
-+		_exit(42);
-+	}
-+}
-
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		child_stack = malloc(CHILD_STACK_SIZE);
--		if (child_stack == NULL)
--			tst_brkm(TBROK, NULL,
--				 "Cannot allocate stack for child");
-+static void sigusr2_handler(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	if (child_pid != 0)
-+		fail = 1;
-+}
-
--		child_pid = ltp_clone(SIGCHLD, do_child, NULL,
--				      CHILD_STACK_SIZE, child_stack);
-+static void verify_clone(void)
-+{
-+	TST_EXP_PID_SILENT(ltp_clone(SIGCHLD, do_child, NULL, CHILD_STACK_SIZE,
-+				child_stack));
-
--		if (child_pid < 0)
--			tst_brkm(TBROK | TERRNO, NULL, "clone failed");
-+	child_pid = TST_RET;
-
--		if ((wait(&status)) == -1)
--			tst_brkm(TBROK | TERRNO, NULL,
--				 "wait failed, status: %d", status);
-+	if (!TST_PASS)
-+		return;
-
--		free(child_stack);
--	}
-+	tst_reap_children();
-
--	if (fail == FALSE)
--		tst_resm(TPASS,
--			 "Use of return() in child did not cause SIGSEGV");
--	else
--		tst_resm(TFAIL, "Use of return() in child caused SIGSEGV");
-+	TST_EXP_VAL(fail, 0, "Use of return() in child did not cause SIGSEGV");
-
--	tst_exit();
- }
-
- static void setup(void)
-@@ -88,41 +60,26 @@ static void setup(void)
- 	struct sigaction def_act;
- 	struct sigaction act;
-
--	TEST_PAUSE;
--
- 	act.sa_handler = sigsegv_handler;
- 	act.sa_flags = SA_RESTART;
--	sigemptyset(&act.sa_mask);
--	if ((sigaction(SIGSEGV, &act, NULL)) == -1)
--		tst_resm(TWARN | TERRNO,
--			 "sigaction() for SIGSEGV failed in test_setup()");
-+	SAFE_SIGEMPTYSET(&act.sa_mask);
-+	SAFE_SIGACTION(SIGSEGV, &act, NULL);
-
--	/* Setup signal handler for SIGUSR2 */
- 	def_act.sa_handler = sigusr2_handler;
- 	def_act.sa_flags = SA_RESTART | SA_RESETHAND;
--	sigemptyset(&def_act.sa_mask);
--
--	if ((sigaction(SIGUSR2, &def_act, NULL)) == -1)
--		tst_resm(TWARN | TERRNO,
--			 "sigaction() for SIGUSR2 failed in test_setup()");
--}
-+	SAFE_SIGEMPTYSET(&def_act.sa_mask);
-+	SAFE_SIGACTION(SIGUSR2, &def_act, NULL);
-
--static int do_child(void)
--{
--	return 0;
-+	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
- }
-
--static void sigsegv_handler(int sig)
-+static void cleanup(void)
- {
--	if (child_pid == 0) {
--		kill(getppid(), SIGUSR2);
--		_exit(42);
--	}
-+	free(child_stack);
- }
-
--/* sig_default_handler() - Default handler for parent */
--static void sigusr2_handler(int sig)
--{
--	if (child_pid != 0)
--		fail = TRUE;
--}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = verify_clone,
-+	.cleanup = cleanup,
-+};
---
-2.20.1
-
+-- 
+Regards,
+Zhang Lianjie
 
 
 
