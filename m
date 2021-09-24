@@ -7,31 +7,30 @@ X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 553F5C433FE
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51374C433EF
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:41 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA6B66124C
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DA6B66124C
+	by mail.kernel.org (Postfix) with ESMTPS id A94E8610C7
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A94E8610C7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3CABA3C8F29
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 09:08:29 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3BE5E3C8F1E
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 09:08:39 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C5F63C1B72
+ by picard.linux.it (Postfix) with ESMTPS id AE3D43C78C9
  for <ltp@lists.linux.it>; Fri, 24 Sep 2021 09:08:09 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E752820119E
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0245960111B
  for <ltp@lists.linux.it>; Fri, 24 Sep 2021 09:08:08 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
  s=mimecast20190719; t=1632467287;
@@ -39,27 +38,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vYpnlsjapoeL0wfI8tK5nov/Fc8wTVmcPsb7YD0Rcz8=;
- b=Aq+aDOhBljJLctqLhX8Zdfbo4GSnOh8E5qjTGlSnVFfPtOpBwiPbbonWnhLFtiOFAyD+7P
- C4l75TWXluHb9G9Az7nUSQapvkmLU3NEVcLWpusscJ+R+1GjppxlKrtTue1OagOpZJmZ31
- zk/HPDOuTMxIV5mD6dZ/YiK+BkHwLRw=
+ bh=pqswdqExKu4Sw878o9hjKb2cwfKX9jBaS/HnpjxOG+I=;
+ b=M9BO4kTANOf1uRmUFOPmzpzDbKcFvlc/98UFlmguSKKZFWTgJPM0BlOP2AmdSyGSR+ZNbQ
+ eTaZGsV3ON632QC4t6YYIVgXb5HOhRvgsZUqshogLcLhta+gx9qeiIaoi91zxvpf2XWrpc
+ nOztsL5H2FNes7Y8MmN4Hm39DhqFOEU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-_tekr_EgOo-G_X08l7KlbA-1; Fri, 24 Sep 2021 03:08:06 -0400
-X-MC-Unique: _tekr_EgOo-G_X08l7KlbA-1
+ us-mta-214-D8KMt1mLMDmoDoWbzsMo0A-1; Fri, 24 Sep 2021 03:08:04 -0400
+X-MC-Unique: D8KMt1mLMDmoDoWbzsMo0A-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CBC51006AA2;
- Fri, 24 Sep 2021 07:08:05 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D81F5802C80;
+ Fri, 24 Sep 2021 07:08:03 +0000 (UTC)
 Received: from liwang-workstation.nay.redhat.com (unknown [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 6240519724;
- Fri, 24 Sep 2021 07:08:04 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id AB94E19724;
+ Fri, 24 Sep 2021 07:08:02 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Fri, 24 Sep 2021 15:07:56 +0800
-Message-Id: <20210924070756.3916953-3-liwang@redhat.com>
+Date: Fri, 24 Sep 2021 15:07:55 +0800
+Message-Id: <20210924070756.3916953-2-liwang@redhat.com>
 In-Reply-To: <20210924070756.3916953-1-liwang@redhat.com>
 References: <20210924070756.3916953-1-liwang@redhat.com>
 MIME-Version: 1.0
@@ -68,10 +67,9 @@ Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] lib: unlimit the tmpfs size when test on small
- systems
+Subject: [LTP] [PATCH 2/3] swapping01: make use of tst_available_mem
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,47 +86,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since commit c305a53c5 (lib: limit the size of tmpfs in LTP, Jul 9)
-Ltp set tmpfs mount size according to the tdev.size. This cause a
-new problem on small RAM system, which consume too much memory and
-finally trigger OOM.
-
-To fix this, let's cancel the tmpfs size limitation when MemAvailable
-is less than twofold of tdev.size.
-
-Reported-by: Ralph Siemsen <ralph.siemsen@linaro.org>
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- include/tst_test.h | 1 +
- lib/tst_test.c     | 3 +++
- 2 files changed, 4 insertions(+)
+ testcases/kernel/mem/include/mem.h         | 1 +
+ testcases/kernel/mem/swapping/swapping01.c | 6 +-----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 5e3619698..3dcb45de0 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -42,6 +42,7 @@
- #include "tst_lockdown.h"
- #include "tst_fips.h"
- #include "tst_taint.h"
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 10712cf0c..f995f45b0 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -4,6 +4,7 @@
+ #include "tst_test.h"
+ #include "tst_cgroup.h"
+ #include "ksm_helper.h"
 +#include "tst_memutils.h"
  
- /*
-  * Reports testcase result.
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 4224353da..b50856f20 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -895,6 +895,9 @@ static const char *limit_tmpfs_mount_size(const char *mnt_data,
- 	if (strcmp(fs_type, "tmpfs"))
- 		return mnt_data;
+ #if defined(__powerpc__) || defined(__powerpc64__)
+ #define MAXNODES		256
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index 66fc65cbe..392b79d65 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -83,11 +83,7 @@ static void test_swapping(void)
+ static void init_meminfo(void)
+ {
+ 	swap_free_init = SAFE_READ_MEMINFO("SwapFree:");
+-	if (FILE_LINES_SCANF("/proc/meminfo", "MemAvailable: %ld",
+-		&mem_available_init)) {
+-		mem_available_init = SAFE_READ_MEMINFO("MemFree:")
+-			+ SAFE_READ_MEMINFO("Cached:");
+-	}
++	mem_available_init = tst_available_mem();
+ 	mem_over = mem_available_init * COE_SLIGHT_OVER;
+ 	mem_over_max = mem_available_init * COE_DELTA;
  
-+	if ((tst_available_mem() / 1024) < (tdev.size * 2))
-+		return mnt_data;
-+
- 	if (mnt_data)
- 		snprintf(buf, buf_size, "%s,size=%luM", mnt_data, tdev.size);
- 	else
 -- 
 2.31.1
 
