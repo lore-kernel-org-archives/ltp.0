@@ -2,94 +2,91 @@ Return-Path: <SRS0=uWjX=OO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,HTML_MESSAGE,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A3BAC433EF
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 04:29:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B567DC433EF
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 06:49:49 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE01F610F7
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 04:29:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BE01F610F7
+	by mail.kernel.org (Postfix) with ESMTPS id D25AD610C7
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 06:49:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D25AD610C7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9CA373C7209
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 06:29:02 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9DF073C8F26
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 08:49:46 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 409A73C176C
- for <ltp@lists.linux.it>; Fri, 24 Sep 2021 06:28:12 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7E0C53C8F13
+ for <ltp@lists.linux.it>; Fri, 24 Sep 2021 08:49:35 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5AB1A2010E0
- for <ltp@lists.linux.it>; Fri, 24 Sep 2021 06:28:11 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F2F13601D76
+ for <ltp@lists.linux.it>; Fri, 24 Sep 2021 08:49:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1632457689;
+ s=mimecast20190719; t=1632466173;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+z9aiYwWursWRWpMjOS6ZIIF6HMp7EQHwZrOhcTZcT8=;
- b=Eqdoh3mepvhiVVd+3ssOgx/ezHQ8Eg7kr6XUU8Mm/T01KkJW/dhgRMRxG3tEEexu2UeA7P
- yICZHhDAdnf1JD9hJoNjZSm2pSoGiHuUCY7bS0zvR6zGs5gN5ylGC/CINTsAq2Zp963h5Z
- Kuogr97Xzp2teNmJWBrHVfvHsd7esno=
+ bh=5hLX4JQnieLzhBP3IU6ejwUULeB7LSs2WrbH4FCrv4Y=;
+ b=bgvvgO3VPZrb8ucN1eDT6kXR83RWLFnDb4UtPczCZSbBH9423EmEYcB2ke4KDPAEdRK8KC
+ 685BSQE9k6Hvi+TDKGVskO7GxRXGgaLOlY6Tb7pjXk6qR/jTAzDKwG4754vrrOJcsy1OHZ
+ cLfJ7iXcS9yhmr4djZzRLehIsHM8zEA=
 Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
  [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-UrGWhyOjMsehjPg4R_7dQw-1; Fri, 24 Sep 2021 00:28:07 -0400
-X-MC-Unique: UrGWhyOjMsehjPg4R_7dQw-1
+ us-mta-296-XakSdz8vM_Koc8AR-ipFYA-1; Fri, 24 Sep 2021 02:49:30 -0400
+X-MC-Unique: XakSdz8vM_Koc8AR-ipFYA-1
 Received: by mail-yb1-f197.google.com with SMTP id
- 83-20020a251956000000b0059948f541cbso1915629ybz.7
- for <ltp@lists.linux.it>; Thu, 23 Sep 2021 21:28:07 -0700 (PDT)
+ f8-20020a2585480000b02905937897e3daso2311367ybn.2
+ for <ltp@lists.linux.it>; Thu, 23 Sep 2021 23:49:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=+z9aiYwWursWRWpMjOS6ZIIF6HMp7EQHwZrOhcTZcT8=;
- b=uwqCMuH1ZsggKpcblZq4VT+CyDQ8ROM4KtTer+zE+L0liA4YNW24adHUWyz95OfaXH
- rrZyFzxKDnkekietaBO/+ugFUEA1BqKPhEZxEoBf5zkGLOlbGMSUn7qDes0TI+csUmRR
- TkpItYkKCT2XKZA1mrkICgvl7V5XibiITXocASJmSbf8SpbgTK+zgPv1wLqdcOa5H9m9
- sOiatn4/fdL4U5n97El9TURBO4hEJsERRPv8I3j1WPGKJMNgfAhvCb92PbbD8WDwBArp
- TJz3eYF6VjPneeoTme3JtXGuSsd0bXLRCNHnb7isiYunaaEAKQls9gEgRz/JHVHo+1QO
- u6Pg==
-X-Gm-Message-State: AOAM532ej9l50PORJDdWSnxtjQ2fJYSDVKr8hSyawoQg49bWR0ejsEGo
- Jlj4zppIVOYwcnJs5cQEGaUkqFelkYfQl4/vcgeu028aAoPNqv5FYe7shAuMMGaXMi10Iig6PU1
- bhbrFxWPap0w9G9E+Z2BrL4uwN1g=
-X-Received: by 2002:a05:6902:705:: with SMTP id
- k5mr10622871ybt.490.1632457686925; 
- Thu, 23 Sep 2021 21:28:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcakAhITn0+ksjCGac2pBYCt69D3NSvWjJOmNLWo9u1giimjR458DYDe/aVCTftht9EjxO7/uN51DtgNBpLUo=
-X-Received: by 2002:a05:6902:705:: with SMTP id
- k5mr10622857ybt.490.1632457686765; 
- Thu, 23 Sep 2021 21:28:06 -0700 (PDT)
+ bh=5hLX4JQnieLzhBP3IU6ejwUULeB7LSs2WrbH4FCrv4Y=;
+ b=B4mgyVe3m27SKwyHj6YbXDBlNvKpOdQAUtLhZxFjfk6Y+fuJJv/xBfsMqWL1w1MbWI
+ ZB44ixn0IDz8tysUEM036BeGzuIdFfuzLlCK1BvbBsai8ZFw9oCORgyWFCY4ohj3cA9z
+ TgniwbsvWHKCbuONjBieJW/SZXDXdoOrW7gct1Iry7UmcwjkLoj7luhx6s1gk4fIVxh+
+ rHT+pOmANsCi9vQy1Uk2NXCASN7zojoAjvWOdaomcDKVL+gCBKMYS+S9pvFOk8I1pvQE
+ 99Qu5w5NUgRojCTE/EUWng1QQypYqKPMeruSNqalXXWyV+MpUzg7uLlv/s/HJThufoww
+ x4EQ==
+X-Gm-Message-State: AOAM5338Yz4bMXspbjR4PATOubXXbBD+JjEdbSAuT684YmmG07NEc3QZ
+ EKJ1i4QMzxYQyU4l/mKaBmgcxleeq78vveExCKuOM5qsD1oBlPC3Nd7WyCb6cnnS4wPDdl+X48C
+ qp3M0/WOFwrFs2EQ1BKnHQItp5ek=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr10782247yba.316.1632466169428; 
+ Thu, 23 Sep 2021 23:49:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwBBVk1eJdn4l4PgJS0MCWKy6VNZKxl90FtiJcdOG6SufGRZzn9TssdxWkvecIOrCqcVNahuTkx/UL0K59V9g=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr10782228yba.316.1632466169237; 
+ Thu, 23 Sep 2021 23:49:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210921203349.GA2014441@maple.netwinder.org>
+References: <20210817104625.2559362-1-liwang@redhat.com>
+ <20210921203349.GA2014441@maple.netwinder.org>
  <CAEemH2dMCmYDkZYxfaeJ_oQCCcHzeMgSOGVQ_wS6BwCrp0YiQw@mail.gmail.com>
  <YUrnljqYd5Hx/fi+@yuki>
  <CAEemH2dDRT-iQPH0a-Aip8OZDUpp2Z3_x4dgVBEg4tv_pyWvfw@mail.gmail.com>
  <YUr9676LXNi0xMs6@yuki>
  <CAEemH2c37Qx6uEG40utX8pGC2Gp0ZLtT_z194L4RVNm6N2CefQ@mail.gmail.com>
  <YUs+jf35Zqp8GjJl@yuki> <20210922165218.GA3081072@maple.netwinder.org>
- <CAEemH2cj3AJU01aUrodUh6WnSioyWmzC4U53gEumM9p7hnxmfw@mail.gmail.com>
- <CAEemH2f0+SL6pizzNs4syontAD5SeKmXFbVchRs=oXM-oEsEzw@mail.gmail.com>
- <YUx8p515ro8Y/Z8l@yuki>
-In-Reply-To: <YUx8p515ro8Y/Z8l@yuki>
+ <YUyQMBLPbCs4/Gur@yuki>
+In-Reply-To: <YUyQMBLPbCs4/Gur@yuki>
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 24 Sep 2021 12:27:54 +0800
-Message-ID: <CAEemH2dxKbbbKGcxnaJLV2TKZNANaow91_Wv-y8QgsE8WBZuAw@mail.gmail.com>
+Date: Fri, 24 Sep 2021 14:49:17 +0800
+Message-ID: <CAEemH2fRGX50RAgdAYJMW6FXX33FZG6kH=ygCQSGO6PHAi-S8g@mail.gmail.com>
 To: Cyril Hrubis <chrubis@suse.cz>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
  defallocate size
@@ -105,112 +102,103 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0911511404=="
+Content-Type: multipart/mixed; boundary="===============1352176906=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0911511404==
-Content-Type: multipart/alternative; boundary="00000000000087e40f05ccb62cdb"
+--===============1352176906==
+Content-Type: multipart/alternative; boundary="000000000000202de605ccb8264e"
 
---00000000000087e40f05ccb62cdb
+--000000000000202de605ccb8264e
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Sep 23, 2021 at 9:09 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Thu, Sep 23, 2021 at 10:32 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
 > Hi!
-> > Or, another way I can think of, is to cancel the tmpfs size limitation
-> > when MemFree is less than the twofold size to be mounted.
->
-> This would fail horribly if the machine has all RAM used but there is
-> plenty in buffers that should be freed.
->
-> I guess that we should really add tst_available_ram() function that
-> would print either MemAvailable or sum of MemFree + MemCached. And of
-> course we shouldn't eat more than half of that in the tests.
+> FYI I've tried to run syscalls on a VM with 256MB RAM just to see what
+> explodes and it looks like futex_cmp_requeue01 fails as well because we
+> don't have enough memory to fork 1000 processes. I guess that we really
+> need an API for at least rough scaling for the number of processes we
+> can run based on free memory. With that we could finally fix the
+> msgstress testcases as well.
 >
 
-Agreed. I would like to put into tst_memutils.h.
++1 Sounds good.
 
+[Cc Fang Ping]
 
+Btw, AFAIK, pifang@ is working on an SUT ability(io, memory, ..) evaluation
+before running the test, then set test parameters intelligently according
+to the
+lite benchmark result. This will definitely help make a proper runtest file
+for LTP,
+but I'm not sure if he plans to integrate it in LTP internally.
+
+I will talk to him to learn more details.
 
 >
-> > --- a/lib/tst_test.c
-> > +++ b/lib/tst_test.c
-> > @@ -895,6 +895,9 @@ static const char *limit_tmpfs_mount_size(const char
-> > *mnt_data,
-> >         if (strcmp(fs_type, "tmpfs"))
-> >                 return mnt_data;
-> >
-> > +       if ((SAFE_READ_MEMINFO("MemFree:") / 1024) < (tdev.size * 2))
-> > +               return mnt_data;
->
-> I guess that we should as well skip the tmpfs completely if we think
-> that the size is too small as well.
+> Also it seems that in my case the tmpfs returns ENOSPC correctly when
+> the machine free memory gets low enough regardless of the limit set at
+> the mount time, and that's 4.19.0-16-amd64. So I guess that there may be
+> something wrong in the kernel you are testing after all.
 >
 
-Just canceling the tmpfs size should work so far, since Ralph said
-he got PASS on 20210524-version, which does not include the size
-limitation.
-
+Maybe yes, so I send request for more info of Ralph's system.
 
 -- 
 Regards,
 Li Wang
 
---00000000000087e40f05ccb62cdb
+--000000000000202de605ccb8264e
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 <div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
 t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Thu, Sep 23, 2021 at 9:09 PM Cyril Hrubis &lt;<a=
- href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><b=
-lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
-ft:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
-&gt; Or, another way I can think of, is to cancel the tmpfs size limitation=
+r" class=3D"gmail_attr">On Thu, Sep 23, 2021 at 10:32 PM Cyril Hrubis &lt;<=
+a href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><=
+blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-l=
+eft:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+FYI I&#39;ve tried to run syscalls on a VM with 256MB RAM just to see what<=
+br>
+explodes and it looks like futex_cmp_requeue01 fails as well because we<br>
+don&#39;t have enough memory to fork 1000 processes. I guess that we really=
 <br>
-&gt; when MemFree is less than the twofold size to be mounted.<br>
+need an API for at least rough scaling for the number of processes we<br>
+can run based on free memory. With that we could finally fix the<br>
+msgstress testcases as well.<br></blockquote><div><br></div><div class=3D"g=
+mail_default" style=3D"font-size:small">+1 Sounds good.</div><div class=3D"=
+gmail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_defa=
+ult" style=3D"font-size:small">[Cc Fang Ping]</div><div class=3D"gmail_defa=
+ult" style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=
+=3D"font-size:small">Btw, AFAIK, pifang@ is working on an SUT ability(io, m=
+emory, ..) evaluation=C2=A0</div><div class=3D"gmail_default" style=3D"font=
+-size:small">before running the test, then set test parameters intelligentl=
+y according to the</div><div class=3D"gmail_default" style=3D"font-size:sma=
+ll">lite benchmark=C2=A0result. This will definitely help make a proper run=
+test file for LTP,=C2=A0</div><div class=3D"gmail_default" style=3D"font-si=
+ze:small">but I&#39;m not sure if he plans to integrate=C2=A0it in LTP inte=
+rnally.</div><div class=3D"gmail_default" style=3D"font-size:small"><br></d=
+iv><div class=3D"gmail_default" style=3D"font-size:small">I will talk to hi=
+m to learn more details.</div><div class=3D"gmail_default" style=3D"font-si=
+ze:small"></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
 <br>
-This would fail horribly if the machine has all RAM used but there is<br>
-plenty in buffers that should be freed.<br>
-<br>
-I guess that we should really add tst_available_ram() function that<br>
-would print either MemAvailable or sum of MemFree + MemCached. And of<br>
-course we shouldn&#39;t eat more than half of that in the tests.<br></block=
-quote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:s=
-mall">Agreed. I would like to put into tst_memutils.h.</div><br></div><div>=
-=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
-.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-&gt; --- a/lib/tst_test.c<br>
-&gt; +++ b/lib/tst_test.c<br>
-&gt; @@ -895,6 +895,9 @@ static const char *limit_tmpfs_mount_size(const ch=
-ar<br>
-&gt; *mnt_data,<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (strcmp(fs_type, &quot;tmpfs&quot;=
-))<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return mn=
-t_data;<br>
-&gt; <br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0if ((SAFE_READ_MEMINFO(&quot;MemFree:&quot=
-;) / 1024) &lt; (tdev.size * 2))<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return mnt_dat=
-a;<br>
-<br>
-I guess that we should as well skip the tmpfs completely if we think<br>
-that the size is too small as well.<br></blockquote><div><br></div><div><di=
-v class=3D"gmail_default" style=3D"font-size:small">Just canceling the tmpf=
-s size should work so far, since Ralph said=C2=A0</div><div class=3D"gmail_=
-default" style=3D"font-size:small">he got PASS on 20210524-version, which d=
-oes not include the size=C2=A0</div><div class=3D"gmail_default" style=3D"f=
-ont-size:small">limitation.</div></div><div><br></div></div><div><br></div>=
--- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Reg=
-ards,<br></div><div>Li Wang<br></div></div></div></div>
+Also it seems that in my case the tmpfs returns ENOSPC correctly when<br>
+the machine free memory gets low enough regardless of the limit set at<br>
+the mount time, and that&#39;s 4.19.0-16-amd64. So I guess that there may b=
+e<br>
+something wrong in the kernel you are testing after all.<br>
+</blockquote><div><br></div><div class=3D"gmail_default" style=3D"font-size=
+:small">Maybe yes, so I send request for more info of Ralph&#39;s system.</=
+div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature">=
+<div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div><=
+/div>
 
---00000000000087e40f05ccb62cdb--
+--000000000000202de605ccb8264e--
 
 
---===============0911511404==
+--===============1352176906==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -220,5 +208,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0911511404==--
+--===============1352176906==--
 
