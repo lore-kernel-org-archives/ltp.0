@@ -7,66 +7,71 @@ X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B21AC433F5
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 553F5C433FE
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:31 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90C1C60232
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 90C1C60232
+	by mail.kernel.org (Postfix) with ESMTPS id DA6B66124C
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 07:08:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DA6B66124C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B59D3C8F24
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 09:08:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3CABA3C8F29
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 09:08:29 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 45F103C1B72
+ by picard.linux.it (Postfix) with ESMTPS id 9C5F63C1B72
  for <ltp@lists.linux.it>; Fri, 24 Sep 2021 09:08:09 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 02AC11A017B1
- for <ltp@lists.linux.it>; Fri, 24 Sep 2021 09:08:07 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E752820119E
+ for <ltp@lists.linux.it>; Fri, 24 Sep 2021 09:08:08 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1632467286;
+ s=mimecast20190719; t=1632467287;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=kmPdDyyaHTJBFyXN1DJQPO1BQv5AtBOrwMw+tYRwg1I=;
- b=MHmgcCQPjpjU2Pp1L7btMRwRB4RQR+W6+/ocWc3qAabbNJ7cfk9Rg3ZnGzyKFsMwuEoRGj
- dc4F9JbrkLmXPX/IDzB6FJUGaPfp3LON68E4uiTjPgZ4dJy9GLTWAo8pBuJtEFLiQ6R1xg
- K2C/U5F0wtSEd8U8J2I7IWoYD9vCXcI=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=vYpnlsjapoeL0wfI8tK5nov/Fc8wTVmcPsb7YD0Rcz8=;
+ b=Aq+aDOhBljJLctqLhX8Zdfbo4GSnOh8E5qjTGlSnVFfPtOpBwiPbbonWnhLFtiOFAyD+7P
+ C4l75TWXluHb9G9Az7nUSQapvkmLU3NEVcLWpusscJ+R+1GjppxlKrtTue1OagOpZJmZ31
+ zk/HPDOuTMxIV5mD6dZ/YiK+BkHwLRw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-X7Fjy89IM5y1OyPx1QJn6Q-1; Fri, 24 Sep 2021 03:08:03 -0400
-X-MC-Unique: X7Fjy89IM5y1OyPx1QJn6Q-1
+ us-mta-198-_tekr_EgOo-G_X08l7KlbA-1; Fri, 24 Sep 2021 03:08:06 -0400
+X-MC-Unique: _tekr_EgOo-G_X08l7KlbA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2CBB81084684;
- Fri, 24 Sep 2021 07:08:02 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CBC51006AA2;
+ Fri, 24 Sep 2021 07:08:05 +0000 (UTC)
 Received: from liwang-workstation.nay.redhat.com (unknown [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id E3E0419724;
- Fri, 24 Sep 2021 07:07:57 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 6240519724;
+ Fri, 24 Sep 2021 07:08:04 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Fri, 24 Sep 2021 15:07:54 +0800
-Message-Id: <20210924070756.3916953-1-liwang@redhat.com>
+Date: Fri, 24 Sep 2021 15:07:56 +0800
+Message-Id: <20210924070756.3916953-3-liwang@redhat.com>
+In-Reply-To: <20210924070756.3916953-1-liwang@redhat.com>
+References: <20210924070756.3916953-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] lib: add tst_available_mem function
+Subject: [LTP] [PATCH 3/3] lib: unlimit the tmpfs size when test on small
+ systems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,52 +88,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tst_available_mem helps to get the value of MemAvailable
-from /proc/meminfo, if no support on older kernels,
-return 'MemFree + Cached' for instead.
+Since commit c305a53c5 (lib: limit the size of tmpfs in LTP, Jul 9)
+Ltp set tmpfs mount size according to the tdev.size. This cause a
+new problem on small RAM system, which consume too much memory and
+finally trigger OOM.
 
+To fix this, let's cancel the tmpfs size limitation when MemAvailable
+is less than twofold of tdev.size.
+
+Reported-by: Ralph Siemsen <ralph.siemsen@linaro.org>
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- include/tst_memutils.h |  6 ++++++
- lib/tst_memutils.c     | 13 +++++++++++++
- 2 files changed, 19 insertions(+)
+ include/tst_test.h | 1 +
+ lib/tst_test.c     | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/include/tst_memutils.h b/include/tst_memutils.h
-index 91dad07cd..f605f544e 100644
---- a/include/tst_memutils.h
-+++ b/include/tst_memutils.h
-@@ -19,4 +19,10 @@
-  */
- void tst_pollute_memory(size_t maxsize, int fillchar);
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 5e3619698..3dcb45de0 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -42,6 +42,7 @@
+ #include "tst_lockdown.h"
+ #include "tst_fips.h"
+ #include "tst_taint.h"
++#include "tst_memutils.h"
  
-+/*
-+ * Read the value of MemAvailable from /proc/meminfo, if no support on
-+ * older kernels, return 'MemFree + Cached' for instead.
-+ */
-+long long tst_available_mem(void);
-+
- #endif /* TST_MEMUTILS_H__ */
-diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
-index 70b60091f..69077861f 100644
---- a/lib/tst_memutils.c
-+++ b/lib/tst_memutils.c
-@@ -62,3 +62,16 @@ void tst_pollute_memory(size_t maxsize, int fillchar)
+ /*
+  * Reports testcase result.
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 4224353da..b50856f20 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -895,6 +895,9 @@ static const char *limit_tmpfs_mount_size(const char *mnt_data,
+ 	if (strcmp(fs_type, "tmpfs"))
+ 		return mnt_data;
  
- 	free(map_blocks);
- }
++	if ((tst_available_mem() / 1024) < (tdev.size * 2))
++		return mnt_data;
 +
-+long long tst_available_mem(void)
-+{
-+	long long mem_available;
-+
-+	if (FILE_LINES_SCANF("/proc/meminfo", "MemAvailable: %ld",
-+		&mem_available)) {
-+		mem_available = SAFE_READ_MEMINFO("MemFree:")
-+			+ SAFE_READ_MEMINFO("Cached:");
-+	}
-+
-+	return mem_available;
-+}
+ 	if (mnt_data)
+ 		snprintf(buf, buf_size, "%s,size=%luM", mnt_data, tdev.size);
+ 	else
 -- 
 2.31.1
 
