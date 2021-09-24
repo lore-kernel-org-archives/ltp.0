@@ -2,72 +2,82 @@ Return-Path: <SRS0=uWjX=OO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5D15C433F5
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 10:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C046CC433EF
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 10:40:58 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85C3161107
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 10:31:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 85C3161107
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 3915460F70
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 10:40:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3915460F70
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1E1A63C8F39
-	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 12:31:04 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9E8393C8F29
+	for <ltp@archiver.kernel.org>; Fri, 24 Sep 2021 12:40:56 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1CEC93C848C
- for <ltp@lists.linux.it>; Fri, 24 Sep 2021 12:30:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 2EA463C848C
+ for <ltp@lists.linux.it>; Fri, 24 Sep 2021 12:40:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4CBF060222B
- for <ltp@lists.linux.it>; Fri, 24 Sep 2021 12:30:53 +0200 (CEST)
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
- by smtp-out2.suse.de (Postfix) with ESMTP id 80F681FFE6
- for <ltp@lists.linux.it>; Fri, 24 Sep 2021 10:30:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1632479453;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZgTkdxYvtxgmJkuqVy8mkZ7Xkxl2a1SZhv5CsWAw1+k=;
- b=I8CtE94Na0c23bI/RuPrqfjPHcsu2YMa+PualBTWmzW6EldM+rqGwcwPcvTVFXIBmPWAVn
- EgRqiCN7IoBvMNf7ddL12jA0XUeFAQYw99Z+Kai6zWM6fyCepJWcvQI+/JsINc/7h5vDt3
- 5/YhNajJvOoq5czaNf1qcZojq9aUoHM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1632479453;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZgTkdxYvtxgmJkuqVy8mkZ7Xkxl2a1SZhv5CsWAw1+k=;
- b=kiGGcyWIdV0W4fmwxbHhG2Yz9d6H3BZOEQVwK6Jg+eXS6um4RaIvfhry6v2so8IP2SzEhf
- /KYAUrY6kSFo2yAA==
-Received: from g78 (unknown [10.163.24.38])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 908A6100142F
+ for <ltp@lists.linux.it>; Fri, 24 Sep 2021 12:40:46 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay1.suse.de (Postfix) with ESMTPS id 45D0E25D3E;
- Fri, 24 Sep 2021 10:30:53 +0000 (UTC)
-References: <20210924092111.20012-1-rpalethorpe@suse.com>
- <YU2n6tamyCf13OS5@pevik>
-User-agent: mu4e 1.4.15; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-In-reply-to: <YU2n6tamyCf13OS5@pevik>
-Date: Fri, 24 Sep 2021 11:30:52 +0100
-Message-ID: <878rzml0yr.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BC3B522427;
+ Fri, 24 Sep 2021 10:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1632480045;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1F/qGEgqwREzNL57qMLLRQYu6bbrn2H4P4m3+Hcq3RU=;
+ b=ZsLoK0fqyd+1UPuruhmAhBuhyf413G+tdmqpX19v4+m1XTDfD7Ix8sEfcbYkLDfXCW8DXE
+ KJ47/Wuw/kYeCHbaTjwmuYu9JEM0v1Ip48L9I5TFPS0X9R6Oi81lnLurj8soU5ui23rwNz
+ 95YquUn47r5wcaTK+T4BAyfYGuBwQE8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1632480045;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1F/qGEgqwREzNL57qMLLRQYu6bbrn2H4P4m3+Hcq3RU=;
+ b=aQVnAcTZ7SdKwkSvnXZR5szQY238xnB+2eeIPc8whHEJ5p2kh8YqIb0+Yd3IotT2/c3LYk
+ miZLCfu6HSmVH8BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74A0913E14;
+ Fri, 24 Sep 2021 10:40:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id UBjrGC2rTWEEWAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 24 Sep 2021 10:40:45 +0000
+Date: Fri, 24 Sep 2021 12:40:42 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YU2rKkEib9F3yLJ7@pevik>
+References: <20210924070756.3916953-1-liwang@redhat.com>
+ <20210924070756.3916953-3-liwang@redhat.com>
+ <YU2foq6v5PUBNUeD@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YU2foq6v5PUBNUeD@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] msgrcv07: Check negative msg type filters
+Subject: Re: [LTP] [PATCH 3/3] lib: unlimit the tmpfs size when test on
+ small systems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,45 +89,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Petr,
+Hi Cyril, Li,
+> Hi!
+> > Since commit c305a53c5 (lib: limit the size of tmpfs in LTP, Jul 9)
+> > Ltp set tmpfs mount size according to the tdev.size. This cause a
+> > new problem on small RAM system, which consume too much memory and
+> > finally trigger OOM.
 
-Petr Vorel <pvorel@suse.cz> writes:
+> > To fix this, let's cancel the tmpfs size limitation when MemAvailable
+> > is less than twofold of tdev.size.
 
-> Hi Richie,
->
-> ...
->> +++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
->> @@ -232,6 +232,13 @@ static void test_negative_msgtyp(void)
->>  			"-msgtyp didn't get the first message in the queue with the lowest type");
->>  	}
->
->> +	TST_EXP_FAIL(msgrcv(queue_id, &rcv_buf, MSGSIZE, -MSGTYPE1, IPC_NOWAIT),
->> +		     ENOMSG,
->> +		     "-msgtype didn't recv next lowest msg");
->> +	TST_EXP_FAIL(msgrcv(queue_id, &rcv_buf, MSGSIZE, -MSGTYPE1, MSG_EXCEPT | IPC_NOWAIT),
->> +		     ENOMSG,
->> +		     "-msgtype (with except) didn't recv next lowest msg");
-> nit: I'd use msgtyp instead of msgtype (although it looks like typo, it's used
-> without 'e' as a parametr name in man msgop(2) and also throughout this test
-> (obviously can be changed during merge).
+...
+> > +	if ((tst_available_mem() / 1024) < (tdev.size * 2))
+> > +		return mnt_data;
 
-Sure, sounds good.
+> I'm starting to think that we should do it the other way around, i.e.
 
->
-> Kind regards,
-> Petr
+> - unless the test defines .min_dev_size we should set the size for tmpfs to be really small 16MB or 32MB
+> - if .min_dev_size is defined and there is not enough free memory -> TCONF
+> - if .min_dev_size is not set and there is not even 64MB of free memory (for 32MB limit) -> TCONF
 
+> I think that this is going to work because most of the tests does not
+> actually consume more than a megabyte or so of the disk space for the
+> actuall test, the only reason why we kept bumping the loop device size
+> is that there are limits on minimal size imposed by filesystems.
 
--- 
-Thank you,
-Richard.
+Also LGTM, thanks Li for working on v2.
+
+Kind regards,
+Petr
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
