@@ -2,80 +2,52 @@ Return-Path: <SRS0=FiD7=OR=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8241C433F5
-	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 15:12:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 535B5C433F5
+	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 16:21:18 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B28636101A
-	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 15:12:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B28636101A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2142C6108E
+	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 16:21:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2142C6108E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CFE813C9643
-	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 17:12:32 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1D1373C8DAF
+	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 18:21:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B68E63C8261
- for <ltp@lists.linux.it>; Mon, 27 Sep 2021 17:12:23 +0200 (CEST)
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com
- [IPv6:2607:f8b0:4864:20::72b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 31CC83C8253
+ for <ltp@lists.linux.it>; Mon, 27 Sep 2021 18:21:02 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4E3A3600FE8
- for <ltp@lists.linux.it>; Mon, 27 Sep 2021 17:12:23 +0200 (CEST)
-Received: by mail-qk1-x72b.google.com with SMTP id b65so36738260qkc.13
- for <ltp@lists.linux.it>; Mon, 27 Sep 2021 08:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=9z/rBIc24V6v6YB/9Gf/83Vvt0GFZG07oZQV0hlLuV0=;
- b=pKsEapGo/uHnGqzda2XSr8zcn40GH64HHY1TTxJM9N+kFtltTEhLestET2LXP5P+vl
- HUqOJmDQtbXZ5vqXz7DZWQeHROgNxZ9s/RVdN4p4O6vjyzt/w55lG4YXTRIwhlPPZfJ4
- 2JTF5yQ6joajVj9ThLWyWST9bZ0rONHoGddeuc7sYof0QoRLwQbnNsysLVX2meJu58si
- KWb2QtD5tD9NvYx97cmQJ3dNHjOjwD4C+xDyY9nu2e53Bw5JzvGYKTRcCO/KqX3k3LYo
- f/co3LeOD7XOeLJrIW0XXsagATF1sNvj+G3W9bXHDH4BNUv89lAVlSzGL+qwU5OCb2e0
- kwpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=9z/rBIc24V6v6YB/9Gf/83Vvt0GFZG07oZQV0hlLuV0=;
- b=LSxo9DRCeUbJHVyRQdsZW77XzzsfyGcMiJB0aSZydJ/7pvvhChJhRp1SBXvrJQyY42
- 5B+DOXC1/+PVZ5tcmz/eHjQ3jwzzf/YGtF1likZW+1ZL6+5rQDMQ8L5YNyjO24fhM+nM
- +90wVSldoQaoyYD9K/cDkQY1heaJv5P6t9je4fK4afZqA3AG6WBtUbDgonCOKYpCdYJF
- wBEB/Op25WA7kEw11FKUtcgUZqSt0TQHhQvO07KEwEa+P6YpTFfC7Lk28/aPsnEfFl7v
- Xl3LobpM0Gjh3FgtDvIIvNPoxM7uWl+6kyhgBSaVs/bYLlEUt4GbGSutUFI1EFr+Op8U
- xMww==
-X-Gm-Message-State: AOAM530Ax6YqsY4oL5Q2mvTbg4vMBxOGi5FNYnGZSTPh29VadQwlK00r
- j2aPFWXPUBY4rx34fCZaD/NrRQ==
-X-Google-Smtp-Source: ABdhPJzntNpt0/3SXli/2uU4XAsgJjeFnQ8LQO1iQvEenCLEnWsWFjOpNsijrGbIeZEXMRcbMixfiA==
-X-Received: by 2002:a37:951:: with SMTP id 78mr487012qkj.244.1632755541963;
- Mon, 27 Sep 2021 08:12:21 -0700 (PDT)
-Received: from localhost (rfs.netwinder.org. [206.248.184.2])
- by smtp.gmail.com with ESMTPSA id p17sm12732337qtl.52.2021.09.27.08.12.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Sep 2021 08:12:21 -0700 (PDT)
-Date: Mon, 27 Sep 2021 11:12:20 -0400
-From: Ralph Siemsen <ralph.siemsen@linaro.org>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20210927151220.GB4173236@maple.netwinder.org>
-References: <20210924070756.3916953-3-liwang@redhat.com>
- <20210924105234.3927811-1-liwang@redhat.com>
- <YU3fTlVIIUU7Ff3d@pevik>
- <CAEemH2crBA=-piu3Z+CM7+Z3neWWxkuMY6+y9i6vdHSvZukKgw@mail.gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5F53A600A35
+ for <ltp@lists.linux.it>; Mon, 27 Sep 2021 18:21:02 +0200 (CEST)
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B1E5520174;
+ Mon, 27 Sep 2021 16:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1632759661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OhdVD9gOAiEfK7wpJLmapbTk6U8empUyrJJ+9sKjxDc=;
+ b=UE0ndxT/7SMUQi2S12WiU1L8o3vezLNsivOroJUx3J6QMJZLqypB8enMbr/LXtEAwGfFAK
+ NzJ4YnTh1xfRrxWsdPLZurdMg5t7WZFYMs4KALj0b0mNHEFMJXFyVTgeZZs4VR5x0dP06T
+ Q0cDAVQEP9WHufbko8M+3o9EQbDZ9BY=
+Received: from g78.suse.de (unknown [10.163.24.38])
+ by relay1.suse.de (Postfix) with ESMTP id A3FD825D3E;
+ Mon, 27 Sep 2021 16:20:58 +0000 (UTC)
+To: x86@kernel.org
+Date: Mon, 27 Sep 2021 17:19:55 +0100
+Message-Id: <20210927161955.28494-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2crBA=-piu3Z+CM7+Z3neWWxkuMY6+y9i6vdHSvZukKgw@mail.gmail.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] lib: adjust the tmpfs size according to
- .dev_min_size and MemAvailable
+Subject: [LTP] [PATCH] x86/entry/ia32: Ensure s32 is sign extended to s64
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,32 +59,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: linux-s390@vger.kernel.org, rpalethorpe@richiejp.com,
+ Arnd Bergmann <arnd@arndb.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ linux-api@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+ linux-kernel@vger.kernel.org, Dominik Brodowski <linux@dominikbrodowski.net>,
+ Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Sep 27, 2021 at 10:39:23AM +0800, Li Wang wrote:
->On Fri, Sep 24, 2021 at 10:23 PM Petr Vorel <pvorel@suse.cz> wrote:
->
->> Hi Li,
->>
->> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->>
->> nit: I'd add Fixes: c305a53c5 ("lib: limit the size of tmpfs in LTP")
->> if anybody searches on Fixes.
->>
->
->Thanks for the review, I added this and pushed it.
+Presently ia32 registers stored in ptregs are unconditionally cast to
+unsigned int by the ia32 stub. They are then cast to long when passed
+to __se_sys*, but will not be sign extended.
 
-I just tested the 20210927 release (commit 12beeda351) under qemu ARM. 
-It seems that fallocate05 test is fine now, even with the 32MB fallback.
+This takes the sign of the syscall argument into account in the ia32
+stub. It still casts to unsigned int to avoid implementation specific
+behavior. However then casts to int or unsigned int as necessary. So
+that the following cast to long sign extends the value.
 
-However fallocate06 test is failing with OOM. It seems this one still 
-contains .dev_min_size = 512 , should this be removed?
+This fixes the io_pgetevents02 LTP test when compiled with
+-m32. Presently the systemcall io_pgetevents_time64 unexpectedly
+accepts -1 for the maximum number of events. It doesn't appear other
+systemcalls with signed arguments are effected because they all have
+compat variants defined and wired up. A less general solution is to
+wire up the systemcall:
+https://lore.kernel.org/ltp/20210921130127.24131-1-rpalethorpe@suse.com/
 
-Ralph
+Fixes: ebeb8c82ffaf ("syscalls/x86: Use 'struct pt_regs' based syscall calling for IA32_EMULATION and x32")
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/s390/include/asm/syscall_wrapper.h |  2 --
+ arch/x86/include/asm/syscall_wrapper.h  | 25 +++++++++++++++++++++----
+ include/linux/syscalls.h                |  1 +
+ 3 files changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/arch/s390/include/asm/syscall_wrapper.h b/arch/s390/include/asm/syscall_wrapper.h
+index ad2c996e7e93..25ab58b0ded1 100644
+--- a/arch/s390/include/asm/syscall_wrapper.h
++++ b/arch/s390/include/asm/syscall_wrapper.h
+@@ -7,8 +7,6 @@
+ #ifndef _ASM_S390_SYSCALL_WRAPPER_H
+ #define _ASM_S390_SYSCALL_WRAPPER_H
+ 
+-#define __SC_TYPE(t, a) t
+-
+ #define SYSCALL_PT_ARG6(regs, m, t1, t2, t3, t4, t5, t6)\
+ 	SYSCALL_PT_ARG5(regs, m, t1, t2, t3, t4, t5),	\
+ 		m(t6, (regs->gprs[7]))
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index 6a2827d0681f..811139a82b13 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -58,12 +58,29 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 		,,regs->di,,regs->si,,regs->dx				\
+ 		,,regs->r10,,regs->r8,,regs->r9)			\
+ 
++
++/* SYSCALL_PT_ARGS is Adapted from s390x */
++#define SYSCALL_PT_ARG6(m, t1, t2, t3, t4, t5, t6)			\
++	SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5), m(t6, (regs->bp))
++#define SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5)				\
++	SYSCALL_PT_ARG4(m, t1, t2, t3, t4),  m(t5, (regs->di))
++#define SYSCALL_PT_ARG4(m, t1, t2, t3, t4)				\
++	SYSCALL_PT_ARG3(m, t1, t2, t3),  m(t4, (regs->si))
++#define SYSCALL_PT_ARG3(m, t1, t2, t3)					\
++	SYSCALL_PT_ARG2(m, t1, t2), m(t3, (regs->dx))
++#define SYSCALL_PT_ARG2(m, t1, t2)					\
++	SYSCALL_PT_ARG1(m, t1), m(t2, (regs->cx))
++#define SYSCALL_PT_ARG1(m, t1) m(t1, (regs->bx))
++#define SYSCALL_PT_ARGS(x, ...) SYSCALL_PT_ARG##x(__VA_ARGS__)
++
++#define __SC_COMPAT_CAST(t, a)						\
++	(__typeof(__builtin_choose_expr(__TYPE_IS_L(t), 0, 0U)))	\
++	(unsigned int)a
++
+ /* Mapping of registers to parameters for syscalls on i386 */
+ #define SC_IA32_REGS_TO_ARGS(x, ...)					\
+-	__MAP(x,__SC_ARGS						\
+-	      ,,(unsigned int)regs->bx,,(unsigned int)regs->cx		\
+-	      ,,(unsigned int)regs->dx,,(unsigned int)regs->si		\
+-	      ,,(unsigned int)regs->di,,(unsigned int)regs->bp)
++	SYSCALL_PT_ARGS(x, __SC_COMPAT_CAST,				\
++			__MAP(x, __SC_TYPE, __VA_ARGS__))		\
+ 
+ #define __SYS_STUB0(abi, name)						\
+ 	long __##abi##_##name(const struct pt_regs *regs);		\
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 69c9a7010081..a492276a11f1 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -122,6 +122,7 @@ enum landlock_rule_type;
+ #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
+ #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
+ #define __SC_CAST(t, a)	(__force t) a
++#define __SC_TYPE(t, a)	t
+ #define __SC_ARGS(t, a)	a
+ #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
+ 
+-- 
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
