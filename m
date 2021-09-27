@@ -1,86 +1,83 @@
-Return-Path: <SRS0=7mwu=OQ=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=FiD7=OR=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A82FBC433F5
-	for <ltp@archiver.kernel.org>; Sun, 26 Sep 2021 07:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09CF2C433EF
+	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 01:37:47 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B35161039
-	for <ltp@archiver.kernel.org>; Sun, 26 Sep 2021 07:41:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0B35161039
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 12A4F60F0F
+	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 01:37:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 12A4F60F0F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 830973C8DF8
-	for <ltp@archiver.kernel.org>; Sun, 26 Sep 2021 09:41:20 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 90DDC3CA0ED
+	for <ltp@archiver.kernel.org>; Mon, 27 Sep 2021 03:37:43 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 807983C75DF
- for <ltp@lists.linux.it>; Sun, 26 Sep 2021 09:41:10 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B29C13C87AA
+ for <ltp@lists.linux.it>; Mon, 27 Sep 2021 03:37:34 +0200 (CEST)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com
+ [IPv6:2607:f8b0:4864:20::f2b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F281A15F5EF4
- for <ltp@lists.linux.it>; Sun, 26 Sep 2021 09:41:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1632642068;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YWsio2O2G+l/Ab85T7hk+AtNZaAN3O1Yqa/tk4rshYc=;
- b=P9XKTWIpozVeN8FIewmZk5bsScKPdS352n9TGSsSRFuAxyUsT1aNcpnhz981hFnlGJEBAU
- jRF5EfuZpVysooSZQh/ocoaY7KYWBqv7dpUWvo2QVRbdJF9lEZ0eK7zYcCVNKAYAfgZMFB
- tyaf9fUhTxHEsT9U1PhUwhoqJ8B/YdI=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-3S6R01imMBGQLs1KBN6u7g-1; Sun, 26 Sep 2021 03:41:06 -0400
-X-MC-Unique: 3S6R01imMBGQLs1KBN6u7g-1
-Received: by mail-yb1-f199.google.com with SMTP id
- v16-20020a256110000000b005b23a793d77so10118484ybb.15
- for <ltp@lists.linux.it>; Sun, 26 Sep 2021 00:41:06 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8669C14001EA
+ for <ltp@lists.linux.it>; Mon, 27 Sep 2021 03:37:33 +0200 (CEST)
+Received: by mail-qv1-xf2b.google.com with SMTP id gs10so10181639qvb.13
+ for <ltp@lists.linux.it>; Sun, 26 Sep 2021 18:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=aXGQd04IhRYN9R2qW8gPrOwrXWI0xTXX7YQtvJUgK6w=;
+ b=uCeozUe5gAnMtXrMhdlGdQuCQenfA3V8L1P2tKR6v5y6cOoqP/cdn37FVsbuGZVfLo
+ TKjGFIHntvVNzUPaUOhII5Ia6yRx/TJlK2LMPUwu9aKB95xvHT2akMU+hOZJLAbIFEdL
+ f/2K/SltyW68XJIyzelgeZJhcGzyIIkq3LBMmbGDKx+ycG/ySHNxlPMwUBUjvGMGNHjF
+ 0mKtBnj+WDYqEWa68WChy4AUguPtt1Wl+7AWgU4eHNKROxvKikFQ19fGOu8dQJeVZleX
+ 5uGZrD0oTv19nZClYfkEG+Z7TOyl2PKcYLG/OU6YvP1J3OgExleuPs1ceG10eBQceWyQ
+ DIVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YWsio2O2G+l/Ab85T7hk+AtNZaAN3O1Yqa/tk4rshYc=;
- b=clStKLiYn0Y5f7Uy+wR63ln2XSVXhtsdsfRBO/oM/WEskqCjAJXK+kfzPgeHhrquDU
- +qWDZkJOEf5gRTfqW1J66jpZ1hxD798391um/QK4QbZmPjLGazvFKCqhyUStl9zG6Tqb
- MOWa2qA9WDEYmSqQLeYZIq4fP+X3+OveoHdY7DIRO4R8cE3a8JzHi0IakgaaV/hmN/NI
- JWSSpzl9vqobmGxAxDB7nzLygdomQRpcV/1Ex+3RvizfVQAKNOQ9zesyGqVFBX/6bMyS
- O5UXkIM1Xvd7aIxaGKbPWgeO3eJxmimQcye23xW+WhcAk5sRFjcm/BlrR3EkEziaVMFZ
- 1p4g==
-X-Gm-Message-State: AOAM532M1cEU93g1duDGSnxbQBBOOxVj5BuF32NC7pNt+y4540Mt3MXl
- Xa8cJ91WUIkosek86ZCjPTQJDhQaxrVVQ80wBZonzL5R6m/sRDWjbi2Kd3AuXnf8hVut5DM5EDW
- dCH4J2CrN9sFces7c0hG3DtnJZ7o=
-X-Received: by 2002:a25:3f47:: with SMTP id m68mr22897877yba.316.1632642066262; 
- Sun, 26 Sep 2021 00:41:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzMPooHkiTh8cixdFEaT+ABXltcZKgRcROVndNV/y0ITOGN1QqA/A7iU4Uqa31m9fDvLrBZh7oztaB8ruQFJTc=
-X-Received: by 2002:a25:3f47:: with SMTP id m68mr22897862yba.316.1632642066063; 
- Sun, 26 Sep 2021 00:41:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEemH2dDRT-iQPH0a-Aip8OZDUpp2Z3_x4dgVBEg4tv_pyWvfw@mail.gmail.com>
- <YUr9676LXNi0xMs6@yuki>
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=aXGQd04IhRYN9R2qW8gPrOwrXWI0xTXX7YQtvJUgK6w=;
+ b=Vg4ynBQaBsmt+uXgoU1OuCZhK6mkP1pfTQQYQ5iPDdhEVmUtM5sJiymoy0t9Zpuyox
+ cLF1vKYbcx1mShgMMloGnHxHtMfrFinkHiXaSudKDKHzv4UvbparghxcTJ+TRO0hmewC
+ 2dRkbmZohSTnw39wPXW1eNmse+OO3/2O1gZCMytC8wol9jvv7FdXrDMBsHO3QRIltdEV
+ uOuyMXOPr6nATPv+UtayxoxtE6TxMmTGzNJfeuZUXjpbATVuNq27RLjptjd3LBMOfmCN
+ 7iqBD+gs8Fhaq0VdMaj2BoG3a1TeroZ/we303kcq1c7hOKShNMWRMm7XS/zUvuDICNq+
+ 2IyA==
+X-Gm-Message-State: AOAM533ZK5RlsemzmBk+rw4MRHpX5fReLqtnqOzh2WwhNzyn3QiBlfaj
+ ws7rny//S3G+0bqY+YXT9iFm+A==
+X-Google-Smtp-Source: ABdhPJwKa8klON0M0ako12i6b7pDQ1S8xOWKNqeqadPKfeqp6oXx740czMLKp4fpFsZzDEl3BWRp5w==
+X-Received: by 2002:ad4:4d90:: with SMTP id cv16mr7102233qvb.8.1632706652184; 
+ Sun, 26 Sep 2021 18:37:32 -0700 (PDT)
+Received: from localhost (rfs.netwinder.org. [206.248.184.2])
+ by smtp.gmail.com with ESMTPSA id l3sm9509570qtu.47.2021.09.26.18.37.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 26 Sep 2021 18:37:31 -0700 (PDT)
+Date: Sun, 26 Sep 2021 21:37:31 -0400
+From: Ralph Siemsen <ralph.siemsen@linaro.org>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20210927013731.GA4173236@maple.netwinder.org>
+References: <YUr9676LXNi0xMs6@yuki>
  <CAEemH2c37Qx6uEG40utX8pGC2Gp0ZLtT_z194L4RVNm6N2CefQ@mail.gmail.com>
- <YUs+jf35Zqp8GjJl@yuki> <20210922165218.GA3081072@maple.netwinder.org>
- <YUyQMBLPbCs4/Gur@yuki> <20210924014900.GA3975163@maple.netwinder.org>
+ <YUs+jf35Zqp8GjJl@yuki>
+ <20210922165218.GA3081072@maple.netwinder.org>
+ <YUyQMBLPbCs4/Gur@yuki>
+ <20210924014900.GA3975163@maple.netwinder.org>
  <CAEemH2diTBrnYAbBedQN+bog6y4NdLZG628egCqxuopZ7DHB0Q@mail.gmail.com>
- <20210924151130.GA4029248@maple.netwinder.org> <YU4YOI4yPufWP9uC@yuki>
- <20210924202601.GB4029248@maple.netwinder.org>
- <CAEemH2etvD_1VXsXLFnjN5KHLJZGt-eUADhwi1TBQa3aQXp-Bw@mail.gmail.com>
-In-Reply-To: <CAEemH2etvD_1VXsXLFnjN5KHLJZGt-eUADhwi1TBQa3aQXp-Bw@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Sun, 26 Sep 2021 15:40:54 +0800
-Message-ID: <CAEemH2ffigCT_gr3vpeF50XJs0_Nch9he6ZJ=sPz7wuuFe8y-w@mail.gmail.com>
-To: Ralph Siemsen <ralph.siemsen@linaro.org>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+ <20210924151130.GA4029248@maple.netwinder.org>
+ <YU4YOI4yPufWP9uC@yuki>
+ <CAEemH2e7LpOgVfNXXthovR4xt4aHYkTLCW+j4OsGoHegta+-uQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAEemH2e7LpOgVfNXXthovR4xt4aHYkTLCW+j4OsGoHegta+-uQ@mail.gmail.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH] fallocate05: increase the fallocate and
@@ -97,125 +94,75 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1402909606=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1402909606==
-Content-Type: multipart/alternative; boundary="00000000000064bf1805cce11ac0"
-
---00000000000064bf1805cce11ac0
-Content-Type: text/plain; charset="UTF-8"
-
-> 5) Apply Li's patchset (with v2 of the 3rd patch)
->>     Exactly the same behaviour as 4)
->>     --> FAIL
->>
+On Sun, Sep 26, 2021 at 03:39:35PM +0800, Li Wang wrote:
 >
-> Can you post the test log for this 5), it shouldn't be similar like 4)
-> because we limit tmfs-size to 32MB in this case. and If you didn't remove
-> .dev_min_size=512, it should be skip tmpfs test on your 153MB MemAva
-> machine.
->
-> With remove .dev_min_size=512 from fallocate05 in situation 5).
-> If it is still OOM with 32MB tmpfs-size, I tend to agree with Cyril that is
-> very likely you hit a kernel problem or configure issue.
->
+>However, unlimit tmpfs-size does not mean set .dev_min_size to zero.
+>It should be returned mnt_data directly in limit_tmpfs_mount_size.
+>That also does the 20210524 version.
 
-FYI, for quick test and show tmpfs mount info, you could add debug code:
+This was my mistake - I had assumed 0 means unlimited - my apologies.
 
---- a/testcases/kernel/syscalls/fallocate/fallocate05.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
-@@ -50,6 +50,8 @@ static void setup(void)
-        bufsize = FALLOCATE_BLOCKS * blocksize;
-        buf = SAFE_MALLOC(bufsize);
-        SAFE_CLOSE(fd);
-+
-+       tst_system("mount | column -t |grep tmpfs");
- }
+I have now amended the limit_tmpfs_mount_size() function as suggested.
+And also the other two suggestions from your follow-up emails.
 
- static void run(void)
-@@ -153,4 +155,14 @@ static struct tst_test test = {
-        .setup = setup,
-        .cleanup = cleanup,
-        .test_all = run,
-+       .skip_filesystems = (const char *const []) {
-+               "ext2",
-+               "ext3",
-+               "ext4",
-+               "nfs",
-+               "xfs",
-+               "ntfs",
-+               "btrfs",
-+               NULL
-+       },
- };
+The tmpfs test now appears to be passing.
 
-
--- 
 Regards,
-Li Wang
+Ralph
 
---00000000000064bf1805cce11ac0
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+OMMAND:    /opt/ltp/bin/ltp-pan -q  -e -S   -a 1939     -n 1939 -p -f /ltp-tmp/ltp-NH5QtKmmxA/alltests -l /home/root/test-definitions/automated/linux/ltp/output/LTP_syscalls.log  -C 
+/home/root/test-definitions/automated/linux/ltp/output/LTP_syscalls.failed -T /opt/ltp/output/LTP_RUN_ON-LTP_syscalls.log.tconf
+INFO: Restricted to fallocate05
+LOG File: /home/root/test-definitions/automated/linux/ltp/output/LTP_syscalls.log
+FAILED COMMAND File: /home/root/test-definitions/automated/linux/ltp/output/LTP_syscalls.failed
+TCONF COMMAND File: /opt/ltp/output/LTP_RUN_ON-LTP_syscalls.log.tconf
+Running tests.......
+tst_device.c:88: TINFO: Found free device 0 '/dev/loop0'
+tst_supported_fs_types.c:147: TINFO: Skipping ext2 as requested by the test
+tst_supported_fs_types.c:147: TINFO: Skipping ext3 as requested by the test
+tst_supported_fs_types.c:147: TINFO: Skipping ext4 as requested by the test
+tst_supported_fs_types.c:147: TINFO: Skipping xfs as requested by the test
+tst_supported_fs_types.c:147: TINFO: Skipping btrfs as requested by the test
+tst_supported_fs_types.c:147: TINFO: Skipping vfat as requested by the test
+tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:147: TINFO: Skipping ntfs as requested by the test
+tst_supported_fs_types.c:89: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:38: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1433: TINFO: Testing on tmpfs
+tst_test.c:934: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1365: TINFO: Timeout per run is 0h 15m 00s
+devtmpfs    on  /dev                                        type  devtmpfs    (rw,relatime,size=87560k,nr_inodes=21890,mode=755)
+tmpfs       on  /dev/shm                                    type  tmpfs       (rw,nosuid,nodev)
+tmpfs       on  /run                                        type  tmpfs       (rw,nosuid,nodev,mode=755)
+tmpfs       on  /sys/fs/cgroup                              type  tmpfs       (ro,nosuid,nodev,noexec,mode=755)
+tmpfs       on  /tmp                                        type  tmpfs       (rw,nosuid,nodev)
+tmpfs       on  /var/volatile                               type  tmpfs       (rw,relatime)
+tmpfs       on  /run/user/0                                 type  tmpfs       (rw,nosuid,nodev,relatime,size=17716k,mode=700)
+ltp-tmpfs   on  /ltp-tmp/ltp-NH5QtKmmxA/falDMCkys/mntpoint  type  tmpfs       (rw,relatime)
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
+tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
+tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
+fallocate05.c:83: TPASS: write() wrote 1048576 bytes
+fallocate05.c:104: TINFO: fallocate()d 0 extra blocks on full FS
+fallocate05.c:116: TPASS: fallocate() on full FS
+fallocate05.c:132: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)
+fallocate05.c:138: TPASS: write()
 
-<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
-ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
- rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_qu=
-ote"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
-rder-left:1px solid rgb(204,204,204);padding-left:1ex">
-5) Apply Li&#39;s patchset (with v2 of the 3rd patch)<br>
-=C2=A0 =C2=A0 Exactly the same behaviour as 4)<br>
-=C2=A0 =C2=A0 --&gt; FAIL<br></blockquote><div><br></div><div><div style=3D=
-"font-size:small">Can you post the test log for this 5), it shouldn&#39;t b=
-e similar like 4)</div><div style=3D"font-size:small">because we limit tmfs=
--size=C2=A0to 32MB in this case. and If you didn&#39;t remove</div><div sty=
-le=3D"font-size:small">.dev_min_size=3D512, it should be skip tmpfs test on=
- your 153MB MemAva</div><div style=3D"font-size:small">machine.=C2=A0</div>=
-<br></div><div><div style=3D"font-size:small">With remove .dev_min_size=3D5=
-12 from fallocate05 in situation 5).</div></div><div><div style=3D"font-siz=
-e:small">If it is still OOM with 32MB tmpfs-size, I tend to agree with Cyri=
-l that is</div><div style=3D"font-size:small">very likely you hit a kernel =
-problem or configure issue.</div></div></div></div></blockquote><div><br></=
-div><div><div class=3D"gmail_default" style=3D"font-size:small">FYI, for qu=
-ick test and show tmpfs mount info, you could add debug code:</div><div cla=
-ss=3D"gmail_default" style=3D"font-size:small"><br></div>--- a/testcases/ke=
-rnel/syscalls/fallocate/fallocate05.c<br>+++ b/testcases/kernel/syscalls/fa=
-llocate/fallocate05.c<br>@@ -50,6 +50,8 @@ static void setup(void)<br>=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 bufsize =3D FALLOCATE_BLOCKS * blocksize;<br>=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 buf =3D SAFE_MALLOC(bufsize);<br>=C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SAFE_CLOSE(fd);<br>+<br>+ =C2=A0 =C2=A0 =C2=A0 tst_system(&quot;=
-mount | column -t<span class=3D"gmail_default" style=3D"font-size:small"> |=
-grep tmpfs</span>&quot;);<br>=C2=A0}<br>=C2=A0<br>=C2=A0static void run(voi=
-d)<br>@@ -153,4 +155,14 @@ static struct tst_test test =3D {<br>=C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 .setup =3D setup,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .cleanup=
- =3D cleanup,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .test_all =3D run,<br>+ =C2=A0=
- =C2=A0 =C2=A0 .skip_filesystems =3D (const char *const []) {<br>+ =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;ext2&quot;,<br>+ =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;ext3&quot;,<br>+ =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;ext4&quot;,<br>+ =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;nfs&quot;,<br>+ =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;xfs&quot;,<br>+ =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;ntfs&quot;,<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 &quot;btrfs&quot;,<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 NULL<br>+ =C2=A0 =C2=A0 =C2=A0 },<br>=C2=A0};<br><=
-div class=3D"gmail_default" style=3D"font-size:small"></div><br></div></div=
-><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=
-=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---00000000000064bf1805cce11ac0--
-
-
---===============1402909606==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1402909606==--
-
