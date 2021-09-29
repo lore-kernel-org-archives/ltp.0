@@ -1,74 +1,83 @@
-Return-Path: <SRS0=NQiP=OS=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=fXc4=OT=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A22CC433EF
-	for <ltp@archiver.kernel.org>; Tue, 28 Sep 2021 13:45:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1C1BC433EF
+	for <ltp@archiver.kernel.org>; Wed, 29 Sep 2021 01:35:46 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33FCF60FE8
-	for <ltp@archiver.kernel.org>; Tue, 28 Sep 2021 13:45:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 33FCF60FE8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 10CE6613A9
+	for <ltp@archiver.kernel.org>; Wed, 29 Sep 2021 01:35:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 10CE6613A9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A7E213CA0A5
-	for <ltp@archiver.kernel.org>; Tue, 28 Sep 2021 15:45:42 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C3F673CA09F
+	for <ltp@archiver.kernel.org>; Wed, 29 Sep 2021 03:35:43 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 510903C8B74
- for <ltp@lists.linux.it>; Tue, 28 Sep 2021 15:45:33 +0200 (CEST)
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
- [IPv6:2607:f8b0:4864:20::830])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ABEC91001171
- for <ltp@lists.linux.it>; Tue, 28 Sep 2021 15:45:32 +0200 (CEST)
-Received: by mail-qt1-x830.google.com with SMTP id l13so19902528qtv.3
- for <ltp@lists.linux.it>; Tue, 28 Sep 2021 06:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=CPEuF45pZ1QyhwtyoNRs3fBGMeXDecBNbNV53jSHvEk=;
- b=RMwMKuXP9kpg+xDgXiWKIeyRwYvrmWfaNhuh/4dZONc70oPywU2Z4iioMicpOIjCeh
- nN8AA6TSBaDkUGxVm7cJ4YSAl9pL3gMtHSHx+42IH+O5DCuYdss0tOHRuaf77Smek2qo
- 50XCMCKBP4nOow0CC1O4a08fcmjTcpmQwDe0ZmhOOOdNlMfZzKpUqS82eglc+BaoQp6T
- RNKtZMFvxOb0LpmALksvtZLGqe1G6XJJQ6ZC/jNWvtJfd0V9NX8VrSNQaQ0lrRvv3sSh
- 1z1a07mMSfLXBR4vw0T8wrAisFurGhFR9hIBEunjDKzm4/JpKQnoIypcYKmU7dThhJfA
- RNYg==
+ by picard.linux.it (Postfix) with ESMTPS id B727A3C81A9
+ for <ltp@lists.linux.it>; Wed, 29 Sep 2021 03:35:34 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 05673140122F
+ for <ltp@lists.linux.it>; Wed, 29 Sep 2021 03:35:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1632879331;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FJKaKn8XlJmrmMcI0VJn7udpPiDqhDUGcryhO1QF2Dk=;
+ b=hnEsvuoMRfESp+skW/JJ5yevrPdFr39Xmbj/KMhp/q7KT1aMH7jZBGYaTyw27f11H7KoUX
+ vWdH4j6v3Iuyezb1TuIjgwbMJoFrP4nb2cawNfG64UtWaiGCXqmrjzTpFRswzELlBuN8y+
+ VxrRfu59k3l/XOiKkVEbnC/Zs1LSQa0=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-68hwrNvLOpe0GC2YYFv2Gg-1; Tue, 28 Sep 2021 21:35:21 -0400
+X-MC-Unique: 68hwrNvLOpe0GC2YYFv2Gg-1
+Received: by mail-yb1-f197.google.com with SMTP id
+ b5-20020a251b05000000b005b575f23711so1482321ybb.4
+ for <ltp@lists.linux.it>; Tue, 28 Sep 2021 18:35:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=CPEuF45pZ1QyhwtyoNRs3fBGMeXDecBNbNV53jSHvEk=;
- b=FLBHTHmEomIOyUHdmkmVrd91ZI9pGzsoZ4f9NGn9L/CbAexijzHzMrFHq/6CFXHbr2
- OjvML1gvyDvU6VMQGV4Dd8/JlsB+r3L9e4uxWtfVP8p5qZ2n6V2gA6pRBVcghFaEOCCc
- wqOBm55eIKJ8TiTfdGN5B4cgvKeFKZ8uW1LdQuO/Fn4earwESMYaKezrcnQdM0Ts/OVF
- lSQ1HJfbgagdpEjFrB5B5+par5HwJjy8zV2EzxTfu0n1kyo83XtE/pu56BqkF+O0FdgI
- jt8blLnmzo/ijifJHZccYRQwXcaOynDFPF5UihpWsUu7lmpyT66E1AOWBWMhQAW1EN5/
- 42aQ==
-X-Gm-Message-State: AOAM533QRafAsUVl+Ptsi4PPO4q9T7rONl/gbmPXup3aDFXmSDVv35dn
- VLiHTAo6IRq/R3dFTxjqZOrjv4IKC4nNKQ==
-X-Google-Smtp-Source: ABdhPJzMwQ7630NE0aDytDHePCzbYRfoZ06UkdMzMiaWQ3af4joEljU5spMoXMhBUjvRXZ3HQ1zbBA==
-X-Received: by 2002:ac8:4446:: with SMTP id m6mr5676486qtn.330.1632836731445; 
- Tue, 28 Sep 2021 06:45:31 -0700 (PDT)
-Received: from maple.netwinder.org (rfs.netwinder.org. [206.248.184.2])
- by smtp.gmail.com with ESMTPSA id 14sm12767646qty.93.2021.09.28.06.45.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Sep 2021 06:45:31 -0700 (PDT)
-From: Ralph Siemsen <ralph.siemsen@linaro.org>
-To: ltp@lists.linux.it
-Date: Tue, 28 Sep 2021 09:45:28 -0400
-Message-Id: <20210928134528.2397293-1-ralph.siemsen@linaro.org>
-X-Mailer: git-send-email 2.25.1
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=FJKaKn8XlJmrmMcI0VJn7udpPiDqhDUGcryhO1QF2Dk=;
+ b=1EIzzKbl7cPooxwgcG+1SnfX82Xk7N0T8vz/BrorDgqnc6K6N5b6dJiVS9ocodzXrc
+ 31PEO1TtqU/Aq5r/0FjFMaaIbQX2y5VSuvqhU6vJKAwlv9Qh8Rb2QFs+Sp1kwUD/NJDc
+ o9WPSilAG2PrtYEleGBqh2TwPxd2tmOfT3MfkgGCCu4HfZEpmIzUPx23O5gFSEORwf1Q
+ wvenDoI310FS9N+BZMSLK86iRBDBI9Sr/jWAHfgrlOKRaUT9JUdEP9wqoANhJZxaZQLk
+ y+5Mi1Z3atuANxjWqji41MfBLm2XvlEmPAskRyExGhs8dh8M5RzWy3eYcFCWGpWmfFtQ
+ KX6g==
+X-Gm-Message-State: AOAM532s5m8wHwN63VkzbBAr7MmZc61rpd9HOlL0ZmNURBU6MT9RrmzX
+ 2g1XR5xbrTy5iMXJcJfE71DlT9yDtLr/pW19Et8db48YHdKuVmg3p4HED6coSR4SLKP3F1e5UgK
+ fhuRCC6U4fbymDrboUi9/BbhcXNU=
+X-Received: by 2002:a05:6902:705:: with SMTP id
+ k5mr11079667ybt.490.1632879320400; 
+ Tue, 28 Sep 2021 18:35:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRATFcpnh+vL9R9sf2e4bWtwCelO93lx4WOealMlHRXlWoozKe/44Yc/pkIEuOMBahwhm2shSDFQMoQKpy4xY=
+X-Received: by 2002:a05:6902:705:: with SMTP id
+ k5mr11079653ybt.490.1632879320170; 
+ Tue, 28 Sep 2021 18:35:20 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20210928134528.2397293-1-ralph.siemsen@linaro.org>
+In-Reply-To: <20210928134528.2397293-1-ralph.siemsen@linaro.org>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 29 Sep 2021 09:35:08 +0800
+Message-ID: <CAEemH2dqGrZnDbHDVse83pDxOpKSLCGkKZeqWGHa5DmiZ+0M5A@mail.gmail.com>
+To: Ralph Siemsen <ralph.siemsen@linaro.org>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fallocate06: drop explicit tmpfs size
+Subject: Re: [LTP] [PATCH] fallocate06: drop explicit tmpfs size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,35 +89,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0132381567=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test does not require 512MB, so drop this specification. Instead
-rely on earlier commit 21c8759f4 ("lib: adjust the tmpfs size according
-to .dev_min_size and MemAvailable") to set the size.
+--===============0132381567==
+Content-Type: multipart/alternative; boundary="000000000000d7175405cd185791"
 
-Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
----
- testcases/kernel/syscalls/fallocate/fallocate06.c | 1 -
- 1 file changed, 1 deletion(-)
+--000000000000d7175405cd185791
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate06.c b/testcases/kernel/syscalls/fallocate/fallocate06.c
-index 49ddba4a2..bf0d24328 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate06.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate06.c
-@@ -261,7 +261,6 @@ static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(testcase_list),
- 	.needs_root = 1,
- 	.mount_device = 1,
--	.dev_min_size = 512,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
- 	.setup = setup,
+Merged, thanks!
+
 -- 
-2.25.1
+Regards,
+Li Wang
+
+--000000000000d7175405cd185791
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Merged, thanks!</div></div><div class=3D"gmail_quote"><div di=
+r=3D"ltr" class=3D"gmail_attr"><br></div></div>-- <br><div dir=3D"ltr" clas=
+s=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<=
+br></div></div></div></div>
+
+--000000000000d7175405cd185791--
+
+
+--===============0132381567==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0132381567==--
+
