@@ -2,54 +2,80 @@ Return-Path: <SRS0=YPcq=OZ=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26554C433F5
-	for <ltp@archiver.kernel.org>; Tue,  5 Oct 2021 13:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32B92C433EF
+	for <ltp@archiver.kernel.org>; Tue,  5 Oct 2021 20:24:48 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 212AE61244
-	for <ltp@archiver.kernel.org>; Tue,  5 Oct 2021 13:47:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 212AE61244
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
+	by mail.kernel.org (Postfix) with ESMTPS id 02D466142A
+	for <ltp@archiver.kernel.org>; Tue,  5 Oct 2021 20:24:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 02D466142A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70CD13C7FE3
-	for <ltp@archiver.kernel.org>; Tue,  5 Oct 2021 15:47:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A54B33CA5EB
+	for <ltp@archiver.kernel.org>; Tue,  5 Oct 2021 22:24:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 56CF63C4DE9
- for <ltp@lists.linux.it>; Tue,  5 Oct 2021 15:46:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AC6123C265F
+ for <ltp@lists.linux.it>; Tue,  5 Oct 2021 22:24:34 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A29F41400C62
- for <ltp@lists.linux.it>; Tue,  5 Oct 2021 15:46:55 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 04569223FC;
- Tue,  5 Oct 2021 13:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1633441615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=9qbTY+sqWcSEkrroNE3kJO+Z5agISD7EdTf8Hv0UXnQ=;
- b=MgIn+PIAEykGsYVlqy9P2jjr3ywmYeT9/l27UBC0vq4krz/acFbk6poIElXFapwcPWEHRU
- OkN3wz1NJ3uh6Nb5mvuLBPWBvgv39MlbD88lPny6bR6IMy2XrQ/pKWvQpFeOLRSES4G+IJ
- +v+puMhyetPQZDzPW6w8y4pRzyRDxSk=
-Received: from g78.suse.de (unknown [10.163.24.38])
- by relay2.suse.de (Postfix) with ESMTP id B2D94A3B9D;
- Tue,  5 Oct 2021 13:46:54 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue,  5 Oct 2021 14:46:39 +0100
-Message-Id: <20211005134640.12565-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.33.0
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2554B1400505
+ for <ltp@lists.linux.it>; Tue,  5 Oct 2021 22:24:34 +0200 (CEST)
+Received: by mail-wr1-x42b.google.com with SMTP id r7so1496838wrc.10
+ for <ltp@lists.linux.it>; Tue, 05 Oct 2021 13:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=M3FpTVktQjAC/nzYFnoZC6Rnd5+t8T0HsHKJVNPpFwo=;
+ b=iy/XXgRy2CZXc6PX5IllRJUmZWb5e1dZmrNyarC9NUJSSYvnOotKyPgnqXwvecqw2V
+ fWRJp8cTlCUlr7qLJgUs79u1VHzHV+jhLUXdIpkeJulbf7ZiRvEAbkWZQcBr7BZoeCBh
+ Q97I34oeY3OM3XKxPB3FzHbYp43lyV3sfN0e98fPXiPVRrOkmLCuPAu0Y0mpTKYJJp92
+ N49lhhfLITtJyINZO4WKAiuSSMtuslhG7x996ArPmaiBghNrJeL5WpRQRAON1JlcfwIq
+ Z7wzfZqWkxRTw4oo85n0Mis70a+Bz3Rq6R2/oTqMBi9R6fuLWDzHnS8MpSSzaaUeSqOm
+ HMcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=M3FpTVktQjAC/nzYFnoZC6Rnd5+t8T0HsHKJVNPpFwo=;
+ b=v0VtUsWkR0g+mFg7IhmKtdBv38dCEYOs+/WraZum9eEEZu9zfeyfSqg3xDQpva375k
+ zpOGSyn9z5nxohv7pALmThEaWkqfUI0Rre6aTeGd0x5nJSXp/Gw9EMbPGiXN5u5C7S1p
+ YMqdPG6XmeqOcZtQR8+3KtLMES90amQ16avkgfqjWkrJLQhpjtHl29vZoTeW8GJjGrIF
+ CNuAxKWHtp3afHcrQJsHTdLkg9ZKYAcwMiVL4HDvJOzV/5eAh6Pek3zIY3PoG1VtiZwt
+ iwZrCI1pm7G/pescPeS1AjISwyLSk3c1XV3QEXjicoK/ERDaZb8CjSCi+xl/aVLUljQH
+ m1vg==
+X-Gm-Message-State: AOAM530jbZztcAKamTRobdDbCbhdgf/UeXWDd0Gk583brAXdbmiIlF5O
+ BUEB0+F72UDPBPrqoVs1DII=
+X-Google-Smtp-Source: ABdhPJxuEcDRBeA2GBYG1zdFtOuu8BjdJJ5wqplFLVZfdRWGOFmBasG4/ovQnCWuxOKS9TlLgIlr2g==
+X-Received: by 2002:adf:a289:: with SMTP id s9mr24616555wra.260.1633465473659; 
+ Tue, 05 Oct 2021 13:24:33 -0700 (PDT)
+Received: from pevik (gw1.ms-free.net. [185.243.124.10])
+ by smtp.gmail.com with ESMTPSA id h3sm11588144wro.42.2021.10.05.13.24.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 05 Oct 2021 13:24:32 -0700 (PDT)
+Date: Tue, 5 Oct 2021 22:24:29 +0200
+From: Petr Vorel <petr.vorel@gmail.com>
+To: Steve Muckle <smuckle@google.com>
+Message-ID: <YVy0fTqiKM3lCCQj@pevik>
+References: <linux-test-project/ltp/releases/50325863@github.com>
+ <YVQf9xSxrXjobBM9@pevik>
+ <CA+nhYX2qvXjaxOBRmEJyqBr0B3JY053PiqMZ3MN-M8HdYvEnRA@mail.gmail.com>
+ <YVtBt+WeskISn5+9@pevik>
+ <2a6a43e1-25da-7eef-f212-bfe0371275d3@google.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2a6a43e1-25da-7eef-f212-bfe0371275d3@google.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] clock_nanosleep01: Avoid dereferencing bad
- pointers in libc
+Subject: Re: [LTP] Requested user & group [was: Re: [linux-test-project/ltp]
+ Release 20210927 - LTP 20210927]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,79 +87,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
+Cc: Sandeep Patil <sspatil@google.com>, Martin Doucha <martin.doucha@suse.com>,
+ ltp <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In 32-bit (regardless of kernel bits) glibc and musl will usually
-dereference the timespec pointers and try to read them. In some cases
-this might be avoidable, but they must do it in others.
+> On 10/4/21 11:02 AM, Petr Vorel wrote:
+> > I'm sorry, I was wrong, I meant GID "nogroup". Looking into the source, there is
+> > no "AID_NOGROUP", thus we need to keep using GID "daemon" for AOSP instead
+> > "nogroup". IMHO instead SAFE_GETGRNAM_FALLBACK() this should be set somewhere in
+> > the library, so that it's for all tests.
 
-Passing invalid pointers is undefined in POSIX. In any case, AFAICT
-libc would have to catch the signal in order to guarantee EFAULT is
-returned.
+> Hi Petr, I've created an issue internally to track adding 'nogroup'. It may
+> be a little while before it goes in though.
 
-It's also reported that some other libc implementations dereference
-the pointers even in 64bit. If this happens then it blocks more useful
-testing. So this avoids passing bad pointers to libc.
+Hi Steve, Martin, Sandeep, Cyril,
 
-Also turn test_type into a bitmask to reduce if statement length.
+@Steve, I'm very sorry, I didn't interpret the changelog correctly. As Martin
+notified me, since his patchset [1][2] merged as dc84a2490~..7d4fdf3bb the only
+groups queried by name are "users" and "daemon" (these in
+SAFE_GETGRNAM_FALLBACK()). He actually removed all references to "nobody" and
+"nogroup" in the patchset, tests now use tst_get_gids(), getgid() or get the
+primary group through getpwnam("nobody"). Thus there is no need to create group
+"nogroup", please close that internal aosp ticket.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Acked-by: Jan Stancek <jstancek@redhat.com>
----
+Looking into tst_get_{g,u}ids() implementation it "The function will fill the
+remaining (size-start) entries with unique UID/GID values.". But the problem is
+that it expect there are no gaps in UID/GID values. While this is true for
+traditional linux distros (not sure about embedded distros), it's definitely not
+true for aosp, see AID_ definitions in libcutils source [1].
 
-V2:
-* Also remove check on 64-bit
-* Avoid pause waiting for child proc
-* Use bitmask
+e.g. tst_get_gids(test_groups, 0, 2) (from setregid03.c) returns GID 1 and 2.
+But on aosp getpwuid(1) and getpwuid(2) fails (I verified that by running code
+on aosp 8). There is GID AID_DAEMON 1 ("daemon") and AID_BIN 2 ("bin"), which
+has been added for aosp 9 (8e8648463d7 ("libcutils: Add "daemon" and "bin" users
+for testing only")) and IMHO no use of tst_get_gids() so far does require higher
+GID that 2, but once higher ID is needed it will break (and even adding GID
+"nobody" would help much).
 
- .../clock_nanosleep/clock_nanosleep01.c         | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Fix would be to actually try to run getpwuid(with expected id) until
+it's found, but next GID for aosp is AID_SYSTEM 1000, thus it wouldn't scale.
+But it would work with aosp < 9 (not sure if anybody cares for old aosp).
 
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-index 382497918..6d81151b6 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-@@ -27,10 +27,10 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- }
- 
- enum test_type {
--	NORMAL,
--	SEND_SIGINT,
--	BAD_TS_ADDR_REQ,
--	BAD_TS_ADDR_REM,
-+	NORMAL = 1,
-+	SEND_SIGINT = 2,
-+	BAD_TS_ADDR_REQ = 4,
-+	BAD_TS_ADDR_REM = 8,
- };
- 
- #define TYPE_NAME(x) .ttype = x, .desc = #x
-@@ -138,7 +138,14 @@ static void do_test(unsigned int i)
- 
- 	tst_res(TINFO, "case %s", tc->desc);
- 
--	if (tc->ttype == SEND_SIGINT || tc->ttype == BAD_TS_ADDR_REM)
-+	if (tc->ttype & (BAD_TS_ADDR_REQ | BAD_TS_ADDR_REM) &&
-+	    tv->clock_nanosleep == libc_clock_nanosleep) {
-+		tst_res(TCONF,
-+			"The libc wrapper may dereference req or rem");
-+		return;
-+	}
-+
-+	if (tc->ttype & (SEND_SIGINT | BAD_TS_ADDR_REM))
- 		pid = create_sig_proc(SIGINT, 40, 500000);
- 
- 	tst_ts_set_sec(rq, tc->tv_sec);
--- 
-2.33.0
+Back to tests which use SAFE_GETGRNAM_FALLBACK() (used in chmod07.c, fchmod02.c).
+With current implementation, it'd be possible to replace it with tst_get_gids().
 
+Kind regards,
+Petr
+
+[1] https://cs.android.com/android/platform/superproject/+/master:system/core/libcutils/include/private/android_filesystem_config.h;l=43?q=AID_
+
+> cheers,
+> Steve
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
