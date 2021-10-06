@@ -2,76 +2,78 @@ Return-Path: <SRS0=CJzs=O2=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64A0BC433EF
-	for <ltp@archiver.kernel.org>; Wed,  6 Oct 2021 18:45:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6517BC433F5
+	for <ltp@archiver.kernel.org>; Wed,  6 Oct 2021 19:08:21 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B79161151
-	for <ltp@archiver.kernel.org>; Wed,  6 Oct 2021 18:45:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B79161151
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 93C7A611CC
+	for <ltp@archiver.kernel.org>; Wed,  6 Oct 2021 19:08:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 93C7A611CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 911C73C9F6C
-	for <ltp@archiver.kernel.org>; Wed,  6 Oct 2021 20:44:57 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 413593C7F59
+	for <ltp@archiver.kernel.org>; Wed,  6 Oct 2021 21:08:18 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD2123C663F
- for <ltp@lists.linux.it>; Wed,  6 Oct 2021 20:44:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3A8DF3C6557
+ for <ltp@lists.linux.it>; Wed,  6 Oct 2021 21:08:08 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3F398140052D
- for <ltp@lists.linux.it>; Wed,  6 Oct 2021 20:44:46 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3BCC01FEF6;
- Wed,  6 Oct 2021 18:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1633545886;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HDmbrCKhWwX6iqiVBjbdelCjcM/jh9fKGuFPUIDf9b4=;
- b=ebNepZCH4VAzSKdOq0i0cVISdF2uJopLpI34hE81H9pU6GyZZcC9lWCxKEEDmADhZQjNc4
- vaGtDH51gGEgjXLIZ53XVLpZZAxdsfS17lnst44KiN8wUPF/5dciItNORlfjKn7d/cFmIs
- pZwkyv1bUl8XQMjW3vb+YL/X7dpYMRM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1633545886;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HDmbrCKhWwX6iqiVBjbdelCjcM/jh9fKGuFPUIDf9b4=;
- b=htNducp8gFoCVn1/pVYIvz0aYSp1MaqCkLCUwEQfK7lkhXV7xR3id1JWSmYb1i2xkhudEx
- W0vRsyXPfocq7KAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F7DE13E68;
- Wed,  6 Oct 2021 18:44:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VSf9AZ7uXWGdfAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 06 Oct 2021 18:44:46 +0000
-Date: Wed, 6 Oct 2021 20:44:44 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 24CD214002B6
+ for <ltp@lists.linux.it>; Wed,  6 Oct 2021 21:08:08 +0200 (CEST)
+Received: by mail-wr1-x42f.google.com with SMTP id v25so11790175wra.2
+ for <ltp@lists.linux.it>; Wed, 06 Oct 2021 12:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=UjqJqLLIonyBl/fEnrRc3ZDS8QCjcSTphhs9Epv9YFs=;
+ b=Om2t+2C9YHz6R1IPkz+0F+fJExUS2ltaLwjW/Dytdc0O8BmX1Gm5kI8GZL/gvuAu4X
+ qThGa3FGpc/6K/HOcsLPlOJNTDrhDHc35kItqhXlLcKJMOcVbm14/rLOPuQxz37oJJbH
+ TlLFF3xGuWD6L/nRBGDq0A2XnN4l270T95HpzsY0Ch0pTSD2iim++YxshJT2/FQakxsL
+ owvgieZneuL2M4+FabpawBcwrRRHqQAJkxF9ak6kHBPqQJNSPPPJDWFOSFmOhNGuJFqP
+ ZsNQuCnzocbpPbHZ6t0wGlLe2jvAIfU0qfKuRrn5yaeR/pAIO91lMQLrKmkNwI1OG6K/
+ KnBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=UjqJqLLIonyBl/fEnrRc3ZDS8QCjcSTphhs9Epv9YFs=;
+ b=AAN+z33mcxal4h8UQC2t3fhCujUMXc+NIA0/rLfeu3ysLDmtJJE1V3bBLMTN8icya8
+ EBUrxtSBUb/m1bw2HV0gLL5ML9p+4dVXhMenr9fIO11ObSaQxRzWjFi4K1ceg4wKjqHN
+ d7M/KQzOXuxVA+2Fs2/9dOKzn90ZqoeL2eHMDSQv51yh3qFDs/RUM2r8ChtTHy4fA0vx
+ hvkY9UGPy6r4n8pLk++Qg2kuEXg5eshW1B355KLx0ATGa8cpI7CgY1R+mch7iLxn6nsf
+ FdjymBdC3e6yraAhjaM0XMaSNogyGqjAZlLLMzWsTnBWCJlpbPlhKOnYY/IF53xiVwjW
+ u+jw==
+X-Gm-Message-State: AOAM531iSOAycQ3HhwLZgF3xkliRNTyHzbge/ZNN1K+AAGFTL/6OrTNo
+ IsoKc0Bvbs9HhVAPeG6WFss=
+X-Google-Smtp-Source: ABdhPJwXWH13biCav+++X52+kE2gMqbg4HD/RVb+8bNBaLgsSjjPQ40xtCIOzEbMhfuNOtc6HIwzZg==
+X-Received: by 2002:adf:b1d7:: with SMTP id r23mr18539389wra.145.1633547287719; 
+ Wed, 06 Oct 2021 12:08:07 -0700 (PDT)
+Received: from pevik (gw1.ms-free.net. [185.243.124.10])
+ by smtp.gmail.com with ESMTPSA id b13sm4881952wmj.3.2021.10.06.12.08.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 06 Oct 2021 12:08:07 -0700 (PDT)
+Date: Wed, 6 Oct 2021 21:08:03 +0200
+From: Petr Vorel <petr.vorel@gmail.com>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YV3unO2KOG5sfxSK@pevik>
-References: <20211004084015.16100-1-pvorel@suse.cz>
- <YV2iuKQyO/ZhpqoW@yuki>
+Message-ID: <YV30E/UL73VJ3AYf@pevik>
+References: <20210930183058.5240-1-petr.vorel@gmail.com>
+ <20210930183058.5240-4-petr.vorel@gmail.com>
+ <YV2r5IvFeiVIoY9a@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YV2iuKQyO/ZhpqoW@yuki>
+In-Reply-To: <YV2r5IvFeiVIoY9a@yuki>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] setgroups03: Fix running more iterations
- (-i 2)
+Subject: Re: [LTP] [RFC PATCH v2 3/3] lapi/if_addr.h: Define IFA_FLAGS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,20 +85,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
+Cc: ltp@lists.linux.it, buildroot@buildroot.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > +	ltpuser = SAFE_GETPWNAM(cleanup, uid);
-> > +	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+Hi Cyril,
 
-> Can we please push the GETPWNAM() to the test setup and pass only uid to
-> the test setup functions?
-Ah, sure, sorry for overlooking obvious improvement.
+> Hi!
+> Looks good, as long as it passed CI:
+Sure, I tested it not only for affected buildroot, but for LTP CI.
+
+Thus fixed commit message and merged.
+Thanks a lot both for review.
 
 Kind regards,
 Petr
