@@ -2,74 +2,74 @@ Return-Path: <SRS0=1KVt=O3=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3067BC433EF
-	for <ltp@archiver.kernel.org>; Thu,  7 Oct 2021 11:35:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84A5AC433EF
+	for <ltp@archiver.kernel.org>; Thu,  7 Oct 2021 11:54:08 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50AD160FD7
-	for <ltp@archiver.kernel.org>; Thu,  7 Oct 2021 11:35:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 50AD160FD7
+	by mail.kernel.org (Postfix) with ESMTPS id 9D1226124A
+	for <ltp@archiver.kernel.org>; Thu,  7 Oct 2021 11:54:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9D1226124A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C31F73C7F45
-	for <ltp@archiver.kernel.org>; Thu,  7 Oct 2021 13:35:04 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id BCB6C3C7AC5
+	for <ltp@archiver.kernel.org>; Thu,  7 Oct 2021 13:54:05 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9B6BE3C1CC3
- for <ltp@lists.linux.it>; Thu,  7 Oct 2021 13:34:53 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3EAE93C1423
+ for <ltp@lists.linux.it>; Thu,  7 Oct 2021 13:53:54 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B21CA1000B22
- for <ltp@lists.linux.it>; Thu,  7 Oct 2021 13:34:52 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 917171A005FF
+ for <ltp@lists.linux.it>; Thu,  7 Oct 2021 13:53:53 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8E19B200B0;
- Thu,  7 Oct 2021 11:34:51 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 96D161FD78;
+ Thu,  7 Oct 2021 11:53:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1633606491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1633607632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GtB5YJjGcQGpSQK/GR1ogzVWlq6YaXzrnqxVA0sagRk=;
- b=S7WIkc/Whvh8qauO1GchuT9YvVlgXq4iOLPJT02rPM6nZF5XEK0Sk6ZlRG8JiFnHfYRJu7
- ucK4G8nJnhm4udgPNjjV9QHZ6RTtzeLyBBVpYjhlrfmGuFrsCU8OqcNTnE5wFmQ4Zd75aB
- atZJkU8zjjz3Ie/UisDCAwSzgVpaPwc=
+ bh=oLL77BH3lPRb5yVbGWDmL84mbC0Kd0bv7qibbCdIUXw=;
+ b=VFI91tvF1xuN9NSjdsYg4Xh0AB8lTbvS7pe+sgznnx75vPoOuy28P2z95nyr1d3XpyH9Qf
+ HZOoPYlLrfVHtftPDR1LKG+v9A/TdmFGjWBpZBDBGkzDlnuT3FelK70yq0Y7+w7ey5U3D9
+ 3yOqaxphVNjjmEFao5oiqAyBgJYiST0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1633606491;
+ s=susede2_ed25519; t=1633607632;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GtB5YJjGcQGpSQK/GR1ogzVWlq6YaXzrnqxVA0sagRk=;
- b=bH//dDhISrM+1G7HfHiAuXRDrOXW+imn5eSZeU04oWdAXgCcaA66GToQ7hVsaHUs9Rdtfm
- COjNyZmjGUzFT7Cg==
+ bh=oLL77BH3lPRb5yVbGWDmL84mbC0Kd0bv7qibbCdIUXw=;
+ b=R5q1JMfAPHRfJN+Sk60Egnvcwf/gL2KYkjmah9ltthXeUmTNUG7qPW6ZbRi7/DcrVvULOB
+ K5JUkfrpEI9+sRAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7822013B92;
- Thu,  7 Oct 2021 11:34:51 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7DA5113B39;
+ Thu,  7 Oct 2021 11:53:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id /+7SHFvbXmG9dQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 07 Oct 2021 11:34:51 +0000
-Date: Thu, 7 Oct 2021 13:35:26 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id AyIEHtDfXmFxfwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 07 Oct 2021 11:53:52 +0000
+Date: Thu, 7 Oct 2021 13:54:27 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: zhanglianjie <zhanglianjie@uniontech.com>
-Message-ID: <YV7bfgmBT+1unI3j@yuki>
+Message-ID: <YV7f8yhhvy7L9YIX@yuki>
 References: <20210929083249.22320-1-zhanglianjie@uniontech.com>
+ <20210929083249.22320-2-zhanglianjie@uniontech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210929083249.22320-1-zhanglianjie@uniontech.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20210929083249.22320-2-zhanglianjie@uniontech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] syscalls/readdir01: Convert to new API
+Subject: Re: [LTP] [PATCH 2/2] syscalls/readdir21: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,215 +87,220 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static void setup(void)
-> +{
-> +	sprintf(prefix, "%s_%d.", "readdirfile", getpid());
-
-Since the test runs in it's own temporary directory there is no need to
-prefix everything with the pid.
-
-> +}
+On Wed, Sep 29, 2021 at 04:32:49PM +0800, zhanglianjie wrote:
+> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 > 
-> -/***********************************************************************
-> - * Main
-> - ***********************************************************************/
-> -int main(int ac, char **av)
-> +static void verify_readdir(void)
->  {
-> -	int lc;
-> -	int cnt;
-> -	int nfiles, fd;
-> +	int i;
-> +	int fd;
-> +	int cnt = 0;
->  	char fname[255];
->  	DIR *test_dir;
->  	struct dirent *dptr;
+> diff --git a/testcases/kernel/syscalls/readdir/readdir21.c b/testcases/kernel/syscalls/readdir/readdir21.c
+> index 205e0715b..1bc3cc199 100644
+> --- a/testcases/kernel/syscalls/readdir/readdir21.c
+> +++ b/testcases/kernel/syscalls/readdir/readdir21.c
+> @@ -1,20 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * Copyright (c) 2014 Fujitsu Ltd.
+>   * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>   */
+> -/*
+> +
+> +/*\
+> + * [Description]
+> + *
+>   * Test Description:
+>   *  Verify that,
+>   *   1. Creat a directory and open it, then delete the directory, ENOENT would
+> @@ -23,28 +15,16 @@
+>   *   3. Invalid file descriptor fd, EBADF would return.
+>   *   4. Argument points outside the calling process's address space, EFAULT
+>   *	would return.
+
+This should be reformatted so that it renders nicely in asccidoc as:
+
+
+/*\
+ * [Description]
+ *
+ * Verify that readdir will fail with:
+ *
+ * - ENOENT when passed a fd to a deleted directory
+ * - ENOTDIR when passed fd that does not point to a directory
+ * - EBADFD when passed an invalid fd
+ * - EFAULT when passed invalid buffer pointer
+ */
+
+> - *
+> - *  PS:
+> - *   This file is for readdir(2) and the other files(readdir01.c and
+> - *   readdir02.c) are for readdir(3).
+>   */
 > 
-> -	tst_parse_opts(ac, av, options, &help);
+> -#define _GNU_SOURCE
+> +//#define _GNU_SOURCE
+
+Just remove it if it's not needed.
+
+>  #include <stdio.h>
+> -#include <sys/types.h>
+>  #include <sys/stat.h>
+> -#include <fcntl.h>
+> -#include <errno.h>
+> -#include <unistd.h>
+> -#include <sys/mman.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include "tst_test.h"
+>  #include "lapi/syscalls.h"
+>  #include "lapi/readdir.h"
+> 
+> -char *TCID = "readdir21";
 > -
-> -	if (Nflag) {
-> -		if (sscanf(Nfilearg, "%i", &Nfiles) != 1) {
-> -			tst_brkm(TBROK, NULL, "--N option arg is not a number");
-> -		}
-> +	for (i = 0; i < nfiles; i++) {
-> +		sprintf(fname, "%s_%d", prefix, i);
-> +		fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
-> +		SAFE_WRITE(1, fd, "hello\n", 6);
-> +		SAFE_CLOSE(fd);
->  	}
-
-This loop could be moved to the test setup, there is no need to
-re-create the files on each iteration.
-
+>  #define TEST_DIR	"test_dir"
+>  #define TEST_DIR4	"test_dir4"
+>  #define TEST_FILE	"test_file"
+> @@ -55,96 +35,46 @@ static unsigned int del_dir_fd, file_fd;
+>  static unsigned int invalid_fd = 999;
+>  static unsigned int dir_fd;
+>  static struct old_linux_dirent dirp;
+> -static void setup(void);
+> -static void cleanup(void);
 > 
-> -    /***************************************************************
-> -     * perform global setup for test
-> -     ***************************************************************/
-> -	/* Next you should run a setup routine to make sure your environment is
-> -	 * sane.
-> -	 */
+> -static struct test_case_t {
+> +static struct tcase {
+>  	unsigned int *fd;
+>  	struct old_linux_dirent *dirp;
+>  	unsigned int count;
+>  	int exp_errno;
+> -} test_cases[] = {
+> +} tcases[] = {
+>  	{&del_dir_fd, &dirp, sizeof(struct old_linux_dirent), ENOENT},
+>  	{&file_fd, &dirp, sizeof(struct old_linux_dirent), ENOTDIR},
+>  	{&invalid_fd, &dirp, sizeof(struct old_linux_dirent), EBADF},
+> -#if !defined(UCLINUX)
+>  	{&dir_fd, (struct old_linux_dirent *)-1,
+>  	 sizeof(struct old_linux_dirent), EFAULT},
+> -#endif
+>  };
+
+I guess that we also miss EINVAL error here with invalid count.
+
+> -int TST_TOTAL = ARRAY_SIZE(test_cases);
+> -static void readdir_verify(const struct test_case_t *);
+> -
+> -int main(int argc, char **argv)
+> -{
+> -	int i, lc;
+> -
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
 > -	setup();
 > -
-> -    /***************************************************************
-> -     * check looping state
-> -     ***************************************************************/
-> -	/* TEST_LOOPING() is a macro that will make sure the test continues
-> -	 * looping according to the standard command line args.
-> -	 */
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
 > -		tst_count = 0;
+> -		for (i = 0; i < TST_TOTAL; i++)
+> -			readdir_verify(&test_cases[i]);
+> -	}
 > -
-> -		if (Nfiles)
-> -			nfiles = Nfiles;
-> -		else
-> -			/* min of 10 links and max of a 100 links */
-> -			nfiles = (lc % 90) + 10;
-> -
-> -		/* create a bunch of files to look at */
-> -		for (cnt = 0; cnt < nfiles; cnt++) {
-> -
-> -			sprintf(fname, "%s%d", Basename, cnt);
-> -			if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
-> -				tst_brkm(TBROK, cleanup,
-> -					 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
-> -					 fname, errno, strerror(errno));
-> -			} else if (write(fd, "hello\n", 6) < 0) {
-> -				tst_brkm(TBROK, cleanup,
-> -					 "write(%s, \"hello\\n\", 6) Failed, errno=%d : %s",
-> -					 fname, errno, strerror(errno));
-> -			} else if (close(fd) < 0) {
-> -				tst_resm(TWARN,
-> -					"close(%s) Failed, errno=%d : %s",
-> -					fname, errno, strerror(errno));
-> -			}
-> -		}
-> -
-> -		if ((test_dir = opendir(".")) == NULL) {
-> -			tst_resm(TFAIL, "opendir(\".\") Failed, errno=%d : %s",
-> -				 errno, strerror(errno));
-> -		} else {
-> -			/* count the entries we find to see if any are missing */
-> -			cnt = 0;
-> -			errno = 0;
-> -			while ((dptr = readdir(test_dir)) != 0) {
-> -				if (strcmp(dptr->d_name, ".")
-> -				    && strcmp(dptr->d_name, ".."))
-> -					cnt++;
-> -			}
-> -
-> -			if (errno != 0) {
-> -				tst_resm(TFAIL,
-> -					 "readir(test_dir) Failed on try %d, errno=%d : %s",
-> -					 cnt + 1, errno, strerror(errno));
-> -			}
-> -			if (cnt == nfiles) {
-> -				tst_resm(TPASS,
-> -					 "found all %d that were created",
-> -					 nfiles);
-> -			} else if (cnt > nfiles) {
-> -				tst_resm(TFAIL,
-> -					 "found more files than were created");
-> -				tst_resm(TINFO, "created: %d, found: %d",
-> -					 nfiles, cnt);
-> -			} else {
-> -				tst_resm(TFAIL,
-> -					 "found less files than were created");
-> -				tst_resm(TINFO, "created: %d, found: %d",
-> -					 nfiles, cnt);
-> -			}
-> -		}
-> -
-> -		/* Here we clean up after the test case so we can do another iteration.
-> -		 */
-> -		for (cnt = 0; cnt < nfiles; cnt++) {
-> -
-> -			sprintf(fname, "%s%d", Basename, cnt);
-> -
-> -			if (unlink(fname) == -1) {
-> -				tst_resm(TWARN,
-> -					"unlink(%s) Failed, errno=%d : %s",
-> -					Fname, errno, strerror(errno));
-> -			}
-> -		}
-> -
-> +	test_dir = SAFE_OPENDIR(".");
-> +	while ((dptr = SAFE_READDIR(test_dir)) != 0) {
-> +		if (strcmp(dptr->d_name, ".")
-> +			&& strcmp(dptr->d_name, ".."))
-> +			cnt++;
->  	}
-
-I would have probably written this as:
-
-	while ((ent = SAFE_READDIR(test_dir))) {
-		if (!strcmp(ent->d_name, "." || !strcmp(ent->d_name, ".")
-			continue;
-
-		cnt++;
-	}
-
-Also I guess that we can check that the filename is filled correctly as
-well, it has to start with prefix at least.
-
-> -    /***************************************************************
-> -     * cleanup and exit
-> -     ***************************************************************/
 > -	cleanup();
-> -
 > -	tst_exit();
 > -}
 > -
-> -/***************************************************************
-> - * help
-> - ***************************************************************/
-> -/* The custom help() function is really simple.  Just write your help message to
-> - * standard out.  Your help function will be called after the standard options
-> - * have been printed
-> - */
-> -void help(void)
-> -{
-> -	printf("  -N #files : create #files files every iteration\n");
-> -}
-> -
-> -/***************************************************************
-> - * setup() - performs all ONE TIME setup for this test.
-> - ***************************************************************/
-> -void setup(void)
-> -{
-> -	/* You will want to enable some signal handling so you can capture
-> -	 * unexpected signals like SIGSEGV.
-> -	 */
+>  static void setup(void)
+>  {
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 > -
-> -	/* One cavet that hasn't been fixed yet.  TEST_PAUSE contains the code to
-> -	 * fork the test with the -c option.  You want to make sure you do this
-> -	 * before you create your temporary directory.
-> -	 */
 > -	TEST_PAUSE;
-> -
-> -	/* If you are doing any file work, you should use a temporary directory.  We
-> -	 * provide tst_tmpdir() which will create a uniquely named temporary
-> -	 * directory and cd into it.  You can now create files in the current
-> -	 * directory without worrying.
-> -	 */
+> +	SAFE_MKDIR(TEST_DIR, DIR_MODE);
+> +	del_dir_fd = SAFE_OPEN(TEST_DIR, O_RDONLY | O_DIRECTORY);
+> +	SAFE_RMDIR(TEST_DIR);
+> 
 > -	tst_tmpdir();
+> +	file_fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0777);
+> 
+> -	SAFE_MKDIR(cleanup, TEST_DIR, DIR_MODE);
+> -	del_dir_fd = SAFE_OPEN(cleanup, TEST_DIR, O_RDONLY | O_DIRECTORY);
+> -	SAFE_RMDIR(cleanup, TEST_DIR);
+> +	SAFE_MKDIR(TEST_DIR4, DIR_MODE);
+> +	dir_fd = SAFE_OPEN(TEST_DIR4, O_RDONLY | O_DIRECTORY);
+> 
+> -	file_fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0777);
 > -
-> -	sprintf(Basename, "%s_%d.", BASENAME, getpid());
-> +	if (cnt == nfiles) {
-> +		tst_res(TPASS,
-> +				"found all %d that were created",
-> +				nfiles);
-> +	} else {
-> +		tst_res(TFAIL,
-> +				"found %s files than were created, created: %d, found: %d",
-> +				cnt > nfiles ? "more" : "less", nfiles, cnt);
-> +	}
+> -	SAFE_MKDIR(cleanup, TEST_DIR4, DIR_MODE);
+> -	dir_fd = SAFE_OPEN(cleanup, TEST_DIR4, O_RDONLY | O_DIRECTORY);
+> -
+> -#if !defined(UCLINUX)
+> -	test_cases[3].dirp = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
+> -				       MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> -#endif
+> +	tcases[3].dirp = tst_get_bad_addr(NULL);
 
-Why the newline after TPASS, TFAIL, ? We indent the format string as if
-it continued after the TFAIL/TPASS anyways.
+We shouldn't rely on the tcases structure order. We usually solve this
+with a for loop in the setup that looks for EFAULT errno as with:
+
+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
+		if (tcases[i].exp_errno == EBADFD)
+			tcases[i].dirp = tst_get_bad_addr(NULL);
+	}
+
+>  }
+> 
+> -static void readdir_verify(const struct test_case_t *test)
+> +static void verify_readdir(unsigned int nr)
+>  {
+> -	TEST(ltp_syscall(__NR_readdir, *test->fd, test->dirp, test->count));
+> -
+> -	if (TEST_RETURN != -1) {
+> -		tst_resm(TFAIL, "readdir() succeeded unexpectedly");
+> -		return;
+> -	}
+> +	struct tcase *tc = &tcases[nr];
+> 
+> -	if (TEST_ERRNO == test->exp_errno) {
+> -		tst_resm(TPASS | TTERRNO, "readdir() failed as expected");
+> -	} else {
+> -		tst_resm(TFAIL | TTERRNO,
+> -			 "readdir() failed unexpectedly; expected: %d - %s",
+> -			 test->exp_errno, strerror(test->exp_errno));
+> -	}
+> +	TST_EXP_FAIL(tst_syscall(__NR_readdir, *tc->fd, tc->dirp, tc->count),
+> +			tc->exp_errno, "readdir() failed unexpectedly, expected: %d - %s",
+> +			tc->exp_errno, strerror(tc->exp_errno));
+
+This produces a very confusing messages. The TST_EXP_*() macros should
+print what is being tested, since the part that describes the result is
+appended automatically.
+
+So here we should probably add a short description to the tcases
+structure and print it with the macro as:
+
+...
+} tcases[] = {
+	{&del_dir_fd, &dirp, sizeof(struct old_linux_dirent), ENOENT, "directory deleted"},
+...
+}
+
+...
+
+	TST_EXP_FAIL(tst_syscall(__NR_readdir, *tc->fd, tc->dirp, tc->count),
+	             tc->exp_errno, "readdir() with %s", tc->desc);
+
+Which would produce:
+
+	readdir21.c:70: TPASS: readdir() with directory deleted : ENOENT (2)
+
+Instead of the confusing:
+
+	readdir21.c:70: TPASS: readdir() failed unexpectedly, expected: 2 - No such file or directory : ENOENT (2)
 
 -- 
 Cyril Hrubis
