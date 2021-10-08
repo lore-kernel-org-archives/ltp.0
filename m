@@ -2,77 +2,59 @@ Return-Path: <SRS0=B/OF=O4=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49EDAC433F5
-	for <ltp@archiver.kernel.org>; Fri,  8 Oct 2021 11:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F02FDC433EF
+	for <ltp@archiver.kernel.org>; Fri,  8 Oct 2021 12:38:22 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A58160F59
-	for <ltp@archiver.kernel.org>; Fri,  8 Oct 2021 11:12:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8A58160F59
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id B5FAB60F93
+	for <ltp@archiver.kernel.org>; Fri,  8 Oct 2021 12:38:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B5FAB60F93
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C6D43CA59C
-	for <ltp@archiver.kernel.org>; Fri,  8 Oct 2021 13:12:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1E9E83C9F48
+	for <ltp@archiver.kernel.org>; Fri,  8 Oct 2021 14:38:19 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3EBD33C52B3
- for <ltp@lists.linux.it>; Fri,  8 Oct 2021 13:12:14 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A25083C1C56
+ for <ltp@lists.linux.it>; Fri,  8 Oct 2021 14:38:07 +0200 (CEST)
+Received: from smtpproxy21.qq.com (smtpbg702.qq.com [203.205.195.102])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0B0F72003BB
- for <ltp@lists.linux.it>; Fri,  8 Oct 2021 13:12:13 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6F1881FD72;
- Fri,  8 Oct 2021 11:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1633691533;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X9XwFYrzJay+iGdpvl1bsGcn39qbjAXS1nBL8NmnK1M=;
- b=dxeNk8Rpwr+NnW4vlZUdNjQfCqNPqwdQXX8+dQZlDGHttc/zeNBjEpBbbne8GOcoIFgsRk
- +AN82nbRWOhjpomk98qvvc3rs48jLUhpE7XOLMTdqf8oBHAwrjtPfSM/jjAgSi80itcj9a
- RpQXpoDbZiHmsjGdlZAhKQOcpZkzTlc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1633691533;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X9XwFYrzJay+iGdpvl1bsGcn39qbjAXS1nBL8NmnK1M=;
- b=SPxI12YGqNhkyTA7AgyjMGxZiXAy/2QN9MOqSN2bzE9/t7UAvCopkKaRUfpT3Di3tt0fJF
- OiT1Z1baEa1djfAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 442DB13EB2;
- Fri,  8 Oct 2021 11:12:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pirLDo0nYGGzMgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 08 Oct 2021 11:12:13 +0000
-Date: Fri, 8 Oct 2021 13:12:11 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0A7B51401431
+ for <ltp@lists.linux.it>; Fri,  8 Oct 2021 14:38:04 +0200 (CEST)
+X-QQ-mid: bizesmtp41t1633696679to9age7l
+Received: from [10.4.23.19] (unknown [58.240.82.166])
+ by esmtp6.qq.com (ESMTP) with 
+ id ; Fri, 08 Oct 2021 20:37:58 +0800 (CST)
+X-QQ-SSF: 0140000000200040D000B00C0000000
+X-QQ-FEAT: xTOTECUEGExAFEG97vZ7w+LOWZpFg037ol5oLcrtL02Ib5Y2YqfhXQK0BuZcf
+ z2IT1d829ZbhSAAUa9Ei4PAKGvnvUXsM10fEqOHZ+VhxzWL9M4famOp+aX5K3Gr6T9JtFaZ
+ VLB31DfBjMQKfybf2fgFW2n8RpKoyYgjbnOfFKfJMkocSJHiuXcmXbR0KsFszrWcmjI82Ec
+ 02TfO/TBTAjtJ0D4tv5LDTu/aUi2PuE+N933VSLUrCm8iKpOvUkyTu7m6n032ZP2aG+xk+k
+ rLdMMpPXu1vGQiYVWTWBooRfgHbrhAnR7bzJKEGV2wJWEEu2vOAaAfYgxxpnbE4q6AcZJXv
+ +juUdaiPZCWmW2WmzY=
+X-QQ-GoodBg: 2
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YWAni7GqNGQswW5P@pevik>
-References: <20211008100024.24351-1-pvorel@suse.cz>
- <YWAcENhhcvKGTpnl@yuki>
+References: <20210929083249.22320-1-zhanglianjie@uniontech.com>
+ <YV7bfgmBT+1unI3j@yuki>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Message-ID: <a797af52-606f-a0fe-21b5-ea44405092f4@uniontech.com>+ACC1DB4CE74E9110
+Date: Fri, 8 Oct 2021 20:37:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YWAcENhhcvKGTpnl@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <YV7bfgmBT+1unI3j@yuki>
+Content-Language: en-US
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/1] setgroups03: Fix running more iterations
- (-i 2)
+Subject: Re: [LTP] [PATCH 1/2] syscalls/readdir01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,123 +66,233 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Zhao,
+Hi,
+I will resubmit after revision, thank you for your review.
 
+
+On 2021-10-07 19:35, Cyril Hrubis wrote:
 > Hi!
-> > -int setup1();			/* setup function to test error EPERM */
-> > +void setup1(const char *uid, uid_t euid);	/* setup function to test error EPERM */
-> >  void setup();			/* setup function for the test */
-> >  void cleanup();			/* cleanup function for the test */
+>> +static void setup(void)
+>> +{
+>> +	sprintf(prefix, "%s_%d.", "readdirfile", getpid());
+> 
+> Since the test runs in it's own temporary directory there is no need to
+> prefix everything with the pid.
+> 
+>> +}
+>>
+>> -/***********************************************************************
+>> - * Main
+>> - ***********************************************************************/
+>> -int main(int ac, char **av)
+>> +static void verify_readdir(void)
+>>   {
+>> -	int lc;
+>> -	int cnt;
+>> -	int nfiles, fd;
+>> +	int i;
+>> +	int fd;
+>> +	int cnt = 0;
+>>   	char fname[255];
+>>   	DIR *test_dir;
+>>   	struct dirent *dptr;
+>>
+>> -	tst_parse_opts(ac, av, options, &help);
+>> -
+>> -	if (Nflag) {
+>> -		if (sscanf(Nfilearg, "%i", &Nfiles) != 1) {
+>> -			tst_brkm(TBROK, NULL, "--N option arg is not a number");
+>> -		}
+>> +	for (i = 0; i < nfiles; i++) {
+>> +		sprintf(fname, "%s_%d", prefix, i);
+>> +		fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
+>> +		SAFE_WRITE(1, fd, "hello\n", 6);
+>> +		SAFE_CLOSE(fd);
+>>   	}
+> 
+> This loop could be moved to the test setup, there is no need to
+> re-create the files on each iteration.
+> 
+>>
+>> -    /***************************************************************
+>> -     * perform global setup for test
+>> -     ***************************************************************/
+>> -	/* Next you should run a setup routine to make sure your environment is
+>> -	 * sane.
+>> -	 */
+>> -	setup();
+>> -
+>> -    /***************************************************************
+>> -     * check looping state
+>> -     ***************************************************************/
+>> -	/* TEST_LOOPING() is a macro that will make sure the test continues
+>> -	 * looping according to the standard command line args.
+>> -	 */
+>> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> -
+>> -		tst_count = 0;
+>> -
+>> -		if (Nfiles)
+>> -			nfiles = Nfiles;
+>> -		else
+>> -			/* min of 10 links and max of a 100 links */
+>> -			nfiles = (lc % 90) + 10;
+>> -
+>> -		/* create a bunch of files to look at */
+>> -		for (cnt = 0; cnt < nfiles; cnt++) {
+>> -
+>> -			sprintf(fname, "%s%d", Basename, cnt);
+>> -			if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+>> -				tst_brkm(TBROK, cleanup,
+>> -					 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
+>> -					 fname, errno, strerror(errno));
+>> -			} else if (write(fd, "hello\n", 6) < 0) {
+>> -				tst_brkm(TBROK, cleanup,
+>> -					 "write(%s, \"hello\\n\", 6) Failed, errno=%d : %s",
+>> -					 fname, errno, strerror(errno));
+>> -			} else if (close(fd) < 0) {
+>> -				tst_resm(TWARN,
+>> -					"close(%s) Failed, errno=%d : %s",
+>> -					fname, errno, strerror(errno));
+>> -			}
+>> -		}
+>> -
+>> -		if ((test_dir = opendir(".")) == NULL) {
+>> -			tst_resm(TFAIL, "opendir(\".\") Failed, errno=%d : %s",
+>> -				 errno, strerror(errno));
+>> -		} else {
+>> -			/* count the entries we find to see if any are missing */
+>> -			cnt = 0;
+>> -			errno = 0;
+>> -			while ((dptr = readdir(test_dir)) != 0) {
+>> -				if (strcmp(dptr->d_name, ".")
+>> -				    && strcmp(dptr->d_name, ".."))
+>> -					cnt++;
+>> -			}
+>> -
+>> -			if (errno != 0) {
+>> -				tst_resm(TFAIL,
+>> -					 "readir(test_dir) Failed on try %d, errno=%d : %s",
+>> -					 cnt + 1, errno, strerror(errno));
+>> -			}
+>> -			if (cnt == nfiles) {
+>> -				tst_resm(TPASS,
+>> -					 "found all %d that were created",
+>> -					 nfiles);
+>> -			} else if (cnt > nfiles) {
+>> -				tst_resm(TFAIL,
+>> -					 "found more files than were created");
+>> -				tst_resm(TINFO, "created: %d, found: %d",
+>> -					 nfiles, cnt);
+>> -			} else {
+>> -				tst_resm(TFAIL,
+>> -					 "found less files than were created");
+>> -				tst_resm(TINFO, "created: %d, found: %d",
+>> -					 nfiles, cnt);
+>> -			}
+>> -		}
+>> -
+>> -		/* Here we clean up after the test case so we can do another iteration.
+>> -		 */
+>> -		for (cnt = 0; cnt < nfiles; cnt++) {
+>> -
+>> -			sprintf(fname, "%s%d", Basename, cnt);
+>> -
+>> -			if (unlink(fname) == -1) {
+>> -				tst_resm(TWARN,
+>> -					"unlink(%s) Failed, errno=%d : %s",
+>> -					Fname, errno, strerror(errno));
+>> -			}
+>> -		}
+>> -
+>> +	test_dir = SAFE_OPENDIR(".");
+>> +	while ((dptr = SAFE_READDIR(test_dir)) != 0) {
+>> +		if (strcmp(dptr->d_name, ".")
+>> +			&& strcmp(dptr->d_name, ".."))
+>> +			cnt++;
+>>   	}
+> 
+> I would have probably written this as:
+> 
+> 	while ((ent = SAFE_READDIR(test_dir))) {
+> 		if (!strcmp(ent->d_name, "." || !strcmp(ent->d_name, ".")
+> 			continue;
+> 
+> 		cnt++;
+> 	}
+> 
+> Also I guess that we can check that the filename is filled correctly as
+> well, it has to start with prefix at least.
+> 
+>> -    /***************************************************************
+>> -     * cleanup and exit
+>> -     ***************************************************************/
+>> -	cleanup();
+>> -
+>> -	tst_exit();
+>> -}
+>> -
+>> -/***************************************************************
+>> - * help
+>> - ***************************************************************/
+>> -/* The custom help() function is really simple.  Just write your help message to
+>> - * standard out.  Your help function will be called after the standard options
+>> - * have been printed
+>> - */
+>> -void help(void)
+>> -{
+>> -	printf("  -N #files : create #files files every iteration\n");
+>> -}
+>> -
+>> -/***************************************************************
+>> - * setup() - performs all ONE TIME setup for this test.
+>> - ***************************************************************/
+>> -void setup(void)
+>> -{
+>> -	/* You will want to enable some signal handling so you can capture
+>> -	 * unexpected signals like SIGSEGV.
+>> -	 */
+>> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>> -
+>> -	/* One cavet that hasn't been fixed yet.  TEST_PAUSE contains the code to
+>> -	 * fork the test with the -c option.  You want to make sure you do this
+>> -	 * before you create your temporary directory.
+>> -	 */
+>> -	TEST_PAUSE;
+>> -
+>> -	/* If you are doing any file work, you should use a temporary directory.  We
+>> -	 * provide tst_tmpdir() which will create a uniquely named temporary
+>> -	 * directory and cd into it.  You can now create files in the current
+>> -	 * directory without worrying.
+>> -	 */
+>> -	tst_tmpdir();
+>> -
+>> -	sprintf(Basename, "%s_%d.", BASENAME, getpid());
+>> +	if (cnt == nfiles) {
+>> +		tst_res(TPASS,
+>> +				"found all %d that were created",
+>> +				nfiles);
+>> +	} else {
+>> +		tst_res(TFAIL,
+>> +				"found %s files than were created, created: %d, found: %d",
+>> +				cnt > nfiles ? "more" : "less", nfiles, cnt);
+>> +	}
+> 
+> Why the newline after TPASS, TFAIL, ? We indent the format string as if
+> it continued after the TFAIL/TPASS anyways.
+> 
 
-> > @@ -95,7 +93,7 @@ struct test_case_t {		/* test case struct. to hold ref. test cond's */
-> >  	int list;
-> >  	char *desc;
-> >  	int exp_errno;
-> > -	int (*setupfunc) ();
-> > +	void (*setupfunc)(const char *uid, uid_t euid);
-> >  } Test_cases[] = {
-> >  	{
-> >  	1, 1, "Size is > sysconf(_SC_NGROUPS_MAX)", EINVAL, NULL}, {
-> > @@ -126,7 +124,7 @@ int main(int ac, char **av)
+-- 
+Regards,
+Zhang Lianjie
 
-> >  		for (i = 0; i < TST_TOTAL; i++) {
-> >  			if (Test_cases[i].setupfunc != NULL) {
-> > -				Test_cases[i].setupfunc();
-> > +				Test_cases[i].setupfunc(nobody_uid, ltpuser->pw_uid);
-> >  			}
 
-> >  			gidsetsize = ngroups_max + Test_cases[i].gsize_add;
-> > @@ -156,8 +154,11 @@ int main(int ac, char **av)
-> >  					 gidsetsize, test_desc, TEST_ERRNO,
-> >  					 Test_cases[i].exp_errno);
-> >  			}
-> > -		}
-
-> > +			if (Test_cases[i].setupfunc != NULL) {
-> > +				Test_cases[i].setupfunc("root", ltpuser->pw_uid);
-> > +			}
-> > +		}
-> >  	}
-
-> >  	cleanup();
-> > @@ -176,8 +177,9 @@ void setup(void)
-
-> >  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-
-> > -	TEST_PAUSE;
-> > +	ltpuser = SAFE_GETPWNAM(cleanup, uid);
-
-> > +	TEST_PAUSE;
-> >  }
-
-> >  /*
-> > @@ -187,29 +189,21 @@ void setup(void)
-> >   *  Get the user info. from /etc/passwd file.
-> >   *  This function returns 0 on success.
-> >   */
-> > -int setup1(void)
-> > +void setup1(const char *uid, uid_t euid)
-> >  {
-> > -	struct passwd *user_info;	/* struct. to hold test user info */
-> > -
-> > -/* Switch to nobody user for correct error code collection */
-> > -	ltpuser = getpwnam(nobody_uid);
-> > -	if (seteuid(ltpuser->pw_uid) == -1) {
-> > -		tst_resm(TINFO, "setreuid failed to "
-> > -			 "to set the effective uid to %d", ltpuser->pw_uid);
-> > -		perror("setreuid");
-> > -	}
-> > +	struct passwd *user_info;
-
-> > -	if ((user_info = getpwnam(TESTUSER)) == NULL) {
-> > -		tst_brkm(TFAIL, cleanup, "getpwnam(2) of %s Failed", TESTUSER);
-> > -	}
-> > +	SAFE_SETEUID(cleanup, euid);
-> > +
-> > +	user_info = SAFE_GETPWNAM(cleanup, uid);
-
-> I still do not get why we call SAFE_GETPWNAM() here. We should do that
-> in the setup and prepare two different group_list[] lists, if that is
-> really needed.
-
-> But I guess that all we need in this test is:
-
-> * Run the EINVAL test as a root
-
-> * Run the EPERM test as a nobody
-
-> The content of the list should not matter, as a matter of a fact we pass
-> unitialized data in the EINVAL case. What matters is the size argument,
-> it should be 1 for the EPERM test and max+1 for the EINVAL case.
-
-Good point, thank you!
-
-@Zhao feel free to let me know you're doing to implement it.
-Otherwise I'll have look on Monday.
-
-Kind regards,
-Petr
-
-> >  	if (!GID_SIZE_CHECK(user_info->pw_gid)) {
-> >  		tst_brkm(TBROK,
-> >  			 cleanup,
-> >  			 "gid returned from getpwnam is too large for testing setgroups16");
-> >  	}
-> > +
-> >  	groups_list[0] = user_info->pw_gid;
-> > -	return 0;
-> >  }
-
-> >  /*
-> > -- 
-> > 2.33.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
