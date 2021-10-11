@@ -2,74 +2,76 @@ Return-Path: <SRS0=Ux39=O7=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B70CC433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49E1AC433F5
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 15:02:36 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DFBB60BD3
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1DFBB60BD3
+	by mail.kernel.org (Postfix) with ESMTPS id 6B64260EE5
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 15:02:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6B64260EE5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C3CED3C0CC6
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 16:52:10 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 26C473C0BBA
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 17:02:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id D0C503C0302
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 17:02:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D766A3C03FE
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 16:52:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 039B91000798
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 16:52:00 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 611B3140124C
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 17:02:04 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0C7681FEBE;
- Mon, 11 Oct 2021 14:52:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B2E09220C3;
+ Mon, 11 Oct 2021 15:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1633963920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1633964523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jAgqrEZlCjAsetbk8KpEfJqY6c+NYBA7oJYIGAnnWrs=;
- b=lIMNVHvM0wayLRC9UcnotWrSXvPo4JlSHz22LLHE38cTZNneOF6tfGmeAjUmOS2gnZ3JPo
- 3Stm9CYKwElHC7FoHi4hcc5CnGl6SjhbQwj9UTZRQtX1Fhi6aRX2g8pdO9KXYPGlCocIM9
- /ZOBB+GERhbfwXkVqc8Hvxwtp3YG++s=
+ bh=katfHzxRA/R4Xyj2QDbdsnIULc9yU9r9yMPGXIti0xc=;
+ b=KUPvbHxCOAE46YwdQtM/MocU1n2xe226Tgi/thl3u1yRqnmsQTpLxIcfIEzszSTh+22YKV
+ vaL7tBy/YXtfSf7RtJyx+/XuV6sV1ejRPSfE4QVY7r987maZ1ot00iVRdlOHboBRQ1Zk2u
+ pwPe2Vhv5wD0oBZMgJJDTkKxxPRIvss=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1633963920;
+ s=susede2_ed25519; t=1633964523;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jAgqrEZlCjAsetbk8KpEfJqY6c+NYBA7oJYIGAnnWrs=;
- b=wTT0mMJxoR/x+Ol5GNW3w+eYwTmiGdZimpZQb5IsDC+IoZ7kITA2tSTUN/FiAyzo9ijNRe
- RPy8Wz7Va2SLoeBQ==
+ bh=katfHzxRA/R4Xyj2QDbdsnIULc9yU9r9yMPGXIti0xc=;
+ b=5dnF62w/1kxQ/dUQl2TVpDUXHxPV60PGV7BONygyQCkZAQ/A7v1Q8ZrCY5+I7WQjJu35kn
+ ountY1vX+SiSHaAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4B0C13C72;
- Mon, 11 Oct 2021 14:51:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9635A13C72;
+ Mon, 11 Oct 2021 15:02:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id N38pNo9PZGFTQAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 11 Oct 2021 14:51:59 +0000
-Date: Mon, 11 Oct 2021 16:52:38 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id njlAJOtRZGEWRQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 11 Oct 2021 15:02:03 +0000
+Date: Mon, 11 Oct 2021 17:02:42 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: zhanglianjie <zhanglianjie@uniontech.com>
-Message-ID: <YWRPtqBwhlpjyRbs@yuki>
-References: <20210907113510.7431-1-zhanglianjie@uniontech.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <YWRSEt30zrkDlSWO@yuki>
+References: <20210923085224.868-1-zhanglianjie@uniontech.com>
+ <20210923085224.868-2-zhanglianjie@uniontech.com>
+ <87bl4il49f.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210907113510.7431-1-zhanglianjie@uniontech.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <87bl4il49f.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] syscalls/clone01: Convert to new API
+Subject: Re: [LTP] [PATCH v3 2/5] syscalls/clone03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,9 +90,82 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-I've changed the malloc() for safe buffer[1] and pushed, thanks.
+> > +static void verify_clone(void)
+> > +{
+> > +	int child_pid;
+> >
+> > -		/* Close read end from parent */
+> > -		if ((close(pfd[0])) == -1)
+> > -			tst_resm(TWARN | TERRNO, "close(pfd[0]) failed");
+> > +	TST_EXP_PID_SILENT(ltp_clone(SIGCHLD, child_fn, NULL, CHILD_STACK_SIZE,
+> > +				child_stack));
+> 
+> tst_clone is the new API.
 
-[1] https://github.com/linux-test-project/ltp/wiki/C-Test-API#131-guarded-buffers
+Actually we can't use it as it is becuase:
+
+- these tests are tests fof clone() not for clone3() so we really have
+  to use the old syscall
+
+- even if we added flag to tst_clone to force the older syscall we would
+  have to add size parameter to the structure since we need to test the
+  case where we pass the stack explicitly as well
+
+I guess that it would be better to do this eventually but I do not want
+to block the cleanup because of this. We can fix this later on.
+
+> >
+> > -		/* Get child's pid from pid string */
+> > -		child_pid = atoi(buff);
+> > +	if (!TST_PASS)
+> > +		return;
+> >
+> > -		if (TEST_RETURN == child_pid)
+> > -			tst_resm(TPASS, "Test passed");
+> > -		else
+> > -			tst_resm(TFAIL, "Test failed");
+> > +	tst_reap_children();
+> >
+> > -		if ((wait(&status)) == -1)
+> > -			tst_brkm(TBROK | TERRNO, cleanup,
+> > -				 "wait failed, status: %d", status);
+> > -	}
+> > +	child_pid = atoi(channel);
+> 
+> atoi is deprecated (see the man page).
+> 
+> >
+> > -	free(child_stack);
+> > -
+> > -	cleanup();
+> > -	tst_exit();
+> > +	TST_EXP_PASS(!(TST_RET == child_pid), "pid(%d)", child_pid);
+> >  }
+> >
+> >  static void setup(void)
+> >  {
+> > -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> > -	TEST_PAUSE;
+> > +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
+> > +	channel = SAFE_MMAP(NULL, 10, PROT_READ | PROT_WRITE,
+> > +				MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> 
+> You could mmap a region needed for pid_t and just read and write it like
+> a normal variable.
+
+That was my point when I suggested mmap()
+
+it should really be:
+
+static int *child_pid;
+
+
+...
+	child_pid = SAFE_MMAP(NULL, sizeof(*child_pid), ....);
+...
+
+Then we can just do *child_pid = foo and if (*child_pid == bar) in the
+code.
 
 -- 
 Cyril Hrubis
