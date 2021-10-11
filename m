@@ -2,74 +2,75 @@ Return-Path: <SRS0=Ux39=O7=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DCE0C433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 15:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5884CC433EF
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 15:59:28 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B590860E52
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 15:39:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B590860E52
+	by mail.kernel.org (Postfix) with ESMTPS id 7652860EB1
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 15:59:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7652860EB1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A2BE83C0BC3
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 17:39:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 08F273C0BD3
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 17:59:25 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 201783C0302
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 17:39:39 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id E62043C0957
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 17:59:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E85F1001264
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 17:39:38 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CF647200DED
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 17:59:14 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 35E9F21F3D;
- Mon, 11 Oct 2021 15:39:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0ADB71FED2;
+ Mon, 11 Oct 2021 15:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1633966778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1633967954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W9ggMcngfDMG/UbAUUFJsK2shpx6MheUsy6sTKt63/0=;
- b=EAPBnU0MRN1Icq82fPd33hi5Xt3MqvpSkCICSss+T6DZMwkX2ROqVyDRFpF/VbJ6dN0EB+
- wUFc6HW5trx3kue6qcQDn+lQgE2gmad8gXsw4SH7JBzaGXeppALiSGmu3bYTaplGZLi3oY
- h6gd6FVQwWHzxgwn4ibWUWleHvWdg9k=
+ bh=7p1/xFObmnjc6MzmQJqK/ZfrHBUBlAoOVtmKSBH9jjs=;
+ b=oo7v4wGOjLrvvFIVxA37pWwa6Pgd0K45M8W5ksmxdRHbOxRIexajiBA9JKHmiXmnfAWT/G
+ zlspr8Rh6b0Apwaul7UN3pwgrl1fI0pL8My8pAGA+WmGu5yz/2a7dh1akbmAlYUzsB/T1/
+ QPC22Us+yeA4FZmz2Mr+OvToFPCxB5M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1633966778;
+ s=susede2_ed25519; t=1633967954;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W9ggMcngfDMG/UbAUUFJsK2shpx6MheUsy6sTKt63/0=;
- b=QQceTVoD4NxUBQ/mzStT8uxtOOUlkWsi/Es7lyJQATzbcbEbx8w/ABGPa5grVEU+hnFUBX
- WolGyEXQNYQup5Bg==
+ bh=7p1/xFObmnjc6MzmQJqK/ZfrHBUBlAoOVtmKSBH9jjs=;
+ b=cBxuIZkiWuAi2dvsW1R/K7PdYAsdrZpglb2j9EHUkUn+Hr5oGP2zlce7C3d25YZxrOlTPX
+ AH8evG+7Q+Nr19Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E51213BCB;
- Mon, 11 Oct 2021 15:39:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E38DF13BC0;
+ Mon, 11 Oct 2021 15:59:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id A1c5B7paZGEiVwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 11 Oct 2021 15:39:38 +0000
-Date: Mon, 11 Oct 2021 17:40:17 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZZUGN1FfZGGwYAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 11 Oct 2021 15:59:13 +0000
+Date: Mon, 11 Oct 2021 17:59:52 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: zhanglianjie <zhanglianjie@uniontech.com>
-Message-ID: <YWRa4VvL33YclVX3@yuki>
+Message-ID: <YWRfeIfOExBjpety@yuki>
 References: <20210923085224.868-1-zhanglianjie@uniontech.com>
+ <20210923085224.868-3-zhanglianjie@uniontech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210923085224.868-1-zhanglianjie@uniontech.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20210923085224.868-3-zhanglianjie@uniontech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/5] syscalls/clone02: Convert to new API
+Subject: Re: [LTP] [PATCH v3 3/5] syscalls/clone05: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,186 +89,137 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> -/*
-> - * test_SIG() - This function changes the signal handler for SIGUSR2
-> - *		signal for child. If CLONE_SIGHAND flag is set, this
-> - *		affects parent also.
-> - */
-> -static int test_SIG(void)
-> +static void verify_clone(void)
->  {
-> +	TST_EXP_PID_SILENT(ltp_clone(tcases[tst_variant].flags, child_fn, NULL,
-> +				CHILD_STACK_SIZE, child_stack));
+> +/*\
+> + * [Description]
+>   * Call clone() with CLONE_VFORK flag set. verify that
+>   * execution of parent is suspended until child finishes
+>   */
 > 
-> -	struct sigaction new_act;
+>  #define _GNU_SOURCE
+> 
+> -#include <errno.h>
+> +#include <stdlib.h>
+>  #include <sched.h>
+> -#include <sys/wait.h>
+> -#include "test.h"
+> +#include "tst_test.h"
+>  #include "clone_platform.h"
+> 
+> -char *TCID = "clone05";
+> -int TST_TOTAL = 1;
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> -static int child_fn(void *);
+> -
+> -static int child_exited = 0;
+> +static int child_exited;
+              ^
+This should be volatile as well in order to avoid compiler
+mis-optimizations.
+
+> +static void *child_stack;
+> 
+> -int main(int ac, char **av)
+> +static int child_fn(void *unused LTP_ATTRIBUTE_UNUSED)
+>  {
+> +	int i;
+> 
+> -	int lc, status;
+> -	void *child_stack;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	child_stack = malloc(CHILD_STACK_SIZE);
+> -	if (child_stack == NULL)
+> -		tst_brkm(TBROK, cleanup, "Cannot allocate stack for child");
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		TEST(ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, child_fn, NULL,
+> -		               CHILD_STACK_SIZE, child_stack));
+> -
+> -		if ((TEST_RETURN != -1) && (child_exited))
+> -			tst_resm(TPASS, "Test Passed");
+> -		else
+> -			tst_resm(TFAIL, "Test Failed");
+> +	for (i = 0; i < 100; i++) {
+> +		sched_yield();
+> +		usleep(1000);
+> +	}
+> 
+> -		if ((wait(&status)) == -1)
+> -			tst_brkm(TBROK | TERRNO, cleanup,
+> -				 "wait failed, status: %d", status);
+> +	child_exited = 1;
+> +	_exit(0);
+> +}
+> 
+> -		child_exited = 0;
+> -	}
+> +static void verify_clone(void)
+> +{
+> +	TST_EXP_PID_SILENT(ltp_clone(CLONE_VM | CLONE_VFORK | SIGCHLD, child_fn, NULL,
+> +					CHILD_STACK_SIZE, child_stack), "clone with vfork");
+> 
+> -	free(child_stack);
 > +	if (!TST_PASS)
 > +		return;
 > 
-> -	new_act.sa_handler = sig_child_defined_handler;
-> -	new_act.sa_flags = SA_RESTART;
-> -	sigemptyset(&new_act.sa_mask);
-> -
-> -	/* Set signal handler to sig_child_defined_handler */
-> -	if (sigaction(SIGUSR2, &new_act, NULL) == -1) {
-> -		tst_resm(TWARN | TERRNO, "signal failed in test_SIG");
-> -		return -1;
-> -	}
-> -
-> -	/* Send SIGUSR2 signal to parent */
-> -	if (kill(getppid(), SIGUSR2) == -1) {
-> -		tst_resm(TWARN | TERRNO, "kill failed in test_SIG");
-> -		return -1;
-> -	}
-> +	tst_reap_children();
+> -	cleanup();
+> -	tst_exit();
+> +	TST_EXP_VAL(child_exited, 1);
+>  }
 > 
-> -	return 0;
-> +	TST_EXP_PASS(tcases[tst_variant].parent_fn(), "%s", tcases[tst_variant].desc);
+>  static void setup(void)
+>  {
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
+> +	child_exited = 0;
 
-Can we, instead of this, print PASS/FAIL for each check we do, so that
-if something fails the log explains what exactly has failed?
+Here again this has to be cleared in the test function because
+oftherwise the test will fail with -i 2.
 
 >  }
 > 
-> -/*
-> - * modified_VM() - This function is called by parent process to check
-> - *		   whether child's modification to parent_variable
-> - *		   is visible to parent
-> - */
-> -
-> -static int modified_VM(void)
-> -{
-> -
-> -	if (parent_variable == CHILD_VALUE)
-> -		/* child has modified parent_variable */
-> -		return 1;
-> -
-> -	return 0;
-> -}
-> 
-> -/*
-> - * modified_FILES() - This function checks for file descriptor table
-> - *		      modifications done by child
-> - */
-> -static int modified_FILES(void)
-> +static void cleanup(void)
+>  static void cleanup(void)
 >  {
-> -	char buff[20];
-> +	SAFE_CHDIR(cwd_parent);
-> +	SAFE_UNLINK(TESTFILE);
-> +	SAFE_RMDIR(cwd_child);
-> 
-> -	if (((read(fd_parent, buff, sizeof(buff))) == -1) && (errno == EBADF))
-> -		/* Child has closed this file descriptor */
-> -		return 1;
-> -
-> -	/* close fd_parent */
-> -	if ((close(fd_parent)) == -1)
-> -		tst_resm(TWARN | TERRNO, "close() failed in modified_FILES()");
-> -
-> -	return 0;
-> +	free(cwd_parent);
 > +	free(child_stack);
 >  }
-> 
-> -/*
-> - * modified_FS() - This function checks parent's current working directory
-> - *		   to see whether its modified by child or not.
-> - */
-> -static int modified_FS(void)
-> +static void setup(void)
->  {
-> -	char cwd[FILENAME_MAX];
+
+Please use the guarded buffer in this test as well.
+
+> -static int child_fn(void *unused __attribute__((unused)))
+> -{
+> -	int i;
 > -
-> -	if ((getcwd(cwd, sizeof(cwd))) == NULL)
-> -		tst_resm(TWARN | TERRNO, "getcwd() failed");
-> +	struct sigaction def_act;
-> 
-> -	if (!(strcmp(cwd, cwd_parent)))
-> -		/* cwd hasn't changed */
-> -		return 0;
-> +	/* Save current working directory of parent */
-> +	cwd_parent = tst_get_tmpdir();
-> 
-> -	return 1;
-> -}
-> +	/*
-> +	 * Set value for parent_variable in parent, which will be
-> +	 * changed by child for testing CLONE_VM flag
-> +	 */
-> +	parent_variable = PARENT_VALUE;
-> 
-> -/*
-> - * modified_SIG() - This function checks whether child has changed
-> - *		    parent's signal handler for signal, SIGUSR2
-> - */
-> -static int modified_SIG(void)
-> -{
-> +	/*
-> +	 * Open file from parent, which will be closed by
-> +	 * child, used for testing CLONE_FILES flag
-> +	 */
-> +	fd_parent = SAFE_OPEN(TESTFILE, O_CREAT | O_RDWR, 0777);
-> 
-> -	if (parent_got_signal)
-> -		/*
-> -		 * parent came through sig_child_defined_handler()
-> -		 * this means child has changed parent's handler
-> -		 */
-> -		return 1;
-> +	/*
-> +	 * set parent_got_signal to 0, used for testing
-> +	 * CLONE_SIGHAND flag
-> +	 */
-> +	parent_got_signal = 0;
-
-We have to make sure we reset the $PWD, variable, got_signal flag and
-open() the file before each test iteration otherwise the test will fail
-on subsequent iterations with -i 2 command line parameter.
-
-> -	return 0;
-> -}
-> +	def_act.sa_handler = sig_parent_default_handler;
-> +	def_act.sa_flags = SA_RESTART;
-> +	SAFE_SIGEMPTYSET(&def_act.sa_mask);
-> +	SAFE_SIGACTION(SIGUSR2, &def_act, NULL);
-> 
-> -/*
-> - * sig_child_defined_handler()  - Signal handler installed by child
-> - */
-> -static void sig_child_defined_handler(int pid)
-> -{
-> -	if ((syscall(__NR_gettid)) == child_pid)
-> -		/* Child got signal, give warning */
-> -		tst_resm(TWARN, "Child got SIGUSR2 signal");
-> -	else
-> -		parent_got_signal = TRUE;
-> +	SAFE_MKDIR(TESTDIR, 0777);
-> +	sprintf(cwd_child, "%s/%s", cwd_parent, TESTDIR);
-> +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-
-Can we use the guarded buffer instead of MALLOC in this test as well?
-Just as we do in clone01.c now.
-
->  }
-> 
-> -/* sig_default_handler() - Default handler for parent */
-> -static void sig_default_handler(void)
-> -{
+> -	/* give the kernel scheduler chance to run the parent */
+> -	for (i = 0; i < 100; i++) {
+> -		sched_yield();
+> -		usleep(1000);
+> -	}
+> -
+> -	child_exited = 1;
+> -	_exit(1);
 > -}
 > +static struct tst_test test = {
 > +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_variants = ARRAY_SIZE(tcases),
-
-This should rather be .tcnt and .test = verify_clone instead of
-variants.
-
-Test variants are usually used when the whole test is exactly same but
-the TEST_*() function calls different variant of the syscall instead.
-
 > +	.test_all = verify_clone,
-> +	.needs_tmpdir = 1,
+> +	.cleanup = cleanup,
 > +};
+> --
+> 2.20.1
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
