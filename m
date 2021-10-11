@@ -2,69 +2,53 @@ Return-Path: <SRS0=Ux39=O7=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C77C433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 938C1C433F5
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:26:34 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E2F660E78
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:09:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4E2F660E78
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 9108560F57
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:26:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9108560F57
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C42E3C0BBE
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 12:08:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C29733C0BA8
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 12:26:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B5A73C00A6
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 12:08:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id E9C643C0151
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 12:26:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B4DBE60132F
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 12:08:43 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6C3831400214
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 12:26:20 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 11E8C2004D
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 10:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633946923;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GZWimQ4H8YO9W2TsCBWY6AIc84vVZSap7+FgGMK92ps=;
- b=NPgkmuSyxiEWPdfhpVscEU6Sd1IjNGNghzS0zflZteJk28tJ63bg0uw1GmmI9ZWtNS4Fg3
- 57JpdwDWk8MpTLmARZdwjObtZA8DjURZ9dCL+z3JbvuMk36bS/BRzIJTk6GUfb41NfXCXE
- RI1TI+rYZ5Gee9Gdcz8FMZvgEU3aeog=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633946923;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GZWimQ4H8YO9W2TsCBWY6AIc84vVZSap7+FgGMK92ps=;
- b=bmZDT/xIHndvdkQQzSIGSmwgJ6WIrdY5V9uAMZUdOz/GngJuXm5wmDiDiU7m5eLn4ILDue
- 2ytFjyzUe2IT+DAw==
-Received: from g78 (unknown [10.163.24.38])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id CFA69A3B83;
- Mon, 11 Oct 2021 10:08:42 +0000 (UTC)
-References: <20210909140911.44EC9A4308@relay2.suse.de>
- <20210916123248.4974-1-rpalethorpe@suse.com> <YV//+xhzYHN5349v@yuki>
-User-agent: mu4e 1.6.5; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 11 Oct 2021 10:22:56 +0100
-In-reply-to: <YV//+xhzYHN5349v@yuki>
-Message-ID: <87o87van6e.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTP id BC7DB22009;
+ Mon, 11 Oct 2021 10:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1633947979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=na7mQ8ncaGAkH9jMpsXYxxZYx5ZMporG/cj49IJF/ME=;
+ b=lfJ6JKtE/aJGzfl4cckRKEmAH0TUuRqbILVrh6bQJY0CYsV5hcFA287Rk9wzKaTQrvLAmU
+ Iito4JizjvCQqsufZrh/VYoI4m68OoW199jX7nwjmmakLabs1ttMejoU+rNddKImldnMRI
+ 58F7pmt0lM/Nl/Ze/8k/M5V9hsfxzsY=
+Received: from g78.suse.de (unknown [10.163.24.38])
+ by relay2.suse.de (Postfix) with ESMTP id 7B1E6A3B89;
+ Mon, 11 Oct 2021 10:26:19 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 11 Oct 2021 11:26:03 +0100
+Message-Id: <20211011102603.21146-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] kernel/irq: Add irqbalance01
+Subject: [LTP] [PATCH v3] kernel/irq: Add irqbalance01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,110 +60,413 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Cyril,
+Add first test specifically targeting interrupts and IRQ management.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+This includes some comments inline because I think the parsing code is
+unavoidably confusing.
 
-> Hi!
->> +	/* Read the CPU affinity masks for each IRQ. The first CPU is in the
->> +	 * right most (least significant) bit. See bitmap_string() in the kernel
->> +	 * (%*pb)
->> +	 */
->> +	for (row = 0; row < nr_irqs; row++) {
->> +		sprintf(path, "/proc/irq/%u/smp_affinity", irq_ids[row]);
->> +		buf = read_proc_file(path);
->> +		c = buf;
->> +		col = 0;
->> +
->> +		while (*c != '\0')
->> +			c++;
->
-> A minor nit, we alredy know the lenght, but we do not return it from the
-> read_proc_file() we may as well change this so taht the read_proc_file
-> returns both buffer pointer and the size. E.g. add size_t *len parameter
-> to the read_proc_file() and set it if it's not NULL.
+Note on the CPU mask parsing; there is already some code for parsing
+and manipulating bitmaps in the LTP. However it is absurdly
+complicated and we don't need actual bitmaps. In fact an array of
+bytes is more flexible.
 
-+1
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
 
->
-> Other than that the parsing looks good now.
->
->> +static void evidence_of_change(void)
->> +{
->> +	size_t row, col, changed = 0;
->> +
->> +	for (row = 0; row < nr_irqs; row++) {
->> +		for (col = 0; col < nr_cpus; col++) {
->> +			if (!irq_stats[row * nr_cpus + col])
->> +				continue;
->> +
->> +			if (irq_affinity[row * nr_cpus + col] == ALLOW)
->> +				continue;
->> +
->> +			changed++;
->> +		}
->> +	}
->> +
->> +	tst_res(changed ? TPASS : TFAIL,
->> +		"Heuristic: Detected %zu irq-cpu pairs have been dissallowed",
->> +		changed);
->> +}
->
-> I'm still unusure about this part though.
->
-> The test fails on my workstation where the IRQs are nicely distributed
-> by the hardware/BIOS.
+V3:
+* output length from read_proc_file
 
-You don't need irqbalance then :-p
+V2:
+* Read proc files in at most 1-page blocks
 
-The original bug this is intened to avoid was caused by the irqbalance
-deamon silently failing.
+  As Cyril suggested this looks like the best way. seq_file will only
+  expand the internal buffer above a page if a record does not fit in
+  one page. In this case a record is the per-cpus counts for an
+  irq. However it won't expand the buffer for multiple records. It
+  just returns whatver fits in the buffer.
 
->
-> Maybe we should check if IRQs are distributed somehow evenly and PASS
-> the test if that is the case as well.
+* Read in CPU masks from the end of the buffer
 
-My plan was to have a second heuristic based on the IRQ
-distribution. However the intention was to make detection more sensitve
-to bad setups. I think what you are suggesting is the opposite. So that
-users can blindly run the test and let it figure out if it is
-appropriate for the hardware.
+  If nr_cpus is not a multiple of 4 then one of the hex digits has
+  some padding. We either need to pad irq_affinity as well (which
+  creates complication) or ignore the padding. It's easier to ignore
+  it if we start at the end.
 
->
-> In my case there is 27 IRQs, 18 of them have non-zero counters and there
-> is 12 CPUs. For active IRQs that gives 18/12 = 1.5 IRQ per CPU and there
-> are 7 CPUs that handle 2 IRQs, 4 CPUs that handle 1 IRQ and 1 CPU that
-> doesn't handle anything. I wonder if we can figure out some kind of
-> heuristic, but I guess that in the end it wouldn't be worth the
-> effort.
+* Print headers and some minor format changes to printing
+* Add a few more parsing checks
+* Remove freeing of buffers
 
-I general I think it is best to write tests which figure out if they are
-in the right environment. This makes all our lives easier. The problem
-with this test in particular is the number of assumptions we have to
-make about what a good IRQ distirbution looks like.
 
-IRQs are (usually) evenly distributed for "performance". However not all
-IRQs are equal, you might get better performance through an uneven
-distribution. Especially if you only care about the performance some
-tasks and not others. Also there are some reasons to isolate some CPUs
-from IRQs regardless of performance.
+ runtest/irq                         |   1 +
+ testcases/kernel/irq/.gitignore     |   1 +
+ testcases/kernel/irq/Makefile       |   7 +
+ testcases/kernel/irq/irqbalance01.c | 315 ++++++++++++++++++++++++++++
+ 4 files changed, 324 insertions(+)
+ create mode 100644 runtest/irq
+ create mode 100644 testcases/kernel/irq/.gitignore
+ create mode 100644 testcases/kernel/irq/Makefile
+ create mode 100644 testcases/kernel/irq/irqbalance01.c
 
-Having said that we can probably find a heuristic for what a very bad
-setup looks like i.e. (almost) all NIC IRQs on one CPU when there are
-30+ CPUs and multiple NICs. That is one CPU is totally saturated with
-IRQs from different NICs. This is a bit speculative so I'd like some
-feedback from testing/community before putting effort into that.
-
+diff --git a/runtest/irq b/runtest/irq
+new file mode 100644
+index 000000000..56d0d23c8
+--- /dev/null
++++ b/runtest/irq
+@@ -0,0 +1 @@
++irqbalance01 irqbalance01
+diff --git a/testcases/kernel/irq/.gitignore b/testcases/kernel/irq/.gitignore
+new file mode 100644
+index 000000000..8ed69a99c
+--- /dev/null
++++ b/testcases/kernel/irq/.gitignore
+@@ -0,0 +1 @@
++irqbalance01
+diff --git a/testcases/kernel/irq/Makefile b/testcases/kernel/irq/Makefile
+new file mode 100644
+index 000000000..aa51da7cb
+--- /dev/null
++++ b/testcases/kernel/irq/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/irq/irqbalance01.c b/testcases/kernel/irq/irqbalance01.c
+new file mode 100644
+index 000000000..a3d29aec2
+--- /dev/null
++++ b/testcases/kernel/irq/irqbalance01.c
+@@ -0,0 +1,315 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com> */
++/*\
++ * [Description]
++ *
++ * Check that something (e.g. irqbalance daemon) is performing IRQ
++ * load balancing.
++ *
++ * On many systems userland needs to set /proc/irq/$IRQ/smp_affinity
++ * to prevent many IRQs being delivered to the same CPU.
++ *
++ * Note some drivers and IRQ controllers will distribute IRQs
++ * evenly. Some systems will have housekeeping CPUs configured. Some
++ * IRQs can not be masked etc. So this test is not appropriate for all
++ * scenarios.
++ *
++ * Furthermore, exactly how IRQs should be distributed is a
++ * performance and/or security issue. This is only a generic smoke
++ * test. It will hopefully detect misconfigured systems and total
++ * balancing failures which are often silent errors.
++ *
++ * Heuristic: Evidence of Change
++ *
++ * 1. Find IRQs with a non-zero count
++ * 2. Check if they are now disallowed
++ *
++ * There are two sources of information we need to parse:
++ *
++ * 1. /proc/interrupts
++ * 2. /proc/irq/$IRQ/smp_affinity
++ *
++ * We get the active IRQs and CPUs from /proc/interrupts. It also
++ * contains the per-CPU IRQ counts and info we do not care about.
++ *
++ * We get the IRQ masks from each active IRQ's smp_affinity file. This
++ * is a bitmask written out in hexadecimal format. It shows which CPUs
++ * an IRQ may be received by.
++ */
++
++#include <stdlib.h>
++
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
++#include "tst_safe_file_at.h"
++
++enum affinity {
++	ALLOW = '+',
++	DENY = '-',
++};
++
++static unsigned int *irq_stats;
++static enum affinity *irq_affinity;
++
++static unsigned int nr_cpus;
++static unsigned int nr_irqs;
++static unsigned int *irq_ids;
++
++static char *read_proc_file(const char *const path, size_t *const len_out)
++{
++	const size_t pg_len = SAFE_SYSCONF(_SC_PAGESIZE);
++	int fd = SAFE_OPEN(path, O_RDONLY);
++	size_t ret = 0, used_len = 0;
++	static size_t total_len;
++	static char *buf;
++
++	do {
++		if (used_len + 1 >= total_len) {
++			total_len += pg_len;
++			buf = SAFE_REALLOC(buf, total_len);
++		}
++
++		ret = SAFE_READ(0, fd,
++				buf + used_len,
++				total_len - used_len - 1);
++		used_len += ret;
++	} while (ret);
++
++	if (!used_len)
++		tst_brk(TBROK, "Empty %s?", path);
++
++	buf[used_len] = '\0';
++
++	SAFE_CLOSE(fd);
++
++	if (len_out)
++		*len_out = used_len;
++	return buf;
++}
++
++static void collect_irq_info(void)
++{
++	char *buf, *c, *first_row;
++	char path[PATH_MAX];
++	size_t row, col, len;
++	long acc;
++	unsigned int cpu_total, bit;
++
++	nr_cpus = 0;
++	nr_irqs = 0;
++
++	buf = read_proc_file("/proc/interrupts", NULL);
++
++	/* Count CPUs, header columns are like /CPU[0-9]+/ */
++	for (c = buf; *c != '\0' && *c != '\n'; c++) {
++		if (!strncmp(c, "CPU", 3))
++			nr_cpus++;
++	}
++
++	c++;
++	first_row = c;
++	/* Count IRQs, real IRQs start with /[0-9]+:/ */
++	while (*c != '\0') {
++		switch (*c) {
++		case ' ':
++		case '\t':
++		case '\n':
++		case '0' ... '9':
++			c++;
++			break;
++		case ':':
++			nr_irqs++;
++			/* fall-through */
++		default:
++			while (*c != '\n' && *c != '\0')
++				c++;
++		}
++	}
++
++	tst_res(TINFO, "Found %u CPUS, %u IRQs", nr_cpus, nr_irqs);
++
++	irq_ids = SAFE_REALLOC(irq_ids, nr_irqs * sizeof(*irq_ids));
++	irq_stats = SAFE_REALLOC(irq_stats,
++				 nr_cpus * (nr_irqs + 1) * sizeof(*irq_stats));
++	irq_affinity = SAFE_REALLOC(irq_affinity,
++				    nr_cpus * nr_irqs * sizeof(*irq_affinity));
++
++	c = first_row;
++	acc = -1;
++	row = col = 0;
++	/* Parse columns containing IRQ counts and IRQ IDs into acc. Ignore
++	 * everything else.
++	 */
++	while (*c != '\0') {
++		switch (*c) {
++		case ' ':
++		case '\t':
++			if (acc >= 0) {
++				irq_stats[row * nr_cpus + col] = acc;
++				acc = -1;
++				col++;
++			}
++			break;
++		case '\n':
++			if (acc != -1)
++				tst_brk(TBROK, "Unexpected EOL");
++			col = 0;
++			row++;
++			break;
++		case '0' ... '9':
++			if (acc == -1)
++				acc = 0;
++
++			acc *= 10;
++			acc += *c - '0';
++			break;
++		case ':':
++			if (acc == -1 || col != 0)
++				tst_brk(TBROK, "Unexpected ':'");
++			irq_ids[row] = acc;
++			acc = -1;
++			break;
++		default:
++			acc = -1;
++			while (*c != '\n' && *c != '\0')
++				c++;
++			continue;
++		}
++
++		c++;
++	}
++
++	for (col = 0; col < nr_cpus; col++) {
++		cpu_total = 0;
++
++		for (row = 0; row < nr_irqs; row++)
++			cpu_total += irq_stats[row * nr_cpus + col];
++
++		irq_stats[row * nr_cpus + col] = cpu_total;
++	}
++
++	/* Read the CPU affinity masks for each IRQ. The first CPU is in the
++	 * right most (least significant) bit. See bitmap_string() in the kernel
++	 * (%*pb)
++	 */
++	for (row = 0; row < nr_irqs; row++) {
++		sprintf(path, "/proc/irq/%u/smp_affinity", irq_ids[row]);
++		buf = read_proc_file(path, &len);
++		c = buf + len;
++		col = 0;
++
++		while (--c >= buf) {
++			if (col > nr_cpus) {
++				tst_res(TINFO, "%u/smp_affnity: %s",
++					irq_ids[row], buf);
++				tst_brk(TBROK, "More mask char bits than cpus");
++			}
++
++			switch (*c) {
++			case '\n':
++			case ' ':
++			case ',':
++				continue;
++			case '0' ... '9':
++				acc = *c - '0';
++				break;
++			case 'a' ... 'f':
++				acc = 10 + *c - 'a';
++				break;
++			default:
++				tst_res(TINFO, "%u/smp_affnity: %s",
++					irq_ids[row], buf);
++				tst_brk(TBROK, "Wasn't expecting 0x%02x", *c);
++			}
++
++			for (bit = 0; bit < 4 && col < nr_cpus; bit++) {
++				irq_affinity[row * nr_cpus + col++] =
++					(acc & (1 << bit)) ? ALLOW : DENY;
++			}
++		}
++
++		if (col < nr_cpus) {
++			tst_res(TINFO, "%u/smp_affnity: %s", irq_ids[row], buf);
++			tst_brk(TBROK, "Only found %zu cpus", col);
++		}
++	}
++}
++
++static void print_irq_info(void)
++{
++	size_t row, col;
++	unsigned int count;
++	enum affinity aff;
++
++	tst_printf("  IRQ       ");
++	for (col = 0; col < nr_cpus; col++)
++		tst_printf("CPU%-8zu", col);
++
++	tst_printf("\n");
++
++	for (row = 0; row < nr_irqs; row++) {
++		tst_printf("%5u:", irq_ids[row]);
++
++		for (col = 0; col < nr_cpus; col++) {
++			count = irq_stats[row * nr_cpus + col];
++			aff = irq_affinity[row * nr_cpus + col];
++
++			tst_printf("%10u%c", count, aff);
++		}
++
++		tst_printf("\n");
++	}
++
++	tst_printf("Total:");
++
++	for (col = 0; col < nr_cpus; col++)
++		tst_printf("%10u ", irq_stats[row * nr_cpus + col]);
++
++	tst_printf("\n");
++}
++
++static void evidence_of_change(void)
++{
++	size_t row, col, changed = 0;
++
++	for (row = 0; row < nr_irqs; row++) {
++		for (col = 0; col < nr_cpus; col++) {
++			if (!irq_stats[row * nr_cpus + col])
++				continue;
++
++			if (irq_affinity[row * nr_cpus + col] == ALLOW)
++				continue;
++
++			changed++;
++		}
++	}
++
++	tst_res(changed ? TPASS : TFAIL,
++		"Heuristic: Detected %zu irq-cpu pairs have been dissallowed",
++		changed);
++}
++
++static void setup(void)
++{
++	collect_irq_info();
++	print_irq_info();
++
++	if (nr_cpus < 1)
++		tst_brk(TBROK, "No CPUs found in /proc/interrupts?");
++
++	if (nr_irqs < 1)
++		tst_brk(TBROK, "No IRQs found in /proc/interrupts?");
++}
++
++static void run(void)
++{
++	collect_irq_info();
++
++	evidence_of_change();
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.min_cpus = 2,
++};
 -- 
-Thank you,
-Richard.
+2.33.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
