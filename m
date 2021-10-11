@@ -2,69 +2,69 @@ Return-Path: <SRS0=Ux39=O7=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DBD6C433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 08:50:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C77C433EF
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:09:05 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 549AA60F24
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 08:49:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 549AA60F24
+	by mail.kernel.org (Postfix) with ESMTPS id 4E2F660E78
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:09:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4E2F660E78
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 03BB33C0BA3
-	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 10:49:56 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8C42E3C0BBE
+	for <ltp@archiver.kernel.org>; Mon, 11 Oct 2021 12:08:59 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7CE313C0264
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 10:49:45 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7B5A73C00A6
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 12:08:48 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B86B71401265
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 10:49:44 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B4DBE60132F
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 12:08:43 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 186402003C
- for <ltp@lists.linux.it>; Mon, 11 Oct 2021 08:49:44 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 11E8C2004D
+ for <ltp@lists.linux.it>; Mon, 11 Oct 2021 10:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633942184;
+ t=1633946923;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=41svvjr9xAyqbVe6llFcCHAZM510znAlws9ElpQOenk=;
- b=0bk8Y8s2Qy9g4GqZFdsjk270xD72/mF+HlwyXP7EhGrsTytf7q+Svjiu5JBefbaPM8jpWp
- 1nTpybQ/BC3+Z7JV7hlBQkXVfkAgjNR896yI8rwT7CzPpF47hv/Q+h2Isad/G+zww3yU0Q
- 9QGntJ3nie15oh2+UpQIeYHk3bqvvGs=
+ bh=GZWimQ4H8YO9W2TsCBWY6AIc84vVZSap7+FgGMK92ps=;
+ b=NPgkmuSyxiEWPdfhpVscEU6Sd1IjNGNghzS0zflZteJk28tJ63bg0uw1GmmI9ZWtNS4Fg3
+ 57JpdwDWk8MpTLmARZdwjObtZA8DjURZ9dCL+z3JbvuMk36bS/BRzIJTk6GUfb41NfXCXE
+ RI1TI+rYZ5Gee9Gdcz8FMZvgEU3aeog=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633942184;
+ s=susede2_ed25519; t=1633946923;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=41svvjr9xAyqbVe6llFcCHAZM510znAlws9ElpQOenk=;
- b=95IAMWL+QnRnuvtB+Iv6Yyv5FnQn/N0tdk0ll/F5YN/LMSGVE9Mzk1U1Ekq5BRXqw4xulF
- gAiVkoS22bI0i5AQ==
+ bh=GZWimQ4H8YO9W2TsCBWY6AIc84vVZSap7+FgGMK92ps=;
+ b=bmZDT/xIHndvdkQQzSIGSmwgJ6WIrdY5V9uAMZUdOz/GngJuXm5wmDiDiU7m5eLn4ILDue
+ 2ytFjyzUe2IT+DAw==
 Received: from g78 (unknown [10.163.24.38])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id DAC02A3B85;
- Mon, 11 Oct 2021 08:49:43 +0000 (UTC)
-References: <20210924092111.20012-1-rpalethorpe@suse.com>
- <YWBSXzdO/gaq9lS6@yuki>
+ by relay2.suse.de (Postfix) with ESMTPS id CFA69A3B83;
+ Mon, 11 Oct 2021 10:08:42 +0000 (UTC)
+References: <20210909140911.44EC9A4308@relay2.suse.de>
+ <20210916123248.4974-1-rpalethorpe@suse.com> <YV//+xhzYHN5349v@yuki>
 User-agent: mu4e 1.6.5; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 11 Oct 2021 09:46:47 +0100
-In-reply-to: <YWBSXzdO/gaq9lS6@yuki>
-Message-ID: <87sfx89c9k.fsf@suse.de>
+Date: Mon, 11 Oct 2021 10:22:56 +0100
+In-reply-to: <YV//+xhzYHN5349v@yuki>
+Message-ID: <87o87van6e.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] msgrcv07: Check negative msg type filters
+Subject: Re: [LTP] [PATCH v2] kernel/irq: Add irqbalance01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,65 +83,99 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hello Cyril,
 
 Cyril Hrubis <chrubis@suse.cz> writes:
 
 > Hi!
-> I guess that it would make more sense to add this to the msgrcv02.c as:
+>> +	/* Read the CPU affinity masks for each IRQ. The first CPU is in the
+>> +	 * right most (least significant) bit. See bitmap_string() in the kernel
+>> +	 * (%*pb)
+>> +	 */
+>> +	for (row = 0; row < nr_irqs; row++) {
+>> +		sprintf(path, "/proc/irq/%u/smp_affinity", irq_ids[row]);
+>> +		buf = read_proc_file(path);
+>> +		c = buf;
+>> +		col = 0;
+>> +
+>> +		while (*c != '\0')
+>> +			c++;
 >
-> diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-> index cfb7d7446..b305d1f92 100644
-> --- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-> +++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-> @@ -21,6 +21,8 @@
->   *   msgflg and no message of the requested type existed on the message queue.
->   */
->
-> +#define _GNU_SOURCE
-> +
->  #include <string.h>
->  #include <sys/wait.h>
->  #include <sys/msg.h>
-> @@ -35,10 +37,12 @@ static int queue_id = -1;
->  static int bad_id = -1;
->  struct passwd *pw;
->
-> +#define MSGTYP 2
-> +
->  static struct buf {
->         long type;
->         char mtext[MSGSIZE];
-> -} rcv_buf, snd_buf = {MSGTYPE, "hello"};
-> +} rcv_buf, snd_buf = {MSGTYP, "hello"};
->
->  static struct tcase {
->         int *id;
-> @@ -49,12 +53,14 @@ static struct tcase {
->         int exp_user;
->         int exp_err;
->  } tcases[] = {
-> -       {&queue_id, &rcv_buf, 4, 1, 0, 0, E2BIG},
-> -       {&queue_id, &rcv_buf, MSGSIZE, 1, 0, 1, EACCES},
-> -       {&queue_id, NULL, MSGSIZE, 1, 0, 0, EFAULT},
-> -       {&bad_id, &rcv_buf, MSGSIZE, 1, 0, 0, EINVAL},
-> -       {&queue_id, &rcv_buf, -1, 1, 0, 0, EINVAL},
-> -       {&queue_id, &rcv_buf, MSGSIZE, 2, IPC_NOWAIT, 0, ENOMSG},
-> +       {&queue_id, &rcv_buf, 4, MSGTYP, 0, 0, E2BIG},
-> +       {&queue_id, &rcv_buf, MSGSIZE, MSGTYP, 0, 1, EACCES},
-> +       {&queue_id, NULL, MSGSIZE, MSGTYP, 0, 0, EFAULT},
-> +       {&bad_id, &rcv_buf, MSGSIZE, MSGTYP, 0, 0, EINVAL},
-> +       {&queue_id, &rcv_buf, -1, MSGTYP, 0, 0, EINVAL},
-> +       {&queue_id, &rcv_buf, MSGSIZE, MSGTYP+1, IPC_NOWAIT, 0, ENOMSG},
-> +       {&queue_id, &rcv_buf, MSGSIZE, -1, IPC_NOWAIT, 0, ENOMSG},
-> +       {&queue_id, &rcv_buf, MSGSIZE, -1, IPC_NOWAIT | MSG_EXCEPT, 0, ENOMSG},
->  };
->
->
-> What do you think?
+> A minor nit, we alredy know the lenght, but we do not return it from the
+> read_proc_file() we may as well change this so taht the read_proc_file
+> returns both buffer pointer and the size. E.g. add size_t *len parameter
+> to the read_proc_file() and set it if it's not NULL.
 
-I don't know, the functionality in each test seems arbitrary. I would be
-happy with either patch.
++1
+
+>
+> Other than that the parsing looks good now.
+>
+>> +static void evidence_of_change(void)
+>> +{
+>> +	size_t row, col, changed = 0;
+>> +
+>> +	for (row = 0; row < nr_irqs; row++) {
+>> +		for (col = 0; col < nr_cpus; col++) {
+>> +			if (!irq_stats[row * nr_cpus + col])
+>> +				continue;
+>> +
+>> +			if (irq_affinity[row * nr_cpus + col] == ALLOW)
+>> +				continue;
+>> +
+>> +			changed++;
+>> +		}
+>> +	}
+>> +
+>> +	tst_res(changed ? TPASS : TFAIL,
+>> +		"Heuristic: Detected %zu irq-cpu pairs have been dissallowed",
+>> +		changed);
+>> +}
+>
+> I'm still unusure about this part though.
+>
+> The test fails on my workstation where the IRQs are nicely distributed
+> by the hardware/BIOS.
+
+You don't need irqbalance then :-p
+
+The original bug this is intened to avoid was caused by the irqbalance
+deamon silently failing.
+
+>
+> Maybe we should check if IRQs are distributed somehow evenly and PASS
+> the test if that is the case as well.
+
+My plan was to have a second heuristic based on the IRQ
+distribution. However the intention was to make detection more sensitve
+to bad setups. I think what you are suggesting is the opposite. So that
+users can blindly run the test and let it figure out if it is
+appropriate for the hardware.
+
+>
+> In my case there is 27 IRQs, 18 of them have non-zero counters and there
+> is 12 CPUs. For active IRQs that gives 18/12 = 1.5 IRQ per CPU and there
+> are 7 CPUs that handle 2 IRQs, 4 CPUs that handle 1 IRQ and 1 CPU that
+> doesn't handle anything. I wonder if we can figure out some kind of
+> heuristic, but I guess that in the end it wouldn't be worth the
+> effort.
+
+I general I think it is best to write tests which figure out if they are
+in the right environment. This makes all our lives easier. The problem
+with this test in particular is the number of assumptions we have to
+make about what a good IRQ distirbution looks like.
+
+IRQs are (usually) evenly distributed for "performance". However not all
+IRQs are equal, you might get better performance through an uneven
+distribution. Especially if you only care about the performance some
+tasks and not others. Also there are some reasons to isolate some CPUs
+from IRQs regardless of performance.
+
+Having said that we can probably find a heuristic for what a very bad
+setup looks like i.e. (almost) all NIC IRQs on one CPU when there are
+30+ CPUs and multiple NICs. That is one CPU is totally saturated with
+IRQs from different NICs. This is a bit speculative so I'd like some
+feedback from testing/community before putting effort into that.
 
 -- 
 Thank you,
