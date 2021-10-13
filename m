@@ -2,76 +2,73 @@ Return-Path: <SRS0=jFKu=PB=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E591C433F5
-	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 10:10:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43FA2C433F5
+	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 10:21:18 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFF1661074
-	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 10:10:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFF1661074
+	by mail.kernel.org (Postfix) with ESMTPS id 6FABF60F4A
+	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 10:21:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6FABF60F4A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 29FED3C12D0
-	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 12:10:13 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E36993C12AD
+	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 12:21:15 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDF9F3C0FC4
- for <ltp@lists.linux.it>; Wed, 13 Oct 2021 12:10:03 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C49B33C01FA
+ for <ltp@lists.linux.it>; Wed, 13 Oct 2021 12:21:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6CAAC1001424
- for <ltp@lists.linux.it>; Wed, 13 Oct 2021 12:10:03 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EC7CD1001431
+ for <ltp@lists.linux.it>; Wed, 13 Oct 2021 12:21:05 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 98C5722300;
- Wed, 13 Oct 2021 10:10:02 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 34867201D5;
+ Wed, 13 Oct 2021 10:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1634119802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1634120465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IB8oWmjbsaa1FAvKbgADnqWgoObk+zrQFlfhTADNUnE=;
- b=pQzE/j1dK6TKP5feMOgzSdI8uwN0M40GALNKBNoWGLfba6RPYeyjJaprgrdwF6bM7F9r7Q
- z0utL69/Q+4OA9RJZlWeX2mA/1gFAM+RWzQLRo61ldaMAz4qcxdrhV4krCpmLMMJkJkNgs
- OQkAOmM5xS82aLY/0q97kbB3EJmnrcY=
+ bh=M1z8j0zsbeBi8jPcmMN6Tx8tdDiACg5qw2alcuQfx50=;
+ b=Y+39dOG5T5m2xlBcy8lIKC1xvwF56pcapxaENL14mpfYt6NVDFmMopdYQac83fmJKkIQ/L
+ wRf/mHBcJfeyGQAfXrOC95z24967OUuf1tVh6I+PHzPRuPB9Z9eqVa/9rN9MLnMV563wSx
+ 3Eo/OClkv3XygTlCyRQsD93HsDqSTHY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1634119802;
+ s=susede2_ed25519; t=1634120465;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IB8oWmjbsaa1FAvKbgADnqWgoObk+zrQFlfhTADNUnE=;
- b=j+lLmtS9boTbmm3FU/NUKIRfql4pLZtjot0oTmUMDR2cDcvXH4CloX9itmFkEHKL/xnh/j
- mnOOAYliEyIlb+Bg==
+ bh=M1z8j0zsbeBi8jPcmMN6Tx8tdDiACg5qw2alcuQfx50=;
+ b=+yrXdCL7CmOLrDEBWqiVlt77J51k7NE8taGkzYU7yB+jhW7/7wKoBuNQewhMVJsz7f3Zbc
+ pvH8vrj4pd6z6ZBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86A8813CEC;
- Wed, 13 Oct 2021 10:10:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22A8213CEC;
+ Wed, 13 Oct 2021 10:21:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ifJwH3qwZmERQwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 13 Oct 2021 10:10:02 +0000
-Date: Wed, 13 Oct 2021 12:10:43 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id yhK3BhGzZmGySAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 13 Oct 2021 10:21:05 +0000
+Date: Wed, 13 Oct 2021 12:21:46 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <YWawowTWzUhxGZPi@yuki>
-References: <1634087649-2137-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1634087649-2137-2-git-send-email-xuyang2018.jy@fujitsu.com>
- <87bl3t9zr3.fsf@suse.de> <61669595.3000900@fujitsu.com>
+To: Anton Smorodskyi <asmorodskyi@suse.de>
+Message-ID: <YWazOorfTyVsNQj+@yuki>
+References: <19307e07-fee3-aaaa-b934-452917478a36@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <61669595.3000900@fujitsu.com>
+In-Reply-To: <19307e07-fee3-aaaa-b934-452917478a36@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] scenario_groups/default: Add irq into default
- run
+Subject: Re: [LTP] getrusage04 issues on virtualized env
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,60 +80,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> >> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
-> >> ---
-> >>   scenario_groups/default | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/scenario_groups/default b/scenario_groups/default
-> >> index 439783dac..1dc2987d5 100644
-> >> --- a/scenario_groups/default
-> >> +++ b/scenario_groups/default
-> >> @@ -6,6 +6,7 @@ dio
-> >>   io
-> >>   mm
-> >>   ipc
-> >> +irq
-> >>   sched
-> >>   math
-> >>   nptl
-> >> -- 
-> >> 2.23.0
-> > 
-> > I'm not sure this should go in the default group at this time. The only
-> > test in irq (irqbalance), only works on some configurations. As
-> > discussed in the test review, the user must figure out if they should
-> > run it or not.
+> I am running LTP tests in different public cloud providers ( Azure , GCE
+> , Amazon ). Currently have issues with getrusage04 test on Azure . Looks
+> like
+> https://github.com/linux-test-project/ltp/commit/3e0ba9aa6a7c933a74d6525ca69028992a3ba1ad
+> not behaves as expected ==> test is not actually skipped on Azure and
+> failing because of known instability of the tests in virtual environments :
 > 
-> It is hard to say moving this case into default run at this time is good
-> or bad.
+> sh-4.4# getrusage04; echo cmd-exit-774-$?
+> getrusage04    0  TINFO  :  Expected timers granularity is 4000 us
+> getrusage04    0  TINFO  :  Using 1 as multiply factor for max [us]time
+> increment (1000+4000us)!
+> getrusage04    0  TINFO  :  utime:        2538us; stime:           0us
+> getrusage04    0  TINFO  :  utime:        3813us; stime:        1906us
+> getrusage04    0  TINFO  :  utime:        6317us; stime:        6317us
+> getrusage04    0  TINFO  :  utime:        7407us; stime:        6317us
+> getrusage04    0  TINFO  :  utime:        8849us; stime:        8849us
+> getrusage04    0  TINFO  :  utime:        9587us; stime:       12783us
+> getrusage04    0  TINFO  :  utime:        9637us; stime:       16062us
+> getrusage04    0  TINFO  :  utime:       10709us; stime:       21418us
+> getrusage04    1  TFAIL  :  getrusage04.c:133: stime increased > 5000us:
 > 
-> With an optimistic attitude, I want to add it into default run(add some
-> comment in irqbalance01.c that irqbalance01 may fail because it needs
-> some configuration in service or hardware)and then listen whether many
-> users complain about this failure.
 > 
-> ps: Many people still use runltp to test ltp instead of runltp-ng and
-> they usually only run default group. That is a important reason that I
-> want to add this case into default group.
+> I manually checked "systemd-detect-virt" execution on VM in azure and it
+> returns "microsoft" as expected. Digging into tst_is_virt source code
+> and around also haven't bring any ideas to me :(
+> 
+> Any hints how to follow up ?
 
-Well there are two wrong choices.
+I guess that we should skip the test if any virtualization is detected,
+that should be done with:
 
-If we add it to the default scenario people will complain that the test
-fails for no good reason.
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+index 06b576d79..318fa7ffc 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage04.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+@@ -197,7 +197,7 @@ static void setup(void)
+ {
+        tst_sig(NOFORK, DEF_HANDLER, cleanup);
 
-If we do not, the test will be largerly unused and probably bitrot over
-the time.
+-       if (tst_is_virt(VIRT_XEN) || tst_is_virt(VIRT_KVM) || tst_is_virt(VIRT_HYPERV))
++       if (tst_is_virt(VIRT_ANY))
+                tst_brkm(TCONF, NULL, "This testcase is not supported on this"
+                        " virtual machine.");
 
-However if majority here things that we should enable it by default, we
-can try that and revert it if we got too many complaints.
+
+Will you send a patch to ML or should I do so?
 
 -- 
 Cyril Hrubis
