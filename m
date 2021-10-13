@@ -2,94 +2,60 @@ Return-Path: <SRS0=jFKu=PB=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 899D3C433EF
-	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 01:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6872AC433F5
+	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 02:49:36 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1C1160E94
-	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 01:14:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E1C1160E94
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4B65160F23
+	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 02:49:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B65160F23
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 37AC93C12F6
-	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 03:14:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 364B43C1011
+	for <ltp@archiver.kernel.org>; Wed, 13 Oct 2021 04:49:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B2813C0EB8
- for <ltp@lists.linux.it>; Wed, 13 Oct 2021 03:13:59 +0200 (CEST)
-Received: from mail1.bemta26.messagelabs.com (mail1.bemta26.messagelabs.com
- [85.158.142.112])
+ by picard.linux.it (Postfix) with ESMTPS id 2808A3C0E8A
+ for <ltp@lists.linux.it>; Wed, 13 Oct 2021 04:49:22 +0200 (CEST)
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DFCFC1A00612
- for <ltp@lists.linux.it>; Wed, 13 Oct 2021 03:13:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1634087636; i=@fujitsu.com;
- bh=oh1eeXragSUd5fA2skwHz1J/nzDQbXVHKHMhZj2yE78=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=ybv+VYmF+mv6Fteit1QXg7/mLJqU/6oHjpSOiYk0h0akCM7/MR33x80EJ7apTkwYX
- YtJhq7u68fcmOb6lRP6CSn5FfdzZPcRaqB5IiMKJLA8oLTgcWiIqSpNheo6DURJkKj
- aNywE9AbjEsoGYVm0aSF8S8PWtH56Zc5rRnTKSY4HoBs6tM2xsFPweXObkSAKsFaqH
- itQN20Z1W4nJTVeFYdJw4DNvriea0CMcjb+PaBnj4WJMFqGRbefrerXDWUWidj33za
- 869BgpeyPbyqfShJiqJ2lmYSuSUNyni19PeZ1OSgM8SuaNijRhyEzEWKcNrjUbS8vk
- Auki5GDMj51mA==
-Received: from [100.113.6.246] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-1.bemta.az-b.eu-central-1.aws.symcld.net id 1C/A0-01506-4D236616;
- Wed, 13 Oct 2021 01:13:56 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRWlGSWpSXmKPExsViZ8ORqHvZKC3
- RYOUJK4sV33cwOjB67Pu9jjWAMYo1My8pvyKBNeNo60LmglfMFd8/72RvYPzL1MXIxSEkcJZR
- 4lf7KVYIZyeTxM2Zv9kgnD2MEvM+XGXvYuTkYBPQlHjWuYAZxBYRkJDoaHgLFmcWUJdYPukX0
- CgODmEBS4nr8y1AwiwCqhKfVn9kBwnzCnhIrH6iDRKWEFCQmPLwPdgUXgFBiZMzn7BATJGQOP
- jiBTNEjaLEpY5vjBB2hcSsWW1MELaaxNVzm5gnMPLPQtI+C0n7AkamVYyWSUWZ6RkluYmZObq
- GBga6hobGuia6hsYGeolVukl6qaW6yal5JUWJQFm9xPJiveLK3OScFL281JJNjMCATClkadrB
- +PvVB71DjJIcTEqivHYLUxOF+JLyUyozEosz4otKc1KLDzHKcHAoSfCyGKYlCgkWpaanVqRl5
- gCjAyYtwcGjJMI7FyTNW1yQmFucmQ6ROsWoKCXOKwWSEABJZJTmwbXBIvISo6yUMC8jAwODEE
- 9BalFuZgmq/CtGcQ5GJWFeTi2gKTyZeSVw018BLWYCWhwYlQKyuCQRISXVwCQcFPvz+qd1E+w
- //nJ5JTHj5LWFLBc2ym86prhve6rEC67Zm96Z72Gwub4qya3mwuGyPosrO6XORtol3Xf8bXw9
- 6rzoqciAR/tP7LitHN3+5eyvzfu7NM/eZ3h2PKC4UtPnmdZU9bYbN591ZJqneW37NfW2mkTHu
- rPSyzT7Zyv7fN3BqPvobdQJpnqxcinBr3/NFIJ766t3MawxDWu+c9s16Mm0vKVP5VXqSx0VTj
- +dEFJu0VWTobfjPnu6gK/6Ao6wJ2mWWs8Nm07tL9JRPX9Js0k9d93s7PJNs/+KFpRkPN1z+1q
- Ek54C56a1USb3eWTCSnZX7M+aH8VnsmmFz/N57pNkbs4Wu2HkK/04wV2JpTgj0VCLuag4EQDf
- hKPeQwMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-19.tower-238.messagelabs.com!1634087635!945629!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.4; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 5934 invoked from network); 13 Oct 2021 01:13:55 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-19.tower-238.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 13 Oct 2021 01:13:55 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 6A4361009CF
- for <ltp@lists.linux.it>; Wed, 13 Oct 2021 02:13:55 +0100 (BST)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 5DC34100250
- for <ltp@lists.linux.it>; Wed, 13 Oct 2021 02:13:55 +0100 (BST)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Wed, 13 Oct 2021 02:13:48 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Wed, 13 Oct 2021 09:14:08 +0800
-Message-ID: <1634087649-2137-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7FE6D600E5F
+ for <ltp@lists.linux.it>; Wed, 13 Oct 2021 04:49:18 +0200 (CEST)
+X-QQ-mid: bizesmtp46t1634093352tyfc22j9
+Received: from [10.4.23.19] (unknown [58.240.82.166])
+ by esmtp6.qq.com (ESMTP) with 
+ id ; Wed, 13 Oct 2021 10:49:11 +0800 (CST)
+X-QQ-SSF: 0140000000200040D000B00A0000000
+X-QQ-FEAT: F3yR32iATbhuiQ+JOQtxovSwEStZBKc19+3UVnYRyN8gbrotyy5kksh3B2Rvm
+ ZRyoeMAFGkYzY+uPd9+rxeKVKQ1d8gTlySn4TXxVUJNYhTLGvpokuLjd5SmGYtBZF7jbRdY
+ yEjkf7kBJFrZA6ePTVvh/7joSjlgp2+uO3gahnGiDegbBLhpsmxoHmD5KpPiNtKudqoXmPx
+ POrjaIolYW2t1uaSoBwPOVpSwWUEJG4jDHN/MFmAjXHo3M27SX+RgruTfHhzfn1MIxULUtw
+ EDrz+hdvXBxTRhDGv95UcMjf1oKSsX6apb7Sc+q01stUbxgEgOQGSbNs/SNDzyQkEFosVTg
+ SRbebOKYNP2y4jIY8g=
+X-QQ-GoodBg: 2
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20210923085224.868-1-zhanglianjie@uniontech.com>
+ <20210923085224.868-4-zhanglianjie@uniontech.com> <YWVTsg3BLFwZRcl0@yuki>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Message-ID: <41caea86-50f4-ce70-be6e-654fa5892880@uniontech.com>+5FCA4DE9235618E4
+Date: Wed, 13 Oct 2021 10:49:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YWVTsg3BLFwZRcl0@yuki>
+Content-Language: en-US
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] kernel/Makefile: Add irq to Makefile
+Subject: Re: [LTP] [PATCH v3 4/5] syscalls/clone06: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,31 +67,128 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: f8fb073708 ("kernel/irq: Add irqbalance01")
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+Hi,
+This is a good idea, just do it, thank you.
 
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index f3a608f38..4604f1f38 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -28,6 +28,7 @@ SUBDIRS			+= connectors \
- 			   input \
- 			   io \
- 			   ipc \
-+			   irq \
- 			   logging \
- 			   mem \
- 			   numa \
+On 2021-10-12 17:21, Cyril Hrubis wrote:
+> Hi!
+>> -	cleanup();
+>> -	tst_exit();
+>> +	parent_env = getenv("TERM") ? : "";
+> 
+> I guess that it would make more sense to create a new variable than
+> depend on anything that may or may not be present on the system.
+> 
+> What about we setenv a variable instead and use that for the test?
+> 
+> #define ENV_VAL "LTP test variable value"
+> #define ENV_ID "LTP_CLONE_TEST"
+> 
+> static void setup(void)
+> {
+> 	int ret;
+> 
+> 	ret = setenv(ENV_ID, ENV_VAL, 0)
+> 	if (ret)
+> 		tst_brk(TBROK | TERRNO, "setenv() failed");
+> 
+> }
+> 
+> 
+>> +	TST_EXP_VAL(strcmp(buff, parent_env), 0,
+>> +				"verify environment variables by child");
+> 
+> Also there is no need to propagate the value to the parent like this,
+> the child process can report the result (in the new library) as well, so
+> this really could be as simple as:
+> 
+> static int do_child(void *arg LTP_ATTRIBUTE_UNUSED)
+> {
+> 	const char *env_val = getenv(ENV_ID);
+> 
+> 	if (!env_val) {
+> 		tst_res(TFAIL, "Variable " ENV_ID " not defined in child");
+> 		return;
+> 	}
+> 
+> 	if (strcmp(env_val, ENV_VAL)) {
+> 		tst_res(TFAIL, "Variable value is different");
+> 		return;
+> 	}
+> 
+> 	tst_res(TPASS, ...);
+> }
+> 
+>>   }
+>>
+>>   static void setup(void)
+>>   {
+>> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+>> -	TEST_PAUSE;
+>> +	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
+>> +	buff = SAFE_MMAP(NULL, MAX_LINE_LENGTH, PROT_READ | PROT_WRITE,
+>> +			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+>>   }
+>>
+>>   static void cleanup(void)
+>>   {
+>> -}
+>> -
+>> -/*
+>> - *	Function executed by child.
+>> - *	Gets the value for environment variable,TERM &
+>> - *	writes it to  a pipe.
+>> - */
+>> -static int child_environ(void)
+>> -{
+>> -
+>> -	char var[MAX_LINE_LENGTH];
+>> -
+>> -	/* Close read end from child */
+>> -	if ((close(pfd[0])) == -1)
+>> -		tst_brkm(TBROK | TERRNO, cleanup, "close(pfd[0]) failed");
+>> -
+>> -	if ((sprintf(var, "%s", getenv("TERM") ? : "")) < 0)
+>> -		tst_resm(TWARN | TERRNO, "sprintf() failed");
+>> -
+>> -	if ((write(pfd[1], var, MAX_LINE_LENGTH)) == -1)
+>> -		tst_resm(TWARN | TERRNO, "write to pipe failed");
+>> -
+>> -	/* Close write end of pipe from child */
+>> -	if ((close(pfd[1])) == -1)
+>> -		tst_resm(TWARN | TERRNO, "close(pfd[1]) failed");
+>> +	free(child_stack);
+>>
+>> -	exit(0);
+>> +	if (buff)
+>> +		SAFE_MUNMAP(buff, MAX_LINE_LENGTH);
+>>   }
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.test_all = verify_clone,
+>> +	.cleanup = cleanup,
+>> +};
+>> --
+>> 2.20.1
+>>
+>>
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+
 -- 
-2.23.0
+Regards,
+Zhang Lianjie
+
 
 
 -- 
