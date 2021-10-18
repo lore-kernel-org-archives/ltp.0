@@ -2,91 +2,77 @@ Return-Path: <SRS0=Jxr4=PG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E121FC433F5
-	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 13:16:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EFE1C433EF
+	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:47:31 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EB2A6103C
-	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 13:16:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6EB2A6103C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
+	by mail.kernel.org (Postfix) with ESMTPS id 302BE60F36
+	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:47:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 302BE60F36
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 698773C2DE2
-	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:16:48 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E377E3C2F54
+	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 17:47:27 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C443B3C2D54
- for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:16:38 +0200 (CEST)
-Received: from mail3.bemta25.messagelabs.com (mail3.bemta25.messagelabs.com
- [195.245.230.82])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 875823C02DA
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 17:47:17 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1F3BB1000A05
- for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:16:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1634562997; i=@fujitsu.com;
- bh=vNXb+B1ygmd2G22HvaMiuI0FQuAOF2dBUPmI5c/Grgo=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=QFa8G35mvil5/qqIIZxmk3OhuA/WNpDNzSkZy7+k0nM5yBpyV0skwfglItVsamUZX
- sUP64qQVHtO6fhfw21JjsUtZ8oSf01/Nl5Y+BT+gAsPMxOiNxpIR2IWMT+DMcnVQMM
- rFGKoSQqi56s8Y2x63y1jo1Jt/aDLTb7Gku9NNNTTCsle3gBfBIg2V6Eu7mo0x7qjx
- +4vzuB4nvKVqwQ4FcieYQ/ru0VlvLnDcITxLQzRCuAYVE2LanlP1XW7tBLLZsjIKTT
- jhC1gHUezJDvgd7TJ9TpDY29OAq7ji+9OlrMFNzrZSxUOBrukv+2jQGoCiHdA9EFOE
- 9QyTtrHQvS4uA==
-Received: from [100.112.197.4] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-2.bemta.az-b.eu-west-1.aws.symcld.net id 9D/6C-18279-5B37D616;
- Mon, 18 Oct 2021 13:16:37 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRWlGSWpSXmKPExsViZ8MxRXdLcW6
- iweI7uhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bqd2+YC9boVlx/95uxgbFVrYuRi0NIoIVJ
- 4tzLi+wQzh5Gicm79rN0MXJysAloSjzrXMAMYosISEh0NLxlB7GZBdQllk/6xQRiCwvEScxaM
- xesnkVAVWLjgw1sXYwcHLwCHhJr7ueBhCUEFCSmPHwPNoZXQFDi5MwnLBBjJCQOvnjBDFGjKH
- Gp4xsjhF0hMWtWG9MERt5ZSFpmIWlZwMi0itEiqSgzPaMkNzEzR9fQwEDX0NBI19DSQtfI0FQ
- vsUo3SS+1VLc8tbhE11AvsbxYr7gyNzknRS8vtWQTIzC8UgqOXd/BePX1B71DjJIcTEqivP1K
- uYlCfEn5KZUZicUZ8UWlOanFhxhlODiUJHhP5wPlBItS01Mr0jJzgKEOk5bg4FES4c0qAkrzF
- hck5hZnpkOkTjHqcjRPWr6dWYglLz8vVUqcl7UAqEgApCijNA9uBCzuLjHKSgnzMjIwMAjxFK
- QW5WaWoMq/YhTnYFQS5rUBRrEQT2ZeCdymV0BHMAEdcdU5B+SIkkSElFQD06on26/WPFBZvUF
- F2mFVZ4v4tbdrG/LWfj106Oaaibs3Tr/reJxZe/EbK/9q5b0XZypzuz10MiqtbjzPLH/y/Izr
- G1fFtDo+ZWBfUnpWcF7UF6vwd4m/itoOepwU5DS4PaNxZ/qGDukLa1ZePiybyRfYovkv/N07g
- XOnDOZYKLHvCVPN+aqrLXSr6O9xoyP3NVhjQ5T8/0zimLoh3YHhfMH0PQUBT1rOnt01c6N2Ub
- p877IIn1lfZfY3J3t9+pR/02Ot+28t1wfPk/Z6CO14mXndOoDXh2ldz7rV3SKx+0L7I/808Wo
- 9ndUQtaFF/NX1FRs3bebr6di17Bzn7D/rBANWLC1xr94nWFwlLTj13F4lluKMREMt5qLiRABo
- 0lpvNgMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-22.tower-285.messagelabs.com!1634562996!297909!1
-X-Originating-IP: [62.60.8.148]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.4; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 23369 invoked from network); 18 Oct 2021 13:16:36 -0000
-Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
- by server-22.tower-285.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 18 Oct 2021 13:16:36 -0000
-Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
- by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 19IDGaOU026144
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
- for <ltp@lists.linux.it>; Mon, 18 Oct 2021 14:16:36 +0100
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Mon, 18 Oct 2021 14:16:34 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Mon, 18 Oct 2021 21:16:36 +0800
-Message-ID: <1634562996-6045-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8981360028E
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 17:47:16 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 449D721966
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1634572035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=zUUzjh81EV5pv+plOl6I1/iyJQU4ILS3QEqLwxY1e4M=;
+ b=FnHQ5tqPHrHaIhG7P5v6JOqItAmNPnh0cnxTik/vxCjYNFE2Ag6psEZi5I3utm3/N7YZoz
+ U1f0ZVbGCK5F9Kh2po3hXD/JobpCOODl0G4EbtI6TUmIG3oHy+Ud3Hx6yjgPWjQxS1+r9J
+ xKT2vz0zWGpHo9eMTe4/gtr6mtbgtnU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1634572035;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=zUUzjh81EV5pv+plOl6I1/iyJQU4ILS3QEqLwxY1e4M=;
+ b=kwakVFzd7rPfbWYNdzOb7/xW+bc71lU+P4CyZXPEcVG48rVim4iBf+mjq77XDZni+3bGs4
+ C03uUU15UFfHGAAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A1EA140B7
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:47:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5irxCAOXbWFwJwAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:47:15 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 18 Oct 2021 17:47:53 +0200
+Message-Id: <20211018154800.11013-2-chrubis@suse.cz>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211018154800.11013-1-chrubis@suse.cz>
+References: <20211018154800.11013-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 11/11] syscalls/quotactl09: Test error when quota
- info hidden in filesystem
+Subject: [LTP] [PATCH 1/7] docparse: Implement #define and #include
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,226 +89,344 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This case is similar to quotactl06 but only two differences
-1) use quotactl and quotactl_fd syscalls without visible quota file
-2) remove some error for addr argument
+We ignore most of the include statements and we attempt to parse only
+header files that reside in the same directory as the test source code,
+that is since we are not interested in any system or library headers as
+we are only looking for constants used in the tst_test structure that
+are always either directly in the test source or in header in the same
+directory.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+The macro support is very simple as well, it's a single pass as we are
+not interested in intricate macros. We just need values for constants
+that are used in the tst_test structure intializations.
+
++ Also add -v verbose mode that prints included files and defined macros
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/quotactl/.gitignore |   1 +
- .../kernel/syscalls/quotactl/quotactl09.c     | 179 ++++++++++++++++++
- 3 files changed, 181 insertions(+)
- create mode 100644 testcases/kernel/syscalls/quotactl/quotactl09.c
+ docparse/docparse.c | 219 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 209 insertions(+), 10 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index cdeb3e142..c8df80fa0 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1074,6 +1074,7 @@ quotactl05 quotactl05
- quotactl06 quotactl06
- quotactl07 quotactl07
- quotactl08 quotactl08
-+quotactl09 quotactl09
+diff --git a/docparse/docparse.c b/docparse/docparse.c
+index 8cd0d0eef..cab01c384 100644
+--- a/docparse/docparse.c
++++ b/docparse/docparse.c
+@@ -1,9 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) 2019-2021 Cyril Hrubis <chrubis@suse.cz>
+  * Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+  */
  
- read01 read01
- read02 read02
-diff --git a/testcases/kernel/syscalls/quotactl/.gitignore b/testcases/kernel/syscalls/quotactl/.gitignore
-index dab9b3420..94de2c8f2 100644
---- a/testcases/kernel/syscalls/quotactl/.gitignore
-+++ b/testcases/kernel/syscalls/quotactl/.gitignore
-@@ -6,3 +6,4 @@
- /quotactl06
- /quotactl07
- /quotactl08
-+/quotactl09
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl09.c b/testcases/kernel/syscalls/quotactl/quotactl09.c
-new file mode 100644
-index 000000000..3276624bc
---- /dev/null
-+++ b/testcases/kernel/syscalls/quotactl/quotactl09.c
-@@ -0,0 +1,179 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ */
++#define _GNU_SOURCE
 +
-+/*\
-+ * [Description]
-+ *
-+ * Tests basic error handling of the quotactl syscall without visible quota files
-+ * (use quotactl and quotactl_fd syscall):
-+ *
-+ * 1) quotactl fails with EFAULT when addr or special is invalid.
-+ *
-+ * 2) quotactl fails with EINVAL when cmd or type is invalid.
-+ *
-+ * 3) quotactl fails with ENOTBLK when special is not a block device.
-+ *
-+ * 4) quotactl fails with ERANGE when cmd is Q_SETQUOTA, but the
-+ * specified limits are out of the range allowed by the quota format.
-+ *
-+ * 5) quotactl fails with EPERM when the caller lacked the required
-+ * privilege (CAP_SYS_ADMIN) for the specified operation.
-+ */
++#include <search.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <libgen.h>
+@@ -12,6 +15,8 @@
+ 
+ #include "data_storage.h"
+ 
++static int verbose;
 +
-+#include <errno.h>
-+#include <sys/quota.h>
-+#include "tst_test.h"
-+#include "lapi/quotactl.h"
-+#include "tst_capability.h"
-+#include "quotactl_var.h"
-+
-+#define OPTION_INVALID 999
-+#define MNTPOINT "mntpoint"
-+#define TESTFILE MNTPOINT "/testfile"
-+
-+static int32_t fmt_id;
-+static int test_id, fd = -1;
-+static int getnextquota_nsup;
-+
-+static struct if_nextdqblk res_ndq;
-+
-+static struct dqblk set_dqmax = {
-+	.dqb_bsoftlimit = 0x7fffffffffffffffLL,  /* 2^63-1 */
-+	.dqb_valid = QIF_BLIMITS
-+};
-+
-+struct tst_cap dropadmin = {
-+	.action = TST_CAP_DROP,
-+	.id = CAP_SYS_ADMIN,
-+	.name = "CAP_SYS_ADMIN",
-+};
-+
-+struct tst_cap needadmin = {
-+	.action = TST_CAP_REQ,
-+	.id = CAP_SYS_ADMIN,
-+	.name = "CAP_SYS_ADMIN",
-+};
-+
-+static struct tcase {
-+	int cmd;
-+	int *id;
-+	void *addr;
-+	int exp_err;
-+	int on_flag;
-+} tcases[] = {
-+	{QCMD(Q_SETQUOTA, USRQUOTA), &fmt_id, NULL, EFAULT, 1},
-+	{QCMD(OPTION_INVALID, USRQUOTA), &fmt_id, NULL, EINVAL, 0},
-+	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, NULL, ENOTBLK, 0},
-+	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dqmax, ERANGE, 1},
-+	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, NULL, EPERM, 0},
-+};
-+
-+static void verify_quotactl(unsigned int n)
+ #define WARN(str) fprintf(stderr, "WARNING: " str "\n")
+ 
+ static void oneline_comment(FILE *f)
+@@ -126,7 +131,7 @@ static void maybe_comment(FILE *f, struct data_node *doc)
+ 	}
+ }
+ 
+-const char *next_token(FILE *f, struct data_node *doc)
++static char *next_token(FILE *f, struct data_node *doc)
+ {
+ 	size_t i = 0;
+ 	static char buf[4096];
+@@ -172,6 +177,7 @@ const char *next_token(FILE *f, struct data_node *doc)
+ 		case '.':
+ 		case '_':
+ 		case '-':
++		case '#':
+ 			buf[i++] = c;
+ 		break;
+ 		case '/':
+@@ -197,6 +203,46 @@ exit:
+ 	return buf;
+ }
+ 
++static FILE *open_include(const char *includepath, FILE *f)
 +{
-+	struct tcase *tc = &tcases[n];
-+	int quota_on = 0;
-+	int drop_flag = 0;
++	char buf[256];
++	char *path;
++	FILE *inc;
 +
-+	if (tc->cmd == QCMD(Q_GETNEXTQUOTA, USRQUOTA) && getnextquota_nsup) {
-+		tst_res(TCONF, "current system doesn't support Q_GETNEXTQUOTA");
++	if (!fscanf(f, "%s\n", buf))
++		return NULL;
++
++	if (buf[0] != '"')
++		return NULL;
++
++	char *filename = buf + 1;
++
++	if (!buf[0])
++		return NULL;
++
++	filename[strlen(filename)-1] = 0;
++
++	if (asprintf(&path, "%s/%s", includepath, filename) < 0)
++		return NULL;
++
++	inc = fopen(path, "r");
++
++	if (inc && verbose)
++		fprintf(stderr, "INCLUDE %s\n", path);
++
++	free(path);
++
++	return inc;
++}
++
++static void close_include(FILE *inc)
++{
++	if (verbose)
++		fprintf(stderr, "INCLUDE END\n");
++
++	fclose(inc);
++}
++
+ static int parse_array(FILE *f, struct data_node *node)
+ {
+ 	const char *token;
+@@ -234,9 +280,28 @@ static int parse_array(FILE *f, struct data_node *node)
+ 	return 0;
+ }
+ 
++static void try_apply_macro(char **res)
++{
++	ENTRY macro = {
++		.key = *res,
++	};
++
++	ENTRY *ret;
++
++	ret = hsearch(macro, FIND);
++
++	if (!ret)
++		return;
++
++	if (verbose)
++		fprintf(stderr, "APPLYING MACRO %s=%s\n", ret->key, (char*)ret->data);
++
++	*res = ret->data;
++}
++
+ static int parse_test_struct(FILE *f, struct data_node *doc, struct data_node *node)
+ {
+-	const char *token;
++	char *token;
+ 	char *id = NULL;
+ 	int state = 0;
+ 	struct data_node *ret;
+@@ -280,6 +345,7 @@ static int parse_test_struct(FILE *f, struct data_node *doc, struct data_node *n
+ 			ret = data_node_array();
+ 			parse_array(f, ret);
+ 		} else {
++			try_apply_macro(&token);
+ 			ret = data_node_string(token);
+ 		}
+ 
+@@ -302,6 +368,103 @@ static const char *tokens[] = {
+ 	"{",
+ };
+ 
++static void macro_get_string(FILE *f, char *buf, char *buf_end)
++{
++	int c;
++
++	for (;;) {
++		c = fgetc(f);
++
++		switch (c) {
++		case '"':
++		case EOF:
++			*buf = 0;
++			return;
++		default:
++			if (buf < buf_end)
++				*(buf++) = c;
++		}
++	}
++}
++
++static void macro_get_val(FILE *f, char *buf, size_t buf_len)
++{
++	int c, prev = 0;
++	char *buf_end = buf + buf_len - 1;
++
++	c = fgetc(f);
++	if (c == '"') {
++		macro_get_string(f, buf, buf_end);
 +		return;
 +	}
 +
-+	if (tc->on_flag) {
-+		TEST(do_quotactl(fd, QCMD(Q_QUOTAON, USRQUOTA), tst_device->dev,
-+			fmt_id, NULL));
-+		if (TST_RET == -1)
-+			tst_brk(TBROK,
-+				"quotactl with Q_QUOTAON returned %ld", TST_RET);
-+		quota_on = 1;
-+	}
-+
-+	if (tc->exp_err == EPERM) {
-+		tst_cap_action(&dropadmin);
-+		drop_flag = 1;
-+	}
-+	
-+	if (tst_variant) {
-+		if (tc->exp_err == ENOTBLK) {
-+			tst_res(TCONF, "quotactl_fd() doesn't have this error, skip");
++	for (;;) {
++		switch (c) {
++		case '\n':
++			if (prev == '\\') {
++				buf--;
++			} else {
++				*buf = 0;
++				return;
++			}
++		break;
++		case EOF:
++			*buf = 0;
 +			return;
++		case ' ':
++		case '\t':
++		break;
++		default:
++			if (buf < buf_end)
++				*(buf++) = c;
 +		}
-+	}
-+	if (tc->exp_err == ENOTBLK)
-+		TEST(do_quotactl(fd, tc->cmd, "/dev/null", *tc->id, tc->addr));
-+	else
-+		TEST(do_quotactl(fd, tc->cmd, tst_device->dev, *tc->id, tc->addr));
 +
-+	if (TST_RET == -1) {
-+		if (tc->exp_err == TST_ERR) {
-+			tst_res(TPASS | TTERRNO, "quotactl failed as expected");
++		prev = c;
++		c = fgetc(f);
++	}
++}
++
++static void parse_macro(FILE *f)
++{
++	char name[128];
++	char val[256];
++
++	if (!fscanf(f, "%s[^\n]", name))
++		return;
++
++	if (fgetc(f) == '\n')
++		return;
++
++	macro_get_val(f, val, sizeof(val));
++
++	ENTRY e = {
++		.key = strdup(name),
++		.data = strdup(val),
++	};
++
++	if (verbose)
++		fprintf(stderr, " MACRO %s=%s\n", e.key, (char*)e.data);
++
++	hsearch(e, ENTER);
++}
++
++static void parse_include_macros(const char *includepath, FILE *f)
++{
++	FILE *inc;
++	const char *token;
++
++	inc = open_include(includepath, f);
++	if (!inc)
++		return;
++
++	while ((token = next_token(inc, NULL))) {
++		if (!strcmp(token, "#define"))
++			parse_macro(inc);
++	}
++
++	close_include(inc);
++}
++
+ static struct data_node *parse_file(const char *fname)
+ {
+ 	int state = 0, found = 0;
+@@ -314,14 +477,25 @@ static struct data_node *parse_file(const char *fname)
+ 
+ 	FILE *f = fopen(fname, "r");
+ 
++	const char *includepath = dirname(strdup(fname));
++
+ 	struct data_node *res = data_node_hash();
+ 	struct data_node *doc = data_node_array();
+ 
+ 	while ((token = next_token(f, doc))) {
+-		if (state < 6 && !strcmp(tokens[state], token))
++		if (state < 6 && !strcmp(tokens[state], token)) {
+ 			state++;
+-		else
 +		} else {
-+			tst_res(TFAIL | TTERRNO,
-+				"quotactl failed unexpectedly; expected %s, but got",
-+				tst_strerrno(tc->exp_err));
++			if (token[0] == '#') {
++				if (!strcmp(token, "#define"))
++					parse_macro(f);
++
++				if (!strcmp(token, "#include"))
++					parse_include_macros(includepath, f);
++			}
++
+ 			state = 0;
 +		}
-+	} else {
-+		tst_res(TFAIL, "quotactl returned wrong value: %ld", TST_RET);
-+	}
-+
-+	if (quota_on) {
-+		TEST(do_quotactl(fd, QCMD(Q_QUOTAOFF, USRQUOTA), tst_device->dev,
-+			fmt_id, NULL));
-+		if (TST_RET == -1)
-+			tst_brk(TBROK,
-+				"quotactl with Q_QUOTAOFF returned %ld", TST_RET);
-+		quota_on = 0;
-+	}
-+
-+	if (drop_flag) {
-+		tst_cap_action(&needadmin);
-+		drop_flag = 0;
-+	}
-+}
-+
-+static void setup(void)
+ 
+ 		if (state < 6)
+ 			continue;
+@@ -386,17 +560,42 @@ const char *strip_name(char *path)
+ 	return name;
+ }
+ 
++static void print_help(const char *prgname)
 +{
-+	unsigned int i;
++	printf("usage: %s [-vh] input.c\n\n", prgname);
++	printf("-v sets verbose mode\n");
++	printf("-h prints this help\n\n");
++	exit(0);
++}
 +
-+	fmt_id = QFMT_VFS_V1;
-+	quotactl_info();
+ int main(int argc, char *argv[])
+ {
+ 	unsigned int i, j;
+ 	struct data_node *res;
++	int opt;
 +
-+	test_id = geteuid();
-+	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+
-+	TEST(do_quotactl(fd, QCMD(Q_GETNEXTQUOTA, USRQUOTA), tst_device->dev,
-+		test_id, (void *) &res_ndq));
-+	if (TST_ERR == EINVAL || TST_ERR == ENOSYS)
-+		getnextquota_nsup = 1;
-+
-+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-+		if (!tcases[i].addr)
-+			tcases[i].addr = tst_get_bad_addr(NULL);
++	while ((opt = getopt(argc, argv, "hv")) != -1) {
++		switch (opt) {
++		case 'h':
++			print_help(argv[0]);
++		break;
++		case 'v':
++			verbose = 1;
++		break;
++		}
 +	}
-+}
 +
-+static void cleanup(void)
-+{
-+	if (fd > -1)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_QFMT_V2",
-+		NULL
-+	},
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_quotactl,
-+	.dev_fs_type = "ext4",
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.dev_fs_opts = (const char *const []){"-O", "quota", NULL},
-+	.needs_root = 1,
-+	.test_variants = 2,
-+};
++	if (optind >= argc) {
++		fprintf(stderr, "No input filename.c\n");
++		return 1;
++	}
+ 
+-	if (argc != 2) {
+-		fprintf(stderr, "Usage: docparse filename.c\n");
++	if (!hcreate(128)) {
++		fprintf(stderr, "Failed to initialize hash table\n");
+ 		return 1;
+ 	}
+ 
+-	res = parse_file(argv[1]);
++	res = parse_file(argv[optind]);
+ 	if (!res)
+ 		return 0;
+ 
+@@ -425,8 +624,8 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	data_node_hash_add(res, "fname", data_node_string(argv[1]));
+-	printf("  \"%s\": ", strip_name(argv[1]));
++	data_node_hash_add(res, "fname", data_node_string(argv[optind]));
++	printf("  \"%s\": ", strip_name(argv[optind]));
+ 	data_to_json(res, stdout, 2);
+ 	data_node_free(res);
+ 
 -- 
-2.23.0
+2.32.0
 
 
 -- 
