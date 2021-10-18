@@ -2,76 +2,78 @@ Return-Path: <SRS0=Jxr4=PG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5513C433EF
-	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92B46C433EF
+	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:48:48 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5652B60F93
-	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:48:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5652B60F93
+	by mail.kernel.org (Postfix) with ESMTPS id 412A960F9D
+	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 15:48:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 412A960F9D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D5C293C4B8F
-	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 17:48:37 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1249B3C304F
- for <ltp@lists.linux.it>; Mon, 18 Oct 2021 17:47:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id 0479A3C2EBC
+	for <ltp@archiver.kernel.org>; Mon, 18 Oct 2021 17:48:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2FF5D1000DE1
- for <ltp@lists.linux.it>; Mon, 18 Oct 2021 17:47:20 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6035F3C3077
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 17:47:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BB98A1400E58
+ for <ltp@lists.linux.it>; Mon, 18 Oct 2021 17:47:19 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CFA3F1FD6D
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4B90D21961
  for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1634572039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Bz4ihaNZC1YAKllRK7RVCTreknTWOTvkDqafghHcRv8=;
- b=d1YGrh3oV1eMjIzHnVCIasW2c9oSb4z4C+eWWYgPMn74tpML2WFOB0OCQcmq/mPgItquZm
- v+2XZWVcnM3xfQWgUE7tzP4p/jXf77v7vOi0MxkAzEUqMcLAQa5k6gP9Iu3JGVAIAziCAH
- c3t/yFaLI4iQQ1RWCvgD52tIN+iLY4Y=
+ bh=CEXx5w6fRkWKj9WgtromYQ0/XLrY8qDjmZHEhIXcsJk=;
+ b=hPyzdFKUmb8uZgvfwa+W5Qe9uDrSH5uc/KJQ3qzJoQqlisRJ/ga+pDbwEpfdFsziN4srQk
+ uMEGFmC/Y2gH7uCeDU3Fhbi6fjBWGMo5DfaKrWhQGgAqUJqH2bXlUi+l/5jDKvpjnAtKFy
+ /yyba7RgqBTjey29ZlIxxDSF0XmG2mQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1634572039;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Bz4ihaNZC1YAKllRK7RVCTreknTWOTvkDqafghHcRv8=;
- b=9AtASFZoflwERVbps/+/ZE0K32eC3aFpDtK0vfKT65+BwippMNcLvNBaAx4jw2G/NXYxwz
- yZ4Nlutw7u5Z3+Dw==
+ bh=CEXx5w6fRkWKj9WgtromYQ0/XLrY8qDjmZHEhIXcsJk=;
+ b=lPeh92dE7gPJR6u8Q47/AYM3fTPzDOkZtcuB4/AAIey0kgsT0IUA1Pqbm6xB11EfXhmmfN
+ 9v3pPYfHkiXFf1BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3002140B7
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 377A8140B7
  for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:47:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id e9Y2KgeXbWGGJwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id d7s5DAeXbWGAJwAAMHmgww
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Mon, 18 Oct 2021 15:47:19 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 18 Oct 2021 17:48:00 +0200
-Message-Id: <20211018154800.11013-9-chrubis@suse.cz>
+Date: Mon, 18 Oct 2021 17:47:59 +0200
+Message-Id: <20211018154800.11013-8-chrubis@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211018154800.11013-1-chrubis@suse.cz>
 References: <20211018154800.11013-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/7] docparse improvements
+Subject: [LTP] [PATCH 7/7] docparse/Makefile: Do not abort on missing
+ generators
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,76 +90,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Implements support for various missing bits to the docparse tool and
-enables it unconditionally so that the metadata.json file is present
-on all builds.
+Since we want to use the metadata.json in the testrunner it must bte
+build unconditionally.
 
-This is first part of bigger effort to get the metadata useful for the
-testrunners, expecially we need the .test_variants field to be properly
-parsed in order to compute the overall test runtime.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ Makefile           | 5 +----
+ docparse/Makefile  | 4 ----
+ m4/ltp-docparse.m4 | 3 ---
+ 3 files changed, 1 insertion(+), 11 deletions(-)
 
-Cyril Hrubis (7):
-  docparse: Implement #define and #include
-  docparse: Add tests
-  docparse: data_storage: Add integer type node
-  docparse: Implement ARRAY_SIZE()
-  docparse: Add type normalization
-  docparse: Group data to 'testsuite' and 'defaults'
-  docparse/Makefile: Do not abort on missing generators
-
- Makefile                             |   5 +-
- docparse/Makefile                    |   4 -
- docparse/data_storage.h              |  45 +++
- docparse/docparse.c                  | 469 ++++++++++++++++++++++++++-
- docparse/parse.sh                    |  18 +-
- docparse/testinfo.pl                 |  16 +-
- docparse/tests/array_size01.c        |   5 +
- docparse/tests/array_size01.c.out    |   4 +
- docparse/tests/array_size02.c        |   5 +
- docparse/tests/array_size02.c.out    |   4 +
- docparse/tests/array_size03.c        |  10 +
- docparse/tests/array_size03.c.out    |   4 +
- docparse/tests/array_size04.c        |   5 +
- docparse/tests/array_size04.c.out    |   4 +
- docparse/tests/empty_struct.c        |   2 +
- docparse/tests/empty_struct.c.out    |   3 +
- docparse/tests/expand_flags.c        |   3 +
- docparse/tests/expand_flags.c.out    |   6 +
- docparse/tests/include.c             |   5 +
- docparse/tests/include.c.out         |   4 +
- docparse/tests/include.h             |   7 +
- docparse/tests/macro.c               |   5 +
- docparse/tests/macro.c.out           |   4 +
- docparse/tests/multiline_macro.c     |   6 +
- docparse/tests/multiline_macro.c.out |   4 +
- docparse/tests/tags.c                |   7 +
- docparse/tests/tags.c.out            |  13 +
- docparse/tests/test.sh               |  18 +
- m4/ltp-docparse.m4                   |   3 -
- 29 files changed, 647 insertions(+), 41 deletions(-)
- create mode 100644 docparse/tests/array_size01.c
- create mode 100644 docparse/tests/array_size01.c.out
- create mode 100644 docparse/tests/array_size02.c
- create mode 100644 docparse/tests/array_size02.c.out
- create mode 100644 docparse/tests/array_size03.c
- create mode 100644 docparse/tests/array_size03.c.out
- create mode 100644 docparse/tests/array_size04.c
- create mode 100644 docparse/tests/array_size04.c.out
- create mode 100644 docparse/tests/empty_struct.c
- create mode 100644 docparse/tests/empty_struct.c.out
- create mode 100644 docparse/tests/expand_flags.c
- create mode 100644 docparse/tests/expand_flags.c.out
- create mode 100644 docparse/tests/include.c
- create mode 100644 docparse/tests/include.c.out
- create mode 100644 docparse/tests/include.h
- create mode 100644 docparse/tests/macro.c
- create mode 100644 docparse/tests/macro.c.out
- create mode 100644 docparse/tests/multiline_macro.c
- create mode 100644 docparse/tests/multiline_macro.c.out
- create mode 100644 docparse/tests/tags.c
- create mode 100644 docparse/tests/tags.c.out
- create mode 100755 docparse/tests/test.sh
-
+diff --git a/Makefile b/Makefile
+index 4e37362f9..447525e75 100644
+--- a/Makefile
++++ b/Makefile
+@@ -62,10 +62,7 @@ $(1):: | $$(abs_top_builddir)/$$(basename $$(subst -,.,$(1)))
+ endif
+ endef
+ 
+-COMMON_TARGETS		+= testcases tools
+-ifeq ($(WITH_METADATA),yes)
+-COMMON_TARGETS		+= docparse
+-endif
++COMMON_TARGETS		+= testcases tools docparse
+ 
+ # Don't want to nuke the original files if we're installing in-build-tree.
+ ifneq ($(BUILD_TREE_STATE),$(BUILD_TREE_SRCDIR_INSTALL))
+diff --git a/docparse/Makefile b/docparse/Makefile
+index e2defad38..5f2f40544 100644
+--- a/docparse/Makefile
++++ b/docparse/Makefile
+@@ -18,10 +18,6 @@ METADATA_GENERATOR_PARAMS := --xsltproc-opts "--stringparam toc.section.depth 1"
+ METADATA_GENERATOR_PARAMS_HTML := -f xhtml
+ METADATA_GENERATOR_PARAMS_PDF := -f pdf
+ METADATA_GENERATOR_PARAMS_HTML_CHUNKED := -f chunked
+-else ifeq ($(METADATA_GENERATOR),)
+-$(error 'METADATA_GENERATOR' not not configured, run ./configure in the root directory)
+-else
+-$(error '$(METADATA_GENERATOR)' not supported, only asciidoctor and asciidoc are supported)
+ endif
+ 
+ ifdef VERBOSE
+diff --git a/m4/ltp-docparse.m4 b/m4/ltp-docparse.m4
+index 88d2e08e4..4cdcfc071 100644
+--- a/m4/ltp-docparse.m4
++++ b/m4/ltp-docparse.m4
+@@ -31,7 +31,6 @@ AC_DEFUN([LTP_CHECK_METADATA_GENERATOR_ASCIIDOC], [
+ ])
+ 
+ AC_DEFUN([LTP_DOCPARSE], [
+-with_metadata=no
+ with_metadata_html=no
+ with_metadata_pdf=no
+ 
+@@ -96,7 +95,6 @@ elif test "x$ax_perl_modules_failed" = x1; then
+ elif test "x$with_metadata_html" = xno -a "x$with_metadata_pdf" = xno; then
+ 	AC_MSG_WARN([$reason, $hint])
+ else
+-	with_metadata=yes
+ 	AC_SUBST(METADATA_GENERATOR, $with_metadata_generator)
+ 	if test "x$with_metadata_html" = xno -a "x$enable_metadata_html" = xyes; then
+ 		AC_MSG_WARN([HTML $reason, $hint])
+@@ -106,7 +104,6 @@ else
+ 	fi
+ fi
+ 
+-AC_SUBST(WITH_METADATA, $with_metadata)
+ AC_SUBST(WITH_METADATA_HTML, $with_metadata_html)
+ AC_SUBST(WITH_METADATA_PDF, $with_metadata_pdf)
+ ])
 -- 
 2.32.0
 
