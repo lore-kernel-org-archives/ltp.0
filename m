@@ -2,92 +2,88 @@ Return-Path: <SRS0=xZdR=PI=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E442C433EF
-	for <ltp@archiver.kernel.org>; Wed, 20 Oct 2021 06:12:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 349B3C433EF
+	for <ltp@archiver.kernel.org>; Wed, 20 Oct 2021 06:32:47 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F32860F0F
-	for <ltp@archiver.kernel.org>; Wed, 20 Oct 2021 06:12:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3F32860F0F
+	by mail.kernel.org (Postfix) with ESMTPS id 6B98260E76
+	for <ltp@archiver.kernel.org>; Wed, 20 Oct 2021 06:32:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6B98260E76
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5BD1A3C4FA8
-	for <ltp@archiver.kernel.org>; Wed, 20 Oct 2021 08:12:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2F9413C5460
+	for <ltp@archiver.kernel.org>; Wed, 20 Oct 2021 08:32:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1C9313C3077
- for <ltp@lists.linux.it>; Wed, 20 Oct 2021 08:12:23 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 4610D3C14F3
+ for <ltp@lists.linux.it>; Wed, 20 Oct 2021 08:32:32 +0200 (CEST)
 Received: from smtp-relay-internal-0.canonical.com
  (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 08A5F20108A
- for <ltp@lists.linux.it>; Wed, 20 Oct 2021 08:12:22 +0200 (CEST)
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1B32F1401244
+ for <ltp@lists.linux.it>; Wed, 20 Oct 2021 08:32:31 +0200 (CEST)
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8165240002
- for <ltp@lists.linux.it>; Wed, 20 Oct 2021 06:12:19 +0000 (UTC)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DB01F3FFFE
+ for <ltp@lists.linux.it>; Wed, 20 Oct 2021 06:32:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1634710339;
- bh=SlQWP0PiFCyldBmS9KMGmJEqC/mj8npse86orPFdvM8=;
- h=Subject:To:References:From:Message-ID:Date:MIME-Version:
- In-Reply-To:Content-Type;
- b=sqwmhgUVsAls4k2Q1Xs1dqXSYbdF1CBmfjbC46wai5S+bgq9gmOOqKYH9KAhHZOqU
- 72A2JKFOX2+Gts/YnlzV+TrEU/QjX1uVAlKT1eUNWJrvU2DIZv2CJTJAPA56lqCLiP
- QlH1pt+lv4oCgm0a+TFnVWckUdluV7EWxzhLq7JGq1Cpl6YK8IzwA7KqgtUNyYgrAJ
- kD8U4EwtwzPwmOPTU57eMII0wFpiRgHcWo8CchfuJvxvRr+oipA7fS/BaezD7SUur0
- sgwdfSkG6F9LCrraTAPI+vJIWehJ30PGzXHPzsJoO93tfqvSqUqlkNvhjgblEHI9FP
- RRLBe3Msc8AFA==
-Received: by mail-lf1-f72.google.com with SMTP id
- bi16-20020a0565120e9000b003fd56ef5a94so2649963lfb.3
- for <ltp@lists.linux.it>; Tue, 19 Oct 2021 23:12:19 -0700 (PDT)
+ s=20210705; t=1634711549;
+ bh=LX/lKqSZXDJSVlrZObePmykpU91aBYxHKaJTWb2Nuns=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=bZlq2vyk0FYWAbXiAyyeB/siq5U9C2/5MEBvMaHhkj5ukClUqxT/HK7L194qINU6V
+ ad6XHLqe+ddzaE5uxMbmPCyNDBkhu/ikh/cw+BzsMP1Cww42By8ehO2nsOd/0i1t5+
+ bcNpeAX8dss136R4cGsN9atOrxar00bzL/0xhYc6qvTN5gf8h/CnQ1R8HFbV21jOfK
+ trRjbngP9KJ8Rjf235hz+wxIQYwdQtFe7cSwKw4ZTjGrkdUv5q8YmaKIOda/QhME2e
+ c3KQdYt9N28zIAbmrG9xiWHF38QMhMqp8bJ1NbbrnhTam3cB6ZyzhQvXlfXBplsz28
+ V6gPHJveDhlOg==
+Received: by mail-lf1-f70.google.com with SMTP id
+ c41-20020a05651223a900b003fdb648a156so2651882lfv.15
+ for <ltp@lists.linux.it>; Tue, 19 Oct 2021 23:32:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=SlQWP0PiFCyldBmS9KMGmJEqC/mj8npse86orPFdvM8=;
- b=QN8cQR8UVHNl2EGRwuTGQ5RzAa+ZmuQtkVNOnTt41oqeTMr2hZsy78+EF/kdXs6KhQ
- USWrTPFB5+BcpZ1wYYX+rt6ll4913mUNPxwCXW8HNu3bwxFqML73FU3okNJ4YG0CSO7T
- 3KM6CgZiZ4BJPBv8LoKbI2YN3vHpJRlFsDo6PFH/3emHeYC7Sa85M2OXmHfk2E0Y1mLa
- ZeIttsz5Mag6d3+Pw9/kxk+Ufu1Cy9T6bExn/CVFFL8iicJ9jKbxxztybTvdT1SFCdAr
- 5v9/O4AKVkyuNtjsx9yZTd85rl126ALtXDVil+r/oKx+o1fScTxA57DQYPiHvaxtaY0I
- iACQ==
-X-Gm-Message-State: AOAM533sL3JzdyTOFtS3/J/4dliDX7Wfs2bkygrJJTTeDwbj/l9lubnv
- 2ahHOUycyOdvLS7XYc4KAyuQFvba85Ug+eLveUd0TYQY1laWyKxGoOZqhPFp15hxRFilyUabdpx
- PpDPDVvF6bkVszwUmb8gQv8Uu375A
-X-Received: by 2002:a2e:a0ce:: with SMTP id f14mr11857110ljm.169.1634710338608; 
- Tue, 19 Oct 2021 23:12:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFVDp/AminlZirFW4tLfRb4rpLXjZtQ2YZxIzqJIsWuAArHxkoBSxX+2yWUnkbKwWGj98d5g==
-X-Received: by 2002:a2e:a0ce:: with SMTP id f14mr11857088ljm.169.1634710338377; 
- Tue, 19 Oct 2021 23:12:18 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
- by smtp.gmail.com with ESMTPSA id n5sm107494lfu.126.2021.10.19.23.12.17
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 Oct 2021 23:12:17 -0700 (PDT)
-To: "liuxp11@chinatelecom.cn" <liuxp11@chinatelecom.cn>,
- ltp <ltp@lists.linux.it>
-References: <20211019150206.90335-1-krzysztof.kozlowski@canonical.com>
- <202110201356480826324@chinatelecom.cn>
+ bh=LX/lKqSZXDJSVlrZObePmykpU91aBYxHKaJTWb2Nuns=;
+ b=W81JU2Xcz9KtT+mjcLm1nUkux1qpP6wGxJC+/cNb8QnFWTg6o1RLg6HCgaWxZIYTAz
+ ZduM7pM3urp15f3wpFhnEHtlBqneglCFlaFQ2cwzOhqQb/E/E3rFWkZKCFoLaJCXgad7
+ C5LduUjCUuqCYUna0cfyiJnO29jZB5iDndfLYq39Rexx6ODMny+jppkAkIjoAgWP7Lf7
+ bSO36RhZUtQEkOJZYJmfJoJuBpIGIVVIRahr3lNbM953GEPrQHBu91EGpYds5Y48M3zz
+ BuNR/b3KhEe0GUb0K/3+pQqcEKN4Acz3UIif/Zwy22SE6vXkM2XTcvfZ4Ls2Lduc8nqZ
+ rPlw==
+X-Gm-Message-State: AOAM533yoPrQmHbJPqeijrTXzXQGr9zR1GxR2WuXsCsbAeueZ4lUJZ9M
+ EvoaAssLcma1oPSLResPHIJ7ovOIbeenjYNOnDaKUg66YyeVbI2C+ZOn8/WdlAL39nQH4PEutLd
+ BsLZRH+INkW949T610JJordx8cjCN
+X-Received: by 2002:a05:6512:b81:: with SMTP id
+ b1mr10315119lfv.301.1634711549041; 
+ Tue, 19 Oct 2021 23:32:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLyBzYCJSyN08kGk+20w3JegOcPcPuJVv0lcXgwFwCA2FsCVzCaB59AcTzulfavRmrpeHQvA==
+X-Received: by 2002:a05:6512:b81:: with SMTP id
+ b1mr10315099lfv.301.1634711548751; 
+ Tue, 19 Oct 2021 23:32:28 -0700 (PDT)
+Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+ by smtp.gmail.com with ESMTPSA id
+ m27sm112565lfo.48.2021.10.19.23.32.28 for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 19 Oct 2021 23:32:28 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <41804f1c-c4e1-ef7f-c2b7-b2c963695285@canonical.com>
-Date: Wed, 20 Oct 2021 08:12:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+To: ltp@lists.linux.it
+Date: Wed, 20 Oct 2021 08:32:20 +0200
+Message-Id: <20211020063220.5885-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <202110201356480826324@chinatelecom.cn>
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: memutils: respect minimum memory watermark
+Subject: [LTP] [PATCH v2] lib: memutils: respect minimum memory watermark
  when polluting memory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -100,21 +96,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMjAvMTAvMjAyMSAwNzo1NiwgbGl1eHAxMUBjaGluYXRlbGVjb20uY24gd3JvdGU6Cj4gU2Vy
-dmVyYWwgbW9udGhzIGFnbyxpIHJlcG9ydCB0aGlzIGlzc3VlLkkgc3VnZ2VzdCB0byB1c2XCoGF2
-YWlsYWJsZSBtZW1vcnkuCj4gWW91IGNhbiB0ZXN0IHdpdGggYXZhaWxhYmxlIG1lbW9yeSBpbnN0
-ZWFkIG9mwqBmcmVlcmFtLEl0IHdpbGwgYmUgT0suCj4gCj4gUmVwb3J0LWJ5OsKgTGl1IFhpbnBl
-bmcgPGxpdXhwMTFAY2hpbmF0ZWxlY29tLmNuIDxtYWlsdG86bGl3YW5nQHJlZGhhdC5jb20+Pgo+
-IFJldmlld2VkLWJ5OiBMaXUgWGlucGVuZyA8bGl1eHAxMUBjaGluYXRlbGVjb20uY24KPiA8bWFp
-bHRvOmxpd2FuZ0ByZWRoYXQuY29tPj4KPiAKCkRvbid0IHJlc3BvbmQgd2l0aCBIVE1MLCBwbGVh
-c2UuCgpJdCB3YXMgcmVwb3J0ZWQgYSB5ZWFyIGFnbyBhbHNvIGhlcmU6Cmh0dHBzOi8vYnVncy5s
-YXVuY2hwYWQubmV0L3VidW50dS1rZXJuZWwtdGVzdHMvK2J1Zy8xODk5NDEzCgpVc2luZyBNZW1B
-dmFpbGFibGUgc2VlbXMgdG8gYmUgaW5jb3JyZWN0IGFzIGl0IHJldHVybnMgdG9vIG11Y2ggbWVt
-b3J5CmF2YWlsYWJsZS4gSXQgZG9lcyBub3QgcmVzcGVjdCBtaW4gd2F0ZXJtYXJrLgoKCkJlc3Qg
-cmVnYXJkcywKS3J6eXN6dG9mCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+Previous fix for an out-of-memory killer killing ioctl_sg01 process
+in commit 4d2e3d44fad5 ("lib: memutils: don't pollute
+entire system memory to avoid OoM") was not fully effective.  While it
+covers most of the cases, an ARM64 machine with 128 GB of memory, 64 kB
+page size and v5.11 kernel hit it again.  Polluting the memory fails
+with OoM:
+
+  LTP: starting ioctl_sg01
+  ioctl_sg01 invoked oom-killer: gfp_mask=0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO), order=0, oom_score_adj=0
+  ...
+  Mem-Info:
+  active_anon:309 inactive_anon:1964781 isolated_anon:0
+                  active_file:94 inactive_file:0 isolated_file:0
+                  unevictable:305 dirty:0 writeback:0
+                  slab_reclaimable:1510 slab_unreclaimable:5012
+                  mapped:115 shmem:339 pagetables:463 bounce:0
+                  free:112043 free_pcp:1 free_cma:3159
+  Node 0 active_anon:19776kB inactive_anon:125745984kB active_file:6016kB inactive_file:0kB unevictable:19520kB ...
+  Node 0 DMA free:710656kB min:205120kB low:256384kB high:307648kB reserved_highatomic:0KB active_anon:0kB inactive_anon:3332032kB ...
+  lowmem_reserve[]: 0 0 7908 7908 7908
+  Node 0 Normal free:6460096kB min:6463168kB low:8078912kB high:9694656kB reserved_highatomic:0KB active_anon:19776kB inactive_anon:122413952kB ...
+  lowmem_reserve[]: 0 0 0 0 0
+
+The important part are details of memory on Node 0 in Normal zone:
+1. free memory: 6460096 kB
+2. min (minimum watermark): 6463168 kB
+
+Parse the /proc/zoneinfo and include the "min" data when counting safety
+(free memory which should not be polluted).  This way we also include
+minimum memory for DMA zones and all nodes.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Liu Xinpeng <liuxp11@chinatelecom.cn>
+
+---
+
+Changes since v1:
+1. Add static and rename to count_min_pages().
+---
+ lib/tst_memutils.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
+index af132bcc6c24..97f3b8275a42 100644
+--- a/lib/tst_memutils.c
++++ b/lib/tst_memutils.c
+@@ -6,22 +6,49 @@
+ #include <unistd.h>
+ #include <limits.h>
+ #include <sys/sysinfo.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ 
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
++#include "tst_safe_stdio.h"
+ 
+ #define BLOCKSIZE (16 * 1024 * 1024)
+ 
++static unsigned long count_min_pages(void)
++{
++	FILE *fp;
++	int ret;
++	unsigned long total_pages = 0;
++	unsigned long pages;
++	char line[BUFSIZ];
++
++	fp = SAFE_FOPEN("/proc/zoneinfo", "r");
++
++	while (fgets(line, BUFSIZ, fp) != NULL) {
++		ret = sscanf(line, " min %lu", &pages);
++		if (ret == 1)
++			total_pages += pages;
++	}
++
++	SAFE_FCLOSE(fp);
++
++	/* Apply a margin because we cannot get below "min" watermark */
++	total_pages += (total_pages / 10);
++
++	return total_pages;
++}
++
+ void tst_pollute_memory(size_t maxsize, int fillchar)
+ {
+ 	size_t i, map_count = 0, safety = 0, blocksize = BLOCKSIZE;
++	long pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
+ 	void **map_blocks;
+ 	struct sysinfo info;
+ 
+ 	SAFE_SYSINFO(&info);
+-	safety = MAX(4096 * SAFE_SYSCONF(_SC_PAGESIZE), 128 * 1024 * 1024);
+-	safety = MAX(safety, (info.freeram / 64));
++	safety = MAX(4096 * pagesize, 128 * 1024 * 1024);
++	safety = MAX(safety, count_min_pages() * pagesize);
+ 	safety /= info.mem_unit;
+ 
+ 	if (info.freeswap > safety)
+-- 
+2.30.2
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
