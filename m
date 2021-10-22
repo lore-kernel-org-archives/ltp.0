@@ -2,52 +2,53 @@ Return-Path: <SRS0=uLVz=PN=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA28EC433EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 07:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF20DC433EF
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 07:28:53 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20ED560F9C
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 07:28:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20ED560F9C
+	by mail.kernel.org (Postfix) with ESMTPS id 5C19E60F4F
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 07:28:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C19E60F4F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF3713C65B9
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 09:28:42 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 226503C6323
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 09:28:52 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D91E3C58B4
- for <ltp@lists.linux.it>; Fri, 22 Oct 2021 05:45:07 +0200 (CEST)
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
+ by picard.linux.it (Postfix) with ESMTPS id C57283C1B6E
+ for <ltp@lists.linux.it>; Fri, 22 Oct 2021 06:25:08 +0200 (CEST)
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 100CE1A019B6
- for <ltp@lists.linux.it>; Fri, 22 Oct 2021 05:45:04 +0200 (CEST)
-X-QQ-mid: bizesmtp50t1634874298t5cgwrqo
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 40CB62013B3
+ for <ltp@lists.linux.it>; Fri, 22 Oct 2021 06:25:01 +0200 (CEST)
+X-QQ-mid: bizesmtp50t1634876696tlu4epk8
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by esmtp6.qq.com (ESMTP) with 
- id ; Fri, 22 Oct 2021 11:44:52 +0800 (CST)
+ id ; Fri, 22 Oct 2021 12:24:50 +0800 (CST)
 X-QQ-SSF: 0140000000200010B000000A0000000
-X-QQ-FEAT: jfdGVjI73+QsvfftLOVp0OIBOoQm06FB5/r1HVKBKriiJR7gHblorwghra50s
- xs8od8DcoT6n51aM9oyHnbtGRRRgSTvzxhUa9E1toNOtMnLbEG9YxwAjRMJN1LqUyipvK52
- 4K8rq1fyw5MQg66eK3nRv7pNrnl3yhQ/Tc2YCLYz11bR9E445Ckee9nffUHSujpu2husH82
- lvguDSZTisvjjsizd/P3CVT8KKk1SEF0wy/pd7CY4hqNckUcXhLlpi1RJJkMdI6f9gqbCLc
- g5mzo+Pw6K20pGratvg+2DH1lULcLLyZU1B8Oo4Cfv5tURTrvcuf5U1CnvexIwlVQwrMCvl
- RjdlH6djrFMdejW2ZRW/kU2qJe43Q==
+X-QQ-FEAT: FXvDfBZI5O5j1np/yMPLgsn3UmULvKf4xgQO4bXeXdSoLwy1tfZpQaAh4Cpng
+ IJe7c/gXx+B8OBLhuSdOEEC2l30Ggub6ptOMld2bNQ9NGIO7T5X5YA7cmIMgywfnLrEvHI3
+ 1ZInWbEzOGMfXhTx+RTZMoPhQsgxcU3RdSaCJ+2Hmfe2Y0CwfTAfKZ23AnGrSrmvrwScc/C
+ qiJ3klCc+Zgp5fkSznXfqfmOM7a0y1UaEvWspX5BbyAEotv2g8vQOUfi8HtZsS8WqaMKe7g
+ w7/hE66Y4EJB88Er5NhzREg78e/kV04jnzKc7ciMO9vRiqYeN0l4dtm9SjW5m+rRoDcWhXw
+ NyggbxB+Uw8SAZ/m/626M5/1VkAsQ==
 X-QQ-GoodBg: 2
 From: tangmeng <tangmeng@uniontech.com>
 To: ltp@lists.linux.it
-Date: Fri, 22 Oct 2021 11:44:51 +0800
-Message-Id: <20211022034451.6698-1-tangmeng@uniontech.com>
+Date: Fri, 22 Oct 2021 12:24:48 +0800
+Message-Id: <20211022042448.14222-1-tangmeng@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
 X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 25 Oct 2021 09:27:43 +0200
 Subject: [LTP] [PATCH] link/link02: Convert to new API
