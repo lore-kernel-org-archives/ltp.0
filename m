@@ -2,63 +2,72 @@ Return-Path: <SRS0=uLVz=PN=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27602C433EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 08:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74961C433F5
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 08:28:33 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24A75604AC
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 08:25:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 24A75604AC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id D770F604AC
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 08:28:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D770F604AC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 03CB63C6550
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 10:25:45 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DD1E53C6576
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 10:28:30 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E6453C26A5
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 10:25:35 +0200 (CEST)
-Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 273393C180D
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 10:28:19 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7FC0F200DE4
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 10:25:31 +0200 (CEST)
-X-QQ-GoodBg: 2
-X-QQ-SSF: 0040000000000010
-X-QQ-FEAT: qfvbM89F703ekHeUeUlzlnMOW/bxPEzLavwewbAvKtTbvoj+m+TLGfq3Ufoll
- hwr2+QmEaWFoXI31FZWOUDbik1mBTihYNVSyWmQ455ZC8tukUIXNNIrl5r9oe6B018HV1ij
- FC82/JtA6KRl5pXZhhaBfbi+QWXxYmXqyZu+w6enEwptaY5nNZ1zPiykb4LBvm+HwfqKubV
- JeY3QetwflZ9vl3+xInSugaEdD9k9mA2KIt7lMz5pV5YwkB0YD4W6eTTHLrMO3k7EI/A1tR
- QsQnHw3rCXPSOJTSqPuZh2L0zADw/14lE2emTTwwtlH39Zq/S6gXMZEARSMkt2kN99xXxYl
- K1K8CqT9NwchJYZXmc=
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 58.240.86.85
-X-QQ-STYLE: 
-X-QQ-mid: logic525t1635150324t1163195
-From: "=?utf-8?B?5rGk5a2f?=" <tangmeng@uniontech.com>
-To: "=?utf-8?B?Q3lyaWwgSHJ1Ymlz?=" <chrubis@suse.cz>,
- "=?utf-8?B?TGkgV2FuZw==?=" <liwang@redhat.com>
-Mime-Version: 1.0
-Date: Mon, 25 Oct 2021 16:25:24 +0800
-X-Priority: 3
-Message-ID: <tencent_019185364707BDF116DD7C74@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20211022043806.19171-1-tangmeng@uniontech.com>
- <CAEemH2dOJWGqji+2nYg8X9eKZfFeJPhn0pV2TX6UovS9M_=_Tg@mail.gmail.com>
- <YXZmuCPM1kdBG/eo@yuki>
-In-Reply-To: <YXZmuCPM1kdBG/eo@yuki>
-X-QQ-ReplyHash: 2034584598
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1]) by smtp.qq.com (ESMTP) with SMTP
- id ; Mon, 25 Oct 2021 16:25:25 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 43C536009CA
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 10:28:18 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5896A2191A;
+ Mon, 25 Oct 2021 08:28:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1635150498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DVVZF5tExILLaIVampWKARI4x4x8Xuu2mJeNLiJT3a8=;
+ b=KFYGSvvpHlCzP/Nd47yBV2pud9sQg2AKWPq+eXD9386Ba7zLJNWyj6XFw4xCpfXGzU19Fw
+ kpcKMZZIS1HzkeHalVSnlj+rzMl+irlgZXWELhoITfABGzRp8EpFoAlAcRqml4vwP12jVE
+ d9F/NPfBa4i0xha4SuNDthgplA1mVws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1635150498;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DVVZF5tExILLaIVampWKARI4x4x8Xuu2mJeNLiJT3a8=;
+ b=MEcQwQ47UsFTQA1XPjdx3H0HlriTIvJyXlFkVCRoQv2ADxAM7pdbmxjR/sjLDWUVSZ+PFc
+ SpQ1GptJdUB/AWAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43A9513216;
+ Mon, 25 Oct 2021 08:28:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id bm6ZDqJqdmGlKQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 25 Oct 2021 08:28:18 +0000
+Date: Mon, 25 Oct 2021 10:29:07 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tang Meng <tangmeng@uniontech.com>
+Message-ID: <YXZq0zWwcjM3+p2I@yuki>
+References: <20211022033021.1351-1-tangmeng@uniontech.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211022033021.1351-1-tangmeng@uniontech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] link/link02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
@@ -72,109 +81,203 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: =?utf-8?B?TFRQIExpc3Q=?= <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0485701737=="
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is a multi-part message in MIME format.
+Hi!
+> --- a/testcases/kernel/syscalls/link/link02.c
+> +++ b/testcases/kernel/syscalls/link/link02.c
+> @@ -1,115 +1,59 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *  AUTHOR		: William Roske
+> - *  CO-PILOT		: Dave Fenner
+> - * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it is
+> - * free of the rightful claim of any third person regarding infringement
+> - * or the like.  Any license provided herein, whether implied or
+> - * otherwise, applies only to this software file.  Patent licenses, if
+> - * any, provided herein do not apply to combinations of this program with
+> - * other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+> - * Mountain View, CA  94043, or:
+> - *
+> - * http://www.sgi.com
+> - *
+> - * For further information regarding this notice, see:
+> - *
+> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+> + * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
 
---===============0485701737==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_617669F4_191EC940_2CDFC7C0"
-Content-Transfer-Encoding: 8Bit
+The copyrights in this file were Silicon Graphics and mine. You have to
+keep the original coypright instead of adding random ones.
 
-This is a multi-part message in MIME format.
+>   */
+> 
+> -/*
+> +/*\
+> + * [Description]
+>   * Tests that link(2) succeds.
+                           ^
+			   succeeds
+>   */
 
-------=_NextPart_617669F4_191EC940_2CDFC7C0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+Also ideally there should be an empty line between the [Description] and
+the rest as:
 
-SGksJm5ic3A7Q3lyaWwgSHJ1YmlzIGFuZCBMSSBXYW5nIQ0KDQoNCkZpcnN0IG9mIGFsbCwg
-SSB3YW50IHRvIHNheSB0aGF0IEkgYW0gZXh0cmVtZWx5IHNvcnJ5Lg0KU2luY2UgaXQgd2Fz
-IHRoZSBmaXJzdCB0aW1lIEkgc3VibWl0dGVkIGEgcGF0Y2ggaGVyZSwgdGhlcmUgd2VyZSBt
-YW55IHVuZmFtaWxpYXIgYW5kIG1pc3VuZGVyc3RhbmRpbmdzIGluIHRoZSBwcm9jZXNzLCB3
-aGljaCBsZWQgdG8gbXVsdGlwbGUgc3VibWlzc2lvbnMuDQpJIHdpbGwgdGFrZSBjYXJlIHRv
-IGF2b2lkIHRoaXMgcHJvYmxlbSBpbiB0aGUgZnV0dXJlDQoNCg0KLS0mbmJzcDsNClJlZ2Fy
-ZHMsDQpUYW5nTWVuZw0KLS0tLS0tLS0tLS0tLS0tLS0tJm5ic3A7T3JpZ2luYWwmbmJzcDst
-LS0tLS0tLS0tLS0tLS0tLS0NCkZyb206ICZuYnNwOyJDeXJpbCBIcnViaXMiPGNocnViaXNA
-c3VzZS5jeiZndDs7DQpEYXRlOiAmbmJzcDtNb24sIE9jdCAyNSwgMjAyMSAwNDoxMCBQTQ0K
-VG86ICZuYnNwOyJMaSBXYW5nIjxsaXdhbmdAcmVkaGF0LmNvbSZndDs7IA0KQ2M6ICZuYnNw
-OyJ0YW5nbWVuZyI8dGFuZ21lbmdAdW5pb250ZWNoLmNvbSZndDs7ICJMVFAgTGlzdCI8bHRw
-QGxpc3RzLmxpbnV4Lml0Jmd0OzsgDQpTdWJqZWN0OiAmbmJzcDtSZTogW0xUUF0gW1BBVENI
-XSBsaW5rL2xpbmswMjogQ29udmVydCB0byBuZXcgQVBJDQoNCiZuYnNwOw0KDQpIaSENCiZn
-dDsgUGx6IHN0b3Agc2VuZGluZyB0aGUgc2FtZSBwYXRjaCBhZ2FpbiBhbmQgYWdhaW4uIEl0
-IGxvb2tzDQomZ3Q7IGxpa2UgYW4gZW1haWwgYm9tYiB0byB0aGUgbWFpbGluZyBsaXN0Lg0K
-DQpQYXJ0bHkgbXkgbWlzdGFrZSwgd2hlbiBJIGxvb2tlZCBhdCB0aGUgbGlzdCBvZiBwYXRj
-aGVzIGZvciBtb2RlcmF0aW9uIEkNCmRpZG4ndCByZWFsaXplZCB0aGF0IHRoaXMgaXMgb25l
-IHBhdGNoIHNlbmQgbWFueSB0aW1lcywgc29ycnkgZm9yIHRoYXQuDQoNCkhvd2V2ZXIgVGFu
-ZyBpZiB5b3UgZW1haWwgdG8gYSBNTCBpcyBoZWxkIGZvciBtb2RlcmF0aW9uIHBsZWFzZSB3
-YWl0DQppbnN0ZWFkIG9mIHJlc2VuZGluZywgSSBkbyByZXZpZXdlIHRoZSBoZWxkIGVtYWls
-cyBuZWFybHkgZGFpbHkgc28gdGhlDQpkZWxheSBzaG91bGRuJ3QgYmUgd29yc2UgdGhhbiBh
-IGRheSBvciB0d28uIEFsc28gaWYgeW91IHNpbmcgdXAgdG8gdGhlDQpNTCB0aGUgZW1haWxz
-IHdvdWxkIGdvIHJpZ2h0IHRocm91Z2guDQoNCi0tIA0KQ3lyaWwgSHJ1YmlzDQpjaHJ1Ymlz
-QHN1c2UuY3o=
+/*
+ * [Description]
+ *
+ * Lorem ipsum dolor sit amet.
+ */
 
-------=_NextPart_617669F4_191EC940_2CDFC7C0
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+> -#include <sys/types.h>
+> -#include <fcntl.h>
+> +#include <unistd.h>
+>  #include <sys/stat.h>
+> -#include <errno.h>
+> -#include <string.h>
+> -#include <signal.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> 
+> -char *TCID = "link02";
+> -int TST_TOTAL = 1;
+> +#include "tst_test.h"
+> 
+>  #define OLDPATH "oldpath"
+>  #define NEWPATH "newpath"
+> 
+> -static void verify_link(void)
+> +static void verify_link02(void)
+                 ^
+		 Just keep this as verify_link(void) no need to add
+		 numbers.
+>  {
+>  	struct stat fbuf, lbuf;
+> 
+>  	TEST(link(OLDPATH, NEWPATH));
 
-PGRpdj48Zm9udD5IaSwmbmJzcDs8L2ZvbnQ+Q3lyaWwgSHJ1YmlzIGFuZCBMSSBXYW5nITwv
-ZGl2PjxkaXY+PGluY2x1ZGV0YWlsPjxkaXY+PGJyPjwvZGl2PjxkaXY+Rmlyc3Qgb2YgYWxs
-LCBJIHdhbnQgdG8gc2F5IHRoYXQgSSBhbSBleHRyZW1lbHkgc29ycnkuPC9kaXY+PGRpdj5T
-aW5jZSBpdCB3YXMgdGhlIGZpcnN0IHRpbWUgSSBzdWJtaXR0ZWQgYSBwYXRjaCBoZXJlLCB0
-aGVyZSB3ZXJlIG1hbnkgdW5mYW1pbGlhciBhbmQgbWlzdW5kZXJzdGFuZGluZ3MgaW4gdGhl
-IHByb2Nlc3MsIHdoaWNoIGxlZCB0byBtdWx0aXBsZSBzdWJtaXNzaW9ucy48L2Rpdj48ZGl2
-Pkkgd2lsbCB0YWtlIGNhcmUgdG8gYXZvaWQgdGhpcyBwcm9ibGVtIGluIHRoZSBmdXR1cmU8
-L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2Pi0tJm5ic3A7PC9kaXY+PGRpdj48c3BhbiBzdHls
-ZT0iZm9udC1mYW1pbHk6ICZxdW90O2x1Y2lkYSBHcmFuZGUmcXVvdDssIFZlcmRhbmE7Ij5S
-ZWdhcmRzLDwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuIHN0eWxlPSJmb250LWZhbWlseTogJnF1
-b3Q7bHVjaWRhIEdyYW5kZSZxdW90OywgVmVyZGFuYTsiPlRhbmdNZW5nPC9zcGFuPjwvZGl2
-PjxkaXYgc3R5bGU9ImZvbnQ6VmVyZGFuYSBub3JtYWwgMTRweDtjb2xvcjojMDAwOyI+PGRp
-diBzdHlsZT0iRk9OVC1TSVpFOiAxMnB4O0ZPTlQtRkFNSUxZOiBBcmlhbCBOYXJyb3c7cGFk
-ZGluZzoycHggMCAycHggMDsiPi0tLS0tLS0tLS0tLS0tLS0tLSZuYnNwO09yaWdpbmFsJm5i
-c3A7LS0tLS0tLS0tLS0tLS0tLS0tPC9kaXY+PGRpdiBzdHlsZT0iRk9OVC1TSVpFOiAxMnB4
-O2JhY2tncm91bmQ6I2VmZWZlZjtwYWRkaW5nOjhweDsiPjxkaXYgaWQ9Im1lbnVfc2VuZGVy
-Ij48Yj5Gcm9tOiA8L2I+Jm5ic3A7IkN5cmlsIEhydWJpcyImbHQ7Y2hydWJpc0BzdXNlLmN6
-Jmd0Ozs8L2Rpdj48ZGl2PjxiPkRhdGU6IDwvYj4mbmJzcDtNb24sIE9jdCAyNSwgMjAyMSAw
-NDoxMCBQTTwvZGl2PjxkaXY+PGI+VG86IDwvYj4mbmJzcDsiTGkgV2FuZyImbHQ7bGl3YW5n
-QHJlZGhhdC5jb20mZ3Q7OyA8d2JyPjwvZGl2PjxkaXY+PGI+Q2M6IDwvYj4mbmJzcDsidGFu
-Z21lbmciJmx0O3RhbmdtZW5nQHVuaW9udGVjaC5jb20mZ3Q7OyAiTFRQIExpc3QiJmx0O2x0
-cEBsaXN0cy5saW51eC5pdCZndDs7IDx3YnI+PC9kaXY+PGRpdj48Yj5TdWJqZWN0OiA8L2I+
-Jm5ic3A7UmU6IFtMVFBdIFtQQVRDSF0gbGluay9saW5rMDI6IENvbnZlcnQgdG8gbmV3IEFQ
-STwvZGl2PjwvZGl2PjxkaXY+Jm5ic3A7PC9kaXY+PGRpdiBzdHlsZT0icG9zaXRpb246cmVs
-YXRpdmU7Ij48ZGl2IGlkPSJ0bXBjb250ZW50X3JlcyI+PC9kaXY+SGkhPGJyPiZndDsgUGx6
-IHN0b3Agc2VuZGluZyB0aGUgc2FtZSBwYXRjaCBhZ2FpbiBhbmQgYWdhaW4uIEl0IGxvb2tz
-PGJyPiZndDsgbGlrZSBhbiBlbWFpbCBib21iIHRvIHRoZSBtYWlsaW5nIGxpc3QuPGJyPjxi
-cj5QYXJ0bHkgbXkgbWlzdGFrZSwgd2hlbiBJIGxvb2tlZCBhdCB0aGUgbGlzdCBvZiBwYXRj
-aGVzIGZvciBtb2RlcmF0aW9uIEk8YnI+ZGlkbid0IHJlYWxpemVkIHRoYXQgdGhpcyBpcyBv
-bmUgcGF0Y2ggc2VuZCBtYW55IHRpbWVzLCBzb3JyeSBmb3IgdGhhdC48YnI+PGJyPkhvd2V2
-ZXIgVGFuZyBpZiB5b3UgZW1haWwgdG8gYSBNTCBpcyBoZWxkIGZvciBtb2RlcmF0aW9uIHBs
-ZWFzZSB3YWl0PGJyPmluc3RlYWQgb2YgcmVzZW5kaW5nLCBJIGRvIHJldmlld2UgdGhlIGhl
-bGQgZW1haWxzIG5lYXJseSBkYWlseSBzbyB0aGU8YnI+ZGVsYXkgc2hvdWxkbid0IGJlIHdv
-cnNlIHRoYW4gYSBkYXkgb3IgdHdvLiBBbHNvIGlmIHlvdSBzaW5nIHVwIHRvIHRoZTxicj5N
-TCB0aGUgZW1haWxzIHdvdWxkIGdvIHJpZ2h0IHRocm91Z2guPGJyPjxicj4tLSA8YnI+Q3ly
-aWwgSHJ1YmlzPGJyPmNocnViaXNAc3VzZS5jejxicj48L2Rpdj48L2Rpdj48IS0tPCFbZW5k
-aWZdLS0+PC9pbmNsdWRldGFpbD48L2Rpdj4=
+This should be:
 
-------=_NextPart_617669F4_191EC940_2CDFC7C0--
+	TST_EXP_PASS(link(OLDPATH, NEWPATH));
 
+	if (!TST_PASS)
+		return;
 
+	SAFE_STAT(...);
+	SAFE_STAT(...);
 
+	if (fbuf.st_nlink ...) {
+		...
+	} else {
+		...
+	}
 
---===============0485701737==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> -	if (TEST_RETURN == 0) {
+> -		SAFE_STAT(cleanup, OLDPATH, &fbuf);
+> -		SAFE_STAT(cleanup, NEWPATH, &lbuf);
+> +	if (TST_RET == 0) {
+> +		SAFE_STAT(OLDPATH, &fbuf);
+> +		SAFE_STAT(NEWPATH, &lbuf);
+>  		if (fbuf.st_nlink > 1 && lbuf.st_nlink > 1 &&
+>  		    fbuf.st_nlink == lbuf.st_nlink) {
+> -			tst_resm(TPASS, "link("OLDPATH","NEWPATH") "
+> +			tst_res(TPASS, "link("OLDPATH","NEWPATH") "
+>  			         "returned 0 and link counts match");
+>  		} else {
+> -			tst_resm(TFAIL, "link("OLDPATH","NEWPATH") returned 0"
+> +			tst_res(TFAIL, "link("OLDPATH","NEWPATH") returned 0"
+>  				 " but stat lin count do not match %d %d",
+>  				 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
+>  		}
+> -		SAFE_UNLINK(cleanup, NEWPATH);
+>  	} else {
+> -		tst_resm(TFAIL | TTERRNO,
+> +		tst_res(TFAIL | TTERRNO,
+>  		         "link("OLDPATH","NEWPATH") returned %ld",
+> -		         TEST_RETURN);
+> -	}
+> -}
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -		verify_link();
+> +		         TST_RET);
+>  	}
+> -
+> -	cleanup();
+> -	tst_exit();
+>  }
+> 
+>  static void setup(void)
+>  {
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	SAFE_TOUCH(cleanup, OLDPATH, 0700, NULL);
+> +	SAFE_TOUCH(OLDPATH, 0700, NULL);
+>  }
+> 
+>  static void cleanup(void)
+>  {
+> -	tst_rmdir();
+> +    SAFE_UNLINK(NEWPATH);
+>  }
 
+There is no need to unlink anything the the cleanup, the test library
+will remove the test temporary directory recursively.
+
+> +static struct tst_test test = {
+> +    .test_all = verify_link02,
+> +    .setup = setup,
+> +    .cleanup = cleanup,
+> +    .needs_tmpdir = 1,
+> +};
+> --
+> 2.20.1
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0485701737==--
-
-
-
