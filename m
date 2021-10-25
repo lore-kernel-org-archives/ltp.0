@@ -2,66 +2,70 @@ Return-Path: <SRS0=uLVz=PN=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DADBC433EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 13:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4FF8C433EF
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 16:01:00 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B311B61002
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 13:26:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B311B61002
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id EE95160E75
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 16:00:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EE95160E75
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 513F73C65EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 15:26:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 032773C6751
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 18:00:57 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 176A93C0958
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 15:26:24 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 72D463C6337
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 18:00:46 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CA98F6019A6
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 15:26:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1635168382;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=eiBSYmXQRu7x2VYjMjsAZWoNDOf4PPHULplW8aaODng=;
- b=N2eYdQ+8DsjS5UjKF9OUP7CkmAgNQT2jfaNi+KH1XOArY1sTSxZudV1D9HJ2WyNKSu/YP7
- LBNjw6dfsVbM3HhhDG0J6zW8782lmEhqIZEqyg4HA0Vt6C2D2bfUEZvXdOwvK19J0tcMz1
- Ed3GWhypqV5cXOCMthskU8dwL97fPdw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-SkznIOpFOPKGBXjhQSqnqQ-1; Mon, 25 Oct 2021 09:26:20 -0400
-X-MC-Unique: SkznIOpFOPKGBXjhQSqnqQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C8FE96010BE
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 18:00:45 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E7D78026AD
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 13:26:19 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.40.192.75])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 5BED660FB8
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 13:26:17 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CE0D11FD52
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 16:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1635177644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=QFvUysOp5HJl3+sa6EhMjQNnTjQZjv/DYPw4XIjPoFY=;
+ b=cpB/EugEBmoWVDRQ57mp7iixcCBsZpg724znW94mlsbOTzdQ/Npmq35vS/2QU7KaxFjnSN
+ HyA2Hqes2Ulu0HY03YDcp5iMOX2+MzrsGcDBuPwVQiUO/+nx8arUWVRHczNsGeSG9S48WY
+ cpp+17J4JnZmTLzCJ6SuNbKS0CyAUu8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1635177644;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=QFvUysOp5HJl3+sa6EhMjQNnTjQZjv/DYPw4XIjPoFY=;
+ b=rLuWCLAPxtqoVT/2Eik12m8QJ2g6i1Wq9QNjdA+ZLDU6lhyN3MhEjFwJJ1nTD6ChmDSm+t
+ kTeoZrG99fWPg3Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B95E613C39
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 16:00:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 9W1JLKzUdmGHLAAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 16:00:44 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 25 Oct 2021 15:25:42 +0200
-Message-Id: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
+Date: Mon, 25 Oct 2021 18:01:28 +0200
+Message-Id: <20211025160134.9283-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] finit_module02: fix exp. errno for O_WRONLY testcase
+Subject: [LTP] [PATCH 0/6] Introduce a concept of test max_runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,31 +82,89 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-commit 032146cda855 ("vfs: check fd has read access in
-kernel_read_file_from_fd()") changed errno back to EBADF,
-which is correct value according to man page, so tweak
-the test to expect it for kernels >= 5.15.
+This patchset introduces a concept of test max_runtime and convert all
+tests that were (mis)using timeout to get around timeouts when a test
+runtime was longer than expected timeout.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/finit_module/finit_module02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Generally this removes quite a bit of code and makes things simpler
+since it's easier to set up a runtime and compute test timeout based on
+that rather than the other way around.
 
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
-index 0d2bf917ea64..9b5d3563b74e 100644
---- a/testcases/kernel/syscalls/finit_module/finit_module02.c
-+++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
-@@ -52,7 +52,7 @@ static void bad_fd_setup(struct tcase *tc)
- 
- static void wo_file_setup(struct tcase *tc)
- {
--	if (tst_kvercmp(4, 6, 0) < 0)
-+	if (tst_kvercmp(4, 6, 0) < 0 || tst_kvercmp(5, 15, 0) >= 0)
- 		tc->exp_errno = EBADF;
- 	else
- 		tc->exp_errno = ETXTBSY;
+If this gets merged I may follow up with other changes, there are a few
+tests that deliberately set up timeout to be 10 or 20 seconds in order
+to timeout faster than the default 360. So logicall followup would be
+setting the default timeout somewhat shorter and get rid of these as
+well.
+
+Cyril Hrubis (6):
+  lib: tst_test: Move timeout scaling out of fork_testrun()
+  lib: Add .max_runtime and tst_remaining_runtime()
+  mtest06/mmap3: Convert to tst_remaining_runtime()
+  syscalls/gettimeofday02: Convert to tst_remaining_runtime()
+  cve-2015-3290: convert tst_remining_runtime()
+  lib: Add tst_set_runtime() & remove tst_set_timeout()
+
+ include/tst_fuzzy_sync.h                      |  7 ++-
+ include/tst_test.h                            | 19 +++++-
+ include/tst_timer_test.h                      |  3 +
+ lib/newlib_tests/.gitignore                   |  4 +-
+ lib/newlib_tests/test18.c                     | 22 -------
+ lib/newlib_tests/test_max_runtime01.c         | 28 +++++++++
+ lib/newlib_tests/test_max_runtime02.c         | 29 +++++++++
+ lib/newlib_tests/test_max_runtime03.c         | 35 +++++++++++
+ lib/newlib_tests/tst_fuzzy_sync01.c           |  1 +
+ lib/newlib_tests/tst_fuzzy_sync02.c           |  1 +
+ lib/newlib_tests/tst_fuzzy_sync03.c           |  1 +
+ lib/tst_test.c                                | 62 ++++++++++++-------
+ lib/tst_timer_test.c                          |  4 +-
+ runtest/mm                                    |  2 +-
+ testcases/cve/cve-2014-0196.c                 |  1 +
+ testcases/cve/cve-2015-3290.c                 |  8 +--
+ testcases/cve/cve-2016-7117.c                 |  1 +
+ testcases/cve/cve-2017-2671.c                 |  1 +
+ testcases/kernel/crypto/af_alg02.c            |  4 +-
+ testcases/kernel/crypto/af_alg07.c            |  1 +
+ testcases/kernel/crypto/pcrypt_aead01.c       |  3 +-
+ testcases/kernel/mem/mtest01/mtest01.c        |  9 ++-
+ testcases/kernel/mem/mtest06/mmap1.c          | 27 ++------
+ testcases/kernel/mem/mtest06/mmap3.c          | 12 +---
+ testcases/kernel/mem/thp/thp04.c              |  1 +
+ testcases/kernel/pty/pty03.c                  |  1 +
+ testcases/kernel/pty/pty05.c                  |  1 +
+ testcases/kernel/sound/snd_seq01.c            |  2 +-
+ testcases/kernel/sound/snd_timer01.c          |  1 +
+ testcases/kernel/syscalls/bind/bind06.c       |  2 +-
+ .../clock_nanosleep/clock_nanosleep02.c       |  1 +
+ .../syscalls/epoll_pwait/epoll_pwait03.c      |  1 +
+ .../kernel/syscalls/epoll_wait/epoll_wait02.c |  1 +
+ .../kernel/syscalls/epoll_wait/epoll_wait04.c |  2 +-
+ .../syscalls/futex/futex_cmp_requeue01.c      |  2 +-
+ .../kernel/syscalls/futex/futex_wait05.c      |  1 +
+ .../syscalls/gettimeofday/gettimeofday02.c    | 35 +----------
+ testcases/kernel/syscalls/inotify/inotify09.c |  1 +
+ .../kernel/syscalls/ipc/shmctl/shmctl05.c     |  2 +-
+ .../kernel/syscalls/move_pages/move_pages12.c |  4 +-
+ .../kernel/syscalls/nanosleep/nanosleep01.c   |  1 +
+ testcases/kernel/syscalls/poll/poll02.c       |  1 +
+ testcases/kernel/syscalls/prctl/prctl09.c     |  1 +
+ testcases/kernel/syscalls/pselect/pselect01.c |  1 +
+ testcases/kernel/syscalls/select/select02.c   |  1 +
+ testcases/kernel/syscalls/sendmsg/sendmsg03.c |  1 +
+ .../kernel/syscalls/setsockopt/setsockopt06.c |  1 +
+ .../kernel/syscalls/setsockopt/setsockopt07.c |  1 +
+ .../syscalls/timerfd/timerfd_settime02.c      |  1 +
+ testcases/kernel/syscalls/writev/writev03.c   |  1 +
+ testcases/network/can/cve/can_bcm01.c         |  1 +
+ testcases/network/packet/fanout01.c           |  1 +
+ testcases/network/sockets/vsock01.c           |  1 +
+ 53 files changed, 219 insertions(+), 137 deletions(-)
+ delete mode 100644 lib/newlib_tests/test18.c
+ create mode 100644 lib/newlib_tests/test_max_runtime01.c
+ create mode 100644 lib/newlib_tests/test_max_runtime02.c
+ create mode 100644 lib/newlib_tests/test_max_runtime03.c
+
 -- 
-2.27.0
+2.32.0
 
 
 -- 
