@@ -2,55 +2,80 @@ Return-Path: <SRS0=uLVz=PN=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8FE2C433FE
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 07:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0EC9C433EF
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 08:05:28 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4625160F9C
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 07:29:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4625160F9C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2A8F760524
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 08:05:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2A8F760524
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1ED13C65B9
-	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 09:29:38 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D3BAC3C653E
+	for <ltp@archiver.kernel.org>; Mon, 25 Oct 2021 10:05:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 441203C26D3
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 04:28:02 +0200 (CEST)
-Received: from smtpbg506.qq.com (smtpbg506.qq.com [203.205.250.33])
+ by picard.linux.it (Postfix) with ESMTPS id CADFB3C26A5
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 10:05:16 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 186711000F72
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 04:27:59 +0200 (CEST)
-X-QQ-mid: bizesmtp31t1635128872t676oeed
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Mon, 25 Oct 2021 10:27:47 +0800 (CST)
-X-QQ-SSF: 0140000000000010B000B00A0000000
-X-QQ-FEAT: nWwLie5Ka5k4Udw52s0Curu4zKfa9vgZRAyY1DmP0zYdA8k2f3ONEBEPO8eXF
- CGw264ikgniPGfto268sz4hSrJgdInABuugKUup2MK9XQUKSy7wmtZM/tfJ/rCymIvwHljQ
- st+KU+DNrh7DHboST2Yu70RAhYfjwwHHqzBvGXkbo8ymC1Kuc1y+aDPlagM9jm6S4pkGc1I
- dq6kR07kJWs8EFB3PSbCv578qiN7L6pzQzqdean4Im0P6VDdmQIeZteu1+NAbM22BtXgy7c
- MjbCx53bo5VeFrWm9TJfbQK7WzNgOChbvXUYjboHmYgLvmiufeZMsQwsxNV42wCYIx8thiv
- lcO0KVzrU3vlGxJSAU=
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Mon, 25 Oct 2021 10:27:45 +0800
-Message-Id: <20211025022745.21469-1-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5E2F9600F58
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 10:05:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635149114;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0+J0xqelC5XWDgdKNLEqlMh7pdSZX5xn5rKg/AYSpoY=;
+ b=hzIIjIqkX0bt6QuRtcaheXnev3GIuRqcaCJgh+fKgO9L77cTZaw91iDZiB6HYFbje2fiB7
+ 0K84eQpJG00IiJQwgjWRnPaGrgqyPI5DxH/dFQd5T0+be9eFfuNlmQr5pJmyAVyJqK1iLI
+ pU2HUwgaemxIYxWmZ0Og6BoCBEPqv2s=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-abIPBbX_Nr2-moG_whPFBA-1; Mon, 25 Oct 2021 04:05:09 -0400
+X-MC-Unique: abIPBbX_Nr2-moG_whPFBA-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ x15-20020a056902102f00b005ba71cd7dbfso16119831ybt.8
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 01:05:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=0+J0xqelC5XWDgdKNLEqlMh7pdSZX5xn5rKg/AYSpoY=;
+ b=Up5TixMp4sHUJJvhq5Wdc4OsKc9JUDD/8QdR1UZiTU7iUANRRELAffw60qbXeoyxEB
+ afII4nzVzdhVPLco0leNSF2Ieqv4PGVVmt8W2CuMrm0K4UtwLZrASS3h8Q2XjaFI4M4j
+ EmBS+mBmNdM83J1RwvRwhpxCPqXWqu4fEjEBvmhCyQT9ST9mYPWCpDeyhi7aaUgF9ZLF
+ Ifb65rbn92favF02ACh0RHudpRTDC7I01Fk7ZEZaUar/PgmKipl9x/8nKDm1097atskK
+ oS3EvRXe2cf176OuK5th/pJA2X+K6QNxGXW4Is3ix7QAc3z4/Ml3zY4e6wkdidmQRKoR
+ K3vw==
+X-Gm-Message-State: AOAM533frLPnQp0Fk1xMG/kH9P58dk2b3W/7tHpxfSq/eyh++UBdOrkO
+ pmUlBOOxl5buO94sGXVq3pWcaoXiV+c9BWOvH9tPiRliOOjR2UUQiiz3dFeVR5hZo2GyyIRm35U
+ PPANFAFWIGD7099Dg2AWyL7Ss4CE=
+X-Received: by 2002:a25:7e46:: with SMTP id z67mr15366034ybc.166.1635149109026; 
+ Mon, 25 Oct 2021 01:05:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzq9KQ5kRpWm0ST8VruKyjRWf6Oo4DmXIxzKNRcX5FmUlt8FmJOuJjRsfm5YdIRXBxNCYGAz65LhsbUQmodmyc=
+X-Received: by 2002:a25:7e46:: with SMTP id z67mr15366016ybc.166.1635149108842; 
+ Mon, 25 Oct 2021 01:05:08 -0700 (PDT)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20211022043806.19171-1-tangmeng@uniontech.com>
+In-Reply-To: <20211022043806.19171-1-tangmeng@uniontech.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 25 Oct 2021 16:04:57 +0800
+Message-ID: <CAEemH2dOJWGqji+2nYg8X9eKZfFeJPhn0pV2TX6UovS9M_=_Tg@mail.gmail.com>
+To: tangmeng <tangmeng@uniontech.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 25 Oct 2021 09:27:43 +0200
-Subject: [LTP] [PATCH] link/link02: Convert to new API
+Subject: Re: [LTP] [PATCH] link/link02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,165 +87,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1323344498=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- testcases/kernel/syscalls/link/link02.c | 102 ++++++------------------
- 1 file changed, 23 insertions(+), 79 deletions(-)
+--===============1323344498==
+Content-Type: multipart/alternative; boundary="000000000000c9adb205cf28d122"
 
-diff --git a/testcases/kernel/syscalls/link/link02.c b/testcases/kernel/syscalls/link/link02.c
-index 6ac340c72..f41179f4c 100644
---- a/testcases/kernel/syscalls/link/link02.c
-+++ b/testcases/kernel/syscalls/link/link02.c
-@@ -1,115 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *  AUTHOR		: William Roske
-- *  CO-PILOT		: Dave Fenner
-- * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+ * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-  */
+--000000000000c9adb205cf28d122
+Content-Type: text/plain; charset="UTF-8"
 
--/*
-+/*\
-+ * [Description]
-  * Tests that link(2) succeds.
-  */
+Tang Meng,
 
--#include <sys/types.h>
--#include <fcntl.h>
-+#include <unistd.h>
- #include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void cleanup(void);
+Plz stop sending the same patch again and again. It looks
+like an email bomb to the mailing list.
 
--char *TCID = "link02";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
+If you are not sure the patch being deliver correctly, you
+can try wait a moment and check https://lists.linux.it/listinfo/ltp
 
- #define OLDPATH "oldpath"
- #define NEWPATH "newpath"
+-- 
+Regards,
+Li Wang
 
--static void verify_link(void)
-+static void verify_link02(void)
- {
- 	struct stat fbuf, lbuf;
+--000000000000c9adb205cf28d122
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
- 	TEST(link(OLDPATH, NEWPATH));
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Tang Meng,</div><div class=3D"gmail_default" style=3D"font-si=
+ze:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">=
+Plz stop sending the same patch again and again. It looks</div><div class=
+=3D"gmail_default" style=3D"font-size:small">like an email bomb to the mail=
+ing list.</div><div class=3D"gmail_default" style=3D"font-size:small"><br><=
+/div><div class=3D"gmail_default" style=3D"font-size:small">If you are not =
+sure the patch being deliver correctly, you=C2=A0</div><div class=3D"gmail_=
+default" style=3D"font-size:small">can try wait a moment and check=C2=A0<a =
+href=3D"https://lists.linux.it/listinfo/ltp">https://lists.linux.it/listinf=
+o/ltp</a></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_=
+signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></=
+div></div></div>
 
--	if (TEST_RETURN == 0) {
--		SAFE_STAT(cleanup, OLDPATH, &fbuf);
--		SAFE_STAT(cleanup, NEWPATH, &lbuf);
-+	if (TST_RET == 0) {
-+		SAFE_STAT(OLDPATH, &fbuf);
-+		SAFE_STAT(NEWPATH, &lbuf);
- 		if (fbuf.st_nlink > 1 && lbuf.st_nlink > 1 &&
- 		    fbuf.st_nlink == lbuf.st_nlink) {
--			tst_resm(TPASS, "link("OLDPATH","NEWPATH") "
-+			tst_res(TPASS, "link("OLDPATH","NEWPATH") "
- 			         "returned 0 and link counts match");
- 		} else {
--			tst_resm(TFAIL, "link("OLDPATH","NEWPATH") returned 0"
-+			tst_res(TFAIL, "link("OLDPATH","NEWPATH") returned 0"
- 				 " but stat lin count do not match %d %d",
- 				 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
- 		}
--		SAFE_UNLINK(cleanup, NEWPATH);
- 	} else {
--		tst_resm(TFAIL | TTERRNO,
-+		tst_res(TFAIL | TTERRNO,
- 		         "link("OLDPATH","NEWPATH") returned %ld",
--		         TEST_RETURN);
--	}
--}
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		verify_link();
-+		         TST_RET);
- 	}
--
--	cleanup();
--	tst_exit();
- }
-
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	SAFE_TOUCH(cleanup, OLDPATH, 0700, NULL);
-+	SAFE_TOUCH(OLDPATH, 0700, NULL);
- }
-
- static void cleanup(void)
- {
--	tst_rmdir();
-+    SAFE_UNLINK(NEWPATH);
- }
-+
-+static struct tst_test test = {
-+    .test_all = verify_link02,
-+    .setup = setup,
-+    .cleanup = cleanup,
-+    .needs_tmpdir = 1,
-+};
---
-2.20.1
+--000000000000c9adb205cf28d122--
 
 
+--===============1323344498==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1323344498==--
+
