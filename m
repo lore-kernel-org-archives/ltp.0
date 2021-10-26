@@ -2,73 +2,75 @@ Return-Path: <SRS0=ntep=PO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 830A1C433F5
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 13:35:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6067CC433EF
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 13:45:10 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A257460EC0
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 13:35:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A257460EC0
+	by mail.kernel.org (Postfix) with ESMTPS id 9F9BE60EB4
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 13:45:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F9BE60EB4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 593EF3C687F
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 15:35:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AF71D3C6859
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 15:45:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 117693C0958
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 15:35:22 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D3C693C135F
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 15:44:56 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 35B77601FC5
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 15:35:21 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0C7A22009C9
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 15:44:55 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2AB381FD52;
- Tue, 26 Oct 2021 13:35:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 372FB1FD42;
+ Tue, 26 Oct 2021 13:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1635255321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1635255895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PYjPeetmM5oaPkV6H8FCtIl9w0Rvuk1NwOPyNDy4n6c=;
- b=n+i/6DFH61D+rhb+bDcpBrv1SJRfxnAXIaSn4hzow/P+NlssnPvjAJB2IBgRKAdw9lSO4F
- 2+Ac0ycqhlofUQ0uf8slbFst0DTyx9vEvR679/Fhy10nb1ZySfPd+mSIBoDviv168UZX+E
- KsmObC2nLCdNwD4FR7BpPQHlD2Ernoc=
+ bh=5zPZhNmSgVFZnWXX7Xl1Y3MZpng32I2Fvk4C4FXM6as=;
+ b=vaAI/y0Jrt/9ewyyOwfpbfHmY9wIv7fZI0ovdq9PQOTROZ16XpU+dHkbcgm4G/CQ87fZlJ
+ t/5OOhaWwDhHEPNOajBU7N/FV1YXHMLKKhA4VtnbUOBSCocQawsSgYuXNm7PQFzInc0qT0
+ uG41mbOmyq86MKTMC7OX3qG4czSKFi4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1635255321;
+ s=susede2_ed25519; t=1635255895;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PYjPeetmM5oaPkV6H8FCtIl9w0Rvuk1NwOPyNDy4n6c=;
- b=jLF0IeKw4IP+RKdPOaqTxHe5kVWFL4E2eNBS0C781bqjrIgZsxPFcbB/7IXWfXhjBWUdIh
- K9teRs1NqAzCq9Cg==
+ bh=5zPZhNmSgVFZnWXX7Xl1Y3MZpng32I2Fvk4C4FXM6as=;
+ b=Erl/SjIB/ZfNy5ayClS4863EpJl+/+SG1izLtTwelTjuIfuDnRLnnc3hOZAt8w9voAas2W
+ OK3/AONUZgxSV8Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0509613AEF;
- Tue, 26 Oct 2021 13:35:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E82113B06;
+ Tue, 26 Oct 2021 13:44:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id k9tqABkEeGEJegAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 26 Oct 2021 13:35:21 +0000
-Date: Tue, 26 Oct 2021 15:36:10 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id E8TtBVcGeGGEfgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 26 Oct 2021 13:44:55 +0000
+Date: Tue, 26 Oct 2021 15:45:44 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <YXgESh8jbi+l1KNk@yuki>
+Message-ID: <YXgGiMSDSwVOhMfW@yuki>
 References: <1634562591-5830-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1634562591-5830-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1634562591-5830-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <1634562591-5830-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 01/11] syscalls/quotactl01: Also test with
+Subject: Re: [LTP] [PATCH v1 02/11] syscalls/quotactl06???Also test with
  vfsv1 format
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -87,116 +89,135 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi!
+> --- a/testcases/kernel/syscalls/quotactl/quotactl06.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
+> @@ -1,26 +1,42 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+> + * Copyright (c) 2019-2021 FUJITSU LIMITED. All rights reserved.
+>   * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> + */
+> +
 > +/*\
 > + * [Description]
-> + * This testcase checks the basic flag of quotactl(2) for non-XFS filesystems
-                                                               ^
-							       ext4?
-
-It seems that the test is using ext4 only, are there any other
-filesystems that should be tested here?
-
-> + * with visible quota files(cover two formats, vfsv0 and vfsv1):
+> + *
+> + * Tests basic error handling of the quotactl syscall with visible quota files
+> + * (cover two formats, vfsv0 and vfsv1):
 >   *
-> - * This testcase checks the basic flag of quotactl(2) for non-XFS filesystems:
->   * 1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for user.
-> - * 2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
+> - * Tests basic error handling of the quotactl syscall.
+>   * 1) quotactl fails with EACCES when cmd is Q_QUOTAON and addr
+>   * existed but not a regular file.
 > + *
-> + * 2 quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
->   *    for user.
+>   * 2) quotaclt fails with ENOENT when the file specified by special
+>   * or addr does not exist.
 > + *
->   * 3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
->   *    for user.
+>   * 3) quotactl fails with EBUSTY when  cmd is Q_QUOTAON and another
+>   * Q_QUOTAON had already been performed.
 > + *
->   * 4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
->   *    flag for user.
+>   * 4) quotactl fails with EFAULT when addr or special is invalid.
 > + *
->   * 5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
->   *    flag for user.
+>   * 5) quotactl fails with EINVAL when cmd or type is invalid.
 > + *
->   * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for user.
+>   * 6) quotactl fails with ENOTBLK when special is not a block device.
 > + *
->   * 7) quotactl(2) succeeds to update quota usages with Q_SYNC flag for user.
+>   * 7) quotactl fails with ESRCH when no disk quota is found for the
+>   * indicated user and quotas have not been turned on for this fs.
 > + *
->   * 8) quotactl(2) succeeds to get disk quota limit greater than or equal to
->   *    ID with Q_GETNEXTQUOTA flag for user.
+>   * 8) quotactl fails with ESRCH when cmd is Q_QUOTAON, but the quota
+>   * format was not found.
 > + *
->   * 9) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
+>   * 9) quotactl fails with ESRCH when cmd is Q_GETNEXTQUOTA, but there
+>   * is no ID greater than or equal to id that has an active quota.
 > + *
->   * 10) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
+>   * 10) quotactl fails with ERANGE when cmd is Q_SETQUOTA, but the
+>   * specified limits are out of the range allowed by the quota format.
 > + *
->   * 11) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
->   *     for group.
-> + *
->   * 12) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
->   *     for group.
-> + *
->   * 13) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
->   *     flag for group.
-> + *
->   * 14) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
->   *     flag for group.
-> + *
->   * 15) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
-> + *
->   * 16) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
-> + *
->   * 17) quotactl(2) succeeds to get disk quota limit greater than or equal to
->   *     ID with Q_GETNEXTQUOTA flag for group.
-> + *
->   * 18) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
+>   * 11) quotactl fails with EPERM when the caller lacked the required
+>   * privilege (CAP_SYS_ADMIN) for the specified operation.
 >   */
 
-This does not render as a list in asciidoc once the documentation is
-rendered. I would have converted it to a bulleted style lists, i.e. the
-list items would start with - instead of 1).
+Same comments apply here as well.
 
-Also it's a bit poinless to repeat the quotactl(2) succeeds on each
-line. It would make much more sense to put that part to the sentence
-that describes the list as:
-
- * This testcases checks that quotactl(2) succeeds to:
- *
- *  - turn on quota with Q_QUOTAON flag
- *  - ...
-
-> @@ -43,16 +66,12 @@
->  #include "lapi/quotactl.h"
->  #include "tst_test.h"
+> @@ -32,10 +48,7 @@
+>  #include "tst_capability.h"
 >  
-> -#ifndef QFMT_VFS_V0
-> -# define QFMT_VFS_V0	2
-> -#endif
+>  #define OPTION_INVALID 999
+> -#define QFMT_VFS_V0     2
 >  #define USRPATH MNTPOINT "/aquota.user"
->  #define GRPPATH MNTPOINT "/aquota.group"
-> -#define FMTID	QFMT_VFS_V0
->  #define MNTPOINT	"mntpoint"
->  
-> -static int32_t fmt_id = FMTID;
-> -static int test_id;
-> +static int32_t fmt_id;
-> +static int test_id, mount_flag;
+> -#define FMTID QFMT_VFS_V0
+> -
+>  #define MNTPOINT "mntpoint"
+>  #define TESTDIR1 MNTPOINT "/testdir1"
+>  #define TESTDIR2 MNTPOINT "/testdir2"
+> @@ -43,10 +56,10 @@
 >  static char usrpath[] = USRPATH;
->  static char grppath[] = GRPPATH;
->  static struct dqblk set_dq = {
-> @@ -163,9 +182,22 @@ static struct tcase {
+>  static char testdir1[] = TESTDIR1;
+>  static char testdir2[] = TESTDIR2;
+> -static int32_t fmt_id = FMTID;
+> +static int32_t fmt_id;
+>  static int32_t fmt_invalid = 999;
+>  static int test_invalid;
+> -static int test_id;
+> +static int test_id, mount_flag;
+>  static int getnextquota_nsup;
+>  
+>  static struct if_nextdqblk res_ndq;
+> @@ -105,7 +118,7 @@ static void verify_quotactl(unsigned int n)
+>  
+>  	if (tc->on_flag) {
+>  		TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), tst_device->dev,
+> -			FMTID, usrpath));
+> +			fmt_id, usrpath));
+>  		if (TST_RET == -1)
+>  			tst_brk(TBROK,
+>  				"quotactl with Q_QUOTAON returned %ld", TST_RET);
+> @@ -135,7 +148,7 @@ static void verify_quotactl(unsigned int n)
+>  
+>  	if (quota_on) {
+>  		TEST(quotactl(QCMD(Q_QUOTAOFF, USRQUOTA), tst_device->dev,
+> -			FMTID, usrpath));
+> +			fmt_id, usrpath));
+>  		if (TST_RET == -1)
+>  			tst_brk(TBROK,
+>  				"quotactl with Q_QUOTAOFF returned %ld", TST_RET);
+> @@ -150,10 +163,23 @@ static void verify_quotactl(unsigned int n)
 >  
 >  static void setup(void)
 >  {
-> -	const char *const cmd[] = {"quotacheck", "-ugF", "vfsv0", MNTPOINT, NULL};
-> -
+> -	const char *const cmd[] = {"quotacheck", "-uF", "vfsv0", MNTPOINT, NULL};
+> +	const char *const vfsv0_cmd[] = {"quotacheck", "-uF", "vfsv0", MNTPOINT, NULL};
+> +	const char *const vfsv1_cmd[] = {"quotacheck", "-uF", "vfsv1", MNTPOINT, NULL};
+
+If we are going to repeat this snippet in each test it may make sense to
+put it into a header as we do with variants:
+
+	static struct quotactl_variant {
+		int32_t fmt_id;
+		const char *fmt_name;
+	} variants[] = {
+		{.fmt_id = QFMT_VFS_V0, .fmt_name = "vfsv0"}
+		{.fmt_id = QFMT_VFS_V1, .fmt_name = "vfsv1"}
+	};
+
+Then we can construct the rest easily from these as:
+
+	const char *const cmd[] = {"quotacheck", "-uF", variants[variant].fmt_name, MNTPOINT, NULL};
+
+	tst_res(TINFO, "quotactl() with %s format", variants[variant].fmt_name);
+
+	SAFE_CMD(cmd, NULL, NULL);
+	fmt_id = variants[variant].fmt_id;
+
+
+>  	unsigned int i;
+>  
 > -	SAFE_CMD(cmd, NULL, NULL);
-> +	const char *const vfsv0_cmd[] = {"quotacheck", "-ugF", "vfsv0", MNTPOINT, NULL};
-> +	const char *const vfsv1_cmd[] = {"quotacheck", "-ugF", "vfsv1", MNTPOINT, NULL};
-> +
 > +	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
-> +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "usrquota,grpquota");
+> +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "usrquota");
 > +	mount_flag = 1;
-
-Why are you moving the mount from the tst_test structure here?
-
-Do we have to remount the device to change the quota format?
-
+> +
 > +	if (tst_variant) {
 > +		tst_res(TINFO, "quotactl() with vfsv1 format");
 > +		SAFE_CMD(vfsv1_cmd, NULL, NULL);
@@ -207,10 +228,10 @@ Do we have to remount the device to change the quota format?
 > +		fmt_id = QFMT_VFS_V0;
 > +	}
 >  
->  	test_id = geteuid();
 >  	if (access(USRPATH, F_OK) == -1)
-> @@ -182,6 +214,12 @@ static void setup(void)
->  		getnextquota_nsup = 1;
+>  		tst_brk(TFAIL | TERRNO, "user quotafile didn't exist");
+> @@ -175,8 +201,15 @@ static void setup(void)
+>  	}
 >  }
 >  
 > +static void cleanup(void)
@@ -219,24 +240,24 @@ Do we have to remount the device to change the quota format?
 > +		tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
 > +}
 > +
->  static void verify_quota(unsigned int n)
->  {
->  	struct tcase *tc = &tcases[n];
-> @@ -222,13 +260,14 @@ static struct tst_test test = {
->  	},
->  	.test = verify_quota,
->  	.tcnt = ARRAY_SIZE(tcases),
-> -	.mount_device = 1,
-> +	.needs_device = 1,
+>  static struct tst_test test = {
+>  	.setup = setup,
+> +	.cleanup = cleanup,
+>  	.needs_kconfigs = (const char *[]) {
+>  		"CONFIG_QFMT_V2",
+>  		NULL
+> @@ -185,11 +218,11 @@ static struct tst_test test = {
+>  	.test = verify_quotactl,
 >  	.dev_fs_type = "ext4",
 >  	.mntpoint = MNTPOINT,
-> -	.mnt_data = "usrquota,grpquota",
+> -	.mount_device = 1,
+> -	.mnt_data = "usrquota",
+> +	.needs_device = 1,
 >  	.needs_cmds = (const char *const []) {
 >  		"quotacheck",
 >  		NULL
 >  	},
->  	.setup = setup,
-> +	.cleanup = cleanup,
+>  	.needs_root = 1,
 > +	.test_variants = 2,
 >  };
 > -- 
