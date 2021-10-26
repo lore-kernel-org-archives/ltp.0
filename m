@@ -2,86 +2,47 @@ Return-Path: <SRS0=ntep=PO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93052C433EF
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 15:16:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 329CBC433FE
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 18:43:28 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D960A6023D
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 15:15:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D960A6023D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3190161078
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 18:43:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3190161078
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 311793C6879
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 17:15:58 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 819953C6859
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 20:43:24 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCF703C67D7
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 17:15:47 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ by picard.linux.it (Postfix) with ESMTPS id 6B6573C67DE
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 20:43:14 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0D2721001588
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 20:43:12 +0200 (CEST)
+Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2589C601569
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 17:15:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1635261345;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rrcIx+1LzgzO+kzfujsKUFFO55BG2ORlzIih50fbvHg=;
- b=MFYWyeMoOPBlo5W1MBS3Uruc/6Eqi4ebU/9+rPxUYLm58Thxl3PhtHDfTlbUjNlS1aDnXc
- vjk54PYjF4GeW7lb0n2F/lx2FUsctYl5FAMdPyqizN2lf3/BIp4f6283dRgOFyV9Dwoj3R
- Lmw/LMEFj61sWGgxb4TMvNXAdTNLF9c=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-U2LoJY-4NmimFGkwsdQUMQ-1; Tue, 26 Oct 2021 11:15:44 -0400
-X-MC-Unique: U2LoJY-4NmimFGkwsdQUMQ-1
-Received: by mail-oo1-f70.google.com with SMTP id
- f21-20020a4abb15000000b002b766ff48feso6000407oop.20
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:15:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=rrcIx+1LzgzO+kzfujsKUFFO55BG2ORlzIih50fbvHg=;
- b=sxPzc1jz/bcCgl9m+hJf0bEWDKIdAyX6hZwPUktCsYbHha1Q70zfhuUbxktAEG16Zf
- N81PSuBECCieQi4i4m17T0x8qih+tXt/dkWDORpmjOg3u0nw6U2AabK8xy29zmTYiQVk
- VKRcPNBmPxsOg8I7gLoYfyhHwKKoV2NcectXj4LO6n3KrTY8A9+eLAgs/fRsxngVR+99
- GhKTS9o3Od6ySxtG6f60jCEr+IqBIiEsygWQZmuYKUFT+n1ZigiVVsIwRxkFhjz4nvmT
- D6LUUKNEA9EGeCjZy7GlsgP9kP4XusgSja197syBxMdHMKcee0RZtWM+a1TPF5ITVjHw
- r/5w==
-X-Gm-Message-State: AOAM530i/OU904FqTlWE6/OLhbpDAmso/7PLXyqPhx9Pc4K2cMEd8SyH
- L5kXcgKxkoCyXZw/vDs/H/ioo1A8AzJzvdF8/mLFQJkkg3wUPJZL00gBJ2pX9AEAxv92bcvqDYz
- +K+6Z6pydxpamM6Lh9rev41Svvac=
-X-Received: by 2002:a9d:53c4:: with SMTP id i4mr19418570oth.176.1635261343736; 
- Tue, 26 Oct 2021 08:15:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQCow1tAacXwSz868Rm84SLrg1ejytXpaAkpEl+fQzb/Jm+IGiouMvmTeIqWqwVo1dHb47zTS7kX172fL93kY=
-X-Received: by 2002:a9d:53c4:: with SMTP id i4mr19418554oth.176.1635261343575; 
- Tue, 26 Oct 2021 08:15:43 -0700 (PDT)
+ (No client certificate requested) (Authenticated sender: krisman)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 035A51F43877;
+ Tue, 26 Oct 2021 19:43:10 +0100 (BST)
+From: Gabriel Krisman Bertazi <krisman@collabora.com>
+To: ltp@lists.linux.it,
+	jack@suse.com,
+	amir73il@gmail.com
+Date: Tue, 26 Oct 2021 15:42:29 -0300
+Message-Id: <20211026184239.151156-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
- <b987a73550937e5d5652e4a86e591d72334d8fda.1635244875.git.jstancek@redhat.com>
- <YXfeAnRORHareVtn@yuki>
- <CAASaF6wZEaQjUy8RU9TCp6GpWKN6FkQSWtOb2iLDNY_1KCmE8g@mail.gmail.com>
- <YXgZ0CK737PXTv5Y@yuki>
-In-Reply-To: <YXgZ0CK737PXTv5Y@yuki>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 Oct 2021 17:15:28 +0200
-Message-ID: <CAASaF6zO1KAkGmpWN7Gp6u-5NLmxZWvCa6qWtG08QkX=zTDq+A@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] finit_module02: fix exp. errno for O_WRONLY
- testcase
+Subject: [LTP] [PATCH v2 00/10] Test the new fanotify FAN_FS_ERROR event
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,32 +54,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Cc: linux-ext4@vger.kernel.org, kernel@collabora.com,
+ Gabriel Krisman Bertazi <krisman@collabora.com>, khazhy@google.com,
+ repnop@google.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Oct 26, 2021 at 5:07 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > > Also I'm starting to wonder if the errno from dir_setup() should be
-> > > fixed in the kernel as well. I guess that EISDIR sounds much better
-> > > error than EINVAL.
-> >
-> > It does.
->
-> Will you send a kernel patch or should I do it?
+Hi,
 
-Since you found it, I'll leave it to you :-).
-On second thought, EBADF might be better, since it covers other fd
-types as well.
+Now that FAN_FS_ERROR is close to being merged, I'm sending out a new
+version of the LTP tests.  This version only applies the previous
+feedback and updates the interface to correspond to the changes
+requested on the kernel patches.
 
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
+One important detail is that, for the tests to succeed, there is a
+dependency on an ext4 fix I sent today:
+
+https://lore.kernel.org/linux-ext4/20211026173302.84000-1-krisman@collabora.com/T/#u
+
+---
+
+Original cover letter:
+
+FAN_FS_ERROR is a new (still unmerged) fanotify event to monitor
+fileystem errors.  This patchset introduces a new LTP test for this
+feature.
+
+Testing file system errors is slightly tricky, in particular because
+they are mostly file system dependent.  Since there are only patches for
+ext4, I choose to make the test around it, since there wouldn't be much
+to do with other file systems.  The second challenge is how we cause the
+file system errors, since there is no error injection for ext4 in Linux.
+In this series, this is done by corrupting specific data in the
+test device with the help of debugfs.
+
+The FAN_FS_ERROR feature is flying around linux-ext4 and fsdevel, and
+the latest version is available on the branch below:
+
+    https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-v9
+
+A proper manpage description is also available on the respective mailing
+list, or in the branch below:
+
+    https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
+
+Please, let me know your thoughts.
+
+Gabriel Krisman Bertazi (10):
+  syscalls: fanotify: Add macro to require specific mark types
+  syscalls: fanotify: Add macro to require specific events
+  syscalls/fanotify20: Introduce helpers for FAN_FS_ERROR test
+  syscalls/fanotify20: Validate the generic error info
+  syscalls/fanotify20: Validate incoming FID in FAN_FS_ERROR
+  syscalls/fanotify20: Support submission of debugfs commands
+  syscalls/fanotify20: Create a corrupted file
+  syscalls/fanotify20: Test event after filesystem abort
+  syscalls/fanotify20: Test file event with broken inode
+  syscalls/fanotify20: Test capture of multiple errors
+
+ testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify.h |  72 +++-
+ .../kernel/syscalls/fanotify/fanotify03.c     |   4 +-
+ .../kernel/syscalls/fanotify/fanotify10.c     |   3 +-
+ .../kernel/syscalls/fanotify/fanotify12.c     |   3 +-
+ .../kernel/syscalls/fanotify/fanotify20.c     | 313 ++++++++++++++++++
+ 6 files changed, 389 insertions(+), 7 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify20.c
+
+-- 
+2.33.0
 
 
 -- 
