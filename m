@@ -2,74 +2,86 @@ Return-Path: <SRS0=ntep=PO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2107C433FE
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AFAFC433EF
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:30:30 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3777460F22
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:03:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3777460F22
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 83A9C60E96
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:30:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 83A9C60E96
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CA98B3C67ED
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 10:03:45 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id B050C3C6817
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 10:30:26 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 855B33C2C95
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 10:03:36 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3C3CF3C665E
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 10:30:16 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E9F596011E5
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 10:03:35 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 42A98218B0;
- Tue, 26 Oct 2021 08:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1635235415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 98E441000A6C
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 10:30:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635237014;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pL7x4Ejoz5tGzEGD4+IuefPR5IATiZgPNq+WM4o0IYg=;
- b=aMm+FbP0bG+5lm5b87fQsrt/M9oRPjSnbedKdy9ETfxMxUTTvJgZw/irEm3xOhDWnwkzYA
- ieRy1yszHYoiXjsydk6gRkonQuZkd9BmffLZ5Myu2YQb8FgFkkuWghJOql90wFXR+H6zly
- gxa11xDQWWL6/fAgzSk0JM/1qFv1U1Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1635235415;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pL7x4Ejoz5tGzEGD4+IuefPR5IATiZgPNq+WM4o0IYg=;
- b=uVPnQpQEU847l7NKrK2tKvR9uMxIXIFuHFcTZ3YMzw9ZCxpwKKnUPZKRcR5biOZMbI19Lz
- hhRvZSbqEHpcQoCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 268CC13E04;
- Tue, 26 Oct 2021 08:03:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QyDdBVe2d2H0SwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 26 Oct 2021 08:03:35 +0000
-Date: Tue, 26 Oct 2021 10:04:23 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <YXe2h9oEAR0GzMXz@yuki>
-References: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
+ bh=hyC8h1F1eDMUzkSUXDn0M/4yP5eZZI8pX/7M4JCEtvk=;
+ b=A+YDQBDBIgNgPz3+MDh1JBscxgmW0l4Ra5hqfzXEsvOYlQTY4q/2s92VcqE+Xpz9UId4ee
+ JD+0gs+xG4UydIeIbX/GPc1lmkg/d0SXOBfKHMk8SOTRQTyhPMnzQQZAe2VZXUe2rmgOJl
+ SG2BkKL3Rw2rfH/Pah7eZpoRkAlxamM=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-lBHi5-iqP0S8CKldYKN0kg-1; Tue, 26 Oct 2021 04:30:12 -0400
+X-MC-Unique: lBHi5-iqP0S8CKldYKN0kg-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ x68-20020a25ce47000000b005c198858e6bso5177398ybe.21
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 01:30:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=hyC8h1F1eDMUzkSUXDn0M/4yP5eZZI8pX/7M4JCEtvk=;
+ b=Xuq4jJ00+S6AKrK9r3C4UwsKl5T6svu6D+YHQuakp6rXNPbycc4Oy1D8hdJu4jBVHA
+ WYXV5XTfS179JF8doAK7v0zB7xBmnu3HNlA6Sa6vC0HzuXSN7bNTcIxfaBH9bYLUrxYq
+ Pss2bY2pq/Ah19dKHDIfyk0wdKF5+2Bf54tcCcIQd6EtBuFY0duG/HQqcAZGQfxXTP0c
+ ZR/Rwn/a6NYo8hNtLjRySROV6o6bBddhVCq70NW9nZpt9rQxLNlDpMAS67CpyBTMSnRR
+ AJ1/HHfpDp7u9a5AXPLLI73WQ1GfUYaVZ0BFwoA/D71t+6xXkwSSJqy6kR3zWmb5H8tv
+ drDA==
+X-Gm-Message-State: AOAM531zcl05iVktnUKwCLduK/g7rdS/Rmh3c8UTfQkhK+5ey/RvCwr+
+ tCsK3GZT8ozHYcMOeErnuz9E/3zfWr6FYpOmVOCvLWVeUyVmAE9nvOgdykam/LlVlPfFYaebg5t
+ irZvN8OXUOOieDWU1Mv/7yDerwTw=
+X-Received: by 2002:a25:5607:: with SMTP id k7mr1376454ybb.425.1635237012046; 
+ Tue, 26 Oct 2021 01:30:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzc7aJbkNXLGMG4/Il66/JMMGZGHU3RSQpMlKPsd7br13SueUZ0A6kljG3+F2I7JecQADp+eYM6stASxWBVnIk=
+X-Received: by 2002:a25:5607:: with SMTP id k7mr1376438ybb.425.1635237011814; 
+ Tue, 26 Oct 2021 01:30:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20211025160134.9283-1-chrubis@suse.cz>
+ <20211025160134.9283-7-chrubis@suse.cz>
+ <CAEemH2dQcUW5k3Rv-n3=CrznqwpFta3P28QrB0oVZPZH6PyNuw@mail.gmail.com>
+ <YXeqxPwYuAVvrMdv@yuki>
+ <CAEemH2eGMNYRDo8drkEesqqBG1HfNAX2O=WPenCa1W0v-S-Lmg@mail.gmail.com>
+ <YXe0owmFqLAYkJwo@yuki>
+In-Reply-To: <YXe0owmFqLAYkJwo@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 26 Oct 2021 16:29:58 +0800
+Message-ID: <CAEemH2fFq0dDhx9zHA=+Yt2OLVZ5VLDnRdxmLgnPE90tyNBrdA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] finit_module02: fix exp. errno for O_WRONLY
- testcase
+Subject: Re: [LTP] [PATCH 6/6] lib: Add tst_set_runtime() & remove
+ tst_set_timeout()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,49 +93,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1603183853=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> commit 032146cda855 ("vfs: check fd has read access in
-> kernel_read_file_from_fd()") changed errno back to EBADF,
-> which is correct value according to man page, so tweak
-> the test to expect it for kernels >= 5.15.
+--===============1603183853==
+Content-Type: multipart/alternative; boundary="0000000000003695f905cf3d497c"
 
-Shouldn't we drop the check completely and rather than working around
-the bug add this commit to the test metadata?
+--0000000000003695f905cf3d497c
+Content-Type: text/plain; charset="UTF-8"
 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/finit_module/finit_module02.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
-> index 0d2bf917ea64..9b5d3563b74e 100644
-> --- a/testcases/kernel/syscalls/finit_module/finit_module02.c
-> +++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
-> @@ -52,7 +52,7 @@ static void bad_fd_setup(struct tcase *tc)
->  
->  static void wo_file_setup(struct tcase *tc)
->  {
-> -	if (tst_kvercmp(4, 6, 0) < 0)
-> +	if (tst_kvercmp(4, 6, 0) < 0 || tst_kvercmp(5, 15, 0) >= 0)
->  		tc->exp_errno = EBADF;
->  	else
->  		tc->exp_errno = ETXTBSY;
-> -- 
-> 2.27.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+> Ah, right, that should be fixed. Anything else that should be fixed?
+>
+
+No more from my side, the rest looks quite good.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+
+--0000000000003695f905cf3d497c
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
+<br>
+Ah, right, that should be fixed. Anything else that should be fixed?<br></b=
+lockquote><div><br></div><div><div class=3D"gmail_default" style=3D"font-si=
+ze:small">No more from my side, the rest looks quite good.</div></div></div=
+><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=
+=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--0000000000003695f905cf3d497c--
+
+
+--===============1603183853==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1603183853==--
+
