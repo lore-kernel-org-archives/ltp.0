@@ -2,85 +2,82 @@ Return-Path: <SRS0=ntep=PO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75522C433F5
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:17:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81AA8C433EF
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:21:56 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE8E360FD7
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:17:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CE8E360FD7
+	by mail.kernel.org (Postfix) with ESMTPS id BFCDD60FD7
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:21:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFCDD60FD7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 097C13C6751
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:17:10 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id AA1343C672C
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:21:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DE5A3C66D9
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:16:59 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 9446E3C66DE
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:21:44 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9BF151A01159
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:16:57 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D7EF11000F60
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:21:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1635229016;
+ s=mimecast20190719; t=1635229302;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BVzuULm7rT1LENwyIEx0PbIabU7Qzb3L1F8S7DKaHqg=;
- b=TfmpeO78v50Dw9riflN+aNaEn5NT7w16urAkgpUJ+EOMNUH9W0XNKRoHIDe0i+DGyVvLER
- pWyyiVBpqv3d2rA7ElWA0eWZpEtHmplMz0pgJv0iskOnpeivPWLcqVFg8FIIQ78D0kL/pC
- 0dRzvXYdE6RcSS4f9l9OnKRMEubKbzQ=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-wxvS_IUHPWOGub7bNIQjxg-1; Tue, 26 Oct 2021 02:16:54 -0400
-X-MC-Unique: wxvS_IUHPWOGub7bNIQjxg-1
-Received: by mail-yb1-f200.google.com with SMTP id
- r67-20020a252b46000000b005bea12c4befso20889831ybr.19
- for <ltp@lists.linux.it>; Mon, 25 Oct 2021 23:16:54 -0700 (PDT)
+ bh=xQpVp4VvH2l1cVagsXCkOm569sb4nere/5VASKb9a5w=;
+ b=UxZ1MWhiUeYohwnrvNlt6qsJyk2+CCTPvIxrV3aNFuM/ET4IMWohqcBhSBPrs4lRp5wAoF
+ b6+NgI5AunLsDawKmljB7gZ3xiLTfLF96o9H2TtKyqINnvurqe6Pkxxxkn6j7/vQo1Kmln
+ fSw+agzTguLYgaVuS6/Bht9TegQw47k=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-ypo56B9OMM2oO1ydP_tAKA-1; Tue, 26 Oct 2021 02:21:40 -0400
+X-MC-Unique: ypo56B9OMM2oO1ydP_tAKA-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ x15-20020a056902102f00b005ba71cd7dbfso20987050ybt.8
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 23:21:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=BVzuULm7rT1LENwyIEx0PbIabU7Qzb3L1F8S7DKaHqg=;
- b=mXOpAWuw/8ACFrINj3GMsTrgBjxZjENND6Xd1sRJr9jDR+2bj3Ksd9xH9R0ReDx/2S
- IOMrKgx/WHR+pBYAAEbq5Jb8kp+VW8bNO/ui1WC39yUsqVEBtwr0A3KS19vyWlif/WaI
- h7pdUjPU2Zc/B2vURtng3YUi+zdZb+51ZAxd1Cr4FTT2lZ6QRjZceLyazwC34wqKRSuT
- twdFNPtmgV44PJVxaQN8Sdn5QUqiIAbBbiDbLWoY+jBp9kmZMutkqD7Q7GmYf/vZ9xcT
- mUd7VlTAWRSwQEyEaH0vqdcIR/BiLrTWqchlIImxmBfEJVXiH7dSQwHZwF59nDszm0pd
- Madw==
-X-Gm-Message-State: AOAM532QdvhweGIALj7QyKbPAyfxGKIusYmcyK4BFSGtShlO3c5MDQEn
- XBIRsfHoSfDIvSwKp17KyVlqg6qGKsG58SrNGw+YY3FHqb3q7ZlmbAAM9nT/GKwZrd53C6JzOIb
- MWs2K9upv1OOgA+77q/osYLMwSuk=
-X-Received: by 2002:a25:e4c7:: with SMTP id
- b190mr21430695ybh.302.1635229014092; 
- Mon, 25 Oct 2021 23:16:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx8HM54aBhFJfX9ZJyNTrsxkbsA7e4VVCzZsGTXDjlLhdjUdlD4EXX4D/fBGh5UdpkBPdm7cMEMCm/ilF2ghRs=
-X-Received: by 2002:a25:e4c7:: with SMTP id
- b190mr21430679ybh.302.1635229013843; 
- Mon, 25 Oct 2021 23:16:53 -0700 (PDT)
+ bh=xQpVp4VvH2l1cVagsXCkOm569sb4nere/5VASKb9a5w=;
+ b=O89caVmv9DmaeJu/xsb/rbNUUEVMP8HxEukAZME2IQGRCqqI3xTpW9/TYvItpNILjU
+ bW67aFpQTJzCg2I5pKHRF+rUllkYzEYS38/TQ7IXJYFqNxjJCGa/4Za76JVOQzdbFz2t
+ JNv/YKAIspyijcHjtIOOECrrLWix2h/3ZBqyPjfr8j61TMMp/b77C9HtqsJI3/4wCzoA
+ s1WnXH6NDLNyDmbJmB8ZNd2TE9L5OJHBAw2kTDNXUWxzi7YLpQ5fS46vX6is0ne5+Szf
+ jcz/R4QJjkW2t4/1G8CBXPpJdV8MNk3MTuADdqRpsYrOmdFvYwaT5NtU+ny55H6hasKz
+ gMFQ==
+X-Gm-Message-State: AOAM531+JUtc2LbHM5+L/y5aTxhzaPUtvdk9gJkVLu4aF98yrgHbzc41
+ Diy4/+9lylN4JBjn/nYEP43TG2z+sGLuiDupEpV+vSYIU88GxIhryDKHd9/6WlNj5utLO8lWMTJ
+ XVwpXUEnpxRQCkNo7YbsJqyeSGA4=
+X-Received: by 2002:a25:d7d5:: with SMTP id
+ o204mr16566397ybg.186.1635229300358; 
+ Mon, 25 Oct 2021 23:21:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx2EZCMZrxwLEV4bFzB4KgmWxsTgZAY1nO5fsHfxvhL8TtevamOyowM0xv8d5GYxJ3fSd3jI6PxJOgvzWHXArI=
+X-Received: by 2002:a25:d7d5:: with SMTP id
+ o204mr16566390ybg.186.1635229300230; 
+ Mon, 25 Oct 2021 23:21:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025160134.9283-1-chrubis@suse.cz>
- <20211025160134.9283-7-chrubis@suse.cz>
-In-Reply-To: <20211025160134.9283-7-chrubis@suse.cz>
+References: <20211026061016.11751-1-tangmeng@uniontech.com>
+In-Reply-To: <20211026061016.11751-1-tangmeng@uniontech.com>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 26 Oct 2021 14:16:41 +0800
-Message-ID: <CAEemH2dQcUW5k3Rv-n3=CrznqwpFta3P28QrB0oVZPZH6PyNuw@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 26 Oct 2021 14:21:28 +0800
+Message-ID: <CAEemH2d2nBXLS6F6EK-1R2JnRxGMd2VQge1ETwg6KZWrdY+i_A@mail.gmail.com>
+To: tangmeng <tangmeng@uniontech.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6/6] lib: Add tst_set_runtime() & remove
- tst_set_timeout()
+Subject: Re: [LTP] [PATCH v4] link/link02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,93 +90,63 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0653822168=="
+Content-Type: multipart/mixed; boundary="===============1205705555=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0653822168==
-Content-Type: multipart/alternative; boundary="0000000000007f3a3e05cf3b6cd6"
+--===============1205705555==
+Content-Type: multipart/alternative; boundary="0000000000009120ee05cf3b7d6e"
 
---0000000000007f3a3e05cf3b6cd6
+--0000000000009120ee05cf3b7d6e
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Oct 26, 2021 at 12:02 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Tue, Oct 26, 2021 at 2:11 PM tangmeng <tangmeng@uniontech.com> wrote:
 
-> Rarely there is a need to set the test runtime dynamically, the only
-> tests in LTP that does this are the timer tests that can get two
-> parameters, number of iterations and sleep time, and the test runtime is
-> close to the multiplication of these two.
->
-> It's still cleaner to set the runtime and let the test library figure
-> out the timeout in this case.
+> Signed-off-by: tangmeng <tangmeng@uniontech.com>
+> Reviewed-by: Li Wang <liwang@redhat.com>
 >
 
-If so, should we consider to hinden the .timeout in struct tst_test
-to prevent users from changing it?
+Hi Meng,
 
-IIRC, we currently have ".timeout == -1" to disable test timed
-out in unsure situation, e.g some OOM tests. But in this patch,
-I saw you remove that, but not handle it in tst_set_runtime.
+Usually no need to send another patch when you get
+a "Reviewed-by", that is only for maintainers to know this
+one get ready to merge and tag commit patch.
 
-
-
->
-> Also when no parameters are passed to these tests the runtime is a sum
-> of multiplications from the tst_timer_test.c source so we define a
-> constant in the tst_timer_test.h header and set the max_runtime in the
-> testcases accordingly. With this we get correct estimate for the test
-> runtime and tighter, but still forgiving enough, timeout as well.
->
-
+Anyway, thanks for your quick response.
 
 -- 
 Regards,
 Li Wang
 
---0000000000007f3a3e05cf3b6cd6
+--0000000000009120ee05cf3b7d6e
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 <div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
 t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Tue, Oct 26, 2021 at 12:02 AM Cyril Hrubis &lt;<=
-a href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><=
-blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-l=
-eft:1px solid rgb(204,204,204);padding-left:1ex">Rarely there is a need to =
-set the test runtime dynamically, the only<br>
-tests in LTP that does this are the timer tests that can get two<br>
-parameters, number of iterations and sleep time, and the test runtime is<br=
->
-close to the multiplication of these two.<br>
-<br>
-It&#39;s still cleaner to set the runtime and let the test library figure<b=
-r>
-out the timeout in this case.<br></blockquote><div><br></div><div><div clas=
-s=3D"gmail_default" style=3D"font-size:small">If so, should we consider to =
-hinden the .timeout in struct tst_test=C2=A0</div><div class=3D"gmail_defau=
-lt" style=3D"font-size:small">to prevent users from changing it?</div><br><=
-/div><div><div class=3D"gmail_default" style=3D"font-size:small">IIRC, we c=
-urrently have &quot;.timeout =3D=3D -1&quot; to disable test timed=C2=A0</d=
-iv><div class=3D"gmail_default" style=3D"font-size:small">out in unsure sit=
-uation, e.g some OOM tests. But in this patch,</div><div class=3D"gmail_def=
-ault" style=3D"font-size:small">I saw you remove that, but not handle it in=
- tst_set_runtime.</div><br></div><div>=C2=A0</div><blockquote class=3D"gmai=
-l_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,20=
-4,204);padding-left:1ex">
-<br>
-Also when no parameters are passed to these tests the runtime is a sum<br>
-of multiplications from the tst_timer_test.c source so we define a<br>
-constant in the tst_timer_test.h header and set the max_runtime in the<br>
-testcases accordingly. With this we get correct estimate for the test<br>
-runtime and tighter, but still forgiving enough, timeout as well.<br></bloc=
-kquote><div><br></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D=
-"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br><=
-/div></div></div></div>
+r" class=3D"gmail_attr">On Tue, Oct 26, 2021 at 2:11 PM tangmeng &lt;<a hre=
+f=3D"mailto:tangmeng@uniontech.com">tangmeng@uniontech.com</a>&gt; wrote:<b=
+r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
+;border-left:1px solid rgb(204,204,204);padding-left:1ex">Signed-off-by: ta=
+ngmeng &lt;<a href=3D"mailto:tangmeng@uniontech.com" target=3D"_blank">tang=
+meng@uniontech.com</a>&gt;<br>
+Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_bl=
+ank">liwang@redhat.com</a>&gt;<br></blockquote><div><br></div><div class=3D=
+"gmail_default" style=3D"font-size:small">Hi Meng,</div><div class=3D"gmail=
+_default"><br></div><div class=3D"gmail_default"><span style=3D"color:rgb(5=
+1,51,51);font-size:14px">Usually</span>=C2=A0no need to send another patch =
+when you get</div><div class=3D"gmail_default">a &quot;Reviewed-by&quot;, t=
+hat is only for maintainers to know this</div><div class=3D"gmail_default">=
+one get ready to merge and tag=C2=A0commit=C2=A0patch.</div><div class=3D"g=
+mail_default"><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
+ll">Anyway, thanks for your quick=C2=A0response.</div></div><div><br></div>=
+-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Reg=
+ards,<br></div><div>Li Wang<br></div></div></div></div>
 
---0000000000007f3a3e05cf3b6cd6--
+--0000000000009120ee05cf3b7d6e--
 
 
---===============0653822168==
+--===============1205705555==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -189,5 +156,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0653822168==--
+--===============1205705555==--
 
