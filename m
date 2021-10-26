@@ -2,55 +2,85 @@ Return-Path: <SRS0=ntep=PO=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2946C433EF
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75522C433F5
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:17:12 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A18EF60F9D
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:10:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A18EF60F9D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id CE8E360FD7
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 06:17:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CE8E360FD7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A43D63C6794
-	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:10:40 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 097C13C6751
+	for <ltp@archiver.kernel.org>; Tue, 26 Oct 2021 08:17:10 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6CBFD3C6642
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:10:30 +0200 (CEST)
-Received: from smtpproxy21.qq.com (smtpbg702.qq.com [203.205.195.102])
+ by picard.linux.it (Postfix) with ESMTPS id 0DE5A3C66D9
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:16:59 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 291CE1A01744
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:10:27 +0200 (CEST)
-X-QQ-mid: bizesmtp38t1635228623tajmsvfe
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Tue, 26 Oct 2021 14:10:18 +0800 (CST)
-X-QQ-SSF: 0140000000200020B000000A0000000
-X-QQ-FEAT: +FcubzMZu+SEMgBzXlfPpTGWPu7SFUYlsdYU89OrIBBYbGLFTJ71t2iU8jR3U
- OeHbiU8HT9WIHBZfP34k9Vz4fvNrhxGtjAfP19LBqgXgWYnSQTLpArA8MofyKPOPBb2D4P/
- BBvBftcV0/l0erbCsKxdchA0zaO0SE2D0xluPNhw8/ZWm1AdUcBsbdSjyDqG2/M4EsHo5Fg
- EXCoEmNe014FuPUkqG94Zo5XGDpLXQ6sRzTQ3Pnsk2nAOIB2tlvrvbsyNCob501Y4UtHq+w
- HVWhymanZcumHv9MRjqDXoEAD5ajYtie7wqF5xN0qda0Cd2XLi5Y3cJyZ2IlQwtLLlRvedr
- qGFdERtY8+oqmPEMNgPiv2joobymhxDaXM25DPS
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Tue, 26 Oct 2021 14:10:16 +0800
-Message-Id: <20211026061016.11751-1-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9BF151A01159
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 08:16:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635229016;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BVzuULm7rT1LENwyIEx0PbIabU7Qzb3L1F8S7DKaHqg=;
+ b=TfmpeO78v50Dw9riflN+aNaEn5NT7w16urAkgpUJ+EOMNUH9W0XNKRoHIDe0i+DGyVvLER
+ pWyyiVBpqv3d2rA7ElWA0eWZpEtHmplMz0pgJv0iskOnpeivPWLcqVFg8FIIQ78D0kL/pC
+ 0dRzvXYdE6RcSS4f9l9OnKRMEubKbzQ=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-wxvS_IUHPWOGub7bNIQjxg-1; Tue, 26 Oct 2021 02:16:54 -0400
+X-MC-Unique: wxvS_IUHPWOGub7bNIQjxg-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ r67-20020a252b46000000b005bea12c4befso20889831ybr.19
+ for <ltp@lists.linux.it>; Mon, 25 Oct 2021 23:16:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=BVzuULm7rT1LENwyIEx0PbIabU7Qzb3L1F8S7DKaHqg=;
+ b=mXOpAWuw/8ACFrINj3GMsTrgBjxZjENND6Xd1sRJr9jDR+2bj3Ksd9xH9R0ReDx/2S
+ IOMrKgx/WHR+pBYAAEbq5Jb8kp+VW8bNO/ui1WC39yUsqVEBtwr0A3KS19vyWlif/WaI
+ h7pdUjPU2Zc/B2vURtng3YUi+zdZb+51ZAxd1Cr4FTT2lZ6QRjZceLyazwC34wqKRSuT
+ twdFNPtmgV44PJVxaQN8Sdn5QUqiIAbBbiDbLWoY+jBp9kmZMutkqD7Q7GmYf/vZ9xcT
+ mUd7VlTAWRSwQEyEaH0vqdcIR/BiLrTWqchlIImxmBfEJVXiH7dSQwHZwF59nDszm0pd
+ Madw==
+X-Gm-Message-State: AOAM532QdvhweGIALj7QyKbPAyfxGKIusYmcyK4BFSGtShlO3c5MDQEn
+ XBIRsfHoSfDIvSwKp17KyVlqg6qGKsG58SrNGw+YY3FHqb3q7ZlmbAAM9nT/GKwZrd53C6JzOIb
+ MWs2K9upv1OOgA+77q/osYLMwSuk=
+X-Received: by 2002:a25:e4c7:: with SMTP id
+ b190mr21430695ybh.302.1635229014092; 
+ Mon, 25 Oct 2021 23:16:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8HM54aBhFJfX9ZJyNTrsxkbsA7e4VVCzZsGTXDjlLhdjUdlD4EXX4D/fBGh5UdpkBPdm7cMEMCm/ilF2ghRs=
+X-Received: by 2002:a25:e4c7:: with SMTP id
+ b190mr21430679ybh.302.1635229013843; 
+ Mon, 25 Oct 2021 23:16:53 -0700 (PDT)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
-X-QQ-Bgrelay: 1
+References: <20211025160134.9283-1-chrubis@suse.cz>
+ <20211025160134.9283-7-chrubis@suse.cz>
+In-Reply-To: <20211025160134.9283-7-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 26 Oct 2021 14:16:41 +0800
+Message-ID: <CAEemH2dQcUW5k3Rv-n3=CrznqwpFta3P28QrB0oVZPZH6PyNuw@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] link/link02: Convert to new API
+Subject: Re: [LTP] [PATCH 6/6] lib: Add tst_set_runtime() & remove
+ tst_set_timeout()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,168 +92,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0653822168=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
-Reviewed-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/link/link02.c | 112 ++++++------------------
- 1 file changed, 26 insertions(+), 86 deletions(-)
+--===============0653822168==
+Content-Type: multipart/alternative; boundary="0000000000007f3a3e05cf3b6cd6"
 
-diff --git a/testcases/kernel/syscalls/link/link02.c b/testcases/kernel/syscalls/link/link02.c
-index 6ac340c72..3d265d6eb 100644
---- a/testcases/kernel/syscalls/link/link02.c
-+++ b/testcases/kernel/syscalls/link/link02.c
-@@ -1,56 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-  *  AUTHOR		: William Roske
-  *  CO-PILOT		: Dave Fenner
-  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-  */
+--0000000000007f3a3e05cf3b6cd6
+Content-Type: text/plain; charset="UTF-8"
 
--/*
-- * Tests that link(2) succeds.
-+/*\
-+ * [Description]
-+ *
-+ * Tests that link(2) succeeds.
-  */
+On Tue, Oct 26, 2021 at 12:02 AM Cyril Hrubis <chrubis@suse.cz> wrote:
 
--#include <sys/types.h>
--#include <fcntl.h>
-+#include <unistd.h>
- #include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "link02";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
+> Rarely there is a need to set the test runtime dynamically, the only
+> tests in LTP that does this are the timer tests that can get two
+> parameters, number of iterations and sleep time, and the test runtime is
+> close to the multiplication of these two.
+>
+> It's still cleaner to set the runtime and let the test library figure
+> out the timeout in this case.
+>
 
- #define OLDPATH "oldpath"
- #define NEWPATH "newpath"
-@@ -59,57 +23,33 @@ static void verify_link(void)
- {
- 	struct stat fbuf, lbuf;
+If so, should we consider to hinden the .timeout in struct tst_test
+to prevent users from changing it?
 
--	TEST(link(OLDPATH, NEWPATH));
-+	TST_EXP_PASS(link(OLDPATH, NEWPATH));
-
--	if (TEST_RETURN == 0) {
--		SAFE_STAT(cleanup, OLDPATH, &fbuf);
--		SAFE_STAT(cleanup, NEWPATH, &lbuf);
--		if (fbuf.st_nlink > 1 && lbuf.st_nlink > 1 &&
--		    fbuf.st_nlink == lbuf.st_nlink) {
--			tst_resm(TPASS, "link("OLDPATH","NEWPATH") "
--			         "returned 0 and link counts match");
--		} else {
--			tst_resm(TFAIL, "link("OLDPATH","NEWPATH") returned 0"
--				 " but stat lin count do not match %d %d",
--				 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
--		}
--		SAFE_UNLINK(cleanup, NEWPATH);
--	} else {
--		tst_resm(TFAIL | TTERRNO,
--		         "link("OLDPATH","NEWPATH") returned %ld",
--		         TEST_RETURN);
--	}
--}
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
-+	if (!TST_PASS)
-+		return;
-
--	setup();
-+	SAFE_STAT(OLDPATH, &fbuf);
-+	SAFE_STAT(NEWPATH, &lbuf);
-
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		verify_link();
-+	if (fbuf.st_nlink > 1 && fbuf.st_nlink == lbuf.st_nlink) {
-+		tst_res(TPASS, "link("OLDPATH","NEWPATH") "
-+                                 "returned 0 and stat link counts match");
-+	} else {
-+		tst_res(TFAIL, "link("OLDPATH","NEWPATH") returned 0"
-+                                 " but stat link counts do not match %d %d",
-+                                 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
- 	}
-
--	cleanup();
--	tst_exit();
-+	SAFE_UNLINK(NEWPATH);
- }
-
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	SAFE_TOUCH(cleanup, OLDPATH, 0700, NULL);
-+	SAFE_TOUCH(OLDPATH, 0700, NULL);
- }
-
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.test_all = verify_link,
-+	.setup = setup,
-+	.needs_tmpdir = 1,
-+};
---
-2.20.1
+IIRC, we currently have ".timeout == -1" to disable test timed
+out in unsure situation, e.g some OOM tests. But in this patch,
+I saw you remove that, but not handle it in tst_set_runtime.
 
 
+
+>
+> Also when no parameters are passed to these tests the runtime is a sum
+> of multiplications from the tst_timer_test.c source so we define a
+> constant in the tst_timer_test.h header and set the max_runtime in the
+> testcases accordingly. With this we get correct estimate for the test
+> runtime and tighter, but still forgiving enough, timeout as well.
+>
+
+
+-- 
+Regards,
+Li Wang
+
+--0000000000007f3a3e05cf3b6cd6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Tue, Oct 26, 2021 at 12:02 AM Cyril Hrubis &lt;<=
+a href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><=
+blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-l=
+eft:1px solid rgb(204,204,204);padding-left:1ex">Rarely there is a need to =
+set the test runtime dynamically, the only<br>
+tests in LTP that does this are the timer tests that can get two<br>
+parameters, number of iterations and sleep time, and the test runtime is<br=
+>
+close to the multiplication of these two.<br>
+<br>
+It&#39;s still cleaner to set the runtime and let the test library figure<b=
+r>
+out the timeout in this case.<br></blockquote><div><br></div><div><div clas=
+s=3D"gmail_default" style=3D"font-size:small">If so, should we consider to =
+hinden the .timeout in struct tst_test=C2=A0</div><div class=3D"gmail_defau=
+lt" style=3D"font-size:small">to prevent users from changing it?</div><br><=
+/div><div><div class=3D"gmail_default" style=3D"font-size:small">IIRC, we c=
+urrently have &quot;.timeout =3D=3D -1&quot; to disable test timed=C2=A0</d=
+iv><div class=3D"gmail_default" style=3D"font-size:small">out in unsure sit=
+uation, e.g some OOM tests. But in this patch,</div><div class=3D"gmail_def=
+ault" style=3D"font-size:small">I saw you remove that, but not handle it in=
+ tst_set_runtime.</div><br></div><div>=C2=A0</div><blockquote class=3D"gmai=
+l_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,20=
+4,204);padding-left:1ex">
+<br>
+Also when no parameters are passed to these tests the runtime is a sum<br>
+of multiplications from the tst_timer_test.c source so we define a<br>
+constant in the tst_timer_test.h header and set the max_runtime in the<br>
+testcases accordingly. With this we get correct estimate for the test<br>
+runtime and tighter, but still forgiving enough, timeout as well.<br></bloc=
+kquote><div><br></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D=
+"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br><=
+/div></div></div></div>
+
+--0000000000007f3a3e05cf3b6cd6--
+
+
+--===============0653822168==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0653822168==--
+
