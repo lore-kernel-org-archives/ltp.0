@@ -2,57 +2,72 @@ Return-Path: <SRS0=gHvU=PP=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF18C433EF
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 03:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D764C433F5
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 06:11:21 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF1D86109E
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 03:28:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DF1D86109E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 48FE4610A4
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 06:11:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 48FE4610A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4220E3C691F
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 05:28:56 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 420E33C687E
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 08:11:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 151D13C67EA
- for <ltp@lists.linux.it>; Wed, 27 Oct 2021 05:28:47 +0200 (CEST)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 0C8823C6801
+ for <ltp@lists.linux.it>; Wed, 27 Oct 2021 08:11:08 +0200 (CEST)
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com
+ [IPv6:2607:f8b0:4864:20::d31])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F0196600700
- for <ltp@lists.linux.it>; Wed, 27 Oct 2021 05:28:44 +0200 (CEST)
-Received: from dggeml758-chm.china.huawei.com (unknown [172.30.72.53])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HfDdf6q0sz8trB;
- Wed, 27 Oct 2021 11:27:18 +0800 (CST)
-Received: from dggeml753-chm.china.huawei.com (10.1.199.152) by
- dggeml758-chm.china.huawei.com (10.1.199.159) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Wed, 27 Oct 2021 11:28:40 +0800
-Received: from dggeml753-chm.china.huawei.com ([10.1.199.152]) by
- dggeml753-chm.china.huawei.com ([10.1.199.152]) with mapi id 15.01.2308.015;
- Wed, 27 Oct 2021 11:28:39 +0800
-From: zhaogongyi <zhaogongyi@huawei.com>
-To: Jan Stancek <jstancek@redhat.com>
-Thread-Topic: [LTP] [PATCH] lapi/syscalls: Add epoll_create for aarch64.in
-Thread-Index: AdfK4MPuM5VVybBTTHCDLv/mQLWULw==
-Date: Wed, 27 Oct 2021 03:28:39 +0000
-Message-ID: <366c70644bfb48ddb13e33e80cea5718@huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 35AFE6008DB
+ for <ltp@lists.linux.it>; Wed, 27 Oct 2021 08:11:08 +0200 (CEST)
+Received: by mail-io1-xd31.google.com with SMTP id n67so2268514iod.9
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 23:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=SqwaGiTpzQBE07WRbVBGvjb01yKJSD6j1sWmM16zRSg=;
+ b=JgOgf5hcNhpRL9tnTailOk1lpbZcRs0t2yssc+1//VDrQOeh9wpXS5kJ+MDkJIPvk+
+ P3tXhTv8tX80udsa17JfPX7O1VxLW5tSx7INFOG7b41/qTdNWSoAP8yWxHeQfJ8tBTX2
+ t4maWlUYkED5JFWxH6h2PZgFZ7mpyd+rG5BTztC7PLHY4jkluYPns49ODbv5i414m593
+ WAEMNt3LHrlq0rFuBJqwXKiNBArEZ1whXf26y7l3B+P5xZDREGI0cDDxHkhabtc0UqpF
+ Acuvn39naiSVP4/2ufXaiSKh5SZzLikI2HvD7HhevJDFH0Cx90W8lur5zyKHvETxBM82
+ IGbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=SqwaGiTpzQBE07WRbVBGvjb01yKJSD6j1sWmM16zRSg=;
+ b=M4qI2MfmibrrclEWDNpDODzWMeilnk67+YbtTZfVp9HrZWbTyBFl5Tnrp9Bsl1Q7hB
+ hP+F3kTc43ODnhe9KpP5bN150ZPNXp6bWW5ehdcoy31g2FM2DGLFstAJ0xbWeeM5IgiK
+ cZT9Gi/+8iQtydZgE14qchjz0WM2QIaEJUQJpduqf6gGBqElavVeaRJM5mmBxfwngTrC
+ axETn62GisLm17ma9dCw30AqdskFy8MCg8TIGNB1qH7z1MBHGBwIiFZx0JmkjbeXn86l
+ 0yl/473bUZia44mxypF92kcMJYZhwT7riOrpHqowkLUPz7z9aBe6EoiHwz/TZBI5iExE
+ 9wwg==
+X-Gm-Message-State: AOAM531Jut1qGyQm1QvwExffzJ+UOt/zMR6R4NoTyg0msHBEksge5fIa
+ d8HrksfmSpT2ZDQuF0RaJJAp2jma8Ka3z/3tITk=
+X-Google-Smtp-Source: ABdhPJz/kkv/EWi6r/D4S7PT9bYM43ovca5FpB7VwlgVaJc4ZHGp39Y0fwcxosXffF8lVjG3k488ty5rsD1AM9G/zzY=
+X-Received: by 2002:a05:6602:2ac8:: with SMTP id
+ m8mr19102149iov.112.1635315066947; 
+ Tue, 26 Oct 2021 23:11:06 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20211026184239.151156-1-krisman@collabora.com>
+ <20211026184239.151156-2-krisman@collabora.com>
+In-Reply-To: <20211026184239.151156-2-krisman@collabora.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 27 Oct 2021 09:10:56 +0300
+Message-ID: <CAOQ4uxgPM=D4_5ky=uADSFBFXOXia8A+XCabC3tF5wq1FmKQuA@mail.gmail.com>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lapi/syscalls: Add epoll_create for aarch64.in
+Subject: Re: [LTP] [PATCH v2 01/10] syscalls: fanotify: Add macro to require
+ specific mark types
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,69 +79,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Cc: kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
+ Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.com>,
+ Ext4 <linux-ext4@vger.kernel.org>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+On Tue, Oct 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Like done for init flags and event types, and a macro to require a
+> specific mark type.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-> 
-> On Tue, Oct 26, 2021 at 9:49 AM Zhao Gongyi <zhaogongyi@huawei.com>
-> wrote:
-> >
-> > Add epoll_create for aarch64.in and modify the value of epoll_ctl for
-> > aarch64.in. Otherwise, the testcase epoll_create01/epoll_create02 will
-> > fail.
-> >
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> >  include/lapi/syscalls/aarch64.in | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/lapi/syscalls/aarch64.in
-> > b/include/lapi/syscalls/aarch64.in
-> > index a47185954..e9023a1d0 100644
-> > --- a/include/lapi/syscalls/aarch64.in
-> > +++ b/include/lapi/syscalls/aarch64.in
-> > @@ -19,7 +19,6 @@ getcwd 17
-> >  lookup_dcookie 18
-> >  eventfd2 19
-> >  epoll_create1 20
-> > -epoll_ctl 21
-> >  epoll_pwait 22
-> >  dup 23
-> >  dup3 24
-> > @@ -243,6 +242,8 @@ rt_tgsigqueueinfo 240  perf_event_open 241
-> >  accept4 242
-> >  recvmmsg 243
-> > +epoll_create 250
-> > +epoll_ctl 251
-> 
-> These values are for 32 bit only syscalls. Won't this break 64 bit?
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-Yes, these values are for 32 bit only syscalls, the syscall epoll_create is not support for 64bit arm64. 
-
-Reference to man 2 epoll_create, we can see that epoll_create/epoll_create1 are supported If only we include the header file sys/epoll.h.
-
-Is it better that we call epoll_create replace to syscall __NR_epoll_create since some plateform not support it?
-
-
-Thanks for you review!
-
-> 
-> >  wait4 260
-> >  prlimit64 261
-> >  fanotify_init 262
-> > --
-> > 2.17.1
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> >
-
+> ---
+>  testcases/kernel/syscalls/fanotify/fanotify.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+> index a2be183385e4..c67db3117e29 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+> @@ -373,4 +373,9 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
+>         return rval;
+>  }
+>
+> +#define REQUIRE_MARK_TYPE_SUPPORTED_ON_KERNEL(mark_type) do { \
+> +       fanotify_init_flags_err_msg(#mark_type, __FILE__, __LINE__, tst_brk_, \
+> +                                   fanotify_mark_supported_by_kernel(mark_type)); \
+> +} while (0)
+> +
+>  #endif /* __FANOTIFY_H__ */
+> --
+> 2.33.0
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
