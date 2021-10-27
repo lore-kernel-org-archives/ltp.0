@@ -2,71 +2,72 @@ Return-Path: <SRS0=gHvU=PP=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B2C4C433F5
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 06:44:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7998AC433EF
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 06:49:07 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B542561073
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 06:44:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B542561073
+	by mail.kernel.org (Postfix) with ESMTPS id CE8BF6023B
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 06:49:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CE8BF6023B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3BC633C68BF
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 08:44:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3FF3C3C69DD
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 08:49:05 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A3793C6794
- for <ltp@lists.linux.it>; Wed, 27 Oct 2021 08:44:01 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 850663C6794
+ for <ltp@lists.linux.it>; Wed, 27 Oct 2021 08:48:54 +0200 (CEST)
 Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com
  [IPv6:2607:f8b0:4864:20::d36])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 463052013B3
- for <ltp@lists.linux.it>; Wed, 27 Oct 2021 08:43:55 +0200 (CEST)
-Received: by mail-io1-xd36.google.com with SMTP id g8so1064600iob.10
- for <ltp@lists.linux.it>; Tue, 26 Oct 2021 23:43:55 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 561671401446
+ for <ltp@lists.linux.it>; Wed, 27 Oct 2021 08:48:53 +0200 (CEST)
+Received: by mail-io1-xd36.google.com with SMTP id m184so2425726iof.1
+ for <ltp@lists.linux.it>; Tue, 26 Oct 2021 23:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=u0tjnH7cGTMnJZzZdMCwY+OSK2Wv5tgvwfL8n26UIvo=;
- b=UF1qxaetdU5AaUk6+ECLYk0yoLF0rVQNlSxRSaZjonb0cHU4UmqxlzN61h2XEl1JG3
- HJEozkQZCGaozcHP6nknXZ5Jph0k8dFd+ByJJlTqxpCupwtJ67c2smndLzwQNBu47hRh
- w30tTahJs1BApnSgchFtILE5TnIUJxKhYQsq8DS3eKY3jQfKi/0gVnVMLO65mP0cNslp
- k4G947RCPezqUI+dfsErFF4MJLyDkHKZvzuWKH33Pa7KGt2Fv95zLS7LIN8H1zUdbk2E
- /XgiTZ3jHyR7H97UlB1q5X2NhYuqzwTQsMDUqH9o+frjsv94dnqc7onNjyp9RZumvVnT
- s85w==
+ :cc; bh=xH2jDgjkZqM0c/Z2XA4KwmpdoZJ1Ms7cYMsi0KTSDzo=;
+ b=AQuzx96z6KSI3OzEkPMnGtSC90KILepbtfJ3bsfqrKMRZj7F93OAnh5+6Qo871ldzv
+ aAeYQk7V4vODcXSRg0iriOe3zyYLYHIajsmG6LE+3EiQ/jnj0IEzL+aTiy5U4K/jW48g
+ mLHC2Yx4Szdd1r46zWvPVDddVwud1D6CoN678vzosstSl8npoHEEnvisG9JhOx2pBFKn
+ As4JObmIGbg/RI4xdpsVGUFHSQkgPDvh8JhKSviLTelorDltd/3AETD8B5I490n9yKwO
+ Lnb8ln9J20vIUl0dLXIl0ISdxH1f7N3Nw1sl026fKyPJUe6A8iT/kuKXlerLFUcf0Jne
+ mVww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=u0tjnH7cGTMnJZzZdMCwY+OSK2Wv5tgvwfL8n26UIvo=;
- b=pZ6M+Kmd7FCb/3nmmf12xRrTCOI7/L+7YyQt5PwtzP1V6NHsvgFqORRBKFdYaZisGm
- Vh2ezzznec8lX1H109muo3wUFSGUBcQUtFqBqgSFadTrmpqrhp39J6pg/E/eXLDk3UOP
- VKJuzgF4hiZM+A1A823HcV+hvnAbc2vDpxS/D5gccl1jrRZSvxrnP/Z7g9M+c7/pDeh1
- UQfEbiCRvcDG4yYEABd+mWp4TGjAzIi8rfDXJpqmXEQNLlg03xmmF+QujoGc4Hx+98sp
- AqOjuaPphnZBXwTkinJNnNDwpaPB3EeaHaJR3ZFRc2SO/h9lAHI+B8cC18oZbCEDme3s
- k2dg==
-X-Gm-Message-State: AOAM5332idT6cLfhMrVAF7Ds2hvgqWSZAYcWQ50Pr4ICvetHPSfNlQHB
- pbtolsBKFzp3fbt0QKzJjLVya8+pna4hpWBpaYE=
-X-Google-Smtp-Source: ABdhPJyKujfwG5lyx6ez8ZuzrwIya1B8KTWqM2an447uNxze1QzsZtuA4yrpiMDK7tkacAefrUY9SkclGg/fUmgnfec=
-X-Received: by 2002:a5d:8792:: with SMTP id f18mr18314463ion.52.1635317033899; 
- Tue, 26 Oct 2021 23:43:53 -0700 (PDT)
+ bh=xH2jDgjkZqM0c/Z2XA4KwmpdoZJ1Ms7cYMsi0KTSDzo=;
+ b=1428zkz/qbjCrj0FCKFjXiMJsrbXuHNJY6nNdoljhz8yTmYn29SAuUvM5jtkSPmYQm
+ lNF4cXPQ3UA4ug1aPAbACP6KV+SzvS+SuqpmnNHfX82qkCYzwIHx2Fr1gmhWLSoPjnRj
+ ZcJ6CT+0L9z9ivXFSX0IpDwf8bkDhtqDgnNmgB299tYnoxpRqXE4kOUR/bUcnrBeAzbr
+ M29eupwQjnWmc8UA14ikAfIWPXuCijG7XNmv0CdtRCGVzpA8yNrFmXYLuzWld4w2lYtr
+ uh1TBV/KoS6CGN92aBWQ8G2xscIrTLvNY5mp2JoiaVibZ3XgXhlggWEBBQ0rRS1ehsN/
+ NCZw==
+X-Gm-Message-State: AOAM532OvYXdqNiDgFeu0lBmS+qJ3L74TwmCL2DQjwHV9sF+DLAHgzTH
+ S9HeQWkzwumP6Cm+y74H+s/HwmgIrX7o/CtzdHrl8CkBhZ0=
+X-Google-Smtp-Source: ABdhPJyYCNTsxl0HvixDf2KeW6VzQrseg8hlkG6g8MWIuVh9dNvjHkxylHYh+IL/wfHgdfrMpYH05bdXWwtF7s1p1yY=
+X-Received: by 2002:a02:270c:: with SMTP id g12mr18464820jaa.75.1635317332105; 
+ Tue, 26 Oct 2021 23:48:52 -0700 (PDT)
 MIME-Version: 1.0
 References: <20211026184239.151156-1-krisman@collabora.com>
- <20211026184239.151156-5-krisman@collabora.com>
-In-Reply-To: <20211026184239.151156-5-krisman@collabora.com>
+ <20211026184239.151156-6-krisman@collabora.com>
+In-Reply-To: <20211026184239.151156-6-krisman@collabora.com>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 27 Oct 2021 09:43:43 +0300
-Message-ID: <CAOQ4uxgtkV7kF-YoWH4mau-p2U6bwLb1ajHXmVV1hwoDVpEDTQ@mail.gmail.com>
+Date: Wed, 27 Oct 2021 09:48:41 +0300
+Message-ID: <CAOQ4uxj2b5ckh8VS19ALzU8rjuv0svJg7amCz2j1Cyemi3B+Ww@mail.gmail.com>
 To: Gabriel Krisman Bertazi <krisman@collabora.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 04/10] syscalls/fanotify20: Validate the
- generic error info
+Subject: Re: [LTP] [PATCH v2 05/10] syscalls/fanotify20: Validate incoming
+ FID in FAN_FS_ERROR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,152 +90,153 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 On Tue, Oct 26, 2021 at 9:43 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Implement some validation for the generic error info record emitted by
-> the kernel.  The error number is fs-specific but, well, we only support
-> ext4 for now anyway.
+> Verify the FID provided in the event.  If the FH has size 0, this is
+> assumed to be a superblock error (i.e. null FH).
 >
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-
-After fixing and testing configure.ac you may add:
 
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
+Except maybe move define of FILEID_INVALID to header.
+
+>
 > ---
 > Changes since v1:
 >   - Move defines to header file.
+>   - Use 0-len FH for sb error
 > ---
->  testcases/kernel/syscalls/fanotify/fanotify.h | 32 +++++++++++++++++
->  .../kernel/syscalls/fanotify/fanotify20.c     | 35 ++++++++++++++++++-
->  2 files changed, 66 insertions(+), 1 deletion(-)
+>  testcases/kernel/syscalls/fanotify/fanotify.h |  4 ++
+>  .../kernel/syscalls/fanotify/fanotify20.c     | 63 +++++++++++++++++++
+>  2 files changed, 67 insertions(+)
 >
 > diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> index 8828b53532a2..58e30aaf00bc 100644
+> index 58e30aaf00bc..9bff3cf1a3fe 100644
 > --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 > +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -167,6 +167,9 @@ typedef struct {
->  #ifndef FAN_EVENT_INFO_TYPE_DFID
->  #define FAN_EVENT_INFO_TYPE_DFID       3
->  #endif
-> +#ifndef FAN_EVENT_INFO_TYPE_ERROR
-> +#define FAN_EVENT_INFO_TYPE_ERROR      5
-> +#endif
+> @@ -435,4 +435,8 @@ struct fanotify_event_info_header *get_event_info(
+>         ((struct fanotify_event_info_error *)                           \
+>          get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
 >
->  #ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
->  struct fanotify_event_info_header {
-> @@ -184,6 +187,14 @@ struct fanotify_event_info_fid {
->  };
->  #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
->
-> +#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR
-> +struct fanotify_event_info_error {
-> +       struct fanotify_event_info_header hdr;
-> +       __s32 error;
-> +       __u32 error_count;
-> +};
-> +#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR */
-
-Need to add in configure.ac:
-
-AC_CHECK_TYPES([struct fanotify_event_info_error, struct
-fanotify_event_info_header],,,[#include <sys/fanotify.h>])
-
-(not tested)
-
-> +
->  /* NOTE: only for struct fanotify_event_info_fid */
->  #ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
->  # define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
-> @@ -403,4 +414,25 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
->                 fanotify_events_supported_by_kernel(mask, init_flags, mark_type)); \
->  } while (0)
->
-> +struct fanotify_event_info_header *get_event_info(
-> +                                       struct fanotify_event_metadata *event,
-> +                                       int info_type)
-> +{
-> +       struct fanotify_event_info_header *hdr = NULL;
-> +       char *start = (char *) event;
-> +       int off;
-> +
-> +       for (off = event->metadata_len; (off+sizeof(*hdr)) < event->event_len;
-> +            off += hdr->len) {
-> +               hdr = (struct fanotify_event_info_header *) &(start[off]);
-> +               if (hdr->info_type == info_type)
-> +                       return hdr;
-> +       }
-> +       return NULL;
-> +}
-> +
-> +#define get_event_info_error(event)                                    \
-> +       ((struct fanotify_event_info_error *)                           \
-> +        get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
+> +#define get_event_info_fid(event)                                      \
+> +       ((struct fanotify_event_info_fid *)                             \
+> +        get_event_info((event), FAN_EVENT_INFO_TYPE_FID))
 > +
 >  #endif /* __FANOTIFY_H__ */
 > diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> index 7a522aad4386..6074d449ae63 100644
+> index 6074d449ae63..220cd51419e8 100644
 > --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
 > +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> @@ -42,10 +42,32 @@ int fd_notify;
+> @@ -34,20 +34,61 @@
+>  #ifdef HAVE_SYS_FANOTIFY_H
+>  #include "fanotify.h"
 >
+> +#ifndef FILEID_INVALID
+> +#define        FILEID_INVALID          0xff
+> +#endif
+> +
+>  #define BUF_SIZE 256
+>  static char event_buf[BUF_SIZE];
+>  int fd_notify;
+>
+>  #define MOUNT_PATH "test_mnt"
+>
+> +/* These expected FIDs are common to multiple tests */
+> +static struct fanotify_fid_t null_fid;
+> +
 >  static struct test_case {
 >         char *name;
-> +       int error;
-> +       unsigned int error_count;
+>         int error;
+>         unsigned int error_count;
+> +       struct fanotify_fid_t *fid;
 >         void (*trigger_error)(void);
 >  } testcases[] = {
 >  };
 >
-> +int check_error_event_info_error(struct fanotify_event_info_error *info_error,
+> +int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
 > +                                const struct test_case *ex)
 > +{
-> +       int fail = 0;
+> +       struct file_handle *fh = (struct file_handle *) &fid->handle;
 > +
-> +       if (info_error->error_count != ex->error_count) {
-> +               tst_res(TFAIL, "%s: Unexpected error_count (%d!=%d)",
-> +                       ex->name, info_error->error_count, ex->error_count);
-> +               fail++;
+> +       if (memcmp(&fid->fsid, &ex->fid->fsid, sizeof(fid->fsid))) {
+> +               tst_res(TFAIL, "%s: Received bad FSID type (%x...!=%x...)",
+> +                       ex->name, FSID_VAL_MEMBER(fid->fsid, 0),
+> +                       FSID_VAL_MEMBER(ex->fid->fsid, 0));
+> +
+> +               return 1;
+> +       }
+> +       if (fh->handle_type != ex->fid->handle.handle_type) {
+> +               tst_res(TFAIL, "%s: Received bad file_handle type (%d!=%d)",
+> +                       ex->name, fh->handle_type, ex->fid->handle.handle_type);
+> +               return 1;
 > +       }
 > +
-> +       if (info_error->error != ex->error) {
-> +               tst_res(TFAIL, "%s: Unexpected error code value (%d!=%d)",
-> +                       ex->name, info_error->error, ex->error);
-> +               fail++;
+> +       if (fh->handle_bytes != ex->fid->handle.handle_bytes) {
+> +               tst_res(TFAIL, "%s: Received bad file_handle len (%d!=%d)",
+> +                       ex->name, fh->handle_bytes, ex->fid->handle.handle_bytes);
+> +               return 1;
 > +       }
 > +
-> +       return fail;
+> +       if (memcmp(fh->f_handle, ex->fid->handle.f_handle, fh->handle_bytes)) {
+> +               tst_res(TFAIL, "%s: Received wrong handle. "
+> +                       "Expected (%x...) got (%x...) ", ex->name,
+> +                       *(int*)ex->fid->handle.f_handle, *(int*)fh->f_handle);
+> +               return 1;
+> +       }
+> +       return 0;
 > +}
 > +
->  int check_error_event_metadata(struct fanotify_event_metadata *event)
+>  int check_error_event_info_error(struct fanotify_event_info_error *info_error,
+>                                  const struct test_case *ex)
 >  {
->         int fail = 0;
-> @@ -68,6 +90,8 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
->  {
+> @@ -91,6 +132,7 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
 >         struct fanotify_event_metadata *event =
 >                 (struct fanotify_event_metadata *) buf;
-> +       struct fanotify_event_info_error *info_error;
-> +       int fail = 0;
+>         struct fanotify_event_info_error *info_error;
+> +       struct fanotify_event_info_fid *info_fid;
+>         int fail = 0;
 >
 >         if (len < FAN_EVENT_METADATA_LEN) {
->                 tst_res(TFAIL, "No event metadata found");
-> @@ -77,7 +101,16 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
->         if (check_error_event_metadata(event))
->                 return;
+> @@ -109,6 +151,14 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
+>                 fail++;
+>         }
 >
-> -       tst_res(TPASS, "Successfully received: %s", ex->name);
-> +       info_error = get_event_info_error(event);
-> +       if (info_error)
-> +               fail += check_error_event_info_error(info_error, ex);
+> +       info_fid = get_event_info_fid(event);
+> +       if (info_fid)
+> +               fail += check_error_event_info_fid(info_fid, ex);
 > +       else {
-> +               tst_res(TFAIL, "Generic error record not found");
+> +               tst_res(TFAIL, "FID record not found");
 > +               fail++;
 > +       }
 > +
-> +       if (!fail)
-> +               tst_res(TPASS, "Successfully received: %s", ex->name);
+>         if (!fail)
+>                 tst_res(TPASS, "Successfully received: %s", ex->name);
+>  }
+> @@ -125,12 +175,25 @@ static void do_test(unsigned int i)
+>         check_event(event_buf, read_len, tcase);
 >  }
 >
->  static void do_test(unsigned int i)
+> +static void init_null_fid(void)
+> +{
+> +       /* Use fanotify_save_fid to fill the fsid and overwrite the
+> +        * file_handler to create a null_fid
+> +        */
+> +       fanotify_save_fid(MOUNT_PATH, &null_fid);
+> +
+> +       null_fid.handle.handle_type = FILEID_INVALID;
+> +       null_fid.handle.handle_bytes = 0;
+> +}
+> +
+>  static void setup(void)
+>  {
+>         REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_NOTIF|FAN_REPORT_FID,
+>                                                 FAN_MARK_FILESYSTEM,
+>                                                 FAN_FS_ERROR, ".");
+>
+> +       init_null_fid();
+> +
+>         fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF|FAN_REPORT_FID,
+>                                        O_RDONLY);
+>
 > --
 > 2.33.0
 >
