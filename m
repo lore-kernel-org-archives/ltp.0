@@ -2,84 +2,84 @@ Return-Path: <SRS0=gHvU=PP=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0E3C433F5
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 02:52:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D060FC433EF
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 02:54:50 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B080610A1
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 02:52:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0B080610A1
+	by mail.kernel.org (Postfix) with ESMTPS id 2268161002
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 02:54:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2268161002
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C0F0B3C6873
-	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 04:52:44 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 96B863C68E5
+	for <ltp@archiver.kernel.org>; Wed, 27 Oct 2021 04:54:48 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA6553C6730
- for <ltp@lists.linux.it>; Wed, 27 Oct 2021 04:52:34 +0200 (CEST)
-Received: from esa18.fujitsucc.c3s2.iphmx.com (esa18.fujitsucc.c3s2.iphmx.com
- [216.71.158.38])
+ by picard.linux.it (Postfix) with ESMTPS id 5AE093C63A2
+ for <ltp@lists.linux.it>; Wed, 27 Oct 2021 04:54:37 +0200 (CEST)
+Received: from esa4.fujitsucc.c3s2.iphmx.com (esa4.fujitsucc.c3s2.iphmx.com
+ [68.232.151.214])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DB17E140026F
- for <ltp@lists.linux.it>; Wed, 27 Oct 2021 04:52:33 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5C5EB10016F4
+ for <ltp@lists.linux.it>; Wed, 27 Oct 2021 04:54:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1635303155; x=1666839155;
+ t=1635303276; x=1666839276;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=LJV7znzi9xdmWvGLbK7ATCOm2Vr5usDv6+fez1iWUwA=;
- b=mnvPAuFgzBwHxwD5iVoCbzuQFJIuzr0UF69hZhdIv6DL/4+b9qoKcI3N
- dAPipVobh+r7z3KSV+C9pGI2Gqu7nZdW2Xo78knA0aMD6s5iHJv0wfR8m
- 3vCN5RipeMyzc878mmy0LSzD7H8sTBxv06SbM5XDPAzPrZdKCHKdTTW6x
- 0GiIT9N0LVDzsM16e/QIcHn6hGzgxkZhXnmCYbSsGnMQgQzACKpjrKawt
- VMSFzUbB6jhJr0mOe0otKWDLph/hL9rmHGSh3Ltibelq8J7IyW/JdrBT6
- oapwaw4me+r9qmFOlX1We+KRgUaI4emiuW14/WcksOy6dpv0QSxfnyytQ Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="43025170"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631545200"; d="scan'208";a="43025170"
-Received: from mail-ty1jpn01lp2052.outbound.protection.outlook.com (HELO
- JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.52])
+ bh=UZ6+1lmnAbeHV5ktVW0+Q5rrumPXM3nQlF0lBY8SIpQ=;
+ b=raUdwNHyV9lMV4ZmRwSOfKdzXx5e/6G1BJbp0o2HNIYAkSYO0mFZPXro
+ iV4xE9zfLi0b+Z0lpxYEtmYFYOaJ+Zcco2zcUqL/WfF7za978CmHApWq+
+ rvBb5T9q2Jf/b9naerMg1LX9pUGzPmSZJ8fDHGA+83yWgu6G46l+zBD3h
+ 0UfG5Ts/ic1jyAmCf7ShubbwlVKctC3nOScUfyoFAVwueANSTtYikg4Ct
+ mFzXYiJoxGT9w26PKDIjDRVSKJMRL4bT0POeqYgZWT+W9XSx0XcGuxmZp
+ D497AbfP401JCE2AKMreJF/wyKbBmxbH+9SyPkcHKQRuT8Q5fKq1osSSx g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="50191197"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631545200"; d="scan'208";a="50191197"
+Received: from mail-os2jpn01lp2052.outbound.protection.outlook.com (HELO
+ JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.52])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2021 11:52:33 +0900
+ 27 Oct 2021 11:54:33 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/6EQVr7QUYJCBAKXXBlwTk04nlQm+GMTscP+rZvVjnhvAVO98G3pFKC89Ug8su7Ue1FujD98Zf839+DSnvF656eCKPsbKEo3bcMp6gUCVY9woEtMTYC/vTrpd2Euzf8y8UyRrAHdteeFyJDCe40yhWvwW2I+zHuuAYavaFscZvhoyzvFtsAwopAAR6EEqPdhgtsBBTl9+Cz0zKSDb/m+XlYfP/9ruKzeUD57I2t8n0dt2/xpc0u270x8xW1DNMpcBItyBpVIWq1lTbak8v146f4IaUkwi1K7XL3bbm6gsLuTIsDY+OXlKel0as648f742WufLNrBWgLujrqm84ncw==
+ b=QUcbwlWkZpLTsuwNqAQmWNKR/IojBZWUQSIRncFg/jQqzHk+MNL3TVGgXDR9e7+wMZ4XG6XiAZEUN5dnQ8GlOjRXWT0Fgf8QAcoMMntqIXYOfdLX3hJGEB8wqpS13rEFhYnejuzrpmWtNk7eZfjtpxemqPOr35XLpAvfzzq7oX1z6SwefG9MS8neWKZOwUx9CoGvEnnXz7JkRoCJD1l4XjT6zqHymDcpf3605mX2NF1yH/otSmEzkFQhr/4iybtKw1hhEPfNPTVE23nnlgqbIy3TDQVaSvIrCQq6O/JClLD/li3T+eBcPO5gUoOlQbCb7BUTpenmUKXGre4N9gtpDg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LJV7znzi9xdmWvGLbK7ATCOm2Vr5usDv6+fez1iWUwA=;
- b=mbBy8SDHxACCdJXITGmJnktj6Iok5BrgEaWNpN+rN4r6/Ka/vQ56PA/DkNnLGxpc2Jo9i7OwIdum6WOQH3179l7WmNnd+wa8nfvv0JGJuIwpIfKFJZWNq6//8rVjXJ9+tbw8tw4k3qACzAFi4lbOhW9u+kufyoo0Dio6VUAPLFR7exBpE6LBjb+HGJz1gMwYiY0G8KZ0uH4zZtcOIqYoJhmGbcNCODQKXNMXLI/1fy7YYBdwCD1Vn/svvcb1vej4K6/H7B5DLMxf6YwGLCsmd8n/fskNKAgfMY7Lnc+gD+ihdQwZOOIF47wd6NO8W33ooo8tPh7Ijj6CE5VUWrOOrw==
+ bh=UZ6+1lmnAbeHV5ktVW0+Q5rrumPXM3nQlF0lBY8SIpQ=;
+ b=mHkoZzA77oxBo0UL+bJn5fDJ70w1KagBSBhIEMQliKgSMRo9eFhSnVCae+dZN9/eIZfHLUxPvatRp2mFYcBd/0zlbjv3CbWgcXGcxkcWLhS5aXEZ7OPJVvHMKgOBreaYX0KJ9kG6h1jn27DWAQaIQiCwwuI1EBTLSXfDB497eLDQ4MPvA77PfjWy/ae94C/F7/TpVQIypawsYgJQnTDfOZ7Q7RzDnt/G2hw/Wf5X4/tKb3fI9tj5Kq/PjAlh0nMXNgZ7wUfbFU9/8+e1Gy5Gc3q4W6uoNuChEKMkg7NYE5occ4Uu9Ek8ko2FfTSg6kkvIla/7CkkTqVpWvQsrNseAQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LJV7znzi9xdmWvGLbK7ATCOm2Vr5usDv6+fez1iWUwA=;
- b=W1Q/vdvL4QY322xbzlW402mVXzezGoCFyB8V+n+i/sOLuFTUWRAuQOBfI2G7Op2CWofonEf9hOQHJrvsssRMf1VMXXpq9oeJ+BmFCmtaGyggLekjCdZogLVxe+SM0muOoZeD1iGhz1W9gNlz7J+R8k2fTr6DgI5Vlp8ELsfnYRI=
+ bh=UZ6+1lmnAbeHV5ktVW0+Q5rrumPXM3nQlF0lBY8SIpQ=;
+ b=mCrYkPRrpWr86SQD0t96z0u6GehnrN3jx62r5IsYytMPFmz30vKAcXRspu+p/zutyFe5yuF3314+VC6M6ZyfPNtBkfJKLHSXRTMOiSCYvodgwP1Gi9dgHSbIRKHlHzEU1YsM+5J7UbkeKjYoc+sDTcE679T5M/XrYLjuZv1j99Y=
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TYCPR01MB6737.jpnprd01.prod.outlook.com (2603:1096:400:b0::12) with
+ by TYAPR01MB6538.jpnprd01.prod.outlook.com (2603:1096:400:a2::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
- 2021 02:52:29 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Wed, 27 Oct
+ 2021 02:54:30 +0000
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::35a5:c639:9f43:ee9]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::35a5:c639:9f43:ee9%7]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 02:52:29 +0000
+ 02:54:30 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
 To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [PATCH v1 03/11] syscalls/quotactl04: Remove useless
- quotactl mount options
-Thread-Index: AQHXxCGGe+SkXKK+2U2OEP6F+5/X2avlXCuAgADW84A=
-Date: Wed, 27 Oct 2021 02:52:29 +0000
-Message-ID: <6178BEF1.8060509@fujitsu.com>
+Thread-Topic: [LTP] [PATCH v1 04/11] syscalls/quotactl[3, 5, 7]: Add docparse
+ formatting
+Thread-Index: AQHXynJmLhQoQ169aUuVMcsZZoCHbKvmJwuA
+Date: Wed, 27 Oct 2021 02:54:30 +0000
+Message-ID: <6178BF69.4040202@fujitsu.com>
 References: <1634562591-5830-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1634562591-5830-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <YXgKoQ72mqFN6uD3@yuki>
-In-Reply-To: <YXgKoQ72mqFN6uD3@yuki>
+ <1634562591-5830-4-git-send-email-xuyang2018.jy@fujitsu.com>
+ <YXgLHulsUiCRQmXE@yuki>
+In-Reply-To: <YXgLHulsUiCRQmXE@yuki>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -87,73 +87,73 @@ X-MS-TNEF-Correlator:
 authentication-results: suse.cz; dkim=none (message not signed)
  header.d=none;suse.cz; dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9cbe6237-7028-4c9b-5e19-08d998f4d0ce
-x-ms-traffictypediagnostic: TYCPR01MB6737:
-x-microsoft-antispam-prvs: <TYCPR01MB6737710B4C43324A83043614FD859@TYCPR01MB6737.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:660;
+x-ms-office365-filtering-correlation-id: 37721047-2ab4-4633-bc54-08d998f518e2
+x-ms-traffictypediagnostic: TYAPR01MB6538:
+x-microsoft-antispam-prvs: <TYAPR01MB6538D426AAF4069BBA63EA2BFD859@TYAPR01MB6538.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1091;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dWiVaeUM6YFnVd4XJGqnHUTd3T2qHoF7qM246a43UqPsDEVagZ4x4wGKdnoXtZZeWPkINWx/YMJIIy7WoOkwIF0rf4oEVGcro9VSuO1rRHDl+vqtl+x5VpeKX3BkBF+4IFK6/r4i+DKD8jI/SLQjfUfmL9GQOtsG3kvuPi32zUT5QMZLB/6wu3FLphUglnzB8tzL0BwXVaLbPPNRYv8zsXXojeAU4iv1nZoP1QWL3HJa65THi0YCcxxj2QW5SR8So2xNsPbR6DOUyRkbVbgIGq3EL7KTu27OPhgfGonIbdje7giBrWo8MSxl+NvZFZ6IgObr01hnxJIGkFMeqbNz2nCmYhkx9mHTYWvDOLd4OLMtfWsGU8GBhTQFvNGjEnr9KvwWj0IxUabSS/GNyXBMI8F32PZQL+9Up1jrBPs+K+dRGyrKa04CdhPB8UVXpIAevEp6+PdK6b84ek4tyOgsfZi5kRdvXvUIKQW5K3/iVIJehCxg3dM5VhPskbTE1R8Kx3ssY31USHRgQae5BURY21MhkatyCp082jFH0Gct/OVzBik0jPrqzHcOGwxNM2rNHO5O9gpDNSkzyF2Qlnb/vPjvktMwJlNY0bWSBATgkGtw5LN1gB+4akBgB3uyyJ8zWDogwtm/gzwjs2wT5LzS1eEA8iJCHJpBPlvFVi0RLTeOTSNUAyY0TD4ZZiADT4oXCdQyt6u7B9E+LC9rU1npxQ9OMJz2LdnbQSB1QrZjolwMDHqXWSJWAxPPpaMOKJgyr9cJxyE+SxDsJzkU7JkBjquXezjeMLb2R4+U2R/qs5GycTL+hwSKmgDbLj9QN488gb8mW3urN4cDHlaeC+TL/w==
+x-microsoft-antispam-message-info: 9/fcfKZ9j78lo7EkMEMPojeF/4qJmbtWRgC03e9k2lQHCaaE3oEXZ1YmO6Hsf825dNC6/hgmhGFb35aYNQ7MZb2j4gVbLB8xz1cgf3Cy1Gxz7T6l8g9ErSY75H7IzcYcFe3toSRHBA1HaPhQRzfnnqwJaoNccjtFh+1iFbB+gxcaQEfb6RsvYvRPG2NSj/N4e0y1vtjYGJjPJ5LyVBvwpqb2+pSmEd77/FLcZsbn1Ag5neel7brCj6uTguwT5DqUTmOg4JtxRuRa+arKAzBrqUSgGwyUJW7IlueHqfLnP8UtJPitqELuUqJlKnSSanAyHM8sdsBRK4zw9Ah0rRsmsJsx0RsZ8meVvxE2UQqeCaOji+TFqcHbinmsXN71pScxN0jTBGgChfC2P1Yo/tbgbjsbuIm9jdpYDoWhnVXSa0cOdxVLMmpsT7NEP5sQB5YYj4VfmGeS49UxHGJ4fb/RY/iHZvaIMCM3cAJctSlvkx7A982mJcXM/Ce7TulgAVxkSY8ftr/52FHBhY2hmsfq955dKto785vsqLHwLSvnPCjUFapPo0h7Sv8tOFEwxULUJqQCOzVaFG0Bq+S4VYqJY3OwPAuvWK8nWjq5rDg7IGipYrWDSoToo4PSxSfuz0e+UbQZ+UOJRMDFlXY8ZCyxgQXMvLhozlDK7Ih+ne343mq//smpEHk9qzW/8KwRPae49bmalMvaZ2S06KvGR17VPh4YrNCPrgkTs0jP6uzWKdwzG9Yq6NOQvtw/I7Z0/O6ooD+yTKoFBOSE8ZasyUnTprgJn3WRQDJsjIqzgQDGeBA=
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(26005)(36756003)(6916009)(2616005)(85182001)(15650500001)(186003)(6486002)(8676002)(38070700005)(33656002)(38100700002)(6512007)(71200400001)(8936002)(2906002)(4326008)(86362001)(83380400001)(82960400001)(87266011)(91956017)(76116006)(66946007)(66476007)(122000001)(6506007)(66556008)(66446008)(508600001)(966005)(5660300002)(64756008)(316002);
+ SFS:(4636009)(366004)(122000001)(2906002)(71200400001)(26005)(38100700002)(38070700005)(8676002)(2616005)(186003)(508600001)(6486002)(966005)(87266011)(6506007)(82960400001)(316002)(66476007)(15650500001)(6916009)(36756003)(85182001)(64756008)(6512007)(86362001)(66556008)(66446008)(66946007)(33656002)(91956017)(5660300002)(76116006)(83380400001)(4326008)(8936002);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?eVBabU5wcjVrakJqNElaYlhDLzJxZUcrSG5paDlVWW5zN1h2ekVGUzQ3ZVNo?=
- =?gb2312?B?Vk0xbmdYR3dUMEVNYWl5NWNGb1YzWkRMbkcyZEhMTThmZWJjMzdYbWJZYkxI?=
- =?gb2312?B?bk80aDUvQWhTQmZ2aTVIQnNpMnRSRllZWVJBU2hMdEVwbDM0aDNUZFhGVCt2?=
- =?gb2312?B?aWU4cjdXeTQ2K3V6UXpaQlhSUkRyWnF3UDlwYTRQQmFwbVZlZGVPdmhycW9F?=
- =?gb2312?B?TkpMTFF5Z2oyVGhaTGRPa3pXNUVUZG9ZTG5IclhXRzVISkl3RDJXWExRbUpF?=
- =?gb2312?B?TStYUzVJUmorNW14TWZ6SE8xSnhNaUFnQUpCd09TSFZPTGhIbXJDTVR3eTk5?=
- =?gb2312?B?QkgxUnE2cjU0N3d0ZjVyWUFkMjJtOFI2dEV5ZmlSUzJnYXdVR2RIWk9kRmxE?=
- =?gb2312?B?Q3dkY0ErZHZSbEVWaHUyeXdlbEdNK1RRQmd3WDh0cDlzRDRiUGN5TGRhT2Fx?=
- =?gb2312?B?VzUvdHBwV1pmdUU0Wjg1WWZVaU5yK3EwMXZxRXd4dVhzWko1aCtwbmNRUGdQ?=
- =?gb2312?B?TFFKeitlRkFUQjlWWkNqaWgwSDFGb0xuR3owaGRIT3pmaXVjdnp6Y0txai9F?=
- =?gb2312?B?V0RVdSt5LzJzMUlMQkhMSVNuKytjV3dvN2V0Mk9UM3hvZnNBVFhHNFp0VDVI?=
- =?gb2312?B?MTFkWjE1M3dLMEdzRDQrbWFXeHJlUmpNVGNHczM4UTVDTHhMTVJIdmh0cnJ3?=
- =?gb2312?B?TU4xV2lmWjcwNHFLNGxveWdENmQza1pDSlN2ZDRtUFNHMVlUTWI5THZUWmkz?=
- =?gb2312?B?NmlyWVk0eW5uTVRBc2JsUzFiYkRjOWx5anlDQmFDTWo0enRDV3QvZlp0WFRm?=
- =?gb2312?B?Z00zRVkzY2srYTVBeVg2NWhaY0pTRmQ5aWJsalZSSDlNWHZVSlgxYWs1Wm9D?=
- =?gb2312?B?TEhKU2ZxNXBxWHVaT05lOFI1SVhtek1uTTRJZEIyTU8rTVVaUWVMMjFhK0Vn?=
- =?gb2312?B?SUVMQ0o1OUNkbEJHSWJ2enVhTWs5dVJQODJpZEc4S01icVhqcGZOWjA1ZWVw?=
- =?gb2312?B?QUVyV3IyMll1SW1acWYyYmpSZW91MnJCWXVpekdpams2WmdqOHZjQ01LcEFM?=
- =?gb2312?B?VkRwbXZmRWRWTUVsN3Y5NWZFVXkvR0pwT0N3V2tnOHcxTkJDR012T0FXR3pP?=
- =?gb2312?B?aFpPVWxNZ3krNlpxY3UvQkhFNDhrYnVteDg0KzFHUHdXNHd0a01CYjQwSXZS?=
- =?gb2312?B?c2FxbXdiTVlBS2pPbzl5OVlqaGRQY3dOTDJYZHJwVzJOMUdNQVpoSEpDcTZp?=
- =?gb2312?B?M3hwaHE3K2VaRVRHUEgvbGlXQlNjbGdsVEJpaFV2Y2Z5VFpjV2t0NkZHQnVx?=
- =?gb2312?B?c0M0Qng2TUxNUVJsM2RKc09WVG9aeVJJb0x1cHcwZVhPN2lEa3RqU0FjNTRz?=
- =?gb2312?B?Z1d4aDZPUTVXVzlxQXloMENSTFRGdWdvaFBiaUwzZEt5QVhoSWJQeHFXZEd0?=
- =?gb2312?B?OHB0VzVZNk5taTZLckdJYkREWGs1bXZ6S2FSd29NLzZBdnNhSFNwOHQxNmhX?=
- =?gb2312?B?RWlUcTNsQ2VTTWF5d2Y1YzlyWU05RHpvQlpuVkUrbFIyNXQ1aFNDMDJ0R3ky?=
- =?gb2312?B?U3pFeEhTUXg0dGJKUlYwNHl6Y3dBNUNiMFVSNDFjWTRQa2x1dVcxWkgvTlNJ?=
- =?gb2312?B?ZDJMc09zQzhrVyt0UWpmNmtvODc2WlVVdVZuQUdraGZlSFhNZnEyNlNzdEhZ?=
- =?gb2312?B?V0Z3aFhQblZJeEZSOEJuSGNqdkxCTGszMjZWR1ArZXhqTGpMd2FPSm9tbW94?=
- =?gb2312?B?V0xiZXdYVnVSbjZEc0VIZjQ5NXI5UkYvWkNIVW1sQ3FDbTRhanpEUlRDeUdu?=
- =?gb2312?B?NVRvcDJNbGVhTTUyY0VZbFc2UEJFZ09mQ1FOS2lwNFU0MlNTN2dqZFBLODJW?=
- =?gb2312?B?blRNMVBkd3NNLzdJVG1zb0tObEpYOUcvWmNxa3U4ZnBGSkR2LzU4Qjg3dStC?=
- =?gb2312?B?V3laNzNYalRrTzU1UmFjRkFyZU9YNTBDaXJvV1ppZzY3OCtjdG5BcmZCeDRJ?=
- =?gb2312?B?Rm9QeGc2aXpYNnQ3U0d5Tyt2UjNUOW9RWHhKVDFxVlAyYWN1RllCM0ZUS0dq?=
- =?gb2312?B?SUs0cGQvbFZiamptU0RKYkFlRFI4bDA4ZEh4TEp6M1JGM05ZWkhHNVkyV0x3?=
- =?gb2312?B?Umdoa0V6aXdISDJKMFNac29wSmZPbUc0eFNhL2x4d2NmSmd5L3JKdkl2VU1H?=
- =?gb2312?B?bUcxR1orQ3U0Qkk2Rms3emYrMnhsTWhFbjRyWHQxZmJScE1IU3hCOVJYVFNL?=
- =?gb2312?Q?29a9CaYKhVZit3lv6JutcGlGlX5Jj/ITdSLsUcL3Po=3D?=
-Content-ID: <061CFDEED1AB6244BE33AB80F9061830@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?RFVWQnFKRFYxNVhKUXNqMi9sajRubEpGdHNZT1pXTkdKS09IcUN2QmdvcGtq?=
+ =?gb2312?B?N284SEN6OFIyZ2prTGRoZkFtMldyd1B2Y0ZZWmJmSTZnYXlWcW1VZ2o3WlpI?=
+ =?gb2312?B?amJKN3lXMUxIc1N5N0RqNnp5Zi9XeHVtMEplWklZeFB2Y3pOVFNNMm5NNE1V?=
+ =?gb2312?B?czQ3QlN4aHEvL0xPSUh5K0RrSXBHWDloamlXRzlQWERlbktCRXFnb0QrNXVp?=
+ =?gb2312?B?SmwzRDA0dnJVUjNhNFllR0pPK1UzTTRORlZhV1htM0s0T3hMMUtVd0hNNlNT?=
+ =?gb2312?B?MS93Q0czb1A4R3FDR21DbnlRVkVMZFpmNkhJd3U1L29KQUk5ZHlDcXV4WkFp?=
+ =?gb2312?B?c1BZTFoxK3ZsaWJQSURUaVRZNTNIVWNNM2MvN21NN2JnUEFRT3h3R0kwcThV?=
+ =?gb2312?B?TFFodjQzOGZTZWFwOUhkTHNpRU5ZR1FtbEFKdjJ6QzB6RG8yTjdsdlVHa3Vi?=
+ =?gb2312?B?c3FZS3BpWGxxbHhzN1NNaTE4NGZzc3pSWm9wSGc1bmMrb2I3SDJ2QlAwaG1C?=
+ =?gb2312?B?QytTcGcrend2anZZQng1aDYwRUVYUkM0Y09XM1FjQTRTUFlmWHcvN0VVdFd2?=
+ =?gb2312?B?dlhnMHJZUForblVGVVRIeHlwUkZDWHR1L2JiTjUzUFgrRHQ4MHZXQzlaN0xI?=
+ =?gb2312?B?bEdpZnlLUUVXaFBxSXNFY2liMFYrSTVJaTNnZGtxZUdDclFCemE1aHFaOTkv?=
+ =?gb2312?B?MkZEL2pHaHRpWlpVbnpKdm1iTk11SkZwaU12ZU55ZGdRZ2JwSEF0dXhUL2w3?=
+ =?gb2312?B?WktXME84UC9ic0tMZGFKTEFtMjVqbnlGV2RWRXJDR2xiR01qUzBwM3NZVTFt?=
+ =?gb2312?B?RkZFN2dyeWhjdTV3YW5PNWVVb2RvYmR4cmxGY1dmRGRTN0FGa3NILytmSm1I?=
+ =?gb2312?B?UEdxZEo2RGNiTXhUK2U4eUR1UXJQNzQ1TE5LMnlmNDRuSEF6dXd0YTFqV1hR?=
+ =?gb2312?B?NGFET3dHc255MlVHdnFKLzdXak5MOTZBUTVleXk2TlVMbnFLZWt6RHU4MXhP?=
+ =?gb2312?B?ODZCQ3FqMkcvYXp2bFIxTDRwOWlVL2dHdzBoOWpHek1yeVp6MzhCb1VxbUhE?=
+ =?gb2312?B?YXdob3Q1WC9Qd2NveVNja3l5cjVoMFY0RDJaRGNvcjFYUjF6bkJYa0hJSWNW?=
+ =?gb2312?B?UVlNd1hjeFIraGlsWlFQd2Y5b1M0V2c3V09xYW1ROEoxb2ZlK2J6SEUvM2Fo?=
+ =?gb2312?B?Rm1xZHJDT2dMUGhoUGg2Q2g0VEpUK1NRSGtFMGVIZDgxVHhQeERpdjNqNTRX?=
+ =?gb2312?B?Qmp6YWZlVXdOWTZZbFdkaGJMTDJ4cDB3SmxkMlZveWgzTXFUN3VOa1JVY0lJ?=
+ =?gb2312?B?MEpaSDZNM0FrTkdKYzJ2SjdlK3krZDI3RnVRZ1diL2c5ek0rY1hRaHF0UDJK?=
+ =?gb2312?B?WlVlc3RVMEZaWm5Gci93eE1FRGVYVFhYVEtiTXBJWUdMY3hIVlFBUXEwVTc5?=
+ =?gb2312?B?d0M3RjBoSS9XZG5taCtTNm5lNzVXTStyTXZmZlBtdnZUTEVIdENuZk9OWnpN?=
+ =?gb2312?B?QWhRZWdGZUs3eWJuTE5LVDJYR012Y3VlZ1pzS2xQTmoxSFRNKzFhZ1J0VjFv?=
+ =?gb2312?B?K2xlU2M5MWpuTlJrWVRWYWhXd2tMR0dydHJnOGNWck5IdDF1R2N6MUR4OFR5?=
+ =?gb2312?B?UmJvRWpQdWpkNVg1TkZNR3YraEZTTjE5N3MxZ0R6N1YyTU9IUkI5VHArbUNT?=
+ =?gb2312?B?NXdBZ2htT3k5MmxwYzczVm8vYnNETjhiM0VhQ2N5Ky9OQmFZZFlhRlR1K3Yv?=
+ =?gb2312?B?WjVQeUMrN2FDT3dmN0FtZVJzM20ycmE0em8rMlA0aDdrSDZTVnZCdXdsb3hC?=
+ =?gb2312?B?T3lMTVNCNkY1VTROaFpnWWRhbSs5Tm1XKy9hcGdRRW9TZ24vM05VNUwwN1Np?=
+ =?gb2312?B?Z3ZiaFdzT0J1dk5SNURlclVrNVJlVTV1NktNOUh3bVgvMkdBM2xMUVhPQWhZ?=
+ =?gb2312?B?SUxtYmFBREZvVTNQUXZYdXluTzliWnFxV2hqMmRUT094eXcxUzNyNThDQmwv?=
+ =?gb2312?B?NG5vUEVja3RLZXArV1VwYXV6NC9YbUhNaGxjb3hMOG5ObEd4YjNlZ3FCdFRn?=
+ =?gb2312?B?MGVwbTFDM2p6ZmoveC8xekVJaTQxQVl2aWJ0elY0WDJrOFQyNW1IOWRLVXQx?=
+ =?gb2312?B?RFNCUmVCUnJJQXRYejhoelNIa3U3Uk0rVFZKTUVJc0Zmc1k1ZUhSbEZpekZu?=
+ =?gb2312?B?WDhQekhoYVYvNS9nb213dGZZZlRoOFI0SU1iUnVJWnBLL1JOWlZ3UVpzbkVV?=
+ =?gb2312?Q?dZoPPNq3PzS+3mpnduXLJ4wgLwavxbltab6LziDc3U=3D?=
+Content-ID: <0F42DBE77297CF4C950BA11449638D22@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9cbe6237-7028-4c9b-5e19-08d998f4d0ce
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2021 02:52:29.0979 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37721047-2ab4-4633-bc54-08d998f518e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2021 02:54:30.0801 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zNuSkluI79N6o/uRL3uBSBT544JaA2Izh++B18ztAVl9qhZXrBlTggOqr5LubZdHSqgoFMBragRjZQnSt417nrKh+2IOFbvtkOTlrpBqSiI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6737
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: uikQqKmaH2GTLCoW58wjNqsflsnqPj1MwkiXGxxfhwimPa+MksmxKJsm5d3LdKapDokD/Yt31lOYZjOwt9K7UBJcNUjJtYO0BgOf/tCSI7I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB6538
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 03/11] syscalls/quotactl04: Remove useless
- quotactl mount options
+Subject: Re: [LTP] [PATCH v1 04/11] syscalls/quotactl[3, 5,
+ 7]: Add docparse formatting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -173,23 +173,80 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril
 > Hi!
->> When use -O quota options for mkfs.ext4, quota mount option
->> will be ignored[1]. So remove it.
+>> -/*
+>> - * Test Name: quotactl03
+>> +/*\
+>> + * [Description]
+>>    *
+>> - * Description:
+>>    * quotactl(2) with XGETNEXTQUOTA looks for the next active quota for an user
+>>    * equal or higher to a given ID, in this test the ID is specified to a value
+>>    * close to UINT_MAX(max value of unsigned int). When reaching the upper limit
+>> @@ -16,11 +15,11 @@
+>>    *
+>>    * This kernel bug of xfs has been fixed in:
+>>    *
+>> - * commit 657bdfb7f5e68ca5e2ed009ab473c429b0d6af85
+>> - * Author: Eric Sandeen<sandeen@redhat.com>
+>> - * Date:   Tue Jan 17 11:43:38 2017 -0800
+>> + *  commit 657bdfb7f5e68ca5e2ed009ab473c429b0d6af85
+>> + *  Author: Eric Sandeen<sandeen@redhat.com>
+>> + *  Date:   Tue Jan 17 11:43:38 2017 -0800
+>>    *
+>> - *     xfs: don't wrap ID in xfs_dq_get_next_id
+>> + *  xfs: don't wrap ID in xfs_dq_get_next_id
+>
+> The commit hash of this fix should also go into the tags in the tst_test
+> structure.
+Oh, yes.
+>
+>>    */
 >>
->> Also add docparse formatting.
->>
->> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7c319d3
->>
->> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
->> ---
->>   testcases/kernel/syscalls/quotactl/quotactl04.c | 17 ++++++++++++-----
->>   1 file changed, 12 insertions(+), 5 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
->> index fd3afc888..ca6a94263 100644
->> --- a/testcases/kernel/syscalls/quotactl/quotactl04.c
->> +++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
->> @@ -2,22 +2,33 @@
+>>   #define _GNU_SOURCE
+>> diff --git a/testcases/kernel/syscalls/quotactl/quotactl05.c b/testcases/kernel/syscalls/quotactl/quotactl05.c
+>> index e811e47a4..fbc7f5924 100644
+>> --- a/testcases/kernel/syscalls/quotactl/quotactl05.c
+>> +++ b/testcases/kernel/syscalls/quotactl/quotactl05.c
+>> @@ -2,19 +2,28 @@
+>>   /*
+>>    * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+>>    * Author: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * This testcase checks basic flags of quotactl(2) for project on an XFS filesystem:
+>>    *
+>> - * This testcase checks basic flags of quotactl(2) for project on an XFS file
+>> - * system:
+>>    * 1) quotactl(2) succeeds to turn off xfs quota and get xfs quota off status
+>>    *    for project.
+>> + *
+>>    * 2) quotactl(2) succeeds to turn on xfs quota and get xfs quota on status
+>>    *    for project.
+>> + *
+>>    * 3) quotactl(2) succeeds to set and use Q_XGETQUOTA to get xfs disk quota
+>>    *    limits for project.
+>> + *
+>>    * 4) quotactl(2) succeeds to set and use Q_XGETNEXTQUOTA to get xfs disk
+>>    *    quota limits Cgreater than or equal to ID for project.
+>> + *
+>>    * 5) quotactl(2) succeeds to turn off xfs quota and get xfs quota off statv
+>>    *    for project.
+>> + *
+>>    * 6) quotactl(2) succeeds to turn on xfs quota and get xfs quota on statv
+>>    *    for project.
+>>    */
+>
+> Here as well, the list should be fixed to render as a list.
+Will do.
+>
+>> diff --git a/testcases/kernel/syscalls/quotactl/quotactl07.c b/testcases/kernel/syscalls/quotactl/quotactl07.c
+>> index db477589b..a55416f0e 100644
+>> --- a/testcases/kernel/syscalls/quotactl/quotactl07.c
+>> +++ b/testcases/kernel/syscalls/quotactl/quotactl07.c
+>> @@ -2,6 +2,10 @@
 >>   /*
 >>    * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
 >>    * Author: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
@@ -198,59 +255,8 @@ Hi Cyril
 >> +/*\
 >> + * [Description]
 >>    *
->>    * This testcase checks the basic flag of quotactl(2) for project quota on
->>    * non-XFS filesystems.
->>    *
->>    * 1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for project.
->> + *
->>    * 2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
->>    *    for project.
->> + *
->>    * 3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
->>    *    for project.
->> + *
->>    * 4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
->>    *    flag for project.
->> + *
->>    * 5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
->>    *    flag for project.
->> + *
->>    * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for project.
->> + *
->>    * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
->>    *    ID with Q_GETNEXTQUOTA flag for project.
->> + *
->>    * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
->>    *
->>    * Minimum e2fsprogs version required is 1.43.
->
-> Here as well, the list should be changed to render properly in
-> asciidoc.
-Ok.
-
-Best Regards
-Yang Xu
->
->> @@ -34,10 +45,6 @@
->>   #include "tst_safe_stdio.h"
->>   #include "tst_test.h"
->>
->> -#ifndef QFMT_VFS_V1
->> -# define QFMT_VFS_V1 4
->> -#endif
->> -
->>   #define FMTID QFMT_VFS_V1
->>   #define MNTPOINT	"mntpoint"
->>   static int32_t fmt_id = FMTID;
->> @@ -141,7 +148,7 @@ static void setup(void)
->>   		tst_brk(TCONF, "Test needs mkfs.ext4>= 1.43 for quota,project option, test skipped");
->>   	pclose(f);
->>   	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
->> -	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
->> +	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
->>   }
->>
->>   static void cleanup(void)
+>>    * This is a regresstion test for kernel commit 3dd4d40b4208
+>>    * ("xfs: Sanity check flags of Q_XQUOTARM call").
 >> --
 >> 2.23.0
 >>
