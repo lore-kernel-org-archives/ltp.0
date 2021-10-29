@@ -1,69 +1,82 @@
-Return-Path: <SRS0=5Ww9=PQ=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=M8Fp=PR=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43A41C433EF
-	for <ltp@archiver.kernel.org>; Thu, 28 Oct 2021 09:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B899C433EF
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 07:50:04 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C37360FC0
-	for <ltp@archiver.kernel.org>; Thu, 28 Oct 2021 09:54:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7C37360FC0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 4A3D660234
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 07:50:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A3D660234
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB8BF3C6C49
-	for <ltp@archiver.kernel.org>; Thu, 28 Oct 2021 11:54:06 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0B07A3C6AD3
- for <ltp@lists.linux.it>; Thu, 28 Oct 2021 11:53:57 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by picard.linux.it (Postfix) with ESMTP id AE5BE3C6E45
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 09:50:00 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3081A20E758
- for <ltp@lists.linux.it>; Thu, 28 Oct 2021 11:53:56 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D2EDC21965
- for <ltp@lists.linux.it>; Thu, 28 Oct 2021 09:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635414835;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZHBqKx85NEoa7OJl3CGsusb3cXUWEQi52TX1GQwIfOA=;
- b=ejNF/1wMyF6bTwEhhAFuGn0HqGRzqBgm9BRgvPJJ0eOqnOqe50E+dRxJ6bnUAdlRoYcE43
- lU08pBr6cvz1jbmVDjVt87raPWudeeWB28PBXeLlFuRIkgw+lfNvIadJOPbSWN1QS3bdu9
- bz+WX9AKYBFHG6pf+MSw1ukVxCtYGLo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635414835;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZHBqKx85NEoa7OJl3CGsusb3cXUWEQi52TX1GQwIfOA=;
- b=FBAG1zzWlii+PE9/i9c6M4cdIqvt0QTL6p1F825jxcEq3ZCm++ul3UhgOMs2GkeaCIi7qF
- bNufmJgB+hSeUFDA==
-Received: from g78 (unknown [10.163.24.38])
+ by picard.linux.it (Postfix) with ESMTPS id 2DE813C0E9B
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 09:49:50 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 824ACA3B83;
- Thu, 28 Oct 2021 09:53:55 +0000 (UTC)
-References: <20211018154800.11013-1-chrubis@suse.cz>
- <87tuh2poue.fsf@suse.de> <YXlYwi7+VUIitM7H@yuki>
-User-agent: mu4e 1.6.5; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 28 Oct 2021 09:11:09 +0100
-In-reply-to: <YXlYwi7+VUIitM7H@yuki>
-Message-ID: <87pmrppj9u.fsf@suse.de>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A9F11610496
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 09:49:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635493788;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lDLUcq1w5o4AdujHmp6KP5dD+la3Yr7gNWSp6DA+yFY=;
+ b=eLKRcSib5eTXBKNSIhPdlI/oeC5EGTkbyhD8qiis7RiV+++p1aKOp4H/Qu2/t0dkHn43uo
+ SzQbd10h8w9/u4wpSnUIrbBziwpu2D9Xtj8iHRIiT4XYxGbY3at/mvgKLxdd4DhT8rGG0/
+ CCoR0OZGWQW80vnKerTnjOZkJy3xsDc=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-tmPUBuQXORaS8Cy-wJ36VA-1; Fri, 29 Oct 2021 03:49:44 -0400
+X-MC-Unique: tmPUBuQXORaS8Cy-wJ36VA-1
+Received: by mail-oi1-f199.google.com with SMTP id
+ w26-20020a056808019a00b00298e7b4523cso4591116oic.9
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 00:49:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=lDLUcq1w5o4AdujHmp6KP5dD+la3Yr7gNWSp6DA+yFY=;
+ b=NPoAayjo7vik2HFPDCTxIBkOP67EfhPGgWzbcpUmyA8JsG131x+pYLOOeHRIsm4qq5
+ MDjHABZEoKytOQ4EC6ZxwdCfrrfXCqPkXgyvQzDA6sAlJInMd2WUFDjlIyrRDaFAWe1a
+ MWdiFqTNJThhwc2zBMn9uBh9TdmLY8waqcYGUfXCeVzFXTQsRsrsgNbznoCEs7k+Aks9
+ 9HFC8bchVZQFt+Al3iir73n95rQiCcZ0yTRyMjJji0aLRfSiCtc67YrU55S0h979l9Ff
+ uYYX6C3/4+CRsFjaDQ53abQvRJ4X/eURWuqDm4T5iIoz6yvUHMq8Zd8uAWLiazEdPxIN
+ ctjA==
+X-Gm-Message-State: AOAM5320TkrpbDIFQwsAdbfmBAXRDXeLLs21Bv3cUf7nwBtFCL6aVmDc
+ 3NFKzRs6REmtOTIg3VmEoycJoigZEZJo7ZPqoeSn9/pA0Ta5gmCpCMGxvKuTEUh3ZBir5G9wdZ1
+ loDL4ieXZBlwwgAWARVQZAM16J5I=
+X-Received: by 2002:a9d:1b31:: with SMTP id l46mr7383654otl.57.1635493783799; 
+ Fri, 29 Oct 2021 00:49:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFB1CbGqypZs1++5ghRjeKLLZy8fbENo+FfZ5cdy3RRYWgD6e3xDSDtbVGZ8UXJOjMsGKds2rRq+u0B2P6duI=
+X-Received: by 2002:a9d:1b31:: with SMTP id l46mr7383641otl.57.1635493783535; 
+ Fri, 29 Oct 2021 00:49:43 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20211028031422.208689-1-zhaogongyi@huawei.com>
+In-Reply-To: <20211028031422.208689-1-zhaogongyi@huawei.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 29 Oct 2021 09:49:28 +0200
+Message-ID: <CAASaF6zDyWnkrNGdWAHqgrwQWk3n8cu0DhU3B5-ip0_ka5K5xA@mail.gmail.com>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/7] docparse improvements
+Subject: Re: [LTP] [PATCH] syscalls/epoll_create: Replace syscall to libc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,110 +88,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Cyril Hrubis <chrubis@suse.cz> writes:
-
-> Hi!
->> It's unfortunate that before starting this effort and the checker that
->> we didn't know about tree-sitter (although Sparse may still be the best
->> choice for the checker).
->> 
->> Tree-sitter can parse C into an AST and can easily be vendored into LTP:
->> https://tree-sitter.github.io/tree-sitter/using-parsers#building-the-library
->> 
->> Then we just need to work on the level of the AST. It also has a query
->> language. This should allow the initial matching to be done on a high
->> level.
+On Thu, Oct 28, 2021 at 5:13 AM Zhao Gongyi <zhaogongyi@huawei.com> wrote:
 >
-> The only worry that I have about this would be speed, currently the code
-> I wrote takes a few second to process thousands of C files in LTP, that
-> is because we take a lot of shortcuts and ignore all the stuff we do not
-> need. Full parser that builds AST would be orders of magnitude slower,
-> so before we attempt to use it it should be benchmarked properly to see
-> if it's fast enough.
-
-It's incredibly fast, it has no trouble parsing the entire kernel.
-
-Weggli uses tree-sitter
-
-https://github.com/googleprojectzero/weggli
-
-rich@g78 ~/q/ltp (master)> time weggli '_ verify_alarm(_) { exit(0); }' .
-/home/rich/qa/ltp/./testcases/kernel/syscalls/alarm/alarm03.c:21
-static void verify_alarm(void)
-{
-	pid_t pid;
-
-	TEST(alarm(100));
-
-..
-		} else {
-			tst_res(TPASS,
-				"alarm(100), fork, alarm(0) child's "
-				"alarm returned %ld", TST_RET);
-		}
-		exit(0);
-	}
-
-	TEST(alarm(0));
-	if (TST_RET != 100) {
-		tst_res(TFAIL,
-..
-}
-/home/rich/qa/ltp/./testcases/kernel/syscalls/alarm/alarm07.c:20
-static void verify_alarm(void)
-{
-	pid_t pid;
-	alarm_cnt = 0;
-
-	TEST(alarm(1));
-..
-			tst_res(TPASS, "alarm() request cleared in child");
-		} else {
-			tst_res(TFAIL, "alarm() request not cleared in "
-				"child; alarms received:%d", alarm_cnt);
-		}
-		exit(0);
-	}
-
-	if (alarm_cnt != 1)
-		tst_res(TFAIL, "Sigalarms in parent %i, expected 1", alarm_cnt);
-	else
-..
-}
-
-________________________________________________________
-Executed in   49.35 millis    fish           external
-   usr time  110.88 millis    0.00 millis  110.88 millis
-   sys time   87.44 millis    1.20 millis   86.24 millis
-
+> For epoll_create01.c/epoll_create02.c, we should replace syscall to libc
+> or the testcase will fail because of Syscall epoll_create is not support
+> in some arches.
 >
->> If we continue down the path of hand parsing C, then it will most likely
->> result in constant tweaks and additions.
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+
+Acked-by: Jan Stancek <jstancek@redhat.com>
+
+> ---
+>  testcases/kernel/syscalls/epoll_create/epoll_create01.c | 2 +-
+>  testcases/kernel/syscalls/epoll_create/epoll_create02.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 >
-> Well I would say that this patchset is the last addition for the parser,
-> if we ever need anything more complex we should really switch to
-> something else. On the other hand I do not think that we will ever need
-> more complexity in the parser than this, as long as we keep things
-> sane.
+> diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create01.c b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+> index 3ef5b5cac..b6ebe9ad7 100644
+> --- a/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+> +++ b/testcases/kernel/syscalls/epoll_create/epoll_create01.c
+> @@ -24,7 +24,7 @@ static int tc[] = {1, INT_MAX};
+>
+>  static void run(unsigned int n)
+>  {
+> -       TST_EXP_FD(tst_syscall(__NR_epoll_create, tc[n]), "epoll_create(%d)", tc[n]);
+> +       TST_EXP_FD(epoll_create(tc[n]), "epoll_create(%d)", tc[n]);
+>
+>         if (!TST_PASS)
+>                 return;
+> diff --git a/testcases/kernel/syscalls/epoll_create/epoll_create02.c b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
+> index c59ea7944..e96228983 100644
+> --- a/testcases/kernel/syscalls/epoll_create/epoll_create02.c
+> +++ b/testcases/kernel/syscalls/epoll_create/epoll_create02.c
+> @@ -27,7 +27,7 @@ static struct test_case_t {
+>
+>  static void run(unsigned int n)
+>  {
+> -       TST_EXP_FAIL(tst_syscall(__NR_epoll_create, tc[n].size),
+> +       TST_EXP_FAIL(epoll_create(tc[n].size),
+>                      tc[n].exp_err, "create(%d)", tc[n].size);
+>  }
+>
+> --
+> 2.17.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
-This closes the door on a lot of options for no upside AFAICT. We have
-two tools (Sparse and tree-sitter) that can be (or have been) vendored
-and will parse a large subset of C. Sparse goes a step further allowing
-control flow analysis. The usual reasons for reinventing the wheel are
-not present.
-
--- 
-Thank you,
-Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
