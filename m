@@ -2,73 +2,74 @@ Return-Path: <SRS0=M8Fp=PR=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C01FC433FE
-	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 08:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6721AC433F5
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 08:28:05 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6372861181
-	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 08:26:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6372861181
+	by mail.kernel.org (Postfix) with ESMTPS id 8A57E60041
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 08:28:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8A57E60041
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6549F3C6E45
-	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 10:26:26 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 1BE1E3C6ED8
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 10:28:03 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 98AFB3C136D
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 10:27:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 94CA03C136D
- for <ltp@lists.linux.it>; Fri, 29 Oct 2021 10:26:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id ECD9C61048A
- for <ltp@lists.linux.it>; Fri, 29 Oct 2021 10:26:16 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2438D1A006B2
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 10:27:52 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5620D21954;
- Fri, 29 Oct 2021 08:26:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5F2061FD39;
+ Fri, 29 Oct 2021 08:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1635495976;
+ t=1635496072;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=E+ipOosmQp3Rx1OKdk9RX9TzjQLanLxK5a7QQpPQvs8=;
- b=EeGRRYHaFuGXxOY4qN+yUyfbTERBgUu7v8yIU6YdOr2EHSIp701FRkvk5bd37+uoQG7kyZ
- EGS4UJj8M1J51PesV/ZkhtqnRsg7w7oybFnOBqiNaukk4v4u8CmlHET8kpRIeaywIjwFDZ
- bJjkTCndNgdeNzVruPw3vC0VpLwZz5Y=
+ bh=dM9n2OyhMMAKV3fSflMaRNu1T/1nAHZB0B1QAHDVMAE=;
+ b=IgX5qKwS+ZVggaY+mFfbG9+P2/44xkzHwJ+hcwr3pYmOcRD7OYNu3Nfz+ZL1uVDThtHD4z
+ PLtS+G6hfDFp0sVnZ0JGqHaohm1ZS9dA6tjli+ziCeJBuVZxTCZfoFD0U8ramKn9tj1tJx
+ nHgBFN5yi6eqlOsG0mIr1O+pEI9gGzU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1635495976;
+ s=susede2_ed25519; t=1635496072;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=E+ipOosmQp3Rx1OKdk9RX9TzjQLanLxK5a7QQpPQvs8=;
- b=f7zmkZaKJG8NFkjHPQ1lOY3s3cu5IGxUakyHoiPXdriEm6H7GFc/WwKRLBi4qTEGD+hWYG
- NmgU8J2Wb7CrLBBA==
+ bh=dM9n2OyhMMAKV3fSflMaRNu1T/1nAHZB0B1QAHDVMAE=;
+ b=pNjP6VQDVsCJTY9tMyKUaevjY1/5qvNLZXhf3a5xercStTJaxc757DlZPotbfTXD6BwxP+
+ mUuSY4xnwieMBXDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 246F213A83;
- Fri, 29 Oct 2021 08:26:16 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31C2713A83;
+ Fri, 29 Oct 2021 08:27:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 9/L0BSiwe2GzEQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 29 Oct 2021 08:26:16 +0000
-Date: Fri, 29 Oct 2021 10:26:14 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id IpGDCoiwe2FiEgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 29 Oct 2021 08:27:52 +0000
+Date: Fri, 29 Oct 2021 10:27:50 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YXuwJs+w1uvWc6CK@pevik>
+Message-ID: <YXuwhgCWu7i5VDgF@pevik>
 References: <20211018154800.11013-1-chrubis@suse.cz>
  <20211018154800.11013-2-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20211018154800.11013-2-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/7] docparse: Implement #define and #include
 X-BeenThere: ltp@lists.linux.it
@@ -91,9 +92,8 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-very nice improvement, thanks!
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> + Also add -v verbose mode that prints included files and defined macros
+How about propagate VERBOSE=1 from Makefile to docparse as -v ?
 
 Kind regards,
 Petr
