@@ -2,51 +2,49 @@ Return-Path: <SRS0=M8Fp=PR=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02EA0C433F5
-	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 21:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1139FC433EF
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 21:19:01 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B62C60FC3
-	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 21:18:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3B62C60FC3
+	by mail.kernel.org (Postfix) with ESMTPS id ADB9A60FC3
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 21:19:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ADB9A60FC3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C7FCA3C6E83
-	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 23:18:45 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 5A74F3C6F14
+	for <ltp@archiver.kernel.org>; Fri, 29 Oct 2021 23:18:59 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16EEA3C6F18
- for <ltp@lists.linux.it>; Fri, 29 Oct 2021 23:18:19 +0200 (CEST)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5C499200077
- for <ltp@lists.linux.it>; Fri, 29 Oct 2021 23:18:18 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 602403C6F23
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 23:18:25 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7ACFB603A59
+ for <ltp@lists.linux.it>; Fri, 29 Oct 2021 23:18:24 +0200 (CEST)
 Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: krisman)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C15AD1F45C6F;
- Fri, 29 Oct 2021 22:18:16 +0100 (BST)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3F7261F45C6F;
+ Fri, 29 Oct 2021 22:18:22 +0100 (BST)
 From: Gabriel Krisman Bertazi <krisman@collabora.com>
 To: jack@suse.com,
 	amir73il@gmail.com,
 	repnop@google.com
-Date: Fri, 29 Oct 2021 18:17:27 -0300
-Message-Id: <20211029211732.386127-5-krisman@collabora.com>
+Date: Fri, 29 Oct 2021 18:17:28 -0300
+Message-Id: <20211029211732.386127-6-krisman@collabora.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211029211732.386127-1-krisman@collabora.com>
 References: <20211029211732.386127-1-krisman@collabora.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/9] syscalls/fanotify21: Validate the generic
- error info
+Subject: [LTP] [PATCH v3 5/9] syscalls/fanotify21: Validate incoming FID in
+ FAN_FS_ERROR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,163 +64,163 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Implement some validation for the generic error info record emitted by
-the kernel.  The error number is fs-specific but, well, we only support
-ext4 for now anyway.
+Verify the FID provided in the event.  If the FH has size 0, this is
+assumed to be a superblock error (i.e. null FH).
 
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
 ---
 Changes since v2:
-  - check for error record type in autotools (Amir)
+  - Move FILEID_INVALID define to header file (Amir)
 Changes since v1:
   - Move defines to header file.
+  - Use 0-len FH for sb error
 ---
- configure.ac                                  |  3 +-
- testcases/kernel/syscalls/fanotify/fanotify.h | 32 ++++++++++++++++
- .../kernel/syscalls/fanotify/fanotify21.c     | 37 ++++++++++++++++++-
- 3 files changed, 70 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h |  9 +++
+ .../kernel/syscalls/fanotify/fanotify21.c     | 60 +++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
-diff --git a/configure.ac b/configure.ac
-index 5bf3c52ec161..9efd5b33430f 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -159,7 +159,8 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
- AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
- AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
- AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
--AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
-+AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header,
-+		struct fanotify_event_info_error],[],[],[#include <sys/fanotify.h>])
- AC_CHECK_TYPES([struct file_dedupe_range],,,[#include <linux/fs.h>])
- 
- AC_CHECK_TYPES([struct file_handle],,,[
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 99b898554ede..4294799fe86d 100644
+index 4294799fe86d..f8c39aa490ae 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -167,6 +167,9 @@ typedef struct {
- #ifndef FAN_EVENT_INFO_TYPE_DFID
- #define FAN_EVENT_INFO_TYPE_DFID	3
- #endif
-+#ifndef FAN_EVENT_INFO_TYPE_ERROR
-+#define FAN_EVENT_INFO_TYPE_ERROR	5
+@@ -234,6 +234,11 @@ static inline void fanotify_get_fid(const char *path, __kernel_fsid_t *fsid,
+ 	}
+ }
+ 
++
++#ifndef FILEID_INVALID
++#define	FILEID_INVALID		0xff
 +#endif
- 
- #ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
- struct fanotify_event_info_header {
-@@ -184,6 +187,14 @@ struct fanotify_event_info_fid {
- };
- #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
- 
-+#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR
-+struct fanotify_event_info_error {
-+	struct fanotify_event_info_header hdr;
-+	__s32 error;
-+	__u32 error_count;
-+};
-+#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_ERROR */
 +
- /* NOTE: only for struct fanotify_event_info_fid */
- #ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
- # define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
-@@ -392,4 +403,25 @@ static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
- 		fanotify_events_supported_by_kernel(mask, init_flags, mark_type)); \
- } while (0)
+ struct fanotify_fid_t {
+ 	__kernel_fsid_t fsid;
+ 	struct file_handle handle;
+@@ -424,4 +429,8 @@ struct fanotify_event_info_header *get_event_info(
+ 	((struct fanotify_event_info_error *)				\
+ 	 get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
  
-+struct fanotify_event_info_header *get_event_info(
-+					struct fanotify_event_metadata *event,
-+					int info_type)
-+{
-+	struct fanotify_event_info_header *hdr = NULL;
-+	char *start = (char *) event;
-+	int off;
-+
-+	for (off = event->metadata_len; (off+sizeof(*hdr)) < event->event_len;
-+	     off += hdr->len) {
-+		hdr = (struct fanotify_event_info_header *) &(start[off]);
-+		if (hdr->info_type == info_type)
-+			return hdr;
-+	}
-+	return NULL;
-+}
-+
-+#define get_event_info_error(event)					\
-+	((struct fanotify_event_info_error *)				\
-+	 get_event_info((event), FAN_EVENT_INFO_TYPE_ERROR))
++#define get_event_info_fid(event)					\
++	((struct fanotify_event_info_fid *)				\
++	 get_event_info((event), FAN_EVENT_INFO_TYPE_FID))
 +
  #endif /* __FANOTIFY_H__ */
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-index 9ef687442b7c..31ad5cac0a0e 100644
+index 31ad5cac0a0e..95c988821a34 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify21.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
-@@ -48,14 +48,38 @@ static void trigger_fs_abort(void)
+@@ -40,6 +40,9 @@ int fd_notify;
  
- static struct test_case {
+ #define MOUNT_PATH "test_mnt"
+ 
++/* These expected FIDs are common to multiple tests */
++static struct fanotify_fid_t null_fid;
++
+ static void trigger_fs_abort(void)
+ {
+        SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type,
+@@ -50,6 +53,7 @@ static struct test_case {
  	char *name;
-+	int error;
-+	unsigned int error_count;
+ 	int error;
+ 	unsigned int error_count;
++	struct fanotify_fid_t *fid;
  	void (*trigger_error)(void);
  } testcases[] = {
  	{
- 		.name = "Trigger abort",
+@@ -57,9 +61,43 @@ static struct test_case {
  		.trigger_error = &trigger_fs_abort,
-+		.error_count = 1,
-+		.error = ESHUTDOWN,
+ 		.error_count = 1,
+ 		.error = ESHUTDOWN,
++		.fid = &null_fid,
  	},
  };
  
-+int check_error_event_info_error(struct fanotify_event_info_error *info_error,
++int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
 +				 const struct test_case *ex)
 +{
-+	int fail = 0;
++	struct file_handle *fh = (struct file_handle *) &fid->handle;
 +
-+	if (info_error->error_count != ex->error_count) {
-+		tst_res(TFAIL, "%s: Unexpected error_count (%d!=%d)",
-+			ex->name, info_error->error_count, ex->error_count);
-+		fail++;
++	if (memcmp(&fid->fsid, &ex->fid->fsid, sizeof(fid->fsid))) {
++		tst_res(TFAIL, "%s: Received bad FSID type (%x...!=%x...)",
++			ex->name, FSID_VAL_MEMBER(fid->fsid, 0),
++			FSID_VAL_MEMBER(ex->fid->fsid, 0));
++
++		return 1;
++	}
++	if (fh->handle_type != ex->fid->handle.handle_type) {
++		tst_res(TFAIL, "%s: Received bad file_handle type (%d!=%d)",
++			ex->name, fh->handle_type, ex->fid->handle.handle_type);
++		return 1;
 +	}
 +
-+	if (info_error->error != ex->error) {
-+		tst_res(TFAIL, "%s: Unexpected error code value (%d!=%d)",
-+			ex->name, info_error->error, ex->error);
-+		fail++;
++	if (fh->handle_bytes != ex->fid->handle.handle_bytes) {
++		tst_res(TFAIL, "%s: Received bad file_handle len (%d!=%d)",
++			ex->name, fh->handle_bytes, ex->fid->handle.handle_bytes);
++		return 1;
 +	}
 +
-+	return fail;
++	if (memcmp(fh->f_handle, ex->fid->handle.f_handle, fh->handle_bytes)) {
++		tst_res(TFAIL, "%s: Received wrong handle. "
++			"Expected (%x...) got (%x...) ", ex->name,
++			*(int*)ex->fid->handle.f_handle, *(int*)fh->f_handle);
++		return 1;
++	}
++	return 0;
 +}
 +
- int check_error_event_metadata(struct fanotify_event_metadata *event)
+ int check_error_event_info_error(struct fanotify_event_info_error *info_error,
+ 				 const struct test_case *ex)
  {
- 	int fail = 0;
-@@ -78,6 +102,8 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
- {
+@@ -103,6 +141,7 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
  	struct fanotify_event_metadata *event =
  		(struct fanotify_event_metadata *) buf;
-+	struct fanotify_event_info_error *info_error;
-+	int fail = 0;
+ 	struct fanotify_event_info_error *info_error;
++	struct fanotify_event_info_fid *info_fid;
+ 	int fail = 0;
  
  	if (len < FAN_EVENT_METADATA_LEN) {
- 		tst_res(TFAIL, "No event metadata found");
-@@ -87,7 +113,16 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
- 	if (check_error_event_metadata(event))
- 		return;
+@@ -121,6 +160,14 @@ void check_event(char *buf, size_t len, const struct test_case *ex)
+ 		fail++;
+ 	}
  
--	tst_res(TPASS, "Successfully received: %s", ex->name);
-+	info_error = get_event_info_error(event);
-+	if (info_error)
-+		fail += check_error_event_info_error(info_error, ex);
++	info_fid = get_event_info_fid(event);
++	if (info_fid)
++		fail += check_error_event_info_fid(info_fid, ex);
 +	else {
-+		tst_res(TFAIL, "Generic error record not found");
++		tst_res(TFAIL, "FID record not found");
 +		fail++;
 +	}
 +
-+	if (!fail)
-+		tst_res(TPASS, "Successfully received: %s", ex->name);
+ 	if (!fail)
+ 		tst_res(TPASS, "Successfully received: %s", ex->name);
+ }
+@@ -143,12 +190,25 @@ static void do_test(unsigned int i)
+ 	check_event(event_buf, read_len, tcase);
  }
  
- static void do_test(unsigned int i)
++static void init_null_fid(void)
++{
++	/* Use fanotify_save_fid to fill the fsid and overwrite the
++	 * file_handler to create a null_fid
++	 */
++	fanotify_save_fid(MOUNT_PATH, &null_fid);
++
++	null_fid.handle.handle_type = FILEID_INVALID;
++	null_fid.handle.handle_bytes = 0;
++}
++
+ static void setup(void)
+ {
+ 	REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_NOTIF|FAN_REPORT_FID,
+ 						FAN_MARK_FILESYSTEM,
+ 						FAN_FS_ERROR, ".");
+ 
++	init_null_fid();
++
+ 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF|FAN_REPORT_FID,
+ 				       O_RDONLY);
+ }
 -- 
 2.33.0
 
