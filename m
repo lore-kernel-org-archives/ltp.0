@@ -2,76 +2,70 @@ Return-Path: <SRS0=CSve=PU=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6428C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFE6C433F5
 	for <ltp@archiver.kernel.org>; Mon,  1 Nov 2021 14:59:30 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDC1461247
+	by mail.kernel.org (Postfix) with ESMTPS id BD89960EE3
 	for <ltp@archiver.kernel.org>; Mon,  1 Nov 2021 14:59:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BDC1461247
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BD89960EE3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC8773C70C9
-	for <ltp@archiver.kernel.org>; Mon,  1 Nov 2021 15:53:44 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 179153C7137
+	for <ltp@archiver.kernel.org>; Mon,  1 Nov 2021 15:53:11 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9FAF23C70C0
- for <ltp@lists.linux.it>; Mon,  1 Nov 2021 15:52:51 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 088543C7046
+ for <ltp@lists.linux.it>; Mon,  1 Nov 2021 15:52:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 15FE3200B65
- for <ltp@lists.linux.it>; Mon,  1 Nov 2021 15:52:51 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E50361A004AD
+ for <ltp@lists.linux.it>; Mon,  1 Nov 2021 15:52:48 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AA1AD1FD6F
- for <ltp@lists.linux.it>; Mon,  1 Nov 2021 14:52:50 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E1138212CA
+ for <ltp@lists.linux.it>; Mon,  1 Nov 2021 14:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1635778370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RuRqz8NdHYiae/tZNQ7cn2OQtsD2sQ0w+JxQyqHmESI=;
- b=K+wVESLKw0L+jEViBVMx3t1D9OXqBkXGA7RIgYD8vVraom4DM/Qmz0bEVWSkKTfS0B3sA6
- loJFRy/GFMv5vpdx7YqbO3bMoBTdkWtsENThdQ3yITlCwG1XUvgGcpi2D7+pWZ6vdOCd2u
- orH6GIdkccu87Fb/Lhldf25ianG5DBk=
+ t=1635778367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Gg8ixNTFyzzLYuhP9Ec9ucpV1vgMpPWn3iSjOz5W1tU=;
+ b=K7LiIQAqywVOidwuFhXsBZpjns0KaTPXcELAcggt+EbRt8RSg/IsqgZWlW4oRoizYfV5ep
+ Rs4KjgSiV+QFuT8xy4AXouj368A4i3EhczbwAqcOcbDn5+oXd6CKLnefGOEwHbKVFOoFNx
+ B6g4TMW4uexn/G9riQ6sfVeYuo64i+E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1635778370;
+ s=susede2_ed25519; t=1635778367;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RuRqz8NdHYiae/tZNQ7cn2OQtsD2sQ0w+JxQyqHmESI=;
- b=gaLLYdMzuOzNKjTfvaX6JpAH07WHg9wBFU07rvkpyOFkQvv4ev1nm5y51OE+wrLnZzmLft
- iOAr1Djs4+x8BmDw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Gg8ixNTFyzzLYuhP9Ec9ucpV1vgMpPWn3iSjOz5W1tU=;
+ b=YS4z8FMBIIFCl/BHKnv40tLzp8ETVUVPO1EP2wlXw2nqY89XDPfyaAHjataeLHy+gmCWRw
+ khpGxrw0SZlw/8Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9878F13522
- for <ltp@lists.linux.it>; Mon,  1 Nov 2021 14:52:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD65813522
+ for <ltp@lists.linux.it>; Mon,  1 Nov 2021 14:52:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Po2rI0L/f2HELQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id mnD+MT//f2GvLQAAMHmgww
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Mon, 01 Nov 2021 14:52:50 +0000
+ for <ltp@lists.linux.it>; Mon, 01 Nov 2021 14:52:47 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  1 Nov 2021 15:53:40 +0100
-Message-Id: <20211101145342.7166-6-chrubis@suse.cz>
+Date: Mon,  1 Nov 2021 15:53:35 +0100
+Message-Id: <20211101145342.7166-1-chrubis@suse.cz>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211101145342.7166-1-chrubis@suse.cz>
-References: <20211101145342.7166-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/7] docparse: Add type normalization
+Subject: [LTP] [PATCH v2 0/7] docparse improvements
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,170 +82,100 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For now just for .test_variants.
+Implement support for various missing bits to the docparse tool and
+enables it unconditionally so that the metadata file is present on
+all builds.
 
-There are two reasons for this:
+This is first part of bigger effort to get the metadata useful for the
+testrunners, expecially we need the .test_variants field to be properly
+parsed in order to compute the overall test runtime correctly.
 
-- This code makes sure that we get right value parsed and aborts the
-  compilation if the parser got confused. This part is important since
-  if the testrunners are going to use the metadata the data in there
-  must be correct.
+v2:
+     - Cleaned up the patchset a bit
 
-- And much less important it makes the resulting json nicer to read
+    pvorel:
+     - Added Makefile to metadata tests
+     - Rename the expected output files to foo.c.json
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- docparse/data_storage.h               | 16 ++++++++
- docparse/docparse.c                   | 59 +++++++++++++++++++++++++++
- docparse/tests/include.c.json         |  2 +-
- docparse/tests/macro.c.json           |  2 +-
- docparse/tests/multiline_macro.c.json |  2 +-
- 5 files changed, 78 insertions(+), 3 deletions(-)
+    rpalethorpe:
+     - Fixed parsing of the '# include' and '# define' directives
+       now the hash character produces a separate token and any
+       whitespaces between it and the keyword are removed by the
+       parser
 
-diff --git a/docparse/data_storage.h b/docparse/data_storage.h
-index 117c1d127..91ea70a02 100644
---- a/docparse/data_storage.h
-+++ b/docparse/data_storage.h
-@@ -57,6 +57,22 @@ struct data_node {
- 	};
- };
- 
-+static inline const char* data_type_name(enum data_type type)
-+{
-+	switch (type) {
-+	case DATA_ARRAY:
-+		return "array";
-+	case DATA_HASH:
-+		return "hash";
-+	case DATA_STRING:
-+		return "string";
-+	case DATA_INT:
-+		return "int";
-+	default:
-+		return "???";
-+	}
-+}
-+
- static inline struct data_node *data_node_string(const char *string)
- {
- 	size_t size = sizeof(struct data_node_string) + strlen(string) + 1;
-diff --git a/docparse/docparse.c b/docparse/docparse.c
-index 9133accf5..9c3eaff4c 100644
---- a/docparse/docparse.c
-+++ b/docparse/docparse.c
-@@ -12,6 +12,7 @@
- #include <libgen.h>
- #include <ctype.h>
- #include <unistd.h>
-+#include <errno.h>
- 
- #include "data_storage.h"
- 
-@@ -713,6 +714,61 @@ static struct data_node *parse_file(const char *fname)
- 	return res;
- }
- 
-+static struct typemap {
-+	const char *id;
-+	enum data_type type;
-+} tst_test_typemap[] = {
-+	{.id = "test_variants", .type = DATA_INT},
-+	{}
-+};
-+
-+static void convert_str2int(struct data_node *res, const char *id, const char *str_val)
-+{
-+	long val;
-+	char *endptr;
-+
-+	errno = 0;
-+	val = strtol(str_val, &endptr, 10);
-+
-+	if (errno || *endptr) {
-+		fprintf(stderr,	"Cannot convert %s value %s to int!", id, str_val);
-+		exit(1);
-+	}
-+
-+	if (verbose)
-+		fprintf(stderr, "NORMALIZING %s TO INT %li", id, val);
-+
-+	data_node_hash_del(res, id);
-+	data_node_hash_add(res, id, data_node_int(val));
-+}
-+
-+static void check_normalize_types(struct data_node *res)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; tst_test_typemap[i].id; i++) {
-+		struct data_node *n;
-+		struct typemap *typemap = &tst_test_typemap[i];
-+
-+		n = data_node_hash_get(res, typemap->id);
-+		if (!n)
-+			continue;
-+
-+		if (n->type == typemap->type)
-+			continue;
-+
-+		if (n->type == DATA_STRING && typemap->type == DATA_INT) {
-+			convert_str2int(res, typemap->id, n->string.val);
-+			continue;
-+		}
-+
-+		fprintf(stderr, "Cannot convert %s from %s to %s!",
-+			typemap->id, data_type_name(n->type),
-+			data_type_name(typemap->type));
-+		exit(1);
-+	}
-+}
-+
- static const char *filter_out[] = {
- 	"bufs",
- 	"cleanup",
-@@ -814,6 +870,9 @@ int main(int argc, char *argv[])
- 		}
- 	}
- 
-+	/* Normalize types */
-+	check_normalize_types(res);
-+
- 	for (i = 0; implies[i].flag; i++) {
- 		if (data_node_hash_get(res, implies[i].flag)) {
- 			for (j = 0; implies[i].implies[j]; j++) {
-diff --git a/docparse/tests/include.c.json b/docparse/tests/include.c.json
-index b4ef1ccda..b7c636e82 100644
---- a/docparse/tests/include.c.json
-+++ b/docparse/tests/include.c.json
-@@ -1,4 +1,4 @@
-   "include": {
--   "test_variants": "10",
-+   "test_variants": 10,
-    "fname": "include.c"
-   }
-\ No newline at end of file
-diff --git a/docparse/tests/macro.c.json b/docparse/tests/macro.c.json
-index 0dc73d8ec..c3f53ae43 100644
---- a/docparse/tests/macro.c.json
-+++ b/docparse/tests/macro.c.json
-@@ -1,4 +1,4 @@
-   "macro": {
--   "test_variants": "10",
-+   "test_variants": 10,
-    "fname": "macro.c"
-   }
-\ No newline at end of file
-diff --git a/docparse/tests/multiline_macro.c.json b/docparse/tests/multiline_macro.c.json
-index bafd037da..634516242 100644
---- a/docparse/tests/multiline_macro.c.json
-+++ b/docparse/tests/multiline_macro.c.json
-@@ -1,4 +1,4 @@
-   "multiline_macro": {
--   "test_variants": "10",
-+   "test_variants": 10,
-    "fname": "multiline_macro.c"
-   }
-\ No newline at end of file
+Cyril Hrubis (7):
+  docparse: Implement #define and #include
+  docparse: Add tests
+  docparse: data_storage: Add integer type node
+  docparse: Implement ARRAY_SIZE()
+  docparse: Add type normalization
+  docparse: Group data to 'testsuite' and 'defaults'
+  docparse: Split into metadata and docparse
+
+ Makefile                              |   5 +-
+ docparse/.gitignore                   |   2 -
+ docparse/Makefile                     |  12 +-
+ docparse/docparse.c                   | 434 -------------
+ docparse/testinfo.pl                  |  16 +-
+ metadata/.gitignore                   |   2 +
+ metadata/Makefile                     |  26 +
+ {docparse => metadata}/data_storage.h |  45 ++
+ metadata/metaparse.c                  | 892 ++++++++++++++++++++++++++
+ {docparse => metadata}/parse.sh       |  18 +-
+ metadata/tests/Makefile               |   4 +
+ metadata/tests/array_size01.c         |   5 +
+ metadata/tests/array_size01.c.json    |   4 +
+ metadata/tests/array_size02.c         |   9 +
+ metadata/tests/array_size02.c.json    |   4 +
+ metadata/tests/array_size03.c         |  10 +
+ metadata/tests/array_size03.c.json    |   4 +
+ metadata/tests/array_size04.c         |   5 +
+ metadata/tests/array_size04.c.json    |   4 +
+ metadata/tests/empty_struct.c         |   2 +
+ metadata/tests/empty_struct.c.json    |   3 +
+ metadata/tests/expand_flags.c         |   3 +
+ metadata/tests/expand_flags.c.json    |   6 +
+ metadata/tests/include.c              |   5 +
+ metadata/tests/include.c.json         |   4 +
+ metadata/tests/include.h              |   7 +
+ metadata/tests/macro.c                |   5 +
+ metadata/tests/macro.c.json           |   4 +
+ metadata/tests/multiline_macro.c      |   6 +
+ metadata/tests/multiline_macro.c.json |   4 +
+ metadata/tests/tags.c                 |   7 +
+ metadata/tests/tags.c.json            |  13 +
+ metadata/tests/test.sh                |  18 +
+ 33 files changed, 1123 insertions(+), 465 deletions(-)
+ delete mode 100644 docparse/docparse.c
+ create mode 100644 metadata/.gitignore
+ create mode 100644 metadata/Makefile
+ rename {docparse => metadata}/data_storage.h (89%)
+ create mode 100644 metadata/metaparse.c
+ rename {docparse => metadata}/parse.sh (58%)
+ create mode 100644 metadata/tests/Makefile
+ create mode 100644 metadata/tests/array_size01.c
+ create mode 100644 metadata/tests/array_size01.c.json
+ create mode 100644 metadata/tests/array_size02.c
+ create mode 100644 metadata/tests/array_size02.c.json
+ create mode 100644 metadata/tests/array_size03.c
+ create mode 100644 metadata/tests/array_size03.c.json
+ create mode 100644 metadata/tests/array_size04.c
+ create mode 100644 metadata/tests/array_size04.c.json
+ create mode 100644 metadata/tests/empty_struct.c
+ create mode 100644 metadata/tests/empty_struct.c.json
+ create mode 100644 metadata/tests/expand_flags.c
+ create mode 100644 metadata/tests/expand_flags.c.json
+ create mode 100644 metadata/tests/include.c
+ create mode 100644 metadata/tests/include.c.json
+ create mode 100644 metadata/tests/include.h
+ create mode 100644 metadata/tests/macro.c
+ create mode 100644 metadata/tests/macro.c.json
+ create mode 100644 metadata/tests/multiline_macro.c
+ create mode 100644 metadata/tests/multiline_macro.c.json
+ create mode 100644 metadata/tests/tags.c
+ create mode 100644 metadata/tests/tags.c.json
+ create mode 100755 metadata/tests/test.sh
+
 -- 
 2.32.0
 
