@@ -2,56 +2,83 @@ Return-Path: <SRS0=DF5p=PV=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C55A0C433EF
-	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 00:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D294C433F5
+	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 08:14:11 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E886F60FD9
-	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 00:39:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E886F60FD9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 55ADA60E9C
+	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 08:14:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 55ADA60E9C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 517043C7102
-	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 01:39:42 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D32613C712D
+	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 09:14:07 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E387D3C0E9C
- for <ltp@lists.linux.it>; Tue,  2 Nov 2021 01:39:21 +0100 (CET)
-Received: from smtpproxy21.qq.com (smtpbg704.qq.com [203.205.195.105])
+ by picard.linux.it (Postfix) with ESMTPS id 608A83C6A71
+ for <ltp@lists.linux.it>; Tue,  2 Nov 2021 09:13:57 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 35F7F601159
- for <ltp@lists.linux.it>; Tue,  2 Nov 2021 01:39:19 +0100 (CET)
-X-QQ-mid: bizesmtp34t1635813550t2mi20jf
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Tue, 02 Nov 2021 08:39:08 +0800 (CST)
-X-QQ-SSF: 0140000000200040C000B00A0000000
-X-QQ-FEAT: HvoQuNr4nUroFUIwWilROdk/29NyQwePucd0embmof3iOixUT8XCuaYuZGYtk
- ylhDhbmiK3SgHjaHOak4ySKbdNTztrs9gTOh9qN8F66pHx5C+1unu/O4xDr8fnmCBfVrM6/
- nQd+iYZRjy6l0GK1OO3V0djhCyT8E07LsNjKnGM4qgtSklr8eQ3s84AhmFD/uUoZVi1eRdA
- To+N0zTFGSmdW+V+UcI4BeK2j9Waa4YD+L6jBn2kiGzkiD7yTNFtUo+LgpdZtoiyVlabzIH
- 7q6aBnf1sx0dPwaz2d71Ud3WNnkZCWx51CC/tPd0JqYVewZuZNfttzYrk/IKZTpkbmAj2s9
- rDf5py5vxNleKT9hf65XyTeMajle9IlIx55DKJV
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Tue,  2 Nov 2021 08:38:59 +0800
-Message-Id: <20211102003859.2283-2-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211102003859.2283-1-tangmeng@uniontech.com>
-References: <20211102003859.2283-1-tangmeng@uniontech.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 10B3A600435
+ for <ltp@lists.linux.it>; Tue,  2 Nov 2021 09:13:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635840835;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PsVg1BAjR+Plcx0cm6vANzDFVySqHEBfYdDTWuZwIOw=;
+ b=MgK8EXlOeKtgeZOOdNuRZxPT/n9h/vKc7HZn4gfBoYrI+sTSVw7HyzYaLFbWTiEIT2zjFy
+ TuZqmF0A8PtpDAIJebAAKrpgUKucnXQ2zUOdWpFImJ10E3piLneRS/uPQ/frEGIaPo1kr7
+ m5xsTH3cUtQw0TohSd5jSEAi8Iq2vCM=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-AQuw8STTMx2d2VgSkrde9A-1; Tue, 02 Nov 2021 04:13:53 -0400
+X-MC-Unique: AQuw8STTMx2d2VgSkrde9A-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ l28-20020a25b31c000000b005c27dd4987bso2447403ybj.18
+ for <ltp@lists.linux.it>; Tue, 02 Nov 2021 01:13:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=PsVg1BAjR+Plcx0cm6vANzDFVySqHEBfYdDTWuZwIOw=;
+ b=I5YhshTP9KTCtLaspzhLZwYjsw3krO7ZQ58eHpaG1E97oMOPnwGd3ZCFgpQYxKJKDD
+ b/dbMciD7lGqcev017HRCTlWTprXuuiweR0xQgtZUHJxf4ggf8YMWgxtu53lAYY3qsD+
+ +N4TCkXRd+rPzErsaSs6AKAgnyFzSlbwHEzQsL4tBucsvFNr64dfQmwHdUWoR0SXDMt1
+ oQbTYeb4POj8NGuVodUwPZ+fGPY9bxZ0XidvZ151ABg5FsS25ush8MILwNKLMeWaf5NU
+ AcenBTAAHjrcYCTkmRuXf6QjXjbLWVPBSDUqESvwZbWqGi3mKmDd6yl+HBtUqmhb+EQn
+ HP2w==
+X-Gm-Message-State: AOAM5335Il8AIxw0AE4bdVoohkp6L3wkeQ1Trk9mgZzhjIH5j5Sb7kOs
+ mZmhl5F+gaI/2bbXDJDG0g3+8aAklBGMmaV1HDtLNquwHdluQBMJxKGLJ9DV6JOKpiNeOKQ5KSP
+ Teh0OHDTPT/GmnGDrHlPUGdZ4cRI=
+X-Received: by 2002:a05:6902:1543:: with SMTP id
+ r3mr13933159ybu.166.1635840833237; 
+ Tue, 02 Nov 2021 01:13:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfhsdqhhkeajreJzq06VA8ydYJy11GB13pTFaniSYgkaJ3QCsnBK0KpG1JZb3fIQ8Ku9J266FGiFvzlOMHnfw=
+X-Received: by 2002:a05:6902:1543:: with SMTP id
+ r3mr13933122ybu.166.1635840832921; 
+ Tue, 02 Nov 2021 01:13:52 -0700 (PDT)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
+References: <20211102003859.2283-1-tangmeng@uniontech.com>
+In-Reply-To: <20211102003859.2283-1-tangmeng@uniontech.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 2 Nov 2021 16:13:41 +0800
+Message-ID: <CAEemH2coWuno30JUb7ZuFnvYcCb0bvDTZc1yuNw1e2NJXod31A@mail.gmail.com>
+To: tangmeng <tangmeng@uniontech.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] dup/dup05: Convert to new API
+Subject: Re: [LTP] [PATCH v2 1/2] dup/dup04: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,237 +90,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1382118014=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- testcases/kernel/syscalls/dup/dup05.c | 182 ++++----------------------
- 1 file changed, 27 insertions(+), 155 deletions(-)
+--===============1382118014==
+Content-Type: multipart/alternative; boundary="000000000000c1784805cfc9df76"
 
-diff --git a/testcases/kernel/syscalls/dup/dup05.c b/testcases/kernel/syscalls/dup/dup05.c
-index fc0e1f1d4..362f3e170 100644
---- a/testcases/kernel/syscalls/dup/dup05.c
-+++ b/testcases/kernel/syscalls/dup/dup05.c
-@@ -1,183 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-  *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-+ * 06/1994 AUTHOR: Richard Logan CO-PILOT: William Roske
-  */
--/* $Id: dup05.c,v 1.6 2009/10/13 14:00:46 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: dup05
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for dup(2) of a named pipe descriptor
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: Richard Logan
-- *
-- *    CO-PILOT		: William Roske
-- *
-- *    DATE STARTED	: 06/94
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) dup(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the dup(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	dup(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
--
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
+--000000000000c1784805cfc9df76
+Content-Type: text/plain; charset="UTF-8"
 
--void setup();
--void cleanup();
--
--char *TCID = "dup05";
--int TST_TOTAL = 1;
-+/*\
-+ * [DESCRIPTION]
-+ *
-+ * Basic test for dup(2) of a named pipe descriptor
-+ */
-+#include <stdio.h>
-+#include "tst_test.h"
+Patchset applied, thanks for your work.
 
- char Fname[255];
- int fd;
+-- 
+Regards,
+Li Wang
 
--int main(int ac, char **av)
-+static void run(void)
- {
--	int lc;
-+	TEST(dup(fd));
+--000000000000c1784805cfc9df76
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(dup(fd));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "dup failed");
--		} else {
--			tst_resm(TPASS, "dup returned %ld",
--				 TEST_RETURN);
--
--			SAFE_CLOSE(cleanup, TEST_RETURN);
--		}
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "dup failed");
-+	} else {
-+		tst_res(TPASS, "dup returned %ld",
-+			 TST_RET);
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Patchset applied, thanks for your work.</div></div><div><br><=
+/div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><di=
+v>Regards,<br></div><div>Li Wang<br></div></div></div></div>
 
-+		SAFE_CLOSE(TST_RET);
- 	}
--
--	cleanup();
--	tst_exit();
- }
-
- void setup(void)
- {
- 	fd = -1;
-
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
- 	sprintf(Fname, "dupfile");
--	SAFE_MKFIFO(cleanup, Fname, 0777);
-+	SAFE_MKFIFO(Fname, 0777);
- 	if ((fd = open(Fname, O_RDWR, 0700)) == -1)
--		tst_brkm(TBROK, cleanup, "open failed");
-+		tst_brk(TBROK, "open failed");
- }
-
- void cleanup(void)
- {
- 	if (fd != -1)
- 		if (close(fd) == -1)
--			tst_resm(TWARN | TERRNO, "close failed");
--
--	tst_rmdir();
--
-+			tst_res(TWARN | TERRNO, "close failed");
- }
-+
-+static struct tst_test test = {
-+        .test_all = run,
-+        .setup = setup,
-+        .cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
---
-2.20.1
+--000000000000c1784805cfc9df76--
 
 
+--===============1382118014==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1382118014==--
+
