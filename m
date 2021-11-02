@@ -2,83 +2,74 @@ Return-Path: <SRS0=DF5p=PV=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00EC6C433FE
-	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 10:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AADFC433EF
+	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 10:57:45 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DB3B6023F
-	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 10:04:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5DB3B6023F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2D26E60EBC
+	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 10:57:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2D26E60EBC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B24A3C710C
-	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 11:04:36 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 359E53C716A
+	for <ltp@archiver.kernel.org>; Tue,  2 Nov 2021 11:57:42 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5288E3C6E84
- for <ltp@lists.linux.it>; Tue,  2 Nov 2021 11:04:25 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 828F43C6268
+ for <ltp@lists.linux.it>; Tue,  2 Nov 2021 11:57:30 +0100 (CET)
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com
+ [IPv6:2607:f8b0:4864:20::52a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ACD121401458
- for <ltp@lists.linux.it>; Tue,  2 Nov 2021 11:04:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1635847463;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9l/wSSKuocG7LAVlBky2UP8SvUfLimgXkdtQH2COXyA=;
- b=KK6v+u7P3MzH8OXKkxMsjPOdIoCwffjGnArVFFJoI2u6OkGvJsbQQtKIkB34JX01CpIvaO
- S0QWvLuU11q2enIWIuN/3wSTPkRSqgREsLtlJv8joPs5IbOw0jc9tZTVTBCMPMz71q2+At
- E6uDU7AVsjOwXthSQ/Qsko7E9NvCuyQ=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-GImz4pn-PtGXdVl_DlqrPQ-1; Tue, 02 Nov 2021 06:04:20 -0400
-X-MC-Unique: GImz4pn-PtGXdVl_DlqrPQ-1
-Received: by mail-yb1-f198.google.com with SMTP id
- v133-20020a25c58b000000b005c20153475dso19260324ybe.17
- for <ltp@lists.linux.it>; Tue, 02 Nov 2021 03:04:20 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3D392201157
+ for <ltp@lists.linux.it>; Tue,  2 Nov 2021 11:57:23 +0100 (CET)
+Received: by mail-pg1-x52a.google.com with SMTP id j9so11667717pgh.1
+ for <ltp@lists.linux.it>; Tue, 02 Nov 2021 03:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+ bh=Xm+dgiS88VOix8KcBAlErT3IBRooz4Yz2g/lZvYEMCw=;
+ b=RWT+O+2bO5aGc3ZQKakKsn/lNO/5kaPsq/McefadlER9LQmi8cRb4WEEdXN8yFu3YY
+ FDIfypTpNtJd+VIyB8BGM1QBz9P143so3isGZi0wwMmYM4YMrGFDBY0xEe0b8ePUH4jK
+ crghG/wDb5rUi55JISLZSPY8EgJ3yn7P7iH2Jm3OjHOJT3UQQNR08bRv7B+rBm16dLBV
+ uqY0BZ1KdLy000H7Iq3elRh4hjXziyL8Leo1HodUO3RRgEUS1j4KJYVakE65EuCjI3A9
+ 91CCXIsgIFFh15d3W1pdIZZIioMk+NRTSfDfSK086zvP/ekKxFhHHUfHfMSa7oSWfLKH
+ vY4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=9l/wSSKuocG7LAVlBky2UP8SvUfLimgXkdtQH2COXyA=;
- b=pVRpsAFHZ0/fSc79dBL4+QjbfYO7T4LkMJdtkq+NmKlOw4Clyr1o7IQGdzgc1Lc1Em
- YTg/KZtPcHDWlHWiJyokthVDzIeyCXM2kgcm/4DXQ9UD18pVWqo/Bo2ZSd9q2QpTjKEg
- P8dsFZ2tWOltweUWzSi6G/nLwI4D25iSITGm1604RS7YsTr0sIN0J83vIfp/VFA/zWaB
- wQuS2Rt+DmiODnsqn25k7BbFD9EIorBcw23r3JDeYkjQZKVhraxHrKaUxX0499ab2XjR
- NPxfaK1QVtkJIz8vboPNQVFMCDO35SMrnkq1I/ZAglEbGMD6TwS+HCRyRtA+ipG6Ua8Y
- XwIw==
-X-Gm-Message-State: AOAM532u1zitzW4phUqXdQOdlF+JNk03mibn74dvgp59gztN0f27+kyS
- gpjd1DH7btKiI6HK8/jEVJs1CSuiW781/g8p77iUudgBPmkG7ATG3MqgmNylV+JgzgFezgSFSZT
- TQFlXSa7eIjU2K4Is7jELUaeSvqM=
-X-Received: by 2002:a05:6902:690:: with SMTP id
- i16mr19560353ybt.302.1635847460167; 
- Tue, 02 Nov 2021 03:04:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwg09kzqNtpzQ8+4eKbmwGquV54K0kkYrnsV216sQLUWpeH69j7IGJXzQEZelZk2esGcBBZZlqVgnsLhnsNR1Y=
-X-Received: by 2002:a05:6902:690:: with SMTP id
- i16mr19560338ybt.302.1635847459941; 
- Tue, 02 Nov 2021 03:04:19 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition;
+ bh=Xm+dgiS88VOix8KcBAlErT3IBRooz4Yz2g/lZvYEMCw=;
+ b=vAHQ0ILg2QdRdmtXcEMY+dLtpE1abvFZwQ5GcLmgciIWssp5OibP1K/yRQ/W89rLmo
+ fnzADirkkSEv44/0kCrLllb4cHCaLE/7wR7NN9nTFxLt60ykiEt9/viuINeDkGC2uTwN
+ yEHKYBfojR9pzewN5O1EO+/85NlqSb6QEGPRAX/HBN5Ez5xAxmsfs5rbs/hUIcLV5D+8
+ LFqgfRsnrJXmeUHAodlBm/WZnj29/+JlUpuBGkyk+EJBRGczF2uxRPHmuMgybjGdE3ET
+ 2dEjDogEnyWbfph6Ni8HZ0UYvbYImKGMamYshzIZT5unKNwWf3/6H8NRgF38F5VCNUzK
+ vw5A==
+X-Gm-Message-State: AOAM530b/tnAx9h6rNRFdCbem766yq7xLEKVHsHTV5ZrjqdAeR6DdfVt
+ dGhcwFYbgzR8dcW3nllhrrJLgMeXP5SHmg==
+X-Google-Smtp-Source: ABdhPJyFQN6k4Aq2iO2tfoqWy3QVChjU8S0NOQpFv5ZCGjKwSUFI2+zlvg32Et1mVkp6WAjFOWgUKg==
+X-Received: by 2002:a05:6a00:244d:b0:44d:c279:5155 with SMTP id
+ d13-20020a056a00244d00b0044dc2795155mr35351693pfj.0.1635850641095; 
+ Tue, 02 Nov 2021 03:57:21 -0700 (PDT)
+Received: from google.com (64.157.240.35.bc.googleusercontent.com.
+ [35.240.157.64])
+ by smtp.gmail.com with ESMTPSA id r25sm15269169pge.61.2021.11.02.03.57.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 02 Nov 2021 03:57:20 -0700 (PDT)
+Date: Tue, 2 Nov 2021 10:57:08 +0000
+To: ltp@lists.linux.it
+Message-ID: <cover.1635849607.git.repnop@google.com>
 MIME-Version: 1.0
-References: <20211029080527.28014-1-tangmeng@uniontech.com>
- <20211029080527.28014-4-tangmeng@uniontech.com>
-In-Reply-To: <20211029080527.28014-4-tangmeng@uniontech.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 2 Nov 2021 18:04:08 +0800
-Message-ID: <CAEemH2fhEZ6mmXoSsC_-KEcWTidWokS2FitFKuS3jgbSwSY+ug@mail.gmail.com>
-To: tangmeng <tangmeng@uniontech.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/4] link/link07: Convert to new API
+Subject: [LTP] [PATCH v2 0/2] Test support for new fanotify FAN_REPORT_PIDFD
+ feature
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,60 +81,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0108336574=="
+From: Matthew Bobrowski via ltp <ltp@lists.linux.it>
+Reply-To: Matthew Bobrowski <repnop@google.com>
+Cc: jack@suse.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0108336574==
-Content-Type: multipart/alternative; boundary="000000000000c1c3c005cfcb6a48"
+Hi,
 
---000000000000c1c3c005cfcb6a48
-Content-Type: text/plain; charset="UTF-8"
+This patch series introduces LTP tests for the new fanotify
+FAN_REPORT_PIDFD feature which has been merged as part of the v5.15
+release.
 
-And combine this test into link04.c as well.
+I've addressed the minor nits that came out of the first round of
+review, which can be found here [0].
 
-There wouldn't be very difficult to setup configuration for the specific
-tcase before testing.
+[0] https://lore.kernel.org/ltp/cover.1635327490.git.repnop@google.com/
 
-See how madvise02 achieve that for various situation:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/madvise/madvise02.c
+Matthew Bobrowski (2):
+  syscalls/fanotify20: add new test for FAN_REPORT_PIDFD
+  syscalls/fanotify21: add new test checking the returned pidfd from
+    fanotify in FAN_REPORT_PIDFD mode
+
+ configure.ac                                  |   2 +-
+ testcases/kernel/syscalls/fanotify/.gitignore |   2 +
+ testcases/kernel/syscalls/fanotify/fanotify.h |  26 ++
+ .../kernel/syscalls/fanotify/fanotify20.c     | 128 ++++++++
+ .../kernel/syscalls/fanotify/fanotify21.c     | 306 ++++++++++++++++++
+ 5 files changed, 463 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify20.c
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify21.c
 
 -- 
-Regards,
-Li Wang
+2.33.1.1089.g2158813163f-goog
 
---000000000000c1c3c005cfcb6a48
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
-ll">And combine this test into link04.c as well.</div><div class=3D"gmail_d=
-efault" style=3D"font-size:small"><br></div><div class=3D"gmail_default" st=
-yle=3D"font-size:small">There wouldn&#39;t be very difficult=C2=A0to setup =
-configuration for the specific tcase before testing.</div><div class=3D"gma=
-il_default" style=3D"font-size:small"><br></div><div class=3D"gmail_default=
-" style=3D"font-size:small">See how madvise02 achieve that for various situ=
-ation:</div><div class=3D"gmail_default" style=3D"font-size:small"><a href=
-=3D"https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/=
-syscalls/madvise/madvise02.c">https://github.com/linux-test-project/ltp/blo=
-b/master/testcases/kernel/syscalls/madvise/madvise02.c</a><br></div></div><=
-div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D=
-"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000c1c3c005cfcb6a48--
-
-
---===============0108336574==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+/M
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0108336574==--
-
