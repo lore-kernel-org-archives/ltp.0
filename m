@@ -2,77 +2,76 @@ Return-Path: <SRS0=7iMP=PW=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A36B6C433F5
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 11:39:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E761C433EF
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 12:01:54 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41B8561058
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 11:39:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 41B8561058
+	by mail.kernel.org (Postfix) with ESMTPS id E18A161051
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 12:01:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E18A161051
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2CD6F3C71E0
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 12:39:14 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C03D33C7276
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 13:01:51 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7DA73C67E6
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 12:39:03 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 9185E3C1414
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 13:01:40 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DE200600269
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 12:39:02 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BB2F81000F72
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 13:01:38 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F38072191C;
- Wed,  3 Nov 2021 11:39:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 51E702191C;
+ Wed,  3 Nov 2021 12:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1635939541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1635940898; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+ozeDJlJiLS6w7kC+zxc2TiA7j0Db9Dhw1SzvCV+12E=;
- b=qGOFbMwoVEzs/owuC4nAC02lRslVBUY1s4NCkn4Eh+Fims9klhvr5SphJMEozbR387A1uv
- H8IuAbrzctWtdKFNv9J8nXiX7zv85kLTS2t6SCJQxAjxlQVB0l516ZgzKoJvv50D4Sai9r
- xFVG93WE5gY4iTulqVjJ22fzdNOzDZE=
+ bh=GsxpAUn+u3fFqvmKpesMSYsB+bdsbq00KS7M46Se+pQ=;
+ b=grV8CaLicWbyD/jyBxmv5S6Ulzg4ZPl95bpXy/Su/HoTftoLv7/mDtKNQLWd/serk419KB
+ DgtCEKXDkj9l+SzlxoM16+RDtpfg6BRULo0rkxP9jWfwxEDuCJcmKYt7Y0H6ukGbJlAE53
+ dA3FgQDBQ5W+IveZfIIQeawIoQUcUrk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1635939542;
+ s=susede2_ed25519; t=1635940898;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+ozeDJlJiLS6w7kC+zxc2TiA7j0Db9Dhw1SzvCV+12E=;
- b=W3YP5R/cZ5DIiU/937a9QF71p4sK+h+lvUHhHeRc9SY1QAKYwIxfwFq08g6LJtaA/Kx50q
- AQgqGOmrV0APxIDA==
+ bh=GsxpAUn+u3fFqvmKpesMSYsB+bdsbq00KS7M46Se+pQ=;
+ b=xO1ItHwj5K/ofPYu3BssHEBByMw9tO+apYaGfepvOUgnxp5eFjW3VsFSYQqEUugn1YbtFd
+ QBCgrQ11QM0hlmCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DDA1D13DC1;
- Wed,  3 Nov 2021 11:39:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3EDF513CE7;
+ Wed,  3 Nov 2021 12:01:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KHI+NdV0gmG/OQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 03 Nov 2021 11:39:01 +0000
-Date: Wed, 3 Nov 2021 12:39:57 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id aD5QDiJ6gmFRRwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 03 Nov 2021 12:01:38 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YYJ1DV0+0ftuHT2U@yuki>
-References: <20211101145342.7166-1-chrubis@suse.cz>
- <20211101145342.7166-8-chrubis@suse.cz> <YYFXns53AsnQQg6w@pevik>
- <YYFZLdb91Tz9h6vN@yuki> <YYFbz0LCHPiY+MNB@pevik>
- <YYFhgS9r+TWxN0QB@yuki>
+To: ltp@lists.linux.it
+Date: Wed,  3 Nov 2021 13:02:27 +0100
+Message-Id: <20211103120233.20728-2-chrubis@suse.cz>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211103120233.20728-1-chrubis@suse.cz>
+References: <20211103120233.20728-1-chrubis@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YYFhgS9r+TWxN0QB@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 7/7] docparse: Split into metadata and docparse
+Subject: [LTP] [PATCH v3 1/7] docparse: Implement #define and #include
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,40 +83,375 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Also looking at the Makefile it may not work with out-of-tree build, so
-> we may need this as well:
-> 
-> diff --git a/metadata/Makefile b/metadata/Makefile
-> index 76a3aed94..9b88d8302 100644
-> --- a/metadata/Makefile
-> +++ b/metadata/Makefile
-> @@ -17,10 +17,10 @@ ltp.json: metaparse
-> 
->  docparse: ltp.json
->  ifeq ($(WITH_METADATA),yes)
-> -       $(MAKE) -C ../docparse/
-> +       $(MAKE) -C $(top_srcdir)/docparse/
->  endif
-> 
->  test:
-> -       $(MAKE) -C tests/ test
-> +       $(MAKE) -C $(abs_srcdir)/tests/ test
-> 
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+We ignore most of the include statements and we attempt to parse only
+header files that reside in the same directory as the test source code,
+that is since we are not interested in any system or library headers as
+we are only looking for constants used in the tst_test structure that
+are always either directly in the test source or in header in the same
+directory.
 
-And it's more complex than this, I guess that I will fix the out-of-tree
-build send send another version of the patchset.
+The macro support is very simple as well, it's a single pass as we are
+not interested in intricate macros. We just need values for constants
+that are used in the tst_test structure intializations.
 
++ Also add -v verbose mode that prints included files and defined macros
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ docparse/docparse.c | 242 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 232 insertions(+), 10 deletions(-)
+
+diff --git a/docparse/docparse.c b/docparse/docparse.c
+index 8cd0d0eef..4cb7f5f93 100644
+--- a/docparse/docparse.c
++++ b/docparse/docparse.c
+@@ -1,9 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) 2019-2021 Cyril Hrubis <chrubis@suse.cz>
+  * Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+  */
+ 
++#define _GNU_SOURCE
++
++#include <search.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <libgen.h>
+@@ -12,6 +15,9 @@
+ 
+ #include "data_storage.h"
+ 
++static int verbose;
++static char *includepath;
++
+ #define WARN(str) fprintf(stderr, "WARNING: " str "\n")
+ 
+ static void oneline_comment(FILE *f)
+@@ -126,7 +132,7 @@ static void maybe_comment(FILE *f, struct data_node *doc)
+ 	}
+ }
+ 
+-const char *next_token(FILE *f, struct data_node *doc)
++static char *next_token(FILE *f, struct data_node *doc)
+ {
+ 	size_t i = 0;
+ 	static char buf[4096];
+@@ -159,6 +165,7 @@ const char *next_token(FILE *f, struct data_node *doc)
+ 		case ',':
+ 		case '[':
+ 		case ']':
++		case '#':
+ 			if (i) {
+ 				ungetc(c, f);
+ 				goto exit;
+@@ -197,6 +204,46 @@ exit:
+ 	return buf;
+ }
+ 
++static FILE *open_include(const char *includepath, FILE *f)
++{
++	char buf[256];
++	char *path;
++	FILE *inc;
++
++	if (!fscanf(f, "%s\n", buf))
++		return NULL;
++
++	if (buf[0] != '"')
++		return NULL;
++
++	char *filename = buf + 1;
++
++	if (!buf[0])
++		return NULL;
++
++	filename[strlen(filename)-1] = 0;
++
++	if (asprintf(&path, "%s/%s", includepath, filename) < 0)
++		return NULL;
++
++	inc = fopen(path, "r");
++
++	if (inc && verbose)
++		fprintf(stderr, "INCLUDE %s\n", path);
++
++	free(path);
++
++	return inc;
++}
++
++static void close_include(FILE *inc)
++{
++	if (verbose)
++		fprintf(stderr, "INCLUDE END\n");
++
++	fclose(inc);
++}
++
+ static int parse_array(FILE *f, struct data_node *node)
+ {
+ 	const char *token;
+@@ -234,9 +281,28 @@ static int parse_array(FILE *f, struct data_node *node)
+ 	return 0;
+ }
+ 
++static void try_apply_macro(char **res)
++{
++	ENTRY macro = {
++		.key = *res,
++	};
++
++	ENTRY *ret;
++
++	ret = hsearch(macro, FIND);
++
++	if (!ret)
++		return;
++
++	if (verbose)
++		fprintf(stderr, "APPLYING MACRO %s=%s\n", ret->key, (char*)ret->data);
++
++	*res = ret->data;
++}
++
+ static int parse_test_struct(FILE *f, struct data_node *doc, struct data_node *node)
+ {
+-	const char *token;
++	char *token;
+ 	char *id = NULL;
+ 	int state = 0;
+ 	struct data_node *ret;
+@@ -280,6 +346,7 @@ static int parse_test_struct(FILE *f, struct data_node *doc, struct data_node *n
+ 			ret = data_node_array();
+ 			parse_array(f, ret);
+ 		} else {
++			try_apply_macro(&token);
+ 			ret = data_node_string(token);
+ 		}
+ 
+@@ -302,6 +369,122 @@ static const char *tokens[] = {
+ 	"{",
+ };
+ 
++static void macro_get_string(FILE *f, char *buf, char *buf_end)
++{
++	int c;
++	char *buf_start = buf;
++
++	for (;;) {
++		c = fgetc(f);
++
++		switch (c) {
++		case EOF:
++			*buf = 0;
++			return;
++		case '"':
++			if (buf == buf_start || buf[-1] != '\\') {
++				*buf = 0;
++				return;
++			}
++			buf[-1] = '"';
++		break;
++		default:
++			if (buf < buf_end)
++				*(buf++) = c;
++		}
++	}
++}
++
++static void macro_get_val(FILE *f, char *buf, size_t buf_len)
++{
++	int c, prev = 0;
++	char *buf_end = buf + buf_len - 1;
++
++	while (isspace(c = fgetc(f)));
++
++	if (c == '"') {
++		macro_get_string(f, buf, buf_end);
++		return;
++	}
++
++	for (;;) {
++		switch (c) {
++		case '\n':
++			if (prev == '\\') {
++				buf--;
++			} else {
++				*buf = 0;
++				return;
++			}
++		break;
++		case EOF:
++			*buf = 0;
++			return;
++		case ' ':
++		case '\t':
++		break;
++		default:
++			if (buf < buf_end)
++				*(buf++) = c;
++		}
++
++		prev = c;
++		c = fgetc(f);
++	}
++}
++
++static void parse_macro(FILE *f)
++{
++	char name[128];
++	char val[256];
++
++	if (!fscanf(f, "%s[^\n]", name))
++		return;
++
++	if (fgetc(f) == '\n')
++		return;
++
++	macro_get_val(f, val, sizeof(val));
++
++	ENTRY e = {
++		.key = strdup(name),
++		.data = strdup(val),
++	};
++
++	if (verbose)
++		fprintf(stderr, " MACRO %s=%s\n", e.key, (char*)e.data);
++
++	hsearch(e, ENTER);
++}
++
++static void parse_include_macros(FILE *f)
++{
++	FILE *inc;
++	const char *token;
++	int hash = 0;
++
++	inc = open_include(includepath, f);
++	if (!inc)
++		return;
++
++	while ((token = next_token(inc, NULL))) {
++		if (token[0] == '#') {
++			hash = 1;
++			continue;
++		}
++
++		if (!hash)
++			continue;
++
++		if (!strcmp(token, "define"))
++			parse_macro(inc);
++
++		hash = 0;
++	}
++
++	close_include(inc);
++}
++
+ static struct data_node *parse_file(const char *fname)
+ {
+ 	int state = 0, found = 0;
+@@ -314,14 +497,28 @@ static struct data_node *parse_file(const char *fname)
+ 
+ 	FILE *f = fopen(fname, "r");
+ 
++	includepath = dirname(strdup(fname));
++
+ 	struct data_node *res = data_node_hash();
+ 	struct data_node *doc = data_node_array();
+ 
+ 	while ((token = next_token(f, doc))) {
+-		if (state < 6 && !strcmp(tokens[state], token))
++		if (state < 6 && !strcmp(tokens[state], token)) {
+ 			state++;
+-		else
++		} else {
++			if (token[0] == '#') {
++				token = next_token(f, doc);
++				if (token) {
++					if (!strcmp(token, "define"))
++						parse_macro(f);
++
++					if (!strcmp(token, "include"))
++						parse_include_macros(f);
++				}
++			}
++
+ 			state = 0;
++		}
+ 
+ 		if (state < 6)
+ 			continue;
+@@ -386,17 +583,42 @@ const char *strip_name(char *path)
+ 	return name;
+ }
+ 
++static void print_help(const char *prgname)
++{
++	printf("usage: %s [-vh] input.c\n\n", prgname);
++	printf("-v sets verbose mode\n");
++	printf("-h prints this help\n\n");
++	exit(0);
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	unsigned int i, j;
+ 	struct data_node *res;
++	int opt;
++
++	while ((opt = getopt(argc, argv, "hv")) != -1) {
++		switch (opt) {
++		case 'h':
++			print_help(argv[0]);
++		break;
++		case 'v':
++			verbose = 1;
++		break;
++		}
++	}
++
++	if (optind >= argc) {
++		fprintf(stderr, "No input filename.c\n");
++		return 1;
++	}
+ 
+-	if (argc != 2) {
+-		fprintf(stderr, "Usage: docparse filename.c\n");
++	if (!hcreate(128)) {
++		fprintf(stderr, "Failed to initialize hash table\n");
+ 		return 1;
+ 	}
+ 
+-	res = parse_file(argv[1]);
++	res = parse_file(argv[optind]);
+ 	if (!res)
+ 		return 0;
+ 
+@@ -425,8 +647,8 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	data_node_hash_add(res, "fname", data_node_string(argv[1]));
+-	printf("  \"%s\": ", strip_name(argv[1]));
++	data_node_hash_add(res, "fname", data_node_string(argv[optind]));
++	printf("  \"%s\": ", strip_name(argv[optind]));
+ 	data_to_json(res, stdout, 2);
+ 	data_node_free(res);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.32.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
