@@ -2,75 +2,69 @@ Return-Path: <SRS0=7iMP=PW=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68630C433EF
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 15:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E521AC433F5
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 16:08:38 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9690960F9D
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 15:37:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9690960F9D
+	by mail.kernel.org (Postfix) with ESMTPS id 0F2B960F39
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 16:08:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0F2B960F39
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF7223C71DA
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 16:37:32 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 65D313C72D8
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 17:08:35 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8E20A3C712D
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 16:37:24 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 733E63C0EBB
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 17:08:25 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 09BF01A00209
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 16:37:23 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 59662200763
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 17:08:20 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 55AA31FC9E;
- Wed,  3 Nov 2021 15:37:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 99621218D9;
+ Wed,  3 Nov 2021 16:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1635953843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XsVaUV0D4JjWMhiwIXFBx3QDUWsoGW2C48aA4IxmdFw=;
- b=JG17iXaokxQWw7mA0up8rnirj05CNue2D/dAcKu6TYxgeWjhQMXUAVZVdpkrIHGhLSLxMj
- hj2DjtzzXI+71zx/Nn3tSZTwuVrhwCSPKwWxvVr/6ItVenVLCrIOctJcuNY5A6v+pzYGRn
- 2NmIUTrE28eppvMg18c1QHFcRhTqwVE=
+ t=1635955699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=r9QT5w/szyrsCs3RcnV4fuV71Eqo2Y4fM7f086UKgq8=;
+ b=y1Hw9/gtBpiT4EANtzRMfKKDCGVv3Ky8vMzUiHIeJe3ADv9xFnGjQno7d/Myi9YVRunHQl
+ WjLmykM/Ag76cW+rCHXHxMP+PmpCU+T0T61WozEBG04t2J/6E2+4XYNrezaQTN9m5/KhZV
+ 8WzujMRsYF+BZ/P9wj4NQFpT/Su4870=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1635953843;
+ s=susede2_ed25519; t=1635955699;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XsVaUV0D4JjWMhiwIXFBx3QDUWsoGW2C48aA4IxmdFw=;
- b=+pblP+Bz5RvofCF1uianVRnT0qmJbsNDKwUovscX1ptPoSRaZFUBfh5rP/G61Lmudhzybc
- Hu85Z+Wvkie8BPDg==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=r9QT5w/szyrsCs3RcnV4fuV71Eqo2Y4fM7f086UKgq8=;
+ b=WtPIFe5j8/lr0MeKsK1IkLYJjEV5sDD21oLRRNQjf8ts+7pYbIplA270AhNUUSGFrGHY55
+ qogr2EImObbgMcAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23BAC13C91;
- Wed,  3 Nov 2021 15:37:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7083B13C91;
+ Wed,  3 Nov 2021 16:08:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 9udjB7OsgmExPQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 03 Nov 2021 15:37:23 +0000
-Date: Wed, 3 Nov 2021 16:38:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YYKs64osfKyAlcC/@yuki>
-References: <20211027075615.19832-1-pvorel@suse.cz> <YYKeZRuVLat/xFuS@yuki>
- <YYKhLrXVhCgTfNS4@pevik> <YYKky6iFvFH/WdKd@yuki>
- <YYKoACdUDPtTeoLb@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id JwItGPOzgmEMTgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 03 Nov 2021 16:08:19 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed,  3 Nov 2021 17:08:15 +0100
+Message-Id: <20211103160815.20282-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YYKoACdUDPtTeoLb@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] ver_linux: Print filesystems
+Subject: [LTP] [RFC PATCH 1/1] configure.ac: Print lib & docparse summary
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,45 +76,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Ah, sorry, I see why I checked it more complicated way:
-> with simply checking exit code you have output twice:
-> 
-> df -hT 2>/dev/null || df
-> Filesystem                     Type      Size  Used Avail Use% Mounted on
-> devtmpfs                       devtmpfs   16G  8,0K   16G   1% /dev
-> tmpfs                          tmpfs      16G   91M   16G   1% /dev/shm
-> tmpfs                          tmpfs     6,2G  4,1M  6,2G   1% /run
-> ...
-> df: /run/user/1000/doc: Operation not permitted
-> Filesystem                     Type      Size  Used Avail Use% Mounted on
-> devtmpfs                       devtmpfs   16G  8,0K   16G   1% /dev
-> tmpfs                          tmpfs      16G   91M   16G   1% /dev/shm
-> tmpfs                          tmpfs     6,2G  4,1M  6,2G   1% /run
-> ...
-> 
-> => which is IMHO nogo. I could redirect to a file and cut it after, but in that
-> case v2 is IMHO much better.
+Due many checks of structs, members etc are library presence and
+docparser config results quite hidden. Print them in the end.
 
-But still we don't need that grep part, right?
+Disadvantage of this is need to keep sync m4 macros with configure.ac
+also quite easily results can be misinterpreted.
 
-So it should be something as:
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
-	if `df -hT 2>/dev/null >/dev/null`; then
-		df -hT
-	else
-		df
-	fi
+If we want some summary I don't see much better way how to achieve it
+with autoconf. Maybe we could introduce extra variables in m4 macros
+which would be used in configure.ac.
 
+Kind regards,
+Petr
+
+ configure.ac | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index 5bf3c52ec..a8b9c6b90 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -375,3 +375,22 @@ test "x$with_tirpc" = xyes && LTP_CHECK_TIRPC
+ LTP_DETECT_HOST_CPU
+ 
+ AC_OUTPUT
++
++cat << EOF
++
++LIBRARIES
++keyutils: ${have_keyutils:-no}
++libacl: ${have_libacl:-no}
++libaio: ${have_libaio:-no} (aio: ${have_aio:-no})
++libcap: $cap_libs (newer: ${has_newer_libcap:-no})
++libcrypto: $have_libcrypto (sha: ${have_sha:-no})
++libmnl: ${have_libmnl:-no}
++libnuma: ${have_libnuma:-no} (headers: ${have_numa_headers:-no}, v2 headers: ${have_numa_headers_v2:-no})
++libtirpc: ${have_libtirpc:-no}
++glibc SUN-RPC: ${have_rpc_glibc:-no}
++
++METADATA
++metadata generator: $with_metadata_generator
++HTML metadata: $with_metadata_html
++PDF metadata: $with_metadata_pdf
++EOF
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.33.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
