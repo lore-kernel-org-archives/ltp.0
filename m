@@ -2,55 +2,56 @@ Return-Path: <SRS0=7iMP=PW=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3CDAC433EF
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:07:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B53DC433EF
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:08:06 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4004D60200
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:07:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4004D60200
+	by mail.kernel.org (Postfix) with ESMTPS id 1745D60200
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:08:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1745D60200
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4CB743C7275
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 11:07:54 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6ED483C72A7
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 11:08:04 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 309593C4D0A
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:07:43 +0100 (CET)
-Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
+ by picard.linux.it (Postfix) with ESMTPS id AA3BB3C71C7
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:07:47 +0100 (CET)
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 87F96600FE8
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:07:40 +0100 (CET)
-X-QQ-mid: bizesmtp32t1635934055tpsam8zm
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7F89E1A00E23
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:07:45 +0100 (CET)
+X-QQ-mid: bizesmtp32t1635934059txr3jvqn
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by esmtp6.qq.com (ESMTP) with 
- id ; Wed, 03 Nov 2021 18:07:27 +0800 (CST)
+ id ; Wed, 03 Nov 2021 18:07:36 +0800 (CST)
 X-QQ-SSF: 0140000000200040C000000A0000000
-X-QQ-FEAT: qpGeUh0uYB+JLTguxFkg7Ub4dwPPcXBuEq6YvrA4XvTKM7j0dmHjBxFLrGjiA
- af6pv6UQdjAPKgUmbIJlPe/VZwS7i8VknSSvn5aVznzZu9HTVEp2JghJSJolyK6NCMg1VNs
- RQUCrNjGO5yHC2pHZtYcz3S/GpQeIesNJsAr5qm2goabfgtqzw5FPr6rXrmbJd/iYf1/7RH
- alfth30bkeBhkZm6w4NPg12Z3Vr6JghzIsidkCs5S1ZZDJoD4p11+C7bbcP6LjLIGWubZrc
- v+ZvxHec1q+Qrth+c8l8Rq9TvVE1PdSofaZ+/dq2m/v+2JcyeGLzFYMELBSLjOfQKyZR8qd
- zS6vHtzjw47megtJjhaGsqmgVNmZ5ZrujkPQEeNdW2LwotembU=
+X-QQ-FEAT: FCUjxTjsuSIfcr+2XNXBIQCBMjSECzRsA4ko796OMSiU3p5Tp/zi6DqO18KOP
+ mBzeyvMY+++Xvs5LZWsavRTjy0p4L5BtsoWwoAFKHz5QUjHkOumNCS8f9WTuTLvkQo66RHd
+ QKHteKuAHlRACJ1HwjV8hw+diyIXL9B0ZlTfxVH5wnpPdhlkSb3+caRI4voehLJG6xLz0j4
+ Z7/UcOtz91BsQAyn28QpRdH3Wnq5M6zX9JGAFPZ+P4mQRWcnnVsRUhLbkJpYEThP+R5ZuYI
+ dDzLpyhYTJru0u4HKSWl2lieqIu3k5xmVAIqsj2gbuFifYONjebYnKxLkXW/yRoFOr9zGF8
+ RvuSWbR7ieOi8xbjpS4zqaxAPcMzZSR8pxvbZdu
 X-QQ-GoodBg: 2
 From: tangmeng <tangmeng@uniontech.com>
 To: ltp@lists.linux.it
-Date: Wed,  3 Nov 2021 18:07:25 +0800
-Message-Id: <20211103100726.16220-1-tangmeng@uniontech.com>
+Date: Wed,  3 Nov 2021 18:07:26 +0800
+Message-Id: <20211103100726.16220-2-tangmeng@uniontech.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211103100726.16220-1-tangmeng@uniontech.com>
+References: <20211103100726.16220-1-tangmeng@uniontech.com>
 MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
 X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/2] syscalls/link: Convert to new API and merge
- link06 and link07 into link04
+Subject: [LTP] [PATCH v333 2/2] link/link05: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,32 +71,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: tangmeng <tangmeng@uniontech.com>
 ---
- runtest/syscalls                        |   2 -
- testcases/kernel/syscalls/link/link04.c | 208 +++++++++++-------------
- testcases/kernel/syscalls/link/link06.c | 113 -------------
- testcases/kernel/syscalls/link/link07.c | 118 --------------
- 4 files changed, 93 insertions(+), 348 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/link/link06.c
- delete mode 100644 testcases/kernel/syscalls/link/link07.c
+ testcases/kernel/syscalls/link/link05.c | 159 ++++++------------------
+ 1 file changed, 37 insertions(+), 122 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b19316805..1e6d46744 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -673,8 +673,6 @@ link02 link02
- link03 link03
- link04 link04
- link05 link05
--link06 link06
--link07 link07
- link08 link08
-
- #linkat test cases
-diff --git a/testcases/kernel/syscalls/link/link04.c b/testcases/kernel/syscalls/link/link04.c
-index d9408845e..9a1c32859 100644
---- a/testcases/kernel/syscalls/link/link04.c
-+++ b/testcases/kernel/syscalls/link/link04.c
-@@ -1,65 +1,40 @@
+diff --git a/testcases/kernel/syscalls/link/link05.c b/testcases/kernel/syscalls/link/link05.c
+index 5981ae62f..28d6079f5 100644
+--- a/testcases/kernel/syscalls/link/link05.c
++++ b/testcases/kernel/syscalls/link/link05.c
+@@ -1,161 +1,76 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
@@ -130,467 +113,171 @@ index d9408845e..9a1c32859 100644
 - * For further information regarding this notice, see:
 - *
 - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
   */
-
--/*
-+/*\
-+ * [Description]
-+ *
-  * Negative test cases for link(2).
-  *
-  * This test program should contain test cases where link will fail regardless
-  * of who executed it (i.e. joe-user or root)
+ 
+ /*
+  * Test if link(2) fails with EMLINK.
   */
+ 
 -#include <sys/types.h>
 -#include <fcntl.h>
--#include <sys/stat.h>
++#include <stdio.h>
+ #include <sys/stat.h>
 -#include <errno.h>
 -#include <string.h>
 -#include <signal.h>
-+#include <pwd.h>
- #include <sys/param.h>
- #include <sys/mman.h>
 -#include "test.h"
 -#include "safe_macros.h"
-+#include "tst_test.h"
-+
-+#define NOBODY_USER     99
-+#define MODE_TO1 S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IXOTH|S_IROTH
-+#define MODE_TO2 S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IXGRP|S_IXOTH|S_IROTH|S_IWOTH
-+#define MODE_TE S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
-+#define MODE_RWX        S_IRWXU | S_IRWXG | S_IRWXO
-+#define DIR_TEMP        "dir2/testdir_1"
-
- static char longpath[PATH_MAX + 2];
-
--struct test_case_t {
-+static struct tcase {
- 	char *file1;
- 	char *desc1;
- 	char *file2;
- 	char *desc2;
- 	int exp_errno;
--} test_cases[] = {
-+} tcases[] = {
- 	/* first path is invalid */
- 	{"nonexistfile", "non-existent file", "nefile", "nefile", ENOENT},
- 	{"", "path is empty string", "nefile", "nefile", ENOENT},
-@@ -79,92 +54,95 @@ struct test_case_t {
- 	{"regfile", "regfile", NULL, "invalid address", EFAULT},
- 	/* two existing files */
- 	{"regfile", "regfile", "regfile2", "regfile2", EEXIST},
-+	{"dir1/oldpath", "Write access diretory", "dir1/newpath", "newpath", EACCES},
-+	{"dir2/testdir_1/tfile_2", "Search access diretory", "dir2/testdir_1/new_tfile_2",
-+	"dir2/testdir_1/new_tfile_2", EACCES},
- };
-
--char *TCID = "link04";
--int TST_TOTAL = ARRAY_SIZE(test_cases);
 -
 -static void setup(void);
 -static void cleanup(void);
+-static void help(void);
 -
+-char *TCID = "link05";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
+ #define BASENAME	"lkfile"
+ 
+ static char fname[255];
+ 
+-static char *links_arg;
+-
+-option_t options[] = {
+-	{"N:", NULL, &links_arg},
+-	{NULL, NULL, NULL}
+-};
+-
+ static int nlinks = 1000;
+ 
 -int main(int ac, char **av)
-+static void verify_link(unsigned int i)
++static void verify_link(void)
  {
 -	int lc;
--	char *fname1, *fname2;
--	char *desc1, *desc2;
--	int i;
+ 	struct stat fbuf, lbuf;
+ 	int cnt;
+ 	char lname[255];
+ 
+-	tst_parse_opts(ac, av, options, &help);
 -
--	tst_parse_opts(ac, av, NULL, NULL);
+-	if (links_arg) {
+-		nlinks = atoi(links_arg);
 -
+-		if (nlinks == 0) {
+-			tst_brkm(TBROK, NULL,
+-			         "nlinks is not a positive number");
+-		}
++	for (cnt = 1; cnt < nlinks; cnt++) {
++		sprintf(lname, "%s%d", fname, cnt);
++		TST_EXP_PASS(link(fname, lname), "link(%s, %s)", fname, lname);
+ 	}
+ 
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			fname1 = test_cases[i].file1;
--			desc1 = test_cases[i].desc1;
--			fname2 = test_cases[i].file2;
--			desc2 = test_cases[i].desc2;
--
--			TEST(link(fname1, fname2));
+-		for (cnt = 1; cnt < nlinks; cnt++) {
+-			sprintf(lname, "%s%d", fname, cnt);
+-			TEST(link(fname, lname));
 -
 -			if (TEST_RETURN == -1) {
--				if (TEST_ERRNO == test_cases[i].exp_errno) {
--					tst_resm(TPASS | TTERRNO,
--						 "link(<%s>, <%s>)",
--						 desc1, desc2);
--				} else {
--					tst_resm(TFAIL | TTERRNO,
--						 "link(<%s>, <%s>) Failed "
--					         "expected errno: %d",
--						 desc1, desc2,
--						 test_cases[i].exp_errno);
--				}
--			} else {
 -				tst_resm(TFAIL,
--					 "link(<%s>, <%s>) returned %ld, "
--				         "expected -1, errno:%d",
--					 desc1, desc2, TEST_RETURN,
--					 test_cases[i].exp_errno);
+-					 "link(%s, %s) Failed, errno=%d : %s",
+-					 fname, lname, TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
 -			}
-+	struct tcase *tc = &tcases[i];
-+
-+	TEST(link(tc->file1, tc->file2));
-+
-+	if (TST_RET == -1) {
-+		if (TST_ERR == tc->exp_errno) {
-+			tst_res(TPASS | TTERRNO,
-+			"link(<%s>, <%s>)",
-+			tc->desc1, tc->desc2);
-+	} else {
-+		tst_res(TFAIL | TTERRNO,
-+			"link(<%s>, <%s>) Failed "
-+			"expected errno: %d",
-+			tc->desc1, tc->desc2,
-+			tc->exp_errno);
+-		}
+-
+-		SAFE_STAT(cleanup, fname, &fbuf);
++	SAFE_STAT(fname, &fbuf);
+ 
+-		for (cnt = 1; cnt < nlinks; cnt++) {
+-			sprintf(lname, "%s%d", fname, cnt);
++	for (cnt = 1; cnt < nlinks; cnt++) {
++		sprintf(lname, "%s%d", fname, cnt);
+ 
+-			SAFE_STAT(cleanup, lname, &lbuf);
+-			if (fbuf.st_nlink <= 1 || lbuf.st_nlink <= 1 ||
+-			    (fbuf.st_nlink != lbuf.st_nlink)) {
++		SAFE_STAT(lname, &lbuf);
++		if (fbuf.st_nlink <= 1 || lbuf.st_nlink <= 1 ||
++		    (fbuf.st_nlink != lbuf.st_nlink)) {
+ 
+-				tst_resm(TFAIL,
+-					 "link(%s, %s[1-%d]) ret %ld for %d "
+-				         "files, stat values do not match %d %d",
+-					 fname, fname, nlinks,
+-					 TEST_RETURN, nlinks,
+-					 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
+-				break;
+-			}
+-		}
+-		if (cnt >= nlinks) {
+-			tst_resm(TPASS,
+-				 "link(%s, %s[1-%d]) ret %ld for %d files, "
+-			         "stat linkcounts match %d",
+-				 fname, fname, nlinks, TEST_RETURN,
+-				 nlinks, (int)fbuf.st_nlink);
+-		}
+-
+-		for (cnt = 1; cnt < nlinks; cnt++) {
+-			sprintf(lname, "%s%d", fname, cnt);
+-			SAFE_UNLINK(cleanup, lname);
++			tst_res(TFAIL,
++				 "link(%s, %s[1-%d]) ret %ld for %d "
++			         "files, stat values do not match %d %d",
++				 fname, fname, nlinks,
++				 TST_RET, nlinks,
++				 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
++			break;
  		}
--
-+	} else {
-+		tst_res(TFAIL,
-+			 "link(<%s>, <%s>) returned %ld, "
-+			"expected -1, errno:%d",
-+			tc->desc1, tc->desc2, TST_RET,
-+			tc->exp_errno);
  	}
--
++	if (cnt >= nlinks) {
++		tst_res(TPASS,
++			 "link(%s, %s[1-%d]) ret %ld for %d files, "
++		         "stat linkcounts match %d",
++			 fname, fname, nlinks, TST_RET,
++			 nlinks, (int)fbuf.st_nlink);
++	}
+ 
 -	cleanup();
 -	tst_exit();
+-}
+-
+-static void help(void)
+-{
+-	printf("  -N #links : create #links hard links every iteration\n");
++	for (cnt = 1; cnt < nlinks; cnt++) {
++		sprintf(lname, "%s%d", fname, cnt);
++		SAFE_UNLINK(lname);
++	}
  }
-
+ 
  static void setup(void)
  {
--	int n;
--
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
 -
- 	memset(longpath, 'a', PATH_MAX+1);
--	SAFE_TOUCH(cleanup, "regfile", 0777, NULL);
--	SAFE_TOUCH(cleanup, "regfile2", 0777, NULL);
--	SAFE_MKDIR(cleanup, "dir", 0777);
--
--	void *bad_addr = tst_get_bad_addr(cleanup);
-
--	for (n = 0; n < TST_TOTAL; n++) {
--		if (!test_cases[n].file1)
--			test_cases[n].file1 = bad_addr;
--
--		if (!test_cases[n].file2)
--			test_cases[n].file2 = bad_addr;
-+	SAFE_TOUCH("regfile", 0777, NULL);
-+	SAFE_TOUCH("regfile2", 0777, NULL);
-+	SAFE_MKDIR("dir", 0777);
-+
-+	unsigned int i;
-+	struct passwd *nobody_pwd;
-+
-+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-+		struct tcase *tc = &tcases[i];
-+
-+		switch (tc->exp_errno) {
-+		case EACCES:
-+			if (tc->desc1 == "Write access diretory") {
-+				SAFE_SETEUID(0);
-+				SAFE_MKDIR("dir1", MODE_RWX);
-+				/* Modify mode permissions on test directory */
-+				SAFE_CHMOD("dir1", MODE_TO1);
-+				SAFE_TOUCH(tc->file1, 0777, NULL);
-+				nobody_pwd = SAFE_GETPWNAM("nobody");
-+				SAFE_SETEUID(nobody_pwd->pw_uid);
-+			} else if (tc->desc1 == "Search access diretory") {
-+				SAFE_SETEUID(0);
-+				SAFE_MKDIR("dir2", MODE_RWX);
-+				/* Modify mode permissions on test directory */
-+				SAFE_CHMOD("dir2", MODE_TO2);
-+				SAFE_MKDIR(DIR_TEMP, MODE_RWX);
-+				SAFE_TOUCH(tc->file1, 0666, NULL);
-+
-+				/* Modify mode permissions on test directory - test conditions */
-+				SAFE_CHMOD(DIR_TEMP, MODE_TE);
-+				nobody_pwd = SAFE_GETPWNAM("nobody");
-+				SAFE_SETEUID(nobody_pwd->pw_uid);
-+			}
-+			break;
-+		case ENOENT:
-+		case ENOTDIR:
-+		case ENAMETOOLONG:
-+		case EFAULT:
-+		case EEXIST:
-+			if (!tc->file1)
-+				tc->file1 = tst_get_bad_addr(NULL);
-+
-+			if (!tc->file2)
-+				tc->file2 = tst_get_bad_addr(NULL);
-+			break;
-+		}
- 	}
+ 	sprintf(fname, "%s_%d", BASENAME, getpid());
+-	SAFE_TOUCH(cleanup, fname, 0700, NULL);
++	SAFE_TOUCH(fname, 0700, NULL);
  }
-
+ 
 -static void cleanup(void)
 -{
 -	tst_rmdir();
 -}
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_link,
-+	.setup = setup,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
++        .test_all = verify_link,
++        .setup = setup,
++        .needs_tmpdir = 1,
 +};
-diff --git a/testcases/kernel/syscalls/link/link06.c b/testcases/kernel/syscalls/link/link06.c
-deleted file mode 100644
-index 17b38ad43..000000000
---- a/testcases/kernel/syscalls/link/link06.c
-+++ /dev/null
-@@ -1,113 +0,0 @@
--/*
-- * Copyright (C) Bull S.A. 2001
-- * Copyright (c) International Business Machines  Corp., 2001
-- * 06/2002 Ported by Jacky Malcles
-- * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Verify that, link() fails with -1 and sets errno to EACCES when Write access
-- * to the directory containing newpath is not allowed for the process's
-- * effective uid.
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <pwd.h>
--
--#include "test.h"
--#include "safe_macros.h"
--
--#define NOBODY_USER	99
--#define MODE_TO S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IXOTH|S_IROTH
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "link06";
--int TST_TOTAL = 1;
--
--#define OLDPATH "oldpath"
--#define NEWPATH "newpath"
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST(link(OLDPATH, NEWPATH));
--
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "link() returned %ld, "
--				 "expected -1, errno=%d", TEST_RETURN,
--				 EACCES);
--		} else {
--			if (TEST_ERRNO == EACCES) {
--				tst_resm(TPASS, "link() fails with expected "
--					 "error EACCES errno:%d", TEST_ERRNO);
--			} else {
--				tst_resm(TFAIL, "link() fails with "
--					 "errno=%d, expected errno=%d",
--					 TEST_ERRNO, EACCES);
--			}
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--	struct passwd *nobody_pwd;
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_require_root();
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	/* Modify mode permissions on test directory */
--	SAFE_CHMOD(cleanup, ".", MODE_TO);
--
--	SAFE_TOUCH(cleanup, OLDPATH, 0777, NULL);
--	nobody_pwd = SAFE_GETPWNAM(cleanup, "nobody");
--	SAFE_SETEUID(cleanup, nobody_pwd->pw_uid);
--}
--
--static void cleanup(void)
--{
--	if (seteuid(0))
--		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
--
--	tst_rmdir();
--}
-diff --git a/testcases/kernel/syscalls/link/link07.c b/testcases/kernel/syscalls/link/link07.c
-deleted file mode 100644
-index 09743b59c..000000000
---- a/testcases/kernel/syscalls/link/link07.c
-+++ /dev/null
-@@ -1,118 +0,0 @@
--/*
-- * Copyright (C) Bull S.A. 2001
-- * Copyright (c) International Business Machines  Corp., 2001
-- *  06/2002 Ported by Jacky Malcles
-- * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Verify that, link() fails with -1 and sets errno to EACCES when one of the
-- * directories in oldpath or newpath did not allow search (execute) permission.
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <pwd.h>
--
--#include "test.h"
--#include "safe_macros.h"
--
--#define MODE_TO S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IXGRP|S_IXOTH|S_IROTH|S_IWOTH
--#define MODE_TE S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
--#define MODE_RWX        S_IRWXU | S_IRWXG | S_IRWXO
--#define DIR_TEMP        "testdir_1"
--#define TEST_FILE2      "testdir_1/tfile_2"
--#define NEW_TEST_FILE2  "testdir_1/new_tfile_2"
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "link07";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST(link(TEST_FILE2, NEW_TEST_FILE2));
--
--		/* Check return code from link(2) */
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL | TTERRNO, "link() returned %ld, "
--				 "expected -1, errno=%d", TEST_RETURN, EACCES);
--		} else {
--			if (TEST_ERRNO == EACCES) {
--				tst_resm(TPASS | TTERRNO,
--				         "link() fails with expected error");
--			} else {
--				tst_resm(TFAIL | TTERRNO, "link() failed"
--				         ", expected errno=%d (EACCES)",
--				         EACCES);
--			}
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--	struct passwd *nobody_pwd;
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_require_root();
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	/* Modify mode permissions on test directory */
--	SAFE_CHMOD(cleanup, ".", MODE_TO);
--
--	SAFE_MKDIR(cleanup, DIR_TEMP, MODE_RWX);
--	SAFE_TOUCH(cleanup, TEST_FILE2, 0666, NULL);
--
--	/* Modify mode permissions on test directory - test conditions */
--	SAFE_CHMOD(cleanup, DIR_TEMP, MODE_TE);
--
--	nobody_pwd = SAFE_GETPWNAM(cleanup, "nobody");
--	SAFE_SETEUID(cleanup, nobody_pwd->pw_uid);
--}
--
--static void cleanup(void)
--{
--	if (seteuid(0))
--		tst_resm(TWARN | TERRNO, "seteuid(o) failed");
--
--	tst_rmdir();
--}
---
+-- 
 2.20.1
 
 
