@@ -2,56 +2,70 @@ Return-Path: <SRS0=7iMP=PW=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B53DC433EF
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB121C433F5
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:55:30 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1745D60200
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:08:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1745D60200
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 07DF961076
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 10:55:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 07DF961076
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6ED483C72A7
-	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 11:08:04 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id B99543C7209
+	for <ltp@archiver.kernel.org>; Wed,  3 Nov 2021 11:55:27 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA3BB3C71C7
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:07:47 +0100 (CET)
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
+ by picard.linux.it (Postfix) with ESMTPS id CF3633C6E38
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:55:17 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2871D1A000B2
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:55:16 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 66FB72191A
+ for <ltp@lists.linux.it>; Wed,  3 Nov 2021 10:55:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1635936916;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=N9gJR8zaMD+CFDd7BjHk3ERrzqhLJauo6I35ksn8fEU=;
+ b=j/JH3m0i0cFD2BCWJlscZS9U9IpMGQYmv+3FetdK8PvtaqmUjnn5yhMwKm2y+xDgXeFWUK
+ yJFr43Nvz+2xIlTXy+KdN9tfA52d+tCtymoMb/FdfHmIXaiGtyJ3V+HHDhc61TV+2Uu5mq
+ SJy9D+bZ/dpSmnxHo/kGKDGc6tJkgMA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1635936916;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=N9gJR8zaMD+CFDd7BjHk3ERrzqhLJauo6I35ksn8fEU=;
+ b=GS3pXA2RyKRas8jMm50Fc03hcP2mtJwpIuEzLx0jNYh34rcyUGZhPvP41R+zlyUSUmv36U
+ yntDupnhSNbnUgBA==
+Received: from g78 (unknown [10.163.24.38])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7F89E1A00E23
- for <ltp@lists.linux.it>; Wed,  3 Nov 2021 11:07:45 +0100 (CET)
-X-QQ-mid: bizesmtp32t1635934059txr3jvqn
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Wed, 03 Nov 2021 18:07:36 +0800 (CST)
-X-QQ-SSF: 0140000000200040C000000A0000000
-X-QQ-FEAT: FCUjxTjsuSIfcr+2XNXBIQCBMjSECzRsA4ko796OMSiU3p5Tp/zi6DqO18KOP
- mBzeyvMY+++Xvs5LZWsavRTjy0p4L5BtsoWwoAFKHz5QUjHkOumNCS8f9WTuTLvkQo66RHd
- QKHteKuAHlRACJ1HwjV8hw+diyIXL9B0ZlTfxVH5wnpPdhlkSb3+caRI4voehLJG6xLz0j4
- Z7/UcOtz91BsQAyn28QpRdH3Wnq5M6zX9JGAFPZ+P4mQRWcnnVsRUhLbkJpYEThP+R5ZuYI
- dDzLpyhYTJru0u4HKSWl2lieqIu3k5xmVAIqsj2gbuFifYONjebYnKxLkXW/yRoFOr9zGF8
- RvuSWbR7ieOi8xbjpS4zqaxAPcMzZSR8pxvbZdu
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Wed,  3 Nov 2021 18:07:26 +0800
-Message-Id: <20211103100726.16220-2-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211103100726.16220-1-tangmeng@uniontech.com>
-References: <20211103100726.16220-1-tangmeng@uniontech.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 3BB6A2C14A;
+ Wed,  3 Nov 2021 10:55:16 +0000 (UTC)
+References: <20211025160134.9283-1-chrubis@suse.cz>
+ <20211025160134.9283-3-chrubis@suse.cz>
+User-agent: mu4e 1.6.5; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 03 Nov 2021 09:34:52 +0000
+In-reply-to: <20211025160134.9283-3-chrubis@suse.cz>
+Message-ID: <87bl31o6ek.fsf@suse.de>
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v333 2/2] link/link05: Convert to new API
+Subject: Re: [LTP] [PATCH 2/6] lib: Add .max_runtime and
+ tst_remaining_runtime()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,225 +77,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- testcases/kernel/syscalls/link/link05.c | 159 ++++++------------------
- 1 file changed, 37 insertions(+), 122 deletions(-)
+Hello,
 
-diff --git a/testcases/kernel/syscalls/link/link05.c b/testcases/kernel/syscalls/link/link05.c
-index 5981ae62f..28d6079f5 100644
---- a/testcases/kernel/syscalls/link/link05.c
-+++ b/testcases/kernel/syscalls/link/link05.c
-@@ -1,161 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-  *  AUTHOR		: Richard Logan
-  *  CO-PILOT		: William Roske
-  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-  */
- 
- /*
-  * Test if link(2) fails with EMLINK.
-  */
- 
--#include <sys/types.h>
--#include <fcntl.h>
-+#include <stdio.h>
- #include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void cleanup(void);
--static void help(void);
--
--char *TCID = "link05";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
- #define BASENAME	"lkfile"
- 
- static char fname[255];
- 
--static char *links_arg;
--
--option_t options[] = {
--	{"N:", NULL, &links_arg},
--	{NULL, NULL, NULL}
--};
--
- static int nlinks = 1000;
- 
--int main(int ac, char **av)
-+static void verify_link(void)
- {
--	int lc;
- 	struct stat fbuf, lbuf;
- 	int cnt;
- 	char lname[255];
- 
--	tst_parse_opts(ac, av, options, &help);
--
--	if (links_arg) {
--		nlinks = atoi(links_arg);
--
--		if (nlinks == 0) {
--			tst_brkm(TBROK, NULL,
--			         "nlinks is not a positive number");
--		}
-+	for (cnt = 1; cnt < nlinks; cnt++) {
-+		sprintf(lname, "%s%d", fname, cnt);
-+		TST_EXP_PASS(link(fname, lname), "link(%s, %s)", fname, lname);
- 	}
- 
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (cnt = 1; cnt < nlinks; cnt++) {
--			sprintf(lname, "%s%d", fname, cnt);
--			TEST(link(fname, lname));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL,
--					 "link(%s, %s) Failed, errno=%d : %s",
--					 fname, lname, TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			}
--		}
--
--		SAFE_STAT(cleanup, fname, &fbuf);
-+	SAFE_STAT(fname, &fbuf);
- 
--		for (cnt = 1; cnt < nlinks; cnt++) {
--			sprintf(lname, "%s%d", fname, cnt);
-+	for (cnt = 1; cnt < nlinks; cnt++) {
-+		sprintf(lname, "%s%d", fname, cnt);
- 
--			SAFE_STAT(cleanup, lname, &lbuf);
--			if (fbuf.st_nlink <= 1 || lbuf.st_nlink <= 1 ||
--			    (fbuf.st_nlink != lbuf.st_nlink)) {
-+		SAFE_STAT(lname, &lbuf);
-+		if (fbuf.st_nlink <= 1 || lbuf.st_nlink <= 1 ||
-+		    (fbuf.st_nlink != lbuf.st_nlink)) {
- 
--				tst_resm(TFAIL,
--					 "link(%s, %s[1-%d]) ret %ld for %d "
--				         "files, stat values do not match %d %d",
--					 fname, fname, nlinks,
--					 TEST_RETURN, nlinks,
--					 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
--				break;
--			}
--		}
--		if (cnt >= nlinks) {
--			tst_resm(TPASS,
--				 "link(%s, %s[1-%d]) ret %ld for %d files, "
--			         "stat linkcounts match %d",
--				 fname, fname, nlinks, TEST_RETURN,
--				 nlinks, (int)fbuf.st_nlink);
--		}
--
--		for (cnt = 1; cnt < nlinks; cnt++) {
--			sprintf(lname, "%s%d", fname, cnt);
--			SAFE_UNLINK(cleanup, lname);
-+			tst_res(TFAIL,
-+				 "link(%s, %s[1-%d]) ret %ld for %d "
-+			         "files, stat values do not match %d %d",
-+				 fname, fname, nlinks,
-+				 TST_RET, nlinks,
-+				 (int)fbuf.st_nlink, (int)lbuf.st_nlink);
-+			break;
- 		}
- 	}
-+	if (cnt >= nlinks) {
-+		tst_res(TPASS,
-+			 "link(%s, %s[1-%d]) ret %ld for %d files, "
-+		         "stat linkcounts match %d",
-+			 fname, fname, nlinks, TST_RET,
-+			 nlinks, (int)fbuf.st_nlink);
-+	}
- 
--	cleanup();
--	tst_exit();
--}
--
--static void help(void)
--{
--	printf("  -N #links : create #links hard links every iteration\n");
-+	for (cnt = 1; cnt < nlinks; cnt++) {
-+		sprintf(lname, "%s%d", fname, cnt);
-+		SAFE_UNLINK(lname);
-+	}
- }
- 
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
- 	sprintf(fname, "%s_%d", BASENAME, getpid());
--	SAFE_TOUCH(cleanup, fname, 0700, NULL);
-+	SAFE_TOUCH(fname, 0700, NULL);
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+        .test_all = verify_link,
-+        .setup = setup,
-+        .needs_tmpdir = 1,
-+};
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> This is another attempt of decoupling test runtime from timeouts.
+
+Do we have documentation explaining what runtimes and timeouts are?
+
+These two words are interchangeable.
+
+>
+> Fundamentally there are two types of tests in LTP. First type are tests
+> that are rather quick (much less than a second) and can live with
+> whatever default timeout we set up. Second type of tests are tests that
+> run in a loop until timeout or a number of iterations is reached, these
+> are the tests that are going to be converted to the .max_runtime added
+> by this patch and followups.
+
+The code looks good, but this all feels quite hard to parse on a
+more abstract level. I think it is because you are trying to over
+generalise between different categories of test.
+
+So we have tests which run to completion as fast as they can. Then we
+have tests which iterate for some arbitrary time period (usually capped
+by some number of iterations as well, but it's not important).
+
+In the first case the concept of a target runtime makes no sense. So we
+end up with 'max runtime' which is the same type of thing as the timeout
+(although the value of timeout is greater).
+
+In the second case, where the test tries to execute for some length of
+time. Then the target runtime and timeout are really seperate things.
+
+I would suggest renaming 'max_runtime' to just 'runtime' and make it
+optional (defaults to 0). All tests which are of the second type can set
+.runtime = DEFAULT_RUNTIME (or whatever). If the test tries to use
+tst_remaining_runtime() without runtime being set, then an error is
+thrown.
+
+If runtime is present then it can simply be added to the timeout to
+produce the "total timeout" (total_timeout = runtime + timeout).
+
+This has the advantage of clearly showing in the meta data which tests
+are likely to run for some time. Also it means that the concept of
+'runtime' doesn't change depending on the type of test. Finally we can
+set timeout very low by default.
+
+So when calculating how long a test executable may run for we have
+
+(runtime + timeout) * variants * iterations
+
+The wording is still not great. runtime is more like "deliberate
+runtime" and timeout is "maximal expected runtime after the deliberate
+runtime".
+
 -- 
-2.20.1
-
-
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
