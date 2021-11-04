@@ -2,75 +2,76 @@ Return-Path: <SRS0=esfC=PX=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9509DC433F5
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 306D8C433F5
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:46:53 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEE6561186
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:24:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEE6561186
+	by mail.kernel.org (Postfix) with ESMTPS id 4B30B6120E
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:46:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B30B6120E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2AF423C740D
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 21:24:04 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C423A3C7399
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 21:46:49 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 951F83C7269
- for <ltp@lists.linux.it>; Thu,  4 Nov 2021 21:23:54 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 44C583C559D
+ for <ltp@lists.linux.it>; Thu,  4 Nov 2021 21:46:39 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E06AC200ADB
- for <ltp@lists.linux.it>; Thu,  4 Nov 2021 21:23:53 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D03261001165
+ for <ltp@lists.linux.it>; Thu,  4 Nov 2021 21:46:38 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 420CE218B2;
- Thu,  4 Nov 2021 20:23:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 08B31218B2;
+ Thu,  4 Nov 2021 20:46:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1636057433;
+ t=1636058798;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TEAbTEAXNusmlQvVvekHF5W9wvoR3gu/PmsXtpenqaA=;
- b=D/C6Z/56UHzK1v2Odk7lKgIvdI4DRyovaAzzdc9hj9Auk8p4TJINtxswqQhcdUC/CPkrT+
- G1SFryUW3ovzjz9X14W1n3rhHVkdgH92EJR1JHhKEEphqCIztzlbFEKy3QfwcaF8UdZXgD
- +JbQly0wYg3GyZI2bN9nmWQyDpcLcA8=
+ bh=AxoqIf53yjgo0kLsVTiK5AM+SlsSwgyUIkuZpHlckVw=;
+ b=pile729gzsH5hgODUg6Q1qxdH0dNFXkxLbTFM/XhPK/WwFlGSyJ6cYEZZWbWDo4FnounVF
+ HySXxh0iyhlo5gWdBceI2yfFjZk96wABEzV+c1Vyi+HIHGw3EPlFXWpZRhAthiKFANAcKb
+ BDRj0Gy9iLrul8rj9m0BHXUEO2ov2o4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1636057433;
+ s=susede2_ed25519; t=1636058798;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TEAbTEAXNusmlQvVvekHF5W9wvoR3gu/PmsXtpenqaA=;
- b=X+MUkVyJXQXP5ErY4VJT6KFi1b62fH3JLwYQfrrBt0qUbJeJj7NzvtMFxb7nOdGZME03hf
- Jc4jCqm4Z8p/cFDw==
+ bh=AxoqIf53yjgo0kLsVTiK5AM+SlsSwgyUIkuZpHlckVw=;
+ b=MWSfQlw89D2ntnRPm9jLrk5JY1NNUkK3T8WGH+JXrENCVj0b8NlZ+x3QYc7fWGJZg1+F/A
+ w1hjmqRA6bHm/lCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0690113F9F;
- Thu,  4 Nov 2021 20:23:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C774C13FD0;
+ Thu,  4 Nov 2021 20:46:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id DJZoO1hBhGE1bgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 04 Nov 2021 20:23:52 +0000
-Date: Thu, 4 Nov 2021 21:23:50 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id JAVYLq1GhGF+dgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 04 Nov 2021 20:46:37 +0000
+Date: Thu, 4 Nov 2021 21:46:36 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YYRBVuS+GunT5j9U@pevik>
+Message-ID: <YYRGrBaCefpAtz6x@pevik>
 References: <20211103120233.20728-1-chrubis@suse.cz>
- <20211103120233.20728-5-chrubis@suse.cz>
+ <20211103120233.20728-6-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211103120233.20728-5-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20211103120233.20728-6-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 4/7] docparse: Implement ARRAY_SIZE()
+Subject: Re: [LTP] [PATCH v3 5/7] docparse: Add type normalization
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,27 +92,69 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-> Adds a special handlingn for ARRAY_SIZE() macro.
-typo: s/handlingn/handling/
+> For now just for .test_variants.
 
-While code LGTM
+> There are two reasons for this:
 
-Not related to this change (it's also in code in current master): return value
-of parse_test_struct() is not used.
+> - This code makes sure that we get right value parsed and aborts the
+>   compilation if the parser got confused. This part is important since
+>   if the testrunners are going to use the metadata the data in there
+>   must be correct.
+Very good idea.
+
+> - And much less important it makes the resulting json nicer to read
 
 ...
-> +static void look_for_array_size(FILE *f, const char *arr_id, struct data_node **res)
+> +static void convert_str2int(struct data_node *res, const char *id, const char *str_val)
 > +{
-> +	const char *token;
-> +	char buf[2][2048] = {};
-> +	int cur_buf = 0;
-> +	int prev_buf = 1;
+> +	long val;
+> +	char *endptr;
 > +
-> +	for (;;) {
-> +		if (!(token = next_token2(f, buf[cur_buf], 2048, NULL)))
-nit: there could be sizeof(buf[cur_buf]) instead of hardwiring 2048.
+> +	errno = 0;
+> +	val = strtol(str_val, &endptr, 10);
+> +
+> +	if (errno || *endptr) {
+> +		fprintf(stderr,	"Cannot convert %s value %s to int!", id, str_val);
+=> missing \n.
+> +		exit(1);
+> +	}
+> +
+> +	if (verbose)
+> +		fprintf(stderr, "NORMALIZING %s TO INT %li", id, val);
+And here.
+> +
+> +	data_node_hash_del(res, id);
+> +	data_node_hash_add(res, id, data_node_int(val));
+> +}
+> +
+> +static void check_normalize_types(struct data_node *res)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; tst_test_typemap[i].id; i++) {
+> +		struct data_node *n;
+> +		struct typemap *typemap = &tst_test_typemap[i];
+> +
+> +		n = data_node_hash_get(res, typemap->id);
+> +		if (!n)
+> +			continue;
+> +
+> +		if (n->type == typemap->type)
+> +			continue;
+> +
+> +		if (n->type == DATA_STRING && typemap->type == DATA_INT) {
+> +			convert_str2int(res, typemap->id, n->string.val);
+> +			continue;
+> +		}
+> +
+> +		fprintf(stderr, "Cannot convert %s from %s to %s!",
+And here.
+> +			typemap->id, data_type_name(n->type),
+> +			data_type_name(typemap->type));
+> +		exit(1);
+> +	}
+> +}
 
-LGTM.
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
