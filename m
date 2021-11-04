@@ -2,76 +2,75 @@ Return-Path: <SRS0=esfC=PX=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABA80C433F5
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 19:46:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9509DC433F5
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:24:06 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 105686103B
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 19:46:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 105686103B
+	by mail.kernel.org (Postfix) with ESMTPS id EEE6561186
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:24:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEE6561186
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E70E53C737F
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 20:46:15 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2AF423C740D
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 21:24:04 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0748E3C7186
- for <ltp@lists.linux.it>; Thu,  4 Nov 2021 20:46:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 951F83C7269
+ for <ltp@lists.linux.it>; Thu,  4 Nov 2021 21:23:54 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3F2CC1400F53
- for <ltp@lists.linux.it>; Thu,  4 Nov 2021 20:46:01 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E06AC200ADB
+ for <ltp@lists.linux.it>; Thu,  4 Nov 2021 21:23:53 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 51FE4218B2;
- Thu,  4 Nov 2021 19:46:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 420CE218B2;
+ Thu,  4 Nov 2021 20:23:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1636055161;
+ t=1636057433;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=drn8ZjPMBZs6NMRZjm3q1R+4sb9/B57UZjGtqEHHIdE=;
- b=VmrGBjjDErGLS5+Z7c9ss9Dw3KpWgFbUvCqX8K4+kTFNsGya/TycLPh7KBVpwtSSto3qnH
- 0AoO1x/ud92Y1i5KU1oA7xtboLOZLZ0XrE3BCshzRjbGVc6UiyhKODs2D1VWaF4aJ3qfgX
- XsJcEVgu8c6hWCivc0HNgwQKdiHKmMI=
+ bh=TEAbTEAXNusmlQvVvekHF5W9wvoR3gu/PmsXtpenqaA=;
+ b=D/C6Z/56UHzK1v2Odk7lKgIvdI4DRyovaAzzdc9hj9Auk8p4TJINtxswqQhcdUC/CPkrT+
+ G1SFryUW3ovzjz9X14W1n3rhHVkdgH92EJR1JHhKEEphqCIztzlbFEKy3QfwcaF8UdZXgD
+ +JbQly0wYg3GyZI2bN9nmWQyDpcLcA8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1636055161;
+ s=susede2_ed25519; t=1636057433;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=drn8ZjPMBZs6NMRZjm3q1R+4sb9/B57UZjGtqEHHIdE=;
- b=PDF8fxzKyIwatkRbz1I/fnEu3kycHN5bKKcAl4NTMwIeY25xRWlKz6q+z8r/Y033eJYiLZ
- l8XmJOWAIeLWwIDg==
+ bh=TEAbTEAXNusmlQvVvekHF5W9wvoR3gu/PmsXtpenqaA=;
+ b=X+MUkVyJXQXP5ErY4VJT6KFi1b62fH3JLwYQfrrBt0qUbJeJj7NzvtMFxb7nOdGZME03hf
+ Jc4jCqm4Z8p/cFDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16A2113FCE;
- Thu,  4 Nov 2021 19:46:00 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0690113F9F;
+ Thu,  4 Nov 2021 20:23:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id P6orOHg4hGGlYAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 04 Nov 2021 19:46:00 +0000
-Date: Thu, 4 Nov 2021 20:45:58 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id DJZoO1hBhGE1bgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 04 Nov 2021 20:23:52 +0000
+Date: Thu, 4 Nov 2021 21:23:50 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YYQ4dnFGVkzX4DCw@pevik>
-References: <20211103160815.20282-1-pvorel@suse.cz>
- <YYPc0E/IUPBu1z2k@yuki>
+Message-ID: <YYRBVuS+GunT5j9U@pevik>
+References: <20211103120233.20728-1-chrubis@suse.cz>
+ <20211103120233.20728-5-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YYPc0E/IUPBu1z2k@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20211103120233.20728-5-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] configure.ac: Print lib & docparse summary
+Subject: Re: [LTP] [PATCH v3 4/7] docparse: Implement ARRAY_SIZE()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,7 +83,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -92,21 +91,28 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-> Hi!
-> > Due many checks of structs, members etc are library presence and
-> > docparser config results quite hidden. Print them in the end.
+> Adds a special handlingn for ARRAY_SIZE() macro.
+typo: s/handlingn/handling/
 
-> Another option would be adding 'make info' target to the top level
-> Makefile that would print these based on config.mk, not sure if that
-> would be much better than this though.
+While code LGTM
 
-While using config.mk would make things easier, I slightly prefer to have info
-printed after running ./configure.  Maybe we could even have both. Unfortunately
-each would have to have its own implementation, as configure.ac setup IMHO does
-not allow to use config.mk output.
+Not related to this change (it's also in code in current master): return value
+of parse_test_struct() is not used.
 
-Whatever option we use, what'd be worth to print? Just libraries and docparse
-(as done in this RFC) or more info from config.mk?
+...
+> +static void look_for_array_size(FILE *f, const char *arr_id, struct data_node **res)
+> +{
+> +	const char *token;
+> +	char buf[2][2048] = {};
+> +	int cur_buf = 0;
+> +	int prev_buf = 1;
+> +
+> +	for (;;) {
+> +		if (!(token = next_token2(f, buf[cur_buf], 2048, NULL)))
+nit: there could be sizeof(buf[cur_buf]) instead of hardwiring 2048.
+
+LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
