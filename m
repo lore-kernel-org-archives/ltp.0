@@ -2,54 +2,80 @@ Return-Path: <SRS0=esfC=PX=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 537D2C433EF
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 00:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64925C43217
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 01:55:25 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57CAD611C8
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 00:20:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 57CAD611C8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8922161106
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 01:55:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8922161106
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5EA4A3C72B5
-	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 01:20:31 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 55FB23C72F8
+	for <ltp@archiver.kernel.org>; Thu,  4 Nov 2021 02:55:22 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A64B03C5DD9
- for <ltp@lists.linux.it>; Thu,  4 Nov 2021 01:20:21 +0100 (CET)
-Received: from smtpbg506.qq.com (smtpbg506.qq.com [203.205.250.33])
+ by picard.linux.it (Postfix) with ESMTPS id 2352E3C71C6
+ for <ltp@lists.linux.it>; Thu,  4 Nov 2021 02:55:11 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B5F436007BB
- for <ltp@lists.linux.it>; Thu,  4 Nov 2021 01:20:18 +0100 (CET)
-X-QQ-mid: bizesmtp41t1635985213tgs6zy1f
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Thu, 04 Nov 2021 08:20:07 +0800 (CST)
-X-QQ-SSF: 0140000000200040C000000A0000000
-X-QQ-FEAT: CpF3Nc+oRqyLz6cWQXNPpbmRHZSy0C3OPIbX0E3doergRUhxKMt/YyStK2XjU
- Bh+KHas0TkdpCWqIY8Gb0BGbjZl4VXrUNulkz3klyuczlZCJmxJK4Q2uYtZazroRwOwXJ2N
- S8fJu3Fe5QNz0LkyvlyW9xoZA69QMeWu5qH8Xv7D2mGvZnlUiS4dDuYdW8klZIt2OQZ2DFb
- sp0heQbchG2b0ZqzperGm3QAZPJOJPJOB1dVkak4TgtwdkFSq1Lt+8Q9Fa2AYUlg9Ai5L+Y
- POR4s6lgYXOdX5HHynhXJ3nJuWaTFjnl5FmOfqFW9qbyV3mpDKvfcLq8zT9YNGvwlFeD/Yh
- va2GVMidYgD741AO1kfnKe8OmtbjQ==
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Thu,  4 Nov 2021 08:20:06 +0800
-Message-Id: <20211104002006.11287-1-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5E12D200B37
+ for <ltp@lists.linux.it>; Thu,  4 Nov 2021 02:55:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635990908;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PuqLoLcCy7WfPXOU9ZebWMWV1KvvCfo6Hf3FJBZ16S0=;
+ b=J9vMKp0X10rFFyWFuVmSxpIt8WI6yN+tIug4rS+aP+6IlZVxm/2AEy1iipw/RqkbfQJ5fA
+ cJx8wZBOMGa/J3sZx//DkxR++7rUjbCjnymaQelnVTuWLWs+QoRnrmr063o/lk5ORvVFaM
+ qFUhuDfGbfWBFBdecyVbGg/dCrAAV80=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-h2XW4WDzPqWpxBSbtNsGOw-1; Wed, 03 Nov 2021 21:55:07 -0400
+X-MC-Unique: h2XW4WDzPqWpxBSbtNsGOw-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ z2-20020a254c02000000b005b68ef4fe24so6698112yba.11
+ for <ltp@lists.linux.it>; Wed, 03 Nov 2021 18:55:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=PuqLoLcCy7WfPXOU9ZebWMWV1KvvCfo6Hf3FJBZ16S0=;
+ b=UcTlngLpXahcA8lvFjbftZ6NfTDvGkfre2CyGitEUIjtwsuDb0vWYRYooUlveACI4X
+ Wil6xeiR1+J19ljLn4ftnu5qO3PfdWumyAXLfgbiZXo0qMypzNpTruOzkxpYPxkf1v2O
+ a55kVKkOfFmopOoMlYjwJi28LBVImYR6VHXNbyDV6qBZIvtaQRFLH1ADcZQnh0dBuFg/
+ xMQ5f/tl9zGGOL+y7CkrKMK2XHXjj6vwKIsvECwNU4+2YTiNcaWXIvpT7zNO6AsYX6SC
+ jMOcNM4VLbybypbEAwxF51Av4O530CQGcodB3XTyebwOFgALiryWlvpQOhC8Ep6e0FGm
+ ILsA==
+X-Gm-Message-State: AOAM530PP29w8iZkpaDbBLau9N9+WHhtfvk8UGLaaEdSIsx2O4ejcHPq
+ zIpbX+nDepoip38BHGClb9dCOObK1F4FrzbdGDJbPAipZOZk69ctrOY8MFYDNzaOFJAu6pPlmqQ
+ 2iRHuMZMxg/KbrbWQHa4dy52mqSY=
+X-Received: by 2002:a25:86c4:: with SMTP id y4mr41307570ybm.144.1635990906593; 
+ Wed, 03 Nov 2021 18:55:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCGx9CYIIu4EQKulPJs2ZL/TMXsnGRTINMnICZKTiaGOxfdhk1sg5J6NH/dEnuGwi4fBIhDnS4BPIey4CUAik=
+X-Received: by 2002:a25:86c4:: with SMTP id y4mr41307555ybm.144.1635990906363; 
+ Wed, 03 Nov 2021 18:55:06 -0700 (PDT)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20211104002006.11287-1-tangmeng@uniontech.com>
+In-Reply-To: <20211104002006.11287-1-tangmeng@uniontech.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 4 Nov 2021 09:54:54 +0800
+Message-ID: <CAEemH2da+o7-QgYWT5_WrRJHoaBV0oWeSb9J5So_MROQebDV1g@mail.gmail.com>
+To: tangmeng <tangmeng@uniontech.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] getdomainname/getdomainname01: Convert to new API
+Subject: Re: [LTP] [PATCH] getdomainname/getdomainname01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,185 +87,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0175226471=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- .../syscalls/getdomainname/getdomainname01.c  | 141 ++++--------------
- 1 file changed, 26 insertions(+), 115 deletions(-)
+--===============0175226471==
+Content-Type: multipart/alternative; boundary="000000000000d4788c05cfecd0e5"
 
-diff --git a/testcases/kernel/syscalls/getdomainname/getdomainname01.c b/testcases/kernel/syscalls/getdomainname/getdomainname01.c
-index d40abc8c9..1ea0cf409 100644
+--000000000000d4788c05cfecd0e5
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Meng,
+
+I made some clean-up and pushed.
+
+Changes like:
+
 --- a/testcases/kernel/syscalls/getdomainname/getdomainname01.c
 +++ b/testcases/kernel/syscalls/getdomainname/getdomainname01.c
-@@ -1,132 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- */
--/**********************************************************
-- *
-- *    TEST IDENTIFIER	: getdomainname01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for getdomainname(2)
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-  *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- *    SIGNALS
-- *	Uses SIGUSR1 to pause before test if option set.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This is a Phase I test for the getdomainname(2) system call.
-- *	It is intended to provide a limited exposure of the system call.
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- *  getdomainname01  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *			where,  -c n : Run n copies concurrently.
-- *				-e   : Turn on errno logging.
-- *				-h   : Show help screen
-- *				-f   : Turn off functional testing
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
-+ * Basic test for getdomainname(2)
-  *
-- ****************************************************************/
-+ * This is a Phase I test for the getdomainname(2) system call.
-+ * It is intended to provide a limited exposure of the system call.
-+ */
+@@ -13,29 +13,16 @@
+  * It is intended to provide a limited exposure of the system call.
+  */
 
- #include <errno.h>
+-#include <errno.h>
  #include <linux/utsname.h>
--#include "test.h"
-+#include "tst_test.h"
+ #include "tst_test.h"
 
  #define MAX_NAME_LEN __NEW_UTS_LEN
 
--static void setup();
--static void cleanup();
+-static char domain_name[MAX_NAME_LEN];
 -
--char *TCID = "getdomainname01";
--int TST_TOTAL = 1;
--
- static char domain_name[MAX_NAME_LEN];
-
--int main(int ac, char **av)
-+static void verify_getdomainname(void)
+ static void verify_getdomainname(void)
  {
--
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call getdomainname(2)
--		 */
--		TEST(getdomainname(domain_name, sizeof(domain_name)));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "getdomainname() Failed, errno = %d :"
--				 " %s", TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_resm(TPASS, "getdomainname() returned %ld ",
--				 TEST_RETURN);
--		}
--
-+	/*
-+	 * Call getdomainname(2)
-+	 */
-+	TEST(getdomainname(domain_name, sizeof(domain_name)));
-+
-+	/* check return code */
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL, "getdomainname() Failed, errno = %d :"
-+			 " %s", TST_ERR, strerror(TST_ERR));
-+	} else {
-+		tst_res(TPASS, "getdomainname() returned %ld ",
-+			 TST_RET);
- 	}
--
--	/* cleanup and exit */
--	cleanup();
--
--	tst_exit();
--
+-       /*
+-        * Call getdomainname(2)
+-        */
+-       TEST(getdomainname(domain_name, sizeof(domain_name)));
++       char domain_name[MAX_NAME_LEN];
+
+-       /* check return code */
+-       if (TST_RET == -1) {
+-               tst_res(TFAIL, "getdomainname() Failed, errno = %d :"
+-                        " %s", TST_ERR, strerror(TST_ERR));
+-       } else {
+-               tst_res(TPASS, "getdomainname() returned %ld ",
+-                        TST_RET);
+-       }
++       TST_EXP_PASS(getdomainname(domain_name, sizeof(domain_name)));
  }
 
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--}
--
--/*
-- *cleanup() -  performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
--void cleanup(void)
--{
--
--}
-+static struct tst_test test = {
-+        .test_all = verify_getdomainname,
-+};
---
-2.20.1
+
+-- 
+Regards,
+Li Wang
+
+--000000000000d4788c05cfecd0e5
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Hi Meng,</div><div class=3D"gmail_default" style=3D"font-size=
+:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">I =
+made some clean-up=C2=A0and pushed.</div><div class=3D"gmail_default" style=
+=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-s=
+ize:small">Changes like:</div><div class=3D"gmail_default" style=3D"font-si=
+ze:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">=
+--- a/testcases/kernel/syscalls/getdomainname/getdomainname01.c<br>+++ b/te=
+stcases/kernel/syscalls/getdomainname/getdomainname01.c<br>@@ -13,29 +13,16=
+ @@<br>=C2=A0 * It is intended to provide a limited exposure of the system =
+call.<br>=C2=A0 */<br>=C2=A0<br>-#include &lt;errno.h&gt;<br>=C2=A0#include=
+ &lt;linux/utsname.h&gt;<br>=C2=A0#include &quot;tst_test.h&quot;<br>=C2=A0=
+<br>=C2=A0#define MAX_NAME_LEN __NEW_UTS_LEN<br>=C2=A0<br>-static char doma=
+in_name[MAX_NAME_LEN];<br>-<br>=C2=A0static void verify_getdomainname(void)=
+<br>=C2=A0{<br>- =C2=A0 =C2=A0 =C2=A0 /*<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0* =
+Call getdomainname(2)<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0*/<br>- =C2=A0 =C2=A0=
+ =C2=A0 TEST(getdomainname(domain_name, sizeof(domain_name)));<br>+ =C2=A0 =
+=C2=A0 =C2=A0 char domain_name[MAX_NAME_LEN];<br>=C2=A0<br>- =C2=A0 =C2=A0 =
+=C2=A0 /* check return code */<br>- =C2=A0 =C2=A0 =C2=A0 if (TST_RET =3D=3D=
+ -1) {<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TFAIL,=
+ &quot;getdomainname() Failed, errno =3D %d :&quot;<br>- =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot; %s=
+&quot;, TST_ERR, strerror(TST_ERR));<br>- =C2=A0 =C2=A0 =C2=A0 } else {<br>=
+- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TPASS, &quot;get=
+domainname() returned %ld &quot;,<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TST_RET);<br>- =C2=A0 =C2=
+=A0 =C2=A0 }<br>+ =C2=A0 =C2=A0 =C2=A0 TST_EXP_PASS(getdomainname(domain_na=
+me, sizeof(domain_name)));<br>=C2=A0}<br>=C2=A0<br></div></div><div><br></d=
+iv>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>=
+Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000d4788c05cfecd0e5--
 
 
+--===============0175226471==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0175226471==--
+
