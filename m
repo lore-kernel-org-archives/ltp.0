@@ -2,73 +2,74 @@ Return-Path: <SRS0=uAqx=PY=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DCB4C433F5
-	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 10:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB684C433EF
+	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 10:10:38 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93ABF6128E
-	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 10:00:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 93ABF6128E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id EF320611EE
+	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 10:10:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EF320611EE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 164853C7649
-	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 11:00:18 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD8403C6A2E
- for <ltp@lists.linux.it>; Fri,  5 Nov 2021 11:00:07 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id D38173C73D8
+	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 11:10:35 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B654B20108C
- for <ltp@lists.linux.it>; Fri,  5 Nov 2021 11:00:05 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 2E2F91FD47;
- Fri,  5 Nov 2021 10:00:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636106405;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=x3WBB03aog6geq1DvSLrDWyWAvby++7Yz6YSc3fc5Js=;
- b=riWI/hUNJrnDbigyKRNG5WgVDC6nTKo3PeQ+W1qP/mQ3InDRpFiUoIhUgFi1dlM7v7As+U
- g2DebOKQyDo/1Q+pFwwnX4Ab6niiXVjx7KNTlT5l2NAUZhvmnd9mOW8FWfKJ3Xd7eLRcmi
- Y1Ie4MTVwoDWtKHR/yXsWVBx89vgHDY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636106405;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=x3WBB03aog6geq1DvSLrDWyWAvby++7Yz6YSc3fc5Js=;
- b=39tqPkO4DU3ZLeCTto+k2aYS2omyQsVBdcA3f05B4INClNR7/1tkWpsQzUWrNkJBtAP7ZK
- 9Vevw1gdYtg++gCg==
-Received: from g78 (unknown [10.163.24.38])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3815B3C6D2D
+ for <ltp@lists.linux.it>; Fri,  5 Nov 2021 11:10:24 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id C02232C150;
- Fri,  5 Nov 2021 10:00:04 +0000 (UTC)
-References: <20190615042048.29839-1-liwang@redhat.com> <877ddpo35n.fsf@suse.de>
- <CAEemH2fDxJ1xQ9qNejHDxv0p_Cx2cq5LsXTesuhAEBrDe43Hmg@mail.gmail.com>
- <YYKYR4kspdlXuoDB@yuki>
- <CAEemH2e4sp_CYbAF05EA80Y1ggVG6yjRFp=-4EOudGBjTh7Wkg@mail.gmail.com>
- <YYO1WZh7Kz+en5nY@yuki>
-User-agent: mu4e 1.6.5; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 05 Nov 2021 09:47:30 +0000
-In-reply-to: <YYO1WZh7Kz+en5nY@yuki>
-Message-ID: <87ee7u9b30.fsf@suse.de>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 73E631000464
+ for <ltp@lists.linux.it>; Fri,  5 Nov 2021 11:10:24 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9E9BB212C0;
+ Fri,  5 Nov 2021 10:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1636107023;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5Wqby23pgih4bJELPymWZZdR5S0E6N3dTsc6SakmTbY=;
+ b=Qt6VwAECDU5YCDHsziGa5nLocz3jpcEgbcgdHexeAE+xvpdcamQni+28BfF68+so6byldz
+ qZBHZoUF5b2p8+pulV2Tn8FHPf9vW0HX6OeFd+oGNjiV8vpAVFntac91DM4FP5ILKi1Z/T
+ jwyR/26i6PsdqQFhF/GEY7xGfv8WKp0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1636107023;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5Wqby23pgih4bJELPymWZZdR5S0E6N3dTsc6SakmTbY=;
+ b=D2+jMNhnlhfNiG4WVuADOBiJoHNf2AvRtA1hSYPKiZSbONd4Qis0FKJXgSJ57luXq035iI
+ 6mIqWHgAtgtGb0DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C54E13B97;
+ Fri,  5 Nov 2021 10:10:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6dOmDA8DhWGjewAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 05 Nov 2021 10:10:23 +0000
+Date: Fri, 5 Nov 2021 11:10:21 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>
+Message-ID: <YYUDDU0A9hLFbM4c@pevik>
+References: <20211029211732.386127-1-krisman@collabora.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20211029211732.386127-1-krisman@collabora.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] lib: adding .arch field in tst_test
- structure
+Subject: Re: [LTP] [PATCH v3 0/9] Test the new fanotify FAN_FS_ERROR event
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,88 +81,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: LTP List <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: kernel@collabora.com, khazhy@google.com, repnop@google.com, jack@suse.com,
+ linux-ext4@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Gabriel, all,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+> Hi,
 
-> Hi!
->> > least array of supported architectures in the test_test structure would
->> > be a good addition.
->> >
->> 
->> I guess defining .arch as a string and making a valid check will be enough.
->> Array for that sounds a bit complicated in use.
->
-> Quite the opposite, it should be an array of strings, so that it's easy
-> to work with such as:
->
-> 	.supported_archs = (const char *const []){"x86_64", "ppc64le", NULL},
->
-> We can put it into a single string delimited by a space, but that would
-> be more complicated to work with.
->
->> > However the hard part would be keeping the actual code and metadata in
->> > sync, we still have to keep the ifdefs in the code.
->> >
->> 
->> Yes, some inline assemble require ifdefs.
->> 
->> Btw, I look back at the reviews and find Jan said:
->>     "I can see how tst_on_arch() would be useful. Test is valid
->>      on all arches, but needs different input/constants/code/etc."
->> 
->> That may be a slight reason for keeping tst_on_arch.
->
-> I guess that we should reviewe the code we have, I guess that there are
-> a few tests where we can get rid of a few ifdefs by doing the checks
-> dynamically.
->
-> Also I guess that it would be slightly easier to work with as an enum,
-> so that we can do:
->
-> 	switch (tst_arch) {
-> 	case TST_X86_64:
-> 		...
-> 	break;
-> 	case TST_PPC64_LE:
+> Now that FAN_FS_ERROR is close to being merged, I'm sending a new
+> version of the LTP tests.  This is the v3 of this patchset, and it
+> applies the feedback of the previous version, in particular, it solves
+> the issue Amir pointed out, that ltp won't gracefully handle a test with
+> tcnt==0.  To solve that, I merged the patch that set up the environment
+> with a simple test, that only triggers a fs abort and watches the
+> event.
 
-I prefer enum as well. As an aside, we don't want to include LE in
-ppc64. If someone finds that the byte order is significant for a test
-then we can add ppc64le or ppc64be. Also at some point we may need to
-add a "machine" field for e.g. POWER8, i386 etc.
+> I'm also renaming the testcase from fanotify20 to fanotify21, to leave
+> room for the pidfs test that is also in the baking by Matthew Bobrowski.
 
-Which btw, I have some buildroot and QEMU scripts which can be used to
-test ppc64 BE and any other machine you have the hardware or QEMU
-emulator for.
+> One important detail is that, for the tests to succeed, there is a
+> dependency on an ext4 fix I sent a few days ago:
 
-https://gitlab.com/Palethorpe/cross
+> https://lore.kernel.org/linux-ext4/20211026173302.84000-1-krisman@collabora.com/T/#u
+It has been merged into Theodore Ts'o ext4 tree into dev branch as c1e2e0350ce3
+("ext4: Fix error code saved on super block during file system abort")
 
-> 		...
-> 	break;
-> 	default:
-> 		...
-> 	break;
-> 	}
->
-> instead of:
-> 	if (!strcmp(tst_arch, "x86_64"))
-> 		...
-> 	else if (!strmcp(tst_arch, ...)))
-> 		...
-> 	else
-> 		...
+We should probably add it as .tags (see fanotify06.c).
 
+Also it'd be nice just to mention relevant commits which added FAN_FS_ERROR in
+fanotify21.c (probably "fanotify: Allow users to request FAN_FS_ERROR events" ?)
++ kernel version it added it -suppose 5.16 (although it can be backported; and
+these commits should not go to .tags, as we track there only
+fixes not new features). I can add it myself (no need to repost).
 
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
