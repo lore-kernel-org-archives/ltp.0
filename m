@@ -2,77 +2,52 @@ Return-Path: <SRS0=uAqx=PY=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 696B3C433EF
-	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 08:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99CE3C433FE
+	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 09:00:44 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E85A611EF
-	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 08:59:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E85A611EF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id EEE3C61268
+	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 09:00:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEE3C61268
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14F2F3C7324
-	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 09:59:20 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A19903C762E
+	for <ltp@archiver.kernel.org>; Fri,  5 Nov 2021 10:00:41 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 542443C4B8F
- for <ltp@lists.linux.it>; Fri,  5 Nov 2021 09:59:10 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 674A43C6F3E
+ for <ltp@lists.linux.it>; Fri,  5 Nov 2021 10:00:32 +0100 (CET)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5178E1001296
- for <ltp@lists.linux.it>; Fri,  5 Nov 2021 09:59:09 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 837661FD33;
- Fri,  5 Nov 2021 08:59:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1636102748;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7vTQRd+FsseWzqLlxM7LU6kApFmHFBdkT696eVDN5rg=;
- b=UZCwcikeHe+hKrDIuu0KUBIrM88LJMxb2qcI28Owy6IwsSuaDWxZ2YQ0crX1ucR9oj/ssK
- 7fVjr1WmJ09aR9YK6AettzzhWyvTGpbhOIpLvctMIJEhIqsycR/Qo9JD9Eb9uU+dPWg8c7
- hyd5tJzXNVt7Dq3ink3tPV0d8DLV6Bg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1636102748;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7vTQRd+FsseWzqLlxM7LU6kApFmHFBdkT696eVDN5rg=;
- b=irvOcv58cHch10vX6ODxoZIzRjNhIfYtToaOHS53fKMk/eUWmNU0ULvzj8xalopoGbzNab
- l8+Uaqj9lz9yYJDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25D9013FBA;
- Fri,  5 Nov 2021 08:59:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 0rrqBlzyhGHlVgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 05 Nov 2021 08:59:08 +0000
-Date: Fri, 5 Nov 2021 09:59:06 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <YYTyWs4UPEL0eqjR@pevik>
-References: <20211029211732.386127-1-krisman@collabora.com>
- <20211029211732.386127-4-krisman@collabora.com>
- <CAOQ4uxiwodQm_9+XVY-cWhV6aWKkqTosBfZ0HyAQTVNijJrwuQ@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D5BD814011BC
+ for <ltp@lists.linux.it>; Fri,  5 Nov 2021 10:00:30 +0100 (CET)
+Received: from dggeml753-chm.china.huawei.com (unknown [172.30.72.54])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HlvVN0mJ6zbhZK
+ for <ltp@lists.linux.it>; Fri,  5 Nov 2021 16:55:40 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.63) by
+ dggeml753-chm.china.huawei.com (10.1.199.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Fri, 5 Nov 2021 17:00:25 +0800
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+To: <ltp@lists.linux.it>
+Date: Fri, 5 Nov 2021 17:02:00 +0800
+Message-ID: <20211105090200.103485-1-zhaogongyi@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxiwodQm_9+XVY-cWhV6aWKkqTosBfZ0HyAQTVNijJrwuQ@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Originating-IP: [10.67.174.63]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml753-chm.china.huawei.com (10.1.199.152)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/9] syscalls/fanotify21: Introduce
- FAN_FS_ERROR test
+Subject: [LTP] [PATCH v2] syscalls/fanotify07: add stop_children() to
+ cleanup()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,36 +59,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
- Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.com>,
- Ext4 <linux-ext4@vger.kernel.org>,
- Gabriel Krisman Bertazi <krisman@collabora.com>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+When we run the testcase simultaneously, and the ulimit of open
+files is small, the testcase will fail and remain many while(1)
+tasks in system, it makes the system very stuck.
 
-...
-> > +static struct tst_test test = {
-> > +       .test = do_test,
-> > +       .tcnt = ARRAY_SIZE(testcases),
-> > +       .setup = setup,
-> > +       .cleanup = cleanup,
-> > +       .mount_device = 1,
-> > +       .mntpoint = MOUNT_PATH,
-> > +       .all_filesystems = 0,
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+v1->v2: add stop_children() to cleanup(),suggested by Amir and Matthew.
 
-> That's probably redundant and the default value anyway.
-> If you want to stress out that this test cannot be run on other filesystems
-> maybe add a comment why that is above dev_fs_type.
+ testcases/kernel/syscalls/fanotify/fanotify07.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Yes, good catch. Thanks!
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
+index cc56d9019..40d1b96ce 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify07.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+@@ -86,15 +86,21 @@ static int stop_children(void)
+ 	int child_ret;
+ 	int i, ret = 0;
 
-Kind regards,
-Petr
+-	for (i = 0; i < MAX_CHILDREN; i++)
++	for (i = 0; i < MAX_CHILDREN; i++) {
++		if (!child_pid[i])
++			continue;
+ 		SAFE_KILL(child_pid[i], SIGKILL);
++	}
+
+ 	for (i = 0; i < MAX_CHILDREN; i++) {
++		if (!child_pid[i])
++			continue;
+ 		SAFE_WAITPID(child_pid[i], &child_ret, 0);
+ 		if (!WIFSIGNALED(child_ret))
+ 			ret = 1;
+ 	}
+
++	memset(child_pid, 0, sizeof(pid_t) * MAX_CHILDREN);
+ 	return ret;
+ }
+
+@@ -190,6 +196,8 @@ static void setup(void)
+
+ static void cleanup(void)
+ {
++	stop_children();
++
+ 	if (fd_notify > 0)
+ 		SAFE_CLOSE(fd_notify);
+ }
+@@ -201,6 +209,7 @@ static struct tst_test test = {
+ 	.needs_tmpdir = 1,
+ 	.forks_child = 1,
+ 	.needs_root = 1,
+ };
+
+ #else
+--
+2.17.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
