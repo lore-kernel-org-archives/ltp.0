@@ -2,75 +2,75 @@ Return-Path: <SRS0=tV2W=P3=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48F6FC433F5
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 16:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA917C433EF
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 16:08:15 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3DBB60ED7
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 16:07:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C3DBB60ED7
+	by mail.kernel.org (Postfix) with ESMTPS id 8A10F61075
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 16:08:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8A10F61075
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B3EC93C0667
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 17:07:29 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id EED2F3C06DC
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 17:08:12 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 84E833C0551
- for <ltp@lists.linux.it>; Mon,  8 Nov 2021 17:07:20 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D5DAD3C0551
+ for <ltp@lists.linux.it>; Mon,  8 Nov 2021 17:08:03 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9368A6008DA
- for <ltp@lists.linux.it>; Mon,  8 Nov 2021 17:07:19 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6F06D600C3A
+ for <ltp@lists.linux.it>; Mon,  8 Nov 2021 17:08:03 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D63531FD2F;
- Mon,  8 Nov 2021 16:07:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B95681FD50;
+ Mon,  8 Nov 2021 16:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1636387638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1636387682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=QFAm3DjzL9UMc4dFgKwQ7b/zvmfSsv1shwBuAbst7LmSWg6Tsytgay4oHCGMaW5Ng2pnqA
- 1ktfSlN31KuidEYbTywNM7SaXQmvCVjMXvQCtjB5wKraIGYZz7dpwFSHMEwjoRFdK6yVsT
- ui2aMuUZGZJkw9PsW4OyqtSLm+4nMak=
+ b=xgjAAFOfiIj8G/j6E0bPmb1Nf3lxfLZjGcpN2Go/wcTwzvd3BDSIngcExHboh9fDesaaJ4
+ iM7ETyj+NPT2Scp508yD25rBvdMB4Xw4UOcTRql4Fz/6s78AnGMzVlrg+mAkNhNysugbrC
+ h0gQJuhRwmpBbq43utUqsCYQBg+0niQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1636387638;
+ s=susede2_ed25519; t=1636387682;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=BDBZibhlUm9B/PxriR5EGcN1N8WuDT7k0Pp4iEPNd4O6ATQJ5eEf1aveEL8N2CZHNlzBqx
- M2IeexsTLsM3DWDA==
+ b=8e1BKbMBEug8mn8dzjY1O5De9qv+iT7nAKekJsa5ox6mZh/BSFHMfL4Hq/JBF0HotXcN5J
+ DWYge7Qt8BTl/8Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B345213BBF;
- Mon,  8 Nov 2021 16:07:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94DAA13BBF;
+ Mon,  8 Nov 2021 16:08:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7/1yKjZLiWHbXAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 08 Nov 2021 16:07:18 +0000
-Date: Mon, 8 Nov 2021 17:08:18 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id a6QUI2JLiWEvXQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 08 Nov 2021 16:08:02 +0000
+Date: Mon, 8 Nov 2021 17:09:02 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <YYlLcqxEaH8kzZQs@yuki>
+Message-ID: <YYlLnuJt5FFw9OCd@yuki>
 References: <1635337569-4634-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1635337569-4634-4-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1635337569-4634-5-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1635337569-4634-4-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <1635337569-4634-5-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 04/13] syscalls/quotactl:Add docparse formatting
+Subject: Re: [LTP] [PATCH v2 05/13] lapi/syscalls: Add syscall number for
+ quotactl_fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
