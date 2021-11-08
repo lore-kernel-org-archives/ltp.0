@@ -2,56 +2,81 @@ Return-Path: <SRS0=tV2W=P3=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96F1BC433EF
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 05:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2888FC433EF
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 07:00:52 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B33636124D
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 05:33:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B33636124D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 08497610A2
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 07:00:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08497610A2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 288123C7635
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 06:33:01 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 8F0B23C7740
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 08:00:47 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 763A23C77B9
- for <ltp@lists.linux.it>; Mon,  8 Nov 2021 06:32:44 +0100 (CET)
-Received: from smtpproxy21.qq.com (smtpbg702.qq.com [203.205.195.102])
+ by picard.linux.it (Postfix) with ESMTPS id CC3C53C0BAD
+ for <ltp@lists.linux.it>; Mon,  8 Nov 2021 08:00:38 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 775F810005F1
- for <ltp@lists.linux.it>; Mon,  8 Nov 2021 06:32:43 +0100 (CET)
-X-QQ-mid: bizesmtp52t1636349557twk6x3d5
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Mon, 08 Nov 2021 13:32:34 +0800 (CST)
-X-QQ-SSF: 0140000000200040C000000A0000000
-X-QQ-FEAT: B0D4DPF8NcRTlO3UBxzNqNljYOg7jGyCcZhkTefQjSwz0ykQF+yX2oaL6Fj23
- G2zPou0V/GMM5Y4NGehPHNHURg10vpuPoBrO7801UH5pJukjCsnZTV0goZahmULL2kylMuO
- jWaq1VzR+9nTvV/oCZiregB0Ayhd49m4U2vaOSf3mYFdnnJ+PykMs8wl2j2SGqhgqMppRge
- LsQb3Ifq6tRDwhVzuGc3/0ELzIHNCJ+b9xKIPKC03tB853FwK9Nmhsia0gPAb0PXSUWyIoO
- Q1H9Tzn6gRrsPS4EtPY5d+bkHjEtKzw4PxO0Wl4ll1+Dv4JLGBgEzhr3cJvzBov/O4BtqYL
- kpiqJdBC5+F1++Xr1Dgz8NxEzo6gg==
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Mon,  8 Nov 2021 13:32:25 +0800
-Message-Id: <20211108053225.23442-2-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211108053225.23442-1-tangmeng@uniontech.com>
-References: <20211108053225.23442-1-tangmeng@uniontech.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6C5CD14001FF
+ for <ltp@lists.linux.it>; Mon,  8 Nov 2021 08:00:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1636354836;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Kbowdwup/jtDO6yK7BUy1Zc14FaMxXlO+Uk4LT7Q1PQ=;
+ b=DY2EwlWt4N9iN260WrhzaCqesqG9ZkB7LFkOkuMJRgaTKJG0ill12KlSBZEVkDqyEXjveu
+ bRhUxqBxMQULFbuUndl8P/8MfFSfMiNScS/UdlFrl7uOB0C24bI8pbM0dGGrwTyuhLX4AO
+ x1pnD9NONCS/kn9lEEJiXWS7GpoWsEY=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-kxdgp6DvOjiCgP9gD9WyNg-1; Mon, 08 Nov 2021 02:00:32 -0500
+X-MC-Unique: kxdgp6DvOjiCgP9gD9WyNg-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ r67-20020a252b46000000b005bea12c4befso23716669ybr.19
+ for <ltp@lists.linux.it>; Sun, 07 Nov 2021 23:00:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Kbowdwup/jtDO6yK7BUy1Zc14FaMxXlO+Uk4LT7Q1PQ=;
+ b=MXktq21WTbXnRKmpB6X3AN0BwHoDpSAIToP/cXoQ1bwrYVUjWc+99fn3fXyclId9D5
+ oDmwHorXwuOCdsTlHUu0sWmp7DL+6NvmTB6jHkDRCkidz8riH73GoI0u7od8bgrDnuPg
+ ogmr5ehuIFt+SPNepn2qvJcqb3IH5f+MwkmPU9JJKqM9nIWciCNPGMznSsW5BBGvENus
+ yd5kVOuahVyFUGe5DZ+8xn6yuHw5QXw8Ywc3xVtlGFtUE8xRiixLOpzWJNaKpmraDmdq
+ h2rQceqmsUqkmO/XMSamvNWXcpL8wIST3pjSxjlQS0jkM4wYHRluADpHSS3Le0utkTuf
+ 3vFg==
+X-Gm-Message-State: AOAM53082JkV+p5BIYNCiAailC1dCsvhyI6jQh2NjVW8xSDHqBTzqjeX
+ MgmwbglthQEHXunjm/1u0u1RQtKj5BMlWUmVYqpF7fl8MtxLNJeGmVlqS3//Loom0LiL4w+V/u7
+ XU/3YE8/05Dcmwr/MIUPLAj/RIlo=
+X-Received: by 2002:a25:86c4:: with SMTP id y4mr71249832ybm.144.1636354830038; 
+ Sun, 07 Nov 2021 23:00:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxg1L/oBMJgNhS2RM2nKWE+VxKDCUgxyFHVhMRHnZcFkOLcPY8Z+c8xjAS7ghOii9YeJryTQb8Fq7nVFXVyEt8=
+X-Received: by 2002:a25:86c4:: with SMTP id y4mr71249806ybm.144.1636354829774; 
+ Sun, 07 Nov 2021 23:00:29 -0800 (PST)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20211108053225.23442-1-tangmeng@uniontech.com>
+ <20211108053225.23442-2-tangmeng@uniontech.com>
+In-Reply-To: <20211108053225.23442-2-tangmeng@uniontech.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 8 Nov 2021 15:00:17 +0800
+Message-ID: <CAEemH2fcwZKhZn+-oX75XsLXnBzD=4iidka+ZWrOH8m7=Wmf+w@mail.gmail.com>
+To: tangmeng <tangmeng@uniontech.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] fchdir/fchdir02: Convert to new API
+Subject: Re: [LTP] [PATCH 2/2] fchdir/fchdir02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,145 +88,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0787587897=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- testcases/kernel/syscalls/fchdir/fchdir02.c | 103 ++------------------
- 1 file changed, 8 insertions(+), 95 deletions(-)
+--===============0787587897==
+Content-Type: multipart/alternative; boundary="0000000000005b196a05d0418c75"
 
-diff --git a/testcases/kernel/syscalls/fchdir/fchdir02.c b/testcases/kernel/syscalls/fchdir/fchdir02.c
-index cf11bf6b9..b0ba9ad58 100644
---- a/testcases/kernel/syscalls/fchdir/fchdir02.c
-+++ b/testcases/kernel/syscalls/fchdir/fchdir02.c
-@@ -1,110 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
+--0000000000005b196a05d0418c75
+Content-Type: text/plain; charset="UTF-8"
 
- /*
-- * NAME
-- *	fchdir02.c
-- *
-  * DESCRIPTION
-  *	fchdir02 - try to cd into a bad directory (bad fd).
-- *
-- * CALLS
-- *	fchdir()
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	call fchdir() with an invalid file descriptor
-- *	check the errno value
-- *	  issue a PASS message if we get EBADF - errno 9
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  fchdir02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-  */
+> +static struct tst_test test = {
+> +       .test_all = verify_fchdir,
+> +       .needs_tmpdir = 1,
+>
 
--#include "test.h"
-+#include "tst_test.h"
+There is no need to use tmpdir since it is just a fake test for error
+checking.
 
--#include <errno.h>
--#include <sys/stat.h>
--#include <fcntl.h>
--
--void cleanup(void);
--void setup(void);
--
--char *TCID = "fchdir02";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
-+static void verify_fchdir(void)
- {
- 	const int bad_fd = -5;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST(fchdir(bad_fd));
--
--		if (TEST_RETURN != -1)
--			tst_brkm(TFAIL, cleanup, "call succeeded unexpectedly");
--
--		if (TEST_ERRNO == EBADF)
--			tst_resm(TPASS, "failed as expected with EBADF");
--		else
--			tst_brkm(TFAIL | TTERRNO, cleanup,
--				 "call failed unexpectedly");
--	}
+I removed that line and pushed. Thanks~
 
--	cleanup();
--
--	tst_exit();
-+	TST_EXP_FAIL(fchdir(bad_fd), EBADF);
- }
+-- 
+Regards,
+Li Wang
 
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--}
--
--void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.test_all = verify_fchdir,
-+	.needs_tmpdir = 1,
-+};
---
-2.20.1
+--0000000000005b196a05d0418c75
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
++static struct tst_test test =3D {<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0.test_all =3D verify_fchdir,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0.needs_tmpdir =3D 1,<br></blockquote><div><br><=
+/div><div><div class=3D"gmail_default" style=3D"font-size:small">There is n=
+o need to use tmpdir since it is just a fake test for error checking.</div>=
+<br></div><div><div class=3D"gmail_default" style=3D"font-size:small">I rem=
+oved that line and pushed. Thanks~</div></div></div><div><br></div>-- <br><=
+div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br=
+></div><div>Li Wang<br></div></div></div></div>
+
+--0000000000005b196a05d0418c75--
 
 
+--===============0787587897==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0787587897==--
+
