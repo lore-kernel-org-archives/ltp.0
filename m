@@ -2,75 +2,74 @@ Return-Path: <SRS0=tV2W=P3=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B13DEC433EF
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 12:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A99C433FE
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 12:43:55 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31DFB610F8
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 12:40:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 31DFB610F8
+	by mail.kernel.org (Postfix) with ESMTPS id 37FAD61288
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 12:43:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 37FAD61288
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7836D3C7672
-	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 13:40:48 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7966D3C77D1
+	for <ltp@archiver.kernel.org>; Mon,  8 Nov 2021 13:43:53 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2AFC73C101C
- for <ltp@lists.linux.it>; Mon,  8 Nov 2021 13:40:37 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 8C1F53C101C
+ for <ltp@lists.linux.it>; Mon,  8 Nov 2021 13:43:44 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E33C814011AA
- for <ltp@lists.linux.it>; Mon,  8 Nov 2021 13:40:36 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BE00C600791
+ for <ltp@lists.linux.it>; Mon,  8 Nov 2021 13:43:43 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2741D2195F;
- Mon,  8 Nov 2021 12:40:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 248E0212CA;
+ Mon,  8 Nov 2021 12:43:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1636375236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1636375423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Fzv4GgTy0pDvSSLgTe3+kU4z4yvCzGhIiphIXjq5TCc=;
- b=pGJavvdHk59GeGkyzQyF3rxajgnM9UKlLEGjlJOWgGLIswaYKaCp6uBiqKVu/NjEU6DmoA
- mGtczHTfF4ZgNKbbNpyUGXGNiftLH8okjljoJ0goVml1hGTQSOPP85ibN8HSYQ6ErwQVQc
- SpTYXV7sNdY94iHyffmJXLku/0rwuyk=
+ bh=4iwfhEGhQCdHVgc10U9RSYbdCo/MO0IZr9MjmETKBYE=;
+ b=DErSosCP9syzQM6IDoUGpfArgWamPbeDRjqIY4UrBpRyw0Iy6mnoOFfXF4XxjDQ85yd0QO
+ yCKtQUhW6f8DUiXLKtMtmVvJWqksktRN/FVBO1BumcBuEi62oThhLFpUzr+iGBNvYjBcdn
+ eR1ObEG4ZWUghJBgzuT7DX9oKa78800=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1636375236;
+ s=susede2_ed25519; t=1636375423;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Fzv4GgTy0pDvSSLgTe3+kU4z4yvCzGhIiphIXjq5TCc=;
- b=SoY2YuUMnLlqPfLr3OMjKxmaLNksQOV2OVqQlFtmFVSDfnVYEt+FEfCtxEckzqrhGy8w9A
- 7VTVCFVmCDgqytDw==
+ bh=4iwfhEGhQCdHVgc10U9RSYbdCo/MO0IZr9MjmETKBYE=;
+ b=uB9wVrtWAUVIaIrNDi9ddg8Dycyl/KoZ8Q2JQDyqzgsuNBgsls6WwFBK2F/6j2QW6ho9My
+ va5KBlfIB5GtKlCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1516B13BA0;
- Mon,  8 Nov 2021 12:40:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0520B13BA0;
+ Mon,  8 Nov 2021 12:43:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id t7IgBcQaiWH7aQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 08 Nov 2021 12:40:36 +0000
-Date: Mon, 8 Nov 2021 13:41:36 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id +xpJOn4biWGqawAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 08 Nov 2021 12:43:42 +0000
+Date: Mon, 8 Nov 2021 13:44:42 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <YYkbAEITAiGbdTTk@yuki>
+Message-ID: <YYkbujntxMkANsG6@yuki>
 References: <20211108021450.1460819-1-liwang@redhat.com>
- <20211108021450.1460819-2-liwang@redhat.com>
+ <20211108021450.1460819-3-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211108021450.1460819-2-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20211108021450.1460819-3-liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/3] testcase: make use of .supported_archs
+Subject: Re: [LTP] [PATCH v3 3/3] max_map_count: replace ifdefs by tst_arch
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,52 +87,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->  	asm volatile (
->  		"add $0x400, %%esp\n\t"
->  		"int $0x80\n\t"
-> @@ -114,15 +112,14 @@ static void run(void)
+On Mon, Nov 08, 2021 at 10:14:50AM +0800, Li Wang wrote:
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/mem/tunable/max_map_count.c | 41 +++++++++++---------
+>  1 file changed, 23 insertions(+), 18 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
+> index 4f0ad0037..9da67520c 100644
+> --- a/testcases/kernel/mem/tunable/max_map_count.c
+> +++ b/testcases/kernel/mem/tunable/max_map_count.c
+> @@ -91,24 +91,29 @@ static bool filter_map(const char *line)
+>  	if (ret != 1)
+>  		return false;
 >  
->  static struct tst_test test = {
->  	.test_all = run,
-> +	.supported_archs = (const char *const []) {
-> +		"i386",
-> +		"ppc",
-> +		NULL
-> +	},
->  	.tags = (const struct tst_tag[]) {
->  		{"linux-git", "cf01fb9985e8"},
->  		{"CVE", "CVE-2017-7616"},
->  		{}
->  	}
->  };
+> -#if defined(__x86_64__) || defined(__x86__)
+> -	/* On x86, there's an old compat vsyscall page */
+> -	if (!strcmp(buf, "[vsyscall]"))
+> -		return true;
+> -#elif defined(__ia64__)
+> -	/* On ia64, the vdso is not a proper mapping */
+> -	if (!strcmp(buf, "[vdso]"))
+> -		return true;
+> -#elif defined(__arm__)
+> -	/* Skip it when run it in aarch64 */
+> -	if ((!strcmp(un.machine, "aarch64"))
+> -	|| (!strcmp(un.machine, "aarch64_be")))
+> -		return false;
 > -
-> -#else /* #if defined(__x86_64__) || defined(__powerpc__) */
-> -
-> -TST_TEST_TCONF("not i386 or powerpc");
-> -
-> -#endif /* #else #if defined(__x86_64__) || defined(__powerpc__) */
+> -	/* Older arm kernels didn't label their vdso maps */
+> -	if (!strncmp(line, "ffff0000-ffff1000", 17))
+> -		return true;
+> -#endif
+> +	switch (tst_arch.type) {
+> +	case TST_X86:
+> +	case TST_X86_64:
+> +		/* On x86, there's an old compat vsyscall page */
+> +		if (!strcmp(buf, "[vsyscall]"))
+> +			return true;
+> +	break;
+> +	case TST_IA64:
+> +		/* On ia64, the vdso is not a proper mapping */
+> +		if (!strcmp(buf, "[vdso]"))
+> +			return true;
+> +	break;
+> +	case TST_ARM:
+> +		/* Skip it when run it in aarch64 */
+> +		if ((!strcmp(un.machine, "aarch64"))
+> +				|| (!strcmp(un.machine, "aarch64_be")))
+> +			return false;
 
-Accordingly to this table:
+		I wonder if this would be better as:
 
-https://wiki.debian.org/ArchitectureSpecificsMemo
+		if (tst_kernel_bits() == 64)
+			return false;
 
-__powerpc__ matches both 32bit and 64bit variants.
+Other than this the code looks actually better this way.
 
-I guess that we would have to change the checks in the library as:
-
-#ifdef __powerpc__
-# ifdef __powerpc64__ || __ppc64__
-.arch = "ppc64",
-.type = TST_PPC64,
-# else
-.arch = "ppc",
-.type = "TST_PPC"
-# endif
-#endif
-
-Also I guess that gcc does not define __x86__ for historical reasons and
-__i386__ really means __x86__, but I haven't checked that one.
+> +		/* Older arm kernels didn't label their vdso maps */
+> +		if (!strncmp(line, "ffff0000-ffff1000", 17))
+> +			return true;
+> +	break;
+> +	};
+>  
+>  	return false;
+>  }
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
