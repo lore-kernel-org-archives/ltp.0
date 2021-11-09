@@ -2,158 +2,82 @@ Return-Path: <SRS0=8di7=P4=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F30F7C433F5
-	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 05:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E94C433EF
+	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 06:52:46 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 025C46103A
-	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 05:13:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 025C46103A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
+	by mail.kernel.org (Postfix) with ESMTPS id 71D126112D
+	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 06:52:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 71D126112D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B07C53C0726
-	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 06:13:55 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 6C46B3C07B5
+	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 07:52:43 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E43AD3C0468
- for <ltp@lists.linux.it>; Tue,  9 Nov 2021 06:13:40 +0100 (CET)
-Received: from esa1.fujitsucc.c3s2.iphmx.com (esa1.fujitsucc.c3s2.iphmx.com
- [68.232.152.245])
+ by picard.linux.it (Postfix) with ESMTPS id 352713C04CF
+ for <ltp@lists.linux.it>; Tue,  9 Nov 2021 07:52:33 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 04C4E1A01C91
- for <ltp@lists.linux.it>; Tue,  9 Nov 2021 06:13:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1636434818; x=1667970818;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=IxtAo2CWDoMP540ux7cmwPF+qGNsBrHOM56cG1BsqsQ=;
- b=s//17HUrsFn7Dgme2NTQLVN8/LFPyJI6B03Ba9ZNZSINeeNwFf6nQ/dM
- SyMREUdE8ujs+jKjzMModUWD3OgAnbc4+3KZM4oVxAltg48sMQ+KVgPr8
- 2roD0MUOSp0gqKXenPeYl2qITU+mpKIN3M+fwGdIhpsd8rfuRP3NMqlZ3
- PRPicMBn/XSlRg6uGivYEOATvmDnvpUlf9VjW1NfLLgbLGsdmc77qr6Ww
- 358oYe1kp2gTKEYLoU5EtFFi7PA13xDKlVG9Lkn9FD5JrnuU6ayECjDyT
- D+cRf+x4wDiYi84Nz3TrL+qL5qtR3F53ZP5effrJPph8yxNSt0TH4SNun w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="51341058"
-X-IronPort-AV: E=Sophos;i="5.87,219,1631545200"; d="scan'208";a="51341058"
-Received: from mail-os2jpn01lp2055.outbound.protection.outlook.com (HELO
- JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.55])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2021 14:13:33 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mfEXkreDYeIFqTi2rjppE154xAhuHv+1RdR/sxkaXcPlM9Wzs0bjMMlTtAnLv+lNzWO6QNmw8lNDTs5rrhKPnGZxlH7U/ZBdNtWmgdRTLHOBQaHnyAa8KVcCX/LCZaHRV8uwR5OvntKzMDK8C+eMW6ng8nImLX9ZyTjiwo2mZ+L0k+CxyIF/RMiw+W1Yk3hbdtvYouLWsyVCGKun4cgf0BDfn+zjGQslPeD8vf3QpvTWVNfLG2vtvd4Oa9Jt8RdK3gbs0QSwQk34mLy04kUA9zyIKe+tIFfDLDzpGbzxPGAx5olWVCb8QudcWtYMqyzNrp+dzynHv1U/CatWtBGrnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IxtAo2CWDoMP540ux7cmwPF+qGNsBrHOM56cG1BsqsQ=;
- b=C8aVoTwzqGmcVw0plZUAEoSup3RctdSCPbmkzTddyd3MEKG5zufjdP/u+C1BitPH0a8LB9Bo4ecxGwxnwi6Lq3TA7wO7k2uGEUuv5ETgBD8fjI/jucfJ1r722gWemrCR9RGgBt18BhyXh5r0wegWaLMRZmNqNHDsenrxKjYH5/1ERfu43N7JKISfzomLpxa0/qObr8O2/QpbXOmU2Pme5NDDa+f0xlKC9rRMY3c7fjs5bk9YxZogIjJZUPni+s37u11yUdgCkZeQo4OpmUtv3VVfO8Zz525yMEsfQnjOnFddeGGyDPabGc/mTb3+wrpJoaYd002H+zQ19H5oiQa7Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IxtAo2CWDoMP540ux7cmwPF+qGNsBrHOM56cG1BsqsQ=;
- b=hx6FP24mHkzl4xpkw0BYs77YpChRR4gvXxDaN3wtXtn5u9Sq8qKyEApHmw0TyrZVxSMjoeU6pmBB1saE9uL5s3HUJ8vWviXn2+4noIazz0AKGu2qU2gli/Eo4UbuALTwLtw6w0uBPVgRX2y8C9F8QKFjVkE7JL4sJdTckxK65iY=
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TYAPR01MB5449.jpnprd01.prod.outlook.com (2603:1096:404:8038::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Tue, 9 Nov
- 2021 05:13:30 +0000
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::35a5:c639:9f43:ee9]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::35a5:c639:9f43:ee9%8]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
- 05:13:30 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [PATCH v2 01/13] syscalls/quotactl01: Also test with vfsv1
- format
-Thread-Index: AQHXyy3cej5rSt2kGEqp+8CwKfMnfKv502wAgADnNYA=
-Date: Tue, 9 Nov 2021 05:13:30 +0000
-Message-ID: <618A0369.3010707@fujitsu.com>
-References: <1635337569-4634-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YYlBdhQEasTYSsSV@yuki>
-In-Reply-To: <YYlBdhQEasTYSsSV@yuki>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bc0782a8-471f-4665-ab85-08d9a33fab7d
-x-ms-traffictypediagnostic: TYAPR01MB5449:
-x-microsoft-antispam-prvs: <TYAPR01MB5449928CFB8934D4BB2A6657FD929@TYAPR01MB5449.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /xFzw+4xER5iVKcmbiZaF6QKk8T8gBtjyEcKgvabuvdT797VsMr2k8J0MMIjn+ZXiXEHzWRDZRtnFZd8+qf5yQr/O335eeCxderCsG5+eJan8qlXOIpuAmt5aDddGnJCc5f1r0oUkHsav47cU2bzONr50nZ7KHkYHxvaT6PqfnRHY0MoAzrDGV8RccNSaDcqlk7Bu6FJKqXY/cAzd2ytjf854YvhecmI8L65WHvXhOsUqMOAx8iSyncp+mpAe1I7CjPIf3yaIWhCsHgE5IwrMlT1yIOyjNwsyd2UhGc9rCedzydl8UChHXe1zc8pANGjr2w7QKdCzklWTUTdoJ5SereWz/DyNUFP+FfUhWTy6GbwvfHBjtpPqwWWBaYPa0xaOUqRwVn3MpWHgIjbEIOfpQWcHayvf2ed+Tu7LivXPd8R06zwiCNjG8j6aHy1E01+as6OQNOEfi+dQR0WbOVI+lvxVGr1OIae9VFXOLXpRDIB0u+MPV7MZtnQSnHtC79B3/4nGuwgZt0zlVz+KCitp1OLDiPhJ7iTy/mvbyY/1eBUuKmju+5Q7OvtMc1jf9OMLBicjo3I1OD5dX4u4yXe2X55or6XErQcajVcSKBfMySTgSs2+Kpy7+V1NfafbHFkb4Mr/6ejCdPgkKo1StDnYXtyHvu7yrLR/q3UlAADwN8urzCw825tenl3rRFR5VBWYVX+9M2psZr0wFhbdchNeg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(15650500001)(4326008)(316002)(86362001)(122000001)(4744005)(38100700002)(82960400001)(33656002)(8676002)(76116006)(66556008)(508600001)(8936002)(6916009)(85182001)(36756003)(2906002)(5660300002)(6506007)(186003)(66946007)(64756008)(71200400001)(2616005)(6512007)(38070700005)(91956017)(66476007)(66446008)(87266011)(83380400001)(26005)(6486002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?TW1CZVN1VE1ZanZUcnBTM2lBallMOVVlUUIrL1NNQ2JtcmNSZGl1UjJjQVJJ?=
- =?gb2312?B?N2I4aDlCbjFxcHVCN1RtSkFJdDJtZEdMaXVvNk9MR3B3ZlhwQXZSbmZ5NnFF?=
- =?gb2312?B?T2VVbERrV0NyUGVtOVVad3pLR1J6Nks1bUkvNERmd09ONFFxb2VuTHlmc0Jz?=
- =?gb2312?B?WDRMSHZjUk1FTEtQUWVxZEFOWDdQNEdoUk5Eb293bHI4N3ZDYTUrZEMvTEtm?=
- =?gb2312?B?bWFXdUxncjVWeWI4aC9ZbXdVVHd2VTVwdnJBS0dNYlJCUWJGSlZxREFLa3Rk?=
- =?gb2312?B?WlVvRTc5NHgyM3NiMzFqV1hsdkdQejNBODZ6R0RuQ3BTWXhFU0grNGpVUEpG?=
- =?gb2312?B?eDJReXdYMStISm1TVGZlQkV3a2RoYU9iUFgyQTVWY25XNnBsdWh1ZDVLZllZ?=
- =?gb2312?B?eUdJSFk3YVZoSklGVVVnM1JJdE5BRkdNcDBreWt0cnArRVZjT0lKRTY4blht?=
- =?gb2312?B?N2YwVWxaTmR6SG15d1NqOEYxOHNQblA2KzhNdEQrL29rZytiUzh1bHd0MVdX?=
- =?gb2312?B?V04ySnYxdEZwbktvcEt2YnlINnFOSkNibUJMNTgxOUVRNXZBUkpRMElPOEhj?=
- =?gb2312?B?c2dweW1WbHFEZFFFbWxsbDF3b05OZFU3OTdESUFSL1lsT1NZcVZBUXlhaytQ?=
- =?gb2312?B?T0xQWHZRZEdmZFArTzVjOFEzbjh4eWE4WGMxZ1REd1EvVkJaSVh1RWxuT1Uz?=
- =?gb2312?B?K3ozVjRTeEdjVVZKZ0wvZnM1VW1SVXlmeHVya0VaVngyV3lVc0ZRZ0tqcXBq?=
- =?gb2312?B?Sk5Kems0bEZ2UDNrbmVwa3NIWDZ3RE01VXE0elpna1RuTU9ZdS9ZSnBnWmo4?=
- =?gb2312?B?anZUbXZTUlZ1MXhtdkNRWnREN1NZd09sZGh2OEQ2QnVZb0IwOTRrU1oyZnlJ?=
- =?gb2312?B?azdtWHpNY1V5aFZSVFBJZjFWNWVPRWZ1SWYwTTdNdXh2aExkK2NScmR0b0RI?=
- =?gb2312?B?UEdxeWNJQVFpUkRYd283NW5oRTAxUmpiMFVCS1BMcUVYbks5aTVqckE3NUpN?=
- =?gb2312?B?dENKYmpxVWhyMG5hNkZJZktRVUE3cVpNZ3dKbTFLUERTRmdBNE4rWDVsWkk4?=
- =?gb2312?B?SXdSTlM3NGRKbTdRNXRmK0ZJSlRWV21hL0czOEwyK3dQazNKY2dEcUxJaTlU?=
- =?gb2312?B?YjVHckdEdjI4dzdMamVFbDlNSnE1STQ0WGIrUXhuZGxjaytScDJjZ0FVYWhP?=
- =?gb2312?B?TWJkSWdFalM3TFR2b0d5QkpsNjgzeFVJZThaVHRZYkp1RVJFMTQ4T1J6UzYr?=
- =?gb2312?B?MHZIOUUyQkUxZWs1anBDWjJhU0ZvRHBERUIvMVNDNmYwK3BGUEROREJobTQv?=
- =?gb2312?B?YmFvS0hRaDNxWGdPMERUM0RPcFR4RFErWG5SVzg3Tk1WeXRid3Q5d1lUK2hW?=
- =?gb2312?B?eFZtMGVSZ1Rpeko1cjl0N21BZzdBMkJJdFp2UFhiWHV1Z2Q1OGFrSWhBRkpS?=
- =?gb2312?B?d1N3eW9Ia3BzRExFV3poM2dqZTcrUThveHVDVFRCNzV6UG5DeUFmTzJ1UGRP?=
- =?gb2312?B?bVBpdlh6bWxhOEwrbXMxQURBUE5LYW9IZE5pbHFEYkkvMEI4Vk5kUVdaUTZh?=
- =?gb2312?B?OEUrSlJPd1FlT1FCbWQ1c2ZxWnIyOTZpNWFTcDNyRGNrYlY5UEIvdVZsQUV0?=
- =?gb2312?B?SHpLdytwNWc3TUNTWmVKNEJlRmtFdWJRWXRKdnlXN0NTNGpNeUNqTUJLVHpt?=
- =?gb2312?B?aDVhb1VGY1RSd3l1MWliYnovYzRsSmQwRVRrck5EaUtBUlRTUkcvU0srZk52?=
- =?gb2312?B?UFkvU3VBSkxhWm5XTzI2Qk1UYVBLMHQzNUE3Vmx0SHJIekEwQkkzRzdKN2Zm?=
- =?gb2312?B?ZUFyT1F5Mnh0WlRtdk1TbFc2bDZ3ZWUvdm9INFJTT1VSaW1PN1h3dGYwU2NF?=
- =?gb2312?B?UVAvbmUrZ09pUnpYcTFkSlN4YVN3WE41bkhLWGR6c0lzaE5LVXhnZkx2aWwy?=
- =?gb2312?B?STlnWk1yR05Ra3NNZEUwQXY5T3RrYU1PQlVoZjNPQTlzd0d0K294T3Mwb0Na?=
- =?gb2312?B?SXNZbFVUQ2kxUnptUnZ0WU14ZDNETnFHcEdRUGZvVTJydTN1WWx4SERka0RE?=
- =?gb2312?B?UHBldEJMam1LUERYUlBneWZhaUJ1aXFoL01kbDdsTUJXR2FpdGd3NVVsSTVu?=
- =?gb2312?B?L2dQZkEyRy81T2dGOTRtWkpScXJMa2RRdk1jL2xKRlhtOG9BeGJpMTZqM1Zk?=
- =?gb2312?B?WGFpQzhlS3BvamFkODZ5WFRqVXp5dGkrRFo0MklNSit4SXppcm9CcHkzNmY4?=
- =?gb2312?Q?ljBxrdbVdk4xm9c6XdK9EeGNzIaKmPyK8ZUUlkFU3Y=3D?=
-Content-ID: <536A41C5C6072C4E9544A1D25CEED6FF@jpnprd01.prod.outlook.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9BF8E608A99
+ for <ltp@lists.linux.it>; Tue,  9 Nov 2021 07:52:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1636440749;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZsN+qD5mj9bN7MdRJmmYnCQs4rSyVdTgatHb+POyh20=;
+ b=TKqRQxBwIG253UENI/POSQCvroYkVCGcVGki5qNYgZYAnIsw70T19ZVIYR8QkozN7syiBT
+ o2EL4EtX/azytejqsX98nwxUgXtGH2lqnRRzh1iBzRlyZ/KXitGi0Y23WoPxy+oedDguOh
+ kFlc+gO+AMJluVvCI1Y1XHG8Z3BRIAk=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-7Sn6fmMHNCOVlYMSpluO2w-1; Tue, 09 Nov 2021 01:52:27 -0500
+X-MC-Unique: 7Sn6fmMHNCOVlYMSpluO2w-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ z65-20020a256544000000b005c21b35717dso28947832ybb.10
+ for <ltp@lists.linux.it>; Mon, 08 Nov 2021 22:52:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ZsN+qD5mj9bN7MdRJmmYnCQs4rSyVdTgatHb+POyh20=;
+ b=dNgreabIJ+pnAuJrdUdC6tyBTiy+fPHjE4uNa9Z9eQ+su2Koz0nEoOjXxlMqRuouL2
+ 16lD7Z+OJRbG31xDCfSCZUfVkdyj3GRio77Xp1hzdaeDz1fdC1xesH7tBMBNzFKaj0EI
+ FvOmNCBV1QxCUx2j81h4eCIt27Mwnj8SarXNxYVgH6uKBHJLIStHQblH55LwJer8y4xl
+ qqFbSsFLtTgYS2yhpWKajAt1DOPmOhwd+sN4esL3m+hUfNZvSDFid4/4tgylp7CyOx92
+ wnhnIcScDVOPqeiAVseWKpixVZlRtVHRzyINUGeoza/8cIGN7rsYlDSGinww1OLMtRxd
+ WfMw==
+X-Gm-Message-State: AOAM531mFOfe05HNf8rJ0kwnSJ1cVgmreZfw9btqljvY2ccqTrneLik1
+ Xhux15NJ/jFjC+bGHTbs8i25Q/e7qBlf6oeulaZJDLwGi7FvzedSdVzGWpD3e1VwhNJqjrHbwq+
+ lQeJnonXCsT5VFCgmwQCzqNOb6+o=
+X-Received: by 2002:a25:a062:: with SMTP id x89mr5926670ybh.339.1636440747001; 
+ Mon, 08 Nov 2021 22:52:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyX2gRCek7Q+nh1GHavidJr0mUz1LlXWgAt5TEOkYHLHCmfEOBZrlcmUzmEy0Gl6iuT75+Ft9n6vzbkv0ujdxQ=
+X-Received: by 2002:a25:a062:: with SMTP id x89mr5926645ybh.339.1636440746725; 
+ Mon, 08 Nov 2021 22:52:26 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc0782a8-471f-4665-ab85-08d9a33fab7d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2021 05:13:30.4017 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ESejIwV6470qhny/OkO5LiNwDuewmlzQ316XoppcJAEmMgnL2aOFjQDuMO8cbTs3k5vKy9g5mMcqx9nFtnuDx3zoNIWuhxxtOlVzsCcF224=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5449
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <20211108021450.1460819-1-liwang@redhat.com>
+ <20211108021450.1460819-2-liwang@redhat.com>
+ <YYkbAEITAiGbdTTk@yuki>
+In-Reply-To: <YYkbAEITAiGbdTTk@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 9 Nov 2021 14:52:14 +0800
+Message-ID: <CAEemH2eYBJ8X21JZDTcuathM6dZq2OheR1NspCaU3kdixuv6wQ@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 01/13] syscalls/quotactl01: Also test with
- vfsv1 format
+Subject: Re: [LTP] [PATCH v3 2/3] testcase: make use of .supported_archs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,32 +89,194 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1784842100=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril
+--===============1784842100==
+Content-Type: multipart/alternative; boundary="00000000000067ad3305d0558d78"
+
+--00000000000067ad3305d0558d78
+Content-Type: text/plain; charset="UTF-8"
+
+On Mon, Nov 8, 2021 at 8:40 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
 > Hi!
->>   static void setup(void)
->>   {
->> -	const char *const cmd[] = {"quotacheck", "-ugF", "vfsv0", MNTPOINT, NULL};
->> +	const char *const cmd[] = {"quotacheck", "-ugF", fmt_variants[tst_variant].fmt_name, MNTPOINT, NULL};
+> >       asm volatile (
+> >               "add $0x400, %%esp\n\t"
+> >               "int $0x80\n\t"
+> > @@ -114,15 +112,14 @@ static void run(void)
+> >
+> >  static struct tst_test test = {
+> >       .test_all = run,
+> > +     .supported_archs = (const char *const []) {
+> > +             "i386",
+> > +             "ppc",
+> > +             NULL
+> > +     },
+> >       .tags = (const struct tst_tag[]) {
+> >               {"linux-git", "cf01fb9985e8"},
+> >               {"CVE", "CVE-2017-7616"},
+> >               {}
+> >       }
+> >  };
+> > -
+> > -#else /* #if defined(__x86_64__) || defined(__powerpc__) */
+> > -
+> > -TST_TEST_TCONF("not i386 or powerpc");
+> > -
+> > -#endif /* #else #if defined(__x86_64__) || defined(__powerpc__) */
 >
-> I would be inclined to store the variants pointer on a first line in the
-> setup so that the code gets slightly easier to read as:
+> Accordingly to this table:
 >
-> 	const struct quotactl_fmt_variant *var =&fmt_variants[tst_variant];
+> https://wiki.debian.org/ArchitectureSpecificsMemo
 >
-> Then we can do var->fmt_name and var->fmt_id in the rest of the setup code...
-Yes, it looks more easier. Will do it in v3.
+> __powerpc__ matches both 32bit and 64bit variants.
 >
-> Anyways the code looks good:
+> I guess that we would have to change the checks in the library as:
 >
-> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
-Thanks for your review.
+
+Yes, but I think we can simply reverse the order to solve this.
+It will try to match 64bit firstly otherwise 32bit. The s390 does as well.
+
+....
+#elif defined(__powerpc64__ || __ppc64__)
+        .name = "ppc64",
+        .type = TST_PPC64,
+#elif defined(__powerpc__ || __ppc__)
+        .name = "ppc",
+        .type = TST_PPC,
+#elif defined(__s390x__)
+        .name = "s390x",
+        .type = TST_S390X,
+#elif defined(__s390__)
+        .name = "s390",
+        .type = TST_S390,
+....
+
+
+
 >
+> #ifdef __powerpc__
+> # ifdef __powerpc64__ || __ppc64__
+> .arch = "ppc64",
+> .type = TST_PPC64,
+> # else
+> .arch = "ppc",
+> .type = "TST_PPC"
+> # endif
+> #endif
+>
+> Also I guess that gcc does not define __x86__ for historical reasons and
+> __i386__ really means __x86__, but I haven't checked that one.
+>
+
+You are right. And next we have to get rid of __x86__ from ltp testcase.
+
+
+-- 
+Regards,
+Li Wang
+
+--00000000000067ad3305d0558d78
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Nov 8, 2021 at 8:40 PM Cyril Hrubis &lt;<a =
+href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0asm volatile (<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;add $0x400=
+, %%esp\n\t&quot;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;int $0x80\=
+n\t&quot;<br>
+&gt; @@ -114,15 +112,14 @@ static void run(void)<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 static struct tst_test test =3D {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0.test_all =3D run,<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0.supported_archs =3D (const char *const []) {<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;i386&quot;,<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;ppc&quot;,<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0NULL<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0},<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0.tags =3D (const struct tst_tag[]) {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;linux-git=
+&quot;, &quot;cf01fb9985e8&quot;},<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;CVE&quot;=
+, &quot;CVE-2017-7616&quot;},<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{}<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
+&gt;=C2=A0 };<br>
+&gt; -<br>
+&gt; -#else /* #if defined(__x86_64__) || defined(__powerpc__) */<br>
+&gt; -<br>
+&gt; -TST_TEST_TCONF(&quot;not i386 or powerpc&quot;);<br>
+&gt; -<br>
+&gt; -#endif /* #else #if defined(__x86_64__) || defined(__powerpc__) */<br=
+>
+<br>
+Accordingly to this table:<br>
+<br>
+<a href=3D"https://wiki.debian.org/ArchitectureSpecificsMemo" rel=3D"norefe=
+rrer" target=3D"_blank">https://wiki.debian.org/ArchitectureSpecificsMemo</=
+a><br>
+<br>
+__powerpc__ matches both 32bit and 64bit variants.<br>
+<br>
+I guess that we would have to change the checks in the library as:<br></blo=
+ckquote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size=
+:small">Yes, but I think we can simply reverse the order to solve this.</di=
+v><div class=3D"gmail_default" style=3D"font-size:small">It will try to mat=
+ch 64bit firstly otherwise 32bit. The s390 does as well.</div><div class=3D=
+"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_def=
+ault" style=3D"font-size:small">....</div><div class=3D"gmail_default" styl=
+e=3D"font-size:small">#elif defined(__powerpc64__ || __ppc64__)</div>=C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 .name =3D &quot;ppc64&quot;,<br>=C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 .type =3D TST_PPC64,<br>#elif defined(__powerpc__ || __ppc__)<br>=C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 .name =3D &quot;ppc&quot;,<br>=C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 .type =3D TST_PPC,<br>#elif defined(__s390x__)<br>=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 .name =3D &quot;s390x&quot;,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .typ=
+e =3D TST_S390X,<br>#elif defined(__s390__)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+.name =3D &quot;s390&quot;,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .type =3D TST_S3=
+90,<br><div class=3D"gmail_default" style=3D"font-size:small">....</div><br=
+></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+#ifdef __powerpc__<br>
+# ifdef __powerpc64__ || __ppc64__<br>
+.arch =3D &quot;ppc64&quot;,<br>
+.type =3D TST_PPC64,<br>
+# else<br>
+.arch =3D &quot;ppc&quot;,<br>
+.type =3D &quot;TST_PPC&quot;<br>
+# endif<br>
+#endif<br>
+<br>
+Also I guess that gcc does not define __x86__ for historical reasons and<br=
+>
+__i386__ really means __x86__, but I haven&#39;t checked that one.<br></blo=
+ckquote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size=
+:small">You are right. And next we have to get rid of __x86__ from ltp test=
+case.</div><br></div><div><br></div></div>-- <br><div dir=3D"ltr" class=3D"=
+gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></=
+div></div></div></div>
+
+--00000000000067ad3305d0558d78--
+
+
+--===============1784842100==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1784842100==--
+
