@@ -2,85 +2,82 @@ Return-Path: <SRS0=8di7=P4=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3D61C433FE
-	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 11:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1501C433EF
+	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 12:02:46 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4817361184
-	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 11:42:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4817361184
+	by mail.kernel.org (Postfix) with ESMTPS id C767560F58
+	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 12:02:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C767560F58
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3F18C3C0844
-	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 12:42:21 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DA2D93C0CAF
+	for <ltp@archiver.kernel.org>; Tue,  9 Nov 2021 13:02:42 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B66CB3C07B4
- for <ltp@lists.linux.it>; Tue,  9 Nov 2021 12:42:10 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 59AE03C0797
+ for <ltp@lists.linux.it>; Tue,  9 Nov 2021 13:02:32 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7BFE2200E00
- for <ltp@lists.linux.it>; Tue,  9 Nov 2021 12:42:09 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 99BD51401153
+ for <ltp@lists.linux.it>; Tue,  9 Nov 2021 13:02:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1636458128;
+ s=mimecast20190719; t=1636459349;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=s2cs89amrsM/0y8bdD1wrswpmGuyOOTKU4YbKzoLIug=;
- b=hYaNVV/UVPpRvoDlmUVxgRuh/amlYhKkMd8Y68BCfHmqDOnqrBF9h2u4YxZ57cM4dpJCv7
- KHKfWCUmw/FDx5LKZcgsaJxp95UDlFWABWxyZNTqyGBpchsjqso2V18sIvwuuunvZOFHHZ
- 1f+ZwQ31gfl5+IAm/D4geyIr1Hn+Znw=
+ bh=1yyiD4GVLNuNyLNd1G84DdIp0zRh+5ZjjeZ5OUsq5oo=;
+ b=D9PBmezVU/xLauzrbzJz8V9AfLDNFreo2cIPCKK7xclTkEfHDY4yFpH2nMVcr7Q46GRGev
+ Mrw16il0+kl7fvpnXk/IdIAqdqNh95RvgKNjHUU7TntVSx7hSTZLCrLvX2oa1MKajoq/S9
+ FP5Pl0+cdUD0O43jCKRmOThFgth7hE8=
 Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
  [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-ShqQhwmQPPG7p96-Rld6ZQ-1; Tue, 09 Nov 2021 06:42:06 -0500
-X-MC-Unique: ShqQhwmQPPG7p96-Rld6ZQ-1
+ us-mta-237-FNJn4fIjOGS44WMW4ZHqdQ-1; Tue, 09 Nov 2021 07:02:27 -0500
+X-MC-Unique: FNJn4fIjOGS44WMW4ZHqdQ-1
 Received: by mail-yb1-f198.google.com with SMTP id
- m78-20020a252651000000b005c1f44d3c7bso29992384ybm.22
- for <ltp@lists.linux.it>; Tue, 09 Nov 2021 03:42:06 -0800 (PST)
+ z2-20020a254c02000000b005b68ef4fe24so30074958yba.11
+ for <ltp@lists.linux.it>; Tue, 09 Nov 2021 04:02:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=s2cs89amrsM/0y8bdD1wrswpmGuyOOTKU4YbKzoLIug=;
- b=wqldXppkf9s/UsdKvophrPssAVRhTHGf6uOkouLGn+7R+e5O6eZiU45bou6wFr2PrP
- C66Vlc7KlL2q2TJU1svUc3pCAvEO9mzytPjgb4/BED/XdEhwvjbeJ+W0GZBW2vlzlqJe
- rwtoGRSX/ArsMUlW+gcJsUaEJrkMOnMyICAArogS5PaFWupCOQ58M0LjNKfJq+xe6grK
- dIWyXVvVbuNQFD29qHy0SwjncmuRSbGt++aESxgPIg1IfQ/fG0Y7gzzNSv0WVUVoE9p/
- T8agRhDfEsxQJ5B//SXrcOXD1l+8eLxFy7SdULoWXYxbqTPhk1vOXyEcxiUcHV92ssIO
- tjww==
-X-Gm-Message-State: AOAM530p4k+kVcTc2RE4P6qoQ43WYKXoumNmNgviKR+W0A98Uv3QLXNo
- vqSMJRqwoR22tLxmwTL2NXwkjev4pRAgBsNb6vPyT+JjN+pr9BvRDLBZtZFlfWV9f4n1y2qpnlh
- 0khVzp2M5oqQDbMK819C3uNQ1rFE=
-X-Received: by 2002:a25:e704:: with SMTP id e4mr7520009ybh.490.1636458126021; 
- Tue, 09 Nov 2021 03:42:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyQS5MKp47eAeeBjemreEf32f1/J0akq9WwPCM2r47Fa4IPnR/wJ5XIciLlspc9YuRcTXXsKcckG4f8ASfimNs=
-X-Received: by 2002:a25:e704:: with SMTP id e4mr7519987ybh.490.1636458125825; 
- Tue, 09 Nov 2021 03:42:05 -0800 (PST)
+ bh=1yyiD4GVLNuNyLNd1G84DdIp0zRh+5ZjjeZ5OUsq5oo=;
+ b=U8qdDkc7cUy9YXm1LPgjY3D6TvyqSzeENo/MBFOI+Yd+G0qRsTylpf7FnOyMtibsfI
+ 40cPv39TLmmXq6YQ7zND0Ltm2jlnFhxRwVTiDuc0EbEaRrGAJuOdHVMGkCKbFjzOE4PK
+ AIKrTF66C54yOCWOWx/ucaN2OevuIxN9VAW8+AluROYS36dhe/ZM4gT+H6yr7nEKHmID
+ NnYeafyYAed+xAz2PejCWv9XyFAzax2nvy9q9mtklcReh7BNwdFwMAnX5C2bG3KWML7E
+ 9BjR6+OdL6xoSFHyjRV7WunNk0nBUU3V+9G55wzHWQ4RdcNyVZ8X7KrSEIc8tuyG9wA9
+ JBTQ==
+X-Gm-Message-State: AOAM530kPxCNNjPyZAPo6NFnbIlrqDSfvrFcuhFbqUtQkUPKw83+l+NI
+ ugfen2scSTsMptrAFUVy4YISBO2aL4URv05Qv/Kf/QYFU+0+oPDXD5O/E3WNCdywqi78cq4HhIo
+ d470NjuoQtd+7Be1CqUHJwt6gqy8=
+X-Received: by 2002:a25:2157:: with SMTP id h84mr7873843ybh.425.1636459347199; 
+ Tue, 09 Nov 2021 04:02:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxo0SqF8SCNo9SK0QPr04DDZEb6zw94ZN1uxsW+gJ93XrmotNdLR6FdGuC1YnYowyk7btYLQ1eVb+X53gvhewU=
+X-Received: by 2002:a25:2157:: with SMTP id h84mr7873814ybh.425.1636459346992; 
+ Tue, 09 Nov 2021 04:02:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20211108021450.1460819-1-liwang@redhat.com>
- <20211108021450.1460819-3-liwang@redhat.com>
- <YYkbujntxMkANsG6@yuki>
- <CAEemH2cw=cSgoX=5-A_Q0_N4rhSBUYmqvWdtPEZoEngc1wZxsA@mail.gmail.com>
- <YYpR201x6Ew7D9Zf@yuki>
-In-Reply-To: <YYpR201x6Ew7D9Zf@yuki>
+References: <a3b6f022fac7447b9ee9a840c0ee212b@huawei.com>
+ <YYpOjGf64R9EcIVK@yuki>
+In-Reply-To: <YYpOjGf64R9EcIVK@yuki>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 9 Nov 2021 19:41:53 +0800
-Message-ID: <CAEemH2c-Vaa=y3y1db9AN9EJZcRPA-xoRN_qU4t1TJRRGEdJPg@mail.gmail.com>
+Date: Tue, 9 Nov 2021 20:02:15 +0800
+Message-ID: <CAEemH2c0AbbU5-OjrWaznKwVBaxhr23tMFp_MN2TqVO9yHAp-g@mail.gmail.com>
 To: Cyril Hrubis <chrubis@suse.cz>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/3] max_map_count: replace ifdefs by tst_arch
+Subject: Re: [LTP] [PATCH] lib/tst_test.c: add *cleanup() before exit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,71 +89,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1825328780=="
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1279007147=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1825328780==
-Content-Type: multipart/alternative; boundary="00000000000047b53105d05999a9"
+--===============1279007147==
+Content-Type: multipart/alternative; boundary="00000000000011396e05d059e225"
 
---00000000000047b53105d05999a9
+--00000000000011396e05d059e225
 Content-Type: text/plain; charset="UTF-8"
 
-> > >                 I wonder if this would be better as:
-> > >
-> > >                 if (tst_kernel_bits() == 64)
-> > >                         return false;
-> > >
-> >
-> > Actually, we have TST_AARCH64 already, I'd go with switch to that.
+On Tue, Nov 9, 2021 at 6:32 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> > If we run the LTP testcases Concurrently, this might trigger the oom
+> > killer to kill the library process before the main process exit, and
+> > it might fill up the tmpfs through a long time running.
 >
-> That wouldn't work right? Since we are checking here if 32bit ARM binary
-> runs on 64bit AARCH64 kernel. The tst_arch defines for which
-> architecture the binary was build while the tst_kernel_bits() checks if
-> the kernel is 32bit or 64bit.
+> Then I guess we may as well adjust the oom_score for the test library
+> process so that it's less likely to end up being killed.
 >
 
-Right, I didn't realize that situation. Thanks for the reminder~
++1
 
+And we have to guarantee that oom_score doesn't be
+inherited by any test case. Otherwise, it will break our
+OOM tests.
 
 -- 
 Regards,
 Li Wang
 
---00000000000047b53105d05999a9
+--00000000000011396e05d059e225
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
-ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
- rgb(204,204,204);padding-left:1ex">
-&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0I wo=
-nder if this would be better as:<br>
-&gt; &gt;<br>
-&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (=
-tst_kernel_bits() =3D=3D 64)<br>
-&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0return false;<br>
-&gt; &gt;<br>
-&gt; <br>
-&gt; Actually, we have TST_AARCH64 already, I&#39;d go with switch to that.=
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Tue, Nov 9, 2021 at 6:32 PM Cyril Hrubis &lt;<a =
+href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; w=
+rote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
+x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; If we run the LTP testcases Concurrently, this might trigger the oom<b=
+r>
+&gt; killer to kill the library process before the main process exit, and<b=
+r>
+&gt; it might fill up the tmpfs through a long time running.<br>
 <br>
-<br>
-That wouldn&#39;t work right? Since we are checking here if 32bit ARM binar=
-y<br>
-runs on 64bit AARCH64 kernel. The tst_arch defines for which<br>
-architecture the binary was build while the tst_kernel_bits() checks if<br>
-the kernel is 32bit or 64bit.<br></blockquote><div><br></div><div><div clas=
-s=3D"gmail_default" style=3D"font-size:small">Right, I didn&#39;t realize t=
-hat situation. Thanks for the reminder~</div></div><div><br></div></div><di=
-v><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"l=
-tr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+Then I guess we may as well adjust the oom_score for the test library<br>
+process so that it&#39;s less likely to end up being killed.<br></blockquot=
+e><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:small=
+">+1=C2=A0</div><div class=3D"gmail_default" style=3D"font-size:small"><br>=
+</div><div class=3D"gmail_default" style=3D"font-size:small">And we have to=
+ guarantee that oom_score doesn&#39;t be</div><div class=3D"gmail_default" =
+style=3D"font-size:small">inherited by any test case. Otherwise, it will br=
+eak our</div></div><div class=3D"gmail_default" style=3D"font-size:small">O=
+OM tests.</div></div><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr=
+"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
 
---00000000000047b53105d05999a9--
+--00000000000011396e05d059e225--
 
 
---===============1825328780==
+--===============1279007147==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -166,5 +161,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1825328780==--
+--===============1279007147==--
 
