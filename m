@@ -2,157 +2,95 @@ Return-Path: <SRS0=2GLJ=P6=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45BC7C433EF
-	for <ltp@archiver.kernel.org>; Thu, 11 Nov 2021 03:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA1B6C433EF
+	for <ltp@archiver.kernel.org>; Thu, 11 Nov 2021 08:32:41 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DEEF61261
-	for <ltp@archiver.kernel.org>; Thu, 11 Nov 2021 03:26:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8DEEF61261
+	by mail.kernel.org (Postfix) with ESMTPS id ECF71611AD
+	for <ltp@archiver.kernel.org>; Thu, 11 Nov 2021 08:32:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECF71611AD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A87FE3C6EA2
-	for <ltp@archiver.kernel.org>; Thu, 11 Nov 2021 04:26:08 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 45CFC3C6EA2
+	for <ltp@archiver.kernel.org>; Thu, 11 Nov 2021 09:32:38 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B4EE3C04CF
- for <ltp@lists.linux.it>; Thu, 11 Nov 2021 04:25:58 +0100 (CET)
-Received: from esa15.fujitsucc.c3s2.iphmx.com (esa15.fujitsucc.c3s2.iphmx.com
- [68.232.156.107])
+ by picard.linux.it (Postfix) with ESMTPS id 12B133C2485
+ for <ltp@lists.linux.it>; Thu, 11 Nov 2021 09:32:28 +0100 (CET)
+Received: from mail1.bemta26.messagelabs.com (mail1.bemta26.messagelabs.com
+ [85.158.142.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6D97660004E
- for <ltp@lists.linux.it>; Thu, 11 Nov 2021 04:25:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1636601159; x=1668137159;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=yW434T6jE9ND3W0wnP2zBaGhnbm0brzAqlplnfZFVak=;
- b=cG0IEDpuDiFZXl5Z0WTehlMTEn54cGLvv66vOjC2lniUU81Dcy9q62X0
- YiLL4mtyViEO0J0s4Tt2v419/M/EHckewc2V58x3n60B+yOQv0Z+En9oA
- E/Nw9++lcrogwj4dfZQXzwMiTL1Jns1ISXw3luqJr8Gm6YpEV7aOKXEXM
- jtIaz17nDrLOuHtI+AKwZOk1Q6OA5rM5MW2eiEgl/DJ/Hy4Y920bTJfeE
- dZelTH/rMrLicH2+czNlO06Y5gsZZkLa0ZP9mvj4/y4SP7Q4hZ52qh5Rv
- EboAYMtScDWWVeXyI1+mJlGiWy3oeas8obCi1uXRZTMm0RvD4yzkxqlj6 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="43286558"
-X-IronPort-AV: E=Sophos;i="5.87,225,1631545200"; d="scan'208";a="43286558"
-Received: from mail-ty1jpn01lp2056.outbound.protection.outlook.com (HELO
- JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.56])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2021 12:25:56 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FNfb6NRCDv1imFUOZv6DItWk94bftw+rZ4oe8Jls0aTbtjQ3G9ibrsobw1Tg1VOkjbyGjkHcsEL2yhQ+Ipr5Yz7hobVVoKPT9rIE/wIAjljrv2ioXm/NmXC5VBV1nrjl/lMaPwFVZ4a2DOgXD59dxaPDhaCJ3c5pOuGBOiG1nCvHRIAPGQ5he95EOHljFhpslp+B+yxFu5Q3WlB4qsQXZc2tOGJ60eIz6VuanVTje2Veks8EATdgk9e1LW+TaseWXi68BkDODL/Cs784tZ2g7G1w9NRsZU7tOCqz28z47MT+rYZWTZvLhU3DX2NJjp2Y8Sx7aaeXiKEyrGICICI1ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yW434T6jE9ND3W0wnP2zBaGhnbm0brzAqlplnfZFVak=;
- b=QbljmqmL7LqUhsbCvGvwZL+JrLSBWVucgr55f6Q1qovLJTPaAMRz4lFtpVBAOWJ42MEvgBFirhqWzTfiFCyoXD7tOdWo63aC2cV+4WHZ5ZdwOdM6RHfXe3q8W750EkSbShHyMiGO5ZyraSMZyliQzOvC3KXNgsngW7l2/YZpgI0ZOnGZozntoIz9qoMxBfG+Z4Z1qaFfw2xNKIgvUmUi1hHTqMBPb9P0Fonl9FjCLoQVJ3KZYgYQ4/CKFnAB2myQKPhGiYsQlOFew5TFzASPCg/WmGFCkSMjfiKrhxAjDUCf9YRPQ3se3G00KguKreZTuB0V1rzRYu+zzR8GyjdNdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yW434T6jE9ND3W0wnP2zBaGhnbm0brzAqlplnfZFVak=;
- b=l/tYrtw8PeGMR4oyVSWWtlNiY6i3rXYoUWbQJDMbsoBm1bOQCXbWEWHYMTvuPIlFxPHSol8PQzwItGZQB4Fywm5S0CYsQWa//4SdvMiEnRYDBq1fz/z0fp7q52jtktYA5J1BY4VWztWLzU1dz9wcluZdhCcf/az3ycsoYGqO7tE=
-Received: from OS3PR01MB6535.jpnprd01.prod.outlook.com (2603:1096:604:100::7)
- by OSYPR01MB5559.jpnprd01.prod.outlook.com (2603:1096:604:88::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Thu, 11 Nov
- 2021 03:25:52 +0000
-Received: from OS3PR01MB6535.jpnprd01.prod.outlook.com
- ([fe80::5850:1d20:8712:7420]) by OS3PR01MB6535.jpnprd01.prod.outlook.com
- ([fe80::5850:1d20:8712:7420%9]) with mapi id 15.20.4690.018; Thu, 11 Nov 2021
- 03:25:52 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
-Thread-Topic: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before
- test
-Thread-Index: AQHX1jbTk5TE3JSfn0mFCO1roAjLIKv9q2MA
-Date: Thu, 11 Nov 2021 03:25:52 +0000
-Message-ID: <618C8D62.20904@fujitsu.com>
-References: <20190911124714.GA21670@rei.lan>
- <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <87y25wjf2j.fsf@suse.de>
-In-Reply-To: <87y25wjf2j.fsf@suse.de>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a5249d0e-36ac-4492-c9fc-08d9a4c2f716
-x-ms-traffictypediagnostic: OSYPR01MB5559:
-x-microsoft-antispam-prvs: <OSYPR01MB5559AFDA473F062C60C550C9FD949@OSYPR01MB5559.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CoTObPz1I6bSS+wIJA/9ph+RL2QvDlOZkgweU4hVfXCN96OkBQshjaAv0i0VtPQpjnrN02jIoRT1U7Qpz1UyBTepJJJuPZOweosBJhVMOmQ8OOyPjKEXxHbA5bCjJHnYOjMH4+NDeBsGsbk9pQ7g23xzhosUKcf916S/Q09ajZrt0VK3+XutuhJGywD9itiS7lXyIcZEASM141fK/Uup7F1niwa8YmMT3Kg0KqVUVTg977EQ9BkmzB1bO5cLxJEdY4GXXR3xt3VEEk8lPV5yW3mQQdAj3RPKn2WiICdbi6OWtYypB0iMf3cy4zQCbms4SYNuXsYLr8hhYfPL4XZb1tMca2dCm0wA0vYs1WCdE5uAY/hXNESZBPr7wQgan2yvuadEr3he9q8i1owsJvu9ROI/zxc7dHvlsyQ+1kfysaKkJeKs0tcj3jpZaEcSu9GwOUEBq8PG9QAGOcuMJsm56SR4vvXH8wpADSmHAKoA7oQr0LPdZzD+T3e3BFpqZdqI+31tDInfnQndtDsMY0WSZxiQd8AZ7hE9jYk1ysP9TVVc9xM+5z/VM+yLhGErMC77xhswmYESPR8xrOH9gZxtvXLbJjRsh79dRCVPongKE/kD/qLmISfYDgcyqm7KSuhJK0WJdeinXH+yQyIS3hcbRw5NSLwJzFDF5fNnhCPOpoEvlGOoe8xM0mplUKKjDxEO+poKVJLVCGC0mobBcDJaDw==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:OS3PR01MB6535.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(36756003)(8936002)(33656002)(186003)(76116006)(38100700002)(4744005)(26005)(6512007)(54906003)(508600001)(6506007)(64756008)(66556008)(6916009)(66446008)(122000001)(5660300002)(6486002)(4326008)(66476007)(85182001)(71200400001)(66946007)(91956017)(8676002)(2616005)(82960400001)(316002)(2906002)(38070700005)(86362001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?cW5XVFpmYXBRK08xYnUrdUdJcFgvUkprb2RWeGJPcXVYZlBGNWdVc0pHakti?=
- =?gb2312?B?Q3FrMGU4MkY1ZHpsaGRiVTdHNGlEU0xvbUpJN2p3TnM2cUxuS0tTZzVZTW0w?=
- =?gb2312?B?S2c2S1VVMit5UHR0dWI3UktzLzNNc0tpdXloREY4QWQzamRFcW5CLzcvWEpw?=
- =?gb2312?B?OVBiUHIrT0MvMjFoRTRjUzMyUnlORm93ZHFCYWlibldGVXBVZ1ZSLzUyckk5?=
- =?gb2312?B?Q1pIZlhkT25WU3BUZFJxTWNNaDBQMUFUK2lTNkE4dWtZcXBJM1JkWVdLK1Ni?=
- =?gb2312?B?cWcvZ05OdlBHSzgxU2s2aXYxc2E4Y1hsN2h3NGkrUzdIVU1tL2pJS1NvT1cw?=
- =?gb2312?B?MmZ6NGZIdFhhTmMvZWwzeStmNXArUnR5T1dDTElDUmFFMUw1SzdQT1JTMU1y?=
- =?gb2312?B?dGVWbGxZbVRFckQrZGpMUnJkM2tyc3d3bW5FdWkrc1Y5OVFnR0dNQmhLQ29L?=
- =?gb2312?B?Y3NlT2Q1MTVwSGlYaG1ubEFtN0RJNU5sN1NpK3hhZUZJMVhuaFl6djFkYjkz?=
- =?gb2312?B?cXVsdEd4THhuN1BxVFc2akF0WVQwbDFVNUZ3dlJPbFg0cGd5c2VkWHV1YUVv?=
- =?gb2312?B?RzFXOTF2V2RWclpRV1AvVFdVakNnVno5SkNmT1hLc2ZMRnpRdmtJaUNXSkN0?=
- =?gb2312?B?N1VOZ0ErSGhjaU5FZUVkV2lReEJrWTk5WVZwK202VUJZZHhma1luVHJIdGdx?=
- =?gb2312?B?UEZjam95dUk2ODVRaWhKTzFFMTFWQWZnNFVEWkp1bTJQWW0zSTh1U25vVkg3?=
- =?gb2312?B?WHNBNEFSZlMra2taTjM4SzlIVmZkcmQ3UFpWOE9rMlRXNFZvR3Q3Vm5hQ0Vk?=
- =?gb2312?B?akhOTzh6QVNTUThnUFdHVzJyQWd4NFlGdE5oL0FlL2sxNStyMldRZmlSMnQw?=
- =?gb2312?B?bHhhZ3hDckY0YVA3N2EzSXFmeHJ6Y1Y2VWxYRmRNNVcyQ1ltNSt1a3c5MHB1?=
- =?gb2312?B?N3ZPZnhVdDVDUUl5RUVpVWVKVDc5dE9VK1lUOWNodldMangyMCtVMFZzUmN0?=
- =?gb2312?B?TkRyaUt4d0tGNGFjdERyQ2MxOW1USWkyN3ZlTmI1L2lla0lKbzFQOG5mcGlE?=
- =?gb2312?B?THQvcWlhMjZId2Q0SGx4azB3Sm9lbU55czUrcmV0d3RSR3ZmbUZ2dmt5UHJ1?=
- =?gb2312?B?c3dwb2tHdmxaQ2NQS3ZLK2c1U1J6NkpWU3YzWmgxOEc5OWx5elYwaFpmd0Nm?=
- =?gb2312?B?MEZrYXdYSnExeHo0Tm1MVEVVS0oyV0wwdm4vOUtFeEdIdCtlbGx1bVRlS250?=
- =?gb2312?B?Zk5wd3E0RmliR0tPdFV4eGxmZEtGSWRITzQwbkxPYlcrZVoyMzV5dVM4T3p2?=
- =?gb2312?B?KytGcEViR1k2WHQ5OFBpOXpyQ3RZQXk0a0tEVHR3RE1HcVlmeDdpWmxieXNr?=
- =?gb2312?B?ZlBiSGR2R210NkVPd0YzVmkrZEJjMStxTzRrMFgrclpWSTVBNmFXRmpucGN1?=
- =?gb2312?B?em0rZzBBWXZrMDhjWjZ4OHhSWmc4NTNzdWhCd3dSckJ1cysvTEpWUmp1djdJ?=
- =?gb2312?B?VHpZcVNRblJOTnhvTmgxLzdUb1V6a1Z0Z0xXQ3VzRDZ2TzJuNHB2VXNRcDBF?=
- =?gb2312?B?cE5PSmRNbnBBVEdJcmU0emZFNmNqU0F5dG5HKzhtNktYTGE1ZkI3Tzdjc2Vq?=
- =?gb2312?B?M2x3a1IwUVdwdEszcit0WXQ0MnpmTE5Id0d1UVhBM21oUlBVblN6NzdTcmYw?=
- =?gb2312?B?Q05FelpSK01yOGkzbk5HNkNXVjFPK0NEZWFydGIvL2JhUjlNaDN5NFVWbFpS?=
- =?gb2312?B?Vm9CMnRoaWVCZHJmS242Sm1uLzlESE83RGxMNWlMV3pENTY3aG9pQTQ5ejFJ?=
- =?gb2312?B?cmdkSGJnTXlQVmtMQnMrWFAyVnQ4cmVVTWs1TWcxQitmNFB0bFJDYWxacXZx?=
- =?gb2312?B?eHh3U2U3Rm1vU2JrSGdHbG1NZGozMHIyMWpQWmJSUURDbVoySlppa2tQTEVn?=
- =?gb2312?B?VVp5aHUzRDRjVmNDSkhkN2YxRDhNNWtXOTF1WnVqTS9GSGhEZjRsRnR4NGt1?=
- =?gb2312?B?YTN6S0swTkhKakNyTjdhdkJkNWRvcWthYW1CRWJzVlFvTTZaMDVaZldkTzhJ?=
- =?gb2312?B?MFRUOTRSQXdCUkU4Wk9uMjUzYU1FSFp2WVl4V1VhcVlKNDkxMVdKa0h2QTBB?=
- =?gb2312?B?TGExOTk1aW5hSlIycGMwWWNYeEsxNHJtN2ZObjVyZ1NQYlZ3Ni9Ldy94THZ2?=
- =?gb2312?B?Z2kxaHZGUVd5dVlYNVVZcmtKWVQ2c3NVV1FQZWhxNExLdDVEVjRMYzRhNTNC?=
- =?gb2312?Q?2rk1hk9kuPGyubHh8Usv6EzjuT6RdkT8UlM2HbAapk=3D?=
-Content-ID: <3BA0B05F21B85643815502B6619D85C9@jpnprd01.prod.outlook.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 78378601B12
+ for <ltp@lists.linux.it>; Thu, 11 Nov 2021 09:32:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1636619546; i=@fujitsu.com;
+ bh=p8vWHAv6CnNMrsvsAgxmCCnxbsS/DXciWPZ5tzj/vPs=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=KZ+iVk9UE+USSmh9ZFR2cpWPAaJQlSoI+doO/8znufbAcWp0zqH2MqEa4L43e7Afj
+ VpFlY/6Pty4S9sz5PG23FnDR/BWiQr3JpRdrCiiKGdbKY1pwrZxj9ebrn4WMfhqPjm
+ Z5qQV43qzrN8UjNND+IOCON4BbnR5nOcVeGdJ7P+SsYzunLIb4GcXpGgi4G5wemr62
+ rqQicz8nPUqyqMtTlYQLkbLZT+Fw7TCRly14vGo3YKKvxwm8rLbg4+PxS6zZ8bG7ND
+ v3hWMut58DWc3cGl9OCptqxwyqa8ENPrst2o1JY9CMp3/DOEMvHWZYvk67Fm7IGAjK
+ QucWHyYh1HGfA==
+Received: from [100.113.4.66] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-2.bemta.az-b.eu-central-1.aws.symcld.net id C2/7F-14220-A15DC816;
+ Thu, 11 Nov 2021 08:32:26 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOIsWRWlGSWpSXmKPExsViZ8ORqCt5tSf
+ R4Psxc4sV33cwOjB67Pu9jjWAMYo1My8pvyKBNWPGhm1sBfPdKg5/nsDSwLjQqouRi0NI4Cyj
+ xOffpxghnJ1MEnP7/rB0MXICOXsYJXa2R4DYbAKaEs86FzCD2CICEhIdDW/ZQWxmAXWJ5ZN+M
+ YHYwgKeEj1/1rKC2CwCqhITlm1gA7F5BTwk+hYtB4tLCChITHn4nhkiLihxcuYTFog5EhIHX7
+ xghqhRlLjU8Y0Rwq6QmDWrjQnCVpO4em4T8wRG/llI2mchaV/AyLSK0TKpKDM9oyQ3MTNH19D
+ AQNfQ0FjXVNfIwFAvsUo3SS+1VDc5Na+kKBEoq5dYXqxXXJmbnJOil5dasokRGJIphawndzBO
+ evNB7xCjJAeTkihv4ZKeRCG+pPyUyozE4oz4otKc1OJDjDIcHEoSvFcuAeUEi1LTUyvSMnOA8
+ QGTluDgURLh/QOS5i0uSMwtzkyHSJ1iDOd4s3bJImaOt2Cy7d5dINkOJmcuOLiamWMWmLzffg
+ hIPgCRQix5+XmpUuK8Cy4DjRMAGZdRmge3DBb/lxhlpYR5GRkYGIR4ClKLcjNLUOVfMYpzMCo
+ J89aBTOHJzCuBu+kV0LlMQOfOe9kNcm5JIkJKqoEp88kE7tQZSd85ZTRvcHI8XDplC7/lPieF
+ dz9/z+8X9tl3+cPd7WqXVlbv75dWdOp5cbdn+vzvzhcu7fj++/sa98zFtY2t8WH14YXSvN6ag
+ jF6f10sp/Uqsm/imsgpf9vU4gLv8nyjDZuay7dO39k089oWg7+sfFJfjep/fFhtOp9ZbvO+pY
+ eanXu6Hxg4ME0smqWh4ZWT4SH3Rq6heqrRC6/k5VerN2teWyf20iVf8kpar6jK00qpkxkvPO+
+ yq/S93v7bwmA1D7duvc9arWeOZuKN6xIfzuoM/Be+w6rD7Wj8hlsX7fj+28Se6vxl3tfqf2T3
+ fetL5oKi+st7A97leTJ1ztpmevHEVKFjBZ1KLMUZiYZazEXFiQBDMVb9egMAAA==
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-20.tower-245.messagelabs.com!1636619545!172389!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.5; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 27107 invoked from network); 11 Nov 2021 08:32:25 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-20.tower-245.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 11 Nov 2021 08:32:25 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 649C6100243
+ for <ltp@lists.linux.it>; Thu, 11 Nov 2021 08:32:25 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 583DC100229
+ for <ltp@lists.linux.it>; Thu, 11 Nov 2021 08:32:25 +0000 (GMT)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.24; Thu, 11 Nov 2021 08:32:03 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Thu, 11 Nov 2021 16:32:24 +0800
+Message-ID: <1636619544-2369-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6535.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5249d0e-36ac-4492-c9fc-08d9a4c2f716
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2021 03:25:52.4746 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zcD0bpJxLpDelYH9kgQxkF9Lfy9qWov3Cy2McYwG0mdytlBxlVFA4gxx0lwK7nqPyFhPZYpoKHxKjOMFMHa0nN/QrF89HcGXt4ZVlHGnNY4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSYPR01MB5559
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before
+Subject: [LTP] [PATCH v4] syscalls/statx04: use stx_attributes_mask before
  test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -165,24 +103,296 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richard
-> Hello Yang,
-> 
-> The fix/feature appears easy to backport, so I would suggest just adding the git
-> commit tags to the test. If the feature is required then people can
-> backport the patches, otherwise they can filter out the test.
-> 
+stx_attributes_mask shows what's supported in stx_attributes.
+Set supp_{append,compr,immutable,nodump} attributes only on filesystems
+which actually support it.
 
-I will add these linux tags into description and send a v4.
+Also merge duplicate code and document the kernel commits that ext2/ext4/xfs/btrfs
+supports statx syscall correctly.
 
-Best Regards
-Yang Xu
+Reviewed-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+v3->v4:
+1. add kernel commits into top description
+2. docparse formatting
+
+v2->v3:
+1.add kernel version check for stx_attributes_mask
+2. use test_flag(int) instead of test_flagged and test_unflagged
+
+ testcases/kernel/syscalls/statx/statx04.c | 197 ++++++++++++++--------
+ 1 file changed, 123 insertions(+), 74 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index f8350ed2d..3c221b461 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -4,21 +4,46 @@
+  * Email: code@zilogic.com
+  */
+ 
+-/*
+- * Test statx
++/*\
++ * [Description]
+  *
+  * This code tests if the attributes field of statx received expected value.
+  * File set with following flags by using SAFE_IOCTL:
+- * 1) STATX_ATTR_COMPRESSED - The file is compressed by the filesystem.
+- * 2) STATX_ATTR_IMMUTABLE - The file cannot be modified.
+- * 3) STATX_ATTR_APPEND - The file can only be opened in append mode for
+- *                        writing.
+- * 4) STATX_ATTR_NODUMP - File is not a candidate for backup when a backup
++ *
++ * - STATX_ATTR_COMPRESSED - The file is compressed by the filesystem.
++ * - STATX_ATTR_IMMUTABLE - The file cannot be modified.
++ * - STATX_ATTR_APPEND - The file can only be opened in append mode for writing.
++ * - STATX_ATTR_NODUMP - File is not a candidate for backup when a backup
+  *                        program such as dump(8) is run.
+  *
+  * Two directories are tested.
+- * First directory has all flags set.
+- * Second directory has no flags set.
++ * First directory has all flags set. Second directory has no flags set.
++ *
++ * ext2, ext4, btrfs and xfs support statx syscall since the following commit
++ *
++ *  commit 93bc420ed41df63a18ae794101f7cbf45226a6ef
++ *  Author: yangerkun <yangerkun@huawei.com>
++ *  Date:   Mon Feb 18 09:07:02 2019 +0800
++ *
++ *  ext2: support statx syscall
++ *
++ *  commit 99652ea56a4186bc5bf8a3721c5353f41b35ebcb
++ *  Author: David Howells <dhowells@redhat.com>
++ *  Date:   Fri Mar 31 18:31:56 2017 +0100
++ *
++ *  ext4: Add statx support
++ *
++ *  commit 04a87e3472828f769a93655d7c64a27573bdbc2c
++ *  Author: Yonghong Song <yhs@fb.com>
++ *  Date:   Fri May 12 15:07:43 2017 -0700
++ *
++ *  Btrfs: add statx support
++ *
++ *  commit 1b9598c8fb9965fff901c4caa21fed9644c34df3
++ *  Author: Luis R. Rodriguez <mcgrof@kernel.org>
++ *  Date:   Fri Mar 1 08:14:57 2019 -0800
++ *
++ *  xfs: fix reporting supported extra file attributes for statx()
+  *
+  * Minimum kernel version required is 4.11.
+  */
+@@ -34,85 +59,67 @@
+ #define TESTDIR_UNFLAGGED MOUNT_POINT"/test_dir2"
+ 
+ static int fd, clear_flags;
++static int supp_compr = 1, supp_append = 1, supp_immutable = 1, supp_nodump = 1;
+ 
+-static void test_flagged(void)
+-{
+-	struct statx buf;
+-
+-	TEST(statx(AT_FDCWD, TESTDIR_FLAGGED, 0, 0, &buf));
+-	if (TST_RET == 0)
+-		tst_res(TPASS,
+-			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
+-	else
+-		tst_brk(TFAIL | TTERRNO,
+-			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
+-
+-	if (buf.stx_attributes & STATX_ATTR_COMPRESSED)
+-		tst_res(TPASS, "STATX_ATTR_COMPRESSED flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_COMPRESSED flag is not set");
+-
+-	if (buf.stx_attributes & STATX_ATTR_APPEND)
+-		tst_res(TPASS, "STATX_ATTR_APPEND flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_APPEND flag is not set");
+-
+-	if (buf.stx_attributes & STATX_ATTR_IMMUTABLE)
+-		tst_res(TPASS, "STATX_ATTR_IMMUTABLE flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_IMMUTABLE flag is not set");
+-
+-	if (buf.stx_attributes & STATX_ATTR_NODUMP)
+-		tst_res(TPASS, "STATX_ATTR_NODUMP flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_NODUMP flag is not set");
+-}
+-
+-static void test_unflagged(void)
++static void test_flag(int flag)
+ {
+ 	struct statx buf;
+ 
+-	TEST(statx(AT_FDCWD, TESTDIR_UNFLAGGED, 0, 0, &buf));
++	TEST(statx(AT_FDCWD, flag ? TESTDIR_FLAGGED : TESTDIR_UNFLAGGED, 0, 0, &buf));
+ 	if (TST_RET == 0)
+ 		tst_res(TPASS,
+ 			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)",
+-			TESTDIR_UNFLAGGED);
++			flag ? TESTDIR_FLAGGED : TESTDIR_UNFLAGGED);
+ 	else
+ 		tst_brk(TFAIL | TTERRNO,
+ 			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)",
+-			TESTDIR_UNFLAGGED);
+-
+-	if ((buf.stx_attributes & STATX_ATTR_COMPRESSED) == 0)
+-		tst_res(TPASS, "STATX_ATTR_COMPRESSED flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_COMPRESSED flag is set");
+-
+-	if ((buf.stx_attributes & STATX_ATTR_APPEND) == 0)
+-		tst_res(TPASS, "STATX_ATTR_APPEND flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_APPEND flag is set");
+-
+-	if ((buf.stx_attributes & STATX_ATTR_IMMUTABLE) == 0)
+-		tst_res(TPASS, "STATX_ATTR_IMMUTABLE flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_IMMUTABLE flag is set");
+-
+-	if ((buf.stx_attributes & STATX_ATTR_NODUMP) == 0)
+-		tst_res(TPASS, "STATX_ATTR_NODUMP flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_NODUMP flag is set");
++			flag ? TESTDIR_FLAGGED : TESTDIR_UNFLAGGED);
++
++	if (supp_compr) {
++		if (buf.stx_attributes & STATX_ATTR_COMPRESSED)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_COMPRESSED flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_COMPRESSED flag is not set");
++	}
++	if (supp_append) {
++		if (buf.stx_attributes & STATX_ATTR_APPEND)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_APPEND flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_APPEND flag is not set");
++	}
++	if (supp_immutable) {
++		if (buf.stx_attributes & STATX_ATTR_IMMUTABLE)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_IMMUTABLE flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_IMMUTABLE flag is not set");
++	}
++	if (supp_nodump) {
++		if (buf.stx_attributes & STATX_ATTR_NODUMP)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_NODUMP flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_NODUMP flag is not set");
++	}
+ }
+ 
+ struct test_cases {
+-	void (*tfunc)(void);
++	void (*tfunc)(int);
++	int set_flag;
+ } tcases[] = {
+-	{&test_flagged},
+-	{&test_unflagged},
++	{&test_flag, 1},
++	{&test_flag, 0},
+ };
+ 
+ static void run(unsigned int i)
+ {
+-	tcases[i].tfunc();
++	tcases[i].tfunc(tcases[i].set_flag);
+ }
+ 
+ static void caid_flags_setup(void)
+@@ -135,12 +142,17 @@ static void caid_flags_setup(void)
+ 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_GETFLAGS, ...)", fd);
+ 	}
+ 
+-	attr |= FS_COMPR_FL | FS_APPEND_FL | FS_IMMUTABLE_FL | FS_NODUMP_FL;
++	if (supp_compr)
++		attr |= FS_COMPR_FL;
++	if (supp_append)
++		attr |= FS_APPEND_FL;
++	if (supp_immutable)
++		attr |= FS_IMMUTABLE_FL;
++	if (supp_nodump)
++		attr |= FS_NODUMP_FL;
+ 
+ 	ret = ioctl(fd, FS_IOC_SETFLAGS, &attr);
+ 	if (ret < 0) {
+-		if (errno == EOPNOTSUPP)
+-			tst_brk(TCONF, "Flags not supported");
+ 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_SETFLAGS, %i)", fd, attr);
+ 	}
+ 
+@@ -149,11 +161,48 @@ static void caid_flags_setup(void)
+ 
+ static void setup(void)
+ {
++	struct statx buf;
++
+ 	SAFE_MKDIR(TESTDIR_FLAGGED, 0777);
+ 	SAFE_MKDIR(TESTDIR_UNFLAGGED, 0777);
+ 
++	/* Don't check ext4 because ext4 supports statx since 4.11. */
+ 	if (!strcmp(tst_device->fs_type, "btrfs") && tst_kvercmp(4, 13, 0) < 0)
+-		tst_brk(TCONF, "Btrfs statx() supported since 4.13");
++		tst_brk(TCONF,
++			"Btrfs statx() stx_attributes_mask supported since 4.13, see test description!");
++
++	if (!strcmp(tst_device->fs_type, "xfs") && tst_kvercmp(5, 1, 0) < 0)
++		tst_brk(TCONF,
++			"xfs statx() stx_attributes_mask supported since 5.1, see test description!");
++
++	if (!strcmp(tst_device->fs_type, "ext2") && tst_kvercmp(5, 1, 0) < 0)
++		tst_brk(TCONF,
++			"ext2 statx() stx_attributes_mask supported since 5.1, see test description!");
++
++	TEST(statx(AT_FDCWD, TESTDIR_FLAGGED, 0, 0, &buf));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO,
++			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
++
++	if ((buf.stx_attributes_mask & FS_COMPR_FL) == 0) {
++		supp_compr = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_COMPR_FL");
++	}
++	if ((buf.stx_attributes_mask & FS_APPEND_FL) == 0) {
++		supp_append = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_APPEND_FL");
++	}
++	if ((buf.stx_attributes_mask & FS_IMMUTABLE_FL) == 0) {
++		supp_immutable = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_IMMUTABLE_FL");
++	}
++	if ((buf.stx_attributes_mask & FS_NODUMP_FL) == 0) {
++		supp_nodump = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_NODUMP_FL");
++	}
++	if (!(supp_compr || supp_append || supp_immutable || supp_nodump))
++		tst_brk(TCONF,
++			"filesystem doesn't support the above any attr, skip it");
+ 
+ 	caid_flags_setup();
+ }
+-- 
+2.23.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
