@@ -4,77 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74B76C433EF
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 07:47:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47F16C433EF
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 09:30:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2F233C8FDB
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 08:47:17 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E20B93C8FDB
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 10:30:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B760C3C8DC3
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 08:47:07 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id A09AE3C7047
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:30:43 +0100 (CET)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2BEA3600688
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 08:47:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1638431224;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Qpv5jaTESQdW+W/umE/2JsKchUOdj4AD9hc3VixDA2g=;
- b=OEED6S3z4k9qviAIp/yV5ouuaCp8GTW2ee7L1k0BXjjpePbhkva/0Ol+7pGtTqhyBd2LKj
- PTyEjKqqxsqYt+crtK9TUOO6uRksxsD8vL2OEmjDEtK6t2Z71/ZFgCjIt6CSWXjkVoEplV
- fad4RlTJttUd4flo24N/8UE4EsqL4iQ=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-221-MfMVPlBROkabZ6q-Kv-NDA-1; Thu, 02 Dec 2021 02:47:01 -0500
-X-MC-Unique: MfMVPlBROkabZ6q-Kv-NDA-1
-Received: by mail-yb1-f200.google.com with SMTP id
- t24-20020a252d18000000b005c225ae9e16so41111365ybt.15
- for <ltp@lists.linux.it>; Wed, 01 Dec 2021 23:47:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Qpv5jaTESQdW+W/umE/2JsKchUOdj4AD9hc3VixDA2g=;
- b=hJhzG6xOMVEZ6yr8KV0bvB4A1nUMkwP4JpQvo6F0bWF3rrCrp2z3BEg3xFUG5Itm9L
- 8nIA3aOatl+dGKf1zc1IKqbtHrOJteekJljIYqoARYPEPEfzXtYKELku3WtsEMYqTE96
- 9+RZ/+21ZTYiULqF27hLT3tGCADq7yVaFGXuzSUWzxoDvEf3afCLcCfpEOk0VB6ihBsG
- Ehp1EDreVZfAG+785618ly0dzo7b/UGmPeS96gi4R6oXNHhfArv3x8UwT8ujem49JO/u
- ZmrUTwRVMpSZ+W+EDqahYG2ZqhKLjh2rHHmyQF1zq8PVwxsyKr6P1SG6zu9clmGDMiSp
- yrtg==
-X-Gm-Message-State: AOAM531Nl6e80uCvfdA+ksyNX+kHYmz63HJZm4rA+Hpaqnp1m0+UZpEl
- 3yeotY31Z4/2dng0F43di7T6HbVmpwp8Wu9VAY5xSTvnDKKw/qALgsrRIYp+3ZWRqufdJ9yObTH
- FOpHGgvcPyYeh6+5wmZVQduiL2i8=
-X-Received: by 2002:a25:f621:: with SMTP id t33mr13681237ybd.576.1638431221034; 
- Wed, 01 Dec 2021 23:47:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwRqonk1nywilUZBNbZbPyCJ1qHfki7XHgy75qa9m3hSCKwl0dL7jOcyG37DCgQSYYd2xQyCxdO8RAfOOjAMQg=
-X-Received: by 2002:a25:f621:: with SMTP id t33mr13681220ybd.576.1638431220740; 
- Wed, 01 Dec 2021 23:47:00 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2C4271401634
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:30:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1638437441; i=@fujitsu.com;
+ bh=EfZaehL2AFyrYA2I3jZ1WclNPI20YNTgTDhHlAl0KNs=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=ATm4ESw0B/YyHSiMlTqJ6vIYhL9S8yuA1iWH6h0xFY2YvzbchoA6/pN/rjbM/G6gp
+ Z0TzLxm3E2PwaRITKWXFfMHCDORSxzva78um0+MDSXUlAkBoNLTzrO9BTd/ze6XnZX
+ fU+PfgDKyeUkUBax5uyoCnokGLiaAmggYrdpSHYgxT3mptrWWdsSuwyh63spXVsJ0x
+ Qltq3uO/0+82ycTOaR65LEu7dddN0Dno1qwkgEDqH0jM/x3KRg3LPOXZvFiyj2+6qh
+ cXwtKCpBxPLsqDIGmJLMa3HTVDw23Gnt5IuA0TAJxZJn+Mg0GKjq62CDANpid8IEvS
+ s2ssQ7u4RBFhA==
+Received: from [100.115.34.229] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-4.bemta.az-a.eu-west-2.aws.ess.symcld.net id 38/29-02703-14298A16;
+ Thu, 02 Dec 2021 09:30:41 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRWlGSWpSXmKPExsViZ8MxSddh0op
+ Eg5f3LCxWfN/B6MDose/3OtYAxijWzLyk/IoE1ox/OxezFiz2qvjy8jBTA+NDqy5GLg4hgbOM
+ ErcWbmCFcHYySdzbOZUdwtnHKPFn2lkgh5ODTUBD4trjdmYQW0RAQqKj4S1YnFlATWL31WNsI
+ LawgJnE9I0vwOIsAqoST2/+ZwGxeQXcJK5smgEWlxBQkJjy8D0zRFxQ4uTMJywQcyQkDr54wQ
+ xRoyixf+9GRgi7QmLGjG1sELaaxNVzm5gnMPLPQtI+C0n7AkamVYzWSUWZ6RkluYmZObqGBga
+ 6hoamusamukYGJnqJVbqJeqmluuWpxSW6RnqJ5cV6qcXFesWVuck5KXp5qSWbGIGBmVKsfGYH
+ 46dL3/QOMUpyMCmJ8iokrUgU4kvKT6nMSCzOiC8qzUktPsQow8GhJMH7bAJQTrAoNT21Ii0zB
+ xglMGkJDh4lEd4rE4HSvMUFibnFmekQqVOMuhzvn8xdxCzEkpeflyolznsRZIYASFFGaR7cCF
+ jEXmKUlRLmZWRgYBDiKUgtys0sQZV/xSjOwagkzGsMsoonM68EbtMroCOYgI44PGs5yBEliQg
+ pqQamfpEgoZiE3PVWnex/UjhYSis3l0Rt1p+raLJl6/+kedGWmh/fh3De23FNXmXJ0eaZAl4N
+ s0Larye6at9f/j9X42SRKe+O+5/nHngrkZj72D7w4qUmQftz8tfj33HaZV2/dvB/lwBzf7Uze
+ 9CsFyHuh9VmCAStnZFz0uakRMtWxz/CVkf+7p2Q/DxhmaD4krUTrhwQ5ZOSO7LspMzL7AiPTd
+ my9r9bNM6sLO8X/qD05NnDb1cDCuvv3f9z+MD9NjfLlGSXjnuGRxSPiBx8flhwsozoy7ehgQv
+ cv2203qW0WlFa0lFr05xEd0tB7xdz7/6WvHyw8uoFI4dp+m7LXteeMjricyfA3i5T5pSusXKQ
+ EktxRqKhFnNRcSIA5IvJ8FMDAAA=
+X-Env-Sender: daisl.fnst@fujitsu.com
+X-Msg-Ref: server-7.tower-571.messagelabs.com!1638437440!102293!1
+X-Originating-IP: [62.60.8.146]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.7; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 24723 invoked from network); 2 Dec 2021 09:30:40 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-7.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 2 Dec 2021 09:30:40 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 77C4E10034F
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 09:30:42 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 6AC421000FE
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 09:30:42 +0000 (GMT)
+Received: from rhel79.g08.fujitsu.local (10.167.225.51) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.26; Thu, 2 Dec 2021 09:30:34 +0000
+From: Dai Shili <daisl.fnst@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Fri, 12 Nov 2021 19:09:21 -0500
+Message-ID: <1636762161-26777-1-git-send-email-daisl.fnst@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <cover.1637970912.git.luke.nowakowskikrijger@canonical.com>
- <bbf87d62e2e8274fddc160813e64aedb0a01ffe1.1637970912.git.luke.nowakowskikrijger@canonical.com>
- <CAEemH2ed6DqKw80Xa_BTjUweT0HrhrUN2-7X+sS05K9gCr2F5A@mail.gmail.com>
- <CADS1e3cCXsu=y_GNM3ymwHtOq9R671YnQAWgyycG25FJYnOLaA@mail.gmail.com>
-In-Reply-To: <CADS1e3cCXsu=y_GNM3ymwHtOq9R671YnQAWgyycG25FJYnOLaA@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 2 Dec 2021 15:46:45 +0800
-Message-ID: <CAEemH2cZvK29mrN2xD_EOPx7w3UXFBHrWmAdg+rv5K2vcP3qNA@mail.gmail.com>
-To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.167.225.51]
+X-ClientProxiedBy: G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/4] controllers/memcg: update stress test to work
- under cgroup2
+Subject: [LTP] [PATCH] syscalls/pwrite04: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,289 +96,361 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1981732159=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1981732159==
-Content-Type: multipart/alternative; boundary="000000000000e6d09f05d224fe15"
+1) use SAFE macro
+2) remove useless write() operations
+3) simplify pwrite() operations before using O_APPEND
 
---000000000000e6d09f05d224fe15
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+---
+ testcases/kernel/syscalls/pwrite/pwrite04.c | 307 ++++++----------------------
+ 1 file changed, 66 insertions(+), 241 deletions(-)
 
-On Thu, Dec 2, 2021 at 6:24 AM Luke Nowakowski-Krijger <
-luke.nowakowskikrijger@canonical.com> wrote:
-
-> Hi Li,
->
-> On Wed, Dec 1, 2021 at 1:13 AM Li Wang <liwang@redhat.com> wrote:
->
->> Hi Luke,
->>
->> Thanks for looking into this.
->>
->> On Sat, Nov 27, 2021 at 8:05 AM Luke Nowakowski-Krijger <
->> luke.nowakowskikrijger@canonical.com> wrote:
->>
->>> Update tests to be able to work when memory controller is mounted under
->>> cgroup2 hierarchy.
->>>
->>
->> I'm thinking whether we could achieve these setup functions
->> more generic in cgroup_lib.sh, which to avoid the redundancy
->> behavior over and over again in each cgroup sub-test.
->>
->> Yes I agree. As I was doing the same things a few times I was beginning
-> to wonder if there was a better way. I would be willing to look further into
-> expanding the cgroup_lib.sh and resubmitting my recent patches with those
-> changes.
->
-
-Thanks a lot!
-
-
->
-> About the compatibility of cgroup V1 and V2 in test, I'd suggest
->> following what the LTP C library did in include/tst_cgroup.h.
->>
->> https://github.com/linux-test-project/ltp/blob/master/doc/c-test-api.txt#L2024
->>
->> The solution may be briefly as:
->>
->>
->   1. scan system mounted CGroup path, and judge the situation as one of
->> below:
->>      * only CGroup V2 mounted
->>      * only CGroup V1 mounted
->>      * both CGroup V2 and V1 mounted
->>      * no CGroup mounted
->>   2. make use of the system mounted CGroup V2 or TSKIP
->>       * goto step 5
->>   3. make use of the system mounted CGroup V1
->>       * goto step 5
->>   4. do mount Cgroup as what we needed (V1 or V2) in test
->>       * goto step 5
->>   5. do cleanup
->>
->>
-> Yes this would be the way to go through setting up a controller and
-> checking everything.
-> Going through the steps you mentioned for mounting a single controller and
-> returning that path wouldn't be too hard but
-> it seems to get more complicated when we want some guarantee of having
-> multiple controllers in a hierarchy (if we even
-> would want to support something like that, which for testing purposes
-> wouldnt seem unheard of).
->
-
-Right, it is the complicated part and you can take a reference how
-the current C API handles it.
-
-TBH, I even think to skip the handling on mixed mounting with V1
-and V2, that is too messy/overthinking and not suggested using way.
-
-We'd better face the future and ideally as myself hoping,
-V2 will replace V1 everywhere someday:).
-
-
-
-> Maybe something mimicking the tst_cgroup_require() from the C api would be
-> useful here? I imagine this is where we would
-> do the checking and mounting logic that you were describing. We would just
-> also have to include checking if the controllers
-> we are requiring can be mounted / already exist together.
->
-> For example I am imaging something mimicking the C api something like:
-> tst_cgroup_require "cpu"
-> tst_cgroup_require "cpuset"
-> root_mount_point =$(tst_cgroup_get_mountpoint)
->
-
-I prefer this one a bit, not only it's consistent with C API but it also
-can do CGroup mounting in tst_cgroup_require for a system without
-V1 nor V2 mounting. Then I'd suggest having tst_cgroup_cleanup to
-help umount that which makes things more clear to understand.
-
-Anyway, it depends on the details achieve, maybe there is a better
-solution we haven't found.
-
-
-
->
-> or just combined them together
->
-> root_mount_point = $(tst_cgroup_get_mountpoint "cpu cpuset")
->
-
-> Again, most of the tests seem to only be testing individual controllers
-> from what I can see
-> so I don't know if this would be too useful. Let me know what you think.
->
-
-Yes, the existing legacy tests based on one controller should
-just work well to use the new APIs you're going to achieve.
-But eventually, I think, those tests also need further refactoring
-or rewriting someday.
-
-And, the most important part is that it (CGroup shell APIs) will be
-recommended to be used when a new test is written in the future,
-so now it requires interfaces that have good scalability and compatibility.
-No matter the test target for CGroup itself or just as an auxiliary part,
-these shell APIs will play a key ingredient.
-
+diff --git a/testcases/kernel/syscalls/pwrite/pwrite04.c b/testcases/kernel/syscalls/pwrite/pwrite04.c
+index 4a2825b..2b5ab35 100644
+--- a/testcases/kernel/syscalls/pwrite/pwrite04.c
++++ b/testcases/kernel/syscalls/pwrite/pwrite04.c
+@@ -1,267 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) Linux Test Project, 2021
++ * Copyright (c) International Business Machines  Corp., 2002
++ * ported from SPIE, section2/filesuite/pread_pwrite.c, by Airong Zhang
+  */
+ 
+-/*
+- * NAME
+- *      pwrite04.c (ported from SPIE, section2/filesuite/pread_pwrite.c,
+- *      	        by Airong Zhang)
++/*\
++ * [Description]
+  *
+- * TEST SUMMARY
+- *	Test the pwrite() system call with O_APPEND.
++ * Test the pwrite() system call with O_APPEND.
+  *
+- * USAGE
+- *  	pwrite04
++ * Writing 2k data to the file, close it and reopen it with O_APPEND.
+  *
++ * POSIX requires that opening a file with the O_APPEND flag should have no effect on the
++ * location at which pwrite() writes data. However, on Linux, if a file is opened with
++ * O_APPEND, pwrite() appends data to the end of the file, regardless of the value of offset.
+  */
+ 
+-#define _XOPEN_SOURCE 500
+-#include <stdio.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <memory.h>
+-#include <errno.h>
+-#include "test.h"
+-
+-char *TCID = "pwrite04";
+-int TST_TOTAL = 1;
+-int local_flag;
++#include <stdlib.h>
++#include "tst_test.h"
++#include "tst_safe_prw.h"
+ 
+-#define PASSED 1
+-#define FAILED 0
++#define K1              1024
++#define K2              (K1 * 2)
++#define K3              (K1 * 3)
++#define DATA_FILE       "pwrite04_file"
+ 
+-int block_cnt = 0;
++static int fd = -1;
++static char *write_buf[2];
+ 
+-#define K1    		1024
+-#define K2    		(K1 * 2)
+-#define K3    		(K1 * 3)
+-#define K4    		(K1 * 4)
+-#define K5    		(K1 * 5)
+-#define	NBUFS 		4
+-#define DATA_FILE	"pwrite04_file"
+-
+-char name[256], fname[256];
+-
+-void init_buffers(char *[]);
+-void l_seek(int, off_t, int, off_t);
+-static void cleanup(void);
+-
+-int main(int ac, char *av[])
++static void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
+ {
+-	int fd;
+-	int nbytes;
+-	char *wbuf[NBUFS];
+-	struct stat statbuf;
+-	int lc;
+-
+-	strcpy(name, DATA_FILE);
+-	sprintf(fname, "%s.%d", name, getpid());
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	tst_tmpdir();
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		init_buffers(wbuf);
+-		local_flag = PASSED;
+-
+-		if ((fd = open(fname, O_RDWR | O_CREAT, 0666)) < 0) {
+-			tst_resm(TBROK, "open failed: fname = %s, errno = %d",
+-				 fname, errno);
+-			cleanup();
+-		}
+-		/*
+-		 * pwrite() K1 of data (0's) at offset 0.
+-		 */
+-		if ((nbytes = pwrite(fd, wbuf[0], K1, 0)) != K1) {
+-			tst_resm(TFAIL,
+-				 "pwrite at 0 failed: nbytes=%d, errno=%d",
+-				 nbytes, errno);
+-			cleanup();
+-		}
+-
+-		/*
+-		 * We should still be at offset 0.
+-		 */
+-		l_seek(fd, 0, SEEK_CUR, 0);
+-
+-		/*
+-		 * lseek() to a non K boundary, just to be different.
+-		 */
+-		l_seek(fd, K1 / 2, SEEK_SET, K1 / 2);
+-
+-		/*
+-		 * pwrite() K1 of data (2's) at offset K2.
+-		 */
+-		if ((nbytes = pwrite(fd, wbuf[2], K1, K2)) != K1) {
+-			tst_resm(TFAIL,
+-				 "pwrite at K2 failed: nbytes=%d, errno=%d",
+-				 nbytes, errno);
+-			cleanup();
+-		}
+-
+-		/*
+-		 * We should still be at our non K boundary.
+-		 */
+-		l_seek(fd, 0, SEEK_CUR, K1 / 2);
+-
+-		/*
+-		 * lseek() to an offset of K3.
+-		 */
+-		l_seek(fd, K3, SEEK_SET, K3);
+-
+-		/*
+-		 * This time use a normal write() of K1 of data (3's) which should
+-		 * take place at an offset of K3, moving the file pointer to K4.
+-		 */
+-		if ((nbytes = write(fd, wbuf[3], K1)) != K1) {
+-			tst_resm(TFAIL, "write failed: nbytes=%d, errno=%d",
+-				 nbytes, errno);
+-			cleanup();
+-		}
+-
+-		/*
+-		 * We should be at offset K4.
+-		 */
+-		l_seek(fd, 0, SEEK_CUR, K4);
+-
+-		/*
+-		 * pwrite() K1 of data (1's) at offset K1.
+-		 */
+-		if ((nbytes = pwrite(fd, wbuf[1], K1, K1)) != K1) {
+-			tst_resm(TFAIL, "pwrite failed: nbytes=%d, errno=%d",
+-				 nbytes, errno);
+-			cleanup();
+-		}
+-
+-	/*--------------------------------------------------------------*/
+-
+-		/*
+-		 * Now test that O_APPEND takes precedence over any
+-		 * offset specified by pwrite(), but that the file
+-		 * pointer remains unchanged.  First, close then reopen
+-		 * the file and ensure it is already K4 in length and
+-		 * set the file pointer to it's midpoint, K2.
+-		 */
+-		close(fd);
+-		if ((fd = open(fname, O_RDWR | O_APPEND, 0666)) < 0) {
+-			tst_resm(TBROK, "open failed: fname = %s, errno = %d",
+-				 fname, errno);
+-			cleanup();
+-		}
+-		if (fstat(fd, &statbuf) == -1) {
+-			tst_resm(TFAIL, "fstat failed: errno = %d", errno);
+-			cleanup();
+-		}
+-		if (statbuf.st_size != K4) {
+-			tst_resm(TFAIL, "file size is %ld != K4",
+-				 statbuf.st_size);
+-			cleanup();
+-		}
+-		l_seek(fd, K2, SEEK_SET, K2);
+-
+-		/*
+-		 * Finally, pwrite() some K1 of data at offset 0.
+-		 * What we should end up with is:
+-		 *      -The file pointer should still be at K2.
+-		 *      -The data should have been written to the end
+-		 *       of the file (O_APPEND) and should be K5 in size.
+-		 */
+-		if ((nbytes = pwrite(fd, wbuf[0], K1, 0)) != K1) {
+-			tst_resm(TFAIL,
+-				 "pwrite at 0 failed: nbytes=%d, errno=%d",
+-				 nbytes, errno);
+-
+-		}
+-		l_seek(fd, 0, SEEK_CUR, K2);
+-		if (fstat(fd, &statbuf) == -1) {
+-			tst_resm(TFAIL, "fstat failed: errno = %d", errno);
+-
+-		}
+-		if (statbuf.st_size != K5) {
+-			tst_resm(TFAIL, "file size is %ld != K4",
+-				 statbuf.st_size);
+-
+-		}
+-		tst_resm(TPASS, "O_APPEND test passed.");
+-
+-	/*------------------------------------------------------------------------*/
+-
+-		close(fd);
+-		unlink(fname);
+-	}			/* end for */
+-	cleanup();
+-	tst_exit();
++	off_t offloc;
+ 
++	offloc = SAFE_LSEEK(fdesc, offset, whence);
++	if (offloc != checkoff) {
++		tst_brk(TFAIL, "%ld = lseek(%d, %ld, %d) != %ld",
++			offloc, fdesc, offset, whence, checkoff);
++	}
+ }
+ 
+-/*------------------------------------------------------------------------*/
+-
+-/*
+- * init_buffers() allocates wbuf[] array
+- * as follows:
+- * wbuf[0] has 0's, wbuf[1] has 1's, wbuf[2] has 2's, and wbuf[3] has 3's.
+- */
+-void init_buffers(char *wbuf[])
++static void verify_pwrite(void)
+ {
+-	int i;
++	struct stat statbuf;
+ 
+-	for (i = 0; i < NBUFS; i++) {
+-		wbuf[i] = malloc(K1);
+-		if (wbuf[i] == NULL) {
+-			tst_brkm(TBROK, NULL, "ib: malloc failed: errno=%d",
+-				 errno);
+-		}
+-		memset(wbuf[i], i, K1);
+-	}
++	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_CREAT | O_TRUNC, 0666);
++	SAFE_PWRITE(1, fd, write_buf[0], K2, 0);
++	SAFE_CLOSE(fd);
++
++	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_APPEND, 0666);
++	SAFE_FSTAT(fd, &statbuf);
++	if (statbuf.st_size != K2)
++		tst_res(TFAIL, "file size is %ld != K2", statbuf.st_size);
++
++	/* Appends data to the end of the file regardless of offset. */
++	l_seek(fd, K1, SEEK_SET, K1);
++	SAFE_PWRITE(1, fd, write_buf[1], K1, 0);
++	l_seek(fd, 0, SEEK_CUR, K1);
++	SAFE_FSTAT(fd, &statbuf);
++	if (statbuf.st_size != K3)
++		tst_res(TFAIL, "file size is %ld != K3", statbuf.st_size);
++
++	tst_res(TPASS, "O_APPEND test passed.");
++	SAFE_CLOSE(fd);
+ }
+ 
+-/*
+- * l_seek() is a local front end to lseek().
+- * "checkoff" is the offset at which we believe we should be at.
+- * Used to validate pwrite doesn't move the offset.
+- */
+-void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
++static void setup(void)
+ {
+-	off_t offloc;
+-
+-	if ((offloc = lseek(fdesc, offset, whence)) != checkoff) {
+-		tst_brkm(TFAIL, NULL,
+-			 "(%ld = lseek(%d, %ld, %d)) != %ld) errno = %d",
+-			 offloc, fdesc, offset, whence, checkoff, errno);
+-	}
++	write_buf[0] = SAFE_MALLOC(K2);
++	memset(write_buf[0], 0, K2);
++	write_buf[1] = SAFE_MALLOC(K1);
++	memset(write_buf[0], 1, K1);
+ }
+ 
+-/*
+- * cleanup() - Performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- *
+- *	Print test timing stats and errno log if test executed with options.
+- *	Close the testfile if still opened.
+- *	Remove temporary directory and sub-directories/files under it
+- *	created during setup().
+- *	Exit the test program with normal exit code.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
++	free(write_buf[0]);
++	free(write_buf[1]);
+ 
+-	tst_rmdir();
++	if (fd > -1)
++		SAFE_CLOSE(fd);
+ 
++	SAFE_UNLINK(DATA_FILE);
+ }
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_pwrite,
++};
 -- 
-Regards,
-Li Wang
-
---000000000000e6d09f05d224fe15
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Thu, Dec 2, 2021 at 6:24 AM Luke Nowakowski-Krij=
-ger &lt;<a href=3D"mailto:luke.nowakowskikrijger@canonical.com" target=3D"_=
-blank">luke.nowakowskikrijger@canonical.com</a>&gt; wrote:<br></div><blockq=
-uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
-x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div>Hi Li, <br=
-></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr"=
->On Wed, Dec 1, 2021 at 1:13 AM Li Wang &lt;<a href=3D"mailto:liwang@redhat=
-.com" target=3D"_blank">liwang@redhat.com</a>&gt; wrote:<br></div><blockquo=
-te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
-solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D"ltr">=
-<div style=3D"font-size:small">Hi Luke,</div></div><div><br></div><div><div=
- style=3D"font-size:small">Thanks for looking into this.</div></div><br><di=
-v class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Nov 2=
-7, 2021 at 8:05 AM Luke Nowakowski-Krijger &lt;<a href=3D"mailto:luke.nowak=
-owskikrijger@canonical.com" target=3D"_blank">luke.nowakowskikrijger@canoni=
-cal.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"=
-margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
-t:1ex">Update tests to be able to work when memory controller is mounted un=
-der<br>
-cgroup2 hierarchy.<br></blockquote><div><br></div><div><div style=3D"font-s=
-ize:small">I&#39;m thinking whether we could achieve=C2=A0these setup funct=
-ions</div><div style=3D"font-size:small">more generic in cgroup_lib.sh, whi=
-ch to avoid=C2=A0the redundancy</div><div style=3D"font-size:small">behavio=
-r over and over again in each cgroup sub-test.</div><br></div></div></div><=
-/blockquote><div>Yes I agree. As I was doing the same things a few times I =
-was beginning to wonder if there was a better way. I would be willing to lo=
-ok further into</div><div>expanding the cgroup_lib.sh and resubmitting my r=
-ecent patches with those changes.</div></div></div></blockquote><div><br></=
-div><div><div class=3D"gmail_default" style=3D"font-size:small">Thanks a lo=
-t!</div></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"m=
-argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
-:1ex"><div dir=3D"ltr"><div class=3D"gmail_quote"><div> <br></div><blockquo=
-te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
-solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gma=
-il_quote"><div></div><div><div style=3D"font-size:small">About the compatib=
-ility=C2=A0of cgroup V1 and V2 in test, I&#39;d suggest</div><div style=3D"=
-font-size:small">following what the LTP C library did in include/tst_cgroup=
-.h.</div><div style=3D"font-size:small"><a href=3D"https://github.com/linux=
--test-project/ltp/blob/master/doc/c-test-api.txt#L2024" target=3D"_blank">h=
-ttps://github.com/linux-test-project/ltp/blob/master/doc/c-test-api.txt#L20=
-24</a></div><br></div><div><div style=3D"font-size:small">The solution may =
-be briefly as:</div></div><div>=C2=A0</div></div></div></blockquote><blockq=
-uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
-x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"g=
-mail_quote"><div style=3D"font-size:small"></div><div><div style=3D"font-si=
-ze:small">=C2=A0 1. scan system mounted CGroup path, and judge the situatio=
-n as one of below:</div><div style=3D"font-size:small">=C2=A0 =C2=A0 =C2=A0=
-* only CGroup V2 mounted</div><div style=3D"font-size:small">=C2=A0 =C2=A0 =
-=C2=A0* only CGroup V1 mounted</div><div style=3D"font-size:small">=C2=A0 =
-=C2=A0 =C2=A0* both CGroup V2 and V1 mounted</div><div style=3D"font-size:s=
-mall">=C2=A0 =C2=A0 =C2=A0* no CGroup mounted</div><div style=3D"font-size:=
-small">=C2=A0 2. make use of the system mounted CGroup V2 or TSKIP</div><di=
-v style=3D"font-size:small">=C2=A0 =C2=A0 =C2=A0 * goto step 5</div><div st=
-yle=3D"font-size:small">=C2=A0 3. make use of the system mounted CGroup V1=
-=C2=A0</div><div style=3D"font-size:small">=C2=A0 =C2=A0 =C2=A0 * goto step=
- 5</div><div style=3D"font-size:small">=C2=A0 4. do mount Cgroup as what we=
- needed (V1 or V2) in test</div></div><div style=3D"font-size:small">=C2=A0=
- =C2=A0 =C2=A0 * goto step 5<br></div><div style=3D"font-size:small">=C2=A0=
- 5. do cleanup=C2=A0</div><div><br></div></div></div></blockquote><div><br>=
-</div><div>Yes this would be the way to go through setting up a controller =
-and checking everything.=C2=A0 <div>Going through the steps you mentioned f=
-or mounting a single controller and returning that path wouldn&#39;t be too=
- hard but <br></div><div>it seems to get more complicated when we want some=
- guarantee of having multiple controllers in a hierarchy (if we even</div><=
-div>would want to support something like that, which for testing purposes w=
-ouldnt seem unheard of).<br></div></div></div></div></blockquote><div><br><=
-/div><div><div class=3D"gmail_default" style=3D"font-size:small">Right, it =
-is the complicated part and you can take a reference how</div><div class=3D=
-"gmail_default" style=3D"font-size:small">the current C API handles it.</di=
-v><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div cla=
-ss=3D"gmail_default" style=3D"font-size:small">TBH, I even think to skip th=
-e handling on mixed mounting with V1</div><div class=3D"gmail_default" styl=
-e=3D"font-size:small">and V2, that is too messy/overthinking and not sugges=
-ted using way.</div><div class=3D"gmail_default" style=3D"font-size:small">=
-<br></div><div class=3D"gmail_default" style=3D"font-size:small">We&#39;d b=
-etter face the future and ideally as myself hoping,</div><div class=3D"gmai=
-l_default" style=3D"font-size:small">V2 will replace V1 everywhere someday:=
-).</div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
-=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
--left:1ex"><div dir=3D"ltr"><div class=3D"gmail_quote"><div><div> </div>May=
-be something mimicking the tst_cgroup_require() from the C api would be use=
-ful here? I imagine this is where we would</div><div>do the checking and mo=
-unting logic that you were describing. We would just also have to include c=
-hecking if the controllers</div><div>we are requiring can be mounted / alre=
-ady exist together.<br></div><div><br></div><div>For example I am imaging s=
-omething mimicking the C api something like:</div><div>tst_cgroup_require &=
-quot;cpu&quot;</div><div>tst_cgroup_require &quot;cpuset&quot;</div><div>ro=
-ot_mount_point =3D$(tst_cgroup_get_mountpoint)</div></div></div></blockquot=
-e><div><div class=3D"gmail_default" style=3D"font-size:small"></div><br></d=
-iv><div><div class=3D"gmail_default" style=3D"font-size:small">I prefer thi=
-s one a bit, not only it&#39;s consistent with C API but it also</div><div =
-class=3D"gmail_default" style=3D"font-size:small">can do CGroup mounting in=
- tst_cgroup_require for a system without</div><div class=3D"gmail_default" =
-style=3D"font-size:small">V1 nor V2 mounting. Then I&#39;d suggest having t=
-st_cgroup_cleanup to</div><div class=3D"gmail_default" style=3D"font-size:s=
-mall">help umount that which makes things more clear to understand.</div><d=
-iv class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=
-=3D"gmail_default" style=3D"font-size:small">Anyway, it depends on the deta=
-ils achieve, maybe there is a better</div><div class=3D"gmail_default" styl=
-e=3D"font-size:small">solution we haven&#39;t found.</div><br></div><div>=
-=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
-.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"l=
-tr"><div class=3D"gmail_quote"><div><br></div><div>or just combined them to=
-gether<br></div><div><br></div><div>root_mount_point =3D $(tst_cgroup_get_m=
-ountpoint &quot;cpu cpuset&quot;)=C2=A0</div></div></div></blockquote><bloc=
-kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
-1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D=
-"gmail_quote"><div><br></div><div>Again, most of the tests seem to only be =
-testing individual controllers from what I can see</div><div>so I don&#39;t=
- know if this would be too useful. Let me know what you think.<br></div></d=
-iv></div></blockquote><div><br></div><div><div class=3D"gmail_default" styl=
-e=3D"font-size:small">Yes, the existing legacy tests based on one controlle=
-r should</div><div class=3D"gmail_default" style=3D"font-size:small">just w=
-ork well to use the new APIs you&#39;re going to achieve.=C2=A0</div><div c=
-lass=3D"gmail_default" style=3D"font-size:small">But eventually, I think, t=
-hose tests also need further refactoring</div><div class=3D"gmail_default" =
-style=3D"font-size:small">or rewriting someday. </div><div class=3D"gmail_d=
-efault" style=3D"font-size:small"><br></div><div class=3D"gmail_default" st=
-yle=3D"font-size:small">And, the most important part is that it (CGroup she=
-ll APIs) will be=C2=A0</div><div class=3D"gmail_default" style=3D"font-size=
-:small">recommended to=C2=A0be used when a new test is written in the futur=
-e,</div><div class=3D"gmail_default" style=3D"font-size:small">so now it re=
-quires interfaces that have good scalability and compatibility.</div><div c=
-lass=3D"gmail_default" style=3D"font-size:small">No matter the test target=
-=C2=A0for CGroup itself or just as an auxiliary part,</div><div class=3D"gm=
-ail_default" style=3D"font-size:small">these shell APIs will play a key ing=
-redient.</div><div class=3D"gmail_default" style=3D"font-size:small"><br></=
-div></div></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Regards,<br><=
-/div><div>Li Wang<br></div></div></div></div>
-
---000000000000e6d09f05d224fe15--
-
-
---===============1981732159==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+1.8.3.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1981732159==--
-
