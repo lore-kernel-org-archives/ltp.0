@@ -2,70 +2,68 @@ Return-Path: <SRS0=J9GY=QC=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B4AC433F5
-	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 09:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F38D9C433F5
+	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 09:24:03 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A62561AD1
-	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 09:23:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3A62561AD1
+	by mail.kernel.org (Postfix) with ESMTPS id 675E763211
+	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 09:24:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 675E763211
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F188D3C8153
-	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 10:23:19 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 81FF83C817C
+	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 10:24:01 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D070E3C1C46
- for <ltp@lists.linux.it>; Mon, 15 Nov 2021 10:23:08 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 32D3D3C1C46
+ for <ltp@lists.linux.it>; Mon, 15 Nov 2021 10:23:52 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0178A1A00A44
- for <ltp@lists.linux.it>; Mon, 15 Nov 2021 10:23:07 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E470E200923
+ for <ltp@lists.linux.it>; Mon, 15 Nov 2021 10:23:50 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 19718218A9;
- Mon, 15 Nov 2021 09:23:07 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2B5662170C;
+ Mon, 15 Nov 2021 09:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636968187;
+ t=1636968230;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CJcC3z3vnQUCGKsKotgvZROzmeKNahkQsTBt31qJJkM=;
- b=aKsos1Nc2wvTk8X+faz0doAw79Pw9fkpTfcYl/h1DjIXKvwxUEzArveUpwq94x/cHbI6vT
- Yj1PSyYZIV1dOWg2cIlmn/AWzrTMMxfe8GuttIQwho1ZOj89j3a0mGTy1rd5ImU/z5B9na
- llMvwcn9sg/QFRCajT8C1NNKldk3k6Q=
+ bh=GH/NU0naTwfUBvEoP/4JKiumaGTw/XWiScwWhPqQMp8=;
+ b=K1bEvw9EqsJVWilY5bFdRx4EROqLSavK7XtVjLgjiLUlyk7ccN9C83f3RV30a2nHXozbK1
+ 5jwDpGaA3MiqMIoZt8m46ezSoUv/pqcD8xzGpZAdTX5EmLS8BJMDr8Wc4GE3PIYaL07lsL
+ hIb35UIfxuSb5mGnrfjt1PSsxy23h9I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636968187;
+ s=susede2_ed25519; t=1636968230;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CJcC3z3vnQUCGKsKotgvZROzmeKNahkQsTBt31qJJkM=;
- b=ROjz3Sehdkk6xBo8TMM5C052BsgnzksLVenLNH5As33RFsloO+hmIAjFCLZuz7homxfrX2
- YHbvlJSq0tZroJDw==
+ bh=GH/NU0naTwfUBvEoP/4JKiumaGTw/XWiScwWhPqQMp8=;
+ b=HcPGidNq3ZLQmWcdjO/Nd4MMN8O1kst0uDbQ0/Opaa0+Sss5GWmwd8fmoAs1J7i49MTGy/
+ Rk1sKB1dOpbWUqCA==
 Received: from g78 (unknown [10.163.24.38])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id CF183A3B81;
- Mon, 15 Nov 2021 09:23:06 +0000 (UTC)
-References: <20210623071543.171021-1-lkml@jv-coder.de> <87mtrg4yz6.fsf@suse.de>
- <3a6d7a45-2205-34f9-aaab-2d039d132456@jv-coder.de>
+ by relay2.suse.de (Postfix) with ESMTPS id C32F9A3B83;
+ Mon, 15 Nov 2021 09:23:49 +0000 (UTC)
+References: <20210623071543.171021-1-lkml@jv-coder.de>
+ <20210623071543.171021-2-lkml@jv-coder.de>
 User-agent: mu4e 1.6.9; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 15 Nov 2021 09:19:52 +0000
-In-reply-to: <3a6d7a45-2205-34f9-aaab-2d039d132456@jv-coder.de>
-Message-ID: <871r3heps5.fsf@suse.de>
+Date: Mon, 15 Nov 2021 09:23:21 +0000
+In-reply-to: <20210623071543.171021-2-lkml@jv-coder.de>
+Message-ID: <87wnl9db6i.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/3] cpuset_regression_test: convert and improve
+Subject: Re: [LTP] [PATCH 1/3] cpuset_regression_test: Convert to new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,77 +76,241 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it, Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8gSm9lcmcsCgpKb2VyZyBWZWhsb3cgPGxrbWxAanYtY29kZXIuZGU+IHdyaXRlczoKCj4g
-SGkgUmljaGFyZCwKPgo+IE9uIDYvMjMvMjAyMSAxOjExIFBNLCBSaWNoYXJkIFBhbGV0aG9ycGUg
-d3JvdGU6Cj4+IEhlbGxvIEpvZXJnLAo+Pgo+PiBKb2VyZyBWZWhsb3cgPGxrbWxAanYtY29kZXIu
-ZGU+IHdyaXRlczoKPj4KPj4+IEhpLAo+Pj4KPj4+IHRoaXMgaXMgbW9yZSBvciBsZXNzIGEgdjIg
-b2YgYSBwYXRjaCBJIHNlbmQgcHJldmlvdXNseSAocGF0Y2ggMykuCj4+PiBJIGtub3cgdGhhdCBy
-aWNoYXJkIGlzIG5vdCBlbnRpcmVseSBoYXBweSB3aXRoIHRoaXMgcGF0Y2gsIEkgd2lsbAo+Pj4g
-Z2l2ZSBpdCBhbm90aGVyIHRyeSBhbnl3YXkuLi4KPj4+IEl0IGlzIGVpdGhlciB0aGlzIHBhdGNo
-IG9yIGFub3RoZXIgcGF0Y2gsIHRoYXQgaGFzIHRvIGxvb2sgdGhyb3VnaAo+Pj4gdGhlIGNncm91
-cCBoaWVyYXJjaHksIHRvIGNoZWNrIGlmIHRoZXJlIGlzIGFueSBncm91cCx0aGF0IGV4cGxpY2l0
-ZWx5Cj4+PiB1c2VzIGNwdSAwLgo+PiBJZiBpdCBpcyBhbHJlYWR5IGJlaW5nIHVzZWQgdGhlbiBj
-YW4geW91IHNldCBpdD8KPiBUaGUgdGVzdCBjYW4gdXNlIGFueSBjcHUsIHRoYXQgaXMgbm90IGV4
-cGxpY2l0bHkgYXNzaWduZWQgdG8gYSBncm91cAo+IGFscmVhZHkuCj4gV2hhdCBJIG1lYW4gYnkg
-ImVpdGhlciB0aGlzIG9yIGFub3RoZXIgcGF0Y2giIChhbmQgZm9yZ290IHRvIHR5cGUpLAo+IHRo
-ZSBhbHRlcm5hdGl2ZQo+IHBhdGNoIGhhcyB0byBjaGVjayBpZiBhbnl0aGluZyBpcyB1c2luZyBj
-cHUgMCBleHBsaWNpdGx5IGFuZCB0aGVuIGZhaWwKPiB3aXRoIFRDT05GLgo+IE9yIGl0IGhhcyB0
-byBsb29rIGZvciBhbiB1c2VkIGNwdSBjb3JlLiBUaGF0IHdvdWxkIGJlIGFub3RoZXIgcG9zc2li
-aWxpdHkuLi4KPgo+Pgo+Pj4gVG8gbWUsIGl0IGlzIGEgYmV0dGVyIHNvbHV0aW9uIHRvIGp1c3Qg
-Y2hhbmdlIGdyb3VwcyBmb3IgYSBzaG9ydCB0aW1lLAo+Pj4gYW5kIGNoZWNrIGlmIHRoZSBidWcg
-ZXhpc3RzLiBJZiBsdHAgdGVzdHMgYXJlIHJ1bm5pbmcsIHRoZSBjaGFuY2UsIHRoYXQKPj4+IHRo
-ZXJlIGlzIGFueXRoaW5nIHJ1bm5pbmcsIHRoYXQgcmVhbGx5IG5lZWRzIGEgY29ycmVjdCBjcHVz
-ZXQgaXMgdmVyeSBsb3cuCj4+PiBJIGFtIGNvbW1pbmcgZnJvbSBhIHN5c3RlbSwgd2hlcmUgY2dy
-b3VwcyBhcmUgc2V0dXAgYnkgYSBjb250YWluZXIgbGF1bmNoZXIsCj4+PiB0aGF0IGp1c3QgaGFw
-cGVucyB0byBhc3NpZ24gY3B1cyB0byB0aGUgY29udGFpbmVycyAtIG5vdCBldmVuIGV4Y2x1c2l2
-ZWx5Lgo+Pj4gTFRQIHRlc3RzIGFyZSB1c2VkIGFzIHNvbWUgcGFydCBvZiB0aGUgdGVzdHN1aXRl
-LCB0byB0ZXN0IGFzIGNsb3NlIHRvIGEKPj4+IHByb2R1Y3Rpb24gc3lzdGVtIGFzIHBvc3NpYmxl
-Lgo+PiBJIHdhcyB0aGlua2luZyB0aGF0IGlmIHlvdSBhcmUgYWxyZWFkeSB1c2luZyBDUFUgc2V0
-cyB0aGVuIHlvdSBlaXRoZXIKPj4gZG9uJ3QgaGF2ZSB0aGUgYnVnIG9yIHlvdSB3b24ndCBoaXQg
-aXQgb24geW91ciBzZXR1cChzKT8gSWYgc28gdGhlbiB0aGUKPj4gdGVzdCBpcyByZWR1bmRhbnQu
-Cj4gVHJ1ZSBhYm91dCB0aGUgImRvbid0IGhpdCBpdCBwYXJ0IiwgYXQgbGVhc3Qgd2l0aCB0aGUg
-c2V0dXAsIGJ1dCBJCj4gZ3Vlc3MgdGhlIHJlYXNvbiBmb3IgYSByZWdyZXNzaW9uIHRlc3QsCj4g
-aXMgdG8gcHJldmVudCByZWdyZXNzaW9ucy4gVGhpcyB3YXMgY2xlYXJseSBhIGJ1ZyBpbiB0aGUg
-a2VybmVsIGFuZAo+IG5vdCBvbmx5IGFuIGluY29udmVuaWVuY2UuIEFuZCBzaW5jZQo+IHRoZXJl
-wqAgaXMgbm90ICJ0aGUgb25lIGtlcm5lbCBzb3VyY2UiLCBJIHRoaW5rIGl0IGlzIGltcG9ydGFu
-dCB0byBydW4KPiB0ZXN0cyBsaWtlIHRoaXMgZm9yIGFzIG1hbnkgZGlmZmVyZW50Cj4ga2VybmVs
-cyBhcyBwb3NzaWJsZS4gQXBhcnQgZnJvbSB0aGUgYWxyZWFkeSBzZXR1cCBjZ3JvdXBzLCB0aGVy
-ZSBtYXkKPiBiZSBvdGhlciB1c2VzIG9mIGNncm91cHMgYXMgd2VsbCwKPiB0aGF0IHRyeSB0byBz
-ZXQgdGhlbSB1cCB0aGUgb3RoZXIgd2F5IGFyb3VuZCAoZmlyc3QgZXhjbHVzaXZlLCB0aGVuIGNw
-dXMpLgo+Pgo+Pj4gVGhlIG9ubHkgd2F5IEkgY291bGQgdGhpbmsgb2YgYSBwcm9jZXNzIG1pc2Jl
-aGF2aW5nIGJ5IGRpc2FiZWxpbmcgY3B1IHBpbm5pbmcsCj4+PiB3b3VsZCBiZSBhIGJhZGx5IHdy
-aXR0ZW4gbXVsdGl0aHJlYWQgYXBwbGljYXRpb24sIHRoYXQgY2Fubm90IGNvcnJlY3RseSBydW4s
-Cj4+PiBpZiB0aHJlYWRzIGFyZSByZWFsbHkgcnVubmluZyBpbiBwYXJhbGxlbCwgYnV0IHRoaXMg
-d291bGQgYWxzbyByZXF1aXJlIGEgc2NoZWR1bGluZwo+Pj4gcG9saWN5LCB0aGF0IG1ha2VzIHNj
-aGVkdWxpbmcgcG9pbnRzIHByZWRpY2F0YWJsZS4gV2hpbGUgSSBrbm93IHRoYXQgc29mdHdhcmUg
-bGlrZQo+Pj4gdGhhdCBleGlzdHMgKGluIGZhY3QgSSB3YXMgd29ya2luZyBvbiBzb21ldGhpbmcg
-bGlrZSB0aGF0IGluIHRoZSBwYXN0KSwgSSB0aGluayBpdAo+Pj4gaXMgaGlnaGx5IHVubGlrZWx5
-LCB0aGF0IGl0IGlzIHJ1bm5pbmcgcGFyYWxsZWwgdG8gbHRwLgo+Pj4gQW5kIGV2ZW4gdGhlbiwg
-dGhpcyBjb3VsZCBiZSBtaXRpZ2F0ZWQgYnkgbm90IGp1c3Qgc2V0dGluZyBjcHUgYmluZGluZyB0
-byB1bmRlZmluZWQsCj4+PiBidXQgdG8gb25lIGZpeGVkIGNvcmUuIEJ1dCB3aXRoIHRoZSBjaGFu
-Z2VzIGluIHBhdGNoIDIsIHRoaXMgaXMgbm90Cj4+PiBwb3NzaWJsZS4KPj4+Cj4+PiBCdXQgYW55
-aG93IGx0cCBmaWRkbGVzIHdpdGggbG90cyBvZiBjcml0aWNhbCBzeXN0ZW0gcGFyYW1ldGVycyBk
-dXJpbmcgaXQncyBydW50aW1lLAo+Pj4gdGhlcmUgaXMgbm8gZ3VhcmFudGVlLCB0aGF0IGFuIGFw
-cGxpY2F0aW9uIHRoYXQgcmVxdWlyZXMgc29tZSB2ZXJ5IHNwZWNpZmljIGtlcm5lbAo+Pj4gcnVu
-dGltZSBzZXR0aW5ncyBzdXJ2aXZlcyB0aGlzLiBUaGF0J3Mgd2h5IEkgd291bGQgc3RpbGwgdm90
-ZSBmb3IgdGhpcyBwYXRjaC4KPj4+Cj4+PiBKw7ZyZwo+PiBJIHN0aWxsIHRoaW5rIGl0IGhhcyBh
-IHNtYWxsIGNoYW5jZSBvZiBjYXVzaW5nIHByb2JsZW1zIGZvciB1cy4gVGhlcmUKPj4gYXJlIHNv
-bWUgaGV0ZXJvZ2VuZW91cyBDUFUgc3lzdGVtcyB3aGVyZSBjb250cm9sIHNvZnR3YXJlIHNob3Vs
-ZCBydW4gb24KPj4gYSBnaXZlbiBDUFUuIEkgZG9uJ3Qga25vdyB3aGV0aGVyIENHcm91cHMgYXJl
-IHVzZWQgdG8gY29udHJvbCB0aGF0IG9yIGlmCj4+IGl0IHdvdWxkIG1hdHRlciBpZiB0aGUgcHJv
-Y2VzcyBpcyBtb3ZlZCB0ZW1wb3JhcmlseS4gSXQncyBqdXN0IGEgc21hbGwKPj4gcmlzayBJIHdv
-dWxkIGF2b2lkIGlmIHRoZSB0ZXN0IGlzIG5vdCByZWFsbHkgd29ydGggaXQuCj4gSSBnZXQgdGhh
-dCwgYnV0IHRoZXNlIHN5c3RlbXMgbWF5IGhhdmUgdG8gb3B0LW91dCBvZiBzb21lIHRlc3RzIGFu
-eXdheS4KPj4KPj4gT1RPSCB0aGUgcGF0Y2ggbG9va3MgZ29vZCBvdGhlcndpc2UsIHNvIGl0IHNo
-b3VsZCBiZSBtZXJnZWQgaWYgbm8gb25lCj4+IGVsc2UgYWdyZWVzIHdpdGggbWUuCj4gT2ssIGxl
-dHMgc2VlIHdoYXQgdGhlIG90aGVycyBoYXZlIHRvIHNheSA6KQo+Cj4gSsO2cmcKClNvIGEgZmV3
-IG1vbnRocyBsYXRlciB0aGVyZSBhcmUgbm8gY29tbWVudHMuIFRoZSBwYXRjaC1zZXQgYXMgYSB3
-aG9sZQpsb29rcyBhIGxpa2UgYW4gaW1wcm92ZW1lbnQuIFNvIGxldCdzIG1lcmdlIGl0LgoKCi0t
-IApUaGFuayB5b3UsClJpY2hhcmQuCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+
+Joerg Vehlow <lkml@jv-coder.de> writes:
+
+> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+>
+> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+> ---
+>  .../cpuset/cpuset_regression_test.sh          | 147 +++++++-----------
+>  1 file changed, 56 insertions(+), 91 deletions(-)
+>
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+> index dccfd91cd..1dda19704 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+> @@ -1,82 +1,65 @@
+>  #!/bin/sh
+> -#
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+>  # Copyright (c) 2015 Fujitsu Ltd.
+>  # Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+>  #
+> -# This program is free software; you can redistribute it and/or modify
+> -# it under the terms of the GNU General Public License as published by
+> -# the Free Software Foundation; either version 2 of the License, or
+> -# (at your option) any later version.
+> -#
+> -# This program is distributed in the hope that it will be useful,
+> -# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> -# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> -# GNU General Public License for more details.
+> -#
+> -# You should have received a copy of the GNU General Public License
+> -# along with this program; if not, write to the Free Software
+> -# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> -#
+>  # This is a regression test for commit:
+> -# http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/
+> -# ?id=bb2bc55
+> +# http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=bb2bc55
+>  #
+> +# A newly created cpuset group crashed the kernel, if exclusive was set to 1,
+> +# before a cpuset was set.
+> +
+> +TST_SETUP=setup
+> +TST_CLEANUP=cleanup
+> +TST_TESTFUNC=test
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_TMPDIR=1
+> +TST_MIN_KVER="3.18"
+> +
+> +. cgroup_lib.sh
+> +
+> +LOCAL_MOUNTPOINT="cpuset_test"
+>  
+> -TCID=cpuset_regression_test
+> -TST_TOTAL=1
+> -. test.sh
+> +root_cpuset_dir=
+> +cpu_exclusive="cpuset.cpu_exclusive"
+> +cpus="cpuset.cpus"
+> +old_cpu_exclusive_value=1
+>  
+>  setup()
+>  {
+> -	tst_require_root
+> +	local cpu_num
+>  
+> -	if tst_kvcmp -lt "3.18"; then
+> -		tst_brkm TCONF "Test must be run with kernel 3.18.0 or newer"
+> -	fi
+> -
+> -	local cpu_num=$(tst_getconf _NPROCESSORS_ONLN)
+> +	cpu_num=$(tst_getconf _NPROCESSORS_ONLN)
+>  	if [ $cpu_num -lt 2 ]; then
+> -		tst_brkm TCONF "We need 2 cpus at least to have test"
+> +		tst_brk TCONF "We need 2 cpus at least to have test"
+>  	fi
+>  
+> -	tst_tmpdir
+> -
+> -	TST_CLEANUP=cleanup
+> +	if ! is_cgroup_subsystem_available_and_enabled "cpuset"; then
+> +		tst_brk TCONF "Either kernel does not support cpuset controller or feature not enabled"
+> +	fi
+>  
+>  	# We need to mount cpuset if it is not found.
+> -	mount_flag=0
+> -	grep -w cpuset /proc/mounts > tmpfile
+> -	if [ $? -eq 0 ]; then
+> -		root_cpuset_dir=$(cat tmpfile | awk '{print $2}')
+> -	else
+> -		root_cpuset_dir="cpuset_test"
+> +	root_cpuset_dir=$(get_cgroup_mountpoint cpuset)
+> +	if [ -z "$root_cpuset_dir" ]; then
+> +		root_cpuset_dir="$LOCAL_MOUNTPOINT"
+>  
+>  		ROD_SILENT mkdir -p ${root_cpuset_dir}
+> -
+>  		ROD_SILENT mount -t cpuset cpuset ${root_cpuset_dir}
+> -
+> -		mount_flag=1
+>  	fi
+>  
+> -	if [ -f ${root_cpuset_dir}/cpuset.cpu_exclusive ]; then
+> -		cpu_exclusive=cpuset.cpu_exclusive
+> -		cpus=cpuset.cpus
+> -	elif [ -f ${root_cpuset_dir}/cpu_exclusive ]; then
+> +	if ! [ -f ${root_cpuset_dir}/${cpu_exclusive} ]; then
+>  		cpu_exclusive=cpu_exclusive
+>  		cpus=cpus
+> -	else
+> -		tst_brkm TBROK "Both cpuset.cpu_exclusive and cpu_exclusive" \
+> -			       "do not exist."
+>  	fi
+>  
+> -	cpu_exclusive_value=$(cat ${root_cpuset_dir}/${cpu_exclusive})
+> -	if [ "${cpu_exclusive_value}" != "1" ];then
+> +	if ! [ -f ${root_cpuset_dir}/${cpu_exclusive} ]; then
+> +		tst_brk TBROK "Both cpuset.cpu_exclusive and cpu_exclusive do not exist"
+> +	fi
+> +
+> +	old_cpu_exclusive_value=$(cat ${root_cpuset_dir}/${cpu_exclusive})
+> +	if [ "${old_cpu_exclusive_value}" != "1" ];then
+>  		echo 1 > ${root_cpuset_dir}/${cpu_exclusive}
+> -		if [ $? -ne 0 ]; then
+> -			tst_brkm TBROK "'echo 1 >" \
+> -				       "${root_cpuset_dir}/${cpu_exclusive}'" \
+> -				       "failed"
+> -		fi
+> +		[ $? -ne 0 ] && tst_brk TBROK "'echo 1 > ${root_cpuset_dir}/${cpu_exclusive}' failed"
+>  	fi
+>  }
+>  
+> @@ -86,65 +69,47 @@ cleanup()
+>  		rmdir ${root_cpuset_dir}/testdir
+>  	fi
+>  
+> -	if [ "$cpu_exclusive_value" != 1 ]; then
+> -		# Need to flush, or may be output:
+> -		# "write error: Device or resource busy"
+> +	if [ "$old_cpu_exclusive_value" != 1 ]; then
+> +		# Need to flush, or write may fail with: "Device or resource busy"
+>  		sync
+> -
+> -		echo ${cpu_exclusive_value} > \
+> -		     ${root_cpuset_dir}/${cpu_exclusive}
+> +		echo ${old_cpu_exclusive_value} > ${root_cpuset_dir}/${cpu_exclusive}
+>  	fi
+>  
+> -	if [ "${mount_flag}" = "1" ]; then
+> -		umount ${root_cpuset_dir}
+> +	if [ -d "$LOCAL_MOUNTPOINT" ]; then
+> +		umount ${LOCAL_MOUNTPOINT}
+>  		if [ $? -ne 0 ]; then
+> -			tst_resm TWARN "'umount ${root_cpuset_dir}' failed"
+> +			tst_res TWARN "'umount ${LOCAL_MOUNTPOINT}' failed"
+>  		fi
+>  
+> -		if [ -d "${root_cpuset_dir}" ]; then
+> -			rmdir ${root_cpuset_dir}
+> -		fi
+> +		rmdir ${LOCAL_MOUNTPOINT}
+>  	fi
+> -
+> -	tst_rmdir
+>  }
+>  
+> -cpuset_test()
+> +test()
+>  {
+> +	local cpu_exclusive_tmp cpus_value
+> +
+>  	ROD_SILENT mkdir ${root_cpuset_dir}/testdir
+>  
+>  	# Creat an exclusive cpuset.
+>  	echo 1 > ${root_cpuset_dir}/testdir/${cpu_exclusive}
+> -	if [ $? -ne 0 ]; then
+> -		tst_brkm TFAIL "'echo 1 >" \
+> -			       "${root_cpuset_dir}/testdir/${cpu_exclusive}'" \
+> -			       "failed"
+> -	fi
+> -
+> -	local cpu_exclusive_tmp=$(cat \
+> -				  ${root_cpuset_dir}/testdir/${cpu_exclusive})
+> +	[ $? -ne 0 ] && tst_brk TFAIL "'echo 1 > ${root_cpuset_dir}/testdir/${cpu_exclusive}' failed"
+> +	
+> +	cpu_exclusive_tmp=$(cat ${root_cpuset_dir}/testdir/${cpu_exclusive})
+>  	if [ "${cpu_exclusive_tmp}" != "1" ]; then
+> -		tst_brkm TFAIL "${cpu_exclusive} is '${cpu_exclusive_tmp}'," \
+> -			       "expected '1'"
+> +		tst_brk TFAIL "${cpu_exclusive} is '${cpu_exclusive_tmp}', expected '1'"
+>  	fi
+>  
+> -	# ${cpus} is empty at the begin, that maybe make the system *crash*.
+> +	# This may trigger the kernel crash
+>  	echo 0-1 > ${root_cpuset_dir}/testdir/${cpus}
+> -	if [ $? -ne 0 ]; then
+> -		tst_brkm TFAIL "'echo 0-1 >" \
+> -			       "${root_cpuset_dir}/testdir/${cpus}' failed"
+> -	fi
+> +	[ $? -ne 0 ] && tst_brk TFAIL "'echo 0-1 > ${root_cpuset_dir}/testdir/${cpus}' failed"
+>  
+> -	local cpus_value=$(cat ${root_cpuset_dir}/testdir/${cpus})
+> +	cpus_value=$(cat ${root_cpuset_dir}/testdir/${cpus})
+>  	if [ "${cpus_value}" != "0-1" ]; then
+> -		tst_brkm TFAIL "${cpus} is '${cpus_value}', expected '0-1'"
+> +		tst_brk TFAIL "${cpus} is '${cpus_value}', expected '0-1'"
+>  	fi
+>  
+> -	tst_resm TPASS "Bug is not reproduced"
+> +	tst_res TPASS "Bug is not reproducible"
+>  }
+>  
+> -setup
+> -
+> -cpuset_test
+> -
+> -tst_exit
+> +tst_run
+> -- 
+> 2.25.1
+
+
+-- 
+Thank you,
+Richard.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
