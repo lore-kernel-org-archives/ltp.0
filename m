@@ -2,56 +2,74 @@ Return-Path: <SRS0=J9GY=QC=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B07F1C433F5
-	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 15:21:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41E5AC433F5
+	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 15:21:32 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E119961AA5
-	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 15:21:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E119961AA5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux.it
+	by mail.kernel.org (Postfix) with ESMTPS id ADC0061AAA
+	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 15:21:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ADC0061AAA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 991313C8628
-	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 16:21:19 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 643C73C8622
+	for <ltp@archiver.kernel.org>; Mon, 15 Nov 2021 16:21:30 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 207EE3C0E98
- for <ltp@lists.linux.it>; Mon, 15 Nov 2021 16:20:59 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 9DC853C865F
+ for <ltp@lists.linux.it>; Mon, 15 Nov 2021 16:21:14 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8EEB920034C
- for <ltp@lists.linux.it>; Mon, 15 Nov 2021 16:20:58 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E25B11FD6A;
- Mon, 15 Nov 2021 15:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1636989657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E46A960015C
+ for <ltp@lists.linux.it>; Mon, 15 Nov 2021 16:21:13 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 34C9B21940;
+ Mon, 15 Nov 2021 15:21:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1636989673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7FyiWbajlnr5I0P+Rrx+zGQu1MJQRaeg/OIQBwQjpPo=;
- b=hZKEZ33lMgtRqDrSuL3U25FO/qQ9e7PiEkdGcv2+t50EcdxSOz41y0A18W5v732xFOgFPp
- lK4GslGg4wK7cRcl3RoiBUeHRARkeLEb/ytOT40LXfgm34FfloZvqcFtC9m1Wx+9IKn2so
- ZCrxsrUUMQP7lFy3EWUShG9XLFNuqKc=
-Received: from g78.suse.de (unknown [10.163.24.38])
- by relay2.suse.de (Postfix) with ESMTP id A9001A3B81;
- Mon, 15 Nov 2021 15:20:57 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Mon, 15 Nov 2021 15:20:29 +0000
-Message-Id: <20211115152029.22552-2-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115152029.22552-1-rpalethorpe@suse.com>
-References: <20211115152029.22552-1-rpalethorpe@suse.com>
+ bh=KQIAD8O0cLTES2B8WPk8Ww2PNRZ/PzMPe4t8txVaPMM=;
+ b=vHuuhIkDMEglnYED7SCAP3rkD52AsE7GmXkqKpuXHBfcLqOrYNynoP437jhwaZdd/QEH+t
+ SaUyQMLlHdvBer3Iw0UyyqbbQT2qjlgf9kxtUaLVv7xrgxu3I+5q1b6FvpVyU0LIcXsC+9
+ jvA3kCMXsKRCrUMmhDldDmXIc5xW5b8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1636989673;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KQIAD8O0cLTES2B8WPk8Ww2PNRZ/PzMPe4t8txVaPMM=;
+ b=rnCi74f3cU2/16j6pKq9/Yq2ee6wuUkhPLC405ERI1bTYWAn3G2cxC3TlkvqYrCaUVHt7L
+ TBRGOmb1dst4IdDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BB2813A66;
+ Mon, 15 Nov 2021 15:21:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3IDlBel6kmGNTgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 15 Nov 2021 15:21:13 +0000
+Date: Mon, 15 Nov 2021 16:22:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Joerg Vehlow <lkml@jv-coder.de>
+Message-ID: <YZJ7KeRXJbEne7Jz@yuki>
+References: <20211115081526.384856-1-lkml@jv-coder.de>
+ <20211115081526.384856-4-lkml@jv-coder.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20211115081526.384856-4-lkml@jv-coder.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] lib: Add .skip_in_compat flag
+Subject: Re: [LTP] [PATCH 3/3] realtime/matrix_mult: Fix test optimization
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,123 +81,263 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some tests can never be run under 32-bit compatibility mode. This adds
-a flag to skip them. This will show up in the meta data in addition to
-causing the test to exit with TCONF if compat mode is detected at
-runtime.
+Hi!
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) International Business Machines  Corp., 2007, 2008
+> + * 
+> + * Authors: Darren Hart <dvhltc@us.ibm.com>
+> + *          Dinakar Guniguntala <dino@in.ibm.com>
+> + */
+> +/*\
+> + * [Description]
+>   *
+> - *   Copyright ?? International Business Machines  Corp., 2007, 2008
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - *
+> - * NAME
+> - *      matrix_mult.c
+> - *
+> - * DESCRIPTION
+> - *      Compare running sequential matrix multiplication routines
+> - *      to running them in parallel to judge mutliprocessor
+> - *      performance
+> - *
+> - * USAGE:
+> - *      Use run_auto.sh script in current directory to build and run test.
+> - *
+> - * AUTHOR
+> - *      Darren Hart <dvhltc@us.ibm.com>
+> - *
+> - * HISTORY
+> - *      2007-Mar-09:  Initial version by Darren Hart <dvhltc@us.ibm.com>
+> - *      2008-Feb-26:  Closely emulate jvm Dinakar Guniguntala <dino@in.ibm.com>
+> - *
+> - *****************************************************************************/
+> + * Compare running sequential matrix multiplication routines
+> + * to running them in parallel to judge multiprocessor
+> + * performance
+> + */
 
-It's possible that support for compat mode will be added to
-CAN. If this happens then we will have to probe the interface for
-support when in 32-bit compat mode.
+Ideally the comment changes should be in a separate patch...
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_test.h                          |  1 +
- lib/tst_test.c                              |  4 ++++
- testcases/kernel/syscalls/ptrace/ptrace08.c | 13 +++++--------
- testcases/network/can/cve/can_bcm01.c       |  5 +++++
- 4 files changed, 15 insertions(+), 8 deletions(-)
+>  #include <stdio.h>
+>  #include <stdlib.h>
+> @@ -69,9 +46,14 @@ static int iterations_percpu;
+>  stats_container_t sdat, cdat, *curdat;
+>  stats_container_t shist, chist;
+>  static pthread_barrier_t mult_start;
+> -static pthread_mutex_t mutex_cpu;
+>  
+> -void usage(void)
+> +struct matrices {
+> +	double A[MATRIX_SIZE][MATRIX_SIZE];
+> +	double B[MATRIX_SIZE][MATRIX_SIZE];
+> +	double C[MATRIX_SIZE][MATRIX_SIZE];
+> +};
+> +
+> +static void usage(void)
+>  {
+>  	rt_help();
+>  	printf("matrix_mult specific options:\n");
+> @@ -80,7 +62,7 @@ void usage(void)
+>  	printf("  -i#	   #: number of iterations\n");
+>  }
+>  
+> -int parse_args(int c, char *v)
+> +static int parse_args(int c, char *v)
+>  {
+>  	int handled = 1;
+>  	switch (c) {
+> @@ -100,7 +82,7 @@ int parse_args(int c, char *v)
+>  	return handled;
+>  }
+>  
+> -void matrix_init(double A[MATRIX_SIZE][MATRIX_SIZE],
+> +static void matrix_init(double A[MATRIX_SIZE][MATRIX_SIZE],
+>  		 double B[MATRIX_SIZE][MATRIX_SIZE])
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 3dcb45de0..602ce3090 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -164,6 +164,7 @@ struct tst_test {
- 	 */
- 	int all_filesystems:1;
- 	int skip_in_lockdown:1;
-+	int skip_in_compat:1;
- 
- 	/*
- 	 * The skip_filesystem is a NULL terminated list of filesystems the
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 02ae28335..c1fab3b18 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -18,6 +18,7 @@
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "tst_device.h"
-+#include "lapi/abisize.h"
- #include "lapi/futex.h"
- #include "lapi/syscalls.h"
- #include "tst_ansi_color.h"
-@@ -978,6 +979,9 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->skip_in_lockdown && tst_lockdown_enabled())
- 		tst_brk(TCONF, "Kernel is locked down, skipping test");
- 
-+	if (tst_test->skip_in_compat && TST_ABI != tst_kernel_bits())
-+		tst_brk(TCONF, "Running in 32-bit compat mode");
-+
- 	if (tst_test->needs_cmds) {
- 		const char *cmd;
- 		char path[PATH_MAX];
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
-index f86f69a9c..170cae64c 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace08.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
-@@ -66,14 +66,6 @@ static struct tst_kern_exv kvers[] = {
- 
- static void setup(void)
- {
--	/*
--	 * When running in compat mode we can't pass 64 address to ptrace so we
--	 * have to skip the test.
--	 */
--	if (tst_kernel_bits() != KERN_ADDR_BITS)
--		tst_brk(TCONF, "Cannot pass 64bit kernel address in compat mode");
--
--
- 	/*
- 	 * The original fix for the kernel haven't rejected the kernel address
- 	 * right away when breakpoint was modified from userspace it was
-@@ -164,6 +156,11 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.forks_child = 1,
-+	/*
-+	 * When running in compat mode we can't pass 64 address to ptrace so we
-+	 * have to skip the test.
-+	 */
-+	.skip_in_compat = 1,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "f67b15037a7a"},
- 		{"CVE", "2018-1000199"},
-diff --git a/testcases/network/can/cve/can_bcm01.c b/testcases/network/can/cve/can_bcm01.c
-index 1c527da7a..d4f1e4ec4 100644
---- a/testcases/network/can/cve/can_bcm01.c
-+++ b/testcases/network/can/cve/can_bcm01.c
-@@ -11,6 +11,10 @@
-  *  Date:   Sat Jun 19 13:18:13 2021 -0300
-  *
-  *  can: bcm: delay release of struct bcm_op after synchronize_rcu()
-+ *
-+ * The test is skipped when running in 32-bit compat mode. The kernel
-+ * compatibility layer for CAN structures is not implemented at the
-+ * time of writing.
-  */
- 
- #include "config.h"
-@@ -137,6 +141,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.needs_root = 1,
-+	.skip_in_compat = 1,
- 	.needs_drivers = (const char *const[]) {
- 		"vcan",
- 		"can-bcm",
+These static function conversions should ideally be in a separate patch
+as well. At least the patch description does not mention either of these
+changes.
+
+>  {
+>  	int i, j;
+> @@ -112,41 +94,39 @@ void matrix_init(double A[MATRIX_SIZE][MATRIX_SIZE],
+>  	}
+>  }
+>  
+> -void matrix_mult(int m_size)
+> +static void matrix_mult(struct matrices *matrices)
+>  {
+> -	double A[m_size][m_size];
+> -	double B[m_size][m_size];
+> -	double C[m_size][m_size];
+>  	int i, j, k;
+>  
+> -	matrix_init(A, B);
+> -	for (i = 0; i < m_size; i++) {
+> -		int i_m = m_size - i;
+> -		for (j = 0; j < m_size; j++) {
+> -			double sum = A[i_m][j] * B[j][i];
+> -			for (k = 0; k < m_size; k++)
+> -				sum += A[i_m][k] * B[k][j];
+> -			C[i][j] = sum;
+> +	matrix_init(matrices->A, matrices->B);
+> +	for (i = 0; i < MATRIX_SIZE; i++) {
+> +		int i_m = MATRIX_SIZE - i;
+> +		for (j = 0; j < MATRIX_SIZE; j++) {
+> +			double sum = matrices->A[i_m][j] *  matrices->B[j][i];
+> +			for (k = 0; k < MATRIX_SIZE; k++)
+> +				sum +=  matrices->A[i_m][k] *  matrices->B[k][j];
+> +			 matrices->C[i][j] = sum;
+>  		}
+>  	}
+>  }
+>  
+> -void matrix_mult_record(int m_size, int index)
+> +static void matrix_mult_record(struct matrices *matrices, int index)
+>  {
+>  	nsec_t start, end, delta;
+>  	int i;
+>  
+>  	start = rt_gettime();
+>  	for (i = 0; i < ops; i++)
+> -		matrix_mult(MATRIX_SIZE);
+> +		matrix_mult(matrices);
+>  	end = rt_gettime();
+>  	delta = (long)((end - start) / NS_PER_US);
+>  	curdat->records[index].x = index;
+>  	curdat->records[index].y = delta;
+>  }
+>  
+> -int set_affinity(void)
+> +static int set_affinity(void)
+>  {
+> +	static pthread_mutex_t mutex_cpu = PTHREAD_MUTEX_INITIALIZER;
+
+As well as this change, it looks okay, but it's not listed in the patch
+description.
+
+>  	cpu_set_t mask;
+>  	int cpuid;
+>  
+> @@ -166,9 +146,10 @@ int set_affinity(void)
+>  	return -1;
+>  }
+>  
+> -void *concurrent_thread(void *thread)
+> +static void *concurrent_thread(void *thread)
+>  {
+>  	struct thread *t = (struct thread *)thread;
+> +	struct matrices *matrices = (struct matrices *) t->arg;
+>  	int thread_id = (intptr_t) t->id;
+>  	int cpuid;
+>  	int i;
+> @@ -183,18 +164,23 @@ void *concurrent_thread(void *thread)
+>  	index = iterations_percpu * thread_id;	/* To avoid stats overlapping */
+>  	pthread_barrier_wait(&mult_start);
+>  	for (i = 0; i < iterations_percpu; i++)
+> -		matrix_mult_record(MATRIX_SIZE, index++);
+> +		matrix_mult_record(matrices, index++);
+>  
+>  	return NULL;
+>  }
+>  
+> -int main_thread(void)
+> +static int main_thread(void)
+>  {
+>  	int ret, i, j;
+>  	nsec_t start, end;
+>  	long smin = 0, smax = 0, cmin = 0, cmax = 0, delta = 0;
+>  	float savg, cavg;
+>  	int cpuid;
+> +	struct matrices *matrices[numcpus];
+> +
+> +	for (i = 0; i < numcpus; ++i) {
+> +		matrices[i] = malloc(sizeof(struct matrices));
+> +	}
+>  
+>  	if (stats_container_init(&sdat, iterations) ||
+>  	    stats_container_init(&shist, HIST_BUCKETS) ||
+> @@ -205,12 +191,11 @@ int main_thread(void)
+>  		exit(1);
+>  	}
+>  
+> -	tids = malloc(sizeof(int) * numcpus);
+> +	tids = calloc(numcpus, sizeof(int));
+>  	if (!tids) {
+>  		perror("malloc");
+>  		exit(1);
+>  	}
+> -	memset(tids, 0, numcpus);
+>  
+>  	cpuid = set_affinity();
+>  	if (cpuid == -1) {
+> @@ -223,8 +208,9 @@ int main_thread(void)
+>  	curdat->index = iterations - 1;
+>  	printf("\nRunning sequential operations\n");
+>  	start = rt_gettime();
+> -	for (i = 0; i < iterations; i++)
+> -		matrix_mult_record(MATRIX_SIZE, i);
+> +	for (i = 0; i < iterations; i++) {
+> +		matrix_mult_record(matrices[0], i);
+> +	}
+
+And here LMKL coding style prefers to avoid the curly braces, but that
+is very minor.
+
+>  	end = rt_gettime();
+>  	delta = (long)((end - start) / NS_PER_US);
+>  
+> @@ -256,7 +242,7 @@ int main_thread(void)
+>  	online_cpu_id = -1;	/* Redispatch cpus */
+>  	/* Create numcpus-1 concurrent threads */
+>  	for (j = 0; j < numcpus; j++) {
+> -		tids[j] = create_fifo_thread(concurrent_thread, NULL, PRIO);
+> +		tids[j] = create_fifo_thread(concurrent_thread, matrices[j], PRIO);
+>  		if (tids[j] == -1) {
+>  			printf
+>  			    ("Thread creation failed (max threads exceeded?)\n");
+> @@ -308,6 +294,9 @@ int main_thread(void)
+>  	     criteria);
+>  	printf("Result: %s\n", ret ? "FAIL" : "PASS");
+>  
+> +	for (i = 0; i < numcpus; i++)
+> +		free(matrices[i]);
+> +
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.33.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
