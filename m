@@ -2,69 +2,71 @@ Return-Path: <SRS0=zuCx=QD=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E18C433F5
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:28:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 720C9C433EF
+	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:32:40 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C604463217
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:27:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C604463217
+	by mail.kernel.org (Postfix) with ESMTPS id F38F663219
+	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:32:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F38F663219
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D9C873C875F
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 11:27:57 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 093043C873F
+	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 11:32:38 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC6143C668B
- for <ltp@lists.linux.it>; Tue, 16 Nov 2021 11:27:48 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id D831A3C7CBA
+ for <ltp@lists.linux.it>; Tue, 16 Nov 2021 11:32:28 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 272BF200962
- for <ltp@lists.linux.it>; Tue, 16 Nov 2021 11:27:47 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 61F191A00258
+ for <ltp@lists.linux.it>; Tue, 16 Nov 2021 11:32:28 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 6416E1FCA1;
- Tue, 16 Nov 2021 10:27:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id A8303218E1;
+ Tue, 16 Nov 2021 10:32:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1637058467;
+ t=1637058747;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9nIqg1h57y0y+AdliokCSnTQbMQxDtLNvJai2yJdyLY=;
- b=MJk+6M1QSn8sYoYKn7HfbCXo3pMPtUW8VMF0zGR3NtSAvSbvosRuBc9YzRsghPNNS20ygl
- 6v2pyciQ2LtS5XWj+k1ZnINDZeSlrP8bhj+de+GwxFK0JQe8HR1Re4v99pfyYVJaYRcNXB
- kJOXCaI4w6yLpMq1bw7RTXc9JiZlFj4=
+ bh=hRZq2cXGsHc7xwSh1c2gvMwRNN+THEhlqaG8A5UTzTw=;
+ b=t1oABs09dJrG/WiojuEAzlEJUbDKN9iPgFvLo7Ug3lH4GLK3HhLa8fsTHqt+N9lQWIJaLx
+ gU3zijBlPyMNepNjSbM6L8vAK9GPMMKHbFEn5IJXmrIlXlgmJUQek8I7V32pvRI2bHYghf
+ HrLrI/f/NQy80Fkp2WHsuZdHcYND0fo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1637058467;
+ s=susede2_ed25519; t=1637058747;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9nIqg1h57y0y+AdliokCSnTQbMQxDtLNvJai2yJdyLY=;
- b=zysfwqTFZyQ+JMX1o1XZ6rA3REQ1SRpFn+mAsKCzupqF+MLGaC2VT3JtEelcnIY2hNJLBD
- tLEcOaZ/XwzkyeCA==
+ bh=hRZq2cXGsHc7xwSh1c2gvMwRNN+THEhlqaG8A5UTzTw=;
+ b=7YOKy1nz7pX/igI6O8opgKE1oUz8x/m32Ai0/SSYmqP4QE25CEcOWY/pbnzoBQvaoOPtiJ
+ 3G9+EWpsmxwZxEBg==
 Received: from g78 (unknown [10.163.24.38])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 222A5A3B81;
- Tue, 16 Nov 2021 10:27:47 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 67A16A3B8C;
+ Tue, 16 Nov 2021 10:32:27 +0000 (UTC)
 References: <20211109130910.1583233-1-liwang@redhat.com>
- <20211109130910.1583233-2-liwang@redhat.com> <YYqghWs62gwfQZqR@yuki>
+ <YYqdxmnJi5je9DvV@yuki>
+ <CAEemH2fJHN5i0W9poB6H2JWXUNRBjriXp21VG4x8r5n4oMvhbw@mail.gmail.com>
 User-agent: mu4e 1.6.9; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Nov 2021 10:27:00 +0000
-In-reply-to: <YYqghWs62gwfQZqR@yuki>
-Message-ID: <87czn0bdjx.fsf@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Tue, 16 Nov 2021 10:30:29 +0000
+In-reply-to: <CAEemH2fJHN5i0W9poB6H2JWXUNRBjriXp21VG4x8r5n4oMvhbw@mail.gmail.com>
+Message-ID: <878rxobdc5.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/3] testcase: make use of .supported_archs
+Subject: Re: [LTP] [PATCH v4 1/3] lib: adding .supported_archs field in
+ tst_test structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,67 +85,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hello Li,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Li Wang <liwang@redhat.com> writes:
 
-> Hi!
->>  static void run(void)
->> @@ -58,6 +50,11 @@ static void run(void)
->>  	register long mode __asm__("r3");
->>  	register long node_mask_ptr __asm__("r4");
->>  	register long node_mask_sz __asm__("r5");
->> +#else
->> +	static const int sys_num = 276;
->> +	static const int mode;
->> +	static const int node_mask_ptr = UINT_MAX;
->> +	static const int node_mask_sz = UINT_MAX;
+>  
+>  > +#ifndef TST_ARCH_H__
+>  > +#define TST_ARCH_H__
+>  > +
+>  > +enum tst_arch_type {
+>  > +     TST_UNKNOWN,
+>  > +     TST_I386,
 >
-> These shouldn't be static anymore.
+>  I would still probably name this TST_X86, Linux does not support i386
+>  anymore, the remaining 32bit distributions usually require at least i586
+>  or i686...
 >
->>  #endif
->>  	char stack_pattern[0x400];
->>  
->> @@ -78,7 +75,8 @@ static void run(void)
->>  		:
->>  		"memory", "cr0", "r6", "r7", "r8", "r9", "r10", "r11", "r12");
->>  	sys_ret = mode;
->> -#else /* __i386__ */
->> +#endif
->> +#ifdef __i386__
->>  	asm volatile (
->>  		"add $0x400, %%esp\n\t"
->>  		"int $0x80\n\t"
->> @@ -114,15 +112,14 @@ static void run(void)
->>  
->>  static struct tst_test test = {
->>  	.test_all = run,
->> +	.supported_archs = (const char *const []) {
->> +		"i386",
->> +		"ppc",
->
-> And we should add "ppc64" here as well, right?
+> Sure, If go with that TST_X86, we just need to do modifications based on
+> V4 like below, right? What else am I missing here?
 
-Nope, I think this is only 32-bit
-
->
->> +		NULL
->> +	},
->>  	.tags = (const struct tst_tag[]) {
->>  		{"linux-git", "cf01fb9985e8"},
->>  		{"CVE", "CVE-2017-7616"},
->>  		{}
->>  	}
->>  };
->
-> Other than these two:
->
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
->
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-
+Cyril made another comment about static keyword usage on patch 2. Could
+you please roll a V5?
 
 -- 
 Thank you,
