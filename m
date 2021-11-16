@@ -2,78 +2,69 @@ Return-Path: <SRS0=zuCx=QD=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4726CC433EF
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 09:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B670BC433EF
+	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 09:49:31 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98E2761A38
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 09:39:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 98E2761A38
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 21E4761B98
+	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 09:49:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 21E4761B98
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4AE983C87B6
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:39:17 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id C170E3C8742
+	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:49:29 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD7093C0CB4
- for <ltp@lists.linux.it>; Tue, 16 Nov 2021 10:39:08 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 37D303C0E98
+ for <ltp@lists.linux.it>; Tue, 16 Nov 2021 10:49:20 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2F9BE600669
- for <ltp@lists.linux.it>; Tue, 16 Nov 2021 10:39:07 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D32E7218B5;
- Tue, 16 Nov 2021 09:39:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1637055546;
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9415F1401205
+ for <ltp@lists.linux.it>; Tue, 16 Nov 2021 10:49:19 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 80C901FCA1;
+ Tue, 16 Nov 2021 09:49:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1637056158;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CezZgvPKd6a0fiWdap0e7b8v4ujAL7uGRptnSu+aiY4=;
- b=U+zXF8lsfcUWMyYm/OE/wusdtcwuCwXZk6svluSx7H2/0++N6gJMz2MJ+c0sqs6yntGyfI
- HcI8GDAuc73WmZxzOjuYi1dnqPLPQ6EZcE+TAajX/+mDrH5+xXYDUMLl+9Y29OXZE2jIti
- hdN1zw8XMEgaJdiwNOs/fIPv4xY0+0I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1637055546;
+ bh=sZKkJNjjzCn8n93/bG2Dpiyatr4xuTCUc3F9y42e6vk=;
+ b=J6VJu+c4GIsIfEZpSifwK03/zqDG1feuwGCyraa46l4FQMUo5B7ttuDxOzW4TcMH2Hfl/Q
+ w/p2PwqurB0qgYCRIhP38R7VYBrknP7QQTYVZqNfvdne+2Cr0AfCuei/aSx7YI5rl0OkGC
+ /VJtsDAf14ScH32yNqenJTMzD/auFKg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1637056158;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CezZgvPKd6a0fiWdap0e7b8v4ujAL7uGRptnSu+aiY4=;
- b=/aqNPel9n01A3K6GW+PR6qEoBhLrupH14AKEkWxX4MxuL13M0sus99rwcyCC+yfoftWAPv
- 7hMF+E+pVLbk63Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=sZKkJNjjzCn8n93/bG2Dpiyatr4xuTCUc3F9y42e6vk=;
+ b=il+W6R58f65eGTErVZQtVfukvn+Ai10pRtfCsIgjQzGXqkHvsJxmDMYTHjQXqYcdWXKBYz
+ /pHxKcKHErS9+TAg==
+Received: from g78 (unknown [10.163.24.38])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A35B613BFD;
- Tue, 16 Nov 2021 09:39:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bw/sJTp8k2HGEQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 16 Nov 2021 09:39:06 +0000
-Date: Tue, 16 Nov 2021 10:39:04 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Matthew Bobrowski <repnop@google.com>
-Message-ID: <YZN8OLkeUUBP8yDK@pevik>
-References: <cover.1636451496.git.repnop@google.com>
- <0671d89befb5b24fc3bac510c69811668c39cdf5.1636451496.git.repnop@google.com>
- <CAOQ4uxiFsnvA-8y1mJ7uHccd4bqZUYJkK5Y2R1+KtgDK_OH4Sw@mail.gmail.com>
- <YZLPEjJkII1evtEc@pevik> <YZMEMwvdpA/IXz+P@google.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 46C4BA3B85;
+ Tue, 16 Nov 2021 09:49:18 +0000 (UTC)
+References: <1637049352-25731-1-git-send-email-xuyang2018.jy@fujitsu.com>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Tue, 16 Nov 2021 09:47:28 +0000
+In-reply-to: <1637049352-25731-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <87tugcbfc2.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YZMEMwvdpA/IXz+P@google.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/3] syscalls/fanotify: Add a helper macro
- which checks for the presence of specific fanotify initialization flag(s)
+Subject: Re: [LTP] [PATCH v5 1/3] syscalls/statx04: Skip
+ STATX_ATTR_COMPRESSED flag when tesing xfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,38 +76,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Matthew, Amir,
+Hello,
 
-> On Mon, Nov 15, 2021 at 10:20:18PM +0100, Petr Vorel wrote:
-> > Hi Matthew, Amir,
+Yang Xu <xuyang2018.jy@fujitsu.com> writes:
 
-> > Tested on two distro kernels with support (Tumbleweed and Debian unstable)
-> > + on various old kernels without support.
+> Since STATX_ATTR_COMPRESSED flag are non-supported on xfs, we should skip
+> it and test three other flags.
+>
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 
-> > Merged with very minor fixes, see diff below.
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-> Noted the changes, they're fine by me. Thanks for the merge!
-+1
-
-> > NOTE: we now support basic static analysis + checkpatch formatting check - run
-> > make check in fanotify directory or make check-fanotify20.
-
-> Oh, that's great, I had no idea. Quickly running it, looks like
-> there's a bunch of clean up required for some of the older tests. Will
-> have to get around to doing that at some point.
-
-Thanks a lot, that's really appreciated.
-Also, thanks a lot you and Amir for really maintaining fanotify tests.
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
