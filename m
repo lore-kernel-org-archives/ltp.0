@@ -1,77 +1,56 @@
-Return-Path: <SRS0=zuCx=QD=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ZNpR=QE=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A122C433F5
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E83C433EF
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 03:40:23 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 874F561BE5
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 10:57:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 874F561BE5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 5CD87615E1
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 03:40:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5CD87615E1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 29C483C87B4
-	for <ltp@archiver.kernel.org>; Tue, 16 Nov 2021 11:57:03 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0FF593C87D1
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 04:40:20 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1E13D3C065E
- for <ltp@lists.linux.it>; Tue, 16 Nov 2021 11:56:54 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 4CB773C0726
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 04:40:09 +0100 (CET)
+Received: from smtpbg501.qq.com (smtpbg501.qq.com [203.205.250.101])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8D29D14002C6
- for <ltp@lists.linux.it>; Tue, 16 Nov 2021 11:56:53 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 96D471FCA1;
- Tue, 16 Nov 2021 10:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1637060212;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kqo+lcntlh9Uips3+FQvrLiVIKDumsJfEbQtboN4RAk=;
- b=UpqLiv6z/kNE17DYIJz4vevXYb7IJ/230rFIYSxaTTsT4OTrjOa5VsxDY+JfZccw5dAIPM
- W3LKYEgdq3+04FR1culo45T8nygdIwRO7Ssqh6nj54Ff1XZCetFCU4xTISY4LgZlSB1paZ
- XyUsT27rbp67HPrs02AgZFq7CAr4CSU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1637060212;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kqo+lcntlh9Uips3+FQvrLiVIKDumsJfEbQtboN4RAk=;
- b=OeOD58ecDDUXSCdonroPn/xk2GW5K2xdomWpiiJuowQdbxkoGLdN4HMZdAiKDQdouxuYyk
- /4r3JrLZaOYUNdBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A45B13C06;
- Tue, 16 Nov 2021 10:56:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vyRLGHSOk2GSNQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 16 Nov 2021 10:56:52 +0000
-Date: Tue, 16 Nov 2021 11:56:50 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Zhao Gongyi <zhaogongyi@huawei.com>
-Message-ID: <YZOOcmFmg+2JzK8b@pevik>
-References: <20211105090200.103485-1-zhaogongyi@huawei.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 76B4E1A01483
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 04:40:04 +0100 (CET)
+X-QQ-mid: bizesmtp37t1637120399tzebba32
+Received: from localhost.localdomain (unknown [58.240.82.166])
+ by esmtp6.qq.com (ESMTP) with 
+ id ; Wed, 17 Nov 2021 11:39:52 +0800 (CST)
+X-QQ-SSF: 0140000000200050D000B00A0000000
+X-QQ-FEAT: zkEeU6Ots57clNYTR//TAxROYrZ1e5QS8BzuGarIHSUMNCO56QbfGa3ZEZvwg
+ 0DKAVRMYpqLdd6HUBm/AOanbALjSjK7bkdFdvATF5sQyk34znRbpedzWBfO6g0WnZnZFPxL
+ VeGMZCU/tCLwf/NYPhYGUEbXTi6ZoWgFIg4hybPkd+1WgUM1js//PpNFLD3EL21TNtfEJ15
+ YP+hUjzO7xms340VDvkkkxoNYrwzy0bSJJlOlsUMRAV3RjbyUbKzfREZ1ogOPgBuW4wBZrp
+ drPLgOUZoV+E1mS/u0ImseB+AEm6na/UuGG4JuV9Meh0TsyKYK6aEX6SKJbOIJm7wYljyw7
+ TgK9Sg3SYx1OvY9xxtwa0jmSQXxbQ==
+X-QQ-GoodBg: 2
+From: tangmeng <tangmeng@uniontech.com>
+To: ltp@lists.linux.it
+Date: Wed, 17 Nov 2021 11:39:50 +0800
+Message-Id: <20211117033951.16352-1-tangmeng@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211105090200.103485-1-zhaogongyi@huawei.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/fanotify07: add stop_children() to
- cleanup()
+Subject: [LTP] [PATCH 1/2] fchownat/fchownat01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,82 +62,230 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Matthew Bobrowski <repnop@google.com>, ltp@lists.linux.it
+Cc: tangmeng <tangmeng@uniontech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Signed-off-by: tangmeng <tangmeng@uniontech.com>
+---
+ testcases/kernel/syscalls/fchownat/fchownat.h |  15 +-
+ .../kernel/syscalls/fchownat/fchownat01.c     | 131 +++++-------------
+ 2 files changed, 39 insertions(+), 107 deletions(-)
 
-> When we run the testcase simultaneously, and the ulimit of open
-> files is small, the testcase will fail and remain many while(1)
-> tasks in system, it makes the system very stuck.
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat.h b/testcases/kernel/syscalls/fchownat/fchownat.h
+index a95c26f93..75c435dab 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat.h
++++ b/testcases/kernel/syscalls/fchownat/fchownat.h
+@@ -1,20 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2014 Fujitsu Ltd.
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Library General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- *
+  */
 
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> ---
-> v1->v2: add stop_children() to cleanup(),suggested by Amir and Matthew.
+ #ifndef FCHOWNAT_H
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
+index 9f4ecded7..b18af54f4 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat01.c
++++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
+@@ -1,60 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *   Copyright (c) International Business Machines  Corp., 2006
+  *   AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software Foundation,
+- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+-/*
+- * DESCRIPTION
+- *	This test case will verify basic function of fchownat
+- *	added by kernel 2.6.16 or up.
++
++/*\
++ * [Description]
++ *
++ * This test case will verify basic function of fchownat
++ * added by kernel 2.6.16 or up.
+  */
 
->  testcases/kernel/syscalls/fanotify/fanotify07.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+ #define _GNU_SOURCE
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> index cc56d9019..40d1b96ce 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> @@ -86,15 +86,21 @@ static int stop_children(void)
->  	int child_ret;
->  	int i, ret = 0;
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "fchownat.h"
+ #include "lapi/fcntl.h"
 
-> -	for (i = 0; i < MAX_CHILDREN; i++)
-> +	for (i = 0; i < MAX_CHILDREN; i++) {
-> +		if (!child_pid[i])
-> +			continue;
->  		SAFE_KILL(child_pid[i], SIGKILL);
-> +	}
+ #define TESTFILE	"testfile"
 
->  	for (i = 0; i < MAX_CHILDREN; i++) {
-> +		if (!child_pid[i])
-> +			continue;
->  		SAFE_WAITPID(child_pid[i], &child_ret, 0);
->  		if (!WIFSIGNALED(child_ret))
->  			ret = 1;
-I slightly prefer instead of using memset code which Amir suggested:
-		child_pid[i] = 0;
->  	}
+-static void setup(void);
+-static void cleanup(void);
+-
+ static int dir_fd;
+ static int fd;
+ static int no_fd = -1;
+ static int cu_fd = AT_FDCWD;
 
-Otherwise LGTM.
+-static struct test_case_t {
++static struct tcase {
+ 	int exp_ret;
+ 	int exp_errno;
+ 	int flag;
+ 	int *fds;
+ 	char *filenames;
+-} test_cases[] = {
++} tcases[] = {
+ 	{0, 0, 0, &dir_fd, TESTFILE},
+ 	{-1, ENOTDIR, 0, &fd, TESTFILE},
+ 	{-1, EBADF, 0, &no_fd, TESTFILE},
+@@ -62,77 +38,46 @@ static struct test_case_t {
+ 	{0, 0, 0, &cu_fd, TESTFILE},
+ };
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+-char *TCID = "fchownat01";
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-static void fchownat_verify(const struct test_case_t *);
+-
+-int main(int ac, char **av)
++static void verify_fchownat(unsigned int i)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	struct tcase *tc = &tcases[i];
 
-NOTE: patch was corrupted, please take care next time
-(error: corrupt patch at line 131)
-Also
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-		for (i = 0; i < TST_TOTAL; i++)
+-			fchownat_verify(&test_cases[i]);
++	if (tc->exp_ret == 0) {
++		TST_EXP_PASS(fchownat(*(tc->fds), tc->filenames, geteuid(),
++			getegid(), tc->flag),
++		 	"fchownat() returned %ld, expected %d, errno=%d",
++			 TST_RET, tc->exp_ret, tc->exp_errno);
++	} else {
++		TST_EXP_FAIL(fchownat(*(tc->fds), tc->filenames, geteuid(),
++			getegid(), tc->flag), tc->exp_errno,
++			 "fchownat() expected errno %d: %s",
++			 tc->exp_ret, strerror(tc->exp_errno));
+ 	}
+-
+-	cleanup();
+-	tst_exit();
+ }
 
-Kind regards,
-Petr
+ static void setup(void)
+ {
+-	if ((tst_kvercmp(2, 6, 16)) < 0)
+-		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.16 or newer");
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
+-
+-	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
+-
+-	fd = SAFE_OPEN(cleanup, "testfile2", O_CREAT | O_RDWR, 0600);
+-}
+-
+-static void fchownat_verify(const struct test_case_t *test)
+-{
+-	TEST(fchownat(*(test->fds), test->filenames, geteuid(),
+-		      getegid(), test->flag));
++	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
 
-> +	memset(child_pid, 0, sizeof(pid_t) * MAX_CHILDREN);
->  	return ret;
->  }
+-	if (TEST_RETURN != test->exp_ret) {
+-		tst_resm(TFAIL | TTERRNO,
+-			 "fchownat() returned %ld, expected %d, errno=%d",
+-			 TEST_RETURN, test->exp_ret, test->exp_errno);
+-		return;
+-	}
++	SAFE_TOUCH(TESTFILE, 0600, NULL);
 
-> @@ -190,6 +196,8 @@ static void setup(void)
+-	if (TEST_ERRNO == test->exp_errno) {
+-		tst_resm(TPASS | TTERRNO,
+-			 "fchownat() returned the expected errno %d: %s",
+-			 test->exp_ret, strerror(test->exp_errno));
+-	} else {
+-		tst_resm(TFAIL | TTERRNO,
+-			 "fchownat() failed unexpectedly; expected: %d - %s",
+-			 test->exp_errno, strerror(test->exp_errno));
+-	}
++	fd = SAFE_OPEN("testfile2", O_CREAT | O_RDWR, 0600);
+ }
 
->  static void cleanup(void)
->  {
-> +	stop_children();
-> +
->  	if (fd_notify > 0)
->  		SAFE_CLOSE(fd_notify);
->  }
-> @@ -201,6 +209,7 @@ static struct tst_test test = {
->  	.needs_tmpdir = 1,
->  	.forks_child = 1,
->  	.needs_root = 1,
->  };
+ static void cleanup(void)
+ {
+-	if (fd > 0)
+-		close(fd);
++       if (fd > 0)
++               close(fd);
 
->  #else
+-	if (dir_fd > 0)
+-		close(dir_fd);
+-
+-	tst_rmdir();
++       if (dir_fd > 0)
++               close(dir_fd);
+ }
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.min_kver = "2.6.16",
++	.test = verify_fchownat,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++};
+--
+2.20.1
+
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
