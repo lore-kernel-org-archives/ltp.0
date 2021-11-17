@@ -2,71 +2,157 @@ Return-Path: <SRS0=ZNpR=QE=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D59BC433EF
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 07:07:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F6D5C433EF
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 07:54:58 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B800C61BE5
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 07:07:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B800C61BE5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9AC3161BD2
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 07:54:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9AC3161BD2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7AB253C87DC
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 08:07:50 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id CBDCB3C87CE
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 08:54:55 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 449A53C87D3
- for <ltp@lists.linux.it>; Wed, 17 Nov 2021 08:07:38 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 003A53C3329
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 08:54:45 +0100 (CET)
+Received: from esa18.fujitsucc.c3s2.iphmx.com (esa18.fujitsucc.c3s2.iphmx.com
+ [216.71.158.38])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4851D601CD7
- for <ltp@lists.linux.it>; Wed, 17 Nov 2021 08:07:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1637132848;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gD0yNUerdxID5vn9PFToQv6M0ws45AaJrSXsRUlOML8=;
- b=eWwUMtKPDi0QHnPxx4jFkpAeNEjO/k2EXZSiILyb5UgsRr0jGxtMRDITjLnnkNvMgmWO//
- ydqQ+3/4QHDfqNr2XDcvcSEcnZDgWJJ43xQLT4bXNyODmiUURd97mC9npyXoosPMhrL8ZF
- uIAeHC42+h9xNeundneOfp7zXWuB2NY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-125-XfVsw7-pPUa9EBS92p2x6g-1; Wed, 17 Nov 2021 02:07:14 -0500
-X-MC-Unique: XfVsw7-pPUa9EBS92p2x6g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
- [10.5.11.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C321B87122E;
- Wed, 17 Nov 2021 07:07:12 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com (unknown [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id AFE775F4E0;
- Wed, 17 Nov 2021 07:07:11 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Wed, 17 Nov 2021 15:07:07 +0800
-Message-Id: <20211117070708.2174932-2-liwang@redhat.com>
-In-Reply-To: <20211117070708.2174932-1-liwang@redhat.com>
-References: <20211117070708.2174932-1-liwang@redhat.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D6A6414011B1
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 08:54:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1637135686; x=1668671686;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=xZ8BUUWU62RR5SEN33haWt0PngeCsVyWUxNZ9g+vOuM=;
+ b=UMexcTkGPZ6YB+PBnzgPqBmjrSx79+I4ZYZYqcVhHjpJ0U79A957WXdG
+ /SwrSILBoczJz2wVCHkJUBDDMzzcfy+u2+QLrdlLxziqPCdNJn+RTVUdu
+ 73JohiuwKxG74jQi8gdHl+o95hGkPHosvhwafwchzfIYINRcFC+PidFsg
+ 6Xou89meiLLoxjmkfvsdIOSPkLh8Dt0wcNf+0tFmsc/39nGDDmgpMS6xa
+ Kz/ayWHp/2XP4hl8Job0GOsE9wrvgvYHGyut0V8yw0VRfH0Uh5AIhssEL
+ zkK1QN8lrCuK9mlD4b/J84eNpfX0eWY5BvB4+bJBfPGpEuBBT8RNvhDqS Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="44594305"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631545200"; d="scan'208";a="44594305"
+Received: from mail-os0jpn01lp2107.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.107])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Nov 2021 16:54:44 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D6ikGNrNh+W/6byw0P/2SlntKdXbvKkcZrKRWPTOuycfws8aXjq3aknPSlIJRepm1M7qdF4afEe2fszpMgSwxPJ49lcanJHX1Fbh52vswxjAKbaMBrph5M5Hbuz4MdKacYe2DcD4IKAbYtnGRVolVPLxWrqA0bemN+JGYNkUNfwLiRBbjob5PVCpN/aOYtJs2fWAPWva8tdJzjv+t7BpIS3dMjY/mezSVSxkZzgAX9RBK5BDl8C/BJ2ufjQfc/e18lTXKTHoMrsXlwxwDLMfDChouH4qM267Fn8pIidLhhtOG8jxJwBPZg21LVIKI97RN6UpxyFgg+3RcR4en/fzkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xZ8BUUWU62RR5SEN33haWt0PngeCsVyWUxNZ9g+vOuM=;
+ b=Thr8CYsWF0RrkPOqewm6KFrGZN6NuZuaLEvsJtgNIkJ1Byesi0+5MtcbbrKCtNuXWVqIJpzt/YORBSHs2Wf7fkeFDWO3L5IDDAnSeM3autEkyIVBPZALsjMDTALMWrjXRNTmCi5mR3Cga6+4y65r0spACbFudf9rRk4VzpecN/pS9/tCsz6ZDb/nu7g/Nlm9VR7cS8tBD7Y8rIxXGWePiFXUrpEhuyuxaOCRnF09lnuslqysfE3yVOwl5RedKpxc65WVk4ZQ+avha+8Czc9z3ZFD9ScNx1cOZu9xMds2PXoCYbGfDq5+kgrTjANftxnCPsEE0iTv/SjWmlkdktaGog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xZ8BUUWU62RR5SEN33haWt0PngeCsVyWUxNZ9g+vOuM=;
+ b=NZtDOODRc8Ers8DMM2u7i3xqLVm3PRJRbdUI2tLPr8A5DrHuBZKEK08pFlIA/9SJ0yB0HVpxpxWXo0s+RaQGu688Y1Ld5rx+BHtGS+GRG8tlhKIA51Ph5N/EiRZhhjNGuc8awCKNCnWhBNksJYnsnOQlEIB5KPxldVXA9QZdkJ8=
+Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
+ by TYAPR01MB4622.jpnprd01.prod.outlook.com (2603:1096:404:12e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.18; Wed, 17 Nov
+ 2021 07:54:40 +0000
+Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
+ ([fe80::4997:e3e6:6502:9100]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
+ ([fe80::4997:e3e6:6502:9100%7]) with mapi id 15.20.4713.019; Wed, 17 Nov 2021
+ 07:54:40 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
+Thread-Topic: [LTP] [PATCH] finit_module02: fix exp. errno for O_WRONLY
+ testcase
+Thread-Index: AQHXyaPvQYfk9SBELEWpwUTdeDR4/6wHfa2A
+Date: Wed, 17 Nov 2021 07:54:39 +0000
+Message-ID: <6194B56D.9070100@fujitsu.com>
+References: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
+In-Reply-To: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 45cd67b2-8bc3-4a72-dab8-08d9a99f824f
+x-ms-traffictypediagnostic: TYAPR01MB4622:
+x-microsoft-antispam-prvs: <TYAPR01MB462291CEFADE4ABCC5C828A1FD9A9@TYAPR01MB4622.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1201;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rT8JhIeoAseX7dsEPhPcrwuuVGzsR0+/Qm7/3WlJ8v5MKJkU1gX2sc9gn6eAzmFCRDDEsFtCODBCq0wP5thfXpq60Z6qz9Ol16DMVVopJcraZ29y2kns7p3TVOYDWpkQHOGPVyK9Aq6DVUMsnz329ObSCcnNctTJXJdrOSqJ4aQu+pO7xBXVLYoVZDfGVBmdHX1O7GTc2xkM8iqMBBNAIL0iWbLD+ZVcLPY9iueGjiSt3FVGKDkyhpMExx4wtPV/KXBsKkDMUU6ndhVKz7EGKba1YUdLPO+w6MsGZCWckfTCbTDX/QtMuj8orwP3HtPyy2Ten3SAt7DUa1Vce49VpFQJ+elhMKHHrferEJ7b8CP5erwh4UFGCN2Kp5KZ0Awow+JaPgGA5dZhpq1Ce6JdedUVTv1Uhe2wfsL2mrusb2hZOhil5kpN/uSpA19FrCuJeZ/kYpvXzgLwOIwXPSn4TRgrAe/6l/cskYjgryvkpBruGQjoASQK0nNRUSVNa6htJd8IM/poplCILJdEnpYeneDANg9c/m7HSp+iW2iD7LIUZP+i84PcWcoUIBk8q+OiI61GIsbuFaVdnamKsE6r//Pv2vhh5m9HAG+RNhyy6y7zed2iLQ+FBz30a1qQOzu2MNmNf4TS7VpxtfNelDWx78NWh7y3HhqdEE0EdVm5+gzKOFpRwcXWlFZWKYzOdq28C4Ky1hXkH9q6R65m6NuDGw==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(122000001)(8676002)(6916009)(316002)(8936002)(38100700002)(86362001)(85182001)(33656002)(36756003)(82960400001)(38070700005)(6486002)(6506007)(5660300002)(508600001)(71200400001)(186003)(6512007)(66476007)(26005)(83380400001)(4326008)(66946007)(66446008)(2906002)(64756008)(66556008)(91956017)(76116006)(2616005)(87266011);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?c3ljbktoWUdtTks4bDhUTGpSOVM4WElFY2ZXeTBOcndiNWpFWE9qNWZjN3Z0?=
+ =?gb2312?B?dVFKRGQ3STQ5MEdUSGRFOERxSkFtV3RiTEJHODI3UVJJMTI5RHVEbEkvN25z?=
+ =?gb2312?B?T1k4R3pDZ2R0MzJxNTNmSG1Sdi9QWlpaQytwa21aSFg0eGRzdTlsak1jUEEw?=
+ =?gb2312?B?V2pVSHhtYnhRWExnR1RTKzhWUktFdjJ3RjJmUEVGNk1lTlFaUy9pQ2Y0bUF0?=
+ =?gb2312?B?TW84U3JQa0J6UGN4QjM5RzJUazhqTU5XNHBBblBOdkJmNlY4elhZc0piamtz?=
+ =?gb2312?B?bmVKZUdtZG5wZUs1SEw0NmNaTS9mSlArSDRFS2haNTdPZWY5RmRwWUhtVC9i?=
+ =?gb2312?B?dUgwR1g4VldhUk1IaW5qYkhtaVBtWmpvc1J6b0htdmF3d1lMM3hiZVF6VWVU?=
+ =?gb2312?B?V1JxcHRGSE0zcWwzZzJEcEJkYk5NRmRXdGRTUHJ2YmZDMjhVT3NLalhIVjl2?=
+ =?gb2312?B?WXJZSlZvcFNyNXQ2T2Ezdm0weXA0b2lhclp5N0w3bUN2RW14QXp1QlNnUkV1?=
+ =?gb2312?B?REVwL2JhWitrQVUrcnpBeHlSUGQzbXM0ZXphbTkrQUVETU5BMVlNWENSdisv?=
+ =?gb2312?B?a1dFR1AzVTJ3OERqUDkyZ3Jvb2lMcGNPR3h4QTNTVlhvcHI5MjI4dlhnOFpp?=
+ =?gb2312?B?dzZydDlydWdWc2h3VzlJdDhzTVpLMFJNZXU0ZEZQUmdubXNVQWNkeXEyMTVy?=
+ =?gb2312?B?TmF4ek5DakxTZjkyWWR2N2kyZkE4M0I0aVY1TWIxSGJnckVQNVNQazNDaG90?=
+ =?gb2312?B?bEN6UEozbU1mR0Z5cWNXdU95eklFdTk0d0pQTkdGT0pHMHE5cXZFRmlVV1Z1?=
+ =?gb2312?B?c2RTa04rMzZLaUdZcU8wTGVIU1d3Sjc2LzR0MWRMaWFrY3l2RmxEUTRmNUtV?=
+ =?gb2312?B?ZEtiWitMVlBVUDdRK2dhcWh2a0d3T2xuYTA2dWVyNnNtS3lqbjBRc0tQbkpO?=
+ =?gb2312?B?WmVyU29UcE1jaWlTMm1hMGovZGxERlVxRGFEMFFBVkZkaEFkOHgrenVBdWpB?=
+ =?gb2312?B?c2Q3RjhUdlNXRkhyM1hsdXE3K1JERVNNSlRDUFJad2JVZEhnMDhxaWVoRFBM?=
+ =?gb2312?B?ZTNRZGNobFVyb3FDVTU4RUlKOHZpRzJPR1Rsb29mdktWbmVwQllCSmZ5MERp?=
+ =?gb2312?B?U1E2Y0tRNnJjTktrcmRzbm5ESFN1NzRBMGdUQnNVdGI5Z0ZUZTZ1N3NrTE40?=
+ =?gb2312?B?MjNTOGtDaGUwcFk2VEVaRGdlV1U4MWc3N2VPQlQ3eGJ4SVd5Z0VpeGxxRzg0?=
+ =?gb2312?B?UGJDcnJZYmFnTERFVVZITlZ1UlMrZUtjT0FDRUw3TFBjNnJnQmwxSS9YdXZQ?=
+ =?gb2312?B?T041cW45QlJyb1pvdzNVY1VOYkhaSHhWN2d5QjVJaG4yOHhJdjlFMEF6MVdn?=
+ =?gb2312?B?QTlINDQwWVpyVUNJYVZMU3h3SHBxUFVUandZdithcUNqSHlmOE95WTlVOTBH?=
+ =?gb2312?B?SUhGZEwweXd1R1NiU0JHbWQ1NCt5VURxbExKUTVKOHc3RTg4b285UTJzcDhV?=
+ =?gb2312?B?b3lwd3FtZmZVYk0xdHlocTBrV3lwN2FVTmw2NTBjSi9sVTdKYllZZVJMSUJ6?=
+ =?gb2312?B?L3ZaMEhWZUZTMDJjUDFyZUhNSnF6ZVUweS9KbzF2N2p1VzdRaVJIMWJnalFN?=
+ =?gb2312?B?b0JKU2RwOC9FK2Q2a1c2Sng5RnNoWG84MFpsdDcxb056U0pYc1NmOVZ0bkJh?=
+ =?gb2312?B?eFJwTms1TkdkcGdmbEZNbDl2alNBZzhSSmhlSXJHQjdEcFFnSmlzeVlQWjlV?=
+ =?gb2312?B?UXhrL3cxSHFFQ3U1OURlTktBcDFXMk4yaVlXTmtQay9hSWVzTEFSei9DSFhG?=
+ =?gb2312?B?MEwvc1ZvdVFlUzBiS0xWdGdGNlNrVkZMR1crL09weE5NempHSmx0aXBwYWhI?=
+ =?gb2312?B?SVVqNTFrNVRrc0VBSkpndjRCNGg4ZVNRK1lyY3ErTWx0Y1YyVlpsMURZQU5p?=
+ =?gb2312?B?OHBOdEZsRlM1V05WQ1B0bmlTc3NjRHVuVDlRRmNOTjU3eU5MNnB4QmtzZDIw?=
+ =?gb2312?B?ZFdmYlRDalU3TTJZZHlsVm1VQm5FQ3ZTYzVtSHBoTDc4N3dCejkzcEpOUXc5?=
+ =?gb2312?B?NytBN2EwNEFZNFFMcFBWbnZEalhOUFBwWHBjbjdlTmltU0tRdjE2blpLdzlZ?=
+ =?gb2312?B?b3M4bWRxamtndXh3dXlETUIrQkFkVS9rQkxRVFowZ24wWGczU1BMOGxoYjcv?=
+ =?gb2312?B?dWpWTDBoaHNid29JSlRwSURDa2hFZUJkaTRXejBCaFhRSkJHWDBsRlpPVEh1?=
+ =?gb2312?Q?ZTgXfM20f/L+dZEYoV4U2bEkczBxsgrhH9cEOYCs1U=3D?=
+Content-ID: <377A72400E64E7439DF5EE3D463D7EBB@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45cd67b2-8bc3-4a72-dab8-08d9a99f824f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 07:54:39.9994 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: faDjfuuZIQUg+xCG2HT4fRaWvCZWVsYIYscA7GeYPGv4lO2E/fKkJ8rEEDH2hGnV5VEdIRCBA5SZUQ85XhrszWI62+aQC5h5oyP0SPXX4So=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4622
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 2/3] testcase: make use of .supported_archs
+Subject: Re: [LTP] [PATCH] finit_module02: fix exp. errno for O_WRONLY
+ testcase
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,352 +164,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In some places, we have to keep ifdefs to make the compiler work
-with unportable code.
+Hi Jan
+> commit 032146cda855 ("vfs: check fd has read access in
+> kernel_read_file_from_fd()") changed errno back to EBADF,
+> which is correct value according to man page, so tweak
+> the test to expect it for kernels>= 5.15.
+It seems we still can hit ETXTBSY error if we  use RDWR fd on kernels >= 
+5.15.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
----
- configure.ac                                  |  1 +
- testcases/cve/meltdown.c                      | 16 ++++++-----
- testcases/kernel/syscalls/ptrace/ptrace07.c   | 11 ++++----
- testcases/kernel/syscalls/ptrace/ptrace08.c   | 22 ++++++++-------
- testcases/kernel/syscalls/ptrace/ptrace09.c   | 11 +++++---
- testcases/kernel/syscalls/ptrace/ptrace10.c   | 12 +++++----
- .../syscalls/set_mempolicy/set_mempolicy05.c  | 27 +++++++++----------
- 7 files changed, 54 insertions(+), 46 deletions(-)
+This error existed since the following commit because of 
+deny_write_access api
+commit 39d637af5aa7577f655c58b9e55587566c63a0af
+Author: Dmitry Kasatkin <dmitry.kasatkin@huawei.com>
+Date:   Sun Oct 26 12:42:07 2014 +0200
 
-diff --git a/configure.ac b/configure.ac
-index 859aa9857..9af32c859 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -42,6 +42,7 @@ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     asm/ldt.h \
-+    emmintrin.h \
-     ifaddrs.h \
-     keyutils.h \
-     linux/can.h \
-diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-index 5a984aba3..2577c1a80 100644
---- a/testcases/cve/meltdown.c
-+++ b/testcases/cve/meltdown.c
-@@ -6,8 +6,6 @@
- #include "config.h"
- #include "tst_test.h"
- 
--#if defined(__x86_64__) || defined(__i386__)
--
- #include <stdio.h>
- #include <string.h>
- #include <signal.h>
-@@ -17,6 +15,7 @@
- #include <ctype.h>
- #include <sys/utsname.h>
- 
-+#ifdef HAVE_EMMINTRIN_H
- #include <emmintrin.h>
- 
- #include "tst_tsc.h"
-@@ -378,14 +377,17 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.cleanup = cleanup,
- 	.min_kver = "2.6.32",
-+	.supported_archs = (const char *const []) {
-+		"i386",
-+		"x86_64",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"CVE", "2017-5754"},
- 		{}
- 	}
- };
- 
--#else /* #if defined(__x86_64__) || defined(__i386__) */
--
--TST_TEST_TCONF("not x86_64 or i386");
--
--#endif /* #else #if defined(__x86_64__) || defined(__i386__) */
-+#else /* HAVE_EMMINTRIN_H */
-+	TST_TEST_TCONF("<emmintrin.h> is not supported");
-+#endif
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
-index 9e3f7511d..da62cadb0 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace07.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
-@@ -48,13 +48,13 @@
- # define NT_X86_XSTATE 0x202
- #endif
- 
--#ifdef __x86_64__
- static void check_regs_loop(uint32_t initval)
- {
- 	const unsigned long num_iters = 1000000000;
- 	uint32_t xmm0[4] = { initval, initval, initval, initval };
- 	int status = 1;
- 
-+#ifdef __x86_64__
- 	asm volatile("   movdqu %0, %%xmm0\n"
- 		     "   mov %0, %%rbx\n"
- 		     "1: dec %2\n"
-@@ -68,6 +68,7 @@ static void check_regs_loop(uint32_t initval)
- 		     "3:\n"
- 		     : "+m" (xmm0), "+r" (status)
- 		     : "r" (num_iters) : "rax", "rbx", "xmm0");
-+#endif
- 
- 	if (status) {
- 		tst_res(TFAIL,
-@@ -178,6 +179,10 @@ static struct tst_test test = {
- 	.test_all = do_test,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
-+	.supported_archs = (const char *const []) {
-+		"x86_64",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "814fb7bb7db5"},
- 		{"CVE", "2017-15537"},
-@@ -185,7 +190,3 @@ static struct tst_test test = {
- 	}
- 
- };
--
--#else /* !__x86_64__ */
--	TST_TEST_TCONF("this test is only supported on x86_64");
--#endif /* __x86_64__ */
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
-index 170cae64c..20df39a9b 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace08.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
-@@ -43,18 +43,16 @@
- #include "tst_test.h"
- #include "tst_safe_stdio.h"
- 
--#if defined(__i386__) || defined(__x86_64__)
--
- static pid_t child_pid;
- 
--#if defined(__x86_64__)
--# define KERN_ADDR_MIN 0xffff800000000000
--# define KERN_ADDR_MAX 0xffffffffffffffff
--# define KERN_ADDR_BITS 64
--#elif defined(__i386__)
-+#if defined(__i386__)
- # define KERN_ADDR_MIN 0xc0000000
- # define KERN_ADDR_MAX 0xffffffff
- # define KERN_ADDR_BITS 32
-+#else
-+# define KERN_ADDR_MIN 0xffff800000000000
-+# define KERN_ADDR_MAX 0xffffffffffffffff
-+# define KERN_ADDR_BITS 64
- #endif
- 
- static int deffered_check;
-@@ -98,6 +96,7 @@ static void ptrace_try_kern_addr(unsigned long kern_addr)
- 	if (SAFE_WAITPID(child_pid, &status, WUNTRACED) != child_pid)
- 		tst_brk(TBROK, "Received event from unexpected PID");
- 
-+#if defined(__i386__) || defined(__x86_64__)
- 	SAFE_PTRACE(PTRACE_ATTACH, child_pid, NULL, NULL);
- 	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
- 		(void *)offsetof(struct user, u_debugreg[0]), (void *)1);
-@@ -127,6 +126,7 @@ static void ptrace_try_kern_addr(unsigned long kern_addr)
- 
- 	addr = ptrace(PTRACE_PEEKUSER, child_pid,
- 	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
-+#endif
- 
- 	if (!deffered_check && addr == kern_addr)
- 		tst_res(TFAIL, "Was able to set breakpoint on kernel addr");
-@@ -161,6 +161,11 @@ static struct tst_test test = {
- 	 * have to skip the test.
- 	 */
- 	.skip_in_compat = 1,
-+	.supported_archs = (const char *const []) {
-+		"i386",
-+		"x86_64",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "f67b15037a7a"},
- 		{"CVE", "2018-1000199"},
-@@ -168,6 +173,3 @@ static struct tst_test test = {
- 		{}
- 	}
- };
--#else
--TST_TEST_TCONF("This test is only supported on x86 systems");
--#endif
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace09.c b/testcases/kernel/syscalls/ptrace/ptrace09.c
-index 85875ce65..8ccdfcc4b 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace09.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace09.c
-@@ -22,7 +22,6 @@
- #include <signal.h>
- #include "tst_test.h"
- 
--#if defined(__i386__) || defined(__x86_64__)
- static short watchpoint;
- static pid_t child_pid;
- 
-@@ -46,6 +45,7 @@ static void run(void)
- {
- 	int status;
- 
-+#if defined(__i386__) || defined(__x86_64__)
- 	child_pid = SAFE_FORK();
- 
- 	if (!child_pid) {
-@@ -60,6 +60,7 @@ static void run(void)
- 	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
- 		(void *)offsetof(struct user, u_debugreg[7]), (void *)0x30001);
- 	SAFE_PTRACE(PTRACE_CONT, child_pid, NULL, NULL);
-+#endif
- 
- 	while (1) {
- 		if (SAFE_WAITPID(child_pid, &status, 0) != child_pid)
-@@ -92,12 +93,14 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.cleanup = cleanup,
- 	.forks_child = 1,
-+	.supported_archs = (const char *const []) {
-+		"i386",
-+		"x86_64",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "d8ba61ba58c8"},
- 		{"CVE", "2018-8897"},
- 		{}
- 	}
- };
--#else
--TST_TEST_TCONF("This test is only supported on x86 systems");
--#endif
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace10.c b/testcases/kernel/syscalls/ptrace/ptrace10.c
-index b5d6b9f8f..3bd8ca1a9 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace10.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace10.c
-@@ -22,8 +22,6 @@
- #include <signal.h>
- #include "tst_test.h"
- 
--#if defined(__i386__) || defined(__x86_64__)
--
- static pid_t child_pid;
- 
- static void child_main(void)
-@@ -45,6 +43,7 @@ static void run(void)
- 	if (SAFE_WAITPID(child_pid, &status, WUNTRACED) != child_pid)
- 		tst_brk(TBROK, "Received event from unexpected PID");
- 
-+#if defined(__i386__) || defined(__x86_64__)
- 	SAFE_PTRACE(PTRACE_ATTACH, child_pid, NULL, NULL);
- 	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
- 		(void *)offsetof(struct user, u_debugreg[0]), (void *)1);
-@@ -53,6 +52,7 @@ static void run(void)
- 
- 	addr = ptrace(PTRACE_PEEKUSER, child_pid,
- 	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
-+#endif
- 
- 	if (addr == 2)
- 		tst_res(TPASS, "The rd0 was set on second PTRACE_POKEUSR");
-@@ -76,11 +76,13 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.cleanup = cleanup,
- 	.forks_child = 1,
-+	.supported_archs = (const char *const []) {
-+		"i386",
-+		"x86_64",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "bd14406b78e6"},
- 		{}
- 	}
- };
--#else
--TST_TEST_TCONF("This test is only supported on x86 systems");
--#endif
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-index 86f6a95dc..c65cb1e18 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-@@ -37,18 +37,10 @@
- #include "config.h"
- #include "tst_test.h"
- 
--#if defined(__i386__) || defined(__powerpc__)
--
- #include <string.h>
- 
- static unsigned int i;
- static int sys_ret;
--#ifdef __i386__
--static const int sys_num = 276;
--static const int mode;
--static const int node_mask_ptr = UINT_MAX;
--static const int node_mask_sz = UINT_MAX;
--#endif
- static volatile char *stack_ptr;
- 
- static void run(void)
-@@ -58,6 +50,11 @@ static void run(void)
- 	register long mode __asm__("r3");
- 	register long node_mask_ptr __asm__("r4");
- 	register long node_mask_sz __asm__("r5");
-+#else
-+	const int sys_num = 276;
-+	const int mode;
-+	const int node_mask_ptr = UINT_MAX;
-+	const int node_mask_sz = UINT_MAX;
- #endif
- 	char stack_pattern[0x400];
- 
-@@ -78,7 +75,8 @@ static void run(void)
- 		:
- 		"memory", "cr0", "r6", "r7", "r8", "r9", "r10", "r11", "r12");
- 	sys_ret = mode;
--#else /* __i386__ */
-+#endif
-+#ifdef __i386__
- 	asm volatile (
- 		"add $0x400, %%esp\n\t"
- 		"int $0x80\n\t"
-@@ -114,15 +112,14 @@ static void run(void)
- 
- static struct tst_test test = {
- 	.test_all = run,
-+	.supported_archs = (const char *const []) {
-+		"i386",
-+		"ppc",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "cf01fb9985e8"},
- 		{"CVE", "CVE-2017-7616"},
- 		{}
- 	}
- };
--
--#else /* #if defined(__x86_64__) || defined(__powerpc__) */
--
--TST_TEST_TCONF("not i386 or powerpc");
--
--#endif /* #else #if defined(__x86_64__) || defined(__powerpc__) */
--- 
-2.31.1
+     vfs: forbid write access when reading a file into memory
 
+I suggest add a RDWR test and send a patch to record a ETXTBSY error( 
+Since linux 4.7).
+
+What do you think about this?
+
+Best Regards
+Yang Xu
+>
+> Signed-off-by: Jan Stancek<jstancek@redhat.com>
+> ---
+>   testcases/kernel/syscalls/finit_module/finit_module02.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
+> index 0d2bf917ea64..9b5d3563b74e 100644
+> --- a/testcases/kernel/syscalls/finit_module/finit_module02.c
+> +++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
+> @@ -52,7 +52,7 @@ static void bad_fd_setup(struct tcase *tc)
+>
+>   static void wo_file_setup(struct tcase *tc)
+>   {
+> -	if (tst_kvercmp(4, 6, 0)<  0)
+> +	if (tst_kvercmp(4, 6, 0)<  0 || tst_kvercmp(5, 15, 0)>= 0)
+>   		tc->exp_errno = EBADF;
+>   	else
+>   		tc->exp_errno = ETXTBSY;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
