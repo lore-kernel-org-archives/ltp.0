@@ -2,55 +2,57 @@ Return-Path: <SRS0=ZNpR=QE=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E83C433EF
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 03:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78BB9C433F5
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 03:40:32 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5CD87615E1
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 03:40:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5CD87615E1
+	by mail.kernel.org (Postfix) with ESMTPS id AF43F61A38
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 03:40:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AF43F61A38
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0FF593C87D1
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 04:40:20 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 082993C8800
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 04:40:30 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4CB773C0726
- for <ltp@lists.linux.it>; Wed, 17 Nov 2021 04:40:09 +0100 (CET)
-Received: from smtpbg501.qq.com (smtpbg501.qq.com [203.205.250.101])
+ by picard.linux.it (Postfix) with ESMTPS id E41263C87CE
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 04:40:12 +0100 (CET)
+Received: from smtpproxy21.qq.com (smtpbg704.qq.com [203.205.195.105])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 76B4E1A01483
- for <ltp@lists.linux.it>; Wed, 17 Nov 2021 04:40:04 +0100 (CET)
-X-QQ-mid: bizesmtp37t1637120399tzebba32
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7A41E600D74
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 04:40:10 +0100 (CET)
+X-QQ-mid: bizesmtp37t1637120403to0fwusu
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by esmtp6.qq.com (ESMTP) with 
- id ; Wed, 17 Nov 2021 11:39:52 +0800 (CST)
+ id ; Wed, 17 Nov 2021 11:40:00 +0800 (CST)
 X-QQ-SSF: 0140000000200050D000B00A0000000
-X-QQ-FEAT: zkEeU6Ots57clNYTR//TAxROYrZ1e5QS8BzuGarIHSUMNCO56QbfGa3ZEZvwg
- 0DKAVRMYpqLdd6HUBm/AOanbALjSjK7bkdFdvATF5sQyk34znRbpedzWBfO6g0WnZnZFPxL
- VeGMZCU/tCLwf/NYPhYGUEbXTi6ZoWgFIg4hybPkd+1WgUM1js//PpNFLD3EL21TNtfEJ15
- YP+hUjzO7xms340VDvkkkxoNYrwzy0bSJJlOlsUMRAV3RjbyUbKzfREZ1ogOPgBuW4wBZrp
- drPLgOUZoV+E1mS/u0ImseB+AEm6na/UuGG4JuV9Meh0TsyKYK6aEX6SKJbOIJm7wYljyw7
- TgK9Sg3SYx1OvY9xxtwa0jmSQXxbQ==
+X-QQ-FEAT: jfdGVjI73+Qgs2xf4I8D+EtBPljNr/MFnDrFkGMIiErEzKJcNbloSWoRZtmOt
+ x0VeQuVLVWzQ3jAepOX9l85Y/H+33rayKjysbBkbmMQddLe/Ia05711yBPBZ4FHBscbDmWA
+ k+EJ60aCuL2yaMHi8biuIrtTFVaBzMAeTVCEQBa0eeuD66DY+4i2KFRYKXacRJtPG++RNoU
+ Wc2UPSsp3fRlv4ASCfK09hcSplFywZLpcu1Z9ENGcE4y0EsMtTlwBzp66zR57vmFiLmw/ez
+ tFxO6XfE1QS+zj/IfaskcOUpMff5nPi+pYVXJsAqaaxaq+SPhARNWMTtRlyKsgeqDZFXLQV
+ w6NGn2f6BKOPT1k12TRljjpaJmE2hWbcu5Alctp
 X-QQ-GoodBg: 2
 From: tangmeng <tangmeng@uniontech.com>
 To: ltp@lists.linux.it
-Date: Wed, 17 Nov 2021 11:39:50 +0800
-Message-Id: <20211117033951.16352-1-tangmeng@uniontech.com>
+Date: Wed, 17 Nov 2021 11:39:51 +0800
+Message-Id: <20211117033951.16352-2-tangmeng@uniontech.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211117033951.16352-1-tangmeng@uniontech.com>
+References: <20211117033951.16352-1-tangmeng@uniontech.com>
 MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
 X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] fchownat/fchownat01: Convert to new API
+Subject: [LTP] [PATCH 2/2] fchownat/fchownat02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,70 +72,42 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: tangmeng <tangmeng@uniontech.com>
 ---
- testcases/kernel/syscalls/fchownat/fchownat.h |  15 +-
- .../kernel/syscalls/fchownat/fchownat01.c     | 131 +++++-------------
- 2 files changed, 39 insertions(+), 107 deletions(-)
+ .../kernel/syscalls/fchownat/fchownat02.c     | 121 +++++-------------
+ 1 file changed, 34 insertions(+), 87 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat.h b/testcases/kernel/syscalls/fchownat/fchownat.h
-index a95c26f93..75c435dab 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat.h
-+++ b/testcases/kernel/syscalls/fchownat/fchownat.h
-@@ -1,20 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
+index d19f3f3b8..116d4ca37 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat02.c
++++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
+@@ -1,132 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0-only
  /*
   * Copyright (c) 2014 Fujitsu Ltd.
+  * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
   *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Library General Public License for more details.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-- *
-  */
-
- #ifndef FCHOWNAT_H
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
-index 9f4ecded7..b18af54f4 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat01.c
-+++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
-@@ -1,60 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *   Copyright (c) International Business Machines  Corp., 2006
-  *   AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software Foundation,
-- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- * You should have received a copy of the GNU General Public License along
+- * with this program.
   */
 -/*
-- * DESCRIPTION
-- *	This test case will verify basic function of fchownat
-- *	added by kernel 2.6.16 or up.
+- * Test Description:
+- *   Verify that,
+- *   The flag of fchownat() is AT_SYMLINK_NOFOLLOW and the pathname would
+- *   not be dereferenced if the pathname is a symbolic link.
 +
 +/*\
 + * [Description]
 + *
-+ * This test case will verify basic function of fchownat
-+ * added by kernel 2.6.16 or up.
++ * Verify that,
++ * The flag of fchownat() is AT_SYMLINK_NOFOLLOW and the pathname would
++ * not be dereferenced if the pathname is a symbolic link.
   */
 
  #define _GNU_SOURCE
@@ -146,7 +120,6 @@ index 9f4ecded7..b18af54f4 100644
 -#include <errno.h>
 -#include <string.h>
 -#include <signal.h>
--
 -#include "test.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
@@ -154,132 +127,130 @@ index 9f4ecded7..b18af54f4 100644
  #include "lapi/fcntl.h"
 
  #define TESTFILE	"testfile"
+ #define TESTFILE_LINK	"testfile_link"
 
--static void setup(void);
--static void cleanup(void);
+-char *TCID = "fchownat02";
+-int TST_TOTAL = 1;
 -
  static int dir_fd;
- static int fd;
- static int no_fd = -1;
- static int cu_fd = AT_FDCWD;
-
--static struct test_case_t {
-+static struct tcase {
- 	int exp_ret;
- 	int exp_errno;
- 	int flag;
- 	int *fds;
- 	char *filenames;
--} test_cases[] = {
-+} tcases[] = {
- 	{0, 0, 0, &dir_fd, TESTFILE},
- 	{-1, ENOTDIR, 0, &fd, TESTFILE},
- 	{-1, EBADF, 0, &no_fd, TESTFILE},
-@@ -62,77 +38,46 @@ static struct test_case_t {
- 	{0, 0, 0, &cu_fd, TESTFILE},
- };
-
--char *TCID = "fchownat01";
--int TST_TOTAL = ARRAY_SIZE(test_cases);
--static void fchownat_verify(const struct test_case_t *);
+ static uid_t set_uid = 1000;
+ static gid_t set_gid = 1000;
+-static void setup(void);
+-static void cleanup(void);
+-static void test_verify(void);
+-static void fchownat_verify(void);
 -
 -int main(int ac, char **av)
-+static void verify_fchownat(unsigned int i)
- {
+-{
 -	int lc;
 -	int i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
-+	struct tcase *tc = &tcases[i];
-
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -		for (i = 0; i < TST_TOTAL; i++)
--			fchownat_verify(&test_cases[i]);
-+	if (tc->exp_ret == 0) {
-+		TST_EXP_PASS(fchownat(*(tc->fds), tc->filenames, geteuid(),
-+			getegid(), tc->flag),
-+		 	"fchownat() returned %ld, expected %d, errno=%d",
-+			 TST_RET, tc->exp_ret, tc->exp_errno);
-+	} else {
-+		TST_EXP_FAIL(fchownat(*(tc->fds), tc->filenames, geteuid(),
-+			getegid(), tc->flag), tc->exp_errno,
-+			 "fchownat() expected errno %d: %s",
-+			 tc->exp_ret, strerror(tc->exp_errno));
- 	}
+-			fchownat_verify();
+-	}
 -
 -	cleanup();
 -	tst_exit();
- }
+-}
 
  static void setup(void)
  {
+ 	struct stat c_buf, l_buf;
+
 -	if ((tst_kvercmp(2, 6, 16)) < 0)
 -		tst_brkm(TCONF, NULL, "This test needs kernel 2.6.16 or newer");
 -
+-	tst_require_root();
++	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
+
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
++	SAFE_TOUCH(TESTFILE, 0600, NULL);
+
 -	TEST_PAUSE;
--
++	SAFE_SYMLINK(TESTFILE, TESTFILE_LINK);
+
 -	tst_tmpdir();
--
++	SAFE_STAT(TESTFILE_LINK, &c_buf);
+
 -	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
 -
 -	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
 -
--	fd = SAFE_OPEN(cleanup, "testfile2", O_CREAT | O_RDWR, 0600);
+-	SAFE_SYMLINK(cleanup, TESTFILE, TESTFILE_LINK);
+-
+-	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
+-
+-	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
++	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
+
+ 	if (l_buf.st_uid == set_uid || l_buf.st_gid == set_gid) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
++		tst_brk(TBROK | TERRNO,
+ 			 "link_uid(%d) == set_uid(%d) or link_gid(%d) == "
+ 			 "set_gid(%d)", l_buf.st_uid, set_uid, l_buf.st_gid,
+ 			 set_gid);
+ 	}
+ }
+
+-static void fchownat_verify(void)
+-{
+-	TEST(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
+-		      AT_SYMLINK_NOFOLLOW));
+-
+-	if (TEST_RETURN != 0) {
+-		tst_resm(TFAIL | TTERRNO, "fchownat() failed, errno=%d : %s",
+-			 TEST_ERRNO, strerror(TEST_ERRNO));
+-	} else {
+-		test_verify();
+-	}
 -}
 -
--static void fchownat_verify(const struct test_case_t *test)
--{
--	TEST(fchownat(*(test->fds), test->filenames, geteuid(),
--		      getegid(), test->flag));
-+	dir_fd = SAFE_OPEN("./", O_DIRECTORY);
+-static void test_verify(void)
++static void verify_fchownat(void)
+ {
+ 	struct stat c_buf, l_buf;
 
--	if (TEST_RETURN != test->exp_ret) {
--		tst_resm(TFAIL | TTERRNO,
--			 "fchownat() returned %ld, expected %d, errno=%d",
--			 TEST_RETURN, test->exp_ret, test->exp_errno);
--		return;
--	}
-+	SAFE_TOUCH(TESTFILE, 0600, NULL);
+-	SAFE_STAT(cleanup, TESTFILE_LINK, &c_buf);
++	TST_EXP_PASS_SILENT(fchownat(dir_fd, TESTFILE_LINK, set_uid, set_gid,
++		      AT_SYMLINK_NOFOLLOW));
++
++	SAFE_STAT(TESTFILE_LINK, &c_buf);
 
--	if (TEST_ERRNO == test->exp_errno) {
--		tst_resm(TPASS | TTERRNO,
--			 "fchownat() returned the expected errno %d: %s",
--			 test->exp_ret, strerror(test->exp_errno));
--	} else {
--		tst_resm(TFAIL | TTERRNO,
--			 "fchownat() failed unexpectedly; expected: %d - %s",
--			 test->exp_errno, strerror(test->exp_errno));
--	}
-+	fd = SAFE_OPEN("testfile2", O_CREAT | O_RDWR, 0600);
- }
+-	SAFE_LSTAT(cleanup, TESTFILE_LINK, &l_buf);
++	SAFE_LSTAT(TESTFILE_LINK, &l_buf);
+
+ 	if (c_buf.st_uid != set_uid && l_buf.st_uid == set_uid &&
+ 	    c_buf.st_gid != set_gid && l_buf.st_gid == set_gid) {
+-		tst_resm(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
++		tst_res(TPASS, "fchownat() test AT_SYMLINK_NOFOLLOW success");
+ 	} else {
+-		tst_resm(TFAIL,
++		tst_res(TFAIL,
+ 			 "fchownat() test AT_SYMLINK_NOFOLLOW fail with uid=%d "
+ 			 "link_uid=%d set_uid=%d | gid=%d link_gid=%d "
+ 			 "set_gid=%d", c_buf.st_uid, l_buf.st_uid, set_uid,
+@@ -136,5 +73,15 @@ static void test_verify(void)
 
  static void cleanup(void)
  {
--	if (fd > 0)
--		close(fd);
-+       if (fd > 0)
-+               close(fd);
-
--	if (dir_fd > 0)
--		close(dir_fd);
--
 -	tst_rmdir();
 +       if (dir_fd > 0)
 +               close(dir_fd);
  }
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.min_kver = "2.6.16",
-+	.test = verify_fchownat,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
++        .min_kver = "2.6.16",
++        .test_all = verify_fchownat,
++        .setup = setup,
++        .cleanup = cleanup,
++        .needs_tmpdir = 1,
++	.needs_root = 1,
 +};
 --
 2.20.1
