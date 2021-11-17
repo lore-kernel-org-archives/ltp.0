@@ -2,55 +2,69 @@ Return-Path: <SRS0=ZNpR=QE=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C1DDC433EF
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 14:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0E3BC433EF
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 14:00:40 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 799956139F
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 14:00:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 799956139F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
+	by mail.kernel.org (Postfix) with ESMTPS id 46C8F6139F
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 14:00:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 46C8F6139F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 62B1A3C87F0
-	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 14:59:58 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B687E3C8853
+	for <ltp@archiver.kernel.org>; Wed, 17 Nov 2021 15:00:38 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 47D073C87F0
- for <ltp@lists.linux.it>; Wed, 17 Nov 2021 14:59:48 +0100 (CET)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ by picard.linux.it (Postfix) with ESMTPS id 5673B3C87F6
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 15:00:30 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 82FE96006DC
- for <ltp@lists.linux.it>; Wed, 17 Nov 2021 14:59:47 +0100 (CET)
-Received: from [192.168.178.40] (unknown [188.195.115.12])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 9C999A6E87;
- Wed, 17 Nov 2021 13:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1637157585; bh=sSkAWYuiYt/ZUTmc6h3EGA9B5JOtG+kuP7MpZAB+3jo=;
- h=Message-ID:Date:MIME-Version:Subject:To:From;
- b=tFcoEkLUtws6KfN6YZYue5M+ZfLTfj71Ttq5fdNpfdUKfFglfKz8iiHN4cXXXD9g4
- JLJlklx34VVpb+jnf/gttxcINlNE6BeCpLOP4W6Cp1At54iZmJ3u+xBaES32I/c0P4
- DVsL45uoQiY36YMDewhGxhFgLPL4KrGhI7LN9+tE=
-Message-ID: <77e0b8b9-5de6-73ab-0f73-e3d95bad0935@jv-coder.de>
-Date: Wed, 17 Nov 2021 14:59:45 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Content-Language: en-US
-To: Li Wang <liwang@redhat.com>, ltp@lists.linux.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D31581A014F9
+ for <ltp@lists.linux.it>; Wed, 17 Nov 2021 15:00:29 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D6B8E212C7;
+ Wed, 17 Nov 2021 14:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1637157628;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KT/SKDotJsuzJivdchNowopt/y7Dtf5xHx8bN37nfpM=;
+ b=ZHjSu2mpNJkx9DSg4TpOi9z5etkpKSOjBOX3ND+oXuxqnuK8HSJuHssZuRg5PKn955dn9H
+ vwyrli998j6adRXZNOmDM2pO5cEb7CdJ6GiPjEKa8Fv5cGfXtWfrTuLYI8KKH2H9qBoJhx
+ OhqmQ0fiWMi6Ibz7h9un92lh1XaGwsc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1637157628;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KT/SKDotJsuzJivdchNowopt/y7Dtf5xHx8bN37nfpM=;
+ b=wEz/weAXwNOH75wQZU9WxJdWZS5fH8OY8dPLTmuhLSI2Psh0bw5I3WC1OD15pl1pWSiPh9
+ sSAoIBQECMokEBDg==
+Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.24.38])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id A166AA3B85;
+ Wed, 17 Nov 2021 14:00:28 +0000 (UTC)
 References: <20211117070708.2174932-1-liwang@redhat.com>
-From: Joerg Vehlow <lkml@jv-coder.de>
-In-Reply-To: <20211117070708.2174932-1-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ <20211117070708.2174932-3-liwang@redhat.com> <87v90r9idn.fsf@suse.de>
+ <CAEemH2cXOBqOObhWAoqeS4Xk5MVXyFMfmS79pxqfXJbd+TW8Qg@mail.gmail.com>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Wed, 17 Nov 2021 13:58:51 +0000
+In-reply-to: <CAEemH2cXOBqOObhWAoqeS4Xk5MVXyFMfmS79pxqfXJbd+TW8Qg@mail.gmail.com>
+Message-ID: <87r1beanly.fsf@suse.de>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 1/3] lib: adding .supported_archs field in
- tst_test structure
+Subject: Re: [LTP] [PATCH v5 3/3] max_map_count: replace ifdefs by tst_arch
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,43 +76,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hello Li,
 
-On 11/17/2021 8:07 AM, Li Wang wrote:
-> Testcases for specific arch should be limited on that only being supported
-> platform to run, we now involve a .supported_archs to achieve this feature
-> in LTP library. All you need to run a test on the expected arch is to set
-> the '.supported_archs' array in the 'struct tst_test' to choose the required
-> arch list. e.g.
+Li Wang <liwang@redhat.com> writes:
+
+> Hi Richard,
 >
->      .supported_archs = (const char *const []){"x86_64", "ppc64", NULL}
+>  
+>  > +     case TST_IA64:
+>  > +             /* On ia64, the vdso is not a proper mapping */
+>  > +             if (!strcmp(buf, "[vdso]"))
+>  > +                     return true;
+>  > +             break;
+>  > +     case TST_ARM:
+>  > +             /* Skip it when run it in aarch64 */
 >
-> This helps move the TCONF info from code to tst_test metadata as well.
+>  This should not be possible. If TST_ARM is set then how can we be on
+>  aarch64? We also have TST_AARCH64.
+>
+> Not exactly, I was thinking like this before, but as Cyril point that there is
+> a possible 32bit ARM binary runs on 64bit aarch64 kernel.
+>
+> https://lists.linux.it/pipermail/ltp/2021-November/025925.html
 
-while I do like this, I wonder if it wouldn't be better to do this using 
-kernel config. IIRC there are config switches
-for all architectures. Further more this would allow adding more complex 
-conditions in the future.
+Thanks
 
-E.g: I am pretty sure, that there are some syscalls, that have existed 
-"forever" in x86_64, but where only added
-in a specific version for aarch64. By making the arch a separate option, 
-there is no way, to model this.
-If it was done in the kernel config check, it could be possible to add 
-version and arch checks like
-(CONFIG_AARCH64 && CONFIG_VERSION > 5.3) || CONFIG_X86_64
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-While this probably does not produce a very good error message, it is 
-more versatile.
 
-Sorry for this late questioning the whole approach.
-
-Joerg
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
