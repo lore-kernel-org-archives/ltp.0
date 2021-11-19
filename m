@@ -2,55 +2,74 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89873C433EF
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4777C433F5
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:39:13 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64F3661AF0
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:37:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64F3661AF0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id EEC1D60F14
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:39:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEC1D60F14
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 23DD13C89C1
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 06:37:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 06CF83C89AE
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 06:39:11 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 55A203C2E5C
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:37:08 +0100 (CET)
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E20EE3C2E5C
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:39:01 +0100 (CET)
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com
+ [IPv6:2607:f8b0:4864:20::12a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D5D321000F2B
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:37:06 +0100 (CET)
-X-QQ-mid: bizesmtp42t1637300219tvf5w7dc
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Fri, 19 Nov 2021 13:36:53 +0800 (CST)
-X-QQ-SSF: 0140000000200050D000B00D0000000
-X-QQ-FEAT: 3uawQE1sH+0R7zpQ+rmuMDRWbQ2s7E2UnK8Ip6WW2r16MrAPH47fvDy1rdO/t
- isnL4Bj89iLlzti7B9gWkO5AOQ7I06gWdFcmlfpKxkmM91T6LHLu062iWa/aPoQ/TBGOGXF
- nlyeMYRhuR2/XZl6Kwt4Ea1ErjyAsgtiB3IxpIIftg7oZIPrGL94zqIrezatBNNUvKgq0qx
- 545W2c7h+wOKRkK59iFmcLbchb2X7hhQOhFcsaKYFWdhZfTgUrTsBHIghXdXW3f3DYdkukL
- V1u36eDPYQKh4BXk+gEYRvKnppV/B7uYAlyV6BulGXR/YvBlVuV2FQWYIIiF5lJDbo5oHT7
- ASrVB/RwnXhGokb7fPiVMCqIcxSng==
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
-To: ltp@lists.linux.it
-Date: Fri, 19 Nov 2021 13:36:50 +0800
-Message-Id: <20211119053650.11979-1-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 80D8E600BEB
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:38:54 +0100 (CET)
+Received: by mail-il1-x12a.google.com with SMTP id l19so9199278ilk.0
+ for <ltp@lists.linux.it>; Thu, 18 Nov 2021 21:38:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=f2aHJUlff+sHT0KB89Ar0wCxeN5RNH8wkzpd87A4xsk=;
+ b=oAlT9paDS24Qy4Yiyrpr8LzhBDDyY6nuFPfoE5WZFi0CNco6Z0RyOAi/YjJZH6eLIv
+ 3Ztra06Kmrw2Sxn0fXMfJ7gJIFeTN3Ftacz2Uk0/yiQayzlqpvalFSQwDcIgLP5t1kay
+ 3syKNEWkQ+dkRBSPNJqHKYProaLHYWN0YbCNld2+Oc3QLDPL9IiB+vZHVt/71sz1Zaup
+ nhJZxWzbLqliECWS8PLsBTIL2hf63nt21oS6vN74Cm2DV8DV6B2jbo1SRgOj5mCwmKl4
+ aQa96+CMiBrp9ev6tWAoxD2XT6oKoegT14sB5S4GQKI9QamhdCPmu9GmeJw7u9pqJofQ
+ 6WzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=f2aHJUlff+sHT0KB89Ar0wCxeN5RNH8wkzpd87A4xsk=;
+ b=BomSFdX7o23PxV8BNtvoSqauDFcciWWofPU4vx8KyyDsTLvivReW+Ormbneug3kJa8
+ cEGtA2renRMg8jddy+v6NtDPUKitE3btV99/TBUNziWPp2GsE+lNIV3AZlDA/Fl+uj5U
+ 02WamVAJen4P3wDCsY4tdJo8T+8QLl7fEiJaTEnIMBy7RkSjARtgxosUx6j3T5uLC74l
+ 2bVVTTYZkgKvoYxFFxKIAIt3TGuS8PzKmmnPRQCR6Eb3zhNL4IGMtU/KFajxCJ9bFSaq
+ frBfZDT7TNcGULE3tpqUmD/1rigfs/4ThZ1orNcycC9iAz9h1gyXa3VmhCyyw0eHW/EN
+ hXag==
+X-Gm-Message-State: AOAM533W79lV7hOmvvt2hajVZ1AYu63UTEviOTMrkGGgGhVlblxHrmOk
+ ykgGfyMkXdmd+S7bW99fquLdqldt852fmptkDN0=
+X-Google-Smtp-Source: ABdhPJyge6d8ROjZzxsBZyUPkRoblSllQwMAlbWsZDPUJx4cTNGX4/IFYezj1zcs6kCpZ2H+j9hO+ryU6FblamVSbKo=
+X-Received: by 2002:a05:6e02:c87:: with SMTP id
+ b7mr3301518ile.198.1637300333243; 
+ Thu, 18 Nov 2021 21:38:53 -0800 (PST)
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20211118235744.802584-1-krisman@collabora.com>
+ <20211118235744.802584-5-krisman@collabora.com>
+In-Reply-To: <20211118235744.802584-5-krisman@collabora.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 19 Nov 2021 07:38:42 +0200
+Message-ID: <CAOQ4uxjk8J48ASw2yJhd-OR2LVN6kirg7p6xQbX=xEofGYUghw@mail.gmail.com>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Petr Vorel <pvorel@suse.cz>, Matthew Bobrowski <repnop@google.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/pselect_02: Convert to new API
+Subject: Re: [LTP] [PATCH v4 4/9] syscalls/fanotify22: Validate the generic
+ error info
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,163 +81,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
+Cc: Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+ LTP List <ltp@lists.linux.it>, Khazhismel Kumykov <khazhy@google.com>,
+ Jan Kara <jack@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- testcases/kernel/syscalls/pselect/pselect02.c | 95 ++++---------------
- 1 file changed, 20 insertions(+), 75 deletions(-)
+On Fri, Nov 19, 2021 at 1:58 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Implement some validation for the generic error info record emitted by
+> the kernel.  The error number is fs-specific but, well, we only support
+> ext4 for now anyway.
+>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> ---
+> Changes since v2:
+>   - check for error record type in autotools (Amir)
+> Changes since v1:
+>   - Move defines to header file.
+> ---
+>  configure.ac                                  |  3 +-
+>  testcases/kernel/syscalls/fanotify/fanotify.h | 32 ++++++++++++++++
+>  .../kernel/syscalls/fanotify/fanotify22.c     | 37 ++++++++++++++++++-
+>  3 files changed, 70 insertions(+), 2 deletions(-)
+>
+> diff --git a/configure.ac b/configure.ac
+> index 859aa9857021..a9dc2524966d 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -160,7 +160,8 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
+>  AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
+>  AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
+>  AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
+> -AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
+> +AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header,
+> +               struct fanotify_event_info_error],[],[],[#include <sys/fanotify.h>])
 
-diff --git a/testcases/kernel/syscalls/pselect/pselect02.c b/testcases/kernel/syscalls/pselect/pselect02.c
-index d31621d5a..8ee05f40c 100644
---- a/testcases/kernel/syscalls/pselect/pselect02.c
-+++ b/testcases/kernel/syscalls/pselect/pselect02.c
-@@ -1,24 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2014 Fujitsu Ltd.
-  * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Library General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-- *
-  */
--/*
-- * Test Description:
-+
-+/*\
-+ * [Description]
-+ *
-  *  Verify that,
-  *   1. pselect() fails with -1 return value and sets errno to EBADF
-  *      if a file descriptor that was already closed.
-@@ -28,91 +16,48 @@
-  *      if the value contained within timeout was invalid.
-  */
+Doh! it seems like fanotify_event_info_pidfd was dropped between v2 ->
+v3 in Matthew's patches.
 
--#include <errno.h>
--#include "test.h"
--#include "safe_macros.h"
--
--TCID_DEFINE(pselect02);
-+#include "tst_test.h"
+Petr,
 
- static fd_set read_fds;
- static struct timespec time_buf;
+Can you please fix this.
 
--static struct test_case_t {
-+static struct tcase {
- 	int nfds;
- 	fd_set *readfds;
- 	struct timespec *timeout;
- 	int exp_errno;
--} test_cases[] = {
-+} tcases[] = {
- 	{128, &read_fds, NULL, EBADF},
- 	{-1, NULL, NULL, EINVAL},
- 	{128, NULL, &time_buf, EINVAL},
- };
-
--int TST_TOTAL = ARRAY_SIZE(test_cases);
--
--static void setup(void);
--static void cleanup(void);
--static void pselect_verify(const struct test_case_t *);
--
--int main(int argc, char **argv)
--{
--	int lc, i;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		for (i = 0; i < TST_TOTAL; i++)
--			pselect_verify(&test_cases[i]);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
- static void setup(void)
- {
- 	int fd;
-
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	fd = SAFE_OPEN(cleanup, "test_file", O_RDWR | O_CREAT, 0777);
-+	fd = SAFE_OPEN("test_file", O_RDWR | O_CREAT, 0777);
-
- 	FD_ZERO(&read_fds);
- 	FD_SET(fd, &read_fds);
-
--	SAFE_CLOSE(cleanup, fd);
-+	SAFE_CLOSE(fd);
-
- 	time_buf.tv_sec = -1;
- 	time_buf.tv_nsec = 0;
- }
-
--static void pselect_verify(const struct test_case_t *test)
-+static void pselect_verify(unsigned int i)
- {
--	TEST(pselect(test->nfds, test->readfds, NULL, NULL, test->timeout,
--	     NULL));
--
--	if (TEST_RETURN != -1) {
--		tst_resm(TFAIL, "pselect() succeeded unexpectedly");
--		return;
--	}
-+	struct tcase *tc = &tcases[i];
-
--	if (TEST_ERRNO == test->exp_errno) {
--		tst_resm(TPASS | TTERRNO, "pselect() failed as expected");
--	} else {
--		tst_resm(TFAIL | TTERRNO,
--			 "pselect() failed unexpectedly; expected: %d - %s",
--			 test->exp_errno, strerror(test->exp_errno));
--	}
-+	TST_EXP_FAIL(pselect(tc->nfds, tc->readfds, NULL, NULL, tc->timeout,
-+		     NULL), tc->exp_errno);
- }
-
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+        .tcnt = ARRAY_SIZE(tcases),
-+        .test = pselect_verify,
-+        .setup = setup,
-+        .needs_tmpdir = 1,
-+};
---
-2.20.1
-
-
-
+Thanks,
+Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
