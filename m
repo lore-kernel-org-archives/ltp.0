@@ -2,52 +2,53 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89DE6C433F5
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:47:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 009D1C433F5
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:47:16 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35E7561B1B
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:47:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 35E7561B1B
+	by mail.kernel.org (Postfix) with ESMTPS id 5A04C61B1B
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:47:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5A04C61B1B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 982823C89B0
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:47:04 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E9C983C8994
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:47:13 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EBBE73C7A4A
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:15 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 1C9203C89AD
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:17 +0100 (CET)
 Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A4E601A001C7
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:14 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 920AF6013F9
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:16 +0100 (CET)
 Received: from ubuntu.localdomain (unknown [188.195.115.12])
- by mail.jv-coder.de (Postfix) with ESMTPSA id DFED59FE82;
- Fri, 19 Nov 2021 07:46:13 +0000 (UTC)
+ by mail.jv-coder.de (Postfix) with ESMTPSA id B0F749FD8F;
+ Fri, 19 Nov 2021 07:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1637307974; bh=+Unq/U7kt5t38ObWqFYluZzLSRV7a11RZGARUiUCUyo=;
+ t=1637307975; bh=yAzCtyod/ehTgwPpHhmHbPU8mhf8NditqDPTnq0WiO8=;
  h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=IuGYtAfoVX6wbsT145QWxEkhCwr30TwxjXdk7Xj8PecpsarC7Zwbau0ogGlmmJ4rW
- sDlZOZt62sMmAFG+MEaCwPhzXWhaPcji8HQ7/1SchB+0yiWpFV6HQgqnJIby+5VvC8
- o6V37XGDzvVjpRlTf21U4mppMjKZm6Da8SHaoZws=
+ b=XMBNkWV/JwJEnI5gS+78s3NSCvKwmH9ZnkNFouNGZuAeElTZcBDy+5eWv1SGyFyvv
+ U9oDsPQnrfBvFBW8fLfebjUhXzvmtq5bh9PbsH2iuaIj3SWOVOgKHbv4AEcsCT5fF9
+ jvUi1vVS9nmtkM1SlNTkM/PGdNHJQbZfnRGziTIw=
 From: Joerg Vehlow <lkml@jv-coder.de>
 To: ltp@lists.linux.it
-Date: Fri, 19 Nov 2021 08:45:53 +0100
-Message-Id: <20211119074602.857595-4-lkml@jv-coder.de>
+Date: Fri, 19 Nov 2021 08:45:56 +0100
+Message-Id: <20211119074602.857595-7-lkml@jv-coder.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211119074602.857595-1-lkml@jv-coder.de>
 References: <20211119074602.857595-1-lkml@jv-coder.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 03/12] posix/pthread_create/*: Remove unused variable
+Subject: [LTP] [PATCH 06/12] posix/conformance/interfaces: Fix all unused
+ function warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,47 +68,174 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-While pad was supposed to speed up stack growth, the test
-works without it and it was propably optimized out anyway.
-
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
- .../conformance/interfaces/pthread_create/1-5.c                | 3 ---
- .../conformance/interfaces/pthread_create/3-2.c                | 2 --
- 2 files changed, 5 deletions(-)
+ .../conformance/interfaces/pthread_attr_setstack/6-1.c   | 6 ------
+ .../conformance/interfaces/pthread_attr_setstack/7-1.c   | 6 ------
+ .../interfaces/pthread_attr_setstacksize/4-1.c           | 6 ------
+ .../conformance/interfaces/pthread_exit/4-1.c            | 9 ++-------
+ .../conformance/interfaces/pthread_exit/5-1.c            | 7 +------
+ .../conformance/interfaces/pthread_kill/8-1.c            | 8 --------
+ .../conformance/interfaces/pthread_mutex_lock/1-1.c      | 4 ++--
+ .../conformance/interfaces/pthread_sigmask/18-1.c        | 8 --------
+ 8 files changed, 5 insertions(+), 49 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-5.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-5.c
-index c4756ab6f..33c5b5cb6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-5.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-5.c
-@@ -100,12 +100,9 @@
- static void *overflow(void *arg)
- {
- 	void *current;
--	void *pad[50];		/* We want to consume the stack quickly */
- 	long stacksize = sysconf(_SC_THREAD_STACK_MIN);	/* make sure we touch the current stack memory */
- 	int ret = 0;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/6-1.c
+index 5eac212f9..d298c30ec 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/6-1.c
+@@ -31,12 +31,6 @@
+ static void *stack_addr;
+ static size_t stack_size;
  
--	pad[1] = NULL;		/* so compiler stops complaining about unused variables */
+-static void *thread_func()
+-{
+-	pthread_exit(0);
+-	return NULL;
+-}
 -
- 	if (arg == NULL) {
- 		/* first call */
- 		current = overflow(&current);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/3-2.c
-index a508fc45e..433ccd8fe 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/3-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/3-2.c
-@@ -108,10 +108,8 @@ static sem_t semsync[2];		/* These semaphores will only be used in child process
- static void *overflow(void *arg)
+ int main(void)
  {
- 	void *current;
--	void *pad[50];		/* We want to consume the stack quickly */
- 	long stacksize = sysconf(_SC_THREAD_STACK_MIN);	/* make sure we touch the current stack memory */
+ 	pthread_attr_t attr;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/7-1.c
+index bc7f4f415..932fa8200 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstack/7-1.c
+@@ -32,12 +32,6 @@
+ static void *stack_addr;
+ static size_t stack_size;
  
--	pad[1] = NULL;		/* so compiler stops complaining about unused variables */
+-static void *thread_func()
+-{
+-	pthread_exit(0);
+-	return NULL;
+-}
+-
+ int main(void)
+ {
+ 	pthread_attr_t attr;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/4-1.c
+index b229d7052..800913a66 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_setstacksize/4-1.c
+@@ -28,12 +28,6 @@
+ 
+ #define STACKSIZE PTHREAD_STACK_MIN - sysconf(_SC_PAGE_SIZE)
+ 
+-static void *thread_func()
+-{
+-	pthread_exit(0);
+-	return NULL;
+-}
+-
+ int main(void)
+ {
+ 	pthread_attr_t attr;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/4-1.c
+index 1252d5619..810df0c34 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/4-1.c
+@@ -91,12 +91,7 @@
+ 
+ static int global = 0;
+ 
+-/* atexit() routines */
+-static void at1(void)
+-{
+-	global +=1;
+-}
+-
++/* atexit() routine */
+ static void at2(void)
+ {
+ 	global +=2;
+@@ -107,7 +102,7 @@ static void *threaded(void *arg PTS_ATTRIBUTE_UNUSED)
+ {
  	int ret = 0;
  
- 	if (arg == NULL) {
+-	/* Note that this funtion will be registered once again for each scenario.
++	/* Note that this function will be registered once again for each scenario.
+ 	   POSIX requires the ability to register at least 32 functions so it should
+ 	   not be an issue in our case, as long as we don't get more than 32 scenarii
+ 	   (with joinable threads) */
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/5-1.c
+index 730b751eb..69d5c6a97 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_exit/5-1.c
+@@ -91,12 +91,7 @@
+ static int atctl = 0;
+ static pthread_key_t tld[3];
+ 
+-/* atexit() routines */
+-static void at1(void)
+-{
+-	atctl += 1;
+-}
+-
++/* atexit() routine */
+ static void at2(void)
+ {
+ 	atctl += 2;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/8-1.c
+index 086a0cf5c..b61a08173 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_kill/8-1.c
+@@ -153,14 +153,6 @@ static void sighdl2(int sig PTS_ATTRIBUTE_UNUSED)
+ #endif
+ }
+ 
+-static int init_ctl;
+-/* Init function */
+-static void initializer(void)
+-{
+-	init_ctl++;
+-	return;
+-}
+-
+ /* Test function -- calls pthread_kill() and checks that EINTR is never returned. */
+ static void *test(void *arg PTS_ATTRIBUTE_UNUSED)
+ {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/1-1.c
+index 913251914..4fccbfdf4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_mutex_lock/1-1.c
+@@ -36,7 +36,7 @@ static int value;			/* value protected by mutex */
+ 
+ int main(void)
+ {
+-	int i, rc;
++	int i;
+ 	pthread_attr_t pta;
+ 	pthread_t threads[THREAD_NUM];
+ 	//pthread_t           self = pthread_self();
+@@ -47,7 +47,7 @@ int main(void)
+ 	/* Create threads */
+ 	fprintf(stderr, "Creating %d threads\n", THREAD_NUM);
+ 	for (i = 0; i < THREAD_NUM; ++i)
+-		rc = pthread_create(&threads[i], &pta, f1, NULL);
++		pthread_create(&threads[i], &pta, f1, NULL);
+ 
+ 	/* Wait to join all threads */
+ 	for (i = 0; i < THREAD_NUM; ++i)
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
+index 81ba4ea9b..5801e0e60 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
+@@ -153,14 +153,6 @@ static void sighdl2(int sig PTS_ATTRIBUTE_UNUSED)
+ #endif
+ }
+ 
+-static int init_ctl;
+-/* Init function */
+-static void initializer(void)
+-{
+-	init_ctl++;
+-	return;
+-}
+-
+ /* Test function -- calls pthread_sigmask() and checks that EINTR is never returned. */
+ static void *test(void *arg PTS_ATTRIBUTE_UNUSED)
+ {
 -- 
 2.25.1
 
