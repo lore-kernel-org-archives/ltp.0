@@ -2,70 +2,54 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E4BC433EF
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39A28C433FE
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:11 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2AFF6102A
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:48:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2AFF6102A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D2A1061B04
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2A1061B04
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 226E93C89A0
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 06:48:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 80AE63C8989
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:17:06 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F8333C2E5C
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:48:41 +0100 (CET)
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com
- [IPv6:2607:f8b0:4864:20::132])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A96743C7A4A
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:16:55 +0100 (CET)
+Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DE3FE6013F3
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:48:40 +0100 (CET)
-Received: by mail-il1-x132.google.com with SMTP id e8so9160199ilu.9
- for <ltp@lists.linux.it>; Thu, 18 Nov 2021 21:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=h2UaBAPk9+dX1nyaB3MzZPqLop0ttm08MjzVxvsPoZA=;
- b=UDyTUk11/a32o2RNnkegM+/PGeKx0rK+ZiY4hQ1KmX5J/NBWSK/ixBAe+8Op5lG3/m
- LWn0GK6/75QAo6QYXIZlF7HNwgE2gbXFwEJFfaL7f1zcntzCn44nYa6f/eKIWEfcmzSI
- F7XdOSzMZSl+cPTAkfW+38ia8PXRI6j8VoS4l4tLzMLHxWbXtOoytRIkFNyj2qFVMGUX
- 9mg+haQO09LNcvDHvHZaNWYT8cVGJG6w3mfCbepCEPxYzVClHyLUV5Sq1e0+80akYkh5
- msyRyFk7vJ43a775F+9RCbg0WgrMJoafoBWwYPSl7cS0aYmHbU7eEp+ZEBe1dNH+8ggO
- xJpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=h2UaBAPk9+dX1nyaB3MzZPqLop0ttm08MjzVxvsPoZA=;
- b=kOnTxuZtmVm+dLxvsos7G2WPnLMCaYTiG5sTy8q0kXZFlpDYfx6hHQyZ3H6PwSbUxI
- NHCCHYIw3/dygQa9q9cxuXjWYJ68SaGaZIfKWYQKF0NelgRgXIo2oqpg5t30nMd/kB1M
- g1Pr+kP3OV4v5YRpRDFHSZrrL24prY5YSTB5OqrmsPT1iaVkX6VDGGdvNDomeU2DFs6V
- ca445bcUzeDSNfIqRJCB0ajLZtGmyk6sf3hbrpMR8FA0iTHVgPBVg4Jpn3+C1QjBYZSP
- sJbbyUdy+xhxVQE0kSg9W/WcO9+6ia23M8eJTnHWWQa5iD0X/84YLZSSh1ovGXMsO+7P
- CJJw==
-X-Gm-Message-State: AOAM532rq8r1+rZAsXS8YbJqt10VztUV++ML14sbI8Y4fgTgSstkIHiX
- 8ICpiTpIDiIZYdvIAEUepuG2P43dCg3IMfUOKNQ0f99U59M=
-X-Google-Smtp-Source: ABdhPJw5DB8Y5GvFIbCY2VAUIdCUWYCzlqHFJthiqOrHqHNRz3pUwlq8nhvrhLT0/dgiYnXDQrcBtATNXhegN6UflvI=
-X-Received: by 2002:a05:6e02:1ba6:: with SMTP id
- n6mr3196265ili.254.1637300919715; 
- Thu, 18 Nov 2021 21:48:39 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1BD692011E0
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:16:51 +0100 (CET)
+X-QQ-mid: bizesmtp50t1637306205tod69nxq
+Received: from localhost.localdomain (unknown [58.240.82.166])
+ by esmtp6.qq.com (ESMTP) with 
+ id ; Fri, 19 Nov 2021 15:16:39 +0800 (CST)
+X-QQ-SSF: 0140000000200050D000000D0000000
+X-QQ-FEAT: Mzskoac49OgoSdswGab5sSZilUiAV/+Z7PgUfELOaywPtYmSebsCROLK4ZwVx
+ DPE3ArnuCL4AklmOdE2/W7AaBNd1hHfTm+6LbqnLlFi4F0sfKGkixqW8LaYLycpgZDqQe0U
+ 6V2BVwlWfeOB2vGvMzDdiLUjRPrphOS1qFiL11+r+X1sQi/NLbczqgDW54vvxMUgjqCrDTY
+ 8MFbA2Rx+Jy4PmjXa9eqF5Ar5b1OZJCmLgh5QFoST7jI4HMXkfkyTzVK+/Q9eXhLIUtLTi7
+ TotE+UON0zXGI1OTP6Fe9aw6psmYT1OyTauLAD0Vyw4ZPq2KAjgkH5AjgpZKdUtO8KhFa5k
+ p35ac55/LgRsCzWsmNXy5lU/qvj0ApcyvL18MxX
+X-QQ-GoodBg: 2
+From: tangmeng <tangmeng@uniontech.com>
+To: ltp@lists.linux.it
+Date: Fri, 19 Nov 2021 15:16:36 +0800
+Message-Id: <20211119071637.19635-1-tangmeng@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20211118235744.802584-1-krisman@collabora.com>
-In-Reply-To: <20211118235744.802584-1-krisman@collabora.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 19 Nov 2021 07:48:29 +0200
-Message-ID: <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
-To: Gabriel Krisman Bertazi <krisman@collabora.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
+Subject: [LTP] [PATCH 1/2] syscalls/fchmod_03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,61 +61,233 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel@collabora.com, Matthew Bobrowski <repnop@google.com>,
- Khazhismel Kumykov <khazhy@google.com>, Jan Kara <jack@suse.com>,
- Ext4 <linux-ext4@vger.kernel.org>, LTP List <ltp@lists.linux.it>
+Cc: tangmeng <tangmeng@uniontech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Nov 19, 2021 at 1:57 AM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Hi,
->
-> FAN_FS_ERROR was merged into Linus tree, and the PIDFD testcases reached
-> LTP.  Therefore, I'm sending a new version of the FAN_FS_ERROR LTP
-> tests.  This is the v4 of this patchset, and it applies the feedback of
-> the previous version.
->
-> Thanks,
->
-> ---
->
-> Original cover letter:
->
-> FAN_FS_ERROR is a new (still unmerged) fanotify event to monitor
-> fileystem errors.  This patchset introduces a new LTP test for this
-> feature.
->
-> Testing file system errors is slightly tricky, in particular because
-> they are mostly file system dependent.  Since there are only patches for
-> ext4, I choose to make the test around it, since there wouldn't be much
-> to do with other file systems.  The second challenge is how we cause the
-> file system errors, since there is no error injection for ext4 in Linux.
-> In this series, this is done by corrupting specific data in the
-> test device with the help of debugfs.
->
-> The FAN_FS_ERROR feature is flying around linux-ext4 and fsdevel, and
-> the latest version is available on the branch below:
->
->     https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-v9
->
-> A proper manpage description is also available on the respective mailing
-> list, or in the branch below:
->
->     https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
->
-> Please, let me know your thoughts.
->
+Signed-off-by: tangmeng <tangmeng@uniontech.com>
+---
+ testcases/kernel/syscalls/fchmod/fchmod03.c | 165 +++++---------------
+ 1 file changed, 36 insertions(+), 129 deletions(-)
 
-Gabriel,
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod03.c b/testcases/kernel/syscalls/fchmod/fchmod03.c
+index a5824f36b..8ebfc2536 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod03.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod03.c
+@@ -1,155 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
 
-Can you please push these v4 patches to your gitlab tree?
+-/*
+- * Test Name: fchmod03
++/*\
++ * [Description]
+  *
+- * Test Description:
+- *  Verify that, fchmod(2) will succeed to change the mode of a file
+- *  and set the sticky bit on it if invoked by non-root (uid != 0)
+- *  process with the following constraints,
++ * Verify that, fchmod(2) will succeed to change the mode of a file
++ * and set the sticky bit on it if invoked by non-root (uid != 0)
++ * process with the following constraints,
+  *	- the process is the owner of the file.
+  *	- the effective group ID or one of the supplementary group ID's of the
+  *	  process is equal to the group ID of the file.
+- *
+- * Expected Result:
+- *  fchmod() should return value 0 on success and succeeds to change
+- *  the mode of specified file, sets sticky bit on it.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory created.
+- *
+- * Usage:  <for command-line>
+- *  fchmod03 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS:
+- *  This test should be run by 'non-super-user' only.
+- *
+  */
 
-Thanks,
-Amir.
+-#include <stdio.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+ #include <pwd.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
+ #include "fchmod.h"
++#include "tst_test.h"
+
+ int fd;				/* file descriptor for test file */
+-char *TCID = "fchmod03";
+-int TST_TOTAL = 1;
+-
+ char nobody_uid[] = "nobody";
+ struct passwd *ltpuser;
+
+-void setup();			/* Main setup function for the test */
+-void cleanup();			/* Main cleanup function for the test */
+-
+-int main(int ac, char **av)
++static void verify_fchmod(void)
+ {
+ 	struct stat stat_buf;	/* stat struct. */
+-	int lc;
+ 	mode_t file_mode;	/* mode permissions set on testfile */
+
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	TST_EXP_PASS_SILENT(fchmod(fd, PERMS));
+
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(fchmod(fd, PERMS));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "fchmod failed");
+-			continue;
+-		}
+-		/*
+-		 * Get the file information using
+-		 * fstat(2).
+-		 */
+-		if (fstat(fd, &stat_buf) == -1)
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "fstat failed");
+-		file_mode = stat_buf.st_mode;
+-
+-		/* Verify STICKY BIT set on testfile */
+-		if ((file_mode & PERMS) != PERMS)
+-			tst_resm(TFAIL, "%s: Incorrect modes 0%3o, "
+-				 "Expected 0777", TESTFILE, file_mode);
+-		else
+-			tst_resm(TPASS, "Functionality of fchmod(%d, "
+-				 "%#o) successful", fd, PERMS);
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	/*
++	 * Get the file information using
++	 * fstat(2).
++	 */
++	if (fstat(fd, &stat_buf) == -1)
++		tst_brk(TFAIL | TERRNO, "fstat failed");
++	file_mode = stat_buf.st_mode;
++
++	/* Verify STICKY BIT set on testfile */
++	if ((file_mode & PERMS) != PERMS)
++		tst_res(TFAIL, "%s: Incorrect modes 0%3o, "
++			 "Expected 0777", TESTFILE, file_mode);
++	else
++		tst_res(TPASS, "Functionality of fchmod(%d, "
++			 "%#o) successful", fd, PERMS);
+ }
+
+ void setup(void)
+ {
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	tst_require_root();
+-
+ 	ltpuser = getpwnam(nobody_uid);
+-	if (ltpuser == NULL)
+-		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
+-	SAFE_SETEUID(NULL, ltpuser->pw_uid);
+-
+-	TEST_PAUSE;
+
+-	tst_tmpdir();
++	if (ltpuser == NULL)
++		tst_brk(TBROK | TERRNO, "getpwnam failed");
++	SAFE_SETEUID(ltpuser->pw_uid);
+
+ 	/*
+ 	 * Create a test file under temporary directory with specified
+@@ -157,14 +60,18 @@ void setup(void)
+ 	 * uid/gid of guest user.
+ 	 */
+ 	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
++		tst_brk(TBROK | TERRNO, "open failed");
+ }
+
+ void cleanup(void)
+ {
+ 	if (close(fd) == -1)
+-		tst_resm(TWARN | TERRNO, "close failed");
+-
+-	tst_rmdir();
+-
++		tst_res(TWARN | TERRNO, "close failed");
+ }
++
++static struct tst_test test = {
++	.test_all = verify_fchmod,
++	.setup = setup,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
+--
+2.20.1
+
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
