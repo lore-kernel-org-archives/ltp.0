@@ -2,74 +2,70 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4777C433F5
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:39:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E4BC433EF
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:48:54 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEC1D60F14
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:39:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEC1D60F14
+	by mail.kernel.org (Postfix) with ESMTPS id A2AFF6102A
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 05:48:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2AFF6102A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06CF83C89AE
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 06:39:11 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 226E93C89A0
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 06:48:51 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E20EE3C2E5C
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:39:01 +0100 (CET)
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com
- [IPv6:2607:f8b0:4864:20::12a])
+ by picard.linux.it (Postfix) with ESMTPS id 9F8333C2E5C
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:48:41 +0100 (CET)
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com
+ [IPv6:2607:f8b0:4864:20::132])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 80D8E600BEB
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:38:54 +0100 (CET)
-Received: by mail-il1-x12a.google.com with SMTP id l19so9199278ilk.0
- for <ltp@lists.linux.it>; Thu, 18 Nov 2021 21:38:54 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DE3FE6013F3
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 06:48:40 +0100 (CET)
+Received: by mail-il1-x132.google.com with SMTP id e8so9160199ilu.9
+ for <ltp@lists.linux.it>; Thu, 18 Nov 2021 21:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=f2aHJUlff+sHT0KB89Ar0wCxeN5RNH8wkzpd87A4xsk=;
- b=oAlT9paDS24Qy4Yiyrpr8LzhBDDyY6nuFPfoE5WZFi0CNco6Z0RyOAi/YjJZH6eLIv
- 3Ztra06Kmrw2Sxn0fXMfJ7gJIFeTN3Ftacz2Uk0/yiQayzlqpvalFSQwDcIgLP5t1kay
- 3syKNEWkQ+dkRBSPNJqHKYProaLHYWN0YbCNld2+Oc3QLDPL9IiB+vZHVt/71sz1Zaup
- nhJZxWzbLqliECWS8PLsBTIL2hf63nt21oS6vN74Cm2DV8DV6B2jbo1SRgOj5mCwmKl4
- aQa96+CMiBrp9ev6tWAoxD2XT6oKoegT14sB5S4GQKI9QamhdCPmu9GmeJw7u9pqJofQ
- 6WzQ==
+ :cc; bh=h2UaBAPk9+dX1nyaB3MzZPqLop0ttm08MjzVxvsPoZA=;
+ b=UDyTUk11/a32o2RNnkegM+/PGeKx0rK+ZiY4hQ1KmX5J/NBWSK/ixBAe+8Op5lG3/m
+ LWn0GK6/75QAo6QYXIZlF7HNwgE2gbXFwEJFfaL7f1zcntzCn44nYa6f/eKIWEfcmzSI
+ F7XdOSzMZSl+cPTAkfW+38ia8PXRI6j8VoS4l4tLzMLHxWbXtOoytRIkFNyj2qFVMGUX
+ 9mg+haQO09LNcvDHvHZaNWYT8cVGJG6w3mfCbepCEPxYzVClHyLUV5Sq1e0+80akYkh5
+ msyRyFk7vJ43a775F+9RCbg0WgrMJoafoBWwYPSl7cS0aYmHbU7eEp+ZEBe1dNH+8ggO
+ xJpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=f2aHJUlff+sHT0KB89Ar0wCxeN5RNH8wkzpd87A4xsk=;
- b=BomSFdX7o23PxV8BNtvoSqauDFcciWWofPU4vx8KyyDsTLvivReW+Ormbneug3kJa8
- cEGtA2renRMg8jddy+v6NtDPUKitE3btV99/TBUNziWPp2GsE+lNIV3AZlDA/Fl+uj5U
- 02WamVAJen4P3wDCsY4tdJo8T+8QLl7fEiJaTEnIMBy7RkSjARtgxosUx6j3T5uLC74l
- 2bVVTTYZkgKvoYxFFxKIAIt3TGuS8PzKmmnPRQCR6Eb3zhNL4IGMtU/KFajxCJ9bFSaq
- frBfZDT7TNcGULE3tpqUmD/1rigfs/4ThZ1orNcycC9iAz9h1gyXa3VmhCyyw0eHW/EN
- hXag==
-X-Gm-Message-State: AOAM533W79lV7hOmvvt2hajVZ1AYu63UTEviOTMrkGGgGhVlblxHrmOk
- ykgGfyMkXdmd+S7bW99fquLdqldt852fmptkDN0=
-X-Google-Smtp-Source: ABdhPJyge6d8ROjZzxsBZyUPkRoblSllQwMAlbWsZDPUJx4cTNGX4/IFYezj1zcs6kCpZ2H+j9hO+ryU6FblamVSbKo=
-X-Received: by 2002:a05:6e02:c87:: with SMTP id
- b7mr3301518ile.198.1637300333243; 
- Thu, 18 Nov 2021 21:38:53 -0800 (PST)
+ bh=h2UaBAPk9+dX1nyaB3MzZPqLop0ttm08MjzVxvsPoZA=;
+ b=kOnTxuZtmVm+dLxvsos7G2WPnLMCaYTiG5sTy8q0kXZFlpDYfx6hHQyZ3H6PwSbUxI
+ NHCCHYIw3/dygQa9q9cxuXjWYJ68SaGaZIfKWYQKF0NelgRgXIo2oqpg5t30nMd/kB1M
+ g1Pr+kP3OV4v5YRpRDFHSZrrL24prY5YSTB5OqrmsPT1iaVkX6VDGGdvNDomeU2DFs6V
+ ca445bcUzeDSNfIqRJCB0ajLZtGmyk6sf3hbrpMR8FA0iTHVgPBVg4Jpn3+C1QjBYZSP
+ sJbbyUdy+xhxVQE0kSg9W/WcO9+6ia23M8eJTnHWWQa5iD0X/84YLZSSh1ovGXMsO+7P
+ CJJw==
+X-Gm-Message-State: AOAM532rq8r1+rZAsXS8YbJqt10VztUV++ML14sbI8Y4fgTgSstkIHiX
+ 8ICpiTpIDiIZYdvIAEUepuG2P43dCg3IMfUOKNQ0f99U59M=
+X-Google-Smtp-Source: ABdhPJw5DB8Y5GvFIbCY2VAUIdCUWYCzlqHFJthiqOrHqHNRz3pUwlq8nhvrhLT0/dgiYnXDQrcBtATNXhegN6UflvI=
+X-Received: by 2002:a05:6e02:1ba6:: with SMTP id
+ n6mr3196265ili.254.1637300919715; 
+ Thu, 18 Nov 2021 21:48:39 -0800 (PST)
 MIME-Version: 1.0
 References: <20211118235744.802584-1-krisman@collabora.com>
- <20211118235744.802584-5-krisman@collabora.com>
-In-Reply-To: <20211118235744.802584-5-krisman@collabora.com>
+In-Reply-To: <20211118235744.802584-1-krisman@collabora.com>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 19 Nov 2021 07:38:42 +0200
-Message-ID: <CAOQ4uxjk8J48ASw2yJhd-OR2LVN6kirg7p6xQbX=xEofGYUghw@mail.gmail.com>
-To: Gabriel Krisman Bertazi <krisman@collabora.com>,
- Petr Vorel <pvorel@suse.cz>, Matthew Bobrowski <repnop@google.com>
+Date: Fri, 19 Nov 2021 07:48:29 +0200
+Message-ID: <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 4/9] syscalls/fanotify22: Validate the generic
- error info
+Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,53 +77,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
- LTP List <ltp@lists.linux.it>, Khazhismel Kumykov <khazhy@google.com>,
- Jan Kara <jack@suse.com>
+Cc: kernel@collabora.com, Matthew Bobrowski <repnop@google.com>,
+ Khazhismel Kumykov <khazhy@google.com>, Jan Kara <jack@suse.com>,
+ Ext4 <linux-ext4@vger.kernel.org>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Nov 19, 2021 at 1:58 AM Gabriel Krisman Bertazi
+On Fri, Nov 19, 2021 at 1:57 AM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Implement some validation for the generic error info record emitted by
-> the kernel.  The error number is fs-specific but, well, we only support
-> ext4 for now anyway.
+> Hi,
 >
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> FAN_FS_ERROR was merged into Linus tree, and the PIDFD testcases reached
+> LTP.  Therefore, I'm sending a new version of the FAN_FS_ERROR LTP
+> tests.  This is the v4 of this patchset, and it applies the feedback of
+> the previous version.
+>
+> Thanks,
 >
 > ---
-> Changes since v2:
->   - check for error record type in autotools (Amir)
-> Changes since v1:
->   - Move defines to header file.
-> ---
->  configure.ac                                  |  3 +-
->  testcases/kernel/syscalls/fanotify/fanotify.h | 32 ++++++++++++++++
->  .../kernel/syscalls/fanotify/fanotify22.c     | 37 ++++++++++++++++++-
->  3 files changed, 70 insertions(+), 2 deletions(-)
 >
-> diff --git a/configure.ac b/configure.ac
-> index 859aa9857021..a9dc2524966d 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -160,7 +160,8 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
->  AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
->  AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
->  AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
-> -AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
-> +AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_header,
-> +               struct fanotify_event_info_error],[],[],[#include <sys/fanotify.h>])
+> Original cover letter:
+>
+> FAN_FS_ERROR is a new (still unmerged) fanotify event to monitor
+> fileystem errors.  This patchset introduces a new LTP test for this
+> feature.
+>
+> Testing file system errors is slightly tricky, in particular because
+> they are mostly file system dependent.  Since there are only patches for
+> ext4, I choose to make the test around it, since there wouldn't be much
+> to do with other file systems.  The second challenge is how we cause the
+> file system errors, since there is no error injection for ext4 in Linux.
+> In this series, this is done by corrupting specific data in the
+> test device with the help of debugfs.
+>
+> The FAN_FS_ERROR feature is flying around linux-ext4 and fsdevel, and
+> the latest version is available on the branch below:
+>
+>     https://gitlab.collabora.com/krisman/linux -b fanotify-notifications-v9
+>
+> A proper manpage description is also available on the respective mailing
+> list, or in the branch below:
+>
+>     https://gitlab.collabora.com/krisman/man-pages.git -b fan-fs-error
+>
+> Please, let me know your thoughts.
+>
 
-Doh! it seems like fanotify_event_info_pidfd was dropped between v2 ->
-v3 in Matthew's patches.
+Gabriel,
 
-Petr,
-
-Can you please fix this.
+Can you please push these v4 patches to your gitlab tree?
 
 Thanks,
 Amir.
