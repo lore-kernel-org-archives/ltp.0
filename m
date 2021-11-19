@@ -2,66 +2,72 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA658C433EF
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 13:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C552C433EF
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 13:52:20 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5193261A55
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 13:12:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5193261A55
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4B78A61547
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 13:52:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B78A61547
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CEA33C8B37
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 14:12:03 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B588A3C8BB8
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 14:52:16 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 32BC43C7022
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 14:11:54 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 6D87C3C1DFA
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 14:52:07 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6E7E6600669
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 14:11:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1637327511;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 397CF1A003D2
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 14:52:05 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5641C1FD3E;
+ Fri, 19 Nov 2021 13:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1637329925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z/t4GRNlaUqlSsq07oNubb7fHlnJ6p2B0osWxK36qtk=;
- b=KTFYqmkhJowt/5zPKNGqUAECFYO4wOa7ReEG1l1IDYnCb5LSKQ7Ie4U1/NVxS1o7V9cdRV
- kK5tRqn+8sGl2YluDmXyZEn0SUftbSx0Qeu9iAYU6b/e7hsikcaA0a9uvZydL0THuotiaV
- VGS2MuHVkORxFG5S4i+RD/v8y6mC24U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-585-AJ4f2BX1PPaLdqYwx2gZmA-1; Fri, 19 Nov 2021 08:11:48 -0500
-X-MC-Unique: AJ4f2BX1PPaLdqYwx2gZmA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ bh=HB6UkC/m3Jhk4g15wkmgoM5cRL/6/CfVL9JQXqwekx0=;
+ b=v5hP+oeYFKnDrjcewqtMjcMsjrUYzueHaN11r7c6Q9Vj/fU25rUusLbzS+JlJwN5GDfkwM
+ K8TWsQgEFDOp6YxSJ5CmXk1bjUDBRLis4XA5/xZy9py27/hIhMDUawUZhCqZZBbPXRkhP7
+ P/VNtdX2AFTipqYe9jozmcO8DTSPLlA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1637329925;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=HB6UkC/m3Jhk4g15wkmgoM5cRL/6/CfVL9JQXqwekx0=;
+ b=sZoOGTeYkWKgeu4QUeKM0Lkrs86DkG8/FWc3x1JdL2tyDikWc2RA+Fohk6uvsu7yiC6tDV
+ gsVHvvcvRVQC4KAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FFAA84F209;
- Fri, 19 Nov 2021 13:11:47 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.131])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id C472660BF1;
- Fri, 19 Nov 2021 13:11:45 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <YZearmiVEw9/eor9@yuki>
-Date: Fri, 19 Nov 2021 14:11:43 +0100
-In-Reply-To: <YZearmiVEw9/eor9@yuki> (Cyril Hrubis's message of "Fri, 19 Nov
- 2021 13:38:06 +0100")
-Message-ID: <877dd4cmsw.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42BB513B40;
+ Fri, 19 Nov 2021 13:52:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id MxIJDwWsl2HqcAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 19 Nov 2021 13:52:05 +0000
+Date: Fri, 19 Nov 2021 14:53:10 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Florian Weimer <fweimer@redhat.com>
+Message-ID: <YZesRs3/tyZY12BN@yuki>
+References: <YZearmiVEw9/eor9@yuki> <877dd4cmsw.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <877dd4cmsw.fsf@oldenburg.str.redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] asm-generic/int-ll64.h wrongly used on x86_64?
 X-BeenThere: ltp@lists.linux.it
@@ -81,32 +87,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-* Cyril Hrubis:
+Hi!
+> The correct format depends on whether you use struct statx from the
+> glibc headers or the Linux UAPI headers.  glibc uses uint64_t, Linux
+> uses __u64.  uint64_t in glibc prefers unsigned long if the type is
+> 64-bit, Linux uses unsigned long long unconditionally.
+> 
+> One solution is to use %ju and cast to (uintmax_t).  Other cast-based
+> approaches are possible as well.
+> 
+> I'm not happy with the situation because those casts reduce type safety
+> and may suppress relevant compiler warnings.
 
-> Hi!
-> I was writing simple userspace code that prints the values from the
-> struct statx the line in question looks like:
->
-> 	printf("%" PRIu64 "\n", st.stx_size);
->
-> This unexpectedly gives me warning on x86_64:
->
-> warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type '__u64' {aka 'long long unsigned int'}
+I still do not get why can't the kernel __u64 match the uint64_t at
+least in userspace. It should be as easy as:
 
-The correct format depends on whether you use struct statx from the
-glibc headers or the Linux UAPI headers.  glibc uses uint64_t, Linux
-uses __u64.  uint64_t in glibc prefers unsigned long if the type is
-64-bit, Linux uses unsigned long long unconditionally.
+diff --git a/include/uapi/asm-generic/types.h b/include/uapi/asm-generic/types.h
+index dfaa50d99d8f..3c9a1fc5d5c3 100644
+--- a/include/uapi/asm-generic/types.h
++++ b/include/uapi/asm-generic/types.h
+@@ -2,8 +2,12 @@
+ #ifndef _ASM_GENERIC_TYPES_H
+ #define _ASM_GENERIC_TYPES_H
+ /*
+- * int-ll64 is used everywhere now.
++ * int-ll64 is used everywhere in kernel now.
+  */
+-#include <asm-generic/int-ll64.h>
++#if __BITS_PER_LONG == 64 && !__KERNEL__
++# include <asm-generic/int-l64.h>
++#else
++# include <asm-generic/int-ll64.h>
++#if
 
-One solution is to use %ju and cast to (uintmax_t).  Other cast-based
-approaches are possible as well.
+ #endif /* _ASM_GENERIC_TYPES_H */
 
-I'm not happy with the situation because those casts reduce type safety
-and may suppress relevant compiler warnings.
 
-Thanks,
-Florian
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
