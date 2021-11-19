@@ -2,54 +2,57 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39A28C433FE
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FEB5C433F5
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:20 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2A1061B04
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2A1061B04
+	by mail.kernel.org (Postfix) with ESMTPS id 98C5A61AFD
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 98C5A61AFD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 80AE63C8989
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:17:06 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5F8463C89B4
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:17:18 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A96743C7A4A
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:16:55 +0100 (CET)
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+ by picard.linux.it (Postfix) with ESMTPS id 999323C7A4A
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:16:56 +0100 (CET)
+Received: from smtpbg511.qq.com (smtpbg511.qq.com [203.205.250.109])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1BD692011E0
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:16:51 +0100 (CET)
-X-QQ-mid: bizesmtp50t1637306205tod69nxq
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 48D8D6008A6
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:16:53 +0100 (CET)
+X-QQ-mid: bizesmtp50t1637306208tsrghb9n
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by esmtp6.qq.com (ESMTP) with 
- id ; Fri, 19 Nov 2021 15:16:39 +0800 (CST)
+ id ; Fri, 19 Nov 2021 15:16:46 +0800 (CST)
 X-QQ-SSF: 0140000000200050D000000D0000000
-X-QQ-FEAT: Mzskoac49OgoSdswGab5sSZilUiAV/+Z7PgUfELOaywPtYmSebsCROLK4ZwVx
- DPE3ArnuCL4AklmOdE2/W7AaBNd1hHfTm+6LbqnLlFi4F0sfKGkixqW8LaYLycpgZDqQe0U
- 6V2BVwlWfeOB2vGvMzDdiLUjRPrphOS1qFiL11+r+X1sQi/NLbczqgDW54vvxMUgjqCrDTY
- 8MFbA2Rx+Jy4PmjXa9eqF5Ar5b1OZJCmLgh5QFoST7jI4HMXkfkyTzVK+/Q9eXhLIUtLTi7
- TotE+UON0zXGI1OTP6Fe9aw6psmYT1OyTauLAD0Vyw4ZPq2KAjgkH5AjgpZKdUtO8KhFa5k
- p35ac55/LgRsCzWsmNXy5lU/qvj0ApcyvL18MxX
+X-QQ-FEAT: vplKx+OOQC1BrbCHVuxCg3DC6Iwlvf9SRPV/uxDQc7Uhn1RxcRgRbIDnLPxSJ
+ rYZLx3k2gr0zCz5LyilC0gCjxbvoOZQKI4j4MjXKcNOdhqhFxD5Le8PHBtiLmgfIJY2Sas1
+ 3S3IZtV3n5/TNS+cBTgciGZcpZcIxutvhfHNpSHqz3vfe6RTs62YSJ2OybqStpgQLg7wOOU
+ Kifns4sDoKnFyB8xC8XnzMf2uokia7zaew+DxXi1OGa/XcWfaqs4kCpbO/nWkWYJ4+oKkiq
+ h0+F9IiatNyYcFP72VhACuTzSu21kCu3W6h7G1YiFPElDX1/R7cHAbDiZpcUkTDNhz5DCJC
+ 3ftXKgPJXz67bt9A5T+x8Bfj9E+9A==
 X-QQ-GoodBg: 2
 From: tangmeng <tangmeng@uniontech.com>
 To: ltp@lists.linux.it
-Date: Fri, 19 Nov 2021 15:16:36 +0800
-Message-Id: <20211119071637.19635-1-tangmeng@uniontech.com>
+Date: Fri, 19 Nov 2021 15:16:37 +0800
+Message-Id: <20211119071637.19635-2-tangmeng@uniontech.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211119071637.19635-1-tangmeng@uniontech.com>
+References: <20211119071637.19635-1-tangmeng@uniontech.com>
 MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
 X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] syscalls/fchmod_03: Convert to new API
+Subject: [LTP] [PATCH 2/2] syscalls/fchmod_04: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,15 +72,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: tangmeng <tangmeng@uniontech.com>
 ---
- testcases/kernel/syscalls/fchmod/fchmod03.c | 165 +++++---------------
- 1 file changed, 36 insertions(+), 129 deletions(-)
+ testcases/kernel/syscalls/fchmod/fchmod04.c | 185 +++++---------------
+ 1 file changed, 39 insertions(+), 146 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod03.c b/testcases/kernel/syscalls/fchmod/fchmod03.c
-index a5824f36b..8ebfc2536 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod03.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod03.c
-@@ -1,155 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod04.c b/testcases/kernel/syscalls/fchmod/fchmod04.c
+index befaadb35..1d84b4424 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod04.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod04.c
+@@ -1,190 +1,83 @@
  /*
 - *
   *   Copyright (c) International Business Machines  Corp., 2001
@@ -98,24 +100,24 @@ index a5824f36b..8ebfc2536 100644
   */
 
 -/*
-- * Test Name: fchmod03
+- * Test Name: fchmod04
 +/*\
 + * [Description]
   *
 - * Test Description:
-- *  Verify that, fchmod(2) will succeed to change the mode of a file
-- *  and set the sticky bit on it if invoked by non-root (uid != 0)
-- *  process with the following constraints,
-+ * Verify that, fchmod(2) will succeed to change the mode of a file
-+ * and set the sticky bit on it if invoked by non-root (uid != 0)
-+ * process with the following constraints,
-  *	- the process is the owner of the file.
+- *  Verify that, fchmod(2) will succeed to change the mode of a directory
+- *  and set the sticky bit on it if invoked by non-root (uid != 0) process
+- *  with the following constraints,
++ * Verify that, fchmod(2) will succeed to change the mode of a directory
++ * and set the sticky bit on it if invoked by non-root (uid != 0) process
++ * with the following constraints,
+  *	- the process is the owner of the directory.
   *	- the effective group ID or one of the supplementary group ID's of the
-  *	  process is equal to the group ID of the file.
+  *	  process is equal to the group ID of the directory.
 - *
 - * Expected Result:
-- *  fchmod() should return value 0 on success and succeeds to change
-- *  the mode of specified file, sets sticky bit on it.
+- *  fchmod() should return value 0 on success and succeeds to set sticky bit
+- *  on the specified directory.
 - *
 - * Algorithm:
 - *  Setup:
@@ -139,7 +141,7 @@ index a5824f36b..8ebfc2536 100644
 - *   Delete the temporary directory created.
 - *
 - * Usage:  <for command-line>
-- *  fchmod03 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  fchmod04 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -f   : Turn off functionality Testing.
 - *	       -i n : Execute test n times.
@@ -166,120 +168,144 @@ index a5824f36b..8ebfc2536 100644
 -
 -#include "test.h"
 -#include "safe_macros.h"
++#include <stdio.h>
  #include "fchmod.h"
 +#include "tst_test.h"
 
- int fd;				/* file descriptor for test file */
--char *TCID = "fchmod03";
+ int fd;				/* file descriptor for test directory */
+-char *TCID = "fchmod04";
 -int TST_TOTAL = 1;
 -
  char nobody_uid[] = "nobody";
  struct passwd *ltpuser;
 
--void setup();			/* Main setup function for the test */
--void cleanup();			/* Main cleanup function for the test */
+-void setup();
+-void cleanup();
 -
 -int main(int ac, char **av)
 +static void verify_fchmod(void)
  {
  	struct stat stat_buf;	/* stat struct. */
 -	int lc;
- 	mode_t file_mode;	/* mode permissions set on testfile */
+ 	mode_t dir_mode;	/* mode permissions set on testdirectory */
 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
-+	TST_EXP_PASS_SILENT(fchmod(fd, PERMS));
-
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
+-		/*
+-		 * Call fchmod(2) with mode argument to
+-		 * set sticky bit on TESTDIR
+-		 */
 -		TEST(fchmod(fd, PERMS));
 -
 -		if (TEST_RETURN == -1) {
 -			tst_resm(TFAIL | TTERRNO, "fchmod failed");
 -			continue;
 -		}
--		/*
--		 * Get the file information using
--		 * fstat(2).
--		 */
 -		if (fstat(fd, &stat_buf) == -1)
 -			tst_brkm(TFAIL | TERRNO, cleanup,
 -				 "fstat failed");
--		file_mode = stat_buf.st_mode;
+-		dir_mode = stat_buf.st_mode;
 -
--		/* Verify STICKY BIT set on testfile */
--		if ((file_mode & PERMS) != PERMS)
--			tst_resm(TFAIL, "%s: Incorrect modes 0%3o, "
--				 "Expected 0777", TESTFILE, file_mode);
--		else
+-		if ((dir_mode & PERMS) == PERMS)
 -			tst_resm(TPASS, "Functionality of fchmod(%d, "
 -				 "%#o) successful", fd, PERMS);
+-		else
+-			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+-				 "Expected 0%03o",
+-				 TESTDIR, dir_mode, PERMS);
 -	}
 -
 -	cleanup();
 -	tst_exit();
 +	/*
-+	 * Get the file information using
-+	 * fstat(2).
++	 * Call fchmod(2) with mode argument to
++	 * set sticky bit on TESTDIR
 +	 */
++	TST_EXP_PASS_SILENT(fchmod(fd, PERMS));
++
 +	if (fstat(fd, &stat_buf) == -1)
 +		tst_brk(TFAIL | TERRNO, "fstat failed");
-+	file_mode = stat_buf.st_mode;
++	dir_mode = stat_buf.st_mode;
 +
-+	/* Verify STICKY BIT set on testfile */
-+	if ((file_mode & PERMS) != PERMS)
-+		tst_res(TFAIL, "%s: Incorrect modes 0%3o, "
-+			 "Expected 0777", TESTFILE, file_mode);
-+	else
++	if ((dir_mode & PERMS) == PERMS)
 +		tst_res(TPASS, "Functionality of fchmod(%d, "
 +			 "%#o) successful", fd, PERMS);
++	else
++		tst_res(TFAIL, "%s: Incorrect modes 0%03o, "
++			 "Expected 0%03o",
++			 TESTDIR, dir_mode, PERMS);
  }
 
- void setup(void)
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *  Create a temporary directory and cd to it.
+- *  Create another test directory under temporary directory.
+- *  Open the test directory for reading.
+- */
+-void setup(void)
++static void setup(void)
  {
+-	tst_require_root();
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
--	tst_require_root();
--
+ 	/* Switch to nobody user for correct error code collection */
  	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--	SAFE_SETEUID(NULL, ltpuser->pw_uid);
--
+ 	if (seteuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "seteuid failed to "
++		tst_res(TINFO, "seteuid failed to "
+ 			 "to set the effective uid to %d", ltpuser->pw_uid);
+ 		perror("seteuid");
+ 	}
+
 -	TEST_PAUSE;
-
+-
 -	tst_tmpdir();
-+	if (ltpuser == NULL)
-+		tst_brk(TBROK | TERRNO, "getpwnam failed");
-+	SAFE_SETEUID(ltpuser->pw_uid);
-
+-
  	/*
- 	 * Create a test file under temporary directory with specified
-@@ -157,14 +60,18 @@ void setup(void)
- 	 * uid/gid of guest user.
+ 	 * Create a test directory under temporary directory with specified
+ 	 * mode permissios and open it for reading/writing.
  	 */
- 	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
-+		tst_brk(TBROK | TERRNO, "open failed");
+-	SAFE_MKDIR(cleanup, TESTDIR, DIR_MODE);
++	SAFE_MKDIR(TESTDIR, DIR_MODE);
+ 	if ((fd = open(TESTDIR, O_RDONLY)) == -1) {
+-		tst_brkm(TBROK, cleanup,
++		tst_brk(TBROK,
+ 			 "open(%s, O_RDONLY) failed, errno=%d : %s",
+ 			 TESTDIR, errno, strerror(errno));
+ 	}
  }
 
- void cleanup(void)
+-/*
+- * void
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- *  Close the test directory opened during setup().
+- *  Remove the test directory and temporary directory created in setup().
+- */
+-void cleanup(void)
++static void cleanup(void)
  {
- 	if (close(fd) == -1)
--		tst_resm(TWARN | TERRNO, "close failed");
+-
+ 	/* Close the test directory opened during setup() */
+-	SAFE_CLOSE(NULL, fd);
 -
 -	tst_rmdir();
 -
-+		tst_res(TWARN | TERRNO, "close failed");
++	SAFE_CLOSE(fd);
  }
 +
 +static struct tst_test test = {
 +	.test_all = verify_fchmod,
 +	.setup = setup,
++	.cleanup = cleanup,
 +	.needs_tmpdir = 1,
 +	.needs_root = 1,
 +};
