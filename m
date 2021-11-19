@@ -2,54 +2,50 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7228FC433F5
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20B9BC433EF
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:46:28 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0F6F61AFB
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:17:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F0F6F61AFB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3D08661108
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:46:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D08661108
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 538193C891E
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:17:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 614303C89AD
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:46:25 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3DD5F3C7A4A
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:17:42 +0100 (CET)
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 801293C7A4A
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:14 +0100 (CET)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0F6B4600F67
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:17:38 +0100 (CET)
-X-QQ-mid: bizesmtp48t1637306253tde78x4d
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by esmtp6.qq.com (ESMTP) with 
- id ; Fri, 19 Nov 2021 15:17:24 +0800 (CST)
-X-QQ-SSF: 0140000000200050D000000D0000000
-X-QQ-FEAT: a4niRxydalGRtqbuxcfvzW3/PDzOsamnTg1Dyl/DmXZF3vkDR2SNKBbPyCh5K
- lL/gw02XgGksPzqbf7hq51lBaZOE/FsjM7xkXlqHUvPXrhR3C2ynizrxnYeWxm1mJMqKlaf
- 3YqR+XLwzom1nR/2Uf2Xf5qIP8J+bhhgJKYYjCNe4E8dJwe8P4slgbi8ZxKF+Atkzfj3Loe
- QHVVDzf2gLck5bTdnF9ZxLXspxYOTJGTl+EDgFQW4+L1N1ONACVYWMDEP/HkTy/EsOC86YU
- 5/9IslhgCjGVkZCvDAHOWewhcr3NKr6hsHxOZZYC1n1mOJMl/blbckY+eCGSP7PTJfpzU5+
- vTZI1qdufBvfqg1EJJ1nKVd/oYmXtHyrqCWlxXQ
-X-QQ-GoodBg: 2
-From: tangmeng <tangmeng@uniontech.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 029CB60043D
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:13 +0100 (CET)
+Received: from ubuntu.localdomain (unknown [188.195.115.12])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 8B4C49F6A0
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 07:46:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1637307968; bh=Dsy5dA8HC+767TpHni/vDwLjelNslKVZi4BlKXF7l+c=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=e3g9d8JBIyP44SRRQHjvv01gF7C98pzRHUZNRUPh34F566QRxYNkv6FynUdOX5LFE
+ Lqvgb3VzbKEmo8wa4PWuKxz/++sw0dY6TkX68mW852GwZCzkOItVbnAk1p//IDcl1i
+ muu+3b2QZRLAlVc7Qvb5VKLvFfezd9SdI25T7+X4=
+From: Joerg Vehlow <lkml@jv-coder.de>
 To: ltp@lists.linux.it
-Date: Fri, 19 Nov 2021 15:17:23 +0800
-Message-Id: <20211119071723.19836-1-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+Date: Fri, 19 Nov 2021 08:45:50 +0100
+Message-Id: <20211119074602.857595-1-lkml@jv-coder.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/fchmodat_01: Convert to new API
+Subject: [LTP] [Patch 00/12] Fix or suppress compiler warnings in
+ posix/conformance/interfaces
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,217 +57,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: tangmeng <tangmeng@uniontech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
----
- .../kernel/syscalls/fchmodat/fchmodat01.c     | 140 ++++++------------
- 1 file changed, 44 insertions(+), 96 deletions(-)
+Hi,
 
-diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-index 369f80eb2..555535174 100644
---- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-+++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-@@ -1,116 +1,59 @@
--/******************************************************************************
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2006
-  *
-- *   Copyright (c) International Business Machines  Corp., 2006
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-- * NAME
-- *      fchmodat01.c
-- *
-- * DESCRIPTION
-- *	This test case will verify basic function of fchmodat
-- *	added by kernel 2.6.16 or up.
-- *
-- * Author
-- *	Yi Yang <yyangcdl@cn.ibm.com>
-- *
-- * History
-- *      08/28/2006      Created first by Yi Yang <yyangcdl@cn.ibm.com>
-+ * 08/28/2006 AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- *****************************************************************************/
-+ * This test case will verify basic function of fchmodat.
-+ */
+this set of patches removed all compiler warnings (at least fog gcc10),
+for all tests in openposix/conformance/interfaces.
+I fixed some real issues in separate patches and a lot of similar problems
+in bulk patches.
+For two categories of warnings I used pragma diagnostic:
+ - nonnull: Two nonnull warnings are triggered, where the test is used
+   to explicitly test passing NULL. The only way to fix this warning, is
+   to supress it.
+ - unused-result for write in signal handlers: There is no good way,
+   to handle a failing write-call in a signal handler. Most of the time,
+   the test is exited anyway, so supressing the warning seems like the best fix.
 
- #define _GNU_SOURCE
+While these pragmas are gcc specific IIRC they also work for clang.
 
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <fcntl.h>
- #include <unistd.h>
--#include <stdlib.h>
--#include <errno.h>
- #include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
-
--#define TEST_CASES 6
- #ifndef AT_FDCWD
- #define AT_FDCWD -100
- #endif
--void setup();
--void cleanup();
-
--char *TCID = "fchmodat01";
--int TST_TOTAL = TEST_CASES;
- char pathname[256];
- char testfile[256];
- char testfile2[256];
- char testfile3[256];
--int fds[TEST_CASES];
--char *filenames[TEST_CASES];
--int expected_errno[TEST_CASES] = { 0, 0, ENOTDIR, EBADF, 0, 0 };
-+int expected_errno[6] = { 0, 0, ENOTDIR, EBADF, 0, 0 };
-+int fds[ARRAY_SIZE(expected_errno)];
-+char *filenames[ARRAY_SIZE(expected_errno)];
-
- int myfchmodat(int dirfd, const char *filename, mode_t mode)
- {
--	return ltp_syscall(__NR_fchmodat, dirfd, filename, mode);
-+	return tst_syscall(__NR_fchmodat, dirfd, filename, mode);
- }
-
--int main(int ac, char **av)
-+static void verify_fchmodat(unsigned int i)
- {
--	int lc;
--	int i;
--
--	/* Disable test if the version of the kernel is less than 2.6.16 */
--	if ((tst_kvercmp(2, 6, 16)) < 0) {
--		tst_resm(TWARN, "This test can only run on kernels that are ");
--		tst_resm(TWARN, "2.6.16 and higher");
--		exit(0);
--	}
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(myfchmodat(fds[i], filenames[i], 0600));
--
--			if (TEST_ERRNO == expected_errno[i]) {
--				tst_resm(TPASS,
--					 "fchmodat() returned the expected  errno %d: %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL,
--					 "fchmodat() Failed, errno=%d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--			}
--		}
-+	TEST(tst_syscall(__NR_fchmodat, fds[i], filenames[i], 0600));
-+
-+	if (TST_ERR == expected_errno[i]) {
-+		tst_res(TPASS,
-+			 "fchmodat() returned the expected  errno %d: %s",
-+			 TST_ERR, strerror(TST_ERR));
-+	} else {
-+		tst_res(TFAIL,
-+			 "fchmodat() Failed, errno=%d : %s",
-+			 TST_ERR, strerror(TST_ERR));
- 	}
--
--	cleanup();
--	tst_exit();
- }
-
--void setup(void)
-+static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_tmpdir();
--
- 	/* Initialize test dir and file names */
- 	char *abs_path = tst_get_tmpdir();
- 	int p = getpid();
-@@ -122,31 +65,36 @@ void setup(void)
-
- 	free(abs_path);
-
--	SAFE_MKDIR(cleanup, pathname, 0700);
-+	SAFE_MKDIR(pathname, 0700);
-
--	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
-+	fds[0] = SAFE_OPEN(pathname, O_DIRECTORY);
- 	fds[1] = fds[4] = fds[0];
-
--	SAFE_FILE_PRINTF(cleanup, testfile, "%s", testfile);
--	SAFE_FILE_PRINTF(cleanup, testfile2, "%s", testfile2);
-+	SAFE_FILE_PRINTF(testfile, "%s", testfile);
-+	SAFE_FILE_PRINTF(testfile2, "%s", testfile2);
-
--	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
-+	fds[2] = SAFE_OPEN(testfile3, O_CREAT | O_RDWR, 0600);
- 	fds[3] = 100;
- 	fds[5] = AT_FDCWD;
-
- 	filenames[0] = filenames[2] = filenames[3] = filenames[4] = testfile;
- 	filenames[1] = testfile2;
- 	filenames[5] = testfile3;
--
--	TEST_PAUSE;
- }
-
--void cleanup(void)
-+static void cleanup(void)
- {
- 	if (fds[0] > 0)
- 		close(fds[0]);
- 	if (fds[2] > 0)
- 		close(fds[2]);
--
--	tst_rmdir();
- }
-+
-+static struct tst_test test = {
-+	.min_kver = "2.6.16",
-+	.tcnt = ARRAY_SIZE(expected_errno),
-+	.test = verify_fchmodat,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
---
-2.20.1
-
+Joerg
 
 
 
