@@ -2,53 +2,97 @@ Return-Path: <SRS0=7Ptb=QG=lists.linux.it=ltp-bounces+ltp=archiver.kernel.org@ke
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BBE8C433F5
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48816C433F5
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:28:34 +0000 (UTC)
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81C2461B1E
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 07:48:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 81C2461B1E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jv-coder.de
+	by mail.kernel.org (Postfix) with ESMTPS id BC96261AD2
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:28:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC96261AD2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=fujitsu.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=lists.linux.it
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 420743C89AD
-	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 08:48:25 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 975363C87FE
+	for <ltp@archiver.kernel.org>; Fri, 19 Nov 2021 09:28:30 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3690F3C898B
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:23 +0100 (CET)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 1AFBD3C320C
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 09:28:19 +0100 (CET)
+Received: from mail1.bemta25.messagelabs.com (mail1.bemta25.messagelabs.com
+ [195.245.230.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C73862011DF
- for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:46:20 +0100 (CET)
-Received: from ubuntu.localdomain (unknown [188.195.115.12])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 9774B9F6A0;
- Fri, 19 Nov 2021 07:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1637307978; bh=xvfAN4IYgg+K6clV9HffYVabEwvmh6W1EDD5t/aXtYY=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=n4yiKN3uVhEKlaHdbZhRJEmAq4VdxQKG0n6RAdJB2xlPZ7SXPyl04v0+LXnko6e5q
- UarnpKvCetKLJcmPxrGidrdVEhHIrweFKLU6bpsDtytGFhmzD3PLbTyPTGqr7n1LFB
- k4NxwRS8JOqv6UBAIRvf4rpzoXQc+dE4e+GJzXsM=
-From: Joerg Vehlow <lkml@jv-coder.de>
-To: ltp@lists.linux.it
-Date: Fri, 19 Nov 2021 08:46:02 +0100
-Message-Id: <20211119074602.857595-13-lkml@jv-coder.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211119074602.857595-1-lkml@jv-coder.de>
-References: <20211119074602.857595-1-lkml@jv-coder.de>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EBBFE6013EA
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 09:28:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1637310497; i=@fujitsu.com;
+ bh=3zN04v7sbbyqfPQAAY+/XEfN0v15M2Up5s8lOI4kg0g=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type:
+ Content-Transfer-Encoding;
+ b=sBWGCHdicVsQeuzHKsiEyLxR7+sAFr96Qr+2ItePu18f3us48t+kYPqBwr9aZDbYF
+ QyyBpfUBUFeTTj/w0TIRaYVavvQIOaoKN/k9nXD0tCtYnkWkvabFSaOBOrCboP44Jh
+ qFTvsfYlQR9iaUJWyOvFtCnrQJP41ERLHdUTTjll3cKNqxOPtitjNim48rTSsHYlJT
+ Cq+nJhMvzfbQRqUODIU98un0LM9yQL7+rlPncHKtWm+YaPh9Vzoz+vCT7hv6b9oMj2
+ E+EurminVd9uo37cIZHf8CCdJDpH+8iXkCG+NgCxq/pee92rZErvPXIvYcYpxwP3bn
+ 0n2+bsEOHEGxw==
+Received: from [100.112.196.154] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-1.bemta.az-b.eu-west-1.aws.symcld.net id C2/A1-01873-12067916;
+ Fri, 19 Nov 2021 08:28:17 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRWlGSWpSXmKPExsViZ8ORqKuYMD3
+ R4O5ZHosV33cwOjB67Pu9jjWAMYo1My8pvyKBNePL11lsBdf4Kya+W8nUwHict4uRi0NI4Cyj
+ xIEPpxkhnJ1MEpuaGpkhnD2MEr+WvmbvYuTkYBPQlHjWuYAZxBYRkJDoaHgLFmcWUJdYPukXU
+ xcjB4ewgK/EiWtgYRYBVYlHKy+D2bwCnhJHbs4Ea5UQUJCY8vA9M0RcUOLkzCcsEGM0JVq3/4
+ YaKS/RvHU2VL2ixKWOb4wQdoXErFltTBC2msTVc5uYJzAKzEIyahaSUbOQjFrAyLyK0SKpKDM
+ 9oyQ3MTNH19DAQNfQ0EjX0NJC19DCTC+xSjdJL7VUtzy1uETXUC+xvFivuDI3OSdFLy+1ZBMj
+ MIBTCo7t2sH49vUHvUOMkhxMSqK8amHTE4X4kvJTKjMSizPii0pzUosPMcpwcChJ8NrFAuUEi
+ 1LTUyvSMnOA0QSTluDgURLh/Q2S5i0uSMwtzkyHSJ1iVJQS5zWJB0oIgCQySvPg2mARfIlRVk
+ qYl5GBgUGIpyC1KDezBFX+FaM4B6OSMMQUnsy8Erjpr4AWMwEtlr08GWRxSSJCSqqB6fCqNqf
+ f7fa7u9v7L50508lk8lIoa0b+79RI8+P9TExqNVnLHN8ktXF/Udj6YMpqLp/lDq/uqy4uMDU1
+ i7MX/rPb8cSWXbYzP/7aeT46uvEnQ5TU9JM/1wjL31aTbfdPrLA0v3aw1JaXwyQoYcvX+U13P
+ s6orSj+unzt9aZdkflHEgu5b0dNLHhoKL7fVLrOPj6L9U1yTG/0rguzS0Oe79DQ6NmZwdpvOm
+ Nll/Xp19WvbmqfPKwpIDU1+/O5KfcithzO3dt8Kf/fTrWN12ODPrOZtRnInYs7dofvhryrjLw
+ zw9VzazSOvvw2Za/DB/+syUdZvMO0hKQWvtF81/1oxe9Mu9uLGK5xe+pfv69vo8RSnJFoqMVc
+ VJwIAOTI33VbAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-21.tower-291.messagelabs.com!1637310496!189092!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.5; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 1921 invoked from network); 19 Nov 2021 08:28:17 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-21.tower-291.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 19 Nov 2021 08:28:17 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id AFD5C100242
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:28:16 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id A2546100232
+ for <ltp@lists.linux.it>; Fri, 19 Nov 2021 08:28:16 +0000 (GMT)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.26; Fri, 19 Nov 2021 08:28:06 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Fri, 19 Nov 2021 16:28:41 +0800
+Message-ID: <1637310522-19620-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 12/12] posix/interface/conformance: Fix/supress all
- unused-result warnings
+Subject: [LTP] [PATCH 1/2] syscalls/statx01: Fix compiler warning because of
+ PRIu64
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -60,1168 +104,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-
-The warnings for writes in signalhandlers can only be suppressed,
-there is no good way to handle an error there. In all other locations
-a failing function is printed and PTS_UNRESOLVED returned.
-
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
- .../conformance/interfaces/clock_getcpuclockid/5-1.c  | 10 ++++++++--
- .../conformance/interfaces/fork/7-1.c                 |  3 ++-
- .../conformance/interfaces/kill/2-2.c                 |  5 ++++-
- .../conformance/interfaces/kill/3-1.c                 |  5 ++++-
- .../conformance/interfaces/mmap/11-2.c                |  5 +++++
- .../conformance/interfaces/mmap/11-3.c                |  5 +++++
- .../conformance/interfaces/mmap/18-1.c                |  6 +++++-
- .../conformance/interfaces/mq_open/16-1.c             |  8 ++++++--
- .../conformance/interfaces/pthread_create/1-3.c       | 11 +++++++++--
- .../conformance/interfaces/sched_setparam/2-1.c       |  5 ++++-
- .../conformance/interfaces/sched_setparam/2-2.c       |  5 ++++-
- .../conformance/interfaces/sched_yield/1-1.c          |  9 ++++++---
- .../conformance/interfaces/shm_open/26-2.c            |  9 ++++++---
- .../conformance/interfaces/shm_unlink/8-1.c           |  3 ++-
- .../conformance/interfaces/shm_unlink/9-1.c           |  6 ++++--
- .../conformance/interfaces/sigaction/19-1.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-10.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-11.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-12.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-13.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-14.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-15.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-16.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-17.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-18.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-19.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-2.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-20.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-21.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-22.c          |  8 ++++++--
- .../conformance/interfaces/sigaction/19-23.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-24.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-25.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-26.c          |  9 +++++++--
- .../conformance/interfaces/sigaction/19-3.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-4.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-5.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-6.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-7.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-8.c           |  9 +++++++--
- .../conformance/interfaces/sigaction/19-9.c           |  9 +++++++--
- .../conformance/interfaces/sigaltstack/9-1.c          |  5 ++++-
- testcases/open_posix_testsuite/include/affinity.h     |  3 ++-
- 43 files changed, 261 insertions(+), 75 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c
-index 0046d5066..2e9961a19 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c
-@@ -35,8 +35,14 @@ int main(void)
- 
- 		pwd = getpwnam("nobody");
- 		if (pwd != NULL) {
--			setgid(pwd->pw_gid);
--			setuid(pwd->pw_uid);
-+			if (setgid(pwd->pw_gid)) {
-+				perror("setgid");
-+				return PTS_UNRESOLVED;
-+			}
-+			if (setuid(pwd->pw_uid)) {
-+				perror("setuid");
-+				return PTS_UNRESOLVED;
-+			}
- 		}
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
-index 9a0b148d9..46350b7f0 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
-@@ -157,7 +157,8 @@ int main(void)
- 	if (ret != 0)
- 		UNRESOLVED(errno, "Failed to close the message catalog");
- 
--	system("rm -f " MESSCAT_IN " " MESSCAT_OUT);
-+	unlink(MESSCAT_IN);
-+	unlink(MESSCAT_OUT);
- 
- #if VERBOSE > 0
- 	output("Test passed\n");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c
-index dd566831c..1cd3b2fdc 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c
-@@ -55,7 +55,10 @@ int main(void)
- 	 */
- 	/* this is added incase user is root. If user is normal user, then it
- 	 * has no effect on the tests */
--	setuid(1);
-+	if (setuid(1)) {
-+		perror("setuid");
-+		return PTS_UNRESOLVED;
-+	}
- 
- 	if (-1 == kill(1, 0)) {
- 		if (EPERM == errno) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c
-index a5999332b..70a8c590c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c
-@@ -23,7 +23,10 @@ int main(void)
- {
- 	/* this is added incase user is root. If user is normal user, then it
- 	 * has no effect on the tests */
--	setuid(1);
-+	if (setuid(1)) {
-+		perror("setuid");
-+		return PTS_UNRESOLVED;
-+	}
- 
- 	if (kill(1, 0) != -1) {
- 		printf
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c
-index d63949418..27bfec8ca 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c
-@@ -33,6 +33,9 @@
- #include "posixtest.h"
- #include "tempfile.h"
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
- #define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
- 
- static void sigbus_handler(int signum)
-@@ -44,6 +47,8 @@ static void sigbus_handler(int signum)
- 	}
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- #ifndef _POSIX_MEMORY_PROTECTION
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c
-index 073b64ef9..704049290 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c
-@@ -31,6 +31,9 @@
- #include <unistd.h>
- #include "posixtest.h"
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
- #define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
- 
- static void sigbus_handler(int signum)
-@@ -42,6 +45,8 @@ static void sigbus_handler(int signum)
- 	}
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- #ifndef _POSIX_MEMORY_PROTECTION
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c
-index 113d01b8c..02fc73d80 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c
-@@ -131,7 +131,11 @@ int main(void)
- 		printf("Got EAGAIN: %s\n", strerror(errno));
- 		printf("Test PASSED\n");
- 		/* Change user to root */
--		seteuid(0);
-+		if (seteuid(0)) {
-+			close(fd);
-+			perror("seteuid");
-+			return PTS_UNRESOLVED;
-+		}
- 		close(fd);
- 		munmap(pa, len);
- 		return PTS_PASS;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-index eee55a748..ecbfb0f79 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
-@@ -61,10 +61,14 @@ int main(void)
- 		printf(TNAME " Error at open(): %s\n", strerror(errno));
- 		return PTS_UNRESOLVED;
- 	}
--	/* file is empty now, will cause "Bus error" */
--	write(fd, fname, sizeof(int));
- 	unlink(fname);
- 
-+	if (ftruncate(fd, sizeof(int))) {
-+		perror("ftruncate");
-+		close(fd);
-+		return PTS_UNRESOLVED;
-+	}
-+
- 	pa = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
- 	if (pa == MAP_FAILED) {
- 		printf(TNAME " Error at mmap: %s\n", strerror(errno));
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c
-index 30fcfe0e9..d24810dce 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c
-@@ -10,8 +10,8 @@
-  *
-  * Steps:
-  * 1.  Create a new thread that will go into a never-ending while loop.
-- * 2.  If the thread is truly asynchronise, then the main function will
-- *     continue instead of waiting for the thread to return (which in never
-+ * 2.  If the thread is truly asynchronous, then the main function will
-+ *     continue instead of waiting for the thread to return (which it never
-  *     does in this test case).
-  * 3.  An alarm is set to go off (i.e. send the SIGARLM signal) after 3
-  *     seconds. This is done for 'timeing-out' reasons, in case main DOES
-@@ -30,6 +30,8 @@
- static void *a_thread_function();
- static void alarm_handler();
- 
-+static volatile int alarm_triggered;
-+
- static pthread_t a;
- 
- int main(void)
-@@ -72,6 +74,9 @@ static void *a_thread_function()
- 	return NULL;
- }
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
- #define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
- 
- /* If this handler is called, that means that the test has failed. */
-@@ -80,3 +85,5 @@ static void alarm_handler()
- 	WRITE("Test FAILED: Alarm fired while waiting for cancelation\n");
- 	_exit(PTS_FAIL);
- }
-+
-+#pragma GCC diagnostic pop
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
-index da56343d0..fb19ff6a4 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
-@@ -125,7 +125,10 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	pipe(the_pipe);
-+	if (pipe(the_pipe)) {
-+		perror("pipe");
-+		return PTS_UNRESOLVED;
-+	}
- 
- 	for (i = 0; i < nb_child; i++) {
- 		child_pid[i] = fork();
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
-index 6f10618b6..6c68120c3 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
-@@ -129,7 +129,10 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	pipe(the_pipe);
-+	if (pipe(the_pipe)) {
-+		perror("pipe");
-+		return PTS_UNRESOLVED;
-+	}
- 
- 	for (i = 0; i < nb_child; i++) {
- 		child_pid[i] = fork();
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c
-index 602733e60..2e1e3197a 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c
-@@ -45,18 +45,21 @@ static int child_busy(int fd)
- 	alarm(4);
- 
- 	/* Tell the parent we're ready */
--	write(fd, "go", 2);
-+	if (write(fd, "go", 2) == -1) {
-+		perror("write");
-+		exit(PTS_UNRESOLVED);
-+	}
- 
- 	for (;;) {
- 		rc = sched_yield();
- 		if (rc) {
- 			ERR_LOG("child: sched_yield", rc);
--			exit(1);
-+			exit(PTS_FAIL);
- 		}
- 	}
- 
- 	/* should not get here */
--	exit(2);
-+	exit(PTS_UNRESOLVED);
- }
- 
- int main(void)
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c
-index 215d3e1af..69edeae85 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c
-@@ -95,19 +95,22 @@ int main(void)
- 	fd = shm_open(SHM_NAME, O_RDWR | O_TRUNC, 0);
- 	if (fd == -1) {
- 		perror("An error occurs when calling shm_open()");
--		seteuid(getuid());
-+		if (seteuid(getuid()))
-+			perror("seteuid");
- 		shm_unlink(SHM_NAME);
- 		return PTS_UNRESOLVED;
- 	}
- 
- 	if (fstat(fd, &stat_buf) != 0) {
- 		perror("An error occurs when calling fstat()");
--		seteuid(getuid());
-+		if (seteuid(getuid()))
-+			perror("seteuid");
- 		shm_unlink(SHM_NAME);
- 		return PTS_UNRESOLVED;
- 	}
- 
--	seteuid(getuid());
-+	if (seteuid(getuid()))
-+		perror("seteuid");
- 	shm_unlink(SHM_NAME);
- 
- 	if (stat_buf.st_uid == old_uid && stat_buf.st_gid == old_gid) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c
-index ed18cf213..d67d2fbe2 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c
-@@ -86,7 +86,8 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	seteuid(getuid());
-+	if (seteuid(getuid()))
-+		perror("seteuid");
- 
- 	if (fstat(fd, &stat_after) != 0) {
- 		perror("An error occurs when calling fstat()");
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c
-index 5c52465c8..9ef4b0c65 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c
-@@ -69,12 +69,14 @@ int main(void)
- 	result = shm_unlink(SHM_NAME);
- 	if (result == -1 && errno == EACCES) {
- 		printf("Test PASSED\n");
--		seteuid(getuid());
-+		if (seteuid(getuid()))
-+			perror("seteuid");
- 		shm_unlink(SHM_NAME);
- 		return PTS_PASS;
- 	} else if (result == -1) {
- 		perror("Unexpected error");
--		seteuid(getuid());
-+		if (seteuid(getuid()))
-+			perror("seteuid");
- 		shm_unlink(SHM_NAME);
- 		return PTS_FAIL;
- 	}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c
-index a038ea92a..98b7e2e9d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c
-index 019c98036..649a6914f 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c
-index 7e3545e90..e8223fb4b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c
-index 123ff169d..9b46baaf0 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c
-index 6cfe1d7f9..944741014 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c
-index 9371b1bdb..3c1aa1f48 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c
-index 37a986d68..803851648 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c
-index 72446e792..e189fcd9c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c
-index e6d5ba8be..67405ec35 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c
-index 2d3f7437f..4cd275946 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c
-index b124d08b8..cc13b4a04 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c
-index 0c7e8c698..10a06b34b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c
-index f01a4c2ec..cf5c9a067 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c
-index 74fffa988..18c1be5ce 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c
-index dbe6c55a1..f9971b3f2 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c
-@@ -39,10 +39,12 @@
- #include <signal.h>
- #include <errno.h>
- #include "posixtest.h"
-+static volatile sig_atomic_t called = 0;
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
- 
--static volatile sig_atomic_t called = 0;
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
- 
- static void handler(int sig, siginfo_t *info, void *context)
- {
-@@ -57,6 +59,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c
-index e0f54d835..ec07b89dc 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c
-index bba928a57..fc2c87744 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c
-index 62ebe7390..828f1fd14 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c
-index c02c77397..0a666e59a 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c
-index 5fb8c5fad..bd4a8831d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c
-index 993889041..6ab0f35ee 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c
-index 9096ca426..a1f8ea115 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c
-index 3b6799a4e..ed7aeafdd 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c
-index 5d6b84bd3..f6ff253cd 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c
-index ec2649165..fe745aab9 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c
-index 91044863a..7e55e2722 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c
-@@ -40,10 +40,13 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
-+
-+#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
-+
- static void handler(int sig, siginfo_t *info, void *context)
- {
- 	(void) sig;
-@@ -57,6 +60,8 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	called = 1;
- }
- 
-+#pragma GCC diagnostic pop
-+
- int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c
-index 0236a752e..e9f9a8f71 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c
-@@ -59,7 +59,10 @@ int main(int argc, char *argv[])
- 
- 		/* Get abs path if needed and exec ourself */
- 		if (*argv[0] != '/') {
--			getcwd(path, PATH_MAX);
-+			if (getcwd(path, PATH_MAX) == NULL) {
-+				perror("getcwd");
-+				exit(PTS_UNRESOLVED);
-+			}
- 			strcat(path, "/");
- 			strcat(path, argv[0]);
- 		} else {
-diff --git a/testcases/open_posix_testsuite/include/affinity.h b/testcases/open_posix_testsuite/include/affinity.h
-index 86fb4f4c6..da7e6837e 100644
---- a/testcases/open_posix_testsuite/include/affinity.h
-+++ b/testcases/open_posix_testsuite/include/affinity.h
-@@ -46,7 +46,8 @@ static int get_online_cpu_from_sysfs(void)
- 	f = fopen("/sys/devices/system/cpu/online", "r");
- 	if (!f)
- 		return -1;
--	fscanf(f, "%d", &cpu);
-+	if (!fscanf(f, "%d", &cpu))
-+		cpu = -1;
- 	fclose(f);
- 
- 	return cpu;
--- 
-2.25.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+d2FybmluZzogZm9ybWF0IOKAmCVsdeKAmSBleHBlY3RzIGFyZ3VtZW50IG9mIHR5cGUg4oCYbG9u
+ZyB1bnNpZ25lZCBpbnTigJksCmJ1dCBhcmd1bWVudCA1IGhhcyB0eXBlIOKAmF9fdTY04oCZIHth
+a2Eg4oCYbG9uZyBsb25nIHVuc2lnbmVkIGludOKAmX0KClNpZ25lZC1vZmYtYnk6IFlhbmcgWHUg
+PHh1eWFuZzIwMTguanlAZnVqaXRzdS5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zdGF0eC9zdGF0eDAxLmMgfCA4ICsrKystLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N0YXR4L3N0YXR4MDIuYyB8IDQgKystLQogMiBmaWxlcyBjaGFuZ2VkLCA2IGluc2VydGlvbnMo
+KyksIDYgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zdGF0eC9zdGF0eDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N0YXR4L3N0YXR4
+MDEuYwppbmRleCAyMzU4ZGQ3YmMuLjEyODkzNjZiOSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9zdGF0eC9zdGF0eDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zdGF0eC9zdGF0eDAxLmMKQEAgLTc5LDExICs3OSwxMSBAQCBzdGF0aWMgdm9pZCB0ZXN0
+X25vcm1hbF9maWxlKHZvaWQpCiAKIAlpZiAoYnVmZi5zdHhfc2l6ZSA9PSBTSVpFKQogCQl0c3Rf
+cmVzKFRQQVNTLAotCQkJInN0eF9zaXplKCUiUFJJdTY0IikgaXMgY29ycmVjdCIsIGJ1ZmYuc3R4
+X3NpemUpOworCQkJInN0eF9zaXplKCUiUFJJdTY0IikgaXMgY29ycmVjdCIsICh1aW50NjRfdCli
+dWZmLnN0eF9zaXplKTsKIAllbHNlCiAJCXRzdF9yZXMoVEZBSUwsCiAJCQkic3R4X3NpemUoJSJQ
+Ukl1NjQiKSBpcyBkaWZmZXJlbnQgZnJvbSBleHBlY3RlZCgldSkiLAotCQkJYnVmZi5zdHhfc2l6
+ZSwgU0laRSk7CisJCQkodWludDY0X3QpYnVmZi5zdHhfc2l6ZSwgU0laRSk7CiAKIAlpZiAoKGJ1
+ZmYuc3R4X21vZGUgJiB+KFNfSUZNVCkpID09IE1PREUpCiAJCXRzdF9yZXMoVFBBU1MsICJzdHhf
+bW9kZSgldSkgaXMgY29ycmVjdCIsIGJ1ZmYuc3R4X21vZGUpOwpAQCAtOTQsMTAgKzk0LDEwIEBA
+IHN0YXRpYyB2b2lkIHRlc3Rfbm9ybWFsX2ZpbGUodm9pZCkKIAogCWlmIChidWZmLnN0eF9ibG9j
+a3MgPD0gYnVmZi5zdHhfYmxrc2l6ZS81MTIgKiAyKQogCQl0c3RfcmVzKFRQQVNTLCAic3R4X2Js
+b2NrcyglIlBSSXU2NCIpIGlzIHZhbGlkIiwKLQkJCWJ1ZmYuc3R4X2Jsb2Nrcyk7CisJCQkodWlu
+dDY0X3QpYnVmZi5zdHhfYmxvY2tzKTsKIAllbHNlCiAJCXRzdF9yZXMoVEZBSUwsICJzdHhfYmxv
+Y2tzKCUiUFJJdTY0IikgaXMgaW52YWxpZCIsCi0JCQlidWZmLnN0eF9ibG9ja3MpOworCQkJKHVp
+bnQ2NF90KWJ1ZmYuc3R4X2Jsb2Nrcyk7CiAKIH0KIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9zdGF0eC9zdGF0eDAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N0YXR4L3N0YXR4MDIuYwppbmRleCAwOGVhOTQwY2IuLjYzMTMzYTNiNyAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zdGF0eC9zdGF0eDAyLmMKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9zdGF0eC9zdGF0eDAyLmMKQEAgLTUwLDExICs1MCwxMSBAQCBzdGF0
+aWMgdm9pZCB0ZXN0X2VtcHR5X3BhdGgodm9pZCkKIAogCWlmIChidWYuc3R4X3NpemUgPT0gU0la
+RSkKIAkJdHN0X3JlcyhUUEFTUywKLQkJCSJzdHhfc2l6ZSglIlBSSXU2NCIpIGlzIGNvcnJlY3Qi
+LCBidWYuc3R4X3NpemUpOworCQkJInN0eF9zaXplKCUiUFJJdTY0IikgaXMgY29ycmVjdCIsICh1
+aW50NjRfdClidWYuc3R4X3NpemUpOwogCWVsc2UKIAkJdHN0X3JlcyhURkFJTCwKIAkJCSJzdHhf
+c2l6ZSglIlBSSXU2NCIpIGlzIG5vdCBzYW1lIGFzIGV4cGVjdGVkKCV1KSIsCi0JCQlidWYuc3R4
+X3NpemUsIFNJWkUpOworCQkJKHVpbnQ2NF90KWJ1Zi5zdHhfc2l6ZSwgU0laRSk7CiAKIH0KIAot
+LSAKMi4yMy4wCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
+L2xpc3RpbmZvL2x0cAo=
