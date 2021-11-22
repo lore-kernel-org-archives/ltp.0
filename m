@@ -4,47 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EDFDC433FE
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 06:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A3DEC433F5
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 06:42:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB7DB3C8D81
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 07:41:47 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD86B3C06B2
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 07:41:38 +0100 (CET)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+	by picard.linux.it (Postfix) with ESMTP id E7E8A3C8C37
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 07:42:36 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A9F1E1400DF3
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 07:41:37 +0100 (CET)
-Received: from [192.168.178.40] (unknown [188.195.115.12])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 3A9A69FB3D;
- Mon, 22 Nov 2021 06:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1637563296; bh=fIS0bi1Zr7o8b3bRqKZm63pacRtnCBBj8c5U55eSzIw=;
- h=Message-ID:Date:MIME-Version:Subject:To:From;
- b=bhgUf3s7D2naSrVz0HqDNQs6zsBeJ3GOxS1Va8S+CwuiZ+EkmFIvFHVHFWRCoXvh6
- UVg4bcBq9TADnYPbRLfgdI1Vj5wpbNqGzJhbR+7kMDjd6z97lgX9Nt95JVTOKGSFGn
- 0+nOrGi+hL8K4n6n9lTWfgMFEK5Kr3NGEIa8Sx4I=
-Message-ID: <5979aa76-ca07-2bf2-58cc-33bafe4a280b@jv-coder.de>
-Date: Mon, 22 Nov 2021 07:41:39 +0100
+ by picard.linux.it (Postfix) with ESMTPS id A652E3C06B2
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 07:42:25 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D29C1600BF7
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 07:42:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1637563343;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2BCBCmuBBWA0CCOqx/ASYm9drERuCiONDh5890BhYc8=;
+ b=M26SCR/8hnXON69ue3XZWThHs7Qa804I8lNwp1LHKhfNcKtcBZl8C0OEj8HewwASK6uJfX
+ zEu5/YDCLZHNdxZYFYnV+nlZki4ajCp9dxwkb76QzfYEexX0JRz6Ys3dodcOa728NjXD5j
+ 1clS8ZG12bjeeaPB40bFxQwFT3cOE/w=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-564-xiyFfJW-O8CnrBWOE9Tjng-1; Mon, 22 Nov 2021 01:42:22 -0500
+X-MC-Unique: xiyFfJW-O8CnrBWOE9Tjng-1
+Received: by mail-ot1-f70.google.com with SMTP id
+ z33-20020a9d24a4000000b00579320f89ecso8213602ota.12
+ for <ltp@lists.linux.it>; Sun, 21 Nov 2021 22:42:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2BCBCmuBBWA0CCOqx/ASYm9drERuCiONDh5890BhYc8=;
+ b=bYFon05w0tzkDn8d41mcIbL/YNc1Qk58KBXQoR+vAGaCqp90XVF5EikKkhfRKs3/H9
+ Igpi0yGFOv3C1vurzxhrmF5dRhWbSKfUBT5bwvymzBl7U9Q1U9+1YmrQMoEQHfXcTEHk
+ MKrYEQjITA8Ebro2dD0PkMGrLl09cq4EJsvM5XvmnuAtZCCJ2D/nOR5EEx7zS7mDISm+
+ bgoN05OPW3kPyD4/u5BfBiiMGoke5gPXVoOLhei2IoqTA4x1fFQzk5f6qtvUpO9DwTXe
+ fqkmGKCy8V1ZFmSTGN3S3lVgqezFTRel16/1G6o5DPZZ7MrI8jBtRmgy8buOPZXkFuvx
+ 7Ukw==
+X-Gm-Message-State: AOAM533z8e8+3iMPrZ2PgfcGI89mVCtoxq9bKraE5SS4w3tfLBTu3/Gp
+ DKOYuH9lMq2vYctTQLQ7VvbgutSjWv+QgdPuO2B9PpsZL+7KgyWvCuWxFLjoTo+fRY4Dn58ravy
+ IF1iX9v/C2pOypdretjeGALqmog8=
+X-Received: by 2002:a9d:53c4:: with SMTP id i4mr22233372oth.176.1637563341536; 
+ Sun, 21 Nov 2021 22:42:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxAT8nKzkSUqNvW+zW24S7+dlUdJyT41DS5xnCIcLuPdq9lNjroqtiF1iPng/c3fK8dEKO7yrxcSYUd12qpk4U=
+X-Received: by 2002:a9d:53c4:: with SMTP id i4mr22233345oth.176.1637563341188; 
+ Sun, 21 Nov 2021 22:42:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20211119074602.857595-1-lkml@jv-coder.de>
- <20211119074602.857595-6-lkml@jv-coder.de> <YZfBcfs8VZApzMU9@yuki>
-From: Joerg Vehlow <lkml@jv-coder.de>
-In-Reply-To: <YZfBcfs8VZApzMU9@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+References: <04692b4000ee415add41128173e395f830ea3e56.1635168255.git.jstancek@redhat.com>
+ <6194B56D.9070100@fujitsu.com>
+In-Reply-To: <6194B56D.9070100@fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 22 Nov 2021 07:42:05 +0100
+Message-ID: <CAASaF6yzyUmwLWQrNy8QR6rLC=y6xrbPZMuyqHHjFBtPR1XjUQ@mail.gmail.com>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 05/12] posix/conformance/interfaces: Fix all
- unused variable warnings
+Subject: Re: [LTP] [PATCH] finit_module02: fix exp. errno for O_WRONLY
+ testcase
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,83 +85,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>, ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQ3lyaWwsCgpPbiAxMS8xOS8yMDIxIDQ6MjMgUE0sIEN5cmlsIEhydWJpcyB3cm90ZToKPiBI
-aSEKPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3Jt
-YW5jZS9pbnRlcmZhY2VzL2Fpb19yZWFkLzktMS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVz
-dHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3JlYWQvOS0xLmMKPj4gaW5kZXggZTFh
-ZTU5ZTNiLi5jZDFhYTAzMTggMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rl
-c3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19yZWFkLzktMS5jCj4+ICsrKyBiL3Rl
-c3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19y
-ZWFkLzktMS5jCj4+IEBAIC00OCw3ICs0OCw2IEBAIGludCBtYWluKHZvaWQpCj4+ICAgCWludCBp
-Owo+PiAgIAlzdHJ1Y3QgYWlvY2IgYWlvY2JzW05VTV9BSU9DQlNdOwo+PiAgIAlpbnQgbGFzdF9y
-ZXE7Cj4+IC0JaW50IGVycjsKPj4gICAJaW50IHJldDsKPj4gICAKPj4gICAJaWYgKHN5c2NvbmYo
-X1NDX0FTWU5DSFJPTk9VU19JTykgPCAyMDAxMTJMCj4+IEBAIC04NSw3ICs4NCw3IEBAIGludCBt
-YWluKHZvaWQpCj4+ICAgCX0KPj4gICAKPj4gICAJZm9yIChpID0gMDsgaSA8IGxhc3RfcmVxIC0g
-MTsgaSsrKSB7Cj4+IC0JCWVyciA9IGFpb19lcnJvcigmYWlvY2JzW2ldKTsKPj4gKwkJYWlvX2Vy
-cm9yKCZhaW9jYnNbaV0pOwo+PiAgIAkJcmV0ID0gYWlvX3JldHVybigmYWlvY2JzW2ldKTsKPj4g
-ICAKPj4gICAJfQo+IExvb2tpbmcgYXQgdGhlIHRlc3QgdGhlIHdob2xlIGxvb3AgaGVyZSBpcyBw
-b2ludGxlc3MsIGNhbiB3ZSByZW1vdmUgaXQKPiBjb21wbGV0ZWx5PwpJIHRob3VnaHQgdGhlIHNh
-bWUsIGJ1dCBJIGhhdmUgbmV2ZXIgdXNlZCBhaW8sIHNvIEkgaGF2ZSBubyBjbHVlLCBpZiAKdGhl
-cmUgYXJlIGFueSBzaWRlIGVmZmVjdHMuClNvIEkgd2VudCBmb3IgYSBtaW5pbWFswqAgY2hhbmdl
-IGFwcHJvYWNoLgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvZm9yay83LTEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4
-X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2ZvcmsvNy0xLmMKPj4gaW5kZXggYWFm
-MTQwM2Y5Li45YTBiMTQ4ZDkgMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rl
-c3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2ZvcmsvNy0xLmMKPj4gKysrIGIvdGVzdGNh
-c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvZm9yay83LTEu
-Ywo+PiBAQCAtNTEsNyArNTEsNyBAQAo+PiAgIAo+PiAgIHN0YXRpYyB2b2lkIHJlYWRfY2F0YWxv
-ZyhubF9jYXRkIGNhdCwgY2hhciAqd2hvKQo+PiAgIHsKPj4gLQljaGFyICptc2cgPSBOVUxMOwo+
-PiArCWNoYXIgKm1zZyBQVFNfQVRUUklCVVRFX1VOVVNFRCA9IE5VTEw7Cj4+ICAgCWludCBpLCBq
-Owo+IEkgZ3Vlc3MgdGhhdCBpbiB0aGlzIGNhc2UgdGhlIHRlc3QgaXMgd3JvbmcgYXMgd2VsbC4g
-SXQgZG9lcyBub3Qgc2VlbQo+IHRoYXQgY2F0Z2V0cygpIGZhaWxzIHdoZW4gaXQgcmV0dXJucyB0
-aGUgcG9pbnRlciB0byB0aGUgIm5vdCBmb3VuZCIKPiBzdHJpbmcgYW5kIGRvZXMgbm90IGV2ZW4g
-dG91Y2ggZXJybm8uClllcyBsb29rcyBsaWtlIHlvdSBhcmUgcmlnaHQuIExvb2tzIGxpa2UgdGhp
-cyB0ZXN0IGNhbiBuZXZlciBmYWlsLgoKSSB3b3VsZCBmaXggaXQgbGlrZSB0aGlzIGluIGEgbmV4
-dCByZXZpc2lvbjoKCmRpZmYgLS1naXQgCmEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvZm9yay83LTEuYyAKYi90ZXN0Y2FzZXMvb3Blbl9wb3Np
-eF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9mb3JrLzctMS5jCmluZGV4IDQ2MzUw
-YjdmMC4uNWMwM2IwNGVkIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9mb3JrLzctMS5jCisrKyBiL3Rlc3RjYXNlcy9vcGVu
-X3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2ZvcmsvNy0xLmMKQEAgLTQ5
-LDMzICs0OSwyMiBAQAogwqAjZGVmaW5lIE1FU1NDQVRfSU7CoCAibWVzc2NhdC50eHQiCiDCoCNk
-ZWZpbmUgTUVTU0NBVF9PVVQgIm1lc3NjYXQuY2F0IgoKLXN0YXRpYyB2b2lkIHJlYWRfY2F0YWxv
-ZyhubF9jYXRkIGNhdCwgY2hhciAqd2hvKQorc3RhdGljIGludCByZWFkX2NhdGFsb2cobmxfY2F0
-ZCBjYXQpCiDCoHsKK8KgwqDCoCBzdGF0aWMgY29uc3QgY2hhciAqbm90Zm91bmQgPSAibm90IGZv
-dW5kIjsKIMKgwqDCoMKgIGNoYXIgKm1zZyBQVFNfQVRUUklCVVRFX1VOVVNFRCA9IE5VTEw7CiDC
-oMKgwqDCoCBpbnQgaSwgajsKCi0jaWYgVkVSQk9TRSA+IDAKLcKgwqDCoCBvdXRwdXQoIlJlYWRp
-bmcgdGhlIG1lc3NhZ2UgY2F0YWxvZyBmcm9tICVzLi4uXG4iLCB3aG8pOwotI2VuZGlmCi0KLcKg
-wqDCoCBlcnJubyA9IDA7Ci0KIMKgwqDCoMKgIGZvciAoaSA9IDE7IGkgPD0gMjsgaSsrKSB7CiDC
-oMKgwqDCoCDCoMKgwqAgZm9yIChqID0gMTsgaiA8PSAyOyBqKyspIHsKCi3CoMKgwqAgwqDCoMKg
-IMKgwqDCoCBtc2cgPSBjYXRnZXRzKGNhdCwgaSwgaiwgIm5vdCBmb3VuZCIpOwotCi3CoMKgwqAg
-wqDCoMKgIMKgwqDCoCBpZiAoZXJybm8gIT0gMCkKLcKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCBVTlJFU09MVkVEKGVycm5vLCAiY2F0Z2V0cyByZXR1cm5lZCBhbiBlcnJvciIpOwotI2lmIFZF
-UkJPU0UgPiAxCi3CoMKgwqAgwqDCoMKgIMKgwqDCoCBvdXRwdXQoInNldCAlaSBtc2cgJWk6ICVz
-XG4iLCBpLCBqLCBtc2cpOwotI2VuZGlmCivCoMKgwqAgwqDCoMKgIMKgwqDCoCBtc2cgPSBjYXRn
-ZXRzKGNhdCwgaSwgaiwgbm90Zm91bmQpOworwqDCoMKgIMKgwqDCoCDCoMKgwqAgaWYgKG1zZyA9
-PSBub3Rmb3VuZCkgeworwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiAxOworwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgfQogwqDCoMKgwqAgwqDCoMKgIH0KIMKgwqDCoMKgIH0KLQotI2lm
-IFZFUkJPU0UgPiAwCi3CoMKgwqAgb3V0cHV0KCJNZXNzYWdlIGNhdGFsb2cgcmVhZCBzdWNjZXNz
-ZnVsbHkgaW4gJXNcbiIsIHdobyk7Ci0jZW5kaWYKK8KgwqDCoCByZXR1cm4gMDsKIMKgfQoKIMKg
-c3RhdGljIGNoYXIgKm1lc3NjYXRfaW4gPQpAQCAtMTMyLDcgKzEyMSwxMCBAQCBpbnQgbWFpbih2
-b2lkKQogwqDCoMKgwqAgaWYgKG1lc3NjYXQgPT0gKG5sX2NhdGQpIC0gMSkKIMKgwqDCoMKgIMKg
-wqDCoCBVTlJFU09MVkVEKGVycm5vLCAiQ291bGQgbm90IG9wZW4gLi8iIE1FU1NDQVRfT1VUKTsK
-Ci3CoMKgwqAgcmVhZF9jYXRhbG9nKG1lc3NjYXQsICJwYXJlbnQiKTsKK8KgwqDCoCBpZiAocmVh
-ZF9jYXRhbG9nKG1lc3NjYXQpKSB7CivCoMKgwqAgwqDCoMKgIHByaW50ZigiVU5SRVNPTFZFRDog
-VW5hYmxlIHRvIHJlYWQgbWVzc2FnZSBjYXRhbG9nIGluIHBhcmVudCIpOworwqDCoMKgIMKgwqDC
-oCByZXR1cm4gUFRTX1VOUkVTT0xWRUQ7CivCoMKgwqAgfQoKIMKgwqDCoMKgIGNoaWxkID0gZm9y
-aygpOwoKQEAgLTE0MCw4ICsxMzIsMTEgQEAgaW50IG1haW4odm9pZCkKIMKgwqDCoMKgIMKgwqDC
-oCBVTlJFU09MVkVEKGVycm5vLCAiRmFpbGVkIHRvIGZvcmsiKTsKCiDCoMKgwqDCoCBpZiAoY2hp
-bGQgPT0gMCkgewotwqDCoMKgIMKgwqDCoCByZWFkX2NhdGFsb2cobWVzc2NhdCwgImNoaWxkIik7
-Ci3CoMKgwqAgwqDCoMKgIGV4aXQoUFRTX1BBU1MpOworwqDCoMKgIMKgwqDCoCBpZiAocmVhZF9j
-YXRhbG9nKG1lc3NjYXQpKSB7CivCoMKgwqAgwqDCoMKgIMKgwqDCoCBwcmludGYoIkZBSUxFRDog
-VW5hYmxlIHRvIHJlYWQgbWVzc2FnZSBjYXRhbG9nIGluIGNoaWxkIik7CivCoMKgwqAgwqDCoMKg
-IMKgwqDCoCByZXR1cm4gUFRTX0ZBSUw7CivCoMKgwqAgwqDCoMKgIH0KK8KgwqDCoCDCoMKgwqAg
-cmV0dXJuIFBUU19QQVNTOwogwqDCoMKgwqAgfQoKIMKgwqDCoMKgIGN0bCA9IHdhaXRwaWQoY2hp
-bGQsICZzdGF0dXMsIDApOwoKCkpvZXJnCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
-bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Wed, Nov 17, 2021 at 8:54 AM xuyang2018.jy@fujitsu.com
+<xuyang2018.jy@fujitsu.com> wrote:
+>
+> Hi Jan
+> > commit 032146cda855 ("vfs: check fd has read access in
+> > kernel_read_file_from_fd()") changed errno back to EBADF,
+> > which is correct value according to man page, so tweak
+> > the test to expect it for kernels>= 5.15.
+> It seems we still can hit ETXTBSY error if we  use RDWR fd on kernels >=
+> 5.15.
+>
+> This error existed since the following commit because of
+> deny_write_access api
+> commit 39d637af5aa7577f655c58b9e55587566c63a0af
+> Author: Dmitry Kasatkin <dmitry.kasatkin@huawei.com>
+> Date:   Sun Oct 26 12:42:07 2014 +0200
+>
+>      vfs: forbid write access when reading a file into memory
+>
+> I suggest add a RDWR test and send a patch to record a ETXTBSY error(
+> Since linux 4.7).
+>
+> What do you think about this?
+
+(Sorry for delay, I'm catching up with email after holidays)
+Since it's also not documented, I'd wait for Cyril's patch first. But
+we can always change it later (I see patch was already merged).
+
+
+>
+> Best Regards
+> Yang Xu
+> >
+> > Signed-off-by: Jan Stancek<jstancek@redhat.com>
+> > ---
+> >   testcases/kernel/syscalls/finit_module/finit_module02.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
+> > index 0d2bf917ea64..9b5d3563b74e 100644
+> > --- a/testcases/kernel/syscalls/finit_module/finit_module02.c
+> > +++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
+> > @@ -52,7 +52,7 @@ static void bad_fd_setup(struct tcase *tc)
+> >
+> >   static void wo_file_setup(struct tcase *tc)
+> >   {
+> > -     if (tst_kvercmp(4, 6, 0)<  0)
+> > +     if (tst_kvercmp(4, 6, 0)<  0 || tst_kvercmp(5, 15, 0)>= 0)
+> >               tc->exp_errno = EBADF;
+> >       else
+> >               tc->exp_errno = ETXTBSY;
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
