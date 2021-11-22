@@ -4,42 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30B17C433F5
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 03:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EDFDC433FE
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 06:41:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6D1B33C8C62
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 04:53:55 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id AB7DB3C8D81
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 07:41:47 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id DD86B3C06B2
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 07:41:38 +0100 (CET)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A382E3C0D0B
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 04:53:45 +0100 (CET)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 797F51A00716
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 04:53:41 +0100 (CET)
-Received: from dggeml753-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HyCtG1FTgzbhxr
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 11:48:38 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.63) by
- dggeml753-chm.china.huawei.com (10.1.199.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Mon, 22 Nov 2021 11:53:36 +0800
-To: <ltp@lists.linux.it>
-Date: Mon, 22 Nov 2021 11:54:53 +0800
-Message-ID: <20211122035453.248702-1-zhaogongyi@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A9F1E1400DF3
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 07:41:37 +0100 (CET)
+Received: from [192.168.178.40] (unknown [188.195.115.12])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 3A9A69FB3D;
+ Mon, 22 Nov 2021 06:41:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1637563296; bh=fIS0bi1Zr7o8b3bRqKZm63pacRtnCBBj8c5U55eSzIw=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=bhgUf3s7D2naSrVz0HqDNQs6zsBeJ3GOxS1Va8S+CwuiZ+EkmFIvFHVHFWRCoXvh6
+ UVg4bcBq9TADnYPbRLfgdI1Vj5wpbNqGzJhbR+7kMDjd6z97lgX9Nt95JVTOKGSFGn
+ 0+nOrGi+hL8K4n6n9lTWfgMFEK5Kr3NGEIa8Sx4I=
+Message-ID: <5979aa76-ca07-2bf2-58cc-33bafe4a280b@jv-coder.de>
+Date: Mon, 22 Nov 2021 07:41:39 +0100
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.63]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeml753-chm.china.huawei.com (10.1.199.152)
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20211119074602.857595-1-lkml@jv-coder.de>
+ <20211119074602.857595-6-lkml@jv-coder.de> <YZfBcfs8VZApzMU9@yuki>
+From: Joerg Vehlow <lkml@jv-coder.de>
+In-Reply-To: <YZfBcfs8VZApzMU9@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib/default_cleanup: add default_cleanup() for old
- testcases
+Subject: Re: [LTP] [PATCH 05/12] posix/conformance/interfaces: Fix all
+ unused variable warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -51,56 +56,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zhao Gongyi via ltp <ltp@lists.linux.it>
-Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>, ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In some old testcases, cleanup() will not run since it exit
-form tst_brk. For example, because of the calling of ltp_syscall
-have no real cleanup when syscall not support, testcase ssetmask01
-will leave tmp file.
-
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- include/old/test.h    |  2 ++
- lib/default_cleanup.c | 11 +++++++++++
- 2 files changed, 13 insertions(+)
- create mode 100644 lib/default_cleanup.c
-
-diff --git a/include/old/test.h b/include/old/test.h
-index 2ae7dba71..752c9628d 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -218,4 +218,6 @@ const char *tst_strerrno(int err);
- #endif
- #define TCID_DEFINE(ID) char *TCID = (#ID TCID_BIT_SUFFIX)
-
-+void __attribute__((destructor)) default_cleanup(void);
-+
- #endif	/* __TEST_H__ */
-diff --git a/lib/default_cleanup.c b/lib/default_cleanup.c
-new file mode 100644
-index 000000000..fca394a04
---- /dev/null
-+++ b/lib/default_cleanup.c
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021 Zhao gongyi <zhaogongyi@huawei.com>
-+ */
-+
-+#include "test.h"
-+
-+void __attribute__((destructor)) default_cleanup(void)
-+{
-+	tst_rmdir();
-+}
---
-2.17.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQ3lyaWwsCgpPbiAxMS8xOS8yMDIxIDQ6MjMgUE0sIEN5cmlsIEhydWJpcyB3cm90ZToKPiBI
+aSEKPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3Jt
+YW5jZS9pbnRlcmZhY2VzL2Fpb19yZWFkLzktMS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVz
+dHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3JlYWQvOS0xLmMKPj4gaW5kZXggZTFh
+ZTU5ZTNiLi5jZDFhYTAzMTggMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rl
+c3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19yZWFkLzktMS5jCj4+ICsrKyBiL3Rl
+c3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19y
+ZWFkLzktMS5jCj4+IEBAIC00OCw3ICs0OCw2IEBAIGludCBtYWluKHZvaWQpCj4+ICAgCWludCBp
+Owo+PiAgIAlzdHJ1Y3QgYWlvY2IgYWlvY2JzW05VTV9BSU9DQlNdOwo+PiAgIAlpbnQgbGFzdF9y
+ZXE7Cj4+IC0JaW50IGVycjsKPj4gICAJaW50IHJldDsKPj4gICAKPj4gICAJaWYgKHN5c2NvbmYo
+X1NDX0FTWU5DSFJPTk9VU19JTykgPCAyMDAxMTJMCj4+IEBAIC04NSw3ICs4NCw3IEBAIGludCBt
+YWluKHZvaWQpCj4+ICAgCX0KPj4gICAKPj4gICAJZm9yIChpID0gMDsgaSA8IGxhc3RfcmVxIC0g
+MTsgaSsrKSB7Cj4+IC0JCWVyciA9IGFpb19lcnJvcigmYWlvY2JzW2ldKTsKPj4gKwkJYWlvX2Vy
+cm9yKCZhaW9jYnNbaV0pOwo+PiAgIAkJcmV0ID0gYWlvX3JldHVybigmYWlvY2JzW2ldKTsKPj4g
+ICAKPj4gICAJfQo+IExvb2tpbmcgYXQgdGhlIHRlc3QgdGhlIHdob2xlIGxvb3AgaGVyZSBpcyBw
+b2ludGxlc3MsIGNhbiB3ZSByZW1vdmUgaXQKPiBjb21wbGV0ZWx5PwpJIHRob3VnaHQgdGhlIHNh
+bWUsIGJ1dCBJIGhhdmUgbmV2ZXIgdXNlZCBhaW8sIHNvIEkgaGF2ZSBubyBjbHVlLCBpZiAKdGhl
+cmUgYXJlIGFueSBzaWRlIGVmZmVjdHMuClNvIEkgd2VudCBmb3IgYSBtaW5pbWFswqAgY2hhbmdl
+IGFwcHJvYWNoLgo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
+L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvZm9yay83LTEuYyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4
+X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2ZvcmsvNy0xLmMKPj4gaW5kZXggYWFm
+MTQwM2Y5Li45YTBiMTQ4ZDkgMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rl
+c3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2ZvcmsvNy0xLmMKPj4gKysrIGIvdGVzdGNh
+c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvZm9yay83LTEu
+Ywo+PiBAQCAtNTEsNyArNTEsNyBAQAo+PiAgIAo+PiAgIHN0YXRpYyB2b2lkIHJlYWRfY2F0YWxv
+ZyhubF9jYXRkIGNhdCwgY2hhciAqd2hvKQo+PiAgIHsKPj4gLQljaGFyICptc2cgPSBOVUxMOwo+
+PiArCWNoYXIgKm1zZyBQVFNfQVRUUklCVVRFX1VOVVNFRCA9IE5VTEw7Cj4+ICAgCWludCBpLCBq
+Owo+IEkgZ3Vlc3MgdGhhdCBpbiB0aGlzIGNhc2UgdGhlIHRlc3QgaXMgd3JvbmcgYXMgd2VsbC4g
+SXQgZG9lcyBub3Qgc2VlbQo+IHRoYXQgY2F0Z2V0cygpIGZhaWxzIHdoZW4gaXQgcmV0dXJucyB0
+aGUgcG9pbnRlciB0byB0aGUgIm5vdCBmb3VuZCIKPiBzdHJpbmcgYW5kIGRvZXMgbm90IGV2ZW4g
+dG91Y2ggZXJybm8uClllcyBsb29rcyBsaWtlIHlvdSBhcmUgcmlnaHQuIExvb2tzIGxpa2UgdGhp
+cyB0ZXN0IGNhbiBuZXZlciBmYWlsLgoKSSB3b3VsZCBmaXggaXQgbGlrZSB0aGlzIGluIGEgbmV4
+dCByZXZpc2lvbjoKCmRpZmYgLS1naXQgCmEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
+L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvZm9yay83LTEuYyAKYi90ZXN0Y2FzZXMvb3Blbl9wb3Np
+eF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9mb3JrLzctMS5jCmluZGV4IDQ2MzUw
+YjdmMC4uNWMwM2IwNGVkIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9mb3JrLzctMS5jCisrKyBiL3Rlc3RjYXNlcy9vcGVu
+X3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2ZvcmsvNy0xLmMKQEAgLTQ5
+LDMzICs0OSwyMiBAQAogwqAjZGVmaW5lIE1FU1NDQVRfSU7CoCAibWVzc2NhdC50eHQiCiDCoCNk
+ZWZpbmUgTUVTU0NBVF9PVVQgIm1lc3NjYXQuY2F0IgoKLXN0YXRpYyB2b2lkIHJlYWRfY2F0YWxv
+ZyhubF9jYXRkIGNhdCwgY2hhciAqd2hvKQorc3RhdGljIGludCByZWFkX2NhdGFsb2cobmxfY2F0
+ZCBjYXQpCiDCoHsKK8KgwqDCoCBzdGF0aWMgY29uc3QgY2hhciAqbm90Zm91bmQgPSAibm90IGZv
+dW5kIjsKIMKgwqDCoMKgIGNoYXIgKm1zZyBQVFNfQVRUUklCVVRFX1VOVVNFRCA9IE5VTEw7CiDC
+oMKgwqDCoCBpbnQgaSwgajsKCi0jaWYgVkVSQk9TRSA+IDAKLcKgwqDCoCBvdXRwdXQoIlJlYWRp
+bmcgdGhlIG1lc3NhZ2UgY2F0YWxvZyBmcm9tICVzLi4uXG4iLCB3aG8pOwotI2VuZGlmCi0KLcKg
+wqDCoCBlcnJubyA9IDA7Ci0KIMKgwqDCoMKgIGZvciAoaSA9IDE7IGkgPD0gMjsgaSsrKSB7CiDC
+oMKgwqDCoCDCoMKgwqAgZm9yIChqID0gMTsgaiA8PSAyOyBqKyspIHsKCi3CoMKgwqAgwqDCoMKg
+IMKgwqDCoCBtc2cgPSBjYXRnZXRzKGNhdCwgaSwgaiwgIm5vdCBmb3VuZCIpOwotCi3CoMKgwqAg
+wqDCoMKgIMKgwqDCoCBpZiAoZXJybm8gIT0gMCkKLcKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDC
+oCBVTlJFU09MVkVEKGVycm5vLCAiY2F0Z2V0cyByZXR1cm5lZCBhbiBlcnJvciIpOwotI2lmIFZF
+UkJPU0UgPiAxCi3CoMKgwqAgwqDCoMKgIMKgwqDCoCBvdXRwdXQoInNldCAlaSBtc2cgJWk6ICVz
+XG4iLCBpLCBqLCBtc2cpOwotI2VuZGlmCivCoMKgwqAgwqDCoMKgIMKgwqDCoCBtc2cgPSBjYXRn
+ZXRzKGNhdCwgaSwgaiwgbm90Zm91bmQpOworwqDCoMKgIMKgwqDCoCDCoMKgwqAgaWYgKG1zZyA9
+PSBub3Rmb3VuZCkgeworwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiAxOworwqDC
+oMKgIMKgwqDCoCDCoMKgwqAgfQogwqDCoMKgwqAgwqDCoMKgIH0KIMKgwqDCoMKgIH0KLQotI2lm
+IFZFUkJPU0UgPiAwCi3CoMKgwqAgb3V0cHV0KCJNZXNzYWdlIGNhdGFsb2cgcmVhZCBzdWNjZXNz
+ZnVsbHkgaW4gJXNcbiIsIHdobyk7Ci0jZW5kaWYKK8KgwqDCoCByZXR1cm4gMDsKIMKgfQoKIMKg
+c3RhdGljIGNoYXIgKm1lc3NjYXRfaW4gPQpAQCAtMTMyLDcgKzEyMSwxMCBAQCBpbnQgbWFpbih2
+b2lkKQogwqDCoMKgwqAgaWYgKG1lc3NjYXQgPT0gKG5sX2NhdGQpIC0gMSkKIMKgwqDCoMKgIMKg
+wqDCoCBVTlJFU09MVkVEKGVycm5vLCAiQ291bGQgbm90IG9wZW4gLi8iIE1FU1NDQVRfT1VUKTsK
+Ci3CoMKgwqAgcmVhZF9jYXRhbG9nKG1lc3NjYXQsICJwYXJlbnQiKTsKK8KgwqDCoCBpZiAocmVh
+ZF9jYXRhbG9nKG1lc3NjYXQpKSB7CivCoMKgwqAgwqDCoMKgIHByaW50ZigiVU5SRVNPTFZFRDog
+VW5hYmxlIHRvIHJlYWQgbWVzc2FnZSBjYXRhbG9nIGluIHBhcmVudCIpOworwqDCoMKgIMKgwqDC
+oCByZXR1cm4gUFRTX1VOUkVTT0xWRUQ7CivCoMKgwqAgfQoKIMKgwqDCoMKgIGNoaWxkID0gZm9y
+aygpOwoKQEAgLTE0MCw4ICsxMzIsMTEgQEAgaW50IG1haW4odm9pZCkKIMKgwqDCoMKgIMKgwqDC
+oCBVTlJFU09MVkVEKGVycm5vLCAiRmFpbGVkIHRvIGZvcmsiKTsKCiDCoMKgwqDCoCBpZiAoY2hp
+bGQgPT0gMCkgewotwqDCoMKgIMKgwqDCoCByZWFkX2NhdGFsb2cobWVzc2NhdCwgImNoaWxkIik7
+Ci3CoMKgwqAgwqDCoMKgIGV4aXQoUFRTX1BBU1MpOworwqDCoMKgIMKgwqDCoCBpZiAocmVhZF9j
+YXRhbG9nKG1lc3NjYXQpKSB7CivCoMKgwqAgwqDCoMKgIMKgwqDCoCBwcmludGYoIkZBSUxFRDog
+VW5hYmxlIHRvIHJlYWQgbWVzc2FnZSBjYXRhbG9nIGluIGNoaWxkIik7CivCoMKgwqAgwqDCoMKg
+IMKgwqDCoCByZXR1cm4gUFRTX0ZBSUw7CivCoMKgwqAgwqDCoMKgIH0KK8KgwqDCoCDCoMKgwqAg
+cmV0dXJuIFBUU19QQVNTOwogwqDCoMKgwqAgfQoKIMKgwqDCoMKgIGN0bCA9IHdhaXRwaWQoY2hp
+bGQsICZzdGF0dXMsIDApOwoKCkpvZXJnCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
+bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
