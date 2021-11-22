@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACBF4C433F5
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 10:31:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88788C433F5
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 13:29:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A08D3C8D12
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 11:31:30 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5F5DA3C8D6B
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 14:29:35 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B68733C104D
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 11:31:20 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D5D3B3C25EC
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 14:29:26 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D4B761000DD0
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 11:31:19 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5389D1A00A44
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 14:29:25 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E0C041FD26;
- Mon, 22 Nov 2021 10:31:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 38F481FD39;
+ Mon, 22 Nov 2021 13:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1637577078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1637587765; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HCf2a9K4GJ/GfDjNQFqBJ0Chcv8iqkMCkHEJOvVRZgI=;
- b=Gfz3HlyXEqdGufGMaHfY7CzrdORW3Ueu++BwRchPEqGVH32qrL61SgFoykx9ttZAFGZ8aT
- sPAfexQlQX5uac4Pcdecc93iLv3Mw8v1vNJ5G8RptSgLlARU/Y5rQ2nHFfZqOUCqXltJh3
- FpMPUCLvQhghlu3zmwzvoEtv+A8so4Y=
+ bh=tBcRk0uKyn4Zh1Cyv0zVCwydH4eapYMxaeUBcsUWtJ0=;
+ b=axO/D1cMqGYJcw/tgQY3JPmz1NzQpC377+uPEFNP9UMouzk4cb0mgPGHItFIMZaajHJsyM
+ 7DFX0H5Iqmlx7o5ymAjJhUxiZoAUBrv6e8I/aWmEsMzzuAZXhu3x2Hnh9KQJM+ZEgwPOUA
+ 5EMuprN2H4nuF1AKYnkGN1O8BLRgZUc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1637577078;
+ s=susede2_ed25519; t=1637587765;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HCf2a9K4GJ/GfDjNQFqBJ0Chcv8iqkMCkHEJOvVRZgI=;
- b=G94ylaa210EIAlDi6sOHy770ggkCKvRyce8UmtwIBlcNSs9S1BLLyOJc2/53/d51CjhKrJ
- xn5w3CSzKIIMyGAA==
+ bh=tBcRk0uKyn4Zh1Cyv0zVCwydH4eapYMxaeUBcsUWtJ0=;
+ b=dSr5RphgAFAI0z547/FsSq4oGB0X5hiAPh7O2GwgyyuiTG7QH5eKhW3qLymtwHfy7fS9WN
+ ZW6PvS818AuuUVCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC22113B9E;
- Mon, 22 Nov 2021 10:31:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23AFD13CB0;
+ Mon, 22 Nov 2021 13:29:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id DZpmMXZxm2HFdwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 22 Nov 2021 10:31:18 +0000
-Date: Mon, 22 Nov 2021 11:32:23 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id MhEtBzWbm2EnVgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 22 Nov 2021 13:29:25 +0000
+Date: Mon, 22 Nov 2021 14:30:30 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Joerg Vehlow <lkml@jv-coder.de>
-Message-ID: <YZtxt8oyTC8wSjMk@yuki>
-References: <20211122072601.4096577-1-lkml@jv-coder.de> <YZtlxQZn06aplsvw@yuki>
- <107071aa-80e3-1cb5-ec50-f5a2a83027c1@jv-coder.de>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Message-ID: <YZubdhIyP19rhEVD@yuki>
+References: <20211118112900.15757-1-rpalethorpe@suse.com>
+ <619708EC.6090305@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <107071aa-80e3-1cb5-ec50-f5a2a83027c1@jv-coder.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <619708EC.6090305@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/4] posix/conformance/interfaces/fork/7-1: Fix
- test
+Subject: Re: [LTP] [PATCH] statx04: Re-add BTRFS version check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,19 +76,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>, ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > Other than these two the changes looks good to me. If you agreen I can
-> > fix the two small issues before pushing it to the repo.
-> Perfect, thanks
+> Do you mean that your distribution based on older kernel ie 4.11
+> supports statx syscall but btrfs missed the btrfs patch? Also this
+> distribution doesn't update and so have no choice to backport.
+> > This is different from the
+> > other version checks which are for much newer kernels. 
+> IMO, distribution based on older kernel 4.11 still can make ext2 ext4
+> xfs supports statx because the backport looks not diffcult. So, I don't
+> think this is a difference. It depends on kernel users worked on this
+> distirbution whether have this requirement.
+> Also there could be differences in the difficulty of a backport.
+> I see xfs/btrfs code, it only fills the attributes field of stat
+> struture by parsing inode flags.
+> 
+> If you must add this check on suse distribution, I guess you just add
+> this version check for suse distribution. For centos7,8, neither of them
+> supports btrfs, but I don't know other distribution situation ie unbuntu.
 
-Did that and also fixed trailing whitespace introduced in the
-posixtest.h and pushed the patches, thanks.
+I just checked debian, both oldstable (4.16) and stable (5.10) have new
+enough kernels for this not to matter.
+
+> Maybe you can just add suse detection in lib/tst_kvercmp.c.
+
+I guess that this would be the cleanest solution.
+
+Actually SUSE should be detected just fine, since we parse
+/etc/os-release for ID='foo' in the test library.
+
+So this could be solved just by defining:
+
+static struct tst_kern_exv kvers[] = {
+	{"sles", "4.13.0"}
+	{}
+};
+
+and then doing:
+
+	if (tst_kvercmp2(0, 0, 0, kvers) < 0)
+		tst_brk(TCONF, "Btrfs statx() supported since 4.13");
+
+
+Also it would be a bit cleaner to add this to the tst_test structure as
+.min_kver_ex as well, but that's a different story...
 
 -- 
 Cyril Hrubis
