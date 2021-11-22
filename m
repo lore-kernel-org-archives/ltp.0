@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54775C433EF
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 18:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11745C433EF
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 20:15:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C8BF3C8D7C
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 19:17:28 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C2AE63C8DD0
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 21:15:15 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B937B3C8982
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 17:51:17 +0100 (CET)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3A0A71000F26
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 17:51:17 +0100 (CET)
-Received: by mail-wr1-x42b.google.com with SMTP id d5so33944945wrc.1
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 08:51:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:reply-to:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=APE9ce1oamnPdQjXEcMukuKqcJOxL3i0qU2D/3ee32Y=;
- b=VZFBq1ErQERStcDQb/RfavsYGCXwgxmYoWSKcpcMPPSv1L6iDHUHXmjGL+ALaUajIc
- zyvnV0494M2isgnA1IWQ9p4TpjnufkRB4TnCGAevuvWuJxZOvBxvvZF0DodYXM9AvYlE
- mA05DPwpbdtyTjgGzBD/ky5Sct5ZRUlfUAsMLrETcxnP535JdTB5b9z+1HpKo1kssz/m
- xJ/ulE3KEjLbvZxiGiwdvpNv6Osz9elXtH65e9NAdsGhs5wy8n+32WDqj34AI5jhLrzI
- Rpt+Hkz/TNi4NpVugyCsu5f0ASPSqIjigtHEYEypxxGKRLIrnwpDXVMKd/u+WaV1i6X0
- NCNw==
+ by picard.linux.it (Postfix) with ESMTPS id E12BB3C0204
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 21:15:06 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E36061400FAF
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 21:15:05 +0100 (CET)
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D7CDB3F1E5
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 20:15:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1637612103;
+ bh=zRZQa6mhJ0XBGY4fxps4pl8zKd0PeQSonSKTdoYIcLw=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=pC5wVeiXXruPzuD82exV/KWu7rDwWhUb9uzqUCQF2m3BXmrdd9NVHeS1jlthzgUa/
+ GMOzmd6wz8yPNTiJ4yhrQortYl7V6S3F62AyqPeqpHocPHoIH1IMwmZMlNUY6zZ/yB
+ AFwqpfErd0PAxB6mDgXOAB99L//+K0ail44VsOvKP8V7Y59SDrxyVuPeLsA5YHOJ39
+ PClvh4aGLHAg0Bq1hC3Vi/Jxu/UnxuxqnOX1aBPF8FQT+t2+Jv1zqaXoWbxU0ByyZ+
+ pnBWWYxtvNQyklrEtVAUOsmpaPxur0dmRXjDdrSEqDQUJEnXZlOXEVAz3b6KApZhRh
+ 5798YLFk27Zjw==
+Received: by mail-pg1-f199.google.com with SMTP id
+ o11-20020a635a0b000000b00320daef2ad6so2194907pgb.3
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 12:15:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:reply-to
- :subject:content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=APE9ce1oamnPdQjXEcMukuKqcJOxL3i0qU2D/3ee32Y=;
- b=am2rGk0wKFuABE6qok1T+UKSN3oAF3Dj8p8AQrS8Xjsb5/v/MV8iX2kU4OyAEiJxx3
- reopwH6vGH9ezz3ZSuOTLeagDsBC3OZUeXCdZKb9hVLcG8cvgMMQrpgdG98INXzFWoXe
- GUQUxXoQ8tRNsTz2yynP4nIG6Q0iL2+w4dDUR4AkzOzB6YYTvQ7FHixQUmBBMcB5Se7/
- 0JVnh8j+Y1kKkihUHiMXZVZ/gr7OQG8LpDZ+Eu7A/tPSK8Qko9u2X9yo4uPakud+vClH
- DLJOdp21SBsWDC6cmaN+WvsOb1HI/GJjIXIUdytTf9FQ3B42XUug3lNVvjlzy/Zz0GUC
- itaQ==
-X-Gm-Message-State: AOAM532y1Xhy0YCeeodrXLeVvNCoMH0Zm4C/R4xfEdubPv1OLtiR7Zby
- MdDTttNfhOgWzqpnvYOKWzg=
-X-Google-Smtp-Source: ABdhPJwiCdHnVEJcvSR3PYQyyVUEvELVqDkgOhTYvCGt/mA5mTfb+wjYeTcjhlkJLajz8I2ECfSaLg==
-X-Received: by 2002:a05:6000:1a88:: with SMTP id
- f8mr39590723wry.54.1637599876815; 
- Mon, 22 Nov 2021 08:51:16 -0800 (PST)
-Received: from [10.168.10.170] ([170.253.36.171])
- by smtp.gmail.com with ESMTPSA id o25sm10501981wms.17.2021.11.22.08.51.16
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 22 Nov 2021 08:51:16 -0800 (PST)
-Message-ID: <8dfbe1be-0b4d-cdda-2c71-7a098faf07da@gmail.com>
-Date: Mon, 22 Nov 2021 17:51:15 +0100
+ bh=zRZQa6mhJ0XBGY4fxps4pl8zKd0PeQSonSKTdoYIcLw=;
+ b=ZzgYA1DJ7SwAETh6+iLsPc+/4vLmONrk9HkkabI2l+ITmePChDTkcVSo1j5FRor6d7
+ RvTG3B22nFeVosXYx6+wUpH1SpBgFkoMgmZEB86AmNKtxZzTCbjRy+6L+X/0hsr5PWSN
+ EzLFHwbLiSG+jF7uNHUf9yTKCwTB0Mcv1L94ThIVKvmkUMSZieAEoTm91lJRohrIJBTu
+ c0fFQVzdcZFEfOwDv+/cKUTAkbx13yutFbq/l76i5Nd0CrtVvWZu0Yb4ijFLIo3/+EV7
+ BwKH3NIJJqwOHiEBb/82ZW8JU1m+dCcKOK0rWQpJ7/ay9CrNlxDaB2TVos9Qqe5U4SzI
+ qj2g==
+X-Gm-Message-State: AOAM530S2xcLPfXrU3JLJUbZPs4YAJgGh2U4MBt3w0BP2bo/6GcLTH3j
+ KaUHx3qgRCkth6qrBZcvMmZISsdW9mWTycJHsixoaki+Fv6+tKMM8V6BBpx66U92AUcJgCGFOk2
+ R5bXNPuPbjTIV0CJwT1J5/WPxKVRh
+X-Received: by 2002:a17:902:f54f:b0:143:b899:a9ce with SMTP id
+ h15-20020a170902f54f00b00143b899a9cemr96969680plf.28.1637612101978; 
+ Mon, 22 Nov 2021 12:15:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxppg/zGXM5QFzezaGBpQ6MjJle7IgjzQu02tsK9Dgsg0H7p3NT+a26/wX1FssUWCqBI+GeUg==
+X-Received: by 2002:a17:902:f54f:b0:143:b899:a9ce with SMTP id
+ h15-20020a170902f54f00b00143b899a9cemr96969587plf.28.1637612101405; 
+ Mon, 22 Nov 2021 12:15:01 -0800 (PST)
+Received: from luke-ubuntu.. (cpe-66-27-118-101.san.res.rr.com.
+ [66.27.118.101])
+ by smtp.gmail.com with ESMTPSA id l1sm19369691pjh.28.2021.11.22.12.15.00
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 22 Nov 2021 12:15:00 -0800 (PST)
+From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+To: ltp@lists.linux.it
+Date: Mon, 22 Nov 2021 12:14:57 -0800
+Message-Id: <cover.1637611258.git.luke.nowakowskikrijger@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, linux-kernel@vger.kernel.org
-References: <YZvIlz7J6vOEY+Xu@yuki>
-From: "Alejandro Colomar (mailing lists)" <alx.mailinglists@gmail.com>
-In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 22 Nov 2021 19:17:19 +0100
-Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
- }int64_t in userspace
+Subject: [LTP] [PATCH 0/2] update memcg controller regression tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,84 +89,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: alx.manpages@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
- libc-alpha@sourceware.org, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+These patches aim to update old tests in controllers/memcg to use new
+test infastructure for maintainability as well as to update the tests to
+work when the memory controller is mounted on the cgroup2 hierarchy.
 
-On 11/22/21 17:43, Cyril Hrubis wrote:
-> This changes the __u64 and __s64 in userspace on 64bit platforms from
-> long long (unsigned) int to just long (unsigned) int in order to match
-> the uint64_t and int64_t size in userspace.
-> 
-> This allows us to use the kernel structure definitions in userspace. For
-> example we can use PRIu64 and PRId64 modifiers in printf() to print
-> structure members. Morever with this there would be no need to redefine
-> these structures in libc implementations as it is done now.
-> 
-> Consider for example the newly added statx() syscall. If we use the
-> header from uapi we will get warnings when attempting to print it's
-> members as:
-> 
-> 	printf("%" PRIu64 "\n", stx.stx_size);
-> 
-> We get:
-> 
-> 	warning: format '%lu' expects argument of type 'long unsigned int',
-> 	         but argument 5 has type '__u64' {aka 'long long unsigned int'}
-> 
-> After this patch the types match and no warnings are generated.
-This would make it even easier to ignore the existence of different 
-kernel types, and let userspace use standard types.
+I will more or less be using these changes as a template to update other
+tests to work under cgroup2 (or at least report something reasonable instead
+of failing to mount), so I would appreciate any suggestions anyone has. 
 
-Related recent discussion:
-<https://lore.kernel.org/linux-man/20210423230609.13519-1-alx.manpages@gmail.com/>
+Luke Nowakowski-Krijger (2):
+  controllers/memcg: Update regression tests to newer test infastructure
+  controllers/memcg: Add cgroup2 support for regression tests
 
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+ .../memcg/regression/memcg_regression_test.sh | 175 +++++++++++-------
+ .../memcg/regression/memcg_test_1.c           |  12 +-
+ .../memcg/regression/memcg_test_3.c           |  35 ++--
+ .../memcg/regression/memcg_test_4.sh          |  25 ++-
+ 4 files changed, 145 insertions(+), 102 deletions(-)
 
-Acked-by: Alejandro Colomar <alx.manpages@gmail.com>
+-- 
+2.32.0
 
-Thanks,
-Alex
-
-> ---
->   include/uapi/asm-generic/types.h | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/uapi/asm-generic/types.h b/include/uapi/asm-generic/types.h
-> index dfaa50d99d8f..ae748a3678a4 100644
-> --- a/include/uapi/asm-generic/types.h
-> +++ b/include/uapi/asm-generic/types.h
-> @@ -1,9 +1,16 @@
->   /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->   #ifndef _ASM_GENERIC_TYPES_H
->   #define _ASM_GENERIC_TYPES_H
-> +
-> +#include <asm/bitsperlong.h>
-> +
->   /*
-> - * int-ll64 is used everywhere now.
-> + * int-ll64 is used everywhere in kernel now.
->    */
-> -#include <asm-generic/int-ll64.h>
-> +#if __BITS_PER_LONG == 64 && !defined(__KERNEL__)
-
-BTW, C2X adds LONG_WIDTH in <limits.h> (and in general TYPE_WIDTH) to 
-get the bits of a long.
-
-> +# include <asm-generic/int-l64.h>
-> +#else
-> +# include <asm-generic/int-ll64.h>
-> +#endif
->   
->   #endif /* _ASM_GENERIC_TYPES_H */
-> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
