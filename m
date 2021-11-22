@@ -4,61 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CE1EC433F5
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 20:49:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A11EC433EF
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 21:09:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AAA713C8DC6
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 21:49:06 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id BA3923C8DCD
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 22:09:20 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id BF1DA3C8982
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 22:09:10 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B3B133C0D0B
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 21:48:57 +0100 (CET)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0A3BE2001AB
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 22:09:09 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CFFA51A004AD
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 21:48:56 +0100 (CET)
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MMFdY-1n6Ngf3y1m-00JHh3 for <ltp@lists.linux.it>; Mon, 22 Nov 2021
- 21:48:55 +0100
-Received: by mail-wr1-f53.google.com with SMTP id d24so35100986wra.0
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 12:48:55 -0800 (PST)
-X-Gm-Message-State: AOAM5333s66OC5piYsDOuS51H92AXXPdwzilGM0RLzTBgNoEOAVK2kZY
- THgamuicvLnzqir5GQwSMhLUIAvn/ECezXKizeA=
-X-Google-Smtp-Source: ABdhPJwf+d8ctWPtfnfnh90ZtW1kb/NXAtGxWpODV7GJ5lqYNV7ntpKGV2T3UpIDDYaCPfzwOX3Viuecq2sgKQ0oXhg=
-X-Received: by 2002:adf:df89:: with SMTP id z9mr80369wrl.336.1637614135426;
- Mon, 22 Nov 2021 12:48:55 -0800 (PST)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1455321891;
+ Mon, 22 Nov 2021 21:09:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1637615349;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7vSeuM+UkXq+4iVBqwr0QlYFSjV8HldzhJA1G3tz+oo=;
+ b=bdNN9+3GO0t/ZJwNo/ntHweKuPFkX+p0ufufF7NwxPTePnEHyzxF4XEK4+insnKQKMwA3B
+ mIjQPHJSF5zJolRdGKD6xNHBu2Y5IfcBvpxiGSqakUXxeMtjuLIBOCC12m6AyM8R9cjJxD
+ vVqiNnH7KdCWsRkJpVEwgztNYyI0EQo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1637615349;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7vSeuM+UkXq+4iVBqwr0QlYFSjV8HldzhJA1G3tz+oo=;
+ b=cJHjmUzwcOspkFtxUaSX1oepCoAfz3PwxihV5hwYkT8pZP2nbCcOQUD91SPVpHSOBQs9R9
+ VX+H72qrkMlJ57AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3AA3313B68;
+ Mon, 22 Nov 2021 21:09:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3g8qBfQGnGG7HwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 22 Nov 2021 21:09:08 +0000
+Date: Mon, 22 Nov 2021 22:09:06 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>
+Message-ID: <YZwG8nfFmR+q915S@pevik>
+References: <20211118235744.802584-1-krisman@collabora.com>
+ <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
+ <8735nsuepi.fsf@collabora.com> <YZtLDXW01Cz0BfPU@pevik>
+ <87mtlwt7p6.fsf@collabora.com>
 MIME-Version: 1.0
-References: <YZvIlz7J6vOEY+Xu@yuki>
-In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 22 Nov 2021 21:48:39 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0x5Bw7=0ng-s+KsUywqJYa0tk9cSWmZhx+cZRBOR87ZA@mail.gmail.com>
-Message-ID: <CAK8P3a0x5Bw7=0ng-s+KsUywqJYa0tk9cSWmZhx+cZRBOR87ZA@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Provags-ID: V03:K1:foi9f2ELqVpijqDiZPrIiB4Ag3nIH358xJNDqiUcsocqlgJiHqC
- epoNKHRGOZqXOlMzFQ4UL4MuFQg23S1LlQHKaRVavVMH9dsIvnAUmnRQt/cX3QMj+rUKuTk
- tryXJibvf2ceNhQ3W2D8/0Hd+SdVkBifc84/NBoQje2O47UWxTgKXBCGDd9yHK1gepvtLuB
- TZc5gFF9TKJXNYRB8Zp4g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qu6/jJO5XvA=:PcXY79prnptPRTSHb2E/qf
- kp0nZAGPNVLe5JqNV0l3hQbz3wAA/ZErVvmXHG5aZkpllFYLiXFfnbLxjYUj3EphqYlHTywGt
- Dc6pH6bPHg/y1DywuW9viR6hVo8jdhYKTEa+7lw92JPP4wtbf7wq3q/vwsVgNXkBt7zJl/xLp
- aun6Ayoe8eRbWL7msNbU5l9KfYrMVwSf7KWUM8YNUt6IdGJAB5auSvXhxNfbSqS1m6ipnY/EL
- C1AWjxo3RHus6aI+rU/7VikB0hbH2140cETkdi17hsGQ8va8Qu24DcHGbA8uKQ3iURCrBY1b+
- MmF8pj28ZRqofYMDDjqcBGCkCKhgRNFLGjEhYZJQHvPtpdjO+Qim7R3e/fdzrzBblI/49MBOp
- aJwiYzPOQQJhzxhZMSEQMy403MJTs4EAOJw5C/bxH8x2u/p5gPAXH4wUVk+Iu/tZiCvvs2aHh
- e2XKlUeDIKHJ8htJ+P8PHiGBfodPJv2F7KySwYtAAA5q8XnqWjPaTguk2Ab7rxiUKxOwAEBlA
- AEFUCM3U7h4KgLg8ZBxWis4j2X8iYPkKsqBHEcAfPg26EM7O4wIhz46Dxhc/KO+sZSF50St+b
- V5+MxOOeSOIK2F9enLQSCIdq3/JyH2XlMiw243h+czYfT+VTkbgBtaY3lFbLsSPH6ZZjqPZR9
- RbDn/jdcKh86sTyDTKU9qmw5MWCrjc6V4ykmEojRsUZTig7UtOcBW6CLP000SZN4lWlo=
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87mtlwt7p6.fsf@collabora.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
- }int64_t in userspace
+Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,49 +78,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-arch <linux-arch@vger.kernel.org>,
- GNU C Library <libc-alpha@sourceware.org>, Arnd Bergmann <arnd@arndb.de>,
- Linux API <linux-api@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- LTP List <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
+ Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.com>,
+ Ext4 <linux-ext4@vger.kernel.org>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Nov 22, 2021 at 5:43 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> +
-> +#include <asm/bitsperlong.h>
-> +
->  /*
-> - * int-ll64 is used everywhere now.
-> + * int-ll64 is used everywhere in kernel now.
->   */
-> -#include <asm-generic/int-ll64.h>
-> +#if __BITS_PER_LONG == 64 && !defined(__KERNEL__)
-> +# include <asm-generic/int-l64.h>
-> +#else
-> +# include <asm-generic/int-ll64.h>
-> +#endif
+Hi all,
+> Petr Vorel <pvorel@suse.cz> writes:
 
-I don't think this is correct on all 64-bit architectures, as far as I
-remember the
-definition can use either 'long' or 'long long' depending on the user space
-toolchain.
+> > Hi all,
 
-Out of the ten supported 64-bit architectures, there are four that already
-use asm-generic/int-l64.h conditionally, and six that don't, and I
-think at least
-some of those are intentional.
+> > <snip>
+> >> Hi Amir,
 
-I think it would be safer to do this one architecture at a time to make
-sure this doesn't regress on those that require the int-ll64.h version.
+> >> I have pushed v4 to :
 
-There should also be a check for __SANE_USERSPACE_TYPES__
-to let userspace ask for the ll64 version everywhere.
+> >> https://gitlab.collabora.com/krisman/ltp.git -b fan-fs-error_v4
 
-          Arnd
+> > FYI I've rebased it on my fix 3b2ea2e00 ("configure.ac: Add struct
+> > fanotify_event_info_pidfd check")
+
+> > https://github.com/linux-test-project/ltp.git -b gertazi/fanotify21.v4.fixes
+
+> > diff to krisman/fan-fs-error_v4:
+
+> Petr,
+
+> Should I send a v5 or is v4 getting picked up and merged with the fixup
+> hunk?
+No need to sent v4, I'll merge it from my branch. This is info for Amir, which
+wanted to use your git tree to base his patchset on (if it wasn't relevant only
+to patches for man-pages).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
