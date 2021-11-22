@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 490E2C433EF
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 07:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A68AAC433EF
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 07:26:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 844FF3C8C57
-	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 08:26:46 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B1F0E3C8C7F
+	for <ltp@archiver.kernel.org>; Mon, 22 Nov 2021 08:26:56 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E86973C8D68
+ by picard.linux.it (Postfix) with ESMTPS id 3CDC63C8C5C
  for <ltp@lists.linux.it>; Mon, 22 Nov 2021 08:26:17 +0100 (CET)
 Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BBF8E200BAF
- for <ltp@lists.linux.it>; Mon, 22 Nov 2021 08:26:15 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 853231A010EA
+ for <ltp@lists.linux.it>; Mon, 22 Nov 2021 08:26:16 +0100 (CET)
 Received: from ubuntu.localdomain (unknown [188.195.115.12])
- by mail.jv-coder.de (Postfix) with ESMTPSA id F20229FB3D;
- Mon, 22 Nov 2021 07:26:13 +0000 (UTC)
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 792869FD36;
+ Mon, 22 Nov 2021 07:26:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1637565974; bh=qynIuYusIiXt9NZoQCSZqXpVf7braaEFiSOzjJcBwRk=;
+ t=1637565975; bh=5knM9pwRm77r/wKxoamqGDYBx/eAShhVa7WOj0F9Xeo=;
  h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=LmlzRhl/Kn3D8AqI7+at20Jf+SJ6fXCUS+xa4e552PqFMB52gK+0TkS5krsQVdKI5
- hCblkWy5sC0tYZtiMjdvc12KUcWO3iJcQh+cTtwijLkESLiqwaljLbJkr0yGmzVfCU
- LzGuO7nqBMfBFVCRlf5yvX1SP7212gQV/nkLNniY=
+ b=DbZPN4kt+DKn5BoMuUwjXIbk54SOSYBKGadxYWvD1AUnkw2gU8vse5WqbF4TlLvzS
+ Gxx17KD50c2qjRrjeOYLi8eJGqswAPumY6u86IuTs5CWo+LCS93W3H9exmBcKeve0Q
+ ZAubf5nP3ceYnlyi1njvL5Toc24saLFKMCInw2+s=
 From: Joerg Vehlow <lkml@jv-coder.de>
 To: ltp@lists.linux.it,
 	chrubis@suse.cz
-Date: Mon, 22 Nov 2021 08:26:00 +0100
-Message-Id: <20211122072601.4096577-3-lkml@jv-coder.de>
+Date: Mon, 22 Nov 2021 08:26:01 +0100
+Message-Id: <20211122072601.4096577-4-lkml@jv-coder.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211122072601.4096577-1-lkml@jv-coder.de>
 References: <20211122072601.4096577-1-lkml@jv-coder.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/4] posix/conformance/interfaces: Fix unused result
- for write
+Subject: [LTP] [PATCH 4/4] posix/interface/conformance: Fix all
+ unused-result warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,704 +63,280 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-Moved WRITE (as PTS_WRITE_MSG) macro to posixtest.h and suppress
-unused result error message.
+On error the failed function is printed and PTS_UNRESOLVED returned.
 
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
- .../conformance/interfaces/mmap/11-2.c                    | 6 ++----
- .../conformance/interfaces/mmap/11-3.c                    | 6 ++----
- .../conformance/interfaces/pthread_create/1-3.c           | 8 +++-----
- .../conformance/interfaces/sigaction/19-1.c               | 4 +---
- .../conformance/interfaces/sigaction/19-10.c              | 4 +---
- .../conformance/interfaces/sigaction/19-11.c              | 4 +---
- .../conformance/interfaces/sigaction/19-12.c              | 4 +---
- .../conformance/interfaces/sigaction/19-13.c              | 4 +---
- .../conformance/interfaces/sigaction/19-14.c              | 4 +---
- .../conformance/interfaces/sigaction/19-15.c              | 4 +---
- .../conformance/interfaces/sigaction/19-16.c              | 4 +---
- .../conformance/interfaces/sigaction/19-17.c              | 4 +---
- .../conformance/interfaces/sigaction/19-18.c              | 4 +---
- .../conformance/interfaces/sigaction/19-19.c              | 4 +---
- .../conformance/interfaces/sigaction/19-2.c               | 5 ++---
- .../conformance/interfaces/sigaction/19-20.c              | 4 +---
- .../conformance/interfaces/sigaction/19-21.c              | 4 +---
- .../conformance/interfaces/sigaction/19-22.c              | 4 +---
- .../conformance/interfaces/sigaction/19-23.c              | 4 +---
- .../conformance/interfaces/sigaction/19-24.c              | 4 +---
- .../conformance/interfaces/sigaction/19-25.c              | 4 +---
- .../conformance/interfaces/sigaction/19-26.c              | 4 +---
- .../conformance/interfaces/sigaction/19-3.c               | 4 +---
- .../conformance/interfaces/sigaction/19-4.c               | 4 +---
- .../conformance/interfaces/sigaction/19-5.c               | 4 +---
- .../conformance/interfaces/sigaction/19-6.c               | 4 +---
- .../conformance/interfaces/sigaction/19-7.c               | 4 +---
- .../conformance/interfaces/sigaction/19-8.c               | 4 +---
- .../conformance/interfaces/sigaction/19-9.c               | 4 +---
- testcases/open_posix_testsuite/include/posixtest.h        | 6 ++++++
- 30 files changed, 40 insertions(+), 91 deletions(-)
+ .../conformance/interfaces/clock_getcpuclockid/5-1.c   | 10 ++++++++--
+ .../conformance/interfaces/kill/2-2.c                  |  5 ++++-
+ .../conformance/interfaces/kill/3-1.c                  |  5 ++++-
+ .../conformance/interfaces/mmap/18-1.c                 |  8 ++++++--
+ .../conformance/interfaces/mq_open/16-1.c              |  8 ++++++--
+ .../conformance/interfaces/sched_setparam/2-1.c        |  5 ++++-
+ .../conformance/interfaces/sched_setparam/2-2.c        |  5 ++++-
+ .../conformance/interfaces/sched_yield/1-1.c           |  9 ++++++---
+ .../conformance/interfaces/shm_open/26-2.c             |  9 ++++++---
+ .../conformance/interfaces/shm_unlink/8-1.c            |  3 ++-
+ .../conformance/interfaces/shm_unlink/9-1.c            |  6 ++++--
+ .../conformance/interfaces/sigaltstack/9-1.c           |  5 ++++-
+ testcases/open_posix_testsuite/include/affinity.h      |  3 ++-
+ 13 files changed, 60 insertions(+), 21 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c
-index d63949418..be0f140dc 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-2.c
-@@ -33,13 +33,11 @@
- #include "posixtest.h"
- #include "tempfile.h"
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c
+index 0046d5066..2e9961a19 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getcpuclockid/5-1.c
+@@ -35,8 +35,14 @@ int main(void)
  
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static void sigbus_handler(int signum)
+ 		pwd = getpwnam("nobody");
+ 		if (pwd != NULL) {
+-			setgid(pwd->pw_gid);
+-			setuid(pwd->pw_uid);
++			if (setgid(pwd->pw_gid)) {
++				perror("setgid");
++				return PTS_UNRESOLVED;
++			}
++			if (setuid(pwd->pw_uid)) {
++				perror("setuid");
++				return PTS_UNRESOLVED;
++			}
+ 		}
+ 	}
+ 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c
+index dd566831c..1cd3b2fdc 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/kill/2-2.c
+@@ -55,7 +55,10 @@ int main(void)
+ 	 */
+ 	/* this is added incase user is root. If user is normal user, then it
+ 	 * has no effect on the tests */
+-	setuid(1);
++	if (setuid(1)) {
++		perror("setuid");
++		return PTS_UNRESOLVED;
++	}
+ 
+ 	if (-1 == kill(1, 0)) {
+ 		if (EPERM == errno) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c
+index a5999332b..70a8c590c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/kill/3-1.c
+@@ -23,7 +23,10 @@ int main(void)
  {
- 	if (signum == SIGBUS) {
--		WRITE("SIGBUS triggered\n");
--		WRITE("Test PASSED\n");
-+		PTS_WRITE_MSG("SIGBUS triggered\n");
-+		PTS_WRITE_MSG("Test PASSED\n");
- 		_exit(PTS_PASS);
+ 	/* this is added incase user is root. If user is normal user, then it
+ 	 * has no effect on the tests */
+-	setuid(1);
++	if (setuid(1)) {
++		perror("setuid");
++		return PTS_UNRESOLVED;
++	}
+ 
+ 	if (kill(1, 0) != -1) {
+ 		printf
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c
+index 113d01b8c..9d02a074d 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/18-1.c
+@@ -124,14 +124,18 @@ int main(void)
+ 	 * EAGAIN:
+ 	 * Lock all the memory by mlockall().
+ 	 * Set resource limit setrlimit()
+-	 * Change the user to non-root then only setrmilit is applicable.
++	 * Change the user to non-root then only setrlimit is applicable.
+ 	 */
+ 	pa = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+ 	if (pa == MAP_FAILED && errno == EAGAIN) {
+ 		printf("Got EAGAIN: %s\n", strerror(errno));
+ 		printf("Test PASSED\n");
+ 		/* Change user to root */
+-		seteuid(0);
++		if (seteuid(0)) {
++			close(fd);
++			perror("seteuid");
++			return PTS_UNRESOLVED;
++		}
+ 		close(fd);
+ 		munmap(pa, len);
+ 		return PTS_PASS;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+index eee55a748..ecbfb0f79 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_open/16-1.c
+@@ -61,10 +61,14 @@ int main(void)
+ 		printf(TNAME " Error at open(): %s\n", strerror(errno));
+ 		return PTS_UNRESOLVED;
  	}
- }
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c
-index 073b64ef9..7d38dacda 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-3.c
-@@ -31,13 +31,11 @@
- #include <unistd.h>
- #include "posixtest.h"
+-	/* file is empty now, will cause "Bus error" */
+-	write(fd, fname, sizeof(int));
+ 	unlink(fname);
  
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static void sigbus_handler(int signum)
- {
- 	if (signum == SIGBUS) {
--		WRITE("SIGBUS triggered\n");
--		WRITE("Test PASSED\n");
-+		PTS_WRITE_MSG("SIGBUS triggered\n");
-+		PTS_WRITE_MSG("Test PASSED\n");
- 		_exit(PTS_PASS);
- 	}
- }
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c
-index 30fcfe0e9..2fecdd197 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_create/1-3.c
-@@ -10,8 +10,8 @@
-  *
-  * Steps:
-  * 1.  Create a new thread that will go into a never-ending while loop.
-- * 2.  If the thread is truly asynchronise, then the main function will
-- *     continue instead of waiting for the thread to return (which in never
-+ * 2.  If the thread is truly asynchronous, then the main function will
-+ *     continue instead of waiting for the thread to return (which it never
-  *     does in this test case).
-  * 3.  An alarm is set to go off (i.e. send the SIGARLM signal) after 3
-  *     seconds. This is done for 'timeing-out' reasons, in case main DOES
-@@ -72,11 +72,9 @@ static void *a_thread_function()
- 	return NULL;
- }
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- /* If this handler is called, that means that the test has failed. */
- static void alarm_handler()
- {
--	WRITE("Test FAILED: Alarm fired while waiting for cancelation\n");
-+	PTS_WRITE_MSG("Test FAILED: Alarm fired while waiting for cancelation\n");
- 	_exit(PTS_FAIL);
- }
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c
-index a038ea92a..aadcfd840 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-1.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGABRT) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c
-index 019c98036..4ab58ae4b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-10.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGPIPE) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c
-index 7e3545e90..31d077c7d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-11.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGQUIT) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c
-index 123ff169d..ec7c8ade3 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-12.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGSEGV) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c
-index 6cfe1d7f9..da1241c2e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-13.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGTERM) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c
-index 9371b1bdb..0b33cc2e3 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-14.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGTSTP) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c
-index 37a986d68..c5ef80910 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-15.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGTTIN) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c
-index 72446e792..73c632be2 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-16.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGTTOU) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c
-index e6d5ba8be..50d9b7cd6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-17.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGUSR1) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c
-index 2d3f7437f..dc6976218 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-18.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGUSR2) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c
-index b124d08b8..3708f7e85 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-19.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGPOLL) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c
-index 0c7e8c698..b9c6ff9b5 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-2.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,13 +48,14 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGALRM) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
- 	called = 1;
- }
- 
++	if (ftruncate(fd, sizeof(int))) {
++		perror("ftruncate");
++		close(fd);
++		return PTS_UNRESOLVED;
++	}
 +
+ 	pa = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+ 	if (pa == MAP_FAILED) {
+ 		printf(TNAME " Error at mmap: %s\n", strerror(errno));
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
+index da56343d0..fb19ff6a4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-1.c
+@@ -125,7 +125,10 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	pipe(the_pipe);
++	if (pipe(the_pipe)) {
++		perror("pipe");
++		return PTS_UNRESOLVED;
++	}
+ 
+ 	for (i = 0; i < nb_child; i++) {
+ 		child_pid[i] = fork();
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
+index 6f10618b6..6c68120c3 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/2-2.c
+@@ -129,7 +129,10 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	pipe(the_pipe);
++	if (pipe(the_pipe)) {
++		perror("pipe");
++		return PTS_UNRESOLVED;
++	}
+ 
+ 	for (i = 0; i < nb_child; i++) {
+ 		child_pid[i] = fork();
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c
+index 602733e60..2e1e3197a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_yield/1-1.c
+@@ -45,18 +45,21 @@ static int child_busy(int fd)
+ 	alarm(4);
+ 
+ 	/* Tell the parent we're ready */
+-	write(fd, "go", 2);
++	if (write(fd, "go", 2) == -1) {
++		perror("write");
++		exit(PTS_UNRESOLVED);
++	}
+ 
+ 	for (;;) {
+ 		rc = sched_yield();
+ 		if (rc) {
+ 			ERR_LOG("child: sched_yield", rc);
+-			exit(1);
++			exit(PTS_FAIL);
+ 		}
+ 	}
+ 
+ 	/* should not get here */
+-	exit(2);
++	exit(PTS_UNRESOLVED);
+ }
+ 
  int main(void)
- {
- 	int ret;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c
-index f01a4c2ec..bf8f35ab0 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-20.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGPROF) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c
+index 215d3e1af..69edeae85 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_open/26-2.c
+@@ -95,19 +95,22 @@ int main(void)
+ 	fd = shm_open(SHM_NAME, O_RDWR | O_TRUNC, 0);
+ 	if (fd == -1) {
+ 		perror("An error occurs when calling shm_open()");
+-		seteuid(getuid());
++		if (seteuid(getuid()))
++			perror("seteuid");
+ 		shm_unlink(SHM_NAME);
+ 		return PTS_UNRESOLVED;
  	}
  
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c
-index 74fffa988..fa96eda85 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-21.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGSYS) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
+ 	if (fstat(fd, &stat_buf) != 0) {
+ 		perror("An error occurs when calling fstat()");
+-		seteuid(getuid());
++		if (seteuid(getuid()))
++			perror("seteuid");
+ 		shm_unlink(SHM_NAME);
+ 		return PTS_UNRESOLVED;
  	}
  
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c
-index dbe6c55a1..3885f2a0c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-22.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
+-	seteuid(getuid());
++	if (seteuid(getuid()))
++		perror("seteuid");
+ 	shm_unlink(SHM_NAME);
  
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGTRAP) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
+ 	if (stat_buf.st_uid == old_uid && stat_buf.st_gid == old_gid) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c
+index ed18cf213..d67d2fbe2 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/8-1.c
+@@ -86,7 +86,8 @@ int main(void)
+ 		return PTS_UNRESOLVED;
  	}
  
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c
-index e0f54d835..e51d7ce18 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-23.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
+-	seteuid(getuid());
++	if (seteuid(getuid()))
++		perror("seteuid");
  
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGURG) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
+ 	if (fstat(fd, &stat_after) != 0) {
+ 		perror("An error occurs when calling fstat()");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c
+index 5c52465c8..9ef4b0c65 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/9-1.c
+@@ -69,12 +69,14 @@ int main(void)
+ 	result = shm_unlink(SHM_NAME);
+ 	if (result == -1 && errno == EACCES) {
+ 		printf("Test PASSED\n");
+-		seteuid(getuid());
++		if (seteuid(getuid()))
++			perror("seteuid");
+ 		shm_unlink(SHM_NAME);
+ 		return PTS_PASS;
+ 	} else if (result == -1) {
+ 		perror("Unexpected error");
+-		seteuid(getuid());
++		if (seteuid(getuid()))
++			perror("seteuid");
+ 		shm_unlink(SHM_NAME);
+ 		return PTS_FAIL;
  	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c
+index 0236a752e..e9f9a8f71 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaltstack/9-1.c
+@@ -59,7 +59,10 @@ int main(int argc, char *argv[])
  
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c
-index bba928a57..8505c94ef 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-24.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
+ 		/* Get abs path if needed and exec ourself */
+ 		if (*argv[0] != '/') {
+-			getcwd(path, PATH_MAX);
++			if (getcwd(path, PATH_MAX) == NULL) {
++				perror("getcwd");
++				exit(PTS_UNRESOLVED);
++			}
+ 			strcat(path, "/");
+ 			strcat(path, argv[0]);
+ 		} else {
+diff --git a/testcases/open_posix_testsuite/include/affinity.h b/testcases/open_posix_testsuite/include/affinity.h
+index 86fb4f4c6..da7e6837e 100644
+--- a/testcases/open_posix_testsuite/include/affinity.h
++++ b/testcases/open_posix_testsuite/include/affinity.h
+@@ -46,7 +46,8 @@ static int get_online_cpu_from_sysfs(void)
+ 	f = fopen("/sys/devices/system/cpu/online", "r");
+ 	if (!f)
+ 		return -1;
+-	fscanf(f, "%d", &cpu);
++	if (!fscanf(f, "%d", &cpu))
++		cpu = -1;
+ 	fclose(f);
  
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGVTALRM) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c
-index 62ebe7390..404521ed9 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-25.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGXCPU) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c
-index c02c77397..0e072823e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-26.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGXFSZ) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c
-index 5fb8c5fad..6674c9a53 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-3.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGBUS) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c
-index 993889041..a56f15bd2 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-4.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGCHLD) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c
-index 9096ca426..9df9e428d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-5.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGCONT) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c
-index 3b6799a4e..da0b6ba7c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-6.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGFPE) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c
-index 5d6b84bd3..ed1bd3db4 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-7.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGHUP) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c
-index ec2649165..4edf21e7d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-8.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGILL) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c
-index 91044863a..e59bb745b 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sigaction/19-9.c
-@@ -40,8 +40,6 @@
- #include <errno.h>
- #include "posixtest.h"
- 
--#define WRITE(str) write(STDOUT_FILENO, str, sizeof(str) - 1)
--
- static volatile sig_atomic_t called = 0;
- 
- static void handler(int sig, siginfo_t *info, void *context)
-@@ -50,7 +48,7 @@ static void handler(int sig, siginfo_t *info, void *context)
- 	(void) context;
- 
- 	if (info->si_signo != SIGINT) {
--		WRITE("Wrong signal generated?\n");
-+		PTS_WRITE_MSG("Wrong signal generated?\n");
- 		_exit(PTS_FAIL);
- 	}
- 
-diff --git a/testcases/open_posix_testsuite/include/posixtest.h b/testcases/open_posix_testsuite/include/posixtest.h
-index 833488280..d1e62bac0 100644
---- a/testcases/open_posix_testsuite/include/posixtest.h
-+++ b/testcases/open_posix_testsuite/include/posixtest.h
-@@ -23,3 +23,9 @@
- #define PTS_ATTRIBUTE_NORETURN		__attribute__((noreturn))
- #define PTS_ATTRIBUTE_UNUSED		__attribute__((unused))
- #define PTS_ATTRIBUTE_UNUSED_RESULT	__attribute__((warn_unused_result))
-+
-+#define PTS_WRITE_MSG(msg) do { \
-+         if (write(STDOUT_FILENO, msg, sizeof(msg) - 1)) { \
-+                 /* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425 */ \
-+         } \
-+} while (0) 
+ 	return cpu;
 -- 
 2.25.1
 
