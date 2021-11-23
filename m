@@ -4,69 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE5B7C433EF
-	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 15:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEA0AC433F5
+	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 16:47:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 329CB3C8E72
-	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 16:16:08 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id EC6BA3C8E67
+	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 17:47:51 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1AC2F3C25EC
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 16:15:39 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 5BDAF3C3189
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 17:47:42 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8415C10001A3
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 16:15:39 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B0D481FD5A
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 15:15:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1637680538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 78160601CFE
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 17:47:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1637686060;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=siONAoEy/QGvNNwxpcQdBhh1sgLCDSwRWyHbMYlxXLU=;
- b=V33l6mWuqz8u/7ETV/MxON/IXLvuxFLQ8bNzeKrwQchRSG+e0SQouX5UEVdh4si795ZVrf
- 4GH9RhzBKF9+ub4NaKj/scpdmyPponw11ufrEaRsNy079pKNvN4qPwjZo7syNou2wTox4T
- UojlEytDUsjP2WnmRPVBeL8TmokcBWk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1637680538;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=siONAoEy/QGvNNwxpcQdBhh1sgLCDSwRWyHbMYlxXLU=;
- b=b9HRq0sV1YyhhacxpPLpAp7os5fgx5cZuopn0H+ZxADd4mzxL6r21vyjkFc5jwp2JVPIS7
- ETDs13nv5RBA0RCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=eGWhtGhPtpq/ZiEd6igWpm4/71FIAUKG5LmWLh1yu0w=;
+ b=CpYzwHr5GjNeVs7i3GEIY5jgKVOdaEuGfj0IfYbYxOTYEFPpqUx6M1OfcXwR32Wia8NnVn
+ /I38TIpHWvZceLwAPIl4XQay+vbNAD+9spK6V8n+dA+DIBg/Lu1NZHaus4HPut2MFJ5rW3
+ Mgl8VUA3+xdaUAeccCzIi2QLcHGfogY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-258-66xCcqg-MdGoCOG_LgKrhA-1; Tue, 23 Nov 2021 11:47:36 -0500
+X-MC-Unique: 66xCcqg-MdGoCOG_LgKrhA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
+ [10.5.11.12])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DCFC13E20
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 15:15:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OL5cJZoFnWHqQwAAMHmgww
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 15:15:38 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 23 Nov 2021 16:15:36 +0100
-Message-Id: <20211123151537.14913-2-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211123151537.14913-1-mdoucha@suse.cz>
-References: <20211123151537.14913-1-mdoucha@suse.cz>
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 500BA80668B;
+ Tue, 23 Nov 2021 16:47:35 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B473360C7F;
+ Tue, 23 Nov 2021 16:47:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+ Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+ Kingdom.
+ Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
+References: <YZvIlz7J6vOEY+Xu@yuki>
+To: Cyril Hrubis <chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-ID: <1618288.1637686052.1@warthog.procyon.org.uk>
+Date: Tue, 23 Nov 2021 16:47:32 +0000
+Message-ID: <1618289.1637686052@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] nfs_lib.sh: Add support for test-specific
- parameters
+Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
+ }int64_t in userspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,39 +73,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: linux-arch@vger.kernel.org, libc-alpha@sourceware.org, arnd@arndb.de,
+ linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, dhowells@redhat.com,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Changes since v1: None
+> This changes the __u64 and __s64 in userspace on 64bit platforms from
+> long long (unsigned) int to just long (unsigned) int in order to match
+> the uint64_t and int64_t size in userspace.
 
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Can you guarantee this won't break anything in userspace?  Granted the types
+*ought* to be the same size, but anyone who's written code on the basis that
+these are "(unsigned) long long int" may suddenly get a bunch of warnings
+where they didn't before from the C compiler.  Anyone using C++, say, may find
+their code no longer compiles because overloaded function matching no longer
+finds a correct match.
 
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index 790655643..b01215136 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -19,10 +19,12 @@ nfs_parse_args()
- 	case "$1" in
- 	v) VERSION="$(echo $2 | tr ',' ' ')";;
- 	t) SOCKET_TYPE="$(echo $2 | tr ',' ' ')";;
-+	*) [ "$NFS_PARSE_ARGS_CALLER" ] && $NFS_PARSE_ARGS_CALLER "$@";;
- 	esac
- }
- 
--TST_OPTS="v:t:"
-+NFS_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
-+TST_OPTS="v:t:$TST_OPTS"
- TST_PARSE_ARGS=nfs_parse_args
- TST_USAGE=nfs_usage
- TST_NEEDS_TMPDIR=1
--- 
-2.33.0
+Also, whilst your point about PRIu64 and PRId64 modifiers in printf() is a
+good one, it doesn't help someone whose compiler doesn't support that (I don't
+know if anyone's likely to encounter such these days).  At the moment, I think
+a user can assume that %llu will work correctly both on 32-bit and 64-bit on
+all arches, but you're definitely breaking that assumption.
+
+David
 
 
 -- 
