@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEA0AC433F5
-	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 16:47:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9344FC433EF
+	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 18:07:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC6BA3C8E67
-	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 17:47:51 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 0B0F73C8F1B
+	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 19:07:30 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BDAF3C3189
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 17:47:42 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B37D83C3189
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 19:07:21 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 78160601CFE
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 17:47:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1637686060;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eGWhtGhPtpq/ZiEd6igWpm4/71FIAUKG5LmWLh1yu0w=;
- b=CpYzwHr5GjNeVs7i3GEIY5jgKVOdaEuGfj0IfYbYxOTYEFPpqUx6M1OfcXwR32Wia8NnVn
- /I38TIpHWvZceLwAPIl4XQay+vbNAD+9spK6V8n+dA+DIBg/Lu1NZHaus4HPut2MFJ5rW3
- Mgl8VUA3+xdaUAeccCzIi2QLcHGfogY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-258-66xCcqg-MdGoCOG_LgKrhA-1; Tue, 23 Nov 2021 11:47:36 -0500
-X-MC-Unique: 66xCcqg-MdGoCOG_LgKrhA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7858D200BC5
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 19:07:19 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 500BA80668B;
- Tue, 23 Nov 2021 16:47:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
- by smtp.corp.redhat.com (Postfix) with ESMTP id B473360C7F;
- Tue, 23 Nov 2021 16:47:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
- Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
- Kingdom.
- Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
-References: <YZvIlz7J6vOEY+Xu@yuki>
-To: Cyril Hrubis <chrubis@suse.cz>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6E5FF2191E;
+ Tue, 23 Nov 2021 18:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1637690838; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=5vRCFpWqfNnTZBMGXadkQUJm6TYGY4z4PX3nEnCadmg=;
+ b=jmLFPXqtQrQi720V2Mh0QRQsSpmemBcpf+JcX3N676Oj+JMgOiN9EfW2+RPMeMWbrRA33N
+ 1z6ZN3Hnebu/vXXr5rzKxqY21DPZRcZEQYi01v0DVBb4bmSliHK1CRAY8gaU1nD6Y5++P3
+ FxMZhQ6zoFAQKAaj5N1E9IQiEz2+P3A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1637690838;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=5vRCFpWqfNnTZBMGXadkQUJm6TYGY4z4PX3nEnCadmg=;
+ b=Cvex7LUwV3hbLP/TWSqezeVZOkKONj5KW3I/vF0XSgoy5RIdIO3NkpwjY7OtP5tTj6cvCb
+ WrRaeP0EwSQO6sBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 160CB13E38;
+ Tue, 23 Nov 2021 18:07:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id L+vMAtYtnWFzDQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 23 Nov 2021 18:07:18 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 23 Nov 2021 19:07:11 +0100
+Message-Id: <20211123180711.30274-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-ID: <1618288.1637686052.1@warthog.procyon.org.uk>
-Date: Tue, 23 Nov 2021 16:47:32 +0000
-Message-ID: <1618289.1637686052@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
- }int64_t in userspace
+Subject: [LTP] [PATCH 1/1] tst_test.sh: Print help ASAP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,34 +71,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-arch@vger.kernel.org, libc-alpha@sourceware.org, arnd@arndb.de,
- linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, dhowells@redhat.com,
- ltp@lists.linux.it
+Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cyril Hrubis <chrubis@suse.cz> wrote:
+There is no need to run setup before printing help.
 
-> This changes the __u64 and __s64 in userspace on 64bit platforms from
-> long long (unsigned) int to just long (unsigned) int in order to match
-> the uint64_t and int64_t size in userspace.
+Before this change root was required for network tests also for -h:
 
-Can you guarantee this won't break anything in userspace?  Granted the types
-*ought* to be the same size, but anyone who's written code on the basis that
-these are "(unsigned) long long int" may suddenly get a bunch of warnings
-where they didn't before from the C compiler.  Anyone using C++, say, may find
-their code no longer compiles because overloaded function matching no longer
-finds a correct match.
+    $ PATH="$lb:$PATH" nfs01 -h
+    nfs01 1 TCONF: Must be super/root for this test!
 
-Also, whilst your point about PRIu64 and PRId64 modifiers in printf() is a
-good one, it doesn't help someone whose compiler doesn't support that (I don't
-know if anyone's likely to encounter such these days).  At the moment, I think
-a user can assume that %llu will work correctly both on 32-bit and 64-bit on
-all arches, but you're definitely breaking that assumption.
+And with root setup was run:
 
-David
+	# PATH="$lb:$PATH" nfs07.sh -h
+	nfs07 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+	nfs07 1 TINFO: add local addr 10.0.0.2/24
+	nfs07 1 TINFO: add local addr fd00:1:1:1::2/64
+	nfs07 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+	nfs07 1 TINFO: add remote addr 10.0.0.1/24
+	nfs07 1 TINFO: add remote addr fd00:1:1:1::1/64
+	nfs07 1 TINFO: Network config (local -- remote):
+	nfs07 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+	nfs07 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+	nfs07 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+	-t x    Socket type, tcp or udp, default is udp
+	-v x    NFS version, default is '3'
+	-n x    Create x files and x directories, default is 5000
+	-h      Prints this help
+	-i n    Execute test n times
+
+Now help is simply printed:
+
+    $ PATH="$lb:$PATH" nfs01 -h
+    -t x    Socket type, tcp or udp, default is udp
+    -v x    NFS version, default is '3'
+    -6      IPv6 tests
+    -h      Prints this help
+    -i n    Execute test n times
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 2556b28f5..3cf94adac 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -606,7 +606,6 @@ tst_run()
+ 
+ 	while getopts ":hi:$TST_OPTS" _tst_name $TST_ARGS; do
+ 		case $_tst_name in
+-		'h') tst_usage; exit 0;;
+ 		'i') TST_ITERATIONS=$OPTARG;;
+ 		'?') tst_usage; exit 2;;
+ 		*) $TST_PARSE_ARGS "$_tst_name" "$OPTARG";;
+@@ -789,4 +788,9 @@ if [ -z "$TST_NO_DEFAULT_RUN" ]; then
+ 			tst_brk TBROK "Unexpected positional arguments '$@'"
+ 		fi
+ 	fi
++
++	if [ "$TST_PRINT_HELP" = 1 ]; then
++		tst_usage
++		exit 0
++	fi
+ fi
+-- 
+2.33.1
 
 
 -- 
