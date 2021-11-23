@@ -4,49 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28E75C433F5
-	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 12:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F262C433F5
+	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 14:19:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7E4053C8DCB
-	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 13:44:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 312CB3C8EA3
+	for <ltp@archiver.kernel.org>; Tue, 23 Nov 2021 15:19:08 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 31C163C8DCB
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 13:43:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 1D5733C8190
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 15:18:57 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A91F1601C59
- for <ltp@lists.linux.it>; Tue, 23 Nov 2021 13:43:57 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5B0A41FD63;
- Tue, 23 Nov 2021 12:43:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1637671437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=YU7+mR5X1h8DzMu2UlECBsvdY1AQ4SyXWzAt8GKOyxE=;
- b=gktZAe3frCEbg51+2W7Eyeow9EeF+n8CuNEKzU4HFs/jPkuJB84ZHxP2yZH2p66KVtwvx0
- 9CauH07X3gJdyp4iZzC8t4DvDnOtsrtICO2xCyF5qqFaCPDJdpzCvFbjA/eFmPu6dhLKRc
- Pu9HWPGdwj75HTk9lyQzJKUN4/YT78c=
-Received: from g78.suse.de (unknown [10.163.24.38])
- by relay2.suse.de (Postfix) with ESMTP id 2D939A3B88;
- Tue, 23 Nov 2021 12:43:57 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 23 Nov 2021 12:43:48 +0000
-Message-Id: <20211123124348.31073-4-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211123124348.31073-1-rpalethorpe@suse.com>
-References: <20211123124348.31073-1-rpalethorpe@suse.com>
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 113591400966
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 15:18:56 +0100 (CET)
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N4Qbu-1mfwTm1FqQ-011UVy for <ltp@lists.linux.it>; Tue, 23 Nov 2021 15:18:56
+ +0100
+Received: by mail-wm1-f44.google.com with SMTP id
+ i8-20020a7bc948000000b0030db7b70b6bso2418023wml.1
+ for <ltp@lists.linux.it>; Tue, 23 Nov 2021 06:18:56 -0800 (PST)
+X-Gm-Message-State: AOAM5331mY+iz/w2zKTE5WGXmEl7/JCUOstlG82c7Pi/koK18Fu5G4t1
+ rvAQZAkoG1Y9WMeeziqypUbzcdv8wbERnxUUzZE=
+X-Google-Smtp-Source: ABdhPJy/iu+HUeUW5MAS4aoS4UPs9O0+2rPHcGIO3sxNnrXnPW2hntwc4AmghGSopXx9bjgxeEGyK0ovTBLVT2Rzyac=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr3353750wmi.173.1637677135896; 
+ Tue, 23 Nov 2021 06:18:55 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <YZvIlz7J6vOEY+Xu@yuki>
+ <CAK8P3a0x5Bw7=0ng-s+KsUywqJYa0tk9cSWmZhx+cZRBOR87ZA@mail.gmail.com>
+ <YZyw56flmdQnBIuh@yuki>
+In-Reply-To: <YZyw56flmdQnBIuh@yuki>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 23 Nov 2021 15:18:39 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2RU8XJp_hS0JkO9mPJctAHHKBobV97gced6pMXcwzWow@mail.gmail.com>
+Message-ID: <CAK8P3a2RU8XJp_hS0JkO9mPJctAHHKBobV97gced6pMXcwzWow@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Provags-ID: V03:K1:rRoapDkttEiLPem05MqYqDj96TUmjY/071Kd/US1TYtaM1G66+V
+ XQDj3uylWxeZoJjF/V5cHjIkxuHcT3qDMlDzGmrJz6body52HYhgFkhb4vBVQVxw08e6Rib
+ QIquU0yGpj6a1WQGpT8E5rmoDL75iZc5VHvxQV47MggHHEBSOXBjQOS9jTfDt4KhHtjPcWU
+ U4N6uMPXSUh8blsGn9DDg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bU7Q96TdblA=:JT2zJIU3uSEp+XVgfEwnUW
+ M++x0EefEtkPz5ubtDJyqRBkwiO597b1g+Q0wA9WHjpGTSM/cK5Lub8a08oWQV2rArkK7xH6b
+ 24+4PaSs2sW8HAIvyhWYqBwUUCZPbikXwpZSRhn0u5iLSU11+twWAIKjzfg0fATE5t9SKKFXd
+ h+ZIONK6BqUmD74VwgDGqVw4JsOiCLM2GB8uKv7ZzBdPOxbyjyObrKwU0jaVUWMgoGkQNUwjO
+ ulkS1JHjATD+fsOsWAO49RMNCA/vzFbEcgg5POu0682N+QwJomuvnrCF5/qXhQ3PLftLjs62h
+ zpH4SO/tKe5BQsCz3VfIvzdp1P9MsB5ybtIGTcmv3dhP1CaxkGsnuQQzxvg3T6ENhA4tpE1XH
+ yuCXtC4GEqczj82HUoAvpI5ovCwfv1yKz4okA1QtsOqoQDiAegPbmgbtAMCMWa2vWUhvSqFk+
+ 0fOPSaUHie/HRcCHRvT8BBeTRvCgr7kpXSRPL7N8Z+aDUPeiCCjCETj0LcuryRnM7HU5ChW9F
+ +96UWa11eXz78e4F7d0H0t7Oq2PYgxkLPTKsZFxiCP7XOpO2lOwlZ4IKVQR4wRRY6EAdFW2BZ
+ otii2euarlTtmAge18T6eCq3wvCKdGgiGtU2TMNihsx4Rs+p3nA0DUfCZCCzdZLvZRaUHwu60
+ yKCs/Ga5Wio6XzgPriLue/KOvGIZpkAyKoRl90l7a+PdeUvLBzV3mvm1KYUM486L5xM6qpVB9
+ b1uj8nwHvr0o4O73AYOpIIFCsL94Ok7QYYPo/daMZ4I2FJPoFS3Tu3CmqWq148OuqYW0dAeFS
+ NfT39yTWs0TWwmmQLdVMfESpKyTaB8hDWGxabG+WwBOFMyVfFA=
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] statx: Add missing static keyword to tcase
- variable
+Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
+ }int64_t in userspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,93 +76,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: linux-arch <linux-arch@vger.kernel.org>,
+ GNU C Library <libc-alpha@sourceware.org>, Arnd Bergmann <arnd@arndb.de>,
+ Linux API <linux-api@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This shows how easy it is to miss the static keyword.
+On Tue, Nov 23, 2021 at 10:14 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+> > I don't think this is correct on all 64-bit architectures, as far as I
+> > remember the
+> > definition can use either 'long' or 'long long' depending on the user space
+> > toolchain.
+>
+> As far as I can tell the userspace bits/types.h does exactly the same
+> check in order to define uint64_t and int64_t, i.e.:
+>
+> #if __WORDSIZE == 64
+> typedef signed long int __int64_t;
+> typedef unsigned long int __uint64_t;
+> #else
+> __extension__ typedef signed long long int __int64_t;
+> __extension__ typedef unsigned long long int __uint64_t;
+> #endif
+>
+> The macro __WORDSIZE is defined per architecture, and it looks like the
+> defintions in glibc sources in bits/wordsize.h match the uapi
+> asm/bitsperlong.h. But I may have missed something, the code in glibc is
+> not exactly easy to read.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/syscalls/statx/statx01.c | 2 +-
- testcases/kernel/syscalls/statx/statx02.c | 2 +-
- testcases/kernel/syscalls/statx/statx04.c | 2 +-
- testcases/kernel/syscalls/statx/statx05.c | 2 +-
- testcases/kernel/syscalls/statx/statx07.c | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+It's possible that the only difference between the two files was the
+'__u32'/'__s32' definition, which could be either 'int' or 'long'. We used
+to try matching the user space types for these, but not use 'int'
+everywhere in the kernel.
 
-diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
-index 2358dd7bc..11e188e8f 100644
---- a/testcases/kernel/syscalls/statx/statx01.c
-+++ b/testcases/kernel/syscalls/statx/statx01.c
-@@ -131,7 +131,7 @@ static void test_device_file(void)
- }
- 
- 
--struct tcase {
-+static struct tcase {
- 	void (*tfunc)(void);
- } tcases[] = {
- 	{&test_normal_file},
-diff --git a/testcases/kernel/syscalls/statx/statx02.c b/testcases/kernel/syscalls/statx/statx02.c
-index 08ea940cb..15f5562b2 100644
---- a/testcases/kernel/syscalls/statx/statx02.c
-+++ b/testcases/kernel/syscalls/statx/statx02.c
-@@ -90,7 +90,7 @@ static void test_sym_link(void)
- 			"Statx symlink flag failed to work as expected");
- }
- 
--struct tcase {
-+static struct tcase {
- 	void (*tfunc)(void);
- } tcases[] = {
- 	{&test_empty_path},
-diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
-index 180c61bf9..f66b04f70 100644
---- a/testcases/kernel/syscalls/statx/statx04.c
-+++ b/testcases/kernel/syscalls/statx/statx04.c
-@@ -133,7 +133,7 @@ static void test_unflagged(void)
- 		tst_res(TFAIL, "STATX_ATTR_NODUMP flag is set");
- }
- 
--struct test_cases {
-+static struct test_cases {
- 	void (*tfunc)(void);
- } tcases[] = {
- 	{&test_flagged},
-diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-index 81a5bcbf2..47a1f8ad1 100644
---- a/testcases/kernel/syscalls/statx/statx05.c
-+++ b/testcases/kernel/syscalls/statx/statx05.c
-@@ -74,7 +74,7 @@ static void test_unflagged(void)
- 		tst_res(TFAIL, "STATX_ATTR_ENCRYPTED flag is set");
- }
- 
--struct test_cases {
-+static struct test_cases {
- 	void (*tfunc)(void);
- } tcases[] = {
- 	{&test_flagged},
-diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-index ec1cdd190..9aa160d31 100644
---- a/testcases/kernel/syscalls/statx/statx07.c
-+++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -84,7 +84,7 @@ static int get_mode(char *file_name, int flag_type, char *flag_name)
- 	return buf.stx_mode;
- }
- 
--const struct test_cases {
-+static const struct test_cases {
- 	int flag;
- 	char *flag_name;
- 	char *server_file;
--- 
-2.33.1
+> > Out of the ten supported 64-bit architectures, there are four that already
+> > use asm-generic/int-l64.h conditionally, and six that don't, and I
+> > think at least
+> > some of those are intentional.
+> >
+> > I think it would be safer to do this one architecture at a time to make
+> > sure this doesn't regress on those that require the int-ll64.h version.
+>
+> I'm still trying to understand what exactly can go wrong here. As long
+> as __BITS_PER_LONG is correctly defined the __u64 and __s64 will be
+> correctly sized as well. The only visible change is that one 'long' is
+> dropped from the type when it's not needed.
 
+Correct, I'm not worried about getting incorrectly-sized types here,
+but using the wrong type can cause compile-time warnings when
+they are mismatched against format strings or assigning pointers
+to the wrong types. With the kernel types, one would always use
+%d for __u32 and %lld for __u64, while with the user space types,
+one has to resort to using macros.
+
+       Arnd
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
