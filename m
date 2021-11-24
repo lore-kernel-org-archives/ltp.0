@@ -4,70 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B768AC433EF
-	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 09:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4169BC433EF
+	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 10:01:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 533C33C59E8
-	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 10:51:10 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 162AD3C30CA
+	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 11:01:52 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0346B3C1DA8
- for <ltp@lists.linux.it>; Wed, 24 Nov 2021 10:51:00 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id B6E043C0894
+ for <ltp@lists.linux.it>; Wed, 24 Nov 2021 11:01:42 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9FF002011D2
- for <ltp@lists.linux.it>; Wed, 24 Nov 2021 10:50:59 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEE562195F;
- Wed, 24 Nov 2021 09:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1637747458;
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 233171401623
+ for <ltp@lists.linux.it>; Wed, 24 Nov 2021 11:01:41 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 6F8F51FD37;
+ Wed, 24 Nov 2021 10:01:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1637748101;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VKAsDt3cGsFIU1slYo5uW1AhDNF8fNq8Tl4bXSqCbEM=;
- b=aeYgWIZPYMxYs7m1TlrdlDi+xcanP5RSWVZsR204gFylgFxB3yxj++jj0y7wUOw+g+geMd
- DzC9PZqxjKkgFTn/BByApBWhAszt6T7bQyG61/15AiGic2kXWGAsAR4GTw4bV/KX0vWuSR
- Se2Flp6vI7HO/sEk+jWB+1I4j+bkl8o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1637747458;
+ bh=7OsCo2OF21LKPKwnMrZpXBeeazyz+HH9jIj3Fs1Dibs=;
+ b=sSzkUoMUoZwJAGWhaKmweipe/sV3El7PUmK/UCPREXtG31Qy+P+b26kA4qmIrmkyTF0efa
+ upWdyMXuD8MqaIuCHA6PhOcVIULy9yMV8C6uDgdvhu1mbWDDRKPyjDH7m3L9JiuStetg0j
+ lbHpcd5Qe4eokV5yYlq7gmoYt8SFU74=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1637748101;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VKAsDt3cGsFIU1slYo5uW1AhDNF8fNq8Tl4bXSqCbEM=;
- b=Qi7YRmBJOdkxP1pQDph2uo5mtZnYQu2fb+3Zzg5+Ski9MhQseHYPeN69CTs5qOJVvY4GYl
- scQFYXHyUjTGCMAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=7OsCo2OF21LKPKwnMrZpXBeeazyz+HH9jIj3Fs1Dibs=;
+ b=cLqllqtKjghz3ucAjc/Fm0quGGMY9RJe3xzy0Fq9rB6zyIBVjGaANjSuLNy1zaCgIfWxGO
+ MXNIGrhAY6l5aVDA==
+Received: from g78 (unknown [10.163.24.38])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8545F13EFF;
- Wed, 24 Nov 2021 09:50:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id L1TPHgILnmFiUQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 24 Nov 2021 09:50:58 +0000
-Date: Wed, 24 Nov 2021 10:50:56 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YZ4LAN2RrJntGlFq@pevik>
-References: <20211123151537.14913-1-mdoucha@suse.cz>
- <20211123151537.14913-3-mdoucha@suse.cz> <YZ1Dmbh+m6blfLzZ@pevik>
- <9d0f2161-4c10-6318-5a15-470cc12fe76c@suse.cz>
+ by relay2.suse.de (Postfix) with ESMTPS id 3FD74A3B8C;
+ Wed, 24 Nov 2021 10:01:41 +0000 (UTC)
+References: <20211123124348.31073-1-rpalethorpe@suse.com>
+ <20211123124348.31073-2-rpalethorpe@suse.com>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 24 Nov 2021 10:00:31 +0000
+In-reply-to: <20211123124348.31073-2-rpalethorpe@suse.com>
+Message-ID: <87pmqplvnf.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <9d0f2161-4c10-6318-5a15-470cc12fe76c@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] Add test for NFS directory listing
- regression
+Subject: Re: [LTP] [PATCH 1/3] tools/sparse: Add static check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,73 +69,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Reply-To: rpalethorpe@suse.de
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Hello,
 
-> > -	echo "-n x    Create x files and x directories, default is 5000"
-> > +	echo "-n x    Create x files and x directories, default is $FILE_COUNT"
-> >  }
+Richard Palethorpe <rpalethorpe@suse.com> writes:
 
-> If you run `nfs07.sh -hn 123`, your version will print that the default
-> is 123.
+> This was adapted from Sparse's inbuilt check_duplicates (-Wdecl). The
+> original check appears to print a warning whenever a symbol is
+> non-static, but has no prototype. It appears to work because library
+> symbols are usually declared first in a header file and then again
+> with their definition in a source file.
+>
+> The LTP version also checks for the various library prefixes, but
+> should otherwise be the same.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  tools/sparse/sparse-ltp.c | 53 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/tools/sparse/sparse-ltp.c b/tools/sparse/sparse-ltp.c
+> index 45874e8eb..73725d191 100644
+> --- a/tools/sparse/sparse-ltp.c
+> +++ b/tools/sparse/sparse-ltp.c
+> @@ -82,6 +82,57 @@ static void do_entrypoint_checks(struct entrypoint *ep)
+>  	} END_FOR_EACH_PTR(bb);
+>  }
+>  
+> +/* Check for LTP-003 and LTP-004
+> + *
+> + * Try to find cases where the static keyword was forgotten.
+> + */
+> +static void check_symbol_visibility(struct symbol *sym)
+> +{
+> +	struct symbol *next = sym;
 
-Out of curiosity (as it's not anything important) not sure what's wrong on my
-side (I tested it before I suggested it, I also reinstalled LTP to make sure
-it's updated), but it works as expected:
+Ooops, we don't need next anymore.
 
-# PATH="/opt/ltp/testcases/bin:$PATH" ./nfs07.sh -hn 123
-nfs07 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
-nfs07 1 TINFO: add local addr 10.0.0.2/24
-nfs07 1 TINFO: add local addr fd00:1:1:1::2/64
-nfs07 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
-nfs07 1 TINFO: add remote addr 10.0.0.1/24
-nfs07 1 TINFO: add remote addr fd00:1:1:1::1/64
-nfs07 1 TINFO: Network config (local -- remote):
-nfs07 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
-nfs07 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
-nfs07 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
--t x    Socket type, tcp or udp, default is udp
--v x    NFS version, default is '3'
--n x    Create x files and x directories, default is 5000
--h      Prints this help
--i n    Execute test n times
-
-> >  do_setup()
-> > @@ -45,7 +45,7 @@ do_test()
-> >  {
-> >  	local count
-
-> > -	# Pass the list of files through `sort -u` in case `ls` doesn't fitler
-> > +	# Pass the list of files through `sort -u` in case `ls` doesn't filter
-> >  	# out potential duplicate filenames returned by buggy NFS
-> >  	count=`ls | grep '^file' | sort -u | wc -l`
-
-> > @@ -61,7 +61,7 @@ do_test()
-> >  		return
-> >  	fi
-
-> > -	tst_res TPASS "All files and directories were correctly listed"
-> > +	tst_res TPASS "All $FILE_COUNT files and directories were correctly listed"
-> >  }
-
-> That would make the line over 80 characters and the number isn't that
-> important. Let's fix just the "fitler" typo.
-I don't consider 80 as an issue as long as it's not over 100 chars (barier
-increased also in mainline checkpatch.pl), but sure, these are really minor
-issues, thus agree to fix just the typo.
-
-Waiting little longer if Alexey has any comments and then merge.
-
-Thanks a lot for very useful test case!
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
