@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F246AC433EF
-	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 07:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79BB1C433EF
+	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 07:19:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06C6D3C681F
-	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 08:19:06 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 32AC43C60C9
+	for <ltp@archiver.kernel.org>; Wed, 24 Nov 2021 08:19:50 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 20B9F3C0948
- for <ltp@lists.linux.it>; Wed, 24 Nov 2021 08:18:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 966993C0948
+ for <ltp@lists.linux.it>; Wed, 24 Nov 2021 08:19:41 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5593B14012DC
- for <ltp@lists.linux.it>; Wed, 24 Nov 2021 08:18:56 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3144214012DE
+ for <ltp@lists.linux.it>; Wed, 24 Nov 2021 08:19:40 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 952D51FD3A;
- Wed, 24 Nov 2021 07:18:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 63AD01FD2F;
+ Wed, 24 Nov 2021 07:19:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1637738335;
+ t=1637738380;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MKFlG3fylRuipipUDX3UVxBMODIaHYJIiiy+wYAnbTI=;
- b=x6YR8QnvXzUCHGdrSYSOQkAgDOC7eIa2FKbxc3A6mYFDd03IyxQn2KitbuEujDR0B9lT1Q
- F5TEjb77GZCY8/ulwCfuJdrtZ2lO0D53lA+wDOw3ZVbDUOscze6vKU+KWQUViz2USeDkPw
- gC17TXrxcqVRZBMz5GuP+w7Mxm7NZEA=
+ bh=rA3XyT9Y9jF8ddAcPw8gWyppt70l4pXI1qJT8mTpqh0=;
+ b=yrNFqnAUUYcFBtDReNDchf9dJ5MvZsot3fLZFXCTNBmel4QjGlZOc14wVzOBrajbzRendr
+ dJGbAWXAhwG+4o/dVW6T/K479IvGw62ow51yGhpR2u9kaWcdKhUhB0gnHudrLGeTfpR/Sn
+ KqxRPQafV9L0iNnsBI7iTGlEJ5ms4Y4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1637738335;
+ s=susede2_ed25519; t=1637738380;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MKFlG3fylRuipipUDX3UVxBMODIaHYJIiiy+wYAnbTI=;
- b=kZ8t6gIchjQCLdmeZD2jHKWjbccIRmy387MfOgTTtPKkRKqWR+SI+YBr4rcTsQQu76CYV7
- PoegEWy85sZv30BQ==
+ bh=rA3XyT9Y9jF8ddAcPw8gWyppt70l4pXI1qJT8mTpqh0=;
+ b=uOdPiiqtbidMKyV0nzljlZYCCKQCz1SJnx/ei0A12UCpGCbfILx2bevZh+zo5DhGGT/FQj
+ vv7HOyqYzlvOEHBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5897A13EC4;
- Wed, 24 Nov 2021 07:18:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 307A513EC4;
+ Wed, 24 Nov 2021 07:19:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XLFTEV/nnWHdDgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 24 Nov 2021 07:18:55 +0000
-Date: Wed, 24 Nov 2021 08:18:53 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id RASOCoznnWEbDwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 24 Nov 2021 07:19:40 +0000
+Date: Wed, 24 Nov 2021 08:19:38 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <YZ3nXUuDjePQxOt6@pevik>
+Message-ID: <YZ3nitT/eckgWzes@pevik>
 References: <20211123124348.31073-1-rpalethorpe@suse.com>
- <20211123124348.31073-3-rpalethorpe@suse.com>
+ <20211123124348.31073-4-rpalethorpe@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211123124348.31073-3-rpalethorpe@suse.com>
+In-Reply-To: <20211123124348.31073-4-rpalethorpe@suse.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] doc: Add LTP-003 and LTP-004 static and tst
- API prefix rules
+Subject: Re: [LTP] [PATCH 3/3] statx: Add missing static keyword to tcase
+ variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,28 +87,7 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Richie,
 
-...
-> +2.3 LTP-003: Externally visible library symbols have the tst_ prefix
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +Functions, types and variables in the public test API should have the
-> +tst_ prefix. With some exceptions for symbols already prefixed with
-> +safe_ or ltp_.
-BTW It'd be nice to have some check for shell library (maybe shellcheck would be
-able to do it).
-
-...
-
-> +2.1.1 LTP-004: Test executable symbols are marked static
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +Test executables should not export symbols unecessarily. This means
-typo s/unecessarily/unnecessarily/
-
-> +that all top-level variables and functions should be marked with the
-> +static keyword. The only visible symbols should be those included from
-> +shared object files.
-> +
+obviously correct. Thanks!
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
