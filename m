@@ -4,62 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D0B5C433EF
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 10:49:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 105BDC433F5
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 10:49:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 655983C6BD8
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:49:36 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 3882F3C6BD8
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:49:46 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD0CA3C5A83
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:49:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 75A973C4E59
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:49:18 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2961E1000A43
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:49:16 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D51491000D4A
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:49:17 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6169C21709
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 10:49:16 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6D82821709
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 10:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638269356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ANEQleHS81hE+PVPgdl4NDFyuPPwQfNLjjRuETQZaNE=;
- b=H4RJLS6uCIEQJW//zHvMbId2DEL0J8WVwZEWuk3ggbAFGWpVuf1VuF+u05RANIWEljc4HQ
- 9+9QgLlM+DtOGUHHTWOfTNgenNnRaFI43db6ma1Vo2KBuhZrKQw/lJ2sfkDGQofbvj05Hc
- 0mimqUf9UitTK4BdXXZNWYBBRRB7fkc=
+ t=1638269357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8fu4pfyMtYIoVAPfpuMtwye1sOyyFvFXUwjGkbNLV2Y=;
+ b=SDsKYz6rnZAVtPeFGRrNzMKBrBGPzWQF6BpYP74yHVgPCeor8Wzknaj1CtltZ3tpl5LEi/
+ 0mU0TDvhuXlmKELq9ovXSsghGYjekld04A0lWpzLYQ/it5VUqMjBI+AzPfN7Fou8yg6XEg
+ FBydIWD1kRltT68wiML3Y6TidvvNhGY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638269356;
+ s=susede2_ed25519; t=1638269357;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ANEQleHS81hE+PVPgdl4NDFyuPPwQfNLjjRuETQZaNE=;
- b=clm4ZfzwE5/r5Ry/bbRmztZ1YUFjxgmrm8ByuWbcoNIhR9DW9VdUhhUuNEoZDOGVKzMpmz
- WQmA3Z0r/pPbiSDQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8fu4pfyMtYIoVAPfpuMtwye1sOyyFvFXUwjGkbNLV2Y=;
+ b=QgUdnul0gHFSuaNbzPk+rF/bbucya092djwN1hZdr/bdKtXe5Ev/xXmCZNdCS2X5A0rWlc
+ 7OBAvb+QM1l4TGAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4960013C44
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 10:49:16 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A08B13C44
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 10:49:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8k9tEawBpmG2QAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id RKtpFK0BpmHAQAAAMHmgww
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 10:49:16 +0000
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 10:49:17 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 30 Nov 2021 11:50:25 +0100
-Message-Id: <20211130105027.1071-1-chrubis@suse.cz>
+Date: Tue, 30 Nov 2021 11:50:27 +0100
+Message-Id: <20211130105027.1071-3-chrubis@suse.cz>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211130105027.1071-1-chrubis@suse.cz>
+References: <20211130105027.1071-1-chrubis@suse.cz>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/2] Two small fixes for LTP-003
+Subject: [LTP] [PATCH 2/2] sparse: Do not report static inline functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,16 +83,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This fixes false possitives for tst_fuzzy_sync.h
+Since these are part of the library API and can be prefixed with tst_
 
-Cyril Hrubis (2):
-  include/tst_fuzzy_sync.h: Add inline to static fucntions
-  sparse: Do not report static inline functions
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ tools/sparse/sparse-ltp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- include/tst_fuzzy_sync.h  | 14 +++++++-------
- tools/sparse/sparse-ltp.c |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
+diff --git a/tools/sparse/sparse-ltp.c b/tools/sparse/sparse-ltp.c
+index 2f32bfa38..b1677d336 100644
+--- a/tools/sparse/sparse-ltp.c
++++ b/tools/sparse/sparse-ltp.c
+@@ -98,7 +98,7 @@ static void check_symbol_visibility(const struct symbol *const sym)
+ 	if (!(mod & MOD_TOPLEVEL))
+ 		return;
+ 
+-	if (has_lib_prefix && (mod & MOD_STATIC)) {
++	if (has_lib_prefix && (mod & MOD_STATIC) && !(mod & MOD_INLINE)) {
+ 		warning(sym->pos,
+ 			"LTP-003: Symbol '%s' has the LTP public library prefix, but is static (private).",
+ 			name);
 -- 
 2.32.0
 
