@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D8FC433EF
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 10:18:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE57EC433F5
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 10:22:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 44AAC3C6B60
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:18:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 7D8973C66FF
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:22:07 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4C5B43C3171
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:17:58 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id E97003C551F
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:21:56 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BE8401A01124
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:17:57 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 852DA60103A
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:21:56 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CDF4C2170C;
- Tue, 30 Nov 2021 10:17:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CD9171FD54;
+ Tue, 30 Nov 2021 10:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638267476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1638267715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Qmkzw47Mz6mDDNPrsfSp0OXvODR3aQfdxrJThIB5YBc=;
- b=jJZ8/qBr7YYgxQbTRLp5lAs/pUaDmODp4tcFBALoSvNxjDlDlEO/0YoGuTKlzrkRdu+L4t
- ywGutg+iH5u7Kjn6cjOQc87HBZM1+fSm2RANndco76gW1qB43LpQnj+KJa+4CS+KAjFx5Q
- arlZSK/JNl5JWipXc5faiu4zZaJ8YSs=
+ bh=DIrSwsnKYht7d07V4vAgwrJyzD1yqK6L/CX2mNQTArg=;
+ b=oGIQbrI6OlqK+1D5kWAPIgZSuUzahMF2zjNNpT5Rt+Rf197+2qvUopFJ8JraP6i3dGZkMz
+ fa1LXfLs7cxTfgUE9Men5B7LfQoPPrXX01PZ3rNF7cFBorwkFt6DqVliM8uUM4bWYZ6jKy
+ zJVLseLVkZziEbtG5jNg/tSwRDKIr4g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638267476;
+ s=susede2_ed25519; t=1638267715;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Qmkzw47Mz6mDDNPrsfSp0OXvODR3aQfdxrJThIB5YBc=;
- b=uC/AR+hanRsFc1hhTpPFpGgQjBeNjEOG2n1mqA9FVZ0itwmk9sQjvLWvH1tXuIQfsFTg4S
- ryKV4sUqLLj89wCA==
+ bh=DIrSwsnKYht7d07V4vAgwrJyzD1yqK6L/CX2mNQTArg=;
+ b=CkBqL08p8qQUSd668nOjarJDEx0sEV720JulQu+64Msa+L/N1wdu8mW9XC17qZ5LBqjZ+/
+ t89fxkxYIM5ca5CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B902713D2F;
- Tue, 30 Nov 2021 10:17:56 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B12B613D2F;
+ Tue, 30 Nov 2021 10:21:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yM4bLFT6pWEzMgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 30 Nov 2021 10:17:56 +0000
-Date: Tue, 30 Nov 2021 11:19:08 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id UOAIKkP7pWHtMwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 30 Nov 2021 10:21:55 +0000
+Date: Tue, 30 Nov 2021 11:23:07 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <YaX6nLRGwtfUTjrP@yuki>
+Message-ID: <YaX7i/ezRhxANBwM@yuki>
 References: <20211123124348.31073-1-rpalethorpe@suse.com>
  <20211123124348.31073-2-rpalethorpe@suse.com>
  <YZ3l+QtJA+/RCp6v@pevik> <87v90akpyy.fsf@suse.de>
+ <YaX6nLRGwtfUTjrP@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87v90akpyy.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YaX6nLRGwtfUTjrP@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/3] tools/sparse: Add static check
 X-BeenThere: ltp@lists.linux.it
@@ -84,14 +85,104 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Thanks! pushed. Please pull and try it out.
+> > Thanks! pushed. Please pull and try it out.
+> 
+> Looks like it fails on fuzzy sync since it uses tst_ but it's in an
+> header.
+> 
+> These definitions should be static inline and changing them so fixes the
+> warnings. It looks like static inline functions does not make it into
+> the symbol test at all.
 
-Looks like it fails on fuzzy sync since it uses tst_ but it's in an
-header.
+This is even stranger, the 'static inline void' functions does not make
+it into the check function, but anything that returns a non-void value
+does get there so we need:
 
-These definitions should be static inline and changing them so fixes the
-warnings. It looks like static inline functions does not make it into
-the symbol test at all.
+diff --git a/tools/sparse/sparse-ltp.c b/tools/sparse/sparse-ltp.c
+index 2f32bfa38..b1677d336 100644
+--- a/tools/sparse/sparse-ltp.c
++++ b/tools/sparse/sparse-ltp.c
+@@ -98,7 +98,7 @@ static void check_symbol_visibility(const struct symbol *const sym)
+        if (!(mod & MOD_TOPLEVEL))
+                return;
+
+-       if (has_lib_prefix && (mod & MOD_STATIC)) {
++       if (has_lib_prefix && (mod & MOD_STATIC) && !(mod & MOD_INLINE)) {
+                warning(sym->pos,
+                        "LTP-003: Symbol '%s' has the LTP public library prefix, but is static (private).",
+                        name);
+
+And:
+
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+index 8f97bb8f6..bc3450294 100644
+--- a/include/tst_fuzzy_sync.h
++++ b/include/tst_fuzzy_sync.h
+@@ -210,7 +210,7 @@ struct tst_fzsync_pair {
+  *
+  * @sa tst_fzsync_pair_reset()
+  */
+-static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
+ {
+        CHK(avg_alpha, 0, 1, 0.25);
+        CHK(min_samples, 20, INT_MAX, 1024);
+@@ -230,7 +230,7 @@ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
+  *
+  * Call this from your cleanup function.
+  */
+-static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
+ {
+        if (pair->thread_b) {
+                /* Revoke thread B if parent hits accidental break */
+@@ -254,7 +254,7 @@ struct tst_fzsync_run_thread {
+  * Wrap run_b for tst_fzsync_pair_reset to enable pthread cancel
+  * at the start of the thread B.
+  */
+-static void *tst_fzsync_thread_wrapper(void *run_thread)
++static inline void *tst_fzsync_thread_wrapper(void *run_thread)
+ {
+        struct tst_fzsync_run_thread t = *(struct tst_fzsync_run_thread *)run_thread;
+
+@@ -268,7 +268,7 @@ static void *tst_fzsync_thread_wrapper(void *run_thread)
+  *
+  * @relates tst_fzsync_stat
+  */
+-static void tst_init_stat(struct tst_fzsync_stat *s)
++static inline void tst_init_stat(struct tst_fzsync_stat *s)
+ {
+        s->avg = 0;
+        s->avg_dev = 0;
+@@ -292,7 +292,7 @@ static void tst_init_stat(struct tst_fzsync_stat *s)
+  *
+  * @sa tst_fzsync_pair_init()
+  */
+-static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
++static inline void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
+                                  void *(*run_b)(void *))
+ {
+        tst_fzsync_pair_cleanup(pair);
+@@ -340,7 +340,7 @@ static inline void tst_fzsync_stat_info(struct tst_fzsync_stat stat,
+  *
+  * @relates tst_fzsync_pair
+  */
+-static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
+ {
+        tst_res(TINFO, "loop = %d, delay_bias = %d",
+                pair->exec_loop, pair->delay_bias);
+@@ -493,7 +493,7 @@ static inline void tst_upd_diff_stat(struct tst_fzsync_stat *s,
+  *
+  * @relates tst_fzsync_pair
+  */
+-static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+ {
+        float alpha = pair->avg_alpha;
+        float per_spin_time, time_delay;
+
+
 
 -- 
 Cyril Hrubis
