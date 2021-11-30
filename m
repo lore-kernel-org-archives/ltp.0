@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB760C433F5
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 10:54:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DD41C433F5
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 10:58:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 02F493C6E5A
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:54:42 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id E2C513C810E
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:58:06 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 30C8D3C4E59
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:54:32 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 4B9623C4E59
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:57:57 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A107E1400B68
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:54:31 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C1F4E600D4B
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:57:56 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DCA551FD58;
- Tue, 30 Nov 2021 10:54:30 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 17F441FD58;
+ Tue, 30 Nov 2021 10:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638269670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1638269876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9insqNU3Sr6rN5SP1fJLLrCesX3MJNE+WUcJ/eIM8kU=;
- b=j6lToPIuK9RaYkJwg0OL03MjFlfnNEW6fNi9uKIrLhumvrVs8kY5FUbBQkCpsFdG0I7Akh
- 7RCVSkNtSxTM+IeNujf70EDNJu9E0jLg6un36r4rk2SmPL+2GrITx0fBug+5rUtYn9xCPw
- lQPFf7G2fR09XqI4rT3ZgvvjCya2HXI=
+ bh=175CBzJX2G4TDwBIT7h1MwhgwqiDPGD6JQ/H6tyUMho=;
+ b=M+eZEP6syDP94hli3pyXJdfKcUBFn4SXwLXriwANTKc1eKfzVTtSzXeGlVWj14wnyETY7k
+ uTnPuImb7pDD6lx1yDrQ9/3fH77Ow/J6QJxIzK2xXBTrMNMIOJ4bVCwo12Gf8LKeS99CeN
+ 2u3WIQOPKPkLv3N8/0XrJE79xjPBAPU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638269670;
+ s=susede2_ed25519; t=1638269876;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9insqNU3Sr6rN5SP1fJLLrCesX3MJNE+WUcJ/eIM8kU=;
- b=MiNfSLIxAPFf0F0AXDewn/utNxguXFuNjv/NuUBajdko0LiR3P/zYIQ2+mv6543D5V0rTU
- qA+ihVx6DMx/YHAw==
+ bh=175CBzJX2G4TDwBIT7h1MwhgwqiDPGD6JQ/H6tyUMho=;
+ b=btKYKhqFSuFjVWnDvbRSmIkFDoqFn02jdPkoCfiyCQKa1Elsda1kalFntxXwQUPohtEND3
+ C23DkFqJ4w6AhzDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFD6213C44;
- Tue, 30 Nov 2021 10:54:30 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE55813C44;
+ Tue, 30 Nov 2021 10:57:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YLoFLeYCpmFuQwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 30 Nov 2021 10:54:30 +0000
-Date: Tue, 30 Nov 2021 11:55:42 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id C/rDOLMDpmE5RQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 30 Nov 2021 10:57:55 +0000
+Date: Tue, 30 Nov 2021 11:59:07 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <YaYDLh9KQojeuTlz@yuki>
+Message-ID: <YaYD+5AJdzMGOQt3@yuki>
 References: <20211130105246.19900-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20211130105246.19900-1-andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] Add common.h utilities for aiodio tests
 X-BeenThere: ltp@lists.linux.it
@@ -82,13 +81,10 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +#endif /* AIODIO_COMMON_H__ */
-> \ No newline at end of file
+> +static char *check_zero(char *buf, int size)
 
-This one is good apart from the '\ No newline at the end of file'
-
-Also this should be followed up with a patch that makes use of the
-header, we do have at least one test that can use it now, right?
+And these functions should be 'static inline' which is idiom for how to
+define functions in headers in C...
 
 -- 
 Cyril Hrubis
