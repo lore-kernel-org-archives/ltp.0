@@ -4,63 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B585EC433F5
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 11:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC58BC433EF
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 12:10:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0E8A3C6BD8
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 12:44:26 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 515DD3C7FC0
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 13:10:51 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 77FAE3C5DF0
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 12:44:17 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 33FDC3C13DE
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 13:10:41 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0AB5B1400BDA
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 12:44:16 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A600320005C
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 13:10:40 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4B2521FD54
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638272656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DB451212C0;
+ Tue, 30 Nov 2021 12:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1638274239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ngokI/jYJMiC5FqYQ+N9P1Df3VlTr8US/sLqwtiwSRI=;
- b=AyBQKgZfcjbrTAlMWfXRANS4aCuxhafbalAPD37BRZHvlQAqPX0/a6ZYWDdTmrR/ESE80b
- e4DmtNNeIca8CwjUjH4gpVoJXaxTSNFi/dp68O0vaU8+DW+3Y+uvPNADDiVtHdNOu4Fwuh
- B/jxiFcJttBO4FAKWTdHqxgvUQ42C10=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638272656;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ngokI/jYJMiC5FqYQ+N9P1Df3VlTr8US/sLqwtiwSRI=;
- b=9Kv/OWG4zsGmW6zlOmYSjiF/A0tBjNbHH297Iu8LgOucSeWcspe5S5n1OEU1TqFKY8k/BR
- 4zkV5kd4ctDo+ICw==
+ bh=IDzMjJ8lJ80BC4IwSlL+ylJ9QmrXfY7txNj42LU6f6o=;
+ b=X1J2Kb1kYwV1pc+fHCEvOr3ggLl4kaIhcaWSnFhUy/ID5MfFPpFJsZMrvmTXfq4f4P9srA
+ QA/iVqTKCsBoybE93Z+6/oY9CMRVidp3nhiJUnMfSnEWkUr6MqxIth9UcWd+eyzy4ATqp6
+ VrvYz7k6YEWoz5wz4W5CQmcz4Vukixo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF3CD13C98
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:44:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A07213C98;
+ Tue, 30 Nov 2021 12:10:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Y5nJNI8OpmGsXQAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 11:44:15 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id SaQaHL8UpmGTbAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Tue, 30 Nov 2021 12:10:39 +0000
 To: ltp@lists.linux.it
-Date: Tue, 30 Nov 2021 12:45:27 +0100
-Message-Id: <20211130114527.5942-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.32.0
+Date: Tue, 30 Nov 2021 13:10:20 +0100
+Message-Id: <20211130121022.14296-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sparse: Skip TCID and TST_TOTAL
+Subject: [LTP] [PATCH 0/2] Create common.h utilities for aiodio testsuite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,34 +63,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since these are part of the old library API.
+aiodio testsuite has multiple copy/paste inside the source code. For
+this reason, common.h has been created for all aiodio tests.
+dio_truncate is the first test based on LTP API and now it's using it.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- tools/sparse/sparse-ltp.c | 3 +++
- 1 file changed, 3 insertions(+)
+Andrea Cervesato (2):
+  Add common.h utilities for aiodio tests
+  Use common.h in dio_truncate test
 
-diff --git a/tools/sparse/sparse-ltp.c b/tools/sparse/sparse-ltp.c
-index b1677d336..1a3b4089a 100644
---- a/tools/sparse/sparse-ltp.c
-+++ b/tools/sparse/sparse-ltp.c
-@@ -98,6 +98,9 @@ static void check_symbol_visibility(const struct symbol *const sym)
- 	if (!(mod & MOD_TOPLEVEL))
- 		return;
- 
-+	if (!strcmp(name, "TCID") || !strcmp(name, "TST_TOTAL"))
-+		return;
-+
- 	if (has_lib_prefix && (mod & MOD_STATIC) && !(mod & MOD_INLINE)) {
- 		warning(sym->pos,
- 			"LTP-003: Symbol '%s' has the LTP public library prefix, but is static (private).",
+ testcases/kernel/io/ltp-aiodio/common.h       | 54 +++++++++++++++++++
+ testcases/kernel/io/ltp-aiodio/dio_truncate.c | 48 ++---------------
+ 2 files changed, 58 insertions(+), 44 deletions(-)
+ create mode 100644 testcases/kernel/io/ltp-aiodio/common.h
+
 -- 
-2.32.0
+2.34.0
 
 
 -- 
