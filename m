@@ -4,148 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76493C433EF
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 03:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 902A9C433F5
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 07:12:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D62993C697C
-	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 04:41:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 08F323C5A83
+	for <ltp@archiver.kernel.org>; Tue, 30 Nov 2021 08:11:58 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2DDE53C1044
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 04:40:49 +0100 (CET)
-Received: from esa7.fujitsucc.c3s2.iphmx.com (esa7.fujitsucc.c3s2.iphmx.com
- [68.232.159.87])
+ by picard.linux.it (Postfix) with ESMTPS id 6C9AD3C4E29
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 08:11:47 +0100 (CET)
+Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
+ [195.245.230.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8B3D51400985
- for <ltp@lists.linux.it>; Tue, 30 Nov 2021 04:40:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1638243649; x=1669779649;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=Ydw+h8Irhr1mkz/Pwg5h/wrhz+IIR7IVG6rSR63Wscg=;
- b=n82Eyy6be0Gw0YrPJs6HOrkD58JxAm7feOxSTKkNKfK+22infA3EyAHO
- 6YrDrVgj0m7IkYjYmKFRnUxPUavO9MmTduC2yC3OU41PM2XU5KMdPtjbd
- Fu4a12gL4DyLhDjHmpx7fiwC4abYNO/UUXBcveA8D5DUww/tnztM2U9kF
- m5wHlkebdSN3si93VEUKFHP8/kfacYHUju3R0qmX5rW3zsZ4dUPtSNtHe
- OEPKu9eVd1ci7H85UGj8itURnBTGmblIsIFdLkud84bobrOmw/CgIb+2+
- fEAQacky5tPK6cY0ey9OV9s0BU42CULbPBt6E496SN1BooDPPXxMP1/Z+ Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="44835180"
-X-IronPort-AV: E=Sophos;i="5.87,275,1631545200"; d="scan'208";a="44835180"
-Received: from mail-tycjpn01lp2175.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.175])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Nov 2021 12:40:46 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iu7BgsZ1L2RSHA7BiXLIE+FmPVFuMxOOtRaTdu13oHa8EREjhnf4pQKDgFYFE7tQquYGUL7Y6HweuV/5UAdoXj4Pv6moh60WnJKgOGz9K6uhuf/XbspcVqGclpx7r0kbmswCN4Zyk8YETgvFhhvnsWGXJu8eHo9DsPTnMkTMHrbZ+6KUB/0kzOAOKBbY4WM4rCc/UjPrP/nM3IjbD4lqsCaQvbUWNOuL+CBGLVt6QPaMHRDFl+l2BMjter/kGsdXQS8qgu8bfNqOIklDa0U2ozll1hrgBzyjxfPhtHU7bhFS9sfu3R86sRXXNP47KgMNnYgGyXNn6cKmBBxJfH5Tdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ydw+h8Irhr1mkz/Pwg5h/wrhz+IIR7IVG6rSR63Wscg=;
- b=iMSM3nF+psuUHVLR5KvcY8f7do092G0zGl9xscDAtbj4yb9NsBLUMWPCy73u/foT9csnZxLTWfhJpUHfXBU8cuyizTTugKf48MoDzyVW2oJ42i3Y/p68201OaO4lG1RDCvEkudPuzPnamaMwVG9XMIHBB8KR1bZqcmiRHRZQlFH2Ltrz5Zflos8Vv70WiuhPBejD9vrIHDdihG95kIwqmaVvboXBsZ7zmv0n0RbzVJ0H9jQ+aDq7PyIYHwbB6V0zJTN46tgWucHIE2yVbeIVmnzWr1CQREYswtDoOovTkUBYbBnWje4TmM3MT9Du6FBNyQKpTC8ck4W9NE+edQgHmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ydw+h8Irhr1mkz/Pwg5h/wrhz+IIR7IVG6rSR63Wscg=;
- b=LM0uYYdpVp9JAL5b9mLbJVe6hRA+0HY58XFx6qdWFJQqic/f2lMabeH2MH3o5ERW76FVlTqjB/GhXoWqdYStquKVV23b6jG2ZtJmNOYs6rCQyZdzVqnpm7ffeU4Bo9KANmWAxGpjWQQS7jNJZO+6vnWvjaIoIAidSQvFEE5bZGk=
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TYCPR01MB6849.jpnprd01.prod.outlook.com (2603:1096:400:b4::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20; Tue, 30 Nov
- 2021 03:40:43 +0000
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::4997:e3e6:6502:9100]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::4997:e3e6:6502:9100%9]) with mapi id 15.20.4734.024; Tue, 30 Nov 2021
- 03:40:43 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [PATCH] syscalls/statx01: Add stx_mnt_id check
-Thread-Index: AQHX4d/FTp7QLs8z/U66yMujt2jnE6waPc0AgAE2o4A=
-Date: Tue, 30 Nov 2021 03:40:43 +0000
-Message-ID: <61A59D4D.8020409@fujitsu.com>
-References: <1637832900-4753-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YaSYuLV+XPW/pQ5/@yuki>
-In-Reply-To: <YaSYuLV+XPW/pQ5/@yuki>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2dbbcb66-fc8b-49d2-5551-08d9b3b32fd5
-x-ms-traffictypediagnostic: TYCPR01MB6849:
-x-microsoft-antispam-prvs: <TYCPR01MB68497B22B343FA7014DF692CFD679@TYCPR01MB6849.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eJQ9irShIrag07qGzdY3RzGmfvxpzBhax47+agF9iNP314GNGGyYEfCruGDvRW6SpHVVFEKCXvxd20FC5df6uaRXvB4hCc8PjCbvoWW27eFrNCRvVVWpqqyxz3FAd89VC0gEQ/gtQ7CJ/jaCFfOmU1BBVUQxRl8oIXI1g+ZHLZbVL5QXWlMDeCyTlp4AnLaBrfCxWtWqEJDEFMKmqFE0A90QXtKKA+4tTR8n/Tb4ve16F0cWJ1eu7gF0nwWiyp9NHzAMMokBP4yNRX9ib7QwR0mVdJAnnmAXzxvo/3SEYN3WLgZlM07Zch+s2E0EfDMnevlp0S6jSsQkrtO55vizg8i26HJsx1kXMhu1zLKa5invH51BYEyFvslWRqkDToq0MClXv1KsH5gztOMAiSjgtZAQZrPalRHbGDonxehUlJL1b3zQs2TcR0E9J7Ie/d7ccMS8cdweD9QcJRao/bYE499jPbeoM7RExHOfWtxVI1t+EiedG8lVFx4tg1gmJRpfjL80wFq8zTjN9lzb5UC+JMxxnliCbyU/Bih5TJj+X4OT1A0nAkn1eWWjCzDC624PdR1CcApZRvM0TVDw6HD9c9U2F0k2J3pd5ThDvG1K7wWr2Na6A3G9dcFj8r4FChILEz8SpIkmpzOKAYId56O1rYO6RSK69+xcjoReF1IwqYKmfWJATtayka7IDe4mVVioBPGTM4wMXErS2RqtI0VaJA==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(508600001)(4326008)(2616005)(6512007)(6916009)(5660300002)(186003)(33656002)(26005)(8936002)(8676002)(85182001)(87266011)(91956017)(6486002)(66556008)(82960400001)(66946007)(83380400001)(66446008)(86362001)(38070700005)(71200400001)(64756008)(66476007)(122000001)(6506007)(2906002)(316002)(38100700002)(76116006)(36756003);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?dWhYbU16T3FSZmdoaVFpZG5kQk1WNkhKeUFsaFdvWDdQNmlqYXhUTE9KZ3BH?=
- =?gb2312?B?OVNIeFlVTzRCVndVTy83bzRDVy9tRXBtMGQ2ZkFvVzdVZkF1eUxJMW8wNjk3?=
- =?gb2312?B?cU1BZHlYdGNNdS83VHFzbWNqVldGZGFTdzc5U0NmT0ZYZmFCbjRVb0ZHZnB1?=
- =?gb2312?B?MnJhVWRoNDVVTGJIRjZBTEh4WDdrK1orZVErbVpmdk1sVEhlN0tyNkUwZTI0?=
- =?gb2312?B?Nmtvc0YweUNJUm4xMCtEQ2dCQUt1L0ZWQlYvOWxyTWR3SVUxNnZROW16dkdJ?=
- =?gb2312?B?ejVod3JodVQ1ZkdJcVJ2clQ5Tlp3ckJia0p3UUVxU0IvaVd2dG1wd3ZZQ3Ar?=
- =?gb2312?B?bXhYYUdpeGppdVlYSHJ3cDc1aDJHcjg5L1NDbHhOd1JTU2JnampVQWpGdUYx?=
- =?gb2312?B?T0tadlh1U1FRbjNnZmZ6SkhNWk1sczBQTndsT3NYYUpnUTk2eDc0WitGL0xJ?=
- =?gb2312?B?WDNHTUloRHpuMGVMeXRCQjZOdkowVWthbVp1ZlFBZUxqRWZpS1ZPRWcvUC9q?=
- =?gb2312?B?dHlNTzc1WU9EWVMwQ281bHFuVnV5SGd0Wlk0cjdWUVlvOTRyeE9UcWZmRm91?=
- =?gb2312?B?Ym8wMFJ6dXNuY2VhODFSM1d6N0QweW4rNHJFUVVUdFZCTkNndU51cWp3REtl?=
- =?gb2312?B?RlZPeG4rUmZxRjFNNkk5a3o5WW9vNDBBVEk4emN4bUZ4eU5tcFZRWmpPS283?=
- =?gb2312?B?SEh3VXR5K1I5NmdUTUVmd1YvMFdIckVZUmc2NXMxdGpRV1RLaWN0WEJrRCsr?=
- =?gb2312?B?UGF6NEJPUnV5a2U3eVFCdVEwaEh2V3VPUzUvWkFrdFFjc3E5RGRRWGxxUE9V?=
- =?gb2312?B?Y2RFWG5VSTNVVTJVNmdjdW9iSXRJSkpPQ05tT3U5RTd3aVcrK2R4NHpKUjRq?=
- =?gb2312?B?R3lKdW9aWG5VeDEzMEJhQ0tUb1htd3NPNkVVM0JmMGhZSHVCVnhtdmY2cm1q?=
- =?gb2312?B?QVlnKzA5bDlSVVdmaVQxTXZsaE93TmViK1NUdjZuTkczd3NSUXBDOEtGMlVv?=
- =?gb2312?B?M1NEYVJ3VWNtU3JQOG9qMFpURmZEa2dJMytIcHdmaHI2d3M0c3BwYzRwV0tr?=
- =?gb2312?B?TEhNRTR3NE9hSkt6eE5jU0FrL3ZKczNhR1crNHRFdVcwZTZzVlFIY2JEekRW?=
- =?gb2312?B?UDRCU0I3azdwdEFiY09XZURrcGVlY2pFakpXbmlVampHaW9OVXRRR1lqc3Zk?=
- =?gb2312?B?YnF3RHFXaEY3d3U5U1EvYU55RWU0NWtycmlRTnZjZDZOMTh3RWYvQ0ZyQVl4?=
- =?gb2312?B?L2ZxRXFkSEg0WGRDV3dHUWlXa3NtRmJIL0plNjY3QUR6a2RCOGEwdFBpVUpV?=
- =?gb2312?B?RkEvVDFxTXRvakJNV0RiSXVMbWd4TFlPNlV4QXBLZllsQ1FmVDJsQlBZbXZ6?=
- =?gb2312?B?eXdHcHFIS29OV0hOWUNPVnhnVCtid2ZWUWdrMGhvZzI3N3JoYzE3Z2U0RjZ0?=
- =?gb2312?B?UEJ1c0k2ZnlaeThqOTFKVUIrdFJEMkpuN2pHVnhTT2NJUkJSZVZSbGxWTUZz?=
- =?gb2312?B?SVQ3RHRNNzNSRm9zbk0wUmNFMnQ3QWpncWR4dDFGUWlhRWRLY0ZZRU1BVUl4?=
- =?gb2312?B?bDFFRGpvSmRzaVl1Z0N6TjdYVEFxOWJqY1YvMzU1cnplTyt0eUhKL05TdDk0?=
- =?gb2312?B?UXAvS0k4OStiWWlTZkFEL2Znb001TzN4ODhCYlg4ODlFMW8zK0UwaTBGS01y?=
- =?gb2312?B?NktHT0FLRDNYSlU4ckxpNy83Tk8wNUpCalllNTJlRnVRMUtlNWZsT1VZd0hh?=
- =?gb2312?B?TEFLL0V3bnVJb0RvMmpJRkdoZmFMdWo5RUVWQTE0NEJhNlJrVE5qdUpNeVc2?=
- =?gb2312?B?czM4T3lRUXhVNm1CMHJhYkNtVUo2STF4ZzZDamVLb0ZEUFFmUEYybTE1TERQ?=
- =?gb2312?B?dnUxSmtnMEh2aTN4Yy8zOFVZWkFzb0t2YkIweVNkbnl1dHVEdUVnZmxtdTZ1?=
- =?gb2312?B?dTdQRTJCbzk4a3Rkd0p0cUtDZUpTVkhYbGJhVmdVSjdYN25rSW1meWNPQVIw?=
- =?gb2312?B?V2kxZjhrRTdmbkJCVTZSY1JnSWZ4Yy96VjRuWGtKaHRSQ0hwRXJXNTlnY2Jm?=
- =?gb2312?B?WFdtdjlyN3EzNTIvNld1WjRjVkhaZ0lpVEVXWUZOOE5wVTBrRTVRN1hsVGJY?=
- =?gb2312?B?T01iSXhGdnRwOE1xeG01c2ZkbFZGdEQvMWVwT2FvVUZFL3lNcVYybmU0Mkdt?=
- =?gb2312?B?Q29Yb2dQMldwK3JsTC92VjlFVmVTRjRSRCsrbFZDODVzdUJsV09keEhPQklk?=
- =?gb2312?Q?rpJ7ue0CLvgGpgq+9hol64sj3qIKA8Dg1uPwS9hy70=3D?=
-Content-ID: <147B3DED96E21244A4F0B9EA83069D28@jpnprd01.prod.outlook.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D2D1E200C3D
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 08:11:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1638256305; i=@fujitsu.com;
+ bh=fbPJkFrBZmgZR7RSBO6Zc2wZkHJReOUQdNuL31V/R88=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=u8QYlDltHRxaVFG5ajsDFzj6KzTCsVXMaKTr7iXERj87xN6EYyvXtcnYDdumysUtH
+ O8cf2LdNDpOBekcjQ2eY177liKCX+7lmRuvVfQJ0Zi8hFe2sI8BaF1os9lywKbAUIk
+ kw4Xlog4tgpTdrEWONcHXwprlHnaC0CKq+PmDeW87wwuIIvsCsfpVeoZx2n7IU9gfR
+ 7irFIDfhXdJXwlil3RIVVgVBSEyz0GqclsMa49Z8xZnPzSaN5W6q7dRXleMmWQSJvA
+ Cu/4/j/0ssuS3CvbF3AD+UWiZY0/YKzZ9ZQ842MYko5eNhXOtI4JAlRTiY9nofQgHd
+ lM/3bgaVvAPvQ==
+Received: from [100.115.2.64] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-1.bemta.az-a.eu-west-1.aws.ess.symcld.net id BD/D4-12056-1BEC5A16;
+ Tue, 30 Nov 2021 07:11:45 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEIsWRWlGSWpSXmKPExsViZ8MxSXfjuaW
+ JButnClqs+L6D0YHRY9/vdawBjFGsmXlJ+RUJrBm7r+xnLvhsU9F+6ANrA+Nlgy5GLg4hgbOM
+ EjMefWTrYuQEcnYySTya5gxh72GUaLsmA2KzCWhKPOtcwAxiiwhISHQ0vGUHsZkF1CWWT/rFB
+ GILC9hLrJmwCsxmEVCVuPt3AiOIzSvgITGj+wZYvYSAgsSUh+/B5nAKeEosvvsYyOYA2pUose
+ 5rMUS5oMTJmU9YIMZLSBx88YIZolVR4lLHN0YIu0Ji1qw2JghbTeLquU3MExgFZyFpn4WkfQE
+ j0ypGi6SizPSMktzEzBxdQwMDXUNDU11DXSO9xCrdRL3UUt3y1OISXUO9xPJivdTiYr3iytzk
+ nBS9vNSSTYzA4E0pZmTawbis76feIUZJDiYlUd7mzUsThfiS8lMqMxKLM+KLSnNSiw8xynBwK
+ Enw9pwCygkWpaanVqRl5gAjCSYtwcGjJML7/gxQmre4IDG3ODMdInWKUZejedLy7cxCLHn5ea
+ lS4rytZ4GKBECKMkrz4EbAovoSo6yUMC8jAwODEE9BalFuZgmq/CtGcQ5GJWFeE5ApPJl5JXC
+ bXgEdwQR0xNuli0GOKElESEk1MFVvsE0RyHjDmHL1zv/zR3ksvUpta9Q2zpz3sEsmVTVl22SV
+ N6uY82cqn5mYPan24+v7DLE8Ibn3G37HVoW+mtHx9olw9Z9Xv/+8qQo13xW7leXZ+gmsF89lf
+ lrDX/c39Z3z9Jq4v4s+6B99PydCe5WjfprXj6c7tfJeNkwMkPln/7OOWy5988zCF/O5c/q4di
+ TL5n+Nv3zc88rLGd9yvgbuNDzgKvlPNUuOQ2SvzZRoNrNX+dtZZwjb6BwR+fKWLS5gX73Zj3V
+ 6vfP5Wl+axR7WXR69+v3+UL3D3+ovpC5Y83lPWo8to183x5zVMVn80RpRVox7LdjbLN0/5lSs
+ um/bvtLPKUPHYPerV6W93UosxRmJhlrMRcWJAIJ9P3dlAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-12.tower-591.messagelabs.com!1638256305!46576!1
+X-Originating-IP: [62.60.8.146]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.7; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 23244 invoked from network); 30 Nov 2021 07:11:45 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-12.tower-591.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 30 Nov 2021 07:11:45 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 29234250375
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 07:11:45 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 1BFC6236939
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 07:11:45 +0000 (GMT)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.26; Tue, 30 Nov 2021 07:11:22 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Tue, 30 Nov 2021 15:11:13 +0800
+Message-ID: <1638256273-5208-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1638256273-5208-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <YaSYuLV+XPW/pQ5/@yuki>
+ <1638256273-5208-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dbbcb66-fc8b-49d2-5551-08d9b3b32fd5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2021 03:40:43.1907 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cXWJes9r5wL8gWM4PyZN1LiAk94h2TRvX9llQiWom6HHSX9L6iZBHiD+S+plUT5ONvrJOX/NmK/j6yp4smoPsYYaVo8CqPq9ZnHjkUu0+Zk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6849
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/statx01: Add stx_mnt_id check
+Subject: [LTP] [PATCH v2 2/2] syscalls/statx: Add docparse formatting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -157,81 +100,259 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril
-> Hi!
->> +static int file_fd = -1;
->> +
->> +#ifdef HAVE_STRUCT_STATX_STX_MNT_ID
->> +static void test_mnt_id(struct statx *buf)
->> +{
->> +	FILE *file;
->> +	char line[PATH_MAX];
->> +	int pid;
->> +	unsigned int line_mjr, line_mnr, mnt_id;
->
-> Shouldn't we check the STATX_MNT_ID bit here before we event attempt to
-> continue? Otherwise if we compile the test with headers where stx_mnt_id
-> is defined then run it on old kernel there will be garbage in the
-> stx_mnt_id field.
-Agree.
->
->> +	file = SAFE_FOPEN("/proc/self/mountinfo", "r");
->> +
->> +	while (fgets(line, sizeof(line), file)) {
->> +		if (sscanf(line, "%d %*d %d:%d",&mnt_id,&line_mjr,&line_mnr) != 3)
->> +			continue;
->> +
->> +		if (line_mjr == buf->stx_dev_major&&  line_mnr == buf->stx_dev_minor)
->> +			break;
->> +	}
->> +
->> +	SAFE_FCLOSE(file);
->> +
->> +	if (buf->stx_mnt_id == mnt_id)
->> +		tst_res(TPASS,
->> +			"statx.stx_mnt_id equals to mount_id(%d) in /proc/self/mountinfo",
->> +			mnt_id);
->> +	else
->> +		tst_res(TFAIL,
->> +			"statx.stx_mnt_id(%d) is different from mount_id(%d) in /proc/self/mountinfo",
->> +			buf->stx_mnt_id, mnt_id);
->> +
->> +	pid = getpid();
->> +	snprintf(line, PATH_MAX, "/proc/%d/fdinfo/%d", pid, file_fd);
->> +	TST_ASSERT_FILE_INT(line, "mnt_id:", buf->stx_mnt_id);
->> +}
->> +#endif
->> +
->>   static void test_normal_file(void)
->>   {
->>   	struct statx buff;
->> @@ -106,6 +146,11 @@ static void test_normal_file(void)
->>   		tst_res(TFAIL, "stx_nlink(%u) is different from expected(1)",
->>   			buff.stx_nlink);
->>
->> +#ifdef HAVE_STRUCT_STATX_STX_MNT_ID
->> +	test_mnt_id(&buff);
->> +#else
->> +	tst_res(TCONF, "stx_mnt_id was not supported until linux 5.8.");
->
-> This is confusing at best, if we end up here we were missing the
-> structure member during compilation regardless the kernel version.
->
-> So this message really should be:
->
-> "stx_mnt_id not defined in struct statx"
-Will do it in v2.
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/syscalls/statx/statx01.c | 31 +++++++++------------
+ testcases/kernel/syscalls/statx/statx02.c | 12 +++++----
+ testcases/kernel/syscalls/statx/statx03.c | 26 +++++++-----------
+ testcases/kernel/syscalls/statx/statx05.c |  8 +++---
+ testcases/kernel/syscalls/statx/statx06.c | 33 +++++++----------------
+ testcases/kernel/syscalls/statx/statx07.c | 21 ++++++++-------
+ 6 files changed, 53 insertions(+), 78 deletions(-)
 
-Best Regards
-Yang Xu
->
->
+diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+index 524acd273..b52bb2988 100644
+--- a/testcases/kernel/syscalls/statx/statx01.c
++++ b/testcases/kernel/syscalls/statx/statx01.c
+@@ -4,35 +4,28 @@
+  * Email: code@zilogic.com
+  */
+ 
+-/*
+- * Test statx
++/*\
++ * [Description]
+  *
+  * This code tests the functionality of statx system call.
+  *
+  * TESTCASE 1:
+  * The metadata for normal file are tested against predefined values:
+- * 1) gid
+- * 2) uid
+- * 3) mode
+- * 4) blocks
+- * 5) size
+- * 6) nlink
+- * 7) mnt_id
+  *
+- * A file is created and metadata values are set with
+- * predefined values.
+- * Then the values obtained using statx is checked against
+- * the predefined values.
++ * - gid
++ * - uid
++ * - mode
++ * - blocks
++ * - size
++ * - nlink
++ * - mnt_id
+  *
+  * TESTCASE 2:
+  * The metadata for device file are tested against predefined values:
+- * 1) MAJOR number
+- * 2) MINOR number
+  *
+- * A device file is created seperately using mknod(must be a root user).
+- * The major number and minor number are set while creation.
+- * Major and minor numbers obtained using statx is checked against
+- * predefined values.
++ * - MAJOR number
++ * - MINOR number
++ *
+  * Minimum kernel version required is 4.11.
+  */
+ 
+diff --git a/testcases/kernel/syscalls/statx/statx02.c b/testcases/kernel/syscalls/statx/statx02.c
+index 63133a3b7..56577599c 100644
+--- a/testcases/kernel/syscalls/statx/statx02.c
++++ b/testcases/kernel/syscalls/statx/statx02.c
+@@ -4,12 +4,13 @@
+  * Email: code@zilogic.com
+  */
+ 
+-/*
+- * Test statx
++/*\
++ * [Description]
++ *
++ * This code tests the following flags with statx syscall:
+  *
+- * This code tests the following flags:
+- * 1) AT_EMPTY_PATH
+- * 2) AT_SYMLINK_NOFOLLOW
++ * - AT_EMPTY_PATH
++ * - AT_SYMLINK_NOFOLLOW
+  *
+  * A test file and a link for it is created.
+  *
+@@ -19,6 +20,7 @@
+  * To check symlink no follow flag, the linkname is statxed.
+  * To ensure that link is not dereferenced, obtained inode is compared
+  * with test file inode.
++ *
+  * Minimum kernel version required is 4.11.
+  */
+ 
+diff --git a/testcases/kernel/syscalls/statx/statx03.c b/testcases/kernel/syscalls/statx/statx03.c
+index c72d7fead..de2fe4d38 100644
+--- a/testcases/kernel/syscalls/statx/statx03.c
++++ b/testcases/kernel/syscalls/statx/statx03.c
+@@ -4,25 +4,17 @@
+  * Email: code@zilogic.com
+  */
+ 
+-/*
+- * Test statx
++/*\
++ * [Description]
+  *
+- * This code tests if expected error values are returned for specific cases by
+- * statx.
+- * The error cases are simulated and the return value is checked against
+- * expected error number value.
+- * The following error values are tested:
+- * 1) EBADF - Bad file descriptor
+- * 2) EFAULT - Bad address
+- * 3) EINVAL - Invalid argument
+- * 4) ENOENT - No such file or directory
+- * 5) ENOTDIR - Not a directory
+- * 6) ENAMETOOLONG - Filename too long
++ * Test basic error handling of statx syscall:
+  *
+- * Error scenario is simulated for each listed flag by passing
+- * respective arguments.
+- * The obtained error flag is checked against the expected
+- * flag value for that scenario.
++ * - EBADF - Bad file descriptor
++ * - EFAULT - Bad address
++ * - EINVAL - Invalid argument
++ * - ENOENT - No such file or directory
++ * - ENOTDIR - Not a directory
++ * - ENAMETOOLONG - Filename too long
+  *
+  * Minimum Kernel version required is 4.11.
+  */
+diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
+index 81a5bcbf2..83c6c3ab5 100644
+--- a/testcases/kernel/syscalls/statx/statx05.c
++++ b/testcases/kernel/syscalls/statx/statx05.c
+@@ -4,10 +4,12 @@
+  * Email: code@zilogic.com
+  */
+ 
+-/*
+- * Test statx
++/*\
++ * [Description]
++ *
++ * Test statx syscall with STATX_ATTR_ENCRYPTED flag
+  *
+- * 1) STATX_ATTR_ENCRYPTED - A key is required for the file to be encrypted by
++ * - STATX_ATTR_ENCRYPTEDL: A key is required for the file to be encrypted by
+  *                          the filesystem.
+  *
+  * e4crypt is used to set the encrypt flag (currently supported only by ext4).
+diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+index 0469d66c5..4a0685a65 100644
+--- a/testcases/kernel/syscalls/statx/statx06.c
++++ b/testcases/kernel/syscalls/statx/statx06.c
+@@ -1,36 +1,21 @@
+ // SPDX-License-Identifier: GPL-2.0 or later
+ /*
+- *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
+- *  Email : code@zilogic.com
++ * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
++ * Email : code@zilogic.com
+  */
+ 
+-/*
+- * DESCRIPTION :
++/*\
++ * [Description]
+  *
+- * Test-Case 1 : Testing btime
+- * flow :       The time before and after the execution of the create
+- *              system call is noted.
+- *		It is checked whether the birth time returned by statx lies in
+- *              this range.
++ * Test the following file timestamps of statx syscall:
+  *
+- * Test-Case 2 : Testing mtime
+- * flow :       The time before and after the execution of the write
+- *              system call is noted.
+- *              It is checked whether the modification time returned
+- *              by statx lies in this range.
++ * - btime - The time before and after the execution of the create system call is noted.
+  *
+- * Test-Case 3 : Testing atime
+- * flow :       The time before and after the execution of the read
+- *              system call is noted.
+- *              It is checked whether the access time returned by statx lies in
+- *              this range.
++ * - mtime - The time before and after the execution of the write system call is noted.
+  *
+- * Test-Case 4 : Testing ctime
+- * flow :	The time before and after the execution of the chmod
+- *              system call is noted.
+- *              It is checked whether the status change time returned by statx
+- *              lies in this range.
++ * - atime - The time before and after the execution of the read system call is noted.
+  *
++ * - ctime - The time before and after the execution of the chmod system call is noted.
+  */
+ 
+ #define _GNU_SOURCE
+diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
+index ec1cdd190..e7045edaa 100644
+--- a/testcases/kernel/syscalls/statx/statx07.c
++++ b/testcases/kernel/syscalls/statx/statx07.c
+@@ -1,15 +1,16 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
+- *  Email : code@zilogic.com
++ * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
++ * Email : code@zilogic.com
+  */
+ 
+-/*
+- * Test statx
++/*\
++ * [Description]
+  *
+  * This code tests the following flags:
+- * 1) AT_STATX_FORCE_SYNC
+- * 2) AT_STATX_DONT_SYNC
++ *
++ * - AT_STATX_FORCE_SYNC
++ * - AT_STATX_DONT_SYNC
+  *
+  * By exportfs cmd creating NFS setup.
+  *
+@@ -29,11 +30,11 @@
+  *
+  * The support for SYNC flags was implemented in NFS in:
+  *
+- * commit 9ccee940bd5b766b6dab6c1a80908b9490a4850d
+- * Author: Trond Myklebust <trond.myklebust@primarydata.com>
+- * Date:   Thu Jan 4 17:46:09 2018 -0500
++ *  commit 9ccee940bd5b766b6dab6c1a80908b9490a4850d
++ *  Author: Trond Myklebust <trond.myklebust@primarydata.com>
++ *  Date:   Thu Jan 4 17:46:09 2018 -0500
+  *
+- *     Support statx() mask and query flags parameters
++ *  Support statx() mask and query flags parameters
+  *
+  * Hence we skip the test on anything older than 4.16.
+  */
+-- 
+2.23.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
