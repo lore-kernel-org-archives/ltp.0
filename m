@@ -4,87 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5970C433F5
-	for <ltp@archiver.kernel.org>; Wed,  1 Dec 2021 03:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F513C433EF
+	for <ltp@archiver.kernel.org>; Wed,  1 Dec 2021 07:07:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 143413C8BDB
-	for <ltp@archiver.kernel.org>; Wed,  1 Dec 2021 04:15:27 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 642AE3C8EF5
+	for <ltp@archiver.kernel.org>; Wed,  1 Dec 2021 08:07:28 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE4763C1810
- for <ltp@lists.linux.it>; Wed,  1 Dec 2021 04:15:16 +0100 (CET)
-Received: from mail1.bemta26.messagelabs.com (mail1.bemta26.messagelabs.com
- [85.158.142.114])
+ by picard.linux.it (Postfix) with ESMTPS id 27FDB3C8D0C
+ for <ltp@lists.linux.it>; Wed,  1 Dec 2021 08:07:18 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5B760600FA5
- for <ltp@lists.linux.it>; Wed,  1 Dec 2021 04:15:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1638328514; i=@fujitsu.com;
- bh=KndQ9jsj8fD1E+iZb8aipURRdG0Pgoo17/Ccv60BITs=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=d5JAuvPC2q36+Avv4DTLpL7Sx/AfTxKcED1+JM8tyx0aK4snxVkvfopLrwJwAu2iK
- vQpnRMEk9PlkYdmrajuwLrltd/dO9LGgIQ2eIl5YD7leqQ3xfiiOzhNie7uStdIUlQ
- dToh0UH78w3SZyxfTalzqWzXFqe0GkZWkzxHpeW9nkE/AIq/G0d9QcjjtYxGjCsafC
- nGRBrgDfyG8cwUwuctSQKFjnm4FI1xGIwNJNPaIdKXNE5IjPMijxSaUKAjzZlr50qP
- gXFdX5nGZjYXYMCI81FgDK8ndxueky1tcrROTDJB/VoEenA0AkgUI5jK8ikfQHMZJh
- 4ta+1apm7PpCg==
-Received: from [100.113.7.129] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-b.eu-central-1.aws.symcld.net id 0C/27-30139-2C8E6A16;
- Wed, 01 Dec 2021 03:15:14 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRWlGSWpSXmKPExsViZ8MxSffgi2W
- JBlu7eCxWfN/B6MDose/3OtYAxijWzLyk/IoE1owFnZcYC57zVyyb9IOxgXEFbxcjF4eQwFlG
- iZWXNjNBODuZJCacOsgM4exmlHj7fg5jFyMnB5uApsSzzgXMILaIgIRER8NbdhCbWUBdYvmkX
- 0wgtrBAkMTSa+vZQGwWARWJRy+fgNm8Ah4S1++uAKuXEFCQmPLwPTNEXFDi5MwnLBBzJCQOvn
- jBDFGjKHGp4xsjhF0hMWtWGxOErSZx9dwm5gmM/LOQtM9C0r6AkWkVo0VSUWZ6RkluYmaOrqG
- Bga6hobGuGZCll1ilm6SXWqqbnJpXUpQIlNRLLC/WK67MTc5J0ctLLdnECAzJlEI2rh2MT19/
- 0DvEKMnBpCTKm7liWaIQX1J+SmVGYnFGfFFpTmrxIUYZDg4lCV7NZ0A5waLU9NSKtMwcYHzAp
- CU4eJREeLOeAqV5iwsSc4sz0yFSpxgVpcR5rz0HSgiAJDJK8+DaYDF5iVFWSpiXkYGBQYinIL
- UoN7MEVf4VozgHo5IwbzXIFJ7MvBK46a+AFjMBLX67dDHI4pJEhJRUA1OiZ4N2m+rRcNNv5Yo
- miZzH2E+WH2up5YuavOOFU6m9bO5MJueCivmXfB4rHzx/fEZx0dKFu07syZgzicNPSa5DV0lN
- UnPHzcJPn8NYNZX4vvh81NCqOb9U+BIre+M7e2GJR3f3b2vxWbP8gcKk9zJbdLK5/CvdF6WYc
- z26fDM5rP4bx3ZD80mswsGH9ocv3GQffa9P81iz9Y0v9mu2c35ZPEuQecvpP3HdEiY/1ryU2r
- A24/yOFy9Y8sO9GTJ/BomekHNW6Ul7WHM9OY09NOqP9NcDM1a+1BHfsi9Zp+P9xVeSb/ZvnnD
- cf/vCgz8anJ0akvYqsl6u9fmTz9vGcuLOm9MlXw+yF4nrP9mQ1qbEUpyRaKjFXFScCABlhXQ8
- RAMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-8.tower-238.messagelabs.com!1638328512!589953!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.5; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 26423 invoked from network); 1 Dec 2021 03:15:13 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
- by server-8.tower-238.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 1 Dec 2021 03:15:13 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id A57F11000F6
- for <ltp@lists.linux.it>; Wed,  1 Dec 2021 03:15:13 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 993161000EE
- for <ltp@lists.linux.it>; Wed,  1 Dec 2021 03:15:13 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Wed, 1 Dec 2021 03:15:00 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Wed, 1 Dec 2021 11:15:11 +0800
-Message-ID: <1638328511-2534-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 71BF4100126D
+ for <ltp@lists.linux.it>; Wed,  1 Dec 2021 08:07:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1638342437;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fivw2k8b37Gfp9uKmrEuNWDQLowVK35oYm4HYwldsDk=;
+ b=UdbNmLTiDo0npGHWhRVcvmcRUXcfePwk6JhBhJBIreauZfok4iryBSbxZq/uqKtEVoP9BZ
+ 01UZiGFLHBBcKsOQul24pMUeNhUEu6LycOOdAp0p4tZJdMJPlMCxsLoPBmuJBKsIBzq+UQ
+ My1hxFANgPRe0+6i8Sv9yOwNfo2dLMA=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-548-ewNIylGuMtqmrsDuX58FGA-1; Wed, 01 Dec 2021 02:07:14 -0500
+X-MC-Unique: ewNIylGuMtqmrsDuX58FGA-1
+Received: by mail-yb1-f197.google.com with SMTP id
+ d9-20020a251d09000000b005c208092922so34357455ybd.20
+ for <ltp@lists.linux.it>; Tue, 30 Nov 2021 23:07:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=fivw2k8b37Gfp9uKmrEuNWDQLowVK35oYm4HYwldsDk=;
+ b=4rBdUAPWZ42gY1yvKNQ4ZF36HOXPnu/vU4kx7zJKh3H7dOrpzEsenPfxpmBvtyBGBR
+ 0KOVpeIJQWOjVHer9qyj4mVLxAd2t5xY4nz20EUhQDgKRB8SbycLA0e1pbd2oVo/Q2sJ
+ NjQ1TvZnnRkF1cOPqhaFGJ1hfXsp75Hg86d1BE5PXjrJlqTwLTOmD6svLLhsTlxlbjx3
+ FwpelB4SIr8mZ5+EkgQugLVfSRB4Zp8eRW/qoya/JezImkrwso8yvP/twG8iOkLpzGph
+ wxUc8C8/V+NwbLIUb75NdkCQ0VJ76Ir7CMQkNE5j85Mlq8dvSFKIp1W1fNrBk59rlvFY
+ Lx4A==
+X-Gm-Message-State: AOAM532KI1InzyacVojmTB0q+WRUtMLoqylGSJpZrXUKDY7zKcNsY0Ek
+ lo9qvvY0LVsgUO3AoghWo08UrE2pgRcBuWPB3DbRwjWk7zrwgarVaWHeqIKavQmsgkjg0fZ7jFO
+ iVEJtkZBekFLV7qtzrho/k+GoWpM=
+X-Received: by 2002:a25:760d:: with SMTP id r13mr5581360ybc.296.1638342434242; 
+ Tue, 30 Nov 2021 23:07:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzMtowv919lMB1Kps456lk3UPCFFrpS8/68pdaotSrLyxFdpvq0202oClLR+3SaillD+rGgcePNSapfAAjedis=
+X-Received: by 2002:a25:760d:: with SMTP id r13mr5581335ybc.296.1638342433983; 
+ Tue, 30 Nov 2021 23:07:13 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20211130105027.1071-1-chrubis@suse.cz>
+ <20211130105027.1071-2-chrubis@suse.cz>
+In-Reply-To: <20211130105027.1071-2-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 1 Dec 2021 15:07:01 +0800
+Message-ID: <CAEemH2cKMVmjuGBFcp9-CWYSy1dbHegACgENQk6RXqnDuqc1-Q@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/statx05, 07: Move e4crypt,
- exportfs to tst_test structure
+Subject: Re: [LTP] [PATCH 1/2] include/tst_fuzzy_sync.h: Add inline to
+ static fucntions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,78 +84,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1030248352=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Also remove duplicated e4crypt metadata info in statx05 description.
+--===============1030248352==
+Content-Type: multipart/alternative; boundary="000000000000cc635d05d210529a"
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/statx/statx05.c | 9 ++-------
- testcases/kernel/syscalls/statx/statx07.c | 6 ++++--
- 2 files changed, 6 insertions(+), 9 deletions(-)
+--000000000000cc635d05d210529a
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-index a3184e7e3..a948a30b0 100644
---- a/testcases/kernel/syscalls/statx/statx05.c
-+++ b/testcases/kernel/syscalls/statx/statx05.c
-@@ -10,8 +10,6 @@
-  * Test statx syscall with STATX_ATTR_ENCRYPTED flag, setting a key is required
-  * for the file to be encrypted by the filesystem.
-  *
-- * e4crypt is used to set the encrypt flag (currently supported only by ext4).
-- *
-  * Two directories are tested.
-  * First directory has all flags set.
-  * Second directory has no flags set.
-@@ -110,11 +108,7 @@ static void setup(void)
- 	SAFE_MKDIR(TESTDIR_UNFLAGGED, 0777);
- 
- 	ret = tst_system("echo qwery | e4crypt add_key "TESTDIR_FLAGGED);
--
--	if (WEXITSTATUS(ret) == 127)
--		tst_brk(TCONF, "e4crypt not installed!");
--
--	if (WEXITSTATUS(ret))
-+	if (ret)
- 		tst_brk(TCONF, "e4crypt failed (CONFIG_EXT4_ENCRYPTION not set?)");
- }
- 
-@@ -136,6 +130,7 @@ static struct tst_test test = {
- 	.dev_fs_type = "ext4",
- 	.needs_cmds = (const char *[]) {
- 		"mkfs.ext4",
-+		"e4crypt",
- 		NULL
- 	}
- };
-diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-index 89de0c487..e1ae36a35 100644
---- a/testcases/kernel/syscalls/statx/statx07.c
-+++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -135,8 +135,6 @@ static void setup(void)
- 	exported = 1;
- 
- 	ret = tst_system(cmd);
--	if (WEXITSTATUS(ret) == 127)
--		tst_brk(TCONF | TST_ERR, "%s not found", cmd);
- 	if (ret)
- 		tst_brk(TBROK | TST_ERR, "failed to exportfs");
- 
-@@ -172,4 +170,8 @@ static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.dev_fs_type = "nfs",
- 	.needs_root = 1,
-+	.needs_cmds = (const char *[]) {
-+		"exportfs",
-+		NULL
-+	}
- };
+For the series:
+Reviewed-by: Li Wang <liwang@redhat.com>
+
 -- 
-2.23.0
+Regards,
+Li Wang
+
+--000000000000cc635d05d210529a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
+ll">For the series:=C2=A0</div><div class=3D"gmail_default" style=3D"font-s=
+ize:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">li=
+wang@redhat.com</a>&gt;<br></div></div><div><br></div>-- <br><div dir=3D"lt=
+r" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>L=
+i Wang<br></div></div></div></div>
+
+--000000000000cc635d05d210529a--
+
+
+--===============1030248352==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1030248352==--
+
