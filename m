@@ -4,87 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47F16C433EF
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 09:30:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F89EC433F5
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 09:37:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E20B93C8FDB
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 10:30:53 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 094E63C9023
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 10:37:45 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A09AE3C7047
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:30:43 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.4])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 949933C8DD1
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:37:34 +0100 (CET)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2C4271401634
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:30:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1638437441; i=@fujitsu.com;
- bh=EfZaehL2AFyrYA2I3jZ1WclNPI20YNTgTDhHlAl0KNs=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=ATm4ESw0B/YyHSiMlTqJ6vIYhL9S8yuA1iWH6h0xFY2YvzbchoA6/pN/rjbM/G6gp
- Z0TzLxm3E2PwaRITKWXFfMHCDORSxzva78um0+MDSXUlAkBoNLTzrO9BTd/ze6XnZX
- fU+PfgDKyeUkUBax5uyoCnokGLiaAmggYrdpSHYgxT3mptrWWdsSuwyh63spXVsJ0x
- Qltq3uO/0+82ycTOaR65LEu7dddN0Dno1qwkgEDqH0jM/x3KRg3LPOXZvFiyj2+6qh
- cXwtKCpBxPLsqDIGmJLMa3HTVDw23Gnt5IuA0TAJxZJn+Mg0GKjq62CDANpid8IEvS
- s2ssQ7u4RBFhA==
-Received: from [100.115.34.229] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-a.eu-west-2.aws.ess.symcld.net id 38/29-02703-14298A16;
- Thu, 02 Dec 2021 09:30:41 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRWlGSWpSXmKPExsViZ8MxSddh0op
- Eg5f3LCxWfN/B6MDose/3OtYAxijWzLyk/IoE1ox/OxezFiz2qvjy8jBTA+NDqy5GLg4hgbOM
- ErcWbmCFcHYySdzbOZUdwtnHKPFn2lkgh5ODTUBD4trjdmYQW0RAQqKj4S1YnFlATWL31WNsI
- LawgJnE9I0vwOIsAqoST2/+ZwGxeQXcJK5smgEWlxBQkJjy8D0zRFxQ4uTMJywQcyQkDr54wQ
- xRoyixf+9GRgi7QmLGjG1sELaaxNVzm5gnMPLPQtI+C0n7AkamVYzWSUWZ6RkluYmZObqGBga
- 6hoamusamukYGJnqJVbqJeqmluuWpxSW6RnqJ5cV6qcXFesWVuck5KXp5qSWbGIGBmVKsfGYH
- 46dL3/QOMUpyMCmJ8iokrUgU4kvKT6nMSCzOiC8qzUktPsQow8GhJMH7bAJQTrAoNT21Ii0zB
- xglMGkJDh4lEd4rE4HSvMUFibnFmekQqVOMuhzvn8xdxCzEkpeflyolznsRZIYASFFGaR7cCF
- jEXmKUlRLmZWRgYBDiKUgtys0sQZV/xSjOwagkzGsMsoonM68EbtMroCOYgI44PGs5yBEliQg
- pqQamfpEgoZiE3PVWnex/UjhYSis3l0Rt1p+raLJl6/+kedGWmh/fh3De23FNXmXJ0eaZAl4N
- s0Larye6at9f/j9X42SRKe+O+5/nHngrkZj72D7w4qUmQftz8tfj33HaZV2/dvB/lwBzf7Uze
- 9CsFyHuh9VmCAStnZFz0uakRMtWxz/CVkf+7p2Q/DxhmaD4krUTrhwQ5ZOSO7LspMzL7AiPTd
- my9r9bNM6sLO8X/qD05NnDb1cDCuvv3f9z+MD9NjfLlGSXjnuGRxSPiBx8flhwsozoy7ehgQv
- cv2203qW0WlFa0lFr05xEd0tB7xdz7/6WvHyw8uoFI4dp+m7LXteeMjricyfA3i5T5pSusXKQ
- EktxRqKhFnNRcSIA5IvJ8FMDAAA=
-X-Env-Sender: daisl.fnst@fujitsu.com
-X-Msg-Ref: server-7.tower-571.messagelabs.com!1638437440!102293!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 24723 invoked from network); 2 Dec 2021 09:30:40 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
- by server-7.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 2 Dec 2021 09:30:40 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 77C4E10034F
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 09:30:42 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 6AC421000FE
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 09:30:42 +0000 (GMT)
-Received: from rhel79.g08.fujitsu.local (10.167.225.51) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Thu, 2 Dec 2021 09:30:34 +0000
-From: Dai Shili <daisl.fnst@fujitsu.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 772D860137B
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:37:30 +0100 (CET)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J4W5p3Fc9zXdRS;
+ Thu,  2 Dec 2021 17:35:26 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 2 Dec 2021 17:37:25 +0800
+Received: from ubuntu1604.huawei.com (10.67.174.57) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 2 Dec 2021 17:37:25 +0800
 To: <ltp@lists.linux.it>
-Date: Fri, 12 Nov 2021 19:09:21 -0500
-Message-ID: <1636762161-26777-1-git-send-email-daisl.fnst@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+Date: Thu, 2 Dec 2021 17:38:38 +0800
+Message-ID: <1638437918-60401-1-git-send-email-wenyehai@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Originating-IP: [10.167.225.51]
-X-ClientProxiedBy: G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.67.174.57]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/pwrite04: Convert to new API
+Subject: [LTP] [PATCH v2] bugfix for testcases which with duplicate header
+ files fcntl.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,360 +55,458 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: wenyehai via ltp <ltp@lists.linux.it>
+Reply-To: wenyehai <wenyehai@huawei.com>
+Cc: wenyehai <wenyehai@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-1) use SAFE macro
-2) remove useless write() operations
-3) simplify pwrite() operations before using O_APPEND
+testcases/kernel/syscalls:Remove duplicate header files fcntl.h.
 
-Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+Signed-off-by: Yehai Wen <wenyehai@huawei.com>
 ---
- testcases/kernel/syscalls/pwrite/pwrite04.c | 307 ++++++----------------------
- 1 file changed, 66 insertions(+), 241 deletions(-)
+v1->v2: remove duplicate header files fcntl.h for all testcases
+ testcases/kernel/syscalls/accept4/accept4_01.c            | 1 -
+ testcases/kernel/syscalls/eventfd2/eventfd2_01.c          | 1 -
+ testcases/kernel/syscalls/eventfd2/eventfd2_02.c          | 1 -
+ testcases/kernel/syscalls/execveat/execveat03.c           | 1 -
+ testcases/kernel/syscalls/fallocate/fallocate01.c         | 1 -
+ testcases/kernel/syscalls/fchownat/fchownat01.c           | 1 -
+ testcases/kernel/syscalls/fchownat/fchownat02.c           | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl29.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl30.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl31.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl34.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl35.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl36.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl37.c                 | 1 -
+ testcases/kernel/syscalls/fcntl/fcntl38.c                 | 1 -
+ testcases/kernel/syscalls/inotify_init/inotify_init1_01.c | 1 -
+ testcases/kernel/syscalls/inotify_init/inotify_init1_02.c | 1 -
+ testcases/kernel/syscalls/linkat/linkat02.c               | 1 -
+ testcases/kernel/syscalls/mknodat/mknodat01.c             | 1 -
+ testcases/kernel/syscalls/mknodat/mknodat02.c             | 1 -
+ testcases/kernel/syscalls/open/open14.c                   | 1 -
+ testcases/kernel/syscalls/openat/openat01.c               | 1 -
+ testcases/kernel/syscalls/openat/openat02.c               | 1 -
+ testcases/kernel/syscalls/openat/openat03.c               | 1 -
+ testcases/kernel/syscalls/pipe/pipe12.c                   | 1 -
+ testcases/kernel/syscalls/pipe2/pipe2_04.c                | 1 -
+ testcases/kernel/syscalls/renameat/renameat01.c           | 1 -
+ testcases/kernel/syscalls/signalfd4/signalfd4_01.c        | 1 -
+ testcases/kernel/syscalls/socket/socket02.c               | 1 -
+ testcases/kernel/syscalls/socketpair/socketpair02.c       | 1 -
+ testcases/kernel/syscalls/tee/tee01.c                     | 1 -
+ testcases/kernel/syscalls/timerfd/timerfd02.c             | 1 -
+ testcases/kernel/syscalls/timerfd/timerfd03.c             | 1 -
+ testcases/kernel/syscalls/vmsplice/vmsplice01.c           | 1 -
+ testcases/kernel/syscalls/vmsplice/vmsplice02.c           | 2 --
+ 35 files changed, 36 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/pwrite/pwrite04.c b/testcases/kernel/syscalls/pwrite/pwrite04.c
-index 4a2825b..2b5ab35 100644
---- a/testcases/kernel/syscalls/pwrite/pwrite04.c
-+++ b/testcases/kernel/syscalls/pwrite/pwrite04.c
-@@ -1,267 +1,92 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) Linux Test Project, 2021
-+ * Copyright (c) International Business Machines  Corp., 2002
-+ * ported from SPIE, section2/filesuite/pread_pwrite.c, by Airong Zhang
-  */
- 
--/*
-- * NAME
-- *      pwrite04.c (ported from SPIE, section2/filesuite/pread_pwrite.c,
-- *      	        by Airong Zhang)
-+/*\
-+ * [Description]
-  *
-- * TEST SUMMARY
-- *	Test the pwrite() system call with O_APPEND.
-+ * Test the pwrite() system call with O_APPEND.
-  *
-- * USAGE
-- *  	pwrite04
-+ * Writing 2k data to the file, close it and reopen it with O_APPEND.
-  *
-+ * POSIX requires that opening a file with the O_APPEND flag should have no effect on the
-+ * location at which pwrite() writes data. However, on Linux, if a file is opened with
-+ * O_APPEND, pwrite() appends data to the end of the file, regardless of the value of offset.
-  */
- 
--#define _XOPEN_SOURCE 500
--#include <stdio.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <unistd.h>
+diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
+index b3ab1b9..58115ea 100644
+--- a/testcases/kernel/syscalls/accept4/accept4_01.c
++++ b/testcases/kernel/syscalls/accept4/accept4_01.c
+@@ -13,7 +13,6 @@
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <stdlib.h>
 -#include <fcntl.h>
--#include <memory.h>
--#include <errno.h>
--#include "test.h"
--
--char *TCID = "pwrite04";
--int TST_TOTAL = 1;
--int local_flag;
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
- 
--#define PASSED 1
--#define FAILED 0
-+#define K1              1024
-+#define K2              (K1 * 2)
-+#define K3              (K1 * 3)
-+#define DATA_FILE       "pwrite04_file"
- 
--int block_cnt = 0;
-+static int fd = -1;
-+static char *write_buf[2];
- 
--#define K1    		1024
--#define K2    		(K1 * 2)
--#define K3    		(K1 * 3)
--#define K4    		(K1 * 4)
--#define K5    		(K1 * 5)
--#define	NBUFS 		4
--#define DATA_FILE	"pwrite04_file"
--
--char name[256], fname[256];
--
--void init_buffers(char *[]);
--void l_seek(int, off_t, int, off_t);
--static void cleanup(void);
--
--int main(int ac, char *av[])
-+static void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
- {
--	int fd;
--	int nbytes;
--	char *wbuf[NBUFS];
--	struct stat statbuf;
--	int lc;
--
--	strcpy(name, DATA_FILE);
--	sprintf(fname, "%s.%d", name, getpid());
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	tst_tmpdir();
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		init_buffers(wbuf);
--		local_flag = PASSED;
--
--		if ((fd = open(fname, O_RDWR | O_CREAT, 0666)) < 0) {
--			tst_resm(TBROK, "open failed: fname = %s, errno = %d",
--				 fname, errno);
--			cleanup();
--		}
--		/*
--		 * pwrite() K1 of data (0's) at offset 0.
--		 */
--		if ((nbytes = pwrite(fd, wbuf[0], K1, 0)) != K1) {
--			tst_resm(TFAIL,
--				 "pwrite at 0 failed: nbytes=%d, errno=%d",
--				 nbytes, errno);
--			cleanup();
--		}
--
--		/*
--		 * We should still be at offset 0.
--		 */
--		l_seek(fd, 0, SEEK_CUR, 0);
--
--		/*
--		 * lseek() to a non K boundary, just to be different.
--		 */
--		l_seek(fd, K1 / 2, SEEK_SET, K1 / 2);
--
--		/*
--		 * pwrite() K1 of data (2's) at offset K2.
--		 */
--		if ((nbytes = pwrite(fd, wbuf[2], K1, K2)) != K1) {
--			tst_resm(TFAIL,
--				 "pwrite at K2 failed: nbytes=%d, errno=%d",
--				 nbytes, errno);
--			cleanup();
--		}
--
--		/*
--		 * We should still be at our non K boundary.
--		 */
--		l_seek(fd, 0, SEEK_CUR, K1 / 2);
--
--		/*
--		 * lseek() to an offset of K3.
--		 */
--		l_seek(fd, K3, SEEK_SET, K3);
--
--		/*
--		 * This time use a normal write() of K1 of data (3's) which should
--		 * take place at an offset of K3, moving the file pointer to K4.
--		 */
--		if ((nbytes = write(fd, wbuf[3], K1)) != K1) {
--			tst_resm(TFAIL, "write failed: nbytes=%d, errno=%d",
--				 nbytes, errno);
--			cleanup();
--		}
--
--		/*
--		 * We should be at offset K4.
--		 */
--		l_seek(fd, 0, SEEK_CUR, K4);
--
--		/*
--		 * pwrite() K1 of data (1's) at offset K1.
--		 */
--		if ((nbytes = pwrite(fd, wbuf[1], K1, K1)) != K1) {
--			tst_resm(TFAIL, "pwrite failed: nbytes=%d, errno=%d",
--				 nbytes, errno);
--			cleanup();
--		}
--
--	/*--------------------------------------------------------------*/
--
--		/*
--		 * Now test that O_APPEND takes precedence over any
--		 * offset specified by pwrite(), but that the file
--		 * pointer remains unchanged.  First, close then reopen
--		 * the file and ensure it is already K4 in length and
--		 * set the file pointer to it's midpoint, K2.
--		 */
--		close(fd);
--		if ((fd = open(fname, O_RDWR | O_APPEND, 0666)) < 0) {
--			tst_resm(TBROK, "open failed: fname = %s, errno = %d",
--				 fname, errno);
--			cleanup();
--		}
--		if (fstat(fd, &statbuf) == -1) {
--			tst_resm(TFAIL, "fstat failed: errno = %d", errno);
--			cleanup();
--		}
--		if (statbuf.st_size != K4) {
--			tst_resm(TFAIL, "file size is %ld != K4",
--				 statbuf.st_size);
--			cleanup();
--		}
--		l_seek(fd, K2, SEEK_SET, K2);
--
--		/*
--		 * Finally, pwrite() some K1 of data at offset 0.
--		 * What we should end up with is:
--		 *      -The file pointer should still be at K2.
--		 *      -The data should have been written to the end
--		 *       of the file (O_APPEND) and should be K5 in size.
--		 */
--		if ((nbytes = pwrite(fd, wbuf[0], K1, 0)) != K1) {
--			tst_resm(TFAIL,
--				 "pwrite at 0 failed: nbytes=%d, errno=%d",
--				 nbytes, errno);
--
--		}
--		l_seek(fd, 0, SEEK_CUR, K2);
--		if (fstat(fd, &statbuf) == -1) {
--			tst_resm(TFAIL, "fstat failed: errno = %d", errno);
--
--		}
--		if (statbuf.st_size != K5) {
--			tst_resm(TFAIL, "file size is %ld != K4",
--				 statbuf.st_size);
--
--		}
--		tst_resm(TPASS, "O_APPEND test passed.");
--
--	/*------------------------------------------------------------------------*/
--
--		close(fd);
--		unlink(fname);
--	}			/* end for */
--	cleanup();
--	tst_exit();
-+	off_t offloc;
- 
-+	offloc = SAFE_LSEEK(fdesc, offset, whence);
-+	if (offloc != checkoff) {
-+		tst_brk(TFAIL, "%ld = lseek(%d, %ld, %d) != %ld",
-+			offloc, fdesc, offset, whence, checkoff);
-+	}
- }
- 
--/*------------------------------------------------------------------------*/
--
--/*
-- * init_buffers() allocates wbuf[] array
-- * as follows:
-- * wbuf[0] has 0's, wbuf[1] has 1's, wbuf[2] has 2's, and wbuf[3] has 3's.
-- */
--void init_buffers(char *wbuf[])
-+static void verify_pwrite(void)
- {
--	int i;
-+	struct stat statbuf;
- 
--	for (i = 0; i < NBUFS; i++) {
--		wbuf[i] = malloc(K1);
--		if (wbuf[i] == NULL) {
--			tst_brkm(TBROK, NULL, "ib: malloc failed: errno=%d",
--				 errno);
--		}
--		memset(wbuf[i], i, K1);
--	}
-+	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_CREAT | O_TRUNC, 0666);
-+	SAFE_PWRITE(1, fd, write_buf[0], K2, 0);
-+	SAFE_CLOSE(fd);
-+
-+	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_APPEND, 0666);
-+	SAFE_FSTAT(fd, &statbuf);
-+	if (statbuf.st_size != K2)
-+		tst_res(TFAIL, "file size is %ld != K2", statbuf.st_size);
-+
-+	/* Appends data to the end of the file regardless of offset. */
-+	l_seek(fd, K1, SEEK_SET, K1);
-+	SAFE_PWRITE(1, fd, write_buf[1], K1, 0);
-+	l_seek(fd, 0, SEEK_CUR, K1);
-+	SAFE_FSTAT(fd, &statbuf);
-+	if (statbuf.st_size != K3)
-+		tst_res(TFAIL, "file size is %ld != K3", statbuf.st_size);
-+
-+	tst_res(TPASS, "O_APPEND test passed.");
-+	SAFE_CLOSE(fd);
- }
- 
--/*
-- * l_seek() is a local front end to lseek().
-- * "checkoff" is the offset at which we believe we should be at.
-- * Used to validate pwrite doesn't move the offset.
-- */
--void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
-+static void setup(void)
- {
--	off_t offloc;
--
--	if ((offloc = lseek(fdesc, offset, whence)) != checkoff) {
--		tst_brkm(TFAIL, NULL,
--			 "(%ld = lseek(%d, %ld, %d)) != %ld) errno = %d",
--			 offloc, fdesc, offset, whence, checkoff, errno);
--	}
-+	write_buf[0] = SAFE_MALLOC(K2);
-+	memset(write_buf[0], 0, K2);
-+	write_buf[1] = SAFE_MALLOC(K1);
-+	memset(write_buf[0], 1, K1);
- }
- 
--/*
-- * cleanup() - Performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *
-- *	Print test timing stats and errno log if test executed with options.
-- *	Close the testfile if still opened.
-- *	Remove temporary directory and sub-directories/files under it
-- *	created during setup().
-- *	Exit the test program with normal exit code.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
-+	free(write_buf[0]);
-+	free(write_buf[1]);
- 
--	tst_rmdir();
-+	if (fd > -1)
-+		SAFE_CLOSE(fd);
- 
-+	SAFE_UNLINK(DATA_FILE);
- }
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_pwrite,
-+};
--- 
-1.8.3.1
+ #include <stdio.h>
+ #include <string.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+index a4af388..c0c6a26 100644
+--- a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
++++ b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+@@ -53,7 +53,6 @@
+ /*              Ported to LTP                                                 */
+ /*                      - Jan 08 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
+diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_02.c b/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
+index 151edb8..418c07c 100644
+--- a/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
++++ b/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
+@@ -50,7 +50,6 @@
+ /*              Ported to LTP                                                 */
+ /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
+diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
+index 78b26ab..1900c07 100644
+--- a/testcases/kernel/syscalls/execveat/execveat03.c
++++ b/testcases/kernel/syscalls/execveat/execveat03.c
+@@ -29,7 +29,6 @@
+ #include <string.h>
+ #include <sys/syscall.h>
+ #include <sys/mount.h>
+-#include <fcntl.h>
+ #include "tst_test.h"
+ #include "lapi/execveat.h"
+ #include "lapi/fcntl.h"
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
+index c60e160..383796c 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate01.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
+@@ -93,7 +93,6 @@
+ #include <errno.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ #include <inttypes.h>
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
+index 9f4ecde..a658f07 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat01.c
++++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
+@@ -26,7 +26,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
+index d19f3f3..701623d 100644
+--- a/testcases/kernel/syscalls/fchownat/fchownat02.c
++++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
+@@ -24,7 +24,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
+index ffb9fea..5874764 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl29.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
+@@ -24,7 +24,6 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <string.h>
+ #include <signal.h>
+ #include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
+index a7a5e13..27f4643 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl30.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
+@@ -25,7 +25,6 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <string.h>
+ #include <signal.h>
+ #include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl31.c b/testcases/kernel/syscalls/fcntl/fcntl31.c
+index fd284fd..9003089 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl31.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl31.c
+@@ -25,7 +25,6 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <string.h>
+ #include <signal.h>
+ #include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c b/testcases/kernel/syscalls/fcntl/fcntl34.c
+index 3a68b51..3442114 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl34.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
+@@ -7,7 +7,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <pthread.h>
+ #include <sched.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
+index c5a071d..8eb7148 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl35.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
+@@ -26,7 +26,6 @@
+ #include <sys/types.h>
+ #include <pwd.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <stdlib.h>
+ #include "lapi/fcntl.h"
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
+index 1d187c2..d6b07fc 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl36.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
+@@ -34,7 +34,6 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <fcntl.h>
+ #include <pthread.h>
+ #include <sched.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl37.c b/testcases/kernel/syscalls/fcntl/fcntl37.c
+index c52af22..a624554 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl37.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl37.c
+@@ -14,7 +14,6 @@
+  */
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <sys/types.h>
+ #include <limits.h>
+ #include <stdlib.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl38.c b/testcases/kernel/syscalls/fcntl/fcntl38.c
+index fae2ab4..2f1b022 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl38.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl38.c
+@@ -8,7 +8,6 @@
+  *     Check that dnotify event is reported to both parent and subdir
+  */
+-#include <fcntl.h>
+ #include <signal.h>
+ #include <stdio.h>
+ #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c b/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
+index f1203a4..f1b50fd 100644
+--- a/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
++++ b/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
+@@ -53,7 +53,6 @@
+ /*              Ported to LTP                                                 */
+ /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
+diff --git a/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c b/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
+index b074214..3b0c767 100644
+--- a/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
++++ b/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
+@@ -50,7 +50,6 @@
+ /*              Ported to LTP                                                 */
+ /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
+diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
+index 84b4a3b..566c76b 100644
+--- a/testcases/kernel/syscalls/linkat/linkat02.c
++++ b/testcases/kernel/syscalls/linkat/linkat02.c
+@@ -21,7 +21,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/mknodat/mknodat01.c b/testcases/kernel/syscalls/mknodat/mknodat01.c
+index 2e13c77..bff2c6a 100644
+--- a/testcases/kernel/syscalls/mknodat/mknodat01.c
++++ b/testcases/kernel/syscalls/mknodat/mknodat01.c
+@@ -27,7 +27,6 @@
+ #define _GNU_SOURCE
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include <sys/stat.h>
+ #include <stdlib.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
+index 6c5054b..7e6afda 100644
+--- a/testcases/kernel/syscalls/mknodat/mknodat02.c
++++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
+@@ -27,7 +27,6 @@
+ #define _GNU_SOURCE
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include <sys/stat.h>
+ #include <stdlib.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
+index 0d832cb..f78a364 100644
+--- a/testcases/kernel/syscalls/open/open14.c
++++ b/testcases/kernel/syscalls/open/open14.c
+@@ -22,7 +22,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <errno.h>
+ #include "test.h"
+diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
+index 0441c3a..daed419 100644
+--- a/testcases/kernel/syscalls/openat/openat01.c
++++ b/testcases/kernel/syscalls/openat/openat01.c
+@@ -28,7 +28,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <string.h>
+diff --git a/testcases/kernel/syscalls/openat/openat02.c b/testcases/kernel/syscalls/openat/openat02.c
+index e2eefda..2ce1190 100644
+--- a/testcases/kernel/syscalls/openat/openat02.c
++++ b/testcases/kernel/syscalls/openat/openat02.c
+@@ -38,7 +38,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include <stdlib.h>
+diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
+index 7e816f2..2846fd0 100644
+--- a/testcases/kernel/syscalls/openat/openat03.c
++++ b/testcases/kernel/syscalls/openat/openat03.c
+@@ -22,7 +22,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <errno.h>
+ #include "test.h"
+diff --git a/testcases/kernel/syscalls/pipe/pipe12.c b/testcases/kernel/syscalls/pipe/pipe12.c
+index 4c7eda2..f524040 100644
+--- a/testcases/kernel/syscalls/pipe/pipe12.c
++++ b/testcases/kernel/syscalls/pipe/pipe12.c
+@@ -11,7 +11,6 @@
+ #define _GNU_SOURCE
+ #include <unistd.h>
+ #include <stdlib.h>
+-#include <fcntl.h>
+ #include "tst_test.h"
+ #include "lapi/fcntl.h"
+diff --git a/testcases/kernel/syscalls/pipe2/pipe2_04.c b/testcases/kernel/syscalls/pipe2/pipe2_04.c
+index 432007e..3789435 100644
+--- a/testcases/kernel/syscalls/pipe2/pipe2_04.c
++++ b/testcases/kernel/syscalls/pipe2/pipe2_04.c
+@@ -11,7 +11,6 @@
+ #define _GNU_SOURCE
+ #include <stdlib.h>
+ #include <features.h>
+-#include <fcntl.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ #include "lapi/fcntl.h"
+diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
+index 817e217..9df4b70 100644
+--- a/testcases/kernel/syscalls/renameat/renameat01.c
++++ b/testcases/kernel/syscalls/renameat/renameat01.c
+@@ -41,7 +41,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>
+-#include <fcntl.h>
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <string.h>
+diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+index 9f85973..960c7ce 100644
+--- a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
++++ b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+@@ -54,7 +54,6 @@
+ /*              Ported to LTP                                                 */
+ /*                      - Jan 08 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <signal.h>
+ #include <stdio.h>
+ #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/socket/socket02.c b/testcases/kernel/syscalls/socket/socket02.c
+index afe9dc1..59fd942 100644
+--- a/testcases/kernel/syscalls/socket/socket02.c
++++ b/testcases/kernel/syscalls/socket/socket02.c
+@@ -12,7 +12,6 @@
+ * in socket() in kernel 2.6.27.
+ */
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <netinet/in.h>
+diff --git a/testcases/kernel/syscalls/socketpair/socketpair02.c b/testcases/kernel/syscalls/socketpair/socketpair02.c
+index 72ca0e8..e23945c 100644
+--- a/testcases/kernel/syscalls/socketpair/socketpair02.c
++++ b/testcases/kernel/syscalls/socketpair/socketpair02.c
+@@ -13,7 +13,6 @@
+ */
+ #include <errno.h>
+-#include <fcntl.h>
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/tee/tee01.c b/testcases/kernel/syscalls/tee/tee01.c
+index db2ac1e..cee6ed7 100644
+--- a/testcases/kernel/syscalls/tee/tee01.c
++++ b/testcases/kernel/syscalls/tee/tee01.c
+@@ -11,7 +11,6 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include "tst_test.h"
+ #include "lapi/fcntl.h"
+diff --git a/testcases/kernel/syscalls/timerfd/timerfd02.c b/testcases/kernel/syscalls/timerfd/timerfd02.c
+index c544406..88742b8 100644
+--- a/testcases/kernel/syscalls/timerfd/timerfd02.c
++++ b/testcases/kernel/syscalls/timerfd/timerfd02.c
+@@ -54,7 +54,6 @@
+ /*                      - Jan 08 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <time.h>
+ #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/timerfd/timerfd03.c b/testcases/kernel/syscalls/timerfd/timerfd03.c
+index e288251..41aa946 100644
+--- a/testcases/kernel/syscalls/timerfd/timerfd03.c
++++ b/testcases/kernel/syscalls/timerfd/timerfd03.c
+@@ -50,7 +50,6 @@
+ /*              Ported to LTP                                                 */
+ /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+ /******************************************************************************/
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <time.h>
+ #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice01.c b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+index 1d1b66d..36ecc08 100644
+--- a/testcases/kernel/syscalls/vmsplice/vmsplice01.c
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+@@ -11,7 +11,6 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include <sys/poll.h>
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice02.c b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+index 39c407c..0135b6f 100644
+--- a/testcases/kernel/syscalls/vmsplice/vmsplice02.c
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+@@ -18,9 +18,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ #include <sys/uio.h>
+ #include <limits.h>
+2.7.4
 
 
 -- 
