@@ -4,46 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F89EC433F5
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 09:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92016C433EF
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 09:50:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 094E63C9023
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 10:37:45 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id DB0853C903B
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 10:50:17 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 949933C8DD1
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:37:34 +0100 (CET)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D60013C8CF4
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:50:07 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 772D860137B
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:37:30 +0100 (CET)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J4W5p3Fc9zXdRS;
- Thu,  2 Dec 2021 17:35:26 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 2 Dec 2021 17:37:25 +0800
-Received: from ubuntu1604.huawei.com (10.67.174.57) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 2 Dec 2021 17:37:25 +0800
-To: <ltp@lists.linux.it>
-Date: Thu, 2 Dec 2021 17:38:38 +0800
-Message-ID: <1638437918-60401-1-git-send-email-wenyehai@huawei.com>
-X-Mailer: git-send-email 2.7.4
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EF137601357
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 10:50:06 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id C767221709;
+ Thu,  2 Dec 2021 09:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1638438605;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=460uOUFqagadUvudCRzMglINI2i8l+i3pah7CFYH1dk=;
+ b=hVBxU4IA01eQ1gm+kffZWWE7qAMBVFpyI/JES0KkbXZS4IWGBvOKQwj6hDd/zi44GQbyrQ
+ 6d0jY2+oyhPVref7wjGHF0fGiGOVlJXzJYqK8PdX7tJLygK5G2PuxY8HE9foQGk/UElsoO
+ 5CLyKL6InxOVRCmDkvAK2c/ba2D5b3Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1638438605;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=460uOUFqagadUvudCRzMglINI2i8l+i3pah7CFYH1dk=;
+ b=lU1aTHg6oexHOq/ZIbode5x9HOHLvyAEGSMG7AV7uuFJ06KvFU7OkFcIPikBqFISanO4XA
+ 9+g9Fc0BowHjYSDw==
+Received: from g78 (unknown [10.163.24.38])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id E3E55A40E8;
+ Thu,  2 Dec 2021 09:50:00 +0000 (UTC)
+References: <cover.1637970912.git.luke.nowakowskikrijger@canonical.com>
+ <bbf87d62e2e8274fddc160813e64aedb0a01ffe1.1637970912.git.luke.nowakowskikrijger@canonical.com>
+ <CAEemH2ed6DqKw80Xa_BTjUweT0HrhrUN2-7X+sS05K9gCr2F5A@mail.gmail.com>
+ <CADS1e3cCXsu=y_GNM3ymwHtOq9R671YnQAWgyycG25FJYnOLaA@mail.gmail.com>
+ <CAEemH2cZvK29mrN2xD_EOPx7w3UXFBHrWmAdg+rv5K2vcP3qNA@mail.gmail.com>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Thu, 02 Dec 2021 09:23:27 +0000
+In-reply-to: <CAEemH2cZvK29mrN2xD_EOPx7w3UXFBHrWmAdg+rv5K2vcP3qNA@mail.gmail.com>
+Message-ID: <87pmqfcp4j.fsf@suse.de>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.57]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] bugfix for testcases which with duplicate header
- files fcntl.h
+Subject: Re: [LTP] [PATCH 1/4] controllers/memcg: update stress test to work
+ under cgroup2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,459 +73,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: wenyehai via ltp <ltp@lists.linux.it>
-Reply-To: wenyehai <wenyehai@huawei.com>
-Cc: wenyehai <wenyehai@huawei.com>
+Reply-To: rpalethorpe@suse.de
+Cc: LTP List <ltp@lists.linux.it>,
+ Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-testcases/kernel/syscalls:Remove duplicate header files fcntl.h.
+Hello Li and Luke
+Li Wang <liwang@redhat.com> writes:
 
-Signed-off-by: Yehai Wen <wenyehai@huawei.com>
----
-v1->v2: remove duplicate header files fcntl.h for all testcases
- testcases/kernel/syscalls/accept4/accept4_01.c            | 1 -
- testcases/kernel/syscalls/eventfd2/eventfd2_01.c          | 1 -
- testcases/kernel/syscalls/eventfd2/eventfd2_02.c          | 1 -
- testcases/kernel/syscalls/execveat/execveat03.c           | 1 -
- testcases/kernel/syscalls/fallocate/fallocate01.c         | 1 -
- testcases/kernel/syscalls/fchownat/fchownat01.c           | 1 -
- testcases/kernel/syscalls/fchownat/fchownat02.c           | 1 -
- testcases/kernel/syscalls/fcntl/fcntl29.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl30.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl31.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl34.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl35.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl36.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl37.c                 | 1 -
- testcases/kernel/syscalls/fcntl/fcntl38.c                 | 1 -
- testcases/kernel/syscalls/inotify_init/inotify_init1_01.c | 1 -
- testcases/kernel/syscalls/inotify_init/inotify_init1_02.c | 1 -
- testcases/kernel/syscalls/linkat/linkat02.c               | 1 -
- testcases/kernel/syscalls/mknodat/mknodat01.c             | 1 -
- testcases/kernel/syscalls/mknodat/mknodat02.c             | 1 -
- testcases/kernel/syscalls/open/open14.c                   | 1 -
- testcases/kernel/syscalls/openat/openat01.c               | 1 -
- testcases/kernel/syscalls/openat/openat02.c               | 1 -
- testcases/kernel/syscalls/openat/openat03.c               | 1 -
- testcases/kernel/syscalls/pipe/pipe12.c                   | 1 -
- testcases/kernel/syscalls/pipe2/pipe2_04.c                | 1 -
- testcases/kernel/syscalls/renameat/renameat01.c           | 1 -
- testcases/kernel/syscalls/signalfd4/signalfd4_01.c        | 1 -
- testcases/kernel/syscalls/socket/socket02.c               | 1 -
- testcases/kernel/syscalls/socketpair/socketpair02.c       | 1 -
- testcases/kernel/syscalls/tee/tee01.c                     | 1 -
- testcases/kernel/syscalls/timerfd/timerfd02.c             | 1 -
- testcases/kernel/syscalls/timerfd/timerfd03.c             | 1 -
- testcases/kernel/syscalls/vmsplice/vmsplice01.c           | 1 -
- testcases/kernel/syscalls/vmsplice/vmsplice02.c           | 2 --
- 35 files changed, 36 deletions(-)
+> On Thu, Dec 2, 2021 at 6:24 AM Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> wrote:
+>
+>  Hi Li, 
+>
+>  On Wed, Dec 1, 2021 at 1:13 AM Li Wang <liwang@redhat.com> wrote:
+>
+>  Hi Luke,
+>
+>  Thanks for looking into this.
+>
+>  On Sat, Nov 27, 2021 at 8:05 AM Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> wrote:
+>
+>  Update tests to be able to work when memory controller is mounted under
+>  cgroup2 hierarchy.
+>
+>  I'm thinking whether we could achieve these setup functions
+>  more generic in cgroup_lib.sh, which to avoid the redundancy
+>  behavior over and over again in each cgroup sub-test.
 
-diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
-index b3ab1b9..58115ea 100644
---- a/testcases/kernel/syscalls/accept4/accept4_01.c
-+++ b/testcases/kernel/syscalls/accept4/accept4_01.c
-@@ -13,7 +13,6 @@
- #include <sys/socket.h>
- #include <netinet/in.h>
- #include <stdlib.h>
--#include <fcntl.h>
- #include <stdio.h>
- #include <string.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
-index a4af388..c0c6a26 100644
---- a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
-+++ b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
-@@ -53,7 +53,6 @@
- /*              Ported to LTP                                                 */
- /*                      - Jan 08 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <stdio.h>
- #include <unistd.h>
- #include <sys/syscall.h>
-diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_02.c b/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
-index 151edb8..418c07c 100644
---- a/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
-+++ b/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
-@@ -50,7 +50,6 @@
- /*              Ported to LTP                                                 */
- /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <stdio.h>
- #include <unistd.h>
- #include <sys/syscall.h>
-diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
-index 78b26ab..1900c07 100644
---- a/testcases/kernel/syscalls/execveat/execveat03.c
-+++ b/testcases/kernel/syscalls/execveat/execveat03.c
-@@ -29,7 +29,6 @@
- #include <string.h>
- #include <sys/syscall.h>
- #include <sys/mount.h>
--#include <fcntl.h>
- #include "tst_test.h"
- #include "lapi/execveat.h"
- #include "lapi/fcntl.h"
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
-index c60e160..383796c 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate01.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
-@@ -93,7 +93,6 @@
- #include <errno.h>
- #include <sys/stat.h>
- #include <sys/types.h>
--#include <fcntl.h>
- #include <sys/syscall.h>
- #include <unistd.h>
- #include <inttypes.h>
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
-index 9f4ecde..a658f07 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat01.c
-+++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
-@@ -26,7 +26,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <unistd.h>
- #include <stdlib.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
-index d19f3f3..701623d 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat02.c
-+++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
-@@ -24,7 +24,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <unistd.h>
- #include <stdlib.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
-index ffb9fea..5874764 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl29.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
-@@ -24,7 +24,6 @@
- #include <stdio.h>
- #include <errno.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <string.h>
- #include <signal.h>
- #include <sys/types.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
-index a7a5e13..27f4643 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl30.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
-@@ -25,7 +25,6 @@
- #include <stdio.h>
- #include <errno.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <string.h>
- #include <signal.h>
- #include <sys/types.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl31.c b/testcases/kernel/syscalls/fcntl/fcntl31.c
-index fd284fd..9003089 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl31.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl31.c
-@@ -25,7 +25,6 @@
- #include <stdio.h>
- #include <errno.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <string.h>
- #include <signal.h>
- #include <sys/types.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c b/testcases/kernel/syscalls/fcntl/fcntl34.c
-index 3a68b51..3442114 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl34.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
-@@ -7,7 +7,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <pthread.h>
- #include <sched.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
-index c5a071d..8eb7148 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl35.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
-@@ -26,7 +26,6 @@
- #include <sys/types.h>
- #include <pwd.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <stdlib.h>
- #include "lapi/fcntl.h"
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
-index 1d187c2..d6b07fc 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl36.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
-@@ -34,7 +34,6 @@
- #include <unistd.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <fcntl.h>
- #include <pthread.h>
- #include <sched.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl37.c b/testcases/kernel/syscalls/fcntl/fcntl37.c
-index c52af22..a624554 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl37.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl37.c
-@@ -14,7 +14,6 @@
-  */
- #include <unistd.h>
--#include <fcntl.h>
- #include <sys/types.h>
- #include <limits.h>
- #include <stdlib.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl38.c b/testcases/kernel/syscalls/fcntl/fcntl38.c
-index fae2ab4..2f1b022 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl38.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl38.c
-@@ -8,7 +8,6 @@
-  *     Check that dnotify event is reported to both parent and subdir
-  */
--#include <fcntl.h>
- #include <signal.h>
- #include <stdio.h>
- #include <unistd.h>
-diff --git a/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c b/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
-index f1203a4..f1b50fd 100644
---- a/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
-+++ b/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
-@@ -53,7 +53,6 @@
- /*              Ported to LTP                                                 */
- /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <stdio.h>
- #include <unistd.h>
- #include <sys/syscall.h>
-diff --git a/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c b/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
-index b074214..3b0c767 100644
---- a/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
-+++ b/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
-@@ -50,7 +50,6 @@
- /*              Ported to LTP                                                 */
- /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <stdio.h>
- #include <unistd.h>
- #include <sys/syscall.h>
-diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
-index 84b4a3b..566c76b 100644
---- a/testcases/kernel/syscalls/linkat/linkat02.c
-+++ b/testcases/kernel/syscalls/linkat/linkat02.c
-@@ -21,7 +21,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <unistd.h>
- #include <stdlib.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat01.c b/testcases/kernel/syscalls/mknodat/mknodat01.c
-index 2e13c77..bff2c6a 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat01.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat01.c
-@@ -27,7 +27,6 @@
- #define _GNU_SOURCE
- #include <sys/types.h>
--#include <fcntl.h>
- #include <sys/stat.h>
- #include <stdlib.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
-index 6c5054b..7e6afda 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat02.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
-@@ -27,7 +27,6 @@
- #define _GNU_SOURCE
- #include <sys/types.h>
--#include <fcntl.h>
- #include <sys/stat.h>
- #include <stdlib.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
-index 0d832cb..f78a364 100644
---- a/testcases/kernel/syscalls/open/open14.c
-+++ b/testcases/kernel/syscalls/open/open14.c
-@@ -22,7 +22,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <errno.h>
- #include "test.h"
-diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
-index 0441c3a..daed419 100644
---- a/testcases/kernel/syscalls/openat/openat01.c
-+++ b/testcases/kernel/syscalls/openat/openat01.c
-@@ -28,7 +28,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/openat/openat02.c b/testcases/kernel/syscalls/openat/openat02.c
-index e2eefda..2ce1190 100644
---- a/testcases/kernel/syscalls/openat/openat02.c
-+++ b/testcases/kernel/syscalls/openat/openat02.c
-@@ -38,7 +38,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <unistd.h>
- #include <sys/wait.h>
- #include <stdlib.h>
-diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
-index 7e816f2..2846fd0 100644
---- a/testcases/kernel/syscalls/openat/openat03.c
-+++ b/testcases/kernel/syscalls/openat/openat03.c
-@@ -22,7 +22,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <errno.h>
- #include "test.h"
-diff --git a/testcases/kernel/syscalls/pipe/pipe12.c b/testcases/kernel/syscalls/pipe/pipe12.c
-index 4c7eda2..f524040 100644
---- a/testcases/kernel/syscalls/pipe/pipe12.c
-+++ b/testcases/kernel/syscalls/pipe/pipe12.c
-@@ -11,7 +11,6 @@
- #define _GNU_SOURCE
- #include <unistd.h>
- #include <stdlib.h>
--#include <fcntl.h>
- #include "tst_test.h"
- #include "lapi/fcntl.h"
-diff --git a/testcases/kernel/syscalls/pipe2/pipe2_04.c b/testcases/kernel/syscalls/pipe2/pipe2_04.c
-index 432007e..3789435 100644
---- a/testcases/kernel/syscalls/pipe2/pipe2_04.c
-+++ b/testcases/kernel/syscalls/pipe2/pipe2_04.c
-@@ -11,7 +11,6 @@
- #define _GNU_SOURCE
- #include <stdlib.h>
- #include <features.h>
--#include <fcntl.h>
- #include <unistd.h>
- #include <stdio.h>
- #include "lapi/fcntl.h"
-diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
-index 817e217..9df4b70 100644
---- a/testcases/kernel/syscalls/renameat/renameat01.c
-+++ b/testcases/kernel/syscalls/renameat/renameat01.c
-@@ -41,7 +41,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/time.h>
--#include <fcntl.h>
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
-index 9f85973..960c7ce 100644
---- a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
-+++ b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
-@@ -54,7 +54,6 @@
- /*              Ported to LTP                                                 */
- /*                      - Jan 08 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <signal.h>
- #include <stdio.h>
- #include <unistd.h>
-diff --git a/testcases/kernel/syscalls/socket/socket02.c b/testcases/kernel/syscalls/socket/socket02.c
-index afe9dc1..59fd942 100644
---- a/testcases/kernel/syscalls/socket/socket02.c
-+++ b/testcases/kernel/syscalls/socket/socket02.c
-@@ -12,7 +12,6 @@
- * in socket() in kernel 2.6.27.
- */
--#include <fcntl.h>
- #include <stdio.h>
- #include <unistd.h>
- #include <netinet/in.h>
-diff --git a/testcases/kernel/syscalls/socketpair/socketpair02.c b/testcases/kernel/syscalls/socketpair/socketpair02.c
-index 72ca0e8..e23945c 100644
---- a/testcases/kernel/syscalls/socketpair/socketpair02.c
-+++ b/testcases/kernel/syscalls/socketpair/socketpair02.c
-@@ -13,7 +13,6 @@
- */
- #include <errno.h>
--#include <fcntl.h>
- #include <pthread.h>
- #include <stdio.h>
- #include <unistd.h>
-diff --git a/testcases/kernel/syscalls/tee/tee01.c b/testcases/kernel/syscalls/tee/tee01.c
-index db2ac1e..cee6ed7 100644
---- a/testcases/kernel/syscalls/tee/tee01.c
-+++ b/testcases/kernel/syscalls/tee/tee01.c
-@@ -11,7 +11,6 @@
- #include <string.h>
- #include <signal.h>
- #include <sys/types.h>
--#include <fcntl.h>
- #include "tst_test.h"
- #include "lapi/fcntl.h"
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd02.c b/testcases/kernel/syscalls/timerfd/timerfd02.c
-index c544406..88742b8 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd02.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd02.c
-@@ -54,7 +54,6 @@
- /*                      - Jan 08 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <stdio.h>
- #include <time.h>
- #include <unistd.h>
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd03.c b/testcases/kernel/syscalls/timerfd/timerfd03.c
-index e288251..41aa946 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd03.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd03.c
-@@ -50,7 +50,6 @@
- /*              Ported to LTP                                                 */
- /*                      - Jan 13 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
- /******************************************************************************/
--#include <fcntl.h>
- #include <stdio.h>
- #include <time.h>
- #include <unistd.h>
-diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice01.c b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
-index 1d1b66d..36ecc08 100644
---- a/testcases/kernel/syscalls/vmsplice/vmsplice01.c
-+++ b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
-@@ -11,7 +11,6 @@
- #include <string.h>
- #include <signal.h>
- #include <sys/types.h>
--#include <fcntl.h>
- #include <sys/poll.h>
- #include "tst_test.h"
-diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice02.c b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
-index 39c407c..0135b6f 100644
---- a/testcases/kernel/syscalls/vmsplice/vmsplice02.c
-+++ b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
-@@ -18,9 +18,7 @@
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <unistd.h>
--#include <fcntl.h>
- #include <sys/uio.h>
- #include <limits.h>
-2.7.4
++1 this is very necessary IMO
 
+>
+>  Yes I agree. As I was doing the same things a few times I was beginning to wonder if there was a better way. I would be willing to look further into
+>  expanding the cgroup_lib.sh and resubmitting my recent patches with
+>  those changes.
+>
+> Thanks a lot!
+>  
+>  
+>  About the compatibility of cgroup V1 and V2 in test, I'd suggest
+>  following what the LTP C library did in include/tst_cgroup.h.
+>  https://github.com/linux-test-project/ltp/blob/master/doc/c-test-api.txt#L2024
+>
+>  The solution may be briefly as:
+>   
+>    1. scan system mounted CGroup path, and judge the situation as one of below:
+>       * only CGroup V2 mounted
+>       * only CGroup V1 mounted
+>       * both CGroup V2 and V1 mounted
+>       * no CGroup mounted
+>    2. make use of the system mounted CGroup V2 or TSKIP
+>        * goto step 5
+>    3. make use of the system mounted CGroup V1 
+>        * goto step 5
+>    4. do mount Cgroup as what we needed (V1 or V2) in test
+>        * goto step 5
+>    5. do cleanup 
+>
+>  Yes this would be the way to go through setting up a controller and checking everything.  
+>  Going through the steps you mentioned for mounting a single controller and returning that path wouldn't be too hard but 
+>  it seems to get more complicated when we want some guarantee of having multiple controllers in a hierarchy (if we even
+>  would want to support something like that, which for testing purposes wouldnt seem unheard of).
+>
+> Right, it is the complicated part and you can take a reference how
+> the current C API handles it.
+
+Actually we can use the C API. This would avoid a whole bunch of
+issues. It requires creating a utility which we can use from shell
+(e.g. tst_cgctl).
+
+We *may* have to track state somehow. Either we could run the utility as
+a daemon initially and communicate with a socket to execute commands. Or
+we could save/serialise some state to environment/shell
+variables. Alternatively we can probably rescan the system each
+time. The only state really required is the test's PID which is needed
+to find the correct CGroup in the LTP sub-hierarchy.
+
+Still that is probably easier than dealing with all of the corner cases
+twice.
+
+>
+> TBH, I even think to skip the handling on mixed mounting with V1
+> and V2, that is too messy/overthinking and not suggested using way.
+>
+> We'd better face the future and ideally as myself hoping,
+> V2 will replace V1 everywhere someday:).
+
+There are still controllers/features that don't exist on V2. Meanwhile
+there are features that only exist on V2. So if someone wants both, then
+they have to mount both. Regardless, this was the default in systemd, so
+we are stuck with it for about 20 years and can't ignore it ;-)
+
+>
+>  
+>  Maybe something mimicking the tst_cgroup_require() from the C api would be useful here? I imagine this is where we would
+>  do the checking and mounting logic that you were describing. We would just also have to include checking if the controllers
+>  we are requiring can be mounted / already exist together.
+>
+>  For example I am imaging something mimicking the C api something like:
+>  tst_cgroup_require "cpu"
+>  tst_cgroup_require "cpuset"
+>  root_mount_point =$(tst_cgroup_get_mountpoint)
+>
+> I prefer this one a bit, not only it's consistent with C API but it also
+> can do CGroup mounting in tst_cgroup_require for a system without
+> V1 nor V2 mounting. Then I'd suggest having tst_cgroup_cleanup to
+> help umount that which makes things more clear to understand.
+>
+> Anyway, it depends on the details achieve, maybe there is a better
+> solution we haven't found.
+
+Yes, or if it is a utility then
+
+$ test_cpu_cg_dir = $(tst_cgroup require cpu)
+$ test_cpu_cg_dir = $(tst_cgroup require memory)
+
+maybe with an option to pass the PID to indetify the test. I guess there
+might be some existing env variable the shell API sets we could use as well.
+
+$ tst_cgroup cleanup --pid $MAIN_PID
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
