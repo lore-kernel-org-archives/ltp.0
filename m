@@ -4,62 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE245C433EF
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 20:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC570C433EF
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 20:49:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94AD63C902D
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 21:30:27 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 005C63C714C
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 21:30:18 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id 8AB483C9045
+	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 21:49:05 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0249E60215E
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 21:30:14 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ by picard.linux.it (Postfix) with ESMTPS id 3C3153C714C
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 21:48:54 +0100 (CET)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D865F1FC9E;
- Thu,  2 Dec 2021 20:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638477013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=47jWJdDUiDy8SmOuEUu3TSqH+Ihelhx5RTrI1Z2Ivoc=;
- b=SNaC02UK/y9rIgL90nz8HqxgN8Ch+fnAqdwct5S2j68gxaT/v9AOCtTC2q/dMiRxuHRYJU
- 1WJVyqNxL+PW9ZeQx2uSd/sANmBwYI24GXVP8sl6Pp566MifeOh614QnH+oodvzgfpONAm
- xMMvrqyUNI14836Z7UfCfZJb7BmTiJE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638477013;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=47jWJdDUiDy8SmOuEUu3TSqH+Ihelhx5RTrI1Z2Ivoc=;
- b=XGSM6uqlzAHeVzaDGj0Z/i6jOeu9bNzZkI8S0pbP8xPxhU6I3XtEkPzR5aV/l5pcrnjH6C
- J66Pgs9AcYpTKCBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B15B613EA5;
- Thu,  2 Dec 2021 20:30:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id cjGIKdUsqWEtegAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 02 Dec 2021 20:30:13 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu,  2 Dec 2021 21:30:06 +0100
-Message-Id: <20211202203006.32259-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.34.0
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B4E641400E4F
+ for <ltp@lists.linux.it>; Thu,  2 Dec 2021 21:48:51 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 844045C01E1;
+ Thu,  2 Dec 2021 15:48:49 -0500 (EST)
+Received: from imap45 ([10.202.2.95])
+ by compute5.internal (MEProxy); Thu, 02 Dec 2021 15:48:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=owlfolio.org; h=
+ mime-version:message-id:in-reply-to:references:date:from:to:cc
+ :subject:content-type; s=fm2; bh=V+oY0lvpRQ6EWyHSpKOwdyQZHvigeH/
+ DqFU+688VfMY=; b=nb/nkksHB3a3v4m7IZp4fqN9v2xH5hSYXlFYTlHB+UWrVyH
+ zTDvXiG5u/13oPUWZiI6qmf0PYrvqXZEvdl2SqEr4Y6QawYYzmnseHuysVT/lFIq
+ V8MNlx4x00WGzc5fNSo+1GgM1UOD3mwX1IZ4Vp/T5pQc7VzQb6gZ6u0KrdEmDK9N
+ xbsHXGFoSCie3plt1DgqtjMNV06JXlML19Zz0H/vf5Bq/klVz+0M1ohEHRNYDPeo
+ IL7Cg8Y5P3pHdGfvgdXBSkSfMVKquO9L+7h7bg4QA3Zrg76+DszVT13+n7r5KNlb
+ iriUINGYx8Ze31uCpxdzOO2Gv0t1NknSTRbPfHA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=V+oY0l
+ vpRQ6EWyHSpKOwdyQZHvigeH/DqFU+688VfMY=; b=NQm5/SdfzT+EZ/AqkRR47a
+ QX4yiM4sJjwLX4m6PvlVoMNjX+Uns4jeRpZTM7mMBWBlh3l8ufG/VWwDtu2brul0
+ bRGYNECR1HwGvbO5xZYs5c8IJ5eyUpagJdfeekv2EHQbHJ1uDSHRjFbaXx/dDfwt
+ TrV6iAZ8rAPqjZv3bVNtCx2Y9+EDrV11Ss/gUVNwcT5D6gla9+H9PwBjnLpL4vc6
+ aljzCB68dMyH3Hg1PxjcBiJ85Eu61QapWuAGoJRsT1MRbqrh6ogBoZt7d6C6bmPS
+ /VXkBMhkDj89rsmYNou+/aiC93ISbgkOKnA1tsiLHlqP3HuH8g2CZKkomwPlG1Qw
+ ==
+X-ME-Sender: <xms:MTGpYeEJPYWp_rHkqEacZFxYHsJd67PCuWde_SH5dYWqrSmdLSvCdg>
+ <xme:MTGpYfV2PxMAfwkf12Wcl41xCYCZ32GQT7M7kVl9ac2lG76oEqZspgMjV4iJ4GJGN
+ klk3u_Gtl_dcYLK3ss>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrieehgddugeduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdgkrggt
+ khcuhggvihhnsggvrhhgfdcuoeiirggtkhesohiflhhfohhlihhordhorhhgqeenucggtf
+ frrghtthgvrhhnpefhuefhveeuffetfffgjeetgfekkeehfedtfeelgfehffffveehkeel
+ fefgheffudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+ hmpeiirggtkhesohiflhhfohhlihhordhorhhg
+X-ME-Proxy: <xmx:MTGpYYIcIk60IcYhPJipH82rcWZ_npxTlANWG_CTbh882idWQplhiQ>
+ <xmx:MTGpYYFb3jITNU2wroc500kVkUXgtwzYSAT-u9F-RsjShajDz8ZIKQ>
+ <xmx:MTGpYUWgEuT3sqp06vd3CA8jMwj1erEyitWGrie6-G1qgQ3qvVyqUQ>
+ <xmx:MTGpYSyEIzBfPUqfSA9f-BvYW2l9jShFn38Fz-o3hMBGYUTAl4VOIg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id 11E5C24A0077; Thu,  2 Dec 2021 15:48:48 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-4458-g51a91c06b2-fm-20211130.004-g51a91c06
+Mime-Version: 1.0
+Message-Id: <1e3867cd-2c8b-4fe1-93a6-c6ae34120f6b@www.fastmail.com>
+In-Reply-To: <913509.1638457313@warthog.procyon.org.uk>
+References: <b8d6f890-e5aa-44bf-8a55-5998efa05967@www.fastmail.com>
+ <YZvIlz7J6vOEY+Xu@yuki> <1618289.1637686052@warthog.procyon.org.uk>
+ <ff8fc4470c8f45678e546cafe9980eff@AcuMS.aculab.com> <YaTAffbvzxGGsVIv@yuki>
+ <CAK8P3a1Rvf_+qmQ5pyDeKweVOFM_GoOKnG4HA3Ffs6LeVuoDhA@mail.gmail.com>
+ <913509.1638457313@warthog.procyon.org.uk>
+Date: Thu, 02 Dec 2021 15:48:21 -0500
+From: "Zack Weinberg" <zack@owlfolio.org>
+To: "David Howells" <dhowells@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/1] configure.ac: Print summary
+Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
+ }int64_t in userspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,57 +93,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+ Florian Weimer <libc-alpha@sourceware.org>,
+ "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ David Laight <David.Laight@aculab.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Due many checks of structs, members etc are chosen testsuites,
-presence of used libraries and docparser config results quite hidden.
-Print them as summary in the end.
+On Thu, Dec 2, 2021, at 10:01 AM, David Howells via Libc-alpha wrote:
+> Zack Weinberg <zack@owlfolio.org> wrote:
+>> I could be persuaded otherwise with an example of a program for which
+>> changing __s64 from 'long long' to 'long' would break *binary* backward
+>> compatibility, or similarly for __u64.
+>
+> C++ could break.
 
-Disadvantage of this is need to keep sync m4 macros with configure.ac
-also quite easily results can be misinterpreted.
+That's too hypothetical to be actionable.  I would like to see a _specific program_, and I would like it to be one that already exists in the world and was not written as a test case for this hypothetical ABI break.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- configure.ac | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/configure.ac b/configure.ac
-index 4751b14d2..063a8a9d1 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -381,3 +381,26 @@ test "x$with_tirpc" = xyes && LTP_CHECK_TIRPC
- LTP_DETECT_HOST_CPU
- 
- AC_OUTPUT
-+
-+cat << EOF
-+
-+TESTSUITES
-+open posix testsuite: ${with_open_posix_testsuite:-no}
-+realtime testsuite: ${with_realtime_testsuite:-no}
-+
-+LIBRARIES
-+keyutils: ${have_keyutils:-no}
-+libacl: ${have_libacl:-no}
-+libaio: ${have_libaio:-no} (aio: ${have_aio:-no})
-+libcap: $cap_libs (newer: ${has_newer_libcap:-no})
-+libcrypto: $have_libcrypto (sha: ${have_sha:-no})
-+libmnl: ${have_libmnl:-no}
-+libnuma: ${have_libnuma:-no} (headers: ${have_numa_headers:-no}, v2 headers: ${have_numa_headers_v2:-no})
-+libtirpc: ${have_libtirpc:-no}
-+glibc SUN-RPC: ${have_rpc_glibc:-no}
-+
-+METADATA
-+metadata generator: $with_metadata_generator
-+HTML metadata: $with_metadata_html
-+PDF metadata: $with_metadata_pdf
-+EOF
--- 
-2.34.0
-
+zw
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
