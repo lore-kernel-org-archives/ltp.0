@@ -4,66 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 904D2C433EF
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 20:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0298FC433EF
+	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 00:11:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 07C683C902E
-	for <ltp@archiver.kernel.org>; Thu,  2 Dec 2021 21:50:51 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 6D8B13C9055
+	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 01:11:32 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 36F193C6F16
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 01:11:21 +0100 (CET)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6E3AC3C216A
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 21:50:42 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BCCF714016F5
- for <ltp@lists.linux.it>; Thu,  2 Dec 2021 21:50:41 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A76D12170C;
- Thu,  2 Dec 2021 20:50:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638478240;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mJp/RARTotMqPtcCQNz8X6kEQA5f+UQ4ngYhQ/ZaAgw=;
- b=LRBKmMzRDQze+nWarL4RTgKt3+RCrdxif7tSbAQ0D72/XPZXjkerCgy38xhGd0A5oan4H5
- R/T1wnOI2em0XZWTL9yKJq5BXJD6x81Z+KIxBE6XgCNPB0aXrlRVgmnWKifZJPkS/ENvvS
- artviUqZOGTYpRxiRuJKuMJMtcR/uZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638478240;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mJp/RARTotMqPtcCQNz8X6kEQA5f+UQ4ngYhQ/ZaAgw=;
- b=N6CaZ9T8pm0ZJs7um0zGdXzL/Rt9KaF6uz04aEcl1ESNjsfdsX0MaUy0pE4AqGxUUjxRai
- v6zjj8o898xD8cBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5ACAB13E53;
- Thu,  2 Dec 2021 20:50:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aG6XEqAxqWHZAQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 02 Dec 2021 20:50:40 +0000
-Date: Thu, 2 Dec 2021 21:49:37 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <YakxYTtUs+tWyLj8@pevik>
-References: <20211201160954.16442-1-andrea.cervesato@suse.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211201160954.16442-1-andrea.cervesato@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 73DC51400DBA
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 01:11:17 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 2CFF15C0316;
+ Thu,  2 Dec 2021 19:11:16 -0500 (EST)
+Received: from imap45 ([10.202.2.95])
+ by compute5.internal (MEProxy); Thu, 02 Dec 2021 19:11:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=owlfolio.org; h=
+ mime-version:message-id:in-reply-to:references:date:from:to:cc
+ :subject:content-type; s=fm2; bh=4lwOqAOjiqgPdGNyVJBcnRov6B/MBYi
+ /SQsQ344Kws8=; b=iZTEsHJPzFYGerrtuIFEF8lvFfZ1myqisgEcFN1ffbWQ+3E
+ v+C/FJbVGEoXsjAIOMpneXLU5eFM2354eY9ExknLCU8BXqlwsSTRZ8YHbCghdyWh
+ SUrBWT16y0q0fa4mzL8/EBn74/lTQ/pxV1u0sxO0h72ULPDUY/ov0wM9HASMW2R0
+ RYn8ABqRMMKLHe6W3diodUPobl5qanP2mqsTrtIKalZL1VJv5WBAlcWb1k3Pg3vy
+ vTr/w58e2e8iKduW2f9a1KBdOPZwNLvOoPKBADUJY1li+R9Bvp1PWugAH8YzgvzL
+ xgGFIb2H9A/PS5I3wgGIGdRaqeQd9kCC72Pyz6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4lwOqA
+ OjiqgPdGNyVJBcnRov6B/MBYi/SQsQ344Kws8=; b=F+4V/vqA0mdN07pmSi4Sup
+ bZ1wYJ3VkqKHUSAz5fxinzf6sNcTmp0nQuUkyXu/4bNq1sDcqapETlmRLBJLldX6
+ djLlx9XPYcYpT5cW+U1wcRmFQvbJNnVYe0tNOUwYIB/HpKQMcz5jT6H3XIwBpoDQ
+ Wb5NowOmSx10GLEtFgoDgSR84RiPvi3O9fa7TPLtPetKWSxo8vGRz33CuGQ7GkvE
+ Tsg6XNNQCb8kqe7y78xm9tFPdQ1SV/snIQnb6X74Rmy/FwxGeQ8w6rFE1ty88//T
+ 14h1TrMJnRmELFu+QejOxgW3t+DyX2DgMLWawiuYXVhgw9jPlziCyEYROYm8Rosw
+ ==
+X-ME-Sender: <xms:o2CpYVkFEV2f4rfGPZevc3_fyVsSkOlmrjf2nSkQsi-flCYkAf3DRA>
+ <xme:o2CpYQ1ZD0-Sgjs_ufHCwHaI1gnEubYppLUKG1Nga-LEDZKGoYNfSgTfwFEDdrLPT
+ xSyys-agwM36sUdAKI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrieeigddukecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfkggrtghk
+ ucghvghinhgsvghrghdfuceoiigrtghksehofihlfhholhhiohdrohhrgheqnecuggftrf
+ grthhtvghrnhephfeuhfevueffteffgfejtefgkeekheeftdeflefgheffffevheekleef
+ gfehffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+ epiigrtghksehofihlfhholhhiohdrohhrgh
+X-ME-Proxy: <xmx:o2CpYbrw5sjhOj-qcwg0AljYtdAcB4SNvKWJfO21fsb9OlLPajktvw>
+ <xmx:o2CpYVkH94KabekVxhFbhMPVxZGUtPX3A4_QMMU_JSkwpC82XWlC4w>
+ <xmx:o2CpYT3bF-Q8WARuO9lFtFvyRTvYe8M1FfNbToVDvt_3MSMt6psgNw>
+ <xmx:pGCpYeSifUh_WhZNjYJBjKUDgNgWJwSIhrs3URgu5Fb3E1dWRGpxSQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id 34AB724A0074; Thu,  2 Dec 2021 19:11:15 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-4458-g51a91c06b2-fm-20211130.004-g51a91c06
+Mime-Version: 1.0
+Message-Id: <9d24f699-386a-4881-b09a-ebd747310187@www.fastmail.com>
+In-Reply-To: <855a47d1-a89c-bbc8-7ddd-b89104c6138a@linaro.org>
+References: <YZvIlz7J6vOEY+Xu@yuki>
+ <c5993ee9-1b5d-4469-9c0e-8d4e0fbd575a@www.fastmail.com>
+ <20211202153422.GH7074@brightrain.aerifal.cx>
+ <20211202232954.GI7074@brightrain.aerifal.cx>
+ <855a47d1-a89c-bbc8-7ddd-b89104c6138a@linaro.org>
+Date: Thu, 02 Dec 2021 19:10:52 -0500
+From: "Zack Weinberg" <zack@owlfolio.org>
+To: "Adhemerval Zanella" <adhemerval.zanella@linaro.org>,
+ "Rich Felker" <dalias@libc.org>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Refactoring aiodio_append.c using LTP API
+Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
+ }int64_t in userspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,83 +94,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+ libc-alpha@sourceware.org, linux-kernel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+On Thu, Dec 2, 2021, at 6:43 PM, Adhemerval Zanella via Libc-alpha wrote:
+> On 02/12/2021 20:29, Rich Felker wrote:
+>> On Thu, Dec 02, 2021 at 10:34:23AM -0500, Rich Felker wrote:
+>>> On Mon, Nov 22, 2021 at 10:19:59PM +0000, Zack Weinberg via Libc-alpha wrote:
+>>>> On Mon, Nov 22, 2021, at 4:43 PM, Cyril Hrubis wrote:
+>>>>> This changes the __u64 and __s64 in userspace on 64bit platforms from
+>>>>> long long (unsigned) int to just long (unsigned) int in order to match
+>>>>> the uint64_t and int64_t size in userspace.
+>>>> ....
+>>>>> +
+>>>>> +#include <asm/bitsperlong.h>
+>>>>> +
+>>>>>  /*
+>>>>> - * int-ll64 is used everywhere now.
+>>>>> + * int-ll64 is used everywhere in kernel now.
+>>>>>   */
+>>>>> -#include <asm-generic/int-ll64.h>
+>>>>> +#if __BITS_PER_LONG == 64 && !defined(__KERNEL__)
+>>>>> +# include <asm-generic/int-l64.h>
+>>>>> +#else
+>>>>> +# include <asm-generic/int-ll64.h>
+>>>>> +#endif
+>>>>
+>>>> I am all for matching __uN / __sN to uintN_t / intN_t in userspace, but may I suggest the technically simpler and guaranteed-to-be-accurate
+>>>>
+>>>>  /*
+>>>> - * int-ll64 is used everywhere now.
+>>>> + * int-ll64 is used everywhere in kernel now.
+>>>> + * In user space match <stdint.h>.
+>>>>   */
+>>>> +#ifdef __KERNEL__
+>>>>  # include <asm-generic/int-ll64.h>
+>>>> +#elif __has_include (<bits/types.h>)
+>>>> +# include <bits/types.h>
+>>>> +typedef __int8_t __s8;
+>>>> +typedef __uint8_t __u8;
+>>>> +typedef __int16_t __s16;
+>>>> +typedef __uint16_t __u16;
+>>>> +typedef __int32_t __s32;
+>>>> +typedef __uint32_t __u32;
+>>>> +typedef __int64_t __s64;
+>>>> +typedef __uint64_t __u64;
+>>>> +#else
+>>>> +# include <stdint.h>
+>>>> +typedef int8_t __s8;
+>>>> +typedef uint8_t __u8;
+>>>> +typedef int16_t __s16;
+>>>> +typedef uint16_t __u16;
+>>>> +typedef int32_t __s32;
+>>>> +typedef uint32_t __u32;
+>>>> +typedef int64_t __s64;
+>>>> +typedef uint64_t __u64;
+>>>> +#endif
+>>>>
+>>>> The middle clause could be dropped if we are okay with all uapi
+>>>> headers potentially exposing the non-implementation-namespace names
+>>>> defined by <stdint.h>. I do not know what the musl libc equivalent
+>>>> of <bits/types.h> is.
+>>>
+>>> We (musl) don't have an equivalent header or __-prefixed versions of
+>>> these types.
+>>>
+>>> FWIW I don't think stdint.h exposes anything that would be problematic
+>>> alongside arbitrary use of kernel headers.
+>> 
+>> Also, per glibc's bits/types.h:
+>> 
+>> /*
+>>  * Never include this file directly; use <sys/types.h> instead.
+>>  */
+>> 
+>> it's not permitted (not supported usage) to #include <bits/types.h>.
+>> So I think the above patch is wrong for glibc too. As I understand it,
+>> this is general policy for bits/* -- they're only intended to work as
+>> included by the libc system headers, not directly by something else.
+>
+> You are right, the idea is to allow glibc to create and remove internal headers.
 
-...
-> +static void run(void)
-> +{
-> +	char *filename = "file";
-You decided to remove file as first parameter.
-That's fine ($TMPDIR/aiodio.$$/file2 as parameter used $$ to get unique
-directory, but new API uses unique directory anyway), but then you should update
-runtest/ltp-aiodio.part4 - remove $TMPDIR/aiodio.$$/file2.
-nit: I'd just define that name with preprocessor #define.
-
-> +	int filesize = FILE_SIZE;
-> +	int num_children = NUM_CHILDREN;
-> +	int status;
->  	int i;
-> -	char *filename = argv[1];
-
-> -	printf("Starting aio/dio append test...\n");
-> +	*run_child = 1;
-
->  	for (i = 0; i < num_children; i++) {
-nit: I'd use directly NUM_CHILDREN
-> -		if ((pid[i] = fork()) == 0) {
-> -			/* child */
-> -			return read_eof(filename);
-> -		} else if (pid[i] < 0) {
-> -			/* error */
-> -			perror("fork error");
-> -			break;
-> -		} else {
-> -			/* Parent */
-> -			continue;
-> +		if (!SAFE_FORK()) {
-> +			read_eof(filename, filesize);
-... and here FILE_SIZE
-> +			return;
->  		}
->  	}
-...
-
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.forks_child = 1,
-> +};
->  #else
-> -int main(void)
-> +static void run(void)
->  {
-> -	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
-> +	tst_res(TCONF, "test requires libaio and it's development packages");
->  }
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +};
->  #endif
-
-New API has shorter variant when need to quit due missing dependencies:
-TST_TEST_TCONF(), e.g.:
-
-#else
-	TST_TEST_TCONF("test requires libaio and it's development packages");
-#endif
-
-Kind regards,
-Petr
+As a general rule yes, but we could make a deal that some specific bits headers are permanent API for use by things like this. They probably should be less of a dumping ground than bits/types.h though.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
