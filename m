@@ -4,63 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6934C433EF
-	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 16:42:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE0CC433F5
+	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 20:45:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 584E13C908E
-	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 17:42:13 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 491D23C90F3
+	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 21:45:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A88F3C88DF
- for <ltp@lists.linux.it>; Fri,  3 Dec 2021 17:42:02 +0100 (CET)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com
- [IPv6:2607:f8b0:4864:20::433])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6E8F73C907C
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 21:45:42 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8B2C91A01072
- for <ltp@lists.linux.it>; Fri,  3 Dec 2021 17:42:02 +0100 (CET)
-Received: by mail-pf1-x433.google.com with SMTP id x131so3388536pfc.12
- for <ltp@lists.linux.it>; Fri, 03 Dec 2021 08:42:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
- bh=Ts26fyf1U51sthD6yufqMtDk6EewFliawaw6NCN8wuM=;
- b=QNqiYAqfeDgkgHsHLIdjysNQopCoV3QNXu9uNKcxwhQKH/5SxiGmxr0ApEOKx+ucLD
- tfvtBesPo8XSbv4UX+bm6RvF6xYOkYG7CYGIRhXeUTvoLyWK1l88hTiF91ZUibLU8GHI
- iTRgI9VViebaTg94Yz1tEXpS7YpqrJYfnqT3RH+L8nYwMCX/+nNjVGMLw1ucnT7dVNYi
- TS9pNEE3qaY9RPdLUVoOwj2YY0hyDxYNrmZFeDmRgz2W51nrZ+cRF4o92x3ximjfvmQ6
- E5gKiJ6GsVj7y5hbB0/OsqHDl1aJYFty/TzOa3/kvwnnGmp3DabLICpVpiXsTUhAp8Sc
- bsNg==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 81A9E201737
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 21:45:41 +0100 (CET)
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EC15A3F1B2
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 20:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1638564337;
+ bh=ZPdrSSAtv5YTFMXSpAceBwL2nDuS7IVQIgTaev+3vR4=;
+ h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+ To:Cc:Content-Type;
+ b=FOSgnJrbhFEyKBBisfCPh/WldmdK6bOhZMl8dlEZ47ScFOigqKAN3af1YPxN7yDYx
+ DCCS5f8BYPUSxEeZHwTTYxxAbZ5pclq1jJ6euOKCTRKLDCXH2W3UsKgrVaaceWC4B3
+ lID/+ymVy30t6btZwkSnywKnSX1HzrMhDh2WQMlB98rLF27Js6zkEwmSM6HVm4MKAc
+ noOqa97QDM1h1IDNd2osKdRzX6XuYx0ifMIdYICN6e86wn8VVU//vnzL7t3VLS9v8K
+ czhiyaT47MueK+PAWKG3VY8rSM4cLdWlH//HX+tIXesyzGAWFS7vyF2Kxsr2jTi6U+
+ srgfbYaDD4nYQ==
+Received: by mail-ed1-f72.google.com with SMTP id
+ m12-20020a056402430c00b003e9f10bbb7dso3537138edc.18
+ for <ltp@lists.linux.it>; Fri, 03 Dec 2021 12:45:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:cc;
- bh=Ts26fyf1U51sthD6yufqMtDk6EewFliawaw6NCN8wuM=;
- b=exWDX3HfFSf1ZYGgZEOTQDg1EuwKfD3xOMuq4H2I0rutloAJtCrmI66o0uTfeuYz1v
- Vyx6rgS24FWspZxh2EJpMezNY0lSra/UKhxtkf9wZ/Ek3/VN4wP3d3OLo1iiBbfXH9Ii
- vEoFgzmMFDuPR7A74Kr38Nbo1JfzfOegp5TcOVWxGcXhEbTELN/s3OopEibYHShV6tdP
- xX9xVIiX7cHt+D8kGLDe9GqlTbt5GtVqMu0YD+Z45FPDXv6n9Qo6rlYnLd2Zl4fFrnNg
- I/Cdd0vrK9YE2RGdvu6SRcl/47lY0iLCzOj0/pHDu135GFxCw0f1gZ2LGCOizcdkCw2t
- +b0g==
-X-Gm-Message-State: AOAM531MnlmGizG95U9R4Zmyh+vdu/7aAnmLh5/GLPSekSGNr7YQ0e/j
- 3m8mUTqEFQGs5jfRmt8NLlMd9Dd3xNSw2KFhQkR1cyGk
-X-Google-Smtp-Source: ABdhPJz1TDpv+JaXC0LQI4OmMmxNT3/JGktK4T9YcgLxTP0U94UxY2u/UdxfoNHnsgV/d+guIRkb2CXw/VGFqD2SQ1U=
-X-Received: by 2002:a05:6a00:1741:b0:4a6:3de7:a816 with SMTP id
- j1-20020a056a00174100b004a63de7a816mr20509592pfc.29.1638549720602; Fri, 03
- Dec 2021 08:42:00 -0800 (PST)
+ :message-id:subject:to:cc;
+ bh=ZPdrSSAtv5YTFMXSpAceBwL2nDuS7IVQIgTaev+3vR4=;
+ b=RlFC+dbK8xy3EX91gs5nZID8cQhz88Zo8DpamSDVV1F3z7GY0QHJOU7dIvgz2XHLPL
+ CQLd2Xb98QIEy3G2nuKJBboqESbwTD43K+i7tY3eEVGecJ6qQ3TZRtmrcTVrUUstarYc
+ ErUONk+SKYPe2pKqSnTjwmkDKX0M6HJnp07IR3aDZ8HE1zv/ELT4IivOAdl5Lj2sJH6s
+ dCzbPwrr/FfAx+u1sB1dPQjOREk8pGMsyDtYT1NiTj3a9mIhbLzdpoD1leuzNFZdav/a
+ 3Hm/ZR+CQ8jAX4BAiH7NsaW5kq+X4HSvidHp6ynYVbW5zh2JhTVG4LsZxSzjoI13iYcM
+ WMAw==
+X-Gm-Message-State: AOAM533XBPDWXXOLRRVv3i1OlmsNj3M/prVDL5b0PuQ3btIPKzOiSIMX
+ keuKxKvREoK8kkpPGC5setaiWIsnDoVeOMWZdI09K+Vvoj4ZO5+JYtq3qmAJ4aWEMphSEYW+XIc
+ 30KCfJCdNmI0BoSE8dkSP+L/TwfM18Dy7hQow3HLz2FQf
+X-Received: by 2002:a17:906:c109:: with SMTP id
+ do9mr25965271ejc.48.1638564337156; 
+ Fri, 03 Dec 2021 12:45:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwKveFs7eg/0b6dEHJk5pcRMKS/0OXEkXJH0PSlcxfSzoJeBBDYh5mGh06Arp+4Ha5jvbJNo1CMftMV6MxMe7A=
+X-Received: by 2002:a17:906:c109:: with SMTP id
+ do9mr25965249ejc.48.1638564336981; 
+ Fri, 03 Dec 2021 12:45:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20211127121609.26837-1-saginakash@gmail.com>
-In-Reply-To: <20211127121609.26837-1-saginakash@gmail.com>
-From: Sagi Nakash <saginakash@gmail.com>
-Date: Fri, 3 Dec 2021 18:41:50 +0200
-Message-ID: <CAMkC073EZbyb_wux7-Kfv+eT+wL0bB421KpbkypMhkM33LHdvg@mail.gmail.com>
-Cc: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <cover.1637970912.git.luke.nowakowskikrijger@canonical.com>
+ <bbf87d62e2e8274fddc160813e64aedb0a01ffe1.1637970912.git.luke.nowakowskikrijger@canonical.com>
+ <CAEemH2ed6DqKw80Xa_BTjUweT0HrhrUN2-7X+sS05K9gCr2F5A@mail.gmail.com>
+ <CADS1e3cCXsu=y_GNM3ymwHtOq9R671YnQAWgyycG25FJYnOLaA@mail.gmail.com>
+ <CAEemH2cZvK29mrN2xD_EOPx7w3UXFBHrWmAdg+rv5K2vcP3qNA@mail.gmail.com>
+ <87pmqfcp4j.fsf@suse.de>
+ <CADS1e3dXhKJ0NK0OSWYfu-KB__7OsOkRcGmTH66+Ah-tMW8ijA@mail.gmail.com>
+ <CAEemH2cT76bRmeQQPQrALUjjK9VNaGRLY4jOYPNrMjkA4FF7_g@mail.gmail.com>
+In-Reply-To: <CAEemH2cT76bRmeQQPQrALUjjK9VNaGRLY4jOYPNrMjkA4FF7_g@mail.gmail.com>
+From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Date: Fri, 3 Dec 2021 12:44:58 -0800
+Message-ID: <CADS1e3dkYtRibN7ADGh_c9T5uZ4BFTpjgPaXH1+xfBUS8xpKcA@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] ltp-pan: Report failure if testcases failed
- to run
+Subject: Re: [LTP] [PATCH 1/4] controllers/memcg: update stress test to work
+ under cgroup2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,112 +94,173 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0006176817=="
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1574468459=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0006176817==
-Content-Type: multipart/alternative; boundary="0000000000000b1a2305d2409685"
+--===============1574468459==
+Content-Type: multipart/alternative; boundary="0000000000003f6e6f05d243fd68"
 
---0000000000000b1a2305d2409685
+--0000000000003f6e6f05d243fd68
 Content-Type: text/plain; charset="UTF-8"
 
-Ping
+Hi Richard and Li,
 
-On Sat, Nov 27, 2021, 14:16 Sagi Nakash <saginakash@gmail.com> wrote:
+Hmm, why do we need that utility as a daemon in the background?
+> Isn't it easier to execute a binary utility to get the CGroup path
+> only when needed? Just like Richard mentioned the alternative
+> way, rescan system each time and only distinguish correct CGroup
+> path via the test PID.
+>
+> Yes this would be easier if we only wanted to get access to the path. I
+was getting ahead of myself and thinking about using the C-api to keep
+track of creating sub-cgroups and all the state that comes with that. Which
+we wouldn't want to do for a shell utility because creation/cleanup of
+subgroups is for the test to take care of and that is more trivial in a
+shell environment.
 
-> In case a test fails to run in run_child() for some reason (signaled via
-> SIGTERM/SIGTOP, execve() failure, etc.), runltp still reports success:
-> "INFO: ltp-pan reported all tests PASS".
 >
-> Failed tests are reported via check_pids(), by checking their exit
-> status, yet it doesn't catch tests which weren't able to run at all.
 >
-> exit_stat holds the exit status code: 0 in case of success in all tests,
-> otherwise, the number of failed tests.
+>>
+>>
+>> The nice part of having a daemon that we could fork off for every test
+>> that uses it would be that the cleanup / tracking of sub-groups would get
+>> cleaned up in the normal way when we want to close the daemon and just call
+>> tst_cgroup_cleanup(). The daemons state would be tied to the test that's
+>> issuing commands to it. We could also send out the commands via a shared
+>> buffer or pipe that we read and write to.
+>>
+>> But is a daemon per test (that uses the cgroup shell api) overkill? It
+>> seems it would spare us from having to track the test PID to sub-hierarchy
+>> like you were mentioning. Or maybe there are some other drawbacks to the
+>> per-test daemon idea that I'm not seeing?
+>>
 >
-> Fix this by increasing exit_stat also when a test fails to run.
+> I think yes, starting a daemon per test is not wise.
 >
-> Signed-off-by: Sagi Nakash <saginakash@gmail.com>
-> ---
->  pan/ltp-pan.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Another drawback I can think of is that will definitely affect paralleling
+> things,
+> we must guarantee the CGroup mounted by testA shouldn't be scanned/used
+> by testB, otherwise, it will fail in the cleanup phase. But, we can make
+> the LTP
+> test mounted CGroup path is transparent to others just by adding a special
+> string
+> like "ltp-cgroup".
 >
-> diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-> index 0bdb51477..eff9a867d 100644
-> --- a/pan/ltp-pan.c
-> +++ b/pan/ltp-pan.c
-> @@ -551,6 +551,8 @@ int main(int argc, char **argv)
->                                 ++num_active;
->                         if ((cpid != -1 || sequential) && starts > 0)
->                                 --starts;
-> +                       if (cpid == -1 && track_exit_stats)
-> +                               exit_stat++;
->
->                         if (sequential)
->                                 if (++c >= coll->cnt)
+> If I understand it correctly, all the cgroup tests are mounted and created
+like "controller_mount_point/ltp/test-$PID" where every test shares the
+mount_point and ltp dir. And when tst_cgroup_cleanup() gets called it only
+cleans up its own test_dir and removes the ltp dir and unmounts the mount
+point if it was the first test to do it. So none of the tests should be
+touching each other's directories and so what you're describing should
+already be taken care of. Maybe I'm not understanding you correctly.
+
+I think the only problem with the binary utility approach where we rescan
+every time we execute it is that
+1) The test-$PID dir that the test would be created with the PID of the
+program which if we were executing the utility could be different between
+calls. This could be easily solved by adding an arg to tst_cgroup_opts for
+a specific PID, which would be the test that is calling it.
+2) We lose the reference between calls to the root->test_dir that is filled
+in when we call tst_cgroup_require(), which is what does the cleanup of the
+test specific dir. This is where I believe Richard was mentioning passing
+the PID as "tst_cgroup cleanup --pid $MAIN_PID". Which if we wanted to use
+the C api for this we would have to expose it to knowing about specific
+PIDs? Or for the root->test_dir to be reset somewhere?
+
+
 > --
-> 2.25.1
->
+> Regards,
+> Li Wang
 >
 
---0000000000000b1a2305d2409685
+Let me know if this makes sense and what you think about it, I might be
+getting confused somewhere. But if I understand you correctly I believe
+that the binary utility approach where we rescan and call
+tst_cgroup_require() or tst_cgroup_cleanup() is a good approach.
+
+Best,
+- Luke
+
+--0000000000003f6e6f05d243fd68
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"auto">Ping</div><br><div class=3D"gmail_quote"><div dir=3D"ltr"=
- class=3D"gmail_attr">On Sat, Nov 27, 2021, 14:16 Sagi Nakash &lt;<a href=
-=3D"mailto:saginakash@gmail.com">saginakash@gmail.com</a>&gt; wrote:<br></d=
-iv><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left=
-:1px #ccc solid;padding-left:1ex">In case a test fails to run in run_child(=
-) for some reason (signaled via<br>
-SIGTERM/SIGTOP, execve() failure, etc.), runltp still reports success:<br>
-&quot;INFO: ltp-pan reported all tests PASS&quot;.<br>
-<br>
-Failed tests are reported via check_pids(), by checking their exit<br>
-status, yet it doesn&#39;t catch tests which weren&#39;t able to run at all=
-.<br>
-<br>
-exit_stat holds the exit status code: 0 in case of success in all tests,<br=
->
-otherwise, the number of failed tests.<br>
-<br>
-Fix this by increasing exit_stat also when a test fails to run.<br>
-<br>
-Signed-off-by: Sagi Nakash &lt;<a href=3D"mailto:saginakash@gmail.com" targ=
-et=3D"_blank" rel=3D"noreferrer">saginakash@gmail.com</a>&gt;<br>
----<br>
-=C2=A0pan/ltp-pan.c | 2 ++<br>
-=C2=A01 file changed, 2 insertions(+)<br>
-<br>
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c<br>
-index 0bdb51477..eff9a867d 100644<br>
---- a/pan/ltp-pan.c<br>
-+++ b/pan/ltp-pan.c<br>
-@@ -551,6 +551,8 @@ int main(int argc, char **argv)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ++num_active;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 if ((cpid !=3D -1 || sequential) &amp;&amp; starts &gt; 0)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 --starts;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0if (cpid =3D=3D -1 &amp;&amp; track_exit_stats)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0exit_stat++;<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 if (sequential)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (++c &gt;=3D coll-&gt;cnt)<br>
--- <br>
-2.25.1<br>
-<br>
-</blockquote></div>
+<div dir=3D"ltr"><div>Hi Richard and Li,<br></div><br><div class=3D"gmail_q=
+uote"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
+order-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><d=
+iv class=3D"gmail_quote"><div><div style=3D"font-size:small">Hmm, why do we=
+ need that utility as a daemon in the background? </div><div style=3D"font-=
+size:small">Isn&#39;t it easier to execute a binary utility to get the CGro=
+up path</div><div style=3D"font-size:small">only when needed? Just like Ric=
+hard mentioned the alternative</div></div><div style=3D"font-size:small">wa=
+y, rescan system each time and only distinguish correct CGroup</div><div st=
+yle=3D"font-size:small">path via the test PID.</div><div style=3D"font-size=
+:small"><br></div></div></div></blockquote><div>Yes this would be easier if=
+ we only wanted to get access to the path. I was getting ahead of myself an=
+d thinking about using the C-api to keep track of creating sub-cgroups and =
+all the state that comes with that. Which we wouldn&#39;t want to do for a =
+shell utility because creation/cleanup of subgroups is for the test to take=
+ care of and that is more trivial in a shell environment. <br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"g=
+mail_quote"><div style=3D"font-size:small"></div><div>=C2=A0</div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
+solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gma=
+il_quote"><div> <br></div><div><br></div><div>The nice part of having a dae=
+mon that we could fork off for every test that uses it would be that the cl=
+eanup / tracking of sub-groups would get cleaned up in the normal way when =
+we want to close the daemon and just call tst_cgroup_cleanup(). The daemons=
+ state would be tied to the test that&#39;s issuing commands to it. We coul=
+d also send out the commands via a shared buffer or pipe that we read and w=
+rite to. <br></div><div><br></div><div>But is a daemon per test (that uses =
+the cgroup shell api) overkill? It seems it would spare us from having to t=
+rack the test PID to sub-hierarchy like you were mentioning. Or maybe there=
+ are some other drawbacks to the per-test daemon idea that I&#39;m not seei=
+ng?<br></div></div></div></blockquote><div><br></div><div><div style=3D"fon=
+t-size:small">I think yes, starting a daemon per test is not wise.</div><di=
+v style=3D"font-size:small"><br></div><div style=3D"font-size:small">Anothe=
+r drawback I can think of is that will definitely affect paralleling things=
+,</div><div style=3D"font-size:small"><div>we must guarantee the CGroup mou=
+nted by testA shouldn&#39;t be scanned/used</div><div>by testB, otherwise, =
+it will fail in the cleanup phase. But, we can make the=C2=A0LTP=C2=A0</div=
+><div>test mounted CGroup path is transparent to=C2=A0others just by adding=
+ a special string</div><div>like &quot;ltp-cgroup&quot;.</div></div></div><=
+/div><br clear=3D"all"></div></blockquote><div>If I understand it correctly=
+, all the cgroup tests are mounted and created like &quot;controller_mount_=
+point/ltp/test-$PID&quot; where every test shares the mount_point and ltp d=
+ir. And when tst_cgroup_cleanup() gets called it only cleans up its own tes=
+t_dir and removes the ltp dir and unmounts the mount point if it was the fi=
+rst test to do it. So none of the tests should be touching each other&#39;s=
+ directories and so what you&#39;re describing should already be taken care=
+ of. Maybe I&#39;m not understanding you correctly. <br></div><div><br></di=
+v><div>I think the only problem with the binary utility approach where we r=
+escan every time we execute it is that <br></div><div>1) The test-$PID dir =
+that the test would be created with the PID of the program which if we were=
+ executing the utility could be different between calls. This could be easi=
+ly solved by adding an arg to tst_cgroup_opts for a specific PID, which wou=
+ld be the test that is calling it. <br></div><div>2) We lose the reference =
+between calls to the root-&gt;test_dir that is filled in when we call tst_c=
+group_require(), which is what does the cleanup of the test specific dir. T=
+his is where I believe Richard was mentioning passing the PID as &quot;tst_=
+cgroup cleanup --pid $MAIN_PID&quot;. Which if we wanted to use the C api f=
+or this we would have to expose it to knowing about specific PIDs? Or for t=
+he root-&gt;test_dir to be reset somewhere?=C2=A0<font color=3D"#888888"><b=
+> </b><br></font></div><div><br></div><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddi=
+ng-left:1ex"><div dir=3D"ltr"><div><br></div>-- <br><div dir=3D"ltr"><div d=
+ir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div><=
+/blockquote><div><br></div><div>Let me know if this makes sense and what yo=
+u think about it, I might be getting confused somewhere. But if I understan=
+d you correctly I believe that the binary utility approach where we rescan =
+and call tst_cgroup_require() or tst_cgroup_cleanup() is a good approach.<b=
+r></div><div><br></div><div>Best, <br></div><div>- Luke<br></div></div></di=
+v>
 
---0000000000000b1a2305d2409685--
+--0000000000003f6e6f05d243fd68--
 
---===============0006176817==
+--===============1574468459==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -187,4 +270,4 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0006176817==--
+--===============1574468459==--
