@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40C91C433EF
-	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 03:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3D0FC433F5
+	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 03:56:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 988DD3C902E
-	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 04:18:00 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 9B03B3C9043
+	for <ltp@archiver.kernel.org>; Fri,  3 Dec 2021 04:56:24 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 274913C8137
- for <ltp@lists.linux.it>; Fri,  3 Dec 2021 04:17:48 +0100 (CET)
-Received: from esa8.fujitsucc.c3s2.iphmx.com (esa8.fujitsucc.c3s2.iphmx.com
- [68.232.159.88])
+ by picard.linux.it (Postfix) with ESMTPS id 6298F3C6C13
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 04:56:14 +0100 (CET)
+Received: from esa1.fujitsucc.c3s2.iphmx.com (esa1.fujitsucc.c3s2.iphmx.com
+ [68.232.152.245])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C4CBE1A00667
- for <ltp@lists.linux.it>; Fri,  3 Dec 2021 04:17:46 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A02F11401197
+ for <ltp@lists.linux.it>; Fri,  3 Dec 2021 04:56:11 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1638501466; x=1670037466;
+ t=1638503773; x=1670039773;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=PtBO/YcDADvrFYEdQvmvyT03P42Lu75q0i1n4+txy8A=;
- b=Y0Zh5om2gjnEzWx50gFhDFivd5/tK3BdoGbuQSwwhq57w7Qkh8HNrPeM
- Mdkmh6J1FVnzaCVLYmlliWx6W8qGmtq2aQ7TGRN4hw5MwziPiAcoSFOvO
- SJoVZXGBj5/umsX12zbl9ZWbbNFqFZdMCVyNlkGgMpBNutOjfrhYebLNl
- ZDH6WLChDpf4Ex/lkA9AQ45lohSiFXM2iqPb+5gwi83BA32zHpRwJSEse
- x/Aid/fpnCLh224PNgbjJ21Z8E+nqMe5NCLSPfyyK2hNELPBIojYpFkzx
- 8B2m/JsL+CeJfiXAFEdNlHI7GFaSxW2ts7nwuyCIFbSP2b0HAHv/Gu0yD g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10186"; a="45083371"
-X-IronPort-AV: E=Sophos;i="5.87,283,1631545200"; d="scan'208";a="45083371"
-Received: from mail-tycjpn01lp2171.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.171])
+ bh=bO6S2EvHzX2e/ivPP3NxvPqWmJLM3Mxrysfj/Mpe8Rk=;
+ b=fF/7RU+hTOuN1zxlo6CFu2cJqZVBBcPfMpMn0S3tqId0ZYh7K1vfEKTo
+ 0B7cp+z+RineCboxx1KjupLdYYpjl4ik2M9waQ2s6fW2bcP4ac/cNjVaK
+ TdKESdEXBWTJSLP6rG83M8P84ub1R9EjkR4rkNCwwd6fLPJ2GQLJTFCsD
+ ub0R37ASLCbQNSxbQwrA5swBvoWkom3IysLN6V61qc0aR335t4Yf+BIOL
+ Ua2zIz8rLJl6JkkhvgfKcTzgZUOBLO4im43BJz+r5/+KwrgCz2FqM6YC9
+ 9pbBrAjZwtxFQjCDhvv8n/Q2HGizDE63jFMLevhKlpcVmn3AIXAcM8yle w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10186"; a="53314917"
+X-IronPort-AV: E=Sophos;i="5.87,283,1631545200"; d="scan'208";a="53314917"
+Received: from mail-tycjpn01lp2170.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.170])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Dec 2021 12:17:44 +0900
+ 03 Dec 2021 12:56:10 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CHaUzWpDBpnQwoI4xmYJ4u0YMCtXTCmf5hefAazmJ15HGX4dF0M9vcHBpV1NpE9sOh2L3B3DbslErLMUa9VaPZ+f+nVhmf4Z0mqlP7Bte8cFU1LvIRhQaEor8OFzDUBRQ97gVe0Eo+hzgfmeTggTz40udgWR+6GW9IwVioe2ipMKn15WxRUnWRFlbQ1zqeqArgDLWfLAyygdRd4OSU1F+RoKhkVEi/q4UIoOccgHS680eqOdF8hAWzHHLEnQ+LoCXULsOiuLCOcry50nFltFtwQkZOPVOjLbi6Hsp2B7A8lFlsYxHVVHQPsXVDiZxsU8wesV+VB5TVPiaELRuWSlQg==
+ b=Kmb3PK+JB0nyz9PdQpRcpUQW9c6HMrmIXKCPt4zx357dDnE8mzmS+yv7FLgagXKxjcCd5ndP/54W/ty9sK/+967VBYhW12DltoFL/vScEXjXi/ICCLZC0IfBhWPpDLsDOHjEdEuTZifQSZ2BxFyTJbyzA6TUdWTCt4vcK8fQUyiZ0mhbgXEVBW7vDJhAPaer9EnLxag/C9xkBJoIMDX1vtegdhG3wBtOObZLAY0kO6sevSMgn0kw096t772NqKhDUAZg/I11fqn8qiEroJGdSgsX4WsCMeq82R+Ppih5AoreX4ibdd0qw3q5/fqLdrbLrCFkfcGvHJHcQaRo+2LaHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PtBO/YcDADvrFYEdQvmvyT03P42Lu75q0i1n4+txy8A=;
- b=OwACFaUIArd6LVBz59qDgB2kBvkZOIyPiC27spwIiaw4Lq2nzYJHbOB/8XZ3NHhPTIAmbfJ5suPIWFI2xNZgrdy1qe66aSgRbRLHbfiRvYl0OhJQJor2WCGLS+amFPgfhk8b60sVXoJlgWkw+iWrjhQZkyf5HEuVrT9aAk8pRtdeoJ2N63usPW77YoJBKI/jUur72jBAwpOmJkSsNF71+CwYT1IZ1KSffbYrmIcBL5tt4eedM2wjwv/Wz4NwoBi9M/gCg9onjdiJ5B97iJJ327AkKa7cnEpjgV+g0Pcy3WC/hzNRzDtptaWdxbSPzUhLnDmuHQdgsmdcCnug9UK6mw==
+ bh=bO6S2EvHzX2e/ivPP3NxvPqWmJLM3Mxrysfj/Mpe8Rk=;
+ b=JvQM96FE0qLmQFvTFawNjOFEMRV2vkDj6jtYu5rVCzSDnDaNqZ0IEJ3cWi9HhDdJD/dZQstmny57JGM4gFV6Ri3TUEF2DTw26NQf3qX+aFPIL9zBEtA5BSmpTf/n0LsfxHY0Rduy2eKHSSFSG5lOsD1OcCiV/+Pgxy28cnz9PtOC8EXERh8hI9rN2Uu4sXroVW9qwZR4rvEGuEMA4tTY1qc5je++UTBeLw69KtdvOos+j29VyuDePp1GcwFsEUTHu+3StuCbeRHyARu0c2EuBtv8DpG0SFME4CWyRZ2iIS9usK8l+IwZBlr2MyAhVXAzCXnQjR06YPQZMR9GDH7RoA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PtBO/YcDADvrFYEdQvmvyT03P42Lu75q0i1n4+txy8A=;
- b=JY7Pzh4WA7vqH0lKcllG12JAEtgWFsG7rX+jFlEzGdcRtYfFB4dMdJtYYMABNxBmzqCf6FkS2qIAKaLxTLuEOSwx3K6xntXDBv+4jmziY9roWpTomgfi/hv03D8xXzyT+vrtOs/cdzOb1LO0fCmAx/PBZcHO0Pu+JWR13cIRJ0c=
+ bh=bO6S2EvHzX2e/ivPP3NxvPqWmJLM3Mxrysfj/Mpe8Rk=;
+ b=qlJapwX7xH/629ie6ABQ2HMTguPhF61cQVAHCXT/Y7aoz9lteVtQmdGwYGb+55K5n4roezEtS8x+/O+EtI9zSWc1rJI52V2R9nLQNa+8eS1HSx7JEZ65W74Aad7glGFRvkYI0M8WjzA8HX+PqyVq4cABdrtBmlrPPhd13dhoEps=
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TY2PR01MB4364.jpnprd01.prod.outlook.com (2603:1096:404:10c::19) with
+ by TYAPR01MB4494.jpnprd01.prod.outlook.com (2603:1096:404:120::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Fri, 3 Dec
- 2021 03:17:41 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Fri, 3 Dec
+ 2021 03:56:06 +0000
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::4997:e3e6:6502:9100]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::4997:e3e6:6502:9100%9]) with mapi id 15.20.4755.016; Fri, 3 Dec 2021
- 03:17:41 +0000
+ 03:56:06 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: "daisl.fnst@fujitsu.com" <daisl.fnst@fujitsu.com>
-Thread-Topic: [LTP] [PATCH] syscalls/pwrite04: Convert to new API
-Thread-Index: AQHX519N0zA0fs5cgUSnKSmxNBiS46wgGgeA
-Date: Fri, 3 Dec 2021 03:17:41 +0000
-Message-ID: <61A98C6D.7090208@fujitsu.com>
-References: <1636762161-26777-1-git-send-email-daisl.fnst@fujitsu.com>
-In-Reply-To: <1636762161-26777-1-git-send-email-daisl.fnst@fujitsu.com>
+To: wenyehai <wenyehai@huawei.com>
+Thread-Topic: [LTP][PATCH v2] bugfix for testcases which with duplicate header
+ files fcntl.h
+Thread-Index: AQHX52BInJMJhHk9Lkux9SEyH4r7ZKwgJMCA
+Date: Fri, 3 Dec 2021 03:56:06 +0000
+Message-ID: <61A9956D.2010801@fujitsu.com>
+References: <1638437918-60401-1-git-send-email-wenyehai@huawei.com>
+In-Reply-To: <1638437918-60401-1-git-send-email-wenyehai@huawei.com>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -79,72 +79,73 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 07ad65c6-b341-401c-847a-08d9b60b775b
-x-ms-traffictypediagnostic: TY2PR01MB4364:
-x-microsoft-antispam-prvs: <TY2PR01MB43645BBFC2FF6305BECE8E1AFD6A9@TY2PR01MB4364.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-office365-filtering-correlation-id: 2d168b4f-8183-4421-723f-08d9b610d52b
+x-ms-traffictypediagnostic: TYAPR01MB4494:
+x-microsoft-antispam-prvs: <TYAPR01MB44943B0F99B779318FC07FCAFD6A9@TYAPR01MB4494.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p94B+Ts4fn74NOF7aEtjMpNlLUY66CIORIZMv6gNwG1/SVA+Nw+Ha50jOqz0/u67r+XZJJh1wJu2Qme2N+TLepQMo44+zd3HxphsKVu2KJbUTkoVV1bZPWru+gTynv8PMScFGtfRQKnkd4QiIrajvLr6Ux8GLtP7ANJOpczLnpW4wm9eDaqXYfYIzIRay0tGv6+IgMhc5jVGa1NeFtWQEznou2+Oxj1gfzQ7uUbMrtV9PlvxyQxXKbPAj+s/O59MzUojYEPp3RZYLvfQFgqZttfsMwIuxKGZnk2ASZ7k5bk866iPjjiJYCN9iv/GRFEET+RNJEfvcvhWtHEd/UPGFX4SHUcQah7mj01BRPhsEgBwsUD5dclDyXqoI7BxUf5cjATXfNjKmPzvdKamd/9gbbWWYHt0p0oK/IYombk5POW7+w0jSkSVJhmA8ZYKK2fxReYCzhblnrFW+MAVJAh6y8x6D62GrD25KGdclwH7d082RKA06D1vZv38b+y7b0tHLXAXCrKKSozu1IhvPgcwctctDSOSwPhG1yuU8WeiRNzQGp9SqER84SQsv0SxAHpIJjw9PV/Ojz/5b9GluIcrH5pgZqBN98XYagjSTDYtVkApjzNQXOjqN+5g+cWsQ3tSd30PwfrIiVnDN7aXn4hNv+xMIwLKj1qKqaGCd2Cbf0DqbZYjGWdrEe+uwJHjV5Rzye673ti4xhK6IzVd5ulHo4HaK2wL0dPE1Fckt7y+FxE=
+x-microsoft-antispam-message-info: fEEyYqHvu42NkvZP0eVAx7KW4yFcK5B+ykD/e3MDGpvlgfz1n/H2jDnYEY/crqyS75SAX1azDj07IYQlU8459uCzOj1Kduh8H51Sdd9FJezjqgrEGaN6sXOo4wwf0CdAi+Sd/f2YvWgB2UAj1Q1JM0MKGrN680JP3QGkmuoUzGIWePnOihjebhq7BjyzMcEVWP40AJB7NXwNKZqQqtAVlWm5yyp/ksfkw3ScObjCOM2Rz4NXTYSV9LpfmaPelVPm3pVsYMdaXriHC9CVMWqlDvFqWeKsa7c4y6XGTjXqv5JqCpD4JVgYOCTQPfedK82xBb1JkEcZzWEIMvgngvKUNADgZYTLgYs3xHQIjX2phPiDVfYMNCJ0j8tj2jLE5QujUTBH7iOk0eKO4I21GMiVEkXJX0E1DUqHRXmuKWsCgljCCMsaf1SxFLG2r4fpRUzZDzN8KVYxk6TMmUkM4BofL8VB7WmLAtYCSo1ekv1+ErDUR7DN4Go3fEOVk89DZ+PyLM7yYRb2pXRp5kG3i/+Mz987CXNwlldVESk0U24RFsQ1Q6VsF4hNXv3QYFwMen0KOPEzRKijDPOJpuYZd9skS+y+7HZzw99/orA98oxjEIitoWpuDCKKlF8N9zYR0eDW76BZZsvYt70YERQpMvw5nO2Dcp73KX5VOYi9+UR9ZiodwOSlNvGyZW8PRefChVQnThAXHpG6w1l6kA1LbHtB6g==
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66946007)(66446008)(66556008)(66476007)(64756008)(91956017)(38070700005)(186003)(76116006)(6506007)(8676002)(8936002)(83380400001)(6512007)(26005)(36756003)(85182001)(2616005)(508600001)(33656002)(87266011)(38100700002)(37006003)(5660300002)(71200400001)(6636002)(82960400001)(6486002)(2906002)(122000001)(4326008)(316002)(86362001)(6862004)(2004002);
+ SFS:(4636009)(366004)(86362001)(6486002)(5660300002)(30864003)(38070700005)(36756003)(4326008)(8676002)(26005)(186003)(2616005)(87266011)(6506007)(66446008)(38100700002)(316002)(91956017)(6916009)(83380400001)(71200400001)(85182001)(8936002)(33656002)(6512007)(64756008)(66476007)(76116006)(66946007)(66556008)(508600001)(2906002)(122000001)(82960400001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?VG5HYlNRWmU0S1U1d2pLWGhLUENCYTZpaVFmTWd2bGI0S2xKMEdOdEN3Skw1?=
- =?gb2312?B?amNCUkZ4MmMxeUdqRHNTQmRtcGhQSU5KOEpoV1NHSjg3Rmd5L3dMelk2SlJ1?=
- =?gb2312?B?WHFlY2c1dXdIVWRNNDlBOTdDemYwOStJcFZOSk5ZQ2luMFViQm1IZHUwaFFa?=
- =?gb2312?B?UzRKZlNMQ0xTZmVjRGhpN3N3eHhTUFp4bTdRTUZjWDArVFNvWGxXbnYvVHl4?=
- =?gb2312?B?ajVDTkEyNGY1eUIzR0tlL1p4WXhtUTUzak1ueHJEVzdzWHJ6VmpEaDJOemlE?=
- =?gb2312?B?WnliNWljMGRHVFdSZnVJK3J5SUhXaXlIVnp1U1l4RUt3cU9SVmdCd0dZUk5D?=
- =?gb2312?B?b0VzQkt4Z0F5T0NZaXB5VU0vbC9GY3NPd1I2MTA0T3U4bldyZG9wTTAyblNW?=
- =?gb2312?B?WXBBS1E2SWlnRmtYSnJjN05FOGNiOERjL1d4SnE2NUtmQk9qVGd5OE50MmJY?=
- =?gb2312?B?SUcrZmh2eFViMVFpRmVzT1U5OEpzdDV0aHRQblphbGpZVlZVcjdBV3F0OFQ5?=
- =?gb2312?B?K29aKzVINE5KMko0czk3cVlxNGVTVDd0YzRIcStHVlFYT1dCRHNpeHBjT2RT?=
- =?gb2312?B?SmFDSkxQR1c1eEkvSS95eTYvMGFUU2J4N0t1WDczSjQrTWl3Qkphb1k1d3hi?=
- =?gb2312?B?eHBLc0NnTTR5ZW54OGQ3VjlCdDh2ajh1cWdCdUhzcEFVMnE0LzFTUFRCV3hw?=
- =?gb2312?B?MGd1Z082TnN0dkYxaHNlclllVDBLaVpMdnMyZGh3ZGRaSFVQSmE5MG1OL3h0?=
- =?gb2312?B?VFlHbE02Tkx6Y0NGSDdEVzF1NEtTQnhLRm90VUhObGVGckhncVZEbW1GWm9L?=
- =?gb2312?B?azNpMGhGNThEZk9jTENSeUVBZkZMSFhDNmpaaDhEK0YxeVJuZmU3VzQ5c3dj?=
- =?gb2312?B?c1NoM2UrTXcvTFNBcnpTOVV0dzFkL0FvK3ZRUmErK1ZheGRZYjFhbmIrT0pZ?=
- =?gb2312?B?YlJGQVhnejdUZ2VMdkVnbmlwRDhDTTA1aExKNVJrY2NJcVU1QThyTWNHTVJU?=
- =?gb2312?B?OFArTCtNMjhNRFc2cC8wN09xMTM0RXY3OGt4akFKRlhuQWxiODBFL05aTE5a?=
- =?gb2312?B?U2F1YmxmaThHV3ZuM2NkbTNsT2s5N3l5cXZabElBcXRIN2VDNnhFTFQxcXVa?=
- =?gb2312?B?SGFtQ0R0N0FKMm5OK1JCYzBEQ21jTDR6Ylg2Rm9wMG1MdDhzWU9lKy9WVWZY?=
- =?gb2312?B?U1ExdW5QUHNCaVlZUEpLUCtnV2xUb2NBVjBhNk03QzRacStIVDdJdll2TmQy?=
- =?gb2312?B?blI2WFZyMnNBZWUyNzZMbTFPL3JqVnhzUE45ZkhIbVo2UFl4UmJBYk9uNzZw?=
- =?gb2312?B?ajlVM2dUdUZ2Qld4Y3FBZUI2N2xVeVg1YVoxSEN0bjZhZ1VENVM3T3VPY2RY?=
- =?gb2312?B?T3pKNTNVQzM0dzB0bnlML0M2dUU4OTQwc1Y2RURRblIrREc3Rno5RFVJR2Rp?=
- =?gb2312?B?QWJ3aW45c1FJeW45K0duVUFEQVFYWHlhVm5iMjd1eDJCaVJZSmE2bDFqaDg0?=
- =?gb2312?B?Q2U1cmRGUmRSd1BBWk9zQWRqblRLRnZQdVFEVHRKQXNzOVJSbjJvdjRaTTVH?=
- =?gb2312?B?dE4wbnZLajUwNm9Uc0hlTlNSUlFZQ1Q2OTJRUzN3b1l6VkVJekpXTXpYelpl?=
- =?gb2312?B?U2hTWUZkNUFYWGdhNkdmRUgvay9vU2Znc0NOTzR1aVNPZmZYd1dUQXY2NVhC?=
- =?gb2312?B?ZnlzRnd4ZEdRVWhLVktKRmMrS3pUYUVVdjZhOE02L1BxOGYxRUp2dTVIWFZJ?=
- =?gb2312?B?cThybFN1MTNocU45dE04US9nbjFGZkdzd3RXUGVCUG1kMXZlbTVsQVJuNkZG?=
- =?gb2312?B?T0dMNWxaOWRsYmlKQTd4VHd2S2xMK3JoSzBpdGJpa2ZybWxJZ3RuZkh1c0NR?=
- =?gb2312?B?UWxSVTVaa1JIWGZTQ0M2TTh1VFhwaENxMjVHT0xHUi9kM3l3VnRBMmM1bk9t?=
- =?gb2312?B?cWl5d1NkM1FTemUrdStMVFNsbUFjMHNjc0kxNkFyKzNJa1FXTWsrWUZURzFC?=
- =?gb2312?B?LzYwM0NaSEtoZGhXWUlGM2tEUG1zdVZMWDFYbjUrallKTG9jak5sYk9aTGl6?=
- =?gb2312?B?emp0L29pVjFOY3ppMlhZeDRWMlFodjRBdWJ5UHd0QVpzZ0h2aVpnRWlZSTJq?=
- =?gb2312?B?SEY5a3pwejM3aHhpRHhxMDBxWlBRdFdYQ0dWbVB2L1hhcFl4Y3ptUUpaSlhK?=
- =?gb2312?B?MVREZFVjYkRoWTlxZ1NjNXZTcFJFZit3b0NBQU84cTc3V1lEeWpmVXYyNk8r?=
- =?gb2312?Q?53x8FoF3R0SnCXcGfDLC3e5Uq8qxQYhCRVNcf7bFXQ=3D?=
-Content-ID: <231B01FC40045A468FE2B00D2CA22563@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?bFdiMUtJeWNwMnh4TkdsTndLVmJmTml0SXBOdGoxT0g0d1l3REJuanZWbWJy?=
+ =?gb2312?B?M1VWdjN2amNDbFpMeFNiUFh6N21qK0RxNEF3MnAzK0hocm9DQkVzclpCdGFZ?=
+ =?gb2312?B?UlJUZlo1dUoxRHpJTHdiVWU1WTY3Y2dCc1hqV09WdHZkc2tUZExKWXdkdGZW?=
+ =?gb2312?B?MTliUmJqSXNYQkVDVTM1OE5OcmRQbkxzY2VNN1d2bnlFcU00N3F5WHJUQVdV?=
+ =?gb2312?B?bnJKTTgvcDZhSTBNZUJtbjdXTUR1TzBmOFhCVVFUTDRWdmpFWXBGU2IxVXpv?=
+ =?gb2312?B?ckFwLzFWZUJhbjZORWJteXlXSWZsa2pLRzVoQWVsbG0yZ0REamFISG5mV3Vq?=
+ =?gb2312?B?aGZnUVRvWDN6Q3E3R3hRa25CRlltWU1TOEdMaXl6SWc2S2NCRkJ2SVZRNDV1?=
+ =?gb2312?B?dnlFeGRvTE96MFVPTndJODhjMzNJa3UvdnMrOEFJR1dCdTkyYlNDQmhzaXRh?=
+ =?gb2312?B?aFpDalRybGxPamh0L3dRdVNlNE1MSUVlZHFmVHRNYjRCQVkzSDJCQW9lZHF4?=
+ =?gb2312?B?VmhYSGhEbHhUcFF0WFBRc0N3Yit4eGYwZFVwRzhJNWVibFR0RjhIWk8zTWpn?=
+ =?gb2312?B?MXlXRVViTDJSSFZrYk4wQ2h2dVNnL0YwMkN2ZXh3L0JlMmI5dGIvdWt0VGRt?=
+ =?gb2312?B?NXBFbE1Kbnh0N1ZsdlZHQlpBQmNtWjJuOVdDWlVmcUloMnk2ejNKZzg4SUU0?=
+ =?gb2312?B?V0Rua09IODBIUEJJdFFBb0JsZ0Y4MEIzeWlGaCtwbGRZRkNjWTRTNTRoTGZL?=
+ =?gb2312?B?eWpCeDlwbStSa01tVWg5b09JMXRMMXQrL3A2ZDd6bFM2SWJCSWZQbUNpbEU2?=
+ =?gb2312?B?dGxPeXcrR3VScXp2a2twRmlvbmRha0x5Q1cxSXFjZ25ScXBjR3dIUzIxT3RJ?=
+ =?gb2312?B?cjduVTRBMnRISk0vYmhDVlZYOVlWM3BFNHgyc1dRMjRFTVFNaGVrNWluRGZS?=
+ =?gb2312?B?NXhTWTloK1RESTVOSzlPaUlHUnZ2NEowTXVqTkNlMTBRNlRWbEM1aEkxd29l?=
+ =?gb2312?B?RXVmbEI0a3Y3ek1NbHhzN09IMjIxZXl3cDd2QTd0ei8vZXNxbmZjR0lFTVFE?=
+ =?gb2312?B?VElYWXV1VjdVbSt2MkN5WXdaQkYxazNzODFaQWJFM3RqcEhWTVdCSm1HcmFG?=
+ =?gb2312?B?ZCtRQkl4Q2tWa21YQU1mWXRvU0hqc2RCaW54U2RLZVdaTk9wMWVRcGJXc2t2?=
+ =?gb2312?B?bXUvajFHd3JQeGNnZkQ1a1dvMzNqdVlkWnVkLzhUUXpVQXAveXdiMmlCNnVm?=
+ =?gb2312?B?eUpndWFpYzBsR3ZyQTRvbE0zUlhQR1RqcXo3aDhDeTFmaEROdWQ4L2t0bEFW?=
+ =?gb2312?B?alpDK2Y4WnQxQlVvajFaTm9sQTJQbjdYYU5nN09VVDZKcWlNdWtPWURaTDRS?=
+ =?gb2312?B?c2k1S01QTEFJMUZkaFFHY1QvVERMVUJHV0FCbFNwUks2VTZ6cXVYNkMvS3BJ?=
+ =?gb2312?B?YWhpVVpVMFFnYTlySmsvZG1CdytScUxDYmdZbDl6N29TemdIN2NkRTZKbkc0?=
+ =?gb2312?B?MTRmWGYza0Y1MTBjeGFrWExlL0NZMml6Y1JYSjF2V2h5b21MTkNCTnNQdkZ1?=
+ =?gb2312?B?NStMQURBYUZjQVRoakQ2cVJsWUJtbUVPQk9kY3VwNE1hUm1hNkJmOTJHRnFL?=
+ =?gb2312?B?dFhaTEdURXFRclpQOGFGc1ZRK1hXVjVjOVQ3ZllubnJ4eUZHVitNaDZsdk5x?=
+ =?gb2312?B?OElWKy9VVW94dUZVcXJPS0R5MGlMcXMvV0YzanhnS3dzT0lWSFVtOU1LMDlU?=
+ =?gb2312?B?bzNEdlp3QmtGa3pGdDJSaDVkS0Q1SEpkclAvcWY1czdwaEFjMnhidkhVYXJI?=
+ =?gb2312?B?S1hwT1owYm11SjFDdm0vV1huTEZqUldRVlUrSVMxK3c2TS9GUTVnV0ZyUXhG?=
+ =?gb2312?B?aG9hakI2OStFTXhUSmFXams3c1JLZWk5aWpTME1wWUJkUWMyTGczTThmZGVR?=
+ =?gb2312?B?RCtpeXpTakp6MVlCODlnQldEd0lJVkhhQkp1MEJOcUFoajVKN0hOTEJmTGk1?=
+ =?gb2312?B?MHNHVUY4amFOd1RPd0FHN2JFdVF0YjZlbkhGRERKZFlCR2xCOUdwaXE0eXRx?=
+ =?gb2312?B?bjAyZytIbmpxZTd2b2VlNTBoMlh0SjZTZm1VdmhhVlBTZTFhSGVMYzR2akJX?=
+ =?gb2312?B?UEFSdWhiZ1ZpQ2ZPR0tVcWhNQUJXdDg4blN1QjlGSzJFZU5UQzFZUExOUkZN?=
+ =?gb2312?B?dUpyR2hjSmpXa0VwY3htUkdJMnJhdmxUV0MveWJ6a0M0SG1pUVV6UEozNk9E?=
+ =?gb2312?Q?RPHnw3y7/06n7SKcapQq8nVc/GR5LRwAKxqddkxyek=3D?=
+Content-ID: <97E790EC7EC1134A8CBB9C2287A0CD6E@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07ad65c6-b341-401c-847a-08d9b60b775b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2021 03:17:41.1663 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d168b4f-8183-4421-723f-08d9b610d52b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2021 03:56:06.0547 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: e+uiyCJ1aKmyhdAE1naq5p+1JRNZkEEVmrUpgHNegAUb+fXmA1ueyElZa4Wh1R92ob1i8Il8FsR6rHQ+Sxr6KBC0A+K059x2NidAyjFcmrs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4364
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: wn5XF6Km65lUfsft1jU1jYV8ubkO5tgZaTMw5Pym+QYN5/P3HOYi8Hpxw45Fb5+dKuOkLVmtLJ/hkluKfMf8k8wbZKKNg13VvogkPj6e6SI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4494
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/pwrite04: Convert to new API
+Subject: Re: [LTP] [PATCH v2] bugfix for testcases which with duplicate
+ header files fcntl.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -162,360 +163,475 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Dai
-> 1) use SAFE macro
-> 2) remove useless write() operations
-> 3) simplify pwrite() operations before using O_APPEND
-Thanks for your patch, merged with some minor changes.
-1)use PRId64 instead of %ld in l_seek
-2)use TFAIL instead of TBROK
+Hi Wen
+
+When I plan to merge this patch into ltp, it reports error as below:
+
+[root@localhost ltp]# git am
+v2-bugfix-for-testcases-which-with-duplicate-header-files-fcntl.h.patch
+Applying: bugfix for testcases which with duplicate header files fcntl.h
+error: corrupt patch at line 111
+Patch failed at 0001 bugfix for testcases which with duplicate header
+files fcntl.h
+hint: Use 'git am --show-current-patch' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+[root@localhost ltp
+
+
+Do you rebase on lastest ltp or use git format-patch to generate patch?
+
+ps: This patch doesn't fix any bug, I would like to use
+"testcase: Remove duplicate fcntl.h" subject.
 
 Best Regards
 Yang Xu
->
-> Signed-off-by: Dai Shili<daisl.fnst@fujitsu.com>
+> testcases/kernel/syscalls:Remove duplicate header files fcntl.h.
+> 
+> Signed-off-by: Yehai Wen<wenyehai@huawei.com>
 > ---
->   testcases/kernel/syscalls/pwrite/pwrite04.c | 307 ++++++----------------------
->   1 file changed, 66 insertions(+), 241 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/pwrite/pwrite04.c b/testcases/kernel/syscalls/pwrite/pwrite04.c
-> index 4a2825b..2b5ab35 100644
-> --- a/testcases/kernel/syscalls/pwrite/pwrite04.c
-> +++ b/testcases/kernel/syscalls/pwrite/pwrite04.c
-> @@ -1,267 +1,92 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->   /*
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2002
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * Copyright (c) Linux Test Project, 2021
-> + * Copyright (c) International Business Machines  Corp., 2002
-> + * ported from SPIE, section2/filesuite/pread_pwrite.c, by Airong Zhang
->    */
->
-> -/*
-> - * NAME
-> - *      pwrite04.c (ported from SPIE, section2/filesuite/pread_pwrite.c,
-> - *      	        by Airong Zhang)
-> +/*\
-> + * [Description]
->    *
-> - * TEST SUMMARY
-> - *	Test the pwrite() system call with O_APPEND.
-> + * Test the pwrite() system call with O_APPEND.
->    *
-> - * USAGE
-> - *  	pwrite04
-> + * Writing 2k data to the file, close it and reopen it with O_APPEND.
->    *
-> + * POSIX requires that opening a file with the O_APPEND flag should have no effect on the
-> + * location at which pwrite() writes data. However, on Linux, if a file is opened with
-> + * O_APPEND, pwrite() appends data to the end of the file, regardless of the value of offset.
->    */
->
-> -#define _XOPEN_SOURCE 500
-> -#include<stdio.h>
-> -#include<sys/types.h>
-> -#include<sys/stat.h>
-> -#include<unistd.h>
+> v1->v2: remove duplicate header files fcntl.h for all testcases
+>   testcases/kernel/syscalls/accept4/accept4_01.c            | 1 -
+>   testcases/kernel/syscalls/eventfd2/eventfd2_01.c          | 1 -
+>   testcases/kernel/syscalls/eventfd2/eventfd2_02.c          | 1 -
+>   testcases/kernel/syscalls/execveat/execveat03.c           | 1 -
+>   testcases/kernel/syscalls/fallocate/fallocate01.c         | 1 -
+>   testcases/kernel/syscalls/fchownat/fchownat01.c           | 1 -
+>   testcases/kernel/syscalls/fchownat/fchownat02.c           | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl29.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl30.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl31.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl34.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl35.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl36.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl37.c                 | 1 -
+>   testcases/kernel/syscalls/fcntl/fcntl38.c                 | 1 -
+>   testcases/kernel/syscalls/inotify_init/inotify_init1_01.c | 1 -
+>   testcases/kernel/syscalls/inotify_init/inotify_init1_02.c | 1 -
+>   testcases/kernel/syscalls/linkat/linkat02.c               | 1 -
+>   testcases/kernel/syscalls/mknodat/mknodat01.c             | 1 -
+>   testcases/kernel/syscalls/mknodat/mknodat02.c             | 1 -
+>   testcases/kernel/syscalls/open/open14.c                   | 1 -
+>   testcases/kernel/syscalls/openat/openat01.c               | 1 -
+>   testcases/kernel/syscalls/openat/openat02.c               | 1 -
+>   testcases/kernel/syscalls/openat/openat03.c               | 1 -
+>   testcases/kernel/syscalls/pipe/pipe12.c                   | 1 -
+>   testcases/kernel/syscalls/pipe2/pipe2_04.c                | 1 -
+>   testcases/kernel/syscalls/renameat/renameat01.c           | 1 -
+>   testcases/kernel/syscalls/signalfd4/signalfd4_01.c        | 1 -
+>   testcases/kernel/syscalls/socket/socket02.c               | 1 -
+>   testcases/kernel/syscalls/socketpair/socketpair02.c       | 1 -
+>   testcases/kernel/syscalls/tee/tee01.c                     | 1 -
+>   testcases/kernel/syscalls/timerfd/timerfd02.c             | 1 -
+>   testcases/kernel/syscalls/timerfd/timerfd03.c             | 1 -
+>   testcases/kernel/syscalls/vmsplice/vmsplice01.c           | 1 -
+>   testcases/kernel/syscalls/vmsplice/vmsplice02.c           | 2 --
+>   35 files changed, 36 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
+> index b3ab1b9..58115ea 100644
+> --- a/testcases/kernel/syscalls/accept4/accept4_01.c
+> +++ b/testcases/kernel/syscalls/accept4/accept4_01.c
+> @@ -13,7 +13,6 @@
+>   #include<sys/socket.h>
+>   #include<netinet/in.h>
+>   #include<stdlib.h>
 > -#include<fcntl.h>
-> -#include<memory.h>
-> -#include<errno.h>
-> -#include "test.h"
-> -
-> -char *TCID = "pwrite04";
-> -int TST_TOTAL = 1;
-> -int local_flag;
-> +#include<stdlib.h>
-> +#include "tst_test.h"
-> +#include "tst_safe_prw.h"
->
-> -#define PASSED 1
-> -#define FAILED 0
-> +#define K1              1024
-> +#define K2              (K1 * 2)
-> +#define K3              (K1 * 3)
-> +#define DATA_FILE       "pwrite04_file"
->
-> -int block_cnt = 0;
-> +static int fd = -1;
-> +static char *write_buf[2];
->
-> -#define K1    		1024
-> -#define K2    		(K1 * 2)
-> -#define K3    		(K1 * 3)
-> -#define K4    		(K1 * 4)
-> -#define K5    		(K1 * 5)
-> -#define	NBUFS 		4
-> -#define DATA_FILE	"pwrite04_file"
-> -
-> -char name[256], fname[256];
-> -
-> -void init_buffers(char *[]);
-> -void l_seek(int, off_t, int, off_t);
-> -static void cleanup(void);
-> -
-> -int main(int ac, char *av[])
-> +static void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
->   {
-> -	int fd;
-> -	int nbytes;
-> -	char *wbuf[NBUFS];
-> -	struct stat statbuf;
-> -	int lc;
-> -
-> -	strcpy(name, DATA_FILE);
-> -	sprintf(fname, "%s.%d", name, getpid());
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	tst_tmpdir();
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		init_buffers(wbuf);
-> -		local_flag = PASSED;
-> -
-> -		if ((fd = open(fname, O_RDWR | O_CREAT, 0666))<  0) {
-> -			tst_resm(TBROK, "open failed: fname = %s, errno = %d",
-> -				 fname, errno);
-> -			cleanup();
-> -		}
-> -		/*
-> -		 * pwrite() K1 of data (0's) at offset 0.
-> -		 */
-> -		if ((nbytes = pwrite(fd, wbuf[0], K1, 0)) != K1) {
-> -			tst_resm(TFAIL,
-> -				 "pwrite at 0 failed: nbytes=%d, errno=%d",
-> -				 nbytes, errno);
-> -			cleanup();
-> -		}
-> -
-> -		/*
-> -		 * We should still be at offset 0.
-> -		 */
-> -		l_seek(fd, 0, SEEK_CUR, 0);
-> -
-> -		/*
-> -		 * lseek() to a non K boundary, just to be different.
-> -		 */
-> -		l_seek(fd, K1 / 2, SEEK_SET, K1 / 2);
-> -
-> -		/*
-> -		 * pwrite() K1 of data (2's) at offset K2.
-> -		 */
-> -		if ((nbytes = pwrite(fd, wbuf[2], K1, K2)) != K1) {
-> -			tst_resm(TFAIL,
-> -				 "pwrite at K2 failed: nbytes=%d, errno=%d",
-> -				 nbytes, errno);
-> -			cleanup();
-> -		}
-> -
-> -		/*
-> -		 * We should still be at our non K boundary.
-> -		 */
-> -		l_seek(fd, 0, SEEK_CUR, K1 / 2);
-> -
-> -		/*
-> -		 * lseek() to an offset of K3.
-> -		 */
-> -		l_seek(fd, K3, SEEK_SET, K3);
-> -
-> -		/*
-> -		 * This time use a normal write() of K1 of data (3's) which should
-> -		 * take place at an offset of K3, moving the file pointer to K4.
-> -		 */
-> -		if ((nbytes = write(fd, wbuf[3], K1)) != K1) {
-> -			tst_resm(TFAIL, "write failed: nbytes=%d, errno=%d",
-> -				 nbytes, errno);
-> -			cleanup();
-> -		}
-> -
-> -		/*
-> -		 * We should be at offset K4.
-> -		 */
-> -		l_seek(fd, 0, SEEK_CUR, K4);
-> -
-> -		/*
-> -		 * pwrite() K1 of data (1's) at offset K1.
-> -		 */
-> -		if ((nbytes = pwrite(fd, wbuf[1], K1, K1)) != K1) {
-> -			tst_resm(TFAIL, "pwrite failed: nbytes=%d, errno=%d",
-> -				 nbytes, errno);
-> -			cleanup();
-> -		}
-> -
-> -	/*--------------------------------------------------------------*/
-> -
-> -		/*
-> -		 * Now test that O_APPEND takes precedence over any
-> -		 * offset specified by pwrite(), but that the file
-> -		 * pointer remains unchanged.  First, close then reopen
-> -		 * the file and ensure it is already K4 in length and
-> -		 * set the file pointer to it's midpoint, K2.
-> -		 */
-> -		close(fd);
-> -		if ((fd = open(fname, O_RDWR | O_APPEND, 0666))<  0) {
-> -			tst_resm(TBROK, "open failed: fname = %s, errno = %d",
-> -				 fname, errno);
-> -			cleanup();
-> -		}
-> -		if (fstat(fd,&statbuf) == -1) {
-> -			tst_resm(TFAIL, "fstat failed: errno = %d", errno);
-> -			cleanup();
-> -		}
-> -		if (statbuf.st_size != K4) {
-> -			tst_resm(TFAIL, "file size is %ld != K4",
-> -				 statbuf.st_size);
-> -			cleanup();
-> -		}
-> -		l_seek(fd, K2, SEEK_SET, K2);
-> -
-> -		/*
-> -		 * Finally, pwrite() some K1 of data at offset 0.
-> -		 * What we should end up with is:
-> -		 *      -The file pointer should still be at K2.
-> -		 *      -The data should have been written to the end
-> -		 *       of the file (O_APPEND) and should be K5 in size.
-> -		 */
-> -		if ((nbytes = pwrite(fd, wbuf[0], K1, 0)) != K1) {
-> -			tst_resm(TFAIL,
-> -				 "pwrite at 0 failed: nbytes=%d, errno=%d",
-> -				 nbytes, errno);
-> -
-> -		}
-> -		l_seek(fd, 0, SEEK_CUR, K2);
-> -		if (fstat(fd,&statbuf) == -1) {
-> -			tst_resm(TFAIL, "fstat failed: errno = %d", errno);
-> -
-> -		}
-> -		if (statbuf.st_size != K5) {
-> -			tst_resm(TFAIL, "file size is %ld != K4",
-> -				 statbuf.st_size);
-> -
-> -		}
-> -		tst_resm(TPASS, "O_APPEND test passed.");
-> -
-> -	/*------------------------------------------------------------------------*/
-> -
-> -		close(fd);
-> -		unlink(fname);
-> -	}			/* end for */
-> -	cleanup();
-> -	tst_exit();
-> +	off_t offloc;
->
-> +	offloc = SAFE_LSEEK(fdesc, offset, whence);
-> +	if (offloc != checkoff) {
-> +		tst_brk(TFAIL, "%ld = lseek(%d, %ld, %d) != %ld",
-> +			offloc, fdesc, offset, whence, checkoff);
-> +	}
->   }
->
-> -/*------------------------------------------------------------------------*/
-> -
-> -/*
-> - * init_buffers() allocates wbuf[] array
-> - * as follows:
-> - * wbuf[0] has 0's, wbuf[1] has 1's, wbuf[2] has 2's, and wbuf[3] has 3's.
-> - */
-> -void init_buffers(char *wbuf[])
-> +static void verify_pwrite(void)
->   {
-> -	int i;
-> +	struct stat statbuf;
->
-> -	for (i = 0; i<  NBUFS; i++) {
-> -		wbuf[i] = malloc(K1);
-> -		if (wbuf[i] == NULL) {
-> -			tst_brkm(TBROK, NULL, "ib: malloc failed: errno=%d",
-> -				 errno);
-> -		}
-> -		memset(wbuf[i], i, K1);
-> -	}
-> +	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_CREAT | O_TRUNC, 0666);
-> +	SAFE_PWRITE(1, fd, write_buf[0], K2, 0);
-> +	SAFE_CLOSE(fd);
-> +
-> +	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_APPEND, 0666);
-> +	SAFE_FSTAT(fd,&statbuf);
-> +	if (statbuf.st_size != K2)
-> +		tst_res(TFAIL, "file size is %ld != K2", statbuf.st_size);
-> +
-> +	/* Appends data to the end of the file regardless of offset. */
-> +	l_seek(fd, K1, SEEK_SET, K1);
-> +	SAFE_PWRITE(1, fd, write_buf[1], K1, 0);
-> +	l_seek(fd, 0, SEEK_CUR, K1);
-> +	SAFE_FSTAT(fd,&statbuf);
-> +	if (statbuf.st_size != K3)
-> +		tst_res(TFAIL, "file size is %ld != K3", statbuf.st_size);
-> +
-> +	tst_res(TPASS, "O_APPEND test passed.");
-> +	SAFE_CLOSE(fd);
->   }
->
-> -/*
-> - * l_seek() is a local front end to lseek().
-> - * "checkoff" is the offset at which we believe we should be at.
-> - * Used to validate pwrite doesn't move the offset.
-> - */
-> -void l_seek(int fdesc, off_t offset, int whence, off_t checkoff)
-> +static void setup(void)
->   {
-> -	off_t offloc;
-> -
-> -	if ((offloc = lseek(fdesc, offset, whence)) != checkoff) {
-> -		tst_brkm(TFAIL, NULL,
-> -			 "(%ld = lseek(%d, %ld, %d)) != %ld) errno = %d",
-> -			 offloc, fdesc, offset, whence, checkoff, errno);
-> -	}
-> +	write_buf[0] = SAFE_MALLOC(K2);
-> +	memset(write_buf[0], 0, K2);
-> +	write_buf[1] = SAFE_MALLOC(K1);
-> +	memset(write_buf[0], 1, K1);
->   }
->
-> -/*
-> - * cleanup() - Performs all ONE TIME cleanup for this test at
-> - *             completion or premature exit.
-> - *
-> - *	Print test timing stats and errno log if test executed with options.
-> - *	Close the testfile if still opened.
-> - *	Remove temporary directory and sub-directories/files under it
-> - *	created during setup().
-> - *	Exit the test program with normal exit code.
-> - */
-> -void cleanup(void)
-> +static void cleanup(void)
->   {
-> +	free(write_buf[0]);
-> +	free(write_buf[1]);
->
-> -	tst_rmdir();
-> +	if (fd>  -1)
-> +		SAFE_CLOSE(fd);
->
-> +	SAFE_UNLINK(DATA_FILE);
->   }
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = verify_pwrite,
-> +};
+>   #include<stdio.h>
+>   #include<string.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+> index a4af388..c0c6a26 100644
+> --- a/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+> +++ b/testcases/kernel/syscalls/eventfd2/eventfd2_01.c
+> @@ -53,7 +53,6 @@
+>   /*              Ported to LTP                                                 */
+>   /*                      - Jan 08 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+>   #include<sys/syscall.h>
+> diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_02.c b/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
+> index 151edb8..418c07c 100644
+> --- a/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
+> +++ b/testcases/kernel/syscalls/eventfd2/eventfd2_02.c
+> @@ -50,7 +50,6 @@
+>   /*              Ported to LTP                                                 */
+>   /*                      - Jan 13 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+>   #include<sys/syscall.h>
+> diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
+> index 78b26ab..1900c07 100644
+> --- a/testcases/kernel/syscalls/execveat/execveat03.c
+> +++ b/testcases/kernel/syscalls/execveat/execveat03.c
+> @@ -29,7 +29,6 @@
+>   #include<string.h>
+>   #include<sys/syscall.h>
+>   #include<sys/mount.h>
+> -#include<fcntl.h>
+>   #include "tst_test.h"
+>   #include "lapi/execveat.h"
+>   #include "lapi/fcntl.h"
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
+> index c60e160..383796c 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate01.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
+> @@ -93,7 +93,6 @@
+>   #include<errno.h>
+>   #include<sys/stat.h>
+>   #include<sys/types.h>
+> -#include<fcntl.h>
+>   #include<sys/syscall.h>
+>   #include<unistd.h>
+>   #include<inttypes.h>
+> diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
+> index 9f4ecde..a658f07 100644
+> --- a/testcases/kernel/syscalls/fchownat/fchownat01.c
+> +++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
+> @@ -26,7 +26,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+> -#include<fcntl.h>
+>   #include<unistd.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
+> index d19f3f3..701623d 100644
+> --- a/testcases/kernel/syscalls/fchownat/fchownat02.c
+> +++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
+> @@ -24,7 +24,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+> -#include<fcntl.h>
+>   #include<unistd.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl29.c b/testcases/kernel/syscalls/fcntl/fcntl29.c
+> index ffb9fea..5874764 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl29.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl29.c
+> @@ -24,7 +24,6 @@
+>   #include<stdio.h>
+>   #include<errno.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<string.h>
+>   #include<signal.h>
+>   #include<sys/types.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
+> index a7a5e13..27f4643 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl30.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
+> @@ -25,7 +25,6 @@
+>   #include<stdio.h>
+>   #include<errno.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<string.h>
+>   #include<signal.h>
+>   #include<sys/types.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl31.c b/testcases/kernel/syscalls/fcntl/fcntl31.c
+> index fd284fd..9003089 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl31.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl31.c
+> @@ -25,7 +25,6 @@
+>   #include<stdio.h>
+>   #include<errno.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<string.h>
+>   #include<signal.h>
+>   #include<sys/types.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c b/testcases/kernel/syscalls/fcntl/fcntl34.c
+> index 3a68b51..3442114 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl34.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
+> @@ -7,7 +7,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<pthread.h>
+>   #include<sched.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
+> index c5a071d..8eb7148 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl35.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
+> @@ -26,7 +26,6 @@
+>   #include<sys/types.h>
+>   #include<pwd.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<stdlib.h>
+>   #include "lapi/fcntl.h"
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
+> index 1d187c2..d6b07fc 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl36.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
+> @@ -34,7 +34,6 @@
+>   #include<unistd.h>
+>   #include<stdio.h>
+>   #include<stdlib.h>
+> -#include<fcntl.h>
+>   #include<pthread.h>
+>   #include<sched.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl37.c b/testcases/kernel/syscalls/fcntl/fcntl37.c
+> index c52af22..a624554 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl37.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl37.c
+> @@ -14,7 +14,6 @@
+>    */
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<sys/types.h>
+>   #include<limits.h>
+>   #include<stdlib.h>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl38.c b/testcases/kernel/syscalls/fcntl/fcntl38.c
+> index fae2ab4..2f1b022 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl38.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl38.c
+> @@ -8,7 +8,6 @@
+>    *     Check that dnotify event is reported to both parent and subdir
+>    */
+> -#include<fcntl.h>
+>   #include<signal.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+> diff --git a/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c b/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
+> index f1203a4..f1b50fd 100644
+> --- a/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
+> +++ b/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c
+> @@ -53,7 +53,6 @@
+>   /*              Ported to LTP                                                 */
+>   /*                      - Jan 13 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+>   #include<sys/syscall.h>
+> diff --git a/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c b/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
+> index b074214..3b0c767 100644
+> --- a/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
+> +++ b/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c
+> @@ -50,7 +50,6 @@
+>   /*              Ported to LTP                                                 */
+>   /*                      - Jan 13 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+>   #include<sys/syscall.h>
+> diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
+> index 84b4a3b..566c76b 100644
+> --- a/testcases/kernel/syscalls/linkat/linkat02.c
+> +++ b/testcases/kernel/syscalls/linkat/linkat02.c
+> @@ -21,7 +21,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+> -#include<fcntl.h>
+>   #include<unistd.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/mknodat/mknodat01.c b/testcases/kernel/syscalls/mknodat/mknodat01.c
+> index 2e13c77..bff2c6a 100644
+> --- a/testcases/kernel/syscalls/mknodat/mknodat01.c
+> +++ b/testcases/kernel/syscalls/mknodat/mknodat01.c
+> @@ -27,7 +27,6 @@
+>   #define _GNU_SOURCE
+>   #include<sys/types.h>
+> -#include<fcntl.h>
+>   #include<sys/stat.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
+> index 6c5054b..7e6afda 100644
+> --- a/testcases/kernel/syscalls/mknodat/mknodat02.c
+> +++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
+> @@ -27,7 +27,6 @@
+>   #define _GNU_SOURCE
+>   #include<sys/types.h>
+> -#include<fcntl.h>
+>   #include<sys/stat.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+> diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
+> index 0d832cb..f78a364 100644
+> --- a/testcases/kernel/syscalls/open/open14.c
+> +++ b/testcases/kernel/syscalls/open/open14.c
+> @@ -22,7 +22,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<errno.h>
+>   #include "test.h"
+> diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
+> index 0441c3a..daed419 100644
+> --- a/testcases/kernel/syscalls/openat/openat01.c
+> +++ b/testcases/kernel/syscalls/openat/openat01.c
+> @@ -28,7 +28,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+> -#include<fcntl.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+>   #include<string.h>
+> diff --git a/testcases/kernel/syscalls/openat/openat02.c b/testcases/kernel/syscalls/openat/openat02.c
+> index e2eefda..2ce1190 100644
+> --- a/testcases/kernel/syscalls/openat/openat02.c
+> +++ b/testcases/kernel/syscalls/openat/openat02.c
+> @@ -38,7 +38,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+> -#include<fcntl.h>
+>   #include<unistd.h>
+>   #include<sys/wait.h>
+>   #include<stdlib.h>
+> diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
+> index 7e816f2..2846fd0 100644
+> --- a/testcases/kernel/syscalls/openat/openat03.c
+> +++ b/testcases/kernel/syscalls/openat/openat03.c
+> @@ -22,7 +22,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<errno.h>
+>   #include "test.h"
+> diff --git a/testcases/kernel/syscalls/pipe/pipe12.c b/testcases/kernel/syscalls/pipe/pipe12.c
+> index 4c7eda2..f524040 100644
+> --- a/testcases/kernel/syscalls/pipe/pipe12.c
+> +++ b/testcases/kernel/syscalls/pipe/pipe12.c
+> @@ -11,7 +11,6 @@
+>   #define _GNU_SOURCE
+>   #include<unistd.h>
+>   #include<stdlib.h>
+> -#include<fcntl.h>
+>   #include "tst_test.h"
+>   #include "lapi/fcntl.h"
+> diff --git a/testcases/kernel/syscalls/pipe2/pipe2_04.c b/testcases/kernel/syscalls/pipe2/pipe2_04.c
+> index 432007e..3789435 100644
+> --- a/testcases/kernel/syscalls/pipe2/pipe2_04.c
+> +++ b/testcases/kernel/syscalls/pipe2/pipe2_04.c
+> @@ -11,7 +11,6 @@
+>   #define _GNU_SOURCE
+>   #include<stdlib.h>
+>   #include<features.h>
+> -#include<fcntl.h>
+>   #include<unistd.h>
+>   #include<stdio.h>
+>   #include "lapi/fcntl.h"
+> diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
+> index 817e217..9df4b70 100644
+> --- a/testcases/kernel/syscalls/renameat/renameat01.c
+> +++ b/testcases/kernel/syscalls/renameat/renameat01.c
+> @@ -41,7 +41,6 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+>   #include<sys/time.h>
+> -#include<fcntl.h>
+>   #include<stdlib.h>
+>   #include<errno.h>
+>   #include<string.h>
+> diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+> index 9f85973..960c7ce 100644
+> --- a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+> +++ b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+> @@ -54,7 +54,6 @@
+>   /*              Ported to LTP                                                 */
+>   /*                      - Jan 08 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<signal.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+> diff --git a/testcases/kernel/syscalls/socket/socket02.c b/testcases/kernel/syscalls/socket/socket02.c
+> index afe9dc1..59fd942 100644
+> --- a/testcases/kernel/syscalls/socket/socket02.c
+> +++ b/testcases/kernel/syscalls/socket/socket02.c
+> @@ -12,7 +12,6 @@
+>   * in socket() in kernel 2.6.27.
+>   */
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+>   #include<netinet/in.h>
+> diff --git a/testcases/kernel/syscalls/socketpair/socketpair02.c b/testcases/kernel/syscalls/socketpair/socketpair02.c
+> index 72ca0e8..e23945c 100644
+> --- a/testcases/kernel/syscalls/socketpair/socketpair02.c
+> +++ b/testcases/kernel/syscalls/socketpair/socketpair02.c
+> @@ -13,7 +13,6 @@
+>   */
+>   #include<errno.h>
+> -#include<fcntl.h>
+>   #include<pthread.h>
+>   #include<stdio.h>
+>   #include<unistd.h>
+> diff --git a/testcases/kernel/syscalls/tee/tee01.c b/testcases/kernel/syscalls/tee/tee01.c
+> index db2ac1e..cee6ed7 100644
+> --- a/testcases/kernel/syscalls/tee/tee01.c
+> +++ b/testcases/kernel/syscalls/tee/tee01.c
+> @@ -11,7 +11,6 @@
+>   #include<string.h>
+>   #include<signal.h>
+>   #include<sys/types.h>
+> -#include<fcntl.h>
+>   #include "tst_test.h"
+>   #include "lapi/fcntl.h"
+> diff --git a/testcases/kernel/syscalls/timerfd/timerfd02.c b/testcases/kernel/syscalls/timerfd/timerfd02.c
+> index c544406..88742b8 100644
+> --- a/testcases/kernel/syscalls/timerfd/timerfd02.c
+> +++ b/testcases/kernel/syscalls/timerfd/timerfd02.c
+> @@ -54,7 +54,6 @@
+>   /*                      - Jan 08 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<time.h>
+>   #include<unistd.h>
+> diff --git a/testcases/kernel/syscalls/timerfd/timerfd03.c b/testcases/kernel/syscalls/timerfd/timerfd03.c
+> index e288251..41aa946 100644
+> --- a/testcases/kernel/syscalls/timerfd/timerfd03.c
+> +++ b/testcases/kernel/syscalls/timerfd/timerfd03.c
+> @@ -50,7 +50,6 @@
+>   /*              Ported to LTP                                                 */
+>   /*                      - Jan 13 2009 - Subrata<subrata@linux.vnet.ibm.com>   */
+>   /******************************************************************************/
+> -#include<fcntl.h>
+>   #include<stdio.h>
+>   #include<time.h>
+>   #include<unistd.h>
+> diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice01.c b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+> index 1d1b66d..36ecc08 100644
+> --- a/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+> +++ b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+> @@ -11,7 +11,6 @@
+>   #include<string.h>
+>   #include<signal.h>
+>   #include<sys/types.h>
+> -#include<fcntl.h>
+>   #include<sys/poll.h>
+>   #include "tst_test.h"
+> diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice02.c b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+> index 39c407c..0135b6f 100644
+> --- a/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+> +++ b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+> @@ -18,9 +18,7 @@
+>   #include<sys/types.h>
+>   #include<sys/stat.h>
+> -#include<fcntl.h>
+>   #include<unistd.h>
+> -#include<fcntl.h>
+>   #include<sys/uio.h>
+>   #include<limits.h>
+> 2.7.4
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
