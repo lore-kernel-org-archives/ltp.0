@@ -4,79 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C362C433F5
-	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 12:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28033C433F5
+	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 14:06:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E254D3C21EE
-	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 13:44:53 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A4BAF3C264E
+	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 15:06:21 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7E0453C6F5D
- for <ltp@lists.linux.it>; Fri,  3 Dec 2021 13:32:40 +0100 (CET)
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com
- [IPv6:2607:f8b0:4864:20::f32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A105F3C02F7
+ for <ltp@lists.linux.it>; Mon,  6 Dec 2021 15:06:11 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A191A200FE9
- for <ltp@lists.linux.it>; Fri,  3 Dec 2021 13:32:39 +0100 (CET)
-Received: by mail-qv1-xf32.google.com with SMTP id gu12so2556051qvb.6
- for <ltp@lists.linux.it>; Fri, 03 Dec 2021 04:32:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=tpGZcD4nIKwqnuNHKHO0TBkz7hc0UrH6GNojNQbNLKw=;
- b=CEcz3jokK+2gamU86FUd732G6aGQSldWSgIYDAb1++eUEokprXH6vVcds+LEIFOvpw
- CGcL58iMsLJPtV1sYdGQNrjx76UbdkL8wS6Nr8TKdrBLSU3WmoH4r7TEhESoXa3cjl8I
- kl6yD/ihDzek+MCP6SP2DDP1Y2qbPZEIMFvEVe2a7KTHLELSuZr7ex+owANFJdyUNTj3
- XUPwdZZNgBlEk/tE3YhZQQM8vyJMQPV7Cewrx4SQ89iL7flVKLssOKgLB0rEeGv+A17u
- nsZueDRq8rbCD9tdeBuIThzS5LD3OWlinDAWsIjJIFkYFOB8NKl/Dh2MbBe41kfsYLrT
- DOKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=tpGZcD4nIKwqnuNHKHO0TBkz7hc0UrH6GNojNQbNLKw=;
- b=722X4m+0PtN87w7DqBo5Pc3FlGt8J0z/Xfs2l6rQ5m5QqNPUO4Zx03Vi6BpHu7EIKN
- iKh/mhXAG/aFoBmTF90m9bpyDqJv2yFWGaHaHgN4UyCDsZa3Y6MiCgHTFBXRKxITqyn6
- 3jMJ12qwFs5gz+8cWsR9BcURn77Jheh2xmzx0SWzoF8sXS5agwSCWmFAIcwMHat6F1ub
- NU1BCklJ0jqoCnrMQ6iZJ1HooiWiGb5bpFJbQnJSh6jbRxfJmVkUgVusiUtmxl9Je/wW
- NIkkJZDa4CGe0FnZRHEQcdAtdwb2KrofNfpqtR/a4bzzmP1rUQZfJKXgm5xGtrAg5g11
- V0rA==
-X-Gm-Message-State: AOAM531RcM5cT6Do5yznNLJCy2CLLfX30gMLROWWeTgLSmvf/J6wchR+
- 1xM5jDjkUcyDdDf+fCgLqS3Aig==
-X-Google-Smtp-Source: ABdhPJzaCgHrIbHSQbI0Sq3nOtRXTwg7hBaKyrlCC9ErC+zf+wgn72iYAl0CHvgkGMkfZn4Bi4B5jQ==
-X-Received: by 2002:a05:6214:4007:: with SMTP id
- kd7mr18672354qvb.52.1638534758304; 
- Fri, 03 Dec 2021 04:32:38 -0800 (PST)
-Received: from ?IPV6:2804:431:c7cb:30f8:f5d6:4b6d:fe6a:d565?
- ([2804:431:c7cb:30f8:f5d6:4b6d:fe6a:d565])
- by smtp.gmail.com with ESMTPSA id h22sm2258645qtb.86.2021.12.03.04.32.36
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 03 Dec 2021 04:32:37 -0800 (PST)
-Message-ID: <0864bd62-7a93-106d-8a36-23dd72a7ab58@linaro.org>
-Date: Fri, 3 Dec 2021 09:32:34 -0300
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BCCBD600795
+ for <ltp@lists.linux.it>; Mon,  6 Dec 2021 15:06:10 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0CE5B1FD59;
+ Mon,  6 Dec 2021 14:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1638799570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AEf+/+mv3a313H/VOiK4fDF/FvbvFFa1+rDyV138oJk=;
+ b=fsBOrYybjGvPGO5vFz+YzzDYmTTt3VWD9imOg39GZpnefvgjYVGVnS9IhGI310wwUxXFfP
+ G6dCLnh9KGknGNKu6wa+21oIXUc2ZuurXu09o+Nrz51nTba+DNlcccgaAu6CteBwsx3LOj
+ fKzv2tYOmvnmzs4sEQGMNoMZ9TrV5XQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1638799570;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AEf+/+mv3a313H/VOiK4fDF/FvbvFFa1+rDyV138oJk=;
+ b=/kJzdbZgFwdAjSYPrh666kZIOOFdoiST3GMYPgBJ31AQ4ockcHfABuHbF3kkZkj/tTIGVW
+ hXKoen026AKCsvCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0A5513C4C;
+ Mon,  6 Dec 2021 14:06:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Nf7+NdEYrmHGMAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 06 Dec 2021 14:06:09 +0000
+Date: Mon, 6 Dec 2021 15:07:25 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <Ya4ZHdAsCz+/421w@yuki>
+References: <20211201134846.14352-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Content-Language: en-US
-To: Zack Weinberg <zack@owlfolio.org>, Rich Felker <dalias@libc.org>
-References: <YZvIlz7J6vOEY+Xu@yuki>
- <c5993ee9-1b5d-4469-9c0e-8d4e0fbd575a@www.fastmail.com>
- <20211202153422.GH7074@brightrain.aerifal.cx>
- <20211202232954.GI7074@brightrain.aerifal.cx>
- <855a47d1-a89c-bbc8-7ddd-b89104c6138a@linaro.org>
- <9d24f699-386a-4881-b09a-ebd747310187@www.fastmail.com>
-From: Adhemerval Zanella <adhemerval.zanella@linaro.org>
-In-Reply-To: <9d24f699-386a-4881-b09a-ebd747310187@www.fastmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20211201134846.14352-1-andrea.cervesato@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 06 Dec 2021 13:44:12 +0100
-Subject: Re: [LTP] [PATCH] uapi: Make __{u, s}64 match {u,
- }int64_t in userspace
+Subject: Re: [LTP] [PATCH v1] Refactoring dio_sparse.c using LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,100 +74,399 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
- libc-alpha@sourceware.org, linux-kernel@vger.kernel.org, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-
-
-On 02/12/2021 21:10, Zack Weinberg wrote:
-> On Thu, Dec 2, 2021, at 6:43 PM, Adhemerval Zanella via Libc-alpha wrote:
->> On 02/12/2021 20:29, Rich Felker wrote:
->>> On Thu, Dec 02, 2021 at 10:34:23AM -0500, Rich Felker wrote:
->>>> On Mon, Nov 22, 2021 at 10:19:59PM +0000, Zack Weinberg via Libc-alpha wrote:
->>>>> On Mon, Nov 22, 2021, at 4:43 PM, Cyril Hrubis wrote:
->>>>>> This changes the __u64 and __s64 in userspace on 64bit platforms from
->>>>>> long long (unsigned) int to just long (unsigned) int in order to match
->>>>>> the uint64_t and int64_t size in userspace.
->>>>> ....
->>>>>> +
->>>>>> +#include <asm/bitsperlong.h>
->>>>>> +
->>>>>>  /*
->>>>>> - * int-ll64 is used everywhere now.
->>>>>> + * int-ll64 is used everywhere in kernel now.
->>>>>>   */
->>>>>> -#include <asm-generic/int-ll64.h>
->>>>>> +#if __BITS_PER_LONG == 64 && !defined(__KERNEL__)
->>>>>> +# include <asm-generic/int-l64.h>
->>>>>> +#else
->>>>>> +# include <asm-generic/int-ll64.h>
->>>>>> +#endif
->>>>>
->>>>> I am all for matching __uN / __sN to uintN_t / intN_t in userspace, but may I suggest the technically simpler and guaranteed-to-be-accurate
->>>>>
->>>>>  /*
->>>>> - * int-ll64 is used everywhere now.
->>>>> + * int-ll64 is used everywhere in kernel now.
->>>>> + * In user space match <stdint.h>.
->>>>>   */
->>>>> +#ifdef __KERNEL__
->>>>>  # include <asm-generic/int-ll64.h>
->>>>> +#elif __has_include (<bits/types.h>)
->>>>> +# include <bits/types.h>
->>>>> +typedef __int8_t __s8;
->>>>> +typedef __uint8_t __u8;
->>>>> +typedef __int16_t __s16;
->>>>> +typedef __uint16_t __u16;
->>>>> +typedef __int32_t __s32;
->>>>> +typedef __uint32_t __u32;
->>>>> +typedef __int64_t __s64;
->>>>> +typedef __uint64_t __u64;
->>>>> +#else
->>>>> +# include <stdint.h>
->>>>> +typedef int8_t __s8;
->>>>> +typedef uint8_t __u8;
->>>>> +typedef int16_t __s16;
->>>>> +typedef uint16_t __u16;
->>>>> +typedef int32_t __s32;
->>>>> +typedef uint32_t __u32;
->>>>> +typedef int64_t __s64;
->>>>> +typedef uint64_t __u64;
->>>>> +#endif
->>>>>
->>>>> The middle clause could be dropped if we are okay with all uapi
->>>>> headers potentially exposing the non-implementation-namespace names
->>>>> defined by <stdint.h>. I do not know what the musl libc equivalent
->>>>> of <bits/types.h> is.
->>>>
->>>> We (musl) don't have an equivalent header or __-prefixed versions of
->>>> these types.
->>>>
->>>> FWIW I don't think stdint.h exposes anything that would be problematic
->>>> alongside arbitrary use of kernel headers.
->>>
->>> Also, per glibc's bits/types.h:
->>>
->>> /*
->>>  * Never include this file directly; use <sys/types.h> instead.
->>>  */
->>>
->>> it's not permitted (not supported usage) to #include <bits/types.h>.
->>> So I think the above patch is wrong for glibc too. As I understand it,
->>> this is general policy for bits/* -- they're only intended to work as
->>> included by the libc system headers, not directly by something else.
->>
->> You are right, the idea is to allow glibc to create and remove internal headers.
+Hi!
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  testcases/kernel/io/ltp-aiodio/common.h     |  32 +++
+>  testcases/kernel/io/ltp-aiodio/dio_sparse.c | 248 +++++++-------------
+>  2 files changed, 119 insertions(+), 161 deletions(-)
 > 
-> As a general rule yes, but we could make a deal that some specific bits headers are permanent API for use by things like this. They probably should be less of a dumping ground than bits/types.h though.
+> diff --git a/testcases/kernel/io/ltp-aiodio/common.h b/testcases/kernel/io/ltp-aiodio/common.h
+> index fefeed2cf..0d050b626 100644
+> --- a/testcases/kernel/io/ltp-aiodio/common.h
+> +++ b/testcases/kernel/io/ltp-aiodio/common.h
+> @@ -7,6 +7,9 @@
+>  #define AIODIO_COMMON_H__
+>  
+>  #include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <sys/mman.h>
+>  #include "tst_test.h"
+>  
+>  static inline char *check_zero(char *buf, int size)
+> @@ -51,4 +54,33 @@ static inline void io_append(const char *path, char pattern, int flags, size_t b
+>  	SAFE_CLOSE(fd);
+>  }
+>  
+> +/*
+> + * This code tries to create dirty free blocks on
+> + * the HDD so there is a chance that blocks to be allocated
+> + * for a file are filled with something else than zeroes.
+> + *
+> + * The usefulness of this is IMHO questionable.
+> + */
+> +static inline void dirty_freeblocks(int size)
+> +{
+> +	char *filename = "dirty_file";
+> +	int fd;
+> +	void *p;
+> +	int pg;
+> +
+> +	pg = getpagesize();
+> +	size = ((size + pg - 1) / pg) * pg;
 
-I really don't think adding such constraints really would improve the project
-in long term, we already have issues about the need to support some internal
-symbols that were exported by accident.
+We can replace this with LTP_ALIGN() macro now that we are moving the
+code...
 
+> +	fd = SAFE_OPEN(filename, O_CREAT | O_RDWR, 0600);
+> +	SAFE_FTRUNCATE(fd, size);
+> +
+> +	p = SAFE_MMAP(NULL, size, PROT_WRITE | PROT_READ, MAP_SHARED | MAP_FILE, fd, 0);
+> +	memset(p, 0xaa, size);
+> +	msync(p, size, MS_SYNC);
+> +	munmap(p, size);
+> +
+> +	SAFE_CLOSE(fd);
+> +	SAFE_UNLINK(filename);
+> +}
+> +
+>  #endif /* AIODIO_COMMON_H__ */
+> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> index 3f44e92ea..cb1b25d1b 100644
+> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   *   Copyright (c) 2004 Daniel McNeil <daniel@osdl.org>
+>   *                 2004 Open Source Development Lab
+> @@ -6,206 +7,131 @@
+>   *
+>   *   Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
+>   *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> + *   Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+>   *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * Create a sparse file using O_DIRECT while other processes are doing
+> + * buffered reads and check if the buffer reads always see zero.
+>   */
+>  
+>  #define _GNU_SOURCE
+>  
+>  #include <stdlib.h>
+> -#include <sys/types.h>
+> -#include <signal.h>
+> -#include <errno.h>
+> -#include <fcntl.h>
+> -#include <stdio.h>
+>  #include <unistd.h>
+> -#include <memory.h>
+> -#include <sys/mman.h>
+> +#include <string.h>
+>  #include <sys/wait.h>
+> -#include <limits.h>
+> -#include <getopt.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include "tst_test.h"
+> +#include "common.h"
+>  
+>  #define NUM_CHILDREN 1000
+> +#define FILE_SIZE (100 * 1024 * 1024)
+> +#define WRITE_SIZE 1024
+>  
+> -static void setup(void);
+> -static void cleanup(void);
+> -static void usage(void);
+> -static int debug = 0;
+> -static int fd;
+> -
+> -char *TCID = "dio_sparse";
+> -int TST_TOTAL = 1;
+> +static int *run_child;
+>  
+> -#include "common_sparse.h"
+> -
+> -/*
+> - * Write zeroes using O_DIRECT into sparse file.
+> - */
+> -int dio_sparse(int fd, int align, int writesize, int filesize, int offset)
+> +static void dio_sparse(int fd, int filesize, int writesize)
+>  {
+>  	void *bufptr = NULL;
+> -	int i, w;
+> +	int i;
+> +	int w;
+>  
+> -	TEST(posix_memalign(&bufptr, align, writesize));
+> -	if (TEST_RETURN) {
+> -		tst_resm(TBROK | TRERRNO, "cannot allocate aligned memory");
+> -		return 1;
+> -	}
+> +	bufptr = SAFE_MEMALIGN(getpagesize(), writesize);
+>  
+>  	memset(bufptr, 0, writesize);
+> -	lseek(fd, offset, SEEK_SET);
+> -	for (i = offset; i < filesize;) {
+> -		if ((w = write(fd, bufptr, writesize)) != writesize) {
+> -			tst_resm(TBROK | TERRNO, "write() returned %d", w);
+> -			return 1;
+> -		}
+> +	SAFE_LSEEK(fd, 0, SEEK_SET);
+>  
+> +	for (i = 0; i < filesize;) {
+> +		w = SAFE_WRITE(0, fd, bufptr, writesize);
+>  		i += w;
+>  	}
+> -
+> -	return 0;
+> -}
+> -
+> -void usage(void)
+> -{
+> -	fprintf(stderr, "usage: dio_sparse [-d] [-n children] [-s filesize]"
+> -		" [-w writesize] [-o offset]]\n");
+> -	exit(1);
+>  }
+>  
+> -int main(int argc, char **argv)
+> +static void read_sparse(const char *filename, int filesize)
+>  {
+> -	char *filename = "dio_sparse";
+> -	int pid[NUM_CHILDREN];
+> -	int num_children = 1;
+> +	char buff[4096];
+> +	int fd;
+>  	int i;
+> -	long alignment = 512;
+> -	int writesize = 65536;
+> -	int filesize = 100 * 1024 * 1024;
+> -	int offset = 0;
+> -	int c;
+> -	int children_errors = 0;
+> -	int ret;
+> -
+> -	while ((c = getopt(argc, argv, "dw:n:a:s:o:")) != -1) {
+> -		char *endp;
+> -		switch (c) {
+> -		case 'd':
+> -			debug++;
+> -			break;
+> -		case 'a':
+> -			alignment = strtol(optarg, &endp, 0);
+> -			alignment = scale_by_kmg(alignment, *endp);
+> -			break;
+> -		case 'w':
+> -			writesize = strtol(optarg, &endp, 0);
+> -			writesize = scale_by_kmg(writesize, *endp);
+> -			break;
+> -		case 's':
+> -			filesize = strtol(optarg, &endp, 0);
+> -			filesize = scale_by_kmg(filesize, *endp);
+> -			break;
+> -		case 'o':
+> -			offset = strtol(optarg, &endp, 0);
+> -			offset = scale_by_kmg(offset, *endp);
+> -			break;
+> -		case 'n':
+> -			num_children = atoi(optarg);
+> -			if (num_children > NUM_CHILDREN) {
+> -				fprintf(stderr,
+> -					"number of children limited to %d\n",
+> -					NUM_CHILDREN);
+> -				num_children = NUM_CHILDREN;
+
+First of all these parameters should be defined in the tst_option
+structure and exposed in the tst_test structure.
+
+See: https://github.com/linux-test-project/ltp/wiki/C-Test-API#15-test-specific-command-line-options
+
+> +	int r;
+> +
+> +	while ((fd = open(filename, O_RDONLY, 0666)) < 0)
+> +		usleep(100);
+> +
+> +	tst_res(TINFO, "child %i reading file", getpid());
+> +
+> +	SAFE_LSEEK(fd, SEEK_SET, 0);
+
+There is no need to seek newly opened file to the start.
+
+> +	while (*run_child) {
+> +		off_t offset = 0;
+> +		char *bufoff;
+
+And the seek should be here, right?
+
+> +		for (i = 0; i < filesize + 1; i += sizeof(buff)) {
+> +			r = SAFE_READ(0, fd, buff, sizeof(buff));
+> +			if (r > 0) {
+> +				bufoff = check_zero(buff, r);
+> +				if (bufoff) {
+> +					tst_res(TINFO, "non-zero read at offset %zu",
+> +						offset + (bufoff - buff));
+> +					break;
+> +				}
+> +				offset += r;
+>  			}
+> -			break;
+> -		case '?':
+> -			usage();
+> -			break;
+>  		}
+>  	}
+>  
+> -	setup();
+> -	tst_resm(TINFO, "Dirtying free blocks");
+> -	dirty_freeblocks(filesize);
+> +	SAFE_CLOSE(fd);
+> +}
+
+Also this function should go to the common header so that we can reuse
+it later on...
+
+> +static void setup(void)
+> +{
+> +	run_child = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> +}
+>  
+> -	fd = SAFE_OPEN(cleanup, filename,
+> -		O_DIRECT | O_WRONLY | O_CREAT | O_EXCL, 0600);
+> -	SAFE_FTRUNCATE(cleanup, fd, filesize);
+> +static void cleanup(void)
+> +{
+> +	SAFE_MUNMAP(run_child, sizeof(int));
+> +}
+>  
+> -	tst_resm(TINFO, "Starting I/O tests");
+> -	signal(SIGTERM, SIG_DFL);
+> -	for (i = 0; i < num_children; i++) {
+> -		switch (pid[i] = fork()) {
+> -		case 0:
+> -			SAFE_CLOSE(NULL, fd);
+> -			read_sparse(filename, filesize);
+> -			break;
+> -		case -1:
+> -			while (i-- > 0)
+> -				kill(pid[i], SIGTERM);
+> -
+> -			tst_brkm(TBROK | TERRNO, cleanup, "fork()");
+> -		default:
+> -			continue;
+> -		}
+> -	}
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +static void run(void)
+> +{
+> +	char *filename = "sparse_file";
+> +	int filesize = FILE_SIZE;
+> +	int num_children = NUM_CHILDREN;
+> +	int writesize = WRITE_SIZE;
+> +	int status;
+> +	int fd;
+> +	int i;
+>  
+> -	ret = dio_sparse(fd, alignment, writesize, filesize, offset);
+> +	tst_res(TINFO, "Dirtying free blocks");
+> +	dirty_freeblocks(filesize);
+
+Maybe the dirty_freeblocks() should go to the test setup, so that we do
+it once in case we requested multiple test iterations with -i
+
+> -	tst_resm(TINFO, "Killing childrens(s)");
+> +	fd = SAFE_OPEN(filename, O_DIRECT | O_WRONLY | O_CREAT, 0666);
+> +	SAFE_FTRUNCATE(fd, filesize);
+>  
+> -	for (i = 0; i < num_children; i++)
+> -		kill(pid[i], SIGTERM);
+> +	*run_child = 1;
+>  
+>  	for (i = 0; i < num_children; i++) {
+> -		int status;
+> -		pid_t p;
+> -
+> -		p = waitpid(pid[i], &status, 0);
+> -		if (p < 0) {
+> -			tst_resm(TBROK | TERRNO, "waitpid()");
+> -		} else {
+> -			if (WIFEXITED(status) && WEXITSTATUS(status) == 10)
+> -				children_errors++;
+> +		if (!SAFE_FORK()) {
+> +			read_sparse(filename, filesize);
+> +			return;
+>  		}
+>  	}
+>  
+> -	if (children_errors)
+> -		tst_resm(TFAIL, "%i children(s) exited abnormally",
+> -			 children_errors);
+> +	dio_sparse(fd, filesize, writesize);
+>  
+> -	if (!children_errors && !ret)
+> -		tst_resm(TPASS, "Test passed");
+> +	if (SAFE_WAITPID(-1, &status, WNOHANG))
+> +		tst_res(TFAIL, "Non zero bytes read");
+> +	else
+> +		tst_res(TPASS, "All bytes read were zeroed");
+>  
+> -	cleanup();
+> -	tst_exit();
+> -}
+> -
+> -static void setup(void)
+> -{
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	tst_tmpdir();
+> +	*run_child = 0;
+>  }
+>  
+> -static void cleanup(void)
+> -{
+> -	if (fd > 0 && close(fd))
+> -		tst_resm(TWARN | TERRNO, "Failed to close file");
+> -
+> -	tst_rmdir();
+> -}
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1,
+> +	.forks_child = 1,
+> +};
+> -- 
+> 2.34.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
