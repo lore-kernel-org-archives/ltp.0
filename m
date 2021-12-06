@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45389C433EF
-	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 09:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02CE0C433EF
+	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 10:15:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BFF323C1DE7
-	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 10:57:05 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id DBF603C1CC5
+	for <ltp@archiver.kernel.org>; Mon,  6 Dec 2021 11:15:04 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4221E3C0B78
- for <ltp@lists.linux.it>; Mon,  6 Dec 2021 10:56:57 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 5C1533C061B
+ for <ltp@lists.linux.it>; Mon,  6 Dec 2021 11:14:54 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6CF04140027A
- for <ltp@lists.linux.it>; Mon,  6 Dec 2021 10:56:56 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9651B10009DE
+ for <ltp@lists.linux.it>; Mon,  6 Dec 2021 11:14:53 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9A6D81FD2F;
- Mon,  6 Dec 2021 09:56:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D4B59212C0;
+ Mon,  6 Dec 2021 10:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1638784615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1638785692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=bTmaZ3GiDcUNudP56jF5t8qSkPC4hjYP8TzQ8AV+uVg=;
- b=QSOvrvlvmeRujTOsKEdvnv0dn2bFHKzcGjE9w5Z5xJ/VC59mxNL5Nc00Ep33hoUaYGWSGc
- YYE45pIR4LXKS+mhrbJVatV2l4PLqRzLccC+etgUQZfTj534VRmHOUfHQRujZY4Mfox1Ty
- +wUPL1oodyTj3SMs/Ayo8DcCMzJHZaU=
+ bh=09uajS2ObDyCpEhqssl0PVWDm5R/aV5Hu3nzrXmlfdU=;
+ b=KSDuTQwCTSBfq9qlRYa0NmaIinTdAVPHx7zVZ0HJxg9WXmBLRJdxtP+QBHNRQLdfbPOt7q
+ /XZI7j8IMN6Uda9WfINEYVX2RJ/X6335zz5R746efkB4Gq7bsncUJ0aJ2gRvQhrw7cdaVX
+ NBINo3WVKvyiNgickiS74orSMTsjCjc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BA2213AED;
- Mon,  6 Dec 2021 09:56:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD73B13AED;
+ Mon,  6 Dec 2021 10:14:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 0jROGGferWG8NgAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Mon, 06 Dec 2021 09:56:55 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id nVtCKJzirWEPPgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Mon, 06 Dec 2021 10:14:52 +0000
 To: ltp@lists.linux.it
-Date: Mon,  6 Dec 2021 10:56:52 +0100
-Message-Id: <20211206095652.6181-1-andrea.cervesato@suse.com>
+Date: Mon,  6 Dec 2021 11:14:51 +0100
+Message-Id: <20211206101451.13415-1-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Refactoring aiodio_append.c test using LTP API
+Subject: [LTP] [PATCH v2] Refactoring aiodio_sparse.c test using LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,18 +72,28 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- .../kernel/io/ltp-aiodio/aiodio_append.c      | 193 +++++++++---------
- 1 file changed, 91 insertions(+), 102 deletions(-)
+ .../kernel/io/ltp-aiodio/aiodio_sparse.c      | 339 ++++++------------
+ 1 file changed, 111 insertions(+), 228 deletions(-)
 
-diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_append.c b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
-index 5d97ed941..31a24393d 100644
---- a/testcases/kernel/io/ltp-aiodio/aiodio_append.c
-+++ b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
-@@ -1,84 +1,78 @@
+diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+index 4767f49d2..95b6633d6 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+@@ -1,3 +1,4 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) 2004 Daniel McNeil <daniel@osdl.org>
   *               2004 Open Source Development Lab
+@@ -5,63 +6,72 @@
+  * Copyright (c) 2004 Marty Ridgeway <mridge@us.ibm.com>
+  *
+  * Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
+  *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
@@ -97,37 +107,31 @@ index 5d97ed941..31a24393d 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-- * Module: .c
-- * Change History:
-- *
-- * 2/2004  Marty Ridgeway (mridge@us.ibm.com) Changes to adapt to LTP
-+ *               2004  Marty Ridgeway <mridge@us.ibm.com>
-+ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
--*/
-+ * Append zeroed data to a file using libaio while other processes are doing
++ * Create a sparse file using libaio while other processes are doing
 + * buffered reads and check if the buffer reads always see zero.
-+ */
+  */
  
  #define _GNU_SOURCE
  
--#include <stdio.h>
 -#include <stdlib.h>
 -#include <sys/types.h>
--#include <signal.h>
 -#include <errno.h>
+-#include <signal.h>
 -#include <fcntl.h>
+-#include <stdio.h>
 -#include <unistd.h>
+-#include <sys/mman.h>
+-#include <sys/wait.h>
+-#include <limits.h>
+-#include <getopt.h>
+-
 -
 -#include "config.h"
 -#include "test.h"
+-#include "safe_macros.h"
 -
--char *TCID = "aiodio_append";
+-char *TCID = "aiodio_sparse";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
  
  #ifdef HAVE_LIBAIO
@@ -137,204 +141,367 @@ index 5d97ed941..31a24393d 100644
  #include <libaio.h>
 +#include "common.h"
  
-+#define FILE_NAME "aiodio_append"
- #define NUM_CHILDREN 8
++#define FILE_NAME "aiodio_sparse"
+ #define NUM_CHILDREN 1000
 +#define NUM_AIO 16
-+#define AIO_SIZE (64 * 1024)
-+#define FILE_SIZE (64 * 1024)
++#define WRITE_SIZE (64 * 1024)
++#define FILE_SIZE (100 * 1024 * 1024)
  
--#include "common_checkzero.h"
+-int debug;
+-int fd;
 +static int *run_child;
  
--int read_eof(char *filename)
-+static void read_eof(const char *filename, size_t bs)
- {
- 	int fd;
--	int i;
- 	int r;
--	char buf[4096];
-+	char *bufptr;
- 
--	while ((fd = open(filename, O_RDONLY)) < 0) {
--		sleep(1);	/* wait for file to be created */
--	}
+-static void setup(void);
+-static void cleanup(void);
+-static void usage(void);
++static void read_sparse(const char *filename, int filesize)
++{
++	char buff[4096];
++	int fd;
++	int i;
++	int r;
++
 +	while ((fd = open(filename, O_RDONLY, 0666)) < 0)
 +		usleep(100);
- 
--	for (i = 0; i < 1000000; i++) {
-+	bufptr = SAFE_MEMALIGN(getpagesize(), bs);
 +
 +	tst_res(TINFO, "child %i reading file", getpid());
++
++	SAFE_LSEEK(fd, SEEK_SET, 0);
 +	while (*run_child) {
- 		off_t offset;
- 		char *bufoff;
- 
--		offset = lseek(fd, SEEK_END, 0);
--		r = read(fd, buf, 4096);
--		if (r > 0) {
--			if ((bufoff = check_zero(buf, r))) {
--				fprintf(stderr, "non-zero read at offset %p\n",
--					offset + bufoff);
--				exit(1);
-+		offset = SAFE_LSEEK(fd, 0, SEEK_END);
-+		do {
-+			r = SAFE_READ(0, fd, bufptr, bs);
++		off_t offset = 0;
++		char *bufoff;
++
++		for (i = 0; i < filesize + 1; i += sizeof(buff)) {
++			r = SAFE_READ(0, fd, buff, sizeof(buff));
 +			if (r > 0) {
-+				bufoff = check_zero(bufptr, r);
++				bufoff = check_zero(buff, r);
 +				if (bufoff) {
 +					tst_res(TINFO, "non-zero read at offset %zu",
-+						offset + (bufoff - bufptr));
-+					free(bufptr);
-+					SAFE_CLOSE(fd);
-+					return;
++						offset + (bufoff - buff));
++					break;
 +				}
 +				offset += r;
- 			}
--		}
-+		} while (r > 0);
- 	}
--	return 0;
--}
++			}
++		}
++	}
  
--#define NUM_AIO 16
--#define AIO_SIZE 64*1024
-+	free(bufptr);
+-#include "common_sparse.h"
 +	SAFE_CLOSE(fd);
 +}
  
- /*
-  * append to the end of a file using AIO DIRECT.
-  */
--void aiodio_append(char *filename)
-+static void aiodio_append(char *filename, int bcount)
+-/*
+- * do async DIO writes to a sparse file
+- */
+-int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
++static void aiodio_sparse(char *filename, int writesize, int filesize, int num_aio)
  {
- 	int fd;
- 	void *bufptr;
-@@ -91,21 +85,13 @@ void aiodio_append(char *filename)
- 	struct io_event event;
- 	struct timespec timeout;
++	int fd;
+ 	int i, w;
+ 	struct iocb **iocbs;
+ 	off_t offset;
+@@ -72,16 +82,15 @@ int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
+ 	if ((num_aio * writesize) > filesize)
+ 		num_aio = filesize / writesize;
  
--	fd = open(filename, O_DIRECT | O_WRONLY | O_CREAT, 0666);
--	if (fd < 0) {
--		perror("cannot create file");
--		return;
--	}
 +	fd = SAFE_OPEN(filename, O_DIRECT | O_WRONLY | O_CREAT, 0666);
- 
++	SAFE_FTRUNCATE(fd, filesize);
++
  	memset(&myctx, 0, sizeof(myctx));
- 	io_queue_init(NUM_AIO, &myctx);
+ 	io_queue_init(num_aio, &myctx);
  
- 	for (i = 0; i < NUM_AIO; i++) {
--		TEST(posix_memalign(&bufptr, 4096, AIO_SIZE));
--		if (TEST_RETURN) {
--			tst_resm(TBROK | TRERRNO, "cannot malloc aligned memory");
--			return;
+-	iocbs = malloc(sizeof(struct iocb *) * num_aio);
+-	for (i = 0; i < num_aio; i++) {
+-		if ((iocbs[i] = malloc(sizeof(struct iocb))) == 0) {
+-			tst_resm(TBROK | TERRNO, "malloc()");
+-			return 1;
 -		}
-+		bufptr = SAFE_MEMALIGN(getpagesize(), AIO_SIZE);
- 		memset(bufptr, 0, AIO_SIZE);
- 		io_prep_pwrite(&iocb_array[i], fd, bufptr, AIO_SIZE, offset);
- 		iocbs[i] = &iocb_array[i];
-@@ -115,14 +101,14 @@ void aiodio_append(char *filename)
- 	/*
- 	 * Start the 1st NUM_AIO requests
- 	 */
--	if ((w = io_submit(myctx, NUM_AIO, iocbs)) < 0) {
--		fprintf(stderr, "io_submit write returned %d\n", w);
 -	}
-+	w = io_submit(myctx, NUM_AIO, iocbs);
++	iocbs = SAFE_MALLOC(sizeof(struct iocb *) * num_aio);
++	for (i = 0; i < num_aio; i++)
++		iocbs[i] = SAFE_MALLOC(sizeof(struct iocb));
+ 
+ 	/*
+ 	 * allocate the iocbs array and iocbs with buffers
+@@ -90,11 +99,7 @@ int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
+ 	for (i = 0; i < num_aio; i++) {
+ 		void *bufptr;
+ 
+-		TEST(posix_memalign(&bufptr, align, writesize));
+-		if (TEST_RETURN) {
+-			tst_resm(TBROK | TRERRNO, "cannot allocate aligned memory");
+-			return 1;
+-		}
++		bufptr = SAFE_MEMALIGN(getpagesize(), writesize);
+ 		memset(bufptr, 0, writesize);
+ 		io_prep_pwrite(iocbs[i], fd, bufptr, writesize, offset);
+ 		offset += writesize;
+@@ -103,13 +108,9 @@ int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
+ 	/*
+ 	 * start the 1st num_aio write requests
+ 	 */
+-	if ((w = io_submit(myctx, num_aio, iocbs)) < 0) {
+-		tst_resm(TBROK, "io_submit() returned %i", w);
+-		return 1;
+-	}
+-
+-	if (debug)
+-		tst_resm(TINFO, "io_submit() returned %d", w);
++	w = io_submit(myctx, num_aio, iocbs);
 +	if (w < 0)
 +		tst_brk(TBROK, "io_submit: %s", tst_strerrno(-w));
  
  	/*
- 	 * As AIO requests finish, keep issuing more AIOs.
- 	 */
--	for (; i < 1000; i++) {
-+	for (; i < bcount; i++) {
- 		int n = 0;
+ 	 * As AIO requests finish, keep issuing more AIO until done.
+@@ -120,21 +121,9 @@ int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
+ 		int n;
  		struct iocb *iocbp;
  
-@@ -131,56 +117,59 @@ void aiodio_append(char *filename)
- 			iocbp = (struct iocb *)event.obj;
+-		if (debug)
+-			tst_resm(TINFO,
+-				 "aiodio_sparse: offset %p filesize %d inflight %d",
+-				 &offset, filesize, aio_inflight);
+-
+-		if ((n = io_getevents(myctx, 1, 1, &event, 0)) != 1) {
+-			if (-n != EINTR)
+-				tst_resm(TBROK, "io_getevents() returned %d",
+-					 n);
+-			break;
+-		}
+-
+-		if (debug)
+-			tst_resm(TINFO,
+-				 "aiodio_sparse: io_getevent() returned %d", n);
++		n = io_getevents(myctx, 1, 1, &event, 0);
++		if (n != 1 && -n != EINTR)
++			tst_brk(TBROK, "io_getevents: %s", tst_strerrno(-n));
  
- 			if (n > 0) {
--				io_prep_pwrite(iocbp, fd, iocbp->u.c.buf,
--					       AIO_SIZE, offset);
-+				io_prep_pwrite(iocbp, fd, iocbp->u.c.buf, AIO_SIZE, offset);
- 				offset += AIO_SIZE;
--				if ((w = io_submit(myctx, 1, &iocbp)) < 0) {
--					fprintf(stderr,
--						"write %d returned %d\n", i, w);
--				}
-+				w = io_submit(myctx, 1, &iocbp);
-+				if (w < 0)
-+					tst_brk(TBROK, "io_submit: %s", tst_strerrno(-w));
- 			}
- 		}
+ 		aio_inflight--;
+ 
+@@ -142,30 +131,18 @@ int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
+ 		 * check if write succeeded.
+ 		 */
+ 		iocbp = (struct iocb *)event.obj;
+-		if (event.res2 != 0 || event.res != iocbp->u.c.nbytes) {
+-			tst_resm(TBROK,
+-				 "AIO write offset %lld expected %ld got %ld",
+-				 iocbp->u.c.offset, iocbp->u.c.nbytes,
+-				 event.res);
+-			break;
+-		}
+-
+-		if (debug)
+-			tst_resm(TINFO,
+-				 "aiodio_sparse: io_getevent() res %ld res2 %ld",
+-				 event.res, event.res2);
++		if (event.res2 != 0 || event.res != iocbp->u.c.nbytes)
++			tst_brk(TBROK,
++					"AIO write offset %lld expected %ld got %ld",
++					iocbp->u.c.offset, iocbp->u.c.nbytes,
++					event.res);
+ 
+ 		/* start next write */
+ 		io_prep_pwrite(iocbp, fd, iocbp->u.c.buf, writesize, offset);
+ 		offset += writesize;
+-		if ((w = io_submit(myctx, 1, &iocbp)) < 0) {
+-			tst_resm(TBROK, "io_submit failed at offset %ld",
+-				 offset);
+-			break;
+-		}
+-
+-		if (debug)
+-			tst_resm(TINFO, "io_submit() return %d", w);
++		w = io_submit(myctx, 1, &iocbp);
++		if (w < 0)
++			tst_brk(TBROK, "io_submit: %s", tst_strerrno(-w));
+ 
+ 		aio_inflight++;
  	}
+@@ -177,161 +154,67 @@ int aiodio_sparse(int fd, int align, int writesize, int filesize, int num_aio)
+ 		int n;
+ 		struct iocb *iocbp;
+ 
+-		if ((n = io_getevents(myctx, 1, 1, &event, 0)) != 1) {
+-			tst_resm(TBROK, "io_getevents failed");
+-			break;
+-		}
++		n = io_getevents(myctx, 1, 1, &event, 0);
++		if (n != 1)
++			tst_brk(TBROK, "io_getevents failed");
++
+ 		aio_inflight--;
++
+ 		/*
+ 		 * check if write succeeded.
+ 		 */
+ 		iocbp = (struct iocb *)event.obj;
+-		if (event.res2 != 0 || event.res != iocbp->u.c.nbytes) {
+-			tst_resm(TBROK,
+-				 "AIO write offset %lld expected %ld got %ld",
+-				 iocbp->u.c.offset, iocbp->u.c.nbytes,
+-				 event.res);
+-		}
++		if (event.res2 != 0 || event.res != iocbp->u.c.nbytes)
++			tst_brk(TBROK,
++					"AIO write offset %lld expected %ld got %ld",
++					iocbp->u.c.offset, iocbp->u.c.nbytes,
++					event.res);
+ 	}
++}
+ 
+-	return 0;
++static void setup(void)
++{
++	run_child = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+ }
+ 
+-static void usage(void)
++static void cleanup(void)
+ {
+-	fprintf(stderr, "usage: dio_sparse [-n children] [-s filesize]"
+-		" [-w writesize]\n");
+-	exit(1);
++	SAFE_MUNMAP(run_child, sizeof(int));
  }
  
 -int main(int argc, char **argv)
-+static void setup(void)
++static void run(void)
  {
+-	char *filename = "aiodio_sparse";
 -	int pid[NUM_CHILDREN];
 -	int num_children = 1;
-+	run_child = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_MUNMAP(run_child, sizeof(int));
-+}
-+
-+static void run(void)
-+{
 +	int status;
  	int i;
--	char *filename = argv[1];
+-	long alignment = 512;
+-	int writesize = 65536;
+-	int filesize = 100 * 1024 * 1024;
+-	int num_aio = 16;
+-	int children_errors = 0;
+-	int c;
+-	int ret;
 -
--	printf("Starting aio/dio append test...\n");
--
--	for (i = 0; i < num_children; i++) {
--		if ((pid[i] = fork()) == 0) {
--			/* child */
--			return read_eof(filename);
--		} else if (pid[i] < 0) {
--			/* error */
--			perror("fork error");
+-	while ((c = getopt(argc, argv, "dw:n:a:s:i:")) != -1) {
+-		char *endp;
+-		switch (c) {
+-		case 'd':
+-			debug++;
 -			break;
--		} else {
--			/* Parent */
+-		case 'i':
+-			num_aio = atoi(optarg);
+-			break;
+-		case 'a':
+-			alignment = strtol(optarg, &endp, 0);
+-			alignment = (int)scale_by_kmg((long long)alignment,
+-						      *endp);
+-			break;
+-		case 'w':
+-			writesize = strtol(optarg, &endp, 0);
+-			writesize =
+-			    (int)scale_by_kmg((long long)writesize, *endp);
+-			break;
+-		case 's':
+-			filesize = strtol(optarg, &endp, 0);
+-			filesize =
+-			    (int)scale_by_kmg((long long)filesize, *endp);
+-			break;
+-		case 'n':
+-			num_children = atoi(optarg);
+-			if (num_children > NUM_CHILDREN) {
+-				fprintf(stderr,
+-					"number of children limited to %d\n",
+-					NUM_CHILDREN);
+-				num_children = NUM_CHILDREN;
+-			}
+-			break;
+-		case '?':
+-			usage();
+-			break;
+-		}
+-	}
+ 
+-	setup();
+-	tst_resm(TINFO, "Dirtying free blocks");
+-	dirty_freeblocks(filesize);
+-
+-	fd = SAFE_OPEN(cleanup, filename,
+-		O_DIRECT | O_WRONLY | O_CREAT | O_EXCL, 0600);
+-	SAFE_FTRUNCATE(cleanup, fd, filesize);
+-
+-	tst_resm(TINFO, "Starting I/O tests");
+-	signal(SIGTERM, SIG_DFL);
+-	for (i = 0; i < num_children; i++) {
+-		switch (pid[i] = fork()) {
+-		case 0:
+-			SAFE_CLOSE(NULL, fd);
+-			read_sparse(filename, filesize);
+-			break;
+-		case -1:
+-			while (i-- > 0)
+-				kill(pid[i], SIGTERM);
+-
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork()");
+-		default:
 -			continue;
-+
+-		}
+-	}
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	ret = aiodio_sparse(fd, alignment, writesize, filesize, num_aio);
+-
+-	tst_resm(TINFO, "Killing childrens(s)");
+-
+-	for (i = 0; i < num_children; i++)
+-		kill(pid[i], SIGTERM);
 +	*run_child = 1;
-+
+ 
+-	for (i = 0; i < num_children; i++) {
+-		int status;
+-		pid_t p;
+-
+-		p = waitpid(pid[i], &status, 0);
+-		if (p < 0) {
+-			tst_resm(TBROK | TERRNO, "waitpid()");
+-		} else {
+-			if (WIFEXITED(status) && WEXITSTATUS(status) == 10)
+-				children_errors++;
 +	for (i = 0; i < NUM_CHILDREN; i++) {
 +		if (!SAFE_FORK()) {
-+			read_eof(FILE_NAME, FILE_SIZE);
++			read_sparse(FILE_NAME, FILE_SIZE);
 +			return;
  		}
  	}
  
--	/*
--	 * Parent appends to end of file using direct i/o
--	 */
-+	tst_res(TINFO, "Parent append to file");
+-	if (children_errors)
+-		tst_resm(TFAIL, "%i children(s) exited abnormally",
+-			 children_errors);
++	tst_res(TINFO, "Parent create a sparse file");
  
--	aiodio_append(filename);
-+	aiodio_append(FILE_NAME, 1000);
+-	if (!children_errors && !ret)
+-		tst_resm(TPASS, "Test passed");
++	aiodio_sparse(FILE_NAME, WRITE_SIZE, FILE_SIZE, NUM_AIO);
  
--	for (i = 0; i < num_children; i++) {
--		kill(pid[i], SIGTERM);
--	}
+-	cleanup();
+-	tst_exit();
+-}
 +	if (SAFE_WAITPID(-1, &status, WNOHANG))
 +		tst_res(TFAIL, "Non zero bytes read");
 +	else
 +		tst_res(TPASS, "All bytes read were zeroed");
  
--	return 0;
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	tst_tmpdir();
+-}
+-
+-static void cleanup(void)
+-{
+-	if (fd > 0 && close(fd))
+-		tst_resm(TWARN | TERRNO, "Failed to close file");
+-
+-	tst_rmdir();
 +	*run_child = 0;
  }
-+
+ 
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
