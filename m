@@ -4,48 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C41B0C433F5
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 12:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A5C9C433F5
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 12:55:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96D773C55DF
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 13:54:46 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 607073C555B
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 13:55:08 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E9BF63C0BCC
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 13:54:36 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 875073C0BCC
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 13:54:59 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 49EAC1400E72
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 13:54:35 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 813CC21954;
- Tue,  7 Dec 2021 12:54:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1638881675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C06CC1A007E5
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 13:54:58 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 00F4F212CA;
+ Tue,  7 Dec 2021 12:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1638881698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pY3ZsLqAUuDkCXdI0bX+ix9JM8J4bUcjsKECbG7+4T8=;
- b=e/dIiEiKh+iFgcJcaepA1nWHGfkHQZ0fc6cXsH0NZDaGOclAayugQ7XsJhurzljsm/lHPI
- ySqzoZSGojaW8wrAVP7khUNUgDPJfLPIH7RrHDRNWm17kELLu3s5nT5CM+1eXGJI96PWrh
- zk78bD9XwVIEPljn96tMSYcS3pruMro=
-Received: from g78.suse.de (unknown [10.163.17.14])
- by relay2.suse.de (Postfix) with ESMTP id 3F5B8A3B84;
- Tue,  7 Dec 2021 12:54:35 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue,  7 Dec 2021 12:54:20 +0000
-Message-Id: <20211207125420.32538-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211130114527.5942-1-chrubis@suse.cz>
-References: <20211130114527.5942-1-chrubis@suse.cz>
+ bh=9LDnk0LfrXNq2xBPJGp6WPeWmjvQBdp1EYqek7+HeTo=;
+ b=xoz7AkoDoavs9+jiBdGIWk3Fx/mRrOt35JmsjsEeVIKvjT8zEZNdQ2iZkNAK0cXAhTEZJZ
+ PccaoZ0mPDR+VOXim0XuTNQ5KbcSHqApKp3X9oFnxG1Rj9gDYhJ8N9qi4KDc7iKwlTjQ2d
+ D6fO5KhYGj5ex+JRDl+L4h/YQCpKSGc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1638881698;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9LDnk0LfrXNq2xBPJGp6WPeWmjvQBdp1EYqek7+HeTo=;
+ b=p+ut1YyMwSqA8m9DlEn6keZjnSPvaE+N3E5Tep6hN7Nwe/TDlCMWJZHwgsIty4b0cAWXOS
+ jHf3mmEUD8r6DqDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89DB213A78;
+ Tue,  7 Dec 2021 12:54:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 9yNjH6FZr2H+OgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 07 Dec 2021 12:54:57 +0000
+Date: Tue, 7 Dec 2021 13:56:14 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <Ya9Z7ukjNryOs2vM@yuki>
+References: <20211207114625.30495-1-andrea.cervesato@suse.com>
+ <Ya9ZYCErHU/XqjLn@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Ya9ZYCErHU/XqjLn@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] check: Deprecated API symbols
+Subject: Re: [LTP] [PATCH v2] Add tst_parse_filesize functionality in LTP
+ test API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,82 +76,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The old API represents a big source of complication. It invalidates a
-lot of assumptions we can make when writing checks specifically for
-the new API.
+Hi!
+> > +	if (str == end || (strlen(end) != 0 && strlen(end) != 1))
+> 
+> No need for the strlen() here. what you do here is a fancy way of doing (!end[0] && !end[1]).
 
-Cyril proposed ignoring these symbols altogether in a previous
-patch. This is a counter proposal to print a warning, but then abandon
-checking the symbol any further.
+And of course it should be (end[0] && end[1]) that means that the string
+is not terminated.
 
-The reasoning is that ignoring them altogether might hide errors. Also
-the existence of the old API may be a surprise to new developers. This
-change will alert them that a test needs updating and that it is not
-to be used as a reference.
+Or optionally (strlen(end) > 1) would work too.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- tools/sparse/sparse-ltp.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/tools/sparse/sparse-ltp.c b/tools/sparse/sparse-ltp.c
-index 3a38229f1..513033518 100644
---- a/tools/sparse/sparse-ltp.c
-+++ b/tools/sparse/sparse-ltp.c
-@@ -81,6 +81,32 @@ static void do_entrypoint_checks(struct entrypoint *ep)
- 		do_basicblock_checks(bb);
- 	} END_FOR_EACH_PTR(bb);
- }
-+/* The old API can not comply with the rules. So when we see one of
-+ * these symbols we know that it will result in further
-+ * warnings. Probably these will suggest inappropriate things. Usually
-+ * these symbols should be removed and the new API used
-+ * instead. Otherwise they can be ignored until all tests have been
-+ * converted to the new API.
-+ */
-+static bool check_symbol_deprecated(const struct symbol *const sym)
-+{
-+	static struct ident *TCID_id, *TST_TOTAL_id;
-+	const struct ident *id = sym->ident;
-+
-+	if (!TCID_id) {
-+		TCID_id = built_in_ident("TCID");
-+		TST_TOTAL_id = built_in_ident("TST_TOTAL");
-+	}
-+
-+	if (id != TCID_id && id != TST_TOTAL_id)
-+		return false;
-+
-+	warning(sym->pos,
-+		"Ignoring deprecated API symbol: '%s'. Should this code be converted to the new API?",
-+		show_ident(id));
-+
-+	return true;
-+}
- 
- /* Check for LTP-003 and LTP-004
-  *
-@@ -212,6 +238,9 @@ static void check_test_struct(const struct symbol *const sym)
- /* AST level checks */
- static void do_symbol_checks(struct symbol *sym)
- {
-+	if (check_symbol_deprecated(sym))
-+		return;
-+
- 	check_symbol_visibility(sym);
- 	check_test_struct(sym);
- }
 -- 
-2.34.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
