@@ -4,64 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36FDAC433EF
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 10:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05CEEC433F5
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 11:44:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA81E3C30F9
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 11:54:13 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 46E573C4D92
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 12:44:16 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03A2D3C0F60
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:54:04 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 418AF3C042D
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 12:44:07 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3F303200AD8
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:54:03 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8992E212BE;
- Tue,  7 Dec 2021 10:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1638874443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 78185200DAA
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 12:44:06 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id ADC6C21B3A
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1638877445;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2VqfsvfG3KZdc8EA86nn+g643E9N9IkAQ88zerj64gw=;
- b=tnGGyVoggBl5OYI9DWDf8aZxwaY5nA9tD5U8wwRLZV5YJw5/V40PCT7glC1ahOaSw2Vpuw
- RUodoZ55IuuHRPbvDTCht9JtOjjmQ/rc0i0wvhZafLxNtcHWbM07CV0nu+7DHYSnHfypm6
- 48+4XNUBGkt/QWoDzj5lSfhKofaGMdA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1638874443;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ bh=1yh5AB8SU1n2pwoGtvocXRx/5vaK1fcvBuaQF8YLxUU=;
+ b=cpdk8S5AVmk2y6tdyz0TluZRatlzlOYXKOEre6E0YmAr1QU0eALvVtuR6A+keEVBiua3ZM
+ VXY9X1HjRuth4I5EeMw2zMQ29y0yD+NipZeRt4fFOOvUQC2eyneSH7oP57KWlEi2Swzqrb
+ x6spJ1XKYjsiORqEWS6T4irRiuG8o+I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1638877445;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2VqfsvfG3KZdc8EA86nn+g643E9N9IkAQ88zerj64gw=;
- b=wZZBBItKpyvHq8nFRJDGxUGrWSyRau8+rX9cQx94ID0hQo4Ul2Fapo9P13Q7/539hqrAKq
- QoMIgbP6mK55vbBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=1yh5AB8SU1n2pwoGtvocXRx/5vaK1fcvBuaQF8YLxUU=;
+ b=v7h73COzJ7PoEuHWTLGFSn6hN+sLy7eyk5uJ0nOOLyDKg8pXYHGBp7jK1vYA+iYrydcEkV
+ 9Iw51TymOyu5JoAw==
+Received: from g78 (unknown [10.163.17.14])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 689A513A1F;
- Tue,  7 Dec 2021 10:54:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IRB8GEs9r2FgfAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 07 Dec 2021 10:54:03 +0000
-Date: Tue, 7 Dec 2021 11:55:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <Ya89l6N6nGtPEiu/@yuki>
+ by relay2.suse.de (Postfix) with ESMTPS id 68FCBA3B83;
+ Tue,  7 Dec 2021 11:44:05 +0000 (UTC)
 References: <20211207102904.6011-1-rpalethorpe@suse.com>
- <20211207102904.6011-3-rpalethorpe@suse.com>
+ <20211207102904.6011-3-rpalethorpe@suse.com> <Ya89l6N6nGtPEiu/@yuki>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 07 Dec 2021 11:31:49 +0000
+In-reply-to: <Ya89l6N6nGtPEiu/@yuki>
+Message-ID: <871r2od4hq.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211207102904.6011-3-rpalethorpe@suse.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 3/3] getrusage03,
@@ -77,23 +70,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Looks obviously fine:
+Hello,
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-Also good catch, this really shows that the automation is worth the
-effort.
+> Hi!
+> Looks obviously fine:
+>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+Pushed! Thanks!
+
+>
+> Also good catch, this really shows that the automation is worth the
+> effort.
+
+I hope so and perhaps this can be generalised by creating an attribute
+e.g. (null_terminated) which could be upstreamed to Sparse. Then
+eventually it might be adopted by compilers.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
