@@ -4,49 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0964C433F5
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 10:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C00BC433F5
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 10:51:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 05F1C3C4BF9
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 11:29:46 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B67B53C31F2
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 11:51:16 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2037F3C285B
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:29:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D40323C0F60
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:51:07 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9F6C02000A3
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:29:16 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0F6C91FD2F;
- Tue,  7 Dec 2021 10:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1638872956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 406DB1000A0E
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 11:51:06 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4D6881FD2F;
+ Tue,  7 Dec 2021 10:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1638874266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Z55LL4sRdkJJ1aOYg1M3qkRYCmNwO7s3l64fbu9i5Ac=;
- b=BNEe4AtXXvHp2yLK/S5nU2N3a7uf43h3CbsESq9OyQ1Ny0AjLkUBHnsmPIsrlJfFLm+tN2
- O3fn/K1Y0G52c6ylfPUyocfHcOjt6yGIQxn/xfLhCXlPcSmvLhsazXc0dLf8OWGhV3nG+7
- pfsDX0qYYTUer3b0kq8zs1EoGBkBEVU=
-Received: from g78.suse.de (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
- by relay2.suse.de (Postfix) with ESMTP id C14AAA3B8B;
- Tue,  7 Dec 2021 10:29:15 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue,  7 Dec 2021 10:29:04 +0000
-Message-Id: <20211207102904.6011-3-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211207102904.6011-1-rpalethorpe@suse.com>
-References: <20211207102904.6011-1-rpalethorpe@suse.com>
+ bh=woAYj8a6ni1+2u/e/lwtKrd+JALazksYsuO4dqSciwY=;
+ b=FRnqkWu8WwE4BoLi9rTCHrhVt6oa/yamL1oGLTDPL+kNWx7SPhznX5VXz2VOoS7OS4JTT5
+ sweoshornBP6uuKUHxkGSnZUPsxUQMsw4rZZ3xuykQjwy9XkMGf4Zo4m7ABBisnKyjSOFr
+ TRwsFdjpUB7G/l/JcaioUWp0N9DmPfY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1638874266;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=woAYj8a6ni1+2u/e/lwtKrd+JALazksYsuO4dqSciwY=;
+ b=siP8SCYkxfLxMxP2WvXP5sF9LXCb3xxlIuyGlPyIhYSHnZopSRuF17lfNDQvemJ5KWX9qq
+ Z97JMnVRYbEAAuDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3751213A1F;
+ Tue,  7 Dec 2021 10:51:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id SmnfC5o8r2EXewAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 07 Dec 2021 10:51:06 +0000
+Date: Tue, 7 Dec 2021 11:52:22 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <Ya885sQsH3wftoeb@yuki>
+References: <Ya4DeVrCa1X8IFjk@yuki>
+ <1638864483-2446-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1638864483-2446-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] getrusage03,
- setsockopt03: Add sentinel value to tags
+Subject: Re: [LTP] [PATCH v2 1/2] library: add cmd check handler in
+ needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,48 +76,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-LTP-005
+Hi!
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index a79275722..7cca209ab 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/syscalls/getrusage/getrusage03.c   | 1 +
- testcases/kernel/syscalls/setsockopt/setsockopt03.c | 1 +
- 2 files changed, 2 insertions(+)
+I would rather put the version parsing code to a different source file
+than tst_test.c just because the tst_test.c is long enough already. What
+I did suggest for v1 is that the entry point function i.e.
+tst_check_cmd() now wouldn't get exported as a prototype to the tests by
+being defined in a header included in the tst_test.h header.
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
-index ef2f62a18..bf5127483 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage03.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-@@ -180,6 +180,7 @@ static struct tst_test test = {
- 	.min_kver = "2.6.32",
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "1f10206cf8e9"},
-+		{}
- 	},
- 	.test = run,
- 	.tcnt = ARRAY_SIZE(testfunc_list),
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt03.c b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
-index b7a4447ba..191c4cdfe 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt03.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
-@@ -81,5 +81,6 @@ static struct tst_test test = {
- 	.tags = (const struct tst_tag[]){
- 		{"linux-git", "ce683e5f9d04"},
- 		{"CVE", "CVE-2016-4997"},
-+		{}
- 	}
- };
+We already have include/tst_private.h that is expected to be used for
+function prototypes that are not supposed to be available to the test
+code.
+
+Other than this the code looks good.
+
 -- 
-2.34.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
