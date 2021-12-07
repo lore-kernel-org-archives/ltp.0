@@ -4,54 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82B43C433EF
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 16:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF39CC433EF
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 17:09:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9CE8F3C30C8
-	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 17:45:57 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 66ED13C55A2
+	for <ltp@archiver.kernel.org>; Tue,  7 Dec 2021 18:09:36 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A40863C0BCC
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 17:45:48 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 805FA3C21F9
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 18:09:26 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 573E9200753
- for <ltp@lists.linux.it>; Tue,  7 Dec 2021 17:45:46 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 76EB31401170
+ for <ltp@lists.linux.it>; Tue,  7 Dec 2021 18:09:26 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4CFF71FDFE;
- Tue,  7 Dec 2021 16:45:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1638895546; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mR04EFEnERFSKR10gVfcS2MGsgTI5rFRowl6JAzvqIk=;
- b=LI6vaA4XW818uwYLT/c582rFkDFDMpg5/0mu6UyTvAEmJoB+VKVEKE14PwKZC+DvPIT01X
- idG99nZoJ2t0Cd5AZWCKagGZxMTLsZe45m+kzqQmwRtSI1IlMWtVBU+OvK8mv3tBlNqALY
- EfXLQDIqehx3+AFVDsE5qJYWJN5e4qU=
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5E3FF1FDFE;
+ Tue,  7 Dec 2021 17:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1638896965;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iAjSdrVQTCNWqebTOsvPkARr9OoCnx2qTytLW7jluk0=;
+ b=fa3MDKTQPhVhZXeDIU/rq3Nr0LNdtEnnVi3TCcKri7sMtycpBpwPyzMEus60a6qdElpnXV
+ 1PqxP1Kfq9tkbQtB5Asxg0wqX33JUwdcs3ANLiX65HciwqloiD6TvYuMUj9LZRCUDfwiH4
+ pXEqgqYJpKSIEsgIHH6Bm6ah92hLYIo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1638896965;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iAjSdrVQTCNWqebTOsvPkARr9OoCnx2qTytLW7jluk0=;
+ b=OnH68GoOKnSz4RZqRO1MAnsiDvt2xqi9TziCdjsb7HGm5FODg/v9wAJ5z3FK6+77g6vJnh
+ E2NsHPmdGvHnJ8Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2251613AAD;
- Tue,  7 Dec 2021 16:45:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 20A7113AB5;
+ Tue,  7 Dec 2021 17:09:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EaAVBrqPr2HNLAAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Tue, 07 Dec 2021 16:45:46 +0000
-To: ltp@lists.linux.it
-Date: Tue,  7 Dec 2021 17:45:44 +0100
-Message-Id: <20211207164544.29273-1-andrea.cervesato@suse.com>
-X-Mailer: git-send-email 2.34.1
+ by imap2.suse-dmz.suse.de with ESMTPSA id vMyZBUWVr2EBOAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 07 Dec 2021 17:09:25 +0000
+Date: Tue, 7 Dec 2021 18:09:23 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Ya+VQ9mVuAo99QOB@pevik>
+References: <20211202203006.32259-1-pvorel@suse.cz>
+ <CAASaF6we7wki=+4Rt_8NGg848735VdAUeaMSGNUMBcL-cOX5pg@mail.gmail.com>
+ <Ya3lc9jWR5UZXB3T@pevik> <87wnkgbm70.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87wnkgbm70.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Refactoring dio_sparse.c using LTP API
+Subject: Re: [LTP] [PATCH v2 1/1] configure.ac: Print summary
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,385 +78,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/io/ltp-aiodio/common.h     |  64 ++++++
- testcases/kernel/io/ltp-aiodio/dio_sparse.c | 235 +++++++-------------
- 2 files changed, 139 insertions(+), 160 deletions(-)
+Hi Richie, Jan,
 
-diff --git a/testcases/kernel/io/ltp-aiodio/common.h b/testcases/kernel/io/ltp-aiodio/common.h
-index fefeed2cf..c065edb55 100644
---- a/testcases/kernel/io/ltp-aiodio/common.h
-+++ b/testcases/kernel/io/ltp-aiodio/common.h
-@@ -51,4 +51,68 @@ static inline void io_append(const char *path, char pattern, int flags, size_t b
- 	SAFE_CLOSE(fd);
- }
- 
-+static inline void io_read(const char *filename, int filesize, int **run_child)
-+{
-+	char buff[4096];
-+	int fd;
-+	int i;
-+	int r;
-+
-+	while ((fd = open(filename, O_RDONLY, 0666)) < 0)
-+		usleep(100);
-+
-+	tst_res(TINFO, "child %i reading file", getpid());
-+
-+	while (**run_child) {
-+		off_t offset = 0;
-+		char *bufoff;
-+
-+		SAFE_LSEEK(fd, SEEK_SET, 0);
-+
-+		for (i = 0; i < filesize + 1; i += sizeof(buff)) {
-+			r = SAFE_READ(0, fd, buff, sizeof(buff));
-+			if (r > 0) {
-+				bufoff = check_zero(buff, r);
-+				if (bufoff) {
-+					tst_res(TINFO, "non-zero read at offset %zu",
-+						offset + (bufoff - buff));
-+					break;
-+				}
-+				offset += r;
-+			}
-+		}
-+	}
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+/*
-+ * This code tries to create dirty free blocks on
-+ * the HDD so there is a chance that blocks to be allocated
-+ * for a file are filled with something else than zeroes.
-+ *
-+ * The usefulness of this is IMHO questionable.
-+ */
-+static inline void dirty_freeblocks(int size)
-+{
-+	char *filename = "dirty_file";
-+	int fd;
-+	void *p;
-+	int pg;
-+
-+	pg = getpagesize();
-+	size = ((size + pg - 1) / pg) * pg;
-+
-+	fd = SAFE_OPEN(filename, O_CREAT | O_RDWR, 0600);
-+	SAFE_FTRUNCATE(fd, size);
-+
-+	p = SAFE_MMAP(NULL, size, PROT_WRITE | PROT_READ, MAP_SHARED | MAP_FILE, fd, 0);
-+	memset(p, 0xaa, size);
-+	msync(p, size, MS_SYNC);
-+	munmap(p, size);
-+
-+	SAFE_CLOSE(fd);
-+	SAFE_UNLINK(filename);
-+}
-+
- #endif /* AIODIO_COMMON_H__ */
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-index 3f44e92ea..0b3b26e0d 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *   Copyright (c) 2004 Daniel McNeil <daniel@osdl.org>
-  *                 2004 Open Source Development Lab
-@@ -6,206 +7,120 @@
-  *
-  *   Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-+ *   Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Create a sparse file using O_DIRECT while other processes are doing
-+ * buffered reads and check if the buffer reads always see zero.
-  */
- 
- #define _GNU_SOURCE
- 
- #include <stdlib.h>
--#include <sys/types.h>
--#include <signal.h>
--#include <errno.h>
--#include <fcntl.h>
--#include <stdio.h>
- #include <unistd.h>
--#include <memory.h>
--#include <sys/mman.h>
-+#include <string.h>
- #include <sys/wait.h>
--#include <limits.h>
--#include <getopt.h>
--
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
-+#include "common.h"
- 
--#define NUM_CHILDREN 1000
-+static int *run_child;
- 
--static void setup(void);
--static void cleanup(void);
--static void usage(void);
--static int debug = 0;
--static int fd;
-+static char *str_numchildren;
-+static char *str_writesize;
-+static char *str_filesize;
-+static char *str_offset;
- 
--char *TCID = "dio_sparse";
--int TST_TOTAL = 1;
-+static struct tst_option options[] = {
-+	{"n:", &str_numchildren, "Number of threads (default 1000)"},
-+	{"w:", &str_writesize, "Size of writing blocks (default 1024)"},
-+	{"s:", &str_filesize, "Size of file (default 100M)"},
-+	{"o:", &str_offset, "File offset (default 0)"},
-+	{NULL, NULL, NULL}
-+};
- 
--#include "common_sparse.h"
--
--/*
-- * Write zeroes using O_DIRECT into sparse file.
-- */
--int dio_sparse(int fd, int align, int writesize, int filesize, int offset)
-+static void dio_sparse(int fd, int filesize, int writesize)
- {
- 	void *bufptr = NULL;
--	int i, w;
-+	int i;
-+	int w;
- 
--	TEST(posix_memalign(&bufptr, align, writesize));
--	if (TEST_RETURN) {
--		tst_resm(TBROK | TRERRNO, "cannot allocate aligned memory");
--		return 1;
--	}
-+	bufptr = SAFE_MEMALIGN(getpagesize(), writesize);
- 
- 	memset(bufptr, 0, writesize);
--	lseek(fd, offset, SEEK_SET);
--	for (i = offset; i < filesize;) {
--		if ((w = write(fd, bufptr, writesize)) != writesize) {
--			tst_resm(TBROK | TERRNO, "write() returned %d", w);
--			return 1;
--		}
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
- 
-+	for (i = 0; i < filesize;) {
-+		w = SAFE_WRITE(0, fd, bufptr, writesize);
- 		i += w;
- 	}
-+}
- 
--	return 0;
-+static void setup(void)
-+{
-+	run_child = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+
-+	tst_res(TINFO, "Dirtying free blocks");
-+	dirty_freeblocks(100 * 1024 * 1024);
- }
- 
--void usage(void)
-+static void cleanup(void)
- {
--	fprintf(stderr, "usage: dio_sparse [-d] [-n children] [-s filesize]"
--		" [-w writesize] [-o offset]]\n");
--	exit(1);
-+	SAFE_MUNMAP(run_child, sizeof(int));
- }
- 
--int main(int argc, char **argv)
-+static void run(void)
- {
- 	char *filename = "dio_sparse";
--	int pid[NUM_CHILDREN];
--	int num_children = 1;
--	int i;
--	long alignment = 512;
--	int writesize = 65536;
-+	int numchildren = 1000;
-+	int writesize = 1024;
- 	int filesize = 100 * 1024 * 1024;
- 	int offset = 0;
--	int c;
--	int children_errors = 0;
--	int ret;
--
--	while ((c = getopt(argc, argv, "dw:n:a:s:o:")) != -1) {
--		char *endp;
--		switch (c) {
--		case 'd':
--			debug++;
--			break;
--		case 'a':
--			alignment = strtol(optarg, &endp, 0);
--			alignment = scale_by_kmg(alignment, *endp);
--			break;
--		case 'w':
--			writesize = strtol(optarg, &endp, 0);
--			writesize = scale_by_kmg(writesize, *endp);
--			break;
--		case 's':
--			filesize = strtol(optarg, &endp, 0);
--			filesize = scale_by_kmg(filesize, *endp);
--			break;
--		case 'o':
--			offset = strtol(optarg, &endp, 0);
--			offset = scale_by_kmg(offset, *endp);
--			break;
--		case 'n':
--			num_children = atoi(optarg);
--			if (num_children > NUM_CHILDREN) {
--				fprintf(stderr,
--					"number of children limited to %d\n",
--					NUM_CHILDREN);
--				num_children = NUM_CHILDREN;
--			}
--			break;
--		case '?':
--			usage();
--			break;
--		}
--	}
-+	int status;
-+	int fd;
-+	int i;
- 
--	setup();
--	tst_resm(TINFO, "Dirtying free blocks");
--	dirty_freeblocks(filesize);
--
--	fd = SAFE_OPEN(cleanup, filename,
--		O_DIRECT | O_WRONLY | O_CREAT | O_EXCL, 0600);
--	SAFE_FTRUNCATE(cleanup, fd, filesize);
--
--	tst_resm(TINFO, "Starting I/O tests");
--	signal(SIGTERM, SIG_DFL);
--	for (i = 0; i < num_children; i++) {
--		switch (pid[i] = fork()) {
--		case 0:
--			SAFE_CLOSE(NULL, fd);
--			read_sparse(filename, filesize);
--			break;
--		case -1:
--			while (i-- > 0)
--				kill(pid[i], SIGTERM);
--
--			tst_brkm(TBROK | TERRNO, cleanup, "fork()");
--		default:
--			continue;
--		}
--	}
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	if (tst_parse_int(str_numchildren, &numchildren, 1, INT_MAX))
-+		tst_brk(TBROK, "Invalid number of children '%s'", str_numchildren);
- 
--	ret = dio_sparse(fd, alignment, writesize, filesize, offset);
-+	if (tst_parse_int(str_writesize, &writesize, 1, INT_MAX))
-+		tst_brk(TBROK, "Invalid write blocks size '%s'", str_writesize);
- 
--	tst_resm(TINFO, "Killing childrens(s)");
-+	if (tst_parse_filesize(str_filesize, &filesize, 1, LONG_LONG_MAX))
-+		tst_brk(TBROK, "Invalid file size '%s'", str_filesize);
- 
--	for (i = 0; i < num_children; i++)
--		kill(pid[i], SIGTERM);
-+	if (tst_parse_int(str_offset, &offset, 0, INT_MAX))
-+		tst_brk(TBROK, "Invalid file offset '%s'", str_offset);
- 
--	for (i = 0; i < num_children; i++) {
--		int status;
--		pid_t p;
-+	fd = SAFE_OPEN(filename, O_DIRECT | O_WRONLY | O_CREAT, 0666);
-+	SAFE_FTRUNCATE(fd, filesize);
- 
--		p = waitpid(pid[i], &status, 0);
--		if (p < 0) {
--			tst_resm(TBROK | TERRNO, "waitpid()");
--		} else {
--			if (WIFEXITED(status) && WEXITSTATUS(status) == 10)
--				children_errors++;
-+	*run_child = 1;
-+
-+	for (i = 0; i < numchildren; i++) {
-+		if (!SAFE_FORK()) {
-+			io_read(filename, filesize, &run_child);
-+			return;
- 		}
- 	}
- 
--	if (children_errors)
--		tst_resm(TFAIL, "%i children(s) exited abnormally",
--			 children_errors);
-+	dio_sparse(fd, filesize, writesize);
- 
--	if (!children_errors && !ret)
--		tst_resm(TPASS, "Test passed");
-+	if (SAFE_WAITPID(-1, &status, WNOHANG))
-+		tst_res(TFAIL, "Non zero bytes read");
-+	else
-+		tst_res(TPASS, "All bytes read were zeroed");
- 
--	cleanup();
--	tst_exit();
-+	*run_child = 0;
- }
- 
--static void setup(void)
--{
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	tst_tmpdir();
--}
--
--static void cleanup(void)
--{
--	if (fd > 0 && close(fd))
--		tst_resm(TWARN | TERRNO, "Failed to close file");
--
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.options = options,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
--- 
-2.34.1
+> Hello,
 
+> Petr Vorel <pvorel@suse.cz> writes:
+
+> > Hi Jan,
+
+> >> On Thu, Dec 2, 2021 at 9:30 PM Petr Vorel <pvorel@suse.cz> wrote:
+
+> >> > Due many checks of structs, members etc are chosen testsuites,
+> >> > presence of used libraries and docparser config results quite hidden.
+> >> > Print them as summary in the end.
+
+> >> Color output would be nice too. But I find this output useful in plain
+> >> text as well:
+> >> Acked-by: Jan Stancek <jstancek@redhat.com>
+
+> > Thanks! I can have look on colors later on, but I'd prefer to do it as a
+> > separate approach.
+
+> > Kind regards,
+> > Petr
+
+> I wonder if colours can be added to all output with some autotools toggle?
+There might be some third party plugin, but I haven't found any.
+
+> Anyway, pushed!
+Ah, thanks!
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
