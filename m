@@ -4,149 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A12EDC433EF
-	for <ltp@archiver.kernel.org>; Wed,  8 Dec 2021 05:44:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CEEEC433F5
+	for <ltp@archiver.kernel.org>; Wed,  8 Dec 2021 08:26:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E5EB3C67FA
-	for <ltp@archiver.kernel.org>; Wed,  8 Dec 2021 06:44:20 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E0A393C6AA9
+	for <ltp@archiver.kernel.org>; Wed,  8 Dec 2021 09:26:44 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id C7FD73C21F9
+ for <ltp@lists.linux.it>; Wed,  8 Dec 2021 09:26:35 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 078A23C0959
- for <ltp@lists.linux.it>; Wed,  8 Dec 2021 06:44:10 +0100 (CET)
-Received: from esa1.fujitsucc.c3s2.iphmx.com (esa1.fujitsucc.c3s2.iphmx.com
- [68.232.152.245])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B62461000DD1
+ for <ltp@lists.linux.it>; Wed,  8 Dec 2021 09:26:30 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0A92B1A0092C
- for <ltp@lists.linux.it>; Wed,  8 Dec 2021 06:44:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1638942251; x=1670478251;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=2K/OXa8d687FLp37ZfW+tkTWzbSaLJMfgd6cx+0yntk=;
- b=sO3IpMFzi5RKqgFN6JAtDPG9AZj0eYe7U0sJB93NCYdmcUNa+PvPDz/V
- /f7zJO2SE2dm4w+b0VN4+FI+Bs6cdLif5X140BSpDG6TZe+TB71j/SDWw
- 6oOXI9V3amkIUxTA8/TFp7j5v4hAS6YsETAU0uAT4v+sYhZ9mDhy3wjUY
- j3N0S1WCVRNvp/0aTOQh6LLBbfqzHNjYVG4ufm5Qwo7sU07dQWOFA5m9H
- YylLzUa/HuPtXpO5+xdrIn0qTOZo5y/p+FawZY4xYuu7kKiTyLMn+QDJb
- +CT9X8pZ+hGr+/K2pIj6dNDrONs+/mTGKwFXEUrtYVyCy1HfBrFWu9688 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="53626749"
-X-IronPort-AV: E=Sophos;i="5.87,296,1631545200"; d="scan'208";a="53626749"
-Received: from mail-tycjpn01lp2174.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.174])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Dec 2021 14:44:09 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X6Vj9kadsFqsRPglPLIR08XkF2f8x/mrpbk9nLk8qbabd32t8xDNgPAweWE0EEYc5d7cODY28tjRCyljQJ8KwuOQrYSW4BgSfCTgGvfTWKQ3F48kpF1mqqQ6UUW3UV/u8dkJQCawXKEAyMxifYq6s6U60qwAYmIWrkoqoiRVCnEglo9HKd0l32vRxSXKtK3u9hJ7cu+LgTQuyZ/MyRuopIXsKHCAxV1htGf4adu3e5vgxUlH5kwZskYo2w2GfY2//76WKe/1Lr8jIqEIEmlnIVNGgfTEEtHM5gesY5puT9zJO5mK5tMCDtwsopQU8AnSYQwiKK96j7pMdTRFJIM17w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2K/OXa8d687FLp37ZfW+tkTWzbSaLJMfgd6cx+0yntk=;
- b=K6l9Ah/ukwRTf5JMnWfQDoptAx/Ro2kILRE21a+yntIg94vmLiuxn2iWljER+lVhuO5/+Xmmc2/D711gcTGRn7nhpAJUTRr+EAq9xF1eAPTljgmapzAetcpdiapL3TdcOIx1+0vb7N3nyudnliExS2tJy1edLu0dQRZb4SwsfeTbXQrlSpSQ5RvDWSO0t50s4oING5TUB2mhsy+0T5CMNUksdqoeQpK0hNTdbQOLK8K2g62tu13fWMnb9LNS4Z1RKLXeFcgEP9SAVASc95OeNfloDDyG97VqZ5T25PNLAis4Ftv3t7ZVxrXH896GnDU4sgmHBJiDvfY9hxBv0XYXTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2K/OXa8d687FLp37ZfW+tkTWzbSaLJMfgd6cx+0yntk=;
- b=TplAVRv2XHqNM/6WVJdGVvVohzaYpK3zqbLseUd5vUnpyhiNVGZez7ITuXqyjbyWsi/p6F+j+QbVVbxpNIHALEbvh7PDhybokbm5SnE6flebV5QiaiW7EomPUzc9qBhPvjq+JZwcYrLcXPQVs5rmqjwInM8KAI+sie96s5AxIlI=
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TY2PR01MB3915.jpnprd01.prod.outlook.com (2603:1096:404:d3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.12; Wed, 8 Dec
- 2021 05:44:04 +0000
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::4997:e3e6:6502:9100]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::4997:e3e6:6502:9100%9]) with mapi id 15.20.4755.023; Wed, 8 Dec 2021
- 05:44:04 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [PATCH v2] syscalls/statx05,07: Move e4crypt, exportfs to
- tst_test structure
-Thread-Index: AQHX6z/qXWVniOHrPkuv2r1b8qtbvKwoFuGA
-Date: Wed, 8 Dec 2021 05:44:04 +0000
-Message-ID: <61B04647.20108@fujitsu.com>
-References: <Ya4Fa01xi7/iKaC0@yuki>
- <1638863781-2196-1-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1638863781-2196-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d69c3d60-facb-4902-6b05-08d9ba0dbeb5
-x-ms-traffictypediagnostic: TY2PR01MB3915:EE_
-x-microsoft-antispam-prvs: <TY2PR01MB39151E6946FB4ED7CD01C24AFD6F9@TY2PR01MB3915.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tjZzjb5RtQa3IA7bXEzAgvaBIfMJSvCMPHM5l9clONapC9AA4gWPwsoSYfWKAsai2aOrkjwmbxAaDYnZTO/Uau1Bu98yMEIVUa38SpBJMumuitwkQR+IEoEKoVRrBI0CsWzItMmA+uMC6+t09afA10SWFJ6mDxXFFqPhC0yM8CfWN1yO45a83By1NQxecTSqrsiurPftxl909zXVkVIly2Qmls8PsiFt+08AV8DaLscyBkGy3wXCuIkhRL4qd5zzVeRZuJ91xFHX/Fo5r6z3+qaHCp3A4RNnVf5emDZ1qdNlk8+d2g/N6Ha7CYMOtLIhAutubifNtW9LqqPj2FQL/uUnoPsjLA8ZkL1POlOXB84mHu7aoKh6X3ZUoul+w0Y6own3CJJsJ/Hr4N7hnMJ9HGJ5m2jM4PusbiNqT5o1sfTdSQ0YfXAH+XiV1OEVl+8RlbhFYdfRxMevlFG+5ijDLCXg62bwohGDDinp7SU4Kxr+/gYkewqs6TXo+UdBil2Gp2MAmKYeY/IXq75DjxGJWVcxFbINaqoPLEm6jEyvOI45ojUmVM2nYNMiPA0nL5OnVpSvHeHegRw22JgQrsr7Ar2Bh5OvXhanCa3f6MG4Cxxsw4Zk0SfGdcaL7kV5AODa1d//J3JLndSQ3FkjoPZHX07pb88uU2NrJB1I2z/oiTe567OsRyUADkY38GC99VNKOAa3CZswXayoF+QymFewdpQ0FCEWqQzK+wIBWOvPVQo=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66476007)(33656002)(6916009)(8936002)(91956017)(316002)(6512007)(2906002)(66556008)(66446008)(64756008)(2616005)(66946007)(82960400001)(6506007)(85182001)(86362001)(5660300002)(76116006)(186003)(38070700005)(26005)(38100700002)(83380400001)(508600001)(4326008)(6486002)(122000001)(36756003)(71200400001)(8676002)(32563001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?eTNzNW1nejVnUDI5VE82dDFRb1NzNThOanBBM1I4TlZNdkVvTnpQYjZpWUFy?=
- =?gb2312?B?SkZlRVFUSXVPYXdEd2Y1M3dtd3Q1NGZyQjhLcGEwbXZnQ0pDTTk4MHErOHBR?=
- =?gb2312?B?SmJQUU8wcEthTFpsU1kyMG13YzZDSENvcDE1RHliZzE3dnBPTXVZbS8xQ3Ju?=
- =?gb2312?B?QXpVa0NGZE51R2hTY3prclI1M3BoaE8rdWdxWU1UMWQxSHJtcjRrT2VBS2dE?=
- =?gb2312?B?dEJWTnVYc0wzNFF0UHIrZzlvSmtaWXJMZkZ4VENJNjd5MktjMXFYT2M2OWp6?=
- =?gb2312?B?Wng1ek51bGx3bGo1T1hsUElmZG9hZzFYL2YxN3FMd1l3UFo3RVVnNHdGN2JJ?=
- =?gb2312?B?dVM5WWprc2tOWnE1RGc5MjdaSnFhVG1UMmVsUnRGS2t3Q2E4d2ZSN0Fwa29O?=
- =?gb2312?B?cVNta0xRUkZZWGxVOEx2M0VIdi9YUXZhbStqM2x5UkdGblp5eFZvdEMxOXNn?=
- =?gb2312?B?MWY2RC9tbWZIQzkrZmlCcVU0QmUydmxlRitJTkFiSFVWK3NUdVNyYUUyOG8v?=
- =?gb2312?B?SlZDbHUxSHBRcUNyMVlGNVRoemNjajQzOVprNE11WENlRngrcG9rYUtVRmJa?=
- =?gb2312?B?R3dQSnh2OHphdVlWVkNMci81elBiaVZ2VHdWN0ZkdHdtTWo1a3UwQnpQU1JG?=
- =?gb2312?B?WTQxWnRwNWNzT01Ec01mYXV6SWc5V2kzT3JFSUlUdzAwT2dSVlh1dVZzcnp6?=
- =?gb2312?B?NU1vMStZUktsRDRlelhoZ3BqcHYzaGFQSGlSMGU2OGwrUGk3UUNNSzZZbDdi?=
- =?gb2312?B?bUxWSnV4OHNGTTRySi82QU96dHdRMThQZG1TZWttdjQvOE1OVlFVUzVuUy8v?=
- =?gb2312?B?bS9UdUx2SzNLMDNaa1RCR2tkVitHcE0wSnlUMXVSYzQvbXhuVTRFSTRaVTFp?=
- =?gb2312?B?eXJtOXhDUkxPZWwzUTRMWUo4QmFaTjBxMUlDcnZPRlBvalBINzF3RGIxR3lL?=
- =?gb2312?B?VGpSRXZOWnRxSjBhYnZWaUdBRUpGRjdyUmtZSWprcFlHRE5qTjRqd3Q3bzJR?=
- =?gb2312?B?RFpCKzk1aStobk5FNGEzYXVSODBYZTB1OWNGbXdEaVdQZ2J3SnBBV3dkMGNX?=
- =?gb2312?B?NThtZmZRekJSekNJZ1hSbDRYUGRBL0NGMWJ4YzUyWjNPVjczY1JlMTRMS2FZ?=
- =?gb2312?B?RmVOVkhCK2lic0cxZkh3Zk5wTzZxQ3ZRZERNQ015bjdrbzgwZGQ2aGNmUVkz?=
- =?gb2312?B?M0N1clEvMUxLd3VTZm52b05jVjBiQUZKZVFQWVZCWmlyOFJkdmRlTW9DSFY3?=
- =?gb2312?B?Vy9kREhIMmYwbDRjdnluN2k0TlU4SG1pYmxEdHVxdmxnRXZWZzZ0bjFKVERl?=
- =?gb2312?B?QzFpZzE1STFjMWRLbEVOTlZ0V1pJaTFOT2NLRVhoOVdOUVdiOW9iZWlwNEpo?=
- =?gb2312?B?dXMyNlc3MzJyM0xFWWd5SjNOSWVrTWVuY3ViMkZTMnRNS3Q5RlY1VFZtSHUv?=
- =?gb2312?B?S2FVRnlaTEE0ak5TeVpDRXJocmd5d1RSSzU4WmpjS0NNT3V1cmFFdHVEN3Uz?=
- =?gb2312?B?dU55d09HY1lacVJkRVFML3lTdFluU21XZVpBT0cyeEVYem1VN2JWVGptUEJv?=
- =?gb2312?B?dy9iNWFDZldtT0ppd1ZQU0dXVnpEV1o5MWxtTlkwVWRvZDBMVTB5SHRQVWNh?=
- =?gb2312?B?QzJSMUxjZkdWZC9QZG1FaC9ZajhIRjM4RkdWU3Q4SU05L2J6K3FaYXU5cjQ0?=
- =?gb2312?B?R2JSWGtHajU4akp6a3RLM0szY2MzNlp4TlJsNlRWUllqbnRiUk5ScFgyUmVX?=
- =?gb2312?B?Ui9wTnl6WDJTbkU5eU95NGg5NEtKU2ZTSEZBeEc5VEFtT0Y1N01IQlF2WG9U?=
- =?gb2312?B?RUJoa1NhaGQ5Z0ltalB1N24vQ2lUT2h5by8xc0xGWVhBV25sTi9jcjdaajdV?=
- =?gb2312?B?QllWekNIM0EwY3p2Uk50QlZrYnVOQlprOXcrV0pZbnkrUURtTXNpTU1DOXU1?=
- =?gb2312?B?ZVFXL1duZUcwNmwvVjBxZ1JGYnZldDQ1bzlYaVVnSjVIQjcyQUNOOTN0aVZm?=
- =?gb2312?B?amI1VEVJSUpsTGxuaG9VdE1PTWNJZXU2aTB3a1k5cVR6a05JbWtCeXVTQ0xy?=
- =?gb2312?B?WEdXb2htQjVnVUlobUtUbUFTV3NBSUU0NDhYS3UvakU3WmgwMnhlbXZHdm5E?=
- =?gb2312?B?Q0pvUERhSm51SlI1Z01VblRPV0lWMmJadzZCVDYwZzc5V09uTHd1ZDlXMnV3?=
- =?gb2312?B?ZkpBMGhvOGpBajdIZ3FZZnU0SnE1VldnOHlYbXpJWklhcmRZTEtjQXdZYkRy?=
- =?gb2312?Q?uQi1FEbbznoPphfh/70VwSOqXf5i8SqdhbCBRGv7Eo=3D?=
-Content-ID: <CD8B44CE501C9443AC3AED075B206049@jpnprd01.prod.outlook.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D2AAB1FE00;
+ Wed,  8 Dec 2021 08:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1638951989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Drui9TB5nPfhxs6yEpkUTZiZDs+6MNKRPVa2huwOP4Y=;
+ b=Jz8j+n8b4o9whRffe6QryNlo+NYrVl6z+kI56pCZVcyAxkLUBYfyiLOpPA5vc6Ox9yw3u8
+ q8oCV4U37u8aLA7DhTPpmkDNtTql/oa7Ccz3fUqfeupcaFPYKNL4QDV3gYGVgUh0w9cjL1
+ jxCCaTWgZiD3CfLAGLe4a279beDklrk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1638951989;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Drui9TB5nPfhxs6yEpkUTZiZDs+6MNKRPVa2huwOP4Y=;
+ b=S5G365G9Dq1sP7D1CXdbXS2YFxGJiJ+eXY9+SNUWTFWu2FOydmF2fwmvNNxIOqaEGmGHFn
+ g2excYrmLJmHJVBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6D4D13B49;
+ Wed,  8 Dec 2021 08:26:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id BjyJJjVssGEEagAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 08 Dec 2021 08:26:29 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed,  8 Dec 2021 09:26:25 +0100
+Message-Id: <20211208082625.26324-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d69c3d60-facb-4902-6b05-08d9ba0dbeb5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2021 05:44:04.5750 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ibDlgZFnzd+uc1YBb4HwnXqPCJbpvj0MTKIGmpwX4SmH0ZExjgq7nFk7k7XmoSC3t2wu6lVsnJYWbPEl+uPc76mM8rpu5SZg8Sydao+bK2c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB3915
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/statx05, 07: Move e4crypt,
- exportfs to tst_test structure
+Subject: [LTP] [PATCH 1/1] m4: Fix warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,72 +70,311 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril
+from autoconf 2.71:
 
-Thanks for your review, merged.
+* s/AC_HELP_STRING/AS_HELP_STRING/
 
-Best Regards
-Yang Xu
-> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
-> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
-> ---
-> v1-v2: keep e4crypt info in statx05 description instead of removing
->   testcases/kernel/syscalls/statx/statx05.c | 6 ++----
->   testcases/kernel/syscalls/statx/statx07.c | 6 ++++--
->   2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-> index a3184e7e3..86bd3ace1 100644
-> --- a/testcases/kernel/syscalls/statx/statx05.c
-> +++ b/testcases/kernel/syscalls/statx/statx05.c
-> @@ -111,10 +111,7 @@ static void setup(void)
-> 
->   	ret = tst_system("echo qwery | e4crypt add_key "TESTDIR_FLAGGED);
-> 
-> -	if (WEXITSTATUS(ret) == 127)
-> -		tst_brk(TCONF, "e4crypt not installed!");
-> -
-> -	if (WEXITSTATUS(ret))
-> +	if (ret)
->   		tst_brk(TCONF, "e4crypt failed (CONFIG_EXT4_ENCRYPTION not set?)");
->   }
-> 
-> @@ -136,6 +133,7 @@ static struct tst_test test = {
->   	.dev_fs_type = "ext4",
->   	.needs_cmds = (const char *[]) {
->   		"mkfs.ext4",
-> +		"e4crypt",
->   		NULL
->   	}
->   };
-> diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-> index 89de0c487..e1ae36a35 100644
-> --- a/testcases/kernel/syscalls/statx/statx07.c
-> +++ b/testcases/kernel/syscalls/statx/statx07.c
-> @@ -135,8 +135,6 @@ static void setup(void)
->   	exported = 1;
-> 
->   	ret = tst_system(cmd);
-> -	if (WEXITSTATUS(ret) == 127)
-> -		tst_brk(TCONF | TST_ERR, "%s not found", cmd);
->   	if (ret)
->   		tst_brk(TBROK | TST_ERR, "failed to exportfs");
-> 
-> @@ -172,4 +170,8 @@ static struct tst_test test = {
->   	.needs_tmpdir = 1,
->   	.dev_fs_type = "nfs",
->   	.needs_root = 1,
-> +	.needs_cmds = (const char *[]) {
-> +		"exportfs",
-> +		NULL
-> +	}
->   };
+Similar replace was done in autoconf commit 5958ce17 ("*
+doc/autoconf.texi: Replace AC_HELP_STRING AS_HELP_STRING.")
+from 2.58.
+
+* s/AC_TRY_LINK/AC_COMPILE_IFELSE([AC_LANG_PROGRAM/
+
+Similar replace was done in autoconf commit ede91cff ("Modernize
+AC_EXEEXT and AC_OBJEXT. Now work with other languages than C and C++.")
+from 2.50.
+
+* s/AC_PROG_LEX/AC_PROG_LEX(yywrap)
+yywrap argument introduced in 46f384f8 ("Revert to 2.69-compatible
+behavior in AC_PROG_LEX (#110346)") from 2.70, but using is is
+compatible on older releases (tested on 2.63).
+
+Therefore keep requiring 2.61. Tested on 2.63 (SLES 11 and CentOS 6 both
+don't even compile as unsupported, thus we could bump version to 2.63).
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Tested:
+https://github.com/pevik/ltp/actions/runs/1553085898
+
+Kind regards,
+Petr
+
+ configure.ac                       | 26 +++++++++++++-------------
+ m4/ltp-clone7args.m4               |  8 +++-----
+ m4/ltp-eventfd.m4                  |  8 +++-----
+ m4/ltp-kernel_devel.m4             |  6 +++---
+ m4/ltp-mremap_fixed.m4             |  6 +++---
+ m4/ltp-perf_event_open.m4          |  8 +++-----
+ testcases/realtime/m4/check.m4     |  6 +++---
+ testcases/realtime/m4/ltp-exp10.m4 |  8 +++-----
+ 8 files changed, 34 insertions(+), 42 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 063a8a9d1..366429b64 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -24,7 +24,7 @@ AC_PROG_CC
+ # 2.62.
+ AC_DEFUN([AC_PROG_AR], [AC_CHECK_TOOL(AR, ar, :)])
+ AC_PROG_AR
+-AC_PROG_LEX
++AC_PROG_LEX(yywrap)
+ AC_PROG_RANLIB
+ AC_DEFUN([AC_PROG_STRIP], [AC_CHECK_TOOL(STRIP, strip, :)])
+ AC_PROG_STRIP
+@@ -216,7 +216,7 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
+ 
+ # Bash
+ AC_ARG_WITH([bash],
+-  [AC_HELP_STRING([--with-bash],
++  [AS_HELP_STRING([--with-bash],
+     [have the Bourne Again Shell interpreter])],
+   [with_bash=$withval],
+   [with_bash=no]
+@@ -229,24 +229,24 @@ fi
+ 
+ # metadata
+ AC_ARG_ENABLE([metadata],
+-  [AC_HELP_STRING([--disable-metadata],
++  [AS_HELP_STRING([--disable-metadata],
+ 	[Disable metadata generation (both HTML and PDF, default no)])],
+   [], [enable_metadata=yes]
+ )
+ AC_ARG_ENABLE([metadata_html],
+-  [AC_HELP_STRING([--disable-metadata-html],
++  [AS_HELP_STRING([--disable-metadata-html],
+ 	[Disable metadata HTML generation (default no)])],
+   [], [enable_metadata_html=yes]
+ )
+ 
+ AC_ARG_ENABLE([metadata_pdf],
+-  [AC_HELP_STRING([--enable-metadata-pdf],
++  [AS_HELP_STRING([--enable-metadata-pdf],
+ 	[Enable metadata PDF generation (default no)])],
+   [], [enable_metadata_pdf=no]
+ )
+ 
+ AC_ARG_WITH([metadata_generator],
+-  [AC_HELP_STRING([--with-metadata-generator=asciidoc|asciidoctor],
++  [AS_HELP_STRING([--with-metadata-generator=asciidoc|asciidoctor],
+ 	[Specify metadata generator to use (default autodetect)])],
+   [with_metadata_generator=$withval],
+   [with_metadata_generator=detect]
+@@ -256,7 +256,7 @@ LTP_DOCPARSE
+ 
+ # Expect
+ AC_ARG_WITH([expect],
+-  [AC_HELP_STRING([--with-expect],
++  [AS_HELP_STRING([--with-expect],
+     [have the Tcl/expect library])],
+   [with_expect=$withval],
+   [with_expect=no]
+@@ -269,7 +269,7 @@ fi
+ 
+ # Numa
+ AC_ARG_WITH([numa],
+-  AC_HELP_STRING([--without-numa],
++  AS_HELP_STRING([--without-numa],
+     [without numa support]),
+   [with_numa=$withval],
+   [with_numa=yes]
+@@ -277,7 +277,7 @@ AC_ARG_WITH([numa],
+ 
+ # Perl
+ AC_ARG_WITH([perl],
+-  [AC_HELP_STRING([--with-perl],
++  [AS_HELP_STRING([--with-perl],
+     [have a perl interpreter])],
+   [with_perl=$withval],
+   [with_perl=no]
+@@ -290,7 +290,7 @@ fi
+ 
+ # Python
+ AC_ARG_WITH([python],
+-  [AC_HELP_STRING([--with-python],
++  [AS_HELP_STRING([--with-python],
+     [have a python interpreter])],
+   [with_python=$withval],
+   [with_python=no]
+@@ -303,7 +303,7 @@ fi
+ 
+ # TI RPC
+ AC_ARG_WITH([tirpc],
+-  AC_HELP_STRING([--without-tirpc],
++  AS_HELP_STRING([--without-tirpc],
+     [without libtirpc support]),
+   [with_tirpc=$withval],
+   [with_tirpc=yes]
+@@ -313,7 +313,7 @@ AC_ARG_WITH([tirpc],
+ # Testsuites knobs
+ 
+ AC_ARG_WITH([open-posix-testsuite],
+-  [AC_HELP_STRING([--with-open-posix-testsuite],
++  [AS_HELP_STRING([--with-open-posix-testsuite],
+     [compile and install the open posix testsuite])],
+   [with_open_posix_testsuite=$withval],
+   [with_open_posix_testsuite=no]
+@@ -326,7 +326,7 @@ fi
+ 
+ # TODO: testcases/realtime requires bash and python.
+ AC_ARG_WITH([realtime-testsuite],
+-  [AC_HELP_STRING([--with-realtime-testsuite],
++  [AS_HELP_STRING([--with-realtime-testsuite],
+     [compile and install the realtime testsuite])],
+   [with_realtime_testsuite=$withval],
+   [with_realtime_testsuite=no]
+diff --git a/m4/ltp-clone7args.m4 b/m4/ltp-clone7args.m4
+index ab55c1e33..4962789e5 100644
+--- a/m4/ltp-clone7args.m4
++++ b/m4/ltp-clone7args.m4
+@@ -5,13 +5,11 @@ AC_DEFUN([LTP_CHECK_CLONE_SUPPORTS_7_ARGS],[
+ AH_TEMPLATE(CLONE_SUPPORTS_7_ARGS,
+ [Define to 1 if clone() supports 7 arguments.])
+ AC_MSG_CHECKING([if clone() supports 7 args])
+-AC_TRY_LINK([#define _GNU_SOURCE
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
+ 		#include <sched.h>
+-		#include <stdlib.h>],
+-		[
++		#include <stdlib.h>]], [[
+ 		#ifndef __ia64__
+ 		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
+ 		#endif
+-		],
+-		AC_DEFINE(CLONE_SUPPORTS_7_ARGS) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
++		]])],[AC_DEFINE(CLONE_SUPPORTS_7_ARGS) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ ])
+diff --git a/m4/ltp-eventfd.m4 b/m4/ltp-eventfd.m4
+index 5d729a33d..580df00a3 100644
+--- a/m4/ltp-eventfd.m4
++++ b/m4/ltp-eventfd.m4
+@@ -12,12 +12,10 @@ AC_DEFUN([LTP_CHECK_SYSCALL_EVENTFD], [
+ 		AC_SUBST(AIO_LIBS, "-laio")
+ 
+ 		AC_MSG_CHECKING([io_set_eventfd is defined in aio library or aio header])
+-		AC_TRY_LINK([#include <stdio.h>
++		AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
+                              #include <libaio.h>
+-		            ],
+-		            [io_set_eventfd(NULL, 0); return 0;],
++		            ]], [[io_set_eventfd(NULL, 0); return 0;]])],
+ 		            [AC_DEFINE(HAVE_IO_SET_EVENTFD, 1, [Define to 1 if you have `io_set_eventfd' function.])
+-						AC_MSG_RESULT(yes)],
+-		            [AC_MSG_RESULT(no)])
++						AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ 	fi
+ ])
+diff --git a/m4/ltp-kernel_devel.m4 b/m4/ltp-kernel_devel.m4
+index 8a0598e5a..d46d54775 100644
+--- a/m4/ltp-kernel_devel.m4
++++ b/m4/ltp-kernel_devel.m4
+@@ -9,7 +9,7 @@ AC_DEFUN([LTP_CHECK_KERNEL_DEVEL],[
+ AC_MSG_CHECKING([for kernel-devel])
+ AC_ARG_WITH(
+ 	[linux-version],
+-	[AC_HELP_STRING([--with-linux-version=VERSION],
++	[AS_HELP_STRING([--with-linux-version=VERSION],
+ 			[specify the Linux version to build modules for])],
+ 	[LINUX_VERSION="${withval}"],
+ 	AS_IF([test "$cross_compiling" = "no"],
+@@ -18,7 +18,7 @@ AC_ARG_WITH(
+ AC_SUBST(LINUX_VERSION)
+ 
+ AC_ARG_WITH([linux-dir],
+-	[AC_HELP_STRING([--with-linux-dir=DIR],
++	[AS_HELP_STRING([--with-linux-dir=DIR],
+ 			[specify path to kernel-devel directory])],
+ 	[LINUX_DIR="${withval}"],
+ 	AS_IF([test -n "$LINUX_VERSION"],
+@@ -44,7 +44,7 @@ AC_MSG_RESULT([$WITH_MODULES])
+ 
+ AC_ARG_WITH(
+ 	[modules],
+-	[AC_HELP_STRING([--without-modules],
++	[AS_HELP_STRING([--without-modules],
+ 			[disable auto-building kernel modules])],
+ 			[WITH_MODULES="no"],
+ 			[])
+diff --git a/m4/ltp-mremap_fixed.m4 b/m4/ltp-mremap_fixed.m4
+index 66548b82b..ff2696909 100644
+--- a/m4/ltp-mremap_fixed.m4
++++ b/m4/ltp-mremap_fixed.m4
+@@ -6,7 +6,7 @@ AC_DEFUN([LTP_CHECK_MREMAP_FIXED],[
+ AH_TEMPLATE(HAVE_MREMAP_FIXED,
+ [Define to 1 if you have MREMAP_FIXED in <sys/mman.h>.])
+ AC_MSG_CHECKING([for MREMAP_FIXED in <sys/mman.h>])
+-AC_TRY_COMPILE([#define _GNU_SOURCE
+-                #include <sys/mman.h>], [int flags = MREMAP_FIXED;],
+-               AC_DEFINE(HAVE_MREMAP_FIXED) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
++                #include <sys/mman.h>]], [[int flags = MREMAP_FIXED;]])],
++                [AC_DEFINE(HAVE_MREMAP_FIXED) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ ])
+diff --git a/m4/ltp-perf_event_open.m4 b/m4/ltp-perf_event_open.m4
+index 6966cf270..4a488ffa3 100644
+--- a/m4/ltp-perf_event_open.m4
++++ b/m4/ltp-perf_event_open.m4
+@@ -7,10 +7,8 @@ AC_DEFUN([LTP_CHECK_SYSCALL_PERF_EVENT_OPEN],[
+ AH_TEMPLATE(HAVE_PERF_EVENT_ATTR,
+ [Define to 1 if you have struct perf_event_attr])
+ AC_MSG_CHECKING([for perf_event_attr in linux/perf_event.h])
+-AC_TRY_COMPILE([#include <unistd.h>
+-		#include <linux/perf_event.h>],
+-		[
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>
++		#include <linux/perf_event.h>]], [[
+ 			struct perf_event_attr pe;
+-		],
+-		AC_DEFINE(HAVE_PERF_EVENT_ATTR) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
++		]])],[AC_DEFINE(HAVE_PERF_EVENT_ATTR) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ ])
+diff --git a/testcases/realtime/m4/check.m4 b/testcases/realtime/m4/check.m4
+index e60ae1928..d04a2cc73 100644
+--- a/testcases/realtime/m4/check.m4
++++ b/testcases/realtime/m4/check.m4
+@@ -1,10 +1,10 @@
+ AC_DEFUN([REALTIME_CHECK_PRIO_INHERIT],[
+ AC_MSG_CHECKING([for PTHREAD_PRIO_INHERIT])
+-AC_TRY_COMPILE([
+-#include <pthread.h>],[int main(void) {
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
++#include <pthread.h>]], [[int main(void) {
+ 	pthread_mutexattr_t attr;
+ 	return pthread_mutexattr_setprotocol(&attr, PTHREAD_PRIO_INHERIT);
+-}],[has_priority_inherit="yes"],[])
++}]])],[has_priority_inherit="yes"],[])
+ if test "x$has_priority_inherit" = "xyes" ; then
+ 	AC_DEFINE(HAS_PRIORITY_INHERIT,1,[Define to 1 if you have PTHREAD_PRIO_INHERIT])
+ 	AC_MSG_RESULT(yes)
+diff --git a/testcases/realtime/m4/ltp-exp10.m4 b/testcases/realtime/m4/ltp-exp10.m4
+index 3d2320a20..625175c31 100644
+--- a/testcases/realtime/m4/ltp-exp10.m4
++++ b/testcases/realtime/m4/ltp-exp10.m4
+@@ -26,12 +26,10 @@ AH_TEMPLATE(HAVE_EXP10,
+ AC_MSG_CHECKING([for exp10])
+ backup_ldlibs="$LIBS"
+ LIBS+=" -lm"
+-AC_TRY_LINK([#define _GNU_SOURCE
+-             #include <math.h>],
+-            [
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
++             #include <math.h>]], [[
+              volatile float val;
+              exp10(val);
+-            ],
+-             AC_DEFINE(HAVE_EXP10) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
++            ]])],[AC_DEFINE(HAVE_EXP10) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
+ LIBS="$backup_ldlibs"
+ ])
+-- 
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
