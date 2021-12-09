@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64C07C433F5
-	for <ltp@archiver.kernel.org>; Thu,  9 Dec 2021 19:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A4AAC433F5
+	for <ltp@archiver.kernel.org>; Thu,  9 Dec 2021 19:27:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 44C0C3C809F
-	for <ltp@archiver.kernel.org>; Thu,  9 Dec 2021 20:27:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A15B23C8095
+	for <ltp@archiver.kernel.org>; Thu,  9 Dec 2021 20:27:16 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C25173C7FBB
- for <ltp@lists.linux.it>; Thu,  9 Dec 2021 20:26:56 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 33F2A3C818C
+ for <ltp@lists.linux.it>; Thu,  9 Dec 2021 20:27:06 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B92E810009CB
- for <ltp@lists.linux.it>; Thu,  9 Dec 2021 20:26:55 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 389541A00CA4
+ for <ltp@lists.linux.it>; Thu,  9 Dec 2021 20:27:05 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E4F76210FD;
- Thu,  9 Dec 2021 19:26:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8B9B4210FD;
+ Thu,  9 Dec 2021 19:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639078014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1639078025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=DL63pQ44m+bwysVoPLyMQH30JJ9ZmxLwifeooCovQ7XGdNNGp+434zji7zN+2kzLIeWD/J
- eek5HccIaf4xuLTNeI4CsuU8hM9CbFluQz02z5v5UzYwUMg1YWeNheLYrvSwsCpQP40TEL
- EcvGuvWYYRwMOSeQFIN6ufIoHSkOKa4=
+ b=OnFg5f0wsLt+2H9rS0srdx+eJnQoRY5fUR6TtaRgaZMUSAiORjQdJFnMqLD/3Llu6V7GHw
+ q7lqomkMkU2VBMdZw4WxIfKfMqzSBGQxfGP2ZvTgz2fAnBA5HyJHqAEOqBjw3zN2EFCNCJ
+ maFbL7G4cNNHPHi5NDVtDJd6RuPBvAQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639078014;
+ s=susede2_ed25519; t=1639078025;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=Wu6QJeEuqwJu22a9VQ0WpJHTHNESVoE+xcSE8HY6WyQcqfR8isvEaZ3Dh4Is8ngz7Es//c
- RsiM5qZ2zwwUqaDg==
+ b=ztQ92wVStA+VFqiofTGGgmYp8A16YFyLuACllNxNLHSUugaI5W+NFEjL12NPL/z/RFVlZm
+ wq+eesFlJUpo74CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4AAB13D79;
- Thu,  9 Dec 2021 19:26:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74DAA13D79;
+ Thu,  9 Dec 2021 19:27:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mHwoLn5YsmF9KAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 09 Dec 2021 19:26:54 +0000
-Date: Thu, 9 Dec 2021 20:28:14 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6D1vHIlYsmGOKAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 09 Dec 2021 19:27:05 +0000
+Date: Thu, 9 Dec 2021 20:28:25 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <YbJYzhnsKZsfZ+XA@yuki>
-References: <20211209091104.4539-1-andrea.cervesato@suse.com>
+Message-ID: <YbJY2WIGPzPLig74@yuki>
+References: <20211209102855.6628-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211209091104.4539-1-andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20211209102855.6628-1-andrea.cervesato@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] Add tst_parse_filesize functionality in LTP
- test API
+Subject: Re: [LTP] [PATCH v2] Add documentation for tst_parse_* helpers
+ functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
