@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 455EBC433EF
-	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 12:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F724C433F5
+	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 12:26:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ADA473C8776
-	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 13:24:16 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 59EBA3C8115
+	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 13:26:55 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 087A73C7729
- for <ltp@lists.linux.it>; Fri, 10 Dec 2021 13:24:05 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E393F3C7729
+ for <ltp@lists.linux.it>; Fri, 10 Dec 2021 13:26:45 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C0495100136A
- for <ltp@lists.linux.it>; Fri, 10 Dec 2021 13:24:04 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 335131400965
+ for <ltp@lists.linux.it>; Fri, 10 Dec 2021 13:26:44 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0BA2D210FA;
- Fri, 10 Dec 2021 12:24:04 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6E65D210FE;
+ Fri, 10 Dec 2021 12:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639139044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1639139204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WLetHtdlWQAO6bt2LD9BnAU0XY1Wzh7cRjrpbWC05zA=;
- b=er5cN5goRh1BPCECROHM2VroApbUX6XtkTAOD9o13DPLXoxz9jeSaGvnzt+Sk+hIXDFaCZ
- EmfpzfE8M8c3ypWbGx+QGpMVnLwDvHzxvaz/7qDroELXMydLMtZCk+InGMsE6qfXma6dfM
- aslsNZ33ljHRJWUM6eHA6k8/ayzeAow=
+ bh=9083BlSf2wv6VL72u8QdylBa2qX7vRkUGRgy7NY8qZY=;
+ b=GAfir/48LTU109mtGTAYaickzTMCQMHf8jizRjoxf+EHo84BUUh5ISkIYOLgAP8lMdel6O
+ fge+rU2Jatc8GL7+v7BOEfknazxGZz60BHTJzDnNDjJ+w/Z9y64/8TXqN+/bNOSnagDm7r
+ elY6IfQXnDinJ6veO+7dNaT0KjcLEcc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639139044;
+ s=susede2_ed25519; t=1639139204;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WLetHtdlWQAO6bt2LD9BnAU0XY1Wzh7cRjrpbWC05zA=;
- b=T+/LFZsaACaoO3e4KrhMpXYanMbHLutDsSQzX4J4xSpjdzOxDR0Aj28DME05M9wrEx0MFC
- XKkTeqbujqmytzAQ==
+ bh=9083BlSf2wv6VL72u8QdylBa2qX7vRkUGRgy7NY8qZY=;
+ b=KST+lQBZ79vrAiPK8ugH8c07YlmI/exmRjVzs3TkkKpd8O7o4rfgTNApY2EWVlT/jRXbM8
+ wVP8MdXXvWDKrKAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E8B9B13E02;
- Fri, 10 Dec 2021 12:24:03 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5BF6713E02;
+ Fri, 10 Dec 2021 12:26:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id d3FcOONGs2FnCAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 10 Dec 2021 12:24:03 +0000
-Date: Fri, 10 Dec 2021 13:25:24 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id fNKEFYRHs2FHCgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 10 Dec 2021 12:26:44 +0000
+Date: Fri, 10 Dec 2021 13:28:04 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <YbNHND+vtQBC4Ltr@yuki>
+Message-ID: <YbNH1J8E3nzH15Cu@yuki>
 References: <YbJ3SKsLu7iNoqZc@pevik>
  <1639136448-2148-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1639136448-2148-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1639136448-2148-3-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1639136448-2148-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <1639136448-2148-3-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] zram/zram_lib.sh: Skip test if zram module
- can not be removed
+Subject: Re: [LTP] [PATCH v2 3/3] zram/zram03: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,44 +83,18 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +	lsmod | grep -q '^zram'
-> +	if [ $? -eq 0 ]; then
-
-Why not just:
-	if grep -q '^zram' /proc/modules; then
-		...
-
-Here as well what the lsmod does it to open /proc/modules and for each
-entry it also looks at /sys/module/$name/refcnt and
-/sys/module/$name/hodlers. But we are not interested in the second part
-at all...
-
-> +		 rmmod zram > /dev/null 2>&1 || tst_brk TCONF "zram module is being used"
-> +	fi
-> +
->  	tst_set_timeout $((dev_num*450))
->  
->  	tst_res TINFO "create '$dev_num' zram device(s)"
-> @@ -54,10 +64,12 @@ zram_load()
->  	modprobe zram num_devices=$dev_num || \
->  		tst_brk TBROK "failed to insert zram module"
->  
-> +	dev_zram_load=1
->  	dev_num_created=$(ls /dev/zram* | wc -w)
->  
->  	if [ "$dev_num_created" -ne "$dev_num" ]; then
-> -		tst_brk TFAIL "unexpected num of devices: $dev_num_created"
-> +		tst_brk TFAIL "expected num of devices $dev_num, but created"\
-> +				"$dev_num_created"
->  	fi
->  
->  	tst_res TPASS "all zram devices successfully created"
-> -- 
-> 2.23.0
+> Also add removing zram module step in setup, so we can avoid the situation that
+> zram module is being used by zram-generator.
 > 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> Fixes: #888
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+> Not use lsmod to detect because tst_cmd doesn't support "lsmod |grep zram". Or
+> I miss something?
+
+We can do the same here as we do for the swap detection here.
+
+Just SAFE_FOPEN("/proc/modules") and loop over the lines and do strstr() for zram.
 
 -- 
 Cyril Hrubis
