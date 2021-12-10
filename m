@@ -4,87 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FAF7C433EF
-	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 11:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84A17C433EF
+	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 11:41:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE5593C8651
-	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 12:40:56 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 3A3853C8191
+	for <ltp@archiver.kernel.org>; Fri, 10 Dec 2021 12:41:18 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0208A3C0761
- for <ltp@lists.linux.it>; Fri, 10 Dec 2021 12:40:47 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.3])
+ by picard.linux.it (Postfix) with ESMTPS id C34EF3C0761
+ for <ltp@lists.linux.it>; Fri, 10 Dec 2021 12:41:07 +0100 (CET)
+Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
+ [195.245.230.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC8671400740
- for <ltp@lists.linux.it>; Fri, 10 Dec 2021 12:40:46 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1BAA51400C47
+ for <ltp@lists.linux.it>; Fri, 10 Dec 2021 12:41:06 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1639136445; i=@fujitsu.com;
- bh=97cjEoC9TjYMb7unMJSQ0hzf2GTirX4eDkYvOLmRKC8=;
+ s=170520fj; t=1639136466; i=@fujitsu.com;
+ bh=7cMRrZv7Q/hoxvWUkj2MDjNaH6bwKkChv0RAloOHWzk=;
  h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=fdydPfD81YTR/zZhs05i1Fa8AH620jSrZIaLv49QXTRR5bbutW9jji7gfiF2yLXvw
- 0gmVIFuNsqa4Xu8qWtysmRlQEBqv51yNdmIWTVbiad/e9eCCLuAvuUGPVWv2dVHJr0
- w/E2eeK1GRgyW0d8Sqp1yIJZvBpb+xwq4TyOT8Qpsbu48nzmUDN7yP+1O46MOfvzN+
- sB2CJ9fJRJfQAJcxle5AVkA19lCGGfxLXGek+N0PR6ijnEWbqcqrnqDzCKtpePrmye
- N/PdnlllTKz42p03l0n8NT7DECUuIENBYc65FSgDm+zP9ySqHMLFPXFDKkwcBn8wGs
- Q5KVCuQv1SB9A==
-Received: from [100.115.39.64] (using TLSv1.2 with cipher
+ b=JcIdSZ7pOUVX8cAPed/mmhVefhDZMHvqs6g07nd0kSXaXN9x98NnR82mH2QGT8LiB
+ hMYymPm2tDzboMO+p9JrYgikjhJft3it7jbs0rJVLU4hP2/s9Fwt+YrDgGjHvxl0R9
+ 1D5wZplXTKy4IoFjvHXIU6Nh7+LF9yC2+YAMMf0EGJyDchSzw/ZmiEMbIOJMkWQcMK
+ 8+vVVJi+eNyzbib922MfJf8xnZOsEprLtHpz1fNZfu7N6gKeqzmKRz4o+Vz8KFM5md
+ LpgA7eQQi30WUc6RltKFKfwrRvgkF7X5DArLoHYtvI418FC9lpHIbtGUlxBCxC3uiv
+ uMutUREXSZbrg==
+Received: from [100.115.1.47] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-a.eu-west-2.aws.ess.symcld.net id 06/76-09428-DBC33B16;
- Fri, 10 Dec 2021 11:40:45 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRWlGSWpSXmKPExsViZ8MxRXevzeZ
- Eg1tr5C1WfN/B6MDose/3OtYAxijWzLyk/IoE1ow1n1+yFNzhrPh9YDtbA+Maji5GLg4hgSYm
- ieeXrrFAOHsYJWbM/MfcxcjJwSagKfGscwGYLSIgIdHR8JYdxGYWUJdYPukXUxcjB4ewgIfEn
- 1e5IGEWAVWJu80L2UDCvEDhxn4OkLCEgILElIfvwaZwApXM/w/SyQm0SkVix+UGNhCbV0BQ4u
- TMJywQ0yUkDr54wQzRqyhxqeMbI4RdITFrVhvTBEb+WUhaZiFpWcDItIrROqkoMz2jJDcxM0f
- X0MBA19DQVNfYUtfI0EwvsUo3US+1VLc8tbhE10gvsbxYL7W4WK+4Mjc5J0UvL7VkEyMwJFOK
- 1W/sYHx/6ZveIUZJDiYlUV6x35sShfiS8lMqMxKLM+KLSnNSiw8xynBwKEnwMlpvThQSLEpNT
- 61Iy8wBxgdMWoKDR0mEdyNImre4IDG3ODMdInWKUVFKnNcCJCEAksgozYNrg8XkJUZZKWFeRg
- YGBiGegtSi3MwSVPlXjOIcjErCvJogU3gy80rgpr8CWswEtNi5ZT3I4pJEhJRUA9OK2FtN/x5
- cdRNgfXSvVVHrzscj6vJTxM/9YmtinKCYGxQY/v//VInJ3iph/NoRk07mL6oxZ3rpXrXdgT/d
- 9FhTQ+HXasXtrKpRuRcSepe9e8T+yfiG3UVBGYe+L9FZmlInrDbduhfU/vVl8+H6UKXZica1c
- +SfffRcv6RWTO9CmcSr3M5J37oqTuozL/pU3FGns+tJgPv99U2FAVIWkjOnS9w/tSfHoWaxRf
- /+oLaO712xmktb9R77n7v/3rWl6lb2soq/tqlC6+PTKqxO+x/ka5iXWpb8fNvvI/y3HP63etY
- bbff4qvFvQX/rtE3H+Kp3LLfYO+93/Ios6VwOmQ1h065uzpq1kuP2wYv5O5VYijMSDbWYi4oT
- AbGccXREAwAA
+ by server-2.bemta.az-a.eu-west-1.aws.ess.symcld.net id 42/CE-10124-2DC33B16;
+ Fri, 10 Dec 2021 11:41:06 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNIsWRWlGSWpSXmKPExsViZ8MxSfeizeZ
+ EgxXr9S1WfN/B6MDose/3OtYAxijWzLyk/IoE1ozL39uYCpbwVcyYeIylgfEzdxcjF4eQwFlG
+ iYa+Y0wQzk4miYnbjjBCOHsYJT7+XsLexcjJwSagKfGscwEziC0iICHR0fAWLM4soC6xfNIvJ
+ hBbWCBU4lnPG7AaFgFViW9/DrGB2LwCHhJvd+5gBbElBBQkpjx8D1bDKeAp8bt5N1iNkECSxP
+ Ndqxgh6gUlTs58wgIxX0Li4IsXzBC9ihKXOr4xQtgVErNmtTFB2GoSV89tYp7AKDgLSfssJO0
+ LGJlWMVolFWWmZ5TkJmbm6BoaGOgaGprqmgBZhnqJVbqJeqmluuWpxSW6QG55sV5qcbFecWVu
+ ck6KXl5qySZGYBinFLOk7mDs6/upd4hRkoNJSZRX7PemRCG+pPyUyozE4oz4otKc1OJDjDIcH
+ EoSvIzWmxOFBItS01Mr0jJzgDEFk5bg4FES4d0IkuYtLkjMLc5Mh0idYlSUEud9A5IQAElklO
+ bBtcHi+BKjrJQwLyMDA4MQT0FqUW5mCar8K0ZxDkYlYV5pYFIQ4snMK4Gb/gpoMRPQYueW9SC
+ LSxIRUlINTFaqzwtV6gLXH/2Q+lHS04yX56ejbhKb8Np1FZ7GovHvzpnttYpeM/9USNvliA35
+ 2YdCDVKfys6f8Unv34dzYjtOi/xKYrz26EKLn+KyQ7OmbXzb1bruneaTl90f1l8z/13czmtmG
+ bPletGLrAvT/h/ckaT43uteZ/gN20M98TEnprBazm4NzuZ8r3v29Jb7v0Vm/l2VU7OqJiHTzv
+ RwuQDXzAWtXcvXfp60//TEZPEjPxq+Kku/33F+jdKm+GOxX6ZteivtPNm93l2tSjb935/c56y
+ /vTSvHWHJ1Hd0NTr+xI3hRs4zvau7YlT0ykPNi6ZPejG/O2DF3jNaH2ak63mzdmyf2mIiY1Wg
+ 0iuveEOJpTgj0VCLuag4EQBPc68vXgMAAA==
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-11.tower-571.messagelabs.com!1639136445!20844!1
-X-Originating-IP: [62.60.8.148]
+X-Msg-Ref: server-2.tower-585.messagelabs.com!1639136465!67236!1
+X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 17131 invoked from network); 10 Dec 2021 11:40:45 -0000
-Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
- by server-11.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 10 Dec 2021 11:40:45 -0000
-Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
- by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 1BABePtQ022674
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
- for <ltp@lists.linux.it>; Fri, 10 Dec 2021 11:40:45 GMT
+Received: (qmail 14072 invoked from network); 10 Dec 2021 11:41:05 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-2.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 10 Dec 2021 11:41:05 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 3E843100441
+ for <ltp@lists.linux.it>; Fri, 10 Dec 2021 11:41:05 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 30069100353
+ for <ltp@lists.linux.it>; Fri, 10 Dec 2021 11:41:05 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Fri, 10 Dec 2021 11:40:23 +0000
+ (TLS) id 15.0.1497.26; Fri, 10 Dec 2021 11:40:29 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Fri, 10 Dec 2021 19:40:46 +0800
-Message-ID: <1639136448-2148-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Fri, 10 Dec 2021 19:40:47 +0800
+Message-ID: <1639136448-2148-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <YbJ3SKsLu7iNoqZc@pevik>
+In-Reply-To: <1639136448-2148-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <YbJ3SKsLu7iNoqZc@pevik>
+ <1639136448-2148-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/3] swapping01: skip test if zram-swap is being
- used
+Subject: [LTP] [PATCH v2 2/3] zram/zram_lib.sh: Skip test if zram module can
+ not be removed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,47 +106,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For the swapping test we attempt to allocate 130% of the available RAM and
-we make sure that the overflow would fit the swap, but as long as swap is
-backed by RAM this obviously false. So skip it if zram-swap is being used.
+If zram-generator package is installed and works, then we can not
+remove zram module because zram swap is being used. We can also use zramstart
+command or similar shell script(use zramctl,mkswap,swapon) to do this.
+
+Since zram01.sh and zram02.sh needs to rmmod and modprobe, they can't work well
+if zram module can't be removed. So skip it.
 
 Fixes: #888
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/mem/swapping/swapping01.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 392b79d65..aef47e9a4 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -40,10 +40,10 @@
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index fe9c915c3..4fed1f17c 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -5,6 +5,7 @@
  
- #include <sys/types.h>
- #include <sys/wait.h>
--#include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
-+#include "tst_safe_stdio.h"
- #include "lapi/abisize.h"
- #include "mem.h"
+ dev_makeswap=-1
+ dev_mounted=-1
++dev_zram_load=-1
  
-@@ -67,6 +67,14 @@ static void test_swapping(void)
- #ifdef TST_ABI32
- 	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
-+	FILE *file;
-+	char line[PATH_MAX];
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
+@@ -17,6 +18,10 @@ zram_cleanup()
+ {
+ 	local i
+ 
++	if [ $dev_zram_load -le 0 ]; then
++		return
++	fi
 +
-+	file = SAFE_FOPEN("/proc/swaps", "r");
-+	while (fgets(line, sizeof(line), file)) {
-+		if (strstr(line, "/dev/zram"))
-+			tst_brk(TCONF, "zram-swap is being used!");
-+	}
+ 	for i in $(seq 0 $dev_makeswap); do
+ 		swapoff /dev/zram$i
+ 	done
+@@ -47,6 +52,11 @@ zram_load()
+ 		tst_brk TBROK "dev_num must be > 0"
+ 	fi
  
- 	init_meminfo();
++	lsmod | grep -q '^zram'
++	if [ $? -eq 0 ]; then
++		 rmmod zram > /dev/null 2>&1 || tst_brk TCONF "zram module is being used"
++	fi
++
+ 	tst_set_timeout $((dev_num*450))
  
+ 	tst_res TINFO "create '$dev_num' zram device(s)"
+@@ -54,10 +64,12 @@ zram_load()
+ 	modprobe zram num_devices=$dev_num || \
+ 		tst_brk TBROK "failed to insert zram module"
+ 
++	dev_zram_load=1
+ 	dev_num_created=$(ls /dev/zram* | wc -w)
+ 
+ 	if [ "$dev_num_created" -ne "$dev_num" ]; then
+-		tst_brk TFAIL "unexpected num of devices: $dev_num_created"
++		tst_brk TFAIL "expected num of devices $dev_num, but created"\
++				"$dev_num_created"
+ 	fi
+ 
+ 	tst_res TPASS "all zram devices successfully created"
 -- 
 2.23.0
 
