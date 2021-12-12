@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86AAAC433F5
-	for <ltp@archiver.kernel.org>; Sun, 12 Dec 2021 03:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09348C433F5
+	for <ltp@archiver.kernel.org>; Sun, 12 Dec 2021 03:50:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0386A3C8852
-	for <ltp@archiver.kernel.org>; Sun, 12 Dec 2021 04:23:31 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 854A13C8843
+	for <ltp@archiver.kernel.org>; Sun, 12 Dec 2021 04:50:41 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C62043C1D8F
- for <ltp@lists.linux.it>; Sun, 12 Dec 2021 04:23:20 +0100 (CET)
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
- [IPv6:2607:f8b0:4864:20::102e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 126151A00CDC
- for <ltp@lists.linux.it>; Sun, 12 Dec 2021 04:23:20 +0100 (CET)
-Received: by mail-pj1-x102e.google.com with SMTP id
- nh10-20020a17090b364a00b001a69adad5ebso10650474pjb.2
- for <ltp@lists.linux.it>; Sat, 11 Dec 2021 19:23:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:subject:mime-version:from:in-reply-to:cc
- :date:message-id:references:to;
- bh=aWmVkGYm/Hbc/drqIbTnuHJB4Gd4mOKfDFaTu3AxVtc=;
- b=qsRS0xB6Z9pHjZLb3aYb8pDeCrf2BeA5PpWdqRwXYlNtyE0nB3OL/dCaLO6iumCnGN
- OFcHOh52d9BAR6yYax7kobdAXJxp4lfj59x7fZJ0yr3WAyVoEesnoQJDQZ6XcNFSrX2Q
- y+fp0UcLLp/T+6lQN0Tk+6c9KsBFAerVS8g714a3L06tHHtsjJQZyhHL4ESPQ7ZTRcUz
- 05wwq1W0XZ+Jbo1DXkR2mT7P90KSN4dWVXyqM0MKj1pADzePstCZLEVbgGY7NNdQS5qR
- hybEobx4k6j3w+dlSEO49fuv7RaEEHdv9fyoRXGuNq+fCZ0jGf6b4A6sHtpx6bRwVNT2
- qE/A==
+ by picard.linux.it (Postfix) with ESMTPS id B73253C1D8F
+ for <ltp@lists.linux.it>; Sun, 12 Dec 2021 04:50:28 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 522A910007BB
+ for <ltp@lists.linux.it>; Sun, 12 Dec 2021 04:50:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1639281025;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oSjGym/L4Ic5JVTzxRbJpYKsvn5QO6p4muMGRAK33CY=;
+ b=QxZOhERrXXJnkPjgxRTKEfvm2OXjo1cqCL8o4LsgQIiWcVPd2sv0zN2KyGXQUOqjGMiGvC
+ Uijggo8d31SBhTx6njTFjMPW3e3HWhuNi/U3KKoUTD6/2vn01L8XLe+SeRVi3OQRJsVPlU
+ i0pgkoyfqxiIGJM1YF2bcPTkRA4W1iA=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-15-ABfeLYE5Ouyl9lgc3E3-HA-1; Sat, 11 Dec 2021 22:50:21 -0500
+X-MC-Unique: ABfeLYE5Ouyl9lgc3E3-HA-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ e131-20020a25d389000000b005fb5e6eb757so24094937ybf.22
+ for <ltp@lists.linux.it>; Sat, 11 Dec 2021 19:50:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:content-transfer-encoding:subject:mime-version
- :from:in-reply-to:cc:date:message-id:references:to;
- bh=aWmVkGYm/Hbc/drqIbTnuHJB4Gd4mOKfDFaTu3AxVtc=;
- b=EV5YY6DBV3qPSgKqTWHjK52NqllZ9Y+XnGboT9n/qRZJjSch09ntaDsFHV1eIYov7P
- anYbsnGOXfAwqzHdtoZ225oYrVbnIp+LMM2LojF70WVE3Q2crEvxc/xV2KpGrJ/rBFAH
- 3adaHVas1GC3lnd+yudx2QhZC2ccbTfUsJNQ0xxrMs60Gi6AkLNM8SwpuA6obbmJBz7n
- WGoZ3eBgbG/b5uCk/O7WDND8dCUTAKnBY7QH2zXMRs/rGEBgJQjMClwvYeUKOdzm/3xp
- 5kptORnbvO4fJcGoINT8C9FC8iSUHPX6WkEBqJpjLWpeQkW47OIZglKCFJFw7DNIjcZd
- YGmA==
-X-Gm-Message-State: AOAM53071zQRlQIMYagOiVaH3P0kWgE6mH3UDMQpGavVZ5g+Vz/iDyc9
- aUCH6RT7sJ09QLX3HUZshqM=
-X-Google-Smtp-Source: ABdhPJyS91HolR7htNyAxHDS1+ext7YDFXK+j3HaDB2N5meq6ecXGYtKnZppzkxJrntquunX/8Tq4g==
-X-Received: by 2002:a17:90b:1644:: with SMTP id
- il4mr34905071pjb.39.1639279398401; 
- Sat, 11 Dec 2021 19:23:18 -0800 (PST)
-Received: from smtpclient.apple (c-73-19-52-228.hsd1.wa.comcast.net.
- [73.19.52.228])
- by smtp.gmail.com with ESMTPSA id v19sm2989132pju.32.2021.12.11.19.23.17
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 11 Dec 2021 19:23:17 -0800 (PST)
-Mime-Version: 1.0 (1.0)
-X-Apple-Notify-Thread: NO
-X-Universally-Unique-Identifier: 6003D6CE-9DF0-48F5-978F-78A89D008180
-From: Enji Cooper <yaneurabeya@gmail.com>
-In-Reply-To: <YbTYI2iKkopqLIjx@vapier>
-Date: Sat, 11 Dec 2021 19:23:16 -0800
-X-Apple-Message-Smime-Encrypt: NO
-Message-Id: <FB9939BA-DAB2-436A-B000-E5264956EFB6@gmail.com>
-References: <YbTYI2iKkopqLIjx@vapier>
-To: Mike Frysinger <vapier@gentoo.org>
-X-Mailer: iPhone Mail (19B81)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=oSjGym/L4Ic5JVTzxRbJpYKsvn5QO6p4muMGRAK33CY=;
+ b=Q8+MdieO122EysKZo/6jMwQnGX5+8OdJufw1lpCr4gWk0Ubl2pJUkLwGj547/YgSCj
+ 2xJ/rWstnKKOXFyNWGq+anf4qFOqFqn+ClQ9wO1+13J+XvoUpuII4O9n+yJqV4x4IfKY
+ 5NFMpTrNudehhgEbaLmLIv96Z9hWL0J4t7fOD5G8Q4IEK9N5FdiAmAVuMSbd2HakeqHf
+ 7F8Rxki8gvwJhAyavO4nXr+dPUnfVCOCFYqrbvps6rdbBq5fVe4GdMqwJL9WS6H/9M6T
+ NkMdNfRvPl1bk4PUNAP3lXdr3yftZ3tNq+0NWLa6s0NZWDZgOAtciovHT74rCPDAUAYP
+ 0n4A==
+X-Gm-Message-State: AOAM533EwkuJpN4G4/q5pABuqXbMTN1wG7kh5Ja0wW64jmcwE7XKJqT7
+ UzDxoCAu3DIP/XVR5KQvMlKaEwvrtMCsn6QIkqJc1J+4ALPoFP85ZHJH3yekZgSHLA215oT354X
+ fQAOi8/nGnM3GUrtwEkQMATdsTKs=
+X-Received: by 2002:a25:1e83:: with SMTP id e125mr23797954ybe.32.1639281021351; 
+ Sat, 11 Dec 2021 19:50:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzbQKJoKqyPgzQJ1wlzQaBJIr3Db9h+5dJPqhNhK4KHnpUmvNx02meYDQhT1G7xk3lj8rqPdL8x7HP5+Do02tY=
+X-Received: by 2002:a25:1e83:: with SMTP id e125mr23797934ybe.32.1639281021006; 
+ Sat, 11 Dec 2021 19:50:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20211210134556.26091-1-pvorel@suse.cz>
+In-Reply-To: <20211210134556.26091-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Sun, 12 Dec 2021 11:49:59 +0800
+Message-ID: <CAEemH2ec18R5rxvz-m7yKzRHMHt8aDSA=pggPXGc7jjzHH=-Vw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] doc/maintainer: Add policy for new
  functionality
@@ -84,33 +84,134 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>,
- Xiao Yang <yangx.jy@cn.fujitsu.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0800366507=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cgo+IE9uIERlYyAxMSwgMjAyMSwgYXQgMDg6NTUsIE1pa2UgRnJ5c2luZ2VyIDx2YXBpZXJAZ2Vu
-dG9vLm9yZz4gd3JvdGU6Cj4gCj4g77u/T24gMTEgRGVjIDIwMjEgMTY6MTksIFBldHIgVm9yZWwg
-d3JvdGU6Cj4+Pj4gU3VnZ2VzdGVkLWJ5OiBDeXJpbCBIcnViaXMgPGNocnViaXNAc3VzZS5jej4K
-Pj4+PiBTaWduZWQtb2ZmLWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPj4+PiAtLS0K
-Pj4+PiBkb2MvbWFpbnRhaW5lci1wYXRjaC1yZXZpZXctY2hlY2tsaXN0LnR4dCB8IDMgKysrCj4+
-Pj4gMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+PiAKPj4+PiBkaWZmIC0tZ2l0IGEv
-ZG9jL21haW50YWluZXItcGF0Y2gtcmV2aWV3LWNoZWNrbGlzdC50eHQgYi9kb2MvbWFpbnRhaW5l
-ci1wYXRjaC1yZXZpZXctY2hlY2tsaXN0LnR4dAo+Pj4+IGluZGV4IGM3YmI0NzgxMC4uNGUyYjI2
-N2FjIDEwMDY0NAo+Pj4+IC0tLSBhL2RvYy9tYWludGFpbmVyLXBhdGNoLXJldmlldy1jaGVja2xp
-c3QudHh0Cj4+Pj4gKysrIGIvZG9jL21haW50YWluZXItcGF0Y2gtcmV2aWV3LWNoZWNrbGlzdC50
-eHQKPj4+PiBAQCAtMzQsNiArMzQsOSBAQCBOZXcgdGVzdCBzaG91bGQKPj4+PiAgIEdQTC0yLjAt
-b3ItbGF0ZXI7IHRoZSBsaWNlbmNlIGZvciB0ZXN0IChlLmcuIEdQTC0yLjApIHNob3VsZCBub3Qg
-Y2hhbmdlCj4+Pj4gICB1bmxlc3MgdGVzdCBpcyBjb21wbGV0ZWx5IHJld3JpdHRlbgo+Pj4+ICog
-T2xkIGNvcHlyaWdodHMgc2hvdWxkIGJlIGtlcHQgdW5sZXNzIHRlc3QgaXMgY29tcGxldGVseSBy
-ZXdyaXR0ZW4KPj4+PiArKiBUZXN0cyBmb3IgbmV3IGZ1bmN0aW9uYWxpdHkgaW4gbWFpbmxpbmUg
-a2VybmVsIHNob3VsZCBiZSBtZXJnZWQgYWZ0ZXIgZmluYWwKPj4+PiArICByZWxlYXNlIG9mIGtl
-cm5lbCB3aGljaCBjb250YWlucyB0aGF0IGZ1bmN0aW9uYWxpdHkgKGl0J3Mgbm90IGVub3VnaCB3
-aGVuIHRoZQo+Pj4+ICsgIGZlYXR1cmUgZ2V0cyBpbnRvIHJjMSwgYmVjYXVzZSBpdCBjYW4gYmUg
-cmV2ZXJ0ZWQgaW4gbGF0ZXIgcmMgaWYgcHJvYmxlbWF0aWMpLgo+PiAKPj4+IFNvdW5kcyByZWFz
-b25hYmxlIHRvIG1lLCBidXQgaWRlYWxseSB0aGlzIHNob3VsZCBiZSBhY2tlZCBieSB0aGUgcmVz
-dCBvZgo+Pj4gdGhlIG1haW50YWluZXJzLgo+PiAKPj4gU3VyZSwgdGhpcyBjYW4gd2FpdCA6KS4K
-PiAKPiBzZWVtcyBmaW5lCgpBQ0sKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+--===============0800366507==
+Content-Type: multipart/alternative; boundary="000000000000f1d53b05d2eada25"
+
+--000000000000f1d53b05d2eada25
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, Dec 10, 2021 at 9:46 PM Petr Vorel <pvorel@suse.cz> wrote:
+
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+
+
+> ---
+>  doc/maintainer-patch-review-checklist.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/doc/maintainer-patch-review-checklist.txt
+> b/doc/maintainer-patch-review-checklist.txt
+> index c7bb47810..4e2b267ac 100644
+> --- a/doc/maintainer-patch-review-checklist.txt
+> +++ b/doc/maintainer-patch-review-checklist.txt
+> @@ -34,6 +34,9 @@ New test should
+>    GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should not change
+>    unless test is completely rewritten
+>  * Old copyrights should be kept unless test is completely rewritten
+> +* Tests for new functionality in mainline kernel should be merged after
+> final
+> +  release of kernel which contains that functionality (it's not enough
+> when the
+> +  feature gets into rc1, because it can be reverted in later rc if
+> problematic).
+>
+>  ### C tests
+>  * Use new
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C
+> API]
+> --
+> 2.34.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+
+-- 
+Regards,
+Li Wang
+
+--000000000000f1d53b05d2eada25
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Fri, Dec 10, 2021 at 9:46 PM Petr Vorel &lt;<a h=
+ref=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></div><block=
+quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
+px solid rgb(204,204,204);padding-left:1ex">Suggested-by: Cyril Hrubis &lt;=
+<a href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt=
+;<br>
+Signed-off-by: Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_=
+blank">pvorel@suse.cz</a>&gt;<br></blockquote><div><span class=3D"gmail_def=
+ault" style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:=
+liwang@redhat.com">liwang@redhat.com</a>&gt;</span></div><div><span class=
+=3D"gmail_default" style=3D"font-size:small"><br></span></div><div><span cl=
+ass=3D"gmail_default" style=3D"font-size:small"></span>=C2=A0</div><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px=
+ solid rgb(204,204,204);padding-left:1ex">
+---<br>
+=C2=A0doc/maintainer-patch-review-checklist.txt | 3 +++<br>
+=C2=A01 file changed, 3 insertions(+)<br>
+<br>
+diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-pat=
+ch-review-checklist.txt<br>
+index c7bb47810..4e2b267ac 100644<br>
+--- a/doc/maintainer-patch-review-checklist.txt<br>
++++ b/doc/maintainer-patch-review-checklist.txt<br>
+@@ -34,6 +34,9 @@ New test should<br>
+=C2=A0 =C2=A0GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should n=
+ot change<br>
+=C2=A0 =C2=A0unless test is completely rewritten<br>
+=C2=A0* Old copyrights should be kept unless test is completely rewritten<b=
+r>
++* Tests for new functionality in mainline kernel should be merged after fi=
+nal<br>
++=C2=A0 release of kernel which contains that functionality (it&#39;s not e=
+nough when the<br>
++=C2=A0 feature gets into rc1, because it can be reverted in later rc if pr=
+oblematic).<br>
+<br>
+=C2=A0### C tests<br>
+=C2=A0* Use new <a href=3D"https://github.com/linux-test-project/ltp/wiki/T=
+est-Writing-Guidelines#22-writing-a-test-in-c[C" rel=3D"noreferrer" target=
+=3D"_blank">https://github.com/linux-test-project/ltp/wiki/Test-Writing-Gui=
+delines#22-writing-a-test-in-c[C</a> API]<br>
+-- <br>
+2.34.1<br>
+<br>
+<br>
+-- <br>
+Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
+oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
+<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
+Wang<br></div></div></div></div>
+
+--000000000000f1d53b05d2eada25--
+
+
+--===============0800366507==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0800366507==--
+
