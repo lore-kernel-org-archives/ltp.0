@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E452C433FE
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 13:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1D61C433EF
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 13:24:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2D1F3C8C62
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 14:24:02 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9FAAE3C8A4B
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 14:24:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F7E43C88E7
+ by picard.linux.it (Postfix) with ESMTPS id 067473C8AFF
  for <ltp@lists.linux.it>; Mon, 13 Dec 2021 14:23:52 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 04A011000F25
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 03FED600292
  for <ltp@lists.linux.it>; Mon, 13 Dec 2021 14:23:51 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 40EBA212B6;
- Mon, 13 Dec 2021 13:23:51 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F297D1F3BE;
+ Mon, 13 Dec 2021 13:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639401831; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=R0ixrMPTmSGUJ/7ziNaEypkXN6aZVxcg32lZusTeWy8=;
- b=HuNKbUwL4UR80hrxao7UgI/gBk1a//T2mKQQyMgCBSxMNunbY31bJbzwDJDo03vl8eSuZq
- HUgwwn1AF+aZ2yfSCiuqPT7TvvoGNsbBBp90ZBAwFKu/WmOBd/sVa/avuW7xYPSWLOLX9y
- 8LQFc9kukITdg/Rk+eTsvhWs6rwZ1gk=
+ t=1639401830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=2D/01UJbk+D3t2qjZApB6fOpbUQBZ8bzaTyBVahbNQc=;
+ b=w46mr8EZou74yLvhCKMYstugwDqDoFeL5mzYor20Jg6Ce7hb1BQ6OCP4SIX+2gtd7gVw9p
+ 1TG9upgMHzGzPwXEJXaWJozU9rUIDO3uGqkAHjqHDaJACwnzZLYIrbzQzBj2ZU3zOQ8/T5
+ iZrjEO6v3U/kfhAHzW9CvgCAxoap78Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639401831;
+ s=susede2_ed25519; t=1639401830;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=R0ixrMPTmSGUJ/7ziNaEypkXN6aZVxcg32lZusTeWy8=;
- b=FCL5vg8xe/yJtXyrpOEHdDGow/ZKSH9HtzR+YRlYZn7d/tqRwfTCYvAcjrh8a3jDemT3XM
- WUfJSdVx3cKdmEDA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=2D/01UJbk+D3t2qjZApB6fOpbUQBZ8bzaTyBVahbNQc=;
+ b=UgNnuSVHCUg1EUclKXnscXrusbn6IJUk601RavhTLU7NejN4rObgim+8x3ph141TTJO2io
+ M3jCT9t7ZryiYEBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0457513AFF;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B6A5613AFF;
  Mon, 13 Dec 2021 13:23:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gLyDOmZJt2GLDQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id hbNGKmZJt2GLDQAAMHmgww
  (envelope-from <pvorel@suse.cz>); Mon, 13 Dec 2021 13:23:50 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 13 Dec 2021 14:23:39 +0100
-Message-Id: <20211213132339.22770-2-pvorel@suse.cz>
+Date: Mon, 13 Dec 2021 14:23:38 +0100
+Message-Id: <20211213132339.22770-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20211213132339.22770-1-pvorel@suse.cz>
-References: <20211213132339.22770-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] chdir01.c: Minor cleanup
+Subject: [LTP] [PATCH 1/2] chdir01.c: Fix on enabled FIPS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,53 +76,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-1) print tested item (readability)
-2) define TESTUSER (DRY)
+which causes 0 permission for user and group.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/chdir/chdir01.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/chdir/chdir01.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
-index 5819998484..228f6daf44 100644
+index aa25adf6aa..5819998484 100644
 --- a/testcases/kernel/syscalls/chdir/chdir01.c
 +++ b/testcases/kernel/syscalls/chdir/chdir01.c
-@@ -25,6 +25,7 @@
- #define BLOCKED_NAME "keep_out"
- #define LINK_NAME1 "symloop"
+@@ -27,7 +27,7 @@
  #define LINK_NAME2 "symloop2"
-+#define TESTUSER  "nobody"
  
  static char *workdir;
- static int skip_symlinks, blocked_perm;
-@@ -78,7 +79,7 @@ static void setup(void)
- 	SAFE_CLOSE(fd);
+-static int skip_symlinks, skip_blocked;
++static int skip_symlinks, blocked_perm;
+ static struct passwd *ltpuser;
  
- 	if (!ltpuser)
--		ltpuser = SAFE_GETPWNAM("nobody");
-+		ltpuser = SAFE_GETPWNAM(TESTUSER);
- }
+ static struct test_case {
+@@ -61,9 +61,9 @@ static void setup(void)
+ 	SAFE_MKDIR(BLOCKED_NAME, 0644);
+ 	umask(sys_umask);
  
- static void check_result(const char *user, const char *name, int retval,
-@@ -106,6 +107,8 @@ static void run(unsigned int n)
- {
- 	struct test_case *tc = testcase_list + n;
- 
-+	tst_res(TINFO, "Testing '%s'", tc->name);
+-	/* FAT and NTFS override file and directory permissions */
+ 	SAFE_STAT(BLOCKED_NAME, &statbuf);
+-	skip_blocked = statbuf.st_mode & 0111;
++	blocked_perm = statbuf.st_mode;
 +
- 	if (tc->root_err == ELOOP && skip_symlinks) {
- 		tst_res(TCONF, "Skipping symlink loop test, not supported");
- 		return;
-@@ -135,7 +138,7 @@ static void run(unsigned int n)
- 	SAFE_SETEUID(ltpuser->pw_uid);
- 	TEST(chdir(tc->name));
- 	SAFE_SETEUID(0);
--	check_result("nobody", tc->name, tc->nobody_ret, tc->nobody_err);
-+	check_result(TESTUSER, tc->name, tc->nobody_ret, tc->nobody_err);
- }
+ 	skip_symlinks = 0;
+ 	TEST(symlink(LINK_NAME1, LINK_NAME2));
  
- static void cleanup(void)
+@@ -117,7 +117,15 @@ static void run(unsigned int n)
+ 	TEST(chdir(tc->name));
+ 	check_result("root", tc->name, tc->root_ret, tc->root_err);
+ 
+-	if (tc->nobody_err == EACCES && skip_blocked) {
++	/* FIPS mode disables umask efect for group or other */
++	if (!(blocked_perm & S_IRGRP) && strcmp(tc->name, "/") != 0) {
++		tst_res(TCONF, "Skipping unprivileged permission test, "
++			"no read permission for \"%s\"", tc->name);
++		return;
++	}
++
++	/* FAT and NTFS override file and directory permissions */
++	if (blocked_perm & 0111 && tc->nobody_err == EACCES) {
+ 		tst_res(TCONF, "Skipping unprivileged permission test, "
+ 			"FS mangles dir mode");
+ 		return;
 -- 
 2.34.1
 
