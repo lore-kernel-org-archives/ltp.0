@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CF6C433EF
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 05:44:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21054C433F5
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 05:45:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 411B63C8979
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 06:44:50 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id E8B813C88C5
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 06:45:00 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF1C33C0B90
+ by picard.linux.it (Postfix) with ESMTPS id E802E3C87C8
  for <ltp@lists.linux.it>; Mon, 13 Dec 2021 06:44:40 +0100 (CET)
 Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
  [195.245.230.82])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 28F6F10005BB
- for <ltp@lists.linux.it>; Mon, 13 Dec 2021 06:44:38 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4C40E100061D
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 06:44:40 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
  s=170520fj; t=1639374278; i=@fujitsu.com;
- bh=evaJqqkGaylDpRYT3blh5oEaPWKw4ObFAinvz33gFPw=;
+ bh=9xQr6p2zrBP7zLanA6gT06FdkzkUB9XsHZh5eAp4dEU=;
  h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=mDpoKgRsLXsZifV+410jIo3lixLCKoe6LYi91fYQ94OAAZL4DFJ8lmfU1pblNV6Mc
- wozrWGfKtq2mgV6RYwu900DxGsFiEY2gA/QIZ4TiV3KNLsHenKJoJrRvnpcO8/rdyj
- BZIBZQhVZ/wLT1M9UqT/nYAG30YWksUbiVoVLV/kbXYJkXP0vsiHgJGSYz05dFRN5E
- udK5/4ZAPqCvXOL25hKPtlNcxGWGBVR78HbievL3GA1ife/0Dcp4OLsDXitDxORp8n
- lJzpKLx1csydipuSiCXmL2/dWnMRUIuPYK4v+qZhyVrwZn3TsFPkBzXAyogniypSYK
- wnDUSpswpEbAA==
+ b=iSWlQqk+zDlp9llAfJlcB4UQzEmMds3PJpqhi0EgibrKGrlK7QazpNuTSk9UmRPmb
+ fWFVKqHOuqELZJ553Ql0tj4Z/P8qqYZHn5c/9OlTdW1IpFzRedcHMmzqNdx+74bUHv
+ LP9z1DCM3hbMczeexBDCQW3ZzBq5lqBQKEv0Hc7GfJpwUK8wWVMA7xG4oTYHvHVbEd
+ lXGUuUYYp3I4LmzL81XCxj9cSiH/wt55byj12Jr20y3HhlWJyEzxAk7fa/xLO45Nmr
+ Z0PI+2D9IfFPAttbkrXODd0RwhkwvOLRP0jxqISPb+En+E9SOy3vx1pVJ62bQc18iW
+ ZNFZsjVEiL3iA==
 Received: from [100.115.1.47] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-a.eu-west-1.aws.ess.symcld.net id E6/61-30341-5CDD6B16;
+ by server-4.bemta.az-a.eu-west-1.aws.ess.symcld.net id 57/61-30341-5CDD6B16;
  Mon, 13 Dec 2021 05:44:37 +0000
 X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFIsWRWlGSWpSXmKPExsViZ8MxSffo3W2
- JBvvvK1is+L6D0YHRY9/vdawBjFGsmXlJ+RUJrBn9r2YzFuznqnh5YztjA2MjZxcjF4eQwFlG
- idm9h1ghnJ1MEhMvzWWDcPYwShxadwUow8nBJqAp8axzATOILSIgIdHR8JYdxGYWUJdYPukXE
- 4gtLOAhsef/ZhYQm0VAVeJv93GwGl4BT4lL8zvAeiUEFCSmPHwPZHNwcAqoSLx+GQcSFhJQlp
- i+9DUjRLmgxMmZT1ggxktIHHzxAqpVUeJSxzdGCLtCYtasNiYIW03i6rlNzBMYBWchaZ+FpH0
- BI9MqRqukosz0jJLcxMwcXUMDA11DQ1NdU10jU1O9xCrdRL3UUt3y1OISXUO9xPJivdTiYr3i
- ytzknBS9vNSSTYzAIE4pZv2/g7G776feIUZJDiYlUd5vjFsThfiS8lMqMxKLM+KLSnNSiw8xy
- nBwKEnwttzaligkWJSanlqRlpkDjCiYtAQHj5IILyMwqoR4iwsSc4sz0yFSpxgVpcR5j94BSg
- iAJDJK8+DaYFF8iVFWSpiXkYGBQYinILUoN7MEVf4VozgHo5Iw7zSQKTyZeSVw018BLWYCWVy
- 5GWRxSSJCSqqBKemx6x9eJu57bzZei3gctTM98kxSn/YP5jJGM4MFyyzvNRzPdhVmzPiWe9a7
- srfxwPZIFhYtR+Yqk3ILneV2NZ1PSw6rflrOafhl5qOZr67ulo+vYphXu8wxQO5fQLqSj3Xvu
- URfX3MdUb0vR2b5T3wd5lW+Lyv5i3Ok+a8UOya708s8HXccb3puvcWe/+Kf4we2S+6QiVjA4z
- OX5d712KwaK40knfBZ7HyJ5w5bPjzE/0ilqizUr/fas+DLx5vfiP75b/ZMYa1/7rE45b7Cew9
- uNYr3ebKtXhrN3qNRZHRF0W/JzSDWq9opslPnpuyS+ruV+9cvA7HjE8W9S48/Yd12UdDB9L9U
- o61Yg70SS3FGoqEWc1FxIgBzMvU6XQMAAA==
+ JBj8alSxWfN/B6MDose/3OtYAxijWzLyk/IoE1owXEyeyFsziq1g+4zB7A+MH7i5GLg4hgbOM
+ EqvPtrFAODuZJD4uvMIO4exhlLjx7y1TFyMnB5uApsSzzgXMILaIgIRER8NbdhCbWUBdYvmkX
+ 2A1wgKhEh2rd7KC2CwCqhJX768Cqufg4BXwlPiwxAwkLCGgIDHl4XuwMZwCXhJn1z0GaxUSSJ
+ Lo+7OUBcTmFRCUODnzCQvEeAmJgy9eMEP0Kkpc6vjGCGFXSMya1cYEYatJXD23iXkCo+AsJO2
+ zkLQvYGRaxWiVVJSZnlGSm5iZo2toYKBraGiqCySNjPUSq3QT9VJLdctTi0t0DfUSy4v1UouL
+ 9Yorc5NzUvTyUks2MQKDOKWYoXoH4//en3qHGCU5mJREeb8xbk0U4kvKT6nMSCzOiC8qzUktP
+ sQow8GhJMHbcmtbopBgUWp6akVaZg4womDSEhw8SiK8jMCoEuItLkjMLc5Mh0idYlSUEuc9eg
+ coIQCSyCjNg2uDRfElRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK800Cm8GTmlcBNfwW0mAl
+ kceVmkMUliQgpqQamOb5HFyYUuB+ZfLDE549v8313k51P/68TXM3bVuwRo7PsTJ8Uy4dnWzcV
+ RSx5EhLbHdSUw5DMeP32uxfncttOnf3yZZlMdVOm4wxfrsSJN2+eupfiwCY5/+p8Xl7FvYrLn
+ OzWfV2voXrb+vqvY5fKUxmNnt/rMplvru09++1r6fmLi+QusvU1djz5avW7XdpNX1Ig4mLgFZ
+ nmlbnvj3yW8jcp6/RimtkbIGZ1Wvu8zKTrb60UU83Kd7PtKr5T8Jtf+OC9RffjZjOvPy8/Y3n
+ is9ubLp106VqcMDXiS+3UDNmjgW8PiCQ3md/XLL+XqLxq88qz5+YERinV7G3a3Nt48SinkZHN
+ r22Sp47xPXlZrcRSnJFoqMVcVJwIAGdael1dAwAA
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-5.tower-585.messagelabs.com!1639374277!154814!1
+X-Msg-Ref: server-14.tower-585.messagelabs.com!1639374277!173691!1
 X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 3175 invoked from network); 13 Dec 2021 05:44:37 -0000
+Received: (qmail 32614 invoked from network); 13 Dec 2021 05:44:37 -0000
 Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
- by server-5.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ by server-14.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
  encrypted SMTP; 13 Dec 2021 05:44:37 -0000
 Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 1D7C21000F6
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 212B51000FC
  for <ltp@lists.linux.it>; Mon, 13 Dec 2021 05:44:37 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 11070100047
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 1411E1000EE
  for <ltp@lists.linux.it>; Mon, 13 Dec 2021 05:44:37 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Mon, 13 Dec 2021 05:44:07 +0000
+ (TLS) id 15.0.1497.26; Mon, 13 Dec 2021 05:44:23 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Mon, 13 Dec 2021 13:44:19 +0800
-Message-ID: <1639374260-22887-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon, 13 Dec 2021 13:44:20 +0800
+Message-ID: <1639374260-22887-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <YbNH1J8E3nzH15Cu@yuki>
+In-Reply-To: <1639374260-22887-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <YbNH1J8E3nzH15Cu@yuki>
+ <1639374260-22887-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/3] swapping01: skip test if zram-swap is being
- used
+Subject: [LTP] [PATCH v3 2/3] zram/zram_lib.sh: Skip test if zram module can
+ not be removed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,51 +106,67 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For the swapping test we attempt to allocate 130% of the available RAM and
-we make sure that the overflow would fit the swap, but as long as swap is
-backed by RAM this obviously false. So skip it if zram-swap is being used.
+If zram-generator package is installed and works, then we can not
+remove zram module because zram swap is being used. We can also use zramstart
+command or similar shell script(use zramctl,mkswap,swapon) to do this.
+
+Since zram01.sh and zram02.sh needs to rmmod and modprobe, they can't work well
+if zram module can't be removed. So skip it.
 
 Fixes: #888
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/mem/swapping/swapping01.c | 13 ++++++++++++-
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 392b79d65..925790186 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -40,10 +40,10 @@
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index fe9c915c3..26f19ec02 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -5,6 +5,7 @@
  
- #include <sys/types.h>
- #include <sys/wait.h>
--#include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
-+#include "tst_safe_stdio.h"
- #include "lapi/abisize.h"
- #include "mem.h"
+ dev_makeswap=-1
+ dev_mounted=-1
++dev_zram_load=-1
  
-@@ -67,6 +67,17 @@ static void test_swapping(void)
- #ifdef TST_ABI32
- 	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
-+	FILE *file;
-+	char line[PATH_MAX];
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
+@@ -17,6 +18,10 @@ zram_cleanup()
+ {
+ 	local i
+ 
++	if [ $dev_zram_load -le 0 ]; then
++		return
++	fi
 +
-+	file = SAFE_FOPEN("/proc/swaps", "r");
-+	while (fgets(line, sizeof(line), file)) {
-+		if (strstr(line, "/dev/zram")) {
-+			SAFE_FCLOSE(file);
-+			tst_brk(TCONF, "zram-swap is being used!");
-+		}
-+	}
-+	SAFE_FCLOSE(file);
+ 	for i in $(seq 0 $dev_makeswap); do
+ 		swapoff /dev/zram$i
+ 	done
+@@ -47,6 +52,10 @@ zram_load()
+ 		tst_brk TBROK "dev_num must be > 0"
+ 	fi
  
- 	init_meminfo();
++	if grep -q '^zram' /proc/modules; then
++		 rmmod zram > /dev/null 2>&1 || tst_brk TCONF "zram module is being used"
++	fi
++
+ 	tst_set_timeout $((dev_num*450))
  
+ 	tst_res TINFO "create '$dev_num' zram device(s)"
+@@ -54,10 +63,12 @@ zram_load()
+ 	modprobe zram num_devices=$dev_num || \
+ 		tst_brk TBROK "failed to insert zram module"
+ 
++	dev_zram_load=1
+ 	dev_num_created=$(ls /dev/zram* | wc -w)
+ 
+ 	if [ "$dev_num_created" -ne "$dev_num" ]; then
+-		tst_brk TFAIL "unexpected num of devices: $dev_num_created"
++		tst_brk TFAIL "expected num of devices $dev_num, but created"\
++				"$dev_num_created"
+ 	fi
+ 
+ 	tst_res TPASS "all zram devices successfully created"
 -- 
 2.23.0
 
