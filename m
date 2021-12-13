@@ -4,75 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09348C433F5
-	for <ltp@archiver.kernel.org>; Sun, 12 Dec 2021 03:50:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BDDFC433F5
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 03:42:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 854A13C8843
-	for <ltp@archiver.kernel.org>; Sun, 12 Dec 2021 04:50:41 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A30F83C89A4
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 04:42:55 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B73253C1D8F
- for <ltp@lists.linux.it>; Sun, 12 Dec 2021 04:50:28 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id C75023C1448
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 04:42:44 +0100 (CET)
+Received: from smtpproxy21.qq.com (smtpbg704.qq.com [203.205.195.105])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 522A910007BB
- for <ltp@lists.linux.it>; Sun, 12 Dec 2021 04:50:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1639281025;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oSjGym/L4Ic5JVTzxRbJpYKsvn5QO6p4muMGRAK33CY=;
- b=QxZOhERrXXJnkPjgxRTKEfvm2OXjo1cqCL8o4LsgQIiWcVPd2sv0zN2KyGXQUOqjGMiGvC
- Uijggo8d31SBhTx6njTFjMPW3e3HWhuNi/U3KKoUTD6/2vn01L8XLe+SeRVi3OQRJsVPlU
- i0pgkoyfqxiIGJM1YF2bcPTkRA4W1iA=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-15-ABfeLYE5Ouyl9lgc3E3-HA-1; Sat, 11 Dec 2021 22:50:21 -0500
-X-MC-Unique: ABfeLYE5Ouyl9lgc3E3-HA-1
-Received: by mail-yb1-f198.google.com with SMTP id
- e131-20020a25d389000000b005fb5e6eb757so24094937ybf.22
- for <ltp@lists.linux.it>; Sat, 11 Dec 2021 19:50:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=oSjGym/L4Ic5JVTzxRbJpYKsvn5QO6p4muMGRAK33CY=;
- b=Q8+MdieO122EysKZo/6jMwQnGX5+8OdJufw1lpCr4gWk0Ubl2pJUkLwGj547/YgSCj
- 2xJ/rWstnKKOXFyNWGq+anf4qFOqFqn+ClQ9wO1+13J+XvoUpuII4O9n+yJqV4x4IfKY
- 5NFMpTrNudehhgEbaLmLIv96Z9hWL0J4t7fOD5G8Q4IEK9N5FdiAmAVuMSbd2HakeqHf
- 7F8Rxki8gvwJhAyavO4nXr+dPUnfVCOCFYqrbvps6rdbBq5fVe4GdMqwJL9WS6H/9M6T
- NkMdNfRvPl1bk4PUNAP3lXdr3yftZ3tNq+0NWLa6s0NZWDZgOAtciovHT74rCPDAUAYP
- 0n4A==
-X-Gm-Message-State: AOAM533EwkuJpN4G4/q5pABuqXbMTN1wG7kh5Ja0wW64jmcwE7XKJqT7
- UzDxoCAu3DIP/XVR5KQvMlKaEwvrtMCsn6QIkqJc1J+4ALPoFP85ZHJH3yekZgSHLA215oT354X
- fQAOi8/nGnM3GUrtwEkQMATdsTKs=
-X-Received: by 2002:a25:1e83:: with SMTP id e125mr23797954ybe.32.1639281021351; 
- Sat, 11 Dec 2021 19:50:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzbQKJoKqyPgzQJ1wlzQaBJIr3Db9h+5dJPqhNhK4KHnpUmvNx02meYDQhT1G7xk3lj8rqPdL8x7HP5+Do02tY=
-X-Received: by 2002:a25:1e83:: with SMTP id e125mr23797934ybe.32.1639281021006; 
- Sat, 11 Dec 2021 19:50:21 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ED3AA10005BB
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 04:42:41 +0100 (CET)
+X-QQ-mid: bizesmtp35t1639366954txaq4vjl
+Received: from localhost.localdomain (unknown [58.240.82.166])
+ by esmtp6.qq.com (ESMTP) with 
+ id ; Mon, 13 Dec 2021 11:42:28 +0800 (CST)
+X-QQ-SSF: 0140000000200070E000000B0000000
+X-QQ-FEAT: 4LFlwc+MlXmqnpGi9L9tyFsagf6I45RFYFWiUTVMjCPLlQKxoi2jvT0pyIBXq
+ z3z0wl6L5/OsJcYXw8o2oOhcFvZTBsamVKmjdKrbIUqTE967BhshIUp5cK/2ylFLe7XXRx3
+ yD7GVxYNlsmTUXJBQLT2Lvf5LjA0b56aO7NFTfb/LOwV8bLF2974un5GgQ4Pv13v+IfROps
+ hqOZUtuZwnxYA5Ri8WI2hCZfORHc3MobMuL7tFS+JcdhdmN79EhOzahg+jH9qMDhHMoHrGm
+ AUT/cxijkSF4dkm6qsMgUOFCniWhrjfPy736sT2TqvYRRwPqtv3lQNKv2geZhHB0PDJljPl
+ A+ixH58+0a58LGPC1zPfQeePVGIjw==
+X-QQ-GoodBg: 2
+From: sujiaxun <sujiaxun@uniontech.com>
+To: ltp@lists.linux.it
+Date: Mon, 13 Dec 2021 11:42:13 +0800
+Message-Id: <20211213034213.10306-1-sujiaxun@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20211210134556.26091-1-pvorel@suse.cz>
-In-Reply-To: <20211210134556.26091-1-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Sun, 12 Dec 2021 11:49:59 +0800
-Message-ID: <CAEemH2ec18R5rxvz-m7yKzRHMHt8aDSA=pggPXGc7jjzHH=-Vw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] doc/maintainer: Add policy for new
- functionality
+Subject: [LTP] [PATCH] [v1] syscalls/symlinkat01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,134 +56,327 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0800366507=="
+Cc: sujiauxn <sujiaxun@uniontech.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0800366507==
-Content-Type: multipart/alternative; boundary="000000000000f1d53b05d2eada25"
+From: sujiauxn <sujiaxun@uniontech.com>
 
---000000000000f1d53b05d2eada25
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: sujiauxn <sujiaxun@uniontech.com>
+---
+ .../kernel/syscalls/symlinkat/symlinkat01.c   | 198 ++++++------------
+ 1 file changed, 63 insertions(+), 135 deletions(-)
 
-On Fri, Dec 10, 2021 at 9:46 PM Petr Vorel <pvorel@suse.cz> wrote:
+diff --git a/testcases/kernel/syscalls/symlinkat/symlinkat01.c b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
+index 8c9e148e9..beda359c1 100644
+--- a/testcases/kernel/syscalls/symlinkat/symlinkat01.c
++++ b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
+@@ -1,35 +1,16 @@
+-/******************************************************************************
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2006
++ * 08/25/2006      Created first by Yi Yang <yyangcdl@cn.ibm.com>
++ */
++
++/*\
++ * [Description]
+  *
+- *   Copyright (c) International Business Machines  Corp., 2006
++ * This test case will verify basic function of symlinkat
++ * added by kernel 2.6.16 or up.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+- * NAME
+- *      symlinkat01.c
+- *
+- * DESCRIPTION
+- *	This test case will verify basic function of symlinkat
+- *	added by kernel 2.6.16 or up.
+- *
+- * Author
+- *	Yi Yang <yyangcdl@cn.ibm.com>
+- *
+- * History
+- *      08/25/2006      Created first by Yi Yang <yyangcdl@cn.ibm.com>
+- *
+- *****************************************************************************/
++ */
 
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
->
-Reviewed-by: Li Wang <liwang@redhat.com>
+ #define _GNU_SOURCE
+
+@@ -38,24 +19,16 @@
+ #include <sys/time.h>
+ #include <fcntl.h>
+ #include <stdlib.h>
+-#include <errno.h>
+-#include <string.h>
+ #include <signal.h>
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
++#include <stdio.h>
+
+ #define MYRETCODE -999
+ #ifndef AT_FDCWD
+ #define AT_FDCWD -100
+ #endif
+
+-struct test_struct;
+-static void setup();
+-static void cleanup();
+-static void setup_every_copy();
+-static void mysymlinkat_test(struct test_struct *desc);
+-
+ #define TEST_DIR1 "olddir"
+ #define TEST_DIR2 "newdir"
+ #define TEST_DIR3 "deldir"
+@@ -67,146 +40,104 @@ static char dpathname[256] = "%s/" TEST_DIR2 "/" TEST_FILE1;
+ static int olddirfd, newdirfd = -1, cwd_fd = AT_FDCWD, stdinfd = 0, crapfd =
+     -1, deldirfd;
+
+-struct test_struct {
++struct test_case {
+ 	const char *oldfn;
+ 	int *newfd;
+ 	const char *newfn;
+ 	const char *referencefn1;
+ 	const char *referencefn2;
+ 	int expected_errno;
+-} test_desc[] = {
++} tcases[] = {
+ 	/* relative paths */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &newdirfd, TEST_FILE1,
+ 		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* abs path at dst */
++    /* abs path at dst */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &newdirfd, dpathname,
+ 		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* relative paths to cwd */
++    /* relative paths to cwd */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &cwd_fd,
+ 		    TEST_DIR2 "/" TEST_FILE1, TEST_DIR1 "/" TEST_FILE1,
+ 		    TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* abs path */
++    /* abs path */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &cwd_fd, dpathname,
+ 		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* relative paths to invalid */
++    /* relative paths to invalid */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &stdinfd,
+ 		    TEST_DIR2 "/" TEST_FILE1, 0, 0, ENOTDIR},
+-	    /* abs path at dst */
++    /* abs path at dst */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &stdinfd, dpathname,
+ 		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* relative paths to crap */
++    /* relative paths to crap */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &crapfd,
+ 		    TEST_DIR2 "/" TEST_FILE1, 0, 0, EBADF},
+-	    /* abs path at dst */
++    /* abs path at dst */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &crapfd, dpathname,
+ 		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* relative paths to deleted */
++    /* relative paths to deleted */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &deldirfd,
+ 		    TEST_DIR2 "/" TEST_FILE1, 0, 0, ENOENT},
+-	    /* abs path at dst */
++    /* abs path at dst */
+ 	{
+ 	"../" TEST_DIR1 "/" TEST_FILE1, &deldirfd, dpathname,
+-		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0},
+-	    /* fifo link */
+-	    /*      { TEST_FIFO, &newdirfd, TEST_FILE1, TEST_DIR1"/"TEST_FIFO, TEST_DIR2"/"TEST_FILE1, 0 }, */
++		    TEST_DIR1 "/" TEST_FILE1, TEST_DIR2 "/" TEST_FILE1, 0}
+ };
+
+-char *TCID = "symlinkat01";
+-int TST_TOTAL = sizeof(test_desc) / sizeof(*test_desc);
+-
+-static int mysymlinkat(const char *oldfilename,
+-		       int newdirfd, const char *newfilename)
+-{
+-	return ltp_syscall(__NR_symlinkat, oldfilename, newdirfd, newfilename);
+-}
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int i;
+-
+-	/* Disable test if the version of the kernel is less than 2.6.16 */
+-	if ((tst_kvercmp(2, 6, 16)) < 0) {
+-		tst_resm(TWARN, "This test can only run on kernels that are ");
+-		tst_resm(TWARN, "2.6.16 and higher");
+-		exit(0);
+-	}
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			setup_every_copy();
+-			mysymlinkat_test(&test_desc[i]);
+-
+-		}
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+ static void setup_every_copy(void)
+ {
+ 	close(newdirfd);
+ 	unlink(dpathname);
+ 	rmdir(TEST_DIR2);
+
+-	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
+-	newdirfd = SAFE_OPEN(cleanup, TEST_DIR2, O_DIRECTORY);
++	SAFE_MKDIR(TEST_DIR2, 0700);
++	newdirfd = SAFE_OPEN(TEST_DIR2, O_DIRECTORY);
+ }
+
+-static void mysymlinkat_test(struct test_struct *desc)
++static void run_test(unsigned int nr)
+ {
+ 	int fd;
++	struct test_case *tc = &tcases[nr];
++
++	setup_every_copy();
+
+-	TEST(mysymlinkat(desc->oldfn, *desc->newfd, desc->newfn));
+-
+-	/* check return code */
+-	if (TEST_ERRNO == desc->expected_errno) {
+-		if (TEST_RETURN == 0 && desc->referencefn1 != NULL) {
++	TEST(tst_syscall(__NR_symlinkat, tc->oldfn, *tc->newfd, tc->newfn));
++	if (TST_ERR == tc->expected_errno) {
++		if (TST_RET == 0 && tc->referencefn1 != NULL) {
+ 			int tnum = rand(), vnum = ~tnum;
+
+-			fd = SAFE_OPEN(cleanup, desc->referencefn1, O_RDWR);
+-			SAFE_WRITE(cleanup, 1, fd, &tnum, sizeof(tnum));
+-			SAFE_CLOSE(cleanup, fd);
++			fd = SAFE_OPEN(tc->referencefn1, O_RDWR);
++			SAFE_WRITE(1, fd, &tnum, sizeof(tnum));
++			SAFE_CLOSE(fd);
+
+-			fd = SAFE_OPEN(cleanup, desc->referencefn2, O_RDONLY);
+-			SAFE_READ(cleanup, 1, fd, &vnum, sizeof(vnum));
+-			SAFE_CLOSE(cleanup, fd);
++			fd = SAFE_OPEN(tc->referencefn2, O_RDONLY);
++			SAFE_READ(1, fd, &vnum, sizeof(vnum));
++			SAFE_CLOSE(fd);
+
+ 			if (tnum == vnum)
+-				tst_resm(TPASS, "Test passed");
++				tst_res(TPASS, "Test passed");
+ 			else
+-				tst_resm(TFAIL,
++				tst_res(TFAIL,
+ 					 "The link file's content isn't as same as the original file's "
+ 					 "although symlinkat returned 0");
+ 		} else {
+-			tst_resm(TPASS,
++			tst_res(TPASS,
+ 				 "symlinkat() returned the expected  errno %d: %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
++				 TST_ERR, strerror(TST_ERR));
+ 		}
+ 	} else {
+-		tst_resm(TFAIL,
+-			 TEST_RETURN ==
++		tst_res(TFAIL,
++			 TST_RET ==
+ 			 0 ? "symlinkat() surprisingly succeeded" :
+-			 "symlinkat() Failed, errno=%d : %s", TEST_ERRNO,
+-			 strerror(TEST_ERRNO));
++			 "symlinkat() Failed, errno=%d : %s", TST_ERR,
++			 strerror(TST_ERR));
+ 	}
+ }
+
+@@ -214,27 +145,24 @@ static void setup(void)
+ {
+ 	char *tmp;
+ 	int fd;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	tst_tmpdir();
+-
+-	SAFE_MKDIR(cleanup, TEST_DIR1, 0700);
+-	SAFE_MKDIR(cleanup, TEST_DIR3, 0700);
+-	olddirfd = SAFE_OPEN(cleanup, TEST_DIR1, O_DIRECTORY);
+-	deldirfd = SAFE_OPEN(cleanup, TEST_DIR3, O_DIRECTORY);
+-	SAFE_RMDIR(cleanup, TEST_DIR3);
+-	fd = SAFE_OPEN(cleanup, TEST_DIR1 "/" TEST_FILE1, O_CREAT | O_EXCL, 0600);
+-	SAFE_CLOSE(cleanup, fd);
++
++	SAFE_MKDIR(TEST_DIR1, 0700);
++	SAFE_MKDIR(TEST_DIR3, 0700);
++	olddirfd = SAFE_OPEN(TEST_DIR1, O_DIRECTORY);
++	deldirfd = SAFE_OPEN(TEST_DIR3, O_DIRECTORY);
++	SAFE_RMDIR(TEST_DIR3);
++	fd = SAFE_OPEN(TEST_DIR1 "/" TEST_FILE1, O_CREAT | O_EXCL, 0600);
++	SAFE_CLOSE(fd);
+
+ 	/* gratuitous memory leak here */
+ 	tmp = strdup(dpathname);
+ 	snprintf(dpathname, sizeof(dpathname), tmp, get_current_dir_name());
+-
+-	TEST_PAUSE;
+ }
+
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++    .min_kver = "2.6.16",
++	.setup = setup,
++    .tcnt = ARRAY_SIZE(tcases),
++    .test = run_test,
++    .needs_tmpdir = 1,
++};
+--
+2.20.1
 
 
-
-> ---
->  doc/maintainer-patch-review-checklist.txt | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/doc/maintainer-patch-review-checklist.txt
-> b/doc/maintainer-patch-review-checklist.txt
-> index c7bb47810..4e2b267ac 100644
-> --- a/doc/maintainer-patch-review-checklist.txt
-> +++ b/doc/maintainer-patch-review-checklist.txt
-> @@ -34,6 +34,9 @@ New test should
->    GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should not change
->    unless test is completely rewritten
->  * Old copyrights should be kept unless test is completely rewritten
-> +* Tests for new functionality in mainline kernel should be merged after
-> final
-> +  release of kernel which contains that functionality (it's not enough
-> when the
-> +  feature gets into rc1, because it can be reverted in later rc if
-> problematic).
->
->  ### C tests
->  * Use new
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C
-> API]
-> --
-> 2.34.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
-
--- 
-Regards,
-Li Wang
-
---000000000000f1d53b05d2eada25
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, Dec 10, 2021 at 9:46 PM Petr Vorel &lt;<a h=
-ref=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></div><block=
-quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
-px solid rgb(204,204,204);padding-left:1ex">Suggested-by: Cyril Hrubis &lt;=
-<a href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt=
-;<br>
-Signed-off-by: Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_=
-blank">pvorel@suse.cz</a>&gt;<br></blockquote><div><span class=3D"gmail_def=
-ault" style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:=
-liwang@redhat.com">liwang@redhat.com</a>&gt;</span></div><div><span class=
-=3D"gmail_default" style=3D"font-size:small"><br></span></div><div><span cl=
-ass=3D"gmail_default" style=3D"font-size:small"></span>=C2=A0</div><blockqu=
-ote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px=
- solid rgb(204,204,204);padding-left:1ex">
----<br>
-=C2=A0doc/maintainer-patch-review-checklist.txt | 3 +++<br>
-=C2=A01 file changed, 3 insertions(+)<br>
-<br>
-diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-pat=
-ch-review-checklist.txt<br>
-index c7bb47810..4e2b267ac 100644<br>
---- a/doc/maintainer-patch-review-checklist.txt<br>
-+++ b/doc/maintainer-patch-review-checklist.txt<br>
-@@ -34,6 +34,9 @@ New test should<br>
-=C2=A0 =C2=A0GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should n=
-ot change<br>
-=C2=A0 =C2=A0unless test is completely rewritten<br>
-=C2=A0* Old copyrights should be kept unless test is completely rewritten<b=
-r>
-+* Tests for new functionality in mainline kernel should be merged after fi=
-nal<br>
-+=C2=A0 release of kernel which contains that functionality (it&#39;s not e=
-nough when the<br>
-+=C2=A0 feature gets into rc1, because it can be reverted in later rc if pr=
-oblematic).<br>
-<br>
-=C2=A0### C tests<br>
-=C2=A0* Use new <a href=3D"https://github.com/linux-test-project/ltp/wiki/T=
-est-Writing-Guidelines#22-writing-a-test-in-c[C" rel=3D"noreferrer" target=
-=3D"_blank">https://github.com/linux-test-project/ltp/wiki/Test-Writing-Gui=
-delines#22-writing-a-test-in-c[C</a> API]<br>
--- <br>
-2.34.1<br>
-<br>
-<br>
--- <br>
-Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
-oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
-<br>
-</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
- class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
-Wang<br></div></div></div></div>
-
---000000000000f1d53b05d2eada25--
-
-
---===============0800366507==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0800366507==--
-
