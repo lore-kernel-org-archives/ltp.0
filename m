@@ -4,75 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DC29C433EF
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 10:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 243E7C433EF
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 10:22:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC09B3C8A8D
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 11:19:11 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id B03683C89BC
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 11:22:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 189B93C093B
- for <ltp@lists.linux.it>; Mon, 13 Dec 2021 11:19:02 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id B79C53C093B
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 11:22:46 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E4DB200B78
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 11:22:45 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B733E1F3BA;
+ Mon, 13 Dec 2021 10:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1639390964;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DrevJBElhvBWHdc8cEzhdTjbEYs5RuZukQcuChwQdGU=;
+ b=PlUDScsh1yKu5bmM+y+lJ6Mp+Pfn7KSMeYj+PWbEkSZ3BUI2zGFVAKPHI9P1Z9cp31O9ig
+ uFKqQo+HHqz2xZg3e5FTuQ6Bk32xDbz1Bqtynuh0Hkr3zg7ueruXX0miAvygLP0vb10HBu
+ ckEeGfWU8BcR0hTZ9wfFVd+T4KSAN14=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1639390964;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DrevJBElhvBWHdc8cEzhdTjbEYs5RuZukQcuChwQdGU=;
+ b=DbnXIOHqB46wAdNY8LJbbeeFJ/WnoFAMxHTiGV/MxtcsWwDagzOjwE7CCyt67CquqTzF+z
+ aqJkYCd/4acPtFAw==
+Received: from g78 (unknown [10.163.24.42])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E3DDB1A00CB8
- for <ltp@lists.linux.it>; Mon, 13 Dec 2021 11:19:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1639390740;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7aVm8Rp5Wj3BkXFZL1Br1wymIrtIX1u7/OUVQWTAamM=;
- b=JE+vLvjzkJfeLaxXSnyp0SSxYsAJTbI/bIVjtl/dCTenekFessRd3Fxz4NxTa/UGX4nBYj
- 31wJVWy5Z97lXAXKHiTAC4e365KZx3eAtvJskgJ7TXpeQeJrhfE1CmZHe37cObty/z7yzK
- MXPrY8hvFXKC0CWdOClX3CJC3vNXGdU=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-448-Qi0Vpiv7N32GWtvc0p1e7w-1; Mon, 13 Dec 2021 05:18:59 -0500
-X-MC-Unique: Qi0Vpiv7N32GWtvc0p1e7w-1
-Received: by mail-yb1-f199.google.com with SMTP id
- y17-20020a2586d1000000b005f6596e8760so29416703ybm.17
- for <ltp@lists.linux.it>; Mon, 13 Dec 2021 02:18:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=7aVm8Rp5Wj3BkXFZL1Br1wymIrtIX1u7/OUVQWTAamM=;
- b=K+iqdhTbUOxjHhyqGYKq/34hVaoXgMBFSg4BW/RlHaJ49EPFeT8NLbgKzzb5P0s7Kr
- yKzUFwv0rtn1BOQob+E4cGYhoYvHJWHriQR4BOJGDHMBaAyI+7UlpXVr9oEp0J9EB5h4
- tj9swvZ67wchJ+uZNInvEV9ite5jFqp0a0WHd4Ueqr1mmVNDiC0sXjbt2NSkH+tEH9Xh
- si5MS15REtL/LEfyAS6Q6+OKY/iM7y98shbnxthqsdiB7rfeMUMnMsYCwtiAHE47r2Yg
- 4Kgsl/zni/2gXxXe9eeVGkVCPZJiLXugVtzrUUkDY3EGu4utfBT8R4NEJk0c9ln0t2ip
- UtDQ==
-X-Gm-Message-State: AOAM531TOtuCK6KibLS25dV2qgmA3Fb5p1Q4ZUrGSXU95ADAVtbxz1D2
- L9APAbUHJbe294ylmfFiJJcbtZSPoY+kLp8scB++LdDf2RjP0gc/nt1428P1Spk87ggri9B4Ep1
- cciEosG77NfC26kMfdng51Yo1S3A=
-X-Received: by 2002:a25:9849:: with SMTP id k9mr33268088ybo.728.1639390738554; 
- Mon, 13 Dec 2021 02:18:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzQ/eT0R8YV9z6xaKU2DA1VgC1nyb6OmDS9D4k6qdb6OTulxRyyeGs/fUy/HsGgPWj/p1SY0myhoOnmyDSwDP4=
-X-Received: by 2002:a25:9849:: with SMTP id k9mr33268073ybo.728.1639390738318; 
- Mon, 13 Dec 2021 02:18:58 -0800 (PST)
+ by relay2.suse.de (Postfix) with ESMTPS id 70139A3B83;
+ Mon, 13 Dec 2021 10:22:44 +0000 (UTC)
+References: <bbf87d62e2e8274fddc160813e64aedb0a01ffe1.1637970912.git.luke.nowakowskikrijger@canonical.com>
+ <CAEemH2ed6DqKw80Xa_BTjUweT0HrhrUN2-7X+sS05K9gCr2F5A@mail.gmail.com>
+ <CADS1e3cCXsu=y_GNM3ymwHtOq9R671YnQAWgyycG25FJYnOLaA@mail.gmail.com>
+ <CAEemH2cZvK29mrN2xD_EOPx7w3UXFBHrWmAdg+rv5K2vcP3qNA@mail.gmail.com>
+ <87pmqfcp4j.fsf@suse.de>
+ <CADS1e3dXhKJ0NK0OSWYfu-KB__7OsOkRcGmTH66+Ah-tMW8ijA@mail.gmail.com>
+ <CAEemH2cT76bRmeQQPQrALUjjK9VNaGRLY4jOYPNrMjkA4FF7_g@mail.gmail.com>
+ <CADS1e3dkYtRibN7ADGh_c9T5uZ4BFTpjgPaXH1+xfBUS8xpKcA@mail.gmail.com>
+ <87ilw2ccgv.fsf@suse.de>
+ <CADS1e3dEh6YAnWmhizVpkuN_EAqwDOeeVnfT_C23mzN2LS-2XA@mail.gmail.com>
+ <YbMurQKsabIfCOMu@yuki>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 13 Dec 2021 08:50:25 +0000
+In-reply-to: <YbMurQKsabIfCOMu@yuki>
+Message-ID: <87pmq0ajnw.fsf@suse.de>
 MIME-Version: 1.0
-References: <CAEemH2d+-rqscLPdn8q0AEkKaCSkCZ-pET_E=eWWN7Z=aB1k0w@mail.gmail.com>
- <CAASaF6zRCAYo3f4bRc+mxKHnprwtworq-fCif81ECZUWawumbQ@mail.gmail.com>
-In-Reply-To: <CAASaF6zRCAYo3f4bRc+mxKHnprwtworq-fCif81ECZUWawumbQ@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 13 Dec 2021 18:18:45 +0800
-Message-ID: <CAEemH2f_bkCkGiAnB3-8G07rYuVb9hZzKAKO3EMXUExDnx1Fdw@mail.gmail.com>
-To: Jan Stancek <jstancek@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC] enable OOM protection for the library and test
- process?
+Subject: Re: [LTP] [PATCH 1/4] controllers/memcg: update stress test to work
+ under cgroup2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,122 +80,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1201929426=="
+Reply-To: rpalethorpe@suse.de
+Cc: LTP List <ltp@lists.linux.it>,
+ Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1201929426==
-Content-Type: multipart/alternative; boundary="0000000000009b1e5b05d304662a"
+Hello,
 
---0000000000009b1e5b05d304662a
-Content-Type: text/plain; charset="UTF-8"
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-On Mon, Dec 13, 2021 at 5:32 PM Jan Stancek <jstancek@redhat.com> wrote:
+> Hi!
+>> Yes, we would have to remember what we mounted. I think the part I am most
+>> curious about is how we would generate that state i.e what we mounted,
+>> because the Cgroup library does not expose any of this as far as I'm aware.
+>> 
+>> If we want to use the tst_cgroup C lib to cleanup as well we would have to
+>> find a way to reintroduce test state to the lib that we are losing between
+>> calls of the utility, which the only way I could think of is introducing a
+>> way to export and import test state within the lib. e.g.
+>> tst_cgroup_print_test_state() tst_cgroup_load_test_state(), which doesn't
+>> feel good as it exposes some of the nice API you have going on. This
+>> is the
 
-> On Mon, Dec 13, 2021 at 9:04 AM Li Wang <liwang@redhat.com> wrote:
-> >
-> > Hi All,
-> >
-> > As we observed that oom tests occasionally ended with TBROK (Test
-> killed) on small
-> > RAM system, the reason seems test process(test_pid) get killed early
-> than the expected
-> > victim process so that can't report the status correctly.
-> >
-> > I'm thinking maybe we can purposely make the OOM ignore test
-> process(test_pid)
-> > and the main process? (achieve this only in mem library for OOM test)
+struct tst_cgroup_opts and tst_cgroup_print_config could be
+extended. These are presently only used for debugging IIRC.
+
+BTW don't worry about the purity of API too much or how it's implemented
+to begin with. The current API is nice, but that is only after a lengthy
+review process.
+
+>> easiest way to tell if we are mounting things because we can just print
+>> what we mounted, what the test dir of the test is, and reload that state.
+>> This could have further applications to not just this scenario but also to
+>> scenarios where if a test dies its state can be reloaded, etc, almost in a
+>> checkpoint way. Not saying its common but adds some flexibility to the API
+>> and I could see it having applications outside of this utility.
+
+Perhaps, but if a test dies then we usually assume a kernel bug happened
+and abort. In the future we want tests to be able to restart the system,
+but we don't have concrete information about such scenarios.
+
+>> 
+>> Alternatively we could inspect what we created and generate state that way,
+>> i.e. make a call to tst_cgroup_require() and see if new things were
+>> mounted. Then we would have to manually be freeing things. I don't like
+>> this approach because it goes against the whole point of this which was
+>> code reuse. But the cleanup of things isnt the most difficult part so it
+>> wouldn't be the biggest deal to redo the logic.
+
+We have to save the PID (or some kind of test ID) that is used to
+identify the CGroup. So may as well save what CGroups we created as
+well.
+
+>> 
+>> Yes, sounds good.
+>> >
+>> >
+>> Let me know what you think. I wouldn't want to add anything huge to the API
+>> without your blessing :)
 >
-> There are likely more processes that could become unintended targets
-> (e.g. harness process)
->
+> Wouldn't it be easier to rewrite these test to the C then? I think that
+> error handling in shell CGroup tests would always be more difficuilt
+> than in C and given that we have a nice library for C it actually sounds
+> like a better solution.
 
-Right, but I don't think that LTP has responsible to take care of harness
-process.
-(sometimes people even run LTP manually)
-
-
-
-> (if we haven't tried already) Could we make expected victim process
-> more appealing target by tweaking its oom_score/oom_score_adj ?
->
-
-This might not be a good way.
-
-Because OOM Killer counts the oom_score by itself algorithm for
-choosing which process to kill. If we tweak that, it will interfere with
-the scientificity of the OOM test. But if we only do protect the
-lib-process,
-we know that shouldn't be killed and the test will report correctly for us.
-
+Yeah, I would prefer C in general. I'm not sure what is the path of
+least resistance though.
 
 -- 
-Regards,
-Li Wang
-
---0000000000009b1e5b05d304662a
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Mon, Dec 13, 2021 at 5:32 PM Jan Stancek &lt;<a =
-href=3D"mailto:jstancek@redhat.com">jstancek@redhat.com</a>&gt; wrote:<br><=
-/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
-rder-left:1px solid rgb(204,204,204);padding-left:1ex">On Mon, Dec 13, 2021=
- at 9:04 AM Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_bla=
-nk">liwang@redhat.com</a>&gt; wrote:<br>
-&gt;<br>
-&gt; Hi All,<br>
-&gt;<br>
-&gt; As we observed that oom tests occasionally ended with TBROK (Test kill=
-ed) on small<br>
-&gt; RAM system, the reason seems test process(test_pid) get killed early t=
-han the expected<br>
-&gt; victim process so that can&#39;t report the status correctly.<br>
-&gt;<br>
-&gt; I&#39;m thinking maybe we can purposely make the OOM ignore test proce=
-ss(test_pid)<br>
-&gt; and the main process? (achieve this only in mem library for OOM test)<=
-br>
-<br>
-There are likely more processes that could become unintended targets<br>
-(e.g. harness process)<br></blockquote><div><br></div><div><div class=3D"gm=
-ail_default" style=3D"font-size:small">Right, but I don&#39;t think that LT=
-P has responsible to take care of harness process.</div><div class=3D"gmail=
-_default" style=3D"font-size:small">(sometimes people even run LTP manually=
-)</div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
-=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
--left:1ex">
-(if we haven&#39;t tried already) Could we make expected victim process<br>
-more appealing target by tweaking its oom_score/oom_score_adj ?<br></blockq=
-uote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:sm=
-all">This might not be a good way.=C2=A0</div><div class=3D"gmail_default" =
-style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"f=
-ont-size:small">Because OOM Killer counts the oom_score by itself=C2=A0algo=
-rithm for</div><div class=3D"gmail_default" style=3D"font-size:small">choos=
-ing which process to kill. If we tweak that, it will interfere with</div><d=
-iv class=3D"gmail_default" style=3D"font-size:small">the scientificity of t=
-he OOM test. But if we only do protect the lib-process,=C2=A0</div></div><d=
-iv class=3D"gmail_default" style=3D"font-size:small">we know that shouldn&#=
-39;t be killed and the test will report correctly for us.</div><div><br></d=
-iv></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><=
-div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></=
-div>
-
---0000000000009b1e5b05d304662a--
-
-
---===============1201929426==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1201929426==--
-
