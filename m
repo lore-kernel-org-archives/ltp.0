@@ -4,45 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22659C433EF
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 08:40:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA84CC433EF
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 08:44:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ECC613C89CE
-	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 09:40:14 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id AD1A73C8989
+	for <ltp@archiver.kernel.org>; Mon, 13 Dec 2021 09:44:06 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 127BF3C00B4
- for <ltp@lists.linux.it>; Sat, 11 Dec 2021 17:56:00 +0100 (CET)
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+ by picard.linux.it (Postfix) with ESMTPS id 4CE203C8809
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 09:43:57 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 747E52001D6
- for <ltp@lists.linux.it>; Sat, 11 Dec 2021 17:55:58 +0100 (CET)
-Received: by smtp.gentoo.org (Postfix, from userid 559)
- id 3F277342D13; Sat, 11 Dec 2021 16:55:56 +0000 (UTC)
-Date: Sat, 11 Dec 2021 11:56:03 -0500
-From: Mike Frysinger <vapier@gentoo.org>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8A135200B8C
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 09:43:56 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id A0C141F3B0
+ for <ltp@lists.linux.it>; Mon, 13 Dec 2021 08:43:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1639385035;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sGjYXZfDGwDvZtihI5hG0924zmLqxDYM13C4Wwcsthc=;
+ b=xi096QM6Coa0Q+5m+Ba27mvL1oNosuohvcfAQ/JkcQNrQQiaq5BDL7w3SKrS0COiFRuHvf
+ 6GIU8Vkzaz5y68go38APBWffeQdx8341FXHENc1ULzSJ6L7lj2qEo2n7jLZdnJkyVr9eKl
+ U4svBalzpWY3cL5hlgC+DVn4lxNY5co=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1639385035;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=sGjYXZfDGwDvZtihI5hG0924zmLqxDYM13C4Wwcsthc=;
+ b=VRu2mbApCjJW6V726Y9VUghM0rWBGJfHWyW4UFZtMhFfOGAS6A5RXVFMRLrLyQDAXjOcC+
+ SeLAy3BQgv4c07Dg==
+Received: from g78 (unknown [10.163.24.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 6E0FFA3B8A;
+ Mon, 13 Dec 2021 08:43:55 +0000 (UTC)
+References: <20211210134556.26091-1-pvorel@suse.cz>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YbTYI2iKkopqLIjx@vapier>
-Mail-Followup-To: Petr Vorel <pvorel@suse.cz>,
- Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
- Jan Stancek <jstancek@redhat.com>, Li Wang <liwang@redhat.com>,
- Xiao Yang <yangx.jy@cn.fujitsu.com>,
- Yang Xu <xuyang2018.jy@fujitsu.com>,
- Richard Palethorpe <rpalethorpe@suse.com>,
- Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
- Enji Cooper <yaneurabeya@gmail.com>
-References: <20211210134556.26091-1-pvorel@suse.cz> <YbN8abgFFb3RTq38@yuki>
- <YbTBgHwZQEigF/1v@pevik>
+Date: Mon, 13 Dec 2021 08:22:00 +0000
+In-reply-to: <20211210134556.26091-1-pvorel@suse.cz>
+Message-ID: <87tufcao8l.fsf@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <YbTBgHwZQEigF/1v@pevik>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 13 Dec 2021 09:40:04 +0100
 Subject: Re: [LTP] [PATCH 1/1] doc/maintainer: Add policy for new
  functionality
 X-BeenThere: ltp@lists.linux.it
@@ -56,86 +70,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>,
- Xiao Yang <yangx.jy@cn.fujitsu.com>, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============2031157344=="
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hello Petr,
 
---===============2031157344==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eByfOaBB8gNqNUln"
-Content-Disposition: inline
+Petr Vorel <pvorel@suse.cz> writes:
 
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/maintainer-patch-review-checklist.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+> index c7bb47810..4e2b267ac 100644
+> --- a/doc/maintainer-patch-review-checklist.txt
+> +++ b/doc/maintainer-patch-review-checklist.txt
+> @@ -34,6 +34,9 @@ New test should
+>    GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should not change
+>    unless test is completely rewritten
+>  * Old copyrights should be kept unless test is completely rewritten
+> +* Tests for new functionality in mainline kernel should be merged after final
+> +  release of kernel which contains that functionality (it's not enough when the
+> +  feature gets into rc1, because it can be reverted in later rc if
+> problematic).
 
---eByfOaBB8gNqNUln
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What is the concern? All I can see is that we merge a test which is for
+a feature that is never included
 
-On 11 Dec 2021 16:19, Petr Vorel wrote:
-> > > Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > ---
-> > >  doc/maintainer-patch-review-checklist.txt | 3 +++
-> > >  1 file changed, 3 insertions(+)
->=20
-> > > diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintain=
-er-patch-review-checklist.txt
-> > > index c7bb47810..4e2b267ac 100644
-> > > --- a/doc/maintainer-patch-review-checklist.txt
-> > > +++ b/doc/maintainer-patch-review-checklist.txt
-> > > @@ -34,6 +34,9 @@ New test should
-> > >    GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should not c=
-hange
-> > >    unless test is completely rewritten
-> > >  * Old copyrights should be kept unless test is completely rewritten
-> > > +* Tests for new functionality in mainline kernel should be merged af=
-ter final
-> > > +  release of kernel which contains that functionality (it's not enou=
-gh when the
-> > > +  feature gets into rc1, because it can be reverted in later rc if p=
-roblematic).
->=20
-> > Sounds reasonable to me, but ideally this should be acked by the rest of
-> > the maintainers.
->=20
-> Sure, this can wait :).
+The issue is we may forget to merge patch sets for features which are
+included (a far worse result). It's more stuff waiting around in the
+queue. At the least we should have a procedure for tracking them (like
+tagging github issues for review at each mainline release).
 
-seems fine
--mike
+If a test requires a kernel config which doesn't exist in mainline we
+could also look for that automatically.
 
---eByfOaBB8gNqNUln
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEuQK1JxMl+JKsJRrUQWM7n+g39YEFAmG02CMACgkQQWM7n+g3
-9YGQahAAulx+ebixwoCXcPYC99Kzchvq0z+qAAiXNc+Q4d+mSYtcvzJYxPCGvkTf
-uoYAn2yu5IAi9MNdtPCpWjTDP/zV9WldYKtYfSIh7do4vCYdxfxtQj2GrU1gp4FV
-sQHL22kIoYShw/a13eISnPvoxs71HCOecIy7hC3SctjLuacZp/FyM9tXy58BeG0H
-/Ij1qfBgMd9UwKwcdzflGH4h71SvK9g3zV+xOwrOuUjCbiM/gs9myiJWvZPazfwZ
-leFJd6XnOQYpiuwvJQQ/lKNCGHqoXCziAYwkCXx+zQs5qKoeboLgu3lFqFQcbqpB
-l45HGb7AnmR5CopIQV4uK6Mo7YgtMrK04M5vbM2khpkbO9CViwe+XXxkL/F+X6LO
-dbDkHl45WWU06C1bOm8PIQa9BsROCMjUxxt7VJFnTtYpBB42XrgF25VVPhvD6wtr
-DZw4Mo4AZHbv6D1Le7S6VCBNfsSAaUBlwddFbVLS5UIfTmeAFw7ByHYNyhfQkSVK
-yH/0+1bjUAW0njd8bGyAvZxJ0pQnZ9BIghGSAbOKoePrhbh7JtBfSaPwT/O3c04A
-QnOuz6bxljBYYrkPrZc55NAG+sthao4L7tK51GzL7ix1Ky5hBqIe999YmKZYdOOV
-znI+EMwQGkaOfOwiMWJxTuzDQgc+bRX540BBon14o3wKc71tsoA=
-=mni5
------END PGP SIGNATURE-----
-
---eByfOaBB8gNqNUln--
-
---===============2031157344==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>  
+>  ### C tests
+>  * Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+> -- 
+> 2.34.1
 
 
 -- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+Thank you,
+Richard.
 
---===============2031157344==--
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
