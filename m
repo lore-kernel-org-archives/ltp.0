@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22B45C433F5
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BC22C433EF
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:37:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D491F3C8C6D
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:37:38 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A20793C8BC0
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:37:47 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9413B3C1351
+ by picard.linux.it (Postfix) with ESMTPS id DA0E03C8CE5
  for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:36:59 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D65CA1A00F64
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:36:58 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6D9F06007A4
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:36:59 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 5A5FB2111A;
+ by smtp-out2.suse.de (Postfix) with ESMTP id A80DC1F3C4;
  Tue, 14 Dec 2021 10:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
  t=1639478218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=R6o4nFx3ev7FpJ1ICm5MByu/71+kpQjPMOQynpgQkPA=;
- b=HGjsKmN9UPAseTMSLlzCklvMO2bzbQenoIn/6wwv51Z7ygtRfspJTwydrZyt/9ubORNvob
- Q6PP5rvHSlKLxuLLsXBD6bLT9il9jlANFPXnpGgv4eep+vxKAUGlRZJHMhtbZJ3t1BISI0
- wdQIDI8uJq+xqavsraPecACykPKfdwE=
+ bh=QdGRI8bcuKEl8mzqerw/UGr4mSnqvlE+ZNCqGq3SydQ=;
+ b=IT+fGXo5UTlchf9RF22VvpwVmQS+7/Q/0kuD30Bce60eTl3YTIxWix8nSqj/5NsjQK45QH
+ BY1FQfBC0hCQOu7GPTFA7QEoYWJuV9LMI+ZA5jI/HCEcJD+VFYwlYoqd4NzDhqnUGUiWXV
+ Xg6Pbj+yXkXTV9nmOcYy5tGK970zMcE=
 Received: from g78.suse.de (unknown [10.163.24.42])
- by relay2.suse.de (Postfix) with ESMTP id 27350A3B83;
+ by relay2.suse.de (Postfix) with ESMTP id 69A0CA3B89;
  Tue, 14 Dec 2021 10:36:58 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Tue, 14 Dec 2021 10:36:43 +0000
-Message-Id: <20211214103645.16148-3-rpalethorpe@suse.com>
+Date: Tue, 14 Dec 2021 10:36:44 +0000
+Message-Id: <20211214103645.16148-4-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211214103645.16148-1-rpalethorpe@suse.com>
 References: <20211214103645.16148-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/5] API/cgroup: Lift out assignments in if statements
+Subject: [LTP] [PATCH 4/5] API/cgroup: remove ltp_ prefix from static vars
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,121 +66,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-checkpatch.pl forbids this; for good reason because it can mask
-accidental use of '=' instead of '=='. Also included is a script to
-automatically fix occurrences of this.
+LTP-003 reserves this prefix for use in public symbols. Also it tends
+to be used in parts of the old API. The new API uses tst_.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- lib/tst_cgroup.c                           | 22 ++++++++++------
- scripts/coccinelle/fix-if-assignment.cocci | 30 ++++++++++++++++++++++
- 2 files changed, 44 insertions(+), 8 deletions(-)
- create mode 100644 scripts/coccinelle/fix-if-assignment.cocci
+ lib/tst_cgroup.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index d9d74faa8..8eeb98a26 100644
+index 8eeb98a26..c22f5b32c 100644
 --- a/lib/tst_cgroup.c
 +++ b/lib/tst_cgroup.c
-@@ -370,7 +370,8 @@ static void cgroup_root_scan(const char *const mnt_type,
- 	SAFE_FILE_READAT(mnt_dfd, "cgroup.controllers", buf, sizeof(buf));
+@@ -199,11 +199,11 @@ static const struct tst_cgroup_opts default_opts = { 0 };
+ /* We should probably allow these to be set in environment
+  * variables
+  */
+-static const char *ltp_cgroup_dir = "ltp";
+-static const char *ltp_cgroup_drain_dir = "drain";
+-static char test_cgroup_dir[NAME_MAX + 1];
+-static const char *ltp_mount_prefix = "/tmp/cgroup_";
+-static const char *ltp_v2_mount = "unified";
++static const char *cgroup_ltp_dir = "ltp";
++static const char *cgroup_ltp_drain_dir = "drain";
++static char cgroup_test_dir[NAME_MAX + 1];
++static const char *cgroup_mount_ltp_prefix = "/tmp/cgroup_";
++static const char *cgroup_v2_ltp_mount = "unified";
  
- 	for (tok = strtok(buf, " "); tok; tok = strtok(NULL, " ")) {
--		if ((const_ctrl = cgroup_find_ctrl(tok)))
-+		const_ctrl = cgroup_find_ctrl(tok);
-+		if (const_ctrl)
- 			add_ctrl(&ctrl_field, const_ctrl);
+ #define first_root				\
+ 	(roots[0].ver ? roots : roots + 1)
+@@ -464,7 +464,7 @@ static void cgroup_mount_v2(void)
+ {
+ 	char mnt_path[PATH_MAX];
+ 
+-	sprintf(mnt_path, "%s%s", ltp_mount_prefix, ltp_v2_mount);
++	sprintf(mnt_path, "%s%s", cgroup_mount_ltp_prefix, cgroup_v2_ltp_mount);
+ 
+ 	if (!mkdir(mnt_path, 0777)) {
+ 		roots[0].mnt_dir.we_created_it = 1;
+@@ -506,7 +506,7 @@ static void cgroup_mount_v1(struct cgroup_ctrl *const ctrl)
+ 	char mnt_path[PATH_MAX];
+ 	int made_dir = 0;
+ 
+-	sprintf(mnt_path, "%s%s", ltp_mount_prefix, ctrl->ctrl_name);
++	sprintf(mnt_path, "%s%s", cgroup_mount_ltp_prefix, ctrl->ctrl_name);
+ 
+ 	if (!mkdir(mnt_path, 0777)) {
+ 		made_dir = 1;
+@@ -653,7 +653,7 @@ mkdirs:
  	}
  
-@@ -386,7 +387,8 @@ static void cgroup_root_scan(const char *const mnt_type,
+ 	if (!root->ltp_dir.dir_fd)
+-		cgroup_dir_mk(&root->mnt_dir, ltp_cgroup_dir, &root->ltp_dir);
++		cgroup_dir_mk(&root->mnt_dir, cgroup_ltp_dir, &root->ltp_dir);
+ 	else
+ 		root->ltp_dir.ctrl_field |= root->mnt_dir.ctrl_field;
  
- v1:
- 	for (tok = strtok(mnt_opts, ","); tok; tok = strtok(NULL, ",")) {
--		if ((const_ctrl = cgroup_find_ctrl(tok)))
-+		const_ctrl = cgroup_find_ctrl(tok);
-+		if (const_ctrl)
- 			add_ctrl(&ctrl_field, const_ctrl);
- 
- 		no_prefix |= !strcmp("noprefix", tok);
-@@ -1008,8 +1010,9 @@ int safe_cgroup_has(const char *const file, const int lineno,
- 		return 0;
- 
- 	for_each_dir(cg, cfile->ctrl_indx, dir) {
--		if (!(alias = cgroup_file_alias(cfile, *dir)))
--		    continue;
-+		alias = cgroup_file_alias(cfile, *dir);
-+		if (!alias)
-+			continue;
- 
- 		if (!faccessat((*dir)->dir_fd, alias, F_OK, 0))
- 			return 1;
-@@ -1077,7 +1080,8 @@ ssize_t safe_cgroup_read(const char *const file, const int lineno,
- 	ssize_t read_ret = 0;
- 
- 	for_each_dir(cg, cfile->ctrl_indx, dir) {
--		if (!(alias = cgroup_file_alias(cfile, *dir)))
-+		alias = cgroup_file_alias(cfile, *dir);
-+		if (!alias)
- 			continue;
- 
- 		if (prev_len)
-@@ -1115,8 +1119,9 @@ void safe_cgroup_printf(const char *const file, const int lineno,
- 	va_list va;
- 
- 	for_each_dir(cg, cfile->ctrl_indx, dir) {
--		if (!(alias = cgroup_file_alias(cfile, *dir)))
--		    continue;
-+		alias = cgroup_file_alias(cfile, *dir);
-+		if (!alias)
-+			continue;
- 
- 		va_start(va, fmt);
- 		safe_file_vprintfat(file, lineno,
-@@ -1141,7 +1146,8 @@ void safe_cgroup_scanf(const char *const file, const int lineno,
- 		return;
- 
- 	va_start(va, fmt);
--	if ((ret = vsscanf(buf, fmt, va)) < 1) {
-+	ret = vsscanf(buf, fmt, va);
-+	if (ret < 1) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
- 			 "'%s': vsscanf('%s', '%s', ...)", file_name, buf, fmt);
+@@ -668,10 +668,10 @@ mkdirs:
+ 			cgroup_copy_cpuset(root);
  	}
-diff --git a/scripts/coccinelle/fix-if-assignment.cocci b/scripts/coccinelle/fix-if-assignment.cocci
-new file mode 100644
-index 000000000..4dad22fe0
---- /dev/null
-+++ b/scripts/coccinelle/fix-if-assignment.cocci
-@@ -0,0 +1,30 @@
-+@@
-+expression V, E;
-+@@
-+
-++ V = E;
-+  if (
-+-	(V = E)
-++ 	V
-+  ) { ... }
-+
-+@@
-+expression V, E;
-+@@
-+
-++ V = E;
-+  if (!
-+-	(V = E)
-++ 	V
-+  ) { ... }
-+
-+@@
-+expression V, E;
-+binary operator B; 
-+@@
-+
-++ V = E;
-+  if (
-+-	(V = E)
-++ 	V
-+  B ...) { ... }
+ 
+-	cgroup_dir_mk(&root->ltp_dir, ltp_cgroup_drain_dir, &root->drain_dir);
++	cgroup_dir_mk(&root->ltp_dir, cgroup_ltp_drain_dir, &root->drain_dir);
+ 
+-	sprintf(test_cgroup_dir, "test-%d", getpid());
+-	cgroup_dir_mk(&root->ltp_dir, test_cgroup_dir, &root->test_dir);
++	sprintf(cgroup_test_dir, "test-%d", getpid());
++	cgroup_dir_mk(&root->ltp_dir, cgroup_test_dir, &root->test_dir);
+ }
+ 
+ static void cgroup_drain(const enum tst_cgroup_ver ver,
 -- 
 2.34.0
 
