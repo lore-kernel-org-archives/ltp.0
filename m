@@ -4,69 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45BC2C433F5
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7BE1C433EF
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:37:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 449CB3C8C69
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:34:26 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C00A23C8CB3
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:37:08 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 51B113C04BA
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:34:16 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id A42023C1351
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:36:59 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 62F67601AF9
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:34:15 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 41BA71F3C3;
- Tue, 14 Dec 2021 10:34:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639478055; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A819B600747
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:36:58 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 169FD212B5;
+ Tue, 14 Dec 2021 10:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1639478218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Y/Ujqb88TiAPFOtBIteV/7hEjjComcCg13j5JLiZlgc=;
- b=o+CA1/NFgIufoUFC8zMunYdCWUsdfbIEDtbxQWZISZyVI1b8j+zp4zThqAD4gie8Y2IaAD
- Fc+19LSt3XdMaps5hQSOHb0IRGf1ARs9s5J/oKO6eoVDqIApiGEFg8BS7Ndvsm9rRvBL7y
- VXCsVbm4R2cKEJMMA3zUTvl040WZwh8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639478055;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Y/Ujqb88TiAPFOtBIteV/7hEjjComcCg13j5JLiZlgc=;
- b=sh6avoCiSxYPoYDMX3NBKaIx1roFNtlV0urrQ5IA5F2+WK/rSOsFlKa6I3mRijsD8335xk
- s1Q1NKdGi1oE3XCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F1D913C31;
- Tue, 14 Dec 2021 10:34:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OIORCidzuGGyUQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Dec 2021 10:34:15 +0000
-Date: Tue, 14 Dec 2021 11:35:39 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YbhzexvHiyLKSAu6@yuki>
-References: <20211213193419.13414-1-pvorel@suse.cz>
- <CAEemH2dp55yFvaXhq_5e77k6QBnY0aFU5fhz4TjW82bkbwwDiA@mail.gmail.com>
- <YbhV9VIv/8o97O6r@pevik>
+ bh=shAg4pHd9bj0Jg9EiTn6M8Xj03sM3sbpCyFv2gVX90I=;
+ b=u/G6m+eLdtO+clbXdG8mKaQ1A0JgV/PRD5sjsyL3S+H0ufnfwumxL1rxk1MZvD0Rh7Wc9V
+ ibAr/r5zEcFUZXUSG6p4WKQIvvHqdo6FdUwJGtfOzVlucqx15nwXvMudxlxlW/dz50v6oO
+ rUgh7Bwosn5d6jRSLfQtb6ZHbxhAnpk=
+Received: from g78.suse.de (unknown [10.163.24.42])
+ by relay2.suse.de (Postfix) with ESMTP id D6C47A3B83;
+ Tue, 14 Dec 2021 10:36:57 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue, 14 Dec 2021 10:36:42 +0000
+Message-Id: <20211214103645.16148-2-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211214103645.16148-1-rpalethorpe@suse.com>
+References: <20211214103645.16148-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YbhV9VIv/8o97O6r@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] lib: Add support for debugging
- .all_filesystems
+Subject: [LTP] [PATCH 2/5] API/cgroup: Remove typedef
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,33 +57,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > My only concern is that the variable name is too long and not easy
-> > to remember/understand usage. Can we find a better name?
-> >     LTP_ONE_FS_TYPE
-> >     LTP_ASGD_FD_TYPE
-> >     LTP_FS_TYPE_DEBUG
-> Yes, it's too long. LTP_FS_TYPE_DEBUG sounds best to me, but no strong opinion
-> about it.
+Angers make check and is not helpful anymore.
 
-Not sure about the "DEBUG" in the name. I would go for a variation of
-the first name "LTP_SINGLE_FS_TYPE" or "LTP_LIMIT_FS_TYPE"
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ lib/tst_cgroup.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-> If we agree we want this, we can consider to use some switch instead or print
-> this variable in help output (-h), with other variables from
-> https://github.com/linux-test-project/ltp/wiki/User-Guidelines.
-
-Printing the variables on -h does sounds reasonabe.
-
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 2dcfbc8ff..d9d74faa8 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -141,10 +141,7 @@ struct tst_cgroup_group {
+ /* Always use first item for unified hierarchy */
+ static struct cgroup_root roots[ROOTS_MAX + 1];
+ 
+-/* Lookup tree for item names. */
+-typedef struct cgroup_file files_t[];
+-
+-static const files_t cgroup_ctrl_files = {
++static const struct cgroup_file cgroup_ctrl_files[] = {
+ 	/* procs exists on V1, however it was read-only until kernel v3.0. */
+ 	{ "cgroup.procs", "tasks", 0 },
+ 	{ "cgroup.subtree_control", NULL, 0 },
+@@ -152,7 +149,7 @@ static const files_t cgroup_ctrl_files = {
+ 	{ }
+ };
+ 
+-static const files_t memory_ctrl_files = {
++static const struct cgroup_file memory_ctrl_files[] = {
+ 	{ "memory.current", "memory.usage_in_bytes", CTRL_MEMORY },
+ 	{ "memory.max", "memory.limit_in_bytes", CTRL_MEMORY },
+ 	{ "memory.swappiness", "memory.swappiness", CTRL_MEMORY },
+@@ -163,7 +160,7 @@ static const files_t memory_ctrl_files = {
+ 	{ }
+ };
+ 
+-static const files_t cpu_ctrl_files = {
++static const struct cgroup_file cpu_ctrl_files[] = {
+ 	/* The V1 quota and period files were combined in the V2 max
+ 	 * file. The quota is in the first column and if we just print
+ 	 * a single value to the file, it will be treated as the
+@@ -175,13 +172,14 @@ static const files_t cpu_ctrl_files = {
+ 	{ }
+ };
+ 
+-static const files_t cpuset_ctrl_files = {
++static const struct cgroup_file cpuset_ctrl_files[] = {
+ 	{ "cpuset.cpus", "cpuset.cpus", CTRL_CPUSET },
+ 	{ "cpuset.mems", "cpuset.mems", CTRL_CPUSET },
+ 	{ "cpuset.memory_migrate", "cpuset.memory_migrate", CTRL_CPUSET },
+ 	{ }
+ };
+ 
++/* Lookup tree for item names. */
+ static struct cgroup_ctrl controllers[] = {
+ 	[0] = { "cgroup", cgroup_ctrl_files, 0, NULL, 0 },
+ 	[CTRL_MEMORY] = {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
