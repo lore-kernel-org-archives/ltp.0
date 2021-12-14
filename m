@@ -4,48 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F323C433EF
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 09:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 318D4C433F5
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 09:07:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 003E03C8C68
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:07:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5729B3C8C37
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:07:52 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCF383C2FF6
+ by picard.linux.it (Postfix) with ESMTPS id DE5053C7616
  for <ltp@lists.linux.it>; Tue, 14 Dec 2021 10:07:33 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EEE3920114A
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EE5EF600A51
  for <ltp@lists.linux.it>; Tue, 14 Dec 2021 10:07:32 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 42EBA212BA;
- Tue, 14 Dec 2021 09:07:32 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id F35F1212B5;
+ Tue, 14 Dec 2021 09:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1639472852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=NTtCgY6gHtUjM1RqaQIlRIqsNKEVgozSSwiU8cT2pyQ=;
- b=B5bQKU14D/7W/J1Zko+BqMb0WYxBtquuPmEN0ohydAoT91nTnGKInKqEOfkZhMPen/RTJG
- rkmVwZ19bXebZ7FCsGuZP1ajlJxznKzJhc8hQOzM3T/Nv7l1QuXWJ0ahw6PnoPEuChwb3d
- kdsB8qQ+oiJaidNbY6ISeIvK07DH5sE=
+ t=1639472851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=60Z6de0fK8d6iQzJrBe+4I/pWrsJ+mQyqUbLMjkKwC8=;
+ b=lv3Ee4mqQbmbX/KaavMJwlYyVhvsrf7tyCvO8qsQcso16jR4jNNypCNuvsEyvaodyEjLDM
+ VX1N+JbIlXmQcZpynv9dv2TsAn4zashdbqwaA4UYCOcGDGZ0a0Kpb7OJymlc61hlYXsSDr
+ jIboGTq/HD9ASNSO/umShPqOXkw6Y9o=
 Received: from g78.suse.de (unknown [10.163.24.42])
- by relay2.suse.de (Postfix) with ESMTP id 10B6AA3B81;
- Tue, 14 Dec 2021 09:07:32 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id B3B31A3B81;
+ Tue, 14 Dec 2021 09:07:31 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Tue, 14 Dec 2021 09:06:45 +0000
-Message-Id: <20211214090648.14292-2-rpalethorpe@suse.com>
+Date: Tue, 14 Dec 2021 09:06:44 +0000
+Message-Id: <20211214090648.14292-1-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211214090648.14292-1-rpalethorpe@suse.com>
-References: <20211214090648.14292-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/4] API: cgroup: Add safe_cgroup_occursin
+Subject: [LTP] [PATCH 0/4] Begin converting kselftest memcg tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,53 +61,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Similar to cg_read_strstr from kselftests. The name was changed
-because strstr from string.h returns a ptr and this does not.
+Hello,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_cgroup.h |  8 ++++++++
- lib/tst_cgroup.c     | 12 ++++++++++++
- 2 files changed, 20 insertions(+)
+This is the begining of a piecmeal conversion of the memcg
+kselftests. The first test is fairly redundant. However it allows for
+some organizational discussion.
 
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index 9e34321e4..632050e86 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -191,5 +191,13 @@ void safe_cgroup_scanf(const char *file, const int lineno,
- 		       const char *fmt, ...)
- 		       __attribute__ ((format (scanf, 5, 6), nonnull));
- 
-+#define SAFE_CGROUP_OCCURSIN(cg, file_name, needle)		\
-+	safe_cgroup_occursin(__FILE__, __LINE__,		\
-+			     (cg), (file_name), (needle))
-+
-+int safe_cgroup_occursin(const char *file, const int lineno,
-+			 const struct tst_cgroup_group *const cg,
-+			 const char *const file_name,
-+			 const char *const needle);
- 
- #endif /* TST_CGROUP_H */
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 61cc02fa7..f85dc4fdd 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -1153,3 +1153,15 @@ void safe_cgroup_scanf(const char *const file, const int lineno,
- 		 "'%s': vsscanf('%s', '%s', ..): Less conversions than expected: %d != %d",
- 		 file_name, buf, fmt, ret, conv_cnt);
- }
-+
-+int safe_cgroup_occursin(const char *const file, const int lineno,
-+			 const struct tst_cgroup_group *const cg,
-+			 const char *const file_name,
-+			 const char *const needle)
-+{
-+	char buf[BUFSIZ];
-+
-+	safe_cgroup_read(file, lineno, cg, file_name, buf, sizeof(buf));
-+
-+	return !!strstr(buf, needle);
-+}
+The motivation for converting these tests is as follows:
+
+1. It's easier to run these tests across our full product range
+   as part of the LTP.
+2. The LTP CGroup library allows testing on V1 and V2.
+   The kselftest's only support V2.
+3. The kselftests appear to cover some things which
+   existing LTP tests do not.
+
+Richard Palethorpe (4):
+  API: cgroup: Add safe_cgroup_occursin
+  API: cgroup: Add cgroup.controllers
+  memcontrol01: Import first memcg kselftest
+  scripts/coccinelle: Helper for converting CGroup selftests
+
+ include/tst_cgroup.h                          |  8 ++
+ lib/tst_cgroup.c                              | 13 ++++
+ runtest/controllers                           |  3 +
+ .../coccinelle/kselftest-cgroup-to-ltp.cocci  | 40 ++++++++++
+ testcases/kernel/controllers/memcg/.gitignore |  1 +
+ .../kernel/controllers/memcg/memcontrol01.c   | 77 +++++++++++++++++++
+ 6 files changed, 142 insertions(+)
+ create mode 100644 scripts/coccinelle/kselftest-cgroup-to-ltp.cocci
+ create mode 100644 testcases/kernel/controllers/memcg/memcontrol01.c
+
 -- 
 2.34.0
 
