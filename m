@@ -4,64 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2545BC4332F
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3028C433F5
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:25:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14D6D3C8C39
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 12:13:56 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A010B3C8D12
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 12:25:57 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1ED6F3C8B02
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 12:13:46 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 67CFD3C7621
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 12:25:48 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 730261A017A9
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 12:13:46 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9FE511F37C;
- Tue, 14 Dec 2021 11:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639480425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A042220101B
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 12:25:47 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D01732112A
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1639481146;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jLLxFECa/Mu2h4/pvJ/DmuXqqqRcZoHhd1VKFwXJ4xI=;
- b=2xD4OrfCah7UvAgCHj/CB5SPX28EsgUXPNheNQVaZKxUFRMMx9pns1oPfDE5yW2LtY+w68
- bPv/4CN8ughFRrWewDdj4bRPUxfpav4sEfPlWqvJzxhH+QgSuwn4oECvTMu9BkaHPPZOec
- hQFjS80/X1P8r2QmTlwQBnvBPYIzklI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639480425;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ bh=6QOIi4CL0hYohfhbmGzjiYnKKOA6hmTk741/F/4D0z0=;
+ b=u0unK6HmhfXXfOxC6brTJdNRI7lqgo/BRH0j/uBKQOh99eaVai2Sc9frMGtJ0XOHHfVjZY
+ kkCGw/3cgFmUjBrWsIzEkZLua6WpRtKsX+Gta9KK9necPq5ru53E3ZWF+kompEAavvhXoH
+ 7IRgxHSJaosH2f4BtQXxrGaPM5sF8uQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1639481146;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jLLxFECa/Mu2h4/pvJ/DmuXqqqRcZoHhd1VKFwXJ4xI=;
- b=RJN+BMkNB9bR3f0pUOgm7OO5u7q/56d8di9Ojym2xhtUiSICzntOqxmB63dLbS0QaKZ4HJ
- dOV6NiInrcZXA4CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=6QOIi4CL0hYohfhbmGzjiYnKKOA6hmTk741/F/4D0z0=;
+ b=JKpYLEBe/Yw42G+UaMiLgb01mwEiSeHd+qmrmPTmas3nmeltItTq2Tl/gyOfI5EigHhNry
+ csMeTaZt0undHOBg==
+Received: from g78 (unknown [10.163.24.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8CE0713CF5;
- Tue, 14 Dec 2021 11:13:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1buoIWl8uGExZAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Dec 2021 11:13:45 +0000
-Date: Tue, 14 Dec 2021 12:15:09 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <Ybh8vUPDA8a0oBOC@yuki>
+ by relay2.suse.de (Postfix) with ESMTPS id 9E2AAA3B84;
+ Tue, 14 Dec 2021 11:25:46 +0000 (UTC)
 References: <20211214090648.14292-1-rpalethorpe@suse.com>
- <20211214090648.14292-5-rpalethorpe@suse.com>
+ <20211214090648.14292-5-rpalethorpe@suse.com> <Ybh8vUPDA8a0oBOC@yuki>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 14 Dec 2021 11:22:30 +0000
+In-reply-to: <Ybh8vUPDA8a0oBOC@yuki>
+Message-ID: <87czlza0n9.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211214090648.14292-5-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 4/4] scripts/coccinelle: Helper for converting
  CGroup selftests
@@ -76,33 +70,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +@@
-> +expression cg;
-> +@@
-> +
-> +... when != TST_CGROUP_VER(...)
-> +
-> +- SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
-> ++ if (TST_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
-> ++    SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
+Hello,
 
-I guess that here we operat on already partially converted code right?
+Cyril Hrubis <chrubis@suse.cz> writes:
 
+> Hi!
+>> +@@
+>> +expression cg;
+>> +@@
+>> +
+>> +... when != TST_CGROUP_VER(...)
+>> +
+>> +- SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
+>> ++ if (TST_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
+>> ++    SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
+>
+> I guess that here we operat on already partially converted code right?
 
-Other than this the rest is really straightforward:
+Correct, in general cg_write is converted to safe_cgroup_print. Then we
+have this special rule for subtree_control to introduce the version
+check (if there isn't one already present).
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+>
+>
+> Other than this the rest is really straightforward:
+>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
