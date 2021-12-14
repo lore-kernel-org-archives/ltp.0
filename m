@@ -4,49 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B3A3C433EF
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 09:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45BC2C433F5
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:34:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ACEDC3C8D6B
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 10:08:20 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 449CB3C8C69
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 11:34:26 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9016E3C7616
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 10:07:34 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 51B113C04BA
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:34:16 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7DEA11001447
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 10:07:33 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D6BEA1F3C4;
- Tue, 14 Dec 2021 09:07:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1639472852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 62F67601AF9
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 11:34:15 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 41BA71F3C3;
+ Tue, 14 Dec 2021 10:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1639478055; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=guU6ZkVHfPw2mroxfiCghi8Q20dMQFo1exH4uIx8mUA=;
- b=Szhpd3SLIn8ldDKpxVOtIvdxjvTfgJ+5BIet3qt31cGEPYZhShNU4hqXS2MdGnDFy0uupj
- QbQt7LBfbo7gyq/tuNWtM0APWrFZsAghApcCH4xB6nY/ARa+5WOzbOR9L8s6kcNRT4ZCNr
- eLvAd6pbQ4KhpGdvR5E5xFfGKifLa88=
-Received: from g78.suse.de (unknown [10.163.24.42])
- by relay2.suse.de (Postfix) with ESMTP id A2F03A3B81;
- Tue, 14 Dec 2021 09:07:32 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 14 Dec 2021 09:06:47 +0000
-Message-Id: <20211214090648.14292-4-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211214090648.14292-1-rpalethorpe@suse.com>
-References: <20211214090648.14292-1-rpalethorpe@suse.com>
+ bh=Y/Ujqb88TiAPFOtBIteV/7hEjjComcCg13j5JLiZlgc=;
+ b=o+CA1/NFgIufoUFC8zMunYdCWUsdfbIEDtbxQWZISZyVI1b8j+zp4zThqAD4gie8Y2IaAD
+ Fc+19LSt3XdMaps5hQSOHb0IRGf1ARs9s5J/oKO6eoVDqIApiGEFg8BS7Ndvsm9rRvBL7y
+ VXCsVbm4R2cKEJMMA3zUTvl040WZwh8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1639478055;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y/Ujqb88TiAPFOtBIteV/7hEjjComcCg13j5JLiZlgc=;
+ b=sh6avoCiSxYPoYDMX3NBKaIx1roFNtlV0urrQ5IA5F2+WK/rSOsFlKa6I3mRijsD8335xk
+ s1Q1NKdGi1oE3XCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F1D913C31;
+ Tue, 14 Dec 2021 10:34:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id OIORCidzuGGyUQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Dec 2021 10:34:15 +0000
+Date: Tue, 14 Dec 2021 11:35:39 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YbhzexvHiyLKSAu6@yuki>
+References: <20211213193419.13414-1-pvorel@suse.cz>
+ <CAEemH2dp55yFvaXhq_5e77k6QBnY0aFU5fhz4TjW82bkbwwDiA@mail.gmail.com>
+ <YbhV9VIv/8o97O6r@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YbhV9VIv/8o97O6r@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/4] memcontrol01: Import first memcg kselftest
+Subject: Re: [LTP] [PATCH 1/1] lib: Add support for debugging
+ .all_filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,135 +78,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is a conversion of the first test in the memory cgroup
-kselftest. There will be a number of (more important) tests to follow;
-i.e. memcontrol02...
+Hi!
+> > My only concern is that the variable name is too long and not easy
+> > to remember/understand usage. Can we find a better name?
+> >     LTP_ONE_FS_TYPE
+> >     LTP_ASGD_FD_TYPE
+> >     LTP_FS_TYPE_DEBUG
+> Yes, it's too long. LTP_FS_TYPE_DEBUG sounds best to me, but no strong opinion
+> about it.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- runtest/controllers                           |  3 +
- testcases/kernel/controllers/memcg/.gitignore |  1 +
- .../kernel/controllers/memcg/memcontrol01.c   | 77 +++++++++++++++++++
- 3 files changed, 81 insertions(+)
- create mode 100644 testcases/kernel/controllers/memcg/memcontrol01.c
+Not sure about the "DEBUG" in the name. I would go for a variation of
+the first name "LTP_SINGLE_FS_TYPE" or "LTP_LIMIT_FS_TYPE"
 
-diff --git a/runtest/controllers b/runtest/controllers
-index e3d0243f1..2b41a94d3 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -16,6 +16,9 @@ memcg_usage_in_bytes	memcg_usage_in_bytes_test.sh
- memcg_stress		memcg_stress_test.sh
- memcg_control		memcg_control_test.sh
- 
-+# kselftest ports
-+memcontrol01 memcontrol01
-+
- cgroup_fj_function_debug cgroup_fj_function.sh debug
- cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
- cgroup_fj_function_cpu cgroup_fj_function.sh cpu
-diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
-index c0b6d0714..c3565f85c 100644
---- a/testcases/kernel/controllers/memcg/.gitignore
-+++ b/testcases/kernel/controllers/memcg/.gitignore
-@@ -5,3 +5,4 @@
- /regression/memcg_test_3
- /regression/memcg_test_4
- /stress/memcg_process_stress
-+memcontrol01
-diff --git a/testcases/kernel/controllers/memcg/memcontrol01.c b/testcases/kernel/controllers/memcg/memcontrol01.c
-new file mode 100644
-index 000000000..6ef8e04d9
---- /dev/null
-+++ b/testcases/kernel/controllers/memcg/memcontrol01.c
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*\
-+ *
-+ * [Description]
-+ *
-+ * Conversion of first kselftest in cgroup/test_memcontrol.c.
-+ *
-+ */
-+#define _GNU_SOURCE
-+
-+#include <stdio.h>
-+
-+#include "tst_test.h"
-+#include "tst_cgroup.h"
-+
-+static const struct tst_cgroup_group *cg_test;
-+static struct tst_cgroup_group *parent, *child;
-+static struct tst_cgroup_group *parent2, *child2;
-+
-+/*
-+ * This test creates two nested cgroups with and without enabling
-+ * the memory controller.
-+ *
-+ * The LTP API automatically adds controllers to subtree_control when
-+ * a child cgroup is added. So unlike the kselftest we remove the
-+ * controller again.
-+ */
-+static void test_memcg_subtree_control(void)
-+{
-+	parent = tst_cgroup_group_mk(cg_test, "memcg_test_0");
-+	child = tst_cgroup_group_mk(parent, "memcg_test_1");
-+	parent2 = tst_cgroup_group_mk(cg_test, "memcg_test_2");
-+	child2 = tst_cgroup_group_mk(parent2, "memcg_test_3");
-+
-+	SAFE_CGROUP_PRINT(parent2, "cgroup.subtree_control", "-memory");
-+
-+	TST_EXP_POSITIVE(
-+		SAFE_CGROUP_OCCURSIN(child, "cgroup.controllers", "memory"),
-+		"child should have memory controller");
-+	TST_EXP_POSITIVE(
-+		!SAFE_CGROUP_OCCURSIN(child2, "cgroup.controllers", "memory"),
-+		"child2 should not have memory controller");
-+
-+	child2 = tst_cgroup_group_rm(child2);
-+	parent2 = tst_cgroup_group_rm(parent2);
-+	child = tst_cgroup_group_rm(child);
-+	parent = tst_cgroup_group_rm(parent);
-+}
-+
-+static void setup(void)
-+{
-+	tst_cgroup_require("memory", NULL);
-+	cg_test = tst_cgroup_get_test_group();
-+
-+	if (TST_CGROUP_VER(cg_test, "memory") == TST_CGROUP_V1)
-+		tst_brk(TCONF, "V1 controllers do not have subtree control");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (child2)
-+		child2 = tst_cgroup_group_rm(child2);
-+	if (parent2)
-+		parent2 = tst_cgroup_group_rm(parent2);
-+	if (child)
-+		child = tst_cgroup_group_rm(child);
-+	if (parent)
-+		parent = tst_cgroup_group_rm(parent);
-+
-+	tst_cgroup_cleanup();
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = test_memcg_subtree_control,
-+};
+> If we agree we want this, we can consider to use some switch instead or print
+> this variable in help output (-h), with other variables from
+> https://github.com/linux-test-project/ltp/wiki/User-Guidelines.
+
+Printing the variables on -h does sounds reasonabe.
+
 -- 
-2.34.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
