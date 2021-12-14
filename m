@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60978C433EF
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 16:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87035C433F5
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 16:47:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B2023C8DD1
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 17:46:28 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 577273C8C69
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 17:47:27 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B29C93C013D
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 17:46:18 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 4F7BD3C8C62
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 17:47:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 271F21001448
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 17:46:17 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 745A11400F39
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 17:47:17 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1A736210FE;
- Tue, 14 Dec 2021 16:46:17 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AE7EF1F381;
+ Tue, 14 Dec 2021 16:47:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639500377;
+ t=1639500436;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=h88o0M4banyuScug9IutrlIQC2acIHfUlRzOV/h5afU=;
- b=pMBL1QajM+1YkPUsT62wqIqg8iG5t9DY4Pqi3LwHMHv5wcwGulf3lFl+XQ3Zv/q+kuw+8F
- 6dUPcWtNmjcoLc01l9azN9d6qXcaEQcxcFNrlKahE967D98qTVPuVcVlyw2d0CaoviGh6j
- A0o2+XZVgKeXjTbRIEyVPUxmuxe76g0=
+ bh=EsUOIlzExTsFudec+Y7M/oLV2ASznW+/kHDNZWia86g=;
+ b=Y6efpG3RoW44rP/Gb1O+ftMKpGiDfZcfpZNBJ9khOymhNvXds1Tw9PvLoUn0FTmtKeGLuI
+ 4tklA8cnh7aetPcOLwGmtQ1BoRy2KIESXrIKlZJiPscySUU7jj+PrS0KqqAt/JEFsORI1h
+ Fnf/shgAZ2kH4xP4e+C87VzS+pOTpOY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639500377;
+ s=susede2_ed25519; t=1639500436;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=h88o0M4banyuScug9IutrlIQC2acIHfUlRzOV/h5afU=;
- b=roQirhgMfbingum30/fvR/JD4pJmRSBTCqHKP0PVNlEjFO/FK/yrcUOt6HqATtkLvzsG9B
- KI++Ev1Sc6tmvMDA==
+ bh=EsUOIlzExTsFudec+Y7M/oLV2ASznW+/kHDNZWia86g=;
+ b=lDgHV6BWnD5Ak6Ty/bqNz3XZ8RJKebLIbUYpgq3sufMpFf5Otliy2lQJ+yugTJeqnl6pXq
+ bRCW5K1hGnf3bBBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6CD013A1D;
- Tue, 14 Dec 2021 16:46:16 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7714213A1D;
+ Tue, 14 Dec 2021 16:47:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id A3aDNljKuGETDQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 14 Dec 2021 16:46:16 +0000
-Date: Tue, 14 Dec 2021 17:46:15 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id x8WeG5TKuGGEDQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 14 Dec 2021 16:47:16 +0000
+Date: Tue, 14 Dec 2021 17:47:14 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YbjKV7yUJS+njaCY@pevik>
+To: Tim.Bird@sony.com
+Message-ID: <YbjKkic5F0j4c3bD@pevik>
 References: <20211214144309.6704-1-pvorel@suse.cz>
- <20211214144309.6704-4-pvorel@suse.cz> <YbjAOffrWpsMvinQ@yuki>
+ <20211214144309.6704-3-pvorel@suse.cz>
+ <BYAPR13MB25037C7B8DE0850EFB25DDE5FD759@BYAPR13MB2503.namprd13.prod.outlook.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YbjAOffrWpsMvinQ@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <BYAPR13MB25037C7B8DE0850EFB25DDE5FD759@BYAPR13MB2503.namprd13.prod.outlook.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] lib: Add support for debugging
- .all_filesystems
+Subject: Re: [LTP] [PATCH v2 2/3] tst_test: Print environment variables on -h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,22 +85,13 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Li,
+Hi Tim,
 
-> Hi!
-> > +| 'LTP_SINGLE_FS_TYPE'  | Testing only specified filesystem instead all
->                                          ^   ^
-> 					 |   "specifies"
-> 					 there should be comma or dash here
+> > +	fprintf(stderr, "LTP_TIMEOUT_MUL      Multiply timeout (must be number >= 1)\n");
 
-I meant "specific", i.e. Testing only specific filesystem instead all supported,
-but "Testing only - specifies filesystem instead all supported" makes more
-sense.
+> I think this should this be: "Timeout multiplier (must be a number >=1, should be an integer)
 
-> Other than that the rest looks fine, for the patchset:
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-Thanks! Waiting for Li and others for input before merging it.
+Also makes sense, thanks!
 
 Kind regards,
 Petr
