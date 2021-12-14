@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE9F4C433EF
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 15:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC20CC433F5
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 16:01:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D87523C8C62
-	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 16:12:13 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 37B0F3C8DD7
+	for <ltp@archiver.kernel.org>; Tue, 14 Dec 2021 17:01:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 501D73C8A8C
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 16:12:05 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 3B4C43C8B34
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 17:01:42 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D01591A00245
- for <ltp@lists.linux.it>; Tue, 14 Dec 2021 16:12:04 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 26861140138F
+ for <ltp@lists.linux.it>; Tue, 14 Dec 2021 17:01:41 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id ECFC81F37C;
- Tue, 14 Dec 2021 15:12:03 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 315301F383;
+ Tue, 14 Dec 2021 16:01:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639494723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1639497701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1EpiJyiUKWpXgs3ShfAQG/b5vhUFPlJNyE1oZ/A9iT4=;
- b=ixxWFCiWKfxm9knHTA3/EzmnXKLbK2CsDq4YPZ05Iax21v1TIhxGRkp2ZGLwoQff4VoBm8
- sv+4TjViCQIeKybnPoA7X1sX/y7qbd22z+bB0Ao66fpcTd4sefcchA5HfQ+Tt2uNXiPQmR
- zXmQNFYk7gc4LvwA3Hzt6Jw7FZ54v8U=
+ bh=bN60ts/6mToDoGTSk1vKSUnUN3K5eklWXbgU1H00UBs=;
+ b=PGGc97I6Q9as7CLenWnFr19JlRJWSvyPBHvaf+gAgUs4a/uo06RILA7eZBTENuilWQGihW
+ DSGPZzvRbGRXDS4pKWYU2YlXHUkm9zTdu2wFEDBBkyDysXSsk6/LRuUt9LVyfeS1+jxnkK
+ Y5owzDYZN+ArnSxD2cCAoMQsS0NQ4Jc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639494723;
+ s=susede2_ed25519; t=1639497701;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1EpiJyiUKWpXgs3ShfAQG/b5vhUFPlJNyE1oZ/A9iT4=;
- b=JdSmz6fVbEC1XaRDz3dr6oxqqcLv99mIO9s7SXECxi3qbnLJoBlEJw9Yylwr0IWXYg709q
- 8GdLrxfox+zuFICA==
+ bh=bN60ts/6mToDoGTSk1vKSUnUN3K5eklWXbgU1H00UBs=;
+ b=v7s4OCU/qCT7u27jIVsm4GVbJiI8kPe9Qb+hJKvY4iPCkRePwdkoQ1xynFCo4mqBmBAVzQ
+ zFmShzi3H4FSY1DA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CAAD913DF1;
- Tue, 14 Dec 2021 15:12:03 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E34C13EA2;
+ Tue, 14 Dec 2021 16:01:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4lnFMEO0uGFaXQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Dec 2021 15:12:03 +0000
-Date: Tue, 14 Dec 2021 16:13:28 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id U2ryBuW/uGFDdAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Dec 2021 16:01:41 +0000
+Date: Tue, 14 Dec 2021 17:03:05 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Ybi0mHK4s3X7nLlD@yuki>
-References: <20211213160437.32353-1-andrea.cervesato@suse.com>
- <YbiyhLnljUy2K7Mv@pevik>
+Message-ID: <YbjAOffrWpsMvinQ@yuki>
+References: <20211214144309.6704-1-pvorel@suse.cz>
+ <20211214144309.6704-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YbiyhLnljUy2K7Mv@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <20211214144309.6704-4-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] Refactoring dio_append.c using LTP API
+Subject: Re: [LTP] [PATCH v2 3/3] lib: Add support for debugging
+ .all_filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,14 +84,54 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> I wonder what I'm missing:
-> ./dio_append
-> tst_test.c:1409: TINFO: Timeout per run is 0h 05m 00s
-> dio_append.c:69: TINFO: Parent append to file
-> common.h:45: TBROK: open(dio_append,16449,0666) failed: EINVAL (22)
+> +| 'LTP_SINGLE_FS_TYPE'  | Testing only specified filesystem instead all
+                                         ^   ^
+					 |   "specifies"
+					 there should be comma or dash here
 
-That's an O_DIRECT open() EINVAL probably means that O_DIRECT is not
-supported. Is your /tmp/ on tmpfs?
+> +                          supported (for tests with '.all_filesystems').
+>  | 'LTP_DEV_FS_TYPE'     | Filesystem used for testing (default: 'ext2').
+>  | 'LTP_TIMEOUT_MUL'     | Multiply timeout, must be number >= 1 (> 1 is useful for
+>                            slow machines to avoid unexpected timeout).
+> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+> index fc072cadfd..23e5ce8775 100644
+> --- a/lib/tst_supported_fs_types.c
+> +++ b/lib/tst_supported_fs_types.c
+> @@ -139,8 +139,17 @@ const char **tst_get_supported_fs_types(const char *const *skiplist)
+>  	unsigned int i, j = 0;
+>  	int skip_fuse;
+>  	enum tst_fs_impl sup;
+> +	const char *only_fs;
+>  
+>  	skip_fuse = tst_fs_in_skiplist("fuse", skiplist);
+> +	only_fs = getenv("LTP_SINGLE_FS_TYPE");
+> +
+> +	if (only_fs) {
+> +		tst_res(TINFO, "WARNING: testing only %s", only_fs);
+> +		if (tst_fs_is_supported(only_fs))
+> +			fs_types[0] = only_fs;
+> +		return fs_types;
+> +	}
+>  
+>  	for (i = 0; fs_type_whitelist[i]; i++) {
+>  		if (tst_fs_in_skiplist(fs_type_whitelist[i], skiplist)) {
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index f92ff858e9..ce2b8239d7 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -483,6 +483,7 @@ static void print_help(void)
+>  	fprintf(stderr, "LTP_COLORIZE_OUTPUT  Force colorized output behaviour (y/1 always, n/0: never)\n");
+>  	fprintf(stderr, "LTP_DEV              Path to the block device to be used (for .needs_device)\n");
+>  	fprintf(stderr, "LTP_DEV_FS_TYPE      Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
+> +	fprintf(stderr, "LTP_SINGLE_FS_TYPE   Testing only specified filesystem instead all supported (for .all_filesystems)\n");
+>  	fprintf(stderr, "LTP_TIMEOUT_MUL      Multiply timeout (must be number >= 1)\n");
+>  	fprintf(stderr, "LTP_VIRT_OVERRIDE    Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm\n");
+>  	fprintf(stderr, "TMPDIR               Base directory for template directory (for .needs_tmpdir, default: %s)\n", TEMPDIR);
+
+Other than that the rest looks fine, for the patchset:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 
 -- 
 Cyril Hrubis
