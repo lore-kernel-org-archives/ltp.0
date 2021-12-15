@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04B4C433F5
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 11:44:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B67C433F5
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 11:51:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 98D903C8F0F
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 12:44:57 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E7A143C8F38
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 12:50:58 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E9A163C0B90
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 12:44:47 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 091E03C104E
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 12:50:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4C7C3600F1A
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 12:44:46 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 19219201094
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 12:50:48 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 76B581F39F;
- Wed, 15 Dec 2021 11:44:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 22C0E210F9;
+ Wed, 15 Dec 2021 11:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639568686;
+ t=1639569048;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=olBbbnTkw5AOQ0gYwxnWJv6YLk6HJZQJXJ1IuxVD6Mc=;
- b=nzYO39/X2EgvQ4wAe+eZbV8Fe62PoY4ZsneDGdbuVQvFPUXVlDn+klgYdPa+Nem5TYiMJw
- zeA7DYtm6hg8aFfVdjlWDCNC7+WylHycSyT9llOQoK0qrkVjLLEDFIqgb78+u4eFQkuHwQ
- W9gwAONf/VJ+yp+/F1TGGGpLeUXxTRI=
+ bh=1EoIVVgvsJZhc4BRiiuSdkoviF226zqO5/Fn4H0vNf8=;
+ b=JuHWa3x2DsDWJc9mkAqadHUjLBrPN3/reX/Y6g26Y8e/E3hgRoLqrQmpOwZVT8vm1EWRRP
+ 9SPKfyzNTFwDyAftPEX9gljKRlUiOaSSPr6zyBBbqLs0+cUId84mMAfmjV4Yqt4LiBjzKy
+ +1xz7JhRfaMbnTwv4dTJqjFtoyfnZ4Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639568686;
+ s=susede2_ed25519; t=1639569048;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=olBbbnTkw5AOQ0gYwxnWJv6YLk6HJZQJXJ1IuxVD6Mc=;
- b=6LXrWMvjLhD63Bgn2FBJQQ0wogcs8WU8mOcfkXSTlt0TiGEzvaesG4eObzh7tmseinc4kE
- RF5y0bGdgGWKZIBw==
+ bh=1EoIVVgvsJZhc4BRiiuSdkoviF226zqO5/Fn4H0vNf8=;
+ b=pDW8SW5kcTTNtJTp3T4MM1VkxknUqm9fwIQU2TQMZxsOxNO7oTsCYyFoHGFg+yBg1RBLJb
+ b2lUuPVfnQT3OABg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4224513B27;
- Wed, 15 Dec 2021 11:44:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEEBF13B27;
+ Wed, 15 Dec 2021 11:50:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id f4jSDS7VuWFyGgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 15 Dec 2021 11:44:46 +0000
-Date: Wed, 15 Dec 2021 12:44:44 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id jxKgOJfWuWF0HQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 15 Dec 2021 11:50:47 +0000
+Date: Wed, 15 Dec 2021 12:50:46 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YbnVLKrl28DEVOAO@pevik>
-References: <20211215101642.2464-1-pvorel@suse.cz>
- <YbnDVLypfHi/8622@yuki>
+Message-ID: <YbnWlgK9SLTD2i5B@pevik>
+References: <20211213160437.32353-1-andrea.cervesato@suse.com>
+ <YbiyhLnljUy2K7Mv@pevik> <Ybi0mHK4s3X7nLlD@yuki>
+ <YbjIqypOcAYAnLbl@pevik> <YbnS9OiBV0V0CwuD@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YbnDVLypfHi/8622@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <YbnS9OiBV0V0CwuD@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] ci: Don't run wiki mirror on LTP forks
+Subject: Re: [LTP] [PATCH v4] Refactoring dio_append.c using LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,13 +85,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi,
 
-> Sounds like an obvious fix.
+...
+> > > That's an O_DIRECT open() EINVAL probably means that O_DIRECT is not
+> > > supported. Is your /tmp/ on tmpfs?
+> > Yes. As we cannot use SAFE_OPEN() in io_read_eof() [1], there should be check
+> > for errno I guess.
 
-> Acked-by: Cyril Hrubis <chrubis@suse.cz>
-
-Thanks, merged!
+> Maybe it would be a bit cleaner to add a check that would attempt to
+> open a dummy file in the test setup and exit the O_DIRECT tests before
+> they attempt to fork children...
++1
 
 Kind regards,
 Petr
