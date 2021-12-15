@@ -4,65 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5EFCC433FE
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 15:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB685C4332F
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 16:29:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4B2893C8F51
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 16:49:01 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 55F603C8F88
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 17:29:20 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E7F93C1821
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 16:48:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 3C5323C8DDE
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 17:29:11 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0C0D6140055C
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 16:48:49 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 93F7C1000F40
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 17:29:10 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 278BA212B6;
- Wed, 15 Dec 2021 15:48:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D4C3C1F3CB;
+ Wed, 15 Dec 2021 16:29:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639583329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1639585749;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=myVIkBj2vzbwCOSDlPSb2UUKMoTntKIKbamQyzkvLuY=;
- b=B+iCY5pNLJSjHYD048GAgM2FdOO6qreAo1R+fZRRwcB+ZnrH+LTCihg634K75OqAMlo0sR
- 2h3I/0OBxVNzKrvtRxxHFdxAcFYhulkF8hjcangVSC+GfR+80q+p+MoVUGigOYYUcNab8v
- xz2bjMIB/bafWZXFI1T1Y3mCjH0cpGc=
+ bh=A1GR2lBxWrp2SeMoLjwjLxP4JiMLw9HEWDUYHAtf9fk=;
+ b=q3Y8K3aHVZihVv1IUY8Yu2M/dHY97K51wx+wwhR2BwmAvuF8Z8smm7ePdoXz3FTyT6jwI7
+ B+SPHDViNfmc3yADtyhYs0Nkw2sqtHKt6BkD6KfEUUUFUeGFSe4EAFPk4Y7cCgJsvTJ8bZ
+ JA8vWLI7OUPVRglyp310OBX1vbdG0ow=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639583329;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1639585749;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=myVIkBj2vzbwCOSDlPSb2UUKMoTntKIKbamQyzkvLuY=;
- b=H4OZ9P+wELcM3kBZun2ncGkeJ2eGnx2sQoYU6X5LiMZs6YEGVTI+nwZ0Re91axiEFZoLCi
- uFskcz5cakp+YsBw==
+ bh=A1GR2lBxWrp2SeMoLjwjLxP4JiMLw9HEWDUYHAtf9fk=;
+ b=x5QOSmraiqUWQvh31+YEm6XDRX40npNYzW59QlAynWfcMGyqUruyAff6GR4dIQhekm85aC
+ FblebUnEnK8wBmDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 087DB13B45;
- Wed, 15 Dec 2021 15:48:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D7D413B75;
+ Wed, 15 Dec 2021 16:29:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2cflAWEOumHUDwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 15 Dec 2021 15:48:49 +0000
-Date: Wed, 15 Dec 2021 16:50:14 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <YboOtg0XorMEaOZi@yuki>
-References: <20211213163802.8830-1-andrea.cervesato@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id +Mi7INUXumFaIQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 15 Dec 2021 16:29:09 +0000
+Date: Wed, 15 Dec 2021 17:29:07 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <YboX0x4X05tMmUkE@pevik>
+References: <20211210134556.26091-1-pvorel@suse.cz> <87tufcao8l.fsf@suse.de>
+ <YbcM8xKx7G0KQxWU@yuki> <61B70DE2.4040402@fujitsu.com>
+ <87lf0oaeui.fsf@suse.de> <Ybc5QJSZM3YIji70@yuki>
+ <87h7bca7vu.fsf@suse.de> <YbnI83sr26q+naFd@pevik>
+ <874k7a9j5p.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211213163802.8830-1-andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <874k7a9j5p.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Refactoring aiodio_append.c using LTP API
+Subject: Re: [LTP] [PATCH 1/1] doc/maintainer: Add policy for new
+ functionality
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,388 +80,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: pvorel@suze.cz, "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/runtest/ltp-aiodio.part4 b/runtest/ltp-aiodio.part4
-> index bb8abfdf1..ef1cfdac6 100644
-> --- a/runtest/ltp-aiodio.part4
-> +++ b/runtest/ltp-aiodio.part4
-> @@ -34,16 +34,16 @@ DIO07 dio_sparse
->  DIO08 dio_sparse
->  DIO09 dio_sparse
->  #Running aiodio_append
-> -AD000 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD001 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD002 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD003 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD004 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD005 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD006 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD007 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD008 aiodio_append $TMPDIR/aiodio.$$/file2
-> -AD009 aiodio_append $TMPDIR/aiodio.$$/file2
-> +AD000 aiodio_append
-> +AD001 aiodio_append
-> +AD002 aiodio_append
-> +AD003 aiodio_append
-> +AD004 aiodio_append
-> +AD005 aiodio_append
-> +AD006 aiodio_append
-> +AD007 aiodio_append
-> +AD008 aiodio_append
-> +AD009 aiodio_append
+Hi Richie, Cyril,
 
-I suppose that we will add some parameters to these tests later on,
-right?
+> Hello Petr,
 
->  #Running dio_append
->  ADI000 dio_append
->  ADI001 dio_append
-> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_append.c b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
-> index 5d97ed941..9fbf70b25 100644
-> --- a/testcases/kernel/io/ltp-aiodio/aiodio_append.c
-> +++ b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
-> @@ -1,128 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2004 Daniel McNeil <daniel@osdl.org>
->   *               2004 Open Source Development Lab
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - *
-> - * Module: .c
-> - * Change History:
-> - *
-> - * 2/2004  Marty Ridgeway (mridge@us.ibm.com) Changes to adapt to LTP
-> + *               2004  Marty Ridgeway <mridge@us.ibm.com>
-> + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +/*\
-> + * [Description]
->   *
-> -*/
-> + * Append zeroed data to a file using libaio while other processes are doing
-> + * buffered reads and check if the buffer reads always see zero.
-> + */
->  
->  #define _GNU_SOURCE
->  
-> -#include <stdio.h>
-> -#include <stdlib.h>
-> -#include <sys/types.h>
-> -#include <signal.h>
-> -#include <errno.h>
-> -#include <fcntl.h>
-> -#include <unistd.h>
-> -
-> -#include "config.h"
-> -#include "test.h"
-> -
-> -char *TCID = "aiodio_append";
-> +#include "tst_test.h"
->  
->  #ifdef HAVE_LIBAIO
-> +#include <stdlib.h>
-> +#include <sys/wait.h>
-> +#include <unistd.h>
->  #include <libaio.h>
-> +#include "common.h"
->  
-> -#define NUM_CHILDREN 8
-> +static int *run_child;
->  
-> -#include "common_checkzero.h"
-> +static char *str_numchildren;
-> +static char *str_writesize;
-> +static char *str_numaio;
-> +static char *str_appends;
->  
-> -int read_eof(char *filename)
-> -{
-> -	int fd;
-> -	int i;
-> -	int r;
-> -	char buf[4096];
-> -
-> -	while ((fd = open(filename, O_RDONLY)) < 0) {
-> -		sleep(1);	/* wait for file to be created */
-> -	}
-> -
-> -	for (i = 0; i < 1000000; i++) {
-> -		off_t offset;
-> -		char *bufoff;
-> -
-> -		offset = lseek(fd, SEEK_END, 0);
-> -		r = read(fd, buf, 4096);
-> -		if (r > 0) {
-> -			if ((bufoff = check_zero(buf, r))) {
-> -				fprintf(stderr, "non-zero read at offset %p\n",
-> -					offset + bufoff);
-> -				exit(1);
-> -			}
-> -		}
-> -	}
-> -	return 0;
-> -}
-> -
-> -#define NUM_AIO 16
-> -#define AIO_SIZE 64*1024
-> +static int numchildren;
-> +static long long writesize;
-> +static int numaio;
-> +static int appends;
-> +static long long alignment;
->  
->  /*
->   * append to the end of a file using AIO DIRECT.
->   */
-> -void aiodio_append(char *filename)
-> +static void aiodio_append(char *filename, int bcount, long long align, long long ws, int naio)
->  {
->  	int fd;
->  	void *bufptr;
->  	int i;
->  	int w;
-> -	struct iocb iocb_array[NUM_AIO];
-> -	struct iocb *iocbs[NUM_AIO];
-> +	struct iocb iocb_array[naio];
-> +	struct iocb *iocbs[naio];
->  	off_t offset = 0;
->  	io_context_t myctx;
->  	struct io_event event;
->  	struct timespec timeout;
->  
-> -	fd = open(filename, O_DIRECT | O_WRONLY | O_CREAT, 0666);
-> -	if (fd < 0) {
-> -		perror("cannot create file");
-> -		return;
-> -	}
-> +	fd = SAFE_OPEN(filename, O_DIRECT | O_WRONLY | O_CREAT, 0666);
->  
-> +	/*
-> +	 * Prepare AIO write context.
-> +	 */
->  	memset(&myctx, 0, sizeof(myctx));
-> -	io_queue_init(NUM_AIO, &myctx);
-> -
-> -	for (i = 0; i < NUM_AIO; i++) {
-> -		TEST(posix_memalign(&bufptr, 4096, AIO_SIZE));
-> -		if (TEST_RETURN) {
-> -			tst_resm(TBROK | TRERRNO, "cannot malloc aligned memory");
-> -			return;
-> -		}
-> -		memset(bufptr, 0, AIO_SIZE);
-> -		io_prep_pwrite(&iocb_array[i], fd, bufptr, AIO_SIZE, offset);
-> +	w = io_queue_init(naio, &myctx);
-> +	if (w < 0)
-> +		tst_brk(TBROK, "io_queue_init: %s", tst_strerrno(-w));
-> +
-> +	for (i = 0; i < naio; i++) {
-> +		bufptr = SAFE_MEMALIGN(align, ws);
-> +		memset(bufptr, 0, ws);
-> +		io_prep_pwrite(&iocb_array[i], fd, bufptr, ws, offset);
->  		iocbs[i] = &iocb_array[i];
-> -		offset += AIO_SIZE;
-> +		offset += ws;
->  	}
->  
->  	/*
-> -	 * Start the 1st NUM_AIO requests
-> +	 * Start the 1st AIO requests.
->  	 */
-> -	if ((w = io_submit(myctx, NUM_AIO, iocbs)) < 0) {
-> -		fprintf(stderr, "io_submit write returned %d\n", w);
-> +	w = io_submit(myctx, naio, iocbs);
-> +	if (w < 0) {
-> +		io_destroy(myctx);
-> +		tst_brk(TBROK, "io_submit (multiple): %s", tst_strerrno(-w));
->  	}
->  
->  	/*
->  	 * As AIO requests finish, keep issuing more AIOs.
->  	 */
-> -	for (; i < 1000; i++) {
-> +	for (; i < bcount; i++) {
->  		int n = 0;
->  		struct iocb *iocbp;
->  
-> @@ -131,56 +92,97 @@ void aiodio_append(char *filename)
->  			iocbp = (struct iocb *)event.obj;
->  
->  			if (n > 0) {
+> Petr Vorel <pvorel@suse.cz> writes:
 
-It's not visible in this patch but there is another if (n > 0) right
-above this one which makes this one redundant.
+> > Hi Richie, all,
 
-> -				io_prep_pwrite(iocbp, fd, iocbp->u.c.buf,
-> -					       AIO_SIZE, offset);
-> -				offset += AIO_SIZE;
-> -				if ((w = io_submit(myctx, 1, &iocbp)) < 0) {
-> -					fprintf(stderr,
-> -						"write %d returned %d\n", i, w);
-> +				io_prep_pwrite(iocbp, fd, iocbp->u.c.buf, ws, offset);
-> +				offset += ws;
-> +				w = io_submit(myctx, 1, &iocbp);
-> +				if (w < 0) {
-> +					io_destroy(myctx);
-> +					tst_brk(TBROK, "io_submit (single): %s", tst_strerrno(-w));
->  				}
->  			}
->  		}
->  	}
->  }
+> >> Hello,
 
->  
-> -int main(int argc, char **argv)
-> +static void setup(void)
-> +{
-> +	struct stat sb;
-> +	int maxaio;
-> +
-> +	numchildren = 8;
-> +	writesize = 64 * 1024;
-> +	numaio = 16;
-> +	appends = 1000;
-> +	alignment = 0;
-> +
-> +	SAFE_FILE_SCANF("/proc/sys/fs/aio-max-nr", "%d", &maxaio);
-> +	tst_res(TINFO, "Maximum AIO blocks: %d", maxaio);
-> +
-> +	if (tst_parse_int(str_numchildren, &numchildren, 1, INT_MAX))
-> +		tst_brk(TBROK, "Invalid number of children '%s'", str_numchildren);
-> +
-> +	if (tst_parse_filesize(str_writesize, &writesize, 1, LLONG_MAX))
-> +		tst_brk(TBROK, "Size of the file to write '%s'", str_writesize);
-> +
-> +	if (tst_parse_int(str_numaio, &numaio, 1, maxaio))
-> +		tst_brk(TBROK, "Number of async IO blocks '%s'", str_numaio);
+> >> Cyril Hrubis <chrubis@suse.cz> writes:
 
-I do not think that we want to TBROK if numaio is greater than maxaio.
-Ideally we will parse the numaio without any upper limit then check it
-againts maxaio and produce TCONF if maxaio < numaio.
+> >> > Hi!
+> >> >> >>> The issue is we may forget to merge patch sets for features which are
+> >> >> >>> included (a far worse result). It's more stuff waiting around in the
+> >> >> >>> queue. At the least we should have a procedure for tracking them (like
+> >> >> >>> tagging github issues for review at each mainline release).
 
-> +	if (tst_parse_int(str_appends, &appends, 1, INT_MAX))
-> +		tst_brk(TBROK, "Invalid number of appends '%s'", str_appends);
-> +
-> +	SAFE_STAT(".", &sb);
-> +	alignment = sb.st_blksize;
-> +
-> +	run_child = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	*run_child = 0;
-> +	SAFE_MUNMAP(run_child, sizeof(int));
-> +}
-> +
-> +static void run(void)
->  {
-> -	int pid[NUM_CHILDREN];
-> -	int num_children = 1;
-> +	char *filename = "aiodio_append";
-> +	int status;
->  	int i;
-> -	char *filename = argv[1];
-> -
-> -	printf("Starting aio/dio append test...\n");
-> -
-> -	for (i = 0; i < num_children; i++) {
-> -		if ((pid[i] = fork()) == 0) {
-> -			/* child */
-> -			return read_eof(filename);
-> -		} else if (pid[i] < 0) {
-> -			/* error */
-> -			perror("fork error");
-> -			break;
-> -		} else {
-> -			/* Parent */
-> -			continue;
-> +
-> +	*run_child = 1;
-> +
-> +	for (i = 0; i < numchildren; i++) {
-> +		if (!SAFE_FORK()) {
-> +			io_read_eof(filename, run_child);
-> +			return;
->  		}
->  	}
->  
-> -	/*
-> -	 * Parent appends to end of file using direct i/o
-> -	 */
-> +	tst_res(TINFO, "Parent append to file");
->  
-> -	aiodio_append(filename);
-> +	aiodio_append(filename, appends, alignment, writesize, numaio);
->  
-> -	for (i = 0; i < num_children; i++) {
-> -		kill(pid[i], SIGTERM);
-> -	}
-> +	if (SAFE_WAITPID(-1, &status, WNOHANG))
-> +		tst_res(TFAIL, "Non zero bytes read");
-> +	else
-> +		tst_res(TPASS, "All bytes read were zeroed");
->  
-> -	return 0;
-> +	*run_child = 0;
->  }
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.forks_child = 1,
-> +	.options = (struct tst_option[]) {
-> +		{"n:", &str_numchildren, "Number of threads (default 16)"},
-                                                     ^
-						     processes
+> >> >> >>> If a test requires a kernel config which doesn't exist in mainline we
+> >> >> >>> could also look for that automatically.
 
-> +		{"s:", &str_writesize, "Size of the file to write (default 64K)"},
-> +		{"c:", &str_appends, "Number of appends (default 1000)"},
-> +		{"b:", &str_numaio, "Number of async IO blocks (default 16)"},
-> +		{}
+> >> >> >> The main issue is that if we happen to release LTP meanwhile with a test
+> >> >> >> for a syscall that didn't get included in the mainline in the end we
+> >> >> >> have released LTP that is supposed to be stable and the test will start
+> >> >> >> to fail when the syscall number is allocated for something else which
+> >> >> >> will happen sooner or later.
+> >> >> > I know a example that is quotactl_path syscall.
 
-And the options needs the same treatement as in the dio_append (unless
-you want to fix the library first :-).
 
-> +	},
-> +};
->  #else
-> -int main(void)
-> -{
-> -	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
-> -}
-> +TST_TEST_TCONF("test requires libaio and its development packages");
->  #endif
-> -- 
-> 2.34.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> >> >> If the real issue is LTP releases, then why not exclude tests for new
+> >> >> features from them? I assume it's only a small number of commits which
+> >> >> would need to be removed. Possibly we could tag them in git when merging
+> >> >> so it is not a lot more work for whoever does the release (namely
+> >> >> Cyril) to create a branch without them.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> >> > That sounds too complex for a test or two we are usually getting during
+> >> > the release cycle.
+
+> >> > Note that people who contribute the functionality to the kernel are used
+> >> > to wait for next release window, kernel releases are aprox. twice as
+> >> > fast as LTP.
+
+> >> >> My main concern is this will throw up a barrier to motivated
+> >> >> contributors working on the cutting edge.
+
+> >> > So far really nobody complained, which may not be a good metric. But
+> >> > still unless there is a evidence that this happens I wouldn't consider
+> >> > spending effort on this.
+
+> >> OK, well if it comes up again we can revisit it. However Petr please
+> >> could you add the reasoning about not adding unstable tests into
+> >> releases.
+> > Isn't "... because it can be reverted in later rc if problematic" enough?
+> > If not what would you add? Cyril posted test getting released in LTP and later
+> > unstable. I could be more verbose, but not sure if that's better:
+
+> > * Tests for new functionality in mainline kernel should be merged after final
+> >   release of kernel which contains that functionality. It's not enough when the
+> >   feature gets into rc1, because in later rc the functionality can be changed or
+> >   even reverted if problematic. And this could lead to broken test.
+
+> It's only a problem because of LTP releases. We can just fix or revert
+> tests otherwise. Especially if the test author is also developing the
+> kernel feature and updating the test in lockstep.
+
+> Without LTP releases then a test can be added for a feature only in RC
+> and removed again. Only people who test the RC will get a result other
+> than TCONF from the test before it disappears again or is updated to
+> support the final feature.
+
+> Assuming of course people update LTP from HEAD on a regular basis. Which
+> of course they won't or can't, so we have releases. We don't have a
+> separate unstable branch because no one has volunteered to create and
+> maintain it. If we did we could just add such tests to that.
+
+Agree, but we *do* have releases and do *not* have unstable branch.
+
+Thus, first, do you agree with current policy?
+If yes, how would you phrase it (do you want to add / change anything)?
+
+Or do you suggest to have policy when merged to rc1?
+It would work for me, but we'd have to ask all maintainers
+(I suggested that before, Cyril preferred kernel release).
+
+Kind regards,
+Petr
+
+> >> With that you can add
+
+> >> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
