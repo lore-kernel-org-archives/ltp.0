@@ -4,74 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48556C433EF
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 09:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E8E1C433F5
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 09:54:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 35DBA3C8E88
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 10:50:11 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 181743C8EA3
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 10:54:31 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id E33883C092C
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 10:54:22 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 266FE3C092C
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 10:50:02 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DAAA91400C63
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 10:54:21 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 71B4F14011AF
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 10:50:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1639561800;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EBE25212C4;
+ Wed, 15 Dec 2021 09:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1639562060;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zlQbn+DGy0tvaA68Zkamx4pIe7sJ4kBRrJHMeiMtAT0=;
- b=UQ2aqJZxuWuGfWgdtkdW+2mZ6aGlgeYQoBby7eg9n+EgdY9SkysaK2zf6nEToxC0dVQXYb
- nlgidYm8Ffq4D/PMjF8m6rjMqNwB9XAFCUTat8dY+Jd7iZd5+ZDjA0LwySzrE6NxeaZwxi
- UXGyQmorrfNAp21vqyHxQ4/0mAE8oY4=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-103-RtglAc0nNk-H3880zVZjdw-1; Wed, 15 Dec 2021 04:49:58 -0500
-X-MC-Unique: RtglAc0nNk-H3880zVZjdw-1
-Received: by mail-yb1-f200.google.com with SMTP id
- e131-20020a25d389000000b005fb5e6eb757so42096033ybf.22
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 01:49:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=zlQbn+DGy0tvaA68Zkamx4pIe7sJ4kBRrJHMeiMtAT0=;
- b=Qr2FsBLHG3so63+UL9EoHP/PCQzlqtnjnEwt4E2uFa72/PJI5HI4bIzP29qOT2t351
- xDvHywdI5SI+zagZvsOEzVQnhY1kcADly8iEmkJAGAWeWVl+T0sliOfIsk8p3HlKBeI4
- XtFm4cVageuvamotDxmdOJ9vn7aoHvPtNKG+pzWcEHlduALh5jsudTQLzuUTR9ZUbHh5
- 8SekzZP8l2HBc25kZEIzzASlXYfuIx5atzhAYLyJIeKu67MujFtcvQp3n7cajCi3qq/m
- K9+9Po/ye+RM/x48SBr7AUAOzBBYX9CKYa+20CJaSb5NCEZvUjmf5nsFhlAVWVk178aI
- Q9sg==
-X-Gm-Message-State: AOAM531RHUeKi2eSfXyKzerpNG6v0O7IfajTE6YT8cwOXk0IdQ6uURBR
- Qy4VPmshnGPkziK2tbBJFX69AWR6DEO1/5IfPngi96zZHjoTXVS6xFhq44nkuj7cAYlMYso5398
- RaKHqX9i28OjWhXzQl15oq4mZGms=
-X-Received: by 2002:a25:8c9:: with SMTP id 192mr4960099ybi.102.1639561798105; 
- Wed, 15 Dec 2021 01:49:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw0xYhfOwySx3KxiXGj8E/s2ioODSRfw3tUlH8TETCeCT+7lhXFVJ11FBgTW0AzF1FmWGfqYM87iSbJ5/6otbg=
-X-Received: by 2002:a25:8c9:: with SMTP id 192mr4960061ybi.102.1639561797629; 
- Wed, 15 Dec 2021 01:49:57 -0800 (PST)
-MIME-Version: 1.0
+ bh=F+OrsxxkronFRjD+FWx2bwZZ8H38f+Llt16ebgdtnyE=;
+ b=cO0s/Rbg7xn55TnhYMpmTYNGP2K8Vv5YhtlM1PZsj0XUhzZ7EqnKSJR6+cgrbpLiO+mFUr
+ bJh8PWRestPH+AryR4vZZDAVY/Pu8mJclslexEJC/wszpPwv+mmATPG0Z0xGAZkyuNPpqE
+ axifYBBXhxXfr3oYN403eYuTEkUYaH0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1639562060;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F+OrsxxkronFRjD+FWx2bwZZ8H38f+Llt16ebgdtnyE=;
+ b=4KtG8GuEYqKb7fmQpVezKEm3UK5J3tkxjmASxyRRSzyviamK0VyIW3VC/Oai7kQyvaVDYa
+ jpp0gik4kAaS/FBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFF1313B09;
+ Wed, 15 Dec 2021 09:54:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id VQBsLEy7uWFoXwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 15 Dec 2021 09:54:20 +0000
+Date: Wed, 15 Dec 2021 10:54:18 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Ybm7StGlzB9YQVhH@pevik>
 References: <20211214144309.6704-1-pvorel@suse.cz>
- <20211214144309.6704-4-pvorel@suse.cz>
- <YbjAOffrWpsMvinQ@yuki> <YbjKV7yUJS+njaCY@pevik>
+ <20211214144309.6704-4-pvorel@suse.cz> <YbjAOffrWpsMvinQ@yuki>
+ <YbjKV7yUJS+njaCY@pevik>
  <CAEemH2eXMWXt5GeY8EXaoPbS66-fju71iY+hJERNKMip+DqxLA@mail.gmail.com>
  <Ybm1vgG1OfmTjzzO@yuki>
-In-Reply-To: <Ybm1vgG1OfmTjzzO@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 15 Dec 2021 17:49:44 +0800
-Message-ID: <CAEemH2fkMVnRipZ-M_tYber5Y71RzrujyKVJFyEHyt+3AGfX4Q@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+ <CAEemH2fkMVnRipZ-M_tYber5Y71RzrujyKVJFyEHyt+3AGfX4Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAEemH2fkMVnRipZ-M_tYber5Y71RzrujyKVJFyEHyt+3AGfX4Q@mail.gmail.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 3/3] lib: Add support for debugging
@@ -87,75 +82,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1324970421=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1324970421==
-Content-Type: multipart/alternative; boundary="000000000000890f9105d32c3a5d"
+> Hi Petr, Cyril
 
---000000000000890f9105d32c3a5d
-Content-Type: text/plain; charset="UTF-8"
+> On Wed, Dec 15, 2021 at 5:29 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Hi Petr, Cyril
+> > Hi!
+> > > Hmm, I think it also makes sense to people who care about the
+> > > only one filesystem on their product. So this should _NOT_ be limit
+> > > for test/debug, because it can help to reduce testing time for specific
+> > > requirements.
 
-On Wed, Dec 15, 2021 at 5:29 PM Cyril Hrubis <chrubis@suse.cz> wrote:
-
-> Hi!
-> > Hmm, I think it also makes sense to people who care about the
-> > only one filesystem on their product. So this should _NOT_ be limit
-> > for test/debug, because it can help to reduce testing time for specific
-> > requirements.
->
-> With that line of reasoning it should be just called LTP_FS_TYPES and
-> user should be able to specify a list...
->
-
-Okay right, so just let it is, if there is new requirement we can add that.
+> > With that line of reasoning it should be just called LTP_FS_TYPES and
+> > user should be able to specify a list...
 
 
--- 
-Regards,
-Li Wang
+> Okay right, so just let it is, if there is new requirement we can add that.
 
---000000000000890f9105d32c3a5d
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+OK, I'll merge it as is. Thanks a lot both!
 
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Petr, Cyril</div></div><br><div class=3D"gmail_quote"><div=
- dir=3D"ltr" class=3D"gmail_attr">On Wed, Dec 15, 2021 at 5:29 PM Cyril Hru=
-bis &lt;<a href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<b=
-r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
-;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
-&gt; Hmm, I think it also makes sense to people who care about the<br>
-&gt; only one filesystem on their product. So this should _NOT_ be limit<br=
->
-&gt; for test/debug, because it can help to reduce testing time for specifi=
-c<br>
-&gt; requirements.<br>
-<br>
-With that line of reasoning it should be just called LTP_FS_TYPES and<br>
-user should be able to specify a list...<br></blockquote><div><br></div><di=
-v><div class=3D"gmail_default" style=3D"font-size:small">Okay right, so jus=
-t let it is, if there is new requirement=C2=A0we can add that.</div></div><=
-div><br></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_s=
-ignature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></d=
-iv></div></div>
-
---000000000000890f9105d32c3a5d--
-
-
---===============1324970421==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1324970421==--
-
