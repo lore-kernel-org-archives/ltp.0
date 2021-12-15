@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39E16C433F5
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 07:20:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC46BC433F5
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 07:21:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 25D303C8F2C
-	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 08:20:46 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 673653C8F5E
+	for <ltp@archiver.kernel.org>; Wed, 15 Dec 2021 08:21:01 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6FA1C3C091D
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 08:20:27 +0100 (CET)
-Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
- [85.158.142.1])
+ by picard.linux.it (Postfix) with ESMTPS id 9136C3C8CE5
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 08:20:52 +0100 (CET)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A1E1C100152F
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 08:20:26 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B34AE6011EB
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 08:20:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1639552825; i=@fujitsu.com;
- bh=JBmUAe3F5YnPEQD+3assGHIuxnw3qiToeq8pc2EjHNI=;
+ s=170520fj; t=1639552851; i=@fujitsu.com;
+ bh=Ogqm++6mf8LrY9jXzwFPIcx9lZn850mgfPQIes7hSxc=;
  h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=dq5+f14OR1ng6UHth7c22NGDHdFnUSpr3NKheTJTX5msA1uUr9Olqw5RyrGAcRefR
- Y74K+H8OQ2I8+5GSnjFm+Whj4TF3c6WGXWgAhb4VetH04W32+opvlo4cfOaS+Vy9Ab
- vcOi19FRIQ+N9pAV+gAV30rpMuAKDEzH0jhK0F6aB3u+NeBwquUyvSJ54OWw7w+fXT
- 8Lg/9zbP/O7EPSnHXdTni2Yh/6cthA11as/3EhiM9Im/7w99ZhYZnESTN0nZcKdTEs
- UlZpYYjZCY1mDK39k214tvkdtBfzQ+5lzGi4xSfQh4F1Nm9BXsJWtKgjs5GUceyuHs
- DKSDkBYUdxLHw==
-Received: from [100.115.68.153] (using TLSv1.2 with cipher
+ b=Fd2SUNIq3vTdAFdUUvj1cywgefUU5ds4p++Hz2lbF/kb2Dm/EO8GcBrp88DsBSl0J
+ GTLZyRaKj/hLJFvNM/0eUlwZ1YBkALMgcPZujeynCftThN4oFklR8vfemXoQDwnXyA
+ B1RAN5H6B2y18EtJMFfGyrY1i2iCS1bcIU1adD2Hs9VSWc7EXLdS4cfB3nBAEC3J5v
+ CVSDWqebipeGpa/Ypp1NlYqbuL0sUrVnD4yU6OJGPo3bda+QXM8bliq5PHSCgU0/9N
+ ZKN+Lq7oJlJdcVqOfqdzOUk9azZfS5ByZOfr1ezPaBEVk3QW5ZlyLSd4GdaHO6YPMU
+ syMpx8Zmg9xhA==
+Received: from [100.115.34.181] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-1.bemta.az-a.eu-central-1.aws.ess.symcld.net id 1D/E0-31213-93799B16;
- Wed, 15 Dec 2021 07:20:25 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRWlGSWpSXmKPExsViZ8MxRddy+s5
- Eg64H4hYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa0bbdfuC2YYV6zqPsTcw3tHoYuTiEBJoYpI4
- 8/0cO4Szh1FixtnPLF2MnBxsApoSzzoXMIPYIgISEh0Nb9lBbGYBdYnlk34xgdjCAjES/xcfA
- 4uzCKhKTF/bAWbzCnhI7PiyixXElhBQkJjy8D3YHE4BT4kLULYQUM2PaWvZIOoFJU7OfMICMV
- 9C4uCLF8wQvYoSlzq+MULYFRKzZrUxTWDkn4WkZRaSlgWMTKsY7ZKKMtMzSnITM3N0DQ0MdA0
- NTXXNDXUNLQ30Eqt0E/VSS3WTU/NKihKB0nqJ5cV6qcXFesWVuck5KXp5qSWbGIGhmVLsvm8H
- 44u+n3qHGCU5mJREed+W70wU4kvKT6nMSCzOiC8qzUktPsQow8GhJMH7ciJQTrAoNT21Ii0zB
- xgnMGkJDh4lEd5jU4HSvMUFibnFmekQqVOMxhw7j85bxMzxuuXnDmYhlrz8vFQpcd6tIKUCIK
- UZpXlwg2Dxe4lRVkqYl5GBgUGIpyC1KDezBFX+FaM4B6OSMK/NJKApPJl5JXD7XgGdwgRySu5
- 2kFNKEhFSUg1MPMbtEv+UH3MXH1ALaYwJLWnWTnDm+sMQJbqs+tzLmDzJqRu9N31lqz3Id61l
- h9i86ZYOzQKnp6wvOHtENODsQ7eNS7XDmm3u32lIy3hZVWIqJHrnw95JyXp/9P5p6S07nlDFt
- 23xpOL9hv29023j+77VVs+Xmbgkj2eu/G+/b1d+LQgo8Dh7tjhq6RGhxKVaRy7+31TY5f9jZ6
- ZW/oVzc6zkCo4utLjoUOdl8vr7l2MJ99oXGDOe2HLX6fYCpZ3L1u4UNb8SXP/+e+Bxj5mXq+a
- 9e35k1/+qg1VJekXBTDtOl7k2LQkTO7V4acWFay7J8+5WzfSMnGe1cX9HpAijlmxHyK2U3HVr
- Jny37mBuUGIpzkg01GIuKk4EAEs3kOpaAwAA
+ by server-4.bemta.az-a.eu-west-2.aws.ess.symcld.net id 88/6E-23453-25799B16;
+ Wed, 15 Dec 2021 07:20:50 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNIsWRWlGSWpSXmKPExsViZ8MxSTdo+s5
+ EgwtflS1WfN/B6MDose/3OtYAxijWzLyk/IoE1oxPVyayFZzhqXjU8pK5gfEWVxcjJ4eQwFlG
+ idVH9LoYuYDsnUwSHb1n2SCcPYwSnTe7WUCq2AQ0JZ51LmAGsUUEJCQ6Gt6yg9jMAuoSyyf9Y
+ gKxhQUSJS73PwKrYRFQldizupMVxOYV8JDo7+kBsyUEFCSmPHwPVsMp4ClxAcoWAqr5MW0tG0
+ S9oMTJmU9YIOZLSBx88YIZoldR4lLHN0YIu0Ji1qw2JghbTeLquU3MExgFZyFpn4WkfQEj0yp
+ G66SizPSMktzEzBxdQwMDXUNDU11jIyDTRC+xSjdRL7VUtzy1uETXSC+xvFgvtbhYr7gyNzkn
+ RS8vtWQTIzCMU4oVMnYwfl/5U+8QoyQHk5Io79vynYlCfEn5KZUZicUZ8UWlOanFhxhlODiUJ
+ HhfTgTKCRalpqdWpGXmAGMKJi3BwaMkwntsKlCat7ggMbc4Mx0idYpRUUqcdytIQgAkkVGaB9
+ cGi+NLjLJSwryMDAwMQjwFqUW5mSWo8q8YxTkYlYR5bSYBTeHJzCuBm/4KaDETyOLc7SCLSxI
+ RUlINTFUdPV0OtzdPOpX1/ZCz+OZPO/lj9n5mdf92sMe14uPbm6Llxzizrs5oEWj3Wfb8R8Kl
+ Bqk2qyrp6hnzZ/FbNVYqzAncdlRMPG+ijUHM5Aj5y0cW900/s4Pr5i/xZ+sU333TFn2jY+Npf
+ NvGOPOE8pq6GGZ2ha89j/L8Co7P35l502CPveL5Jf0l75n2RNyYLyR080Kakf2MA6scU4Ot97
+ kdE7i39Tuftboxx9L8kJnf2KVKTm7Pjn2xRXOWihrnk6q3+e5xwrtfvtjJ8YtZYU3Igdr999h
+ Z/nfazfR1mBR7UyPuwrrbUvMyt6Y7Nc4wu7/m89ynPALaiesjFk/8vsUjU6NwlVjHo9UN5Usf
+ sSqxFGckGmoxFxUnAgASYjnBXgMAAA==
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-9.tower-532.messagelabs.com!1639552825!1006!1
-X-Originating-IP: [62.60.8.148]
+X-Msg-Ref: server-8.tower-571.messagelabs.com!1639552850!106065!1
+X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 13382 invoked from network); 15 Dec 2021 07:20:25 -0000
-Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
- by server-9.tower-532.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 15 Dec 2021 07:20:25 -0000
-Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
- by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 1BF7KJT5006429
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
- for <ltp@lists.linux.it>; Wed, 15 Dec 2021 07:20:24 GMT
+Received: (qmail 21511 invoked from network); 15 Dec 2021 07:20:50 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-8.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 15 Dec 2021 07:20:50 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 416CD100440
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 07:20:50 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 34D661000FE
+ for <ltp@lists.linux.it>; Wed, 15 Dec 2021 07:20:50 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Wed, 15 Dec 2021 07:20:22 +0000
+ (TLS) id 15.0.1497.26; Wed, 15 Dec 2021 07:20:32 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Wed, 15 Dec 2021 15:20:47 +0800
-Message-ID: <1639552849-2251-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Wed, 15 Dec 2021 15:20:49 +0800
+Message-ID: <1639552849-2251-4-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1639552849-2251-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <1639552849-2251-1-git-send-email-xuyang2018.jy@fujitsu.com>
@@ -80,10 +85,10 @@ MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/4] zram/zram_lib.sh: adapt the situation that
- zram device is being used
+Subject: [LTP] [PATCH v4 4/4] zram/zram01.sh: Use mem_used_total field
+ instead of compr_data_size field
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,230 +105,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-If zram-generator package is installed and works, then we can not remove zram module
-because zram swap is being used. This case needs a clean zram environment, change this
-test by using hot_add/hot_remove interface[1]. So even zram device is being used, we
-still can add zram device and remove them in cleanup.
+Before ltp commit 4372f7a2156 ("Fix compression ratio calculation in zram01")[1], we
+used free -m changes to calculate the compression ratio.
 
-Also, zram01,02 case are adjuested to adapt the situation that CONFIG_ZRAM=y.
+After the above patch, we used compr_data_size to calculate. kernel documentation[2] has
+the following info:
+orig_data_size: uncompressed size of data stored in this disk.
+compr_data_size: compressed size of data stored in this disk
+mem_used_total: the amount of memory allocated for this disk
 
-1]https://www.kernel.org/doc/html/latest/admin-guide/blockdev/zram.html#add-remove-zram-devices
+We should calculate the compression ratio by used disk size divided into used mem size.
+It can also avoid the situation that division by 0 as below:
+zram01 7 TINFO: filling zram4 (it can take long time)
+zram01 7 TPASS: zram4 was filled with '25568' KB
+zram01 7 TINFO: compr_size 0
+ /opt/ltp/testcases/bin/zram01.sh: line 131: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
 
-Fixes: #888
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- .../kernel/device-drivers/zram/zram01.sh      |  6 +-
- .../kernel/device-drivers/zram/zram02.sh      |  4 +-
- .../kernel/device-drivers/zram/zram_lib.sh    | 60 ++++++++++++-------
- 3 files changed, 42 insertions(+), 28 deletions(-)
+ testcases/kernel/device-drivers/zram/zram01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index ad9a9a2be..5e13f387c 100755
+index 5e13f387c..5b4c05434 100755
 --- a/testcases/kernel/device-drivers/zram/zram01.sh
 +++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -69,7 +69,7 @@ setup()
+@@ -125,8 +125,8 @@ zram_fill_fs()
+ 			continue
+ 		fi
  
- zram_makefs()
- {
--	local i=0
-+	local i=$dev_start
- 	local fs
+-		local compr_size=`awk '{print $2}' "/sys/block/zram$i/mm_stat"`
+-		local v=$((100 * 1024 * $b / $compr_size))
++		local mem_used_total=`awk '{print $3}' "/sys/block/zram$i/mm_stat"`
++		local v=$((100 * 1024 * $b / $mem_used_total))
+ 		local r=`echo "scale=2; $v / 100 " | bc`
  
- 	for fs in $zram_filesystems; do
-@@ -90,7 +90,7 @@ zram_mount()
- {
- 	local i=0
- 
--	for i in $(seq 0 $(($dev_num - 1))); do
-+	for i in $(seq $dev_start $dev_end); do
- 		tst_res TINFO "mount /dev/zram$i"
- 		mkdir zram$i
- 		ROD mount /dev/zram$i zram$i
-@@ -102,7 +102,7 @@ zram_mount()
- 
- zram_fill_fs()
- {
--	for i in $(seq 0 $(($dev_num - 1))); do
-+	for i in $(seq $dev_start $dev_end); do
- 		tst_res TINFO "filling zram$i (it can take long time)"
- 		local b=0
- 		while true; do
-diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
-index f0421ce7f..c980fce76 100755
---- a/testcases/kernel/device-drivers/zram/zram02.sh
-+++ b/testcases/kernel/device-drivers/zram/zram02.sh
-@@ -29,7 +29,7 @@ zram_makeswap()
- 	tst_require_cmds mkswap swapon swapoff
- 	local i=0
- 
--	for i in $(seq 0 $(($dev_num - 1))); do
-+	for i in $(seq $dev_start $dev_end); do
- 		ROD mkswap /dev/zram$i
- 		ROD swapon /dev/zram$i
- 		tst_res TINFO "done with /dev/zram$i"
-@@ -44,7 +44,7 @@ zram_swapoff()
- 	tst_require_cmds swapoff
- 	local i
- 
--	for i in $(seq 0 $dev_makeswap); do
-+	for i in $(seq $dev_start $dev_end); do
- 		ROD swapoff /dev/zram$i
- 	done
- 	dev_makeswap=-1
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index fe9c915c3..db9552501 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -5,6 +5,9 @@
- 
- dev_makeswap=-1
- dev_mounted=-1
-+dev_start=-1
-+dev_end=-1
-+module_load=-1
- 
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
-@@ -17,19 +20,25 @@ zram_cleanup()
- {
- 	local i
- 
--	for i in $(seq 0 $dev_makeswap); do
-+	for i in $(seq $dev_start $dev_makeswap); do
- 		swapoff /dev/zram$i
- 	done
- 
--	for i in $(seq 0 $dev_mounted); do
-+	for i in $(seq $dev_start $dev_mounted); do
- 		umount /dev/zram$i
- 	done
- 
--	for i in $(seq 0 $(($dev_num - 1))); do
-+	for i in $(seq $dev_start $dev_end); do
- 		echo 1 > /sys/block/zram${i}/reset
- 	done
- 
--	rmmod zram > /dev/null 2>&1
-+	for i in $(seq $dev_start $dev_end); do
-+		echo $i > /sys/class/zram-control/hot_remove
-+	done
-+
-+	if [ $module_load -eq 1 ]; then
-+		rmmod zram > /dev/null 2>&1
-+	fi
- }
- 
- zram_load()
-@@ -51,16 +60,23 @@ zram_load()
- 
- 	tst_res TINFO "create '$dev_num' zram device(s)"
- 
--	modprobe zram num_devices=$dev_num || \
--		tst_brk TBROK "failed to insert zram module"
-+	if [ ! -d "/sys/class/zram-control" ]; then
-+		modprobe zram num_devices=$dev_num
-+		module_load=1
-+		dev_start=0
-+		dev_end=$(($dev_num - 1))
-+		tst_res TPASS "all zram devices(/dev/zram0~$dev_end) successfully created"
-+		return
-+	fi
- 
--	dev_num_created=$(ls /dev/zram* | wc -w)
-+	dev_start=$(ls /dev/zram* | wc -w)
-+	dev_end=$(($dev_start + $dev_num - 1))
- 
--	if [ "$dev_num_created" -ne "$dev_num" ]; then
--		tst_brk TFAIL "unexpected num of devices: $dev_num_created"
--	fi
-+	for i in $(seq  $dev_start $dev_end); do
-+		cat /sys/class/zram-control/hot_add > /dev/null
-+	done
- 
--	tst_res TPASS "all zram devices successfully created"
-+	tst_res TPASS "all zram devices(/dev/zram$dev_start~$dev_end) successfully created"
- }
- 
- zram_max_streams()
-@@ -73,7 +89,7 @@ zram_max_streams()
- 
- 	tst_res TINFO "set max_comp_streams to zram device(s)"
- 
--	local i=0
-+	local i=$dev_start
- 
- 	for max_s in $zram_max_streams; do
- 		local sys_path="/sys/block/zram${i}/max_comp_streams"
-@@ -85,7 +101,7 @@ zram_max_streams()
- 			tst_brk TFAIL "can't set max_streams '$max_s', get $max_stream"
- 
- 		i=$(($i + 1))
--		tst_res TINFO "$sys_path = '$max_streams' ($i/$dev_num)"
-+		tst_res TINFO "$sys_path = '$max_streams'"
- 	done
- 
- 	tst_res TPASS "test succeeded"
-@@ -100,20 +116,18 @@ zram_compress_alg()
- 		return
- 	fi
- 
--	local i=0
-+	local i=$dev_start
- 
- 	tst_res TINFO "test that we can set compression algorithm"
--	local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
-+	local algs="$(sed 's/[][]//g' /sys/block/zram${i}/comp_algorithm)"
- 	tst_res TINFO "supported algs: $algs"
- 
--	local dev_max=$(($dev_num - 1))
--
--	for i in $(seq 0 $dev_max); do
-+	for i in $(seq $dev_start $dev_end); do
- 		for alg in $algs; do
- 			local sys_path="/sys/block/zram${i}/comp_algorithm"
- 			echo "$alg" >  $sys_path || \
- 				tst_brk TFAIL "can't set '$alg' to $sys_path"
--			tst_res TINFO "$sys_path = '$alg' ($i/$dev_max)"
-+			tst_res TINFO "$sys_path = '$alg'"
- 		done
- 	done
- 
-@@ -122,7 +136,7 @@ zram_compress_alg()
- 
- zram_set_disksizes()
- {
--	local i=0
-+	local i=$dev_start
- 	local ds
- 
- 	tst_res TINFO "set disk size to zram device(s)"
-@@ -132,7 +146,7 @@ zram_set_disksizes()
- 			tst_brk TFAIL "can't set '$ds' to $sys_path"
- 
- 		i=$(($i + 1))
--		tst_res TINFO "$sys_path = '$ds' ($i/$dev_num)"
-+		tst_res TINFO "$sys_path = '$ds'"
- 	done
- 
- 	tst_res TPASS "test succeeded"
-@@ -147,7 +161,7 @@ zram_set_memlimit()
- 		return
- 	fi
- 
--	local i=0
-+	local i=$dev_start
- 	local ds
- 
- 	tst_res TINFO "set memory limit to zram device(s)"
-@@ -158,7 +172,7 @@ zram_set_memlimit()
- 			tst_brk TFAIL "can't set '$ds' to $sys_path"
- 
- 		i=$(($i + 1))
--		tst_res TINFO "$sys_path = '$ds' ($i/$dev_num)"
-+		tst_res TINFO "$sys_path = '$ds'"
- 	done
- 
- 	tst_res TPASS "test succeeded"
+ 		if [ "$v" -lt 100 ]; then
 -- 
 2.23.0
 
