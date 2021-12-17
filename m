@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD8BC433EF
-	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 14:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78AB2C433FE
+	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 15:23:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 541433C909A
-	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 15:50:05 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 021C83C90A3
+	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 16:23:35 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 66C223C71AA
- for <ltp@lists.linux.it>; Fri, 17 Dec 2021 15:49:51 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 63B293C8FB7
+ for <ltp@lists.linux.it>; Fri, 17 Dec 2021 16:23:26 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DFFCB602390
- for <ltp@lists.linux.it>; Fri, 17 Dec 2021 15:49:50 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DE043602701
+ for <ltp@lists.linux.it>; Fri, 17 Dec 2021 16:23:25 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 31EC21F394;
- Fri, 17 Dec 2021 14:49:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EFBE31F389;
+ Fri, 17 Dec 2021 15:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639752590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1639754604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yqKu7mB5BqQrPue+Ny60Wn+uHo+/rdkJIgn7H96wLX8=;
- b=H1uUIl4Z1MrJEWDmvPjhk/b4eFwCO/MgP+gI5ufmP6QbJF2QHD6ZaEPKOSH98KaAfjZRVF
- wCnTr3QtXYblBieAMsq5K4A+3JZ9aEl2jG87dwkEvuixgDpce9K1nOZAd5ZlFjL5aowg3w
- Ax6TvXEnAd/71lQODH3MvMzPa3NQ/+0=
+ bh=pPcBfRJ6tOJK1Uvia3LGMN5D3g6JlrHe9U4ZKknIN2I=;
+ b=vuPPsqlzh5kA541e4mPm/1AO3JCRWtYTUXcd3Dpy6++qSoUt9hBjAT9epnDdV4+edWTkLO
+ fLvZJnkHC6dKGIekpUXyzNB2Ez7ukhEmFkcKimgZeEQHsMbCf2lpHmxVs0raBvp/qPfjNq
+ VJfs8uPkfaVPJq++itB9pt5ii110HNY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639752590;
+ s=susede2_ed25519; t=1639754604;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yqKu7mB5BqQrPue+Ny60Wn+uHo+/rdkJIgn7H96wLX8=;
- b=oEljM7KPD3ODeQqa8BSlGkIDycnGifbk5NoG50rHywV4jkRZUz5QMjVD1QFJHuba/Q4ual
- omyeFnTN58iBzhDg==
+ bh=pPcBfRJ6tOJK1Uvia3LGMN5D3g6JlrHe9U4ZKknIN2I=;
+ b=SKOlvCamcH4A7c5FuYq1mYasCGfzYnR2a7ydw7NByzbDpjYDNhmvt6ncFc+ZkQPGLIXj+U
+ zCUfr3Knib1YLnCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1DAAD13E1C;
- Fri, 17 Dec 2021 14:49:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9A9213BCF;
+ Fri, 17 Dec 2021 15:23:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lE4kBo6jvGGgLQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 17 Dec 2021 14:49:50 +0000
-Date: Fri, 17 Dec 2021 15:51:18 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id qfGvM2yrvGFoPAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 17 Dec 2021 15:23:24 +0000
+Date: Fri, 17 Dec 2021 16:24:52 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Ybyj5nEb7k+5dtmb@yuki>
-References: <20211217113751.359613-1-liwang@redhat.com>
- <20211217113751.359613-3-liwang@redhat.com>
+To: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Message-ID: <YbyrxDrG/T8sKb36@yuki>
+References: <20211217142130.1182702-1-cascardo@canonical.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211217113751.359613-3-liwang@redhat.com>
+In-Reply-To: <20211217142130.1182702-1-cascardo@canonical.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] oom: enable OOM protection for mem lib
- process
+Subject: Re: [LTP] [PATCH] syscalls/dup202: make sure fds are not equal to
+ ofd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,35 +82,16 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Just simply invoke oom protection on mem library to make
-> it can collect full state of children.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/kernel/mem/lib/mem.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index ac890491c..566e29055 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -129,8 +129,11 @@ void oom(int testcase, int lite, int retcode, int allow_sigkill)
->  	pid_t pid;
->  	int status, threads;
->  
-> +	tst_enable_oom_protection(getpid());
-> +
->  	switch (pid = SAFE_FORK()) {
->  	case 0:
-> +		tst_cancel_oom_protection(getpid());
->  		threads = MAX(1, tst_ncpus() - 1);
->  		child_alloc(testcase, lite, threads);
->  	default:
+> If the test is executed by a process which has many open file descriptors,
+> creat may end up returning ofd == 10, which it will try to dup2 to, and,
+> then, SAFE_CLOSE will be run twice over fd=10, making it fail the second
+> time.
 
-Looking at the code we have, we always pass getpid(). We may as well
-change the library to use /proc/self/oom_score_adj if 0 is passed
-instead of the pid.
+Applied, thanks.
+
+However it may be a good idea to fix your test executor to open file
+descriptors with O_CLOEXEC so that they do not leak into the test
+processes.
 
 -- 
 Cyril Hrubis
