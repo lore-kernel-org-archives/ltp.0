@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD9CC433EF
-	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 08:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D25A7C433FE
+	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 09:13:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 082763C9005
-	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 09:48:04 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id EFEFA3C8FB7
+	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 10:13:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4EB953C0E12
- for <ltp@lists.linux.it>; Fri, 17 Dec 2021 09:47:54 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id AE6C63C1014
+ for <ltp@lists.linux.it>; Fri, 17 Dec 2021 10:13:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 62CF61001F43
- for <ltp@lists.linux.it>; Fri, 17 Dec 2021 09:47:53 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6AA8520650C
+ for <ltp@lists.linux.it>; Fri, 17 Dec 2021 10:13:46 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 772162111A;
- Fri, 17 Dec 2021 08:47:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7ABAD1F389;
+ Fri, 17 Dec 2021 09:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639730873;
+ t=1639732425;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4gvZnFC8y5IC2wXm1UuVMvVbiL1iriiCtETeOuCgMhc=;
- b=diTmHx4MW1zYzWgIzPZzeFgB1fqKtlcSehNs7JUsbpiElL3SSywKVFr7A89L0fkWHWtH88
- YtCugQ8+PCTJmi8ncTHHU0z8X7ilBChyR7j5l4BYcQUh/xBS9DkrNjW6fpNQ8kBQOHGHRy
- 6i9dJs151y76bkLOPQ7C9+RoNA0yVDw=
+ bh=xCNYN7az7fwzmF0L/axc7PjtkC9JlwPQRy1HzeWqrcw=;
+ b=V0lcU9BLSsKdMIHi5Y92N/6YmrEFdjHB2hF4SJ+8+KK+84EsB3ykgFI+EcsGFOGmji/VSE
+ StuU4oCXI/ykHi3nt4mSvg8wixdFB3ua63+prg05qMNiJFSXfsJartsZfsMjpXYrkVAbcN
+ AGQ3xoGK7xioGkNAIPLhexbfXB61l6s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639730873;
+ s=susede2_ed25519; t=1639732425;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4gvZnFC8y5IC2wXm1UuVMvVbiL1iriiCtETeOuCgMhc=;
- b=2fN6ich7+6Ivw/wHT3oopOi0A9sgafuWax26BIy64eSJa1CJTl9WL9KyE3F06MYMpasWeM
- Cj2AYNNlqs5rKQAg==
+ bh=xCNYN7az7fwzmF0L/axc7PjtkC9JlwPQRy1HzeWqrcw=;
+ b=fiJvTb0VpmzVog5Pcw5Mr8w17iuZj+9LCuBbPn157VeXFrQYO5hegAfkTZD8nn+HiC5GM8
+ SX9AeHkvJhTMc+Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4BDA313C6D;
- Fri, 17 Dec 2021 08:47:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5592213DC1;
+ Fri, 17 Dec 2021 09:13:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2xu+ELlOvGGnfQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 17 Dec 2021 08:47:53 +0000
-Date: Fri, 17 Dec 2021 09:47:51 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id PX5tE8lUvGEBCwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 17 Dec 2021 09:13:45 +0000
+Date: Fri, 17 Dec 2021 10:13:43 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <YbxOtyzYsbgZ578D@pevik>
-References: <1639552849-2251-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1639552849-2251-4-git-send-email-xuyang2018.jy@fujitsu.com>
+To: sujiaxun <sujiaxun@uniontech.com>
+Message-ID: <YbxUx8mz7ejCjp7W@pevik>
+References: <20211217062637.29720-1-sujiaxun@uniontech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1639552849-2251-4-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20211217062637.29720-1-sujiaxun@uniontech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 4/4] zram/zram01.sh: Use mem_used_total field
- instead of compr_data_size field
+Subject: Re: [LTP] [PATCH] [v2,
+ 1/2] syscalls/sched_get_priority_max01: Convert to new
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,40 +78,171 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi sujiaxun,
 
-[ Cc Martin ]
+> +++ b/testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
+> @@ -1,142 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+FYI You could add your or LTP copyright. Which one you prefer?
 
-> Before ltp commit 4372f7a2156 ("Fix compression ratio calculation in zram01")[1], we
-> used free -m changes to calculate the compression ratio.
+> +/*\
+> + * [Description]
+>   *
+> - *    DESCRIPTION
+>   *	This is a Phase I test for the sched_get_priority_max(2) system call.
 
-> After the above patch, we used compr_data_size to calculate. kernel documentation[2] has
-> the following info:
-> orig_data_size: uncompressed size of data stored in this disk.
-> compr_data_size: compressed size of data stored in this disk
-> mem_used_total: the amount of memory allocated for this disk
+I suggest to change it to
++ * Basic test for the sched_get_priority_max(2) system call.
++ * Obtain different maximum priority scheduling strategies and compare
++ * them with the expected value.
 
-> We should calculate the compression ratio by used disk size divided into used mem size.
-> It can also avoid the situation that division by 0 as below:
-> zram01 7 TINFO: filling zram4 (it can take long time)
-> zram01 7 TPASS: zram4 was filled with '25568' KB
-> zram01 7 TINFO: compr_size 0
->  /opt/ltp/testcases/bin/zram01.sh: line 131: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
+FYI metadata are:
+https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.html
+https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.pdf
+You can run make in metadata/ if you're curious what output you do with
+[Description]. The output will be in docparse/metadata.html and/or
+docparse/metadata.pdf.
 
-Thank you for addressing this issue. replacing "data *stored* in this disk" with
-"*allocated* for this disk" could help (although looking at kernel code
-mm_stat_show(), I would not be sure).
+> - *	It is intended to provide a limited exposure of the system call.
+> - *
+> - * 	Setup:
+> - * 	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *
+> - * 	Test:
+> - *	 Loop if the proper options are given.
+> - * 	  Execute system call
+> - *	  Check return code, if system call failed (return=-1)
+> - *		Log the errno and Issue a FAIL message.
+> - *	  Otherwise, Issue a PASS message.
+> - *
+> - * 	Cleanup:
+> - * 	  Print errno log and/or timing stats if options given
+> - *
+> - * USAGE:  <for command-line>
+> - *  sched_get_priority_max01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f]
+> - * 			     [-p]
+> - *			where,  -c n : Run n copies concurrently.
+> - *				-e   : Turn on errno logging.
+> - *				-h   : Show help screen
+> - *				-f   : Turn off functional testing
+> - *				-i n : Execute test n times.
+> - *				-I x : Execute test for x seconds.
+> - *				-p   : Pause for SIGUSR1 before starting
+> - *				-P x : Pause for x seconds between iterations.
+> - *				-t   : Turn on syscall timing.
+> - *
+> - ****************************************************************/
+> + *	Obtain different maximum priority scheduling strategies and compare
+> + *	them with the expected value.
+> + */
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>  #include <errno.h>
+>  #include <sched.h>
+> -#include "test.h"
+> -
+> -static void setup();
+> -static void cleanup();
+> -
+> -char *TCID = "sched_get_priority_max01";
+> +#include "lapi/syscalls.h"
+> +#include "tst_test.h"
 
-Kind regards,
-Petr
+> -static struct test_case_t {
+> +static struct test_case {
+>  	char *desc;
+>  	int policy;
+>  	int retval;
+> -} test_cases[] = {
+> -	{
+> -	"Test for SCHED_OTHER", SCHED_OTHER, 0}, {
+> -	"Test for SCHED_FIFO", SCHED_FIFO, 99}, {
+> -	"Test for SCHED_RR", SCHED_RR, 99}
+> +} tcases[] = {
+> +	{"SCHED_OTHER", SCHED_OTHER, 0},
+> +	{"SCHED_FIFO", SCHED_FIFO, 99},
+> +	{"SCHED_RR", SCHED_RR, 99}
+>  };
+FYI if string is the same as constant, you can use macro:
+
+#define POLICY_DESC(x) .desc = #x, .policy = x
+
+static struct test_case {
+	char *desc;
+	int policy;
+	int retval;
+} tcases[] = {
+	{POLICY_DESC(SCHED_OTHER), 0},
+	{POLICY_DESC(SCHED_FIFO), 99},
+	{POLICY_DESC(SCHED_RR), 99}
+};
+
+Thus if you agree, I'm going to merge with this diff below.
+
+diff --git testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
+index 8dcf7e3ea6..5058153e36 100644
+--- testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
++++ testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
+@@ -1,14 +1,16 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
++ * Copyright (c) 2021 sujiaxun <sujiaxun@uniontech.com>
+  */
+ 
+ /*\
+  * [Description]
+  *
+- *	This is a Phase I test for the sched_get_priority_max(2) system call.
+- *	Obtain different maximum priority scheduling strategies and compare
+- *	them with the expected value.
++ * Basic test for the sched_get_priority_max(2) system call.
++ *
++ * Obtain different maximum priority scheduling strategies and compare
++ * them with the expected value.
+  */
+ 
+ #include <errno.h>
+@@ -16,14 +18,16 @@
+ #include "lapi/syscalls.h"
+ #include "tst_test.h"
+ 
++#define POLICY_DESC(x) .desc = #x, .policy = x
++
+ static struct test_case {
+ 	char *desc;
+ 	int policy;
+ 	int retval;
+ } tcases[] = {
+-	{"SCHED_OTHER", SCHED_OTHER, 0},
+-	{"SCHED_FIFO", SCHED_FIFO, 99},
+-	{"SCHED_RR", SCHED_RR, 99}
++	{POLICY_DESC(SCHED_OTHER), 0},
++	{POLICY_DESC(SCHED_FIFO), 99},
++	{POLICY_DESC(SCHED_RR), 99}
+ };
+ 
+ static void run_test(unsigned int nr)
+@@ -33,11 +37,9 @@ static void run_test(unsigned int nr)
+ 
+ 	TST_EXP_VAL(tst_syscall(__NR_sched_get_priority_max, tc->policy),
+ 			tc->retval, "test for %s", tc->desc);
+-
+ }
+ 
+ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = run_test,
+ };
+-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
