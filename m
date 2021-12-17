@@ -4,66 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62538C433F5
-	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 13:56:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D54EDC433F5
+	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 14:21:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D76A43C903C
-	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 14:56:24 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A856D3C87AD
- for <ltp@lists.linux.it>; Fri, 17 Dec 2021 14:56:14 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by picard.linux.it (Postfix) with ESMTP id 856863C9023
+	for <ltp@archiver.kernel.org>; Fri, 17 Dec 2021 15:21:54 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CFDC514098CE
- for <ltp@lists.linux.it>; Fri, 17 Dec 2021 14:56:13 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ by picard.linux.it (Postfix) with ESMTPS id 255973C876C
+ for <ltp@lists.linux.it>; Fri, 17 Dec 2021 15:21:43 +0100 (CET)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1405C21114;
- Fri, 17 Dec 2021 13:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1639749373;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4aQ3+yf5JIWHypRszMvoOehD/PG7HGAeJLhf6ZiTFwo=;
- b=bkgVW+QXLWRwyooWfNY4ExMsuTdQwLeZSEr6AT+1qDU1qqq9aPy9NGOBmFjMWPWB8nARjw
- CPVIXzV6oySScKwskkjcuovWhhGkgo/9aPWx8kgVKYjGmu2BbgYh4FwEbZhkqeIwDSPj8E
- BcyUpHH5eV4cclujxFHH2W9IJnRv/LQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1639749373;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4aQ3+yf5JIWHypRszMvoOehD/PG7HGAeJLhf6ZiTFwo=;
- b=jMHa6pAVnintD0MC+0vhqIXBXves0SaboiDm8UO6QmJ+B2lyx38VvTTondZSlCs+OhSHVZ
- jd4nTxQDWSRAC+Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3641B1A007E9
+ for <ltp@lists.linux.it>; Fri, 17 Dec 2021 15:21:42 +0100 (CET)
+Received: from mussarela.. (unknown [179.93.189.162])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA85613E25;
- Fri, 17 Dec 2021 13:56:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GmH6KvyWvGFfEwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 17 Dec 2021 13:56:12 +0000
-Date: Fri, 17 Dec 2021 14:56:10 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Yael Tiomkin <yaelt@google.com>
-Message-ID: <YbyW+nRbUnmfHue1@pevik>
-References: <20211217021726.2487455-1-yaelt@google.com>
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 961AC3FFD5; 
+ Fri, 17 Dec 2021 14:21:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1639750900;
+ bh=QFppDQDs3kQ2tZSo17MmSW61YVyJgs28UZx+zU48LUI=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=H25LDkLvRRYpD8WC4KKHcwxBOki7MbOxVBq+utITX47L46q8WRweUzkC1+WrO6hOB
+ 0cXk7NMkIOYehF1dUEJxjiKvQcwjKob4FESyvscnyhySwaRD+If1aAGkqHI4abchrN
+ 6N0hBwZvmqcDEcDckzEUj1h6wJ3iWtcXFU/qs3Au3C+CKiiCNzk4rhcOf7Avip7RxV
+ FmNERCUUlTl+qdESpvrzOY3BDKkrgd6KqgPBRuYQKgptQ6mHOvcT/EsMQcnYhd5WBY
+ +ppnBcaQv3c66d8IDEx79WSJLQQEHwkOlZvCf2/eplfrPQc34lDiCBk18qHqxVbb2i
+ iWA6BLeehsxFA==
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To: ltp@lists.linux.it
+Date: Fri, 17 Dec 2021 11:21:30 -0300
+Message-Id: <20211217142130.1182702-1-cascardo@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211217021726.2487455-1-yaelt@google.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/keyctl09: test encrypted keys.
+Subject: [LTP] [PATCH] syscalls/dup202: make sure fds are not equal to ofd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,184 +58,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Yael,
+If the test is executed by a process which has many open file descriptors,
+creat may end up returning ofd == 10, which it will try to dup2 to, and,
+then, SAFE_CLOSE will be run twice over fd=10, making it fail the second
+time.
 
-> Test that encrypted keys can be instantiated using
-> both user-provided decrypted data
-> (https://lore.kernel.org/linux-integrity/20211213192030.125091-1-yaelt@google.com/),
-> or kernel-generated numbers.
+Test output would be like this:
+dup202.c:90: TPASS: original(100444) and duped(100444) are the same mode
+dup202.c:90: TPASS: original(100222) and duped(100222) are the same mode
+dup202.c:90: TPASS: original(100666) and duped(100666) are the same mode
+dup202.c:78: TINFO: original mode 0777, new mode 0444 after chmod
+dup202.c:90: TPASS: original(100444) and duped(100444) are the same mode
+dup202.c:94: TBROK: close(10) failed: EBADF (9)
 
-Thanks a lot for adding this test. There are few missing things:
+It is easy to reproduce by simply exec'ing the test from a program that
+has fds 0 to 10 opened.
 
-BTW all mentioned here is implemented here to speedup your work:
-https://github.com/pevik/ltp/tree/yael_tiomkin/keyctl09.fixes
-Below is diff of my suggested changes.
+Fix it by allocating enough file descriptors on the setup phase, and
+assigning those new file descriptors to the fds that are going to be dup2
+to.
 
-What I didn't solve is broken test when run with more than 1 iteration:
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ testcases/kernel/syscalls/dup2/dup202.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-./keyctl09 -i2
-tst_test.c:1423: TINFO: Timeout per run is 0h 05m 00s
-keyctl09.c:47: TPASS: Encrypted keys were successfully instantiated and read
-keyctl09.c:31: TBROK: Failed to instantiate encrypted key using payload decrypted data: EINVAL (22)
-
-NOTE: you can specify test setup to do things only once. You should also cleanup
-after test run with test cleanup.
-https://github.com/linux-test-project/ltp/wiki/C-Test-API#11-basic-test-structure
-
-You also need to add entry to testcases/kernel/syscalls/keyctl/.gitignore
-/keyctl09
-
-and runtest/syscalls
-keyctl09 keyctl09
-
-...
-> +/*
-> + * Description: This tests that encrypted keys can be instantiated using
-> + * user-provided decrypted data (plaintext), and separately, using
-> + * kernel-generated key material.
-> + */
-
-I'd rephrase it a bit and use LTP metadata formatting
-/*\
- * [Description]
- * Test that encrypted keys can be instantiated using user-provided decrypted
- * data (plaintext), and separately, using kernel-generated key material.
- */
-
-FYI metadata is LTP documentation - here is the output:
-https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.html
-https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.pdf
-
-You can run make in docparse/ directory and then see in output in
-metadata/metadata.{html,pdf}.
-
-> +
-> +#include <errno.h>
-> +#include <stdint.h>
-IMHO these 2 aren't needed.
-> +
-> +#include "tst_test.h"
-> +#include "lapi/keyctl.h"
-> +
-> +static void do_test(void)
-> +{
-> +	key_serial_t masterkey;
-> +	key_serial_t encryptedkey1;
-> +	key_serial_t encryptedkey2;
-> +	char buffer[128];
-> +
-> +	masterkey = add_key("user", "user:masterkey", "foo", 3, KEY_SPEC_PROCESS_KEYRING);
-> +	if (masterkey == -1)
-> +		tst_brk(TBROK | TERRNO, "Failed to add user key");
-> +
-> +	encryptedkey1 = add_key("encrypted", "ltptestkey1", "new enc32 user:masterkey 32 plaintext12345678901234567890123", 60, KEY_SPEC_PROCESS_KEYRING);
-nit: It'd be nice to keep 80 lines per line (or 100 with string).
-Maybe use #define for payload, which makes it shorter?
-
-> +	if (encryptedkey1 == -1)
-> +		tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted key using payload decrypted data");
-> +
-> +	TEST(keyctl(KEYCTL_READ, encryptedkey1, buffer, sizeof(buffer)));
-> +	if (TST_RET < 0)
-> +		tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed for encryptedkey1");
-> +
-> +	encryptedkey2 = add_key("encrypted", "ltptestkey2", "new enc32 user:masterkey 32", 27, KEY_SPEC_PROCESS_KEYRING);
-> +	if (encryptedkey2 == -1)
-> +		tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted key using kernel-generated key material");
-> +
-> +	TEST(keyctl(KEYCTL_READ, encryptedkey2, buffer, sizeof(buffer)));
-> +	if (TST_RET < 0)
-> +		tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed for encryptedkey2");
-At least one of these should be TFAIL - failing test. TBROK is used when test
-fails in test preparation phase. Also have look at include/tst_test_macros.h
-you can use e.g. TST_EXP_PASS_SILENT().
-
-Kind regards,
-Petr
-
-diff --git runtest/syscalls runtest/syscalls
-index bcf3d56c9c..ccea1ddbdb 100644
---- runtest/syscalls
-+++ runtest/syscalls
-@@ -643,6 +643,7 @@ keyctl05 keyctl05
- keyctl06 keyctl06
- keyctl07 keyctl07
- keyctl08 keyctl08
-+keyctl09 keyctl09
+diff --git a/testcases/kernel/syscalls/dup2/dup202.c b/testcases/kernel/syscalls/dup2/dup202.c
+index 64c800d35a10..659f3a4ecdff 100644
+--- a/testcases/kernel/syscalls/dup2/dup202.c
++++ b/testcases/kernel/syscalls/dup2/dup202.c
+@@ -29,7 +29,7 @@ static char testfile[40];
+ static int ofd = -1, nfd = -1;
  
- kcmp01 kcmp01
- kcmp02 kcmp02
-diff --git testcases/kernel/syscalls/keyctl/.gitignore testcases/kernel/syscalls/keyctl/.gitignore
-index 3544ac79ce..f9948c1766 100644
---- testcases/kernel/syscalls/keyctl/.gitignore
-+++ testcases/kernel/syscalls/keyctl/.gitignore
-@@ -6,3 +6,4 @@
- /keyctl06
- /keyctl07
- /keyctl08
-+/keyctl09
-diff --git testcases/kernel/syscalls/keyctl/keyctl09.c testcases/kernel/syscalls/keyctl/keyctl09.c
-index 4589ef3679..7481526c67 100644
---- testcases/kernel/syscalls/keyctl/keyctl09.c
-+++ testcases/kernel/syscalls/keyctl/keyctl09.c
-@@ -3,15 +3,12 @@
-  * Copyright (c) 2021 Google, Inc.
-  */
+ /* set these to a known index into our local file descriptor table */
+-static int duprdo = 10, dupwro = 20, duprdwr = 30;
++static int duprdo, dupwro, duprdwr;
  
--/*
-- * Description: This tests that encrypted keys can be instantiated using
-- * user-provided decrypted data (plaintext), and separately, using
-- * kernel-generated key material.
-+/*\
-+ * [Description]
-+ * Test that encrypted keys can be instantiated using user-provided decrypted
-+ * data (plaintext), and separately, using kernel-generated key material.
-  */
+ static struct tcase {
+ 	int *nfd;
+@@ -47,8 +47,23 @@ static struct tcase {
  
--#include <errno.h>
--#include <stdint.h>
--
- #include "tst_test.h"
- #include "lapi/keyctl.h"
+ static void setup(void)
+ {
++	int nextfd;
++
+ 	umask(0);
+ 	sprintf(testfile, "dup202.%d", getpid());
++
++	/* Pick up fds that are known not to collide with creat */
++	nextfd = SAFE_CREAT(testfile, 0777);
++	duprdo = SAFE_DUP(nextfd);
++	dupwro = SAFE_DUP(nextfd);
++	duprdwr = SAFE_DUP(nextfd);
++	/* SAFE_CLOSE will set fd to -1 */
++	close(duprdwr);
++	close(dupwro);
++	close(duprdo);
++	SAFE_CLOSE(nextfd);
++	SAFE_UNLINK(testfile);
++
+ }
  
-@@ -22,11 +19,14 @@ static void do_test(void)
- 	key_serial_t encryptedkey2;
- 	char buffer[128];
- 
--	masterkey = add_key("user", "user:masterkey", "foo", 3, KEY_SPEC_PROCESS_KEYRING);
-+	masterkey = add_key("user", "user:masterkey", "foo", 3,
-+			    KEY_SPEC_PROCESS_KEYRING);
- 	if (masterkey == -1)
- 		tst_brk(TBROK | TERRNO, "Failed to add user key");
- 
--	encryptedkey1 = add_key("encrypted", "ltptestkey1", "new enc32 user:masterkey 32 plaintext12345678901234567890123", 60, KEY_SPEC_PROCESS_KEYRING);
-+	encryptedkey1 = add_key("encrypted", "ltptestkey1",
-+				"new enc32 user:masterkey 32 plaintext12345678901234567890123",
-+				60, KEY_SPEC_PROCESS_KEYRING);
- 	if (encryptedkey1 == -1)
- 		tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted key using payload decrypted data");
- 
-@@ -34,9 +34,11 @@ static void do_test(void)
- 	if (TST_RET < 0)
- 		tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed for encryptedkey1");
- 
--	encryptedkey2 = add_key("encrypted", "ltptestkey2", "new enc32 user:masterkey 32", 27, KEY_SPEC_PROCESS_KEYRING);
-+	encryptedkey2 = add_key("encrypted", "ltptestkey2", "new enc32 user:masterkey 32",
-+				27, KEY_SPEC_PROCESS_KEYRING);
- 	if (encryptedkey2 == -1)
--		tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted key using kernel-generated key material");
-+		tst_brk(TBROK | TERRNO,
-+			"Failed to instantiate encrypted key using kernel-generated key material");
- 
- 	TEST(keyctl(KEYCTL_READ, encryptedkey2, buffer, sizeof(buffer)));
- 	if (TST_RET < 0)
+ static void cleanup(void)
+-- 
+2.32.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
