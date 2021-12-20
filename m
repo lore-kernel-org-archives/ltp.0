@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10714C433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 13:11:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9804AC433F5
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 13:11:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C19983C916B
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 14:11:30 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EEDCB3C9177
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 14:11:39 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 243133C6EA0
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 14:11:12 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 28B193C915D
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 14:11:11 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 85FDB600F10
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E941100119C
  for <ltp@lists.linux.it>; Mon, 20 Dec 2021 14:11:11 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2A89D218F3;
- Mon, 20 Dec 2021 13:11:11 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id D54ED212C2;
+ Mon, 20 Dec 2021 13:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1640005871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1640005870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yEE8+Qu4pdp/7+VEAL7BYTtjssyqim93rR+z0Cxp0UM=;
- b=qt8Wn+fTZHs3CR1D1CRLxZrmnwaibg/zm10aHwCrdf3gF0OyqFul8cSBaoT/Nl6mHkNB1v
- DEs0+nfVap1veYMEU1YiZepVpUMHzx9d2eEKLXnPR9fpq1eU6oCPArFozDrkh6TcHKuCdD
- IUM9qNTBrBUiubBRKvyFKpDL7pYSpq4=
+ bh=34iGibGZeZewa2hFIZVMSJM4C3h4SeIHSk/6Mk5FFtc=;
+ b=bAumr9kp6Ru5O0I52wQZ8rbT8J6HQ8qgV/meJIHqz4SF80MBBdDNEkFE5c7M5DkL95Szvj
+ n4I01B/d9mjObcqP3BspKpzlwmr9xYpavN73gKqs/LPZLcT284oMLA5uIrocqYniv9G3FR
+ 2DZgEK+NV9x/SfLIfxTWcy0+FmBlQA4=
 Received: from g78.suse.de (unknown [10.163.24.42])
- by relay2.suse.de (Postfix) with ESMTP id ED951A3B85;
+ by relay2.suse.de (Postfix) with ESMTP id 9879FA3B81;
  Mon, 20 Dec 2021 13:11:10 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Mon, 20 Dec 2021 13:10:43 +0000
-Message-Id: <20211220131043.18894-3-rpalethorpe@suse.com>
+Date: Mon, 20 Dec 2021 13:10:42 +0000
+Message-Id: <20211220131043.18894-2-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211220131043.18894-1-rpalethorpe@suse.com>
 References: <20211220131043.18894-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] cgroup: Add memcontrol02
+Subject: [LTP] [PATCH 2/3] API/cgroup: Add memory.stat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,194 +66,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Conversion of the second kself test.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/controllers                           |   1 +
- testcases/kernel/controllers/memcg/.gitignore |   1 +
- .../kernel/controllers/memcg/memcontrol02.c   | 151 ++++++++++++++++++
- 3 files changed, 153 insertions(+)
- create mode 100644 testcases/kernel/controllers/memcg/memcontrol02.c
+ lib/tst_cgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/runtest/controllers b/runtest/controllers
-index 2b41a94d3..09e0107e4 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -18,6 +18,7 @@ memcg_control		memcg_control_test.sh
- 
- # kselftest ports
- memcontrol01 memcontrol01
-+memcontrol02 memcontrol02
- 
- cgroup_fj_function_debug cgroup_fj_function.sh debug
- cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
-diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
-index c3565f85c..f7de40d53 100644
---- a/testcases/kernel/controllers/memcg/.gitignore
-+++ b/testcases/kernel/controllers/memcg/.gitignore
-@@ -6,3 +6,4 @@
- /regression/memcg_test_4
- /stress/memcg_process_stress
- memcontrol01
-+memcontrol02
-diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
-new file mode 100644
-index 000000000..002637db0
---- /dev/null
-+++ b/testcases/kernel/controllers/memcg/memcontrol02.c
-@@ -0,0 +1,151 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*\
-+ *
-+ * [Description]
-+ *
-+ * Conversion of second kself test in cgroup/test_memcontrol.c.
-+ *
-+ * This test creates a memory cgroup, allocates some anonymous memory
-+ * and some pagecache and check memory.current and some memory.stat
-+ * values.
-+ *
-+ * Note that the V1 rss and cache counters were renamed to anon and
-+ * file in V2. Besides error reporting, this test mainly differs from
-+ * the kselftest in that it supports V1.
-+ */
-+#define _GNU_SOURCE
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+
-+#include "tst_test.h"
-+#include "tst_cgroup.h"
-+
-+#define MB(x) (x << 20)
-+
-+static size_t page_size;
-+static const struct tst_cgroup_group *cg_test;
-+static int is_v1_memcg;
-+static struct tst_cgroup_group *cg_child;
-+static int fd;
-+
-+/*
-+ * Checks if two given values differ by less than err% of their sum.
-+ */
-+static inline int values_close(const ssize_t a,
-+			       const ssize_t b,
-+			       const ssize_t err)
-+{
-+	return labs(a - b) <= (a + b) / 100 * err;
-+}
-+
-+static void alloc_anon_50M_check(void)
-+{
-+	const ssize_t size = MB(50);
-+	char *buf, *ptr;
-+	ssize_t anon, current;
-+	const char *const anon_key_fmt = is_v1_memcg ? "rss %zd" : "anon %zd";
-+
-+	buf = SAFE_MALLOC(size);
-+	for (ptr = buf; ptr < buf + size; ptr += page_size)
-+		*ptr = 0;
-+
-+	SAFE_CGROUP_SCANF(cg_child, "memory.current", "%zd", &current);
-+	TST_EXP_POSITIVE(current >= size,
-+			 "(memory.current=%zd) >= (size=%zd)", current, size);
-+
-+	SAFE_CGROUP_LINES_SCANF(cg_child, "memory.stat", anon_key_fmt, &anon);
-+
-+	TST_EXP_POSITIVE(anon > 0, "(memory.stat.anon=%zd) > 0", anon);
-+
-+	TST_EXP_POSITIVE(values_close(size, current, 3),
-+			 "(size=%zd) ~= (memory.stat.anon=%zd)", size, current);
-+	TST_EXP_POSITIVE(values_close(anon, current, 3),
-+			 "(memory.current=%zd) ~= (memory.stat.anon=%zd)",
-+			 current, anon);
-+}
-+
-+static void alloc_pagecache(const int fd, size_t size)
-+{
-+	char buf[BUFSIZ];
-+	struct stat st;
-+	size_t i;
-+
-+	SAFE_FSTAT(fd, &st);
-+	size += st.st_size;
-+
-+	SAFE_FTRUNCATE(fd, size);
-+
-+	for (i = 0; i < size; i += sizeof(buf))
-+		SAFE_READ(0, fd, buf, sizeof(buf));
-+}
-+
-+static void alloc_pagecache_50M_check(void)
-+{
-+	const size_t size = MB(50);
-+	size_t current, file;
-+	const char *const file_key_fmt = is_v1_memcg ? "cache %zd" : "file %zd";
-+
-+	fd = SAFE_OPEN("page_cache", O_RDWR | O_CREAT);
-+	alloc_pagecache(fd, size);
-+
-+	SAFE_CGROUP_SCANF(cg_child, "memory.current", "%zu", &current);
-+	TST_EXP_POSITIVE(current >= size,
-+			 "(memory.current=%zu) >= (size=%zu)", current, size);
-+
-+	SAFE_CGROUP_LINES_SCANF(cg_child, "memory.stat", file_key_fmt, &file);
-+	TST_EXP_POSITIVE(file > 0, "(memory.stat.file=%zd) > 0", file);
-+
-+	TST_EXP_POSITIVE(values_close(file, current, 10),
-+			 "(memory.current=%zd) ~= (memory.stat.file=%zd)",
-+			 current, file);
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void test_memcg_current(unsigned int n)
-+{
-+	size_t current;
-+
-+	cg_child = tst_cgroup_group_mk(cg_test, "child");
-+	SAFE_CGROUP_SCANF(cg_child, "memory.current", "%zu", &current);
-+	TST_EXP_POSITIVE(current == 0, "(current=%zu) == 0", current);
-+
-+	if (!SAFE_FORK()) {
-+		SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-+		if (!n)
-+			alloc_anon_50M_check();
-+		else
-+			alloc_pagecache_50M_check();
-+	} else {
-+		tst_reap_children();
-+		cg_child = tst_cgroup_group_rm(cg_child);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-+
-+	tst_cgroup_require("memory", NULL);
-+	cg_test = tst_cgroup_get_test_group();
-+
-+	is_v1_memcg = TST_CGROUP_VER(cg_test, "memory") == TST_CGROUP_V1;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (cg_child)
-+		cg_child = tst_cgroup_group_rm(cg_child);
-+
-+	tst_cgroup_cleanup();
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = 2,
-+	.test = test_memcg_current,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 961596256..cda1d39f7 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -153,6 +153,7 @@ static const struct cgroup_file cgroup_ctrl_files[] = {
+ static const struct cgroup_file memory_ctrl_files[] = {
+ 	{ "memory.current", "memory.usage_in_bytes", CTRL_MEMORY },
+ 	{ "memory.max", "memory.limit_in_bytes", CTRL_MEMORY },
++	{ "memory.stat", "memory.stat", CTRL_MEMORY },
+ 	{ "memory.swappiness", "memory.swappiness", CTRL_MEMORY },
+ 	{ "memory.swap.current", "memory.memsw.usage_in_bytes", CTRL_MEMORY },
+ 	{ "memory.swap.max", "memory.memsw.limit_in_bytes", CTRL_MEMORY },
 -- 
 2.34.0
 
