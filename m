@@ -4,65 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81ACC433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 11:49:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB70EC433EF
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 13:11:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 198193C9171
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 12:49:17 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0B0623C920B
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 14:11:21 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE5CB3C282E
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 12:49:08 +0100 (CET)
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com
- [IPv6:2607:f8b0:4864:20::d32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 140DA3C0B96
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 14:11:11 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 59B0B200DD6
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 12:49:08 +0100 (CET)
-Received: by mail-io1-xd32.google.com with SMTP id m9so12926119iop.0
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 03:49:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Ol2NZaQ06boKcIwHQi4WmQVOiEUH/6bxWgiZDz0xGKA=;
- b=m6dRPO0fFnMOUk9MhocTz0+04kmj8yfccgmEXkcvJFd67GJ4nlbx31rM9z5uXOHPNV
- n0BV1xDYtywamhC3f3kFvLdTRrDFPgNBgakm6UPVrV+pYPzy+vLKodzlxZhdwaEWCNhK
- n/uS78u6dZdHYx6Y7+0cRNwOGO8mxzv4ksTcE2UKFX/V9G/rQHdJoEvvsDWNMdgMv8Sm
- RPw+oSfdpQIAU8UtxMikZEk/RqjivcqoNELiISswfwlJSqUqGszI0wtOW+3g2S6LGY98
- hY9ZK0CKIK83fKiPEaYXx6PplBh/t1c5VnDXdl+eGEUZyMXPlQiYhuwudVSt0PJC5m39
- dbkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Ol2NZaQ06boKcIwHQi4WmQVOiEUH/6bxWgiZDz0xGKA=;
- b=kuaxYGOhQxQ5gq3soJyVoUTPmeUvqBKvpWxuyBAXcSuJKogmcQyw7czz3X56HpZSvG
- 4IGkGgMxxX+yay8fObeiLWktCeb162yrJjVVp558VLA2qBZmom/Hwq39+ouZ3iJr0m/b
- 8TQETgn9m0xtWo5Ui1C4TzJ8T0curzx6cxyPLsVd1emHD9cLUL0s7LumdXLJS8qKRNma
- MhzwIZ51xnqqEe+RBFT8TNAgGK0mYFEuRS+tGL+rwpa/oSHSkoruYGYXyBbXzsj7nTMZ
- LztbtxZqzN8y9bkWcuAgWrdcy4WYGN3fjwg4FNbxtQkYwlHl8fM3GceeC3fw8F+H91L/
- HP/Q==
-X-Gm-Message-State: AOAM531+BypRVgk4SrzlPjTQYLTXTgjAs3e2cqnQxzjpJZxCYC4oHnNn
- QwarB1sGGxXVtrXZJc4tsEUpejzZANz5cnPWCYY=
-X-Google-Smtp-Source: ABdhPJzXuWfW2X4Q3eFornjCyRY6vAcO+HcNjJ39EbsuaBOMZwnVbZsC1jG08VEl2PJSpGaSQa1TUnXtA618AP9Q6w8=
-X-Received: by 2002:a05:6638:358b:: with SMTP id
- v11mr9008705jal.53.1640000947005; 
- Mon, 20 Dec 2021 03:49:07 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6348A100115B
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 14:11:11 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 8913F1F381;
+ Mon, 20 Dec 2021 13:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1640005870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Pnl6jgot6NNUHpAxZqsAI61lTgsYbYexc0mjxmnoPFw=;
+ b=OjbID88G4FwyrTVIH+tY7HXQKv1OShdpaxXDmDkigmqw0Pg+wFyUwvyewc9JiAX/9XXe/k
+ LpA22U/rOJ8EwT1CdNYt4Q/IVpcngj8kxuqWO5G5OL1I46Qsgn5BfGJVhp6fa6jj/5YXFp
+ ce70kIeNhw3xdvS8vYcxw80LLYiIWHA=
+Received: from g78.suse.de (unknown [10.163.24.42])
+ by relay2.suse.de (Postfix) with ESMTP id 56F76A3B81;
+ Mon, 20 Dec 2021 13:11:10 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 20 Dec 2021 13:10:41 +0000
+Message-Id: <20211220131043.18894-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-References: <20211118235744.802584-1-krisman@collabora.com>
- <CAOQ4uxhbDgdZZ0qphWg1vnW4ZoAkUxcQp631yZO8W49AE18W9g@mail.gmail.com>
- <8735nsuepi.fsf@collabora.com> <YZtLDXW01Cz0BfPU@pevik>
- <YZ4Wf3d+J36NPMfS@pevik>
-In-Reply-To: <YZ4Wf3d+J36NPMfS@pevik>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 20 Dec 2021 13:48:56 +0200
-Message-ID: <CAOQ4uxgg6BvUtcaD4stDv7meS0it-0-iDWNiz_-=SRN_tvgzYQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
+Subject: [LTP] [PATCH 1/3] API/cgroup: Add safe_cgroup_lines_scanf
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,45 +53,96 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
- Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.com>,
- Ext4 <linux-ext4@vger.kernel.org>,
- Gabriel Krisman Bertazi <krisman@collabora.com>, LTP List <ltp@lists.linux.it>
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Nov 24, 2021 at 12:40 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi all,
->
-> <snip>
-> > > Hi Amir,
->
-> > > I have pushed v4 to :
->
-> > > https://gitlab.collabora.com/krisman/ltp.git -b fan-fs-error_v4
->
-> > FYI I've rebased it on my fix 3b2ea2e00 ("configure.ac: Add struct
-> > fanotify_event_info_pidfd check")
->
-> > https://github.com/linux-test-project/ltp.git -b gertazi/fanotify21.v4.fixes
->
-> FYI I removed branch from official LTP repository and put it to my fork
-> https://github.com/pevik/ltp.git -b fan-fs-error_v4.fixes
->
+Similar to file_lines_scanf. Allows us to read a particular key-value
+pair from a controller file. Can replace kselftest's cg_read_key_*
+when converting tests.
 
-Hi Petr,
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_cgroup.h | 12 +++++++++++-
+ lib/tst_cgroup.c     | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
-Are you waiting with this merge for after release of v5.16?
-or is it just waiting behind other work?
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index 632050e86..561216296 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -188,9 +188,19 @@ void safe_cgroup_printf(const char *const file, const int lineno,
+ void safe_cgroup_scanf(const char *file, const int lineno,
+ 		       const struct tst_cgroup_group *const cg,
+ 		       const char *const file_name,
+-		       const char *fmt, ...)
++		       const char *const fmt, ...)
+ 		       __attribute__ ((format (scanf, 5, 6), nonnull));
+ 
++#define SAFE_CGROUP_LINES_SCANF(cg, file_name, fmt, ...)		\
++	safe_cgroup_lines_scanf(__FILE__, __LINE__,			\
++				(cg), (file_name), (fmt), __VA_ARGS__)
++
++void safe_cgroup_lines_scanf(const char *const file, const int lineno,
++			     const struct tst_cgroup_group *const cg,
++			     const char *const file_name,
++			     const char *const fmt, ...)
++			__attribute__ ((format (scanf, 5, 6), nonnull));
++
+ #define SAFE_CGROUP_OCCURSIN(cg, file_name, needle)		\
+ 	safe_cgroup_occursin(__FILE__, __LINE__,		\
+ 			     (cg), (file_name), (needle))
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index c08ff2f20..961596256 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -1161,6 +1161,39 @@ void safe_cgroup_scanf(const char *const file, const int lineno,
+ 		 file_name, buf, fmt, ret, conv_cnt);
+ }
+ 
++void safe_cgroup_lines_scanf(const char *const file, const int lineno,
++			     const struct tst_cgroup_group *const cg,
++			     const char *const file_name,
++			     const char *const fmt, ...)
++{
++	va_list va;
++	char buf[BUFSIZ];
++	ssize_t len = safe_cgroup_read(file, lineno,
++				       cg, file_name, buf, sizeof(buf));
++	const int conv_cnt = tst_count_scanf_conversions(fmt);
++	int ret = 0;
++	char *line;
++
++	if (len < 1)
++		return;
++
++	line = strtok(buf, "\n");
++	while (line && ret != conv_cnt) {
++		va_start(va, fmt);
++		ret = vsscanf(line, fmt, va);
++		va_end(va);
++
++		line = strtok(NULL, "\n");
++	}
++
++	if (conv_cnt == ret)
++		return;
++
++	tst_brk_(file, lineno, TBROK,
++		 "'%s': vsscanf('%s', '%s', ..): Less conversions than expected: %d != %d",
++		 file_name, buf, fmt, ret, conv_cnt);
++}
++
+ int safe_cgroup_occursin(const char *const file, const int lineno,
+ 			 const struct tst_cgroup_group *const cg,
+ 			 const char *const file_name,
+-- 
+2.34.0
 
-Just asking out of curiosity.
-I've based my tests for fan_rename (queued for v5.17) on top of your branch.
-
-Thanks,
-Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
