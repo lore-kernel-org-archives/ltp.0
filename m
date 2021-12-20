@@ -4,88 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51E2BC433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 06:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E77C4C433F5
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 06:53:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4BDB83C9190
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 07:52:57 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A7ABB3C9164
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 07:53:06 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 32CAA3C8FDB
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 07:52:48 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.4])
+ by picard.linux.it (Postfix) with ESMTPS id 6DE4F3C8FDB
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 07:52:47 +0100 (CET)
+Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
+ [85.158.142.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7DDCB200BB7
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E3EB1000A1B
  for <ltp@lists.linux.it>; Mon, 20 Dec 2021 07:52:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
  s=170520fj; t=1639983166; i=@fujitsu.com;
- bh=rfBRM05lJpqFUY8BQan6dns0pKXxAOTYOlruINzzkZM=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=aa+yWdBsm09lNS3KJPJpv3IRhuqpjEPdbm0YnXaqI62drFkNZPL6p8PO0MA+HATWo
- SKh58hMEoZs+oFaoa9R2qQioRt2ACaHKe12tRbetxVFk1hp7h1CyAx7R4e2TNYgGxm
- N2GSPiwnVVNOQukWtftmuR754NBTca4ORR+/cBrKQR7oov6pl7Y4lRsBABLfMSiDKx
- t902Yv6j3xxopFZxMt62zkLnlhk+1B0WVwSNk4rZkDWg9Zop8FDTgnAO+1QELSq4gO
- 8DZ94WqjMGVdfv7dS1O55P/XcUcwn1HhJsqAAq4ob6uIlgrhetzUHUBFu/1UgcgHMC
- pjx05ywTnPKQQ==
-Received: from [100.115.34.181] (using TLSv1.2 with cipher
+ bh=1e8/V5jEE4u/3JoydjloypNMov8rxwlTHlFwVva5+Ec=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=YGAVtqYOuG0RoZmRUq0rG3nfzg8ZGcR608B+LP2PD0n5rdr9UXYmCo0XQgoZmRmzD
+ spI159MKpIyrntjUD5dWBsVcOS7yCrIRWHDelb1Lf50OER4Ej1PGAeQJMTIO6p64PM
+ TUj1Eh7dJ8myEK2p3enVNCWCtX5W+e9p2S2fmj9mxZpErt7tvSYlRhL4BEqiVjJkH/
+ FKtmtgBmRuPhar6TGeYZpFPrvLv9MWyqqvXc7+AdN1cTmvsrAHkUwkQE3gnKBJCLSb
+ zlDpeXV8Oxbvx6tY82G/GUGl5znV1A8E48r2AUDML7VHPf/ThaS4godVgIu+8cQDdc
+ FyymWgTSoHTnQ==
+Received: from [100.115.69.209] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-a.eu-west-2.aws.ess.symcld.net id 65/7A-23453-E3820C16;
+ by server-2.bemta.az-a.eu-central-1.aws.ess.symcld.net id AC/D4-24146-E3820C16;
  Mon, 20 Dec 2021 06:52:46 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMIsWRWlGSWpSXmKPExsViZ8ORqGuncSD
- RYMYVRosV33cwOjB67Pu9jjWAMYo1My8pvyKBNWPylbOsBU95Kv5eTGtgfMHVxcjFISRwllHi
- 5eSDzBDOTiaJW3euMUE4exgl3k1pY+ti5ORgE9CUeNa5gBnEFhGQkOhoeMsOYjMLqEssn/SLC
- cQWFvCQmL20kwXEZhFQlWj/eAishhcofvvvWbA5EgIKElMevmeGiAtKnJz5hAVijoTEwRcvmC
- FqFCUudXxjhLArJGbNamOCsNUkrp7bxDyBkX8WkvZZSNoXMDKtYrROKspMzyjJTczM0TU0MNA
- 1NDTVNbYAUoZ6iVW6iXqppbrlqcUlukZ6ieXFeqnFxXrFlbnJOSl6eaklmxiBYZlSrJa/g/Hv
- yp96hxglOZiURHkFuvcmCvEl5adUZiQWZ8QXleakFh9ilOHgUJLglVc/kCgkWJSanlqRlpkDj
- BGYtAQHj5IIr6caUJq3uCAxtzgzHSJ1ilFRSpzXA6RPACSRUZoH1waLy0uMslLCvIwMDAxCPA
- WpRbmZJajyrxjFORiVhHn5QabwZOaVwE1/BbSYCWixUvh+kMUliQgpqQYmcVnZZ5En2S7NktP
- XvRC90UiobtPfH+ncnN+Sfm5a2h1w7FXV3IX5X5S+x02xXK8es737wEuhgzvOLJr6yc3V5vdX
- +0myvP3++VoRHaoKi/vkOepTdOZlOUfsKtR3MJIIKljXwhczRcXmrM6VL8xtxXFesRa3+babS
- bg0xnFWnFuqdcLQMJBzcoeYeubTHq+VQfz//pQw9lSUnV0aFrbG/PcNhdBaNcPDP/8+ms+sL2
- wusD3ISjSX4eDKRA7zBSLrXl3137B6m88jlf32LtM/lDb4fyq4Mau4qiFOX7myIkOQY9+exVd
- 1djc9qtzE+OK7p6qgMI9dxNGAzuf3BEySHkctks3+0a9m1FTwXImlOCPRUIu5qDgRANGlPEBG
- AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBIsWRWlGSWpSXmKPExsViZ8ORqGuncSD
+ R4MwyTosV33cwOjB67Pu9jjWAMYo1My8pvyKBNWP39yuMBV95KlrmRjUw/ufqYuTiEBI4yyjx
+ Zd5/FghnJ5PEhWXtzBDOHkaJP8fPsncxcnKwCWhKPOtcwAxiiwhISHQ0vAWLMwuoSyyf9IsJx
+ BYWSJf4eXgLC4jNIqAq8bz7JJjNK+AhceDDeTBbQkBBYsrD90BzODg4BTwlJnyxAAkLAZV0zD
+ zFDFEuKHFy5hMWiPESEgdfvGCGaFWUuNTxjRHCrpCYNauNCcJWk7h6bhPzBEbBWUjaZyFpX8D
+ ItIrRNqkoMz2jJDcxM0fX0MBA19DQVNfMAkjpJVbpJuqlluomp+aVFCUCZfUSy4v1UouL9Yor
+ c5NzUvTyUks2MQIDOaXYhXsH452+n3qHGCU5mJREeQW69yYK8SXlp1RmJBZnxBeV5qQWH2KU4
+ eBQkuCVVz+QKCRYlJqeWpGWmQOMKpi0BAePkgivpxpQmre4IDG3ODMdInWKUZdj59F5i5iFWP
+ Ly81KlxHk9QGYIgBRllObBjYBF+CVGWSlhXkYGBgYhnoLUotzMElT5V4ziHIxKwrz8IFN4MvN
+ K4Da9AjqCCegIpfD9IEeUJCKkpBqYgpdPV1h2LaVvdU3YLf5fz/oyGHk2c+i+Ub81vzVRMG8d
+ x+78GwaJXauUVhZI6nTulj1/cPX5a4LiVhPnOj36xXV6an7yhDOsYYlzNm066+pUbSEz0f10z
+ apM8e2W79z9haIC+xQXVGwWVFrAuOMmy5qtPaFpC+4/E7ljeOzmd820pXYTtj6uidj0hrE0Q/
+ TEPe8LM9vnHN2dl+a8r2LuWd1dVrlpPzr0Em/PFbnx59ySshwh4VeWXimXli+3SOdmPFC4Tey
+ Om2OGcV34GhPupI87Nic0TwgM9OySioxI4HA65GM0fdtL0bbp+dKHOCzeuho+4C7/vnDx9Bip
+ 5ZPP7FEyD7vzti8sd4206eVEJZbijERDLeai4kQAYlkVzmsDAAA=
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-22.tower-565.messagelabs.com!1639983165!219130!1
+X-Msg-Ref: server-21.tower-528.messagelabs.com!1639983165!176971!1
 X-Originating-IP: [62.60.8.97]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 3667 invoked from network); 20 Dec 2021 06:52:46 -0000
+Received: (qmail 10515 invoked from network); 20 Dec 2021 06:52:46 -0000
 Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-22.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ by server-21.tower-528.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
  encrypted SMTP; 20 Dec 2021 06:52:46 -0000
 Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id A8486100248
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id AEA7F1009FC
  for <ltp@lists.linux.it>; Mon, 20 Dec 2021 06:52:45 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 9D451100231
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id A0C2310023E
  for <ltp@lists.linux.it>; Mon, 20 Dec 2021 06:52:45 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Mon, 20 Dec 2021 06:52:23 +0000
+ (TLS) id 15.0.1497.26; Mon, 20 Dec 2021 06:52:41 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Mon, 20 Dec 2021 14:52:19 +0800
-Message-ID: <1639983142-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon, 20 Dec 2021 14:52:22 +0800
+Message-ID: <1639983142-2247-4-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1639983142-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1639983142-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 1/4] swapping01: skip test if zram-swap is being
- used
+Subject: [LTP] [PATCH v5 4/4] zram/zram01.sh: replacing data stored in this
+ disk with allocated for this disk
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,70 +105,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For the swapping test we attempt to allocate 130% of the available RAM and
-we make sure that the overflow would fit the swap, but as long as swap is
-backed by RAM this obviously false. So skip it if zram-swap is being used.
+Before ltp commit 4372f7a2156 ("Fix compression ratio calculation in zram01")[1], we
+used free -m changes to calculate the compression ratio.
 
-Also make check happy.
+After the above patch, we used compr_data_size to calculate. kernel documentation[2] has
+the following info:
+orig_data_size: uncompressed size of data stored in this disk.
+compr_data_size: compressed size of data stored in this disk
+mem_used_total: the amount of memory allocated for this disk
 
-Fixes: #888
+We should calculate the compression ratio by used disk size divided into used mem size.
+It can also avoid the situation that division by 0 as below:
+zram01 7 TINFO: filling zram4 (it can take long time)
+zram01 7 TPASS: zram4 was filled with '25568' KB
+zram01 7 TINFO: compr_size 0
+ /opt/ltp/testcases/bin/zram01.sh: line 131: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
+
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/mem/swapping/swapping01.c | 25 ++++++++++++++++------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ testcases/kernel/device-drivers/zram/zram01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 392b79d65..498f502c1 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -40,10 +40,10 @@
+diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+index 5e13f387c..5b4c05434 100755
+--- a/testcases/kernel/device-drivers/zram/zram01.sh
++++ b/testcases/kernel/device-drivers/zram/zram01.sh
+@@ -125,8 +125,8 @@ zram_fill_fs()
+ 			continue
+ 		fi
  
- #include <sys/types.h>
- #include <sys/wait.h>
--#include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
-+#include "tst_safe_stdio.h"
- #include "lapi/abisize.h"
- #include "mem.h"
+-		local compr_size=`awk '{print $2}' "/sys/block/zram$i/mm_stat"`
+-		local v=$((100 * 1024 * $b / $compr_size))
++		local mem_used_total=`awk '{print $3}' "/sys/block/zram$i/mm_stat"`
++		local v=$((100 * 1024 * $b / $mem_used_total))
+ 		local r=`echo "scale=2; $v / 100 " | bc`
  
-@@ -67,16 +67,27 @@ static void test_swapping(void)
- #ifdef TST_ABI32
- 	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
-+	FILE *file;
-+	char line[PATH_MAX];
-+
-+	file = SAFE_FOPEN("/proc/swaps", "r");
-+	while (fgets(line, sizeof(line), file)) {
-+		if (strstr(line, "/dev/zram")) {
-+			SAFE_FCLOSE(file);
-+			tst_brk(TCONF, "zram-swap is being used!");
-+		}
-+	}
-+	SAFE_FCLOSE(file);
- 
- 	init_meminfo();
- 
- 	switch (pid = SAFE_FORK()) {
--		case 0:
--			do_alloc(0);
--			do_alloc(1);
--			exit(0);
--		default:
--			check_swapping();
-+	case 0:
-+		do_alloc(0);
-+		do_alloc(1);
-+		exit(0);
-+	default:
-+		check_swapping();
- 	}
- }
- 
+ 		if [ "$v" -lt 100 ]; then
 -- 
 2.23.0
 
