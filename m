@@ -4,78 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C462C433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 05:02:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 446ADC433F5
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 06:22:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 88EA23C90E4
-	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 06:02:14 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BFB183C9174
+	for <ltp@archiver.kernel.org>; Mon, 20 Dec 2021 07:22:47 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C5BC53C0EBB
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 06:02:04 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 5255E3C5709
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 07:22:38 +0100 (CET)
+Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
+ [195.245.230.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3502D600793
- for <ltp@lists.linux.it>; Mon, 20 Dec 2021 06:02:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1639976521;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Dcn/rzlqYzH2wtEdlMpeT3b4ZkXMn7ZrhP1i8SyTLjo=;
- b=ON4difXMAjxJppkqs+sLwXV8ORIan5O2qA1H/j8RGMH6ZdT0BztSAd6xe+C8Q3nckl1G7v
- q8tB6+ZcN/MDaFdV0eb/9oAM+0CT8xjV5mOyEV4bNmAqgfwBJNFX79MtHzddbugn+uEu2l
- nIrpJy8XISvmQBdXI3X70d7n5Ejy+eY=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-199-UQqCoeCTOQGLkQi7Ms7iGw-1; Mon, 20 Dec 2021 00:01:59 -0500
-X-MC-Unique: UQqCoeCTOQGLkQi7Ms7iGw-1
-Received: by mail-yb1-f199.google.com with SMTP id
- l145-20020a25cc97000000b005c5d04a1d52so17525522ybf.23
- for <ltp@lists.linux.it>; Sun, 19 Dec 2021 21:01:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Dcn/rzlqYzH2wtEdlMpeT3b4ZkXMn7ZrhP1i8SyTLjo=;
- b=4F4fqUOWumsOsbXeokAP2XcugZ8TWD8PSHZB3zvIxc85IaHz/R3Ka930tKYfj9EomE
- moUcWrkd9uptNdNMYqlJjw0WpZT7baQ3Jo4VfZgzyVFGkT9w8eemUomjIx241l/f5MyX
- peMNzwiBiiQhcXQjq354vO1FJ7bkMo2snoOuZZOevk9f/nd1pARxQrk2n+emXLuWl8BK
- kW/+a9uaYf3ZvFdZwr/buEZeZoDHt7DdA8wV+L+lj5ZgrVEiSIFC8UBdljxBsXlt8V22
- 1LuXw3US82kelmRm1Yn7wRIhfNcKbK0upOZdzULHQfR667NN4sNIcgKs11qahbHpQc/N
- l4Sw==
-X-Gm-Message-State: AOAM533t24rGxRBilV5EqRwj6TxECRdRIZbabpd9plm5nNrwBGJydTIO
- 2eWeFJ7DL8sUcJuQ05dlLadMI9CF0fzu9e/GqNaQjEj/VkgDcl5bE1uXMCAgFWBF3vH82VjyzRJ
- uc3OeV1RWjFs3NR36PML5WZAypsU=
-X-Received: by 2002:a05:6902:4f4:: with SMTP id
- w20mr20688217ybs.421.1639976518881; 
- Sun, 19 Dec 2021 21:01:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxaN0lDBKsur2HGehoUzNxWSXS6D1Y0Wst5BPHnoEY57MYisUD4F15t2s7yXMFdXR2lBymDvsgGVl19PfvJR8w=
-X-Received: by 2002:a05:6902:4f4:: with SMTP id
- w20mr20688192ybs.421.1639976518575; 
- Sun, 19 Dec 2021 21:01:58 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F22921400E1C
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 07:22:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1639981356; i=@fujitsu.com;
+ bh=aGA+PN1rC0aCfBFWh5Tpv92SA1Etju/e5RilSeISOLs=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=DWXBuAiizsx/gT+eRf6kYW41L8eqvRVKyMBqjl+0JJsSPbl8+D6LIOrS1wuscc9N1
+ 3sOOrBGSVMpykz8epzBmsx2ey8oHXlYvL0AIZgJusEzDPHeZFZ7lkVuHtZYNdFZHpe
+ XcSAfGj3RZlW1mowM5kDQM2bN3Gkl1E4V2+IA5Dwweh4s6BFjYn1Iqbf5taN1FZ0n0
+ w4BtkpmmjhCFQPn93xrVmN5+B5FK8T5ux0ejXuawyuW8mtpn4pjaEtgLgw3Qbfeom4
+ tlUoD01vGVU6mBkBZz4uR8Zespp0aJx2M3ZuHW8APeep7DNJuQCUb60k/+SnwnzkDB
+ sWpLyjCPCdFXA==
+Received: from [100.115.6.114] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-1.bemta.az-a.eu-west-1.aws.ess.symcld.net id 4A/64-14524-B2120C16;
+ Mon, 20 Dec 2021 06:22:35 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRWlGSWpSXmKPExsViZ8ORqKuteCD
+ RYNJfZovpL46yWaz4voPRgclj3+91rB5nFhxhD2CKYs3MS8qvSGDN2PdpPlPBJ+mKu39bWBsY
+ e8S7GDk5hAS2MEp0/w3sYuQCshcwSbSt62WEcPYzSvy9vIkFpIpNQEPi2uN2ZhBbREBU4vP0c
+ 2A2s4CNxL6rE8BsYQEjia1v74LVswioSmze+ZoRxOYVcJNY9PYDWI2EgILElIfvwWxOARWJi3
+ eesUFcoSyx69o6Zoh6QYmTM5+wQMyXkDj44gVUr6LE/r0bGSHsCokZM7axQdhqElfPbWKewCg
+ 4C0n7LCTtCxiZVjFaJRVlpmeU5CZm5ugaGhjoGhqa6prpGppZ6iVW6SbqpZbqlqcWl+ga6iWW
+ F+ulFhfrFVfmJuek6OWllmxiBAZ2SjHbyh2MK/t+6h1ilORgUhLlFejemyjEl5SfUpmRWJwRX
+ 1Sak1p8iFGGg0NJgtdK7kCikGBRanpqRVpmDjDKYNISHDxKIryTZYHSvMUFibnFmekQqVOMxh
+ wfnsxdxMzRPGn5dmYhlrz8vFQpcV4TBaBSAZDSjNI8uEGw6L/EKCslzMvIwMAgxFOQWpSbWYI
+ q/4pRnINRSZiXGWQKT2ZeCdy+V0CnMAGdohS+H+SUkkSElFQD05RuHtHg1t8PwxuL633thJJn
+ 1/36N+l+6JKLbj/zP9/NvnLF5IdZdEu+xVmF/acSZrjIhEovKNkfUsrPaxrheG3qPGWmUN+ru
+ tztrm+vZzbxpOXfi+UVT5xqrbrsUubtY90/ZI93yv17M+Wt0JkTS0WO3v0+rXnLJ5Z/h3hKV1
+ rLxHvcnse1eZrcPnHdx69apLPf3VA/1KVq5VzZOX9t0u3p7gfEZ+U/Ul71e5mGXUT2+TcfMwQ
+ UKpNmnDLeEKSfL/R5v6Kj+LWu7c6BLPfj3kzw01fZ1yX5I0xFoi1VYYvHwtsVXAEssT7qVVk7
+ zVxVc24sWevQtDTo5XpL9aUOZTcjOKvKpT0uhyieW2GqxFKckWioxVxUnAgAYZJh2nkDAAA=
+X-Env-Sender: daisl.fnst@fujitsu.com
+X-Msg-Ref: server-12.tower-591.messagelabs.com!1639981354!159827!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.7; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 5900 invoked from network); 20 Dec 2021 06:22:35 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-12.tower-591.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 20 Dec 2021 06:22:35 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 852C71009FA;
+ Mon, 20 Dec 2021 06:22:34 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 79A20100239;
+ Mon, 20 Dec 2021 06:22:34 +0000 (GMT)
+Received: from rhel79.g08.fujitsu.local (10.167.225.51) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.26; Mon, 20 Dec 2021 06:22:22 +0000
+From: Dai Shili <daisl.fnst@fujitsu.com>
+To: <chrubis@suse.cz>
+Date: Mon, 20 Dec 2021 14:23:04 -0500
+Message-ID: <1640028184-20297-1-git-send-email-daisl.fnst@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <YbMyhM7/wqbGCdgk@yuki>
+References: <YbMyhM7/wqbGCdgk@yuki>
 MIME-Version: 1.0
-References: <20211217113751.359613-1-liwang@redhat.com>
- <20211217113751.359613-3-liwang@redhat.com> <Ybyj5nEb7k+5dtmb@yuki>
-In-Reply-To: <Ybyj5nEb7k+5dtmb@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 20 Dec 2021 13:01:45 +0800
-Message-ID: <CAEemH2ck0HdR_yoGsstZrSWOa3gRVYzBMowB_kzr+GQ0UfjNQQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.167.225.51]
+X-ClientProxiedBy: G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] oom: enable OOM protection for mem lib
- process
+Subject: [LTP] [PATCH v2] syscalls/write06: Add new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,83 +100,146 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============1683555746=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1683555746==
-Content-Type: multipart/alternative; boundary="000000000000d4819105d38cc9c2"
+Like pwrite04.c, test the write() system call with O_APPEND.
 
---000000000000d4819105d38cc9c2
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+---
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/write/.gitignore |  1 +
+ testcases/kernel/syscalls/write/write06.c  | 95 ++++++++++++++++++++++++++++++
+ 3 files changed, 97 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/write/write06.c
 
-On Fri, Dec 17, 2021 at 10:49 PM Cyril Hrubis <chrubis@suse.cz> wrote:
-
-
->
-> > +     tst_enable_oom_protection(getpid());
-> > +
-> >       switch (pid = SAFE_FORK()) {
-> >       case 0:
-> > +             tst_cancel_oom_protection(getpid());
-> >               threads = MAX(1, tst_ncpus() - 1);
-> >               child_alloc(testcase, lite, threads);
-> >       default:
->
-> Looking at the code we have, we always pass getpid(). We may as well
-> change the library to use /proc/self/oom_score_adj if 0 is passed
-> instead of the pid.
->
-
-Yes, agree with all suggestions (include comments in 1/3 2/3).
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index bcf3d56..32fcda4 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1699,6 +1699,7 @@ write02 write02
+ write03 write03
+ write04 write04
+ write05 write05
++write06 write06
+ 
+ writev01 writev01
+ writev02 writev02
+diff --git a/testcases/kernel/syscalls/write/.gitignore b/testcases/kernel/syscalls/write/.gitignore
+index 7f36194..8529aae 100644
+--- a/testcases/kernel/syscalls/write/.gitignore
++++ b/testcases/kernel/syscalls/write/.gitignore
+@@ -3,3 +3,4 @@
+ /write03
+ /write04
+ /write05
++/write06
+diff --git a/testcases/kernel/syscalls/write/write06.c b/testcases/kernel/syscalls/write/write06.c
+new file mode 100644
+index 0000000..ea30d73
+--- /dev/null
++++ b/testcases/kernel/syscalls/write/write06.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
++ * Author: Dai Shili <daisl.fnst@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test the write() system call with O_APPEND.
++ *
++ * The full description of O_APPEND is in open(2) man-pages:
++ * O_APPEND
++ *        The file is opened in append mode.  Before each write(2), the
++ * file offset is positioned at the end of the file, as if with lseek(2).
++ * The modification of the file offset and the write operation are
++ * performed as a single atomic step.
++ *
++ * Writing 2k data to the file, close it and reopen it with O_APPEND.
++ * Verify that the file size is 3k and offset is moved to the end of the file.
++ */
++
++#include <stdlib.h>
++#include <inttypes.h>
++#include "tst_test.h"
++#include "tst_safe_prw.h"
++
++#define K1              1024
++#define K2              (K1 * 2)
++#define K3              (K1 * 3)
++#define DATA_FILE       "write06_file"
++
++static int fd = -1;
++static char *write_buf[2];
++
++static void verify_write(void)
++{
++	off_t off;
++	struct stat statbuf;
++
++	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_CREAT | O_TRUNC);
++	SAFE_WRITE(1, fd, write_buf[0], K2);
++	SAFE_CLOSE(fd);
++
++	fd = SAFE_OPEN(DATA_FILE, O_RDWR | O_APPEND);
++	SAFE_FSTAT(fd, &statbuf);
++	if (statbuf.st_size != K2)
++		tst_res(TFAIL, "file size is %ld != K2", statbuf.st_size);
++
++	off = SAFE_LSEEK(fd, K1, SEEK_SET);
++	if (off != K1)
++		tst_brk(TBROK, "Failed to seek to K1");
++
++	SAFE_WRITE(1, fd, write_buf[1], K1);
++
++	off = SAFE_LSEEK(fd, 0, SEEK_CUR);
++	if (off != K3)
++		tst_res(TFAIL, "Wrong offset after write %zu expected %u", off, K3);
++	else
++		tst_res(TPASS, "Offset is correct after write %zu", off);
++
++	SAFE_FSTAT(fd, &statbuf);
++	if (statbuf.st_size != K3)
++		tst_res(TFAIL, "Wrong file size after append %zu expected %u", statbuf.st_size, K3);
++	else
++		tst_res(TPASS, "Correct file size after append %u", K3);
++
++	SAFE_CLOSE(fd);
++}
++
++static void setup(void)
++{
++	memset(write_buf[0], 0, K2);
++	memset(write_buf[1], 1, K1);
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	SAFE_UNLINK(DATA_FILE);
++}
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_write,
++	.bufs = (struct tst_buffers[]) {
++		{&write_buf[0], .size = K2},
++		{&write_buf[1], .size = K1},
++		{}
++	}
++};
 -- 
-Regards,
-Li Wang
-
---000000000000d4819105d38cc9c2
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, Dec 17, 2021 at 10:49 PM Cyril Hrubis &lt;<=
-a href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><=
-div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
-px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"> <br>
-&gt; +=C2=A0 =C2=A0 =C2=A0tst_enable_oom_protection(getpid());<br>
-&gt; +<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0switch (pid =3D SAFE_FORK()) {<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0case 0:<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_cancel_oom_protec=
-tion(getpid());<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0threads =3D MAX(=
-1, tst_ncpus() - 1);<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0child_alloc(test=
-case, lite, threads);<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0default:<br>
-<br>
-Looking at the code we have, we always pass getpid(). We may as well<br>
-change the library to use /proc/self/oom_score_adj if 0 is passed<br>
-instead of the pid.<br>
-</blockquote><div><br></div><div class=3D"gmail_default" style=3D"font-size=
-:small">Yes, agree with all suggestions (include comments in 1/3 2/3).</div=
-></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><di=
-v dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></di=
-v>
-
---000000000000d4819105d38cc9c2--
-
-
---===============1683555746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+1.8.3.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1683555746==--
-
