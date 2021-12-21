@@ -4,150 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8BC1C433F5
-	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 02:18:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03B6FC433EF
+	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 02:36:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 986403C9219
-	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 03:18:36 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 10DE83C8D18
+	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 03:36:00 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4F05B3C8B9B
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 03:18:27 +0100 (CET)
-Received: from esa8.fujitsucc.c3s2.iphmx.com (esa8.fujitsucc.c3s2.iphmx.com
- [68.232.159.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E03433C0BA7
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 03:35:50 +0100 (CET)
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
+ [IPv6:2607:f8b0:4864:20::829])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 819A0600713
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 03:18:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1640053106; x=1671589106;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=FIp88LFYcWOyVKW/hKt4aUQifDyhcjdQBH9ullXv/nU=;
- b=WpopfPhkjw6uJmNlc7prKoPJxqQA1zaMIZS2zIRI0BraZqWFxUD/3lAN
- 9T/IRMBJvUEo+ZyYP0Qg0nblc4hTrbzygVKPbY0efj1TQHS7yuGbQ5UiL
- lBkFC8FEAsY6ybXaxKeSM3YRymJnGgzteigUaJQyh3TUZMnzgMjFws/yx
- xfUARQBiyKBVgEfVOhznkA4Pya1uECBEVEOf+qEJsyDO/PzhjnNluYIlR
- RZQleVjocffHo9cM+mMrmbmpDKwlxGhRtwn1Dcqv1gjNHOVlwjH4aklTL
- Wk5cFFNljllIzgFudUx3VDTgpKtAaATmoYjyMy/09L8ZTwEOZW43SY3nf A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10204"; a="46252793"
-X-IronPort-AV: E=Sophos;i="5.88,222,1635174000"; d="scan'208";a="46252793"
-Received: from mail-os0jpn01lp2111.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.111])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Dec 2021 11:18:25 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iddw7lmaTdnZzy8OwRuDIBPvzfFwlGNxKaxaodmkamoohcNH9s3iAqLr5Nsb2oQb9scG6tbd928q3eLgHmYZ8QRL6VWoyI2iiecu6JIIcDhKCEhgI2fQQ61GVSyCCBLHZfv/WYq63/MDRdC+il5xbc7FH7fa2BlsDS7gVAWTJ1SmaOXpbAT594U6+Q7TnBde5aZd3T4lhDqXHgXhPO/EB7oQ1ZODct4S6YeErpiey86jMQOclgk+tLvLiaEI38h+IDYZj10xucQogrFvG+xAJq6p5sHF60MREFwfcrs9jruvtpvDVjI5fwb+6CVLchCiZKTe4lgS+yfWDKS4pSBHfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FIp88LFYcWOyVKW/hKt4aUQifDyhcjdQBH9ullXv/nU=;
- b=evHacYpPQvpYYPnj897WYlZoxHxdepI1hDMdJ8xq5VeDnoDoGzcvmcm4ZQV9hRtLkou3F5Gwip+pvTPt6/ROTxTZOg0xeZF7QSh4bjdCbi2T91/LaFz6535f4h+k6llloH+C0coA6KRfKCqCfWPYh7QQhECXcVIog9tSYKeT1DhbPWPQ/gJ311WVX9VdVkp/HNjqlILdhyz/BJO+OXNGC5+wDu9EAIypOVraNMoIckgsr97CoWlHXtb7MGVq5vhChSkMFpmbf5MLJRjWiYMt7+pm2wqB4bKWg6M+2Y0OpzUN3uv2AWILNl8dMS3y+kBXbw39EIzxX1FSND2adteHYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FIp88LFYcWOyVKW/hKt4aUQifDyhcjdQBH9ullXv/nU=;
- b=iu3JRHAcGsonGY44EVWlWVoQD4tbRN0fScu7jcQafFftyzkLqlkRSFRPpfk6Bla65RnhzKCzvaUaWfhsNt2W02yVJB04f8L3j5k0o9mn+EodzSFnDXwDFmzWLgBZSkmu1LuNuNukLLrjXPBDodGPpHCa4IKtCoyCsvYVMZt3ObA=
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TY2PR01MB2010.jpnprd01.prod.outlook.com (2603:1096:404:10::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.17; Tue, 21 Dec
- 2021 02:18:22 +0000
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::4997:e3e6:6502:9100]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::4997:e3e6:6502:9100%8]) with mapi id 15.20.4801.020; Tue, 21 Dec 2021
- 02:18:22 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH v5 4/4] zram/zram01.sh: replacing data stored in
- this disk with allocated for this disk
-Thread-Index: AQHX9W40nQa467DKIkaQve8+nb3fJaw7M6kAgAEDlgA=
-Date: Tue, 21 Dec 2021 02:18:21 +0000
-Message-ID: <61C1397A.1070904@fujitsu.com>
-References: <1639983142-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1639983142-2247-4-git-send-email-xuyang2018.jy@fujitsu.com>
- <YcBfuCPg1ENZHvud@pevik>
-In-Reply-To: <YcBfuCPg1ENZHvud@pevik>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3960168f-7dc5-473f-69cb-08d9c4282951
-x-ms-traffictypediagnostic: TY2PR01MB2010:EE_
-x-microsoft-antispam-prvs: <TY2PR01MB20100E09A0FF662E52D71733FD7C9@TY2PR01MB2010.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1443;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1jMKVG5wr7RuW9y5kNwCTCjmJYQt6LC6IBUrLXxluKq8jiHS1JsqVpeI8RXArrtxFxjhBtNrscYwda79VxTWTuhP0WNy80cn6UAn9zGSSTJ42mdHAuiAASnbHpjRL/cng9jm73dQR6YtmkqpZq13cEIhFyXPa17TMJtjNIAK9JQPtVW8OAnzId1hjt02JcElVBQZVC4IS66eIqeHqqfuYIV4Jf7p2PsQTABdbpwq5/bVhKFBLZLcSs3onYwZ+U2sDEY9ydOGPIcjc7fxwb39f7f5TuOmPBxTi5TyVO2fwqZAjhLRVgWRjg7PMxRCx2fNEKU7g7s3SsMN3LDWFVHs1rkznJyslw/XJQwHhmzgBbfF3dw0297shnrPGY0igJ0FTHdL1GAuUsZdhr3cJw5LVHASEI/n0hfR/qWa24r2YrHUWkX8AEZMt5BiayEDxUdKOj+/4LeCHw+3UG1FbfdABUuj8jdVwGrvWioZ55cvEYAXKS1EMBdaXF4kU//0HQOUQpq22m1mv9XT2oRRQ9gky0uw6iOmMc3L1oWCncbbN+xJf2lbVbKUQ/CCkjvXh5jmNcJE9pOigq+QIyEj9s+JdP0vahOXpY4ZHIrFRQ0+uZP0zDEukOqgTcnQMuDDW0xK0WyvKendcT6dz3zsBOLBQc1qxvyGiVJphA/Xw03HiyzS5Q/4jOKe5J/F37K1lk9kyMXC7pFM+sSvZJb3nzMBTZnWdZ6SGEViMtfloh0ZfLQ6MRU8hm3C3xFcSTdbn/5G6S5SGrRCh88rS5YpDF5c6M+Jms7A3TvHyXX2Gav4hpU=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(6506007)(6916009)(71200400001)(36756003)(2616005)(64756008)(186003)(26005)(87266011)(8676002)(2906002)(5660300002)(85182001)(82960400001)(40140700001)(33656002)(316002)(86362001)(122000001)(83380400001)(8936002)(38100700002)(66476007)(66946007)(966005)(91956017)(76116006)(66446008)(508600001)(38070700005)(6486002)(6512007)(4326008)(66556008);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?eDNlQmVZY0EzOGhIemxBMDVpN1ZhdmFyWE8zdzlBTE9IcWlvdUhxZEErQnZB?=
- =?gb2312?B?dEl3Q3BIelVYQ2hzSWZzcEErbXo4ekt0aVhmejc5Yy9ldkJQUCtad1diT1Ny?=
- =?gb2312?B?KzRMZVc2dGhlL2ZWZ2llUCtLWHBsSmtvMzBCY3piS0dEMjJtWDloTlVFVEpB?=
- =?gb2312?B?UHZ2SHA5TVQzL09yZVdyWlYvWEUxM0h3NnJoZk8vd3o0b0tPenJtRDVueGN3?=
- =?gb2312?B?Yy9tYTh4aS9JVjhvNTBWUWxXa3doL25pRXRPdFNIN3pFWVhYZ0dGRVRBVXgr?=
- =?gb2312?B?aVFFOVRRWDdnQ1BaUGtqNEN0UXFsWmhYbGJscnBwcHg0RksyZ3BtNHQzVThn?=
- =?gb2312?B?Z0s0V2FZOU52c1hyOTFiNmRRZG9jbHhEMmp6c0h1cjRTVHBLSEFWNVg5bzBZ?=
- =?gb2312?B?ZnFZa1JUTW9MRFZSbS8yZTZpdW9HS3o5UEl5RnRWS1g4b05BWGIrZnBaYVkv?=
- =?gb2312?B?VXRjZ0VoU1JVSkFpQS8yT2wvYUUyWXFoL2JVbmw4WGozRUl6UVNlOU9aYVNH?=
- =?gb2312?B?YWdpR1dIWTN6QzhXKzExNnVXVHVWTUpPMWVOeVlvc1RXeTBJK1I4YVdnY2R0?=
- =?gb2312?B?c1ZxenJqM2U2Yk9IVTc5QWp5NTJ4TzZmVzQxY1pqSVNHVktPZnhTY2hkcVRN?=
- =?gb2312?B?ZHAwZnJ6bno5MEFIWVVKZVlZT0RQVkpYUTEvMmtBTjhtVG1weU1hU1FrU2Y1?=
- =?gb2312?B?Z0NBQ2pBd0haVjlWb2d2UEhQeDY2b1FjazExS2tvUVlCZ3l5aStSMnlpOTZY?=
- =?gb2312?B?bHJaZzFkRnhPeTc4NnE3LzZRNU9pcmFoNEsvcGMyaTRBa0wwMmt3YlAyMEFu?=
- =?gb2312?B?UFRBMGVEMkYvWUhoMHF0aTNORlIzTGFJRXpvOEk5NG9zc05oNlZMMkFCUm9r?=
- =?gb2312?B?WXVUZmI0TTU1N1R4M3VWWHFOMm9tZGsrT0c2OElNNmxQNE1GaXlVNDN0NklU?=
- =?gb2312?B?ejA1ZmxEY1FaMlpNMkJRbW9wcURqM01vd3VwWjBNbWFNOG1md3dOTXdiTUsw?=
- =?gb2312?B?NkEyMTVNQmZ2Mk15ZHR0QnMrL2lDUk5saTdZY0VBUlRCSlQxck1LZ0RDclJp?=
- =?gb2312?B?MW5kdGs2cjVaaWtZcWg0b2lMdXNNNmYxditQMzJwbmxDcmkwMzQweDhOVU1S?=
- =?gb2312?B?N3dwRU1uMkJSS3FFc1ZSUm1mbW5NMkh4Ky9ZNUV5OWlUbnBXV2Z2T0o2KzU1?=
- =?gb2312?B?K0N6OHdZanVTTVc3TlYzWGZUMWIrazJwU3V2eUk2ckkxV014dXBwSUxNUmNa?=
- =?gb2312?B?THhTcUtrSkxlSG1pVE00cVdqSjZYWFFLZFdKci9kYys4b2VJckpLRG15cEFH?=
- =?gb2312?B?V2lmT3A0WDErelZlbzZEdTZPV1BvZllYV1JQanRQd3EwUFd3K01PcllSQVFs?=
- =?gb2312?B?TVJTRXVOaDNiK1VIVHlPK0RFUjUxSXdHb0cvWlpjejI4MTU0RjNVK3h3OSty?=
- =?gb2312?B?R3Q1cEdiVVc2QTJJL0tkMnlaaE4zTjBCSkNpM1I5MzEvR2xZb3N6bjJod1lv?=
- =?gb2312?B?QytYRFVidGZvWmJmWmlLcGs4cE4yUnlZdXBISVhNbmtSUjAreTQzWjFFM3Jk?=
- =?gb2312?B?WEFvYXVTZW9Kd01HL0xkL2MyMjFxR2pCU0tXdmMzNENGS080Zmx2SnUwVjFM?=
- =?gb2312?B?U1EvV1ZVUm00eFgrQWdRRWJYUzZhU3h5T2FIVDFYcmpOVEl1Q3A3bkNDWE5X?=
- =?gb2312?B?ejhIUklaU3hCUW9ZdlppcGxCYVB0UDFrV1o3RXkzanBkcU5Lb25uV3F3bGhJ?=
- =?gb2312?B?WWRRZ2VqS2g0N3FCOStlQlpSWDhRMjVOU0NNR0xseG52Y2VIemdLOWVla3lq?=
- =?gb2312?B?QTZtdDY0SE9ESXMwd3RGQnFvM3B0TjlpZWFRdkNmd3BNTXJodm5ubjNaeDBw?=
- =?gb2312?B?OEZPRTZ2YlhJK3VWajJpNFkzWWozdkFOdE52UUdqOE5mU1I3NTNFTFUyOEpm?=
- =?gb2312?B?SW9NUTFUNTl0U0YraStXZkUzSzMrdFVLRlJHSmhscnJMbk9FVEx3S2dib215?=
- =?gb2312?B?OHQ3LzdhUisvRE01YmNMNDY3ek5BUUg1dGFzWEU0dHpvZ3g1NjVYVkJXdktj?=
- =?gb2312?B?R2pmNm5zbmowdng0NWdEUTBPTFJJYXloRENjbUFUeE5JNTU1djVpUVR4bE92?=
- =?gb2312?B?Y2VwOWQxblJ4ZFJxWW9YS2IvR1lNZm1RZFhrSW91Y1U4VC9ybXFhRm5qc093?=
- =?gb2312?B?bUxnMW43Z2tHWEdVdllnN2J1Rk5UVVJlOEY0RWQwc2VUVVFRUStKMWh1dGlu?=
- =?gb2312?Q?D1uxyeL4CKkT28NAGw66PMYuTuEVOLYU7F6FXA7ONM=3D?=
-Content-ID: <04AA8E4F46936A45A5867DEF42A9BAFB@jpnprd01.prod.outlook.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C37AE6008D1
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 03:35:49 +0100 (CET)
+Received: by mail-qt1-x829.google.com with SMTP id p19so11597585qtw.12
+ for <ltp@lists.linux.it>; Mon, 20 Dec 2021 18:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=G+Bwtd4hccdbBEg6XJR8xmKWMDe5fbaxRcI2i1y0oxs=;
+ b=dL2HNPnCG7IHvvGS3jt4/+Llii8YYT8vPk5bNqBFv+Xfg05kOsQbfB7SPLVyLEuI06
+ NK2Zx185j4h9sZ23c1OuCXmRyzthTtiGaxvoEV/q/jstEUXb+DCS3b0bLG6AOFULWIa/
+ 1xSezoarab34AbcZn2QeYq9CUa3OJkKhV0SyfTxZ+7T2FxMS8Ie9pndHlKXOWj/SFWDh
+ hYAhsJ9a5IWrEI8DHzYL6B6bcCIZObCppUv7Y0mE4A6zPMC9Nu5BBMyFGSmG4DI/5WbF
+ uW87uqgRF0cKte3YavNIyE9ESKPUoasgwsIoaf95ssiw+FmtucWF/eqL56NgPrcd934x
+ cx8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=G+Bwtd4hccdbBEg6XJR8xmKWMDe5fbaxRcI2i1y0oxs=;
+ b=YUdnBCoXkwvKXsG7Beif3HGc2HQ6c3iY3S/p4RIuReak5WLVTeadTb+TvPmaU7ZWvW
+ 5Q7HmNd7MyzSn7k8AGi0YYQpYrjYVHgMbk2gablAc1K2rLGh4VGMunzTbO+1Qq3XpaNM
+ D1QrSeLQbURNSreYcDpifi3b/tRU1GFgu4xS9VdPffBgTxex1VRNjwV7QlWT29b7i9bO
+ Jut3QAI2orJ2s1rJ+rEeuLKDaxdx3IGZCfOOn3rQKqesA6L8cATZW8o75y+ZHjtk+gk3
+ HslLnOIUOaQYPjTBFflH5yJXrt5VF3t/+II38I4iJvcteusDzqvxCaVN9p5fzfnSfi84
+ Jydg==
+X-Gm-Message-State: AOAM53395gnITElG2lvtyO4KDrg8s+kMJLyweJ3R5XEajXc2mW6iuEsj
+ dqVJ2EQ/vjwbXLQYQk9IG6bVox4mvpZGCwlOo6sZHg==
+X-Google-Smtp-Source: ABdhPJzPOwehzMafSgRoO2tfh9iKO0br0hCJAUITfkkoiwMvCmKgGvKn2YNLfQtpiu9OygbFJUMcS30ToGG2LF9ROzU=
+X-Received: by 2002:a05:622a:4d1:: with SMTP id
+ q17mr742455qtx.560.1640054148143; 
+ Mon, 20 Dec 2021 18:35:48 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3960168f-7dc5-473f-69cb-08d9c4282951
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2021 02:18:22.0214 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VtZnBURARG7p5pNRXnftXO0YHW/qXxjJwLm1YMyvpGrFX9JQnndXkjLQgUXo7HkTgsunY5oHmXLsq0yme95ebcI/hwEQT5gMtBxFtXaom3w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2010
+References: <20211217021726.2487455-1-yaelt@google.com>
+ <YbyW+nRbUnmfHue1@pevik>
+In-Reply-To: <YbyW+nRbUnmfHue1@pevik>
+Date: Mon, 20 Dec 2021 21:35:37 -0500
+Message-ID: <CAKoutNuSwbSs6E7BPQXyWFRxy2P=5+M86CMNbGFcLw0mB=m9DQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 4/4] zram/zram01.sh: replacing data stored in
- this disk with allocated for this disk
+Subject: Re: [LTP] [PATCH] syscalls/keyctl09: test encrypted keys.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -159,50 +71,497 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Yael Tiomkin via ltp <ltp@lists.linux.it>
+Reply-To: Yael Tiomkin <yaelt@google.com>
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============0741726454=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr
->> Before ltp commit 4372f7a2156 ("Fix compression ratio calculation in zram01")[1], we
-> nit: we can drop [1]
->> used free -m changes to calculate the compression ratio.
+--===============0741726454==
+Content-Type: multipart/alternative; boundary="000000000000ea07f605d39edce6"
+
+--000000000000ea07f605d39edce6
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, Dec 17, 2021 at 8:56 AM Petr Vorel <pvorel@suse.cz> wrote:
+
+> Hi Yael,
 >
->> After the above patch, we used compr_data_size to calculate. kernel documentation[2] has
-> nit: I'd add link to the doc also in this commit message.
-I don't see the link on your ltp fork:
-https://github.com/pevik/ltp/tree/yang_xu/zram-swap.v5.fixes
-
-I have tried this branch and these change seems fine.
-
-I guess I don't need to send a v6 patch and you can merge it directly(by 
-removing [1][2] linke and adding fixes tag ). Is it right?
-
-ps: I want to add a fixes tag for pointing to commit 4372f7a2156 ("Fix 
-compression ratio calculation in zram01").
-
-Best Regards
-Yang Xu
+> > Test that encrypted keys can be instantiated using
+> > both user-provided decrypted data
+> > (
+> https://lore.kernel.org/linux-integrity/20211213192030.125091-1-yaelt@google.com/
+> ),
+> > or kernel-generated numbers.
+>
+> Thanks a lot for adding this test. There are few missing things:
+>
+> BTW all mentioned here is implemented here to speedup your work:
+> https://github.com/pevik/ltp/tree/yael_tiomkin/keyctl09.fixes
+> Below is diff of my suggested changes.
+>
+> What I didn't solve is broken test when run with more than 1 iteration:
+>
+> ./keyctl09 -i2
+> tst_test.c:1423: TINFO: Timeout per run is 0h 05m 00s
+> keyctl09.c:47: TPASS: Encrypted keys were successfully instantiated and
+> read
+> keyctl09.c:31: TBROK: Failed to instantiate encrypted key using payload
+> decrypted data: EINVAL (22)
+>
+> NOTE: you can specify test setup to do things only once. You should also
+> cleanup
+> after test run with test cleanup.
+>
+> https://github.com/linux-test-project/ltp/wiki/C-Test-API#11-basic-test-structure
+>
+> You also need to add entry to testcases/kernel/syscalls/keyctl/.gitignore
+> /keyctl09
+>
+> and runtest/syscalls
+> keyctl09 keyctl09
+>
+> ...
+> > +/*
+> > + * Description: This tests that encrypted keys can be instantiated using
+> > + * user-provided decrypted data (plaintext), and separately, using
+> > + * kernel-generated key material.
+> > + */
+>
+> I'd rephrase it a bit and use LTP metadata formatting
+> /*\
+>  * [Description]
+>  * Test that encrypted keys can be instantiated using user-provided
+> decrypted
+>  * data (plaintext), and separately, using kernel-generated key material.
+>  */
+>
+> FYI metadata is LTP documentation - here is the output:
+>
+> https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.html
+>
+> https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.pdf
+>
+> You can run make in docparse/ directory and then see in output in
+> metadata/metadata.{html,pdf}.
+>
+> > +
+> > +#include <errno.h>
+> > +#include <stdint.h>
+> IMHO these 2 aren't needed.
+> > +
+> > +#include "tst_test.h"
+> > +#include "lapi/keyctl.h"
+> > +
+> > +static void do_test(void)
+> > +{
+> > +     key_serial_t masterkey;
+> > +     key_serial_t encryptedkey1;
+> > +     key_serial_t encryptedkey2;
+> > +     char buffer[128];
+> > +
+> > +     masterkey = add_key("user", "user:masterkey", "foo", 3,
+> KEY_SPEC_PROCESS_KEYRING);
+> > +     if (masterkey == -1)
+> > +             tst_brk(TBROK | TERRNO, "Failed to add user key");
+> > +
+> > +     encryptedkey1 = add_key("encrypted", "ltptestkey1", "new enc32
+> user:masterkey 32 plaintext12345678901234567890123", 60,
+> KEY_SPEC_PROCESS_KEYRING);
+> nit: It'd be nice to keep 80 lines per line (or 100 with string).
+> Maybe use #define for payload, which makes it shorter?
+>
+> > +     if (encryptedkey1 == -1)
+> > +             tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted
+> key using payload decrypted data");
+> > +
+> > +     TEST(keyctl(KEYCTL_READ, encryptedkey1, buffer, sizeof(buffer)));
+> > +     if (TST_RET < 0)
+> > +             tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed for
+> encryptedkey1");
+> > +
+> > +     encryptedkey2 = add_key("encrypted", "ltptestkey2", "new enc32
+> user:masterkey 32", 27, KEY_SPEC_PROCESS_KEYRING);
+> > +     if (encryptedkey2 == -1)
+> > +             tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted
+> key using kernel-generated key material");
+> > +
+> > +     TEST(keyctl(KEYCTL_READ, encryptedkey2, buffer, sizeof(buffer)));
+> > +     if (TST_RET < 0)
+> > +             tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed for
+> encryptedkey2");
+> At least one of these should be TFAIL - failing test. TBROK is used when
+> test
+> fails in test preparation phase. Also have look at
+> include/tst_test_macros.h
+> you can use e.g. TST_EXP_PASS_SILENT().
 >
 > Kind regards,
 > Petr
 >
->> the following info:
->> orig_data_size: uncompressed size of data stored in this disk.
->> compr_data_size: compressed size of data stored in this disk
->> mem_used_total: the amount of memory allocated for this disk
+> diff --git runtest/syscalls runtest/syscalls
+> index bcf3d56c9c..ccea1ddbdb 100644
+> --- runtest/syscalls
+> +++ runtest/syscalls
+> @@ -643,6 +643,7 @@ keyctl05 keyctl05
+>  keyctl06 keyctl06
+>  keyctl07 keyctl07
+>  keyctl08 keyctl08
+> +keyctl09 keyctl09
 >
->> We should calculate the compression ratio by used disk size divided into used mem size.
->> It can also avoid the situation that division by 0 as below:
->> zram01 7 TINFO: filling zram4 (it can take long time)
->> zram01 7 TPASS: zram4 was filled with '25568' KB
->> zram01 7 TINFO: compr_size 0
->>   /opt/ltp/testcases/bin/zram01.sh: line 131: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
+>  kcmp01 kcmp01
+>  kcmp02 kcmp02
+> diff --git testcases/kernel/syscalls/keyctl/.gitignore
+> testcases/kernel/syscalls/keyctl/.gitignore
+> index 3544ac79ce..f9948c1766 100644
+> --- testcases/kernel/syscalls/keyctl/.gitignore
+> +++ testcases/kernel/syscalls/keyctl/.gitignore
+> @@ -6,3 +6,4 @@
+>  /keyctl06
+>  /keyctl07
+>  /keyctl08
+> +/keyctl09
+> diff --git testcases/kernel/syscalls/keyctl/keyctl09.c
+> testcases/kernel/syscalls/keyctl/keyctl09.c
+> index 4589ef3679..7481526c67 100644
+> --- testcases/kernel/syscalls/keyctl/keyctl09.c
+> +++ testcases/kernel/syscalls/keyctl/keyctl09.c
+> @@ -3,15 +3,12 @@
+>   * Copyright (c) 2021 Google, Inc.
+>   */
 >
->> Reviewed-by: Petr Vorel<pvorel@suse.cz>
->> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+> -/*
+> - * Description: This tests that encrypted keys can be instantiated using
+> - * user-provided decrypted data (plaintext), and separately, using
+> - * kernel-generated key material.
+> +/*\
+> + * [Description]
+> + * Test that encrypted keys can be instantiated using user-provided
+> decrypted
+> + * data (plaintext), and separately, using kernel-generated key material.
+>   */
+>
+> -#include <errno.h>
+> -#include <stdint.h>
+> -
+>  #include "tst_test.h"
+>  #include "lapi/keyctl.h"
+>
+> @@ -22,11 +19,14 @@ static void do_test(void)
+>         key_serial_t encryptedkey2;
+>         char buffer[128];
+>
+> -       masterkey = add_key("user", "user:masterkey", "foo", 3,
+> KEY_SPEC_PROCESS_KEYRING);
+> +       masterkey = add_key("user", "user:masterkey", "foo", 3,
+> +                           KEY_SPEC_PROCESS_KEYRING);
+>         if (masterkey == -1)
+>                 tst_brk(TBROK | TERRNO, "Failed to add user key");
+>
+> -       encryptedkey1 = add_key("encrypted", "ltptestkey1", "new enc32
+> user:masterkey 32 plaintext12345678901234567890123", 60,
+> KEY_SPEC_PROCESS_KEYRING);
+> +       encryptedkey1 = add_key("encrypted", "ltptestkey1",
+> +                               "new enc32 user:masterkey 32
+> plaintext12345678901234567890123",
+> +                               60, KEY_SPEC_PROCESS_KEYRING);
+>         if (encryptedkey1 == -1)
+>                 tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted
+> key using payload decrypted data");
+>
+> @@ -34,9 +34,11 @@ static void do_test(void)
+>         if (TST_RET < 0)
+>                 tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed for
+> encryptedkey1");
+>
+> -       encryptedkey2 = add_key("encrypted", "ltptestkey2", "new enc32
+> user:masterkey 32", 27, KEY_SPEC_PROCESS_KEYRING);
+> +       encryptedkey2 = add_key("encrypted", "ltptestkey2", "new enc32
+> user:masterkey 32",
+> +                               27, KEY_SPEC_PROCESS_KEYRING);
+>         if (encryptedkey2 == -1)
+> -               tst_brk(TBROK | TERRNO, "Failed to instantiate encrypted
+> key using kernel-generated key material");
+> +               tst_brk(TBROK | TERRNO,
+> +                       "Failed to instantiate encrypted key using
+> kernel-generated key material");
+>
+>         TEST(keyctl(KEYCTL_READ, encryptedkey2, buffer, sizeof(buffer)));
+>         if (TST_RET < 0)
+>
+
+Thank you Petr for the feedback!
+
+I have implemented your suggestions and will repost the patch shortly.
+The test failed when multiple iterations were run because the same
+encrypted key cannot be added more than once. The updated test also revokes
+the keys and it now passes with multiple iterations.
+
+Yael
+
+--000000000000ea07f605d39edce6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote">=
+<div dir=3D"ltr" class=3D"gmail_attr">On Fri, Dec 17, 2021 at 8:56 AM Petr =
+Vorel &lt;<a href=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<b=
+r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
+;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi Yael,<br>
+<br>
+&gt; Test that encrypted keys can be instantiated using<br>
+&gt; both user-provided decrypted data<br>
+&gt; (<a href=3D"https://lore.kernel.org/linux-integrity/20211213192030.125=
+091-1-yaelt@google.com/" rel=3D"noreferrer" target=3D"_blank">https://lore.=
+kernel.org/linux-integrity/20211213192030.125091-1-yaelt@google.com/</a>),<=
+br>
+&gt; or kernel-generated numbers.<br>
+<br>
+Thanks a lot for adding this test. There are few missing things:<br>
+<br>
+BTW all mentioned here is implemented here to speedup your work:<br>
+<a href=3D"https://github.com/pevik/ltp/tree/yael_tiomkin/keyctl09.fixes" r=
+el=3D"noreferrer" target=3D"_blank">https://github.com/pevik/ltp/tree/yael_=
+tiomkin/keyctl09.fixes</a><br>
+Below is diff of my suggested changes.<br>
+<br>
+What I didn&#39;t solve is broken test when run with more than 1 iteration:=
+<br>
+<br>
+./keyctl09 -i2<br>
+tst_test.c:1423: TINFO: Timeout per run is 0h 05m 00s<br>
+keyctl09.c:47: TPASS: Encrypted keys were successfully instantiated and rea=
+d<br>
+keyctl09.c:31: TBROK: Failed to instantiate encrypted key using payload dec=
+rypted data: EINVAL (22)<br>
+<br>
+NOTE: you can specify test setup to do things only once. You should also cl=
+eanup<br>
+after test run with test cleanup.<br>
+<a href=3D"https://github.com/linux-test-project/ltp/wiki/C-Test-API#11-bas=
+ic-test-structure" rel=3D"noreferrer" target=3D"_blank">https://github.com/=
+linux-test-project/ltp/wiki/C-Test-API#11-basic-test-structure</a><br>
+<br>
+You also need to add entry to testcases/kernel/syscalls/keyctl/.gitignore<b=
+r>
+/keyctl09<br>
+<br>
+and runtest/syscalls<br>
+keyctl09 keyctl09<br>
+<br>
+...<br>
+&gt; +/*<br>
+&gt; + * Description: This tests that encrypted keys can be instantiated us=
+ing<br>
+&gt; + * user-provided decrypted data (plaintext), and separately, using<br=
+>
+&gt; + * kernel-generated key material.<br>
+&gt; + */<br>
+<br>
+I&#39;d rephrase it a bit and use LTP metadata formatting<br>
+/*\<br>
+=C2=A0* [Description]<br>
+=C2=A0* Test that encrypted keys can be instantiated using user-provided de=
+crypted<br>
+=C2=A0* data (plaintext), and separately, using kernel-generated key materi=
+al.<br>
+=C2=A0*/<br>
+<br>
+FYI metadata is LTP documentation - here is the output:<br>
+<a href=3D"https://github.com/linux-test-project/ltp/releases/download/2021=
+0121/metadata.20210121.html" rel=3D"noreferrer" target=3D"_blank">https://g=
+ithub.com/linux-test-project/ltp/releases/download/20210121/metadata.202101=
+21.html</a><br>
+<a href=3D"https://github.com/linux-test-project/ltp/releases/download/2021=
+0121/metadata.20210121.pdf" rel=3D"noreferrer" target=3D"_blank">https://gi=
+thub.com/linux-test-project/ltp/releases/download/20210121/metadata.2021012=
+1.pdf</a><br>
+<br>
+You can run make in docparse/ directory and then see in output in<br>
+metadata/metadata.{html,pdf}.<br>
+<br>
+&gt; +<br>
+&gt; +#include &lt;errno.h&gt;<br>
+&gt; +#include &lt;stdint.h&gt;<br>
+IMHO these 2 aren&#39;t needed.<br>
+&gt; +<br>
+&gt; +#include &quot;tst_test.h&quot;<br>
+&gt; +#include &quot;lapi/keyctl.h&quot;<br>
+&gt; +<br>
+&gt; +static void do_test(void)<br>
+&gt; +{<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0key_serial_t masterkey;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0key_serial_t encryptedkey1;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0key_serial_t encryptedkey2;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0char buffer[128];<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0masterkey =3D add_key(&quot;user&quot;, &quot;use=
+r:masterkey&quot;, &quot;foo&quot;, 3, KEY_SPEC_PROCESS_KEYRING);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (masterkey =3D=3D -1)<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TERRN=
+O, &quot;Failed to add user key&quot;);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0encryptedkey1 =3D add_key(&quot;encrypted&quot;, =
+&quot;ltptestkey1&quot;, &quot;new enc32 user:masterkey 32 plaintext1234567=
+8901234567890123&quot;, 60, KEY_SPEC_PROCESS_KEYRING);<br>
+nit: It&#39;d be nice to keep 80 lines per line (or 100 with string).<br>
+Maybe use #define for payload, which makes it shorter?<br>
+<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (encryptedkey1 =3D=3D -1)<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TERRN=
+O, &quot;Failed to instantiate encrypted key using payload decrypted data&q=
+uot;);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0TEST(keyctl(KEYCTL_READ, encryptedkey1, buffer, s=
+izeof(buffer)));<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (TST_RET &lt; 0)<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TTERR=
+NO, &quot;KEYCTL_READ failed for encryptedkey1&quot;);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0encryptedkey2 =3D add_key(&quot;encrypted&quot;, =
+&quot;ltptestkey2&quot;, &quot;new enc32 user:masterkey 32&quot;, 27, KEY_S=
+PEC_PROCESS_KEYRING);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (encryptedkey2 =3D=3D -1)<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TERRN=
+O, &quot;Failed to instantiate encrypted key using kernel-generated key mat=
+erial&quot;);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0TEST(keyctl(KEYCTL_READ, encryptedkey2, buffer, s=
+izeof(buffer)));<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (TST_RET &lt; 0)<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TTERR=
+NO, &quot;KEYCTL_READ failed for encryptedkey2&quot;);<br>
+At least one of these should be TFAIL - failing test. TBROK is used when te=
+st<br>
+fails in test preparation phase. Also have look at include/tst_test_macros.=
+h<br>
+you can use e.g. TST_EXP_PASS_SILENT().<br>
+<br>
+Kind regards,<br>
+Petr<br>
+<br>
+diff --git runtest/syscalls runtest/syscalls<br>
+index bcf3d56c9c..ccea1ddbdb 100644<br>
+--- runtest/syscalls<br>
++++ runtest/syscalls<br>
+@@ -643,6 +643,7 @@ keyctl05 keyctl05<br>
+=C2=A0keyctl06 keyctl06<br>
+=C2=A0keyctl07 keyctl07<br>
+=C2=A0keyctl08 keyctl08<br>
++keyctl09 keyctl09<br>
+<br>
+=C2=A0kcmp01 kcmp01<br>
+=C2=A0kcmp02 kcmp02<br>
+diff --git testcases/kernel/syscalls/keyctl/.gitignore testcases/kernel/sys=
+calls/keyctl/.gitignore<br>
+index 3544ac79ce..f9948c1766 100644<br>
+--- testcases/kernel/syscalls/keyctl/.gitignore<br>
++++ testcases/kernel/syscalls/keyctl/.gitignore<br>
+@@ -6,3 +6,4 @@<br>
+=C2=A0/keyctl06<br>
+=C2=A0/keyctl07<br>
+=C2=A0/keyctl08<br>
++/keyctl09<br>
+diff --git testcases/kernel/syscalls/keyctl/keyctl09.c testcases/kernel/sys=
+calls/keyctl/keyctl09.c<br>
+index 4589ef3679..7481526c67 100644<br>
+--- testcases/kernel/syscalls/keyctl/keyctl09.c<br>
++++ testcases/kernel/syscalls/keyctl/keyctl09.c<br>
+@@ -3,15 +3,12 @@<br>
+=C2=A0 * Copyright (c) 2021 Google, Inc.<br>
+=C2=A0 */<br>
+<br>
+-/*<br>
+- * Description: This tests that encrypted keys can be instantiated using<b=
+r>
+- * user-provided decrypted data (plaintext), and separately, using<br>
+- * kernel-generated key material.<br>
++/*\<br>
++ * [Description]<br>
++ * Test that encrypted keys can be instantiated using user-provided decryp=
+ted<br>
++ * data (plaintext), and separately, using kernel-generated key material.<=
+br>
+=C2=A0 */<br>
+<br>
+-#include &lt;errno.h&gt;<br>
+-#include &lt;stdint.h&gt;<br>
+-<br>
+=C2=A0#include &quot;tst_test.h&quot;<br>
+=C2=A0#include &quot;lapi/keyctl.h&quot;<br>
+<br>
+@@ -22,11 +19,14 @@ static void do_test(void)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 key_serial_t encryptedkey2;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 char buffer[128];<br>
+<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0masterkey =3D add_key(&quot;user&quot;, &quot;u=
+ser:masterkey&quot;, &quot;foo&quot;, 3, KEY_SPEC_PROCESS_KEYRING);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0masterkey =3D add_key(&quot;user&quot;, &quot;u=
+ser:masterkey&quot;, &quot;foo&quot;, 3,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0KEY_SPEC_PROCESS_KEYRING);<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (masterkey =3D=3D -1)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_brk(TBROK | TER=
+RNO, &quot;Failed to add user key&quot;);<br>
+<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0encryptedkey1 =3D add_key(&quot;encrypted&quot;=
+, &quot;ltptestkey1&quot;, &quot;new enc32 user:masterkey 32 plaintext12345=
+678901234567890123&quot;, 60, KEY_SPEC_PROCESS_KEYRING);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0encryptedkey1 =3D add_key(&quot;encrypted&quot;=
+, &quot;ltptestkey1&quot;,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;new enc32 user:masterkey 32 pla=
+intext12345678901234567890123&quot;,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A060, KEY_SPEC_PROCESS_KEYRING);<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (encryptedkey1 =3D=3D -1)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_brk(TBROK | TER=
+RNO, &quot;Failed to instantiate encrypted key using payload decrypted data=
+&quot;);<br>
+<br>
+@@ -34,9 +34,11 @@ static void do_test(void)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (TST_RET &lt; 0)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_brk(TBROK | TTE=
+RRNO, &quot;KEYCTL_READ failed for encryptedkey1&quot;);<br>
+<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0encryptedkey2 =3D add_key(&quot;encrypted&quot;=
+, &quot;ltptestkey2&quot;, &quot;new enc32 user:masterkey 32&quot;, 27, KEY=
+_SPEC_PROCESS_KEYRING);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0encryptedkey2 =3D add_key(&quot;encrypted&quot;=
+, &quot;ltptestkey2&quot;, &quot;new enc32 user:masterkey 32&quot;,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A027, KEY_SPEC_PROCESS_KEYRING);<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (encryptedkey2 =3D=3D -1)<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TER=
+RNO, &quot;Failed to instantiate encrypted key using kernel-generated key m=
+aterial&quot;);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK | TER=
+RNO,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0&quot;Failed to instantiate encrypted key using kernel-generated =
+key material&quot;);<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 TEST(keyctl(KEYCTL_READ, encryptedkey2, buffer,=
+ sizeof(buffer)));<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (TST_RET &lt; 0)<br></blockquote><div><br></=
+div><div>Thank you Petr for the feedback!</div><div><br></div><div>I have i=
+mplemented your suggestions and will repost the patch shortly.</div><div>Th=
+e test failed when multiple iterations were run because the same encrypted =
+key cannot be added more than once. The updated test also revokes the keys =
+and it now passes with multiple iterations.</div><div><br></div><div>Yael</=
+div></div></div>
+
+--000000000000ea07f605d39edce6--
+
+--===============0741726454==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0741726454==--
