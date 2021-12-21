@@ -4,75 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D63DC433EF
-	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 12:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4219EC433FE
+	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 12:35:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4DD593C9234
-	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 13:14:50 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 01E3B3C9234
+	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 13:35:45 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 897F73C9207
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 13:14:40 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 420DD3C9207
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 13:35:34 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1855F1401277
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 13:14:38 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DB6A110011DF
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 13:35:33 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1640088877;
+ s=mimecast20190719; t=1640090132;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vt+n1WwrCBrL2/W6gCV5VVVX0XuqlPzfYEXdomzS+UA=;
- b=ikkl106uChNTWwOhl+U0T3ZPywlmI2vPNf0JZ94SA5d/0JrjVXcbzmtsf1IdCauuhvixq9
- TLkDq+miluWHgoO5w9eIiT9nXRxt9iRMkmbbfIlNmxDJYwxrvOfdZiZ6v6Fmwqh3frZias
- XQPExDkTj6BZrHaQ7PkEZewlzEIzB/Q=
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=T5iPwFQzTGdR6scHSPC7wD5QbAZaB4B1M3waHGRB15M=;
+ b=LpEIxShTCOxPFxk0dcMc6hfY/Wh4Qsqytho7O2G0tV1zhKDpCnbXs2KUbemITpF3Q2Spe4
+ BWrfAJpIAiMBNNvvAFHXIxW7C3FR7e08UAnoA471gOK6jJQ/ApZ2W1bolHaJ7b/RxIZy33
+ /1JLRSQoeiUJo1mArEMpNw+iUr4jQRk=
 Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
  [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-611-WGcanofkNgCpWqm0zpbmhw-1; Tue, 21 Dec 2021 07:14:35 -0500
-X-MC-Unique: WGcanofkNgCpWqm0zpbmhw-1
+ us-mta-449-8DFmvVM6MdeE-h9JTnbIJA-1; Tue, 21 Dec 2021 07:35:30 -0500
+X-MC-Unique: 8DFmvVM6MdeE-h9JTnbIJA-1
 Received: by mail-yb1-f200.google.com with SMTP id
- h5-20020a255f45000000b005ffd939127bso24975290ybm.10
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 04:14:35 -0800 (PST)
+ t24-20020a252d18000000b005c225ae9e16so25270707ybt.15
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 04:35:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=vt+n1WwrCBrL2/W6gCV5VVVX0XuqlPzfYEXdomzS+UA=;
- b=PgCUwgKGr9GsSXZt9pBOUe00Xa9VkpLhtQP+3dk8vjAuUrq4HHkx+eyMOAV94IWHgF
- hs5uzxtR9axQbSYnV/bEirVsw+ba1d6wlRBJhYIdBAUH9hoIfgsVkfKqoKjC7B7ZSCms
- 1IU37CipIxFKMlZ2PzwwL4IHAcYeISWKjq7JGAwIzpHue0BfoiPkQtREKPpwA17MggEz
- snO0UP5CbMVpRjvud1Y12bFItznsSu8EQOBU7vc+d++kP8LV64tJjz4crPxhfeS1pzIT
- WLJYwf+QuKdJf22fDxf2k0/gMghKV0eEfS+v2tFVab8DJ5ebezN801rjhsQCmwETYAD3
- 9gFA==
-X-Gm-Message-State: AOAM530DSGxHFHrAFAJKnIbC8qmvUS2FGFOSI/WzoWu4R8q0P5iP8WLz
- 33rboJHzFQaehx6d3J78kaZQOfXc/DzCmF6YeZiu5YfgkuNXINU4SGfu0B/mmv7OSMHvjI+RF2F
- QWM4wt5lC8sf6z5IsGwg3PyszDiI=
-X-Received: by 2002:a25:1e83:: with SMTP id e125mr4079534ybe.32.1640088874521; 
- Tue, 21 Dec 2021 04:14:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwmXkf2cLPgBToJU2niah3fYJARbE2ReU9j7HUYhJpmojLAX8I7obpoA/Qn/3IPTu39Zt8MUvJfQNUZZnhgJGM=
-X-Received: by 2002:a25:1e83:: with SMTP id e125mr4079499ybe.32.1640088874228; 
- Tue, 21 Dec 2021 04:14:34 -0800 (PST)
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=T5iPwFQzTGdR6scHSPC7wD5QbAZaB4B1M3waHGRB15M=;
+ b=FUIeljXLWDaV7BDvlIyHZ2doE3CKS+Iy7/4o3Qtk73axTVQLOqKX+y5oEVBv+ZwKRD
+ YAyGtwsSkkP0b5NOi9V6fnc063tbNIlhJb/XD8t67kHDJNW/2/6sfxO4Mv9HtgBt3SEF
+ evLa97+XkjvwPdAxdUUyHavZ94WopDsV0EfP8mZLuAL6jKSxuOAPM9hIWbr8OSf/3ST/
+ n6Iv/ZvQDcWtzYbekZueq2Bz3BmTLNnYY4OvlDhqRCZar7qVwJq9P2kAKwHdYHu09RSI
+ 2E29sWWzikM6eqChlstZpf+5J8z87B+uQhilyk6jaYiTj/pJSZjzBdNQhflMZGxhfOXA
+ JiRg==
+X-Gm-Message-State: AOAM532RYKd/AonM4TqKCldKRPR3IkBfaF7j6KhJzRcT+WhNKwFKEKmS
+ cX1cykihsmP3pEhHc5EZsNLD65Iu8Cili7DAIQuAULNCOulwutNHEvwMGCxlJj6T2zH4jNM4aUM
+ Jz8Rop4KL7NNlVR5VXnRM4yll0XU=
+X-Received: by 2002:a25:8c9:: with SMTP id 192mr4255197ybi.102.1640090128706; 
+ Tue, 21 Dec 2021 04:35:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzxha+q6FegFgRs4MWqNgbztNmfb+kTv9GZW7/I6eEb5Z24342Yv7SkYqYjJ/VfoIm78OPENKCKiDRLH8D0MSc=
+X-Received: by 2002:a25:8c9:: with SMTP id 192mr4255173ybi.102.1640090128445; 
+ Tue, 21 Dec 2021 04:35:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20211220180748.36A90A3B8E@relay2.suse.de>
- <20211221113042.21357-1-rpalethorpe@suse.com>
-In-Reply-To: <20211221113042.21357-1-rpalethorpe@suse.com>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 21 Dec 2021 20:14:22 +0800
-Message-ID: <CAEemH2eFg5HVK32hLGrB_OvqN4Ef+QfkdkGebKgEkz--tYYoKA@mail.gmail.com>
-To: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 21 Dec 2021 20:35:17 +0800
+Message-ID: <CAEemH2eZDBODpZwjcCq=M=wT0uiSUSM+iS88F7-OQP-pkYRn=A@mail.gmail.com>
+To: LTP List <ltp@lists.linux.it>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] API: Allow testing of kernel features in
- development
+Subject: [LTP] [Question] Why test C API failed in github CI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,113 +79,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0654766560=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richard,
+--===============0654766560==
+Content-Type: multipart/alternative; boundary="00000000000081857b05d3a73d05"
 
-On Tue, Dec 21, 2021 at 7:31 PM Richard Palethorpe via ltp
-<ltp@lists.linux.it> wrote:
->
-> Add an unstable kernel ABI flag and a runtest file for unstable
-> tests. This means we can add tests which are likely to be broken by
-> changes in the kernel ABI. Without disrupting LTP releases which are
-> required to be stable.
->
-> Users who require stability can filter the tests with this flag
-> or not schedule the unstable runtest file(s).
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->
-> How about adding this to the fanotify22 patch?
->
->  include/tst_test.h        | 12 ++++++++++++
->  lib/tst_test.c            |  6 ++++++
->  runtest/syscalls-unstable |  3 +++
->  3 files changed, 21 insertions(+)
->  create mode 100644 runtest/syscalls-unstable
->
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 450ddf086..ff31e972e 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -174,6 +174,18 @@ struct tst_test {
->         int skip_in_lockdown:1;
->         int skip_in_compat:1;
->
-> +       /*
-> +        * Test is for a feature that has not been added to the stable
-> +        * kernel ABI. That is, it's for a feature only available in
-> +        * linux-next, an RC or some other development branch.
-> +        *
-> +        * This string should be set to some text describing the
-> +        * kernel branch and version the test was developed
-> +        * against. e.g. "5.16 RC2", "linux-next-20211220",
-> +        * "net-next".
-> +        */
-> +       const char *const unstable_abi_version;
+--00000000000081857b05d3a73d05
+Content-Type: text/plain; charset="UTF-8"
 
-I'm not sure if this will bring convenience or trouble to LTP.
+Hi Petr and all,
 
-If a new syscall is in development (or merged in linux-next) but
-drop/change in mainline-kernel. We have to adjust the test case
-accordingly.
+Firstly, I'm sorry to push the patchset about oom protection cursorily.
 
-And after the feature is go into the mainline kernel finally, should
-we move that from 'syscalls-unstable' to 'syscalls' and remove the
-tst_test->unstable_abi_version field at the same time?
+The GitHub CI complained about the following failures, I feel confused
+when I add a bit of debug code in my private branch then. It gets passed
+in access(score_path, R_OK|W_OK) but failed in closing the file and
+give no EACCESS errno, that's wired.
 
-Btw, why not we just keep the unstable-syscall test case stay
-in the review phase until it gets merged in mailline-kernel?
-I guess that wouldn't block anything or make anyone unhappy.
+Did I miss anything?
 
-> +
->         /*
->          * The skip_filesystem is a NULL terminated list of filesystems the
->          * test does not support. It can also be used to disable whole class of
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 9b51bb5be..babb250d0 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1013,6 +1013,12 @@ static void do_setup(int argc, char *argv[])
->         if (!tst_test)
->                 tst_brk(TBROK, "No tests to run");
->
-> +       if (tst_test->unstable_abi_version) {
-> +               tst_res(TINFO,
-> +                       "This test was developed against pre-release kernel: %s",
-> +                       tst_test->unstable_abi_version);
-> +       }
-> +
->         if (tst_test->tconf_msg)
->                 tst_brk(TCONF, "%s", tst_test->tconf_msg);
->
-> diff --git a/runtest/syscalls-unstable b/runtest/syscalls-unstable
-> new file mode 100644
-> index 000000000..a87284afe
-> --- /dev/null
-> +++ b/runtest/syscalls-unstable
-> @@ -0,0 +1,3 @@
-> +# Tests for kernel features which are not finalized
-> +
-> +fanotify22 fanotify22
-> --
-> 2.34.0
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
+https://github.com/wangli5665/ltp/runs/4594473907?check_suite_focus=true
+
+-----error log------
+runtest TINFO: * test05
+14tst_memutils.c:118: TWARN: Failed to close FILE
+'/proc/63046/oom_score_adj'
+15tst_memutils.c:119: TBROK: Failed to close FILE
+'/proc/63046/oom_score_adj': EACCES (13)
+...
+----------------------
+
+--- a/lib/tst_memutils.c
++++ b/lib/tst_memutils.c
+@@ -111,7 +111,13 @@ static void set_oom_score_adj(pid_t pid, int value)
+                        tst_brk(TBROK, "%s does not exist, please check if
+PID is valid", score_path);
+        }
+
++       //debug code
++       if (access(score_path, R_OK | W_OK) == -1)
++               tst_brk(TBROK, "%s not readable/writeable", score_path);
++
+        FILE_PRINTF(score_path, "%d", value);
++       SAFE_FILE_PRINTF(score_path, "%d", value);
++
+        FILE_SCANF(score_path, "%d", &val);
+
+        if (val != value) {
 
 
 -- 
 Regards,
 Li Wang
 
+--00000000000081857b05d3a73d05
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Petr and all,<br><br><span class=3D"gmail_default" styl=
+e=3D"font-size:small">Firstly,</span> I&#39;m sorry to push the patchset ab=
+out oom protection cursorily.<br><br>The GitHub CI complained about the fol=
+lowing failures, I feel confused<br>when I add a bit of debug code in my pr=
+ivate branch then. It gets passed<br>in access(score_path, R_OK|W_OK) but f=
+ailed in closing the file and<br>give no EACCESS errno, that&#39;s wired.<s=
+pan class=3D"gmail_default" style=3D"font-size:small">=C2=A0</span><div><sp=
+an class=3D"gmail_default" style=3D"font-size:small"><br></span></div><div>=
+<span class=3D"gmail_default" style=3D"font-size:small">Did I miss anything=
+?</span><br><a href=3D"https://github.com/wangli5665/ltp/runs/4594473907?ch=
+eck_suite_focus=3Dtrue"><br>https://github.com/wangli5665/ltp/runs/45944739=
+07?check_suite_focus=3Dtrue</a><br><br>-----error log------<br>runtest TINF=
+O: * test05<br>14tst_memutils.c:118: TWARN: Failed to close FILE &#39;/proc=
+/63046/oom_score_adj&#39;<br>15tst_memutils.c:119: TBROK: Failed to close F=
+ILE &#39;/proc/63046/oom_score_adj&#39;: EACCES (13)<div><div class=3D"gmai=
+l_default" style=3D"font-size:small">...</div><div class=3D"gmail_default" =
+style=3D"font-size:small">----------------------</div><br>--- a/lib/tst_mem=
+utils.c<br>+++ b/lib/tst_memutils.c<br>@@ -111,7 +111,13 @@ static void set=
+_oom_score_adj(pid_t pid, int value)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_brk(TBROK, &quot;%s do=
+es not exist, please check if PID is valid&quot;, score_path);<br>=C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 }<br>=C2=A0<br>+ =C2=A0 =C2=A0 =C2=A0 //debug code<br>=
++ =C2=A0 =C2=A0 =C2=A0 if (access(score_path, R_OK | W_OK) =3D=3D -1)<br>+ =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_brk(TBROK, &quot;%s no=
+t readable/writeable&quot;, score_path);<br>+<br>=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 FILE_PRINTF(score_path, &quot;%d&quot;, value);<br>+ =C2=A0 =C2=A0 =C2=
+=A0 SAFE_FILE_PRINTF(score_path, &quot;%d&quot;, value);<br>+<br>=C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 FILE_SCANF(score_path, &quot;%d&quot;, &amp;val);<br>=C2=
+=A0<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (val !=3D value) {<br><br><br>-- <br>=
+Regards,<br>Li Wang</div></div></div>
+
+--00000000000081857b05d3a73d05--
+
+
+--===============0654766560==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0654766560==--
+
