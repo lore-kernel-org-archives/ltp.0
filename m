@@ -4,74 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B290C433F5
-	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 10:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1F78C433EF
+	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 10:46:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 19F963C91D1
-	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 11:44:41 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 16F733C922B
+	for <ltp@archiver.kernel.org>; Tue, 21 Dec 2021 11:46:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A1103C104E
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 11:44:31 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 8860E3C104E
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 11:46:06 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ECBDA1401261
- for <ltp@lists.linux.it>; Tue, 21 Dec 2021 11:44:30 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 40C051F3A6;
- Tue, 21 Dec 2021 10:44:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1640083470;
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D189C600D78
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 11:46:05 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 1E91B1F388
+ for <ltp@lists.linux.it>; Tue, 21 Dec 2021 10:46:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1640083565;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DPTqCE1PtD00oVFnbmbRxB6QQn+CQttP/1Ju/jfijW4=;
- b=uENf03XjWbW3SXPoFt7wA0HYtl3fQ2ebEd6dTH50BFvErtpcsgzN4idbC0gDrLw/pSD4Qz
- LlF94Jd0Pqnq2ucP2x+Bzqo3bN8QKsuewsPYag14xktx2ngjI92NvIec02JLl+yKCPqpI3
- 2yO4T5hMTOz2gRU8XOlVbyKeINSpRWg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1640083470;
+ bh=QhZb4e/D0IM+tUSFTWluTbeenmW3aBJhjRUxakp7XM4=;
+ b=u/+aQOTs9vNQjOpqiRe2l/bIuxgM2ILn8Jy9oU8+D9+UkdxjGQNWclGtH0stuumD1mV75h
+ k2daHJdTHAgWNPSp07sLnCHC96e6avqqsDXMKZz03rDMO0Rg7DRywJ3nE6wB6UokIWdepx
+ gLDxLc8zheU5BWKPDpOdOMmrkezxf7I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1640083565;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DPTqCE1PtD00oVFnbmbRxB6QQn+CQttP/1Ju/jfijW4=;
- b=hP8wLoNuyqPqo3P4NqpY9qvc6SvoQ1bXtqjB11C0t7xNQG/xjFxT3ullaaDszMtYw/G+RG
- IzqSKfhkyaMymCCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=QhZb4e/D0IM+tUSFTWluTbeenmW3aBJhjRUxakp7XM4=;
+ b=Vvu7YkfcodQ4B5QqLlrthWSu0ugdeI5AccDzDJrEiZBeY6lM0Bt6gh9F3LqJLeyBkZPgUq
+ s+iiL/WbdTfuaRCg==
+Received: from g78 (unknown [10.163.24.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 186C813C26;
- Tue, 21 Dec 2021 10:44:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id w8WSBA6wwWEjZgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 21 Dec 2021 10:44:30 +0000
-Date: Tue, 21 Dec 2021 11:44:28 +0100
-From: Petr Vorel <pvorel@suse.cz>
+ by relay2.suse.de (Postfix) with ESMTPS id E0FEEA3B81;
+ Tue, 21 Dec 2021 10:46:04 +0000 (UTC)
+References: <20211220131043.18894-1-rpalethorpe@suse.com>
+ <20211220131043.18894-3-rpalethorpe@suse.com> <YcCk13sQIpG+E0jR@yuki>
+User-agent: mu4e 1.6.9; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YcGwDKmi+iQuw3fS@pevik>
-References: <20211220095416.583323-1-liwang@redhat.com>
- <YcDMnDRgsac/q8D9@pevik>
- <CAEemH2d6PPi94q3PhMyR1Js_Rqr1dpfvch=ex3HpuHfQKJYTnw@mail.gmail.com>
- <YcGb5abUqe8PNKoM@yuki>
- <CAEemH2dDEM30-fM89LDZq1E7YN8rf44doGgnkPXuce0ttP67OA@mail.gmail.com>
- <YcGlb4NoDGSP4ZkU@yuki>
- <CAEemH2fFY_TuCEqoR9ogqUBA5mFjY-FX+tDufYs39uN0JJ9gvQ@mail.gmail.com>
- <YcGuIJql99Row3o9@yuki>
+Date: Tue, 21 Dec 2021 08:38:03 +0000
+In-reply-to: <YcCk13sQIpG+E0jR@yuki>
+Message-ID: <87a6gufd77.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YcGuIJql99Row3o9@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/3] lib: add functions to adjust oom score
+Subject: Re: [LTP] [PATCH 3/3] cgroup: Add memcontrol02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,35 +70,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: LTP List <ltp@lists.linux.it>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > So, I will push (the improved) code like below, after getting
-> > Petr and you ack again:
+Hello,
 
-> > +static void set_oom_score_adj(pid_t pid, int value)
-> > +{
-> > +       int val;
-> > +       char score_path[64];
-> > +
-> > +       if (access("/proc/self/oom_score_adj", F_OK) == -1) {
-> > +               tst_res(TINFO, "Warning: oom_score_adj does not exist,
-> > +                               skipping the adjustement");
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-> I'm not sure about the "Warning:" in this message, I would just dully
-> informed the user that the interface is not available.
+>> +
+>> +static void test_memcg_current(unsigned int n)
+>> +{
+>> +	size_t current;
+>> +
+>> +	cg_child = tst_cgroup_group_mk(cg_test, "child");
+>> +	SAFE_CGROUP_SCANF(cg_child, "memory.current", "%zu", &current);
+>> +	TST_EXP_POSITIVE(current == 0, "(current=%zu) == 0", current);
+>
+> I find these TST_EXP_POSITIVE() macros slightly confusing.
+>
+> Note that we do have TST_EXP_VAL(), so this can be better defined as
+> TST_EXP_VAL(current, 0);
+>
+> But even then all the macros all written in a way that they do expect
+> a syscall as a first parameter and the messages are not clear.
 
-I'd also prefer not having to print "Warning:" in TINFO message
-(I know TWARN exit non-zero).
+Possibly it should just be TST_EXP(bool_expr, fmt, ...). That would be like
+practically every other testing framework. OTOH LTP is somewhat special
+as we usually are checking the return value of a syscall. So I should
+probably leave these macros alone in this case.
 
-Kind regards,
-Petr
+>
+> Maybe we need a different solution. We already have tst_assert_foo()
+> functions for sysfs/proc files so maybe we need something as compare
+> function for the cgroup file attributes:
 
+Frankly that is poor naming. One would expect tst_assert to be similar
+to assert from assert.h.
+
+>
+> 	enum cmp {
+> 		CMP_EQ,
+> 		CMP_NE,
+> 		CMP_LT,
+> 		CMP_GT,
+> 		CMP_LE,
+> 		CMP_GE,
+> 		CMP_EPS,
+> 	};
+>
+> 	CGROUP_ASSERT_CMP_SIZE(cg_child, "memory.current", CMP_EQ, 0);
+>
+> 	CGROUP_ASSERT_CMP_SIZE(cg_child, "memory.current", CMP_EPS, file, 10);
+>
+>
+> 	or even simple macro that would compare two values accordingly
+> 	to the OP and print PASS/FAIL would be better than this.
+>
+
+I think it would be simpler to just create a general assert_expr
+macro. The above function won't neatly handle loading multiple values
+from multiple files. Nor will it handle transforming values.
+
+We could implement SQL queries for sys files, like osquery, that would
+be neat!
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
