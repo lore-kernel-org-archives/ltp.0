@@ -4,65 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98C92C433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 17:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B04BC433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 17:59:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 053E83C92AD
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 18:01:51 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 55BFA3C9262
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 18:59:12 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4504C3C0B99
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 18:01:42 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A3A4D3C091D
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 18:59:02 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6D1B720113E
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 18:01:40 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D20066000F7
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 18:59:01 +0100 (CET)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 86501210F4;
- Wed, 22 Dec 2021 17:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1640192500;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Lhdp4Qt+UtVTDQ4ZKXylPx7PbpUOTaS9BuCkJ87TYX8=;
- b=1yd1gnpiWPHwn61wPxIVGH6rPpBhSLIxi2tdhpH7iEp7ru0Cregf5vJRdIGzfguY4qgBZt
- GYC0At1GcJMsmwrJDaEfnaCjl53zUCJxXeuqqJcTSGMlm8oPcu8WF5dpVi0CT1AGwNqPVK
- Jm+N2LIDiU+ZmzxOXC3QbtpG9AWdpBw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1640192500;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Lhdp4Qt+UtVTDQ4ZKXylPx7PbpUOTaS9BuCkJ87TYX8=;
- b=Wx6Emu1IVBwwo0t9txPo3Y2PbK3GqqcG6mAsQxdsvRYTvb4zr75/xtRosvkrGRUKM9KiED
- vpxW0f15rEwBamCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 450FC13D3A;
- Wed, 22 Dec 2021 17:01:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nvqiCvRZw2FoKQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 22 Dec 2021 17:01:40 +0000
-Date: Wed, 22 Dec 2021 18:01:37 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Eric Biggers <ebiggers@kernel.org>
-Message-ID: <YcNZ8TDUR8+V+t6g@pevik>
-References: <20211220212756.13510-1-pvorel@suse.cz>
- <YcNE2Yt4zLs4ayz7@quark>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9B3ACB81DA8;
+ Wed, 22 Dec 2021 17:59:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC5E9C36AE8;
+ Wed, 22 Dec 2021 17:58:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1640195939;
+ bh=YzsGIhsCjKlo+Dr17RpxbVSdBhRvXkVe0NTxUujkss4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Rh14M3s5UinP19Tdq4TYIbylkdD3uwHSssNJMhXpgx9SKXi2wvS0p+dEa1NYQFmC8
+ BOZ6/t3iEwQMtZjqTQx7D0IJtRw5M7hZ2dtIc6QBgPObhJNsna9EjWFp5OeGMYh5+A
+ xjjg5y+UnEdQcEd+Kaeht4iZA6QgFCw6MCO8K/p/d7UUAH1lINAUWS0bwhyTzp1gIK
+ rVUVx18OGKrNBO8j8fczQMShwA1g81l0FxT4CDxQeqh9B8QsiohH/P5gZGm0nyO0JS
+ jQC1ySF7aL/tSMfqxvkBTVrGBijk4JLvzVOhrIGylocoUCzOs6OIPouh//34aCCUzj
+ qOplanY4zvGuQ==
+Date: Wed, 22 Dec 2021 11:58:55 -0600
+From: Eric Biggers <ebiggers@kernel.org>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YcNnXzREFOMn86E1@quark>
+References: <20211220212756.13510-1-pvorel@suse.cz> <YcNE2Yt4zLs4ayz7@quark>
+ <YcNZ8TDUR8+V+t6g@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YcNE2Yt4zLs4ayz7@quark>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <YcNZ8TDUR8+V+t6g@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 1/1] tst_af_alg: Another fix for disabled weak
  cipher
@@ -77,68 +61,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Eric,
+On Wed, Dec 22, 2021 at 06:01:37PM +0100, Petr Vorel wrote:
+> Hi Eric,
+> 
+> > On Mon, Dec 20, 2021 at 10:27:56PM +0100, Petr Vorel wrote:
+> > > tst_af_alg.c:84: TBROK: unexpected error binding AF_ALG socket to hash algorithm 'md5': ELIBBAD (80)
+> 
+> > This seems like a kernel bug; shouldn't the kernel report ENOENT for the
+> > algorithms that fips_enabled isn't allowing, just like other algorithms that
+> > aren't available?  Have you checked with linux-crypto@vger.kernel.org that the
+> > current behavior is actually intentional?
+> It reports ELIBBAD. Am I missing something?
+> 
 
-> On Mon, Dec 20, 2021 at 10:27:56PM +0100, Petr Vorel wrote:
-> > tst_af_alg.c:84: TBROK: unexpected error binding AF_ALG socket to hash algorithm 'md5': ELIBBAD (80)
+It does.  I am asking whether it should.  The purpose of LTP is to find kernel
+bugs; perhaps it found a bug here?
 
-> This seems like a kernel bug; shouldn't the kernel report ENOENT for the
-> algorithms that fips_enabled isn't allowing, just like other algorithms that
-> aren't available?  Have you checked with linux-crypto@vger.kernel.org that the
-> current behavior is actually intentional?
-It reports ELIBBAD. Am I missing something?
-
-> > @@ -77,11 +86,16 @@ bool tst_have_alg(const char *algtype, const char *algname)
-
-> >  	ret = bind(algfd, (const struct sockaddr *)&addr, sizeof(addr));
-> >  	if (ret != 0) {
-> > -		if (errno != ENOENT) {
-> > +		if (errno == ELIBBAD && tst_fips_enabled()) {
-> > +			tst_res(TCONF,
-> > +				"FIPS enabled => %s algorithm '%s' disabled",
-> > +				algtype, algname);
-> > +		} else if (errno != ENOENT) {
-> >  			tst_brk(TBROK | TERRNO,
-> >  				"unexpected error binding AF_ALG socket to %s algorithm '%s'",
-> >  				algtype, algname);
-> >  		}
-> > +
-> >  		have_alg = false;
-> >  	}
-
-> This function is supposed to return false if the algorithm isn't available; it
-> shouldn't be skipping the test.
-Sure, but split into 2 functions (add tst_try_alg() and use it in
-tst_have_alg()) suggested by Cyril should solve it.
-
-> > @@ -22,8 +23,9 @@ static void test_with_hash_alg(const char *hash_algname)
-> >  	char key[4096] = { 0 };
-
-> >  	if (!tst_have_alg("hash", hash_algname)) {
-> > -		tst_res(TCONF, "kernel doesn't have hash algorithm '%s'",
-> > -			hash_algname);
-> > +		if (errno != ELIBBAD)
-> > +			tst_res(TCONF, "kernel doesn't have hash algorithm '%s'",
-> > +				hash_algname);
-> >  		return;
-> >  	}
-> >  	sprintf(hmac_algname, "hmac(%s)", hash_algname);
-
-> Why treat this case any differently from any other hash algorithm that isn't
-> available?
-I'm sorry The addition is left over from testing, it should have not been here.
-
-Kind regards,
-Petr
-
-> - Eric
+- Eric
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
