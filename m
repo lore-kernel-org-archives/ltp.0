@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 983EAC433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 14:04:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94E53C433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 14:12:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C9933C06C4
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 15:04:01 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5DEA73C9293
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 15:12:51 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8FCB23C0214
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 15:03:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id B28253C02F7
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 15:12:42 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0515D200DDD
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 15:03:50 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 160C510004B9
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 15:12:41 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2050621129;
- Wed, 22 Dec 2021 14:03:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 413BE1F384;
+ Wed, 22 Dec 2021 14:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1640181830;
+ t=1640182361;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Sk9g2z9kPFlAgFTk0rOoabmab4dOLYdsjyiiHOcAcdM=;
- b=OnvmUGa5K2ZkEYnnqEJv7lURqyono3jLs4UBHuxqpmdUiyO4vyLHl0hIIfSN0gWmPkBV3J
- hclS39p0BSOb7sG4IxlDd1eZiN1nGA6xdKxvUdbIz02CxNG9Q899AusdkPsLnDhLUtQ/J7
- EcYQthS7Vu6aR2qeYVuaZdRfKYZu6W0=
+ bh=vMKNEiOE9Ch5kdW2trlzvS2gEzbdt3i/mH4V6pdWuOI=;
+ b=kiaDrWOk/yKVeHXO5Qwr+zOoF4D4MjPFK/tNAE/Hy8tCl+/bF8AnNEu0SMBVd1dXZWOkEy
+ ia+OOjXmbKz+IeLYW3jybGpd+5rAI5wrNvBhlXYVShcZTYyurnzYRcoaJ8DtKpVqTH6emC
+ eMXh8lvbz2czlXiU2DWiImeV9gSBpac=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1640181830;
+ s=susede2_ed25519; t=1640182361;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Sk9g2z9kPFlAgFTk0rOoabmab4dOLYdsjyiiHOcAcdM=;
- b=BVQ+seZ9aSD4urmbbkZP3mMlEXsIWTRNJgPHiYENprQHVt78MIQ06porGvyQSksJv2iomw
- slqYvSWqbXO3chAQ==
+ bh=vMKNEiOE9Ch5kdW2trlzvS2gEzbdt3i/mH4V6pdWuOI=;
+ b=uSfQgf2DwxsQOjzJl21ZNODTIrNtJqAFbj3Im/R/uAAVjVQ/m2GPQeomP0rrDi23iuoCmT
+ Gwv4agLeQllV8HAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E66D213D2F;
- Wed, 22 Dec 2021 14:03:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00B7413D2F;
+ Wed, 22 Dec 2021 14:12:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id M0W3NkUww2ELXAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 22 Dec 2021 14:03:49 +0000
-Date: Wed, 22 Dec 2021 15:03:48 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8qkpOVgyw2FPYAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 22 Dec 2021 14:12:40 +0000
+Date: Wed, 22 Dec 2021 15:12:39 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YcMwRIZcQNH94xhe@pevik>
-References: <20211222135234.30025-1-chrubis@suse.cz>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Message-ID: <YcMyV/jZQWAC3nv8@pevik>
+References: <1639983142-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1639983142-2247-4-git-send-email-xuyang2018.jy@fujitsu.com>
+ <YcBfuCPg1ENZHvud@pevik> <61C1397A.1070904@fujitsu.com>
+ <YcGTMcan0r2NOcR9@pevik> <61C2F10F.9000901@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211222135234.30025-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <61C2F10F.9000901@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] lib: Do not fail a test if oom score cannot be
- adjusted.
+Subject: Re: [LTP] [PATCH v5 4/4] zram/zram01.sh: replacing data stored in
+ this disk with allocated for this disk
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,26 +80,30 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, all,
+Hi Xu,
 
-> From: Petr Vorel <pvorel@suse.cz>
+> Hi Petr
 
-> Setting value < 0 in /proc/*/oom_score_adj requires CAP_SYS_RESOURCE or
-> CAP_SYS_ADMIN. However setting the library process score is a best
-> effort operation, so let's skip it silently when the user is not
-> privileged to do so.
+> Thanks for your review, I have pushed this patchset.
+> Also adding some debuginfo in zram03.c like you do in zram_lib.sh.
 +1
 
-LGTM, thanks for this version, I'm for merging it.
+> ps: I have sent a patchset in kernel selftest to update zram case a week 
+> ago, but doesn't get any reponse...
+> https://patchwork.kernel.org/project/linux-kselftest/list/?series=595877
 
-Also tested locally and on CI, working as expected.
-https://github.com/pevik/ltp/runs/4607602484?check_suite_focus=true
+Great thanks!
+patchwork is temporarily down (502 Bad Gateway), thus posting lore link:
+https://lore.kernel.org/linux-kselftest/1639562171-4434-1-git-send-email-xuyang2018.jy@fujitsu.com/#b
+
+Although it's meant to be for kernel developers I might find a time to have a
+look.
 
 Kind regards,
 Petr
