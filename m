@@ -4,83 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E57EDC433EF
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 11:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 748B4C433F5
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 13:51:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 608C63C9262
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 12:33:04 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 157623C9296
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 14:51:15 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 50F693C092C
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 12:32:54 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 934F63C2BA4
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 14:51:04 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0B4DD1A00A2A
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 12:32:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1640172772;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=S4nA4XWT/Ei7fpHtSJjO3enca+1wSAz2KKbvxYpR3VY=;
- b=YqOYPGF2m7rzRPahvevVOZi+5TZPHtqCh2ij4Z0TMDZnNdl4MEsZZHPXoJ8nok1eclwwTU
- CB3A2bU2P21qR4guHB2SHbghQEg5eWPdOZ41sbCtbBHzAbeSyPKowItbAvrVmXWcA5UveP
- 8uflgzcT05EhZYFhdnSQlIWxOudIS0w=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-281-N7NIp1zkMdSQ1v3BLnrLrA-1; Wed, 22 Dec 2021 06:32:51 -0500
-X-MC-Unique: N7NIp1zkMdSQ1v3BLnrLrA-1
-Received: by mail-yb1-f198.google.com with SMTP id
- y125-20020a25dc83000000b005c2326bf744so3361519ybe.21
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 03:32:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=S4nA4XWT/Ei7fpHtSJjO3enca+1wSAz2KKbvxYpR3VY=;
- b=zDYFe5j0YXQPW57o24L0t3oe5Vu53br2/zM2NyJ8IqOLz/oJZvNoc76lA/PmK/bgqI
- wJxAvQu4Lqhh86W+nXZ7J+itIk1fUk38esOizK/lXiz3o/NEpL4Nf+untBcBh26sLKi5
- Q5kd5ZEADWpCAlSyoRV15HC9mabDKVm7+/GeV1RS3/gRrdG8aNLaHd51O73sO9nDzbwP
- Fql7eeVPYDZflQ9R1r5ZXHIx4c2WnyGuuZit3prcIHuQ13gP8HJ0F75TsYUU+1fDNeYN
- KdVkcWX1lubSUiU+uSYrPaj6zPLTqbrPKvPVHDfpkLn4v9Lmh7JZE23Szp8ys/TIcQnR
- A+Ew==
-X-Gm-Message-State: AOAM533YZonbCUHCEeL+reuhZAyfyPCeQZ1gCSS7rFxEUweJIa/iSP44
- PVjGOgi4puzV4dsQY4fd2IwRlzLvNBIqp2R/MPJSn7Rpj9Dv7t/PASfJZ50ulITNRpIWq30NCgV
- 8tpbdIVSs9Ou1yEGNTmXM27kmc5A=
-X-Received: by 2002:a25:aa86:: with SMTP id t6mr3934153ybi.728.1640172770436; 
- Wed, 22 Dec 2021 03:32:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyEpd3CiRvTVYDPMF4PrSlvathwk3E5XimYoEXQTq+QMHoNnQitqais1PeC35vMKKaQsxv8pOvmW9IzYvKHOpw=
-X-Received: by 2002:a25:aa86:: with SMTP id t6mr3934130ybi.728.1640172770222; 
- Wed, 22 Dec 2021 03:32:50 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 94CEE200DED
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 14:51:03 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7F1491F384;
+ Wed, 22 Dec 2021 13:51:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1640181062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tnumUxlt1cwB4za6iXDGfp1CcsIHJkSa2R0sHWGexQo=;
+ b=JBkQUCRFrRD8BTB3QN9K06c3attqKH230gYrE+xMVZXoKTLEe0rzE6eGgvUUF5QjABITBj
+ FVbm9EMwNPWWlGNmYG86yZN0Rmc8oC3JtMGFRD6UjH9Dg162kKvZsoGcLo7aSnM9IGDI/5
+ KCLSn/3FO5MTq5xUFG6svwATNi/OkRw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1640181062;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tnumUxlt1cwB4za6iXDGfp1CcsIHJkSa2R0sHWGexQo=;
+ b=HRN3AILnhOPRQN+YOIsQXcuBFpXggA/TIXQ/iCx8XV+kxbwVe+Y9mlAYLiGsx1u2Zh16F3
+ 9xe01YOMIfh5H8AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6531D13D10;
+ Wed, 22 Dec 2021 13:51:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id VicHF0Ytw2EbVgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 22 Dec 2021 13:51:02 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed, 22 Dec 2021 14:52:34 +0100
+Message-Id: <20211222135234.30025-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211221193500.31950-1-pvorel@suse.cz>
- <61C28CB8.3050209@fujitsu.com>
- <CAEemH2cqTErtNZka8X3L3AgOhy-a2x8fqy1k-QKJWiXc7wA2fA@mail.gmail.com>
- <61C2C02A.90104@fujitsu.com> <YcLeaPJmSvmUJwJO@pevik>
- <61C2E3DB.9070004@fujitsu.com>
- <CAEemH2dpLJ9N57TpMhW3wMkd-V0cZMPWyH_sXn6KjXoWJWUC4g@mail.gmail.com>
- <YcL5XG6azJuGTys7@yuki> <YcL82UGphHruor3+@pevik> <YcMArVLw7UbLT/wi@yuki>
- <YcMCao3J5PIPaTWe@pevik>
- <CAEemH2dMxEfDwxJ_LO+DK=J+Tkfuxg1F0+5UEoM4oK47A_ZxyA@mail.gmail.com>
-In-Reply-To: <CAEemH2dMxEfDwxJ_LO+DK=J+Tkfuxg1F0+5UEoM4oK47A_ZxyA@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 22 Dec 2021 19:32:37 +0800
-Message-ID: <CAEemH2dgTFvHMA_fRtQfxptxB4E5XG_NVPMsfu1XqwqrwbGtJg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] lib: Skip tst_{disable,
- enable}_oom_protection() for non-root
+Subject: [LTP] [PATCH v2] lib: Do not fail a test if oom score cannot be
+ adjusted.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,86 +72,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
- Richard Palethorpe <rpalethorpe@suse.com>
-Content-Type: multipart/mixed; boundary="===============1771568429=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1771568429==
-Content-Type: multipart/alternative; boundary="00000000000057022105d3ba7ba8"
+From: Petr Vorel <pvorel@suse.cz>
 
---00000000000057022105d3ba7ba8
-Content-Type: text/plain; charset="UTF-8"
+Setting value < 0 in /proc/*/oom_score_adj requires CAP_SYS_RESOURCE or
+CAP_SYS_ADMIN. However setting the library process score is a best
+effort operation, so let's skip it silently when the user is not
+privileged to do so.
 
-On Wed, Dec 22, 2021 at 7:29 PM Li Wang <liwang@redhat.com> wrote:
+Fixes: 8a0827766d ("lib: add functions to adjust oom score")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_memutils.h |  6 ++++-
+ lib/tst_memutils.c     | 55 ++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 52 insertions(+), 9 deletions(-)
 
->
->
-> On Wed, Dec 22, 2021 at 6:48 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> > > I've sent v2, which checks CAP_SYS_ADMIN and CAP_SYS_RESOURCE,
->> > > but feel free just to bring simpler solution.
->>
->> > I still think that the most acurate test would be just writing to the
->> > file and checking the result.
->> OK. Anybody taking this (so that not more people working on it)?
->
->
-> I'm considering using both of the two methods.
->
-
-Or now just go with Petr's patch to get rid of the fails before
-Christmas vacation:).
-
+diff --git a/include/tst_memutils.h b/include/tst_memutils.h
+index 68a6e3771..855c6f289 100644
+--- a/include/tst_memutils.h
++++ b/include/tst_memutils.h
+@@ -28,13 +28,17 @@ long long tst_available_mem(void);
+ /*
+  * Enable OOM protection to prevent process($PID) being killed by OOM Killer.
+  *   echo -1000 >/proc/$PID/oom_score_adj
++ *
+  * If the pid is 0 which means it will set on current(self) process.
+  *
++ *  Unless the process has CAP_SYS_RESOURCE or CAP_SYS_ADMIN this call will be
++ *  no-op because setting adj value < 0 requires it.
++ *
+  * Note:
+  *  This exported tst_enable_oom_protection function can be used at anywhere
+  *  you want to protect, but please remember that if you do enable protection
+  *  on a process($PID) that all the children will inherit its score and be
+- *  ignored by OOM Killer as well. So that's why tst_disable_oom_protection
++ *  ignored by OOM Killer as well. So that's why tst_disable_oom_protection()
+  *  to be used in combination.
+  */
+ void tst_enable_oom_protection(pid_t pid);
+diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
+index 4dea30330..4a47bbb33 100644
+--- a/lib/tst_memutils.c
++++ b/lib/tst_memutils.c
+@@ -11,6 +11,8 @@
+ 
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
++#include "tst_capability.h"
++#include "lapi/syscalls.h"
+ 
+ #define BLOCKSIZE (16 * 1024 * 1024)
+ 
+@@ -93,6 +95,42 @@ long long tst_available_mem(void)
+ 	return mem_available;
+ }
+ 
++static int has_caps(void)
++{
++	struct tst_cap_user_header hdr = {
++		.version = 0x20080522,
++		.pid = tst_syscall(__NR_gettid),
++	};
++
++	struct tst_cap_user_data caps[2];
++
++	if (tst_capget(&hdr, caps))
++		tst_brk(TBROK | TERRNO, "tst_capget()");
++
++	if ((caps[0].effective & (1U << CAP_SYS_ADMIN)) ||
++	    (caps[0].effective & (1U << CAP_SYS_RESOURCE)))
++		return 1;
++
++	return 0;
++}
++
++static int write_score(const char *path, int score)
++{
++	FILE *f;
++
++	f = fopen(path, "w");
++	if (!f)
++		return 1;
++
++	if (fprintf(f, "%d", score) <= 0)
++		return 1;
++
++	if (fclose(f))
++		return 1;
++
++	return 0;
++}
++
+ static void set_oom_score_adj(pid_t pid, int value)
+ {
+ 	int val;
+@@ -111,17 +149,18 @@ static void set_oom_score_adj(pid_t pid, int value)
+ 			tst_brk(TBROK, "%s does not exist, please check if PID is valid", score_path);
+ 	}
+ 
+-	FILE_PRINTF(score_path, "%d", value);
++	if (write_score(score_path, value)) {
++		if (!has_caps())
++			return;
++
++		tst_res(TWARN, "Can't adjust score, even with capabilities!?");
++		return;
++	}
++
+ 	FILE_SCANF(score_path, "%d", &val);
+ 
+-	if (val != value) {
+-		if (value < 0) {
+-			tst_res(TWARN, "'%s' cannot be set to %i, are you root?",
+-				score_path, value);
+-			return;
+-		}
++	if (val != value)
+ 		tst_brk(TBROK, "oom_score_adj = %d, but expect %d.", val, value);
+-	}
+ }
+ 
+ void tst_enable_oom_protection(pid_t pid)
 -- 
-Regards,
-Li Wang
-
---00000000000057022105d3ba7ba8
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Wed, Dec 22, 2021 at 7:29 PM Li Wang &lt;<a href=
-=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></div><bl=
-ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
-t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D=
-"ltr"><div style=3D"font-size:small"><br></div></div><br><div class=3D"gmai=
-l_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Dec 22, 2021 at 6:48=
- PM Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_blank">pvor=
-el@suse.cz</a>&gt; wrote:</div><div dir=3D"ltr" class=3D"gmail_attr"><br></=
-div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
-der-left:1px solid rgb(204,204,204);padding-left:1ex">
-&gt; &gt; I&#39;ve sent v2, which checks CAP_SYS_ADMIN and CAP_SYS_RESOURCE=
-,<br>
-&gt; &gt; but feel free just to bring simpler solution.<br>
-<br>
-&gt; I still think that the most acurate test would be just writing to the<=
-br>
-&gt; file and checking the result.<br>
-OK. Anybody taking this (so that not more people working on it)?</blockquot=
-e><div><br></div><div><div style=3D"font-size:small">I&#39;m considering us=
-ing both of the two methods.</div></div></div></div></blockquote><div><br><=
-/div><div class=3D"gmail_default" style=3D"font-size:small">Or now just go =
-with Petr&#39;s patch to get rid of the fails before Christmas=C2=A0vacatio=
-n:).</div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signa=
-ture"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div><=
-/div></div>
-
---00000000000057022105d3ba7ba8--
-
-
---===============1771568429==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.32.0
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1771568429==--
-
