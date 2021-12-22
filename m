@@ -4,52 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BAFC433F5
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 15:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5E5EC433F5
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 15:34:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B05F53C9267
-	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 16:31:51 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 76AA53C9262
+	for <ltp@archiver.kernel.org>; Wed, 22 Dec 2021 16:34:08 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 245A23C2BA4
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 16:31:42 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ by picard.linux.it (Postfix) with ESMTPS id 223DD3C2BA4
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 16:33:59 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3AC021A01139
- for <ltp@lists.linux.it>; Wed, 22 Dec 2021 16:31:41 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BD1D560063D
+ for <ltp@lists.linux.it>; Wed, 22 Dec 2021 16:33:58 +0100 (CET)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3CA2861AFE;
- Wed, 22 Dec 2021 15:31:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6303BC36AE8;
- Wed, 22 Dec 2021 15:31:39 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 93FF9B81D16;
+ Wed, 22 Dec 2021 15:33:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6333C36AE8;
+ Wed, 22 Dec 2021 15:33:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640187099;
- bh=fep8Y0HnfxjmZRYvI/1KisSMfojZs+oUH6aL0AZ2w9s=;
+ s=k20201202; t=1640187236;
+ bh=PmIDdS4IybuygmCjt0en1LveCUWmmqBJ/vB3gTgpAB8=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=B/BM3Dcp4ZGTY+sAzpq5/Thp5iwGm4udEaS+6XQy6ZpRL5fdKePTjNZYjlIGvtdTg
- Ap88AsHlbxpi+YFIVm17JKCKQfzlt+yDpKA3qFnZRof4dUJ6H3y3ry7XtW0tDOPjXB
- 3KeWVNnFRYlDQVQnLsSPYZ64kh3zJWa/iCt13ya2b/anHd+YGiXASxJVuX551NGV/U
- AXDJzi0xJqh32JmTbjji2uO1fGXZrYVuFLlRozfxbXmxJP0+BcHzQ6KoZ2taGmYs0I
- YmmpycbGuzVdu4tx/YvGXiRZpj0DqneWDJnxTIQC5V8k95KOtiwk9ISOBLhW/gZa1T
- 9yxRiY80wZt7Q==
-Date: Wed, 22 Dec 2021 09:31:37 -0600
+ b=gho7k+2tkTwtD4p/dGCpsSYKTTCRBF7WwqWi5PmmzPDyjR5/xLe83w4EuvC/n9dYt
+ JdmQhGfR4042vEQcowtO8OedVZCsqaN1K0g5nXTzJ9flj2f2DymSIbOY3kLF7GDYoJ
+ +YlnwWpvjfIP1Xgn1hL9oXd9H/zats9nDU8V1cJpukXEBHKBBd8UlKKKE49EPtx7V8
+ XdnemwNqvU5rFCHepLUOJGU7HPUD7+eMQMBLjC0zv6sYBh1YqKuA0JCWW0HhHwxLnZ
+ G67VPfDROMZJzIAXDsRleI9IWuQQbHdXXYbD+3JDa2MmNZkJ+KXSEszK/unpBlNx+T
+ Ty5XUnpwZzmGQ==
+Date: Wed, 22 Dec 2021 09:33:53 -0600
 From: Eric Biggers <ebiggers@kernel.org>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YcNE2Yt4zLs4ayz7@quark>
-References: <20211220212756.13510-1-pvorel@suse.cz>
+To: Yael Tiomkin <yaelt@google.com>
+Message-ID: <YcNFYd78LfV2FcSW@quark>
+References: <20211221023721.129689-1-yaelt@google.com> <YcNA4w6mof+zKIak@quark>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211220212756.13510-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YcNA4w6mof+zKIak@quark>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] tst_af_alg: Another fix for disabled weak
- cipher
+Subject: Re: [LTP] [PATCH v2] syscalls/keyctl09: test encrypted keys.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,56 +59,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Dec 20, 2021 at 10:27:56PM +0100, Petr Vorel wrote:
-> tst_af_alg.c:84: TBROK: unexpected error binding AF_ALG socket to hash algorithm 'md5': ELIBBAD (80)
+On Wed, Dec 22, 2021 at 09:14:43AM -0600, Eric Biggers wrote:
+> On Mon, Dec 20, 2021 at 09:37:21PM -0500, Yael Tiomkin wrote:
+> > diff --git a/testcases/kernel/syscalls/keyctl/keyctl09.c b/testcases/kernel/syscalls/keyctl/keyctl09.c
+> > new file mode 100644
+> > index 000000000..507cd5628
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/keyctl/keyctl09.c
+> > @@ -0,0 +1,58 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2021 Google, Inc.
+> > + */
+> > +
+> > +/*\
+> > + * [Description]
+> > + * Test that encrypted keys can be instantiated using user-provided decrypted
+> > + * data (plaintext), and separately, using kernel-generated key material.
+> > + */
+> > +
+> 
+> This test doesn't seem to work as intended.
+> 
+> First, it fails if CONFIG_ENCRYPTED_KEYS is unset (it should be skipped):
+> 
+> 	keyctl09.c:33: TFAIL: Failed to instantiate encrypted key using payload decrypted data
+> 
+> Second, I don't have your patch "Instantiate key with user-provided decrypted
+> data" (https://lore.kernel.org/r/20211213192030.125091-1-yaelt@google.com) in my
+> kernel, so instantiating a key using "user-provided decrypted data" is not
+> implemented by the kernel.  However, the test still passes regardless:
+> 
+> 	keyctl09.c:49: TPASS: Encrypted keys were successfully instantiated and read    
+> 
+> The test should detect when "user-provided decrypted data" is not supported by
+> the kernel, and report that the test of that is being skipped in that case.
+> 
 
-This seems like a kernel bug; shouldn't the kernel report ENOENT for the
-algorithms that fips_enabled isn't allowing, just like other algorithms that
-aren't available?  Have you checked with linux-crypto@vger.kernel.org that the
-current behavior is actually intentional?
-
-> @@ -77,11 +86,16 @@ bool tst_have_alg(const char *algtype, const char *algname)
->  
->  	ret = bind(algfd, (const struct sockaddr *)&addr, sizeof(addr));
->  	if (ret != 0) {
-> -		if (errno != ENOENT) {
-> +		if (errno == ELIBBAD && tst_fips_enabled()) {
-> +			tst_res(TCONF,
-> +				"FIPS enabled => %s algorithm '%s' disabled",
-> +				algtype, algname);
-> +		} else if (errno != ENOENT) {
->  			tst_brk(TBROK | TERRNO,
->  				"unexpected error binding AF_ALG socket to %s algorithm '%s'",
->  				algtype, algname);
->  		}
-> +
->  		have_alg = false;
->  	}
-
-This function is supposed to return false if the algorithm isn't available; it
-shouldn't be skipping the test.
-
-> @@ -22,8 +23,9 @@ static void test_with_hash_alg(const char *hash_algname)
->  	char key[4096] = { 0 };
->  
->  	if (!tst_have_alg("hash", hash_algname)) {
-> -		tst_res(TCONF, "kernel doesn't have hash algorithm '%s'",
-> -			hash_algname);
-> +		if (errno != ELIBBAD)
-> +			tst_res(TCONF, "kernel doesn't have hash algorithm '%s'",
-> +				hash_algname);
->  		return;
->  	}
->  	sprintf(hmac_algname, "hmac(%s)", hash_algname);
-
-Why treat this case any differently from any other hash algorithm that isn't
-available?
+And of course, if "user-provided decrypted data" *is* supported by the kernel,
+the test should actually test it.
 
 - Eric
 
