@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACCC6C433EF
-	for <ltp@archiver.kernel.org>; Mon,  3 Jan 2022 15:13:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79C6FC433EF
+	for <ltp@archiver.kernel.org>; Mon,  3 Jan 2022 15:13:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 614B33C8FCF
-	for <ltp@archiver.kernel.org>; Mon,  3 Jan 2022 16:13:46 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 101883C8FCF
+	for <ltp@archiver.kernel.org>; Mon,  3 Jan 2022 16:13:56 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69F203C292E
+ by picard.linux.it (Postfix) with ESMTPS id 82BA03C62E6
  for <ltp@lists.linux.it>; Mon,  3 Jan 2022 16:13:37 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DA66560087D
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F12621A0014C
  for <ltp@lists.linux.it>; Mon,  3 Jan 2022 16:13:36 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1D4E2210FC;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 55C1C1F386;
  Mon,  3 Jan 2022 15:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1641222816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yijcLSNOri3a7hgw2kCqG/PI3Bngv7EIVuAzoMqX45c=;
- b=nPlVy5aFuNOYOEMqpJKzeSi/u1o9/wVlTGAtJNHOepBTWlnRDbUN+nf96GFD7xVlRJ9RNl
- Vu3DtbExc4wnHaAy4g3JVNLIsW8AzPL9A002oTwpptKd/2tAm8asYZ4VsThrBig8z+lgWc
- rKMgYTVv3RMlNE6zFOwqF15bF3ID5WU=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z4rDeQEr2Pt4rIJyDl0jl9LiJQh57x4L+yyUC2iB0Cw=;
+ b=qLrlcYM04p8B1DmzAnblQ+AwRRMciQbnUYCD/GgIoOpoPMbO2ArvP8cFJxf2vkXs00fe91
+ 88sbGg/entxOBrkhL5j6c1eNWbc97m1kvHJzwHGNMtoG/SCnBjMMldMqtB6HhAg7iqu6Q8
+ Te8/6gDbRSh6xC+mjHNWLpYsCqVSb1w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1641222816;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yijcLSNOri3a7hgw2kCqG/PI3Bngv7EIVuAzoMqX45c=;
- b=1RIyJKAljA11Yuo06UJdyO/3FvRv0mMAmYetEkkAytDerlcrnPek+zy501/ZDx2xiE90m6
- tTD2WwaWkppmMaAQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z4rDeQEr2Pt4rIJyDl0jl9LiJQh57x4L+yyUC2iB0Cw=;
+ b=khxyIfSBomxUh5wPzOWiBs84n8xdihwv1b63Mwt8hzXvscbL+IB960F0jaaY0tWuRqNTRG
+ E+qdSNu9XxnxzfCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E515513AED;
- Mon,  3 Jan 2022 15:13:35 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 280E813AED;
+ Mon,  3 Jan 2022 15:13:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id igY9Np8S02EtbQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 03 Jan 2022 15:13:35 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id CJ7tB6AS02EtbQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 03 Jan 2022 15:13:36 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  3 Jan 2022 16:13:31 +0100
-Message-Id: <20220103151332.1989-1-pvorel@suse.cz>
+Date: Mon,  3 Jan 2022 16:13:32 +0100
+Message-Id: <20220103151332.1989-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220103151332.1989-1-pvorel@suse.cz>
+References: <20220103151332.1989-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] lib: Add known-fail test tag
+Subject: [LTP] [PATCH 2/2] ustat0{1,
+ 2}: Mark failure on Btrfs with known-fail tag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,55 +82,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-to save test reviewers time.
+ustat() has been always broken on Btrfs and it's unlikely to be fixed
+due ustat() being deprecated (glibc doesn't expose this system call
+anymore).
 
 Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/c-test-api.txt | 1 +
- lib/tst_test.c     | 8 ++++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/ustat/ustat01.c | 4 ++++
+ testcases/kernel/syscalls/ustat/ustat02.c | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 6481531cf2..f8ee4de0d1 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -2259,6 +2259,7 @@ struct tst_test test = {
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "9392a27d88b9"},
- 		{"linux-git", "ff002b30181d"},
+diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
+index 0252858beb..e314649e8d 100644
+--- a/testcases/kernel/syscalls/ustat/ustat01.c
++++ b/testcases/kernel/syscalls/ustat/ustat01.c
+@@ -44,6 +44,10 @@ static void setup(void)
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
++	.tags = (const struct tst_tag[]) {
 +		{"known-fail", "ustat() is known to fail with EINVAL on Btrfs"},
- 		{"linux-stable-git", "c4a23c852e80"},
- 		{"CVE", "2020-29373"},
- 		{}
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 23fc0ebf48..901b363704 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -762,10 +762,13 @@ static void print_failure_hint(const char *tag, const char *hint,
- 				hint_printed = 1;
- 				fprintf(stderr, "\n");
- 				print_colored("HINT: ");
--				fprintf(stderr, "You _MAY_ be %s, see:\n\n", hint);
-+				fprintf(stderr, "You _MAY_ be %s:\n\n", hint);
- 			}
- 
--			fprintf(stderr, "%s%s\n", url, tags[i].value);
-+			if (url)
-+				fprintf(stderr, "%s%s\n", url, tags[i].value);
-+			else
-+				fprintf(stderr, "%s\n", tags[i].value);
- 		}
- 	}
- }
-@@ -778,6 +781,7 @@ static void print_failure_hints(void)
- 					   LINUX_STABLE_GIT_URL);
- 	print_failure_hint("glibc-git", "missing glibc fixes", GLIBC_GIT_URL);
- 	print_failure_hint("CVE", "vulnerable to CVE(s)", CVE_DB_URL);
-+	print_failure_hint("known-fail", "hit by known kernel failures", NULL);
- }
- 
- static void do_exit(int ret)
++		{}
++	}
+ };
+ #else
+ TST_TEST_TCONF("testing ustat requires <sys/ustat.h> or <linux/types.h>");
+diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+index d08446eaa1..67d2918f83 100644
+--- a/testcases/kernel/syscalls/ustat/ustat02.c
++++ b/testcases/kernel/syscalls/ustat/ustat02.c
+@@ -63,6 +63,10 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.setup = setup,
+ 	.tcnt = ARRAY_SIZE(tc),
++	.tags = (const struct tst_tag[]) {
++		{"known-fail", "ustat() is known to fail with EINVAL on Btrfs"},
++		{}
++	}
+ };
+ #else
+ TST_TEST_TCONF("testing ustat requires <sys/ustat.h> or <linux/types.h>");
 -- 
 2.34.1
 
