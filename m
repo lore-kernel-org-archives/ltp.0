@@ -4,86 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E03C433EF
-	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 09:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D73AC433EF
+	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 10:00:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 460E63C9116
-	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 10:23:38 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id AC1393C9235
+	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 11:00:25 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7CA2C3C0F5C
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 10:23:27 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5CBA93C222E
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 11:00:15 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 36C071A00CC6
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 10:23:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1641374605; i=@fujitsu.com;
- bh=4EBT+EnjU2VC1WeVPNr+hLMZtGgVOXaDqvebl8t+zkM=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=yx9jFAXt7XWYZjwuNy7e1d96LT4cfqFNBTyzJKRR5sOtxMFDj5yOlZS5B1ifoKH0o
- 5p8iCbz5I4EJqKz4PpRpbQjgf7XNAS4K7OlTlQ1GkvVpdzArWiNRNa6QW2VKQGVdVp
- O+MvIXxZb9JYmVqHMk/gWEtnR627sqX0LTR2k2tWucnMjm+9cP+EPUpfJVwTVVYG0S
- 6Xg8b5Dwc9hnC9wLL9ZCSrlnDlqZRjWZesJQS8pe6tK8+Vb2QFY8bLSbN9mP61auAq
- rcm7Nd6YSb3reN1hfL072GTYMD5Xmcd+eto+nXxeLpbKxm2eT1a0OQSvPfJjyoCM8t
- hzprJT7hS5eAQ==
-Received: from [100.115.37.206] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-2.bemta.az-a.eu-west-2.aws.ess.symcld.net id 13/2B-27579-D8365D16;
- Wed, 05 Jan 2022 09:23:25 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEIsWRWlGSWpSXmKPExsViZ8ORqNuTfDX
- RYGejqcWK7zsYHRg99v1exxrAGMWamZeUX5HAmtG05y1LwV32iosHtjA2MJ5m62Lk4hASOMso
- sbR7CTuEs5NJ4ufGNUwQzm5GiaPfuoDKODnYBDQlnnUuYAaxRQQkJDoa3rKD2MwC6hLLJ/1iA
- rGFBdwk/lw6AGazCKhI/FjUzNLFyMHBK+Ah8f1VLkhYQkBBYsrD92BjeAUEJU7OfMICMUZC4u
- CLF8wQNYoSlzq+MULYFRKzZrUxQdhqElfPbWKewMg/C0n7LCTtCxiZVjFaJRVlpmeU5CZm5ug
- aGhjoGhqa6hpb6loY6SVW6SbqpZbqlqcWl+gCueXFeqnFxXrFlbnJOSl6eaklmxiBQZlSrB60
- g/Hbip96hxglOZiURHlbVa4mCvEl5adUZiQWZ8QXleakFh9ilOHgUJLglU8CygkWpaanVqRl5
- gAjBCYtwcGjJMIrCowSId7igsTc4sx0iNQpRkUpcd61IH0CIImM0jy4NlhUXmKUlRLmZWRgYB
- DiKUgtys0sQZV/xSjOwagkzLsOZApPZl4J3PRXQIuZgBafk7sMsrgkESEl1cA0wf5Jp/r8thD
- NFWezBO6+ZHh12+TR+jvZCzLUvDUEVR98ec689snrG59TGRRfbNgkVOKsmVbRpOmS+6JXlekj
- k+5WFqtaDuPNSW8b9awybO6cmf5tTeTy90FmxTFpc2dL/fL+75dRv9hz+/NpoYmKwW0zy6ecY
- Kw0OrZEiv1JhOoPWdNHoaarcjOitv2siVVz/PZe3n/R+cfT/Lw1Mg5zrxGeo8wnZ2Z6NjWwyu
- 9zya1j/s91c7xYZ5sbW8UKHMjv9F2RrpW+7S3fzWtnPzl3bhPTd/3nuiF8o88ix33h4rnl7Ow
- 3bSV4eD7ulI1pvs9nFf3JI+7T2tVPEjIuZ1zp1PB5FBb06FSFfdj/XCWW4oxEQy3mouJEAKI0
- rbpFAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-12.tower-571.messagelabs.com!1641374604!10941!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 25241 invoked from network); 5 Jan 2022 09:23:24 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-12.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 5 Jan 2022 09:23:24 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 7C160100189
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 09:23:24 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E8E201A00E05
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 11:00:14 +0100 (CET)
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 6FFB7100184
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 09:23:24 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Wed, 5 Jan 2022 09:23:02 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Wed, 5 Jan 2022 17:23:29 +0800
-Message-ID: <1641374609-2143-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7D6A13F225
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 10:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1641376814;
+ bh=x6HHrFlMrJ8CJ7ujsVswADiWR9Tes2WA/9a5JYo9nuU=;
+ h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=nVQXuXykT9/3Fm8PmWjGNBP+KbY2kPmbWKK9vj7IojWNDmfmHK04UNf/DaPtyyjiN
+ 5UFN8aFE4ntCNjUweYsWcQk0yYoRO7/urtyObmhEMSUBS6adK8waP33Li81VjCS/jf
+ Exq3ymBsxFWv4LAQ0S0ppYZoHDHsSNAuVR7vxRp99F1xlRlsOL9XoPwUJTUU83QCrd
+ ZWqQlYyMulj5f/7GvRh4zAyO7htwynfEYBS3+V9iaV+1VQy3l6ktJ0glSgw0LeIQGv
+ r1QkAWgWbcQ8eplL2HH+8ItawnDfJqCCn0jcgSwKUNZG2mY3yj5NcjxmIn6YPv8+PU
+ AnV/YfZbC6YCQ==
+Received: by mail-lj1-f199.google.com with SMTP id
+ g20-20020a2eb5d4000000b0022e0a6d890dso5234782ljn.15
+ for <ltp@lists.linux.it>; Wed, 05 Jan 2022 02:00:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=x6HHrFlMrJ8CJ7ujsVswADiWR9Tes2WA/9a5JYo9nuU=;
+ b=H/DYuEA2gwojuztBS5cpNZF1aaFMHwDOWEK5WPN8OqH0oUx1tBmyYEPN83rwr8VX68
+ CJz5OGEHlrp434hJg9Y6S2IAOZ1DNH0lwc2/njrIhDEJx70BZKVnUtxXToX0plFgrOd4
+ w6hLKJnVdiptEzDdiTxXiP40sBUq+KWeexCpK7a55YkF+XbSC1hG02sabJBZ/QQh4QXm
+ jx6Y3vIfLP40YI6fmCRFn+8YGKGrajQxFFc5XXJUYKNC2ohvPc6IeuPEDZZZR41GMH3O
+ N2NxN187m1e9JxR3ea+nj7UQutjNlqlUM/rGbxM/ISCfvHijzQWDT2XN51n/+AIxif8y
+ jPeQ==
+X-Gm-Message-State: AOAM532FVS2OBLULNyvm9ZV0yyTSVp6UWdsGS55bapqYAOQZtCDtMcwH
+ BeuNZ4mNwIKHlxnhTcE08TAvd/Rnq13ozdvXqMUgNud6rizwFBW7NY2UDZe2yWxuzMH8tFRvW1v
+ AvIuuPhoi3eVo+UlmsU00I7XFSskL
+X-Received: by 2002:a2e:bd88:: with SMTP id o8mr15455304ljq.134.1641376813265; 
+ Wed, 05 Jan 2022 02:00:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyGFQuli00GO5OtsS1ZTz5o3JWyCU1h4ox2xDnWbAuft1uGDIbkmS2B1pUUifB22zgE6MCJRA==
+X-Received: by 2002:a2e:bd88:: with SMTP id o8mr15455289ljq.134.1641376813009; 
+ Wed, 05 Jan 2022 02:00:13 -0800 (PST)
+Received: from lukenow-XPS-13-9380.home (159-205-75-251.adsl.inetia.pl.
+ [159.205.75.251])
+ by smtp.gmail.com with ESMTPSA id z25sm4152527lfq.20.2022.01.05.02.00.11
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 05 Jan 2022 02:00:12 -0800 (PST)
+From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+To: ltp@lists.linux.it
+Date: Wed,  5 Jan 2022 02:00:03 -0800
+Message-Id: <f69cdd6ec3cffc8d2bd5990feb131eb6be73a33e.1641376050.git.luke.nowakowskikrijger@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
+References: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib/tst_test.c: adjust the tst_kconfig_check position
+Subject: [LTP] [PATCH 2/6] API/cgroup: Add cgroup_find_root helper function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,42 +95,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since tst_kconfig_check is front of parse_opts, then running
-test_kconfig01 -h can not get the print_help info.
+Add a helper function similar to cgroup_find_ctrl to make matching paths
+to roots more convenient.
 
-Fix this by moving tst_kconfig_check behind parse_opts.
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
- lib/tst_test.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ lib/tst_cgroup.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 23fc0ebf4..9fea7263a 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1016,9 +1016,6 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->tconf_msg)
- 		tst_brk(TCONF, "%s", tst_test->tconf_msg);
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 166d0f97e..b06ae6ab7 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -365,6 +365,19 @@ static struct cgroup_ctrl *cgroup_find_ctrl(const char *const ctrl_name)
+ 	return ctrl;
+ }
  
--	if (tst_test->needs_kconfigs)
--		tst_kconfig_check(tst_test->needs_kconfigs);
--
- 	assert_test_fn();
- 
- 	TCID = tid = get_tid(argv);
-@@ -1028,6 +1025,9 @@ static void do_setup(int argc, char *argv[])
- 
- 	parse_opts(argc, argv);
- 
-+	if (tst_test->needs_kconfigs)
-+		tst_kconfig_check(tst_test->needs_kconfigs);
++static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
++{
++	struct cgroup_root *root = roots;
 +
- 	if (tst_test->needs_root && geteuid() != 0)
- 		tst_brk(TCONF, "Test needs to be run as root");
- 
++	while (root->ver && strcmp(root->mnt_path, mnt_path))
++		root++;
++
++	if (!root->ver)
++		root = NULL;
++
++	return root;
++}
++
+ /* Determine if a mounted cgroup hierarchy is unique and record it if so.
+  *
+  * For CGroups V2 this is very simple as there is only one
 -- 
-2.23.0
+2.32.0
 
 
 -- 
