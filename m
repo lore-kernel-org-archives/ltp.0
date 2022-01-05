@@ -4,66 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 845FAC433EF
-	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 14:52:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A734C433EF
+	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 15:03:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 59C193C9223
-	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 15:52:02 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 80EE03C91BF
+	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 16:03:41 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A12CA3C6A74
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 15:51:53 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id B583D3C58DA
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 16:03:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 362D5600A55
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 15:51:52 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 870992009B2
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 16:03:28 +0100 (CET)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 54A3B210FE;
- Wed,  5 Jan 2022 14:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1641394312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NyG1OuhP7xn6OYEfgo6nqB216p1X3jlHpjtrto9urQ8=;
- b=zKqdrzR8DA06/4801xJvwU0FzdEk4UaCmIJ3sEiDb/oDhLgXWx6J0eOH02TadjZdjz2PO8
- kUlqkmAy5MK56ZIplTul7898MVFJ1kemwryE0f2BU35/7TdUE/JVt/bHodqklcWMOLt75Z
- RCKYrslxzHiViBstd+abNeHEtAnF33U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1641394312;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NyG1OuhP7xn6OYEfgo6nqB216p1X3jlHpjtrto9urQ8=;
- b=2om+glnRxuqrAbbDQYMD4IkZwKk5+ftlTxkvSSOVgrE9RIgxCV8oST01P3tVfWdDXOCpoK
- oA8SWNvNp2GeZRAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3764813BE7;
- Wed,  5 Jan 2022 14:51:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nLcUDYiw1WF8XAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 05 Jan 2022 14:51:52 +0000
-Date: Wed, 5 Jan 2022 15:53:22 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <YdWw4rza2wHGQqA9@yuki>
-References: <YdWC0f+70TF6Eluk@yuki>
- <CAOQ4uxg4sv9otWKSJCvdtaJnQrgaXUqvgPtnydDp6V8jio3nUA@mail.gmail.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 55C2FB81BA4;
+ Wed,  5 Jan 2022 15:03:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA166C36AE3;
+ Wed,  5 Jan 2022 15:03:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1641395006;
+ bh=Zz7dh/oULjRAdyFY/UkMqMsOTG1+bA+s3LIQszfvG90=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=mGuUYBgHYU5NnQecH9MLpKhzhkzl1KFM2Yb9W2feOfPGq/MvHsS6bQJ7tlLpLsRzC
+ 8BJ1/Xnk9UviKgg3g6oCjbB6pqEkKEBgWYlhvKuBHzDJBFXcFwkZbItmdwBk6rPEQT
+ ORjSFonBIx3aSLNPDvOjKPqPhVSJvDsXprdYqrxKKV+VvhRYOE3sNDPx0mfc+vjU0u
+ 599a8nN6qQPulJfpXCgQuXwrByG5XyXue7j36IyMPjKT2Vj+pBGASyKD4iWrqARvyF
+ iymNW3GmvBWtyREw2pkeLLmWjkeMOW6z/uxVcCNGRsv4db0YSQSbdL+gqBC+qfjlYi
+ 9kaAhg4ZpOhLg==
+Date: Wed, 5 Jan 2022 07:03:24 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YdWzPMp1IiF/jiBw@sol.localdomain>
+References: <20211222192604.16839-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxg4sv9otWKSJCvdtaJnQrgaXUqvgPtnydDp6V8jio3nUA@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20211222192604.16839-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: Re: [LTP] [PATCH v3 1/2] tst_af_alg: Moving tst_res(TCONF) to
+ tst_have_alg()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,37 +61,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Gabriel Krisman Bertazi <krisman@collabora.com>,
- LTP List <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > As usuall it's time to start preparing for the next release.
-> >
-> > Given the amount patches waiting for the review I guess that we should
-> > try to get reviewed and merged as much as possible in the next few days.
-> > I would go for git freeze at 14. 1. as that would give us a week for
-> > pre-release testing and the release would be, as usuall, finalized
-> > around the 21. 1. Feel free to reply if you think that the schedulle
-> > should be different.
-> >
-> > Also if there are patches that you think should be merged before the
-> > release let me know ASAP so we can have a look soon enough.
-> >
+On Wed, Dec 22, 2021 at 08:26:03PM +0100, Petr Vorel wrote:
+> + introduce tst_try_alg() for cases where tst_res(TCONF) cannot be used.
 > 
-> Maybe that's a good time to say I did not understand the resolution on the
-> discussion [1] about timing of merging tests for new (i.e. v5.16) features.
+> It reduces duplicity for tst_have_alg() use.
+> 
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-I guess that's because we haven't ended up with one as the discussion
-faded away before christmas break. I guess I will read that again and
-try to do something about it.
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+- Eric
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
