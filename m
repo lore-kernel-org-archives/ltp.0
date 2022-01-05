@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB884C433F5
-	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 15:55:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91AE9C433F5
+	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 15:58:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 04A363C9253
-	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 16:55:44 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 6B3F83C92A1
+	for <ltp@archiver.kernel.org>; Wed,  5 Jan 2022 16:58:47 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 764BA3C1482
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 16:55:35 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 4F32F3C1482
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 16:58:37 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D21DC1A0090C
- for <ltp@lists.linux.it>; Wed,  5 Jan 2022 16:55:34 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 02A341000CE6
+ for <ltp@lists.linux.it>; Wed,  5 Jan 2022 16:58:36 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 24FFF1F37F;
- Wed,  5 Jan 2022 15:55:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 58B6F1F37B;
+ Wed,  5 Jan 2022 15:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1641398134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1641398316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yaaNNi5obSS5p4chP9mHJtduiFIV8ES5iFnxKm7OvXc=;
- b=hNzpln05JllfGlLE5F1GZ33coerLa5HWk87nyZ2Es2iGoOjrVPhww9YNu14XJL80sOmFDX
- vjoEEmYrT5LCL6WNVRkewZ/I25HdsgFmr1nimNv91fqe1EE8JNkMl3eszfFoe4gnyBTbYi
- Iz+/ahLJ9RtbeuDU92hIjJQzFzbYKU0=
+ bh=M96kWH2fkP1/i0vLvdidfdSRN7lfBMsf+/5XUXVhrn0=;
+ b=QpWkB5bG1GM4XavUNLhJxo/CUblJ+vf6krwessL7csWs9XFeUXsTpV0pekCpdWYqZ/jS/Y
+ GG4NIohzyM1+QH5h2bqSMNMX256frgAoZ+hK1s9Luoungg208N/XvKKfEkbj1nAVvn1ilp
+ Dpn7JEe/7+TfiSo/IQ7SToAZxkQ8OVg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1641398134;
+ s=susede2_ed25519; t=1641398316;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yaaNNi5obSS5p4chP9mHJtduiFIV8ES5iFnxKm7OvXc=;
- b=Ds3eO0pQbmZDrq1qK4QS1sCE1rZTs/eANJS7SdpHVmx7MSkkZKvvdxs3tj5RnRHHRspEg3
- mdUbY6C0xcQlPrCg==
+ bh=M96kWH2fkP1/i0vLvdidfdSRN7lfBMsf+/5XUXVhrn0=;
+ b=KP1d+9IbThqL6TX1twH3A7MiNtmmOpF27WOGwNEBAEIxtqrZxSeDTSZhVqqbFyGe4fcYqy
+ Dg6/TrM5Ge+7glCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0501B13BF1;
- Wed,  5 Jan 2022 15:55:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36E9613BF1;
+ Wed,  5 Jan 2022 15:58:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZDuIO3W/1WFKegAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 05 Jan 2022 15:55:33 +0000
-Date: Wed, 5 Jan 2022 16:57:04 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id HHxqDCzA1WGqewAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 05 Jan 2022 15:58:36 +0000
+Date: Wed, 5 Jan 2022 17:00:06 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <YdW/0BUm+vBY3PHy@yuki>
+Message-ID: <YdXAhgvstNcDz7WY@yuki>
 References: <20211220180748.36A90A3B8E@relay2.suse.de>
  <20211221113042.21357-1-rpalethorpe@suse.com>
+ <YdW/0BUm+vBY3PHy@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211221113042.21357-1-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YdW/0BUm+vBY3PHy@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH] API: Allow testing of kernel features in
  development
@@ -84,80 +85,14 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Add an unstable kernel ABI flag and a runtest file for unstable
-> tests. This means we can add tests which are likely to be broken by
-> changes in the kernel ABI. Without disrupting LTP releases which are
-> required to be stable.
-> 
-> Users who require stability can filter the tests with this flag
-> or not schedule the unstable runtest file(s).
-> 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
-> 
-> How about adding this to the fanotify22 patch?
-> 
->  include/tst_test.h        | 12 ++++++++++++
->  lib/tst_test.c            |  6 ++++++
->  runtest/syscalls-unstable |  3 +++
->  3 files changed, 21 insertions(+)
->  create mode 100644 runtest/syscalls-unstable
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 450ddf086..ff31e972e 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -174,6 +174,18 @@ struct tst_test {
->  	int skip_in_lockdown:1;
->  	int skip_in_compat:1;
->  
-> +	/*
-> +	 * Test is for a feature that has not been added to the stable
-> +	 * kernel ABI. That is, it's for a feature only available in
-> +	 * linux-next, an RC or some other development branch.
-> +	 *
-> +	 * This string should be set to some text describing the
-> +	 * kernel branch and version the test was developed
-> +	 * against. e.g. "5.16 RC2", "linux-next-20211220",
-> +	 * "net-next".
-> +	 */
-> +	const char *const unstable_abi_version;
+> I would be even tempted to add this to the default syscalls runtest file
+> but render the test resultless, e.g. replace the tst_res() and tst_brk()
+> handlers in tst_res.c so that it will print only INFO messages.
 
-I would rather call this 'remove_after_release' or 'remove_after_kernel_release' but that is very minor.
-
->  	/*
->  	 * The skip_filesystem is a NULL terminated list of filesystems the
->  	 * test does not support. It can also be used to disable whole class of
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 9b51bb5be..babb250d0 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1013,6 +1013,12 @@ static void do_setup(int argc, char *argv[])
->  	if (!tst_test)
->  		tst_brk(TBROK, "No tests to run");
->  
-> +	if (tst_test->unstable_abi_version) {
-> +		tst_res(TINFO,
-> +			"This test was developed against pre-release kernel: %s",
-> +			tst_test->unstable_abi_version);
-> +	}
-> +
->  	if (tst_test->tconf_msg)
->  		tst_brk(TCONF, "%s", tst_test->tconf_msg);
->  
-> diff --git a/runtest/syscalls-unstable b/runtest/syscalls-unstable
-> new file mode 100644
-> index 000000000..a87284afe
-> --- /dev/null
-> +++ b/runtest/syscalls-unstable
-> @@ -0,0 +1,3 @@
-> +# Tests for kernel features which are not finalized
-> +
-> +fanotify22 fanotify22
-
-I would be even tempted to add this to the default syscalls runtest file
-but render the test resultless, e.g. replace the tst_res() and tst_brk()
-handlers in tst_res.c so that it will print only INFO messages.
+And that would also allow us to have env variable switch that would
+enable all tests for unrelased features, something as
+LTP_ENABLE_UNRELASED or so. Also with that we can really just TCONF if
+that variable is not set which would be much simpler.
 
 -- 
 Cyril Hrubis
