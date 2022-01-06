@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECAAFC433F5
-	for <ltp@archiver.kernel.org>; Thu,  6 Jan 2022 02:21:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 566E3C433F5
+	for <ltp@archiver.kernel.org>; Thu,  6 Jan 2022 06:00:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 715E63C928A
-	for <ltp@archiver.kernel.org>; Thu,  6 Jan 2022 03:21:05 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id F41E13C92DC
+	for <ltp@archiver.kernel.org>; Thu,  6 Jan 2022 07:00:10 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C2223C0FF4
- for <ltp@lists.linux.it>; Thu,  6 Jan 2022 03:20:54 +0100 (CET)
-Received: from esa7.fujitsucc.c3s2.iphmx.com (esa7.fujitsucc.c3s2.iphmx.com
- [68.232.159.87])
+ by picard.linux.it (Postfix) with ESMTPS id 736973C2116
+ for <ltp@lists.linux.it>; Thu,  6 Jan 2022 07:00:00 +0100 (CET)
+Received: from esa8.fujitsucc.c3s2.iphmx.com (esa8.fujitsucc.c3s2.iphmx.com
+ [68.232.159.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C0DCD14010CE
- for <ltp@lists.linux.it>; Thu,  6 Jan 2022 03:20:52 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2CB20600AA2
+ for <ltp@lists.linux.it>; Thu,  6 Jan 2022 06:59:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1641435652; x=1672971652;
+ t=1641448800; x=1672984800;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=vGePCpK6qF+2zgx9J4A/i3pc5Yl7MOR7mmAZMyYZSo8=;
- b=RMoZ/nLbyAmGNm/EsI0DLXozJGfxfp/IQCguCl5rNVw/RbtFumEHZWyO
- dh8/sOpDm68SfPgKwZ/h5OWb+UupcEdOFhRTnMpJIvBi3UxieSe1w9XTs
- obQKNXk/ampjiX64wTQm4aUlfFh144bodQ2mP2Ca1/5YttIUGIWIT5ROg
- 6FGJVTwAqOYz1AQnu7eo/T0wwTItsirL9EIuxvec9EpJDm7yn3Y3mzVY8
- /SlZuXOvDohVeoEsLNV0yIEWI2hCn+O6iaRtCOkGToU5LfjRbGdWPzGzM
- nExbZM/ULGFdHeX+wbt3Ish59v69Q+i/5gHsVphgkw3/icusBIn1frzVj Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="47115842"
-X-IronPort-AV: E=Sophos;i="5.88,265,1635174000"; d="scan'208";a="47115842"
+ bh=QJHWd2xA4WKq+9juWk4myTi0Pxo3z97mboemCtBKNYI=;
+ b=oriVeKlwBZhimoowHWNEnFv/KqFoWbC6IgaYkP3MZYRf+oosV8GgZH8G
+ 8gj3wqzd81EWa9SfITl5OSX0dPC5PPy6rWu3RKsOroGu5hq3q8rqQlbMI
+ MGFSofKW0KukZ0qBEziFbG+AKVEIVDRtUUOlILSjJ/jROOapwzczpqNh1
+ 4ojohhp4gkm/ZwaqL1juX582GcblfM/vOv7QWtMlLf82ckNCYDCjxdKmC
+ 1u4Enk5LAs4qX8T0K18K1cnfMmSLOYEHn6XG25ljPo4KdV5VSIv2PZA8T
+ n4+16us+vBzae+uoZ3XX6/Wao+GxOKdsxXRuUoiDH9EZsLbiwdawcMGpO w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="47082295"
+X-IronPort-AV: E=Sophos;i="5.88,266,1635174000"; d="scan'208";a="47082295"
 Received: from mail-os0jpn01lp2110.outbound.protection.outlook.com (HELO
  JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.110])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jan 2022 11:20:49 +0900
+ 06 Jan 2022 14:59:55 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aaU22PjjzbSSJmQfyPfZEnWEVZgffGnTU47XVMs9ckEIZzPIBSPDQDDNJtee4diGX1YmJqcgJWPrehoDLoQ126CR5fcoTbq1gcPXbxaNQiprFH940QjhGgnoZqRY+mFYygZqGvp8XYZrb/4q/joYGUc5RvGgifvyGWqPO3c/SQ3wG95i7/42leZJVlrd6T0YnU2EWkCyPuB9mF/iVPjqGY0eBTyJNllur8BXs01SOVOKGllHg1T0QW/8k/iXALQZor0Z8CizPvnDCh04vUUmFyfOaMz3mkhpOK7rR+CB3YVeYrLKSXWJAqwpE7uBzxLvHcJUgdw8sp8uUHukg6hJDQ==
+ b=i76LZowO2e7U4AVWpi2idYCR+mK7QMD+wwWlmYRkhmyAbC0RQVOqzZU8a6VRiW6VboVxcyu7Yt+gw5IFda/Z7+zUdX4zrC211nT9GWhq2RoWzP4kvllEhAV8+R3ZR+jPeUfgCzyGa4xX1wkmkOHwfLymNMFQWictQWIZ1ffP9gHDe0EIo/dnN5vIS0Maw4dTGjg2db8Rk6qTDzt4uu8MvrIYsNe7VZV5Wgf661e8Z4p2P/8OO+qupwR6jtSGNHcIlRNnpxmq19QBddOKO5C7gn5gxazgP/f+p+9sQDpmkdyyl+CIstN5SdNHDGhyfHTQN0vxQKByYEjTSloYJTB88A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vGePCpK6qF+2zgx9J4A/i3pc5Yl7MOR7mmAZMyYZSo8=;
- b=msbeK/7+hOKI/t8RvuA4e7MCA5Vg4hjSYx0wi/D/mQGN22xsl1Vt3Bt98N+Lp0Uu7LrOkZjtCIMEa8udLlwn0Peic4F8p38Vvfd/fGaXLDRqdZIj/Lu7ZlKBL1mbtCXoKGSxGrEBFbCSdYhSlxOknDVK9t3Kr0AlYGkPhRMjaMogg+G15FVYT0knuz7mJWzebY6Lwori4RGIXAQPY8DNwmOj79Q374BMmMJDU341Tv2I+6VpIAuAs4AFd+b5NmNkbUWtwqE/ROr3J2fo/8nkS6zdfjsasO1LrhezpXeLDFPkmSUZCTiXsGvA7odDDLoX3D2FwsofAA1e8zHnsdNa3Q==
+ bh=QJHWd2xA4WKq+9juWk4myTi0Pxo3z97mboemCtBKNYI=;
+ b=Op09Erx2jJ2Hv4C4d6YWZ8YjCnfZyujlACB4jiBwgfNciBmouGtPx+BqPQWL89ox0CQyWtbgJ4UJxrqUNbLkhznN0eIxAFZe4GYZ9FoAjSU8Kw6eHELA6otFiPNFhx6jkQZpn1iwB1Xn226TbhEGufQcvMbLa8cd8xSsHgUZxsKvy2iWfzWzJfa0AG9VsO3XBOEIVbiyaUdI0dpHfavGYa362MiiZHx7VIonkg/LaSu9z37UQnZDqGYG+vKWEcfoF5ngCBUipSfgUf1aaCVvPVCWpFYAfroYSMrl+xviFaW7cBIkSlCrMtuQln4QijjGb/eLM0snAEvH4HfuRGTniQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vGePCpK6qF+2zgx9J4A/i3pc5Yl7MOR7mmAZMyYZSo8=;
- b=K9N+57BHXCjaZXFP4S6sdYeR9D0oHWIWWgWyGBy6ERuLE/SxtSpMFUkCLMt/+8VwyfZoTS3pxM4xt4DJGKDilL6NipZQui7ntrhNf7IQzZLWqz5IlYyqebM3mGtV0cgKnCh140s3dZAV/eZa4b+pxssO/MwW6w/BRaveBZQgsWc=
+ bh=QJHWd2xA4WKq+9juWk4myTi0Pxo3z97mboemCtBKNYI=;
+ b=o0cdVYMlKqHHRp25cYy0KhVZOWLyZ0oUSg24cwwvvpJha8CFrjBjtFHL86dmYdCtlikHeq2gfw+0tvrapSXU1nqOvZ744ZlegBsr1rzEBH8SvbVvN5nca8vBNAHqQTUwbHNayYynG5wjnA6VCmkrGrDX9pzyXYDDq8F5Znj0m5o=
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TYAPR01MB2318.jpnprd01.prod.outlook.com (2603:1096:404:1::21) with
+ by TYAPR01MB2943.jpnprd01.prod.outlook.com (2603:1096:404:80::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4844.15; Thu, 6 Jan
- 2022 02:20:46 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Thu, 6 Jan
+ 2022 05:59:51 +0000
 Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::9486:fa6e:4ac9:802b]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
  ([fe80::9486:fa6e:4ac9:802b%4]) with mapi id 15.20.4867.009; Thu, 6 Jan 2022
- 02:20:46 +0000
+ 05:59:51 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [PATCH] lib/tst_test.c: adjust the tst_kconfig_check
- position
-Thread-Index: AQHYAhXetolD40qAw0qKLg/g2i71IaxURGyAgAD/ngA=
-Date: Thu, 6 Jan 2022 02:20:46 +0000
-Message-ID: <61D65226.8060408@fujitsu.com>
-References: <1641374609-2143-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YdV7uSO7tE1rAWPO@yuki>
-In-Reply-To: <YdV7uSO7tE1rAWPO@yuki>
+To: Petr Vorel <pvorel@suse.cz>
+Thread-Topic: [LTP] [PATCH v1 2/3] shell: add kconfig parse api
+Thread-Index: AQHYAThOqIvUm+MPjk2RIXi6fN05TaxSs0UAgAFSgYCAAHpoAIABAs2A
+Date: Thu, 6 Jan 2022 05:59:51 +0000
+Message-ID: <61D6857F.9060802@fujitsu.com>
+References: <1641279439-2421-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1641279439-2421-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ <YdQpwpbyGGNKx84z@pevik> <61D545B7.7020003@fujitsu.com>
+ <YdWsZpTjnBLszubC@pevik>
+In-Reply-To: <YdWsZpTjnBLszubC@pevik>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -81,73 +81,72 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e27725da-14fd-425e-28a6-08d9d0bb25f3
-x-ms-traffictypediagnostic: TYAPR01MB2318:EE_
-x-microsoft-antispam-prvs: <TYAPR01MB231889D9286D87796E11EA8CFD4C9@TYAPR01MB2318.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-office365-filtering-correlation-id: 37c686dd-db27-49df-e25f-08d9d0d9c147
+x-ms-traffictypediagnostic: TYAPR01MB2943:EE_
+x-microsoft-antispam-prvs: <TYAPR01MB2943565643DD25A058B65174FD4C9@TYAPR01MB2943.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eaPTT+zdTlVeXJbh/YYcUoGj3LYbLTO4yHeIq2hei4tvamsC4tGz0A633qOrJDhiHBD+auPgEdjXzBtdIOoJ7HzcyREJaCgWzgLVyrIyq92bW2a+KQPXMsBIILTrWEnt9AAEN+KPx7ucenwMZNmxbhC3Nf3mr8cjCBELxOXf7gnyupcMIGdTVArKFINAepa2cgWarD4Co6kjxcd1hk3bAcRoGwNUOOqzAkweCCWYPRzsEnUoGQ9ogJt0SdXankIRcfvfBdWX4rskiHU/RN1jBMxTY/2+aWFXuCYUJPOZ4ZQL6+ffgJxsTOo6hhso1o5qlIqfHQFwOEriHQNxLUxdrSw3GaRT1pnp5wPAG6+jSbDjXSP1evfm61AcSxuerOJ2c2rh7wtpyOcB8haYpPHU9pLvm7+Ti/MkdV1kgmHP0qAAIgEKdYZ1Q838x0LwisBZD4orAaM14rj2aYYzRNFJEZKJiHfYiWCq+v28HIGStEbLRbMWdMw2zOKfLXqu8cybng+c6uOTi46MCuvcjNpiZgydUDyYhtWnj0cQEbqv4BpV2RRxPe5onqL9qN+rhQyqxQwBM1jZ/gITrcU5CfP0SitqoChpcr67K4seAbAF56Wb/IAL6zBSnF4Wjmz4YN0wmGMR7sPx/5JA5LOuFr/HnCGg20V8v7B0G7H6nP3iZHu10RVOSHbtMiXYMl/RRWkFnKhZaGrChH6rjbyE9iBDyQ==
+x-microsoft-antispam-message-info: OiNhxqYBGmU59ujEoOK0IdpN+BidRP4ae69R2AvUUXPBKD2lsflpFVKN+cm6+XKabRmEMxx9/LyMVWX8JOa4Y5/O+U6pikKFffErlJLWcPe32X42/2kxaCKjVBA5Xhfj/H80qtl40EG2u/SC87G4vGair5Ua+gZFrSaQxhAmaC2yPcSQut9TQVIHHU4Wb1EjQZ0TxI9Zq1LlH+CRKWPpPQUydrkh9s1RLviFay5lj9JDGZLifddSbjYnoXSCvt64b53nm6AJgNxRyTCdK89n0Nrr5GlTXYRHbHGZ0T7P/izTJaAnqSklSPwKHWscDoxX/mHDWmoN52usienQK46P1YOZiaSEAkqGDcjHJKGLsMTzM2QGAPUuHmetwrQnexqY2nY203RgZ6xpEBXYnH3pgwBb/Y/VqaZ38ozWzDAk2zmhC4qMb8zetRNKm0ZQWayieRGg3Bou5IRnaxJNjbxc+j/07a+OjSpcQd5Ouml5dFPaqFz0AB6jUUXi2rCb3QY2cAmbw7lok2ymDQS9j7+mkndFP8ZaE41ldHaubKdTI27abXylfeaZwKJzF1j7lxK8zGyxakgIExOrDc6V/Ddekmt1jOSs343w/senDJENQ0lrcbPtKg0wp0gvc5r+zEu3pnSLAlNpPCNpKyZrolJHWNX9nCFcm9QXCb6JcDCB2rQwaCJ/5SjeNxOlGRzy8gw8Aa4HisH3Qf2O0Pouyv2nEObilX4i1bh4Tb84WJJdxaeqiqTMSVs90fpVN31CMxVbNeYoi1GNRYpTLkC7VqiSt95i067abTzpvd4ykmz5/Qs=
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(86362001)(8676002)(2616005)(316002)(186003)(5660300002)(36756003)(33656002)(6512007)(38100700002)(87266011)(6486002)(2906002)(66946007)(4326008)(64756008)(508600001)(71200400001)(8936002)(6506007)(76116006)(91956017)(122000001)(66556008)(38070700005)(66446008)(82960400001)(6916009)(558084003)(26005)(85182001)(66476007);
+ SFS:(4636009)(366004)(83380400001)(5660300002)(38100700002)(8676002)(8936002)(508600001)(2616005)(66946007)(66476007)(186003)(4326008)(66446008)(66556008)(64756008)(85182001)(86362001)(54906003)(87266011)(38070700005)(33656002)(36756003)(6916009)(966005)(71200400001)(2906002)(26005)(316002)(91956017)(6506007)(76116006)(122000001)(6486002)(82960400001)(6512007);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?UE1PTkdFa3VmbDdKZWMwc3UxTXRQRWJ4emI0ejNWOEFCaVpCeGYzSi9vSHg0?=
- =?gb2312?B?SlJid1hKQ2srNjVNTzFjY3Q0QjdkSFRXNGNlcnBiWEV6LzVldDFTMnpvQU1D?=
- =?gb2312?B?akFnQzN4aWlCZWJhRmNXUmhIdGlwb2Qvc0YyczAzbVhsYjBSbUJ6RXQ3cDRJ?=
- =?gb2312?B?bC9QNGF6TkdpaGNyNzRxQXlVcll0UDNxQVN6WDNDbTZMenEvaTF0dzJqR1c4?=
- =?gb2312?B?K1dIeVJPSldMc1ZxbjJaTERmYktLWS9UTmFlWHlpbkd0RW4yZTVkbkhuNmI0?=
- =?gb2312?B?WUFTQ1lob2JhWlZEWkoranhVeVhmaWcxbXVwU1UzaVU2enl6UmxQeC9nOUxl?=
- =?gb2312?B?TENGcHpJZGszdWJqTGxpKzRoV2dNNWNOU08vRmcvUWlURTVVU2pGb3VKR3VH?=
- =?gb2312?B?dTNQenFWRnRYRW1oVDZuVW43NG1BUG5CWXlNaFhjYy9QcTF2RDdJTWxCeFpv?=
- =?gb2312?B?VEk5M1d1TUt5RVVTcHlCYk9EUTN3bkphZWViaUtsZ1phU0I0TlZrNXh3ZGR6?=
- =?gb2312?B?VjMyekFRV0JIeHlTcHAySDVvTVRLclpLNDZzR3BYTVN2aFE1YlhnU2tRbndo?=
- =?gb2312?B?Skx6TThZaXh4SjFyLzYyRlJwUi9TcURTejdIdnFvdXVURHVRRXJPa2RPbVpl?=
- =?gb2312?B?K0prYVdWOW51Z1pSZ1BkYmlTYUd2d1JTMDdPby9GVy9zNDhiczYrbi9DakVV?=
- =?gb2312?B?b3kwS2k4eGtoUVpYU2Yxd2N2WlNDeXl1ZllUYUxWUjRBYU1zNk5xRVBVSlY1?=
- =?gb2312?B?cFAzVjJJeWJhQ1pVSFoyT2tBeVVrQ3d6MFFWNGlxS2V6TkV1MzBLMmhBeitz?=
- =?gb2312?B?OGs5eWVLbWl2WVQzZ0hieEtPY0NlQ3dRY2NNQmNZMlJTS25pYVlnRmhEWHEr?=
- =?gb2312?B?eWdvMkxVQ0xJbDVsZmpDYmdoZHBvWHRKc3B2QW1DaDdOaUxzUEZRdDRvWVQ3?=
- =?gb2312?B?cE9pdm9NQXBTS2VORzZRYVBCQ3NqaHN4TU1rK09zek1JaHZOeWl1Z0xUSDRJ?=
- =?gb2312?B?bHYyOXVTQWxvZXRvZGkzTUQwYWlRc3NYYWc1TytMY1I0NTN5TEwzdXU2L1dV?=
- =?gb2312?B?d3BXMGNZOWhUK3NvbHlaTG02UDd2eTZ4d2JlY2wzbm1BUGlJVEtuOVh5VTBF?=
- =?gb2312?B?OGs1MG0xRVpPQW5mRnAxV1BwQnZWbCtQRnFMNHlsbnpxUElJWHZSSnQ5Ry9q?=
- =?gb2312?B?ZkgzTllncEtMMEExNTE2emhPaFZ4MEhnbXBNbk9mNDE4T3REakt4dGtlcVJr?=
- =?gb2312?B?UW10NDErWDRBdG5nOWZiMEZnQ0pnMGhxQUl5eGNybmVaWVN3R0tmdGpNakla?=
- =?gb2312?B?UGVCOFAreEErN05MdXlHTnpQVlp1Z1FHNHpxWlNFdkxYa1Flamg0cGZ6ek43?=
- =?gb2312?B?RXlwbUlNblBYYkJ5aUg5UDB3ODY1c0JFZmd3V2ltcDF0a2ZNdDJHNk5PaHNB?=
- =?gb2312?B?Y1dSWE04MHozdmszVzU5dllFQmR1MVZsY2ppV0J3OFZOVXRqMFlJbkIyRGJl?=
- =?gb2312?B?MDhxZkJhNXgxTnpBQkJJbThXYVBLSXRZN2tYVVZ5Z1AvZ2JSVWY4eEJnM3h5?=
- =?gb2312?B?SWIwL3FLU3EyZDEyTXh1K1lYZVVJejlla3BKQW1mb2ZVZ2FlSE5XN3F5QnJR?=
- =?gb2312?B?VDNQMjc3SzQ3QXU4UWRaOUZJd21HWUt4LzRWRFlUdVJQeGI0MVhNWTFES0lw?=
- =?gb2312?B?bEhkR3JWcDd5a1dXSk1yWFNPdzZGL2xINHV1bGVtblM1N3lUbGlDem9PaGNt?=
- =?gb2312?B?dGFTUURtelQrZENqWUxWZnJSVituSlFiRlRKZjcxTEdFa2dHbVNHV2R2RmN3?=
- =?gb2312?B?RlI1M2NGc1c0WGpiK2llQ0RzVjA4RWtuTEorUFNBRHV3UUptOS9pLytSUlBu?=
- =?gb2312?B?NWFqSFRzR0FzK1FkMzRFbEdqOGozVHR0dWdYYWhxSzArTWFVZnZxM2w3UEpX?=
- =?gb2312?B?aVpEKytnZzVPTnN0TERtdkNOaDVsS0xXZ2o0RGRsd3BPZllCRG5Xc3cyVWJ6?=
- =?gb2312?B?QU50TU5MN1J0VXZsTmgwNVRRZklHN2FIMHkxc0hQTzVGQmt2cE9RUEJUSXFj?=
- =?gb2312?B?dkQxVUFhWVlwNUxxeFlVN3FhbVZ0NkREVnZTYXJXV3NKY29vOUNJWE9PdUpT?=
- =?gb2312?B?UlVjMURIaVAzMERCNUdMSndHTERqU3N0RmE1SW40MG1GMzJnNEtNb3JEa3U1?=
- =?gb2312?B?ejEweTRSZUZmNlpxTExKdlpJRys2QjJUM3F1clJEbDFpQ1piOU9yRExsS1NC?=
- =?gb2312?Q?HegkAlD1sjfQD5YuX/DU+f5Mr3vTwyg2dyxGFfyMQQ=3D?=
-Content-ID: <FE66029A66B4B14BB5BFC1D9DD499E70@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?eEh2SHFVaUJsOVFDcG5iUVZkajNNMmFFb1FMSWtuc1pDZm0wTGgvd0lWajdx?=
+ =?gb2312?B?QVVaWDhXMVZudU50MUpwdTZydXpzdU5aUzRVWnY0VE1SWmV3T3B4SVJpTnJY?=
+ =?gb2312?B?YVVGZXZXN0h2SFFFcUFpZjBCRW1NKyt1RnlsRkhvYnZxMEZpQW9XNWc2bkZQ?=
+ =?gb2312?B?cVV3VXN2cUo2d0NML01oanZkeVRBYmRwQlRPU1ZIbjZRY29KV041L2Mwbjkx?=
+ =?gb2312?B?NVJSYXYwNFZicFlYV1dLTFc1L1lNdytVdDRGRkdoZUlMemtBeGRISVRuU3Vv?=
+ =?gb2312?B?ZEpiOFo0OWZrRHQwMVlrQUJZTk9KRm1tQnRVejhYVU9kMWdpT09oWlljUU5z?=
+ =?gb2312?B?WVJ0ZFpNbXZ6d3gycUNmeWtjWm5uWjAreGJKY0lObUk2N3FZcnhGdDQ0QzdV?=
+ =?gb2312?B?MVFhTXRYTk0zaDE0QXptY0krcllJaTFIaTVTQUVNcUg2UXl4dVNPNWdCMlVv?=
+ =?gb2312?B?eDh3c1RoQnF3aFUzNlRoZ0pPNzFkNlJyMmEyaGZPeS9iUm9JTDYvb3FqbzZU?=
+ =?gb2312?B?V3FpS3dqL2xRaEhucXNPU1JuLzQ2UWVIWVhUWnYwMUJjVDl4cVRKOWwxWnFj?=
+ =?gb2312?B?ZllrWDB4amNwM0puVnRuTTQxUkFuTVNyY2FZdHBaU2doU1FuU3UvQ2tpcVdm?=
+ =?gb2312?B?YmpRTS9oZnBpRFcyWGZXamV1aFlPbmsweC83NTQ2djBvRnF3dnhUVS9VN1pH?=
+ =?gb2312?B?V2VSSHRhcENhWjc5djU2K3RvMUVJcDh6MFM3cnBsQTBNOE5SM0hzQkVHWHBW?=
+ =?gb2312?B?TVVkQjAvUzBNS1dNdTIwTm9NNEVIU1BpSUE4bHlxditadndLYWg3c0xOUUhC?=
+ =?gb2312?B?endCdEVsbUtLQ0lJNE1seGFPTHlBb3pUNUlTakl6dzNWVHlOc2lqMmdDWjha?=
+ =?gb2312?B?TGpIU2krOGoxQy9GWStIbTZZdWFaa2NMUkZUd1FtK1NDMmlhNUZFNzlaU3Ju?=
+ =?gb2312?B?NFM5Z1RFbFlIbzRYWkt6bmY0UTFTZkMxcDU3SUY2Rmh0WUo5eU0rZXNmS0Z0?=
+ =?gb2312?B?ZEMzWklKWW1RM0hlK2ppNmxkcjNNMFlDcS8vK0ZUVjUvd1BLdHdaVmZJUzJk?=
+ =?gb2312?B?STZBdmtXY1NPdllPY1dpWUIrcmFNSmZTWHRTaEYwT1RrOVpJSFkvZzk4Mk52?=
+ =?gb2312?B?cGN4d2Z0enhWSlVXNDdjV3pLbDFvbnJmWmxpTWZsU3FyWHZrR2lQNU9ESGs2?=
+ =?gb2312?B?VVI5UEErc2dKV0RBbDhFRlowVXAveEVkcWtxN2N4WGRNek9teHNkQ1IxQ3dp?=
+ =?gb2312?B?MXdKYnNETEVJWjJXVTVmWW13Nno2bHZmcnRSaTJpU2pjSGx2RWJ0RkdvZFFy?=
+ =?gb2312?B?K2lqOUczYXZnYmx4cmJPOTZsSHdsY2JTMG10ZWVlWWlTcjhaamUxWlBTR0hZ?=
+ =?gb2312?B?clIrOUJKY0JjS3NZVk5KZEVpOWZ6dDBrdkZHOVBCKzNjckVZZ2RucGZvR3BS?=
+ =?gb2312?B?Uk5TUERDL0xBeWIrRWVDczhlRUgreDhzdmVubkl4QytEbms5SENmd2RzTUZz?=
+ =?gb2312?B?T3ZxSUR0bmVQMlpMMkQ0S2EzMkFpQzI3OGJRWDNJQmo5U0pmSlc0ZWM5aXVF?=
+ =?gb2312?B?bmRGMmpFVXNyL1g4UUlQSzE1TmRMWVcra2NwK085ekx3QTJJR0tHTGlWUHda?=
+ =?gb2312?B?YmVjeHBTRlF5QzFERWZMdUJQYTkzenU1WU9OZU5Fd0VsaHRDMkhRZWVOSjU5?=
+ =?gb2312?B?MnJkcVp6WC9DNjlNdW5rbzVhQnJFbU51T1lXSmN5RzkwL0FlVWlhQkxRT1Fy?=
+ =?gb2312?B?cjFhZVgwL0s1VVUvVXkzem92UitEYnRMOHFXbDZpSFROVWlWQ3hjcSsvYncy?=
+ =?gb2312?B?UzNqZUQ3TER3RUFTMnJDaUtHenlkQTRFK0dZNUtVdGhRQzA5STBvY1J3RXBs?=
+ =?gb2312?B?WXRRRG05SDhaSTQ0WU9vTG4xZzFRTld1bUhrZUsrODVUcDIvWUxOYUJ5TmNS?=
+ =?gb2312?B?WVJ0YVlMbjM3cjRiby9uMEJGbHhna3FKdmZwREtSTVAxMHdZYm1wUTkxeTRD?=
+ =?gb2312?B?d3BDM0JxRyttc1M5MVdWMVdWTDYxd3RrNEFrdHpUajhZNytBUzNTSHR4aUZj?=
+ =?gb2312?B?eWFNbzE1WDB5NHJIMDUva3l1ZzMraHcvU1ZQNmZ6eXhoUWFsZnc5TGp5RFN3?=
+ =?gb2312?B?Qm90dDE5S241VHhPdmVGRFRFNW5HT1JxZG54akFEQ1pLZ2J0WTZNWHR1Ykww?=
+ =?gb2312?B?R2VVajhJOTlkN1BGbjRhdmJFMkg1Y2tQKzJHNDdMaHpNQkdmcHUreVpHYVQx?=
+ =?gb2312?Q?CVvqsm1U+z04FkQ7CqWGVqbNtgSGVkqfNpf4kwL56I=3D?=
+Content-ID: <5A5F5F607252CC4A93DDDB72564E681B@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e27725da-14fd-425e-28a6-08d9d0bb25f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2022 02:20:46.3321 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37c686dd-db27-49df-e25f-08d9d0d9c147
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2022 05:59:51.8049 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fiC1ZL+9rCn2ZCNSbTBq0X4tHU7fcxqc/IX+c/EccxHn9nyUs0/wia3OJ2ET0GEhYsrUbeDOKYW0QcQwsoBysjV28Deoh3XIoKOLBABgIbU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB2318
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: kkWRgrhk4OzyXUp5MGeB3EU0WRR90ViVqhtGPeLElO0/joQOyB8Pc9F2Rq1Y8gwS7u1DzOiVZ2byacONUX2EsUo4+hl5wIeNY6Pd88CLoZY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB2943
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib/tst_test.c: adjust the tst_kconfig_check
- position
+Subject: Re: [LTP] [PATCH v1 2/3] shell: add kconfig parse api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,16 +164,187 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril
-> Hi!
-> Good catch.
+Hi Petr
+> Hi Xu,
 >
-> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
-Thanks for your review, merged.
+>>>> +'$TST_NEEDS_KCONFIGS'.
+>>>> +Optional '$TST_NEEDS_KCONFIG_IFS' is used for splitting, default value is comma.
+>>>> +Optional '$TST_TCONF_IF_KCONFIG' is used for deciding how to exit the test if kernel
+>>>> +.config doesn't meet test's requirement, default value is 1(TCONF). Otherwise, just
+>>> I wonder if we need TST_TCONF_IF_KCONFIG functionality in the test or if it's an
+>>> user request (i.e. user like variable LTP_TCONF_IF_KCONFIG doc/user-guide.txt).
+>>> Because I'm not sure whether test would need it, but I can imagine user want to
+>>> have test running even kernel config is not available (e.g. embedded platforms).
+>>> Or maybe we need both user variable and test variable.
+>> Oh, I misunderstand the usage.
+>
+>> I should use TST_TCONF_IF_KCONFIG for non-found kconfig file instead of
+>> non-found kconfig list.
+>
+>> I think one variable is enough.
+>
+> OK, but I'd like to know others' opinion what's needed.
+> Cyril, Li?
+>
+>>> Also not sure about TST_TCONF_IF_KCONFIG name, IMHO "IF" should be replaced to
+>>> something which describes what it does.
+>> Thinking a good name isn't a easy thing.
+>
+>> how about TCONF_IF_NO_KCONFIG?
+>
+> Well, I was not sure about "IF" part. For use in test code it should have "TST_"
+> prefix, for users to set it should have "LTP_" prefix.
+When I write this v2 patch, I think we may introuce a 
+LTP_KCONFIG_DISABLE macro that can disable kconfig parser function whole 
+for the situation that some embedded platforms doesn't have config. So 
+we don't need to distinguish whether kconfig file doesn't exist or perms 
+leak or invalid config expression.
+
+code may below
+static int tst_kconfig_disable()
+{
+         static int check;
+
+         if (check)
+                 return check - 1;
+
+         char *env = getenv("LTP_KCONFIG_DISABLE");
+
+         if (env) {
+                 if (!strcmp(env, "n") || !strcmp(env, "0"))
+                         check = 1;
+                 if (!strcmp(env, "y") || !strcmp(env, "1"))
+                         check = 2;
+                 return check - 1;
+         }
+
+         check = 1;
+         return 0;
+}
+
+...
+int tst_kconfig_check(const char *const kconfigs[])
+{
+         size_t expr_cnt = array_len(kconfigs);
+         struct tst_expr *exprs[expr_cnt];
+         unsigned int i, var_cnt;
+         int ret = 0;
+
+	if (tst_kconfig_disable())
+		return 0
+	...
+}
+
+Also, this macro is easy to understand and we don't need macro ie 
+CONF_IF_NO_KCONFIG or TWARN_NO_IF_KCONFIG. Any idea?
 
 Best Regards
 Yang Xu
 >
+>>> Also this patchset is about syncing C API functionality with shell API. But you
+>>> introduce TST_TCONF_IF_KCONFIG only for shell. Shouldn't it be functionality for
+>>> both parts?
+>> Yes, code maybe as below:
+>
+>> void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len)
+>> +static char kconfig_flag;
+>> +
+>> +int tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len)
+>>    {
+>>           char line[128];
+>>           unsigned int vars_found = 0;
+>> +       const char *flag = getenv("TWARN_IF_NO_KCONFIG");
+>> +
+>> +       if (flag&&  !strcmp(flag,"y"))
+>> +               kconfig_flag = 'y';
+>
+>>           FILE *fp = open_kconfig();
+>> -       if (!fp)
+>> +       if (!fp) {
+>> +               if (kconfig_flag == 'y') {
+>> +                       tst_res(TWARN, "Cannot parse kernel .config");
+>> +                       return 1;
+>> +               }
+>>                   tst_brk(TBROK, "Cannot parse kernel .config");
+>> -
+>> +       }
+>>           while (fgets(line, sizeof(line), fp)) {
+>>                   if (kconfig_parse_line(line, vars, vars_len))
+>>                           vars_found++;
+>> @@ -198,6 +210,7 @@ void tst_kconfig_read(struct tst_kconfig_var vars[],
+>> size_t vars_len)
+>
+>>    exit:
+>>           close_kconfig(fp);
+>> +       return 0;
+>>    }
+>
+> Sure, once we agree what should be implemented.
+>
+>>    static size_t array_len(const char *const kconfigs[])
+>> @@ -504,7 +517,9 @@ int tst_kconfig_check(const char *const kconfigs[])
+>
+>>           var_cnt = populate_vars(exprs, expr_cnt, vars);
+>
+>> -       tst_kconfig_read(vars, var_cnt);
+>> +       ret = tst_kconfig_read(vars, var_cnt);
+>> +       if (ret)
+>> +               return kconfig_flag == 'y' ? 0 : 1;
+>
+>
+>
+>
+>>> More notes about this variable also below.
+>
+>>> BTW github actions have probably kernel config on expected place, which means
+>>> that most of the new tests TCONF, but tst_check_kconfig05.sh TFAIL.
+>> I guess we can export the  KCONFIG_PATH to solve this problem. But I
+>> don't know the expected place on github actions.
+>
+> Sure, for github we can find config place.
+> But this can happen to user who runs the test. IMHO test should not fail if
+> user's system is without config. That's why I'd like to have a variable making
+> errors non-fatal.
+>
+>>> tst_rhost_run 1 TCONF: veth(null)      0  TWARN  :  /__w/ltp/ltp/lib/tst_kernel.c:110: expected file /lib/modules/5.11.0-1022-azure/modules.dep does not exist or not a file
+>>> 320
+>>> (null)      0  TWARN  :  /__w/ltp/ltp/lib/tst_kernel.c:110: expected file /lib/modules/5.11.0-1022-azure/modules.builtin does not exist or not a file driver not available
+>
+>>>> +use TWRAN and continue to run test.
+>>>> +
+>>>> +Now, we support the length of kconfig list is 10.
+>>> Why 10? Cyril suggested that in PR, where he suggested to use separated
+>>> variables:
+>>> https://github.com/linux-test-project/ltp/issues/891#issuecomment-989712350
+>
+>>> But for string used like array there is no performance limitation, thus I'd use
+>>> something like 50 or 100. Because for certain IMA tests there are at least 6
+>>> kconfig requirements, thus>   10 could be hit.
+>> If case needs more than 10 kconfigs, we can use&  ie
+>> "CONFIG_EX4_FS&  CONFIG_XFS_FS&  CONFIG_QUOTAL_FS, CONFIG_PROC_FS..."
+> Sure. I just meant there is no reason to put low number and then workaround it.
+>
+>>>> --- a/testcases/lib/tst_test.sh
+>>>> +	tst_check_kconfigs $kconfig1 $kconfig2 $kconfig3 $kconfig4 $kconfig5 $kconfig6\
+>>>> +			$kconfig7 $kconfig8 $kconfig9 $kconfig10
+>>>> +	if [ $? -ne 0 ]; then
+>>>> +		if [ $TST_TCONF_IF_KCONFIG -eq 1 ]; then
+>>>> +			tst_brk TCONF "kconfig not available"
+>
+>>>> +		else
+>>>> +			tst_res TWARN "kconfig not available"
+>>> This is quite strong: either test "fails" due TWARN non-zero exit code or it's
+>>> skipped. I'd prefer to have user variable for systems which are properly
+>>> configured (user will make sure all kconfig options are set), but it's just
+>>> missing kconfig due system configuration.
+>> I plan to fix the variable usage for non-found kconfig path/file instead
+>> of kconfig list.
+>
+>> Best Regards
+>> Yang Xu
+>
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
