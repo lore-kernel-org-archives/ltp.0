@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EEB3C433F5
-	for <ltp@archiver.kernel.org>; Fri,  7 Jan 2022 21:23:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2CB8C433F5
+	for <ltp@archiver.kernel.org>; Fri,  7 Jan 2022 21:23:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D3133C92A3
-	for <ltp@archiver.kernel.org>; Fri,  7 Jan 2022 22:23:15 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id F1D463C04A0
+	for <ltp@archiver.kernel.org>; Fri,  7 Jan 2022 22:23:24 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 31FF33C8850
- for <ltp@lists.linux.it>; Fri,  7 Jan 2022 22:21:22 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 107E93C04A0
+ for <ltp@lists.linux.it>; Fri,  7 Jan 2022 22:21:21 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CA8466005DB
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 30324200069
  for <ltp@lists.linux.it>; Fri,  7 Jan 2022 22:21:21 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6ED38212BE;
- Fri,  7 Jan 2022 21:21:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C9B1E21126;
+ Fri,  7 Jan 2022 21:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1641590481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1641590480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=r8dbMHZqI08WJBAgemzVhkLhZ3EWRPCFMhmTDwRu2Bc=;
- b=UAq0FKgapB07PToMUMbcNAyhMsxefHOu+HE38l8xP21ppIkXhCPwSx9T6rkjuvOMkaWyMP
- 7/opQ1XxtEJVuSe5J43OGhM7+qOPu24oNrV7dR1ps7j87WUJA1bGI8WlQjTAPUn47vucpq
- 13+AX2KQc7o8SGwkr3Dl/bZ+u3ZaA4o=
+ bh=KilOEmOiCn/o0MJCDCKwt17D5Jmahqq7qZiN12loUK0=;
+ b=mrxqbLDXAgAvneu6HKjAG7+FHRIckI1g3t2Wq9YDN4WeE/CK4DdLJ2xvdagSD2z0PBkssC
+ TugHiBF7hGQh+XGNDGnZLGq8UBKcromiOwp9G3gRfria1GxzLqZ4e6KNqh7tDPV9Ewm7n2
+ HdL3a8VMoOVB5yrN7UWoeYgiF/014hc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1641590481;
+ s=susede2_ed25519; t=1641590480;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=r8dbMHZqI08WJBAgemzVhkLhZ3EWRPCFMhmTDwRu2Bc=;
- b=DDw3Abmudvf5ka4Pk0BO3/5v4gDj0c8KfwzP2SwNFranUQlGmtNonn16LEHfxqKfKpjCVP
- HEIZ9kFER+w2+TDA==
+ bh=KilOEmOiCn/o0MJCDCKwt17D5Jmahqq7qZiN12loUK0=;
+ b=jqWatWVagdMtNhb53AHXfZXAeXh24fxQaHI06JmmLOy30AGlbgqfW6Qx0EsWWYljccM76D
+ bvfY4aldbTC/ziCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4790B13D44;
- Fri,  7 Jan 2022 21:21:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2AF213D44;
+ Fri,  7 Jan 2022 21:21:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ADhtD9Gu2GEHFwAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Fri, 07 Jan 2022 21:21:21 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id GEmhJdCu2GEHFwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 07 Jan 2022 21:21:20 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Fri,  7 Jan 2022 22:20:58 +0100
-Message-Id: <20220107212058.19768-12-andrea.cervesato@suse.de>
+Date: Fri,  7 Jan 2022 22:20:55 +0100
+Message-Id: <20220107212058.19768-9-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220107212058.19768-1-andrea.cervesato@suse.de>
 References: <20220107212058.19768-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 11/11] Add wqueue09 test
+Subject: [LTP] [PATCH v4 08/11] Add wqueue06 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,20 +82,20 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test is testing WATCH_META_LOSS_NOTIFICATION event
+This test is testing NOTIFY_KEY_CLEARED event
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- testcases/kernel/watchqueue/wqueue09.c | 52 ++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 testcases/kernel/watchqueue/wqueue09.c
+ testcases/kernel/watchqueue/wqueue06.c | 39 ++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 testcases/kernel/watchqueue/wqueue06.c
 
-diff --git a/testcases/kernel/watchqueue/wqueue09.c b/testcases/kernel/watchqueue/wqueue09.c
+diff --git a/testcases/kernel/watchqueue/wqueue06.c b/testcases/kernel/watchqueue/wqueue06.c
 new file mode 100644
-index 000000000..ac49bb8a0
+index 000000000..eb8fab82f
 --- /dev/null
-+++ b/testcases/kernel/watchqueue/wqueue09.c
-@@ -0,0 +1,52 @@
++++ b/testcases/kernel/watchqueue/wqueue06.c
+@@ -0,0 +1,39 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
@@ -103,45 +104,32 @@ index 000000000..ac49bb8a0
 +/*\
 + * [Description]
 + *
-+ * Fill the watch queue and wait for a notification loss.
++ * Test if keyctl clear is correctly recognized by watch queue.
 + */
 +
 +#include "tst_test.h"
 +#include "lapi/keyctl.h"
 +#include "common.h"
 +
-+static int data_lost;
-+
-+static void saw_data_loss(struct watch_notification *n, LTP_ATTRIBUTE_UNUSED size_t len, unsigned int wtype)
++static void saw_key_cleared(struct watch_notification *n, size_t len, unsigned int wtype)
 +{
-+	if (wtype != WATCH_TYPE_META)
-+		return;
-+
-+	if (n->subtype == WATCH_META_LOSS_NOTIFICATION)
-+		data_lost = 1;
++	if (wqueue_key_event(n, len, wtype, NOTIFY_KEY_CLEARED))
++		tst_res(TPASS, "keyctl clear has been recognized");
++	else
++		tst_res(TFAIL, "keyctl clear has not been recognized");
 +}
 +
 +static void run(void)
 +{
 +	int fd;
-+	key_serial_t key;
 +
-+	fd = wqueue_watch(1, &wqueue_filter);
++	fd = wqueue_watch(256, &wqueue_filter);
++	wqueue_add_key(fd);
 +
-+	key = wqueue_add_key(fd);
-+	keyctl(KEYCTL_UPDATE, key, "b", 1);
-+	keyctl(KEYCTL_REVOKE, key);
-+
-+	data_lost = 0;
-+	while (!data_lost)
-+		wqueue_consumer(fd, saw_data_loss);
++	keyctl(KEYCTL_CLEAR, KEY_SPEC_SESSION_KEYRING);
++	wqueue_consumer(fd, saw_key_cleared);
 +
 +	SAFE_CLOSE(fd);
-+
-+	if (data_lost)
-+		tst_res(TPASS, "Meta loss notification received");
-+	else
-+		tst_res(TFAIL, "Event not recognized");
 +}
 +
 +static struct tst_test test = {
