@@ -4,75 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28091C433EF
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 08:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31C88C433EF
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 08:15:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 40ABF3C92F1
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 09:11:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id CD41F3C9377
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 09:15:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4F7643C051B
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:11:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id ACE9D3C051B
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:15:03 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EAF20100034B
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:11:05 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 36ED5600055
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:15:02 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1641802264;
+ s=mimecast20190719; t=1641802501;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
  bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
- b=J6mc0Xg2DkTUnB0foeWAzUEXcNDlbZrIvddZq1YfaCksovoDCxYxZXJ/u4LpkJY6yjlrz3
- YjCuQHN31o4qwFhuoUtTnvaXKwZ4X6TFEGFMND7KB4a3/7hrNFoWulVfATFH56IZjG0Czn
- qo1duuf6Hlh0jDkht+WjRkhpCeKJfa0=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ b=HUOxcdWXcGk6fGNWIHpcxJFGGbi3GxBzEBhPQSrwggOFeWt2QLqpOX0MhbMF5r5e2Uo4YQ
+ 7NRVvJa0xFjOOnzGpbRB6sDfBIADcQX+kSdUh5Ucg8vWQIradVg0rqmBDJQLFI+h+lEJmC
+ PaUAMDQ3RWj9zd9yuTRN3cyLinwtXSo=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-628-49v4SxDIMNGrAOHsuGzjaA-1; Mon, 10 Jan 2022 03:11:02 -0500
-X-MC-Unique: 49v4SxDIMNGrAOHsuGzjaA-1
-Received: by mail-yb1-f197.google.com with SMTP id
- v48-20020a25abb3000000b006113ce63ed8so1631798ybi.22
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 00:11:02 -0800 (PST)
+ us-mta-562--XoyibgiMVG3jjugsXDlIg-1; Mon, 10 Jan 2022 03:15:01 -0500
+X-MC-Unique: -XoyibgiMVG3jjugsXDlIg-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ e137-20020a25378f000000b0060c1f2f4939so25997181yba.3
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 00:15:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
  bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
- b=CTffk30kvWNHDFh10QrAQeaL988eivSJiNe+n4+qCBx34ACy6WMIBcW5Ue3TeNbkfy
- Dv2wLnn8+M2bcFeHgFaBMrgjw66aQKTtKn2743wrUehXAbR3Cvzm6F9a5z5nqHzDhoiJ
- pLH9x/JCsbHZ0PvdBRw4IaG6kOwEiMclXKTiAWZxTwWekrznHq3vvH1r/SMSb1IeaUsM
- QDSau5I2yZRYoqPMpZ8u/KhehHkBm/xSMjFihU2envrIV//l6aUCaG+G/FpV2NRRVCIV
- tcK/SpZ2TSs0heJYhO3EqVrAAJCGBS3yW9Nx0UR8Au61vvUS7VLDohqc4ETXJ60tjjSD
- WFMQ==
-X-Gm-Message-State: AOAM533phB3aD5CDWMOP/GRUOgK4Z0i4NEeFI0PxNPth6wAh/h55rOXq
- oTwoI/wjp60ySPMvvMCi+6yIWmaRHqXVxESv5oaCTjULePnQREmrUt28Bn9xqRdlNdXJYjVxDXb
- exQm7B8fr84+bf067PB/8smqejRo=
-X-Received: by 2002:a25:6745:: with SMTP id b66mr11806135ybc.145.1641802261627; 
- Mon, 10 Jan 2022 00:11:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw5mUaRodeHKbxlS3R/HIjsetoI0YfmrIMczLW3SBenxdZZdab0ykiiD97Qk/ef0TGJKsvM1abk2EDIAqnXOe0=
-X-Received: by 2002:a25:6745:: with SMTP id b66mr11806116ybc.145.1641802261298; 
- Mon, 10 Jan 2022 00:11:01 -0800 (PST)
+ b=NfysnsqKdL8V9/EAZLVHTWiz6HSYnlklkcd98gRMWxy/bK4yaP8+NdC2kY8dlnj5WI
+ J7S8WtEWT4tJ69F29Ze/HYSNxCFdZoBbpAEyG2Cj2+8IMrjY8w6S8wBudsyKDgG1ZdHo
+ 6UT7fAfMrXGwx95kKvZuUBDv/5M7cXrMRc3XK2vCEb4SnSpRTbasvzGtXxLCvQoMStZX
+ l8/NbxeLLfO5yiU9clRF0t5omsQg8EzhVIwxK9f4smqyste7SEaUH0a9jsxij24OJQ/B
+ sGw5mObxa8B6WyaTRtszH88C1kQX/ksDECZToZf7mLpu/LUhJjkNkTXMHy8DvFTyZiW3
+ D3JQ==
+X-Gm-Message-State: AOAM5313UprDBHqxI3If+viWlnJpF9NlxokgLa/7MFGccgx6Q1QBUmkz
+ gY0HDG2hn7zZ+vKy7XzfTdGgWXgS3f29AJ01fibC/IcdrEiLqr+6XbwrxtH7Gg3n6SYnbh9Xkbt
+ 7D/RfzP8CxYh2YqrvwzC2rD3IFdE=
+X-Received: by 2002:a25:b0e:: with SMTP id 14mr501528ybl.728.1641802500516;
+ Mon, 10 Jan 2022 00:15:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJykgy1HfSQgj/afGpSFWYaRd8w+gCO7EiOAax3gEwRmlASdYo5VBqZDZmAjgiEYBg8sVxPTawBNH6mYF+lPmrY=
+X-Received: by 2002:a25:b0e:: with SMTP id 14mr501514ybl.728.1641802500314;
+ Mon, 10 Jan 2022 00:15:00 -0800 (PST)
 MIME-Version: 1.0
 References: <YdbQmTJK73804UYT@yuki>
  <1641779349-8424-1-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1641779349-8424-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1641779349-8424-2-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1641779349-8424-2-git-send-email-xuyang2018.jy@fujitsu.com>
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 10 Jan 2022 16:10:48 +0800
-Message-ID: <CAEemH2fg6ZDwCMsYJ3O2PJnEg7V+QPZfqqX_i8ckOZ7EjbeZFQ@mail.gmail.com>
+Date: Mon, 10 Jan 2022 16:14:47 +0800
+Message-ID: <CAEemH2emC5fPQOfTdKyVHVv2_0Y6bhJ_RZ667i4fbWS9iy_xDA@mail.gmail.com>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/4] lib/tst_kconfig: Modify the return type of
- tst_kconfig_check function
+Subject: Re: [LTP] [PATCH v3 2/4] lib: Introduce KCONFIG_SKIP_CHECK
+ environment variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
