@@ -4,90 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2ECEC433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 06:26:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C636C433EF
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 06:38:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C7E13C6AFE
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 07:26:01 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7A48E3C937D
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 07:37:59 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 517F93C6AAF
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 07:25:19 +0100 (CET)
-Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
- [85.158.142.112])
+ by picard.linux.it (Postfix) with ESMTPS id 2BC9B3C6AAF
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 07:37:49 +0100 (CET)
+Received: from esa6.fujitsucc.c3s2.iphmx.com (esa6.fujitsucc.c3s2.iphmx.com
+ [68.232.159.83])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6D2271401235
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 07:25:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1641795917; i=@fujitsu.com;
- bh=2hz4oF5bt+tt93lV6YoUIFr+PHyo9gI/ZxOb0JhfbzM=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=i7z5tmgkWgH1Wt9AO6gZJ7Z6OUhlUlWNvj8e7sBVDhSTtRVeAc/v90LWuzv2C4j9f
- ujWYDKkO0Q1Q/lwqjH30HkyfgOhbmuNWZM/C1mFacsdXZ3vRAYQWn26B9RekVPgSbp
- c/a2eB7s3nhWivWzcR6W0wCTfKvAI7zgj949e1wqzyLQhzrFYf00MM14OS51fTHtPm
- 78Fy5o8E2bjorpXNSfydVyceeBSedYj+EZR8Mg7Z7v6iDXsxiML4Cm3SFvnDN0NGHT
- sbRvS1avXWzL3HgF2l68o0AqDTVoVPl7LVou1mZGIUB+vpA2W455WL6nKaL4V7ysmT
- 0Ql1MlzpKcWRg==
-Received: from [100.115.65.216] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-a.eu-central-1.aws.ess.symcld.net id 23/64-06990-C41DBD16;
- Mon, 10 Jan 2022 06:25:16 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFIsWRWlGSWpSXmKPExsViZ8ORqOtz8Xa
- iwdJJ6hYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8b97xNYCtYlVLx8Mo2pgbEloIuRi0NI4Cyj
- xK6ONjYIZyeTxNNV15ggnD2MEuubJzB3MXJysAloSjzrXABmiwhISHQ0vGUHsZkF1CWWT/rFB
- GILC5hI7Hr2FGgSBweLgKrEhq0uIGFeAQ+JSduugLVKCChITHn4HszmFPCUuD1vOguILSSQKP
- H2Ry8zRL2gxMmZT1ggxktIHHzxAqpXUeJSxzdGCLtCYtasNiYIW03i6rlNzBMYBWchaZ+FpH0
- BI9MqRrukosz0jJLcxMwcXUMDA11DQ1Ndc0NdQ0sDvcQq3US91FLd5NS8kqJEoLReYnmxXmpx
- sV5xZW5yTopeXmrJJkZgMKcUu+/bwfii76feIUZJDiYlUd59528nCvEl5adUZiQWZ8QXleakF
- h9ilOHgUJLg1TsAlBMsSk1PrUjLzAFGFkxagoNHSYQ34hxQmre4IDG3ODMdInWKUZdj5+nFi5
- iFWPLy81KlxHm3XAAqEgApyijNgxsBi/JLjLJSwryMDAwMQjwFqUW5mSWo8q8YxTkYlYR5K0G
- m8GTmlcBtegV0BBPQEckcYEeUJCKkpBqY1jnHrmhlV2+9ckRqGdfFP/MqlxjOjA1/6rXNfF+Z
- R45gf7Buan7Xqh9BJur9vT9Yp5/7nLki5d/8NyoVcVwx3HPWy5yMnFH2jKnjo8uqxM133zZrT
- j2joPGleMqv9D/LTb10NAznTk+tvLSmW6yYnfXTtVkqOS0zL51oYauZvH+NkMKPR5dP5JpdOZ
- yp7v9/zqKD/if2hs71EahnPnloVgp/h5pr2MWKT4eNXFzkDu1V9BR4VpC13m52zlmh/Ys+O7M
- /faOkU/V3tgbXkeU5ipE/V3QeXFCxsang5nkJE1tJvWnXpzcVnF68dsaXvv1c1f0d7w1PRGzr
- cn3RPTX8mccrHQaWG6vV3LUdH700UWIpzkg01GIuKk4EAIgBtBRtAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-9.tower-545.messagelabs.com!1641795916!148304!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 31498 invoked from network); 10 Jan 2022 06:25:16 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-9.tower-545.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 10 Jan 2022 06:25:16 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id CA3E01001A6
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 06:25:15 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id B7D8810019B
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 06:25:15 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Mon, 10 Jan 2022 06:09:44 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Mon, 10 Jan 2022 09:49:08 +0800
-Message-ID: <1641779349-8424-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1641779349-8424-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <YdbQmTJK73804UYT@yuki>
- <1641779349-8424-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 68C551400123
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 07:37:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1641796669; x=1673332669;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=szO3chWCF+HUPpSKunkFYNsKqzOFEAH2AOSE2R2+0IM=;
+ b=Oxm/QRdYKrtDmVwyAmxPHBy8FvgGXtNkeIcrjpSnAxArDwFbs7AQYI1l
+ lcxH/37SRW1zS8fbrqbMrCGs8uGcnlldWIX7FttKR/ortVKHiUO0nabrV
+ d+3t5m4XGqIFzMejSaUtQ8RBS2XaKMqA27IGPmd6QbAsdQ1IohZEwiAAR
+ Fr6R7JTQnzJPg3a93aR58XtwfYl1Xcoz60Eod6Z4e4G2IEKk1AOLzhMRN
+ gVl2FQ4twrNSgvvDXe2S4eCiKGFw75wWpgs1KunefZk8cRu4nFwME6L1X
+ IIxxE0EZVPGLlkIzd4bJyapsAFNOIC8+uhn4lv8p/lAtQVZGG48jhdc4h Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10222"; a="47306669"
+X-IronPort-AV: E=Sophos;i="5.88,276,1635174000"; d="scan'208";a="47306669"
+Received: from mail-tycjpn01lp2175.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.175])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jan 2022 15:37:47 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bx82MS1OZ6I4o1Qo9S6sC4KxIbFsGeCRxdqmyGZBxDkLO0upJxTd01FA29mXfPHEbWMQoE9sqZVL5wvenebwBiSnTU1UsKD13Za4Dm8Jw6blXescClcxoGlTzS8AQo1m8atTiTJGrSX/gi2M19Z7Git6cgxwMWvaGqmyi5BtVLsGrqQrUOzVtJ2g5h2po+miro/87LF8dnOdFzyDa6L7vaIpIpntt0B+doDedaqCaJ+kG5q0Rod8/RoclA/GcUac2nvXHxXPa0L/h0VCSPwVHRvtx2niuCrtNfWivOKdTgBcHIi27n5iaG2uXOlaR5wZzMxuzzEqTyd7aliASKaJzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=szO3chWCF+HUPpSKunkFYNsKqzOFEAH2AOSE2R2+0IM=;
+ b=FTRcqY2q1mT2QvIQtZsZFV+qMMF0xXZCMf2kVpvCRHps2IXd4rk0ZL4/OLyZ+FTIE13hSXqdc5/ptozrUY+Rrz9jjrgE+GZTmTAnThb+g+Rx7BDZJffWYE/r5Rb/gv6z3UhdJ+qH0/aCwLenh98RqEKuMz0PrF30cNBKpwvxUKb4hVgCMjTvAPQEL03SozVE51c35vIkha1/f22TVhcBa5kQgnynTSM8FK1H3FgiOASr4RKbwOz4OCAh5UrsqLgpXf2nBA6g6c1Q3SvAOFtlaURdb8WONy2PYZtqPwKL8v4lpqK+tfEZmFbv25VyDbkrPUCM8lGkZhL/hV3oyuD4Ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=szO3chWCF+HUPpSKunkFYNsKqzOFEAH2AOSE2R2+0IM=;
+ b=Au1NV6F2BOuJRDTVmbi0lFm584eMrJHLzZvGmON+VMRMGLJGdeV1VQsVeHhNNeDCvBLhIbUT+Y15l6p2naewrPhCJe4iMI3vUsKByr4Nl0STXMZxfnj4VZmv5c7mYFZZDuscr2HqcNFo/2UWN5HjbRKg1ktRctfUn+s2Vq8LSNI=
+Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
+ by TYAPR01MB4493.jpnprd01.prod.outlook.com (2603:1096:404:11f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.11; Mon, 10 Jan
+ 2022 06:37:43 +0000
+Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
+ ([fe80::9486:fa6e:4ac9:802b]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
+ ([fe80::9486:fa6e:4ac9:802b%4]) with mapi id 15.20.4867.011; Mon, 10 Jan 2022
+ 06:37:43 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Thread-Topic: [LTP] [PATCH v4 1/6] syscalls/quotactl08: Test quoatctl01 but
+ quota info hidden in filesystem
+Thread-Index: AQHX7/LHkAfOKvGU/ky0NkV6iB5JYKxXwGIAgAQ5FAA=
+Date: Mon, 10 Jan 2022 06:37:43 +0000
+Message-ID: <61DBD466.3050303@fujitsu.com>
+References: <YY0o7jAxgIHvmczq@yuki>
+ <1639380414-24390-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <YdhJhtWIYUjWdeAk@yuki>
+In-Reply-To: <YdhJhtWIYUjWdeAk@yuki>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: efdf4c9d-99ec-46b9-1c1d-08d9d403b4ee
+x-ms-traffictypediagnostic: TYAPR01MB4493:EE_
+x-microsoft-antispam-prvs: <TYAPR01MB44935B02676B8C2FC8FD4A8CFD509@TYAPR01MB4493.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: izQly6EwhgAP73Y9yOE1cKtSPWw4Ld+R+v8V2Bmx2j0x50MOhISuMkKG4iPLX6qpHlaq/izmbGcbjCLN3aDRVILnPWlm7+N42AjBh1wq0BLp7QU7Wt7yJcYphYhJqon8XFKNVXSxhwM+XhVa+WT0GqCipTaQnLv0M65wC6LU7PemAPiZCH4DHj+8ouChh3CgVB5RIwKXKWombnFU2Fbs/+b84oivvZuy8xb31o2f5eYWJOOu9EVcBU7jpn2Ko4biBsZczMb3SKbF/kkrkU/YFvyj0zA50EK3AwyIWf/745PirWBYi7fUvI3viOqbXIO+YTb2SitKHklosYy13uyRtdP5UlsgRtOJIRDbPk7pfo5gJg53dqoubQ439hTy+F6SGGAbN+c+zrFbDIKAeB+aRszgPbyt1WcB60bKlGuuIXKYeC3cx26wnaj1298E2zwxssCsCxzRwv/qUn4WEfhe6OZFF5mR/2fXZOJ3Yjj/GWOdIP9iVfvNX4v6OQE/QP2JTujLBqxKNpn/wfyKSzBhDbJKAMo3qM8chOrLrc+n2z+e2xN1jYVyLF/973wf2Sz+KIfMnTIkJ2qohtcGD58yALxiTqAxMXeuGqLBJwqC0rGWdj6nBF2C3eufhGnNhKU0PxffnHd8hf4je3sBZYJ/27k6HI8UEeaPGaaclnY2aa6mkmWUqseIv+zsewfgDilOwkAZvUnQEAUIDaGWrZUQnw==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(66446008)(91956017)(186003)(82960400001)(2616005)(66946007)(508600001)(6916009)(8936002)(66476007)(64756008)(6512007)(66556008)(4326008)(85182001)(6486002)(86362001)(36756003)(38070700005)(76116006)(6506007)(71200400001)(26005)(15650500001)(5660300002)(316002)(122000001)(38100700002)(87266011)(2906002)(33656002)(83380400001)(8676002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?R1B3YWxnU0M0VGJjQ3Eyc0J5eEt3QUtHMkI3WmI5UkEveEMyUzFnT3lzOXhD?=
+ =?gb2312?B?dCswVDdlV0dTMkFkRGJlb1VWalhoeHhIdDVkRERZUFhnM3ZZbDJja004QnpZ?=
+ =?gb2312?B?aFYzNlJsQmd1VThwM3NzdjRRa1haU09LR09FOFB3MXJBdk1MYXpLWTBVaG9B?=
+ =?gb2312?B?Mmk1RUVOWDdicWJmaDZJblJnaEx0eERveXh2dmpwR0ZJcDZ6YTZhbEg1YTYv?=
+ =?gb2312?B?Y3g4MlhqUVRYazhIYzNlVHhQT0JFRmpRM3FQMDkxVHRwY2ViZ0tVZjVKcXZ5?=
+ =?gb2312?B?SnM0YVhlMmcza1dGRTZyOVZJSmFzY1creXFZUlF6RGs0NXRxWkdNdEJsaTRC?=
+ =?gb2312?B?WHRKbWNUVFZ2RW8xbUpkbEkrQWRtVjl3cUVYV0ZsV0ZxMitwdGV1WFh2VU15?=
+ =?gb2312?B?TVdLbGcxSDR4V1FtOFBHQ01oVEpDblpHc0hVb3pobmVua1VoeVlxVkxwWnJI?=
+ =?gb2312?B?Tit5MjVnSmVmZHBwb1ZzTVU2MlhZQ0ZZdCtUTUpCWUloRkswQXBncGRiUVRw?=
+ =?gb2312?B?OUI5bldhaE14N2hkQ2xHS29Ub3hhZlNGYTU4ZW1QVzZTbDAxeHdWb3FPK3J1?=
+ =?gb2312?B?TDVkSTE4S2U4WHh0NGNYRnREWFhLZ0UyZmZHNXZla0VHa3FiRkc0VVd5RE13?=
+ =?gb2312?B?c3JvM0cvQUN4NDkzWkVQejhLcitGdTRPZUNuaStXUnJwL1pmMGxmNlRQdFQv?=
+ =?gb2312?B?WVJvWmRYREhtK3VxLzhrTUNyTWh3YWJhWXdEMXRRQ0xYakdwcmVRYXhTNDgr?=
+ =?gb2312?B?WER1Ti9uU1lHelJienJrMnQycUNLTE4rOVc5VlhPNzJaZ3E2MjQvemlUUmlk?=
+ =?gb2312?B?dlFNVWZ1amx3dlJxRStOYWJpWWZoNDF1TlNZc0VRRHVpZ0lIQzdiVk5TSlB4?=
+ =?gb2312?B?eDJPQXZkWWY4dHZLejNsRHYwS3FGblFmaHdUcE4zZmI0alVBa2Fkcllrd2M0?=
+ =?gb2312?B?d3NXOUhKSzRzVFVkWStFT2hWNkRyZjRLcll2VzNOK1RONWcxUW1OSjdXNFF5?=
+ =?gb2312?B?U1RNY1lYaStPVnBlVzZxeXJXM0hBYnRha056eThRUEJYZ0l0NE9sQTFLdDZH?=
+ =?gb2312?B?aGtyblpmQXZnMVBieDNJRTFkT1RSTHdxQU90VFFvSlB1VjcyRTdTcDI3M2xW?=
+ =?gb2312?B?NmlkOVJjUzhTQU1uRGMrYzl4M3ZIOWtXWTE5QjFXVG9tZDJrdGtEK2tYMW1U?=
+ =?gb2312?B?eE1IVDNzZTUvRGZpZlJiUmI0bC93cjJabVpncHc1MHpuRjBiRzAyblFwcnRJ?=
+ =?gb2312?B?TktGblZvZlpQUDJxaHRwMy9ISnhvRENJMkEzV0JrYWRKY2cwQlYrdGFRU0FB?=
+ =?gb2312?B?K2JKUnkyVmU2SmVHN1FsbUJRUVNocDZjRVJwY0o3T0lHNjRCNTM5L3NVN0JM?=
+ =?gb2312?B?QnBvclZQbEhTRXMzYkZrN3VVdHU4a0dBUWpWZGRNTUVrY0VGc01Pem4vQTJ1?=
+ =?gb2312?B?STZheGFZQjRCd1NyanlsTVZuU3RZVEVWQnROZ3FDR2k3Mlg4Ny9SNzBpRWZp?=
+ =?gb2312?B?M1ZDYUszQk9pVEFoRjF6bDQraEpZeGJveGdwU3k0cUFjd041RWVmaC93NnY2?=
+ =?gb2312?B?elkrU3BKMWpwTXdVN3BEVEdHNTJkL0ZtcmZ0T1pWWFRIM0dDQzhOWG5mc1U2?=
+ =?gb2312?B?QWc3T0NTbkpkYis2TWZZR1pjZmlCMDMxZFlXYmVJMDY4S3hxNXNqdDJFOWx0?=
+ =?gb2312?B?dm5JbnBXYVFTSHpvTnJzYzRGcEZLd1FNVjZRSmMycjNzc1RsamFzekxqNU04?=
+ =?gb2312?B?dzQ3VC9yNEFLY05sb0FWZE5hT0FpWXVDOWRCTFVIODBWeThMeWJTaGV5bjd3?=
+ =?gb2312?B?YkNTNEVLVHQ5bTEvTG9Ha3pBakpIRjhIeUZlb1lMMzdrSEF6bGNyQWVyVno0?=
+ =?gb2312?B?Y213cjZzTDV6b2o1VVk5d1ltOHJUWkExQjhhbmtnbzFhSzd0akNJMWpmdlJJ?=
+ =?gb2312?B?V2tLcVdZYnhVdUNvYnRjb284cURudlNrL2p2RStIb0xxY3RwVFVPYitGR0Zv?=
+ =?gb2312?B?TGRtdUZ3QVExNDJSRTIvZkM1bWVhNnZnVmM5TEYvT3N0WTJXcVc2bkMzWEJq?=
+ =?gb2312?B?T1owMlpRYmhzeExIZ21OczhvVENrbmtiTmg3RUZ0cWZmU3c0c2d0QlI3TXJZ?=
+ =?gb2312?B?c1pBaExwa2FreTNmbC9RdUVteXVVU3Vwd004Y1lYWTZNOU9ucm5NWms3Q0w1?=
+ =?gb2312?B?azJSMXNIQTU4RkVDOXRxSXNWK2R6NklvV2lieXpyYitjNmp6MGJuZzhJZDE3?=
+ =?gb2312?Q?IwKZL6GMSyiGeyYYYOWz6IgzzK/jRE8tBiB/zfxRjM=3D?=
+Content-ID: <829350D06BCB1946A1D1FC82C77E4B92@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efdf4c9d-99ec-46b9-1c1d-08d9d403b4ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2022 06:37:43.4348 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yz2+DH8AC5/hfLTJNU756ZXC8nlaMVi4097ATpJFRcHGL9WPcnzDI2CiSJVzj1NKr0OJ7RRG1/n/eOJk2ywKC4b7spmt7iaHVLi0b55YBDI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4493
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/4] shell: add kconfig parse api
+Subject: Re: [LTP] [PATCH v4 1/6] syscalls/quotactl08: Test quoatctl01 but
+ quota info hidden in filesystem
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,350 +160,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Use tst_check_kconfigs command to call tst_kconfig_check function in internal.
-It introduces two variables in tst_test.sh
-TST_NEEDS_KCONFIGS
-TST_NEEDS_KCONFIGS_IFS (default value is comma)
+Hi Cyril
+> Hi!
+>> +static void verify_quota(unsigned int n)
+>> +{
+>> +	struct tcase *tc =&tcases[n];
+>> +
+>> +	res_dq.dqb_bsoftlimit = 0;
+>> +	res_qf.dqi_igrace = 0;
+>> +	fmt_buf = 0;
+>> +	res_ndq.dqb_id = -1;
+>> +
+>> +	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+>> +	if ((tc->cmd == QCMD(Q_GETNEXTQUOTA, USRQUOTA) ||
+>> +		tc->cmd == QCMD(Q_GETNEXTQUOTA, GRPQUOTA))&&
+>> +		getnextquota_nsup) {
+>> +		tst_res(TCONF, "current system doesn't support this cmd");
+>                                                                  ^
+> 								Can we
+> 								print
+> 								tc->des
+> 								here?
+Yes.
+>> +		return;
+>> +	}
+>> +	TEST(do_quotactl(fd, tc->cmd, tst_device->dev, *tc->id, tc->addr));
+>> +	if (TST_RET == -1) {
+>> +		tst_res(TFAIL | TTERRNO, "quotactl failed to %s", tc->des);
+>> +		return;
+>> +	}
+>
+> And this can be TST_EXP_PASS_SILENT() followed by if (!TST_PASS) return;
+>
+> The difference is that the TST_EXP* macros are more comprehensive if
+> there is a bug in kernel that makes quotaclt() return a possitive number
+> on success this test would still succeed while the macro will fail it.
+Yes. But it seems all quotactl cases have this problem(ie quotactl01.c), 
+so I plan to merge this first. Then make use of TST_EXP* macro for all 
+quotactl cases in a separate patch.
 
-Also, we can use tst_check_kconfigs in your shell case if you want to skip subtest
-case instead the whole test.
+What do you think about this?
 
-Fixes:#891
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- doc/shell-test-api.txt                        | 51 ++++++++++++------
- lib/newlib_tests/runtest.sh                   |  3 +-
- lib/newlib_tests/shell/tst_check_kconfig01.sh | 16 ++++++
- lib/newlib_tests/shell/tst_check_kconfig02.sh | 15 ++++++
- lib/newlib_tests/shell/tst_check_kconfig03.sh | 16 ++++++
- lib/newlib_tests/shell/tst_check_kconfig04.sh | 25 +++++++++
- testcases/lib/.gitignore                      |  1 +
- testcases/lib/Makefile                        |  3 +-
- testcases/lib/tst_check_kconfigs.c            | 54 +++++++++++++++++++
- testcases/lib/tst_test.sh                     | 15 ++++++
- 10 files changed, 181 insertions(+), 18 deletions(-)
- create mode 100755 lib/newlib_tests/shell/tst_check_kconfig01.sh
- create mode 100755 lib/newlib_tests/shell/tst_check_kconfig02.sh
- create mode 100755 lib/newlib_tests/shell/tst_check_kconfig03.sh
- create mode 100644 lib/newlib_tests/shell/tst_check_kconfig04.sh
- create mode 100644 testcases/lib/tst_check_kconfigs.c
-
-diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
-index b993a9e1e..e082808f7 100644
---- a/doc/shell-test-api.txt
-+++ b/doc/shell-test-api.txt
-@@ -193,22 +193,25 @@ simply by setting right '$TST_NEEDS_FOO'.
- 
- [options="header"]
- |=============================================================================
--| Variable name      | Action done
--| 'TST_NEEDS_ROOT'   | Exit the test with 'TCONF' unless executed under root.
--|                    | Alternatively the 'tst_require_root' command can be used.
--| 'TST_NEEDS_TMPDIR' | Create test temporary directory and cd into it.
--| 'TST_NEEDS_DEVICE' | Prepare test temporary device, the path to testing
--                       device is stored in '$TST_DEVICE' variable.
--                       The option implies 'TST_NEEDS_TMPDIR'.
--| 'TST_NEEDS_CMDS'   | String with command names that has to be present for
--                       the test (see below).
--| 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
--| 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
--| 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must be int >= 1,
--                       or -1 (special value to disable timeout), default is 300.
--                       Variable is meant be set in tests, not by user.
--                       It's an equivalent of `tst_test.timeout` in C, can be set
--                       via 'tst_set_timeout(timeout)' after test has started.
-+| Variable name            | Action done
-+| 'TST_NEEDS_ROOT'         | Exit the test with 'TCONF' unless executed under root.
-+|                          | Alternatively the 'tst_require_root' command can be used.
-+| 'TST_NEEDS_TMPDIR'       | Create test temporary directory and cd into it.
-+| 'TST_NEEDS_DEVICE'       | Prepare test temporary device, the path to testing
-+                             device is stored in '$TST_DEVICE' variable.
-+                             The option implies 'TST_NEEDS_TMPDIR'.
-+| 'TST_NEEDS_CMDS'         | String with command names that has to be present for
-+                             the test (see below).
-+| 'TST_NEEDS_MODULE'       | Test module name needed for the test (see below).
-+| 'TST_NEEDS_DRIVERS'      | Checks kernel drivers support for the test.
-+| 'TST_NEEDS_KCONFIGS'     | Checks kernel kconfigs support for the test (see below).
-+| 'TST_NEEDS_KCONFIGS_IFS' | Used for splitting '$TST_NEEDS_KCONFIGS' variable,
-+                             default value is comma, it only supports single character.
-+| 'TST_TIMEOUT'            | Maximum timeout set for the test in sec. Must be int >= 1,
-+                             or -1 (special value to disable timeout), default is 300.
-+                             Variable is meant be set in tests, not by user.
-+                             It's an equivalent of `tst_test.timeout` in C, can be set
-+                             via 'tst_set_timeout(timeout)' after test has started.
- |=============================================================================
- 
- [options="header"]
-@@ -742,3 +745,19 @@ TST_NEEDS_CHECKPOINTS=1
- Since both the implementations are compatible, it's also possible to start
- a child binary process from a shell test and synchronize with it. This process
- must have checkpoints initialized by calling 'tst_reinit()'.
-+
-+1.7 Parsing kernel .config
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+The shell library provides an implementation of the kconfig parsing interface
-+compatible with the C version.
-+
-+It's possible to pass kernel kconfig list for tst_require_kconfigs API with
-+'$TST_NEEDS_KCONFIGS'.
-+Optional '$TST_NEEDS_KCONFIGS_IFS' is used for splitting, default value is comma.
-+
-+-------------------------------------------------------------------------------
-+#!/bin/sh
-+TST_NEEDS_KCONFIGS="CONFIG_EXT4_FS, CONFIG_QUOTACTL=y"
-+
-+. tst_test.sh
-+-------------------------------------------------------------------------------
-diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
-index 8b2fe347a..b34a582b7 100755
---- a/lib/newlib_tests/runtest.sh
-+++ b/lib/newlib_tests/runtest.sh
-@@ -6,7 +6,8 @@ tst_needs_cmds01 tst_needs_cmds02 tst_needs_cmds03 tst_needs_cmds06
- tst_needs_cmds07 tst_bool_expr test_exec test_timer tst_res_hexd tst_strstatus
- tst_fuzzy_sync03 test_zero_hugepage.sh}"
- 
--LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh shell/net/*.sh}"
-+LTP_SHELL_API_TESTS="${LTP_SHELL_API_TESTS:-shell/tst_check_driver.sh
-+shell/tst_check_kconfig0[1-4].sh shell/net/*.sh}"
- 
- cd $(dirname $0)
- PATH="$PWD/../../testcases/lib/:$PATH"
-diff --git a/lib/newlib_tests/shell/tst_check_kconfig01.sh b/lib/newlib_tests/shell/tst_check_kconfig01.sh
-new file mode 100755
-index 000000000..065a20fd2
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_check_kconfig01.sh
-@@ -0,0 +1,16 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+
-+TST_TESTFUNC=do_test
-+TST_NEEDS_CMDS="tst_check_kconfigs"
-+TST_NEEDS_KCONFIGS="CONFIG_EXT4"
-+
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_res TFAIL "kernel .config doesn't have CONFIG_EXT4"
-+}
-+
-+tst_run
-diff --git a/lib/newlib_tests/shell/tst_check_kconfig02.sh b/lib/newlib_tests/shell/tst_check_kconfig02.sh
-new file mode 100755
-index 000000000..3a0f05847
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_check_kconfig02.sh
-@@ -0,0 +1,15 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+
-+TST_TESTFUNC=do_test
-+TST_NEEDS_CMDS="tst_check_kconfigs"
-+TST_NEEDS_KCONFIGS="CONFIG_EXT4_FS : CONFIG_XFS_FS"
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_res TFAIL "invalid kconfig delimter"
-+}
-+
-+tst_run
-diff --git a/lib/newlib_tests/shell/tst_check_kconfig03.sh b/lib/newlib_tests/shell/tst_check_kconfig03.sh
-new file mode 100755
-index 000000000..c5f046b79
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_check_kconfig03.sh
-@@ -0,0 +1,16 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+
-+TST_TESTFUNC=do_test
-+TST_NEEDS_CMDS="tst_check_kconfigs"
-+TST_NEEDS_KCONFIGS="CONFIG_EXT4_FS : CONFIG_XFS_FS"
-+TST_NEEDS_KCONFIGS_IFS=":"
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_res TPASS "valid kconfig delimter"
-+}
-+
-+tst_run
-diff --git a/lib/newlib_tests/shell/tst_check_kconfig04.sh b/lib/newlib_tests/shell/tst_check_kconfig04.sh
-new file mode 100644
-index 000000000..ad5e8ac21
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_check_kconfig04.sh
-@@ -0,0 +1,25 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+
-+TST_TESTFUNC=do_test
-+TST_NEEDS_CMDS="tst_check_kconfigs"
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_check_kconfigs "CONFIG_EXT4_FS"
-+	if [ $? -eq 0 ]; then
-+		tst_res TPASS "kernel .config has CONFIG_EXT4_fs"
-+	else
-+		tst_res TFAIL "kernel .config doesn't have CONFIG_EXT4_FS"
-+	fi
-+
-+	tst_check_kconfigs "CONFIG_EXT4"
-+	if [ $? -eq 0 ]; then
-+		tst_res TFAIL "kernel .config has CONFIG_EXT4"
-+	else
-+		tst_res TPASS "kernel .config doesn't have CONFIG_EXT4"
-+	fi
-+}
-+tst_run
-diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-index 9625d9043..c0d4dc851 100644
---- a/testcases/lib/.gitignore
-+++ b/testcases/lib/.gitignore
-@@ -1,4 +1,5 @@
- /tst_check_drivers
-+/tst_check_kconfigs
- /tst_checkpoint
- /tst_device
- /tst_getconf
-diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-index d6b4c7a91..f2de0c832 100644
---- a/testcases/lib/Makefile
-+++ b/testcases/lib/Makefile
-@@ -11,6 +11,7 @@ INSTALL_TARGETS		:= *.sh
- MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
- 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
- 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
--			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill
-+			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
-+			   tst_check_kconfigs
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/lib/tst_check_kconfigs.c b/testcases/lib/tst_check_kconfigs.c
-new file mode 100644
-index 000000000..dd0c72768
---- /dev/null
-+++ b/testcases/lib/tst_check_kconfigs.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.*/
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <limits.h>
-+#include <stdlib.h>
-+#include "tst_kconfig.h"
-+
-+int main(int argc, const char *argv[])
-+{
-+	char delim[2];
-+	char str[PATH_MAX];
-+	char *result = NULL;
-+	char *next = NULL;
-+	int i = 0, j = 0, ret = 0;
-+
-+	if (argc < 3) {
-+		fprintf(stderr, "Please provide kernel kconfig list and delims\n");
-+		return 1;
-+	}
-+
-+	if (strlen(argv[2]) != 1) {
-+		fprintf(stderr, "The delim must be a single character\n");
-+		return 1;
-+	}
-+
-+	strcpy(str, argv[1]);
-+	strcpy(delim, argv[2]);
-+
-+	result = strtok_r(str, delim, &next);
-+	for (i = 0; result != NULL; i++)
-+		result = strtok_r(NULL, delim, &next);
-+
-+	strcpy(str, argv[1]);
-+	char **kconfigs = (char **)malloc(++i * sizeof(char *));
-+
-+	result = strtok_r(str, delim, &next);
-+	for (i = 0; result != NULL; i++) {
-+		kconfigs[i] = (char *)malloc(sizeof(char) * strlen(result));
-+		strcpy(kconfigs[i], result);
-+		result = strtok_r(NULL, delim, &next);
-+	}
-+
-+	kconfigs[i] = NULL;
-+	if (tst_kconfig_check((const char * const*)kconfigs))
-+		ret = 1;
-+
-+	for (j = 0; j <= i; j++)
-+		free(kconfigs[i]);
-+
-+	free(kconfigs);
-+	return ret;
-+}
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 2556b28f5..9c4e4dd3b 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -412,6 +412,17 @@ tst_require_drivers()
- 	return 0
- }
- 
-+tst_require_kconfigs()
-+{
-+	[ $# -ne 2  ] && return 0
-+
-+	tst_check_kconfigs "$1" $2 > /dev/null
-+	if [ $? -ne 0 ]; then
-+		tst_brk TCONF "Aborting due to unsuitable kernel config, see above!"
-+	fi
-+	return 0
-+}
-+
- tst_is_int()
- {
- 	[ "$1" -eq "$1" ] 2>/dev/null
-@@ -587,6 +598,7 @@ tst_run()
- 			NEEDS_ROOT|NEEDS_TMPDIR|TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
- 			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
-+			NEEDS_KCONFIGS|NEEDS_KCONFIGS_IFS);;
- 			IPV6|IPV6_FLAG|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
- 			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG|NETLOAD_CLN_NUMBER);;
-@@ -627,6 +639,7 @@ tst_run()
- 	[ "$TST_DISABLE_SELINUX" = 1 ] && tst_disable_selinux
- 
- 	tst_require_cmds $TST_NEEDS_CMDS
-+	tst_require_kconfigs "$TST_NEEDS_KCONFIGS" $TST_NEEDS_KCONFIGS_IFS
- 	tst_require_drivers $TST_NEEDS_DRIVERS
- 
- 	if [ -n "$TST_MIN_KVER" ]; then
-@@ -748,6 +761,8 @@ if [ -z "$TST_NO_DEFAULT_RUN" ]; then
- 
- 	TST_TEST_DATA_IFS="${TST_TEST_DATA_IFS:- }"
- 
-+	TST_NEEDS_KCONFIGS_IFS="${TST_NEEDS_KCONFIGS_IFS:-,}"
-+
- 	if [ -n "$TST_CNT" ]; then
- 		if ! tst_is_int "$TST_CNT"; then
- 			tst_brk TBROK "TST_CNT must be integer"
--- 
-2.23.0
-
+Best Regards
+Yang Xu
+>
+>
+> Other than these two minor issues:
+>
+> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
