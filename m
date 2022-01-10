@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99EABC433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 08:27:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A319DC433F5
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 08:31:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C3B103C938E
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 09:27:19 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 3E2133C937C
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 09:31:21 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A01663C03FE
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:27:09 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 409723C051B
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:31:10 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D06B81400158
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:27:08 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5DA43600973
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 09:31:09 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1641803227;
+ s=mimecast20190719; t=1641803468;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mYHAFuGkdJesZTRyKqHrxdPny2ADs3/mi9Bir0PZarw=;
- b=R7W7qoXTU34X2NTjHcvnER0/4ut4lDL/n+c+MC33EI3jqrZlOW3ZsxadmRAoeR7l1BcZuy
- OiXakBthbZDGqKV8uohstaMwYOik4G2yr2OUqM1tv4M8lvPVKHsI5Of/rBtlW6ao+or2LX
- iMZeqIBwKr6CxeRDOipQDoQSFDp+FY0=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
+ b=fye015ptlkgSwBFsOLdUA/Xgl2F0Y8m/lNQBBC3aoWcDrA7bwDLh/tb3GGaUvyhOVuPjUu
+ Qm+PUCQEgyrG+J+AYlJX139XWd85TFH2bqRP5WQI94T+LyZEW5J9TdxFN1+y+jfL6QTO1i
+ umZvsT7zPz01qYmUZIzrbG0H2VDl3hg=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-307-O-Gxf4QWOSKTGVGwxv6b-w-1; Mon, 10 Jan 2022 03:27:05 -0500
-X-MC-Unique: O-Gxf4QWOSKTGVGwxv6b-w-1
-Received: by mail-yb1-f198.google.com with SMTP id
- z188-20020a2565c5000000b0060be1f32877so26189890ybb.7
- for <ltp@lists.linux.it>; Mon, 10 Jan 2022 00:27:05 -0800 (PST)
+ us-mta-227-etxnsCkfP_mGyq5g2vAR0Q-1; Mon, 10 Jan 2022 03:31:02 -0500
+X-MC-Unique: etxnsCkfP_mGyq5g2vAR0Q-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ d5-20020a25be45000000b0060fdc206836so25679960ybm.21
+ for <ltp@lists.linux.it>; Mon, 10 Jan 2022 00:31:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=mYHAFuGkdJesZTRyKqHrxdPny2ADs3/mi9Bir0PZarw=;
- b=eyR47WEYqj0twB535Y0O+oduFs9/fQ2anmyl7lvI5G6q035f5QXjcfPy0P24tAbFNz
- 9H8W8KrHrxZksXLaHDB9QalWYp3NQVg94RqI47DygMt1TScIRilL/N2x2il4AoRiqPvz
- VrfPwYNGzfN1p6gufjLzywU6gzehh1tGBEfMfmPNNkD6n2SxxHMrChhPN2Q3U+UD/kdZ
- ZxA0ymC6ynQR+8ymzv89Ha1HVPl9Z6yJXXd7neJWqmjhgO2v/KXA/AKZy2K0sgIC9Inm
- VHVfC1/7pWocqF0C69Vu7GdJd8MS/f2cxqr/8f6nIrParkZK22MFFytcBuFdo6P1Zts5
- uHQA==
-X-Gm-Message-State: AOAM53136G/ADQ3RXyYYk7mznG9kOMP2Wbp5R+vlCUye0woESnmxBPOZ
- QPlGmdaaIM2C5RwlaXFpKqqj4DBTJ/y0LZNkL0MdiCIG70GQ+au5qId5WL+zua6zmPaG/+nFC4s
- k8CU7QExLutj15rDRbrYKoVF4oWI=
-X-Received: by 2002:a25:f90d:: with SMTP id q13mr14345764ybe.32.1641803224602; 
- Mon, 10 Jan 2022 00:27:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJytRip5ua4/vA+zuhEGLRXUyRxX+ngPcD7BigxlA+41AqQyUThjNYyrtQRYlm4qwyZO355a4CDfYazHH9lzG4M=
-X-Received: by 2002:a25:f90d:: with SMTP id q13mr14345752ybe.32.1641803224422; 
- Mon, 10 Jan 2022 00:27:04 -0800 (PST)
+ bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
+ b=bxM/DsDLfs6qgyjWOunHQDY9g66JWkR8+E+UsFgCfoORKPFBClHdPj55S2Xcr2W+OF
+ gxndQspO2mMClNOSc81NInz7mjzyeKQoLdGzaK7LoGEcbM0TIPASoicBDPwWyoQbVqz+
+ +ITxXa/+Kd+D3UTdVUFvT95w3bSqop0eQe9AqaTFRsWbcv21yQ5KF8SNQAsWpnfK0tVO
+ 28POuq1OquFomekOC7Lza+bFAkTTRnbJSAxMWJmCdaVaM+QBAqkgS3lcrp/uCA62Sifz
+ mpOou/l8tJ/pbanLIN+gbcWkzz859y9Eopxh9LE6BRVWHgaYXrYXp+7ScT9vgleKV/CG
+ 9+dA==
+X-Gm-Message-State: AOAM533nanqTsdU5bJRxKOwe50BDuSM5j/wrxYGB37TJ/bHLRk4CILj8
+ Btt657P0P40tVyVN6mIq5hghQfD74YE9JQvHgqW+pXweNIySoqkB89lnJk07H0WyD7w3KFo0PCa
+ tMp4pU5f4N0yX3mi6f0KBG2D0bbE=
+X-Received: by 2002:a25:e60a:: with SMTP id d10mr85433303ybh.71.1641803462117; 
+ Mon, 10 Jan 2022 00:31:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxUyPXmcX7k3qKFGYBgHDV8oetPasNkYtvCMuel4EzG1t7rsQe5JS9HRztbDljQuxXwbymHJjrvx6LXEOoymg4=
+X-Received: by 2002:a25:e60a:: with SMTP id d10mr85433292ybh.71.1641803461951; 
+ Mon, 10 Jan 2022 00:31:01 -0800 (PST)
 MIME-Version: 1.0
 References: <YdbQmTJK73804UYT@yuki>
  <1641779349-8424-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1641779349-8424-3-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1641779349-8424-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1641779349-8424-4-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1641779349-8424-4-git-send-email-xuyang2018.jy@fujitsu.com>
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 10 Jan 2022 16:26:50 +0800
-Message-ID: <CAEemH2cZFWCL4mVSdii0brqPiPEM2C5pyS3x4uzCJ7BB2iSrEw@mail.gmail.com>
+Date: Mon, 10 Jan 2022 16:30:48 +0800
+Message-ID: <CAEemH2c3aD21NqkTVup31tk7gpJrc9qRGAtROmoo6gvqrREfZA@mail.gmail.com>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/4] shell: add kconfig parse api
+Subject: Re: [LTP] [PATCH v3 4/4] sysctl/sysctl02.sh: Use kconfig shell api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,73 +91,9 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Jan 10, 2022 at 2:26 PM Yang Xu <xuyang2018.jy@fujitsu.com> wrote:
-
-> +1.7 Parsing kernel .config
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +The shell library provides an implementation of the kconfig parsing interface
-> +compatible with the C version.
-
- ^ consistent with the C version.
-
-> +++ b/testcases/lib/tst_check_kconfigs.c
-> @@ -0,0 +1,54 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.*/
-> +
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <limits.h>
-> +#include <stdlib.h>
-> +#include "tst_kconfig.h"
-> +
-> +int main(int argc, const char *argv[])
-> +{
-> +       char delim[2];
-> +       char str[PATH_MAX];
-> +       char *result = NULL;
-> +       char *next = NULL;
-> +       int i = 0, j = 0, ret = 0;
-> +
-> +       if (argc < 3) {
-> +               fprintf(stderr, "Please provide kernel kconfig list and delims\n");
-> +               return 1;
-> +       }
-> +
-> +       if (strlen(argv[2]) != 1) {
-> +               fprintf(stderr, "The delim must be a single character\n");
-> +               return 1;
-> +       }
-> +
-> +       strcpy(str, argv[1]);
-> +       strcpy(delim, argv[2]);
-> +
-> +       result = strtok_r(str, delim, &next);
-> +       for (i = 0; result != NULL; i++)
-> +               result = strtok_r(NULL, delim, &next);
-> +
-> +       strcpy(str, argv[1]);
-> +       char **kconfigs = (char **)malloc(++i * sizeof(char *));
-> +
-> +       result = strtok_r(str, delim, &next);
-> +       for (i = 0; result != NULL; i++) {
-> +               kconfigs[i] = (char *)malloc(sizeof(char) * strlen(result));
-> +               strcpy(kconfigs[i], result);
-
-I guess there is no need to allocate additional memory to do strcpy.
-As the kconfigs[i] is just a pointer, we can assign the 'result' to it directly.
-
-i.e.
-
-       for (i = 0; result != NULL; i++) {
-               kconfigs[i] = result;
-               result = strtok_r(NULL, delim, &next);
-       }
-
-Otherwise looks good.
 Reviewed-by: Li Wang <liwang@redhat.com>
 
---
+-- 
 Regards,
 Li Wang
 
