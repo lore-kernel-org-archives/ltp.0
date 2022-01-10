@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE166C433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 06:25:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 120C0C433EF
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 06:25:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2AE163C938A
-	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 07:25:40 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0BC353C9360
+	for <ltp@archiver.kernel.org>; Mon, 10 Jan 2022 07:25:50 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B68CD3C6AFE
+ by picard.linux.it (Postfix) with ESMTPS id 0C2813C6AAF
  for <ltp@lists.linux.it>; Mon, 10 Jan 2022 07:25:18 +0100 (CET)
-Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
- [85.158.142.112])
+Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
+ [195.245.230.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AB65F1401231
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A61F8600A35
  for <ltp@lists.linux.it>; Mon, 10 Jan 2022 07:25:17 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1641795917; i=@fujitsu.com;
- bh=xXS6wnhzMNkJ5S6TNTJOlhvCNUOnWPB2QdM8ekNKy+o=;
+ s=170520fj; t=1641795916; i=@fujitsu.com;
+ bh=bodRrEzzud5z/JeZEdyMJOM2Zk3A8rBgFoShFUWnA2Y=;
  h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=RejUu09FtY3ytBA7N7VJ0afJhfNSjm0F4RJCFg5w/43gRqzHY2RHPD+R/NRDws0yi
- 6ra/cph4H97xN3V1M8nGSTqEVDTR3UhCyZftTZ2dj3sA3eSf2qCX3kTodpj1e6yJjp
- KSf+n5JKo9bKR9ONJiJoYAMsQxzQAI4S+RIzw+2G4Aki8EintQHGH7vMPo0CwqhImk
- qkQuHddD2ME9YegLbAW2eUbkxXFT1SNuQi2dhwHCdwuzNYdUkNjxhXaSKu+pp9RQxT
- OU+bRzg6WqGQ5gIPWBCayOcMZGklbfDjjcKLx+WV0w/0bxmlmX1RXeVNSghcHKVaA5
- GtBx2WIPFZW9Q==
-Received: from [100.115.65.216] (using TLSv1.2 with cipher
+ b=eM3d7NEgjLRE1cOGEaIp/1mNDm8Iwddf8J1rYJKsiy/ZUz3FAhBDJVLxdm6obpeNR
+ L/U/Uvd00U3NkeLOIBqjVEwJ5OUEwcj0CsR9CgSK1gA5KTNGnJwYLVHD7bikyIjGZ/
+ 8eSamM8osW96Axknfk5nbXlEXluN5xqy7/b61J0iQHyC/zUw8C7Vd2i732UPHsZlHJ
+ ydFrC4qVS94rdhNOmYpgJqQPWVQ19jjM8XIwxYLybJeDhhpuYTgNjiBTUr+wrhck5z
+ /FG0zu9EYTurn83r05xNo3LiMZsZek2FIqgR2jdQ1ddM630WZd8xftDOVVIpXNXFdW
+ UVPraaEM02cIA==
+Received: from [100.115.5.195] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-a.eu-central-1.aws.ess.symcld.net id E1/64-06990-C41DBD16;
+ by server-2.bemta.az-a.eu-west-1.aws.ess.symcld.net id E5/BF-10124-C41DBD16;
  Mon, 10 Jan 2022 06:25:16 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNIsWRWlGSWpSXmKPExsViZ8ORqOtz8Xa
- iwY/pqhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8apnZeYCz7xVDyZu42pgbGBu4uRi0NI4Cyj
- xN+edewQzk4miYftt9kgnD2MEv+n/QHKcHKwCWhKPOtcwAxiiwhISHQ0vAWLMwuoSyyf9IsJx
- BYWcJRY9X0qWJxFQFXi2JxzjCA2r4CHxOvNELaEgILElIfvweZwCnhK3J43nQXEFhJIlHj7o5
- cZol5Q4uTMJywQ8yUkDr54wQzRqyhxqeMb1JwKiVmz2pggbDWJq+c2MU9gFJyFpH0WkvYFjEy
- rGO2SijLTM0pyEzNzdA0NDHQNDU11zQ11DY2N9RKrdBP1Ukt1k1PzSooSgdJ6ieXFeqnFxXrF
- lbnJOSl6eaklmxiB4ZxS7N66g/Fy30+9Q4ySHExKorz7zt9OFOJLyk+pzEgszogvKs1JLT7EK
- MPBoSTBq3cAKCdYlJqeWpGWmQOMLZi0BAePkghvxDmgNG9xQWJucWY6ROoUoy5Hy6Mli5iFWP
- Ly81KlxHmPg8wXACnKKM2DGwGL80uMslLCvIwMDAxCPAWpRbmZJajyrxjFORiVhHkPg0zhycw
- rgdv0CugIJqAjkjnAjihJREhJNTBZvZHYe2DX1rLSzN+s0/7IyN6Ye/dsm9il4upJMx6yNc3N
- +HhXXZjHxdo2U138dMT7cJHu1rPrQla9WmNuKxu3Wo3j8e3cx+9/lDFeYbsYz7Huf82vel5G0
- 69yk2p63RQeVtf0zJ9dc5vnsdf0o+d3XfruG5JxUTCys0NIav5Pnfzdzl5T21p6mN9yu5SION
- rsvNpltH7nxmnGF+7OM5RiSoj0nPdpx71XaRfVzFsbLr1b33m17naqUOyDI4X//RctfCpaZHn
- h/4uby4oX7H8zL7j4K9OusM+hl5tvLLj5we6W1ZEiT/kJWXvzT5q57f89cWP8XMMI6ZKZsSUP
- WrolWZxKlou2K/Of3Xwjt8JViaU4I9FQi7moOBEAGu32Im4DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFIsWRWlGSWpSXmKPExsViZ8ORqOtz8Xa
+ iwc23QhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8aa/zPYC06IV5yftIi9gXGLcBcjF4eQwFlG
+ idOvFrJDODuZJBqPNrBBOHsYJf4+PgyU4eRgE9CUeNa5gBnEFhGQkOhoeAsWZxZQl1g+6RdTF
+ yMHh7CAn8S2abogYRYBVYnPa5azgdi8Ah4S6+9dZwKxJQQUJKY8fA82hlPAU+L2vOksILaQQK
+ LE2x+9zBD1ghInZz5hgRgvIXHwxQtmiF5FiUsd3xgh7AqJWbPaoGaqSVw9t4l5AqPgLCTts5C
+ 0L2BkWsVolVSUmZ5RkpuYmaNraGCga2hoqmuqa2RkrpdYpZuol1qqW55aXKJrqJdYXqyXWlys
+ V1yZm5yTopeXWrKJERjEKcWsj3cwrun7qXeIUZKDSUmUd9/524lCfEn5KZUZicUZ8UWlOanFh
+ xhlODiUJHj1DgDlBItS01Mr0jJzgBEFk5bg4FES4Y04B5TmLS5IzC3OTIdInWJUlBLnPQ4yUw
+ AkkVGaB9cGi+JLjLJSwryMDAwMQjwFqUW5mSWo8q8YxTkYlYR5D4NM4cnMK4Gb/gpoMRPQ4mQ
+ OsMUliQgpqQam+MnbYv7d1Zypv1DZfHq6iYnefEdJEd5ZT7pc2zfMf3SuQFGwds7WV1vD7Q59
+ CNdv/fbp6+WguuenrjbNr2G2FLA/kLnkw8M3Lz71HD81dQHXr1f1R7Luq8QwXnwSnFNR9VZ7m
+ /x8t5K0v6cr3qhUH/rnJcW+x22f7uwta8/PrEsNOS6zmf3nn4y+17se90t9P8s8jXVRe7mPdG
+ OJqmH6HQbjPynHlii8vCkZW3InLi5u4uy5R49Y8jXUpD7dpZX8Kqfy4z+9/q65q75xzXCUiLD
+ keiVhvdW+ad6czX8Ylnx9dYll/uwSprW5DtfzozvSw9YFPH8vru7SH7fhTt+7p7ueWfqLXBGO
+ MbtV49ctp8RSnJFoqMVcVJwIAJDD6rldAwAA
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-3.tower-545.messagelabs.com!1641795916!225347!1
+X-Msg-Ref: server-4.tower-585.messagelabs.com!1641795916!228777!1
 X-Originating-IP: [62.60.8.97]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 9993 invoked from network); 10 Jan 2022 06:25:16 -0000
+Received: (qmail 28286 invoked from network); 10 Jan 2022 06:25:16 -0000
 Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-3.tower-545.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ by server-4.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
  encrypted SMTP; 10 Jan 2022 06:25:16 -0000
 Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id D3EEF1001A8
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id C0EFB100188
  for <ltp@lists.linux.it>; Mon, 10 Jan 2022 06:25:15 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id BC7591001A5
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id B48F8100199
  for <ltp@lists.linux.it>; Mon, 10 Jan 2022 06:25:15 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Mon, 10 Jan 2022 06:09:48 +0000
+ (TLS) id 15.0.1497.26; Mon, 10 Jan 2022 06:09:39 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Mon, 10 Jan 2022 09:49:09 +0800
-Message-ID: <1641779349-8424-4-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon, 10 Jan 2022 09:49:07 +0800
+Message-ID: <1641779349-8424-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1641779349-8424-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <YdbQmTJK73804UYT@yuki>
@@ -85,9 +86,10 @@ MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/4] sysctl/sysctl02.sh: Use kconfig shell api
+Subject: [LTP] [PATCH v3 2/4] lib: Introduce KCONFIG_SKIP_CHECK environment
+ variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,56 +106,86 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+This environment variable is designed to add kernel config check functionality
+switch. So we can skip kconfig check completely and it is useful especially
+for the embedded platforms that they don't have kernel config.
+
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/commands/sysctl/sysctl02.sh | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ doc/user-guide.txt |  1 +
+ lib/tst_kconfig.c  | 20 ++++++++++++++++++++
+ lib/tst_test.c     |  1 +
+ 3 files changed, 22 insertions(+)
 
-diff --git a/testcases/commands/sysctl/sysctl02.sh b/testcases/commands/sysctl/sysctl02.sh
-index 3964a9829..1c444268a 100755
---- a/testcases/commands/sysctl/sysctl02.sh
-+++ b/testcases/commands/sysctl/sysctl02.sh
-@@ -20,15 +20,14 @@ TST_CLEANUP=cleanup
- TST_CNT=4
- TST_NEEDS_ROOT=1
- TST_NEEDS_CMDS="sysctl"
-+TST_NEEDS_KCONFIGS="CONFIG_SYSCTL=y, CONFIG_PROC_FS=y"
- sys_name="fs.file-max"
- sys_file="/proc/sys/fs/file-max"
--syms_file="/proc/kallsyms"
+diff --git a/doc/user-guide.txt b/doc/user-guide.txt
+index 494652618..864467f60 100644
+--- a/doc/user-guide.txt
++++ b/doc/user-guide.txt
+@@ -10,6 +10,7 @@ For running LTP network tests see `testcases/network/README.md`.
+ |==============================================================================
+ | 'KCONFIG_PATH'        | The path to the kernel config file, (if not set, it tries
+                           the usual paths '/boot/config-RELEASE' or '/proc/config.gz').
++| 'KCONFIG_SKIP_CHECK'  | Skip kernel config check, the default is empty(don't skip).
+ | 'LTPROOT'             | Prefix for installed LTP, the default is '/opt/ltp'.
+ | 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
+                           'n' or '0': never colorize.
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 7d7aecfc1..e4264101d 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -15,6 +15,16 @@
+ #include "tst_kconfig.h"
+ #include "tst_bool_expr.h"
  
- . tst_test.sh
- 
- setup()
- {
--	[ ! -f "$sys_file" ] && tst_brk TCONF "$sys_file not enabled"
- 	orig_value=$(cat "$sys_file")
- }
- 
-@@ -61,17 +60,15 @@ sysctl_test_overflow()
- 
- sysctl_test_zero()
- {
--	[ ! -f "$syms_file" ] && tst_brk TCONF "$syms_file not enabled"
-+	tst_check_kconfigs "CONFIG_KALLSYMS=y" "CONFIG_KALLSYMS_ALL=y" "CONFIG_KASAN=y" \
-+		|| tst_brk TCONF "kconfig doesn't meet test's requirement!"
++static int kconfig_check_skipped(void)
++{
++	char *skipped = getenv("KCONFIG_SKIP_CHECK");
 +
- 	ROD sysctl -w -q $sys_name=0
++	if (skipped)
++		return 1;
++
++	return 0;
++}
++
+ static const char *kconfig_path(char *path_buf, size_t path_buf_len)
+ {
+ 	const char *path = getenv("KCONFIG_PATH");
+@@ -485,6 +495,11 @@ int tst_kconfig_check(const char *const kconfigs[])
+ 	unsigned int i, var_cnt;
+ 	int ret = 0;
  
--	if grep -q kasan_report $syms_file; then
--		if dmesg | grep -q "KASAN: global-out-of-bounds in __do_proc_doulongvec_minmax"; then
--			tst_res TFAIL "$sys_file is set 0 and trigger a KASAN error"
--		else
--			tst_res TPASS "$sys_file is set 0 and doesn't trigger a KASAN error"
--		fi
-+	if dmesg | grep -q "KASAN: global-out-of-bounds in __do_proc_doulongvec_minmax"; then
-+		tst_res TFAIL "$sys_file is set 0 and trigger a KASAN error"
- 	else
--		tst_res TCONF "kernel doesn't support KASAN"
-+		tst_res TPASS "$sys_file is set 0 and doesn't trigger a KASAN error"
- 	fi
- }
++	if (kconfig_check_skipped()) {
++		tst_res(TINFO, "Skipping kernel config check as requested");
++		return 0;
++	}
++
+ 	for (i = 0; i < expr_cnt; i++) {
+ 		exprs[i] = tst_bool_expr_parse(kconfigs[i]);
  
+@@ -526,6 +541,11 @@ char tst_kconfig_get(const char *confname)
+ {
+ 	struct tst_kconfig_var var;
+ 
++	if (kconfig_check_skipped()) {
++		tst_res(TINFO, "Skipping kernel config check as requested");
++		return 0;
++	}
++
+ 	var.id_len = strlen(confname);
+ 
+ 	if (var.id_len >= sizeof(var.id))
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index d5cefadaa..8ac3cdc5c 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -479,6 +479,7 @@ static void print_help(void)
+ 	fprintf(stderr, "Environment Variables\n");
+ 	fprintf(stderr, "---------------------\n");
+ 	fprintf(stderr, "KCONFIG_PATH         Specify kernel config file\n");
++	fprintf(stderr, "KCONFIG_SKIP_CHECK   Skip kernel config check (the default is empty means don't skip)\n");
+ 	fprintf(stderr, "LTPROOT              Prefix for installed LTP (default: /opt/ltp)\n");
+ 	fprintf(stderr, "LTP_COLORIZE_OUTPUT  Force colorized output behaviour (y/1 always, n/0: never)\n");
+ 	fprintf(stderr, "LTP_DEV              Path to the block device to be used (for .needs_device)\n");
 -- 
 2.23.0
 
