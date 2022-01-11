@@ -4,59 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 784FFC433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 02:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86571C433F5
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 03:03:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F15833C9402
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 03:19:23 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 297B53C93E2
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 04:03:31 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 092303C87B6
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 03:19:13 +0100 (CET)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+ by picard.linux.it (Postfix) with ESMTPS id 0D9D33C937D
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 04:03:19 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E64AB6008F9
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 03:19:10 +0100 (CET)
-Received: from kwepemi500007.china.huawei.com (unknown [172.30.72.55])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JXvRl3nfRz1FCb0;
- Tue, 11 Jan 2022 10:15:31 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (7.193.23.147) by
- kwepemi500007.china.huawei.com (7.221.188.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 11 Jan 2022 10:19:05 +0800
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 11 Jan 2022 10:19:05 +0800
-Received: from kwepemm600017.china.huawei.com ([7.193.23.234]) by
- kwepemm600017.china.huawei.com ([7.193.23.234]) with mapi id 15.01.2308.020;
- Tue, 11 Jan 2022 10:19:05 +0800
-To: Eric Biggers <ebiggers@kernel.org>
-Thread-Topic: =?gb2312?B?tPC4tDogW0xUUF0gW1BBVENIXSBhZGQgc2V2ZXJhbCBoYXNoIGFsZ29yaXRo?=
- =?gb2312?Q?ms_for_crypto/crypto=5Fuser02.c?=
-Thread-Index: AQHYAkbUAbnBYvm/w0qKtx8VMJDdH6xboLvAgABn/oCAAQY6MA==
-Date: Tue, 11 Jan 2022 02:19:05 +0000
-Message-ID: <15b7314d82b547e997c0caca1ae1299c@huawei.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 353DC600BE6
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 04:03:17 +0100 (CET)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2B432B817DB;
+ Tue, 11 Jan 2022 03:03:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC37DC36AE9;
+ Tue, 11 Jan 2022 03:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1641870194;
+ bh=H/QBr2Q02Y3eMQmZDjw/ZzB5gFLeKMOvu1250obpqQs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qx57gaL/YZtjpHxRliDUyYLAtt2vbSQpuxh5RvMjtHCf8CMufBK8vd7OAssxJvIxz
+ pSrvZU9hqKc5Q2v6dxABhdAmODnDVd/bZ/HUXMg+jdvIbg6SAhf2gPZ8WZpQs1g01Q
+ O7kXYhjjlgfC7rUTTyImbf8wTJJiHqB8Iy6iQskKI3zs1/mblghRd+sDMel0PqVOZJ
+ zYt0r/EVU2b/NSLrICXqp6vuJ6QQ4PVDnaEqrW9XYf+H7Z/vmjBkFZrqFuZIotdywf
+ aKxagwO7xYlcAcHhHiExBGM6asbhtL97VzYBDzWFxaJPf0HP4PbeuC6o2mUxv7ELhy
+ mpGFP74jiuf0w==
+Date: Mon, 10 Jan 2022 19:03:13 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: wenyehai <wenyehai@huawei.com>
+Message-ID: <YdzzcTlQpn+BNRsi@sol.localdomain>
 References: <1641287729-194863-1-git-send-email-wenyehai@huawei.com>
  <YdW1m4D2wLYQm1v/@sol.localdomain>
  <0035845766004452880d56963135c616@huawei.com>
  <Ydxwc65JO2C057hm@sol.localdomain>
-In-Reply-To: <Ydxwc65JO2C057hm@sol.localdomain>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.108.250]
+ <15b7314d82b547e997c0caca1ae1299c@huawei.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <15b7314d82b547e997c0caca1ae1299c@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] =?gb2312?b?tPC4tDogtPC4tDogIFtQQVRDSF0gYWRkIHNldmVyYWwg?=
- =?gb2312?b?aGFzaCBhbGdvcml0aG1zIGZvciBjcnlwdG8vY3J5cHRvX3VzZXIwMi5j?=
+Subject: Re: [LTP] 
+ =?utf-8?b?562U5aSNOiDnrZTlpI06ICBbUEFUQ0hdIGFkZCBzZXZlcmFs?=
+ =?utf-8?q?_hash_algorithms_for_crypto/crypto=5Fuser02=2Ec?=
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,52 +66,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: wenyehai via ltp <ltp@lists.linux.it>
-Reply-To: wenyehai <wenyehai@huawei.com>
 Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-DQpIaSBFcmljOg0KDQpUaGFuayB5b3UgdmVyeSBtdWNoIGZvciB5b3VyIGtpbmQgcmVwbHksIGFu
-ZCBhbHNvIHNvcnJ5IGZvciBjYXVzaW5nIHlvdSBjb25mdXNpb24uIA0KQWN0dWFsbHksIEkgZG8g
-d2FudCB0byBnZXQgY3J5cHRvX3VzZXIwMiB0byBydW4gaW4gbW9yZSBjYXNlcy4NCg0KVGhlIHBy
-b2R1Y3Qgd2hpY2ggSSB0ZXN0ZWQganVzdCBvbmx5IGVuYWJsZSBzaGEzIGFsZ29yaXRobSwgYnV0
-IHdoZW4gSSBydW4gY3J5dG9fdXNlcjAyLCBpdCB0ZWxscyAibm8gdmlhYmxlIGFsZ29yaXRobSBm
-b3VuZCIsIGFzIGZvbGxvd3M6DQouL2NyeXB0b191c2VyMDINCnRzdF90ZXN0LmM6MTM2NTogVElO
-Rk86IFRpbWVvdXQgcGVyIHJ1biBpcyAwaCAwNW0gMDBzDQpjcnlwdG9fdXNlcjAyLmM6ODQ6IFRD
-T05GOiBObyB2aWFibGUgYWxnb3JpdGhtIGZvdW5kDQoNClN1bW1hcnk6DQpwYXNzZWQgICAwDQpm
-YWlsZWQgICAwDQpicm9rZW4gICAwDQpza2lwcGVkICAxDQp3YXJuaW5ncyAwDQoNCg0KSSB3YW50
-IGNyeXB0b191c2VyMDIgdG8gc3VwcG9ydCBtb3JlIGNhc2VzKG5vdCBvbmx5IHNoYTMpLCBidXQg
-SSBhbSBub3Qgc3VyZSB3aGljaCBhbGdvcml0aG1zIHNob3VsZCBsaXN0LCANCnNvIEkgY29tcGFy
-ZSB3aXRoIHRoZSBsYXRlc3QgbGludXgga2VybmVsIGVuY3J5cHRpb24gbW9kdWxlLCBhZGQgc2V2
-ZXJhbCBoYXNoIGFsZ29yaXRobXMgd2hpY2ggbm90IGxpc3QgaW4gY3J5cHRvX3VzZXIwMi4NCg0K
-DQoNCkJlc3QgUmVnYXJkcw0KWWVoYWkgV2VuDQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjL
-OiBFcmljIEJpZ2dlcnMgW21haWx0bzplYmlnZ2Vyc0BrZXJuZWwub3JnXSANCreiy83KsbzkOiAy
-MDIyxOox1MIxMcjVIDE6NDQNCsrVvP7Iyzogd2VueWVoYWkgPHdlbnllaGFpQGh1YXdlaS5jb20+
-DQqzrcvNOiBsdHBAbGlzdHMubGludXguaXQNCtb3zOI6IFJlOiC08Li0OiBbTFRQXSBbUEFUQ0hd
-IGFkZCBzZXZlcmFsIGhhc2ggYWxnb3JpdGhtcyBmb3IgY3J5cHRvL2NyeXB0b191c2VyMDIuYw0K
-DQpPbiBNb24sIEphbiAxMCwgMjAyMiBhdCAwMzo1OTozOUFNICswMDAwLCB3ZW55ZWhhaSB3cm90
-ZToNCj4gSGkgRXJpYzoNCj4gDQo+IA0KPiANCj4gVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91
-ciBraW5kIHJlcGx5LCBhbmQgSSBhbSB2ZXJ5IHNvcnJ5IGZvciBub3QgDQo+IGRlc2NyaWJpbmcg
-dGhlIGJhY2tncm91bmQgY2xlYXJseS4NCj4gDQo+IA0KPiANCj4gQWN0dWFsbHksIEkgd2FudGVk
-IHRvIHRlc3QgdGhlIHNoYTMgYWxnb3JpdGhtIGluIGtlcm5lbCA1LjEwLCBidXQgDQo+IGNyeXB0
-b191c2VyMDIuYyByZXR1cm4gIm5vIHZpYWJsZSBhbGdvcml0aG0gZm91bmQiIGFzIGZvbGxvd3M6
-DQo+IA0KPiANCj4gDQo+IFtjaWQ6aW1hZ2UwMDEucG5nQDAxRDgwNjE4LjE0MzA2RjkwXQ0KPiAN
-Cj4gDQo+IA0KPiBTbyBJIGFkZCBzaGEzIHRvIGNyeXB0b191c2VyMDIuYyBhbmQgcnVuIGFnYWlu
-LCBhdCB0aGUgc2FtZSB0aW1lLCANCj4gYWNjb3JkaW5nIHRvIHRoZSBsYXRlc3QgbGludXgga2Vy
-bmVsIGVuY3J5cHRpb24gbW9kdWxlLCBhZGQgc2V2ZXJhbCANCj4gaGFzaCBhbGdvcml0aG1zLCBh
-cw0KPiBmb2xsb3dzOg0KPiANCj4gDQo+IA0KPiBbY2lkOmltYWdlMDAyLnBuZ0AwMUQ4MDYxOC5G
-NzAyRDc5MF0NCg0KW0ZvciBjb21wYXRpYmlsaXR5IHdpdGggdGhlIG1haWxpbmcgbGlzdCwgcGxl
-YXNlIHVzZSBwbGFpbiB0ZXh0IGVtYWlsIHdpdGhvdXQgaW1hZ2VzIC0tIHRoYW5rcyFdDQoNCkkg
-c3RpbGwgZG9uJ3QgdW5kZXJzdGFuZCBleGFjdGx5IHdoYXQgeW91J3JlIHRyeWluZyB0byBkby4g
-IElmIHlvdSdyZSBqdXN0IHRyeWluZyB0byBnZXQgY3J5cHRvX3VzZXIwMiB0byBydW4gaW4gbW9y
-ZSBjYXNlcywgdGhlbiB5b3VyIHBhdGNoIG1ha2VzIHNlbnNlLg0KSWYgb24gdGhlIG90aGVyIGhh
-bmQgeW91J3JlIGFjdHVhbGx5IHRyeWluZyB0byBnZXQgdGhlIGtlcm5lbCB0byBpbnN0YW50aWF0
-ZSBtb3JlIGFsZ29yaXRobXMgc28gdGhhdCB0aGVpciBpbi1rZXJuZWwgc2VsZi10ZXN0cyBhcmUg
-cnVuLCB0aGF0IGlzICpub3QqIHRoZSBwdXJwb3NlIG9mIGNyeXB0b191c2VyMDI7IGEgbmV3IHRl
-c3Qgc2hvdWxkIGJlIHdyaXR0ZW4gZm9yIHRoYXQgcHVycG9zZS4gIFRoZSB0ZXN0IGNvdWxkIHRy
-eSB0byBpbnN0YW50aWF0ZSBhbGwgYWxnb3JpdGhtcyB3aGljaCBoYXZlIGluLWtlcm5lbCBzZWxm
-LXRlc3RzLg0KDQotIEVyaWMNCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Tue, Jan 11, 2022 at 02:19:05AM +0000, wenyehai wrote:
+> 
+> Hi Eric:
+> 
+> Thank you very much for your kind reply, and also sorry for causing you confusion. 
+> Actually, I do want to get crypto_user02 to run in more cases.
+> 
+> The product which I tested just only enable sha3 algorithm, but when I run cryto_user02, it tells "no viable algorithm found", as follows:
+> ./crypto_user02
+> tst_test.c:1365: TINFO: Timeout per run is 0h 05m 00s
+> crypto_user02.c:84: TCONF: No viable algorithm found
+> 
+> Summary:
+> passed   0
+> failed   0
+> broken   0
+> skipped  1
+> warnings 0
+> 
+> 
+> I want crypto_user02 to support more cases(not only sha3), but I am not sure which algorithms should list, 
+> so I compare with the latest linux kernel encryption module, add several hash algorithms which not list in crypto_user02.
+
+Okay, can you please properly explain this in your commit message?
+
+Thanks!
+
+- Eric
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
