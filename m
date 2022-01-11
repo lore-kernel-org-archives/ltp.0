@@ -4,75 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A042FC433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 12:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 438C7C433EF
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 15:00:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA9C83C93F2
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 13:43:21 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C70E93C93FC
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 16:00:09 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC7943C1DE6
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 13:43:11 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 79C5F3C93F8
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 16:00:00 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A7D5C200049
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 15:59:59 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id A2752212C3;
+ Tue, 11 Jan 2022 14:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1641913198;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=69c6mxl52hYFYBLXvugjvxP2Iam+Ouao2M1K5p+8KcI=;
+ b=RZjMFFxJlmcWAAIqsQ2sdtuX/xyl8b7p/+abIV30BxH3zXjzlSrDwQS7BZS1JLWZaZgWOl
+ BrqGtFxNPAIaNsgsi0bFBUK+BYw+eg+ry2HLYGsqOqfd3NXVwdbYzqBYSzVKAUbXPE0j31
+ hvMTogvCfMmfagcm1QJJ476CmDIfeqY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1641913198;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=69c6mxl52hYFYBLXvugjvxP2Iam+Ouao2M1K5p+8KcI=;
+ b=1VEAA253XtvmCMomGIAd6Krxfu19dJudbCwBDPxdBwaZRnTOxRRtNtCqu40MescD5T9moU
+ JWoPo7SR19i2O7Ag==
+Received: from g78 (unknown [10.163.24.42])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 58C93601E0B
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 13:43:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1641904988;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OEuziffwEglnk52T+oPDxOrBvdzx1fshRbqP+2EtaLI=;
- b=jMDu3eNoiX63T8xArJEEyIrhgBxB3/95ubV1FHEO3o25Nbf3xXXzfum4gZ/xVU2G8st50d
- r57qv1A1lkgjJdC5WURmBW0fN5nOtzS0oupkjpO805/GgBEXTMjr3KuN7SSDg7LyB9a3wZ
- 5FOtPEQWb+Q+C0vNdIIByI/iw9iIvM8=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-192-kdBwVZKMMoiabPPIYFl-eA-1; Tue, 11 Jan 2022 07:43:07 -0500
-X-MC-Unique: kdBwVZKMMoiabPPIYFl-eA-1
-Received: by mail-yb1-f197.google.com with SMTP id
- n129-20020a254087000000b00610d09107e0so17384703yba.19
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 04:43:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=OEuziffwEglnk52T+oPDxOrBvdzx1fshRbqP+2EtaLI=;
- b=WNWx8Oqe/+H0SYmaC1jb2uLzGTzP4wDC+nB11/V0DmkNps7jTkTVYQUev7BcSxm51f
- EYiggFF0s4oVhakdRXw/VQV+zN46dozUp2TrwNEhmMMCgwdt5hwvVQR1gSyVSWc65oLm
- VLsVYuHkklkimrd8HtTYWUc9isXL4jhwkPtRlZx/Yt+1iTTe/iYB8IlXruqsmeHvKnA1
- pLIevEU4uLGx96pp7QcATzAi4mPP104Z0c3tVMCblFnvX0qatcmVP4p3VsXuSDqyPFNM
- vah2sYWuVsJMvr7pmZqJatT572zCY69KSZd6WUzBFFLkeA2q+XwFxLGfj3JKUIV2AFfV
- OfxA==
-X-Gm-Message-State: AOAM530vs1yEcYNENOegm2COewLQXt9jU5kUqnkM/WP7eLQRoG99LHrG
- TylH+0+Nmly1oIvZYqgO9AgiRyGVQqdV58TS1Wr7HstANK3fAmVjVvJRvGYzzu3/TMrT2WWjbdz
- 730RTvzKBu5lOO79ZSkgtzuqOrTI=
-X-Received: by 2002:a25:f90d:: with SMTP id q13mr5923543ybe.32.1641904987225; 
- Tue, 11 Jan 2022 04:43:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzVKs4F0dHEnXoO6HzoXsaMF9xHVob9yYZ+G+2LSuMVamuzW9QHwq1ICtAR6wUkETiaRWE2TWD3fsdWT+GUzuE=
-X-Received: by 2002:a25:f90d:: with SMTP id q13mr5923523ybe.32.1641904986990; 
- Tue, 11 Jan 2022 04:43:06 -0800 (PST)
+ by relay2.suse.de (Postfix) with ESMTPS id 67EAAA3B81;
+ Tue, 11 Jan 2022 14:59:58 +0000 (UTC)
+References: <YSz36VZ18+N4YsM/@yuki>
+ <20210831091005.25361-1-rpalethorpe@suse.com>
+ <20210831091005.25361-4-rpalethorpe@suse.com>
+ <7cf81226-52ca-5016-5041-ce12b93b534f@jv-coder.de>
+User-agent: mu4e 1.6.10; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Joerg Vehlow <lkml@jv-coder.de>
+Date: Tue, 11 Jan 2022 14:36:29 +0000
+In-reply-to: <7cf81226-52ca-5016-5041-ce12b93b534f@jv-coder.de>
+Message-ID: <875yqq1fo7.fsf@suse.de>
 MIME-Version: 1.0
-References: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
- <91b9d5928cd129ebb21430a60e715113a6a6f6b7.1641376050.git.luke.nowakowskikrijger@canonical.com>
-In-Reply-To: <91b9d5928cd129ebb21430a60e715113a6a6f6b7.1641376050.git.luke.nowakowskikrijger@canonical.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 11 Jan 2022 20:42:54 +0800
-Message-ID: <CAEemH2dHHNz25Vacu3r49MHgyd+Urk3c=NHMwA6zV=FFAQSpQw@mail.gmail.com>
-To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/6] tools: Implement tst_cgctl binary utility
+Subject: Re: [LTP] [PATCH v2 4/4] bpf_prog05: Drop CAP_BPF and check if ptr
+ arithmetic is allowed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,57 +73,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> wrote:
+Hello Joerg,
 
->  tools/cgroup/Makefile    |  7 ++++
->  tools/cgroup/tst_cgctl.c | 69 ++++++++++++++++++++++++++++++++++++++++
+Joerg Vehlow <lkml@jv-coder.de> writes:
 
-Looks like putting this tst_cgctl.c in testcase/lib/ will be better,
-we have no necessary to create it under a bit far directory, and
-that tool/ is more generic for LTP, but this process is only for
-shell tests.
+> Hi Richard,
+>
+> Am 8/31/2021 um 11:10 AM schrieb Richard Palethorpe via ltp:
+>> On older kernels pointer arithmetic requires CAP_BPF. They also lack
+>> the ability to call BPF subprogs. This makes it difficult to exploit
+>> the div/mod behavior.
+>> Older kernels leave div/mod by zero undefined. This causes the test
+>> to
+>> fail and backporting the new behavior is difficult. So when we find
+>> that pointer arithmetic is not possible without CAP_BPF we can return
+>> TCONF. Because in this case, we know the test will fail, the risk is
+>> limited and there is little that can be done about it.
+>
+> What does older kernel mean here?
 
-> +static int cgctl_cleanup(const char *config)
-> +{
-> +    tst_cgroup_scan();
-> +    tst_cgroup_load_config(config);
+I'm refering to multiple different kernel versions (perhaps
+confusingly). On much older kernels we don't have any issues because
+pointer arithmetic was not possible in sensitive contexts.
 
-This tst_cgroup_load_config() does not work as expected.
-From my manual check, the ltp and drain dir have been created
-but it prints " Created_Ltp_Dir=no Created_Drain_Dir=no" strings.
+Then it was made possible, but div/mod by zero was undefined. Then that
+was fixed, but IIRC there were other issues. Depending on what commits
+you have, any number of outcomes are possible.
 
-...
-Detected Roots:
-/sys/fs/cgroup/memory Mounted_Root=no Created_Ltp_Dir=no
-Created_Drain_Dir=no Test_Id=test-1801
-...
+>
+>> +
+>> +	if (ret != -1)
+>> +		tst_brk(TBROK, "Invalid bpf() return value: %d", ret);
+>> +
+>> +	if (log[0] != 0)
+>> +		tst_brk(TCONF | TERRNO, "No pointer arithmetic:\n %s", log);
+> This check now fails for me with the following output, where the test
+> was successful, before this patch. The kernel is a non-standard suse 
+> 5.3.18 with realtime patches.
+>
+> bpf_prog05.c:100: TCONF: No pointer arithmetic:
+>  0: (bf) r2 = r10
+> 1: (b7) r3 = -1
+> 2: (0f) r2 += r3
+> 3: (72) *(u8 *)(r2 +0) = 0
+> 4: (b7) r0 = 0
+> 5: (95) exit
+>
+> from 2 to 3 (speculative execution): R1=ctx(id=0,off=0,imm=0) R2_w=fp0
+> R3_w=invP-1 R10=fp0
+> 3: (72) *(u8 *)(r2 +0) = 0
+> invalid stack off=0 size=1
+> processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> : EACCES (13)
+>
+>
+> Is this too old? But then again, the test was successful before this
+> patch and your commit message states, that it was not successful on 
+> "older kernels".
 
+Are you testing on ARM? eBPF adopted the ARM behavior when dividing by
+zero.
 
-> +    tst_cgroup_cleanup();
-
-This does not work as expected too, but the problem should exist
-in previous patches. Anyway, I will look into the details tomorrow.
-
-# ./tst_cgctl cleanup "$_cgroup_state"
-tst_cgroup.c:414: TBROK: Could not find root from config. Roots
-changing between calls?
-
-
-> +
-> +    return 0;
-> +}
-
-
---
-Regards,
-Li Wang
-
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
