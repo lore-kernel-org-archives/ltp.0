@@ -4,49 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60567C433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 10:42:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1156C433F5
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 10:51:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6B4C13C93CE
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 11:42:14 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6E1BC3C90AA
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:42:04 +0100 (CET)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+	by picard.linux.it (Postfix) with ESMTP id 2670F3C93FA
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 11:51:17 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3411D200BB0
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:42:03 +0100 (CET)
-Received: from [192.168.178.40] (unknown [188.192.100.83])
- by mail.jv-coder.de (Postfix) with ESMTPSA id B50E89F75E;
- Tue, 11 Jan 2022 10:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1641897721; bh=u7Kb46G871Dw+D166tbNEbTkGImAG8hJeYHelmeNr3g=;
- h=Message-ID:Date:MIME-Version:Subject:To:From;
- b=MfPG62/7q9aviUfg67tBGbbal08+YBRTSAZBZbHy6F1y0Oa/JQXgX7boVtFmIXVi8
- hvL4O5OAWtBLat0kt3qvnOUDAv61edQ18Q7v0ZYOJ4flXejTpaOv2umeumpbpuY2rW
- PwgW+89GMdEZ92mHSo1tiR9qpoKs49p/mj8MD/mA=
-Message-ID: <7cf81226-52ca-5016-5041-ce12b93b534f@jv-coder.de>
-Date: Tue, 11 Jan 2022 11:42:01 +0100
+ by picard.linux.it (Postfix) with ESMTPS id 199D83C90AA
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:51:06 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BD30A60025E
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:51:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1641898264;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=78O0sF73uj5tM451AcyKNLjBpBU118RfSFybLxmbwn8=;
+ b=AGQU3bP8uFbklp0UMhl1h1JSOayhnxWS/p8S4VOCbDs6GJNngRVcfPB4nHcEouyrxX4f4W
+ DzreRRa9d9w7sz7nkceG3+dlv44FuqSdEKflT0kMS2BUfgrPeOkn+KVWq6b2VQsR8thQkG
+ uK/EMPFnIZ6ToPBOBJsxZ0wOTO95fzE=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-385-Cu1WY-X7P0-rGoVzZRuauQ-1; Tue, 11 Jan 2022 05:51:02 -0500
+X-MC-Unique: Cu1WY-X7P0-rGoVzZRuauQ-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ q80-20020a252a53000000b006108776aa8fso23650384ybq.17
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 02:51:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=78O0sF73uj5tM451AcyKNLjBpBU118RfSFybLxmbwn8=;
+ b=HOJ/aj6OhR4mIgl7PosONsvQ2zaI1X5guOPkStQ5/TIRRQEmFUr6aoS/e9jp6wyAFQ
+ 3kvVuqG7Vi80k6jyczFykDdN5MefTRtw8HH+0kOLHr5lKhvAJdn8cwAPC8dJ3AScQCVH
+ v2U4BMILTt3lH+Oe+5e4efrsH3nEbutNIJrIw5UMB3ciWEt+8cNDCFshsr82YI83SGB3
+ u17YC3ndVNGVMF7tsmHoBHy7XZ375lTVSK6ip5DSHAdhfuik3Ol8rO0EW1r/inmH54u4
+ T//i4h1/0Xom79h1VbIKL7yKSn2fEQV73uuqelTfRVvdGEoqoP2GrwLh4zvFAafshEat
+ 8SPA==
+X-Gm-Message-State: AOAM5313fWzfd6XHEyrt5Ls2Zs+UZR/+wZgJ1IwSSH3wnNQ37ZZG3I/o
+ mVk36kUp2VNSMkMtk4ACa8Y5a2lVHMm6HSO9V17tvNpCYdEM2LZpbGVX70bTDbPYDF3+yrOqLjU
+ lz3GgD9yNh8SpSaMuIkbgOWmTcww=
+X-Received: by 2002:a25:452:: with SMTP id 79mr5210057ybe.421.1641898261912;
+ Tue, 11 Jan 2022 02:51:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw6gVevelmJztSnNht051RsD9eRbFzWfdaumiESSHBuwxksTyl7GGyF/rH14ilQ6aoHUTO3FOgu3I+nxTydqZw=
+X-Received: by 2002:a25:452:: with SMTP id 79mr5210036ybe.421.1641898261667;
+ Tue, 11 Jan 2022 02:51:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Content-Language: en-US
-To: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
-References: <YSz36VZ18+N4YsM/@yuki>
- <20210831091005.25361-1-rpalethorpe@suse.com>
- <20210831091005.25361-4-rpalethorpe@suse.com>
-From: Joerg Vehlow <lkml@jv-coder.de>
-In-Reply-To: <20210831091005.25361-4-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
+ <626fb72bcb83352d98e0df828f4b27a4ef5a1d6f.1641376050.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <626fb72bcb83352d98e0df828f4b27a4ef5a1d6f.1641376050.git.luke.nowakowskikrijger@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 11 Jan 2022 18:50:49 +0800
+Message-ID: <CAEemH2eW=4fpi=LqhzOxqNOJMgKn7K1qGOqBPWMSFuAvXX70WA@mail.gmail.com>
+To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 4/4] bpf_prog05: Drop CAP_BPF and check if ptr
- arithmetic is allowed
+Subject: Re: [LTP] [PATCH 6/6] controllers: Expand cgroup_lib shell library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,58 +84,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richard,
-
-Am 8/31/2021 um 11:10 AM schrieb Richard Palethorpe via ltp:
-> On older kernels pointer arithmetic requires CAP_BPF. They also lack
-> the ability to call BPF subprogs. This makes it difficult to exploit
-> the div/mod behavior.
-> 
-> Older kernels leave div/mod by zero undefined. This causes the test to
-> fail and backporting the new behavior is difficult. So when we find
-> that pointer arithmetic is not possible without CAP_BPF we can return
-> TCONF. Because in this case, we know the test will fail, the risk is
-> limited and there is little that can be done about it.
-
-What does older kernel mean here?
-
+> +# Find mountpoint of the given controller
+> +# USAGE: cgroup_get_mountpoint CONTROLLER
+> +# RETURNS: Prints the mountpoint of the given controller
+> +# Must call cgroup_require before calling
+> +cgroup_get_mountpoint()
+> +{
+> +       local ctrl=$1
+> +       local mountpoint
 > +
-> +	if (ret != -1)
-> +		tst_brk(TBROK, "Invalid bpf() return value: %d", ret);
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_get_mountpoint: controller not defined"
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_mountpoint: No previous state found. Forgot to call cgroup_require?"
 > +
-> +	if (log[0] != 0)
-> +		tst_brk(TCONF | TERRNO, "No pointer arithmetic:\n %s", log);
-This check now fails for me with the following output, where the test 
-was successful, before this patch. The kernel is a non-standard suse 
-5.3.18 with realtime patches.
+> +       mountpoint=$(echo "$_cgroup_state" | grep -w "$ctrl" | awk '{ print $4 }')
+> +       echo "$mountpoint"
+> +
+> +       return 0
+> +}
+> +
+> +# Get the test path of a given controller that has been created by the cgroup C API
+> +# USAGE: cgroup_get_test_path CONTROLLER
+> +# RETURNS: Prints the path to the test direcory
+> +# Must call cgroup_require before calling
+> +cgroup_get_test_path()
+> +{
+> +       local ctrl="$1"
+> +       local mountpoint
+> +       local test_path
+> +
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_get_test_path: controller not defined"
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_test_path: No previous state found. Forgot to call cgroup_require?"
+> +
+> +       mountpoint=$(cgroup_get_mountpoint "$ctrl")
+> +
+> +       test_path="$mountpoint/ltp/test-$$"
+> +
+> +       [ ! -d "$test_path" ] && tst_brk TBROK "cgroup_get_test_path: No test path found. Forgot to call cgroup_require?"
+> +
+> +       echo "$test_path"
+> +
+> +       return 0
+> +}
+> +
+> +# Gets the cgroup version of the given controller
+> +# USAGE: cgroup_get_version CONTROLLER
+> +# RETURNS: "V1" if version 1 and "V2" if version 2
+> +# Must call cgroup_require before calling
+> +cgroup_get_version()
+> +{
+> +       local ctrl="$1"
+> +
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_get_version: controller not defined"
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_version: No previous state found. Forgot to call cgroup_require?"
+> +
+> +       version=$(echo "$_cgroup_state" | grep -w "$ctrl" | awk '{ print $2 }')
 
-bpf_prog05.c:100: TCONF: No pointer arithmetic:
-  0: (bf) r2 = r10
-1: (b7) r3 = -1
-2: (0f) r2 += r3
-3: (72) *(u8 *)(r2 +0) = 0
-4: (b7) r0 = 0
-5: (95) exit
+This won't work on my x86_64 KVM platform, maybe we need: grep -w "^$ctrl".
 
-from 2 to 3 (speculative execution): R1=ctx(id=0,off=0,imm=0) R2_w=fp0 
-R3_w=invP-1 R10=fp0
-3: (72) *(u8 *)(r2 +0) = 0
-invalid stack off=0 size=1
-processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0 
-peak_states 0 mark_read 0
-: EACCES (13)
+# echo $$
+1801
+
+# ./tst_cgctl require memory 1801
+Detected Controllers:
+memory V1 @ /sys/fs/cgroup/memory Required
+cpu V1 @ /sys/fs/cgroup/cpu,cpuacct
+cpuset V1 @ /sys/fs/cgroup/cpuset
+Detected Roots:
+/sys/fs/cgroup/memory Mounted_Root=no Created_Ltp_Dir=no
+Created_Drain_Dir=no Test_Id=test-1801
+/sys/fs/cgroup/cpu,cpuacct Mounted_Root=no Created_Ltp_Dir=no
+Created_Drain_Dir=no Test_Id=NULL
+/sys/fs/cgroup/cpuset Mounted_Root=no Created_Ltp_Dir=no
+Created_Drain_Dir=no Test_Id=NULL
+
+# _cgroup_state=$(./tst_cgctl require memory 1801)
+
+# echo "$_cgroup_state" | grep -w "memory" | awk '{ print $2 }'
+V1
+Mounted_Root=no
+
+# echo "$_cgroup_state" | grep -w "memory" | awk '{ print $4 }'
+/sys/fs/cgroup/memory
+Created_Drain_Dir=no
+
+# ./tst_cgctl cleanup "$_cgroup_state"
+tst_cgroup.c:414: TBROK: Could not find root from config. Roots
+changing between calls?
 
 
-Is this too old? But then again, the test was successful before this 
-patch and your commit message states, that it was not successful on 
-"older kernels".
+> +       [ "$version" = "" ] && tst_brk TBROK "cgroup_get_version: Could not find controller $ctrl"
+> +
+> +       echo "$version"
+> +
+> +       return 0
+> +}
+> +
 
-Joerg
+
+-- 
+Regards,
+Li Wang
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
