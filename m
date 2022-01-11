@@ -4,62 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBBE6C433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 10:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60567C433F5
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 10:42:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 845763C940A
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 11:35:05 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6B4C13C93CE
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 11:42:14 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 343203C93B7
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:34:56 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 6E1BC3C90AA
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:42:04 +0100 (CET)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 58AC11A014F8
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:34:54 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9477B1F3B6
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 10:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1641897293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ZP2YcFIpYPnIDBKJd0z2qopo2aCroGJ4NhDGqg1WRN4=;
- b=16oX3WFXvZNeifCwd/o1lh8vLIYkjBqYUBw/A8u1hU7g4tUZxBUa3OmQ7xvW5NkSesM16m
- Ex/KzlJTwjksQqWrKe+TX0X3cEf2mnpc72GRS7pQLAjZ64N1qXBem65BbSRsgfuNfSnqq9
- n1s9lWG5YlykUr68bf2KfB+m5zDEjM4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1641897293;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ZP2YcFIpYPnIDBKJd0z2qopo2aCroGJ4NhDGqg1WRN4=;
- b=9XLfYY2yK90SDYfFHHWd2MecTB5Ikrtw7MBt2zlIofChvxGTEas9o32BE72ZhA1uWxTdDm
- yMc4PfKqTjJqSLAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8150E13638
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 10:34:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +xZPHk1d3WEjYQAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 10:34:53 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 11 Jan 2022 11:36:28 +0100
-Message-Id: <20220111103628.9055-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.34.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3411D200BB0
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 11:42:03 +0100 (CET)
+Received: from [192.168.178.40] (unknown [188.192.100.83])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id B50E89F75E;
+ Tue, 11 Jan 2022 10:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1641897721; bh=u7Kb46G871Dw+D166tbNEbTkGImAG8hJeYHelmeNr3g=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=MfPG62/7q9aviUfg67tBGbbal08+YBRTSAZBZbHy6F1y0Oa/JQXgX7boVtFmIXVi8
+ hvL4O5OAWtBLat0kt3qvnOUDAv61edQ18Q7v0ZYOJ4flXejTpaOv2umeumpbpuY2rW
+ PwgW+89GMdEZ92mHSo1tiR9qpoKs49p/mj8MD/mA=
+Message-ID: <7cf81226-52ca-5016-5041-ce12b93b534f@jv-coder.de>
+Date: Tue, 11 Jan 2022 11:42:01 +0100
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Content-Language: en-US
+To: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+References: <YSz36VZ18+N4YsM/@yuki>
+ <20210831091005.25361-1-rpalethorpe@suse.com>
+ <20210831091005.25361-4-rpalethorpe@suse.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+In-Reply-To: <20210831091005.25361-4-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] chdir01: Fix on more restrictive umask
+Subject: Re: [LTP] [PATCH v2 4/4] bpf_prog05: Drop CAP_BPF and check if ptr
+ arithmetic is allowed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,73 +58,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes the test on more restrictive umask, this was found on FIPS but
-it's not limited to the FIPS system at all. All that is needed to
-reproduce the problem is to set umask to 077 before the test is
-executed.
+Hi Richard,
 
-The troublemaker here is the FAT filesystem since there are no access
-bits defined in FAT disk format and they are emulated completely by the
-kernel. This means that all files on FAT filesytem have access bits
-generated by the kernel accordingly to system umask at the time the
-filesystem was mounted. This means that in order to be able to access
-the files on FAT we have to set the umask(0) before we mount the
-filesystem.
+Am 8/31/2021 um 11:10 AM schrieb Richard Palethorpe via ltp:
+> On older kernels pointer arithmetic requires CAP_BPF. They also lack
+> the ability to call BPF subprogs. This makes it difficult to exploit
+> the div/mod behavior.
+> 
+> Older kernels leave div/mod by zero undefined. This causes the test to
+> fail and backporting the new behavior is difficult. So when we find
+> that pointer arithmetic is not possible without CAP_BPF we can return
+> TCONF. Because in this case, we know the test will fail, the risk is
+> limited and there is little that can be done about it.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/chdir/chdir01.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+What does older kernel mean here?
 
-diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
-index aa25adf6a..c7902376d 100644
---- a/testcases/kernel/syscalls/chdir/chdir01.c
-+++ b/testcases/kernel/syscalls/chdir/chdir01.c
-@@ -50,16 +50,18 @@ static void setup(void)
- 	int fd;
- 	struct stat statbuf;
- 
-+	umask(0);
-+
-+	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
-+
- 	cwd = SAFE_GETCWD(NULL, 0);
- 	workdir = SAFE_MALLOC(strlen(cwd) + strlen(MNTPOINT) + 2);
- 	sprintf(workdir, "%s/%s", cwd, MNTPOINT);
- 	free(cwd);
- 	SAFE_CHDIR(workdir);
- 
--	mode_t sys_umask = umask(0);
- 	SAFE_MKDIR(DIR_NAME, 0755);
- 	SAFE_MKDIR(BLOCKED_NAME, 0644);
--	umask(sys_umask);
- 
- 	/* FAT and NTFS override file and directory permissions */
- 	SAFE_STAT(BLOCKED_NAME, &statbuf);
-@@ -132,12 +134,14 @@ static void run(unsigned int n)
- 
- static void cleanup(void)
- {
-+	SAFE_CHDIR("..");
-+	tst_umount(workdir);
- 	free(workdir);
- }
- 
- static struct tst_test test = {
- 	.needs_root = 1,
--	.mount_device = 1,
-+	.format_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
- 	.test = run,
--- 
-2.34.1
+> +
+> +	if (ret != -1)
+> +		tst_brk(TBROK, "Invalid bpf() return value: %d", ret);
+> +
+> +	if (log[0] != 0)
+> +		tst_brk(TCONF | TERRNO, "No pointer arithmetic:\n %s", log);
+This check now fails for me with the following output, where the test 
+was successful, before this patch. The kernel is a non-standard suse 
+5.3.18 with realtime patches.
 
+bpf_prog05.c:100: TCONF: No pointer arithmetic:
+  0: (bf) r2 = r10
+1: (b7) r3 = -1
+2: (0f) r2 += r3
+3: (72) *(u8 *)(r2 +0) = 0
+4: (b7) r0 = 0
+5: (95) exit
+
+from 2 to 3 (speculative execution): R1=ctx(id=0,off=0,imm=0) R2_w=fp0 
+R3_w=invP-1 R10=fp0
+3: (72) *(u8 *)(r2 +0) = 0
+invalid stack off=0 size=1
+processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0 
+peak_states 0 mark_read 0
+: EACCES (13)
+
+
+Is this too old? But then again, the test was successful before this 
+patch and your commit message states, that it was not successful on 
+"older kernels".
+
+Joerg
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
