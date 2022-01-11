@@ -4,149 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B200C433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 08:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4842FC433EF
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 09:38:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D69213C93C4
-	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 09:38:11 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 7208E3C9402
+	for <ltp@archiver.kernel.org>; Tue, 11 Jan 2022 10:38:47 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC7703C93BE
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 09:38:00 +0100 (CET)
-Received: from esa17.fujitsucc.c3s2.iphmx.com (esa17.fujitsucc.c3s2.iphmx.com
- [216.71.158.34])
+ by picard.linux.it (Postfix) with ESMTPS id F12393C2997
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 10:38:36 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E60716002D4
- for <ltp@lists.linux.it>; Tue, 11 Jan 2022 09:37:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1641890280; x=1673426280;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=rLAbfJKiBQTVntjBhmisoqPQWES8uyTi3cWHoTvRZNc=;
- b=W5i4+CEvVv5Wd4xu0X87VpksRarD8GC3KDil64j9HCTuLY+Zwi3E2qno
- /FL/qyHCuhY11MWUXM5ZXqr0xSfrBrYUuT6VnR9to1URPfEpWa+4FSxot
- t3aQozSQSiWaHAcNFtI3m9ua+7Xz8+liSHAOad04xFvlKSPAhnoHbYid4
- VCzL3Vbfv5S1qsHCY40dmt1R0pppcPprNQL3apIZ34Pih9KC2EzxZ653h
- kR9ZIskFvfPLhRQe3vkjIUDJwJlbstnNmj4E2BFMF6U1VYEHKNUUloQIh
- chSLBJx9KomYpzn9XAqiICL8XuHZZFrbXrlfYIefR26xtJFVC74PwqIhI w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="47343478"
-X-IronPort-AV: E=Sophos;i="5.88,279,1635174000"; d="scan'208";a="47343478"
-Received: from mail-os0jpn01lp2107.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.107])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2022 17:37:58 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kWdCgqlbYW5KBJIy4OtBbmxzcbzNaQnGsq7Cj7fl5JCCQSGVfDe/s6PBzLlxD+8ETyhFZabigVRZYi5Cz71Y6WuJklbZCuM6HvWSYOO3DpoGLzdAF88YalK1IXgUmGRrifBWpdNDY3eCaZVCYr272MWIVP48qRnxXSwwLD9EN1t9KNmOXzRuILIObpFrWuYOFAS9b8S1DVr71h9UufH5WWBG9ZBYghRPixXtPMXpANvbM9CL3hU7GwZN9LK0kArjqndzK2XD8P2rhDqie+I3ddcfwjZBiP6ZA1Ggh1ww7CznF+eT9XdBGkcKoRVO7O0QsmJWWieW8Bu5uKIhuNvtJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rLAbfJKiBQTVntjBhmisoqPQWES8uyTi3cWHoTvRZNc=;
- b=KNKW75KM4/BMizOoFquRUeed1r8mJj7Dt67vde1UmDS/ynuf/Brtzbg1mRgYVcra2Am1nclHTDavwkqTOUVoI2RZRiLVE3vvIoFr7ADWoEGX9p2yGBoJ/y8hscvFfRTtlZH+vGe2Ihv/CJdH1eGS7Uho0Qsix49nDstQpkxuNoUzexGLJKOshvRTHaR79N5w4H6iguQ8gEvkYyg53j25tvDG96GW10tT6FOjIb4n2bmfLe7gC/bwzJeyWzHDiI/16Zt1JfgImb09GxTIEWDWagbiRtWHk60WCzwa2RApp8x5BBEZ8atxmoJ+6zpWEuk27LQUaZUTCT9CvO1+tNiGlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rLAbfJKiBQTVntjBhmisoqPQWES8uyTi3cWHoTvRZNc=;
- b=aE3pO0whSoX7FXoItvnyuXf6IIic3hKplIrgjcO42mYGLtrIPjKPv7+oX7jeMbFmALsIQTmSVWnX4ob+geJc5/Zs561aYJVTxMAiIyG9oZ/9G1xyMJAGyQgkEabuZg/dlcQzuEIVIgV9Q0f0+k8/8bCSX6SJ6Zk9wwthIBApyc4=
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com (2603:1096:400:98::6)
- by TYCPR01MB7011.jpnprd01.prod.outlook.com (2603:1096:400:be::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Tue, 11 Jan
- 2022 08:37:54 +0000
-Received: from TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::9486:fa6e:4ac9:802b]) by TYCPR01MB6544.jpnprd01.prod.outlook.com
- ([fe80::9486:fa6e:4ac9:802b%4]) with mapi id 15.20.4867.012; Tue, 11 Jan 2022
- 08:37:54 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Li Wang <liwang@redhat.com>
-Thread-Topic: [LTP] [PATCH v4 3/5] shell: add kconfig parse api
-Thread-Index: AQHYBrHpl9iAQbrPq0SVOQssuxdnMqxdcxkAgAAMzYA=
-Date: Tue, 11 Jan 2022 08:37:54 +0000
-Message-ID: <61DD4215.2050104@fujitsu.com>
-References: <Ydw4BXF2ramqahuh@yuki>
- <1641881435-2351-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1641881435-2351-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <CAEemH2eZJ7U1+Bdsb5xCB6-KYa1mQQ=GriaDtyFSJ_6zprT7yw@mail.gmail.com>
-In-Reply-To: <CAEemH2eZJ7U1+Bdsb5xCB6-KYa1mQQ=GriaDtyFSJ_6zprT7yw@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7e79f223-188b-46ba-01ce-08d9d4dda9ab
-x-ms-traffictypediagnostic: TYCPR01MB7011:EE_
-x-microsoft-antispam-prvs: <TYCPR01MB701142DA0C8B73AD9BCCFFF0FD519@TYCPR01MB7011.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3TCpGF1lHPn8qMAllJWq6ciCFZIAmbNNdiGSUnEnAruzxvXDsDIC+uthKsrniVqBQGSNM+ZPWVyFN0Q3UEz+K74Xi/iJaeXneKUXekhT6TxQwtGe05gm9U/76QBTQxvEAc5F3Tn14F8LN6pPBd/TRR4dv/4T0VbJAd9AYa+nZKtK/R6IKeRERiZ8DItfDxjW7I2MEOtSK7X2eWLRzB4rs4Q/TFacEdM9bBC7H+ccafeoBif00TLZAF4BMgX35FCxDlLYZgJ5LzYgcsEHKx8u7q5DaC2JJ78pj1lasvnBAmg+KBCitRvObnKgYDXyVIy24tZ9FoZYYFm3MO4PDu0mrZVY4aSxlKQ7/WhdbZPzqReudhBAxTu392ntqICFBgVnJ2hYZTC9ZhHVvisP5aKNBXHhx2toAQmZigVPYhUo7x1hab+UG8Di+r0IqlE8lUqV5pfbGJ38itYUa2ls0KD5YP6sTCuzrmPw9Ab7du7P9drcrV4yrOShKrB/VYi5m7rsrrlA9Wa0Sekx/nQQDIU9vyXD4UScgynWzFRkN7FBVRBKZ4zVYq1hUFne9twGu1Vs5kXj1VJ+7HqLx2tY19shGiz7n14LI9SMd5PaxtWB9RNfQmbPluXpEvMMTZluvEsl9I3MYAcntc0LuyIygJXOrlAFys2Hg18FoGDOe35BLQIuIWsIN4+Cyoe0v4A+0/Arj4USgIBUdckxN9+zkOz1pg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYCPR01MB6544.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(186003)(86362001)(83380400001)(38070700005)(6506007)(26005)(36756003)(4326008)(82960400001)(5660300002)(85182001)(2906002)(6512007)(6486002)(66556008)(122000001)(508600001)(8676002)(71200400001)(2616005)(33656002)(316002)(66946007)(87266011)(8936002)(66476007)(64756008)(6916009)(38100700002)(66446008)(91956017)(76116006)(53546011);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VThsbUh1K2FWMmZMUmlMZE9EQlZPZlNLMlZZVi9kOVdQdzdtZEZTeXkxV05n?=
- =?utf-8?B?dmxLUHFFUm43UTgrSks1c2lmTjAybkFJeS9wSjUvSEd4TkV1VTJrZ0dXSU1y?=
- =?utf-8?B?TS9vUmVTU2pIdVNTVkh2Vmw0R2JhNUsvellOSEJCSTlOWEpta3h6RUI2aVQw?=
- =?utf-8?B?WjNnbkgzTmFLWkE5RnprMVY2THdZaGltMmU2cXZ6b28vcmdSU3hDbHczWC9E?=
- =?utf-8?B?THVaM0JpZExjNHdPYW1CYzZzMDdCWjhGSDVwMHhadmFqcWFaUGwxSVQ2d01K?=
- =?utf-8?B?eU5oTWhzVENJK1dQQjZqWU96VlByQ0g1dDNqQTM0dUVGNCtMZ1FyQmtyVUtY?=
- =?utf-8?B?ZmM0THNtbFllV3M0UmE0WmIyT2tCUTZoTlczK1Fib0RqM3lwQXZIKzB2TytK?=
- =?utf-8?B?MjNZemxibVZsdUtzR2g0RGg2R3ZiendDQWVqeG10TVN4a2xVTmhjTzNuM0Ux?=
- =?utf-8?B?N2ZEUzF3bkpaeStJQnpjQWx1Q2M4RFlEME1WaUI1K1hINTJQaHFjRDdWaGNy?=
- =?utf-8?B?aFppS2ZkMzBZMG81V1dQOGM1Ymh5c0FzcFh4YTdCa0Y4TUVzeE92K3pIRkJR?=
- =?utf-8?B?eU5VQi9JZ3QvbUNMSDlIaklMZE5uWUpjZk5yMWozZlArMnRWT2cyaFRTb0lL?=
- =?utf-8?B?SnFMSkFOU1U1b1k5VWJaaE83OFBINTNYbXdGaEJwMG5NVDQ1V3N4SzdDSEsv?=
- =?utf-8?B?clBWTFErWHZMZlVib01uMHBSUyswZzZFZzcyKzhUVGFhSDRrTG01Zm4rZU5I?=
- =?utf-8?B?WnV2NktsUmhaUEt3eG5ZQmJUdk12ME5NSk4zSk5hc3lPUVhGbGZQTVlBZDdh?=
- =?utf-8?B?MjZWSFFKUjd3a2ZWTk1ieXdkY1JXMlUzNCtmTmx6UmJCVWVvRGxSUlc0VUxu?=
- =?utf-8?B?cnhUY2E2WkZ0REErSHQvMWtiVjB1YktSY2ZHV3N2dDdBeXNXWkpNdGhhd2Ex?=
- =?utf-8?B?bGdOYnpwRkpwTW5MajU4b2xQV1BnUHpNQ1NOVitTRndod3hUcm9Lc25DUFJT?=
- =?utf-8?B?VEkwM09sb0s1bFovNnltMHM1UVlmalNBbTdRL3lXQzk2eVNmZGl0QXljRTNQ?=
- =?utf-8?B?RTgvUm12dFEza1h3bjBWMng0cFVtT0VueXE2RVp6cTFSWGIyUWpXMkNWS2N0?=
- =?utf-8?B?cUs5MllSeTVYNGRyUytwaHlZTE5ISm90YjNiUi9nTlRJMXhndmp6Yy9hWmpk?=
- =?utf-8?B?RThoczFxdktkNXhZR3BYM3UxdDQyaW5DNklmY1lDaWlQY1oyNWpvTlVKRkIx?=
- =?utf-8?B?TGE4SjQxaStkRHFiTWMyeVRPMjVNZmtYSDYxVUdNTU1oVzI1M3FlWVBiQWk5?=
- =?utf-8?B?bXpSdG5uR1NIZUJ4TGMxVy8za1F2NmVsaTh6WUtvWVUwVWkvU3A0UFFLZDJn?=
- =?utf-8?B?QXJ5SjM2N051QXAzNW1zQVdKcHJEZkkzdGF2WTFQeXlveGdSTTVDRW9QLy9n?=
- =?utf-8?B?UFVjMjFub3BWWGM4SHhpdUZZdTZ6RnRqVzNXV0JFVDFIVCs4Zlc1RTIxVzhy?=
- =?utf-8?B?c0hjQkpGVzlyRzR6L1ZOSHloSTBZVXorOG93ZjR5b2dEaEVrNXB0TVVBck9r?=
- =?utf-8?B?Nk1LY1l0emV5aTBWNXA4alVSS2xtRVRDR09yUEpCcHBLUHV5cG9wTmJYbFF5?=
- =?utf-8?B?OThrWjZLREtMY1Q2MlBFYWw5YkNaZTVRL3ZIM2J1VFVhM1MrdzQvTXdwaFRi?=
- =?utf-8?B?NjcvdmxZcFZjSzVabVhNMTRlVU1kOExUa05WMlpmZHpXakZHSWxQNGFtd2ly?=
- =?utf-8?B?RzB3MEMyUmxOOWxQK3pnK0hoeXhLM3I3c0RIUTVRTXBENGVJSkx1RisrcjAr?=
- =?utf-8?B?K0JTTmFkMG1JYy9RWU9SYlRWVGluVFVkbmJSQWJxc1A4M1hYdnFoOUo3Ri82?=
- =?utf-8?B?WTM5N0N0dDRLVnhXRDNlbFVqbEJ4SGd1RiszQktCOWY3dFNoUC9WTXljekFm?=
- =?utf-8?B?Y0Z6ME9HcUlqZ0Z3VEdkK1BpOXhxSnE3dXNDZHA0WGhSMGx1YXNKakJvWDJk?=
- =?utf-8?B?RTVTZktLa2pvbEpaUzZkTGtvNlRSWFh6OG5oaUZTQUs1QUxFdFR4RjZwa3o4?=
- =?utf-8?B?Z1BGcU9lb1JKVkkxMUMrUjYrb0QwTzdpdlh0SDRNNHErall5VGtmWFNYTHkz?=
- =?utf-8?B?dVp3R21tSThwTmtadXVqRVBmS2FMSk1DdjVXYU52ZUVZZXhPRmNJNE5WQnV6?=
- =?utf-8?B?UTJnYnJYU0JwTkxkem9SWHpzcnFCS2dWQk50Wk1wUmxlc1lMemtOZUR3ZEc5?=
- =?utf-8?Q?e6edga+sC5TRjZysT4r3RK/PeSJjvI9OaD2suPyGAM=3D?=
-Content-ID: <EAB539DDB64CD04D9ACFCDAA788D96A9@jpnprd01.prod.outlook.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 921D6140132F
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 10:38:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1641893914;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9YYRxA8YUuZpgTpTTTqfUFY5bJ3n/JuF33+YP3Nlssw=;
+ b=Uvw+A8HY05Db0PJMO/FuIeyVgfmhG5WAbbv7PY2UYsn4PmqdkNjfJaTq/UrLTWPNxhcWmw
+ wqSlkHYhH7da/41NKXUKFwDW9DvAJbKhi7jJmTW4/CBu/CSKFz0NoGo+9PPUNNdDNxAvFs
+ ivJ0W2ZlWWGX9/1IxBD8kvBqushSsCE=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-595-vzCgcE4lNfuD1hc-lALpiQ-1; Tue, 11 Jan 2022 04:38:30 -0500
+X-MC-Unique: vzCgcE4lNfuD1hc-lALpiQ-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ u185-20020a2560c2000000b0060fd98540f7so33036857ybb.0
+ for <ltp@lists.linux.it>; Tue, 11 Jan 2022 01:38:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=9YYRxA8YUuZpgTpTTTqfUFY5bJ3n/JuF33+YP3Nlssw=;
+ b=X3t3miO9VYGiVMf8aoJ7jRByDFZZTMbFblKxkt+viW6mL1NGqIu2NuyGmzu1eqgmY1
+ BRRSsTQ1fsuG4R8veEkFepSLhnoXu8mgIlT9kSfyMsWTOQQvAwO+jlnoQcOCILebcenf
+ 3y3SnpHct00r5Yq4+ZiZDv9Ze2+BZj/7qV0Z7QmC2fIT6TrmrqFYoEGP06Q0zlnGieAI
+ MnfVbnpD98aRdBzRQVZtr3qXcJwzbelefUq3F+UaLxkmIHpXF+5VLprIlxsvBwvpO7Ce
+ OZrqvjErxmsulwHgqc9pj6scgUuYlHUX685+uOxTZ9qnLSGM1sF1xe9Hy8fucUfczjye
+ Q/xw==
+X-Gm-Message-State: AOAM533aBuInHser8PpogdhrD2HJc83O3J8s1zQNtgPBvW2FVb7vWHk5
+ fThw2+AQ/JVhKlR4L5FhEP2LUrHlJ90DU8+I9YSpFWC6q5XYqG/xFJKpnpEsJcjVVJMTsAS67kB
+ k4uBkmniGoIHnG4w284aL7ws/KjM=
+X-Received: by 2002:a25:e60a:: with SMTP id d10mr5086494ybh.71.1641893909895; 
+ Tue, 11 Jan 2022 01:38:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyDmIj0EHmMPcEcWcUU2ysdDsjgxyTT8Nv4qMhinsvXCPEYZCrMOT46WNPsUoG77E8Vx9KP3upQz4SN4mKfyVs=
+X-Received: by 2002:a25:e60a:: with SMTP id d10mr5086470ybh.71.1641893909581; 
+ Tue, 11 Jan 2022 01:38:29 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6544.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e79f223-188b-46ba-01ce-08d9d4dda9ab
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2022 08:37:54.8740 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yz83Z0bNKNlMdmRDaSncWBRoavU6Av1oU4gO4zcdLVes7WDQj3A1geK4BHNN1jliBY6eoUAUB/bv7pWixHzXvbqgQMz8lTtt+pIEpK+ROqo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB7011
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
+ <626fb72bcb83352d98e0df828f4b27a4ef5a1d6f.1641376050.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <626fb72bcb83352d98e0df828f4b27a4ef5a1d6f.1641376050.git.luke.nowakowskikrijger@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 11 Jan 2022 17:38:15 +0800
+Message-ID: <CAEemH2ccc2WBpVvxz49X4DuO7iCLrpGoy1EJ4rqLN6EQ1TK0sw@mail.gmail.com>
+To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/5] shell: add kconfig parse api
+Subject: Re: [LTP] [PATCH 6/6] controllers: Expand cgroup_lib shell library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,123 +84,216 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li
-> On Tue, Jan 11, 2022 at 2:10 PM Yang Xu<xuyang2018.jy@fujitsu.com>  wrote:
+On Wed, Jan 5, 2022 at 6:01 PM Luke Nowakowski-Krijger
+<luke.nowakowskikrijger@canonical.com> wrote:
 >
->> +++ b/testcases/lib/tst_check_kconfigs.c
->> @@ -0,0 +1,46 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/* Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.*/
->> +
->> +#include<stdio.h>
->> +#include<string.h>
->> +#include<stdlib.h>
->> +#include "tst_kconfig.h"
->> +
->> +int main(int argc, char *argv[])
->> +{
->> +       char *str = argv[1];
->> +       char *delim = argv[2];
->> +       unsigned int i, cnt = 1;
->> +       int ret = 0;
->> +
->> +       if (argc == 2 || strlen(delim) == 0) {
+> Expand the cgroup_lib library by using the tools/cgroup/tst_cgctl binary
+> utility to make calls to the Cgroup C API to simplify and centralize the
+> mounting and cleanup process of Cgroups.
 >
-> I doubt that this syntax really works here.
+> Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+> ---
+>  testcases/kernel/controllers/cgroup_lib.sh | 129 ++++++++++++++++++---
+>  1 file changed, 113 insertions(+), 16 deletions(-)
 >
-> How can we get the strlen(delim) equal to 0? if the argc is
-> not 2, why the length of delimi is zero? but if we change ||
-> to&&, then get a segment fault. I don't understand this.
-
-Sorry, this is ugly code. please see the lastest code.
+> diff --git a/testcases/kernel/controllers/cgroup_lib.sh b/testcases/kernel/controllers/cgroup_lib.sh
+> index 7918b5636..6ab201b95 100644
+> --- a/testcases/kernel/controllers/cgroup_lib.sh
+> +++ b/testcases/kernel/controllers/cgroup_lib.sh
+> @@ -5,22 +5,7 @@
 >
->> +               delim = ",";
->> +       } else if (argc == 3) {
->> +               if (strlen(delim)>  1) {
->> +                       fprintf(stderr, "The delim must be a single character\n");
->> +                       return 1;
->> +               }
->> +       } else {
->> +               fprintf(stderr, "Please provide kernel kconfig list and delim "
->> +                               "(optinal, default value is ',')\n");
->> +               return 1;
->> +       }
->> +
->> +       for (i = 0; str[i]; i++) {
->> +               if (str[i] == delim[0])
->> +                       cnt++;
->> +       }
->> +
->> +       char **kconfigs = malloc(++i * sizeof(char *));
+>  . tst_test.sh
 >
-> Shouldn't this be malloc(++cnt * sizeof(char*)) ?
-Oh, yes. Sorry for this typo.
+> -# Find mountpoint to given subsystem
+> -# get_cgroup_mountpoint SUBSYSTEM
+> -# RETURN: 0 if mountpoint found, otherwise 1
+> -get_cgroup_mountpoint()
+
+As we have renamed this function to cgroup_get_mountpoint(), so the
+invoke part in test cases should be updated too. Maybe you're going
+to complete that in following up patches, but as a completed patch set,
+we'd better keep the code not broken in running.
+
+cgroup/cgroup_regression_test.sh:
+cpu_subsys_path=$(get_cgroup_mountpoint "cpu")
+cgroup/cgroup_regression_test.sh:       local
+subsys_path=$(get_cgroup_mountpoint $subsys)
+cpuset/cpuset_regression_test.sh:
+root_cpuset_dir=$(get_cgroup_mountpoint cpuset)
+
+Btw, it would be great you can write simple test demos to verify the
+new shell API works well.
+Just like what people done at: ltp/lib/newlib_tests/shell/*
+
+> -{
+> -       local subsystem=$1
+> -       local mntpoint
+> -
+> -       [ $# -eq 0 ] && tst_brk TBROK "get_cgroup_mountpoint: subsystem not defined"
+> -
+> -       mntpoint=$(grep cgroup /proc/mounts | grep -w $subsystem | awk '{ print $2 }')
+> -       [ -z "$mntpoint" ] && return 1
+> -
+> -       echo $mntpoint
+> -       return 0
+> -}
+> +_cgroup_state=
 >
->> +
->> +       for (i = j0; i<  cnt; i++)
->> +               kconfigs[i] = strtok_r(str, delim,&str);
->> +
->> +       kconfigs[i] = NULL;
-This is also useless.
-
-The lastest code should be as below:
-
-int main(int argc, char *argv[])
-{
-         char *str = argv[1];
-         char *delim = argv[2];
-         unsigned int i, cnt = 1;
-         int ret = 0;
-
-         if (argc == 2) {
-                 delim = ",";
-         } else if (argc == 3) {
-                 if (strlen(delim) > 1) {
-                         fprintf(stderr, "The delim must be a single 
-character\n");
-                         return 1;
-                 }
-         } else {
-                 fprintf(stderr, "Please provide kernel kconfig list and 
-delim "
-                                 "(optinal, default value is ',')\n");
-                 return 1;
-         }
-
-         for (i = 0; str[i]; i++) {
-                 if (str[i] == delim[0])
-                         cnt++;
-         }
-
-         char **kconfigs = malloc(++cnt * sizeof(char *));
-
-         for (i = 0; i < cnt; i++)
-                 kconfigs[i] = strtok_r(str, delim, &str);
-
-         if (tst_kconfig_check((const char * const*)kconfigs))
-                 ret = 1;
-
-         free(kconfigs);
-         return ret;
-}
-
-
-Best Regards
-Yang Xu
->> +
->> +       if (tst_kconfig_check((const char * const*)kconfigs))
->> +               ret = 1;
->> +
->> +       free(kconfigs);
->> +       return ret;
->> +}
+>  # Check if given subsystem is supported and enabled
+>  # is_cgroup_subsystem_available_and_enabled SUBSYSTEM
+> @@ -37,3 +22,115 @@ is_cgroup_subsystem_available_and_enabled()
 >
+>         return 1
+>  }
+> +
+> +# Find mountpoint of the given controller
+> +# USAGE: cgroup_get_mountpoint CONTROLLER
+> +# RETURNS: Prints the mountpoint of the given controller
+> +# Must call cgroup_require before calling
+> +cgroup_get_mountpoint()
+> +{
+> +       local ctrl=$1
+> +       local mountpoint
+> +
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_get_mountpoint: controller not defined"
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_mountpoint: No previous state found. Forgot to call cgroup_require?"
+> +
+> +       mountpoint=$(echo "$_cgroup_state" | grep -w "$ctrl" | awk '{ print $4 }')
+> +       echo "$mountpoint"
+> +
+> +       return 0
+> +}
+> +
+> +# Get the test path of a given controller that has been created by the cgroup C API
+> +# USAGE: cgroup_get_test_path CONTROLLER
+> +# RETURNS: Prints the path to the test direcory
+> +# Must call cgroup_require before calling
+> +cgroup_get_test_path()
+> +{
+> +       local ctrl="$1"
+> +       local mountpoint
+> +       local test_path
+> +
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_get_test_path: controller not defined"
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_test_path: No previous state found. Forgot to call cgroup_require?"
+> +
+> +       mountpoint=$(cgroup_get_mountpoint "$ctrl")
+> +
+> +       test_path="$mountpoint/ltp/test-$$"
+> +
+> +       [ ! -d "$test_path" ] && tst_brk TBROK "cgroup_get_test_path: No test path found. Forgot to call cgroup_require?"
+> +
+> +       echo "$test_path"
+> +
+> +       return 0
+> +}
+> +
+> +# Gets the cgroup version of the given controller
+> +# USAGE: cgroup_get_version CONTROLLER
+> +# RETURNS: "V1" if version 1 and "V2" if version 2
+> +# Must call cgroup_require before calling
+> +cgroup_get_version()
+> +{
+> +       local ctrl="$1"
+> +
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_get_version: controller not defined"
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_version: No previous state found. Forgot to call cgroup_require?"
+> +
+> +       version=$(echo "$_cgroup_state" | grep -w "$ctrl" | awk '{ print $2 }')
+> +       [ "$version" = "" ] && tst_brk TBROK "cgroup_get_version: Could not find controller $ctrl"
+> +
+> +       echo "$version"
+> +
+> +       return 0
+> +}
+> +
+> +# Cleans up any setup done by calling cgroup_require.
+> +# USAGE: cgroup_cleanup
+> +# Can be safely called even when no setup has been done
+> +cgroup_cleanup()
+> +{
+> +       [ "$_cgroup_state" = "" ] && return 0
+?> +
+> +       tst_cgctl cleanup "$_cgroup_state"
+
+I don't understand what exactly the $_cgroup_state do here,
+isn't that just 0 or 1 which returned by 'tst_cgctl require "$ctrl" $$' ?
+Maybe you can add brief comments on this variable.
+
+> +
+> +       return 0
+> +}
+> +
+> +# Get the task list of the given controller
+> +# USAGE: cgroup_get_task_list CONTROLLER
+> +# RETURNS: prints out "cgroup.procs" if version 2 otherwise "tasks"
+> +# Must call cgroup_require before calling
+> +cgroup_get_task_list()
+> +{
+> +       local ctrl="$1"
+> +       local version
+> +
+> +       version=$(cgroup_get_version "$ctrl")
+> +
+> +       if [ "$version" = "V2" ]; then
+> +               echo "cgroup.procs"
+> +       else
+> +               echo "tasks"
+> +       fi
+> +
+> +       return 0
+> +}
+> +
+> +# Mounts and configures the given controller
+> +# USAGE: cgroup_require CONTROLLER
+> +cgroup_require()
+> +{
+> +       local ctrl="$1"
+> +
+> +       [ $# -eq 0 ] && tst_brk TBROK "cgroup_require: controller not defined"
+
+We have already do parameter "$1" checking in
+is_cgroup_subsystem_avalibale_and_enbale,
+so here looks reductant.
+
+And, I think we don't need to invoke that independent function at any
+other place
+if we put that in this cgroup_require() function. It might be good to delete
+is_cgroup_subsystem_avalibale_and_enbale and move the process to here.
+
+> +
+> +       if ! is_cgroup_subsystem_available_and_enabled "$ctrl"; then
+> +               tst_brk TBROK "cgroup_require: Controller not available or not enabled"
+
+Maybe using TCONF here is more elegent.
+
+> +       fi
+> +
+> +       _cgroup_state=$(tst_cgctl require "$ctrl" $$)
+> +
+> +       [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_require: No state was set after call. Controller '$ctrl' maybe does not exist?"
+> +
+> +       return 0
+> +}
+> --
+> 2.32.0
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
+
+-- 
+Regards,
+Li Wang
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
