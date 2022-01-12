@@ -4,68 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80FF4C433F5
-	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 13:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF83C433EF
+	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 13:19:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 856623C94FE
-	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 14:07:05 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 458F23C949B
+	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 14:18:59 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9CF263C8BBB
- for <ltp@lists.linux.it>; Wed, 12 Jan 2022 14:06:54 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 1F5343C93F6
+ for <ltp@lists.linux.it>; Wed, 12 Jan 2022 14:18:49 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E796A200274
- for <ltp@lists.linux.it>; Wed, 12 Jan 2022 14:06:52 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E18DF140052D
+ for <ltp@lists.linux.it>; Wed, 12 Jan 2022 14:18:48 +0100 (CET)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AF3451F385;
- Wed, 12 Jan 2022 13:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1641992811;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0D7iElc2KBU4F3mP8SKPzfDB41mMoY/kXSh/x1Pnzy8=;
- b=UsNnxGAeV0fwkDNUYiW7BW27V2BxPImo6KrmWXhl70oPDX0PnKuw53++kLnram5e+ji2sK
- 9/q0HV+iFRRDqrkOZ9zQkKK6GqWZkFEsw0uwmhKGLFPOWZEDxMVECEez49M/vn4KX6HZcQ
- tVHroNE+M5gAZy/1qZokn3nMhdAl+lk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1641992811;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0D7iElc2KBU4F3mP8SKPzfDB41mMoY/kXSh/x1Pnzy8=;
- b=pw0THi05QwDNihuOTbytvxfEvxp0BbxqJcp9HW1EyJMpbF/2EBv95Q0iIBgLZA1X+TU2kJ
- NvwBE9/IvV4zYlAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75F5013B61;
- Wed, 12 Jan 2022 13:06:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ARgCG2vS3mEDTAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 12 Jan 2022 13:06:51 +0000
-Date: Wed, 12 Jan 2022 14:06:49 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <Yd7SaS2TIaUrlcIN@pevik>
-References: <20211006103059.9617-1-pvorel@suse.cz>
+ by ams.source.kernel.org (Postfix) with ESMTPS id A2466B81ED0;
+ Wed, 12 Jan 2022 13:18:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76006C36AEF;
+ Wed, 12 Jan 2022 13:18:41 +0000 (UTC)
+Date: Wed, 12 Jan 2022 14:18:37 +0100
+From: Christian Brauner <christian.brauner@ubuntu.com>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Message-ID: <20220112131837.igsjkkttqskw4eix@wittgenstein>
+References: <CA+G9fYsMHhXJCgO-ykR0oO1kVdusGnthgj6ifxEKaGPHZJ-ZCw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211006103059.9617-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <CA+G9fYsMHhXJCgO-ykR0oO1kVdusGnthgj6ifxEKaGPHZJ-ZCw@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 0/3] IMA: Add tests for uid, gid, fowner,
- and fgroup options
+Subject: Re: [LTP] [next]: LTP: getxattr05.c:97: TFAIL:
+ unshare(CLONE_NEWUSER) failed: ENOSPC (28)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,70 +51,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: alexhenrie24@gmail.com, linux-integrity@vger.kernel.org,
- Alex Henrie <alexh@vpitech.com>
+Cc: regressions@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>, containers@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, Alexey Gladkov <legion@kernel.org>,
+ LTP List <ltp@lists.linux.it>, "Eric W. Biederman" <ebiederm@xmission.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+On Wed, Jan 12, 2022 at 05:15:37PM +0530, Naresh Kamboju wrote:
+> While testing LTP syscalls with Linux next 20220110 (and till date 20220112)
+> on x86_64, i386, arm and arm64 the following tests failed.
+> 
+> tst_test.c:1365: TINFO: Timeout per run is 0h 15m 00s
+> getxattr05.c:87: TPASS: Got same data when acquiring the value of
+> system.posix_acl_access twice
+> getxattr05.c:97: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
+> tst_test.c:391: TBROK: Invalid child (13545) exit value 1
+> 
+> fanotify17.c:176: TINFO: Test #1: Global groups limit in privileged user ns
+> fanotify17.c:155: TFAIL: unshare(CLONE_NEWUSER) failed: ENOSPC (28)
+> tst_test.c:391: TBROK: Invalid child (14739) exit value 1
+> 
+> sendto03.c:48: TBROK: unshare(268435456) failed: ENOSPC (28)
+> 
+> setsockopt05.c:45: TBROK: unshare(268435456) failed: ENOSPC (28)
+> 
+> strace output:
+> --------------
+> [pid   481] wait4(-1, 0x7fff52f5ae8c, 0, NULL) = -1 ECHILD (No child processes)
+> [pid   481] clone(child_stack=NULL,
+> flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
+> child_tidptr=0x7f3af0fa7a10) = 483
+> strace: Process 483 attached
+> [pid   481] wait4(-1,  <unfinished ...>
+> [pid   483] unshare(CLONE_NEWUSER)      = -1 ENOSPC (No space left on device)
 
-FYI patchset merged with diff below. Fixed
-* "cat: '>': No such file or directory" error reported by Mimi
-* use /proc/uptime to not require date
+This looks like another regression in the ucount code. Reverting the
+following commit fixes it and makes the getxattr05 test work again:
 
-Thanks for your work and patience.
+commit 0315b634f933b0f12cfa82660322f6186c1aa0f4
+Author: Alexey Gladkov <legion@kernel.org>
+Date:   Fri Dec 17 15:48:23 2021 +0100
 
-FYI we had some discussion about merging patches earlier - after they met rc1 or
-next-tree (I guess getting into maintainer tree could be accepted). Feel free to
-contribute to this discussion:
+    ucounts: Split rlimit and ucount values and max values
 
-https://lore.kernel.org/ltp/20211221113042.21357-1-rpalethorpe@suse.com/
-https://lore.kernel.org/ltp/87lf0ffw1y.fsf@suse.de/
-https://lore.kernel.org/ltp/YdW5WEXgrotentzM@yuki/
+    Since the semantics of maximum rlimit values are different, it would be
+    better not to mix ucount and rlimit values. This will prevent the error
+    of using inc_count/dec_ucount for rlimit parameters.
 
-Kind regards,
-Petr
+    This patch also renames the functions to emphasize the lack of
+    connection between rlimit and ucount.
 
-diff --git testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-index c83006f6d1..095028e163 100755
---- testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-+++ testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-@@ -5,8 +5,11 @@
- # Author: Alex Henrie <alexh@vpitech.com>
- #
- # Verify that conditional rules work.
-+#
-+# gid and fgroup options test kernel commit 40224c41661b ("ima: add gid
-+# support") from v5.16.
- 
--TST_NEEDS_CMDS="chgrp chown id sg sudo"
-+TST_NEEDS_CMDS="cat chgrp chown id sg sudo"
- TST_CNT=1
- TST_NEEDS_DEVICE=1
- 
-@@ -28,16 +31,16 @@ verify_measurement()
- 
- 	tst_res TINFO "verify measuring user files when requested via $request"
- 	ROD echo "measure $request=$value" \> $IMA_POLICY
--	ROD echo "$(date) $request test" \> $test_file
-+	ROD echo "$(cat /proc/uptime) $request test" \> $test_file
- 
- 	case "$request" in
- 	fgroup)
- 		chgrp $user $test_file
--		$cmd
-+		sh -c "$cmd"
- 		;;
- 	fowner)
- 		chown $user $test_file
--		$cmd
-+		sh -c "$cmd"
- 		;;
- 	gid) sudo sg $user "sh -c '$cmd'";;
- 	uid) sudo -n -u $user sh -c "$cmd";;
+    v2:
+    - Fix the array-index-out-of-bounds that was found by the lkp project.
+
+    Reported-by: kernel test robot <oliver.sang@intel.com>
+    Signed-off-by: Alexey Gladkov <legion@kernel.org>
+    Link: https://lkml.kernel.org/r/73ea569042babda5cee2092423da85027ceb471f.1639752364.git.legion@kernel.org
+    Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+
+The issue only surfaces if /proc/sys/user/max_user_namespaces is
+actually written to.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
