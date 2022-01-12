@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DB5AC433EF
-	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 10:14:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24431C433EF
+	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 10:47:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3196F3C94FB
-	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 11:14:12 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D3DE63C9483
+	for <ltp@archiver.kernel.org>; Wed, 12 Jan 2022 11:47:15 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 450A93C8857
- for <ltp@lists.linux.it>; Wed, 12 Jan 2022 11:14:01 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C4E173C0345
+ for <ltp@lists.linux.it>; Wed, 12 Jan 2022 11:47:05 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6C9771000F32
- for <ltp@lists.linux.it>; Wed, 12 Jan 2022 11:14:00 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 34F1E200274
+ for <ltp@lists.linux.it>; Wed, 12 Jan 2022 11:47:04 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1641982439;
+ s=mimecast20190719; t=1641984423;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3cUVf3yfQ1e5NY1pFlfVlSP7Rfg+e6EurKGUvAGN4P8=;
- b=FVtYeEVPaLZfgWmKw9F7kzTvQgF5tQM3IiNyKf8EgLuoMY1kZO2n8xPZkSCaPPQbj3ixOe
- DyvLhz3zo+zxGtT949rCWOon0N5it1TRzBOnCNJHRZhmceNlHisU9wZGQ2wgEfSI/2qOv0
- 4+n+V3w1wum7al8JyZWT0dRVWMg0Td4=
+ bh=T8nciUc8CZatwsIcO9/4eEiZ8bMkuaFivBC0TXZp8IU=;
+ b=VHpZykGhBuZKHTuSKgr+TCdS/r0fjHNelgzxKcakWjpjRAgwJ2aBAhY1kzD3r/a3pp6prB
+ 79EIpjOFJesOTtGFzUK7tNRB6TWqNin4bAKPvpi3QByMMAErN9pv6tgqqbEnCNxwo+kjb1
+ im4M9hH0I0EFnuoUpW47norhG3JVAzo=
 Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
  [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-61-mwejrJJIO6ykPNczQrCVbA-1; Wed, 12 Jan 2022 05:13:57 -0500
-X-MC-Unique: mwejrJJIO6ykPNczQrCVbA-1
+ us-mta-246-b0ADMBB1MtK_lTPICCYiFg-1; Wed, 12 Jan 2022 05:47:00 -0500
+X-MC-Unique: b0ADMBB1MtK_lTPICCYiFg-1
 Received: by mail-yb1-f197.google.com with SMTP id
- n2-20020a255902000000b0060f9d75eafeso4074162ybb.1
- for <ltp@lists.linux.it>; Wed, 12 Jan 2022 02:13:57 -0800 (PST)
+ q185-20020a25d9c2000000b00611ae9c8773so252270ybg.18
+ for <ltp@lists.linux.it>; Wed, 12 Jan 2022 02:47:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=3cUVf3yfQ1e5NY1pFlfVlSP7Rfg+e6EurKGUvAGN4P8=;
- b=WzlaxqgVuGA/d3zyEwMG0X4oqZk0hFQ23o8AKQfYbCIZrwfsNvcT4UnzQ/C8Ve03mb
- Vc8ekXbDmo2ZcBvyyfG28y4ZBSZuoNkcZVDU8pvg6NP9XlVmWWW3uBGxZLs9JhPe+mCd
- 9EJBIEkn6W00YEfKpLH7nTLvi7mydop4ZwW1fCrAHsYZWzKCocKDwXlrV6vllIICetsq
- 1lxUtUafm20BEHQa/qHq3pZq7G+8LVCuyhBxl/v5wjkiuaJCJsdod4aLmHKm3rR0gOeH
- N6yaiAlbP7+oKjmn/D4Z5uXMK0kUauJ27cPSHH6O3GZbDnB9kjwjgDTTtSgvyvZmdhgc
- K8tA==
-X-Gm-Message-State: AOAM533L3OXonC7UfMc1nXfAKh+LrBMUe7gvVd5meHZTlIlU4UEgAmw6
- 99l4rDmr4ElEn8Fl52ZA6/A45Pjs5ZXNgf9cW33DMTLlWxT5RuwVgeznbasbBZFRALwgKsgsGJc
- 2zkXPKmMgahUzkpWzyssJvdRIU14=
-X-Received: by 2002:a25:b00b:: with SMTP id q11mr5959994ybf.421.1641982437001; 
- Wed, 12 Jan 2022 02:13:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxBqytOlz4UEoWlU5QKaixQhWmFsQRwHpAk7xZFX5BY/pD7Ks7DK4QSXPNCIxXx7tAgsE6uIr6G/aoD4smDmFc=
-X-Received: by 2002:a25:b00b:: with SMTP id q11mr5959965ybf.421.1641982436651; 
- Wed, 12 Jan 2022 02:13:56 -0800 (PST)
+ :message-id:subject:to:cc;
+ bh=T8nciUc8CZatwsIcO9/4eEiZ8bMkuaFivBC0TXZp8IU=;
+ b=H2hUEbuajiZGqGj5XZV/ImO+l50DM0pBZrjuRz2tbnN5yPDiQgshqDsHEXkh7sWV1m
+ yu5Gvm88lLXhMDgzPM+iJ/eHpDh7GryK3QxvbVjoJd8Oe/mnfKLT1mSAfjdgBfq47NhM
+ 4wlmB3npaldWHKr7ZjSna20r7bxJ+8ZxU2Ob+VyGJpESZwiHVRvi40l4fSEqszBjI7nS
+ 1GfFIdraL5UslHpD2ioeuCpI1BIb69QIiIV5B5IU6lGeF9pYfxecMCgmiEPv5cVn24Ew
+ y11+NRtf5lsiMZpHYxmfWXStYUNtdcwJ+Mat4naWdIi32BfXk+1EOJOIaybmdd83dohx
+ UJOg==
+X-Gm-Message-State: AOAM531xPvSXbhmxGZ1E1sxyXujLoIzsZgteqmBPt6F/Nozvq4zsgg38
+ sl5LSZ81xKEKLA12erz0MYf9Q7+AGVC4h/r1b/xGa6+NtxRXETNtxv+qebelovrMqxt+3A3/h8R
+ qu7tli3PKD7SfIuWrgPlIhp77TmQ=
+X-Received: by 2002:a25:15c3:: with SMTP id 186mr1885139ybv.71.1641984419912; 
+ Wed, 12 Jan 2022 02:46:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxeArkLCwvolQn4FehujpcQ6V/VmpHGQapIwtBIHx5ITDzTAEKv/cwwt5C/CwQnYcC1WSk3ujq3MFWOk1ciR4Y=
+X-Received: by 2002:a25:15c3:: with SMTP id 186mr1885121ybv.71.1641984419698; 
+ Wed, 12 Jan 2022 02:46:59 -0800 (PST)
 MIME-Version: 1.0
 References: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
- <91b9d5928cd129ebb21430a60e715113a6a6f6b7.1641376050.git.luke.nowakowskikrijger@canonical.com>
- <CAEemH2dHHNz25Vacu3r49MHgyd+Urk3c=NHMwA6zV=FFAQSpQw@mail.gmail.com>
- <CADS1e3f0UMMOyovAGovGp33hQ6ovt1W6h0-RUSVkQRsHWpy=DA@mail.gmail.com>
-In-Reply-To: <CADS1e3f0UMMOyovAGovGp33hQ6ovt1W6h0-RUSVkQRsHWpy=DA@mail.gmail.com>
+ <f69cdd6ec3cffc8d2bd5990feb131eb6be73a33e.1641376050.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <f69cdd6ec3cffc8d2bd5990feb131eb6be73a33e.1641376050.git.luke.nowakowskikrijger@canonical.com>
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 12 Jan 2022 18:13:42 +0800
-Message-ID: <CAEemH2e_k4XCb+ST4oZP=y8Hq1tdxcaspO-dh5bm92YrcibkWQ@mail.gmail.com>
+Date: Wed, 12 Jan 2022 18:46:44 +0800
+Message-ID: <CAEemH2fdx8cf_w6-BxJP0vHuveBuo0Eqjh5swqj4t60_hz7OYQ@mail.gmail.com>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/6] tools: Implement tst_cgctl binary utility
+Subject: Re: [LTP] [PATCH 2/6] API/cgroup: Add cgroup_find_root helper
+ function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,65 +91,67 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Luke,
-
->> > +static int cgctl_cleanup(const char *config)
->> > +{
->> > +    tst_cgroup_scan();
->> > +    tst_cgroup_load_config(config);
->>
->> This tst_cgroup_load_config() does not work as expected.
->> From my manual check, the ltp and drain dir have been created
->> but it prints " Created_Ltp_Dir=no Created_Drain_Dir=no" strings.
->>
->> ...
->> Detected Roots:
->> /sys/fs/cgroup/memory Mounted_Root=no Created_Ltp_Dir=no
->> Created_Drain_Dir=no Test_Id=test-1801
->> ...
->>
->>
+On Wed, Jan 5, 2022 at 6:00 PM Luke Nowakowski-Krijger
+<luke.nowakowskikrijger@canonical.com> wrote:
 >
-> Hm, I'm not sure what this could be. Are you sure when you were reading the printed info it was in the same invocation as when it was being created? Because the tst_cgroup_print_config is just pretty directly printing out the state of the cgroup framework.
-
-I have got the reason, because I manually run Cgroup test but did
-not allow it to do cleanup so leaves the ltp/ and drain/ dir there, so
-it will not be recorded as "yes" in Created_Ltp_dir next time, that
-behavior is correct.
-
+> Add a helper function similar to cgroup_find_ctrl to make matching paths
+> to roots more convenient.
 >
->> > +    tst_cgroup_cleanup();
->>
->> This does not work as expected too, but the problem should exist
->> in previous patches. Anyway, I will look into the details tomorrow.
->>
->> # ./tst_cgctl cleanup "$_cgroup_state"
->> tst_cgroup.c:414: TBROK: Could not find root from config. Roots
->> changing between calls?
->>
+> Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+> ---
+>  lib/tst_cgroup.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 >
-> Was "/sys/fs/cgroup/cpu,cpuacct" one of the roots that was printed out? Because if so the way I have it now it would not be able to parse that. I will look into fixing this.
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index 166d0f97e..b06ae6ab7 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -365,6 +365,19 @@ static struct cgroup_ctrl *cgroup_find_ctrl(const char *const ctrl_name)
+>         return ctrl;
+>  }
+>
+> +static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
+> +{
+> +       struct cgroup_root *root = roots;
+> +
+> +       while (root->ver && strcmp(root->mnt_path, mnt_path))
+> +               root++;
+> +
+> +       if (!root->ver)
+> +               root = NULL;
+> +
+> +       return root;
+> +}
 
-Yes, it was, I just cut the message to show the problem.
+I suggest using for_each_root() macro here, otherwise as I commented
+it can't parse root in V1.
+
+static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
+{
+        struct cgroup_root *root;
+
+        for_each_root(root) {
+                if (!strcmp(root->mnt_path, mnt_path))
+                        return root;
+        }
+
+        return NULL;
+}
 
 
-Detected Controllers:
-memory V1 @ /sys/fs/cgroup/memory Required
-cpu V1 @ /sys/fs/cgroup/cpu,cpuacct
-cpuset V1 @ /sys/fs/cgroup/cpuset
-Detected Roots:
-/sys/fs/cgroup/memory Mounted_Root=no Created_Ltp_Dir=no
-Created_Drain_Dir=no Test_Id=test-5091
-/sys/fs/cgroup/cpu,cpuacct Mounted_Root=no Created_Ltp_Dir=no
-Created_Drain_Dir=no Test_Id=NULL
-/sys/fs/cgroup/cpuset Mounted_Root=no Created_Ltp_Dir=no
-Created_Drain_Dir=no Test_Id=NULL
 
+> +
+>  /* Determine if a mounted cgroup hierarchy is unique and record it if so.
+>   *
+>   * For CGroups V2 this is very simple as there is only one
+> --
+> 2.32.0
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
-From my test, the progress works well on Cgroup V2,
-but now fails on parsing the root config in V1.
-I suspect there is a bug in patch 4/6, but still checking
-why the "roots" is NULL at that moment.
 
 -- 
 Regards,
