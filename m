@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16B43C433F5
-	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 10:53:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95039C433EF
+	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 11:09:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4ADCA3C9524
-	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 11:53:23 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 8009A3C9520
+	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 12:09:34 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 07CC23C94FA
- for <ltp@lists.linux.it>; Thu, 13 Jan 2022 11:53:13 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 90F2A3C902B
+ for <ltp@lists.linux.it>; Thu, 13 Jan 2022 12:09:24 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5AF691001196
- for <ltp@lists.linux.it>; Thu, 13 Jan 2022 11:53:12 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A602C200914
+ for <ltp@lists.linux.it>; Thu, 13 Jan 2022 12:09:23 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5F1E11F45F;
- Thu, 13 Jan 2022 10:53:12 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C848421129;
+ Thu, 13 Jan 2022 11:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642071192;
+ t=1642072162;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=61PSOEnR8mx4850IvwzxXTuNcC+Rnvw+tuEqrzl/vdI=;
- b=29T3SyT+Un7MCzKXnURcWKrtXnOesCQxTLgUEPk8bzhEDsqjW+afZGUpP/mnzcxJkfIVjr
- qEWEsexfq0oePTvRx61u5B4YTS+E3zGKneGZZwBmCtoC6wWzxhVkoyeDhwBDPOnHDzks4i
- hw2NIO/uJS9pNhsIib9AWycsw5oDARU=
+ bh=X8+McMR51kgt3GN9ARlTPdrJhogUY3XCcMWnNABrqFQ=;
+ b=srUQ/tr4xiJo99empWeQlSMEUIAph/kkt4zMJzQboMLHzCo/GPayzRvtuF9mvj+XMnN/9D
+ nC0dVIrhlQQECxV6ohl++N5Z3QkiAkTOhGgzVT6hihkgPg4+3DuIlPIRg0nFtedepDHG21
+ pNie2Y2UX9qc6VO8WrqYdQrDVFakwk4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642071192;
+ s=susede2_ed25519; t=1642072162;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=61PSOEnR8mx4850IvwzxXTuNcC+Rnvw+tuEqrzl/vdI=;
- b=3ZX5u/94iTHQ77le2KWpPekE55vHlCb3jW6UmEPcZ3QlxnDgmd2yyh/p9IRL1aINYKZ36a
- D7hoK0WA+hIALADw==
+ bh=X8+McMR51kgt3GN9ARlTPdrJhogUY3XCcMWnNABrqFQ=;
+ b=qJ3h9Qs94EuMyuxWFen+oUIlsexe1AemXtqV4F4MbjktKegGPNqQio4QLRN550ID7hf20g
+ AQpxHem8m1nDRaAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31C1A13BF7;
- Thu, 13 Jan 2022 10:53:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8D581330C;
+ Thu, 13 Jan 2022 11:09:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 89fDCZgE4GGgHgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 13 Jan 2022 10:53:12 +0000
-Date: Thu, 13 Jan 2022 11:53:10 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id vi14J2II4GE4JAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 13 Jan 2022 11:09:22 +0000
+Date: Thu, 13 Jan 2022 12:09:21 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <YeAEliyKciDMKzV0@pevik>
+Message-ID: <YeAIYcZsqi9nBwFp@pevik>
 References: <Ydw4BXF2ramqahuh@yuki>
  <1641881435-2351-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1641881435-2351-4-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1641881435-2351-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1641881435-2351-4-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <1641881435-2351-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 4/5] sysctl/sysctl02.sh: Use kconfig shell api
+Subject: Re: [LTP] [PATCH v4 2/5] lib: Introduce KCONFIG_SKIP_CHECK
+ environment variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,45 +85,52 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu, all,
+Hi Xu,
 
-subject: "sysctl/sysctl02.sh: Use kconfig shell api"
-nit: s/api/API/
+> This environment variable is designed to add kernel config check functionality
+> switch. So we can skip kconfig check completely and it is useful especially
+> for the embedded platforms that they don't have kernel config.
 
-Maybe to explain why it's better thatn simple [ -f /proc/kallsyms ] ?
-Isn't it more reliable to use /proc/kallsyms file instead of requiring kconfig?
+very nit: I'd write it a bit simpler. Maybe:
+Add environment variable to disable kernel config check functionality.
+It is useful for embedded platforms which don't have kernel config installed.
 
-kconfig is sort of documentation, but only if used as TST_NEEDS_KCONFIGS
-(I'm going to work on enabling docparse for shell), which is not this case.
+> +++ b/doc/user-guide.txt
+> @@ -10,6 +10,7 @@ For running LTP network tests see `testcases/network/README.md`.
+>  |==============================================================================
+>  | 'KCONFIG_PATH'        | The path to the kernel config file, (if not set, it tries
+>                            the usual paths '/boot/config-RELEASE' or '/proc/config.gz').
+> +| 'KCONFIG_SKIP_CHECK'  | Skip kernel config check, the default is empty (don't skip).
+s/empty/not set/ ?
+maybe: Skip kernel config check if variable set (not set by default).
 
-If we agree TST_NEEDS_KCONFIGS is better in this case how about to put
-sysctl_test_zero into separate file? It could then define things required setup
-in TST_NEEDS_KCONFIGS.
+...
 
-> +++ b/testcases/commands/sysctl/sysctl02.sh
-> @@ -20,15 +20,14 @@ TST_CLEANUP=cleanup
->  TST_CNT=4
->  TST_NEEDS_ROOT=1
->  TST_NEEDS_CMDS="sysctl"
-> +TST_NEEDS_KCONFIGS="CONFIG_SYSCTL=y, CONFIG_PROC_FS=y"
-As Cyril mentioned previously CONFIG_PROC_FS can be dropped
-(IMHO mandatory for today's linux).
+> +static int kconfig_skip_check(void)
+> +{
+> +	char *skipped = getenv("KCONFIG_SKIP_CHECK");
+> +
+> +	if (skipped)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+>  static const char *kconfig_path(char *path_buf, size_t path_buf_len)
+>  {
+>  	const char *path = getenv("KCONFIG_PATH");
+> @@ -485,6 +495,11 @@ int tst_kconfig_check(const char *const kconfigs[])
+>  	unsigned int i, var_cnt;
+>  	int ret = 0;
 
-OK, looking into sources it's disabled in:
+> +	if (kconfig_skip_check()) {
+> +		tst_res(TINFO, "Skipping kernel config check as requested");
+I suppose you expect tests / library use kconfig_skip_check() in the future for
+some detection. If not I'd move tst_res(TINFO, ...) into kconfig_skip_check().
 
-arch/h8300/configs/edosk2674_defconfig, the other two are GDB simulators.
-=> only this one relevant (Renesas EDOSK2674R)
-arch/h8300/configs/h8300h-sim_defconfig
-arch/h8300/configs/h8s-sim_defconfig
+Otherwise LGTM.
 
-arch/sh/configs/edosk7705_defconfig
-arch/sh/configs/sh7724_generic_defconfig
-arch/sh/configs/sh7770_generic_defconfig
-
-=> sh and h8300 are certainly not mainstream :).
-I can ask the maintainers whether they really use kernel without CONFIG_PROC_FS.
-
-But I'd still consider to safe to expect CONFIG_PROC_FS=y.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
