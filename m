@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3960DC433F5
-	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 15:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC935C433F5
+	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 15:50:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4B5793C9516
-	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 16:49:39 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 78C953C954C
+	for <ltp@archiver.kernel.org>; Thu, 13 Jan 2022 16:50:43 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D3CF33C57AF
- for <ltp@lists.linux.it>; Thu, 13 Jan 2022 16:49:29 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id BBBB13C821C
+ for <ltp@lists.linux.it>; Thu, 13 Jan 2022 16:50:33 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6FCDC600149
- for <ltp@lists.linux.it>; Thu, 13 Jan 2022 16:49:29 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 54CD31A00E7F
+ for <ltp@lists.linux.it>; Thu, 13 Jan 2022 16:50:32 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9B1B91F387;
- Thu, 13 Jan 2022 15:49:28 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7FB2E1F3A8;
+ Thu, 13 Jan 2022 15:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642088968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1642089032;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HPBpX5+3R0gsik+iAC4j7dis7ScEVRCvc4K+YaE1VtE=;
- b=qJLdQwUotW4NUjkpjNj7zbZK4iSAIkEeRLJ4TxlktdfVSn9PQOKCqLLfwOh8F6o7ZehmnB
- m27OKlYHjOOfOcfnWMkKkmiazbRLMG4raHFt/bVsZus2HfwKk+oPoZM7RoqRk1aADNx0t1
- gTLcJsod6sBgoT9/zcvx6XmZVY/4dMw=
+ bh=6rb8hbrZhzVMircbrtv+OBrKulRQqFSvfpa7tpc+IOc=;
+ b=ikOo+qh2JWcx/B/ZyVmZwtZCgwFP7RaJUk20akDdN6laIhlkfLj2kswKvmq4w7EL5DgsAK
+ Mty4QDGnqZBD2o5PUdlMAW8coFZVgKapIX9VaIRqq/lEbSohYSdpdo7Ln7QEhyTKJmIkk4
+ T+a7epCAS7IpcJ3mEPtYPKHrAyiybgU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642088968;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1642089032;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HPBpX5+3R0gsik+iAC4j7dis7ScEVRCvc4K+YaE1VtE=;
- b=Dt9lWHSbWGfwn1Roepwgau8w/KIjQJi5i5QT92Saq9Ez2b8o5lwPXrIiH+Bp9aZTcul8+5
- hVbiLEdxo8kVB1DA==
+ bh=6rb8hbrZhzVMircbrtv+OBrKulRQqFSvfpa7tpc+IOc=;
+ b=mcpDsC1a1EhyallCM+ysWY4UacHRbFgwqN6WKeg3sUsmxa9bJeoAtjRBXpCBMZRmoqj/+T
+ hI8RzysgQRDfkMAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85E3D1330C;
- Thu, 13 Jan 2022 15:49:28 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5546F1330C;
+ Thu, 13 Jan 2022 15:50:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yxpUHwhK4GFpIQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 13 Jan 2022 15:49:28 +0000
-Date: Thu, 13 Jan 2022 16:51:06 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <YeBKakIm5I4HQECr@yuki>
-References: <Ydw4BXF2ramqahuh@yuki>
- <1641881435-2351-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1641881435-2351-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <CAEemH2eZJ7U1+Bdsb5xCB6-KYa1mQQ=GriaDtyFSJ_6zprT7yw@mail.gmail.com>
- <61DD4215.2050104@fujitsu.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id sSMzE0hK4GHfIQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 13 Jan 2022 15:50:32 +0000
+Date: Thu, 13 Jan 2022 16:50:30 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
+Message-ID: <YeBKRoYuuZFVBmHf@pevik>
+References: <20220112161942.4065665-1-nikita.yushchenko@virtuozzo.com>
+ <20220112161942.4065665-2-nikita.yushchenko@virtuozzo.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <61DD4215.2050104@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220112161942.4065665-2-nikita.yushchenko@virtuozzo.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/5] shell: add kconfig parse api
+Subject: Re: [LTP] [PATCH] nfs_lib.sh: run exportfs at "server side" in
+ LTP_NETNS case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,85 +77,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> int main(int argc, char *argv[])
-> {
->          char *str = argv[1];
->          char *delim = argv[2];
->          unsigned int i, cnt = 1;
->          int ret = 0;
-> 
->          if (argc == 2) {
->                  delim = ",";
->          } else if (argc == 3) {
->                  if (strlen(delim) > 1) {
->                          fprintf(stderr, "The delim must be a single 
-> character\n");
->                          return 1;
->                  }
->          } else {
->                  fprintf(stderr, "Please provide kernel kconfig list and 
-> delim "
->                                  "(optinal, default value is ',')\n");
->                  return 1;
->          }
+Hi Nikita,
 
-We can make the code a bit easier to read with a switch()
+[ Cc Alexey ]
 
-	switch (argc) {
-	case 2:
-		delim = ",";
-	break;
-	case 3:
-		if (strlen(delim) > 1) {
-			fprintf(stderr, "...");
-			return 1;
-		}
-	break;
-	default:
-		fprintf(stderr, "...");
-		return 1;
-	}
+> In LTP_NETNS case, nfs server is the root namespace and nfs client is
+> the ltp namespace.
 
+> Then, exportfs shall be executed locally, without tst_rhost_run.
 
->          for (i = 0; str[i]; i++) {
->                  if (str[i] == delim[0])
->                          cnt++;
->          }
-> 
->          char **kconfigs = malloc(++cnt * sizeof(char *));
+> Otherwise, things implicitly depend on /var/lib/nfs being the same in
+> the root namespace and the ltp namespace.
+Not sure if I understand your use case. Do you run rpc.statd (or what is using
+/var/lib/nfs) in non-default net namespace?
 
-It's unlikely that this will fail the allocation, but for the sake of
-correctness we should also do:
+> Signed-off-by: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
+> ---
+>  testcases/network/nfs/nfs_stress/nfs_lib.sh | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 
-	if (!kconfigs) {
-		fprintf(stderr, "malloc failed");
-		return 1;
-	}
+> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> index b01215136..b50ccf196 100644
+> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> @@ -81,8 +81,14 @@ nfs_setup_server()
+>  {
+>  	local export_cmd="exportfs -i -o fsid=$$,no_root_squash,rw *:$remote_dir"
 
->          for (i = 0; i < cnt; i++)
->                  kconfigs[i] = strtok_r(str, delim, &str);
-> 
->          if (tst_kconfig_check((const char * const*)kconfigs))
->                  ret = 1;
-> 
->          free(kconfigs);
->          return ret;
-> }
+> -	if ! tst_rhost_run -c "test -d $remote_dir"; then
+> -		tst_rhost_run -s -c "mkdir -p $remote_dir; $export_cmd"
+> +	if [ -n "$LTP_NETNS" ]; then
+Please use tst_net_use_netns (as in the patch I Cc you just now).
 
-Other than the two minor issues this version looks good to me:
+Shouldn't be also $LTP_NFS_NETNS_USE_LO considered?
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Kind regards,
+Petr
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +		if ! test -d $remote_dir; then
+> +			mkdir -p $remote_dir; $export_cmd
+> +		fi
+> +	else
+> +		if ! tst_rhost_run -c "test -d $remote_dir"; then
+> +			tst_rhost_run -s -c "mkdir -p $remote_dir; $export_cmd"
+> +		fi
+>  	fi
+>  }
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
