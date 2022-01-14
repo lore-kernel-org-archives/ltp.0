@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 810EAC433F5
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 19:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B40FC433F5
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 20:03:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 640613C953A
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 20:45:17 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 916953C9551
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 21:03:43 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF2373C8D8E
- for <ltp@lists.linux.it>; Fri, 14 Jan 2022 20:44:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 7C76C3C9536
+ for <ltp@lists.linux.it>; Fri, 14 Jan 2022 21:03:34 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1D77E1400F8B
- for <ltp@lists.linux.it>; Fri, 14 Jan 2022 20:44:48 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C2A9F1A000BB
+ for <ltp@lists.linux.it>; Fri, 14 Jan 2022 21:03:33 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 509AF219A4;
- Fri, 14 Jan 2022 19:44:48 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E34CE219A5;
+ Fri, 14 Jan 2022 20:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642189488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1642190612;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RJkjl0QnHSOrNTuEzvhNJLDDjXlX5HxPsNEL78c+VjE=;
- b=Y5turGQ6n/PvFzS0wV5G3Chn0r+PeRI1g+L1AVlovXFohY/NdDw6f3SqWaMsay9gbM5LP6
- G1ZQzph2UltCOk6MelcQhVoS+YEmO9wOHWbFNTjsR5Hsp7u7o8Lm7dH2/3jrisEdP6+Old
- SkGqlhqh80UGA/Dxs4Ck42rJ34gKs1g=
+ bh=HE4vcgDwGAU7uMPzUZTChm8S4SLlMFOzTks0kWTjhjw=;
+ b=vIfT2F/AkjKsi+1r0aFLFPsw7RrUP6tT9ow+47mlhvSWNZiUtETaRyVv7UqGwqknPUVPWw
+ VCd+pcxxnGg89kFoFqhwbFJH7nE6ENBt/3P+yial3NB4Z50lR1MHclaQdfhQ/gDL7/ge6V
+ vMNHRX8AcgGHpnXB2wTVZ9AyZmMQqHQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642189488;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1642190612;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RJkjl0QnHSOrNTuEzvhNJLDDjXlX5HxPsNEL78c+VjE=;
- b=azcdzyKBdQjoSD+qWNxB+dtX/CUcPSkMhViYDuULOc7rxepJJYTffmVJxGzLOq7tlHGbbp
- FtiSDgNZalLDUkBw==
+ bh=HE4vcgDwGAU7uMPzUZTChm8S4SLlMFOzTks0kWTjhjw=;
+ b=2P2Xdmg9l8QQHddumXNfC1fSYfxhkH6OUZ58jFqhIKzGjArnC8QZOMhMFf3lNazAzOxnBu
+ /S+V5+UO6kviW6Bw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B4CA1345F;
- Fri, 14 Jan 2022 19:44:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B3EA1345F;
+ Fri, 14 Jan 2022 20:03:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QG29CLDS4WFBQQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 14 Jan 2022 19:44:48 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id +m8hIBTX4WGrRwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 14 Jan 2022 20:03:32 +0000
+Date: Fri, 14 Jan 2022 21:03:30 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 14 Jan 2022 20:44:43 +0100
-Message-Id: <20220114194444.16949-2-pvorel@suse.cz>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220114194444.16949-1-pvorel@suse.cz>
-References: <20220114194444.16949-1-pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <YeHXEvfvnnc1WGfC@pevik>
+References: <20220112161942.4065665-1-nikita.yushchenko@virtuozzo.com>
+ <9813e92e-da52-dcfc-3eca-930854fb754e@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <9813e92e-da52-dcfc-3eca-930854fb754e@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] doc/user-guide: Improve LTPROOT docs
+Subject: Re: [LTP] [PATCH] nfs_flock: fail the test if lock/unlock ops fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,34 +76,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/user-guide.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Martin, Nikita,
 
-diff --git a/doc/user-guide.txt b/doc/user-guide.txt
-index b1ab13832e..5f5a86c9d0 100644
---- a/doc/user-guide.txt
-+++ b/doc/user-guide.txt
-@@ -11,7 +11,9 @@ For running LTP network tests see `testcases/network/README.md`.
- | 'KCONFIG_PATH'        | The path to the kernel config file, (if not set, it tries
-                           the usual paths '/boot/config-RELEASE' or '/proc/config.gz').
- | 'KCONFIG_SKIP_CHECK'  | Skip kernel config check if variable set (not set by default).
--| 'LTPROOT'             | Prefix for installed LTP, the default is '/opt/ltp'.
-+| 'LTPROOT'             | Prefix for installed LTP.  **Should be always set**
-+                          as some tests need it for path to test data files
-+                          ('LTP_DATAROOT'). LTP is by default installed into '/opt/ltp'.
- | 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
-                           'n' or '0': never colorize.
- | 'LTP_DEV'             | Path to the block device to be used
--- 
-2.34.1
+> The test program is quite short and simple. Why not rewrite it using the
+> current LTP API and make it even better? Some useful links to help with
+> that:
 
++1
+
+It might not make it into this release due git freeze [1],
+but definitely worth of doing it.
+Thus I'd accept this patch for upcoming release.
+
+Kind regards,
+Petr
+
+> https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+> https://github.com/linux-test-project/ltp/wiki/C-Test-API
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+
+[1] https://lore.kernel.org/ltp/YeFGwLzrR3t%2FVQLq@yuki/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
