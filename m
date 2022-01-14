@@ -4,68 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 419D8C433EF
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 14:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45DEAC433EF
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 14:25:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 44E583C9535
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 15:21:52 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A8DF63C9544
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 15:25:34 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD76B3C58A8
- for <ltp@lists.linux.it>; Fri, 14 Jan 2022 15:21:41 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 620293C8849
+ for <ltp@lists.linux.it>; Fri, 14 Jan 2022 15:25:24 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 63D6A600E2E
- for <ltp@lists.linux.it>; Fri, 14 Jan 2022 15:21:41 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C28F514002C8
+ for <ltp@lists.linux.it>; Fri, 14 Jan 2022 15:25:23 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 69693219A6;
- Fri, 14 Jan 2022 14:21:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E64E91F3D2;
+ Fri, 14 Jan 2022 14:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642170100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1642170322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2zt1vFHsK2F8eKVO1QcxDYlb6fTT15iGQuZmLpGoPeE=;
- b=lWE1NWTjNCPcxSytoh/VOewXhsFSYBEP6TOYREFZTWczOUP5cMlJLBFKIe9VC9Uz26AsrL
- y3p8TYt2V+5qnKPQxG2/u9y8ZUIlcJvzT1+SqlFCnjj5JOJRfwsGqr6WsGobX93Qqm4A/N
- 60mTMHMfDQv7RCSK8pja1o3tE4isiBA=
+ bh=zKFh9Ra0avDnIK91hTMKevJE9Kxjbem4KbEn01CEzNo=;
+ b=h6p+FTbJS3KcKd/9oyuBUkxDikcUjTIGJ1HdS7a2qfDIXEtobz3UxtppRBe+3IJ61yE1oB
+ eHB0PYURhhEOlVZC3CM0Z0zb4sumIiEG4vC1y7jE3Saz2k9ihYBN1iJMwfE1mF9Qr4vo8N
+ DYibo4Fo+w3k3O3imApZJ7zSg2o2KhE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642170100;
+ s=susede2_ed25519; t=1642170322;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2zt1vFHsK2F8eKVO1QcxDYlb6fTT15iGQuZmLpGoPeE=;
- b=uL6xeOMX9+AVmWt0HSUjd12wXB7nu/tYZFdENAMCOMQv0sqKZ7Aar9mzsrWNwaRwAK6Pot
- GsLwgjH3FEAIv7DQ==
+ bh=zKFh9Ra0avDnIK91hTMKevJE9Kxjbem4KbEn01CEzNo=;
+ b=IBqApp7zkMI/xbzAghaF5tN5K5dB5MX88x5OEFgjYnNabOLgU9qFUSpZor7ueIJvGdMjYZ
+ gI7oh8vYNhjDkFDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5636E13B7F;
- Fri, 14 Jan 2022 14:21:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C750313B7F;
+ Fri, 14 Jan 2022 14:25:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2q22E/SG4WE1LgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 14 Jan 2022 14:21:40 +0000
-Date: Fri, 14 Jan 2022 15:23:19 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id LfrgL9KH4WFXMAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 14 Jan 2022 14:25:22 +0000
+Date: Fri, 14 Jan 2022 15:27:01 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Joerg Vehlow <lkml@jv-coder.de>
-Message-ID: <YeGHV+Gnmo59SXeL@yuki>
-References: <20220114125513.895-1-pvorel@suse.cz> <YeGEunEuwPvNFxyS@yuki>
- <95394feb-6474-d1ca-13d8-3d1c35e781b9@jv-coder.de>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YeGINd/M/Vgf+OET@yuki>
+References: <20220114104231.28338-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <95394feb-6474-d1ca-13d8-3d1c35e781b9@jv-coder.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20220114104231.28338-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] configure.ac: Fix summary for disabled
- metadata
+Subject: Re: [LTP] [PATCH 1/1] ci/wiki-mirror: Don't check path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,32 +81,17 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> >> Previously with --disable-metadata output didn't mention that metadata
-> >> are disabled and printed config which was not used. Now:
-> >>
-> >> $ ./configure --disable-metadata
-> > 
-> > Slightly off topic, should we rename this to --disable-docparse or
-> > --disable-autodoc?
-> > 
-> > Since we split the metadata generator from the documentation and the
-> > metadata are now genereated unconditionally...
-> > 
-> 
-> I would love that and I would reintroduce disable-metadata in that case,
-> to completely disable it.
-> The question is: Will this break some builds because of semantic changes?
+> Because it's checked only from latest commit,
+> thus wiki does not get updated when doc change is in the latest commit
+> of the patchset.
 
-The JSON metadata file is going to replace the runtest files some day,
-at least that is the longterm plan. Also the parser that extracts the
-metadata from the sources is rather fast, compared to the LTP build and
-it's self contained. There is really no reason to have a switch to
-disable the metadat extraction step.
+Looking at the file we will only do a commit when there is a diff, so
+this only runs a few more commands in the CI in the case that there are
+no changes and the end result is same.
 
-The documentation build, on the other hand, is rather slow and requires
-asciidoc, which is the reason why there is a switch that can be used to
-disable that. The only problem here is that the name is a bit confusing
-now.
+Looks good:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
