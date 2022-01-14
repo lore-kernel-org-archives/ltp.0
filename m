@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B92BC433F5
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 20:53:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F823C433EF
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 20:53:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC45C3C956F
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 21:53:44 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E3F3F3C9543
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 21:53:54 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 690683C9543
+ by picard.linux.it (Postfix) with ESMTPS id A21223C928A
  for <ltp@lists.linux.it>; Fri, 14 Jan 2022 21:53:16 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E2DF81400B81
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B223D601410
  for <ltp@lists.linux.it>; Fri, 14 Jan 2022 21:53:15 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 908D91F391;
- Fri, 14 Jan 2022 20:53:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C1EC91F381;
+ Fri, 14 Jan 2022 20:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642193595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5ZWdvpN+7tz8sOIVPJ3ECowlHLEdzdFebKs1dOWGnVk=;
- b=kHpc3REwoEkvKdxpM2uZHL9/pR/zfvD3GOxlwxqvQfZWFNgu4+VKOrvI2llNwFLy1nzbkQ
- EHG2onp9DuktylEa6H+/NXm2IhBuL44+xSON9tve7EXmdz3WV+sIHw0hcVc43PORUcdOpQ
- ku4iOaeRlGbei9zds02aotiYqU03ubA=
+ t=1642193594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=A59O6eCFN8btiMpGAz3UnU8AuKYrBheDpAPS4fvigD4=;
+ b=p91ESh1lgbUj5zqfW+ov3eNshADsDONSUOoAbTelj4J6+flSNFK8HTnTYFGVkjL9A5DK1G
+ /K9dDcll5jC73BeqPxbpXG7wdIzIW0Xg8iKeduTd4G2bk88cvGpJImnGiQtyzJoldt8oC1
+ q429drlNXgSOK24lolltQTIxbT7MN18=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642193595;
+ s=susede2_ed25519; t=1642193594;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5ZWdvpN+7tz8sOIVPJ3ECowlHLEdzdFebKs1dOWGnVk=;
- b=HLXai+v276wIhao+0uHuo0snP6lmjBLtiRRPmowdQGJxZxDA9mGR08s5gmF6kh2pQL3eck
- j3vZAaubPqnjOTCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=A59O6eCFN8btiMpGAz3UnU8AuKYrBheDpAPS4fvigD4=;
+ b=bAHEITlLDNj7GBNEz0x+iIuV5FlDDny9ftKda5CGQyF1r4CVHg9BC4RTZ2oIz6hbf1GFYI
+ snuVJ79yMShTA7CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 556E313BB4;
- Fri, 14 Jan 2022 20:53:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FBCD13BB4;
+ Fri, 14 Jan 2022 20:53:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WKfQEbvi4WHtWAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 14 Jan 2022 20:53:15 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id KX4ZHbri4WHtWAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 14 Jan 2022 20:53:14 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 14 Jan 2022 21:53:09 +0100
-Message-Id: <20220114205309.14409-4-pvorel@suse.cz>
+Date: Fri, 14 Jan 2022 21:53:06 +0100
+Message-Id: <20220114205309.14409-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220114205309.14409-1-pvorel@suse.cz>
-References: <20220114205309.14409-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/3] ustat0{1,
- 2}: Mark failure on Btrfs with known-fail tag
+Subject: [LTP] [PATCH v3 0/3] known-fail test tag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,51 +76,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-ustat() has been always broken on Btrfs and it's unlikely to be fixed
-due ustat() being deprecated (glibc doesn't expose this system call
-anymore).
+Hi,
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/ustat/ustat01.c | 6 ++++++
- testcases/kernel/syscalls/ustat/ustat02.c | 6 ++++++
- 2 files changed, 12 insertions(+)
+changes v2->v3:
+* new commit: testinfo.pl: Support tag values on more lines
+* use URL
 
-diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
-index 0252858beb..66dbc0b184 100644
---- a/testcases/kernel/syscalls/ustat/ustat01.c
-+++ b/testcases/kernel/syscalls/ustat/ustat01.c
-@@ -44,6 +44,12 @@ static void setup(void)
- static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
-+	.tags = (const struct tst_tag[]) {
-+		{"known-fail", "ustat() is known to fail with EINVAL on Btrfs, see"
-+			"https://lore.kernel.org/linux-btrfs/e7e867b8-b57a-7eb2-2432-1627bd3a88fb@toxicpanda.com/"
-+		},
-+		{}
-+	}
- };
- #else
- TST_TEST_TCONF("testing ustat requires <sys/ustat.h> or <linux/types.h>");
-diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
-index d08446eaa1..55bdcaedf8 100644
---- a/testcases/kernel/syscalls/ustat/ustat02.c
-+++ b/testcases/kernel/syscalls/ustat/ustat02.c
-@@ -63,6 +63,12 @@ static struct tst_test test = {
- 	.test = run,
- 	.setup = setup,
- 	.tcnt = ARRAY_SIZE(tc),
-+	.tags = (const struct tst_tag[]) {
-+		{"known-fail", "ustat() is known to fail with EINVAL on Btrfs, see"
-+			"https://lore.kernel.org/linux-btrfs/e7e867b8-b57a-7eb2-2432-1627bd3a88fb@toxicpanda.com/"
-+		},
-+		{}
-+	}
- };
- #else
- TST_TEST_TCONF("testing ustat requires <sys/ustat.h> or <linux/types.h>");
+Petr Vorel (3):
+  lib: Add known-fail test tag
+  testinfo.pl: Support tag values on more lines
+  ustat0{1,2}: Mark failure on Btrfs with known-fail tag
+
+ doc/c-test-api.txt                        |  1 +
+ docparse/testinfo.pl                      | 17 ++++++++++++++++-
+ lib/tst_test.c                            |  8 ++++++--
+ testcases/kernel/syscalls/ustat/ustat01.c |  6 ++++++
+ testcases/kernel/syscalls/ustat/ustat02.c |  6 ++++++
+ 5 files changed, 35 insertions(+), 3 deletions(-)
+
 -- 
 2.34.1
 
