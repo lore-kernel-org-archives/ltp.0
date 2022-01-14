@@ -4,50 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5949AC433FE
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 06:51:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5135C433F5
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 06:57:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D8C5F3C9545
-	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 07:51:41 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1503B3C952C
+	for <ltp@archiver.kernel.org>; Fri, 14 Jan 2022 07:57:33 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 724B23C8B2B
- for <ltp@lists.linux.it>; Fri, 14 Jan 2022 07:51:31 +0100 (CET)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id B27F33C19EF
+ for <ltp@lists.linux.it>; Fri, 14 Jan 2022 07:57:23 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 46E22200B9A
- for <ltp@lists.linux.it>; Fri, 14 Jan 2022 07:51:29 +0100 (CET)
-Received: from [192.168.178.40] (unknown [188.192.100.83])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 666DC9FE98;
- Fri, 14 Jan 2022 06:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1642143088; bh=28K2iCB1M6bce6M8QMQsmROtSrLsdxG/LRIxmtpRnOM=;
- h=Message-ID:Date:MIME-Version:Subject:To:From;
- b=u+21Jb24e/xA96a0KPJPJaSi/ZiKGLD8XFnIiUZvu1XJLi6XWNdkY3wp/yR8wb2TM
- OcqoYN7zuo7eS8oYgeEA5dhFB1eS8IBTnGRHLw/qqFR0Yj2UFcL3tMjuXQZvUXpUBd
- ox5UxWBQ9r9ZcBCrYPOXivrT2u5wUKo4OB3LV7Oo=
-Message-ID: <d68d8f72-fdc9-3a2e-991d-682d8274070f@jv-coder.de>
-Date: Fri, 14 Jan 2022 07:51:27 +0100
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E03BE600C26
+ for <ltp@lists.linux.it>; Fri, 14 Jan 2022 07:57:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1642143441;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=OiSFbJuB/GvB72UyAkdShZrGKJkYr/vcU7qRo3K5eYg=;
+ b=POTt6LpdcZ8y3gSeW7/yz5K7174Kb5gs0rXAZSBpbXAAesp2j4xfWX8MWUcZdVc4ZUVNf3
+ FeNm3QwpKUT5N1L3ZAr9GE7L9O7Qq9wq4+pBjjbmkAtBWDFOmz1O2KDxQQ+JUslBDtNKlU
+ 0L3PKXhPRXv+0Fruht8gxWivnBdNRW8=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-504-OUg-ePgUMfCjNlhP8i9vGQ-1; Fri, 14 Jan 2022 01:57:19 -0500
+X-MC-Unique: OUg-ePgUMfCjNlhP8i9vGQ-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ q185-20020a25d9c2000000b00611ae9c8773so12702702ybg.18
+ for <ltp@lists.linux.it>; Thu, 13 Jan 2022 22:57:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=OiSFbJuB/GvB72UyAkdShZrGKJkYr/vcU7qRo3K5eYg=;
+ b=z6KKBiahmMWQZab5x7g9ngcHq2pfhl72no6968Q5v/OWSM/YhD+TpuzC6VFZ+d3ROd
+ DdwhtxKlb09oYvD8rj7FF9/jjMrv331wH1Er3PufdauuEJ7pewDsCDS1ysBUrQ2lpR46
+ 6bbOgCGvjGcoEq1r4l3TJV0+4oQu/RYHwhjAwRdv/jHDEJQ1gPnMil5ArvldOCXyfYRx
+ re3RnGBC1ol3wD7+rilKdR3Ar4OF28X3DDxX7bxsLJTSwRDL6RJ5mnbcnDJtPwGlRetv
+ +kAbv02gehaNIpuRmrNf3TANfqXMj0ofG3Pe9MDNK3fGrgw5RzaWrwn0xP15xPL2UjwD
+ xS1g==
+X-Gm-Message-State: AOAM5330UVZXbRsbbTgq2oECYf+i4Nr3HyrHGtYva/zPr0JeG5xGl3pk
+ zeTu0my4QP0tYU5yk3NWVL18xAyER68V2Ta5s9K8GJUi+Rtyv9v01CYi1tNY4lGaaV3Wnv8N6Ga
+ b0qqiSTBLHzHq4BV/biMutAz3Z4U=
+X-Received: by 2002:a25:388a:: with SMTP id
+ f132mr11012693yba.102.1642143439360; 
+ Thu, 13 Jan 2022 22:57:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzgdw8S+mqa9gsFI/4EIh2IZv+iLb4Q+a4l3w2eMY1jzXNr53Pcy9JPzRoPYFB2aA4J/bufby0KthFAIDaDsbE=
+X-Received: by 2002:a25:388a:: with SMTP id
+ f132mr11012679yba.102.1642143439099; 
+ Thu, 13 Jan 2022 22:57:19 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To: rpalethorpe@suse.de
-References: <YSz36VZ18+N4YsM/@yuki>
- <20210831091005.25361-1-rpalethorpe@suse.com>
- <20210831091005.25361-4-rpalethorpe@suse.com>
- <7cf81226-52ca-5016-5041-ce12b93b534f@jv-coder.de> <875yqq1fo7.fsf@suse.de>
- <5de1ae7d-139a-8f76-1e99-27d4491eae15@jv-coder.de> <871r1c10my.fsf@suse.de>
-From: Joerg Vehlow <lkml@jv-coder.de>
-In-Reply-To: <871r1c10my.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <cover.1641376050.git.luke.nowakowskikrijger@canonical.com>
+ <39c482de2c75e393fa53c31d06620995dabc5284.1641376050.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <39c482de2c75e393fa53c31d06620995dabc5284.1641376050.git.luke.nowakowskikrijger@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 14 Jan 2022 14:57:04 +0800
+Message-ID: <CAEemH2dhHo7nPWG7EKsRa055et6eAWGpD_8uLP3VG89nhNNuJw@mail.gmail.com>
+To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 4/4] bpf_prog05: Drop CAP_BPF and check if ptr
- arithmetic is allowed
+Subject: Re: [LTP] [PATCH 4/6] API/cgroup: Implement tst_cgroup_load_config()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,169 +85,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richard,
+ Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> wrote:
 
-Am 1/13/2022 um 8:48 AM schrieb Richard Palethorpe:
-> Hello Joerg,
-> 
-> Joerg Vehlow <lkml@jv-coder.de> writes:
-> 
->> Hi Richard,
->>
->> Am 1/11/2022 um 3:36 PM schrieb Richard Palethorpe:
->>>>> +	if (log[0] != 0)
->>>>> +		tst_brk(TCONF | TERRNO, "No pointer arithmetic:\n %s", log);
->>>> This check now fails for me with the following output, where the test
->>>> was successful, before this patch. The kernel is a non-standard suse
->>>> 5.3.18 with realtime patches.
->>>>
->>>> bpf_prog05.c:100: TCONF: No pointer arithmetic:
->>>>   0: (bf) r2 = r10
->>>> 1: (b7) r3 = -1
->>>> 2: (0f) r2 += r3
->>>> 3: (72) *(u8 *)(r2 +0) = 0
->>>> 4: (b7) r0 = 0
->>>> 5: (95) exit
->>>>
->>>> from 2 to 3 (speculative execution): R1=ctx(id=0,off=0,imm=0) R2_w=fp0
->>>> R3_w=invP-1 R10=fp0
->>>> 3: (72) *(u8 *)(r2 +0) = 0
->>>> invalid stack off=0 size=1
->>>> processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0
->>>> peak_states 0 mark_read 0
->>>> : EACCES (13)
->>>>
->>>>
->>>> Is this too old? But then again, the test was successful before this
->>>> patch and your commit message states, that it was not successful on
->>>> "older kernels".
->>> Are you testing on ARM? eBPF adopted the ARM behavior when dividing
->>> by
->>> zero.
->>>
->>
->> No this is x86 and I was expecting 5.3 to not be "very old". IIRC
->> patches for the bug tested here are partly already integrated into
->> 4.19, so I guess 5.3 shouldn't be "very old" in that context?
->>
->> I am not sure what you tried to test, I guess accessing the stack
->> using indirect pointer arithmetic? Because changing the store to "*(u8
->> *)(r10 - 1) = 0", works. But if this indirection is required for the
->> actually test, it should fail, but it doesn't -> I think the check
->> tests something, that is not actually required for the actual test.
-> 
-> The actual test just checks what the result of modulo and division by
-> zero are against the 'arbitrary' values chosen by ARM/upstream (simlar
-> to the selftests BTW). This is because there are multiple different
-> values, which can be exploited depending on what patches are applied.
-> 
-> However they require different logic to detect if pointer arithmetic
-> resulted in an OOB read or write. Note that even if you can do pointer
-> arithmetic and it results in the wrong value being accessed. It doesn't
-> matter if it's not OOB or if the validator blocks it because it has
-> calculated the offset in the wrong direction. It may still be
-> exploitable in these cases, but the test will pass.
-> 
-> I can't remember what the exact problems were; it got very complicated
-> so I just checked that the results of division/modulo by zero matched
-> upstream. This resulted in a false positive on some kernel which in
-> theory would be vulnerable if unprivileged pointer arithmetic were
-> possible. So I added the ptr arithmetic check to prevent the test from
-> running on kernels like this.
-> 
-> This also appears to prevent the test from running on your kernel which
-> is not vulnerable in any case. Thinking about it, this may be due to a
-> configuration option you have set
-> (i.e. sys/kernel/unprivileged_bpf_disabled). Perhaps the problem is this
-> is not mentioned in the test description or TCONF message?
-> 
-> IIRC We chose TCONF instead of TPASS to give a hint that we're not
-> running the full test. You could also have a vulnerable kernel, but with
-> unpriveleged BPF disabled by a config option. In this case the test
-> should not return TCONF because a user could change the option and make
-> themselves vulnerable.
+> +static int parse_root_config(char *config_entry)
+> +{
+> +       char *key;
+> +       char *value;
+> +       struct cgroup_root *root;
+> +
+> +       for (key = strtok(config_entry, " "); key; key = strtok(NULL, " ")) {
+> +               if (!(value = strchr(key, '='))) {
+> +                       if (!(root = cgroup_find_root(key)))
+> +                               tst_brk(TBROK, "Could not find root from config. Roots changing between calls?");
+> +
+> +                       continue;
+> +               }
+> +
+> +               *value = '\0';
+> +               value = value + 1;
+> +
+> +               if (!strcmp(key, CONFIG_MOUNTROOT_KEY) && !strcmp(value, "yes")) {
+> +                       root->we_mounted_it = 1;
+> +
 
-I was looking for kernel config options, that could modify bpf behavior
-and also unprivileged_bpf_disable (set to 0 for me), but nothing stood out.
+> +               } else if (!strcmp(key, CONFIG_LTPDIR_KEY) && !root->ltp_dir.dir_name) {
+> +                       cgroup_dir_mk(&root->mnt_dir, cgroup_ltp_dir, &root->ltp_dir);
+> +                       if (!strcmp(value, "yes"))
+> +                               root->ltp_dir.we_created_it = 1;
+> +
+> +               } else if (!strcmp(key, CONFIG_DRAINDIR_KEY) && !root->drain_dir.dir_name) {
+> +                       cgroup_dir_mk(&root->ltp_dir, cgroup_ltp_drain_dir, &root->drain_dir);
+> +                       if (!strcmp(value, "yes"))
+> +                               root->ltp_dir.we_created_it = 1;
 
-> 
->> I guess what you wanted to check is what BPF_MAP_ARRAY_STX does. There
->> is one major difference between your implementation of the check and 
->> BPF_MAP_ARRAY_STX: BPF_MAP_ARRAY_STX uses an immediate value, to add
->> to r2 compared to a register in your check:
->>
->>  * r2 = fp
->>  * r2 += r2 - 4
->>
->> vs
->>
->>  * r2 = r10
->>  * r3 = -1
->>  * r2 += r3
->>
->> That is actually what makes the difference here...
-> 
-> No, BPF_MAP_ARRAY_STX is just used to output the result of div/mod by
-> zero and I don't think it needs testing.
-> 
->>
->> If I modify the check like this it works:
->>
->> --- a/testcases/kernel/syscalls/bpf/bpf_prog05.c
->> +++ b/testcases/kernel/syscalls/bpf/bpf_prog05.c
->> @@ -67,13 +67,11 @@ static void ensure_ptr_arithmetic(void)
->>  {
->>         const struct bpf_insn prog_insn[] = {
->>                 /* r2 = r10
->> -                * r3 = -1
->> -                * r2 += r3
->> +                * r2 += -1
->>                  * *(char *)r2 = 0
->>                  */
->>                 BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
->> -               BPF_MOV64_IMM(BPF_REG_3, -1),
->> -               BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_3),
->> +               BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -1),
->>                 BPF_ST_MEM(BPF_B, BPF_REG_2, 0, 0),
->>
->>                 /* exit(0) */
->>
->>
->> Is this still checking what it is supposed to? Then I would send it
->> post this as a patch
->>
->> Joerg
-> 
-> This will reintroduce the false positive.
+I think that parsing the  CONFIG_DRAINDIR_KEY from '$_cgroup_state'
+is superfluous. Because from the tst_cgroup_cleanup, if
+root->ltp_dir.we_created_it
+is 1 then both of the two directories will be removed, so just using
+CONFIG_LTPDIR_KE
+to track the status is enough.
 
-Ok, I get that.
+And maybe it is not necessary to print "Created_Drain_Dir=xx" in
+tst_cgroup_print_config at all.
+
+Then, the code snippet could be as:
+
+                } else if (!strcmp(key, CONFIG_LTPDIR_KEY) &&
+!root->ltp_dir.dir_name) {
+                        cgroup_dir_mk(&root->mnt_dir, cgroup_ltp_dir,
+&root->ltp_dir);
+                        cgroup_dir_mk(&root->ltp_dir,
+cgroup_ltp_drain_dir, &root->drain_dir);
+                        if (!strcmp(value, "yes"))
+                                root->ltp_dir.we_created_it = 1;
 
 
-I did some more digging and bisecting. First I bisected the mainline
-kernel and found, that the commit 2c78ee898 ("bpf: Implement CAP_BPF")
-makes the check run successful. This is only in linux >= 5.8.
-But my 5.4 ubuntu kernel also successfully ran the check, so I also
-bisected ubuntu sources [1] and found this commit to be the fix here:
-2fa9ab45c ("bpf: No need to simulate speculative domain for immediates")
-This commit is also in the mainline kernel, but only in >= 5.13.
-
-I guess the check you implemented now disables the test for a lot of
-kernels, that do not have a patch like this... I will stop here and just
-accept, that the test is not running successfully in my case. But still
-wanted to share this information.
-
-Joerg
+> +
+> +               } else if (!strcmp(key, CONFIG_TESTID_KEY) && strcmp(value, "NULL") &&
+> +                                  !root->test_dir.dir_name) {
+> +                       cgroup_dir_mk(&root->ltp_dir, value, &root->test_dir);
+> +                       root->test_dir.we_created_it = 1;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
 
 
-[1]
-https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal/commit/?id=2fa9ab45c53e8b104ba8f7d3a953131cc818fcc0
 
+
+--
+Regards,
+Li Wang
 
 
 -- 
