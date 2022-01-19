@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81066C4332F
-	for <ltp@archiver.kernel.org>; Wed, 19 Jan 2022 14:45:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53D34C433EF
+	for <ltp@archiver.kernel.org>; Wed, 19 Jan 2022 14:45:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4A943C96B1
-	for <ltp@archiver.kernel.org>; Wed, 19 Jan 2022 15:45:42 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A2FD73C96A8
+	for <ltp@archiver.kernel.org>; Wed, 19 Jan 2022 15:45:52 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 907D33C96B3
- for <ltp@lists.linux.it>; Wed, 19 Jan 2022 15:44:31 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id 5392F3C96B9
+ for <ltp@lists.linux.it>; Wed, 19 Jan 2022 15:44:32 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AB335600657
- for <ltp@lists.linux.it>; Wed, 19 Jan 2022 15:44:30 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C45B9600944
+ for <ltp@lists.linux.it>; Wed, 19 Jan 2022 15:44:31 +0100 (CET)
 Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
  [209.85.167.72])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 077133F306
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 48347407FC
  for <ltp@lists.linux.it>; Wed, 19 Jan 2022 14:44:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1642603470;
- bh=Z5Qoj/5QwxECebh/UdARBzw085mUW4YGP5tY/YNMVhs=;
+ s=20210705; t=1642603471;
+ bh=1AT44c14OCUtqPnKhq+49Xdqvl0KLglsyDavTB0JApE=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=ujGUu5t2z+y1XcXj+heLi+L5smBoM/rXkxztMEeXU9DPQ/4ussPPLZeZSrQVjxlOI
- 4YdmXIHr1hxfdkz8cHUU9biqvzHwW/K8P0B+mnGwyTVwL8FkPeiMPqOBc3Wdn210Xh
- 6swe1MnFMO4H2J0fOPGc5rgBs9YgB80O0DfCjGWaTfBuYPU3DAooTDc4fdrgI6OcG0
- EsSgo24U7JuMbwQrSpmbSRlWbssSP01VqshL9aApdeGQ+s3nP8ZK2/p6dyU54ehqDe
- lliZ2Ne61fJa11pJkyg/qeA+TC/IjLXuKYyPgu9Xk0IP4nfv3BMHeS55Iz+Qh44vZ8
- hLw5Gz6tlv/mA==
+ b=K10uKCQyu0lomMGRLiteUww/jQEPqpeMfE3oKjGT/cUQ03SyIiUPUQujwAxZjwE3m
+ PwXu71BH9vNLO41y/D705wXKqAYNwmoaaET7/QRw79i4JcY8GXTScIYInJlMMQJO6W
+ f7Un4pDulMWlVrlKVr7uVN6+xe2ADv3LYTva4AVvARWNsw9BFSoqk7P3FvipZE2Q7r
+ ybnxKGl89iPIWOAT5X1xDbX9qcpsd9YMgVwhjhZmRMpu+psJlSmKXzg1dWyrQQlq4V
+ ctWsgBGfXOqrCG/F3GbV2zcWZ5m8Gu1eNe5i1Zf7xMCTmv0p5CYzpPwPmO+R3kHcqy
+ gSeZ6HetpjRLw==
 Received: by mail-lf1-f72.google.com with SMTP id
- x23-20020ac25dd7000000b0042ffb81aaffso1752514lfq.5
+ d12-20020a196b0c000000b0042afa90ae9bso1742343lfa.12
  for <ltp@lists.linux.it>; Wed, 19 Jan 2022 06:44:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Z5Qoj/5QwxECebh/UdARBzw085mUW4YGP5tY/YNMVhs=;
- b=fua5eW6wrBtF1h/aL+Lso3uoCpYYBUHJpIlK0yugBIgqI+MdCvMw9dt7aCbcYuxH0a
- 5E8WYvFJL/XR3sWgO/Vl2bHK6hcNq65rDYTsM1dO/KMCviQ0EljcfzjBhcH0MnppUv5Z
- XgY4IQh3HoPN+guoD4Y/6gkecd3qZl8CG+cGh4Nq56VKtv2pi2YoYU+GlemI7f4HcuNi
- zoIZa3lybQ4mVZrz+gRFB+Bd4zqIPnjgv1rybO+99gN7C2qf9ucJtSs0dVAXLSq3ssWc
- HFHi/zsy2xMIwbEcIX3A7+44RE42Xi8ZFe5NtwGbSuYSI+0GlqHP4Exr6bRac8dJ/teE
- ApfQ==
-X-Gm-Message-State: AOAM533BZY7eCdyeeN/7JvDGc1moVFVWS10NHqC6HrLJW/hsrc5i65Kf
- 1Y2Q9GNh0kOczXnQUL//kk/W2hxfVUIQ6BSaOiqif7m0he3dwS33bocjBP1bgPRg7A0Wrrxwrrd
- 4+VG97Im9Gc2CzeNZzw7hT4YgLV+f
-X-Received: by 2002:a05:6512:3406:: with SMTP id
- i6mr20193554lfr.116.1642603469234; 
- Wed, 19 Jan 2022 06:44:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzlQinzfKKCoEX/EAcWZZgS3JWG67WeFQ0SNz01nIYBny4tRsPLDNmnmRQlOyhVw9GHAlORgg==
-X-Received: by 2002:a05:6512:3406:: with SMTP id
- i6mr20193520lfr.116.1642603468865; 
- Wed, 19 Jan 2022 06:44:28 -0800 (PST)
+ bh=1AT44c14OCUtqPnKhq+49Xdqvl0KLglsyDavTB0JApE=;
+ b=Cg3mAL02Zb4Fi6VjquYzqUM6z9kXWSb3/B0yxAmnb5Iw64cK32nbL3yxGGC5rRqouP
+ wZ6BV4Y/zKs37x3xdsigKQbJ+2ppzzBGcF5BwdrK4fCx5MaDg/KHp1bX24tBHl0FbJFM
+ KKVU3kyEYGHrGHeBcSaWeqPBPVuF9R44jbcm2dqn7XuMnyqlU9uZ3DdcSAJ01nqGJYNg
+ wQpllmw8/CRHYEGI11qN6fPRNdr0z5CJVJBjVhrGcnGOmcc9v+L8TeA9ah7s+E6NCHTr
+ vyYdguwLL2/YrehlkuED7V35dw64UA8g0SDBfW3Yv+hDLCn38hs+B+phDDpKFCxvL1Pm
+ KdCQ==
+X-Gm-Message-State: AOAM532c56Xh7Z2iBzfm27j0BGt2fFQWtzaBcMN6iaXSYkef1vmZVobe
+ WXxl2Uwrf8KVKzFB8vUYGn9aKk+vN4UK2guDrsjYT+ISq1TgXcM+PZ84gZayRI+Vhaj07up9cox
+ 1K/YW+wYWNEVVXsgnOgHctnHmlq57
+X-Received: by 2002:a05:6512:32c5:: with SMTP id
+ f5mr4456614lfg.564.1642603467930; 
+ Wed, 19 Jan 2022 06:44:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyvsAD0rcJ3ZGWU/9xpDIeN97n5hfHezeu8uwDdlccB4sonX+11fc41rZ1beDiYX9R1cWwKiw==
+X-Received: by 2002:a05:6512:32c5:: with SMTP id
+ f5mr4456591lfg.564.1642603467728; 
+ Wed, 19 Jan 2022 06:44:27 -0800 (PST)
 Received: from lukenow-XPS-13-9380.. (d83-110.icpnet.pl. [77.65.83.110])
- by smtp.gmail.com with ESMTPSA id bt18sm2036843lfb.50.2022.01.19.06.44.27
+ by smtp.gmail.com with ESMTPSA id bt18sm2036843lfb.50.2022.01.19.06.44.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 19 Jan 2022 06:44:28 -0800 (PST)
+ Wed, 19 Jan 2022 06:44:27 -0800 (PST)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it,
 	rpalethorpe@suse.de,
 	liwang@redhat.com
-Date: Wed, 19 Jan 2022 06:44:10 -0800
-Message-Id: <e06862123217f0520f441b0f4117151d231fa19e.1642601554.git.luke.nowakowskikrijger@canonical.com>
+Date: Wed, 19 Jan 2022 06:44:09 -0800
+Message-Id: <631e84014f8c9ad23cc634f6de8770998833286a.1642601554.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 08/16] controllers: Expand cgroup_lib shell library
+Subject: [LTP] [PATCH 07/16] testcases/lib: Implement tst_cgctl binary
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,169 +97,106 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Expand the cgroup_lib library by using the tst_cgctl binary
-utility to make calls to the Cgroup C API to simplify and centralize the
-mounting and cleanup process of Cgroups
+Implement a binary utility that creates an interface to make calls to
+the cgroup C API.
+
+This will effectively allow shell scripts to make calls to the cgroup C
+api.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
-v2: Add "^" to propery grep the correct mountpoint.
-    Removed is_cgroup_enabled_and_available function and put the check
-    in cgroup_require().
-    Check if /proc/cgroups exists in cgroup_require().
-    Change to TCONF if controllers not availabled.
+ testcases/lib/Makefile    |  2 +-
+ testcases/lib/tst_cgctl.c | 69 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/lib/tst_cgctl.c
 
- testcases/kernel/controllers/cgroup_lib.sh | 128 +++++++++++++++++----
- 1 file changed, 108 insertions(+), 20 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cgroup_lib.sh b/testcases/kernel/controllers/cgroup_lib.sh
-index 7918b5636..344df41ac 100644
---- a/testcases/kernel/controllers/cgroup_lib.sh
-+++ b/testcases/kernel/controllers/cgroup_lib.sh
-@@ -5,35 +5,123 @@
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index f2de0c832..f4f8c8524 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -12,6 +12,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+ 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
+ 			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
+-			   tst_check_kconfigs
++			   tst_check_kconfigs tst_cgctl
  
- . tst_test.sh
- 
--# Find mountpoint to given subsystem
--# get_cgroup_mountpoint SUBSYSTEM
--# RETURN: 0 if mountpoint found, otherwise 1
--get_cgroup_mountpoint()
-+_cgroup_state=
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_cgctl.c b/testcases/lib/tst_cgctl.c
+new file mode 100644
+index 000000000..a6cf88f41
+--- /dev/null
++++ b/testcases/lib/tst_cgctl.c
+@@ -0,0 +1,69 @@
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <unistd.h>
++#include "tst_cgroup.h"
 +
-+# Find mountpoint of the given controller
-+# USAGE: cgroup_get_mountpoint CONTROLLER
-+# RETURNS: Prints the mountpoint of the given controller
-+# Must call cgroup_require before calling
-+cgroup_get_mountpoint()
++static int cgctl_require(const char *ctrl, int test_pid)
 +{
-+	local ctrl=$1
-+	local mountpoint
++    struct tst_cgroup_opts opts;
 +
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_mountpoint: controller not defined"
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_mountpoint: No previous state found. Forgot to call cgroup_require?"
++    memset(&opts, 0, sizeof(opts));
++    opts.test_pid = test_pid;
 +
-+	mountpoint=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $4 }')
-+	echo "$mountpoint"
++    tst_cgroup_require(ctrl, &opts);
++    tst_cgroup_print_config();
 +
-+	return 0
++    return 0;
 +}
 +
-+# Get the test path of a given controller that has been created by the cgroup C API
-+# USAGE: cgroup_get_test_path CONTROLLER
-+# RETURNS: Prints the path to the test direcory
-+# Must call cgroup_require before calling
-+cgroup_get_test_path()
++static int cgctl_cleanup(const char *config)
 +{
-+	local ctrl="$1"
-+	local mountpoint
-+	local test_path
++    tst_cgroup_scan();
++    tst_cgroup_load_config(config);
++    tst_cgroup_cleanup();
 +
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_test_path: controller not defined"
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_test_path: No previous state found. Forgot to call cgroup_require?"
-+
-+	mountpoint=$(cgroup_get_mountpoint "$ctrl")
-+
-+	test_path="$mountpoint/ltp/test-$$"
-+
-+	[ ! -e "$test_path" ] && tst_brk TBROK "cgroup_get_test_path: No test path found. Forgot to call cgroup_require?"
-+
-+	echo "$test_path"
-+
-+	return 0
++    return 0;
 +}
 +
-+# Gets the cgroup version of the given controller
-+# USAGE: cgroup_get_version CONTROLLER
-+# RETURNS: "V1" if version 1 and "V2" if version 2
-+# Must call cgroup_require before calling
-+cgroup_get_version()
++static int cgctl_print(void)
 +{
-+	local ctrl="$1"
-+	local version
++    tst_cgroup_scan();
++    tst_cgroup_print_config();
 +
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_version: controller not defined"
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_version: No previous state found. Forgot to call cgroup_require?"
-+
-+	version=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $2 }')
-+	[ "$version" = "" ] && tst_brk TBROK "cgroup_get_version: Could not find controller $ctrl"
-+
-+	echo "$version"
-+
-+	return 0
++    return 0;
 +}
 +
-+# Cleans up any setup done by calling cgroup_require.
-+# USAGE: cgroup_cleanup
-+# Can be safely called even when no setup has been done
-+cgroup_cleanup()
- {
--	local subsystem=$1
--	local mntpoint
-+	[ "$_cgroup_state" = "" ] && return 0
- 
--	[ $# -eq 0 ] && tst_brk TBROK "get_cgroup_mountpoint: subsystem not defined"
-+	tst_cgctl cleanup "$_cgroup_state"
- 
--	mntpoint=$(grep cgroup /proc/mounts | grep -w $subsystem | awk '{ print $2 }')
--	[ -z "$mntpoint" ] && return 1
-+	_cgroup_state=""
- 
--	echo $mntpoint
- 	return 0
- }
- 
--# Check if given subsystem is supported and enabled
--# is_cgroup_subsystem_available_and_enabled SUBSYSTEM
--# RETURN: 0 if subsystem supported and enabled, otherwise 1
--is_cgroup_subsystem_available_and_enabled()
-+# Get the task list of the given controller
-+# USAGE: cgroup_get_task_list CONTROLLER
-+# RETURNS: prints out "cgroup.procs" if version 2 otherwise "tasks"
-+# Must call cgroup_require before calling
-+cgroup_get_task_list()
- {
--	local val
--	local subsystem=$1
-+	local ctrl="$1"
-+	local version
++static int cgctl_process_cmd(int argc, char *argv[])
++{
++    int test_pid;
++    const char *cmd_name = argv[1];
 +
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_task_list: controller not defined"
- 
--	[ $# -eq 0 ] && tst_brk TBROK "is_cgroup_subsystem_available_and_enabled: subsystem not defined"
-+	version=$(cgroup_get_version "$ctrl")
- 
--	val=$(grep -w $subsystem /proc/cgroups | awk '{ print $4 }')
--	[ "$val" = "1" ] && return 0
-+	if [ "$version" = "V2" ]; then
-+		echo "cgroup.procs"
-+	else
-+		echo "tasks"
-+	fi
- 
--	return 1
-+	return 0
++    if (!strcmp(cmd_name, "require")) {
++        test_pid = atoi(argv[3]);
++        if (!test_pid) {
++            fprintf(stderr, "tst_cgctl: Invalid test_pid '%s' given\n",
++                    argv[3]);
++            return 1;
++        }
++        return cgctl_require(argv[2], test_pid);
++    } else if (!strcmp(cmd_name, "cleanup")) {
++        return cgctl_cleanup(argv[2]);
++    } else if (!strcmp(cmd_name, "print")) {
++        return cgctl_print();
++    }
++
++    fprintf(stderr, "tst_cgctl: Unknown command '%s' given\n", cmd_name);
++    return 1;
 +}
 +
-+# Mounts and configures the given controller
-+# USAGE: cgroup_require CONTROLLER
-+cgroup_require()
++int main(int argc, char *argv[])
 +{
-+	local ctrl="$1"
-+	local exists
++    if (argc < 2 || argc > 4) {
++        fprintf(stderr, "tst_cgctl: Invalid number of arguements given");
++        return 1;
++    }
 +
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_require: controller not defined"
-+
-+	[ ! -f /proc/cgroups ] && tst_brk TCONF "Kernel does not support control groups"
-+
-+	exists=$(grep -w $ctrl /proc/cgroups | awk '{ print $4 }')
-+	[ "$exists" != "1" ] && tst_brk TCONF "cgroup_require: Controller not available or not enabled"
-+
-+	_cgroup_state=$(tst_cgctl require "$ctrl" $$)
-+
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_require: No state was set after call. Controller '$ctrl' maybe does not exist?"
-+
-+	return 0
- }
++    return cgctl_process_cmd(argc, argv);
++}
 -- 
 2.32.0
 
