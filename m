@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FA6AC433F5
-	for <ltp@archiver.kernel.org>; Thu, 20 Jan 2022 20:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45855C433FE
+	for <ltp@archiver.kernel.org>; Thu, 20 Jan 2022 21:02:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 475E63C96C8
-	for <ltp@archiver.kernel.org>; Thu, 20 Jan 2022 21:14:53 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 40E683C268E
- for <ltp@lists.linux.it>; Thu, 20 Jan 2022 21:14:44 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id A80043C96E9
+	for <ltp@archiver.kernel.org>; Thu, 20 Jan 2022 22:01:57 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 71C0C1400F49
- for <ltp@lists.linux.it>; Thu, 20 Jan 2022 21:14:43 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E9BBF3C920D
+ for <ltp@lists.linux.it>; Thu, 20 Jan 2022 22:01:47 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3C521600CE8
+ for <ltp@lists.linux.it>; Thu, 20 Jan 2022 22:01:46 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 40BCF1F3AB;
- Thu, 20 Jan 2022 20:14:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 33C392195F;
+ Thu, 20 Jan 2022 21:01:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642709682;
+ t=1642712506;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eIO6zWI0z9Tu+ABa/EFpSjsfGURgRJhwTJHjmK5wlks=;
- b=ORSCgEBvga4VLeLM1gi+Y0SOIbvK+1XmMqS67ax+4gxFq7LT/Ua1aQDsMFrLCIZaZxzcOz
- mhr2gg2NzD++F8Gnj41J3G8ZBtxn2tHxI65VyqaXmk+2j8DB7aTFwvu/7jCGtq38KmG5xo
- ln6Bw+yHtq2569esMsZR36+QpGFTekk=
+ bh=UaXDKza4Sh7YIM3Vzo5bFIWT6IENs7PssxfIjC5umQw=;
+ b=yywB5zTfYaE/pN5XftHj78h2EijpEUz2xT5plerQTtOJ2qh5xiIEiethu3x/0Df6VruRVi
+ 2aEoqO009UgkK1FSwwBpfxcNdz6YN4iaHzsFoGDun2ZU63Ugk8QOZLMvny68Vzg5i5gwBE
+ D+daUNXBN5ec81kEPxwttaYR2Qw/s2k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642709682;
+ s=susede2_ed25519; t=1642712506;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eIO6zWI0z9Tu+ABa/EFpSjsfGURgRJhwTJHjmK5wlks=;
- b=LhhpuBrPYyHPtN9jbibpmGVg9clrV5399FHU2InSzlj3HbGMGNhQMGpO0rptX55CrUHmpG
- ooH0LL2EdOL7ccDw==
+ bh=UaXDKza4Sh7YIM3Vzo5bFIWT6IENs7PssxfIjC5umQw=;
+ b=CDulFiSjc14GO/F1AdHtEvXx+UAh+0L0JxXOBSVAFb7b/kaGC5Ux+BgF8tgarOPwcxI2SI
+ Vrf9ohp2dptbkiBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 011DB13BE0;
- Thu, 20 Jan 2022 20:14:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C474C13EC3;
+ Thu, 20 Jan 2022 21:01:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pZ5cObHC6WGaMwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 20 Jan 2022 20:14:41 +0000
-Date: Thu, 20 Jan 2022 21:14:40 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id swaqLLnN6WGaQwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Jan 2022 21:01:45 +0000
+Date: Thu, 20 Jan 2022 22:01:38 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Kushal Chand <kushalkataria5@gmail.com>
-Message-ID: <YenCsGyklP6fAxz2@pevik>
-References: <20220120163407.30744-1-kushalkataria5@gmail.com>
+To: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
+Message-ID: <YenNsuS1gcA9tDe3@pevik>
+References: <20220120143727.27057-1-nikita.yushchenko@virtuozzo.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220120163407.30744-1-kushalkataria5@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220120143727.27057-1-nikita.yushchenko@virtuozzo.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] tst_taint: print readable error message
- instead of numerical codes
+Subject: Re: [LTP] [PATCH] rpc_lib.sh: fix portmapper detection in case of
+ socket activation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,117 +77,61 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
+Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org, kernel@openvz.org,
+ Steve Dickson <SteveD@redhat.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Kusal,
+Hi Nikita,
 
-there are one problematic thing: use tst_brk() and code style.
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2-coding-style
+[ Cc: Steve as user-space maintainer, also Neil and whole linux-nfs ]
 
+> On systemd-based linux hosts, rpcbind service is typically started via
+> socket activation, when the first client connects. If no client has
+> connected before LTP rpc test starts, rpcbind process will not be
+> running at the time of check_portmap_rpcbind() execution, causing
+> check_portmap_rpcbind() to report TCONF error.
 
-> This patch stores the possible kernel tainted messages in taint_strings
-> and corresponding error is printed.
+> Fix that by adding a quiet invocation of 'rpcinfo' before checking for
+> rpcbind.
 
-> Fixes: #776
+Looks reasonable, but I'd prefer to have confirmation from NFS experts.
+
+> For portmap, similar step is likely not needed, because portmap is used
+> only on old systemd and those don't use systemd.
+
+> Signed-off-by: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
 > ---
->  lib/tst_taint.c | 27 ++++++++++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
+>  testcases/network/rpc/basic_tests/rpc_lib.sh | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-> diff --git a/lib/tst_taint.c b/lib/tst_taint.c
-> index 49146aacb..e224984f5 100644
-> --- a/lib/tst_taint.c
-> +++ b/lib/tst_taint.c
-> @@ -8,6 +8,27 @@
+> diff --git a/testcases/network/rpc/basic_tests/rpc_lib.sh b/testcases/network/rpc/basic_tests/rpc_lib.sh
+> index c7c868709..e882e41b3 100644
+> --- a/testcases/network/rpc/basic_tests/rpc_lib.sh
+> +++ b/testcases/network/rpc/basic_tests/rpc_lib.sh
+> @@ -8,6 +8,12 @@ check_portmap_rpcbind()
+>  	if pgrep portmap > /dev/null; then
+>  		PORTMAPPER="portmap"
+>  	else
+> +		# In case of systemd socket activation, rpcbind could be
+> +		# not started until somebody tries to connect to it's socket.
+> +		#
+> +		# To handle that case properly, run a client now.
+> +		rpcinfo >/dev/null 2>&1
+nit: Shouldn't we keep stderr? In LTP we put required commands into
+$TST_NEEDS_CMDS. It'd be better not require rpcinfo (not a hard dependency),
+and thus it'd be better to see "command not found" when rpcinfo missing and test
+fails.
 
->  static unsigned int taint_mask = -1;
-
-> +static const char * const taint_strings[] = {
-nit: please remove space after star
-static const char *const taint_strings[] = {
-> +				       "G (Propriety module loaded)",
-> +				       "F (Module force loaded)",
-> +				       "S (Running on out of spec system)",
-> +				       "R (Module force unloaded)",
-> +				       "M (Machine check exception)",
-> +				       "B (Bad page reference)",
-> +				       "U (User request)",
-> +				       "D (OOPS/BUG)",
-> +				       "A (ACPI table overridden)",
-> +				       "W (Warning)",
-> +				       "C (Staging driver loaded)",
-> +				       "I (Workaround BIOS/FW bug)",
-> +				       "O (Out of tree module loaded)",
-> +				       "E (Unsigned module loaded)",
-> +				       "L (Soft lock up occured)",
-> +				       "K (Live patched)",
-> +				       "X (Auxilary)",
-> +				       "T (Built with struct randomization)",
-nit: Why so many levels to indent? You also mix tabs and spaces.
-Could you use just 1 tab?
-
-> +};
+Kind regards,
+Petr
 
 > +
->  static unsigned int tst_taint_read(void)
->  {
->  	unsigned int val;
-> @@ -74,6 +95,7 @@ static int tst_taint_check_kver(unsigned int mask)
->  void tst_taint_init(unsigned int mask)
->  {
->  	unsigned int taint = -1;
-> +	long unsigned int i;
-Please use unsigned long
-
-NOTE: warn done by 'cd lib && make check-tst_taint'
-tst_taint.c:98: WARNING: type 'long unsigned int' should be specified in [[un]signed] [short|int|long|long long] order
-tst_taint.c:98: WARNING: Prefer 'unsigned long' over 'long unsigned int' as the int is unnecessary
-
-there are more warning which you can ignore for now.
-
->  	if (mask == 0)
->  		tst_brk(TBROK, "mask is not allowed to be 0");
-> @@ -90,7 +112,10 @@ void tst_taint_init(unsigned int mask)
->  	}
-
->  	if ((taint & taint_mask) != 0)
-> -		tst_brk(TBROK, "Kernel is already tainted: %u", taint);
-> +		for (i = 0; i < ARRAY_SIZE(taint_strings); i++)
-> +			if (taint & (1 << i))
-> +				tst_brk(TBROK, "Kernel is already tainted: %s",
-> +					taint_strings[i]);
-The main reason why I just didn't fix the whitespace myself and applied is using
-tst_brk(). It quits test on first matching flag. You can accumulate letters into
-char array and print after loop.
-
-nit: Please wrap the code around for { }
-https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
-
-FYI we have make check target to help prevent. But some info can be confusing
-(not related to your changes or even false positive):
-
-E.g. for this:
-
-$ cd lib && make check-tst_taint
-tst_taint.c:1: WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-=> you can ignore this
-
-tst_taint.c:98: WARNING: type 'long unsigned int' should be specified in [[un]signed] [short|int|long|long long] order
-tst_taint.c:98: WARNING: Prefer 'unsigned long' over 'long unsigned int' as the int is unnecessary
-=> please fix this one 
-
-make: [../include/mk/rules.mk:48: check-tst_taint] Error 1 (ignored)
-tst_taint.c:32:21: warning: LTP-003: Symbol 'tst_taint_read' has the LTP public library prefix, but is static (private).
-tst_taint.c:41:12: warning: LTP-003: Symbol 'tst_taint_check_kver' has the LTP public library prefix, but is static (private).
-=> you can ignore these two.
-
-Both code style and make check are documented at:
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2-coding-style
-
->  }
+>  		pgrep rpcbind > /dev/null && PORTMAPPER="rpcbind" || \
+>  			tst_brk TCONF "portmap or rpcbind is not running"
+>  	fi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
