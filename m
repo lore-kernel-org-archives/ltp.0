@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAA4DC433FE
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 15:22:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60ECDC433EF
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 15:25:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C67C3C970B
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 16:22:38 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0D5CD3C9716
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 16:25:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 034763C9232
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 16:22:28 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D1D723C9232
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 16:25:04 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2C6FE1000F46
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 16:22:27 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 51B411A000BB
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 16:25:03 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4E4A921982;
- Fri, 21 Jan 2022 15:22:27 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7EABD212C9;
+ Fri, 21 Jan 2022 15:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642778547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1642778703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=aYq/NsDhvgNICC7AY7EWmGwErYM44lu07/6R6uRH/AU=;
- b=H6+JrPbx4RpI6Xpd/g3Z5ogEaUo/FhjMlt+neaCtd1+HX3vaeqAcqpU/0nd1aEu5Rl9Axb
- lSIKFCuqwfiAainqP27XlvpijZ9QDynvaXSlx/sbm4zOZwsL5TO8Jn2vS/xv2WmAO+ebfa
- ZIjkK5ygmX1tPPM6ncN9IWTVizHwtnU=
+ bh=HGf4AMIbjocZMz/CEvfP4PpXN+VDg5/2hF4njQfglk4=;
+ b=MDRbTNk7Ec1fb4m6S5ZGZu/jlhKaXQjykYgGNanbGbEl+/eBU18f1Zh880HnEFTJFHWnat
+ sAnd4rL1RHxKtJUW54tYecGhKB9nxr+9lGnCgcbQ6hypopoO500oIa2teOvPPlE5T7lAgk
+ i6HrcDh6kovE6G3Td0naHnel2eX2y0o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642778547;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ s=susede2_ed25519; t=1642778703;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=aYq/NsDhvgNICC7AY7EWmGwErYM44lu07/6R6uRH/AU=;
- b=Jf7k33FiN+VXUbGns5SIWZStiqoeSDEr4yYNXtuE98El51PPgG3ddhqBebZmWseqOrXU5D
- ALjOD0oWEi/UUkDg==
+ bh=HGf4AMIbjocZMz/CEvfP4PpXN+VDg5/2hF4njQfglk4=;
+ b=4MfvYSCx9e2m9sJFj6Vrum9ZVHUkI9EVXPxJKT3mbYOdpdoE36q+sxsUgL3CS2uO5G7e8y
+ GHQrJ4y0sI/Q1FBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34B3A139FE;
- Fri, 21 Jan 2022 15:22:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5125D139FE;
+ Fri, 21 Jan 2022 15:25:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8t0uC7PP6mHwAgAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 21 Jan 2022 15:22:27 +0000
-Message-ID: <24a1d092-ec35-342b-fd7f-cdbd00725f4e@suse.cz>
-Date: Fri, 21 Jan 2022 16:22:21 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id HST6EE/Q6mFLBAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 21 Jan 2022 15:25:03 +0000
+Message-ID: <25efba68-899f-47b1-b4f3-e6a3ddc2ff78@suse.cz>
+Date: Fri, 21 Jan 2022 16:25:02 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
 Content-Language: en-US
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-References: <20220121150111.22995-1-andrea.cervesato@suse.de>
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20220121134052.30048-1-pvorel@suse.cz>
+ <20220121134052.30048-2-pvorel@suse.cz>
 From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20220121150111.22995-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20220121134052.30048-2-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Reduce default children in dio_read test
+Subject: Re: [LTP] [v2 PATCH 2/2] dio_sparse: Set timeout 30 min
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,40 +85,35 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
+the commit message needs an update due to changes but otherwise:
+
 Acked-by: Martin Doucha <mdoucha@suse.cz>
 
-On 21. 01. 22 16:01, Andrea Cervesato wrote:
-> We reduce default children from 100 to 8 in order to reduce time
-> execution and memory footprint consuption when using default
-> values.
+On 21. 01. 22 14:40, Petr Vorel wrote:
+> Originally only ADSP075 failed (dio_sparse  -w 518192k -s 518192k -n 1000)
+> but just in case increase timeout for all newly rewritten tests.
 > 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/kernel/io/ltp-aiodio/dio_read.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Changes v1->v2:
+> Prolong the timeout only for dio_sparse (Martin)
 > 
-> diff --git a/testcases/kernel/io/ltp-aiodio/dio_read.c b/testcases/kernel/io/ltp-aiodio/dio_read.c
-> index 2c2ec4bce..b0bbb25d5 100644
-> --- a/testcases/kernel/io/ltp-aiodio/dio_read.c
-> +++ b/testcases/kernel/io/ltp-aiodio/dio_read.c
-> @@ -26,7 +26,7 @@ static char *str_readsize;
->  static char *str_filesize;
->  
->  static char *filename = "file.bin";
-> -static int numchildren = 100;
-> +static int numchildren = 8;
->  static long long writesize = 32 * 1024 * 1024;
->  static long long readsize = 32 * 1024 * 1024;
->  static long long filesize = 128 * 1024 * 1024;
-> @@ -171,7 +171,7 @@ static struct tst_test test = {
->  	.needs_tmpdir = 1,
->  	.forks_child = 1,
->  	.options = (struct tst_option[]) {
-> -		{"n:", &str_numchildren, "Number of threads (default 100)"},
-> +		{"n:", &str_numchildren, "Number of threads (default 8)"},
->  		{"w:", &str_writesize, "Size of writing blocks (default 32M)"},
->  		{"r:", &str_readsize, "Size of reading blocks (default 32M)"},
->  		{"s:", &str_filesize, "File size (default 128M)"},
+> Kind regards,
+> Petr
+> 
+>  testcases/kernel/io/ltp-aiodio/dio_sparse.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> index 39fc895d65..0039daa8d1 100644
+> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> @@ -135,4 +135,5 @@ static struct tst_test test = {
+>  		"tmpfs",
+>  		NULL
+>  	},
+> +	.timeout = 1800,
+>  };
 
 
 -- 
