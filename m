@@ -4,87 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AD10C433F5
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 11:47:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3C94C433EF
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 11:48:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B0083C96DB
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 12:47:06 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id F0F653C96F2
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 12:48:39 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 420D33C9424
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 12:46:56 +0100 (CET)
-Received: from mail1.bemta34.sdw.messagelabs.com
- (mail1.bemta34.messagelabs.com [195.245.231.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id C2F3C3C268E
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 12:48:31 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 775DD1400E12
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 12:46:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1642765609; i=@fujitsu.com;
- bh=y2qAXtiiD9OYMtHHmNVw0kvd1uFZU6uMPRhCI++IayE=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=TxDTPF5VAL/XEo7iVBlDxcHTgxlxS3Im6jRTExbEPALY3l1FEAE8aLLfDaNXEPuDZ
- mIgy0GanSa4qX330B48qHv2e5f7NMMfcWSlGOoIUDEhGKron9pUNpGPhmiwIDgMyKo
- CTQ1ncvLyMCnzCHnZkO1aTb/6EA11pgX76iqgrMoHMp3TMi58vjx21VhtatiW9BWDE
- Pp5Ply1qJrSQi8XZKUIY+CR2P/Xw1BRhPSz1ng7qMwCGa9p319XZB8ahA19+JCDOxx
- QX22Ll7FZaykwxdOPVLlKOzEnfTFAwaUdl/8Co5vzNZBz9BdVAeEQAyoUKU8oneSCB
- pmZdep9eYvDJQ==
-Received: from [100.115.32.207] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-1.bemta.az-a.eu-west-2.aws.ess.symcld.net id 5D/50-14912-92D9AE16;
- Fri, 21 Jan 2022 11:46:49 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRWlGSWpSXmKPExsViZ8MxSVdz7qt
- Eg12r5CxWfN/B6MDose/3OtYAxijWzLyk/IoE1oxtF/vYCn75Vnx8XtfA2OrUxcjFISRwllGi
- o/krC4Szk0ni8elprF2MnEDOfkaJ04vNQWw2AQ2Ja4/bmUFsEQEJiY6Gt+wgNrOAmsTuq8fYQ
- GxhAX2Jb39/MYLYLAKqEi3X74LV8Aq4SfScXcIEYksIKEhMefieGSIuKHFy5hMWiDkSEgdfvG
- CGqFGU2L93IyOEXSExY8Y2NghbTeLquU3MExj5ZyFpn4WkfQEj0ypG66SizPSMktzEzBxdQwM
- DXUNDU11jS10jQ2O9xCrdRL3UUt3y1OISXSO9xPJivdTiYr3iytzknBS9vNSSTYzAoEwpVr+6
- g3Hzqp96hxglOZiURHlvVLxKFOJLyk+pzEgszogvKs1JLT7EKMPBoSTB2z4JKCdYlJqeWpGWm
- QOMEJi0BAePkgjvm1lAad7igsTc4sx0iNQpRmOO90/mLmLmaJ60fDuzEEtefl6qlDjvptlApQ
- IgpRmleXCDYJF7iVFWSpiXkYGBQYinILUoN7MEVf4VozgHo5Iw7weQKTyZeSVw+14BncIEdEr
- /s2cgp5QkIqSkGpjaD+s9+djT1dHxjK92DgfXjmeKC1weP8++q7No0fJ0kQOeh39o3VAXEJvR
- 3S+x6GfM7InWNw8L3Ar+WvVIaaWJfMWknepHVyq0Xjl4fOPK2+u23TJTzPR/ern9WYO8kGmoS
- O6dRWHpYY5398v/23J331cRg1Ubd35imPfq4vVltVbtzDbVLc4PT+j2vpeouPPa3+Pvm5gTKb
- vmr+vlffgmgze/XqEn/+v8DkGrxt+K7jorDl9vf/5h6utdP75e2ra7ZHPlW/v/3PdbA249Wfr
- rvfzrh+aNce91NR64ini+rmYNif8qItC0K8Z0lbpN08eqxT/+LyjdfyxDoXrxkpwP6T9MN3z6
- 7cR+7vIdVlUWPiWW4oxEQy3mouJEAIP22GBXAwAA
-X-Env-Sender: daisl.fnst@fujitsu.com
-X-Msg-Ref: server-15.tower-565.messagelabs.com!1642765609!19052!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 10318 invoked from network); 21 Jan 2022 11:46:49 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
- by server-15.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 21 Jan 2022 11:46:49 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 195D9100458
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 11:46:49 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 353F6200D5D
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 12:48:30 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 0C78D100441
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 11:46:49 +0000 (GMT)
-Received: from rhel79.g08.fujitsu.local (10.167.225.51) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Fri, 21 Jan 2022 11:46:26 +0000
-From: Dai Shili <daisl.fnst@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Wed, 29 Dec 2021 10:25:40 -0500
-Message-ID: <1640791540-32333-1-git-send-email-daisl.fnst@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 557ED1F888;
+ Fri, 21 Jan 2022 11:48:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1642765710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5dN6BylKSCKxBPc6nGIkJje1Xy7hRfO4sO0N/E1ZQmY=;
+ b=Qe7AGZKn+AeKwDK+IG/QKteoAojaOqTfX4l/73UhPHoQlpUb6bLWUafk0i6fQizCcA67Xo
+ aegwBPtPdyk3F8CWhdNnD72pFrBsmo7Jsu1ORSLIPeLxYn9JljpxXCectp3i5DhJRTEoo1
+ naIel7dJpSY24jTxORX7q59HyxrWDC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1642765710;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5dN6BylKSCKxBPc6nGIkJje1Xy7hRfO4sO0N/E1ZQmY=;
+ b=kg/KMOf+XdFWeESnhzNeeOEfzrJpztadjmbkrwW+ERGdFeWn5HHDkg86r5g4DCOgos8vcD
+ MCw8I7Zy59HPKhAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B25F13B9C;
+ Fri, 21 Jan 2022 11:48:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id zRU2CY6d6mHKGAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 21 Jan 2022 11:48:30 +0000
+Message-ID: <205bdbc1-6216-8364-697d-36f7c98b3cb2@suse.cz>
+Date: Fri, 21 Jan 2022 12:48:29 +0100
 MIME-Version: 1.0
-X-Originating-IP: [10.167.225.51]
-X-ClientProxiedBy: G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20220121100604.1072-1-pvorel@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20220121100604.1072-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/statx09: Add new test
+Subject: Re: [LTP] [PATCH 1/1] aiodio: Skip tests on tmpfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,368 +83,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test is basically the same as statx04 but here we check for the
-STATX_ATTR_VERITY flag which is currently only implemented on ext4.
+Hi,
+one tiny nit below, otherwise:
 
-Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
----
- configure.ac                               |   1 +
- include/lapi/fs.h                          |   4 +
- include/lapi/fsverity.h                    |  38 ++++++
- include/lapi/stat.h                        |   4 +
- m4/ltp-fsverity.m4                         |  22 ++++
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/statx09.c  | 200 +++++++++++++++++++++++++++++
- 8 files changed, 271 insertions(+)
- create mode 100644 include/lapi/fsverity.h
- create mode 100644 m4/ltp-fsverity.m4
- create mode 100644 testcases/kernel/syscalls/statx/statx09.c
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-diff --git a/configure.ac b/configure.ac
-index 3c56d19..aeb486f 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -367,6 +367,7 @@ LTP_CHECK_SELINUX
- LTP_CHECK_SYNC_ADD_AND_FETCH
- LTP_CHECK_SYSCALL_EVENTFD
- LTP_CHECK_SYSCALL_FCNTL
-+LTP_CHECK_FSVERITY
- 
- if test "x$with_numa" = xyes; then
- 	LTP_CHECK_SYSCALL_NUMA
-diff --git a/include/lapi/fs.h b/include/lapi/fs.h
-index aafeab4..27b3a18 100644
---- a/include/lapi/fs.h
-+++ b/include/lapi/fs.h
-@@ -41,6 +41,10 @@
- #define FS_NODUMP_FL	   0x00000040 /* do not dump file */
- #endif
- 
-+#ifndef FS_VERITY_FL
-+#define FS_VERITY_FL	   0x00100000 /* Verity protected inode */
-+#endif
-+
- /*
-  * Helper function to get MAX_LFS_FILESIZE.
-  * Missing PAGE_SHIFT on some libc prevents defining MAX_LFS_FILESIZE.
-diff --git a/include/lapi/fsverity.h b/include/lapi/fsverity.h
-new file mode 100644
-index 0000000..30a3c2a
---- /dev/null
-+++ b/include/lapi/fsverity.h
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Dai Shili <daisl.fnst@cn.fujitsu.com>
-+ */
-+#ifndef LAPI_FSVERITY_H__
-+#define LAPI_FSVERITY_H__
-+
-+#include "config.h"
-+#include <linux/types.h>
-+
-+#ifdef HAVE_LINUX_FSVERITY_H
-+#include <linux/fsverity.h>
-+#endif
-+
-+#ifndef FS_VERITY_HASH_ALG_SHA256
-+# define FS_VERITY_HASH_ALG_SHA256       1
-+#endif
-+
-+#ifndef FS_IOC_ENABLE_VERITY
-+# define FS_IOC_ENABLE_VERITY    _IOW('f', 133, struct fsverity_enable_arg)
-+#endif
-+
-+#ifndef HAVE_STRUCT_FSVERITY_ENABLE_ARG
-+struct fsverity_enable_arg {
-+	__u32 version;
-+	__u32 hash_algorithm;
-+	__u32 block_size;
-+	__u32 salt_size;
-+	__u64 salt_ptr;
-+	__u32 sig_size;
-+	__u32 __reserved1;
-+	__u64 sig_ptr;
-+	__u64 __reserved2[11];
-+};
-+#endif
-+
-+#endif
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-index d596058..ce1f2b6 100644
---- a/include/lapi/stat.h
-+++ b/include/lapi/stat.h
-@@ -223,6 +223,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
- # define STATX_ATTR_AUTOMOUNT	0x00001000
- #endif
- 
-+#ifndef STATX_ATTR_VERITY
-+# define STATX_ATTR_VERITY	0x00100000
-+#endif
-+
- #ifndef AT_SYMLINK_NOFOLLOW
- # define AT_SYMLINK_NOFOLLOW	0x100
- #endif
-diff --git a/m4/ltp-fsverity.m4 b/m4/ltp-fsverity.m4
-new file mode 100644
-index 0000000..3d466f5
---- /dev/null
-+++ b/m4/ltp-fsverity.m4
-@@ -0,0 +1,22 @@
-+dnl SPDX-License-Identifier: GPL-2.0-or-later
-+dnl Copyright (c) 2022 Fujitsu Ltd.
-+dnl Author: Dai Shili <daisl.fnst@cfujitsu.com>
-+
-+AC_DEFUN([LTP_CHECK_FSVERITY],[
-+	AC_CHECK_HEADERS([linux/fsverity.h], [have_fsverity=yes] ,[AC_MSG_WARN(missing linux/fsverity.h header)])
-+	if test "x$have_fsverity" = "xyes"; then
-+		AC_COMPILE_IFELSE([AC_LANG_SOURCE([
-+#include <linux/fsverity.h>
-+int main(void) {
-+	struct fsverity_enable_arg tst_fsverity_enable_arg;
-+	return 0;
-+}])], [has_fsverity_enable_arg="yes"])
-+	fi
-+
-+if test "x$has_fsverity_enable_arg" = "xyes"; then
-+	AC_DEFINE(HAVE_STRUCT_FSVERITY_ENABLE_ARG, 1, [Define to 1 if you have struct fsverity_enable_arg])
-+	AC_MSG_RESULT(yes)
-+else
-+	AC_MSG_RESULT(no)
-+fi
-+])
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 3b2deb6..7ba0331 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1744,6 +1744,7 @@ statx05 statx05
- statx06 statx06
- statx07 statx07
- statx08 statx08
-+statx09 statx09
- 
- membarrier01 membarrier01
- 
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 4db060d..1cea43c 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -6,3 +6,4 @@
- /statx06
- /statx07
- /statx08
-+/statx09
-diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
-new file mode 100644
-index 0000000..38f7ca7
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx09.c
-@@ -0,0 +1,200 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Dai Shili <daisl.fnst@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This code tests if the attributes field of statx received expected value.
-+ * File set with following flags by using SAFE_IOCTL:
-+ *
-+ * - STATX_ATTR_VERITY: statx() system call sets STATX_ATTR_VERITY if the file
-+ * has fs-verity enabled. This can perform better than FS_IOC_GETFLAGS and
-+ * FS_IOC_MEASURE_VERITY because it doesn't require opening the file,
-+ * and opening verity files can be expensive.
-+ *
-+ * Minimum Linux version required is v5.5.
-+ * fs-verity is currently supported by the ext4 and f2fs filesystems.
-+ * The CONFIG_FS_VERITY kconfig option must be enabled to use fs-verity
-+ * on either filesystem.
-+ * ext4 supports fs-verity since Linux v5.4 and e2fsprogs v1.45.2.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/mount.h>
-+#include <stdlib.h>
-+#include <linux/ioctl.h>
-+#include "tst_test.h"
-+#include "lapi/fs.h"
-+#include "lapi/fsverity.h"
-+#include "lapi/stat.h"
-+#include <inttypes.h>
-+
-+#define MNTPOINT "mnt_point"
-+#define TESTFILE_FLAGGED MNTPOINT"/test_file1"
-+#define TESTFILE_UNFLAGGED MNTPOINT"/test_file2"
-+
-+static int fd_flagged, fd_unflagged, clear_flags;
-+static int mount_flag;
-+static char wrbuf[5];
-+
-+static const uint32_t hash_algorithms[] = {
-+	FS_VERITY_HASH_ALG_SHA256,
-+};
-+
-+static void test_flagged(void)
-+{
-+	struct statx buf;
-+
-+	TEST(statx(AT_FDCWD, TESTFILE_FLAGGED, 0, 0, &buf));
-+	if (TST_RET == 0)
-+		tst_res(TPASS,
-+			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTFILE_FLAGGED);
-+	else
-+		tst_brk(TFAIL | TTERRNO,
-+			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTFILE_FLAGGED);
-+
-+	if (buf.stx_attributes & STATX_ATTR_VERITY)
-+		tst_res(TPASS, "STATX_ATTR_VERITY flag is set: (%"PRIu64") ", buf.stx_attributes);
-+	else
-+		tst_res(TFAIL, "STATX_ATTR_VERITY flag is not set");
-+}
-+
-+static void test_unflagged(void)
-+{
-+	struct statx buf;
-+
-+	TEST(statx(AT_FDCWD, TESTFILE_UNFLAGGED, 0, 0, &buf));
-+	if (TST_RET == 0)
-+		tst_res(TPASS,
-+			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)",
-+			TESTFILE_UNFLAGGED);
-+	else
-+		tst_brk(TFAIL | TTERRNO,
-+			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)",
-+			TESTFILE_UNFLAGGED);
-+
-+	if ((buf.stx_attributes & STATX_ATTR_VERITY) == 0)
-+		tst_res(TPASS, "STATX_ATTR_VERITY flag is not set");
-+	else
-+		tst_res(TFAIL, "STATX_ATTR_VERITY flag is set");
-+}
-+
-+static struct test_cases {
-+	void (*tfunc)(void);
-+} tcases[] = {
-+	{&test_flagged},
-+	{&test_unflagged},
-+};
-+
-+static void run(unsigned int i)
-+{
-+	tcases[i].tfunc();
-+}
-+
-+static void flag_setup(void)
-+{
-+	int attr, ret;
-+	struct fsverity_enable_arg enable;
-+
-+	fd_flagged = SAFE_OPEN(TESTFILE_FLAGGED, O_RDONLY, 0664);
-+	fd_unflagged = SAFE_OPEN(TESTFILE_UNFLAGGED, O_RDWR | O_CREAT, 0664);
-+
-+	ret = ioctl(fd_flagged, FS_IOC_GETFLAGS, &attr);
-+	if (ret < 0) {
-+		if (errno == ENOTTY)
-+			tst_brk(TCONF | TERRNO, "FS_IOC_GETFLAGS not supported");
-+
-+		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_GETFLAGS, ...)", fd_flagged);
-+	}
-+
-+	memset(&enable, 0, sizeof(enable));
-+	enable.version = 1;
-+	enable.hash_algorithm = hash_algorithms[0];
-+	enable.block_size = 4096;
-+	enable.salt_size = 0;
-+	enable.salt_ptr = (intptr_t)NULL;
-+	enable.sig_size = 0;
-+	enable.sig_ptr = (intptr_t)NULL;
-+
-+	ret = ioctl(fd_flagged, FS_IOC_ENABLE_VERITY, &enable);
-+	if (ret < 0) {
-+		if (errno == EOPNOTSUPP) {
-+			tst_brk(TCONF,
-+				"fs-verity is not supported on the file system or by the kernel");
-+		}
-+		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_ENABLE_VERITY) failed", fd_flagged);
-+	}
-+
-+	ret = ioctl(fd_flagged, FS_IOC_GETFLAGS, &attr);
-+	if ((ret == 0) && !(attr & FS_VERITY_FL))
-+		tst_res(TFAIL, "%i: fs-verity enabled but FS_VERITY_FL bit not set", fd_flagged);
-+
-+	clear_flags = 1;
-+}
-+
-+static void setup(void)
-+{
-+	const char *fs_opts[] = {"-O verity", NULL};
-+
-+	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
-+	TEST(mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL));
-+	if (TST_RET) {
-+		if (TST_RET == -1) {
-+			tst_res(TFAIL | TERRNO, "mount(%s, %s, %s) failed. "
-+				"Loop device does not support fs-verity, pls export LTP_DEV.",
-+					tst_device->dev, MNTPOINT, tst_device->fs_type);
-+		} else {
-+			tst_res(TFAIL | TERRNO, "Invalid mount(%s, %s, %s) return value %ld",
-+				tst_device->dev, MNTPOINT, tst_device->fs_type, TST_RET);
-+		}
-+	}
-+	mount_flag = 1;
-+
-+	fd_flagged = SAFE_OPEN(TESTFILE_FLAGGED, O_RDWR | O_CREAT, 0664);
-+	memset(wrbuf, 'a', 5);
-+	SAFE_WRITE(1, fd_flagged, wrbuf, 5);
-+	SAFE_CLOSE(fd_flagged);
-+
-+	flag_setup();
-+}
-+
-+static void cleanup(void)
-+{
-+	int attr;
-+
-+	if (clear_flags) {
-+		SAFE_IOCTL(fd_flagged, FS_IOC_GETFLAGS, &attr);
-+		attr &= ~FS_VERITY_FL;
-+		SAFE_IOCTL(fd_flagged, FS_IOC_SETFLAGS, &attr);
-+	}
-+
-+	if (fd_flagged > 0)
-+		SAFE_CLOSE(fd_flagged);
-+	if (fd_unflagged > 0)
-+		SAFE_CLOSE(fd_unflagged);
-+
-+	if (mount_flag)
-+		tst_umount(MNTPOINT);
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_device = 1,
-+	.dev_fs_type = "ext4",
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_FS_VERITY",
-+		NULL
-+	},
-+	.needs_cmds = (const char *[]) {
-+		"mkfs.ext4 >= 1.45.2",
-+		NULL
-+	}
-+};
+On 21. 01. 22 11:06, Petr Vorel wrote:
+> tmpfs does not support it.
+
+What's "it"? ^
+
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/kernel/io/ltp-aiodio/aiodio_append.c | 10 ++++++++--
+>  testcases/kernel/io/ltp-aiodio/dio_append.c    |  4 ++++
+>  testcases/kernel/io/ltp-aiodio/dio_read.c      |  4 ++++
+>  testcases/kernel/io/ltp-aiodio/dio_sparse.c    | 10 ++++++++--
+>  testcases/kernel/io/ltp-aiodio/dio_truncate.c  | 10 ++++++++--
+>  5 files changed, 32 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_append.c b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
+
+
 -- 
-1.8.3.1
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
