@@ -4,129 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5925C433EF
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 06:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 625A2C433EF
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 08:24:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 659A33C96F6
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 07:50:34 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 027513C96E9
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 09:24:11 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE2973C2AE9
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 07:50:22 +0100 (CET)
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr150090.outbound.protection.outlook.com [40.107.15.90])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 853D73C9424
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 09:24:01 +0100 (CET)
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com
+ [IPv6:2607:f8b0:4864:20::12c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D76C810000CD
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 07:50:21 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DZkzdoQzensrdCGoY6QBZZTjqHAYpkbJ1tmfWvRxxc3j6p4P9kyiOhfQ9iATOsETt5IkuBksPdnuEdQ1PpGANriZnjkIYSR0ZA0eEn1khV7vZUSNUXRICV7Hv7mpAkr0maCL8nIEtasjouFINBBZsLgrSNbYQqSu+N55q5ZErskOxETWtc3Ibi4Ad31j25FKkWONWxRa8qeaHV9f/ppJr2qW3Ky5iNuiR/gSym9+3iihND09g7UhMzbVGzNdbtZgtFViIJiregBW2hyzRdvXikOlP4mgm7UGIURahs15q3WjlC/pYcTCEr9kfTEsztExwt4sZ4zR9nYC1noZDreHdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F2gM7nOnLDXQmxMXKde3/S1ThpGvphQ5aCWJTOIqSUo=;
- b=bpp7cHjrNtZEuCQLCEJxpTwbvRFLAuq45JNjv6omC81cAdPmCQ0slYsDjAsS7+KkztKytrSSfpBht+z7y9rJgeRWTJQtlk2zq7RfxV6aTL3nY9v+FHYZr3e2wF81yU91NH0AuZrJGRJAObBGulpwwRe1xjMzBCLtcv/j47JT24rA+Gaioe/7QFUu/iFz3hebhQZSpBefTTOzT4xNVoBubug6aciRc04zUNzxbS52kFaA49NwhV745CS7Lsq3r0gfF7UqzjFqlEfCGaKNsZ6RzjvR1vfIi8bIV4P+DqUTA0TbwcWojUIrWE6YMRAt46Fc2PE5mpCjKNXtU66VpzUWtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F2gM7nOnLDXQmxMXKde3/S1ThpGvphQ5aCWJTOIqSUo=;
- b=gdSGDnEawgW8XFI53A3ml8FLlYbtdWjW3UaLinkP4a84rmWfravoNTVTwzKTQ6kZKpZwFwoa3J6oEiaUb2XeFyi/zUG3dlNCmKKjgGGotkAIyNtf9XcUrEtejoR+duaiNN/gDOBRlUJB6T6U02SOCyFKiUaVd5riroVWut4kc1I=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=virtuozzo.com;
-Received: from VE1PR08MB5630.eurprd08.prod.outlook.com (2603:10a6:800:1ae::7)
- by AM9PR08MB6753.eurprd08.prod.outlook.com (2603:10a6:20b:309::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.7; Fri, 21 Jan
- 2022 06:50:20 +0000
-Received: from VE1PR08MB5630.eurprd08.prod.outlook.com
- ([fe80::4456:3e05:28ee:51e4]) by VE1PR08MB5630.eurprd08.prod.outlook.com
- ([fe80::4456:3e05:28ee:51e4%5]) with mapi id 15.20.4909.012; Fri, 21 Jan 2022
- 06:50:20 +0000
-Message-ID: <8eef9722-a2ef-54c9-2f16-85a89b25679a@virtuozzo.com>
-Date: Fri, 21 Jan 2022 09:50:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>
-References: <20220120143727.27057-1-nikita.yushchenko@virtuozzo.com>
- <YenNsuS1gcA9tDe3@pevik> <da777e8f-ca8a-e1c6-d005-792114b78f84@virtuozzo.com>
- <YepE066MwWSf7wAK@pevik> <31a29913-11f4-8dfd-6c5c-735673dcd1a2@virtuozzo.com>
- <YepS+Y760GoylOum@pevik>
-In-Reply-To: <YepS+Y760GoylOum@pevik>
-X-ClientProxiedBy: AM5PR0502CA0002.eurprd05.prod.outlook.com
- (2603:10a6:203:91::12) To VE1PR08MB5630.eurprd08.prod.outlook.com
- (2603:10a6:800:1ae::7)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EDBB81000F20
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 09:24:00 +0100 (CET)
+Received: by mail-il1-x12c.google.com with SMTP id i1so1050238ils.5
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 00:24:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=7pmNfjqj+A/zUao8NlMxxYvsOTCoyElb96SDSxWCjpg=;
+ b=leuo4SFOHEVsr/J2wdNQREy+Kp5qOoO3URGILlmUJuJsB8pLpMhcL7IklXFC6j/VFu
+ YQ/stwm+/j3W3RSix4eV/7UnQyP+fasNdaZaOEY7RBmf4qNcKkaDF/clQfZVdYL3adi4
+ kEiPLkoJPDRq4XYF/8sZ+ZhREXtmnJYfT+9UOraoaVoLGtbTLXcR7uX3egmV+Dz5uIe+
+ Cz9xXu+3p83iQM632bmuf5DGMETRFZIA0fnRX7uOIZc8m9ZRAPBOAxqE/so04mjXvuTX
+ CaTWptmsVSYYYzwuUuh7sziFN/+J7vcc2DYDS6jJ7oWItcyOgXIpBCa2Rk/MG3X76ndv
+ dpGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=7pmNfjqj+A/zUao8NlMxxYvsOTCoyElb96SDSxWCjpg=;
+ b=SimEcJ5t9wmv7qCQqq2CmkpDcMG8HwyfBP1UazYqADXJyz6yvi/EWChWOIZl+E770N
+ 2lfSgo69rhsbbLOQaunj82rSNwjmSNi1iRUtNWA4jj7Ki9IlELmLxJ0WM4OgFbvsJsSX
+ JKIVHBRyM8rtV0QMOeNJvtrSqFo+93ngC8N1/IJUCK4PhLJHr7dFq04VPHUJjgyLASy3
+ bbnRT2rTCLk0cXP+C6yVaAjcXV1/Ic+DH7ply5OGTzZY6NvaLPBXQOd/uppE5c/8gMcx
+ l3Aa6zT7wlQ3DHwVrgZoJR39D3kvICMXm1Kjv0DoBv5Av8C0QJJcQ5uTaMNgQI6WkVS2
+ +HWw==
+X-Gm-Message-State: AOAM531ZF81cjOd4KZkdcPDA9gt4iUOqizfVrV6LRKsk50d+e0X4ruWU
+ 93eLrrd+S+lJCgl8Emz5UbJROPhoFIee3T5rt8hGNhCirS14KojL
+X-Google-Smtp-Source: ABdhPJxfzB36yV+wzYShKNRYjOSw7KhMPBaO0jFnsmlN9wGZIZysAsEXsotwt9hK7VuYbep0AVCGn5Z0x5P23p/Z9nw=
+X-Received: by 2002:a92:c243:: with SMTP id k3mr1466576ilo.37.1642753439473;
+ Fri, 21 Jan 2022 00:23:59 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9147c62d-e0ac-4219-12a2-08d9dcaa4a54
-X-MS-TrafficTypeDiagnostic: AM9PR08MB6753:EE_
-X-Microsoft-Antispam-PRVS: <AM9PR08MB6753D8A9942922AB147D8029F45B9@AM9PR08MB6753.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DBTq1D45PtH6TZk/OeNOs+oTO9gOOCzetWMf0fjOXa9JxveFkYnmy7Z+Cdlxl5mTFhHmPQzBnppoygWIR8th69aDMq2sCMx3wyypKDD0kep40dkSXXZtpZf6ETslJ+BBek6OmEYF2O/jhDXUi3k+nYk7MZaEnTHX3VQtXD6Rds2v695eZdj7gGXhNeosnluD2Y9+FjcX6wGN/pDoQBLSgQBpsH3tIsZPfVTDMkLd1Koy9TzSmSd8daHdhJi7LV4LALnWCQ5uDOhPRwsyh8qZW+pOREQr++GA4I1VUzd+x6e31F81DnG4iAgLj6K+Sd894RUuxjxhbVIqq9YznZclBkoBFhW/oQar/V+6sqsv9wbsmPgK6DnCRwRPACzn3bU5x+m4T11Rgbk76maGg0CoszHc5AelKH5YlCOidF8rRnuJqoVQg0sY/g62oQTUSddVCDjCwK35PhXw1wMst1x0mseC7hmtNbPvChWLFPJtdphsJGSamKYtJNBlTSb/qI889BATL9cQy2d0xWPIWH0pcxbUdxcW/dX3I6BZBU5Snv20vZ9thv5rmGQmG/UThlXKJ2j+KkyIi16yL9PxkkJnG61M9Pa6MgAeLAb0umHQFghYu7JFnX3Qcw+Gs6HEUWtycZYfuATuEzfYXgWGwKXiRwUr3msR9/FXdO1veDE0Q+3ypXFuo7smzFjsLnEHTlo7x0T7juHPjtPDJ65T9l4xx6g8VMECN3sD5wSPlA+g3jM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VE1PR08MB5630.eurprd08.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(54906003)(8676002)(4744005)(4326008)(8936002)(2616005)(44832011)(316002)(83380400001)(5660300002)(6666004)(2906002)(86362001)(31686004)(66476007)(66556008)(186003)(36756003)(66946007)(6506007)(26005)(6486002)(6512007)(508600001)(31696002)(6916009)(38100700002)(45980500001)(43740500002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzZJWmRxWnRYQm94QXdhZUpoZGY3ZDlzR05YZEpQbEg0RzB4SCtEc0JlTG5w?=
- =?utf-8?B?VnpNQWMwS0ErTlJOaWVJTlJWOTlBajNpSkpXTFJKZEwyTmhEbSs4c1VLVlkz?=
- =?utf-8?B?cjMyLytxeFhSNEMxYmtLcDFZdFRqV01SSVFjSEpPb3FtYllYQXh0UlRFQyt6?=
- =?utf-8?B?cTEya1FtcUxQV1F2cUFnWlpMc1ZPRHVQSzlCSisxMGpoN1NRUTVISDh6VTJE?=
- =?utf-8?B?OUZ3akthS3lWNE1ISVJmdjVPV3dCNXZzM1lkUGxOaGhxRDI5dTAwU0FiRGEx?=
- =?utf-8?B?VHFsMGZheVlpT0JEaFdGMzJjUkoxblhkeDNQVlJoVTFNYU14ZkVuSkJvN0JW?=
- =?utf-8?B?VGlpWWZFVVBnb0NGSCs4eFBnbHY1YTZsemVhTndteGo5NVUzVEYvREszQVZq?=
- =?utf-8?B?cGptTWdHOFRpVTFPb1dFYXY2dGhhclQwbkhiOGM5K3Z3VVROQTJKbTZkdkJ6?=
- =?utf-8?B?RktET2s2Q000REpudFM5NWptU2VWeEZLRHJCSzlnb1RXcWQ3czNrOHZuUTdm?=
- =?utf-8?B?UWwwRG1FdUpad0w5WnVIVUNMbERabUpveWJuMlNUY1J1c25NZURoMkNRQU43?=
- =?utf-8?B?QzJhTmFDdGVaZHhIOWRqU3l1cU9SYjgyaEFjYkM2VHd3dllNTVVoMDZIRzVu?=
- =?utf-8?B?MWQ2RDM2Wm1CYzNJakNrOFozRGNUdjRMVGxOWXo5OEZrc3I4dStZbldWbjFv?=
- =?utf-8?B?RWl0TTlXSnh4bU9nZHBxWmJYYzJZQXBRdzN0aTZQUzhkcmRBSVFTbWpHajZU?=
- =?utf-8?B?Uy9tRjZkcGFJZWllb3RHWUdJeGtoT0ZyaFEycHFKN2hoR1REUVpUV0lmeGtq?=
- =?utf-8?B?S0k2N2NxS2ppUXRONE9reGVzOEVlOC9XMXFxOE42Qy82bnJKU0YyZWNYditi?=
- =?utf-8?B?NVhqSjVhSkFEclVsbGZYTk1UeE9xUXUweUFOcGZsSlc2WGplaHg1K1VjVVFo?=
- =?utf-8?B?OER0TzJ1L2QyN0t5SUNTNmY0T3Nva0E1NGhVUFVKRGs0NElzOWxZdVUwZnBF?=
- =?utf-8?B?c2JiUmpGc3pwRHNFVysybytGNXJpK1JNZ1lvMm5MOFZ3cEp2OW44VUZRUXFs?=
- =?utf-8?B?dFZ0N2lxRDdBaEJMNm9lL2ZuUzlaSzM2RTQ0OXpDcUFOTFh1aE1ESDdXVHBZ?=
- =?utf-8?B?T3ljeU52VUcrZFFsblk4cjYxUkprQlJuWk1xdlExbUhyQWREdngyRGNON1oz?=
- =?utf-8?B?aDFrUE9tTVkzOWZ3aS9PckNzYlVVOTlXMlcyUkl6S0gyeVdQV3lXK2E3amNi?=
- =?utf-8?B?ZmMycmNzRVpvaDlhb2dtTi9mdlh4VnhPcEswUnhVN1M1NmRwenNvczd5WDRo?=
- =?utf-8?B?eEs3N2lwRkFOUkpKRnFsdEJRNWZvRTNkbi9Tdzg5UHBuR0ZUVGxFS21QQ1NN?=
- =?utf-8?B?bCtXWG9XOTR0cFJZRUtsaVNhUzVvSWU1cHFoaDQ2OEd2MFlzVVNWdWVqYXdJ?=
- =?utf-8?B?RnAvR294dGlxY011Uzlkd2xreUFhK1N6Q0xMRjdaYjRiMUZaOUllV1Z0RE5o?=
- =?utf-8?B?SnZvREIwci84eFVlaXJvYmVjd1MzTFZZb3B4UDZTL2U5LzB2QWFBVWhLb3N0?=
- =?utf-8?B?U1l4WnZTbnA4b3BnYjlYR2t4SkVmd3FjTzEzeFU3WXhKWWI1UUpGd1JpQWRY?=
- =?utf-8?B?WWxrVVBkS200Q2dXM1lvNjRmVzh1N05tZklKNXV6TEhpL2JaSmFRQnhOeTcx?=
- =?utf-8?B?MVFYRWR0R1o3S0hwUXIyVGt0TDE0bTd6aWJkbGpaMTFlZExiekNxai9UOUpk?=
- =?utf-8?B?Z2pvcDZuV1hVSGs3dERhbzZlRHZKaDQza3lJNktFeTZBa05kT1czTm9GV2gw?=
- =?utf-8?B?ZUVaYlFuSTB0NEVMai84Zko1dFF2d0xTaWdHTEtZQ2EwUXphcHRacVpYcnZs?=
- =?utf-8?B?bklrendhV1o3U1ZJd2ZoMGxpbGN6U1phcXBwcW82Sy9DRDg1a0Q0U1MrV3lH?=
- =?utf-8?B?enFyN1Fwak8rZjUvVWMvTVF5SnNKeXgyaTdNWGYyZnErQXFYZG5qUmFJbE5L?=
- =?utf-8?B?Qy9KVncyN0FacnBodFpvVHdzdHViMUkwYkZUQlJGMGxBWFU0a3RPNXRWWlZo?=
- =?utf-8?B?SGhqNHphL2VkQXd4NUtDSlg2Ky9BMVREcjFSZkpUSEw2NE9uTU1ZY2NDRk9O?=
- =?utf-8?B?b0F6S0tWSHJOYTlFVmxCaE9CdWxaUXJWa3BvSTAwQzhnMzlYRDNsWk5NTGxN?=
- =?utf-8?B?RUkxRlQ5ZzFrNXYzTU4wTk9EWHVob2lvN1pBWDdaa2tzak1XdGFMaUpoNlky?=
- =?utf-8?B?UnpQaTYyY2xlQm0rTlAyc0VvWGFRPT0=?=
-X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9147c62d-e0ac-4219-12a2-08d9dcaa4a54
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB5630.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2022 06:50:20.1710 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tJwWrH8zBIOvTODdJ4X9Xkm5TGPpbP0LIb71xX6GmYOKFWIrKrK3eiKAq/XhexwAYKTSywhyx49Fak0uqRXwIq84CoEYZbrqZmx647E07qU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR08MB6753
+From: Kautuk Consul <kautuk.consul.80@gmail.com>
+Date: Fri, 21 Jan 2022 13:53:50 +0530
+Message-ID: <CAKWYkK3a-Qp5bZNyL67JkTtzD=_55c0tk7eb69rsikYr+r=QqA@mail.gmail.com>
+To: ltp@lists.linux.it
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] rpc_lib.sh: fix portmapper detection in case of
- socket activation
+Subject: [LTP] msgstress03: "Fork failed (may be OK if under stress)"
+ problem observed on qemu.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,32 +68,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Nikita Yushchenko via ltp <ltp@lists.linux.it>
-Reply-To: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
-Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org, kernel@openvz.org,
- Steve Dickson <SteveD@redhat.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
->> Just reproduced manually:
-> 
->> [root@vz8 ~]# vzctl start 1000
->> Starting Container ...
->> ...
->> [root@vz8 ~]# vzctl enter 1000
->> entered into CT 1000
->> CT-1000 /# pidof rpcbind
->> CT-1000 /# rpcinfo > /dev/null 2>&1
->> CT-1000 /# pidof rpcbind
->> 678
->> CT-1000 /#
-> 
-> Thanks for info. I'm asking because if it's a setup bug it should not be hidden
-> by workaround but reported. I suppose normal Centos8 VM works.
+Hi All,
 
-I's say this is starting service on demand and this is exactly what socket activation is designed for.
+I am running RISCV kernel on qemu and on executing the msgstress03
+testcase I observe that it fails with the following failure
+log:
+msgstress03    0  TINFO  :  Cannot read session user limits from
+'/sys/fs/cgroup/user.slice/user-0.slice/pids.max'
+msgstress03    0  TINFO  :  Found limit of processes 10178 (from
+/sys/fs/cgroup/pids/user.slice/user-0.slice/pids.max)
+msgstress03    0  TINFO  :  Requested number of processes higher than
+limit (10000 > 9991), setting to 9991
+msgstress03    1  TFAIL  :  msgstress03.c:163:  Fork failed (may be OK
+if under stress)
+
+The kernel dmesg log shows the following log:
+[ 3731.980951] cgroup: fork rejected by pids controller in
+/user.slice/user-0.slice/session-c1.scope
+
+I put some logs into the kernel and confirmed that the cgroup limit of
+forks, i.e. 10178 is being exceeded by this msgstress03 testcase due
+to which it fails to fork() in a legitimate manner.
+On analyzing the msgstress03 testcase code I see that the test-case
+tends to assume that the "nprocs" number of forks are done
+and it is correctly restricted to the limit which is 9991. However,
+the total number of forks is much larger (i.e. 2*nprocs) as the nproc
+children do an additional fork within do_test().
+
+Due to this on slower machines (where the children do not execute fast
+enough and the parent doesn't do a wait syscall fast
+enough) this testcase can/will fail. The initial children may even
+reach exit(), but they will remain as defunct as the parent process
+wil not necessarily be able to execute the wait() syscall on all them
+fast enough to ensure that the pids become free for use.
+
+I made the following changes and the test-case passed:
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+index 3cb70ab18..75cfc109d 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+@@ -131,7 +131,7 @@ int main(int argc, char **argv)
+        /* Set up array of unique keys for use in allocating message
+         * queues
+         */
+-       for (i = 0; i < nprocs; i++) {
++       for (i = 0; i < nprocs/2; i++) {
+                ok = 1;
+                do {
+                        /* Get random key */
+@@ -157,7 +157,7 @@ int main(int argc, char **argv)
+         * of random length messages with specific values.
+         */
+
+-       for (i = 0; i < nprocs; i++) {
++       for (i = 0; i < nprocs/2; i++) {
+                fflush(stdout);
+                if ((pid = FORK_OR_VFORK()) < 0) {
+                        tst_brkm(TFAIL,
+@@ -191,11 +191,11 @@ int main(int argc, char **argv)
+                }
+        }
+        /* Make sure proper number of children exited */
+-       if (count != nprocs) {
++       if (count != nprocs/2) {
+                tst_brkm(TFAIL,
+                         NULL,
+                         "Wrong number of children exited, Saw %d, Expected %d",
+-                        count, nprocs);
++                        count, nprocs/2);
+        }
+
+The reason why other test-cases like msgstress04 dont fail is because
+the nprocs value is set with a different calculation.
+Specifically, I observe that the msgstress04 testcase uses only
+free_pids / 2 pids instead of the full free_pids number of processes.
+
+Can someone confirm my findings ? If needed I can also send out a
+patch with my above nprocs/2 changes if required.
+Or, if there is any better fix or opinion kindly reply back to us.
+
+Thanks and Regards.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
