@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FA47C433EF
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 10:35:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 876FEC433EF
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 10:37:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 714473C96E5
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 11:35:33 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 78F893C96C3
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 11:37:05 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 25D633C9424
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 11:35:24 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id D31BD3C9232
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 11:36:56 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AFA93601483
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 11:35:23 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5F5621000F2B
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 11:36:56 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C2A7E210E0;
- Fri, 21 Jan 2022 10:35:22 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BB4131F3C0;
+ Fri, 21 Jan 2022 10:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642761322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1642761415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NVKDbrRcMVEmp4+C5TNfzf9zevwd0V07MAOLr03jvFw=;
- b=wkX6++FSc/F4Pb6K+5U8xL/GUmrWq4SaTiFTzAKbAW45QcRqUI2aOI+3id+Vo1uDc4j6rq
- FlZqjiRt4m16pqRWoPnTza2FOpl93tQ8N/2y83nL8VmFOG/ukjKPf0quLI7qdJJrPmDKAo
- D1eV1Vyfhi7QF7F5KFID/9Dz/mcndDI=
+ bh=LZPFJJQOkIi914F875OZaYdW8SAPgLzPxwAFipazVnM=;
+ b=MyQkEpISbeTh/6nZgyd6yHz/Xy8Gw0LMagVIoHCgCRtSi2QHzuJ/9LFFZObzXVFYi2ivzB
+ c8vMBLPhFKmxLWTwH0XkyCSVGTTQ4V/zgkVr9T1h+UD8jTmeKG8GXUgK0ITPs70A4ePXei
+ EoTfUPbL8ccixv1hE7MuJa83sS705Sk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642761322;
+ s=susede2_ed25519; t=1642761415;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NVKDbrRcMVEmp4+C5TNfzf9zevwd0V07MAOLr03jvFw=;
- b=tdF/XjdDqLbtKe4bsK5s+LHdhNUTCAQIzIRn7FT+vipHSFbkSC7CrDe8Ms0iuEpN/4om44
- //WiHoRiDZ+bSwDw==
+ bh=LZPFJJQOkIi914F875OZaYdW8SAPgLzPxwAFipazVnM=;
+ b=gMmXBmEe9AB3hEw88oPigCuxZ7U8hnUCAw10oHvZCmMxu0uxZOfOgQ9cFTDNV6rFxbQ27f
+ gpfgy9k3wu2RVnAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0AB213C32;
- Fri, 21 Jan 2022 10:35:22 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95BFD13CFE;
+ Fri, 21 Jan 2022 10:36:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4I6sKWqM6mEAcgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 21 Jan 2022 10:35:22 +0000
-Date: Fri, 21 Jan 2022 11:37:07 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id BGgPIseM6mGrcgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 21 Jan 2022 10:36:55 +0000
+Date: Fri, 21 Jan 2022 11:38:39 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YeqM0+0T3lebbXKt@yuki>
-References: <20220121100604.1072-1-pvorel@suse.cz>
- <YeqIB+Y4rO2XK57i@pevik>
+Message-ID: <YeqNL0I/l8sVoRVH@yuki>
+References: <20220121103011.6266-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YeqIB+Y4rO2XK57i@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220121103011.6266-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] aiodio: Skip tests on tmpfs
+Subject: Re: [LTP] [PATCH 2/2] aiodio: Set timeout 30 min
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,22 +81,10 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > tmpfs does not support it.
-> Verifying with .all_filesystems, that only tmpfs is problematic
-> - tested on exfat, ntfs over FUSE, vfat (common linux filesystems obviously work)
-> 
-> That's why I avoided opening file with O_DIRECT in setup().
-> 
-> BTW I wonder what is the reason of duplicate entries in ltp-aiodio.part4?
-> i.e. dio_sparse, aiodio_append, dio_append, dio_truncate...
-> To create bigger load?
-> 
-> IMHO it'd make sense to run at least one test on .all_filesystems to check more
-> filesystems (dio_append seems to be quick), but I wouldn't done it when there
-> are duplicate entries.
+> Originally only ADSP075 failed (dio_sparse  -w 518192k -s 518192k -n 1000)
+> but just in case increase timeout for all newly rewritten tests.
 
-Historicall mess I guess. We will clean that up in the next development
-cycle.
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
