@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84814C4332F
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 09:26:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF769C433F5
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 09:28:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 58E503C96E5
-	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 10:26:24 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E12493C96CC
+	for <ltp@archiver.kernel.org>; Fri, 21 Jan 2022 10:28:47 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D5E113C9232
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 10:26:14 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id DFB0B3C9232
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 10:28:37 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1666B1A01134
- for <ltp@lists.linux.it>; Fri, 21 Jan 2022 10:26:13 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 73F07200D22
+ for <ltp@lists.linux.it>; Fri, 21 Jan 2022 10:28:37 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 610402195A;
- Fri, 21 Jan 2022 09:26:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B81501F45E;
+ Fri, 21 Jan 2022 09:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1642757173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1642757316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zJxQgiAus1NtGp2id7Oze+DKLA4PQewik6kvs1g0uF0=;
- b=iBofLoTUIhWwPkPuSgfFqFGZKU/4K+3A8GnzjYkdf3Coik1reZ7xRnq/MJTmCFGaDPPZzR
- SvTrSQVvnaO7SSpfbAuZxaWcgyumCYAq/mZAZJzlkYupVSXGbfKoivwN4Qqvb3Nhbf3F2j
- MV0AKBVK9ieCQx5GeoONmIPn0T57BoI=
+ bh=hCRyBaxEgYzaS4PsBMAdciBpyFacZXK3j+azjlpT8ME=;
+ b=3YLSHIJsL2NvSkrWikJT3XBwB7DioL0pSn0gjsTDXcw4ZNIrB+3uZCeTutWkBbGs69RUFy
+ 7tSNo1nVf4YjjEtamdfHKTJluB62G1CgsHdBgYecASJZmTQuSRkma+FXMiwIu697+8qI9U
+ Y4hkGYzCElNBZeDQ+h89HNl3uJqK7i4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1642757173;
+ s=susede2_ed25519; t=1642757316;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zJxQgiAus1NtGp2id7Oze+DKLA4PQewik6kvs1g0uF0=;
- b=F1OyRkz3dmixKO8jc+YopfmZgL69R+odK1BgONfSAPHHqpM/PrhPtXBEhELoK405cchZmS
- 4AsFas8Pqj21MAAQ==
+ bh=hCRyBaxEgYzaS4PsBMAdciBpyFacZXK3j+azjlpT8ME=;
+ b=8IaBI1gxhuiHhYvw8ILmf6V5wwPzjF2AJSgRpNvfzC8S2MukZVwb85bauFdQtMylDtirp0
+ rg+xGnNgFVKYOXBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40A4E13C1A;
- Fri, 21 Jan 2022 09:26:13 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A9B7D13C1A;
+ Fri, 21 Jan 2022 09:28:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Fef+DjV86mE4UQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 21 Jan 2022 09:26:13 +0000
-Date: Fri, 21 Jan 2022 10:27:58 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id SHFwKMR86mFfUgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 21 Jan 2022 09:28:36 +0000
+Date: Fri, 21 Jan 2022 10:30:21 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Yep8ntzBsWApxU8c@yuki>
+Message-ID: <Yep9LbxzJ5s3S8Gn@yuki>
 References: <20220120150421.26639-1-andrea.cervesato@suse.de>
  <YemAQcXuJMGLh/kc@yuki> <Yep1Wm84sKzl3iB6@pevik>
- <Yep6u4N+phjB32Xd@pevik>
+ <Yep6u4N+phjB32Xd@pevik> <Yep8ntzBsWApxU8c@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yep6u4N+phjB32Xd@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <Yep8ntzBsWApxU8c@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1] Reduce needed memory by the dio_read test
 X-BeenThere: ltp@lists.linux.it
@@ -83,22 +84,12 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> No, this is wrong. Also the issue can be just a timeout.
-> ADSP074 (uses -n 512) runs framework ~3.5 min, ADSP075 (uses -n 1000) gets killed
-> by LTP timeout. Do we want to increase tst_test.timeout for test?
-> 
-> Am I correct that we cannot increase based on particular input (for particular
-> getopt value) as we cannot later update results.timeout during run?
+> Also I do plan to fix this properly by V2 of the runtime patchset once
+> the release is finished, so I would go for minimal fix just before the
+> release which would be setting tst_test.timeout to sufficiently large
+> value.
 
-There actually is tst_set_timeout() however in this case I wouldn't
-bother because the test runtime largerly depends on the actuall speed of
-the disk it is writing to and other parameters of the test such as block
-size and the actual formula would be quite complex.
-
-Also I do plan to fix this properly by V2 of the runtime patchset once
-the release is finished, so I would go for minimal fix just before the
-release which would be setting tst_test.timeout to sufficiently large
-value.
+And I guess that we should do that for all the rewritten aio tests.
 
 -- 
 Cyril Hrubis
