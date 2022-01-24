@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79475C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 14:19:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B70C433EF
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 14:21:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EF9193C909A
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:19:18 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 64CD03C8D84
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:21:40 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 79ED43C7E58
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:19:08 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 263BD3C7E58
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:21:29 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A67D96003CC
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:19:07 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DB77F2009AB
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:21:28 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B881C21993;
- Mon, 24 Jan 2022 14:19:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 11F3C21993;
+ Mon, 24 Jan 2022 14:21:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643033946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1643034088;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0fPr+iZCBIUsxkONSxPFenhfpJvWyCPFfJ/Annpe/Lo=;
- b=B/WwMoWluLy2u/hxP5mP03wC3ff6/HS0mGRcndXlba/A3358Ib5wNb6XaczH2R0h6BMhyY
- 5K0G2rkZXJ/b8cs7nyckkpCa9yASoPe3cEnXtxAO26wLkcI8a9nWemoG7tpGxv+3hdAyit
- QVuZyem+JAhgYwbh4VSk9nA2takH3F4=
+ bh=r7ynQBtOKE9H4uDYKAzEUUHm9aWU7Kmq06htmQAwIhM=;
+ b=zmDL745O4sE26TSFbvzFOrPAe+8r9g5rgE31ix7gTS0NZSOYHmPn9Kdf6P12IdqRZf0z0h
+ 5rXQvVt6Yxc55o+Vfz9ycsOHptvssOj3QEnmi/QqqCJkt6LMJhNnG5cFt0DlkTkZ6eS2md
+ BIb8ewgFRQN4+rquWRXomKuL3FvjNRA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643033946;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1643034088;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0fPr+iZCBIUsxkONSxPFenhfpJvWyCPFfJ/Annpe/Lo=;
- b=drzZTjMTBWF3DhT8x318xNeZIhFyzJ8M/65hYHunpRvgEMbo6jgkTygVki3uEzLn7/wEzB
- Kp8aVoELJ9RcbmAw==
+ bh=r7ynQBtOKE9H4uDYKAzEUUHm9aWU7Kmq06htmQAwIhM=;
+ b=dsU2LxwOnngNO7fIEMTfiTQnYwoq3bGfXxQ57kiRJgqzfmQRgnDAIih2EW2RL7Y/yD4uU5
+ 0OjIzAU9WkbL4QBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A173D13BF6;
- Mon, 24 Jan 2022 14:19:06 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E321513BA5;
+ Mon, 24 Jan 2022 14:21:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id sIpvJlq17mENcQAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Mon, 24 Jan 2022 14:19:06 +0000
-Message-ID: <3611b369-89b8-c9bc-92b7-ea69f91fea13@suse.cz>
-Date: Mon, 24 Jan 2022 15:19:06 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 46JSNee17mGEcgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 14:21:27 +0000
+Date: Mon, 24 Jan 2022 15:21:26 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Ye615gN0Yv1/WskD@pevik>
+References: <20211220201814.31596-1-pvorel@suse.cz>
+ <YcH7m45TKEWaDrG3@yuki>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20220119195519.3117-1-pvorel@suse.cz>
- <20220119195519.3117-2-pvorel@suse.cz>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20220119195519.3117-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YcH7m45TKEWaDrG3@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/2] tst_net.sh: Fix for disabled IPv6
+Subject: Re: [LTP] [PATCH 1/1] sched_get_priority_max01: Add more policies
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,70 +77,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Cyril,
 
-On 19. 01. 22 20:55, Petr Vorel wrote:
-> Tests failed in tst_init_iface even IPv4 only test was run.
-> Allow to init interfaces at least for IPv4.
-> 
-> Tests which use TST_IPV6=6 needs to be fixed (unless they use
-> just tst_ipaddr_un()).
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/lib/tst_net.sh | 66 +++++++++++++++++++++++++++++++++-------
->  1 file changed, 55 insertions(+), 11 deletions(-)
-> 
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index 4dc0fca926..df16e12a26 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -24,7 +24,9 @@ TST_IPV6_FLAG=${TST_IPV6_FLAG:-}
->  tst_net_parse_args()
->  {
->  	case $1 in
-> -	6) TST_IPV6=6 TST_IPVER=6 TST_IPV6_FLAG="-6";;
-> +	6)  tst_net_require_ipv6
-> +		TST_IPV6=6 TST_IPVER=6 TST_IPV6_FLAG="-6"
-> +		;;
->  	*) [ "$TST_PARSE_ARGS_CALLER" ] && $TST_PARSE_ARGS_CALLER "$1" "$2";;
->  	esac
->  }
-> @@ -100,6 +102,30 @@ tst_brk_()
->  	[ -z "$TST_USE_LEGACY_API" ] && tst_brk $@ || tst_brkm $@
->  }
->  
-> +tst_net_detect_ipv6()
-> +{
-> +	local type="${1:-lhost}"
-> +	local cmd='[ -f /proc/net/if_inet6 ]'
-> +
-> +	if [ "$type" = "lhost" ]; then
-> +		$cmd
-> +		return $?
-> +	fi
-> +
-> +	tst_rhost_run -c "$cmd"
-> +	return $?
-> +}
+> Hi!
+> > diff --git a/testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c b/testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
+> > index a1c54efd0e..0d01317033 100644
+> > --- a/testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
+> > +++ b/testcases/kernel/syscalls/sched_get_priority_max/sched_get_priority_max01.c
+> > @@ -13,6 +13,8 @@
+> >   * compare them with expected value.
+> >   */
 
-tst_net_detect_ipv6() should probably run each check only once and cache
-the result. The function is called multiple times and tst_rhost_run()
-could be quite slow if the remote side is on a different physical machine.
+> > +#define _GNU_SOURCE
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> I supposed that we need this for SCHED_DEADLINE right? What about
+> alternative libc implementations, does they define SCHED_DEADLINE as
+> well? Do we need a fallback?
+
+Sorry for the delay (I did write a reply, but probably forget to sent).
+musl and glibc support all of them, but uclibc-ng doesn't have SCHED_DEADLINE.
+(and SCHED_RESET_ON_FORK). I'll send v2 with SCHED_DEADLINE fallback.
+
+I guess SCHED_RESET_ON_FORK would deserve it's own test (man sched(7):
+when set, children created by fork(2) do not inherit privileged scheduling
+policies).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
