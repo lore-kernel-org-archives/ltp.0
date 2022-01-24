@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73E12C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 17:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB48FC433EF
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 17:19:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B76EC3C93BA
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 18:18:49 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 913783C9396
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 18:19:27 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F4B33C6F6F
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 18:18:40 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 4E4323C6F6F
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 18:19:18 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 79424100044C
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 18:18:38 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CB94A1000457
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 18:19:17 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6183D1F380;
- Mon, 24 Jan 2022 17:18:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F2D5B1F382;
+ Mon, 24 Jan 2022 17:19:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643044718;
+ t=1643044756;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hb8TecJYNCjMEBrGknvQsJHM82ncykmciR7r7/sNRiE=;
- b=BCL7ABFoy9VwDaqhDgXFQ5DBAKzFNQWioFlsl9LktdutJnvDHW8LZ2wmfCx/MBPSR4Do6c
- dGtlvVG58/lt+NSnWXwQXpnrr8MQVSzGyvAdXme0cZSQGuGeMBIDBQ7QIEamYEgilGCCdb
- 6PPfoWl57+hKQNbcGI+zrH/D9JNW/4c=
+ bh=fw534h5AHsj3wDozGBK9UcwZuDb1twr4dHdu3+LZ0+M=;
+ b=Bvzb+IHHjyDLkF3ZjCk43UX2Soqu80AxB88Zcw/aSuRjd39C+7owX7ZdD3CM0yRdpq05u+
+ kp7iILtgG1Rw6N+GKB63j575a8kYALtVPjbfK12rV9Pzyx9EsXSi6+lc8bKIACvPSh06Qa
+ ocjY0TK/4bRwwP0tMKmtu8IUIOVbbk0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643044718;
+ s=susede2_ed25519; t=1643044757;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hb8TecJYNCjMEBrGknvQsJHM82ncykmciR7r7/sNRiE=;
- b=vzZLk2fCv+9HL/gTOz648ZhBeDSHZLAIdgaSwob2HLsp9PY2tuqWcXl3zDZkGT+RMkXD2C
- ax9ffyWdbBy80gAA==
+ bh=fw534h5AHsj3wDozGBK9UcwZuDb1twr4dHdu3+LZ0+M=;
+ b=jzmymY2OxCA4nBO0U8ApjCdeuqXnVbfPFuAxgX1uKYNiz1J7v7cBMh1uH3cBiJGdrGrbws
+ qeZ8Tg/Ukm53i5Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A26213C41;
- Mon, 24 Jan 2022 17:18:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D17DB13C41;
+ Mon, 24 Jan 2022 17:19:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RZLzEG7f7mGaWwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 17:18:38 +0000
-Date: Mon, 24 Jan 2022 18:18:36 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id eqgMMpTf7mHlWwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 17:19:16 +0000
+Date: Mon, 24 Jan 2022 18:19:15 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Ye7fbKjqzR0Vf3J+@pevik>
-References: <20211208082625.26324-1-pvorel@suse.cz>
- <Ye7CwmegfyHXgN2N@yuki>
+Message-ID: <Ye7fk1XvKjxYDC3y@pevik>
+References: <20220114194444.16949-1-pvorel@suse.cz>
+ <20220114194444.16949-3-pvorel@suse.cz> <Ye6/g0InSIT4J3kV@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Ye7CwmegfyHXgN2N@yuki>
+In-Reply-To: <Ye6/g0InSIT4J3kV@yuki>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] m4: Fix warnings
+Subject: Re: [LTP] [PATCH 2/2] doc/user-guide: Remove "2. Colorized output"
+ section
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,59 +87,13 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-thx for looking into this.
+> > -| 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
+> > -                          'n' or '0': never colorize.
+> > +| 'LTP_COLORIZE_OUTPUT' | By default LTP colorizes it's output unless using
+> > +                          pipe or redirect to file.  Force colorized output behaviour:
 
-> Hi!
-> > diff --git a/m4/ltp-eventfd.m4 b/m4/ltp-eventfd.m4
-> > index 5d729a33d..580df00a3 100644
-> > --- a/m4/ltp-eventfd.m4
-> > +++ b/m4/ltp-eventfd.m4
-> > @@ -12,12 +12,10 @@ AC_DEFUN([LTP_CHECK_SYSCALL_EVENTFD], [
-> >  		AC_SUBST(AIO_LIBS, "-laio")
-
-> >  		AC_MSG_CHECKING([io_set_eventfd is defined in aio library or aio header])
-> > -		AC_TRY_LINK([#include <stdio.h>
-> > +		AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-> >                               #include <libaio.h>
-> > -		            ],
-> > -		            [io_set_eventfd(NULL, 0); return 0;],
-> > +		            ]], [[io_set_eventfd(NULL, 0); return 0;]])],
-> >  		            [AC_DEFINE(HAVE_IO_SET_EVENTFD, 1, [Define to 1 if you have `io_set_eventfd' function.])
-> > -						AC_MSG_RESULT(yes)],
-> > -		            [AC_MSG_RESULT(no)])
-> > +						AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
-
-> Shouldn't we convert this bit into AC_CHECK_FUNCS() (in a separte patch)?
-Ah, thx for catching this.
-
-> > +AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>
-> > +		#include <linux/perf_event.h>]], [[
-> >  			struct perf_event_attr pe;
-> > -		],
-> > -		AC_DEFINE(HAVE_PERF_EVENT_ATTR) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
-> > +		]])],[AC_DEFINE(HAVE_PERF_EVENT_ATTR) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
-
-> And this one with AC_CHECK_TYPES()?
-+1
-
-> > -AC_TRY_LINK([#define _GNU_SOURCE
-> > -             #include <math.h>],
-> > -            [
-> > +AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
-> > +             #include <math.h>]], [[
-> >               volatile float val;
-> >               exp10(val);
-> > -            ],
-> > -             AC_DEFINE(HAVE_EXP10) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
-> > +            ]])],[AC_DEFINE(HAVE_EXP10) AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
-> >  LIBS="$backup_ldlibs"
-> >  ])
-
-> Similarily here AC_CHECK_FUNCS()?
-+1
-
-I'll recheck all of AC_LINK_IFELSE, AC_COMPILE_IFELSE before posting next
-version.
+> Slightly better: "unless it's redirected to a pipe or file"
++1, thanks!
 
 Kind regards,
 Petr
