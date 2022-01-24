@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEA5BC433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 07:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF0F1C433EF
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 08:52:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55BCE3C84C1
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 08:55:24 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 50C8A3C7E58
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 09:52:26 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AEF63C6FEE
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 08:55:11 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6DBAF3C65E6
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 09:52:14 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E0D1D600640
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 08:55:10 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 707A9200916
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 09:52:12 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1643010909;
+ s=mimecast20190719; t=1643014331;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O5sBodCLQ9zp29Bt92NCfpz271fD4pb+V60JMUee0XQ=;
- b=MHmyfqLer7kWOutYxR7RIj8bfne7S/Ad4HNu63HCZv2oIb3jDA8F/WTyN1YSqoqsIBksX2
- aZDB6ZgARFtQs/wOJQRsT6KoBDpjCC8vLKymJk/efjed4X59MXW4oqobH0YOelWxRTOeXV
- GQfsx9Tu8uG8rKj2c9QjLW7PP7TQf7I=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=e4/DYyWeP9YtHvtfmjsvi6MS5NvfI+yJ4A9JctyAU0g=;
+ b=SVUS4Vj1BsSLY1jAoleDkOWtCQlUAmTaQQieNHONkt7I6yVERMoSgNDcrMIKY787d/YQ90
+ que0DnozFGPeHRuWX8yUsnnWa+4Ne+AcFVlhuMMrE7MLrF7p/iIdadXZQTI8gjcfPJ7+Xi
+ 0bnfsVyGN3k9UFQXrbuVGK4qA7LzL84=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-437-47UvJ7QJOSmOIdtuY2H4iQ-1; Mon, 24 Jan 2022 02:55:06 -0500
-X-MC-Unique: 47UvJ7QJOSmOIdtuY2H4iQ-1
-Received: by mail-yb1-f199.google.com with SMTP id
- v70-20020a25c549000000b006130de5790aso33260375ybe.4
- for <ltp@lists.linux.it>; Sun, 23 Jan 2022 23:55:06 -0800 (PST)
+ us-mta-150-mdJ9gFQFORyL4dVowjYFJg-1; Mon, 24 Jan 2022 03:52:07 -0500
+X-MC-Unique: mdJ9gFQFORyL4dVowjYFJg-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ d65-20020a256844000000b00614359972a6so24561848ybc.16
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 00:52:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=O5sBodCLQ9zp29Bt92NCfpz271fD4pb+V60JMUee0XQ=;
- b=18OGfY24zkx2Ynccq2/3DAobLBw2YwqG8pm7INT22vwXBGwtsqBdYHdEDVMdUWs7YE
- pLx5VhkhCcysK2PnML0TjGXwIKa7aXu9/amDSst49nfr4qZ5FlA+oduEyPYWwF90G762
- fP0W9t/tTTN+iApNibPgVTb5c93Vjm2tPmpCZVvL3qdW/JYfZbYRBr1DEmpPNwTAsmcP
- BWIkcYch2V6u3AusQdXU/OITI3USh3g0kOWhMtC7D52PdSKYfmIJl/35VHGLb6eXEbvw
- qhERBAmfbrmuTtw6UWw0S0J7VZ77o8HbTaBqqiGaiZB/rJWVHcMjFC+nx+baCPMEjyHO
- QFxg==
-X-Gm-Message-State: AOAM531eK/7hIsNvQEfpFjTNYmHj+BHb1C3FTBiVd5FI2+ZJ4znum6Y6
- o1HzoRXYjgi7UreyHM1rqTfZqk2MoIQ5YHFT2G258tK+ZT22Yvs5iriHQoi493qO9SYj5l7DbWD
- CasyNdWFlpDqsOop8nTGQpiWbdug=
-X-Received: by 2002:a25:15c3:: with SMTP id 186mr22700230ybv.71.1643010905902; 
- Sun, 23 Jan 2022 23:55:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxZV46sfR3eZrqO28ZzAiwnLKrEKcb1nrrxYvGIdpsldwJdUV8CRUMqhKaQpqH988jbIUPxIeuE2ga5ByAv6IE=
-X-Received: by 2002:a25:15c3:: with SMTP id 186mr22700220ybv.71.1643010905677; 
- Sun, 23 Jan 2022 23:55:05 -0800 (PST)
+ bh=e4/DYyWeP9YtHvtfmjsvi6MS5NvfI+yJ4A9JctyAU0g=;
+ b=4Z4iJk/KXxxSy6KjspiIgLBg8g8gQFmgFRTmcG6a/ukcrvSb2qb+Nb4eLL9odVzMiX
+ DPsfgClmti0LQRD2d0ZmjNIThkZIT8/sH3zS3uHkWqgbBkqTjCMh/MJKTMLMk0yg3aQ4
+ 5uFbsfiC52qaGL0DAvVZvRo0Ic8oSfC8bxWrcC82ECSTjSXz3yprSQO9jTySBcWXb9gP
+ mReZbjReDOzHo4tmfkvl6ySnD064GLjZj4lzcLwTsGWCwA1zpMeiRTFIBuxCkuGGkD3s
+ nLw4kyt2uV/UCa0xG1MLk8iH95H0VvX0dRUCsAprnRgFWOL5N76yO+vZf9IjEg+2+jsv
+ cUfQ==
+X-Gm-Message-State: AOAM532Z3cZTIZvDQjReqVsyeBnb3DXmMYkNZIiyGRbijsXxsi7WJiXf
+ VdBbDoWWbDzxmZ3eaNIh8roI99NhQiz6P0HaEL1JO2Y+Wkrwn2kkaYFVJBOkc6G8K1tWCRGRWog
+ 5WEA7JifP/Km6qn0NMNBXFsF7cCI=
+X-Received: by 2002:a25:4cc5:: with SMTP id
+ z188mr21719949yba.248.1643014326855; 
+ Mon, 24 Jan 2022 00:52:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyuHwAl7Q4uRVxpgNdM40RmWa4uSAMRH4x9b9SZJA/9Qw95tMZdjV30LoIG7GKXylxperbTmnYFvPllbd7d9UQ=
+X-Received: by 2002:a25:4cc5:: with SMTP id
+ z188mr21719918yba.248.1643014326302; 
+ Mon, 24 Jan 2022 00:52:06 -0800 (PST)
 MIME-Version: 1.0
 References: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
- <631e84014f8c9ad23cc634f6de8770998833286a.1642601554.git.luke.nowakowskikrijger@canonical.com>
-In-Reply-To: <631e84014f8c9ad23cc634f6de8770998833286a.1642601554.git.luke.nowakowskikrijger@canonical.com>
+ <9ba0c0fafeb4fd18de0df87b700ec2d9a111fc1a.1642601554.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <9ba0c0fafeb4fd18de0df87b700ec2d9a111fc1a.1642601554.git.luke.nowakowskikrijger@canonical.com>
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 24 Jan 2022 15:54:52 +0800
-Message-ID: <CAEemH2eUUfGLFqxhihdX_pncuHP0bkvHJJxPbVUSJOXwALcsyg@mail.gmail.com>
+Date: Mon, 24 Jan 2022 16:51:52 +0800
+Message-ID: <CAEemH2dsE4TLjOBrgWjhFfh5ng+xJ-PPGgokpBkrjmLoH9FZNg@mail.gmail.com>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 07/16] testcases/lib: Implement tst_cgctl binary
+Subject: Re: [LTP] [PATCH 09/16] controllers: Update cgroup_fj_* to use
+ newer cgroup lib and test lib
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,256 +88,783 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0645449545=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0645449545==
-Content-Type: multipart/alternative; boundary="000000000000653b0105d64f49f9"
+On Wed, Jan 19, 2022 at 10:44 PM Luke Nowakowski-Krijger
+<luke.nowakowskikrijger@canonical.com> wrote:
+>
+> Update the cgroup_fj_* tests to use the newer test lib and to use the
+> updated version of the cgroup lib which handles mounting and unmounting
+> for both v1 and v2 controllers.
+>
+> The tests were modified to accomodate testing the v2 controller
 
---000000000000653b0105d64f49f9
-Content-Type: text/plain; charset="UTF-8"
+accommodate ^
 
-On Wed, Jan 19, 2022 at 10:44 PM Luke Nowakowski-Krijger <
-luke.nowakowskikrijger@canonical.com> wrote:
+> interfaces where it still made sense, and in other places tests were
+> skipped as they were testing using specific parts of the v1 interface
+> that doesen't exist on v2 controllers.
+
+doesn't ^
+
 >
-> Implement a binary utility that creates an interface to make calls to
-> the cgroup C API.
+> Also updated the licensing info at the beginning of the file with SPDX
+> license identifier.
 >
-> This will effectively allow shell scripts to make calls to the cgroup C
-> api.
->
-> Signed-off-by: Luke Nowakowski-Krijger <
-luke.nowakowskikrijger@canonical.com>
+> Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 > ---
->  testcases/lib/Makefile    |  2 +-
->  testcases/lib/tst_cgctl.c | 69 +++++++++++++++++++++++++++++++++++++++
->  2 files changed, 70 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/lib/tst_cgctl.c
+>  .../controllers/cgroup_fj/cgroup_fj_common.sh | 105 ++++-------
+>  .../cgroup_fj/cgroup_fj_function.sh           | 169 ++++++++++--------
+>  .../controllers/cgroup_fj/cgroup_fj_proc.c    |  24 +--
+>  .../controllers/cgroup_fj/cgroup_fj_stress.sh | 168 ++++++++---------
+>  4 files changed, 215 insertions(+), 251 deletions(-)
 >
-> diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-> index f2de0c832..f4f8c8524 100644
-> --- a/testcases/lib/Makefile
-> +++ b/testcases/lib/Makefile
-> @@ -12,6 +12,6 @@ MAKE_TARGETS          := tst_sleep tst_random
-tst_checkpoint tst_rod tst_kvcmp\
->                            tst_device tst_net_iface_prefix
-tst_net_ip_prefix tst_net_vars\
->                            tst_getconf tst_supported_fs tst_check_drivers
-tst_get_unused_port\
->                            tst_get_median tst_hexdump tst_get_free_pids
-tst_timeout_kill\
-> -                          tst_check_kconfigs
-> +                          tst_check_kconfigs tst_cgctl
+> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> index 53ab637e8..9017a3cab 100755
+> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> @@ -1,33 +1,19 @@
+>  #!/bin/sh
+> -
+> -################################################################################
+> -##                                                                            ##
+> -## Copyright (c) 2009 FUJITSU LIMITED                                         ##
+> -##  Author: Shi Weihua <shiwh@cn.fujitsu.com>                                 ##
+> -## Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>                          ##
+> -## Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>                     ##
+> -##                                                                            ##
+> -## This program is free software;  you can redistribute it and#or modify      ##
+> -## it under the terms of the GNU General Public License as published by       ##
+> -## the Free Software Foundation; either version 2 of the License, or          ##
+> -## (at your option) any later version.                                        ##
+> -##                                                                            ##
+> -## This program is distributed in the hope that it will be useful, but        ##
+> -## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> -## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> -## for more details.                                                          ##
+> -##                                                                            ##
+> -## You should have received a copy of the GNU General Public License          ##
+> -## along with this program;  if not, write to the Free Software Foundation,   ##
+> -## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+> -##                                                                            ##
+> -################################################################################
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2009 FUJITSU LIMITED
+> +# Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> +# Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
+> +# Author: Shi Weihua <shiwh@cn.fujitsu.com>
 >
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/lib/tst_cgctl.c b/testcases/lib/tst_cgctl.c
-> new file mode 100644
-> index 000000000..a6cf88f41
-> --- /dev/null
-> +++ b/testcases/lib/tst_cgctl.c
-> @@ -0,0 +1,69 @@
-
-We need to add SPDX-License-Identifier and copyright for this file.
-
-And better to use Tabs (8 characters) instead of 4 spaces for the code
-indentation:).
-See:
-https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
-
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <stdlib.h>
-> +#include <stdint.h>
-> +#include <unistd.h>
-> +#include "tst_cgroup.h"
+>  for arg; do
+>      TCID="${TCID}_$arg"
+>  done
+>
+> -. test.sh
+> +TST_NEEDS_CMDS="rmdir killall"
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_TMPDIR=1
 > +
-> +static int cgctl_require(const char *ctrl, int test_pid)
+> +. cgroup_lib.sh
+>
+>  exist_subsystem()
+
+This function is redundant since we have moved the
+existence check into cgroup_require(), isn't it?
+
+>  {
+> @@ -46,13 +32,13 @@ attach_and_check()
+>      local task
+>      shift
+>
+> -    tst_resm TINFO "Attaching task $pid to $path"
+> +    tst_res TINFO "Attaching task $pid to $path"
+>
+> -    ROD echo "$pid" \> "$path/tasks"
+> +    ROD echo "$pid" \> "$path/$task_list"
+>
+> -    for task in $(cat "$path/tasks"); do
+> +    for task in $(cat "$path/$task_list"); do
+>          if [ "$task" -ne "$pid" ]; then
+> -            tst_resm TINFO "Unexpected pid $task in $path/tasks, expected $pid"
+> +            tst_res TINFO "Unexpected pid $task in $path/$task_list, expected $pid"
+>              return 1
+>          fi
+>      done
+> @@ -64,11 +50,13 @@ create_subgroup()
+>  {
+>      path="$1"
+>
+> -    ROD mkdir "$path"
+> +    [ ! -d "$path" ] && ROD mkdir "$path"
+>
+>      # cpuset.cpus and cpuset.mems must be initialized with suitable value
+> -    # before any pids are attached
+> -    if [ "$subsystem" = "cpuset" ]; then
+> +    # before any pids are attached.
+> +    # Only needs to be done for cgroup v1 as sets are inherited from parents
+> +    # by default in cgroup v2.
+> +    if [ "$cgroup_v" = "V1" ] && [ "$subsystem" = "cpuset" ]; then
+>          if [ -e "$mount_point/cpus" ]; then
+>              ROD cat "$mount_point/cpus" \> "$path/cpus"
+>              ROD cat "$mount_point/mems" \> "$path/mems"
+> @@ -79,54 +67,25 @@ create_subgroup()
+>      fi
+>  }
+>
+> -
+> -setup()
+> +common_setup()
+>  {
+> -    tst_require_root
+> -    tst_require_cmds killall
+> -
+> -    if [ ! -f /proc/cgroups ]; then
+> -        tst_brkm TCONF "Kernel does not support for control groups"
+> -    fi
+> -
+> -    exist_subsystem "$subsystem"
+> -
+> -    tst_tmpdir
+> -    TST_CLEANUP=cleanup
+> -
+> -    mount_point=`grep -w $subsystem /proc/mounts | grep -w "cgroup" | \
+> -       cut -f 2 | cut -d " " -f2`
+> -
+> -    if [ -z "$mount_point" ]; then
+> -        try_umount=1
+> -        mount_point="/dev/cgroup"
+> -       tst_resm TINFO "Subsystem $subsystem is not mounted, mounting it at $mount_point"
+> -        ROD mkdir $mount_point
+> -        ROD mount -t cgroup -o "$subsystem" "ltp_cgroup" "$mount_point"
+> -    else
+> -       tst_resm TINFO "Subsystem $subsystem is mounted at $mount_point"
+> -    fi
+> +    cgroup_require "$subsystem"
+
+> +    mount_point=$(cgroup_get_mountpoint "$subsystem")
+> +    start_path=$(cgroup_get_test_path "$subsystem")
+> +    cgroup_v=$(cgroup_get_version "$subsystem")
+> +    task_list=$(cgroup_get_task_list "$subsystem")
+
+Maybe declare these variables at the top of this file, because
+we hope to export and use them globally.
+
+> +
+> +    [ "$cgroup_v" = "V2" ] && ROD echo "+$subsystem" \> "$start_path/cgroup.subtree_control"
+
+Can we just do this in tst_cgctl.c automatically if it requires the
+subsystem on V2.
+(or at least move it to cgroup_lib.sh)
+Then people don't need to take care of this additionally.
+
+> +    tst_res TINFO "test starts with cgroup $cgroup_v"
+>  }
+>
+> -cleanup()
+> +common_cleanup()
+>  {
+> -    tst_rmdir
+> -
+>      killall -9 cgroup_fj_proc >/dev/null 2>&1
+>
+> -    tst_resm TINFO "Removing all ltp subgroups..."
+> -
+> -    find "$mount_point/ltp/" -depth -type d -exec rmdir '{}' \;
+> +    tst_res TINFO "Removing all ltp subgroups..."
+>
+> -    if [ -z "$try_umount" ]; then
+> -       return
+> -    fi
+> -
+> -    if grep -q "$mount_point" /proc/mounts; then
+> -        EXPECT_PASS umount "$mount_point"
+> -    fi
+> +    [ -d "$start_path" ] && find "$start_path" -depth -type d -exec rmdir '{}' \;
+>
+> -    if [ -e "$mount_point" ]; then
+> -        EXPECT_PASS rmdir "$mount_point"
+> -    fi
+> +    cgroup_cleanup
+>  }
+> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+> index fc3ad1b63..07373dcfe 100755
+> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+> @@ -1,30 +1,16 @@
+>  #!/bin/sh
+> -
+> -################################################################################
+> -##                                                                            ##
+> -## Copyright (c) 2009 FUJITSU LIMITED                                         ##
+> -##  Author: Shi Weihua <shiwh@cn.fujitsu.com>                                 ##
+> -## Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>                          ##
+> -## Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>                     ##
+> -##                                                                            ##
+> -## This program is free software;  you can redistribute it and#or modify      ##
+> -## it under the terms of the GNU General Public License as published by       ##
+> -## the Free Software Foundation; either version 2 of the License, or          ##
+> -## (at your option) any later version.                                        ##
+> -##                                                                            ##
+> -## This program is distributed in the hope that it will be useful, but        ##
+> -## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> -## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> -## for more details.                                                          ##
+> -##                                                                            ##
+> -## You should have received a copy of the GNU General Public License          ##
+> -## along with this program;  if not, write to the Free Software Foundation,   ##
+> -## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+> -##                                                                            ##
+> -################################################################################
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2009 FUJITSU LIMITED
+> +# Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> +# Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
+> +# Author: Shi Weihua <shiwh@cn.fujitsu.com>
+>
+>  TCID="cgroup_fj_function2"
+> -TST_TOTAL=7
+> +TST_TESTFUNC=test
+> +TST_SETUP=setup
+> +TST_CLEANUP=cleanup
+> +TST_CNT=9
+> +TST_POS_ARGS=1
+>
+>  . cgroup_fj_common.sh
+>
+> @@ -36,7 +22,7 @@ usage_and_exit()
+>      echo "  ./cgroup_fj_function2.sh subsystem"
+>      echo "example: ./cgroup_fj_function2.sh cpuset"
+>
+> -    tst_brkm TBROK "$1"
+> +    tst_brk TBROK "$1"
+>  }
+>
+>  if [ "$#" -ne "1" ]; then
+> @@ -46,49 +32,67 @@ fi
+>  # Move a task from group to group
+>  test1()
+>  {
+> +    # mv'ing cgroups is not available in cgroup2
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        tst_res TCONF "Controller mounted on cgroup2 hierachy, skipping test"
+> +        return
+> +    fi
+> +
+>      if ! attach_and_check "$pid" "$start_path/ltp_1"; then
+> -         tst_resm TFAIL "Failed to attach task"
+> +         tst_res TFAIL "Failed to attach task"
+>           return
+>      fi
+>
+>      if ! attach_and_check "$pid" "$start_path"; then
+> -         tst_resm TFAIL "Failed to attach task"
+> +         tst_res TFAIL "Failed to attach task"
+>           return
+>      fi
+>
+> -    tst_resm TPASS "Task attached succesfully"
+> +    tst_res TPASS "Task attached succesfully"
+>  }
+>
+>  # Group can be renamed with mv
+>  test2()
+>  {
+> +    # mv'ing cgroups is not available in cgroup2
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        tst_res TCONF "Controller mounted on cgroup2 hierachy, skipping test"
+> +        return
+> +    fi
+> +
+>      create_subgroup "$start_path/ltp_2"
+>
+>      if ! mv "$start_path/ltp_2" "$start_path/ltp_3"; then
+> -        tst_resm TFAIL "Failed to move $start_path/ltp_2 to $start_path/ltp_3"
+> +        tst_res TFAIL "Failed to move $start_path/ltp_2 to $start_path/ltp_3"
+>          rmdir "$start_path/ltp_2"
+>          return
+>      fi
+>
+>      if ! rmdir "$start_path/ltp_3"; then
+> -        tst_resm TFAIL "Failed to remove $start_path/ltp_3"
+> +        tst_res TFAIL "Failed to remove $start_path/ltp_3"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Successfully moved $start_path/ltp_2 to $start_path/ltp_3"
+> +    tst_res TPASS "Successfully moved $start_path/ltp_2 to $start_path/ltp_3"
+>  }
+>
+>  # Group can be renamed with mv unless the target name exists
+>  test3()
+>  {
+> +    # mv'ing cgroups is not available in cgroup2
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        tst_res TCONF "Controller mounted on cgroup2 hierachy, skipping test"
+> +        return
+> +    fi
+> +
+>      create_subgroup "$start_path/ltp_2"
+>
+>      if mv "$start_path/ltp_2" "$start_path/ltp_1" > /dev/null 2>&1; then
+> -        tst_resm TFAIL "Moved $start_path/ltp_2 over existing $start_path/ltp_1"
+> +        tst_res TFAIL "Moved $start_path/ltp_2 over existing $start_path/ltp_1"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Failed to move $start_path/ltp_2 over existing $start_path/ltp_1"
+> +    tst_res TPASS "Failed to move $start_path/ltp_2 over existing $start_path/ltp_1"
+>
+>      ROD rmdir "$start_path/ltp_2"
+>  }
+> @@ -97,77 +101,104 @@ test3()
+>  test4()
+>  {
+>      if ! attach_and_check "$pid" "$start_path/ltp_1"; then
+> -        tst_resm TFAIL "Failed to attach $pid to $start_path/ltp_1"
+> +        tst_res TFAIL "Failed to attach $pid to $start_path/ltp_1"
+>          return
+>      fi
+>
+>      if rmdir "$start_path/ltp_1" > /dev/null 2>&1; then
+> -        tst_resm TFAIL "Removed $start_path/ltp_1 which contains task $pid"
+> -        create_subgroup "$start_path/ltp_1"
+> +        tst_res TFAIL "Removed $start_path/ltp_1 which contains task $pid"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Group $start_path/ltp_1 with task $pid cannot be removed"
+> +    tst_res TPASS "Group $start_path/ltp_1 with task $pid cannot be removed"
+>  }
+>
+>  # Group with a subgroup cannot be removed
+>  test5()
+>  {
+> +    # We need to move the tasks back to root to create a subgroup
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        for pid in $(cat "$start_path/ltp_1/$task_list"); do
+> +                   echo $pid > "$mount_point/$task_list" 2> /dev/null
+> +           done
+> +
+> +        ROD echo "+$subsystem" \> "$start_path/ltp_1/cgroup.subtree_control"
+> +    fi
+> +
+>      create_subgroup "$start_path/ltp_1/a"
+>
+>      if rmdir "$start_path/ltp_1" > /dev/null 2>&1; then
+> -        tst_resm TFAIL "Removed $start_path/ltp_1 which contains subdir 'a'"
+> +        tst_res TFAIL "Removed $start_path/ltp_1 which contains subdir 'a'"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Dir $start_path/ltp_1 with subdir 'a' cannot be removed"
+> +    tst_res TPASS "Dir $start_path/ltp_1 with subdir 'a' cannot be removed"
+>
+>      ROD rmdir "$start_path/ltp_1/a"
+>
+> -    ROD echo "$pid" \> "$start_path/tasks"
+> +    [ "$cgroup_v" = "V2" ] && ROD echo "-$subsystem" \> "$start_path/ltp_1/cgroup.subtree_control"
+> +    ROD echo "$pid" \> "$start_path/ltp_1/$task_list"
+>  }
+>
+>  # Group cannot be moved outside of hierarchy
+>  test6()
+>  {
+> +    # mv'ing cgroups is not available in cgroup2
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        tst_res TCONF "Controller mounted on cgroup2 hierachy, skipping test"
+> +        return
+> +    fi
+> +
+>      if mv "$start_path/ltp_1" "$PWD/ltp" > /dev/null 2>&1; then
+> -        tst_resm TFAIL "Subgroup $start_path/ltp_1 outside hierarchy to $PWD/ltp"
+> +        tst_res TFAIL "Subgroup $start_path/ltp_1 outside hierarchy to $PWD/ltp"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Subgroup $start_path/ltp_1 cannot be moved to $PWD/ltp"
+> +    tst_res TPASS "Subgroup $start_path/ltp_1 cannot be moved to $PWD/ltp"
+>  }
+>
+>  # Tasks file cannot be removed
+>  test7()
+>  {
+> -    if rm "$start_path/ltp_1/tasks" > /dev/null 2>&1; then
+> -        tst_resm TFAIL "Tasks file $start_path/ltp_1/tasks could be removed"
+> +    if rm "$start_path/ltp_1/$task_list" > /dev/null 2>&1; then
+> +        tst_res TFAIL "Tasks file $start_path/ltp_1/$task_list could be removed"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Tasks file $start_path/ltp_1/tasks cannot be removed"
+> +    tst_res TPASS "Tasks file $start_path/ltp_1/tasks cannot be removed"
+>  }
+>
+>  # Test notify_on_release with invalid inputs
+>  test8()
+>  {
+> +    # notify_on_release is not available in cgroup2 so skip the test
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        tst_res TCONF "Controller mounted on cgroup2 hierachy, skipping test"
+> +        return
+> +    fi
+> +
+>      if echo "-1" > "$start_path/ltp_1/notify_on_release" 2>/dev/null; then
+> -        tst_resm TFAIL "Can write -1 to $start_path/ltp_1/notify_on_release"
+> +        tst_res TFAIL "Can write -1 to $start_path/ltp_1/notify_on_release"
+>          return
+>      fi
+>
+>      if echo "ltp" > "$start_path/ltp_1/notify_on_release" 2>/dev/null; then
+> -        tst_resm TFAIL "Can write ltp to $start_path/ltp_1/notify_on_release"
+> +        tst_res TFAIL "Can write ltp to $start_path/ltp_1/notify_on_release"
+>          return
+>      fi
+>
+> -    tst_resm TPASS "Cannot write invalid values to $start_path/ltp_1/notify_on_release"
+> +    tst_res TPASS "Cannot write invalid values to $start_path/ltp_1/notify_on_release"
+>  }
+>
+>  # Test that notify_on_release can be changed
+>  test9()
+>  {
+> +    # notify_on_release is not available in cgroup2 so skip the test
+> +    if [ "$cgroup_v" = "V2" ]; then
+> +        tst_res TCONF "Controller mounted on cgroup2 hierachy, skipping test"
+> +        return
+> +    fi
+> +
+>      local notify=$(ROD cat "$start_path/ltp_1/notify_on_release")
+>      local value
+>
+> @@ -178,37 +209,29 @@ test9()
+>      fi
+>
+>      if ! echo "$value" > "$start_path/ltp_1/notify_on_release"; then
+> -        tst_resm TFAIL "Failed to set $start_path/ltp_1/notify_on_release to $value"
+> +        tst_res TFAIL "Failed to set $start_path/ltp_1/notify_on_release to $value"
+>          return
+>      fi
+>
+>      ROD echo "$notify" \> "$start_path/ltp_1/notify_on_release"
+>
+> -    tst_resm TPASS "Set $start_path/ltp_1/notify_on_release to $value"
+> +    tst_res TPASS "Set $start_path/ltp_1/notify_on_release to $value"
+>  }
+>
+> -setup
+> -
+> -cgroup_fj_proc&
+> -pid=$!
+> -
+> -start_path="$mount_point/ltp"
+> -
+> -create_subgroup "$start_path"
+> -create_subgroup "$start_path/ltp_1"
+> -
+> -test1
+> -test2
+> -test3
+> -test4
+> -test5
+> -test6
+> -test7
+> -test8
+> -test9
+> +setup()
 > +{
-> +    struct tst_cgroup_opts opts;
+> +    common_setup
+> +    cgroup_fj_proc&
+> +    pid=$!
+> +    create_subgroup "$start_path/ltp_1"
+> +}
+
+
+Btw, I got a TBROK when running the "cgroup_fj_function.sh blkio", but this
+looks not related to your patch, I'll try to look into the problem.
+
+--------------
+tst_cgroup.c:829: TINFO: Could not mount V1 CGroup on
+/tmp/cgroup_blkio: EBUSY (16)
+tst_cgroup.c:932: TCONF: 'blkio' controller required, but not available
+cgroup_fj_function 1 TBROK: cgroup_require: No state was set after
+call. Controller 'blkio' maybe does not exist?
+
+
+>
+> -ROD kill -9 $pid
+> -wait $pid
+> -ROD rmdir "$start_path/ltp_1"
+> +cleanup()
+> +{
+> +    kill -9 $pid >/dev/null 2>&1
+> +    wait $pid >/dev/null 2>&1
+> +    rmdir "$start_path/ltp_1" >/dev/null 2>&1
+> +    common_cleanup
+> +}
+>
+> -tst_exit
+> +tst_run
+> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_proc.c b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_proc.c
+> index 93bc8b744..e3c1153cb 100644
+> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_proc.c
+> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_proc.c
+> @@ -1,24 +1,6 @@
+> -/******************************************************************************/
+> -/*                                                                            */
+> -/* Copyright (c) 2009 FUJITSU LIMITED                                         */
+> -/*                                                                            */
+> -/* This program is free software;  you can redistribute it and/or modify      */
+> -/* it under the terms of the GNU General Public License as published by       */
+> -/* the Free Software Foundation; either version 2 of the License, or          */
+> -/* (at your option) any later version.                                        */
+> -/*                                                                            */
+> -/* This program is distributed in the hope that it will be useful,            */
+> -/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> -/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> -/* the GNU General Public License for more details.                           */
+> -/*                                                                            */
+> -/* You should have received a copy of the GNU General Public License          */
+> -/* along with this program;  if not, write to the Free Software               */
+> -/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+> -/*                                                                            */
+> -/* Author: Shi Weihua <shiwh@cn.fujitsu.com>                                  */
+> -/*                                                                            */
+> -/******************************************************************************/
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +// Copyright (c) 2009 FUJITSU LIMITED
+> +// Author: Shi Weihua <shiwh@cn.fujitsu.com>
+>
+>  #include <sys/types.h>
+>  #include <sys/wait.h>
+> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+> index 292df6f6c..f0f6d32d4 100755
+> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+> @@ -1,30 +1,16 @@
+>  #!/bin/sh
+> -
+> -################################################################################
+> -##                                                                            ##
+> -## Copyright (c) 2009 FUJITSU LIMITED                                         ##
+> -##  Author: Shi Weihua <shiwh@cn.fujitsu.com>                                 ##
+> -## Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>                          ##
+> -## Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>                     ##
+> -##                                                                            ##
+> -## This program is free software;  you can redistribute it and#or modify      ##
+> -## it under the terms of the GNU General Public License as published by       ##
+> -## the Free Software Foundation; either version 2 of the License, or          ##
+> -## (at your option) any later version.                                        ##
+> -##                                                                            ##
+> -## This program is distributed in the hope that it will be useful, but        ##
+> -## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> -## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> -## for more details.                                                          ##
+> -##                                                                            ##
+> -## You should have received a copy of the GNU General Public License          ##
+> -## along with this program;  if not, write to the Free Software Foundation,   ##
+> -## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+> -##                                                                            ##
+> -################################################################################
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2009 FUJITSU LIMITED
+> +# Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> +# Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
+> +# Author: Shi Weihua <shiwh@cn.fujitsu.com>
+>
+>  TCID="cgroup_fj_stress"
+> -TST_TOTAL=1
+> +TST_CNT=1
+> +TST_TESTFUNC=test
+> +TST_SETUP=setup
+> +TST_CLEANUP=cleanup
+> +TST_POS_ARGS=4
+>
+>  . cgroup_fj_common.sh
+>
+> @@ -47,35 +33,9 @@ usage_and_exit()
+>      echo "      each - attach process to each subgroup"
+>      echo "example: ./cgroup_fj_stress.sh cpuset 1 1 one"
+>      echo
+> -    tst_brkm TBROK "$1"
+> +    tst_brk TBROK "$1"
+>  }
+>
+> -if [ "$#" -ne "4" ]; then
+> -    usage_and_exit "Wrong number of parameters, expected 4"
+> -fi
+> -
+> -case $subgroup_num in
+> -    ''|*[!0-9]*) usage_and_exit "Number of subgroups must be possitive integer";;
+> -    *) ;;
+> -esac
+> -
+> -case $subgroup_depth in
+> -    ''|*[!0-9]*) usage_and_exit "Depth of the subgroup tree must be possitive integer";;
+> -    *) ;;
+> -esac
+> -
+> -case $attach_operation in
+> -    'none'|'one'|'each');;
+> -    *) usage_and_exit "Invalid attach operation: $attach_operation";;
+> -esac
+> -
+> -setup
+> -
+> -export TMPFILE=./tmp_tasks.$$
+> -
+> -count=0
+> -collected_pids=
+> -
+>  build_subgroups()
+>  {
+>      local cur_path="$1"
+> @@ -87,6 +47,12 @@ build_subgroups()
+>      fi
+>
+>      create_subgroup "$cur_path"
 > +
-> +    memset(&opts, 0, sizeof(opts));
-> +    opts.test_pid = test_pid;
+> +    # We can only attach processes to the leaves of the tree in cgroup v2 which
+> +    # means we need to enable the controllers everywhere inbetween.
+> +    if [ "$cgroup_v" = "V2" ] && [ "$cur_depth" -ne "$subgroup_depth" ]; then
+> +        ROD echo "+$subsystem" \> "$cur_path/cgroup.subtree_control"
+> +    fi
+>      count=$((count+1))
+>
+>      for i in $(seq 1 $subgroup_num); do
+> @@ -113,8 +79,10 @@ attach_task()
+>          pid="$ppid"
+>      fi
+>
+> -    if ! attach_and_check "$pid" "$cur_path"; then
+> +    if [ "$cgroup_v" = "V2" ] && [ $cur_depth -eq $subgroup_depth ] || [ "$cgroup_v" = "V1" ]; then
+> +        if ! attach_and_check "$pid" "$cur_path"; then
+>              fail=1
+> +        fi
+>      fi
+>
+>      for i in $(seq 1 $subgroup_num); do
+> @@ -123,46 +91,78 @@ attach_task()
+>      done
+>
+>      if [ -n "$ppid" ]; then
+> -        if ! attach_and_check "$pid" "$cur_path"; then
+> -            fail=1
+> +        if [ "$cgroup_v" = "V2" ] && [ $cur_depth -eq $subgroup_depth ] || [ "$cgroup_v" = "V1" ]; then
+> +            if ! attach_and_check "$pid" "$cur_path"; then
+> +                fail=1
+> +            fi
+>          fi
+>      fi
+>  }
+>
+> -start_path="$mount_point/ltp"
+> +setup()
+> +{
+> +    export TMPFILE=./tmp_tasks.$$
+> +    count=0
+> +    collected_pids=
 > +
-> +    tst_cgroup_require(ctrl, &opts);
-> +    tst_cgroup_print_config();
+> +    case $subgroup_num in
+> +        ''|*[!0-9]*) usage_and_exit "Number of subgroups must be possitive integer";;
+> +        *) ;;
+> +    esac
 > +
-> +    return 0;
+> +    case $subgroup_depth in
+> +        ''|*[!0-9]*) usage_and_exit "Depth of the subgroup tree must be possitive integer";;
+> +        *) ;;
+> +    esac
+> +
+> +    case $attach_operation in
+> +        'none'|'one'|'each');;
+> +        *) usage_and_exit "Invalid attach operation: $attach_operation";;
+> +    esac
+> +
+> +    common_setup
+> +}
+>
+> -tst_resm TINFO "Creating subgroups ..."
+> +cleanup()
+> +{
+> +    common_cleanup
+> +}
+>
+> -build_subgroups "$start_path" 0
+> +test()
+> +{
+> +    tst_res TINFO "Creating subgroups ..."
+>
+> -tst_resm TINFO "... mkdired $count times"
+> +    build_subgroups "$start_path" 0
+>
+> -case $attach_operation in
+> -"one" )
+> -    cgroup_fj_proc &
+> -    pid=$!
+> +    tst_res TINFO "... mkdired $count times"
+>
+> -    tst_resm TINFO "Moving one task around"
+> -    attach_task "$start_path" 0 "$pid"
+> -    ROD kill -9 "$pid"
+> -    wait "$pid"
+> -    ;;
+> -"each" )
+> -    tst_resm TINFO "Attaching task to each subgroup"
+> -    attach_task "$start_path" 0
+> -    for pid in $collected_pids; do
+> +    case $attach_operation in
+> +    "one" )
+> +        cgroup_fj_proc &
+> +        pid=$!
+> +
+> +        tst_res TINFO "Moving one task around"
+> +        attach_task "$start_path" 0 "$pid"
+>          ROD kill -9 "$pid"
+>          wait "$pid"
+> -    done
+> -    ;;
+> -*  )
+> -    ;;
+> -esac
+> -
+> -if [ -n "$fail" ]; then
+> -    tst_resm TFAIL "Attaching tasks failed!"
+> -else
+> -    tst_resm TPASS "All done!"
+> -fi
+> -
+> -tst_exit
+> +        ;;
+> +    "each" )
+> +        tst_res TINFO "Attaching task to each subgroup"
+> +        attach_task "$start_path" 0
+> +        for pid in $collected_pids; do
+> +            ROD kill -9 "$pid"
+> +            wait "$pid"
+> +        done
+> +        ;;
+> +    *  )
+> +        ;;
+> +    esac
+> +
+> +    if [ -n "$fail" ]; then
+> +        tst_res TFAIL "Attaching tasks failed!"
+> +    else
+> +        tst_res TPASS "All done!"
+> +    fi
 > +}
 > +
-> +static int cgctl_cleanup(const char *config)
-> +{
-> +    tst_cgroup_scan();
-> +    tst_cgroup_load_config(config);
-> +    tst_cgroup_cleanup();
-> +
-> +    return 0;
-> +}
-> +
-> +static int cgctl_print(void)
-> +{
-> +    tst_cgroup_scan();
-> +    tst_cgroup_print_config();
-> +
-> +    return 0;
-> +}
-> +
-> +static int cgctl_process_cmd(int argc, char *argv[])
-> +{
-> +    int test_pid;
-> +    const char *cmd_name = argv[1];
-> +
-> +    if (!strcmp(cmd_name, "require")) {
-> +        test_pid = atoi(argv[3]);
-> +        if (!test_pid) {
-> +            fprintf(stderr, "tst_cgctl: Invalid test_pid '%s' given\n",
-> +                    argv[3]);
-> +            return 1;
-> +        }
-> +        return cgctl_require(argv[2], test_pid);
-> +    } else if (!strcmp(cmd_name, "cleanup")) {
-> +        return cgctl_cleanup(argv[2]);
-> +    } else if (!strcmp(cmd_name, "print")) {
-> +        return cgctl_print();
-> +    }
-> +
-> +    fprintf(stderr, "tst_cgctl: Unknown command '%s' given\n", cmd_name);
-> +    return 1;
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +    if (argc < 2 || argc > 4) {
-> +        fprintf(stderr, "tst_cgctl: Invalid number of arguements given");
-> +        return 1;
-> +    }
-
-It'd be great to have a help() function to print the usage.
-Something maybe looks like:
-
-Usage: ./tst_cgctl  require|print|cleanup  ...
-
-  # cgroup_state=$(./tst_cgctl require "$ctrl" "$pid")
-  # echo "$cgroup_state"  # to print detailed controllers
-  # tst_cgctl cleanup "$cgroup_state"
-
-
-> +
-> +    return cgctl_process_cmd(argc, argv);
-> +}
+> +tst_run
 > --
 > 2.32.0
 >
 
 
---
+-- 
 Regards,
 Li Wang
-
---000000000000653b0105d64f49f9
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><br><br>On Wed, Jan 19, 2022 at 10:44 PM Luke Nowakowski-K=
-rijger &lt;<a href=3D"mailto:luke.nowakowskikrijger@canonical.com" target=
-=3D"_blank">luke.nowakowskikrijger@canonical.com</a>&gt; wrote:<br>&gt;<br>=
-&gt; Implement a binary utility that creates an interface to make calls to<=
-br>&gt; the cgroup C API.<br>&gt;<br>&gt; This will effectively allow shell=
- scripts to make calls to the cgroup C<br>&gt; api.<br>&gt;<br>&gt; Signed-=
-off-by: Luke Nowakowski-Krijger &lt;<a href=3D"mailto:luke.nowakowskikrijge=
-r@canonical.com" target=3D"_blank">luke.nowakowskikrijger@canonical.com</a>=
-&gt;<br>&gt; ---<br>&gt; =C2=A0testcases/lib/Makefile =C2=A0 =C2=A0| =C2=A0=
-2 +-<br>&gt; =C2=A0testcases/lib/tst_cgctl.c | 69 +++++++++++++++++++++++++=
-++++++++++++++<br>&gt; =C2=A02 files changed, 70 insertions(+), 1 deletion(=
--)<br>&gt; =C2=A0create mode 100644 testcases/lib/tst_cgctl.c<br>&gt;<br>&g=
-t; diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile<br>&gt; ind=
-ex f2de0c832..f4f8c8524 100644<br>&gt; --- a/testcases/lib/Makefile<br>&gt;=
- +++ b/testcases/lib/Makefile<br>&gt; @@ -12,6 +12,6 @@ MAKE_TARGETS =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0:=3D tst_sleep tst_random tst_checkpoint tst_ro=
-d tst_kvcmp\<br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_device tst_net_iface_prefi=
-x tst_net_ip_prefix tst_net_vars\<br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_getco=
-nf tst_supported_fs tst_check_drivers tst_get_unused_port\<br>&gt; =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0tst_get_median tst_hexdump tst_get_free_pids tst_timeout_k=
-ill\<br>&gt; - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_check_kconfigs<br>&gt; + =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0tst_check_kconfigs tst_cgctl<br>&gt;<br>&gt; =C2=A0include $(top_srcdir)=
-/include/mk/<a href=3D"http://generic_leaf_target.mk" target=3D"_blank">gen=
-eric_leaf_target.mk</a><br>&gt; diff --git a/testcases/lib/tst_cgctl.c b/te=
-stcases/lib/tst_cgctl.c<br>&gt; new file mode 100644<br>&gt; index 00000000=
-0..a6cf88f41<br>&gt; --- /dev/null<br>&gt; +++ b/testcases/lib/tst_cgctl.c<=
-br>&gt; @@ -0,0 +1,69 @@<br><br>We need to add SPDX-License-Identifier and =
-copyright for this file.<br><br>And better to use Tabs (8 characters) inste=
-ad of 4 spaces for the code indentation:).<div><div>See:<a href=3D"https://=
-www.kernel.org/doc/html/latest/process/coding-style.html#indentation" targe=
-t=3D"_blank"> https://www.kernel.org/doc/html/latest/process/coding-style.h=
-tml#indentation</a><br><br>&gt; +#include &lt;stdio.h&gt;<br>&gt; +#include=
- &lt;string.h&gt;<br>&gt; +#include &lt;stdlib.h&gt;<br>&gt; +#include &lt;=
-stdint.h&gt;<br>&gt; +#include &lt;unistd.h&gt;<br>&gt; +#include &quot;tst=
-_cgroup.h&quot;<br>&gt; +<br>&gt; +static int cgctl_require(const char *ctr=
-l, int test_pid)<br>&gt; +{<br>&gt; + =C2=A0 =C2=A0struct tst_cgroup_opts o=
-pts;<br>&gt; +<br>&gt; + =C2=A0 =C2=A0memset(&amp;opts, 0, sizeof(opts));<b=
-r>&gt; + =C2=A0 =C2=A0opts.test_pid =3D test_pid;<br>&gt; +<br>&gt; + =C2=
-=A0 =C2=A0tst_cgroup_require(ctrl, &amp;opts);<br>&gt; + =C2=A0 =C2=A0tst_c=
-group_print_config();<br>&gt; +<br>&gt; + =C2=A0 =C2=A0return 0;<br>&gt; +}=
-<br>&gt; +<br>&gt; +static int cgctl_cleanup(const char *config)<br>&gt; +{=
-<br>&gt; + =C2=A0 =C2=A0tst_cgroup_scan();<br>&gt; + =C2=A0 =C2=A0tst_cgrou=
-p_load_config(config);<br>&gt; + =C2=A0 =C2=A0tst_cgroup_cleanup();<br>&gt;=
- +<br>&gt; + =C2=A0 =C2=A0return 0;<br>&gt; +}<br>&gt; +<br>&gt; +static in=
-t cgctl_print(void)<br>&gt; +{<br>&gt; + =C2=A0 =C2=A0tst_cgroup_scan();<br=
->&gt; + =C2=A0 =C2=A0tst_cgroup_print_config();<br>&gt; +<br>&gt; + =C2=A0 =
-=C2=A0return 0;<br>&gt; +}<br>&gt; +<br>&gt; +static int cgctl_process_cmd(=
-int argc, char *argv[])<br>&gt; +{<br>&gt; + =C2=A0 =C2=A0int test_pid;<br>=
-&gt; + =C2=A0 =C2=A0const char *cmd_name =3D argv[1];<br>&gt; +<br>&gt; + =
-=C2=A0 =C2=A0if (!strcmp(cmd_name, &quot;require&quot;)) {<br>&gt; + =C2=A0=
- =C2=A0 =C2=A0 =C2=A0test_pid =3D atoi(argv[3]);<br>&gt; + =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0if (!test_pid) {<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0fprintf(stderr, &quot;tst_cgctl: Invalid test_pid &#39;%s&#39; given\=
-n&quot;,<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0argv[3]);<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0r=
-eturn 1;<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>&gt; + =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0return cgctl_require(argv[2], test_pid);<br>&gt; + =C2=A0 =C2=A0}=
- else if (!strcmp(cmd_name, &quot;cleanup&quot;)) {<br>&gt; + =C2=A0 =C2=A0=
- =C2=A0 =C2=A0return cgctl_cleanup(argv[2]);<br>&gt; + =C2=A0 =C2=A0} else =
-if (!strcmp(cmd_name, &quot;print&quot;)) {<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0return cgctl_print();<br>&gt; + =C2=A0 =C2=A0}<br>&gt; +<br>&gt; + =
-=C2=A0 =C2=A0fprintf(stderr, &quot;tst_cgctl: Unknown command &#39;%s&#39; =
-given\n&quot;, cmd_name);<br>&gt; + =C2=A0 =C2=A0return 1;<br>&gt; +}<br>&g=
-t; +<br>&gt; +int main(int argc, char *argv[])<br>&gt; +{<br>&gt; + =C2=A0 =
-=C2=A0if (argc &lt; 2 || argc &gt; 4) {<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0fprintf(stderr, &quot;tst_cgctl: Invalid number of arguements given&quot=
-;);<br>&gt; + =C2=A0 =C2=A0 =C2=A0 =C2=A0return 1;<br>&gt; + =C2=A0 =C2=A0}=
-</div><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:s=
-mall">It&#39;d be great to have a help() function to print the usage.</div>=
-<div class=3D"gmail_default" style=3D"font-size:small">Something maybe look=
-s like:=C2=A0</div><div class=3D"gmail_default" style=3D"font-size:small"><=
-br></div><div class=3D"gmail_default" style=3D"font-size:small">Usage: ./ts=
-t_cgctl=C2=A0 require|print|cleanup=C2=A0 ...</div><div class=3D"gmail_defa=
-ult" style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=
-=3D"font-size:small">=C2=A0 # cgroup_state=3D$(./tst_cgctl require &quot;$c=
-trl&quot; &quot;$pid&quot;)</div><div class=3D"gmail_default" style=3D"font=
--size:small">=C2=A0 # echo &quot;$cgroup_state&quot;=C2=A0 # to print detai=
-led controllers<br></div><div class=3D"gmail_default" style=3D"font-size:sm=
-all">=C2=A0 # tst_cgctl cleanup &quot;$cgroup_state&quot;</div><br></div><d=
-iv><br>&gt; +<br>&gt; + =C2=A0 =C2=A0return cgctl_process_cmd(argc, argv);<=
-br>&gt; +}<br>&gt; --<br>&gt; 2.32.0<br>&gt;<br><br><br>--<br>Regards,<br>L=
-i Wang</div></div></div>
-
---000000000000653b0105d64f49f9--
-
-
---===============0645449545==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0645449545==--
-
