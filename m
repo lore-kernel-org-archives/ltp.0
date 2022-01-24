@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 228C0C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 21:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76DD0C433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 21:18:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DD66A3C8FE3
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 22:11:19 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 021883C92D0
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 22:18:42 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C97803C65E6
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 22:11:10 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id E94F13C65E6
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 22:18:32 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 61F862009AB
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 22:11:10 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 70817600831
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 22:18:31 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 93BA61F38A;
- Mon, 24 Jan 2022 21:11:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 78108218A9;
+ Mon, 24 Jan 2022 21:18:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643058668;
+ t=1643059111;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Uy+UtmG+RxpK8ia1VY/ggx/d4Pbu50hrej85LfIQW0U=;
- b=1CK0ck8CqwoBPXPc9ra+CFBCmqIeXCHRjfl9JRBhkKGTXN6EiKo+tChlcHLdsS0bPMbkz3
- YepVeXyOa8sRusGHyGuuqWQfSf0aX0w9FxgyDYvld5TK7txGmdZjLKsfmZrV5WdI6q/8/5
- HL+P99nayuOKIidmqPaiuzNRMoagd3U=
+ bh=FOnqL+mHbBA9S8iiozqnkVcfkHIAAf8SyMPugmAMS8o=;
+ b=qGF2/bcwMi/qQ9cOxjmQBz1bGphl1unpKDJllWNGWifheuAzM9sG/KkJFTd/VMK/OVOod6
+ eWEl9MFEXmgd8/sKongOqoKqGpZVf/UocpBA8Werwo7VY8tCtLG7hLYzg4sS3JH7Vh3PB7
+ eeMhHsAdfTvflVS/arIvDfoxbaiAjhs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643058668;
+ s=susede2_ed25519; t=1643059111;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Uy+UtmG+RxpK8ia1VY/ggx/d4Pbu50hrej85LfIQW0U=;
- b=p3KMVcpkwKu+xUnG8OmCFqC7ufg/QWl7G/epeVSLCMd37b/oFmXRR9ce9bR7J6m9Hp3CLS
- VJuKv4mqMlzY/WDQ==
+ bh=FOnqL+mHbBA9S8iiozqnkVcfkHIAAf8SyMPugmAMS8o=;
+ b=OIyECYbyRZ9AzUfbdX5VlOdMYhY9Vo6uhUIgxF1thGBAbzPw+CwVMiY4Sd8NihEz3rYbdv
+ RQMDRpb5e8hHqXDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CCB213CCD;
- Mon, 24 Jan 2022 21:11:08 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E634813CB4;
+ Mon, 24 Jan 2022 21:18:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RUbCEOwV72EOPwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 21:11:08 +0000
-Date: Mon, 24 Jan 2022 22:11:06 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id trmIL6YX72HrQQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 21:18:30 +0000
+Date: Mon, 24 Jan 2022 22:18:28 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
-Message-ID: <Ye8V6jNFpVBwBQLo@pevik>
-References: <20220120143727.27057-1-nikita.yushchenko@virtuozzo.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Ye8XpJ1/UbXBtR3e@pevik>
+References: <20220114194444.16949-1-pvorel@suse.cz>
+ <20220114194444.16949-3-pvorel@suse.cz> <Ye6/g0InSIT4J3kV@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220120143727.27057-1-nikita.yushchenko@virtuozzo.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <Ye6/g0InSIT4J3kV@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] rpc_lib.sh: fix portmapper detection in case of
- socket activation
+Subject: Re: [LTP] [PATCH 2/2] doc/user-guide: Remove "2. Colorized output"
+ section
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,14 +79,15 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: kernel@openvz.org, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For a record, merged alternative solution:
-eb786468b ("rpc_lib.sh: Check for running RPC")
+Hi,
+
+patchset merged with proposed fix.
 
 Kind regards,
 Petr
