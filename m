@@ -4,76 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80640C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 09:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB67FC433EF
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 09:47:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C9AFA3C90AA
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 10:44:11 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 345FB3C8095
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 10:47:18 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D3C3D3C0F5D
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 10:44:02 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 018D43C0F5D
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 10:47:07 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3814D1A00929
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 10:47:06 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id D4B6C1F38B;
+ Mon, 24 Jan 2022 09:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643017625;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kzWmxxCCxBLgr+RmKBlTQw1OgLOq9h4UjqlY2gEarCI=;
+ b=rQDiq8wv2K/hAZKH0fhEGJrNyv07MDJH6gej+kHRNQmyRjd27njpUgs2YroZLXmN1yzbG9
+ /ahttpnQs7ICX/nOBabppfnvlCfO3P7aHAjOfsTqNh/R7bc0KCu67j6LErFYhYVWyo/Vv5
+ EbDWQIuhSBtyKtoGUy6mnnaDGT+iyVk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643017625;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kzWmxxCCxBLgr+RmKBlTQw1OgLOq9h4UjqlY2gEarCI=;
+ b=O8g/zAD4u+qOp8vqsgYVB5XdWr2SuVflUrSPaHrSB1LzAb1dLfGD6eoVrEaySNfoyqR1z9
+ 1Jl/352SDiGtcqCg==
+Received: from g78 (unknown [10.163.24.90])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C0638600629
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 10:44:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1643017440;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YuGS+FnY/0pbaiC1fZibeFy5vDKwz8olhItmTU3QNkk=;
- b=P9DArUrjCYaH9qhbJUu61Zn8OLwAu0TKD1ZcFVISMi9fKke5YLGluTEb1NaYTiZ1jU0MIf
- q1/a7slGnLmtZbVmWmCWN5hOHK8cSA4K7RcKF5G4w37SiH9XkYdqbvP5peIeYD8FAG2pJh
- qqSwpA0Era2yFMk8W+fdzdEEESXiuAQ=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-212-cU9W-TkdNV2LahFPrMSphA-1; Mon, 24 Jan 2022 04:43:59 -0500
-X-MC-Unique: cU9W-TkdNV2LahFPrMSphA-1
-Received: by mail-yb1-f199.google.com with SMTP id
- i10-20020a25540a000000b0061391789216so32754579ybb.2
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 01:43:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YuGS+FnY/0pbaiC1fZibeFy5vDKwz8olhItmTU3QNkk=;
- b=wN3tBUIZfhm3g0DFy9GHq5sQWNKSKsrGJZtcpH3AjBGANtzaGufQQ32f7UNUB0eYTN
- JF9jhKY0ODY2Jg2Mct+Ar0DgJn3XAedX7WhGwsQoUxghZtvnF5MntuYD0k/flUxerNvw
- qr26aD7IEmKY8MCfvXiadUma4zYNWpFoCwuL8Xdj7RGDappeqA4YP597F9iKwNMN81gz
- /dp/ziJMxkOlzqa3EmPJksmtCG0A93LRgSSEsJgyKB8wIyvdJZ98FSYrspJQwDU94m7S
- xUFUmE7PuZwsiTxihbXXYu64kfiAc8TlUnOHcQrmP4RLfVbQSn5s3XgauPyAnLJqo3yt
- askw==
-X-Gm-Message-State: AOAM531di0wLCoogTK9GgSc42U2Dmrva7WOqzUIZWvqWy3FVf3XoRY3E
- qPJZp7gnEAZ8DQdVvB3Za/4eruh3hkHgvHAcTdlXnszFTYkFZOq1GEMqcKQLrqggEp3G6Xedziv
- 8YTLkv8iVEwWUU5/OwBa3GeVzgKE=
-X-Received: by 2002:a25:15c3:: with SMTP id 186mr23171161ybv.71.1643017438551; 
- Mon, 24 Jan 2022 01:43:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxrInwfbVNEHYJkXGtyB073U/cs9A7czqe+xPs5l1TBW8E7l76TplR84jd8sZVIi/1pB6SIIaWJWnDry93vziI=
-X-Received: by 2002:a25:15c3:: with SMTP id 186mr23171142ybv.71.1643017438306; 
- Mon, 24 Jan 2022 01:43:58 -0800 (PST)
-MIME-Version: 1.0
+ by relay2.suse.de (Postfix) with ESMTPS id 91B6FA3B8B;
+ Mon, 24 Jan 2022 09:47:05 +0000 (UTC)
 References: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
- <3b78e25c8eba247d0ce2d99cbbdcaeba7994e26c.1642601554.git.luke.nowakowskikrijger@canonical.com>
-In-Reply-To: <3b78e25c8eba247d0ce2d99cbbdcaeba7994e26c.1642601554.git.luke.nowakowskikrijger@canonical.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 24 Jan 2022 17:43:44 +0800
-Message-ID: <CAEemH2fDx-KejrtrmY_N9c+7Fbe1Btvpxe65rUPyC8Atw_=+nA@mail.gmail.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Date: Mon, 24 Jan 2022 09:40:20 +0000
+In-reply-to: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
+Message-ID: <87sftdzcrr.fsf@suse.de>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 10/16] controllers: Update memcg_control_test to
- newer test lib and cgroup lib
+Subject: Re: [LTP] [PATCH 00/16] Expand Cgroup lib and modify controller
+ tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,75 +69,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> wrote:
+Hello Luke,
 
-> +test1()
->  {
-> -       TST_COUNT=1
-> -       tst_resm TINFO "Test #1: Checking if the memory usage limit imposed by the topmost group is enforced"
-> +       cd $TST_TMPDIR
-> +
-> +       tst_res TINFO "Test #1: Checking if the memory usage limit imposed by the topmost group is enforced"
+Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> writes:
+
+> This patchset aims to expand the cgroup_lib shell library to simplify
+> and centralize the whole mounting and cleanup process that can get
+> rather confusing and redundant when writing cgroup controller tests from
+> a shell environment. This is done by having the shell library make calls
+> to the C cgroup API from a binary utility. 
 >
-> -       echo "$ACTIVE_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.limit_in_bytes
-> -       echo "$TOT_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.memsw.limit_in_bytes
-> +       ROD echo "$ACTIVE_MEM_LIMIT" > "$test_dir/$memory_limit"
-> +       ROD echo "$TOT_MEM_LIMIT" > "$test_dir/$memsw_memory_limit"
-...
->  }
+> In this patch set there are a few tests that have been extensively
+> rewritten to work with the new test API and to use the new functionality
+> from the cgroup lib. Because the test Cgroup lib handles mounting for v1
+> and v2 controllers, some tests were modified to also work under cgroup
+> v2. Some tests that were written for v1 controller also effictively test
+> v2 controllers, while others were written to test v2 controllers in the
+> spirit of the test or skipped outright.
 
-> +setup()
->  {
-> -       RES=$1
-> -       INFO=$2
-> -
-> -       if [ $RES -eq $PASS ]; then
-> -               tst_resm TPASS "$INFO"
-> +       cgroup_require "memory"
-> +       cgroup_v=$(cgroup_get_version "memory")
-> +       test_dir=$(cgroup_get_test_path "memory")
-> +       task_list=$(cgroup_get_task_list "memory")
-> +
-> +       if [ "$cgroup_v" = "V2" ]; then
-> +               memory_limit="memory.max"
-> +               memsw_memory_limit="memory.swap.max"
+Thanks I am really happy to see this!
 
-As we already built the controller files mapping from V2 to V1
-in C library and you actually add many new (in patch 5/16).
+It would be nice to see the tests rewritten in C, but if this works,
+then perhaps we can get many more tests working on both V1 and V2 quite
+quickly. Including perhaps some kernel selftests (IIRC there are some in
+shell as well).
 
-I'm thinking maybe we could make use of it in tst_cgctl.c to
-avoid handling these (in shell) separately.
-
-Something like:
-
-    # ./tst_cgctl  set  "$pid"  "cgroup.procs"  "$target_pid"
-    # ./tst_cgctl  set  "$pid"  "memory.max"  "$ACTIVE_MEM_LIMIT"
-
-Otherwise, it seems to make no sense to add so many new
-files mapping (like that patch 5/16) at this moment.
-
-What do you think?
-
-
->         else
-> -               : $((FAILED_CNT += 1))
-> -               tst_resm TFAIL "$INFO"
-> +               memory_limit="memory.limit_in_bytes"
-> +               memsw_memory_limit="memory.memsw.limit_in_bytes"
->         fi
-> -}
+>
+> Luke Nowakowski-Krijger (16):
+>   API/cgroup: Modify tst_cgroup_print_config for easier parsing and
+>     consumption
+>   API/cgroup: Add option for specific pid to tst_cgroup_opts
+>   API/cgroup: Add cgroup_find_root helper function
+>   API/cgroup: Implement tst_cgroup_load_config()
+>   API/cgroup: Add more controllers to tst_cgroup
+>   API/cgroup: Change to TWARN when v2 controllers change
+>   testcases/lib: Implement tst_cgctl binary
+>   controllers: Expand cgroup_lib shell library
+>   controllers: Update cgroup_fj_* to use newer cgroup lib and test lib
+>   controllers: Update memcg_control_test to newer test lib and cgroup
+>     lib
+>   controllers: Update memcg/regression/* to new test and cgroup lib
+>   controllers: Update memcg_stress_test to use newer cgroup lib
+>   controllers: update memcg/functional to use newer cgroup lib
+>   controllers: Update pids.sh to use newer cgroup lib
+>   controllers: update cpuset_regression_test.sh to use newer cgroup lib
+>   controllers: update cgroup_regression_test to use newer cgroup lib
+>
+>  include/tst_cgroup.h                          |   7 +-
+>  lib/tst_cgroup.c                              | 314 +++++++++++++++++-
+>  .../cgroup/cgroup_regression_test.sh          |  17 +-
+>  .../controllers/cgroup_fj/cgroup_fj_common.sh | 105 ++----
+>  .../cgroup_fj/cgroup_fj_function.sh           | 169 ++++++----
+>  .../controllers/cgroup_fj/cgroup_fj_proc.c    |  24 +-
+>  .../controllers/cgroup_fj/cgroup_fj_stress.sh | 168 +++++-----
+>  testcases/kernel/controllers/cgroup_lib.sh    | 128 +++++--
+>  .../cpuset/cpuset_regression_test.sh          |  26 +-
+>  .../controllers/memcg/control/mem_process.c   |  28 +-
+>  .../memcg/control/memcg_control_test.sh       | 150 +++------
+>  .../memcg/functional/memcg_force_empty.sh     |   2 +-
+>  .../controllers/memcg/functional/memcg_lib.sh |  54 +--
+>  .../memcg/regression/memcg_regression_test.sh | 202 +++++------
+>  .../memcg/regression/memcg_test_1.c           |  40 +--
+>  .../memcg/regression/memcg_test_2.c           |  24 +-
+>  .../memcg/regression/memcg_test_3.c           |  35 +-
+>  .../memcg/regression/memcg_test_4.c           |  24 +-
+>  .../memcg/regression/memcg_test_4.sh          |  50 ++-
+>  .../memcg/stress/memcg_stress_test.sh         |  32 +-
+>  testcases/kernel/controllers/pids/pids.sh     |  65 +---
+>  testcases/lib/Makefile                        |   2 +-
+>  testcases/lib/tst_cgctl.c                     |  69 ++++
+>  23 files changed, 966 insertions(+), 769 deletions(-)
+>  create mode 100644 testcases/lib/tst_cgctl.c
 
 
 -- 
-Regards,
-Li Wang
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
