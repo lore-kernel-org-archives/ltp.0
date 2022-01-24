@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB67FC433EF
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 09:47:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03AECC433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 11:13:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 345FB3C8095
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 10:47:18 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0C10B3C8C70
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 12:12:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 018D43C0F5D
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 10:47:07 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 676E33C2AE3
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 12:12:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3814D1A00929
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 10:47:06 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D605C600640
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 12:12:48 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D4B6C1F38B;
- Mon, 24 Jan 2022 09:47:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 1686821122;
+ Mon, 24 Jan 2022 11:12:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643017625;
+ t=1643022768;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kzWmxxCCxBLgr+RmKBlTQw1OgLOq9h4UjqlY2gEarCI=;
- b=rQDiq8wv2K/hAZKH0fhEGJrNyv07MDJH6gej+kHRNQmyRjd27njpUgs2YroZLXmN1yzbG9
- /ahttpnQs7ICX/nOBabppfnvlCfO3P7aHAjOfsTqNh/R7bc0KCu67j6LErFYhYVWyo/Vv5
- EbDWQIuhSBtyKtoGUy6mnnaDGT+iyVk=
+ bh=MWSMnAo5cK/gOUnbd+JOur/e9HgMpt/aTIRgRdSL1s0=;
+ b=oNHec/wSMhuULQeGtpaseJypALXP8dgX2tfcHeBfpYddtY820U4fhXvPe9ld14m8AMCNFQ
+ p/9FLWV9DAQFOXDu1+OK2z2JJW1Tw9DOQLRi4OtHuZNx11MOisFaE1RBrr9Y9VsJl1HeNO
+ qr9KrpJwn1FxV4VPombAlQT/0rWCYE4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643017625;
+ s=susede2_ed25519; t=1643022768;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kzWmxxCCxBLgr+RmKBlTQw1OgLOq9h4UjqlY2gEarCI=;
- b=O8g/zAD4u+qOp8vqsgYVB5XdWr2SuVflUrSPaHrSB1LzAb1dLfGD6eoVrEaySNfoyqR1z9
- 1Jl/352SDiGtcqCg==
+ bh=MWSMnAo5cK/gOUnbd+JOur/e9HgMpt/aTIRgRdSL1s0=;
+ b=fJ3n4kMZvrB9Q5YVD/eErIy633terIGVaEvH72pS+qJoDpRKzMkjEtoDi71i9K58m/s/8Y
+ ept9UQvPdgCl2wAw==
 Received: from g78 (unknown [10.163.24.90])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 91B6FA3B8B;
- Mon, 24 Jan 2022 09:47:05 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id C8770A3B84;
+ Mon, 24 Jan 2022 11:12:47 +0000 (UTC)
 References: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
+ <2a49929d166ac88d4c7900c5961be77cbd601fa4.1642601554.git.luke.nowakowskikrijger@canonical.com>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Date: Mon, 24 Jan 2022 09:40:20 +0000
-In-reply-to: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
-Message-ID: <87sftdzcrr.fsf@suse.de>
+Date: Mon, 24 Jan 2022 10:44:17 +0000
+In-reply-to: <2a49929d166ac88d4c7900c5961be77cbd601fa4.1642601554.git.luke.nowakowskikrijger@canonical.com>
+Message-ID: <87o841z8sx.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 00/16] Expand Cgroup lib and modify controller
- tests
+Subject: Re: [LTP] [PATCH 06/16] API/cgroup: Change to TWARN when v2
+ controllers change
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,73 +81,57 @@ Hello Luke,
 
 Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> writes:
 
-> This patchset aims to expand the cgroup_lib shell library to simplify
-> and centralize the whole mounting and cleanup process that can get
-> rather confusing and redundant when writing cgroup controller tests from
-> a shell environment. This is done by having the shell library make calls
-> to the C cgroup API from a binary utility. 
->
-> In this patch set there are a few tests that have been extensively
-> rewritten to work with the new test API and to use the new functionality
-> from the cgroup lib. Because the test Cgroup lib handles mounting for v1
-> and v2 controllers, some tests were modified to also work under cgroup
-> v2. Some tests that were written for v1 controller also effictively test
-> v2 controllers, while others were written to test v2 controllers in the
-> spirit of the test or skipped outright.
+> When the v1 blkio controller is mounted it unmounts the v2 io controller
+> effectively bringing the amount of cgroupv2 controllers down and
+> triggering the tst_brk. Because this is exected behaivor it should be
+> changed to TWARN in case there is something funny still going on and
+> should be logged.
 
-Thanks I am really happy to see this!
+Ah, we are in new territory here, the library assumes this won't happen.
 
-It would be nice to see the tests rewritten in C, but if this works,
-then perhaps we can get many more tests working on both V1 and V2 quite
-quickly. Including perhaps some kernel selftests (IIRC there are some in
-shell as well).
+What happens if a test author requires the V2 io controller then
+requires the blkio controller?
+
+At best I think we will get TBROK saying some file doesn't exist. Not
+too bad, but nothing helpful either.
+
+Also what happens if the io controller was in use, disappears then
+returns? (that is, if it returns, because unmounting V1 controllers
+doesn't guarantee the V1 root is destroyed and it can block V2 from
+being used afterwards).
+
+The basic assumption we originally made was that we can't mess with the
+current CGroup setup beyond adding to it. LTP doesn't guarantee it won't
+mess up your system, but it at least tries not to. Pulling controllers
+out from underneath the system manager seems likely to cause wierd
+errors for people.
+
+Why not treat the blkio controller and io controller as the same thing?
+Or if they are not remotely compatible, then do tst_brk(TCONF... when we
+need blkio, but io is on V2.
+
+BTW, this is a moot point, but TWARN is really only used when we think
+an error was just caused by previous errors. Otherwise, if something is
+expected, then it should be TINFO.
 
 >
-> Luke Nowakowski-Krijger (16):
->   API/cgroup: Modify tst_cgroup_print_config for easier parsing and
->     consumption
->   API/cgroup: Add option for specific pid to tst_cgroup_opts
->   API/cgroup: Add cgroup_find_root helper function
->   API/cgroup: Implement tst_cgroup_load_config()
->   API/cgroup: Add more controllers to tst_cgroup
->   API/cgroup: Change to TWARN when v2 controllers change
->   testcases/lib: Implement tst_cgctl binary
->   controllers: Expand cgroup_lib shell library
->   controllers: Update cgroup_fj_* to use newer cgroup lib and test lib
->   controllers: Update memcg_control_test to newer test lib and cgroup
->     lib
->   controllers: Update memcg/regression/* to new test and cgroup lib
->   controllers: Update memcg_stress_test to use newer cgroup lib
->   controllers: update memcg/functional to use newer cgroup lib
->   controllers: Update pids.sh to use newer cgroup lib
->   controllers: update cpuset_regression_test.sh to use newer cgroup lib
->   controllers: update cgroup_regression_test to use newer cgroup lib
+> Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+> ---
+>  lib/tst_cgroup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
->  include/tst_cgroup.h                          |   7 +-
->  lib/tst_cgroup.c                              | 314 +++++++++++++++++-
->  .../cgroup/cgroup_regression_test.sh          |  17 +-
->  .../controllers/cgroup_fj/cgroup_fj_common.sh | 105 ++----
->  .../cgroup_fj/cgroup_fj_function.sh           | 169 ++++++----
->  .../controllers/cgroup_fj/cgroup_fj_proc.c    |  24 +-
->  .../controllers/cgroup_fj/cgroup_fj_stress.sh | 168 +++++-----
->  testcases/kernel/controllers/cgroup_lib.sh    | 128 +++++--
->  .../cpuset/cpuset_regression_test.sh          |  26 +-
->  .../controllers/memcg/control/mem_process.c   |  28 +-
->  .../memcg/control/memcg_control_test.sh       | 150 +++------
->  .../memcg/functional/memcg_force_empty.sh     |   2 +-
->  .../controllers/memcg/functional/memcg_lib.sh |  54 +--
->  .../memcg/regression/memcg_regression_test.sh | 202 +++++------
->  .../memcg/regression/memcg_test_1.c           |  40 +--
->  .../memcg/regression/memcg_test_2.c           |  24 +-
->  .../memcg/regression/memcg_test_3.c           |  35 +-
->  .../memcg/regression/memcg_test_4.c           |  24 +-
->  .../memcg/regression/memcg_test_4.sh          |  50 ++-
->  .../memcg/stress/memcg_stress_test.sh         |  32 +-
->  testcases/kernel/controllers/pids/pids.sh     |  65 +---
->  testcases/lib/Makefile                        |   2 +-
->  testcases/lib/tst_cgctl.c                     |  69 ++++
->  23 files changed, 966 insertions(+), 769 deletions(-)
->  create mode 100644 testcases/lib/tst_cgctl.c
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index 3d56a3364..c53b88ed2 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -677,7 +677,7 @@ static void cgroup_root_scan(const char *const mnt_type,
+>  		goto discard;
+>  
+>  	if (root->ctrl_field)
+> -		tst_brk(TBROK, "Available V2 controllers are changing between scans?");
+> +		tst_res(TWARN, "Available V2 controllers are changing between scans?");
+>  
+>  	root->ver = TST_CGROUP_V2;
 
 
 -- 
