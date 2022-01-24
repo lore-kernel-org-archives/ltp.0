@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0003C433EF
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 20:48:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3E0FC433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 21:10:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 111303C9292
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 21:48:21 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 146C93C93B0
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 22:10:26 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B13123C2911
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 21:48:11 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 230DC3C65E6
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 22:10:16 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 021B21400518
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 21:48:10 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9818E600832
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 22:10:15 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F381F1F380;
- Mon, 24 Jan 2022 20:48:09 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B27101F380;
+ Mon, 24 Jan 2022 21:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643057290;
+ t=1643058614;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8rUs0PpSkxwtOMECw23ldhV6gEpBkLJDvdynQ9Ry7kY=;
- b=l/msyb+UBZ1JdZcsMJ/Z3FLO2vq/leDejqzrp/yjOhE6/Bzy01Nzidzq4emXRT9FWhNUHa
- YBumUlVFUEVbphUysyyXIhG9NdZElr2ofL55WtnR59WCBWVG/EkWX4NdbY0NwygYt8hruM
- DrFtnQLrOGEqnLiMoNCYjqYtEsO42VA=
+ bh=MeP5XoGIJZfAr4l8T4aIdYDVR2IGQc5pZeq+l9Xp2Rg=;
+ b=uTd00DQ7w6zCc3/MYqPgfOSrTRcaqhEPC8eduQbTjZQlTEmOTvXKAjNHU2gH89pBtZIWOV
+ Btgc6Kbl1NBbdyowgJ9u45gRQF5SKrEw9R5GxLWEdDQrSO//huoXNb2qsajWv5Qa9IhAyb
+ /QVE4lexMkwhbshHMjIOGFEeg2+kLG8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643057290;
+ s=susede2_ed25519; t=1643058614;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8rUs0PpSkxwtOMECw23ldhV6gEpBkLJDvdynQ9Ry7kY=;
- b=okm7yI0YbjCGY5THbOqkaJETZXJbhLpDIRpqIPmI/FbVOcNFH5CdLJhD6sIGEjflHsLzK1
- +1FjqvZbGkYXmnAw==
+ bh=MeP5XoGIJZfAr4l8T4aIdYDVR2IGQc5pZeq+l9Xp2Rg=;
+ b=Tqqn3xtOYeKgNiq7JzTUdBbK4aAIhucTXTGCMOA1TZLznROx3FB6WWhuLaZ1RkI6+ByHKF
+ 7h5OxISbWxG2FqAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A879713ADB;
- Mon, 24 Jan 2022 20:48:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EA1B13CC8;
+ Mon, 24 Jan 2022 21:10:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id U+yrIokQ72GdNgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 20:48:09 +0000
-Date: Mon, 24 Jan 2022 21:48:08 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id AvgkGLYV72G/PgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 21:10:14 +0000
+Date: Mon, 24 Jan 2022 22:10:12 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Ye8QiIUfmKeUrSmg@pevik>
-References: <20220124150533.25935-1-andrea.cervesato@suse.de>
+To: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
+Message-ID: <Ye8VtDoKBxoV+zGf@pevik>
+References: <20220124065937.17383-1-pvorel@suse.cz>
+ <d566cf35-7e73-5052-4f77-2bbe05ba8904@virtuozzo.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220124150533.25935-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <d566cf35-7e73-5052-4f77-2bbe05ba8904@virtuozzo.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Replace ltp_syscall with tst_syscall
+Subject: Re: [LTP] [PATCH 1/1] rpc_lib.sh: Check for running RPC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,76 +78,31 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: NeilBrown <neilb@suse.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+> > Nikita, does it really fix your case? Or there needs to be 2 rpcinfo -p
+> > calls with sleep in between?
 
-> diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
-> index d7daf8ad0..77391dbdf 100755
-> --- a/include/lapi/syscalls/regen.sh
-> +++ b/include/lapi/syscalls/regen.sh
-> @@ -35,21 +35,17 @@ cat << EOF > "${output_pid}"
->  #include <asm/unistd.h>
->  #include "cleanup.c"
+> Yes, it fixes that.
 
-> -#define ltp_syscall(NR, ...) ({ \\
-> -	int __ret; \\
-> -	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
-> -		errno = ENOSYS; \\
-> -		__ret = -1; \\
-> -	} else { \\
-> -		__ret = syscall(NR, ##__VA_ARGS__); \\
-> -	} \\
-> -	if (__ret == -1 && errno == ENOSYS) { \\
-> -		tst_brkm(TCONF, CLEANUP, \\
-> -			"syscall(%d) " #NR " not supported on your arch", \\
-> -			NR); \\
-> -	} \\
-> -	__ret; \\
-> +#ifdef TST_TEST_H__
-> +#define TST_SYSCALL_BRK__(NR) ({ \
-> +	tst_brk(TCONF, \
-> +		"syscall(%d) " #NR " not supported on your arch", NR); \
-> +})
-> +#else
-> +#define TST_SYSCALL_BRK__(NR) ({ \
-> +	tst_brkm(TCONF, CLEANUP, \
-> +		"syscall(%d) " #NR " not supported on your arch", NR); \
->  })
-> +#endif
-I miss this in my review. Cyril meant to put double backslashes also
-here in regen.sh (as it was in original version). The result is then:
+> Btw, easy test is:
+>   systemctl stop rpcbind.service
+>   runltp -f net.rpc
 
-#ifdef TST_TEST_H__
-#define TST_SYSCALL_BRK__(NR) ({ 	tst_brk(TCONF, 		"syscall(%d) " #NR " not supported on your arch", NR); })
-#else
-#define TST_SYSCALL_BRK__(NR) ({ 	tst_brkm(TCONF, CLEANUP, 		"syscall(%d) " #NR " not supported on your arch", NR); })
-#endif
+> After applying your patch, that results in no TCONF from rcp01.sh, because
+> rpcbind.socket is still there, and systemd restarts rpcbind on request.
 
-instead of:
-
-#ifdef TST_TEST_H__
-#define TST_SYSCALL_BRK__(NR) ({ \
-	tst_brk(TCONF, \
-		"syscall(%d) " #NR " not supported on your arch", NR); \
-})
-#else
-#define TST_SYSCALL_BRK__(NR) ({ \
-	tst_brkm(TCONF, CLEANUP, \
-		"syscall(%d) " #NR " not supported on your arch", NR); \
-})
-#endif
-
-Merging it with this fix.
-
-Thanks a lot!
+FYI merged, with fixing $x variable to $services.
+Again, thanks both for your work.
 
 Kind regards,
 Petr
+
+> Nikita
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
