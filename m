@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD06C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CCFFC433EF
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:05:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C5553C7E58
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 16:03:32 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id C9A7A3C9289
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 16:05:48 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 53EA63C0F5D
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:03:22 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 505B53C0F5D
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:05:38 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E1C141A007FD
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:03:19 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6CAE82000DB
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:05:36 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 31D2B1F38A;
- Mon, 24 Jan 2022 15:03:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 974281F38A;
+ Mon, 24 Jan 2022 15:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643036599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643036735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ISDAiXHoxp3V8jxBtw3FsbsMpbkZD0GjB3sSjhLnBbI=;
- b=xp1ImWFapyyU28jmJH833atJh/ZdAtcN7jsuJvqYguWXqiBPr2pWgdfi0q48k2vpasD1Eb
- Sr7tULh1kpTO+El52NmAHuOnQk2Hv3y40g0+xzCoYVLrpBr/i1u5Ukyzs1C21ibEzLOxGz
- zDyz3EEweloCGyDHcV0WQD2d7W0dXsM=
+ bh=7VMBp8PI7NCDrMrkQxNqOYgxg3No/mymwMAYTzmGN7g=;
+ b=hJpnW4tnClvd2s8l9wNFXQDss23/PjCu/WOWso3a1mzQoGlxhzpCuxcEzTyCgQ8BQetGdH
+ W6DgECn4En00asuadygkRqKhrtbgMIhs0/Gtf7lzFRqNfsDbTNsnfmS2wHfwkHHlWI33MG
+ a8qYepMS58ZCe8Pme2EFovqWN19AAaY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643036599;
+ s=susede2_ed25519; t=1643036735;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ISDAiXHoxp3V8jxBtw3FsbsMpbkZD0GjB3sSjhLnBbI=;
- b=rMrwhmR1jhla2HilrHtmNeIACp+uLRDTJf4jRkoPuOc6WLmOl5phwMqEiVCNZsvNq2U9zj
- qaLWs5m3eD0NJGDg==
+ bh=7VMBp8PI7NCDrMrkQxNqOYgxg3No/mymwMAYTzmGN7g=;
+ b=usBThKs9A+TyGmPAJh+ERCqi0+QhpX6w7hx1Yxv+7tCY0YU5F5HJVxGyQq4ZuOAsJQs7f7
+ /Z97Fm456pjlaFBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E736313C1B;
- Mon, 24 Jan 2022 15:03:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 389FF13C1B;
+ Mon, 24 Jan 2022 15:05:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GctHNra/7mEVDgAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Mon, 24 Jan 2022 15:03:18 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id XU+ACz/A7mFFDwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 24 Jan 2022 15:05:35 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 24 Jan 2022 16:03:17 +0100
-Message-Id: <20220124150317.24616-1-andrea.cervesato@suse.de>
+Date: Mon, 24 Jan 2022 16:05:33 +0100
+Message-Id: <20220124150533.25935-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Replace ltp_syscall with tst_syscall
+Subject: [LTP] [PATCH v3] Replace ltp_syscall with tst_syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,36 +86,36 @@ been completed with the following procedure:
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- include/lapi/fallocate.h                      | 10 +---
+ include/lapi/fallocate.h                      | 10 ++-----
  include/lapi/init_module.h                    |  2 +-
  include/lapi/mkdirat.h                        |  2 +-
  include/lapi/readlinkat.h                     |  2 +-
  include/lapi/renameat.h                       |  2 +-
- include/lapi/rt_sigaction.h                   | 10 +---
- include/lapi/sync_file_range.h                | 20 +++-----
- include/lapi/syscalls/regen.sh                | 50 +++++++++----------
- include/lapi/timerfd.h                        |  6 +--
+ include/lapi/rt_sigaction.h                   | 10 ++-----
+ include/lapi/sync_file_range.h                | 20 +++++---------
+ include/lapi/syscalls/regen.sh                | 26 ++++++++-----------
+ include/lapi/timerfd.h                        |  6 ++---
  libs/libltpsigwait/sigwait.c                  |  2 +-
  libs/libltpswap/libswap.c                     |  2 +-
  testcases/cve/cve-2016-10044.c                |  2 +-
  .../kernel/containers/libclone/libclone.c     |  2 +-
- testcases/kernel/containers/mqns/mqns_01.c    |  8 +--
- testcases/kernel/containers/mqns/mqns_02.c    |  6 +--
+ testcases/kernel/containers/mqns/mqns_01.c    |  8 +++---
+ testcases/kernel/containers/mqns/mqns_02.c    |  6 ++---
  testcases/kernel/containers/mqns/mqns_03.c    |  2 +-
  testcases/kernel/containers/mqns/mqns_04.c    |  2 +-
- testcases/kernel/containers/pidns/pidns30.c   | 12 ++---
- testcases/kernel/containers/pidns/pidns31.c   | 12 ++---
- testcases/kernel/containers/userns/userns04.c |  6 +--
- .../controllers/cpuset/cpuset_lib/libcpuset.c |  6 +--
- testcases/kernel/syscalls/cma/process_vm01.c  |  4 +-
- .../kernel/syscalls/cma/process_vm_readv02.c  |  4 +-
- .../kernel/syscalls/cma/process_vm_readv03.c  |  6 +--
- .../kernel/syscalls/cma/process_vm_writev02.c |  4 +-
+ testcases/kernel/containers/pidns/pidns30.c   | 12 ++++-----
+ testcases/kernel/containers/pidns/pidns31.c   | 12 ++++-----
+ testcases/kernel/containers/userns/userns04.c |  6 ++---
+ .../controllers/cpuset/cpuset_lib/libcpuset.c |  6 ++---
+ testcases/kernel/syscalls/cma/process_vm01.c  |  4 +--
+ .../kernel/syscalls/cma/process_vm_readv02.c  |  4 +--
+ .../kernel/syscalls/cma/process_vm_readv03.c  |  6 ++---
+ .../kernel/syscalls/cma/process_vm_writev02.c |  4 +--
  testcases/kernel/syscalls/connect/connect01.c |  2 +-
  .../syscalls/delete_module/delete_module01.c  |  2 +-
  testcases/kernel/syscalls/eventfd/eventfd01.c |  2 +-
- .../kernel/syscalls/eventfd2/eventfd2_01.c    |  4 +-
- .../kernel/syscalls/eventfd2/eventfd2_02.c    |  4 +-
+ .../kernel/syscalls/eventfd2/eventfd2_01.c    |  4 +--
+ .../kernel/syscalls/eventfd2/eventfd2_02.c    |  4 +--
  .../kernel/syscalls/eventfd2/eventfd2_03.c    |  2 +-
  .../kernel/syscalls/exit_group/exit_group01.c |  2 +-
  .../kernel/syscalls/faccessat/faccessat01.c   |  2 +-
@@ -122,20 +123,20 @@ Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
  testcases/kernel/syscalls/fchownat/fchownat.h |  2 +-
  testcases/kernel/syscalls/fcntl/fcntl31.c     |  2 +-
  testcases/kernel/syscalls/fork/fork05.c       |  2 +-
- testcases/kernel/syscalls/fstatat/fstatat01.c |  6 +--
+ testcases/kernel/syscalls/fstatat/fstatat01.c |  6 ++---
  .../kernel/syscalls/futimesat/futimesat01.c   |  2 +-
- .../get_robust_list/get_robust_list01.c       | 10 ++--
+ .../get_robust_list/get_robust_list01.c       | 10 +++----
  .../kernel/syscalls/getrandom/getrandom01.c   |  2 +-
  .../kernel/syscalls/getrandom/getrandom02.c   |  2 +-
  .../kernel/syscalls/getrandom/getrandom03.c   |  2 +-
  .../kernel/syscalls/getrandom/getrandom04.c   |  2 +-
  .../syscalls/gettimeofday/gettimeofday01.c    |  2 +-
- .../syscalls/inotify_init/inotify_init1_01.c  |  4 +-
- .../syscalls/inotify_init/inotify_init1_02.c  |  4 +-
+ .../syscalls/inotify_init/inotify_init1_01.c  |  4 +--
+ .../syscalls/inotify_init/inotify_init1_02.c  |  4 +--
  .../kernel/syscalls/ipc/shmctl/shmctl05.c     |  2 +-
  testcases/kernel/syscalls/linkat/linkat01.c   |  2 +-
  testcases/kernel/syscalls/linkat/linkat02.c   |  2 +-
- .../syscalls/migrate_pages/migrate_pages01.c  | 20 ++++----
+ .../syscalls/migrate_pages/migrate_pages01.c  | 20 +++++++-------
  testcases/kernel/syscalls/mknodat/mknodat.h   |  2 +-
  testcases/kernel/syscalls/mknodat/mknodat02.c |  2 +-
  .../kernel/syscalls/newuname/newuname01.c     |  2 +-
@@ -144,26 +145,26 @@ Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
  testcases/kernel/syscalls/ppoll/ppoll01.c     |  2 +-
  testcases/kernel/syscalls/prctl/prctl05.c     |  2 +-
  .../kernel/syscalls/renameat2/renameat2.h     |  2 +-
- .../rt_sigprocmask/rt_sigprocmask01.c         |  6 +--
+ .../rt_sigprocmask/rt_sigprocmask01.c         |  6 ++---
  .../rt_sigprocmask/rt_sigprocmask02.c         |  2 +-
  .../sched_get_priority_max01.c                |  2 +-
  testcases/kernel/syscalls/select/select_var.h |  2 +-
  .../set_thread_area/set_thread_area01.c       |  2 +-
  .../set_tid_address/set_tid_address01.c       |  2 +-
  .../syscalls/setdomainname/setdomainname.h    |  2 +-
- .../kernel/syscalls/sgetmask/sgetmask01.c     |  4 +-
+ .../kernel/syscalls/sgetmask/sgetmask01.c     |  4 +--
  .../kernel/syscalls/signalfd/signalfd01.c     |  2 +-
- .../kernel/syscalls/signalfd4/signalfd4_01.c  |  4 +-
- .../kernel/syscalls/signalfd4/signalfd4_02.c  |  4 +-
- .../kernel/syscalls/ssetmask/ssetmask01.c     |  6 +--
+ .../kernel/syscalls/signalfd4/signalfd4_01.c  |  4 +--
+ .../kernel/syscalls/signalfd4/signalfd4_02.c  |  4 +--
+ .../kernel/syscalls/ssetmask/ssetmask01.c     |  6 ++---
  .../kernel/syscalls/symlinkat/symlinkat01.c   |  2 +-
- .../timer_getoverrun/timer_getoverrun01.c     |  6 +--
- testcases/kernel/syscalls/timerfd/timerfd02.c |  4 +-
- testcases/kernel/syscalls/timerfd/timerfd03.c |  4 +-
+ .../timer_getoverrun/timer_getoverrun01.c     |  6 ++---
+ testcases/kernel/syscalls/timerfd/timerfd02.c |  4 +--
+ testcases/kernel/syscalls/timerfd/timerfd03.c |  4 +--
  testcases/kernel/syscalls/tkill/tkill01.c     |  2 +-
- testcases/kernel/syscalls/tkill/tkill02.c     |  3 +-
+ testcases/kernel/syscalls/tkill/tkill02.c     |  3 +--
  testcases/kernel/syscalls/utils/compat_16.h   |  2 +-
- 78 files changed, 164 insertions(+), 187 deletions(-)
+ 78 files changed, 152 insertions(+), 175 deletions(-)
 
 diff --git a/include/lapi/fallocate.h b/include/lapi/fallocate.h
 index 92b6994a4..fc246bcfc 100644
@@ -330,10 +331,10 @@ index 2f81e446c..b1d2b2827 100644
  }
  #endif
 diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
-index d7daf8ad0..8fa381c97 100755
+index d7daf8ad0..77391dbdf 100755
 --- a/include/lapi/syscalls/regen.sh
 +++ b/include/lapi/syscalls/regen.sh
-@@ -35,34 +35,30 @@ cat << EOF > "${output_pid}"
+@@ -35,21 +35,17 @@ cat << EOF > "${output_pid}"
  #include <asm/unistd.h>
  #include "cleanup.c"
  
@@ -355,42 +356,25 @@ index d7daf8ad0..8fa381c97 100755
 +#define TST_SYSCALL_BRK__(NR) ({ \
 +	tst_brk(TCONF, \
 +		"syscall(%d) " #NR " not supported on your arch", NR); \
- })
--
--#define tst_syscall(NR, ...) ({ \\
--	int tst_ret; \\
--	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
--		errno = ENOSYS; \\
--		tst_ret = -1; \\
--	} else { \\
--		tst_ret = syscall(NR, ##__VA_ARGS__); \\
--	} \\
--	if (tst_ret == -1 && errno == ENOSYS) { \\
--		tst_brk(TCONF, "syscall(%d) " #NR " not supported", NR); \\
--	} \\
--	tst_ret; \\
++})
 +#else
 +#define TST_SYSCALL_BRK__(NR) ({ \
 +	tst_brkm(TCONF, CLEANUP, \
 +		"syscall(%d) " #NR " not supported on your arch", NR); \
-+})
-+#endif
-+
-+#define tst_syscall(NR, ...) ({ \
-+	int tst_ret; \
-+	if (NR == __LTP__NR_INVALID_SYSCALL) { \
-+		errno = ENOSYS; \
-+		tst_ret = -1; \
-+	} else { \
-+		tst_ret = syscall(NR, ##__VA_ARGS__); \
-+	} \
-+	if (tst_ret == -1 && errno == ENOSYS) { \
-+		TST_SYSCALL_BRK__(NR); \
-+	} \
-+	tst_ret; \
  })
++#endif
  
- EOF
+ #define tst_syscall(NR, ...) ({ \\
+ 	int tst_ret; \\
+@@ -60,7 +56,7 @@ cat << EOF > "${output_pid}"
+ 		tst_ret = syscall(NR, ##__VA_ARGS__); \\
+ 	} \\
+ 	if (tst_ret == -1 && errno == ENOSYS) { \\
+-		tst_brk(TCONF, "syscall(%d) " #NR " not supported", NR); \\
++		TST_SYSCALL_BRK__(NR); \\
+ 	} \\
+ 	tst_ret; \\
+ })
 diff --git a/include/lapi/timerfd.h b/include/lapi/timerfd.h
 index 14f8405ab..2613746ca 100644
 --- a/include/lapi/timerfd.h
