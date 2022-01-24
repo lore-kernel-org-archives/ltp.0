@@ -4,46 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96929C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 17:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37C1DC433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 17:37:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C47603C926E
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 18:37:26 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id AF5A43C928D
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 18:37:37 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 898D33C6F6F
+ by picard.linux.it (Postfix) with ESMTPS id 9E4D13C8840
  for <ltp@lists.linux.it>; Mon, 24 Jan 2022 18:37:17 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F21BC1A00606
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C2B96005F3
  for <ltp@lists.linux.it>; Mon, 24 Jan 2022 18:37:16 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3C37F21115;
+ by smtp-out2.suse.de (Postfix) with ESMTP id 877181F37D;
  Mon, 24 Jan 2022 17:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
  t=1643045836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=HXWV2cU8nFbERVLsvoDawcCZQ09K7K0YWK5GJqNsueg=;
- b=irQh0slZJIbSdNJ7h5G9NUmcT/lVVnPb6Zf/+LuMx/nhcmAkJ1ROKc3KyYk4ubZdNgYf58
- oYjYVzhuYOQJsgBm0S7YoPbrBzWJWl3iSS83TDH/r/+UjWsL3HJUjDFIZrpiKF2nzWuhFo
- +Yi+WxdyPbO0sEhNC6LyrYLGT/XORX4=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5V/lct0cH3QJjONlLWxCLiU0PY/Can4t0fk2Jgw7Kpc=;
+ b=Mf7th9hcUtOc1AtzA4La2e4xGqn8FTRYa/wnahZ/FgawFYJdIXF/bI24ALRVki0xSl4IV9
+ Gnfr7SVPDSKvXe7vWA4eKkv4hlB/GniiH2i0j3HfBwSGnb5JU9+m+Cp45AkxybcfkfeLDu
+ /bmzpupUQ2HIpsTWq+CEz2lQlxAkR54=
 Received: from g78.suse.de (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.24.90])
- by relay2.suse.de (Postfix) with ESMTP id 02003A3B81;
- Mon, 24 Jan 2022 17:37:15 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 4DAE5A3B8C;
+ Mon, 24 Jan 2022 17:37:16 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Mon, 24 Jan 2022 17:36:49 +0000
-Message-Id: <20220124173651.652-1-rpalethorpe@suse.com>
+Date: Mon, 24 Jan 2022 17:36:50 +0000
+Message-Id: <20220124173651.652-2-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220124173651.652-1-rpalethorpe@suse.com>
+References: <20220124173651.652-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] memcontrol02: Add VFAT/MSDOS magic and set error
- to 50% for it also
+Subject: [LTP] [PATCH 2/3] memcontrol02: Fix anon memory comparison
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,39 +65,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VFAT also allocates some extra non-pagecache memory for tracking
-buffers.
+All memory is being compared with the size malloc'ed instead of just
+anon.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_fs.h                                  | 1 +
- testcases/kernel/controllers/memcg/memcontrol02.c | 1 +
- 2 files changed, 2 insertions(+)
+ testcases/kernel/controllers/memcg/memcontrol02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index efcdff608..3bab9da8b 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -30,6 +30,7 @@
- #define TST_EXOFS_MAGIC    0x5DF5
- #define TST_OVERLAYFS_MAGIC 0x794c7630
- #define TST_FUSE_MAGIC     0x65735546
-+#define TST_VFAT_MAGIC     0x4d44 /* AKA MSDOS */
- #define TST_EXFAT_MAGIC    0x2011BAB0UL
- 
- enum {
 diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
-index 0b8f317a8..411f5aea6 100644
+index 411f5aea6..0d144cf2d 100644
 --- a/testcases/kernel/controllers/memcg/memcontrol02.c
 +++ b/testcases/kernel/controllers/memcg/memcontrol02.c
-@@ -153,6 +153,7 @@ static void setup(void)
- 	cg_test = tst_cgroup_get_test_group();
+@@ -68,7 +68,7 @@ static void alloc_anon_50M_check(void)
  
- 	switch (tst_fs_type(TMPDIR)) {
-+	case TST_VFAT_MAGIC:
- 	case TST_EXFAT_MAGIC:
- 	case TST_EXT234_MAGIC:
- 		file_to_all_error = 50;
+ 	TST_EXP_EXPR(anon > 0, "(memory.stat.anon=%zd) > 0", anon);
+ 	TST_EXP_EXPR(values_close(size, current, 3),
+-		     "(size=%zd) ~= (memory.stat.anon=%zd)", size, current);
++		     "(size=%zd) ~= (memory.stat.anon=%zd)", size, anon);
+ 	TST_EXP_EXPR(values_close(anon, current, 3),
+ 		     "(memory.current=%zd) ~= (memory.stat.anon=%zd)",
+ 		     current, anon);
 -- 
 2.34.1
 
