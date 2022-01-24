@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15BC8C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10604C433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:01:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D249D3C884A
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 16:00:53 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 63DE43C93BA
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 16:01:19 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 620603C21D9
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:00:42 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 7D8C33C6F26
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:01:08 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8797E600040
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:00:41 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8E0A61A00936
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:01:07 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8C788212BA;
- Mon, 24 Jan 2022 15:00:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CD81A21996;
+ Mon, 24 Jan 2022 15:01:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643036440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643036466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fWL7udvW4I5Czg6kJAFAP5rBRKL5xSWnkjSkXXcwRSc=;
- b=ivPqJLpbhU12210sWuDYlKiF7y7MhN25BwzGBVmx3BlelO7932O+xxQd2fyG2OIBjSQWRW
- UKUsz0KIFNkcsauQ4r2kpJp4N8kQCG3WB9EFU0aRzi8eprVGQlg7C+T2iLEZoerW3oblTs
- FAlknQyRLrgwva0BB9k0apTnWlNNmBg=
+ bh=VnGDSOS2by04f5A3FMoRY8Cnl2UWGkqM+xfE/rAUivg=;
+ b=0D+3Sv78BEZomsl5uVRvvlFk86J3tkZ3whi82pwu57kK6d44oG0Yj7nQF3DvQRcKjtl95m
+ 4Dswxtb99H04VBt9/hkW8rb7tzVLapB3mzdVny2k80i25bv4ohbfqncJstCn9vr/mBG0yw
+ 0/9h12QTlzf7A4AJIrlq4pWZ5vBl7JE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643036440;
+ s=susede2_ed25519; t=1643036466;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fWL7udvW4I5Czg6kJAFAP5rBRKL5xSWnkjSkXXcwRSc=;
- b=pRpNCw53Y7ww7QV0qM5BvSUYgunwCz7ct9SZr9AWmTzem84F/pzLiIyEzWiUk1FYrfjrp7
- CdwkktUAlmxHuBBw==
+ bh=VnGDSOS2by04f5A3FMoRY8Cnl2UWGkqM+xfE/rAUivg=;
+ b=hb2yKh+b+4h9tautRxEWkYNnehYRPBr/kTzJt3MW3iF1JL29dDE5B8FnGTkEP+gav53ka7
+ rkrwxM1y5wAwuRDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69E0913C1B;
- Mon, 24 Jan 2022 15:00:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E59513C1B;
+ Mon, 24 Jan 2022 15:01:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YsnRGRi/7mF4DAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 24 Jan 2022 15:00:40 +0000
-Date: Mon, 24 Jan 2022 16:02:27 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0eb0JTK/7mHCDAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 24 Jan 2022 15:01:06 +0000
+Date: Mon, 24 Jan 2022 16:02:53 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Ye6/g0InSIT4J3kV@yuki>
+Message-ID: <Ye6/nRFl9ajDiLBr@yuki>
 References: <20220114194444.16949-1-pvorel@suse.cz>
- <20220114194444.16949-3-pvorel@suse.cz>
+ <20220114194444.16949-2-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220114194444.16949-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20220114194444.16949-2-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] doc/user-guide: Remove "2. Colorized output"
- section
+Subject: Re: [LTP] [PATCH 1/2] doc/user-guide: Improve LTPROOT docs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,18 +81,6 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-
-Hi!
-> @@ -14,8 +14,9 @@ For running LTP network tests see `testcases/network/README.md`.
->  | 'LTPROOT'             | Prefix for installed LTP.  **Should be always set**
->                            as some tests need it for path to test data files
->                            ('LTP_DATAROOT'). LTP is by default installed into '/opt/ltp'.
-> -| 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
-> -                          'n' or '0': never colorize.
-> +| 'LTP_COLORIZE_OUTPUT' | By default LTP colorizes it's output unless using
-> +                          pipe or redirect to file.  Force colorized output behaviour:
-
-Slightly better: "unless it's redirected to a pipe or file"
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
