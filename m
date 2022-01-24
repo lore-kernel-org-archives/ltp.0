@@ -4,65 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C679BC433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 14:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68641C433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 14:44:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 157493C8840
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:43:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 3A1213C875F
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:44:17 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29B9E3C7E58
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:43:02 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C42183C7E58
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:44:07 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6E34010009F5
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:43:02 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C44F9140099D
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:44:06 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7068D1F38B;
- Mon, 24 Jan 2022 14:43:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CFB201F38F;
+ Mon, 24 Jan 2022 14:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643035381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643035445;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=20iTS7b1EqcePa0So8//Nn/9q29HpEhiWHs/kMtYt7I=;
- b=LNcSXEVMstKfzwIgwV3HC2+fAZywWYzapbRyXOJjvJPjRTLQ3Wt++NWRT6txWz3ukmpVvM
- GcJ37YfutL8JdZQXrCG90zsb7OsOd2VSQI2sIJl4gzIgnAf3X5PlLs7VNTQiYU5XkAq5HP
- KZmM+31ZhLg9H2lF5gLj9/80P815ozE=
+ bh=z5hWZd1n8BDf6D7MnPHpqS14Bg9OWiOhXnibK/kkkKA=;
+ b=oTJ7HTZOlv6ZxSPMigQjZAUqGP7lechKFk/K6eADvXjYM9UjrDRfPhjGFK5MlealvI+jNC
+ VXE4ATp9hp2Dn5Aj+21klbWSp7fiUB25tGWPFZL03pSDBauNw9fvggHqEXGbIn5opb+3+L
+ 7ziuD0DFvfVmXdVxtmcSJhgVuhaIaxc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643035381;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1643035445;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=20iTS7b1EqcePa0So8//Nn/9q29HpEhiWHs/kMtYt7I=;
- b=2U6mXfGK/08iJL1EeP1yX+oGAKsFVkcgb0+8yeEWu0j+UEcEOwr5X5pEgi5EoyalNHmzxF
- Wj3fK1g1sU6f/KAg==
+ bh=z5hWZd1n8BDf6D7MnPHpqS14Bg9OWiOhXnibK/kkkKA=;
+ b=5YFVSdaTmIw+0lqHq2JLCx1WnItUukhzz04aO2lQtKCTkAkrylwa2INEnyejfm1zGBJfQE
+ OyBlD88x/tY0wZCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 574C513BA5;
- Mon, 24 Jan 2022 14:43:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B637213BA5;
+ Mon, 24 Jan 2022 14:44:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id W+FDFfW67mHufwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 24 Jan 2022 14:43:01 +0000
-Date: Mon, 24 Jan 2022 15:44:47 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Ye67X6D1TprHrHcF@yuki>
-References: <20220119152732.21189-1-andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Px0vKzW77mHBAQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 14:44:05 +0000
+Date: Mon, 24 Jan 2022 15:44:04 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>, ltp@lists.linux.it
+Message-ID: <Ye67NAYQaz0NS6v/@pevik>
+References: <1545987769-32388-1-git-send-email-lijinyue@huawei.com>
+ <20190313115844.GB2606@dell5510> <87czn8qpkd.fsf@suse.de>
+ <YYupzZpiGXDNwrus@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220119152732.21189-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <YYupzZpiGXDNwrus@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Replace ltp_syscall with tst_syscall
+Subject: Re: [LTP] [PATCH] controllers/cpuset: add cpuset files check for
+ different OS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,90 +79,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
-> index d7daf8ad0..8fa381c97 100755
-> --- a/include/lapi/syscalls/regen.sh
-> +++ b/include/lapi/syscalls/regen.sh
-> @@ -35,34 +35,30 @@ cat << EOF > "${output_pid}"
->  #include <asm/unistd.h>
->  #include "cleanup.c"
->  
-> -#define ltp_syscall(NR, ...) ({ \\
-> -	int __ret; \\
-> -	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
-> -		errno = ENOSYS; \\
-> -		__ret = -1; \\
-> -	} else { \\
-> -		__ret = syscall(NR, ##__VA_ARGS__); \\
-> -	} \\
-> -	if (__ret == -1 && errno == ENOSYS) { \\
-> -		tst_brkm(TCONF, CLEANUP, \\
-> -			"syscall(%d) " #NR " not supported on your arch", \\
-> -			NR); \\
-> -	} \\
-> -	__ret; \\
-> +#ifdef TST_TEST_H__
-> +#define TST_SYSCALL_BRK__(NR) ({ \
-> +	tst_brk(TCONF, \
-> +		"syscall(%d) " #NR " not supported on your arch", NR); \
->  })
-> -
-> -#define tst_syscall(NR, ...) ({ \\
-> -	int tst_ret; \\
-> -	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
-> -		errno = ENOSYS; \\
-> -		tst_ret = -1; \\
-> -	} else { \\
-> -		tst_ret = syscall(NR, ##__VA_ARGS__); \\
-> -	} \\
-> -	if (tst_ret == -1 && errno == ENOSYS) { \\
-> -		tst_brk(TCONF, "syscall(%d) " #NR " not supported", NR); \\
-> -	} \\
-> -	tst_ret; \\
-> +#else
-> +#define TST_SYSCALL_BRK__(NR) ({ \
-> +	tst_brkm(TCONF, CLEANUP, \
-> +		"syscall(%d) " #NR " not supported on your arch", NR); \
-> +})
-> +#endif
-> +
-> +#define tst_syscall(NR, ...) ({ \
-> +	int tst_ret; \
-> +	if (NR == __LTP__NR_INVALID_SYSCALL) { \
-> +		errno = ENOSYS; \
-> +		tst_ret = -1; \
-> +	} else { \
-> +		tst_ret = syscall(NR, ##__VA_ARGS__); \
-> +	} \
-> +	if (tst_ret == -1 && errno == ENOSYS) { \
-> +		TST_SYSCALL_BRK__(NR); \
-> +	} \
-> +	tst_ret; \
->  })
+Hi Li,
 
-Can we please keep the double backslashes here?
+> Hi Richie, Li,
 
-Both of them works, but if you put single backslash here into the script
-the macro is put into one long line into the generated header, which is
-really hard to decipher. With two the macro is split into lines as it
-should be.
+> > Hello,
 
-Other than that it looks good and simplifies a some of the places.
+> > Petr Vorel <pvorel@suse.cz> writes:
 
-With the backslashes fixed:
+> > > Hi Li,
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > >> While mounting cpuset cgroup, the subsystem directory entries
+> > >> differ in different OS release.
+> > >> eg, cpuset.cpus file on Ubuntu and cpus on some other release.
+> > > Which ones, please? I'm not aware of anyone.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > Unfortunately it is possible. cpuset can be mounted without a prefix
+> > using a legacy compatability option. OTOH this is really ancient.
+
+> Thanks for info.
+
+
+> > >> So we add cpuset files checker to make sure the test work well
+> > >> on all OS release.
+
+> > > ...
+> > >> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> > > ...
+> > >> +cpus_file=
+> > >> +cpu_exclusive_file=
+> > >> +mems_file=
+> > >> +memory_pressure_file=
+> > >> +memory_pressure_enabled_file=
+> > >> +mem_exclusive_file=
+> > >> +mem_hardwall_file=
+> > >> +memory_migrate_file=
+> > >> +memory_spread_page_file=
+> > >> +memory_spread_slab_file=
+> > >> +sched_load_balance_file=
+> > >> +sched_relax_domain_level_file=
+> > > Maybe move the ones in $CPUSET/cpuset.cpus clause here as the default ones
+> > > and move those from else clause into setup.
+
+> > > ...
+> > >> +# check cpuset cgroup files for different OS
+> > >> +cpuset_files_check()
+> > >> +{
+> > >> +	setup
+> > > I guess this should be vice versa, i.e. cpuset_files_check() be part of setup()
+> > > And then not needed to be added into all functions using cpuset_funcs.sh
+
+> > Probably we could just do
+
+> > if [ -f $CPUSET/cpuset.cpus" ]; then
+> >    cpuset_prefix="cpuset."
+> > else
+> >    cpuset_prefix=
+> > fi
+
+> > then replace cpuset. with $cpuset_prefix
+
+> +1, just maybe tiny improvement to remove else part:
+
+> cpuset_prefix=
+> if [ -f $CPUSET/cpuset.cpus" ]; then
+> 	cpuset_prefix="cpuset."
+> fi
+
+Would you mind to send v2 with code suggested by Richie?
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
