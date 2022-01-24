@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68641C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 14:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15BC8C433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:00:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3A1213C875F
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 15:44:17 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C42183C7E58
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:44:07 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id D249D3C884A
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 16:00:53 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C44F9140099D
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 15:44:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 620603C21D9
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:00:42 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8797E600040
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 16:00:41 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CFB201F38F;
- Mon, 24 Jan 2022 14:44:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8C788212BA;
+ Mon, 24 Jan 2022 15:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643035445;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1643036440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z5hWZd1n8BDf6D7MnPHpqS14Bg9OWiOhXnibK/kkkKA=;
- b=oTJ7HTZOlv6ZxSPMigQjZAUqGP7lechKFk/K6eADvXjYM9UjrDRfPhjGFK5MlealvI+jNC
- VXE4ATp9hp2Dn5Aj+21klbWSp7fiUB25tGWPFZL03pSDBauNw9fvggHqEXGbIn5opb+3+L
- 7ziuD0DFvfVmXdVxtmcSJhgVuhaIaxc=
+ bh=fWL7udvW4I5Czg6kJAFAP5rBRKL5xSWnkjSkXXcwRSc=;
+ b=ivPqJLpbhU12210sWuDYlKiF7y7MhN25BwzGBVmx3BlelO7932O+xxQd2fyG2OIBjSQWRW
+ UKUsz0KIFNkcsauQ4r2kpJp4N8kQCG3WB9EFU0aRzi8eprVGQlg7C+T2iLEZoerW3oblTs
+ FAlknQyRLrgwva0BB9k0apTnWlNNmBg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643035445;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ s=susede2_ed25519; t=1643036440;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z5hWZd1n8BDf6D7MnPHpqS14Bg9OWiOhXnibK/kkkKA=;
- b=5YFVSdaTmIw+0lqHq2JLCx1WnItUukhzz04aO2lQtKCTkAkrylwa2INEnyejfm1zGBJfQE
- OyBlD88x/tY0wZCA==
+ bh=fWL7udvW4I5Czg6kJAFAP5rBRKL5xSWnkjSkXXcwRSc=;
+ b=pRpNCw53Y7ww7QV0qM5BvSUYgunwCz7ct9SZr9AWmTzem84F/pzLiIyEzWiUk1FYrfjrp7
+ CdwkktUAlmxHuBBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B637213BA5;
- Mon, 24 Jan 2022 14:44:05 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69E0913C1B;
+ Mon, 24 Jan 2022 15:00:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Px0vKzW77mHBAQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 24 Jan 2022 14:44:05 +0000
-Date: Mon, 24 Jan 2022 15:44:04 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>, ltp@lists.linux.it
-Message-ID: <Ye67NAYQaz0NS6v/@pevik>
-References: <1545987769-32388-1-git-send-email-lijinyue@huawei.com>
- <20190313115844.GB2606@dell5510> <87czn8qpkd.fsf@suse.de>
- <YYupzZpiGXDNwrus@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id YsnRGRi/7mF4DAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 24 Jan 2022 15:00:40 +0000
+Date: Mon, 24 Jan 2022 16:02:27 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Ye6/g0InSIT4J3kV@yuki>
+References: <20220114194444.16949-1-pvorel@suse.cz>
+ <20220114194444.16949-3-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YYupzZpiGXDNwrus@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220114194444.16949-3-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] controllers/cpuset: add cpuset files check for
- different OS
+Subject: Re: [LTP] [PATCH 2/2] doc/user-guide: Remove "2. Colorized output"
+ section
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,86 +77,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi!
+> @@ -14,8 +14,9 @@ For running LTP network tests see `testcases/network/README.md`.
+>  | 'LTPROOT'             | Prefix for installed LTP.  **Should be always set**
+>                            as some tests need it for path to test data files
+>                            ('LTP_DATAROOT'). LTP is by default installed into '/opt/ltp'.
+> -| 'LTP_COLORIZE_OUTPUT' | Force colorized output behaviour. 'y' or '1': always colorize
+> -                          'n' or '0': never colorize.
+> +| 'LTP_COLORIZE_OUTPUT' | By default LTP colorizes it's output unless using
+> +                          pipe or redirect to file.  Force colorized output behaviour:
 
-> Hi Richie, Li,
+Slightly better: "unless it's redirected to a pipe or file"
 
-> > Hello,
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-> > Petr Vorel <pvorel@suse.cz> writes:
-
-> > > Hi Li,
-
-> > >> While mounting cpuset cgroup, the subsystem directory entries
-> > >> differ in different OS release.
-> > >> eg, cpuset.cpus file on Ubuntu and cpus on some other release.
-> > > Which ones, please? I'm not aware of anyone.
-
-> > Unfortunately it is possible. cpuset can be mounted without a prefix
-> > using a legacy compatability option. OTOH this is really ancient.
-
-> Thanks for info.
-
-
-> > >> So we add cpuset files checker to make sure the test work well
-> > >> on all OS release.
-
-> > > ...
-> > >> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> > > ...
-> > >> +cpus_file=
-> > >> +cpu_exclusive_file=
-> > >> +mems_file=
-> > >> +memory_pressure_file=
-> > >> +memory_pressure_enabled_file=
-> > >> +mem_exclusive_file=
-> > >> +mem_hardwall_file=
-> > >> +memory_migrate_file=
-> > >> +memory_spread_page_file=
-> > >> +memory_spread_slab_file=
-> > >> +sched_load_balance_file=
-> > >> +sched_relax_domain_level_file=
-> > > Maybe move the ones in $CPUSET/cpuset.cpus clause here as the default ones
-> > > and move those from else clause into setup.
-
-> > > ...
-> > >> +# check cpuset cgroup files for different OS
-> > >> +cpuset_files_check()
-> > >> +{
-> > >> +	setup
-> > > I guess this should be vice versa, i.e. cpuset_files_check() be part of setup()
-> > > And then not needed to be added into all functions using cpuset_funcs.sh
-
-> > Probably we could just do
-
-> > if [ -f $CPUSET/cpuset.cpus" ]; then
-> >    cpuset_prefix="cpuset."
-> > else
-> >    cpuset_prefix=
-> > fi
-
-> > then replace cpuset. with $cpuset_prefix
-
-> +1, just maybe tiny improvement to remove else part:
-
-> cpuset_prefix=
-> if [ -f $CPUSET/cpuset.cpus" ]; then
-> 	cpuset_prefix="cpuset."
-> fi
-
-Would you mind to send v2 with code suggested by Richie?
-
-Kind regards,
-Petr
-
-> Kind regards,
-> Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
