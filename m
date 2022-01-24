@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 306C0C433F5
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 11:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B91EC433F5
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 12:22:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 85F813C8F8A
-	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 12:58:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C217E3C8A72
+	for <ltp@archiver.kernel.org>; Mon, 24 Jan 2022 13:22:19 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6CC7C3C65E6
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 12:58:41 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 5EF383C14B2
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 13:22:08 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9C2D9600807
- for <ltp@lists.linux.it>; Mon, 24 Jan 2022 12:58:40 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1BBE71A009A9
+ for <ltp@lists.linux.it>; Mon, 24 Jan 2022 13:22:07 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E0B9C1F38B;
- Mon, 24 Jan 2022 11:58:39 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 577891F38B;
+ Mon, 24 Jan 2022 12:22:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643025519;
+ t=1643026927;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6rq2dM/BpwNg9b4dvUzkFE87x0VOA15jjUVE5wOJuVc=;
- b=p4NbxZl/aXL2QX2ux3f4jbOv6dFwKfvwx4B9JIZ8wjS+IhE3v9CbOXUHVVhhhXa4vb8Ggv
- kahJZ1v0LIzN+MwH5RFdQ2C+hOT3I3x9Ac6AbXFqZsiWRJpNqJsMFvqCdM9xeLvIBHzwOf
- A9IXHnQGgewnugldR8mA+h/dhoPb/5M=
+ bh=38k8EWJVKGHWUQvXLzkiT7L0y0qNQVmONu58PGu95vU=;
+ b=REpHMWU7DQ3Osbm0bVMLJzVc8H6B9r0GpnL6IASuh52f3jSJUl8o6IRAP5XBp1AvrNiAkX
+ diZYR54MKnBie/SuT5dfe44elTmxWkNE+Bf1f54OzJXPNfEE1b7isc8W8QGt4VZzufNFBG
+ 61E9yAz9vjr6LXo+yUNG4r6ZjRifF4A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643025519;
+ s=susede2_ed25519; t=1643026927;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6rq2dM/BpwNg9b4dvUzkFE87x0VOA15jjUVE5wOJuVc=;
- b=aMXSOnkefPKWlNUr4pnu69RR8vHNTg7qe+icRLM+abwqOdG8yuWyMHN0UoezoLGdQmBxDJ
- PRdYZORIZPJpZqAQ==
+ bh=38k8EWJVKGHWUQvXLzkiT7L0y0qNQVmONu58PGu95vU=;
+ b=bwBrHOQhysNoS+SPcup4aYRden1DVz1NmcT5siFKvCXUGTN6a7bbAWd6JnW3sXq3jRD0d1
+ Oa8LL7JGSzjQcTDw==
 Received: from g78 (unknown [10.163.24.90])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 9CF78A3B81;
- Mon, 24 Jan 2022 11:58:39 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 1B721A3B8B;
+ Mon, 24 Jan 2022 12:22:07 +0000 (UTC)
 References: <cover.1642601554.git.luke.nowakowskikrijger@canonical.com>
- <b000b664ed74dc8e52c7afe0061471c7f8e20d10.1642601554.git.luke.nowakowskikrijger@canonical.com>
+ <5a65fad42ee618e0191cc664d8da7feeaa754cc0.1642601554.git.luke.nowakowskikrijger@canonical.com>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Date: Mon, 24 Jan 2022 11:36:24 +0000
-In-reply-to: <b000b664ed74dc8e52c7afe0061471c7f8e20d10.1642601554.git.luke.nowakowskikrijger@canonical.com>
-Message-ID: <87fspdz6oh.fsf@suse.de>
+Date: Mon, 24 Jan 2022 12:05:19 +0000
+In-reply-to: <5a65fad42ee618e0191cc664d8da7feeaa754cc0.1642601554.git.luke.nowakowskikrijger@canonical.com>
+Message-ID: <87bl01z5ld.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 05/16] API/cgroup: Add more controllers to
- tst_cgroup
+Subject: Re: [LTP] [PATCH v2 04/16] API/cgroup: Implement
+ tst_cgroup_load_config()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,80 +82,22 @@ Hello Luke,
 
 Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> writes:
 
-> Add more controllers so that they can be mounted and used using the
-> cgroup C api.
+> Implement tst_cgroup_load_config which consumes the state given by
+> tst_cgroup_print_config() to update the internal test state to reflect
+> the given config.
 >
-> Most of the controllers used in controllers tests are added and a
-> reasonable working set of the controller control files that I came
-> across are added as well.
->
-> Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-> ---
->  lib/tst_cgroup.c | 153 ++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 152 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-> index df541d26a..3d56a3364 100644
-> --- a/lib/tst_cgroup.c
-> +++ b/lib/tst_cgroup.c
-> @@ -84,8 +84,20 @@ enum cgroup_ctrl_indx {
->  	CTRL_MEMORY = 1,
->  	CTRL_CPU,
->  	CTRL_CPUSET,
-> +	CTRL_IO,
-> +	CTRL_PIDS,
-> +	CTRL_RDMA,
-> +	CTRL_HUGETLB,
-> +	CTRL_CPUACCT,
-> +	CTRL_DEVICES,
-> +	CTRL_FREEZER,
-> +	CTRL_NETCLS,
-> +	CTRL_NETPRIO,
-> +	CTRL_BLKIO,
-> +	CTRL_MISC,
-> +	CTRL_PERFEVENT
->  };
-> -#define CTRLS_MAX CTRL_CPUSET
-> +#define CTRLS_MAX CTRL_PERFEVENT
->  
->  /* At most we can have one cgroup V1 tree for each controller and one
->   * (empty) v2 tree.
-> @@ -181,6 +193,109 @@ static const struct cgroup_file cpuset_ctrl_files[] = {
->  	{ }
->  };
->  
-> +static const struct cgroup_file io_ctrl_files[] = {
-> +	{ "io.state", NULL, CTRL_IO },
-> +	{ "io.cost.qos", NULL, CTRL_IO },
-> +	{ "io.cost.model", NULL, CTRL_IO },
-> +	{ "io.weight", NULL, CTRL_IO },
-> +	{ "io.max", NULL, CTRL_IO },
-> +	{ "io.pressure", NULL, CTRL_IO },
-> +	{ }
-> +};
-> +
-> +static const struct cgroup_file pids_ctrl_files[] = {
-> +	{ "pids.max", "pids.max", CTRL_PIDS },
-> +	{ "pids.current", "pids.current", CTRL_PIDS },
-> +	{ }
-> +};
-> +
-> +static const struct cgroup_file rdma_ctrl_files[] = {
-> +	{ "rdma.max", "rdma.max", CTRL_RDMA },
-> +	{ "rdma.current", "rdma.current", CTRL_RDMA },
-> +	{ }
-> +};
+> This allows for programs using the cgroup C API to load and reload
+> state, allowing functionality such as calling tst_cgroup_require and
+> tst_cgroup_cleanup to function properly between programs or between
+> invocations of a binary using the C API.
 
-Please don't add stuff we don't have an immediate requirement for!
+I'm afraid I have to say this looks way more complicated than it needs
+to be. We control the input format after all.
 
-We don't have any tests for RDMA yet. I can't even find the "rdma|RDMA"
-in the LTP codebase. We may never test most of these controllers, it's
-just dead code that will have to be rewritten if/when we have to
-implement a more complex V1/V2 compatability layer. Also, as with blkio
-and io, you may be adding the same controllers twice under V1 and V2
-names.
-
-Just add the exact things we need for existing tests.
+If you can make each line the same format then it may be possible to
+just use a single scanf on each line. Note that it's only possible to
+have ~14 controllers, so we can even afford to repeat the root info on
+each line.
 
 -- 
 Thank you,
