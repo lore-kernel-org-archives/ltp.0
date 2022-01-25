@@ -4,77 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D08B7C433EF
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 12:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28A84C433EF
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 12:18:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B125A3C93B7
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 13:12:13 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 25A303C93B7
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 13:18:03 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C19D3C25D7
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 13:12:04 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 444433C04B0
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 13:17:54 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8B090600872
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 13:17:52 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 770941F380;
+ Tue, 25 Jan 2022 12:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1643113072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hVqHXUz3Jk2sVZPobpwss8wYXdEwQhEkUDfTqU6jT1c=;
+ b=tuKwVeRGyMDb2VZ7lsq2tT/lEEKkXD4V1KG7HhiPQXYjM1MMrNCHHZ7auGcys1mCftKDGC
+ s0LWiIIeHKRISWuaIq2GSqcHD4RQYF2b627WVXxihUHuHddAruSb/ORBGoMtaYMNQ3u+JP
+ 4v1SxOFrZZ3r+QYYJk3EgvhnrmZSj20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1643113072;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hVqHXUz3Jk2sVZPobpwss8wYXdEwQhEkUDfTqU6jT1c=;
+ b=VCZjPdrGnM7d1HUGXoXQd3hRCeAU1h0LWuD+W314V+Qhasb2GjNlTWFT4KaIBmvzXw7IVA
+ cUB2oZsAwISCrDCg==
+Received: from quack3.suse.cz (unknown [10.163.43.118])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7F392600A0B
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 13:12:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1643112720;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IIKS/nqnF4ESK7ewCL/H/31qDiuWJZP3KeBro5LpeGk=;
- b=B1kU4uJWb71/08PTsiFoWAL17Ieb0mECHXPKswUO2if8vpCgn8mAqLbFDkwlfzA6yI2BnR
- TcMKOksRtqLThvMyCsGAOkkJP9YLMS0mJ+Nunb1rSKr4kFVKjkYwA7GZiXwnWabAp7oPz7
- u5egAYgb4fN1w3tU490oKK9Ruhsqbw8=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-637-chX2K1mqO52MWBgArCoGeg-1; Tue, 25 Jan 2022 07:11:59 -0500
-X-MC-Unique: chX2K1mqO52MWBgArCoGeg-1
-Received: by mail-oi1-f200.google.com with SMTP id
- w8-20020aca6208000000b002c7da950057so11169001oib.5
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 04:11:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=IIKS/nqnF4ESK7ewCL/H/31qDiuWJZP3KeBro5LpeGk=;
- b=Sxovr64QB2cdZAj+26JCGa31V10cjgDHQ8znOvXvgd3AAL56H1O6LmZqSQ8b4AzpBz
- 0luqfdsNmoY09GX/OZ9MxvCvddb7DGfzYNgSsRH1y0KzqmeXAc8WxS0KL504aQIK0qUU
- MBqW9v8oTjS4x6D5fUpbgWgHrgYr8lfmTAt0UBR4racKrnloMQKI+XcQQDQST6Gz7dKh
- mJH9VE4bBwcXgJz+hr1cCcjtw4XgftqLqax47oo6VG/bTThJkJQWv8IX9flR7oBRL+hy
- OAFK2Fd5mZJveVw2Ldam+hPqceKHfLx+6yVvPeNSLnhZKZJ5ROA1ENjsU/aY+TNtpFet
- Gv2A==
-X-Gm-Message-State: AOAM531OOU3pXLGVclZLgPV8PI3jQ07Z0KSOAI9kTIaeafDzlYuRmeSc
- dDmU05/ty/99EQ2PQlRzn/NRXvPQ1is9iblNcnuJRNEvo8WkEbH+hVweJOlfof6xwOkJ84+T5tQ
- UyenSmLJdBDY+SIjJFq+KWWfPdiA=
-X-Received: by 2002:a05:6808:15aa:: with SMTP id
- t42mr373440oiw.227.1643112718738; 
- Tue, 25 Jan 2022 04:11:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzqUvggIMPy1wR3gplCW7IC5f5HyJ/Nbvrahb/dt2AVsYyI2QhjLDYKk3iWCOgw0/n33l3c8/3gJgSGjqiucak=
-X-Received: by 2002:a05:6808:15aa:: with SMTP id
- t42mr373432oiw.227.1643112718436; 
- Tue, 25 Jan 2022 04:11:58 -0800 (PST)
+ by relay2.suse.de (Postfix) with ESMTPS id 60066A3B8A;
+ Tue, 25 Jan 2022 12:17:52 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 8EB67A05E6; Tue, 25 Jan 2022 13:17:46 +0100 (CET)
+Date: Tue, 25 Jan 2022 13:17:46 +0100
+From: Jan Kara <jack@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <20220125121746.wrs4254pfs2mwexb@quack3.lan>
+References: <20210912123429.GA25450@xsang-OptiPlex-9020>
+ <YT8HqsXsHFeMdDxS@yuki> <20210917121331.GA14905@quack2.suse.cz>
+ <87o840xiel.fsf@suse.de>
 MIME-Version: 1.0
-References: <20220125111116.28393-1-andrea.cervesato@suse.de>
-In-Reply-To: <20220125111116.28393-1-andrea.cervesato@suse.de>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 25 Jan 2022 13:11:42 +0100
-Message-ID: <CAASaF6yqtJ75k1wZUmn6QXupfmaB44V-ZdS45u69fyE14LpB_g@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+In-Reply-To: <87o840xiel.fsf@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Rewrite process_vm_readv02.c test with new LTP
- API
+Subject: Re: [LTP] [mm/page]  ab19939a6a: ltp.msync04.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,156 +72,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Cc: Miklos Szeredi <mszeredi@redhat.com>, Jan Kara <jack@suse.cz>,
+ lkp@intel.com, Chi Wu <wuchi.zero@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@fb.com>,
+ lkp@lists.01.org, kernel test robot <oliver.sang@intel.com>,
+ Sedat Dilek <sedat.dilek@gmail.com>, Tejun Heo <tj@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Jan 25, 2022 at 12:11 PM Andrea Cervesato
-<andrea.cervesato@suse.de> wrote:
+On Tue 25-01-22 09:27:30, Richard Palethorpe wrote:
+> Hello,
+> 
+> Jan Kara <jack@suse.cz> writes:
+> 
+> > On Mon 13-09-21 10:11:22, Cyril Hrubis wrote:
+> >> Hi!
+> >> > FYI, we noticed the following commit (built with gcc-9):
+> >> > 
+> >> > commit: ab19939a6a5010cba4e9cb04dd8bee03c72edcbd ("mm/page-writeback: Fix performance when BDI's share of ratio is 0.")
+> >> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> >> > 
+> >> > 
+> >> > in testcase: ltp
+> >> > version: ltp-x86_64-14c1f76-1_20210907
+> >> > with following parameters:
+> >> > 
+> >> > 	disk: 1HDD
+> >> > 	fs: xfs
+> >> > 	test: syscalls-03
+> >> > 	ucode: 0xe2
+> >> > 
+> >> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> >> > test-url: http://linux-test-project.github.io/
+> >> 
+> >> The msync04 test formats a device with a diffrent filesystems, for each
+> >> filesystem it maps a file, writes to the mapped page and the checks a
+> >> dirty bit in /proc/kpageflags before and after msync() on that page.
+> >> 
+> >> This seems to be broken after this patch for ntfs over FUSE and it looks
+> >> like the page does not have a dirty bit set right after it has been
+> >> written to.
+> >> 
+> >> Also I guess that we should increase the number of the pages we dirty or
+> >> attempt to retry since a single page may be flushed to the storage if we
+> >> are unlucky and the process is preempted between the write and the
+> >> initial check for the dirty bit.
+> >
+> > Yes, I agree. The most likely explanation I see for this is that the
+> > identified commit results in waking flush worker earlier so it may now
+> > succeed in cleaning the page before get_dirty_bit() in the LTP testcase
+> > manages to see it. This is a principial race in this testcase, you can
+> > perhaps make it less likely but not completely fix it AFAICT.
+> 
+> If the dirty bit is not set, then I guess dropping the pagecache will
+> not write anything to the underlying storage?
 
-Hi,
+Correct.
 
-<snip>
+> So when we see no dirty bit is set, we can drop the pagecache then read
+> the file to check the value was written correctly? If so then we can
+> exit with TCONF saying msync couldn't be tested because the storage was
+> written to too quickly.
 
-> -
-> -static void child_alloc(void)
-> +static void child_alloc(const char *data, int length)
->  {
->         char *foo;
-> -       char buf[BUFSIZ];
->
-> -       foo = SAFE_MALLOC(tst_exit, len + 1);
-> -       strncpy(foo, tst_string, len);
-> -       foo[len] = '\0';
-> -       tst_resm(TINFO, "child 0: memory allocated and initialized.");
-> +       foo = SAFE_MALLOC(length + 1);
-> +       snprintf(foo, length + 1, "%s", data);
-> +       foo[length] = '\0';
+Yes, that would work.
 
-or you could use strdup/strcpy
+> Also I guess we can optimize the get_dirty_bit function. It's doing 3
+> syscalls instead of 1 AFAICT.
 
->
-> -       /* passing addr of string "foo" via pipe */
-> -       SAFE_CLOSE(tst_exit, pipe_fd[0]);
-> -       snprintf(buf, BUFSIZ, "%p", foo);
-> -       SAFE_WRITE(tst_exit, 1, pipe_fd[1], buf, strlen(buf) + 1);
-> -       SAFE_CLOSE(tst_exit, pipe_fd[1]);
-> +       snprintf(shared_data, BUFSIZ, "%p", foo);
+And this could reduce the race window. So nice I guess.
 
-The only purpose appears to be to hold pointer value, so you could
-make shared_data
-hold uintptr_t and skip to/from string conversion.
+But IMHO what would be a more sensible test is that msync is indeed persisting
+the data. So something like: mmap file, write to mmap, msync, abort fs,
+mount fs again, check the data is there. We do have framework for stuff
+like this in fstests (but we don't test msync AFAIK, only fsync), not sure
+if LTP has something for this as well.
 
-> +
-> +       tst_res(TINFO, "child 0: memory allocated and initialized");
->
->         /* wait until child_invoke is done reading from our VM */
-> -       TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
-> +       TST_CHECKPOINT_WAIT(0);
->  }
->
-> -static void child_invoke(void)
-> +static void child_invoke(const char *data, int length, pid_t pid_alloc)
->  {
->         char *lp, *rp;
-> -       char buf[BUFSIZ];
->         struct iovec local, remote;
->
-> -       /* get addr from pipe */
-> -       SAFE_CLOSE(tst_exit, pipe_fd[1]);
-> -       SAFE_READ(tst_exit, 0, pipe_fd[0], buf, BUFSIZ);
-> -       SAFE_CLOSE(tst_exit, pipe_fd[0]);
-> -       if (sscanf(buf, "%p", &rp) != 1)
-> -               tst_brkm(TBROK | TERRNO, tst_exit, "sscanf");
-> +       if (sscanf(shared_data, "%p", &rp) != 1)
-> +               tst_brk(TBROK, "sscanf");
->
-> -       lp = SAFE_MALLOC(tst_exit, len + 1);
-> +       lp = SAFE_MALLOC(length + 1);
->         local.iov_base = lp;
-> -       local.iov_len = len;
-> +       local.iov_len = length;
->         remote.iov_base = rp;
-> -       remote.iov_len = len;
-> -
-> -       tst_resm(TINFO, "child 1: reading string from same memory location.");
-> -       TEST(tst_syscall(__NR_process_vm_readv, pids[0],
-> -                        &local, 1UL, &remote, 1UL, 0UL));
-> -       if (TEST_RETURN != len)
-> -               tst_brkm(TFAIL | TTERRNO, tst_exit, "process_vm_readv");
-> -       if (strncmp(lp, tst_string, len) != 0)
-> -               tst_brkm(TFAIL, tst_exit, "child 1: expected string: %s, "
-> -                        "received string: %256s", tst_string, lp);
-> +       remote.iov_len = length;
-> +
-> +       tst_res(TINFO, "child 1: reading string from same memory location");
-> +
-> +       TEST(tst_syscall(__NR_process_vm_readv, pid_alloc, &local, 1UL, &remote,
-> +                                        1UL, 0UL));
-> +
-> +       if (TST_RET != length)
-> +               tst_brk(TBROK, "process_vm_readv: %s", tst_strerrno(-TST_RET));
-> +
-> +       if (strncmp(lp, data, length) != 0)
-> +               tst_res(TFAIL, "child 1: expected string: %s, received string: %256s",
-> +                               data, lp);
->         else
-> -               tst_resm(TPASS, "expected string received.");
-> +               tst_res(TPASS, "expected string received");
->  }
->
->  static void setup(void)
->  {
-> -       tst_require_root();
-> -
->         /* Just a sanity check of the existence of syscall */
->         tst_syscall(__NR_process_vm_readv, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
->
-> -       tst_tmpdir();
-> -       TST_CHECKPOINT_INIT(cleanup);
-> -
-> -       TEST_PAUSE;
-> +       shared_data = SAFE_MMAP(NULL, BUFSIZ, PROT_READ | PROT_WRITE,
-> +                                                       MAP_SHARED | MAP_ANONYMOUS, -1, 0);
->  }
->
->  static void cleanup(void)
->  {
-> -       tst_rmdir();
-> +       if (shared_data)
-> +               SAFE_MUNMAP(shared_data, BUFSIZ);
->  }
-> +
-> +static void run(void)
-> +{
-> +       const char *data = "test";
-> +       pid_t pid_alloc;
-> +       pid_t pid_invoke;
-> +       int length;
-> +       int status;
-> +
-> +       length = strlen(data);
-> +
-> +       pid_alloc = SAFE_FORK();
-> +       if (!pid_alloc) {
-> +               child_alloc(data, length);
-> +               return;
-> +       }
-> +
-> +       pid_invoke = SAFE_FORK();
-> +       if (!pid_invoke) {
-> +               child_invoke(data, length, pid_alloc);
-
-This is a bit racy, child_alloc() might not be ready at this point:
-
-$ ./process_vm_readv02
-tst_test.c:1433: TINFO: Timeout per run is 0h 05m 00s
-process_vm_readv02.c:47: TBROK: sscanf
-process_vm_readv02.c:110: TFAIL: child 1: returns 512
-process_vm_readv02.c:35: TINFO: child 0: memory allocated and initialized
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
