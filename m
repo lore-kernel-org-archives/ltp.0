@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1E00C433F5
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47D6BC433EF
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:41:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A6E6D3C9601
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:27:48 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 93A243C9569
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:41:00 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3CD1C3C03AE
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:27:39 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 842B43C14B2
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:40:50 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AA7F0600C74
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:27:38 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6336D21135
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 14:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643120397;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F3hDsfCuY/IOMEdAABfSRLskN+oYiLGPkW98h+fpSaI=;
- b=QMzt0t4GZDZ98cyCG74Ev9Nz1zmkAuzP3+waLszrfnygVAvFBzQ75VM1LEBbkxUrZYzwZ4
- m+yxGY/k/y4crBkovjlhrIX1LnTGHiix6TFIdWg2J6KHFsiV9xC1iB4gDP0j2rd+ybptLt
- nDW00k+loTj4mEgxzkXDzdGoruZExGs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643120397;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=F3hDsfCuY/IOMEdAABfSRLskN+oYiLGPkW98h+fpSaI=;
- b=e6GFLb2DwpgrSsnlgrPjxOllritWF8ICpxHHSY2naSPMK6rv7ZHI2YwXGagazEa0Z+4BZd
- 9O2oRf40K4b/76Bw==
-Received: from g78 (unknown [10.163.24.90])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E8D8B1A00CAC
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:40:49 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 3372FA3BA0;
- Tue, 25 Jan 2022 14:19:57 +0000 (UTC)
-References: <20220124173651.652-1-rpalethorpe@suse.com>
- <20220124173651.652-2-rpalethorpe@suse.com> <Ye/kxq1oXnj5z1hd@yuki>
- <Ye/k9bYtALTieq7B@yuki>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 25 Jan 2022 14:19:31 +0000
-In-reply-to: <Ye/k9bYtALTieq7B@yuki>
-Message-ID: <87k0enyk1k.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8C656218E5;
+ Tue, 25 Jan 2022 14:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1643121649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=2xDemJ9CZSGPTPZfN0LVguT+YmCGN1Njf239yDCSMsE=;
+ b=sJzbl3mP3iN4J46uljWwHnSFXOyI3Rwdvk/0NGGln6bgl+Qk91N/pb1joaH8H+Wiz+ELOd
+ ULXLZquaU7nQvGz2S5NgUzWoB3/7mwfnMLI9meRY4QIPwidkKflH98pc3xQx5kbNpuTwGz
+ 8hHsHbHXqEOLrdxyId4cbojJ51SPCQo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1643121649;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=2xDemJ9CZSGPTPZfN0LVguT+YmCGN1Njf239yDCSMsE=;
+ b=8BMMqCNGK3IEztfOyxgfRrmbgXZJVGEpfVrRU4Yxr+Rc+wOChdK6UsKEpGtIWoK3QUn3an
+ mnjexwy7J1muOHAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5851013DEB;
+ Tue, 25 Jan 2022 14:40:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id GKa/E/EL8GGFdAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Jan 2022 14:40:49 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 25 Jan 2022 15:40:41 +0100
+Message-Id: <20220125144043.31798-3-pvorel@suse.cz>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220125144043.31798-1-pvorel@suse.cz>
+References: <20220125144043.31798-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] memcontrol02: Fix anon memory comparison
+Subject: [LTP] [PATCH v2 2/4] lapi: Move SCHED_DEADLINE definition from tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,49 +76,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+DRY
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+SCHED_DEADLINE is currently missing on uclibc-ng (v1.0.40).
 
-> Hi!
->> > All memory is being compared with the size malloc'ed instead of just
->> > anon.
->> > 
->> > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> > ---
->> >  testcases/kernel/controllers/memcg/memcontrol02.c | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> > 
->> > diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
->> > index 411f5aea6..0d144cf2d 100644
->> > --- a/testcases/kernel/controllers/memcg/memcontrol02.c
->> > +++ b/testcases/kernel/controllers/memcg/memcontrol02.c
->> > @@ -68,7 +68,7 @@ static void alloc_anon_50M_check(void)
->> >  
->> >  	TST_EXP_EXPR(anon > 0, "(memory.stat.anon=%zd) > 0", anon);
->> >  	TST_EXP_EXPR(values_close(size, current, 3),
->> > -		     "(size=%zd) ~= (memory.stat.anon=%zd)", size, current);
->> > +		     "(size=%zd) ~= (memory.stat.anon=%zd)", size, anon);
->> 
->> I do not get this, we compare size and current and then print anon?
->> 
->> Should we just change the memory.stat.annon to memory.current instead?
->
-> Or did you forget to change the current in the values_close() to annon
-> as well?
++ add indent for definitions (formatting).
 
-Yeah, sorry!
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+New in v2
 
+ include/lapi/sched.h                                | 13 +++++++++----
+ .../kernel/syscalls/sched_getattr/sched_getattr01.c |  1 -
+ .../kernel/syscalls/sched_setattr/sched_setattr01.c |  1 -
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+index 2fc32a38ca..226d3109a0 100644
+--- a/include/lapi/sched.h
++++ b/include/lapi/sched.h
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2015 Cui Bixuan <cuibixuan@huawei.com>
++ * Copyright (c) Linux Test Project, 2016-2022
+  */
+ 
+ #ifndef LAPI_SCHED_H__
+@@ -41,20 +42,24 @@ static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
+ 	return syscall(__NR_sched_getattr, pid, attr, size, flags);
+ }
+ 
++#ifndef SCHED_DEADLINE
++# define SCHED_DEADLINE	6
++#endif
++
+ #ifndef CLONE_VM
+-#define CLONE_VM   0x00000100
++# define CLONE_VM   0x00000100
+ #endif
+ 
+ #ifndef CLONE_FS
+-#define CLONE_FS   0x00000200
++# define CLONE_FS   0x00000200
+ #endif
+ 
+ #ifndef CLONE_SYSVSEM
+-#define CLONE_SYSVSEM   0x00040000
++# define CLONE_SYSVSEM   0x00040000
+ #endif
+ 
+ #ifndef CLONE_IO
+-#define CLONE_IO        0x80000000
++# define CLONE_IO        0x80000000
+ #endif
+ 
+ #endif /* LAPI_SCHED_H__ */
+diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
+index 0ffbce9c8d..c1715d8acf 100644
+--- a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
++++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
+@@ -30,7 +30,6 @@
+ char *TCID = "sched_getattr01";
+ int TST_TOTAL = 1;
+ 
+-#define SCHED_DEADLINE	6
+ #define RUNTIME_VAL 10000000
+ #define PERIOD_VAL 30000000
+ #define DEADLINE_VAL 30000000
+diff --git a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
+index 82156b95cb..d5178e0169 100644
+--- a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
++++ b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
+@@ -36,7 +36,6 @@
+ 
+ char *TCID = "sched_setattr01";
+ 
+-#define SCHED_DEADLINE	6
+ #define RUNTIME_VAL 10000000
+ #define PERIOD_VAL 30000000
+ #define DEADLINE_VAL 30000000
 -- 
-Thank you,
-Richard.
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
