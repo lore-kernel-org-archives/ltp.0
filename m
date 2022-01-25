@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77983C433EF
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49E48C433EF
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:41:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B6F0F3C93DA
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:41:21 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 849DE3C93DA
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:41:31 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8CC293C92D0
+ by picard.linux.it (Postfix) with ESMTPS id BDBCE3C14B2
  for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:40:50 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 17A8D1000DD7
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:40:50 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E68DF140013A
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:40:49 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B79F6218EA;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 18F1E218E6;
  Tue, 25 Jan 2022 14:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1643121649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WaTBQD/rRfYopy8L8HtEV/vNl09utsFh0ID6otKRkiU=;
- b=lsCSJXnuCwl/72DX9gf0W8+U/ofPm6cfvUcsnIAc47PBPtgHaOWsLUpyo85R2V/WbMgo/R
- cE3gOUkzw1t4sNoMH/VJJvLZTPQm6ppPIurvgMllNWA39D9Oyt2tdFIHec9gpO7RI7soWI
- IKXP7MY5WAeM5YJ1FRlT8mXN5tkfJfc=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=8kRLYijuPY19Mf2QdCWIJRUO6bh/Nz0ACiJcsOT3ElU=;
+ b=R5mI5r1ahEzl9HTxuZUM6Te1QjmnwVJZlRWi4lAHJB8M80wON4dqQ88CItTZ7KZTdrgbmZ
+ 8+P/J5rAtBP+uJ5La05JM+hUKBXp/ArboocZAZOPP01MChbIGB24o7WS4X+BtAeA+sSFb1
+ NYxwBuh5dfyEBKP121pbEqhWeoUWZkI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1643121649;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WaTBQD/rRfYopy8L8HtEV/vNl09utsFh0ID6otKRkiU=;
- b=hf90eR+ea9qB4ZUHygsJH9qQn3Vh2L7uFk9194FZbcsY6b4epv0++KzU82Zji6P7LzN3bV
- AtqrMqanrOvvf0Bw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=8kRLYijuPY19Mf2QdCWIJRUO6bh/Nz0ACiJcsOT3ElU=;
+ b=lbP2Xtv9q838khvyk7XGMD3flgJTMeLIaN54wpXB96x3Q60zIpZRifIuWlbK0zRF58cNHp
+ 4gZyMy1byHaATmAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D35213E03;
- Tue, 25 Jan 2022 14:40:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4C6813DEB;
+ Tue, 25 Jan 2022 14:40:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aFqzIPEL8GGFdAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 25 Jan 2022 14:40:49 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id nLYBNvAL8GGFdAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Jan 2022 14:40:48 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Jan 2022 15:40:42 +0100
-Message-Id: <20220125144043.31798-4-pvorel@suse.cz>
+Date: Tue, 25 Jan 2022 15:40:39 +0100
+Message-Id: <20220125144043.31798-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220125144043.31798-1-pvorel@suse.cz>
-References: <20220125144043.31798-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/4] sched_get_priority_min01: Add missing policies
+Subject: [LTP] [PATCH v2 0/4] sched_{g,s}etattr01: Add missing policies
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,57 +76,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-+ improve doc wording and update copyright.
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-New in v2
+changes v1->v2:
+3 new commits
 
- .../sched_get_priority_min01.c                      | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+sched_getattr and sched_setattr are 99% identical (2 values are
+different). I was thinking to use the same approach from e197796f22
+("sethostname: Convert to new API"), but not sure if it's a good
+approach.
 
-diff --git a/testcases/kernel/syscalls/sched_get_priority_min/sched_get_priority_min01.c b/testcases/kernel/syscalls/sched_get_priority_min/sched_get_priority_min01.c
-index cebd08d3f9..e7ab761249 100644
---- a/testcases/kernel/syscalls/sched_get_priority_min/sched_get_priority_min01.c
-+++ b/testcases/kernel/syscalls/sched_get_priority_min/sched_get_priority_min01.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-  * Copyright (c) 2021 sujiaxun <sujiaxun@uniontech.com>
-+ * Copyright (c) Linux Test Project, 2009-2022
-  */
- 
- /*\
-@@ -9,11 +10,12 @@
-  *
-  * Basic test for the sched_get_priority_min(2) system call.
-  *
-- * Obtain different minimum priority scheduling strategies and
-+ * Obtain different minimum priority for different schedulling policies and
-  * compare them with the expected value.
-  */
- 
--#include <errno.h>
-+#define _GNU_SOURCE
-+
- #include <sched.h>
- #include "tst_test.h"
- #include "lapi/syscalls.h"
-@@ -25,9 +27,12 @@ static struct test_case {
- 	int policy;
- 	int retval;
- } tcases[] = {
--	{POLICY_DESC(SCHED_OTHER), 0},
-+	{POLICY_DESC(SCHED_BATCH), 0},
-+	{POLICY_DESC(SCHED_DEADLINE), 0},
- 	{POLICY_DESC(SCHED_FIFO), 1},
--	{POLICY_DESC(SCHED_RR), 1}
-+	{POLICY_DESC(SCHED_IDLE), 0},
-+	{POLICY_DESC(SCHED_OTHER), 0},
-+	{POLICY_DESC(SCHED_RR), 1},
- };
- 
- static void run_test(unsigned int nr)
+Do we want to reduce files needed to be updated after new policy is
+added? If yes, shouldn't there be just a single directory?
+(what name should be using to show 2 syscalls are in sources in this
+directory?)
+
+Also docparse expect source file to be just for one binary, thus not
+sure whether it should just document both binaries (and thus also
+rename source file to show 2 syscalls are for this source?)
+
+Kind regards,
+Petr
+
+Petr Vorel (4):
+  lapi/sched.h: Add include <sched.h>
+  lapi: Move SCHED_DEADLINE definition from tests
+  sched_get_priority_min01: Add missing policies
+  sched_get_priority_max01: Add missing policies
+
+ include/lapi/sched.h                             | 16 +++++++++++-----
+ testcases/kernel/syscalls/kcmp/kcmp03.c          |  1 -
+ .../sched_get_priority_max01.c                   | 13 +++++++++----
+ .../sched_get_priority_min01.c                   | 13 +++++++++----
+ .../syscalls/sched_getattr/sched_getattr01.c     |  3 ---
+ .../syscalls/sched_getattr/sched_getattr02.c     |  2 --
+ .../syscalls/sched_setattr/sched_setattr01.c     |  2 --
+ 7 files changed, 29 insertions(+), 21 deletions(-)
+
 -- 
 2.34.1
 
