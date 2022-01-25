@@ -4,49 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A205AC433EF
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63E31C433EF
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:57:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3731B3C9514
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:50:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 6F9053C92B9
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:56:59 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F2EC23C9390
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:49:42 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 316D63C25D7
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:56:48 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7FDC41000D34
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:49:42 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 2115E1F3B6;
- Tue, 25 Jan 2022 14:49:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1643122182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4196B600C80
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:56:47 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3D1081F380;
+ Tue, 25 Jan 2022 14:56:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1643122607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tAmPUbK8LDcYc+ROXKHN4KkePi88QJ0HskL4/5YFO1c=;
- b=IDEv/s+BXuoDNv412X/EdsCtzPgksrYM1glSHItilbu1w7P/nLj/kB53jKN25DLOmkUvTP
- 11zzggt2TdrPcFyPmdN85dbf/FKFKNUFkOy6IwAFtq2UCnXc96Ow1/jmCAVi3uGGN+xtgI
- +yEJg82m7gwKawa0ULNM3Z3/CBiPxlk=
-Received: from g78.suse.de (unknown [10.163.24.90])
- by relay2.suse.de (Postfix) with ESMTP id DA0D9A3B81;
- Tue, 25 Jan 2022 14:49:41 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 25 Jan 2022 14:49:23 +0000
-Message-Id: <20220125144923.5849-3-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220125144923.5849-1-rpalethorpe@suse.com>
+ bh=W8b2COsVmxYa1AnHeJdEFaSPfnNagCHyGuqXrEyVgs8=;
+ b=qgckEC4+riiu4RAn++Fx/fRprtV5K4Q20YplGTei1kO9v7naxEXnYe/wxrMwqK2ZOxO4qW
+ X0oaFmco0dlzMcksyl8pMywhizyVanYfnP6Hn89WHE4QdeUEtUu8d2syieSh3yG8a8dG+X
+ GZw+0VjZnvtGWXsC5RRbs5cZAQV+oZc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1643122607;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=W8b2COsVmxYa1AnHeJdEFaSPfnNagCHyGuqXrEyVgs8=;
+ b=/DMeAs/TAfBshg//wOkM8to1xM7QVJNfQ9sZmB4lipBODwjQgZNMvJa6U03ZLCNxKdtt0X
+ KkCs8r9OO2i1/oBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1919B13E05;
+ Tue, 25 Jan 2022 14:56:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id fSBCBa8P8GFMfQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 25 Jan 2022 14:56:47 +0000
+Date: Tue, 25 Jan 2022 15:58:35 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Message-ID: <YfAQG1/1Vec2Fbb/@yuki>
 References: <20220124173651.652-1-rpalethorpe@suse.com>
- <20220125144923.5849-1-rpalethorpe@suse.com>
+ <20220124173651.652-3-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220124173651.652-3-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] memcontrol02: Increase expected error with
+Subject: Re: [LTP] [PATCH 3/3] memcontrol02: Increase expected error with
  increase in pagesize
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -59,52 +77,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A few percent seems to be wasted with the increase in page size from
-4k to 64k in these tests. For some reason, this appears to cause the
-test to fail on exfat on the anon test, but only exfat. We add 4% to
-the error for 64k pages.
+Hi!
+Looks reasonable.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/controllers/memcg/memcontrol02.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
-index 75ae5f56c..9fa4ff811 100644
---- a/testcases/kernel/controllers/memcg/memcontrol02.c
-+++ b/testcases/kernel/controllers/memcg/memcontrol02.c
-@@ -39,13 +39,17 @@ static int fd;
- static int file_to_all_error = 10;
- 
- /*
-- * Checks if two given values differ by less than err% of their sum.
-+ * Checks if two given values differ by less than err% of their
-+ * sum. An extra percent is added for every doubling of the page size
-+ * to compensate for wastage in page sized allocations.
-  */
- static inline int values_close(const ssize_t a,
- 			       const ssize_t b,
- 			       const ssize_t err)
- {
--	return 100 * labs(a - b) <= (a + b) * err;
-+	const ssize_t page_adjusted_err = ffs(page_size >> 13) + err;
-+
-+	return 100 * labs(a - b) <= (a + b) * page_adjusted_err;
- }
- 
- static void alloc_anon_50M_check(void)
 -- 
-2.34.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
