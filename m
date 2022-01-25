@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12FF0C433F5
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:46:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3447C433EF
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 14:48:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B916F3C9606
-	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:46:56 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 19FCC3C9543
+	for <ltp@archiver.kernel.org>; Tue, 25 Jan 2022 15:48:50 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EC0AC3C932A
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:46:46 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 204A53C932A
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:48:40 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8B7CF600A0C
- for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:46:46 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4E11E1A009AA
+ for <ltp@lists.linux.it>; Tue, 25 Jan 2022 15:48:39 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B63992112B;
- Tue, 25 Jan 2022 14:46:45 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 803D51F380;
+ Tue, 25 Jan 2022 14:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643122005;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1643122119;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6vRWebqgVyp3wx8zDfp8OjTKEVEDYUPbCGRW7hOFNWU=;
- b=KYcsLUX+iNeeDMYge2/j1ZeEuUKoZwSOhLP/kI2hcU5XwvvFwcHfy5QMlPgxiur5ArRLHt
- P2Io+D5L8EUTh9lf+sM9qNv5AvVn7XGxpfeFhw4uxkbYB0Fbzq1W/0m7Rem7xkO/Qpl4bc
- kICsLqTXXzZ+EAQjF51eRDmpL1iKBUE=
+ bh=oGIpa4uqOv4MJ9J5tvdRQ+7juvZBfy/52tA7ET63Noc=;
+ b=aY/mWVZvbusuw+pjRPdRP4rtG76+wyb6F1YVIaIkGjZ8LHj0JVduFojTPMemXo5a43AH3k
+ cDsmsDy0aWi6XSpTE6/JvfdRTCk14kqsBkYOKTaMj4pnLjoxq9PfAfOMCIb3edTEQTLna2
+ e1c36E1V5xsrhNjwtd/lxINpV5HhV/0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643122005;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1643122119;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6vRWebqgVyp3wx8zDfp8OjTKEVEDYUPbCGRW7hOFNWU=;
- b=GKDXRA/e16sTbIQp5V2YbC57Kj34u8oRltkEfKXsFJ7/Y+Tp+WaTeuylsCpbvP5lyopeh2
- xemO4uwgOXsUyqCQ==
+ bh=oGIpa4uqOv4MJ9J5tvdRQ+7juvZBfy/52tA7ET63Noc=;
+ b=O/VjsqUexThlvooqMtFHD9L62rDOybJaD45RZ09HlBMeOnszF3CNhUD7zchkrv6MVTOKmu
+ VQDoAmvbP54f+PBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7644013E02;
- Tue, 25 Jan 2022 14:46:45 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EA7B13E02;
+ Tue, 25 Jan 2022 14:48:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XCbNGlUN8GEkeAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 25 Jan 2022 14:46:45 +0000
-Date: Tue, 25 Jan 2022 15:46:43 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id WLM5EccN8GEPeQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Jan 2022 14:48:39 +0000
+Date: Tue, 25 Jan 2022 15:48:37 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <YfANU1rO2niDncMA@pevik>
+To: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YfANxZOv13yZwY3C@pevik>
 References: <20220125144043.31798-1-pvorel@suse.cz>
- <20220125144043.31798-4-pvorel@suse.cz>
+ <20220125144043.31798-4-pvorel@suse.cz> <YfANU1rO2niDncMA@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220125144043.31798-4-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <YfANU1rO2niDncMA@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 3/4] sched_get_priority_min01: Add missing
  policies
@@ -83,10 +84,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-
-this test and sched_get_priority_max01 (latest commit) need to include lapi/sched.h.
-I'll fix it before merge.
+> this test and sched_get_priority_max01 (latest commit) need to include lapi/sched.h.
+> I'll fix it before merge.
+For a record: on traditional distros with glibc it's required only on CentOS 7
+and Ubuntu Xenial (very old distros, but Centos 7 EOL in 2024).
 
 Kind regards,
 Petr
