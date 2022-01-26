@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A64DC2BA4C
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 18:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D7F2C2BA4C
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 18:15:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 910263C96FA
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 19:13:21 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 73BD33C96DB
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 19:15:10 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03A8A3C9714
- for <ltp@lists.linux.it>; Wed, 26 Jan 2022 19:12:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 83AFC3C54C9
+ for <ltp@lists.linux.it>; Wed, 26 Jan 2022 19:15:01 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D995E140009D
- for <ltp@lists.linux.it>; Wed, 26 Jan 2022 19:12:16 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B938160049C
+ for <ltp@lists.linux.it>; Wed, 26 Jan 2022 19:15:00 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C5C4C218F3;
- Wed, 26 Jan 2022 18:12:15 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0ABB921901;
+ Wed, 26 Jan 2022 18:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643220735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=pMJJHWFTKC7tKn3xchFnB//WUiScnWWc4fhw8PXBJm4=;
- b=QOVKQkK4qKCNBvEjyFoq3sNMUy9XZD8qbtT2T2Sf7AUNToroSJ17jHUFMMOuxU/CQ/Hoc1
- e1+nLi/eS7viQx6Wr+pmiJlXoVQsu2S11AAnizAFJIk1Ff2JvScae+QVSnzN5hh27JvFHg
- 5PnNQvGbVtBF0fLhC+KNVz8rttxJ8dw=
+ t=1643220900;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kmBQRZXRxgIctWIQPUdoBc6gr1glIn82p9HPiUYaaGo=;
+ b=mT+kAyD+k4bPIliEPKcN1dt4Ixm5VN6ClMppo48pCHV2khLWIAaDqqoaqZkUpFa6OeNm4z
+ RUZwjz7q3f/RdZehGYisWNlhFyMxp1NVpUUbCaYq8y2iATXrEfNElO313tWv9UHielff4i
+ zARXzXBlz23rqE/FiwBKBviMYGjwNHc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643220735;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=pMJJHWFTKC7tKn3xchFnB//WUiScnWWc4fhw8PXBJm4=;
- b=pyq/Y0kUp2y6osrmXLyaybxPdgqShItRYbydPYff0ITxJjl1iL6MQmK5wxG2an8X0JJ9+x
- aOfMC06I3KBw2EDA==
+ s=susede2_ed25519; t=1643220900;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kmBQRZXRxgIctWIQPUdoBc6gr1glIn82p9HPiUYaaGo=;
+ b=Cke2VXt+esEtADBXODag/VgGUzy6PrMWPW/NCsd6FHvvV8cW1q4qDcHdj9MwkzvsjZpDAK
+ 7yQ71WiTm2OtnrBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9BA6D13E30;
- Wed, 26 Jan 2022 18:12:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B92E513E30;
+ Wed, 26 Jan 2022 18:14:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LREWI/+O8WGbcQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 26 Jan 2022 18:12:15 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id lMuKKqOP8WGbcgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 26 Jan 2022 18:14:59 +0000
+Date: Wed, 26 Jan 2022 19:14:57 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 26 Jan 2022 19:12:05 +0100
-Message-Id: <20220126181210.24897-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.34.1
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YfGPoTFwN9r4f/UV@pevik>
+References: <20220126123547.13298-1-pvorel@suse.cz>
+ <YfFn6DCo0ZHHXTI5@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YfFn6DCo0ZHHXTI5@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/5] shell: Add TST_FORMAT_DEVICE support
+Subject: Re: [LTP] [PATCH v2 0/7] m4: Fix warnings, remove old checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,38 +77,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi all,
 
-it's nice to sync with C API, but I don't expect that many tests would
-need formatting device.  The main reason is to preparation for
-TST_ALL_FILESYSTEMS support (useful for NFS tests).
+[ Fixing the address: automated-testing@yoctoproject.org was wrong,
+now using automated-testing@lists.yoctoproject.org ]
+
+> Hi!
+> Generally this is a nice cleanup, I guess that we should wait for a
+> while if there is someone who will ask to keep the ltp-scanner and then
+> we can go ahead with the changes...
++1. Please let us know if you're using ltp-scanner.
 
 Kind regards,
 Petr
-
-Petr Vorel (5):
-  tst_test.sh: Add $TST_DEFAULT_FS_TYPE
-  tst_test.sh: tst_mkfs(): Add support for extra opts
-  tst_test.sh: Add $TST_FORMAT_DEVICE and related vars
-  df01.sh: Use TST_FORMAT_DEVICE=1
-  shell: Add test for TST_FORMAT_DEVICE=1
-
- doc/shell-test-api.txt                      |  9 +++++++-
- lib/newlib_tests/shell/tst_format_device.sh | 24 ++++++++++++++++++++
- testcases/commands/df/df01.sh               |  7 ++----
- testcases/commands/mkfs/mkfs01.sh           |  4 ++--
- testcases/lib/tst_test.sh                   | 25 ++++++++++++---------
- 5 files changed, 51 insertions(+), 18 deletions(-)
- create mode 100755 lib/newlib_tests/shell/tst_format_device.sh
-
--- 
-2.34.1
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
