@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B246C28CF5
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 09:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C00EC28CF5
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 11:56:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8BF593C95F0
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 10:14:49 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 99DE03C54C9
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 12:56:50 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 123273C9402
- for <ltp@lists.linux.it>; Wed, 26 Jan 2022 10:14:40 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 92A3D3C54C9
+ for <ltp@lists.linux.it>; Wed, 26 Jan 2022 12:56:40 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1590C1400DC7
- for <ltp@lists.linux.it>; Wed, 26 Jan 2022 10:14:38 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CFBA1A01526
+ for <ltp@lists.linux.it>; Wed, 26 Jan 2022 12:56:38 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 39B7A21117;
- Wed, 26 Jan 2022 09:14:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643188478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7sie3Z3WaGoiI2+6qCtFnTvJdcxBoZpFEgaXhUa1jaA=;
- b=yvLkVkxUR7GxKyLY3IKkdBE/H82gatCHH6M0zXy2Pmw6peyRVkpyA9A7azMJHNhY4R+HYz
- 1EFXKiLR+ZGsDVogth/CZpo/WUlOcTDfQ1s5c2pj7OVSeSwG7hpV5NP8q7OxQnvvmSHbN4
- aqHRb48EMmpLPPnEMu0yosrLcPMO2Rk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643188478;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5A938218E4;
+ Wed, 26 Jan 2022 11:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1643198198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=e10eMJiPWF0pp/fKHSvoT5tWkEJrq3k1sDyzuFS26HA=;
+ b=wqLxOPwWq+nGspKxGLf43mljxWPZRLqrVx51sr01ZD8z9Hek0NLp0kkC4SjeiGWCFnrlv6
+ 5rVXcrH+zxA1MXzFhxFulHWPESc1+6IIYdh3Nk2ExJtTg7FYGQienpbwSqp1vfqnY1eCnI
+ grrjSwS/hx0ztMo2/ZcRoQSzFVUHA6o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1643198198;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7sie3Z3WaGoiI2+6qCtFnTvJdcxBoZpFEgaXhUa1jaA=;
- b=85vI92EV4GsIgp5iomc5fv+XVSQvr9eEkJbctqsEJvU9hSHUC5baVah2kH+kjlQk/waBB2
- o6PW/YOFLE37IRDQ==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=e10eMJiPWF0pp/fKHSvoT5tWkEJrq3k1sDyzuFS26HA=;
+ b=pTQVYiytfEJnKzmH1MNIhgj+qTZl3MyCuk1MYoENAaIQmvmWtocaavzN8vqkXx4tmk5h0m
+ zxS6x6JwD0oR2SBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 111DB13B8D;
- Wed, 26 Jan 2022 09:14:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4376913BA2;
+ Wed, 26 Jan 2022 11:56:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XeP4Af4Q8WFuQQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 26 Jan 2022 09:14:38 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 26 Jan 2022 10:14:35 +0100
-Message-Id: <20220126091435.16022-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.34.1
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZYetDfY28WHSIgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 26 Jan 2022 11:56:38 +0000
+Date: Wed, 26 Jan 2022 12:58:27 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YfE3Y1xyxSFDfbyr@yuki>
+References: <20220107212058.19768-1-andrea.cervesato@suse.de>
+ <20220107212058.19768-4-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220107212058.19768-4-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Rewrite process_vm_readv02.c test with new LTP API
+Subject: Re: [LTP] [PATCH v4 03/11] Add wqueue01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,282 +76,354 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Removed pipe and replaced with shared memory.
-Replaced TST_CHECKPOINT_INIT usage with .needs_checkpoints from the new
-LTP API.
+Hi!
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+> ---
+>  runtest/watchqueue                     |   9 ++
+>  scenario_groups/default                |   1 +
+>  testcases/kernel/Makefile              |   1 +
+>  testcases/kernel/watchqueue/.gitignore |   9 ++
+>  testcases/kernel/watchqueue/Makefile   |   8 ++
+>  testcases/kernel/watchqueue/common.h   | 149 +++++++++++++++++++++++++
+>  testcases/kernel/watchqueue/wqueue01.c |  40 +++++++
+>  7 files changed, 217 insertions(+)
+>  create mode 100644 runtest/watchqueue
+>  create mode 100644 testcases/kernel/watchqueue/.gitignore
+>  create mode 100644 testcases/kernel/watchqueue/Makefile
+>  create mode 100644 testcases/kernel/watchqueue/common.h
+>  create mode 100644 testcases/kernel/watchqueue/wqueue01.c
+> 
+> diff --git a/runtest/watchqueue b/runtest/watchqueue
+> new file mode 100644
+> index 000000000..bd6b0a423
+> --- /dev/null
+> +++ b/runtest/watchqueue
+> @@ -0,0 +1,9 @@
+> +wqueue01 wqueue01
+> +wqueue02 wqueue02
+> +wqueue03 wqueue03
+> +wqueue04 wqueue04
+> +wqueue05 wqueue05
+> +wqueue06 wqueue06
+> +wqueue07 wqueue07
+> +wqueue08 wqueue08
+> +wqueue09 wqueue09
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
-Since we compare length, there's no need to alloc length+1 size when
-reading remote VM
- .../kernel/syscalls/cma/process_vm_readv02.c  | 217 +++++++-----------
- 1 file changed, 88 insertions(+), 129 deletions(-)
+While this is minor, such entries should be added with each respective
+test.
 
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv02.c b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-index b705b946b..ed905a735 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-@@ -1,164 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2012
-  * Copyright (c) Linux Test Project, 2012
-+ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/* \
-+ * [Description]
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Fork two children, one child allocates memory and initializes it;
-+ * then the other one calls process_vm_readv and reads from the same
-+ * memory location, it then verifies if process_vm_readv returns
-+ * correct data.
-  */
- 
--#define _GNU_SOURCE
-+#include <stdio.h>
- #include <sys/types.h>
--#include <sys/uio.h>
- #include <sys/wait.h>
--#include <errno.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
- 
--char *TCID = "process_vm_readv02";
--int TST_TOTAL = 1;
--
--static char *tst_string = "THIS IS A TEST";
--static int len;
--static int pipe_fd[2];
--static pid_t pids[2];
-+static uintptr_t *data_ptr;
- 
--static void child_alloc(void);
--static void child_invoke(void);
--static void setup(void);
--static void cleanup(void);
--
--int main(int argc, char **argv)
--{
--	int lc, status;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		len = strlen(tst_string);
--
--		SAFE_PIPE(cleanup, pipe_fd);
--
--		/* the start of child_alloc and child_invoke is already
--		 * synchronized via pipe */
--		pids[0] = fork();
--		switch (pids[0]) {
--		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork #0");
--		case 0:
--			child_alloc();
--			exit(0);
--		}
--
--		pids[1] = fork();
--		switch (pids[1]) {
--		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
--		case 0:
--			child_invoke();
--			exit(0);
--		}
--
--		/* wait until child_invoke reads from child_alloc's VM */
--		SAFE_WAITPID(cleanup, pids[1], &status, 0);
--		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--			tst_resm(TFAIL, "child 1 returns %d", status);
--
--		/* child_alloc is free to exit now */
--		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
--
--		SAFE_WAITPID(cleanup, pids[0], &status, 0);
--		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--			tst_resm(TFAIL, "child 0 returns %d", status);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void child_alloc(void)
-+static void child_alloc(const char *data)
- {
- 	char *foo;
--	char buf[BUFSIZ];
- 
--	foo = SAFE_MALLOC(tst_exit, len + 1);
--	strncpy(foo, tst_string, len);
--	foo[len] = '\0';
--	tst_resm(TINFO, "child 0: memory allocated and initialized.");
-+	foo = strdup(data);
-+	*data_ptr = (uintptr_t)foo;
- 
--	/* passing addr of string "foo" via pipe */
--	SAFE_CLOSE(tst_exit, pipe_fd[0]);
--	snprintf(buf, BUFSIZ, "%p", foo);
--	SAFE_WRITE(tst_exit, 1, pipe_fd[1], buf, strlen(buf) + 1);
--	SAFE_CLOSE(tst_exit, pipe_fd[1]);
-+	tst_res(TINFO, "child 0: memory allocated and initialized");
- 
--	/* wait until child_invoke is done reading from our VM */
--	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
-+	/* wake and wait until child_invoke is done reading from our VM */
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- }
- 
--static void child_invoke(void)
-+static void child_invoke(const char *data, int length, pid_t pid_alloc)
- {
--	char *lp, *rp;
--	char buf[BUFSIZ];
-+	char *lp;
- 	struct iovec local, remote;
- 
--	/* get addr from pipe */
--	SAFE_CLOSE(tst_exit, pipe_fd[1]);
--	SAFE_READ(tst_exit, 0, pipe_fd[0], buf, BUFSIZ);
--	SAFE_CLOSE(tst_exit, pipe_fd[0]);
--	if (sscanf(buf, "%p", &rp) != 1)
--		tst_brkm(TBROK | TERRNO, tst_exit, "sscanf");
--
--	lp = SAFE_MALLOC(tst_exit, len + 1);
-+	lp = SAFE_MALLOC(length);
- 	local.iov_base = lp;
--	local.iov_len = len;
--	remote.iov_base = rp;
--	remote.iov_len = len;
--
--	tst_resm(TINFO, "child 1: reading string from same memory location.");
--	TEST(tst_syscall(__NR_process_vm_readv, pids[0],
--			 &local, 1UL, &remote, 1UL, 0UL));
--	if (TEST_RETURN != len)
--		tst_brkm(TFAIL | TTERRNO, tst_exit, "process_vm_readv");
--	if (strncmp(lp, tst_string, len) != 0)
--		tst_brkm(TFAIL, tst_exit, "child 1: expected string: %s, "
--			 "received string: %256s", tst_string, lp);
-+	local.iov_len = length;
-+	remote.iov_base = (void *)*data_ptr;
-+	remote.iov_len = length;
-+
-+	tst_res(TINFO, "child 1: reading string from same memory location");
-+
-+	TEST(tst_syscall(__NR_process_vm_readv, pid_alloc, &local, 1UL, &remote,
-+					 1UL, 0UL));
-+
-+	if (TST_RET != length)
-+		tst_brk(TBROK, "process_vm_readv: %s", tst_strerrno(-TST_RET));
-+
-+	if (strncmp(lp, data, length) != 0)
-+		tst_res(TFAIL, "child 1: expected string: %s, received string: %256s",
-+				data, lp);
- 	else
--		tst_resm(TPASS, "expected string received.");
-+		tst_res(TPASS, "expected string received");
- }
- 
- static void setup(void)
- {
--	tst_require_root();
--
- 	/* Just a sanity check of the existence of syscall */
- 	tst_syscall(__NR_process_vm_readv, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
- 
--	tst_tmpdir();
--	TST_CHECKPOINT_INIT(cleanup);
--
--	TEST_PAUSE;
-+	data_ptr = SAFE_MMAP(NULL, sizeof(uintptr_t), PROT_READ | PROT_WRITE,
-+						 MAP_SHARED | MAP_ANONYMOUS, -1, 0);
- }
- 
- static void cleanup(void)
- {
--	tst_rmdir();
-+	if (data_ptr)
-+		SAFE_MUNMAP(data_ptr, BUFSIZ);
-+}
-+
-+static void run(void)
-+{
-+	const char *data = "test";
-+	pid_t pid_alloc;
-+	pid_t pid_invoke;
-+	int length;
-+	int status;
-+
-+	length = strlen(data);
-+
-+	pid_alloc = SAFE_FORK();
-+	if (!pid_alloc) {
-+		child_alloc(data);
-+		return;
-+	}
-+
-+	/* wait until child_alloc has allocated VM */
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	pid_invoke = SAFE_FORK();
-+	if (!pid_invoke) {
-+		child_invoke(data, length, pid_alloc);
-+		return;
-+	}
-+
-+	/* wait until child_invoke reads from child_alloc's VM */
-+	SAFE_WAITPID(pid_invoke, &status, 0);
-+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+		tst_res(TFAIL, "child 1: returns %d", status);
-+
-+	/* child_alloc is free to exit now */
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	SAFE_WAITPID(pid_alloc, &status, 0);
-+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+		tst_res(TFAIL, "child 0: returns %d", status);
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+};
+> diff --git a/scenario_groups/default b/scenario_groups/default
+> index 1dc2987d5..68bd5300d 100644
+> --- a/scenario_groups/default
+> +++ b/scenario_groups/default
+> @@ -30,3 +30,4 @@ cve
+>  crypto
+>  kernel_misc
+>  uevent
+> +watchqueue
+> diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+> index 4604f1f38..d44856c57 100644
+> --- a/testcases/kernel/Makefile
+> +++ b/testcases/kernel/Makefile
+> @@ -38,6 +38,7 @@ SUBDIRS			+= connectors \
+>  			   sound \
+>  			   tracing \
+>  			   uevents \
+> +			   watchqueue \
+>  
+>  ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
+>  SUBDIRS			+= power_management
+> diff --git a/testcases/kernel/watchqueue/.gitignore b/testcases/kernel/watchqueue/.gitignore
+> new file mode 100644
+> index 000000000..dcfcd8272
+> --- /dev/null
+> +++ b/testcases/kernel/watchqueue/.gitignore
+> @@ -0,0 +1,9 @@
+> +wqueue01
+> +wqueue02
+> +wqueue03
+> +wqueue04
+> +wqueue05
+> +wqueue06
+> +wqueue07
+> +wqueue08
+> +wqueue09
+
+Same here.
+
+> diff --git a/testcases/kernel/watchqueue/Makefile b/testcases/kernel/watchqueue/Makefile
+> new file mode 100644
+> index 000000000..896d66d42
+> --- /dev/null
+> +++ b/testcases/kernel/watchqueue/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +top_srcdir			?= ../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +LDLIBS += $(KEYUTILS_LIBS)
+> diff --git a/testcases/kernel/watchqueue/common.h b/testcases/kernel/watchqueue/common.h
+> new file mode 100644
+> index 000000000..00d19b5bc
+> --- /dev/null
+> +++ b/testcases/kernel/watchqueue/common.h
+> @@ -0,0 +1,149 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +#ifndef WQUEUE_COMMON_H__
+> +#define WQUEUE_COMMON_H__
+> +
+> +#include "tst_test.h"
+> +#include "lapi/watch_queue.h"
+> +#include "lapi/keyctl.h"
+> +
+> +static struct watch_notification_filter wqueue_filter = {
+> +	.nr_filters	= 2,
+> +	.filters = {
+> +		[0]	= {
+> +			.type			= WATCH_TYPE_META,
+> +			.subtype_filter[0]	= UINT_MAX,
+> +		},
+> +		[1]	= {
+> +			.type			= WATCH_TYPE_KEY_NOTIFY,
+> +			.subtype_filter[0]	= UINT_MAX,
+> +		},
+> +	},
+> +};
+> +
+> +static inline int wqueue_key_event(struct watch_notification *n, size_t len, unsigned int wtype, int type)
+> +{
+> +	struct key_notification *k;
+> +	const char* msg;
+> +
+> +	if (wtype != WATCH_TYPE_KEY_NOTIFY)
+> +		return 0;
+> +
+> +	if (len != sizeof(struct key_notification))
+> +		tst_brk(TBROK, "Incorrect key message length");
+> +
+> +	switch (n->subtype) {
+> +		case NOTIFY_KEY_INSTANTIATED:
+> +			msg = "instantiated";
+> +			break;
+> +		case NOTIFY_KEY_UPDATED:
+> +			msg = "updated";
+> +			break;
+> +		case NOTIFY_KEY_LINKED:
+> +			msg = "linked";
+> +			break;
+> +		case NOTIFY_KEY_UNLINKED:
+> +			msg = "unlinked";
+> +			break;
+> +		case NOTIFY_KEY_CLEARED:
+> +			msg = "cleared";
+> +			break;
+> +		case NOTIFY_KEY_REVOKED:
+> +			msg = "revoked";
+> +			break;
+> +		case NOTIFY_KEY_INVALIDATED:
+> +			msg = "invalidated";
+> +			break;
+> +		case NOTIFY_KEY_SETATTR:
+> +			msg = "setattr";
+> +			break;
+> +		default:
+> +			msg = "Invalid notification";
+> +			break;
+> +	};
+> +
+> +	k = (struct key_notification *)n;
+> +	tst_res(TINFO, "KEY %08x change=%u[%s] aux=%u",
+> +		k->key_id, n->subtype, msg, k->aux);
+> +
+> +	if (n->subtype == type)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static inline key_serial_t wqueue_add_key(int fd)
+> +{
+> +	key_serial_t key;
+> +
+> +	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+> +	if (key == -1)
+> +		tst_brk(TBROK, "add_key error: %s", tst_strerrno(errno));
+> +
+> +	keyctl(KEYCTL_WATCH_KEY, key, fd, 0x01);
+> +	keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING, fd, 0x02);
+> +
+> +	return key;
+> +}
+> +
+> +static inline int wqueue_watch(int buf_size, struct watch_notification_filter *filter)
+> +{
+> +	int pipefd[2];
+> +	int fd;
+> +
+> +	SAFE_PIPE2(pipefd, O_NOTIFICATION_PIPE);
+
+We can get two different errors here that should be translated to TCONF.
+
+If you look at watch_queue.h in the linux kernel sources it looks like:
+
+#ifdef CONFIG_WATCH_QUEUE
+...
+#else
+static inline int watch_queue_init(struct pipe_inode_info *pipe)
+{
+        return -ENOPKG;
+}
+#endif
+
+So in the case that CONFIG_WATCH_QUEUE is not set pipe2() with
+O_NOTIFICATION_PIPE will fail with errno set to ENOPKG.
+
+
+And on kernels that are older than the watch queue implementation we will
+trip over:
+
+	if (flags & ~(O_CLOEXEC | O_NONBLOCK | O_DIRECT))
+                return -EINVAL;
+
+In the __do_pipe_flags() function and the call will fail with EINVAL
+instead.
+
+So this code should look like:
+
+	TEST(pipe2(pipefd, O_NOTIFICATION_PIPE));
+	if (TST_RET) {
+		switch (TST_ERR) {
+		case ENOPKG:
+			tst_brk(TCONF | TTERRNO, "CONFIG_WATCH_QUEUE is not set");
+		break;
+		case EINVAL:
+			tst_brk(TCONF | TTERRNO, "O_NOTIFICATION_PIPE is not supported");
+		break;
+		default:
+			tst_brk(TBROK | TTERRNO, "pipe2() returned %ld", TST_RET);
+		}
+	}
+
+> +	fd = pipefd[0];
+> +
+> +	SAFE_IOCTL(fd, IOC_WATCH_QUEUE_SET_SIZE, buf_size);
+> +	SAFE_IOCTL(fd, IOC_WATCH_QUEUE_SET_FILTER, filter);
+> +
+> +	return fd;
+> +}
+> +
+> +typedef void (*wqueue_callback) (struct watch_notification *n, size_t len, unsigned int wtype);
+> +
+> +static void wqueue_consumer(int fd, wqueue_callback cb)
+> +{
+> +	unsigned char buffer[433], *p, *end;
+> +	union {
+> +		struct watch_notification n;
+> +		unsigned char buf1[128];
+> +	} n;
+> +	ssize_t buf_len;
+> +
+> +	tst_res(TINFO, "Reading watch queue events");
+> +
+> +	buf_len = SAFE_READ(0, fd, buffer, sizeof(buffer));
+> +
+> +	p = buffer;
+> +	end = buffer + buf_len;
+> +	while (p < end) {
+> +		size_t largest, len;
+> +
+> +		largest = end - p;
+> +		if (largest > 128)
+> +			largest = 128;
+> +
+> +		if (largest < sizeof(struct watch_notification))
+> +			tst_brk(TBROK, "Short message header: %zu", largest);
+> +
+> +		memcpy(&n, p, largest);
+> +
+> +		tst_res(TINFO, "NOTIFY[%03zx]: ty=%06x sy=%02x i=%08x",
+> +				p - buffer, n.n.type, n.n.subtype, n.n.info);
+> +
+> +		len = n.n.info & WATCH_INFO_LENGTH;
+> +		if (len < sizeof(n.n) || len > largest)
+> +			tst_brk(TBROK, "Bad message length: %zu/%zu", len, largest);
+> +
+> +		cb(&n.n, len, n.n.type);
+> +
+> +		p += len;
+> +	}
+> +}
+> +
+> +#endif
+> diff --git a/testcases/kernel/watchqueue/wqueue01.c b/testcases/kernel/watchqueue/wqueue01.c
+> new file mode 100644
+> index 000000000..24c3908ce
+> --- /dev/null
+> +++ b/testcases/kernel/watchqueue/wqueue01.c
+> @@ -0,0 +1,40 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test if keyctl update is correctly recognized by watch queue.
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/keyctl.h"
+> +#include "common.h"
+> +
+> +static void saw_key_updated(struct watch_notification *n, size_t len, unsigned int wtype)
+> +{
+> +	if (wqueue_key_event(n, len, wtype, NOTIFY_KEY_UPDATED))
+> +		tst_res(TPASS, "keyctl update has been recognized");
+> +	else
+> +		tst_res(TFAIL, "keyctl update has not been recognized");
+> +}
+> +
+> +static void run(void)
+> +{
+> +	int fd;
+> +	key_serial_t key;
+> +
+> +	fd = wqueue_watch(256, &wqueue_filter);
+> +	key = wqueue_add_key(fd);
+> +
+> +	keyctl(KEYCTL_UPDATE, key, "b", 1);
+> +	wqueue_consumer(fd, saw_key_updated);
+> +
+> +	SAFE_CLOSE(fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +};
+> -- 
+> 2.34.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.34.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
