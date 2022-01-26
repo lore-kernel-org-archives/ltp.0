@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D8FCC2BA4C
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 12:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10BD5C2BA4C
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 12:36:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D6CFE3C9696
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 13:36:06 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 54BEE3C96D8
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 13:36:16 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B88F23C0C9F
+ by picard.linux.it (Postfix) with ESMTPS id 148993C0C9F
  for <ltp@lists.linux.it>; Wed, 26 Jan 2022 13:35:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 369CE1A00445
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 84A64200D01
  for <ltp@lists.linux.it>; Wed, 26 Jan 2022 13:35:57 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEFFF218EB;
- Wed, 26 Jan 2022 12:35:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1AEEB1F3B6;
+ Wed, 26 Jan 2022 12:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643200556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643200557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Y6/C/c4axnouW1nL8x/bfNXJEvhZwRKGKlj8DaMcvCM=;
- b=QI3+DDUesW3FInudktos8qR8mAZm0HVuxRkcsQ7RU4bCDmplvi4neXv0DH6XQ2mmLXYDca
- oU9QuVtGoA2dj5VJYHIvRbljzC72xbj0V2kLA3ZHaEra+hUuhOhfeb1dABaTwAZbOfISnU
- PMuEkzVIvwWJ4rRzll+TrQSzz7J+pGI=
+ bh=+9toT3+XA7dqE/yxjZvIzfROFPByeTK/tTqGA4SGvfg=;
+ b=kKsejDsqRGWXIpgGE1GelPXIcGhu9uo9qrDnfqdbz/zk/B3Aoton67tKA+JBFnaD6w9hdf
+ 8IsUtK1FcinhXjtYWAFp2amAxKWSDYQAPmxUZCT1khqBq6Mu1ZlfQRryMsUH/paWmNL6Me
+ TY74hMT39liyROm8mWzJJFcioi5qh5Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643200556;
+ s=susede2_ed25519; t=1643200557;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Y6/C/c4axnouW1nL8x/bfNXJEvhZwRKGKlj8DaMcvCM=;
- b=i0VMb3pm4z0OzdUIULoXHsl88fe6kftjwrCUhIympvt1P8DC51Pq3bCTp/N13g61Nt2FTz
- JYy3lTwdbsFSd4Aw==
+ bh=+9toT3+XA7dqE/yxjZvIzfROFPByeTK/tTqGA4SGvfg=;
+ b=zrPkOuqljfdlC0znJhbeInNBP+wowvJxflpS8AyUFXlS9h0z5MftESXnVp9BbzygMfe7E8
+ kpPm1YcmKODuY/AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A85CF13BB5;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7E2213BB5;
  Wed, 26 Jan 2022 12:35:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id CPE0JyxA8WGkOQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id WF8QMyxA8WGkOQAAMHmgww
  (envelope-from <pvorel@suse.cz>); Wed, 26 Jan 2022 12:35:56 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 26 Jan 2022 13:35:45 +0100
-Message-Id: <20220126123547.13298-6-pvorel@suse.cz>
+Date: Wed, 26 Jan 2022 13:35:46 +0100
+Message-Id: <20220126123547.13298-7-pvorel@suse.cz>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220126123547.13298-1-pvorel@suse.cz>
 References: <20220126123547.13298-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH v2 5/7] m4: Remove check for MREMAP_FIXED
+Subject: [LTP] [RFC PATCH v2 6/7] m4: Remove check for clone() supports 7
+ args
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,95 +83,84 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-glibc and uclibc added it in 2005, musl at 2011.
+Fix from 1db62666ce (2014) for SLES10, RHEL4. Save to remove now.
+
+NOTE: support for 7 args was missing in kernel 2.4 and earlier.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 New in v2
 
- configure.ac                                |  1 -
- m4/ltp-mremap_fixed.m4                      | 12 ------------
- testcases/kernel/mem/thp/thp02.c            |  5 -----
- testcases/kernel/syscalls/mremap/mremap05.c | 11 -----------
- 4 files changed, 29 deletions(-)
- delete mode 100644 m4/ltp-mremap_fixed.m4
+ configure.ac         |  1 -
+ lib/cloner.c         | 10 ----------
+ m4/ltp-clone7args.m4 | 17 -----------------
+ 3 files changed, 28 deletions(-)
+ delete mode 100644 m4/ltp-clone7args.m4
 
 diff --git a/configure.ac b/configure.ac
-index 6ff761837a..41c385edcb 100644
+index 41c385edcb..f83bbe950b 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -360,7 +360,6 @@ LTP_CHECK_KEYUTILS_SUPPORT
- LTP_CHECK_LIBMNL
- LTP_CHECK_LINUX_PTRACE
- LTP_CHECK_LINUXRANDOM
--LTP_CHECK_MREMAP_FIXED
- LTP_CHECK_NOMMU_LINUX
- LTP_CHECK_SELINUX
- LTP_CHECK_SYNC_ADD_AND_FETCH
-diff --git a/m4/ltp-mremap_fixed.m4 b/m4/ltp-mremap_fixed.m4
-deleted file mode 100644
-index 66548b82b3..0000000000
---- a/m4/ltp-mremap_fixed.m4
-+++ /dev/null
-@@ -1,12 +0,0 @@
--dnl SPDX-License-Identifier: GPL-2.0-or-later
--dnl Copyright (c) Linux Test Project, 2012
--dnl Author: Cyril Hrubis <chrubis@suse.cz>
--
--AC_DEFUN([LTP_CHECK_MREMAP_FIXED],[
--AH_TEMPLATE(HAVE_MREMAP_FIXED,
--[Define to 1 if you have MREMAP_FIXED in <sys/mman.h>.])
--AC_MSG_CHECKING([for MREMAP_FIXED in <sys/mman.h>])
--AC_TRY_COMPILE([#define _GNU_SOURCE
--                #include <sys/mman.h>], [int flags = MREMAP_FIXED;],
--               AC_DEFINE(HAVE_MREMAP_FIXED) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
--])
-diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
-index a1b0ee0ab1..56568d1d18 100644
---- a/testcases/kernel/mem/thp/thp02.c
-+++ b/testcases/kernel/mem/thp/thp02.c
-@@ -40,7 +40,6 @@
- #include <unistd.h>
- #include "mem.h"
+@@ -352,7 +352,6 @@ LTP_CHECK_ATOMIC_MEMORY_MODEL
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
+ LTP_CHECK_CAPABILITY_SUPPORT
+ LTP_CHECK_CC_WARN_OLDSTYLE
+-LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+ LTP_CHECK_CRYPTO
+ LTP_CHECK_FORTIFY_SOURCE
+ LTP_CHECK_KERNEL_DEVEL
+diff --git a/lib/cloner.c b/lib/cloner.c
+index 11401f2303..95954f6df3 100644
+--- a/lib/cloner.c
++++ b/lib/cloner.c
+@@ -50,11 +50,6 @@ extern int __clone2(int (*fn) (void *arg), void *child_stack_base,
+                     pid_t *parent_tid, void *tls, pid_t *child_tid);
+ #endif
  
--#ifdef HAVE_MREMAP_FIXED
- static int ps;
- static long hps, size;
- 
-@@ -119,7 +118,3 @@ static struct tst_test test = {
- 	.test_all = do_mremap,
- 	.forks_child = 1,
- };
+-#ifndef CLONE_SUPPORTS_7_ARGS
+-# define clone(fn, stack, flags, arg, ptid, tls, ctid) \
+-         clone(fn, stack, flags, arg)
+-#endif
 -
+ /*
+  * ltp_clone: wrapper for clone to hide the architecture dependencies.
+  *   1. hppa takes bottom of stack and no stacksize (stack grows up)
+@@ -109,12 +104,7 @@ int ltp_clone7(unsigned long flags, int (*fn)(void *arg), void *arg,
+ 	ctid = va_arg(arg_clone, pid_t *);
+ 	va_end(arg_clone);
+ 
+-#ifdef CLONE_SUPPORTS_7_ARGS
+ 	return ltp_clone_(flags, fn, arg, stack_size, stack, ptid, tls, ctid);
 -#else
--	TST_TEST_TCONF("MREMAP_FIXED not present in <sys/mman.h>");
--#endif /* HAVE_MREMAP_FIXED */
-diff --git a/testcases/kernel/syscalls/mremap/mremap05.c b/testcases/kernel/syscalls/mremap/mremap05.c
-index 5e8cda5d78..d85ebb068d 100644
---- a/testcases/kernel/syscalls/mremap/mremap05.c
-+++ b/testcases/kernel/syscalls/mremap/mremap05.c
-@@ -45,8 +45,6 @@
- 
- char *TCID = "mremap05";
- 
--#ifdef HAVE_MREMAP_FIXED
--
- struct test_case_t {
- 	char *old_address;
- 	char *new_address;
-@@ -239,12 +237,3 @@ static void setup(void)
- static void cleanup(void)
- {
+-	errno = ENOSYS;
+-	return -1;
+-#endif
  }
+ 
+ /*
+diff --git a/m4/ltp-clone7args.m4 b/m4/ltp-clone7args.m4
+deleted file mode 100644
+index ab55c1e335..0000000000
+--- a/m4/ltp-clone7args.m4
++++ /dev/null
+@@ -1,17 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) Linux Test Project, 2014
 -
--#else
--
--int main(void)
--{
--	tst_brkm(TCONF, NULL, "MREMAP_FIXED not present in <sys/mman.h>");
--}
--
--#endif /* HAVE_MREMAP_FIXED */
+-AC_DEFUN([LTP_CHECK_CLONE_SUPPORTS_7_ARGS],[
+-AH_TEMPLATE(CLONE_SUPPORTS_7_ARGS,
+-[Define to 1 if clone() supports 7 arguments.])
+-AC_MSG_CHECKING([if clone() supports 7 args])
+-AC_TRY_LINK([#define _GNU_SOURCE
+-		#include <sched.h>
+-		#include <stdlib.h>],
+-		[
+-		#ifndef __ia64__
+-		clone(NULL, NULL, 0, NULL, NULL, NULL, NULL);
+-		#endif
+-		],
+-		AC_DEFINE(CLONE_SUPPORTS_7_ARGS) AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
+-])
 -- 
 2.34.1
 
