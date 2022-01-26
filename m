@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9D8EC28CF5
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 12:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90E78C28CF5
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 14:05:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C2F03C96DB
-	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 13:37:21 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 24F763C96D1
- for <ltp@lists.linux.it>; Wed, 26 Jan 2022 13:35:59 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id 880543C9734
+	for <ltp@archiver.kernel.org>; Wed, 26 Jan 2022 15:05:36 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 098E6600350
- for <ltp@lists.linux.it>; Wed, 26 Jan 2022 13:35:56 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B9E763C9536
+ for <ltp@lists.linux.it>; Wed, 26 Jan 2022 15:05:24 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6908C6007B2
+ for <ltp@lists.linux.it>; Wed, 26 Jan 2022 15:05:23 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1478A1F397;
- Wed, 26 Jan 2022 12:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643200556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=mIxdnI1/e4xXXrEMJ2fg8NNller6ipvhUOSWWNbdi5c=;
- b=c0GjoJFkiR1wPrQpUQVwapTDEOwQS9guhYw4HgcodwBR2SAN+8Y0M9Df0f3ePQlg6q2JZT
- 4b16AusimV4EkwpXpcvYRAJ0gzzL88Ym2WQvOxomh60d4gbjvpaJSdkHWxBOjwXi+H+HNo
- +KKpAhLPnAN/8G6FtKiKnn/kCvY50mk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643200556;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 85E83212BF;
+ Wed, 26 Jan 2022 14:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643205922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7pUsRDnSQF6IC/abGtYsTKQLup87xBBNtb8g82rft9U=;
+ b=ql68aM6PkoldoR47fnRgWW+5jHAEJjHbZxcr8Li5RkW3gUz+4AHLVgOiDDS0pw6NZoH/2V
+ zC8Ov8ohlZs4z2jTqpz4EIkdaxHnFRLT2D5eWeNvVo/PVstW0AVSOdD2nuWit84zmuQIry
+ JZoutXrY91bnkml7meSNX0KtyTWQIjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643205922;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=mIxdnI1/e4xXXrEMJ2fg8NNller6ipvhUOSWWNbdi5c=;
- b=wcgWpir7tHImVOW5U+kCjGOpjtfOTYIQGaN1EcpzYGcDzJ4C4HmPiCTbzI4J8QuiuyB/tu
- w0ZyDSO4C8JjH8Aw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7pUsRDnSQF6IC/abGtYsTKQLup87xBBNtb8g82rft9U=;
+ b=FPkF+n4XKQvoYK0iLc72xo3475X+CIp3jjJ3gfK0GfR+2xxt78H6rgQVkC7oXVyGMrZlGG
+ cITEbhyapCRCtfAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9B7713BB5;
- Wed, 26 Jan 2022 12:35:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5230A13E1A;
+ Wed, 26 Jan 2022 14:05:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +MXVLytA8WGkOQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 26 Jan 2022 12:35:55 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id HKf4ESJV8WFVbwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 26 Jan 2022 14:05:22 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 26 Jan 2022 13:35:41 +0100
-Message-Id: <20220126123547.13298-2-pvorel@suse.cz>
+Date: Wed, 26 Jan 2022 15:05:20 +0100
+Message-Id: <20220126140520.15904-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220126123547.13298-1-pvorel@suse.cz>
-References: <20220126123547.13298-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH v2 1/7] pan: Remove ltp-scanner
+Subject: [LTP] [PATCH v1] Rewrite process_vm_readv03.c test with new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,2388 +71,432 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: automated-testing@yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-We believe that nobody uses it.
+Removed pipe and replaced it with shared memory.
+Replaced TST_CHECKPOINT_INIT usage with .needs_checkpoints from the new
+LTP API.
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
-New in v2
+ .../kernel/syscalls/cma/process_vm_readv03.c  | 311 ++++++++----------
+ 1 file changed, 133 insertions(+), 178 deletions(-)
 
- .gitignore        |   1 -
- INSTALL           |   2 -
- configure.ac      |   1 -
- pan/Makefile      |   8 -
- pan/debug.c       |  84 --------
- pan/debug.h       |  67 -------
- pan/ltp-scanner.c | 175 -----------------
- pan/reporter.c    | 270 --------------------------
- pan/reporter.h    |  80 --------
- pan/scan.h        |  42 ----
- pan/scan.l        | 456 -------------------------------------------
- pan/symbol.c      | 467 --------------------------------------------
- pan/symbol.h      | 104 ----------
- pan/tag_report.c  | 478 ----------------------------------------------
- 14 files changed, 2235 deletions(-)
- delete mode 100644 pan/debug.c
- delete mode 100644 pan/debug.h
- delete mode 100644 pan/ltp-scanner.c
- delete mode 100644 pan/reporter.c
- delete mode 100644 pan/reporter.h
- delete mode 100644 pan/scan.h
- delete mode 100644 pan/scan.l
- delete mode 100644 pan/symbol.c
- delete mode 100644 pan/symbol.h
- delete mode 100644 pan/tag_report.c
-
-diff --git a/.gitignore b/.gitignore
-index 3efac384f6..fd66dac786 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -45,7 +45,6 @@ autom4te.cache
- /lib/ltp.pc
- /pan/ltp-bump
- /pan/ltp-pan
--/pan/ltp-scanner
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+index 2333f7fd6..d46914356 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+@@ -1,274 +1,229 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2012
+  * Copyright (c) Linux Test Project, 2012
++ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/* \
++ * [Description]
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Fork two children, one child mallocs randomly sized trunks of memory
++ * and initializes them; the other child calls process_vm_readv with
++ * the remote iovecs initialized to the original process memory
++ * locations and the local iovecs initialized to randomly sized and
++ * allocated local memory locations. The second child then verifies
++ * that the data copied is correct.
+  */
  
- cscope.*
- ncscope.*
-diff --git a/INSTALL b/INSTALL
-index 3bb37d60b9..eb63539a8c 100644
---- a/INSTALL
-+++ b/INSTALL
-@@ -27,8 +27,6 @@ configure file).
- pkgconf is recommended also for compilation from tarball as it
- does automatic detection of some library support.
- 
--GNU Bison / Berkeley Yacc is required for ltp-scanner.
--
- Configuration
- -------------
- 
-diff --git a/configure.ac b/configure.ac
-index 3c56d19224..8becd74c2c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -24,7 +24,6 @@ AC_PROG_CC
- # 2.62.
- AC_DEFUN([AC_PROG_AR], [AC_CHECK_TOOL(AR, ar, :)])
- AC_PROG_AR
--AC_PROG_LEX
- AC_PROG_RANLIB
- AC_DEFUN([AC_PROG_STRIP], [AC_CHECK_TOOL(STRIP, strip, :)])
- AC_PROG_STRIP
-diff --git a/pan/Makefile b/pan/Makefile
-index 8cefa99ae6..e8596ec26b 100644
---- a/pan/Makefile
-+++ b/pan/Makefile
-@@ -39,18 +39,10 @@ INSTALL_DIR		:= bin
- 
- MAKE_TARGETS		:= ltp-bump ltp-pan
- 
--ifeq ($(strip $(LEXLIB)),)
--$(warning ltp-scanner will not be built because a working copy of lex was not found)
--else
--MAKE_TARGETS		+= ltp-scanner
--endif
--
- ltp-bump: ltp-bump.o zoolib.o
- 
- ltp-pan: ltp-pan.o zoolib.o splitstr.o
- 
--ltp-scanner: scan.o ltp-scanner.o reporter.o tag_report.o symbol.o splitstr.o debug.o
--
- # flex does some whacky junk when it generates files on the fly, so let's make
- # sure gcc doesn't get lost...
- vpath %.c $(abs_srcdir):$(abs_builddir)))
-diff --git a/pan/debug.c b/pan/debug.c
-deleted file mode 100644
-index 9027f9bac8..0000000000
---- a/pan/debug.c
-+++ /dev/null
-@@ -1,84 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: debug.c,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--#include <stdio.h>
--#include <string.h>
--#include "reporter.h"
--
--#ifdef DEBUGGING
--int Debug[MAXDEBUG];		/* Debug level in their areas */
--#endif
--
--/*
-- *	set debug areas & levels
-- *
-- * Syntax:   area[,area]:level[,area[,area]:level]...
-- */
--int set_debug(char *optarg)
--{
--#ifdef DEBUGGING
--	/* pointers to the debug area and level in the option's arguments */
--	char *d_area, *d_level;
--	/* debug area and level after converted to integers */
--	int db_area, db_level;
--
--	d_area = optarg;
--
--	while (*d_area) {
--		d_level = strchr(d_area, ':');
--		*d_level++ = '\0';
--		db_level = atoi(d_level);
--		db_area = atoi(d_area);
--
--		if (db_area > MAXDEBUG) {
--			printf("Error - Debug area %s > maximum of %d\n",
--			       d_area, MAXDEBUG);
--			exit(-1);
--		}
--
--		while (d_area != NULL) {
--			db_area = atoi(d_area);
--			printf("Debug area %d set to %d\n", db_area, db_level);
--			Debug[db_area] = db_level;
--			if ((d_area = strchr(d_area, ',')) != NULL)
--				d_area++;
--		}
--		if ((d_area = strchr(d_level, ',')) == NULL)
--			break;
--	}
--#else
--	printf("Debugging is not enabled.  -D has been ignored\n");
--#endif
--
--	return 0;
--}
-diff --git a/pan/debug.h b/pan/debug.h
-deleted file mode 100644
-index fd8182a53d..0000000000
---- a/pan/debug.h
-+++ /dev/null
-@@ -1,67 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: debug.h,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--#ifndef _DEBUG_H_
--#define _DEBUG_H_
--
--int set_debug( char * );
--
--/*
-- * DEBUG support
-- *
-- * use -DDEBUGGING with cc to enable debugging
-- */
--#ifdef DEBUGGING
--
--extern int Debug[];
--#define MAXDEBUG        30
--#define DEBUG(a,l)      if (Debug[a] >= l)
--#define DEBUGO(a,l,c)   if (Debug[a] >= l || c)
--
--#else
--
--#define	DEBUG(a,l)	if (0)
--#define DEBUGO(a,l,c)   if (0)
--
--#endif
--
--#define D_INIT		1
--#define D_SCAN		2
--#define D_SCAN_LEX	3
--#define D_SCAN_CUTS	4
--#define D_REPORT	5
--#define D_REP_H		6
--#define D_REP_CUTS	7
--
--
--#endif
-diff --git a/pan/ltp-scanner.c b/pan/ltp-scanner.c
-deleted file mode 100644
-index afdd757759..0000000000
---- a/pan/ltp-scanner.c
-+++ /dev/null
-@@ -1,175 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: ltp-scanner.c,v 1.1 2009/05/19 09:39:11 subrata_modak Exp $ */
--/*
-- * An RTS/pan driver output processing program.
-- *
-- * This program reads an RTS/pan driver output format file, parses it using lex
-- * and saves the information into an in-memory hierarchical keyword table.
-- *
-- * The reporting segment of the program reads that keyword table to produce
-- * it's reports.
-- *
-- * Synopsis:
-- * 	ltp-scanner [ -e ] [ -D area:level ] [ -h ]
-- *
-- * Description:
-- *   Scanner is part of the RTS 2.0 reporting mechanism or pan.
-- *   It processes RTS/pan driver format output and produces a single simple report
-- *   of each test tag executed, the TCIDs it executed, and their testcases.
-- *
-- * Options:
-- *   -e
-- *	use an "extended" output format
-- *
-- *   -D
-- *	enable debug statements.  Areas are listed in report2.h and levels
-- *	are in the code.  Must be compiled with "-DDEBUGGING"
-- *
-- *   -h
-- *	print out a command usage statement and exit.
-- *
-- * INPUT
-- *   The input must conform to the RTS/pan driver format.
-- *
-- * Report Format
-- *   A single report style is used.  It consists of a header made of all
-- *   keywords in the rts_keywords fields of the driver output, and the test
-- *   information.
-- *	interpretation of CUTS "number of testcases" field when there are
-- *	multiple TCIDs.  It must be the sum of all TCIDs' testcases.
-- *
-- * System Configuration:
-- * ARCHITECTURE         IOS_MODEL_E CRAY_YMP YMP7XX
-- * CONFIG               JOBCNTL AVL BMD EMA HPM SECURE TFM_UDB_6 SDS SSD
-- * RELEASE              82
-- * UNAME                sn1703c cool 8.2.0ae d82.25
-- * date                 03/24/94
-- *
-- * tag		tcid		testcase	status		contact
-- * ------------------------------------------------------------------------
-- *
-- *   When a report is made for only a tag, the TCID and Testcase fields
-- *   contain a dash ( "-" ).  The intention is that the output be usable
-- *   by other Unix programs.
-- *
-- *   When a report is made for all TCIDs and Testcases, a star ( "*" ) is used.
-- *
-- *   When in extended mode, an additional output line is produced for each
-- *   tag.
-- *
-- *	This line is identified with a "!" in the TCID and Testcase fields.
-- *
-- *	It has no minimum and maximum field widths, so the output does not
-- *	line up in columns
-- *
-- *	the "status" field contains the initiation status
-- *
-- *	the "contact" field does not expand multiple comma-separated contacts
-- *
-- *	fields:
-- *		tag, tcid, testcase, status, contact,
-- *		start time, duration, termination type, termination id,
-- *		output starting line, output ending line
-- *
-- * RELATED DOCUMENTS
-- *	Regression Test System Phase 2 Test Result Reporting System
-- *
-- * AUTHOR
-- *   Glen Overby wrote the code.
-- *
-- * Internal Data Format
-- *   All data is maintained in a hierarchical key database.  While there are
-- *   many available databases, this impliments a simple ASCII comma-separated
-- *   keyed database.
-- *
-- *   Key Naming
-- *	- The top-level keys are named after the RTS or pan test tags.
-- *	- The top-level key named "_RTS" contains the RTS Keywords
-- *	- Each tag has a "_keys" tag that contains the key fields from
-- *	  the TEST_START and EXECUTION_STATUS fields.
-- */
--
--#include <getopt.h>
--#include <stdarg.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--#include "scan.h"
--#include "debug.h"
--#include "reporter.h"
--#include "symbol.h"
--
--char *cnf;			/* current filename */
--int extended = 0;		/* -e option        */
--
--int main(int argc, char *argv[])
--{
--	SYM tags;		/* tag data */
--	int c;
--
--	while ((c = getopt(argc, argv, "D:ehi")) != -1) {
--		switch (c) {
--		case 'i':
--			set_iscanner();
--			break;
--		case 'D':
--			set_debug(optarg);
--			break;
--		case 'e':
--			extended++;
--			break;
--		case 'h':
--			fprintf(stderr,
--				"%s [-e] [-i] [ -D area, level ] input-filenames\n",
--				argv[0]);
--			exit(0);
--		default:
--			fprintf(stderr, "invalid argument, %c\n", c);
--			exit(1);
--		}
--	}
--
--	lex_files(&argv[optind]);	/* I hope that argv[argc+1] == NULL */
--	tags = sym_open(0, 0, 0);
--
--	scanner(tags);
--#ifdef DEBUGGING
--	DEBUG(D_INIT, 1)
--	    sym_dump_s(tags, 0);
--#endif
--	reporter(tags);
--
--	exit(0);
--}
-diff --git a/pan/reporter.c b/pan/reporter.c
-deleted file mode 100644
-index b9ec482d41..0000000000
---- a/pan/reporter.c
-+++ /dev/null
-@@ -1,270 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: reporter.c,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--/*
-- * This is the report generator half of the scanner program.
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
+-#define _GNU_SOURCE
+-#include <sys/types.h>
+-#include <sys/uio.h>
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <limits.h>
+ #include <stdio.h>
+ #include <stdlib.h>
 -#include <string.h>
 -#include <time.h>
 -#include <unistd.h>
--#include "reporter.h"
--#include "symbol.h"
--#include "tag_report.h"
--#include "splitstr.h"
--
--/************************************************************************
-- *                      Report Generation                               *
-- ************************************************************************/
--
--static int scanner_reporter(SYM);
--static int iscanner_reporter(SYM);
--static int scanner_test_end(SYM, SYM, SYM);
--static int iscanner_test_end(SYM, SYM, SYM);
--
--static int (*reporter_func) (SYM) = scanner_reporter;
--static int (*test_end_func) (SYM, SYM, SYM) = scanner_test_end;
--
--/*
-- * Do the report generation.
-- *
-- * A problem: I really need multiple cursors.  I'd rather not look into
-- * the depths of the current symbol table implimentation (there are the
-- * cursors there that I could use) so that a different (faster!) symbol
-- * table can be used in the future.
-- *
-- * I could get a key (tag), get it's sub-keys (TCIDs), then get the key
-- * again to reset to the top level, _then_ get the next key.  That would
-- * be very inefficient.
-- *
-- * The solution I chose is to extract all tags into a list (char array),
-- * then go thru that list with the cursor free for other levels to use.
-- *
-- *  (1) make a list (2d char array) of all Tags
-- *  (2) search for the first tag that has a "stime" record, and use that as
-- *      the date (MMDDYY) that the tests were run.
-- *  (3) print the report header
-- *  (4) go thru all tags and report each as described at the beginning of
-- *      this file
-- */
--static int scanner_reporter(SYM tags)
--{
--	DBT Key, Data;
--	SYM Tag, Keys;
--
--	time_t clock;
--	struct tm *tm;
--
--	/* a list of tags, a count of the number of tags allocated to the list,
--	   and a pointer to go thru the list */
--	char **taglist, **tl;
--	int ntags;
--	int tagcount;		/* how many tags used */
--
--	char key_get[KEYSIZE];
--	char *info;
--
--	/*
--	 * extract tag names from data
--	 */
--	ntags = NTAGS_START;
--	taglist = malloc(sizeof(char *) * ntags);
--	tagcount = 0;
--
--	tl = taglist;
--	sym_seq(tags, &Key, &Data, R_FIRST);
--	do {
--		if (tagcount == ntags) {
--			/* exceeded tag array size -- realloc */
--			ntags += NTAGS_START;
--			taglist =
--			    (char **)realloc(taglist, sizeof(char *) * ntags);
--			tl = taglist + tagcount;
--		}
--
--		*tl++ = Key.data;
--		tagcount++;
--	} while (sym_seq(tags, &Key, &Data, R_NEXT) == 0);
--
--	if (tagcount == ntags) {
--		/* exceeded tag array size -- realloc */
--		ntags += NTAGS_START;
--		taglist = (char **)realloc(taglist, sizeof(char *) * ntags);
--		tl = taglist + tagcount;
--	}
--
--	*tl++ = NULL;
--	ntags = tagcount;
--	/* Retrieve one "stime" to get the date. */
--	for (tl = taglist; *tl != NULL; tl++) {
--		strcpy(key_get, *tl);
--		strcat(key_get, ",_keys,stime");
--		if ((info = (char *)sym_get(tags, key_get)) != NULL) {
--			clock = atoi(info);
--			tm = gmtime(&clock);
--			strftime(key_get, KEYSIZE, "%x", tm);
--			sym_put(tags, strdup("_RTS,date"), strdup(key_get), 0);
--			break;
--		}
--	}
--
--	print_header(tags);
--
--	/*
--	 * The way that I am using 'Keys' and 'Tag' makes assumptions about the
--	 * internals of the sym_* data structure.
--	 */
--	/* dump 'em all */
--	for (tl = taglist; *tl != NULL; tl++) {
--		if (!strcmp(*tl, "_RTS"))
--			continue;
--
--		strcpy(key_get, *tl);
--		strcat(key_get, ",_keys");
--		if ((Keys = sym_get(tags, key_get)) == NULL) {
--			return 0;
--		}
--
--		strcpy(key_get, *tl);
--		if ((Tag = sym_get(tags, key_get)) != NULL) {
--			tag_report(NULL, Tag, Keys);
--		}
--	}
--	free(taglist);
--
--	return 0;
--}
--
--/*
-- * End-Of-Test seen, insert this tag into the global tag data.
-- * (1) Get the test's tag
-- * (2) insert the keywords in the "_keys" tag
-- * (3) insert it into the global data under this tag, replacing any existing
-- *      data.
-- *
-- * a "feature" of the key implimentation: I can insert a key tree
-- * under another key tree with almost zero brainwork because a SYM
-- * is what the DATA area points to.
-- */
--static int scanner_test_end(SYM alltags, SYM ctag, SYM keys)
--{
--	static int notag = 0;	/* counter for records with no tag (error) */
--	char tagname[KEYSIZE];	/* used when creating name (see above) */
--	char *tag;		/* tag name to look things up in */
--	char *status;		/* initiation status of old tag */
--	SYM rm;			/* pointer to old tag -- to remove it */
--
--	if (alltags == NULL || keys == NULL || ctag == NULL)
--		return -1;	/* for really messed up test output */
--
--	/* insert keys into tag */
--	sym_put(ctag, "_keys", (void *)keys, 0);
--
--	/* get the tag, or build a new one */
--	if ((tag = (char *)sym_get(keys, "tag")) == NULL) {
--		/* this is an "impossible" situation: test_output checks for this
--		 * and creates a dummy tag. */
--		sprintf(tagname, "no_tag_%d", notag++);
--		fprintf(stderr, "No TAG key!  Using %s\n", tagname);
--		sym_put(keys, "tag", strdup(tagname), 0);
--		tag = strdup(tagname);
--	}
--
--	/*
--	 * Special case: duplicate tag that has an initiation_status failure
--	 * is thrown away.
--	 */
--	if ((rm = (SYM) sym_get(alltags, tag)) != NULL) {
--		if ((status =
--		     (char *)sym_get(keys, "initiation_status")) != NULL) {
--			if (strcmp(status, "ok")) {
--				/* do not take new data.  remove new data */
--				sym_rm(ctag, RM_KEY | RM_DATA);
--				return 1;
--			} else {
--				/* remove old data in alltags */
--				sym_rm(rm, RM_KEY | RM_DATA);
--			}
--		} else {
--			/* new data does not have an initiation_status -- throw it away */
--			sym_rm(ctag, RM_KEY | RM_DATA);
--			return 1;
--		}
--	}
--
--	/* put new data.. replaces existing "tag" key if it exists
--	 * (it's data should have been removed above) */
--	sym_put(alltags, tag, ctag, PUT_REPLACE);
--
--	return 0;
--}
--
--static int iscanner_reporter(SYM tags)
--{
--	return 0;
--}
--
--static int iscanner_test_end(SYM alltags, SYM ctag, SYM keys)
--{
--	if (alltags == NULL || keys == NULL || ctag == NULL)
--		return -1;	/* for really messed up test output */
--
--	/* insert keys into tag */
--	sym_put(ctag, "_keys", (void *)keys, 0);
--
--	return tag_report(alltags, ctag, keys);
--}
--
--int reporter(SYM s)
--{
--	return reporter_func(s);
--}
--
--int test_end(SYM a, SYM b, SYM c)
--{
--	return test_end_func(a, b, c);
--}
--
--void set_scanner(void)
--{
--	reporter_func = scanner_reporter;
--	test_end_func = scanner_test_end;
--}
--
--void set_iscanner(void)
--{
--	reporter_func = iscanner_reporter;
--	test_end_func = iscanner_test_end;
--}
-diff --git a/pan/reporter.h b/pan/reporter.h
-deleted file mode 100644
-index 9af554c6a7..0000000000
---- a/pan/reporter.h
-+++ /dev/null
-@@ -1,80 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: reporter.h,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--#ifndef _REPORT_H_
--#define _REPORT_H_
--#include "symbol.h"
--
--void set_scanner(void);
--void set_iscanner(void);
--
--int reporter( SYM );
--int test_end( SYM, SYM, SYM );
--
--/*
-- * how much TCID space to start with (table)
-- */
--#define NTCID_START 5
--
--/*
-- * how much tag space to start with (table)
-- */
--#define	NTAGS_START	500
--
--/* Return Tokens (from lex) */
--#define		KW_START	100
--#define		KW_END		101
--#define		TEST_START	102
--#define		TEST_OUTPUT	103
--#define		EXEC_STATUS	104
--#define		TEST_END	105
--#define		TEXT_LINE	106
--#define		KEYWORD		107
--#define		KEYWORD_QUOTED	108
--#define		CUTS_RESULT	109
--#define		CUTS_RESULT_R	110
--#define		SPACE		999
--
--/* Scan Modes (above and beyond what I use lex for) */
--#define		SCAN_OUTSIDE	10	/* not in anything */
--#define		SCAN_RTSKEY	20	/* keywords: rts_keyword */
--#define		SCAN_TSTKEY	21	/* keywords: either test_start or
--					   execution_status */
--#define		SCAN_OUTPUT	30	/* test_output */
--
--/*
-- *	Configuration type things
-- */
--#define KEYSIZE	255	/* maximum key size */
--
--#endif
-diff --git a/pan/scan.h b/pan/scan.h
-deleted file mode 100644
-index 6e01a323cd..0000000000
---- a/pan/scan.h
-+++ /dev/null
-@@ -1,42 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: scan.h,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--#ifndef _SCAN_H_
--#define _SCAN_H_
--#include "symbol.h"
--
--int scanner ( SYM );
--int sym_dump_s ( SYM, int );
--int lex_files( char ** );
--
--#endif
-diff --git a/pan/scan.l b/pan/scan.l
-deleted file mode 100644
-index fdc33f330e..0000000000
---- a/pan/scan.l
-+++ /dev/null
-@@ -1,456 +0,0 @@
--%{
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: scan.l,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--/*
-- * Lex rules for input processing.
-- *
-- * This handles all of the input parsing.  The rules liste here properly
-- * store or process the pertenant input data in the proper ways.  The rules
-- * for the various patterns maintains a "state" to determine if corrupted
-- * input is seen (%Start keys + internal ones that only flag errors).
-- *
-- * See scanner.c for routines called from the actions.
-- *
-- * States:
-- *	SCAN_OUTSIDE
-- *		start-up state, inbetween tests
-- *	SCAN_RTSKEY			valid from SCAN_OUTSIDE
-- *		from rts_keyword_start to _end
-- *		accompanied by lex KEY state.
-- *	SCAN_TSTKEY			valid from SCAN_OUTSIDE
-- *		test_start to test_output or test_end,
-- *		execution_status to test_end
-- *		accompanied by lex KEY state.
-- *	SCAN_OUTPUT
-- *		test_output to execution_status.
-- *		accompanied by lex OUT or CUTS states.
-- */
--
--#include <stdarg.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--
--#include "scan.h"
--#include "reporter.h"
--#include "symbol.h"
--#include "tag_report.h"
--
--int scan_mode = SCAN_OUTSIDE;	/* current mode */
--char *key, *cont;	/* keyword pieces */
--SYM keys=NULL;		/* stored keywords */
--SYM ctag=NULL;		/* temporary - for storing current tag's info */
--SYM alltags;		/* entire tag database.  set to scanner 'tags' param.*/
--SYM k;			/* temporary sym pointer -- for key removal */
--char info[KEYSIZE];	/* tmp string for inserting line numbers */
--static int test_output( SYM, SYM);
--static int check_mode(int, int, ...);
--
--/*
-- * Lex Definitions:
-- * UI	Unsigned Integer
-- * A	Alphabetic
-- * W	"Word" characters (Alpha, Numeric, Hyphens, Underscores)
-- * S    Space characters
-- */
--%}
--
--%option noc++
--%option noinput
--%option nolex-compat
--%option nounput
--%option yylineno
--
--UI      [0-9]+
--A       [a-zA-Z]+
--W	[a-zA-Z0-9_-]+
--S	[ \t]+
--
--%Start KEY OUT CUTS
--%%
--^<<<rts_keyword_start>>>$	{
--    BEGIN KEY;
--    check_mode(scan_mode, SCAN_OUTSIDE, 0);
--    scan_mode = SCAN_RTSKEY;
--
--    /* remove any keys that exist right now */
--    if(keys != NULL)
--	sym_rm(keys, RM_KEY | RM_DATA);
--    /* start a new table of keys */
--    keys = sym_open(0, 0, 0);
--    return(KW_START);
--    /* NOTREACHED */
--}
--
--^<<<rts_keyword_end>>>$		{
--    BEGIN 0;
--    check_mode(scan_mode, SCAN_RTSKEY, 0);
--    scan_mode = SCAN_OUTSIDE;
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 10) {
--	printf("RTS Keywords:\n");
--	sym_dump_s(keys, 0);
--    }
--#endif
--    /* remove _RTS key, if it exists, before replacing it */
--    if( (k=(SYM)sym_get(alltags, "_RTS")) != NULL) {
--	sym_rm(k, RM_KEY | RM_DATA);
--    }
--
--    sym_put(alltags, "_RTS", (void *)keys, PUT_REPLACE);
--    keys = NULL;
--
--    return(KW_END);
--    /* NOTREACHED */
--}
--
--^<<<test_start>>>$		{
--    BEGIN KEY;
--    check_mode(scan_mode, SCAN_OUTSIDE, 0);
--    scan_mode = SCAN_TSTKEY;
--
--    /*
--     * set up new "tag" and "keys" tables
--     * to put the new data into.
--     */
--
--    /* remove any keys that exist right now */
--    if(keys != NULL)
--	sym_rm(keys, RM_KEY | RM_DATA);
--    keys = sym_open(0, 0, 0);
--
--    sprintf(info, "%d", yylineno);
--    sym_put(keys, "_Start_line", strdup(info), 0);
--
--    /* remove any tag info that exists right now */
--    if(ctag != NULL)
--	sym_rm(ctag, RM_KEY | RM_DATA);
--    ctag = sym_open(0, 0, 0);
--
--    return(TEST_START);
--    /* NOTREACHED */
--}
--
--^<<<test_output>>>$		{
--    BEGIN OUT;
--    check_mode(scan_mode, SCAN_TSTKEY, 0);
--    scan_mode = SCAN_OUTPUT;
--
--    test_output(ctag, keys);
--
--    return(TEST_OUTPUT);
--    /* NOTREACHED */
--}
--
--^<<<execution_status>>>$	{
--    BEGIN KEY;
--    check_mode(scan_mode, SCAN_TSTKEY, SCAN_OUTPUT, 0);
--    scan_mode = SCAN_TSTKEY;
--    return(EXEC_STATUS);
--    /* NOTREACHED */
--}
--
--^<<<test_end>>>$		{
--    BEGIN 0;
--    check_mode(scan_mode, SCAN_TSTKEY, 0);
--    scan_mode = SCAN_OUTSIDE;
--
--    sprintf(info, "%d", yylineno);
--
--    sym_put(keys, "_End_line", strdup(info), 0);
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 10) {
--	printf("Tag's Keywords:\n");
--	sym_dump_s(keys, 0);
--    }
--#endif
--    test_end(alltags, ctag, keys);
--    ctag = keys = NULL;
--
--    return(TEST_END);
--    /* NOTREACHED */
--}
--
--<KEY>[a-zA-Z_-]+=\"[^\"\n]+\"	{
--    key = yytext;
--    cont = strchr(yytext, '=');
--    *cont++ = '\0';
--    if(*cont == '"') cont++;
--    if(yytext[yyleng-1] == '"')
--	yytext[yyleng-1] = '\0';
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 5)
--	printf("A quoted keyword: %s = %s\n", key, cont);
--#endif
--    sym_put(keys, key, strdup(cont), 0);
--
--    return(KEYWORD_QUOTED);
--    /* NOTREACHED */
--}
--
--<KEY>[a-zA-Z_-]+=[^\t \n]+	{
--    key = yytext;
--    cont = strchr(yytext, '=');
--    *cont++ = '\0';
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 5)
--	printf("A keyword: %s = %s\n", key, cont);
--#endif
--    sym_put(keys, key, strdup(cont), 0);
--
--    return(KEYWORD);
--    /* NOTREACHED */
--}
--
--<KEY>[ \t\n]*			{
--    return(SPACE);
--    /* NOTREACHED */
--}
--
--<OUT>^.+$			{
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 5)
--	printf("TEXT_LINE: %s\n", yytext);
--#endif
--
--    return(TEXT_LINE);
--    /* NOTREACHED */
--}
--
--<CUTS>^{W}{S}{UI}{S}{A}{S}":"	   {
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 5)
--	printf("CUTS Result: %s\n", yytext);
--#endif
--    cuts_testcase(ctag, keys);
--
--    return(CUTS_RESULT);
--    /* NOTREACHED */
--}
--
--<CUTS>^{W}{S}{UI}-{UI}{S}{A}{S}":" {
--#ifdef DEBUGGING
--    DEBUG(D_SCAN_LEX, 5)
--	printf("CUTS Result: %s\n", yytext);
--#endif
--    cuts_testcase(ctag, keys);
--
--    return(CUTS_RESULT_R);
--    /* NOTREACHED */
--}
--
--.				{
--    return(SPACE);
--    /* NOTREACHED */
--
--}
--"\n"				{
--    return(SPACE);
--    /* NOTREACHED */
--}
--%%
--/*
-- * the BEGIN macro only exists in the lex file, so define a routine to
-- * BEGIN the CUTS state.
-- */
--int
--begin_cuts(void)
--{
--    BEGIN CUTS;
--    return 0;
--}
--
--/*
-- * Calls lex repeatedly until all input is seen.
-- */
--int
--scanner(SYM tags)
--{
--    alltags = tags;		/* move into global scope for lex actions */
--
--    while(yylex())
--	;
--
--    return 0;
--}
--
--/*
-- * Test-Output record
-- *  check if this is a CUTS test; if so, enter the lex "cuts" state;
-- *  otherwise do nothing and lex will be in a "data" mode that will just
-- *  toss all the output.
-- */
--static int
--test_output(SYM tag, SYM keys)
--{
--    char *at;
--
--    if((at=(char *)sym_get(keys, "analysis")) != NULL) {
--	/* CUTS:number_of_testcases  || CUTS-1:number_of_testcases */
--	if(strncasecmp("cuts", at, 4) == 0) {
--	    begin_cuts();
--	    /*printf("CUTS output expected\n");*/
--	}
--    }
--    return 0;
--}
--
--/* Input Data State Check
-- * RTS driver output goes thru specific
-- * phases; this is used to verify that the new state is a legal state
-- * to change to from the current state.
-- * This accepts a variable number of arguments (valid states to be
-- * in).  The last argument MUST be zero
-- */
--struct parse_states {
--	char *name;
--	int bits;
--} parse_states[] = {
--  { "outside",				SCAN_OUTSIDE },
--  { "rts_keyword_start",		SCAN_RTSKEY },
--  { "test_start | execution_status", 	SCAN_TSTKEY },
--  { "test_output",			SCAN_OUTPUT },
--  { "unknown",				0 }, /*end sentinel: bits = 0 */
++#include <sys/types.h>
++#include <sys/wait.h>
+ #include <limits.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
+-char *TCID = "process_vm_readv03";
+-int TST_TOTAL = 1;
+-
+-#define NUM_LOCAL_VECS 4
+-
+-static int nflag, sflag;
+-static char *nr_opt, *sz_opt;
+-static option_t options[] = {
+-	{"n:", &nflag, &nr_opt},
+-	{"s:", &sflag, &sz_opt},
+-	{NULL, NULL, NULL}
 -};
 -
--static int
--check_mode(int scan_mode, int fst, ...)
+-static int nr_iovecs;
+-static long bufsz;
+-static int pipe_fd[2];
+-static pid_t pids[2];
+-
+-static void gen_random_arr(int *arr, int arr_sz);
+-static void child_alloc(int *bufsz_arr);
+-static void child_invoke(int *bufsz_arr);
+-static long *fetch_remote_addrs(void);
+-static void setup(void);
+-static void cleanup(void);
+-static void help(void);
+-
+-int main(int argc, char **argv)
 -{
--    va_list ap;			/* used for variable argument functions*/
--    int found=0;		/* set to true if a valid state was found */
--    int ckm;			/* Check Mode: the mode to look for */
--    register struct parse_states *ps; /* for looking thru parse_states */
--    char exp_mode[KEYSIZE];	/* expected mode list (for error message) */
+-	int lc, status;
+-	int *bufsz_arr;
 -
--    extern int yylineno;	/* Line number from Lex */
+-	tst_parse_opts(argc, argv, options, &help);
 -
--    /* look thru parse_states; end sentinel is "bits" = 0 */
--    for(ps=parse_states; ps->bits && (ps->bits != fst);ps++)
--	;
--    strcpy(exp_mode, ps->name);
+-	setup();
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
 -
--    /* look at first variable argument */
--    if(fst == scan_mode)
--	found++;
--    else {
--	/* not first... look at variable args */
--	va_start(ap, fst);
--	while(((ckm = va_arg(ap, int)) != 0) && (ckm != scan_mode)) {
--	    for(ps=parse_states; ps->bits && (ps->bits != ckm);ps++)
--		;
--	    strcat(exp_mode, ", ");
--	    strcat(exp_mode, ps->name);
+-		SAFE_PIPE(cleanup, pipe_fd);
+-
+-		bufsz_arr = SAFE_MALLOC(cleanup, nr_iovecs * sizeof(int));
+-		gen_random_arr(bufsz_arr, nr_iovecs);
+-
+-		/* the start of child_alloc and child_invoke is already
+-		 * synchronized via pipe */
+-		pids[0] = fork();
+-		switch (pids[0]) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork #0");
+-		case 0:
+-			child_alloc(bufsz_arr);
+-			exit(0);
+-		}
+-
+-		pids[1] = fork();
+-		switch (pids[1]) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
+-		case 0:
+-			child_invoke(bufsz_arr);
+-			exit(0);
+-		}
+-
+-		/* wait until child_invoke reads from child_alloc's VM */
+-		SAFE_WAITPID(cleanup, pids[1], &status, 0);
+-		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			tst_resm(TFAIL, "child 1 returns %d", status);
+-
+-		/* child_alloc is free to exit now */
+-		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++static uintptr_t *data_ptr;
+ 
+-		SAFE_WAITPID(cleanup, pids[0], &status, 0);
+-		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			tst_resm(TFAIL, "child 0 returns %d", status);
++static char *str_buffsize;
++static char *str_nr_iovecs;
+ 
+-		free(bufsz_arr);
 -	}
--	va_end(ap);
 -
--	if(ckm == scan_mode)
--	    found++;
--    }
--
--    if(!found) {
--	for(ps=parse_states; ps->bits && (ps->bits != scan_mode);ps++)
--	    ;
--
--	fprintf(stderr, "PARSE ERROR -- Line %d found %s in mode %s[%d] expected { %s }\n",
--		yylineno, yytext, ps->name, scan_mode, exp_mode);
--    }
--
--    return 0;
+-	cleanup();
+-	tst_exit();
 -}
++static int bufsize = 100000;
++static int nriovecs = 10;
+ 
+-static void gen_random_arr(int *arr, int arr_sz)
++static void create_data_size(int *arr, int arr_sz, int buffsize)
+ {
+ 	long bufsz_left, bufsz_single;
+ 	int i;
+ 
+-	bufsz_left = bufsz;
++	bufsz_left = buffsize;
+ 	for (i = 0; i < arr_sz - 1; i++) {
+-		bufsz_single = rand() % (bufsz_left / 2) + 1;
++		bufsz_single = rand() % ((bufsz_left / 2) + 1);
+ 		arr[i] = bufsz_single;
+ 		bufsz_left -= bufsz_single;
+ 	}
++
+ 	arr[arr_sz - 1] = bufsz_left;
+ }
+ 
+-static void child_alloc(int *bufsz_arr)
++static void child_alloc(const int *sizes, int nr_iovecs)
+ {
+ 	char **foo;
+ 	int i, j;
+-	char buf[BUFSIZ];
+ 	long count;
+ 
+-	foo = SAFE_MALLOC(tst_exit, nr_iovecs * sizeof(char *));
++	foo = SAFE_MALLOC(nr_iovecs * sizeof(int *));
+ 
+ 	count = 0;
+ 	for (i = 0; i < nr_iovecs; i++) {
+-		foo[i] = SAFE_MALLOC(tst_exit, bufsz_arr[i]);
+-		for (j = 0; j < bufsz_arr[i]; j++) {
++		foo[i] = SAFE_MALLOC(sizes[i]);
++		for (j = 0; j < sizes[i]; j++) {
+ 			foo[i][j] = count % 256;
+ 			count++;
+ 		}
+ 	}
+-	tst_resm(TINFO, "child 0: %d iovecs allocated and initialized.",
+-		 nr_iovecs);
+ 
+-	/* passing addr via pipe */
+-	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+-	snprintf(buf, BUFSIZ, "%p", (void *)foo);
+-	SAFE_WRITE(tst_exit, 1, pipe_fd[1], buf, strlen(buf) + 1);
+-	SAFE_CLOSE(tst_exit, pipe_fd[1]);
++	*data_ptr = (uintptr_t)foo;
++
++	tst_res(TINFO, "child 0: memory allocated and initialized");
+ 
+-	/* wait until child_invoke is done reading from our VM */
+-	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
++	/* wake and wait until child_invoke is done reading from our VM */
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ }
+ 
+-static long *fetch_remote_addrs(void)
++static long *fetch_remote_addrs(int nr_iovecs, pid_t pid_alloc)
+ {
+-	long *foo, *bar;
+-	char buf[BUFSIZ];
++	long *bar;
+ 	long len;
+ 	struct iovec local, remote;
+ 
+-	/* get addr from pipe */
+-	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+-	SAFE_READ(tst_exit, 0, pipe_fd[0], buf, BUFSIZ);
+-	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+-	if (sscanf(buf, "%p", &foo) != 1)
+-		tst_brkm(TBROK | TERRNO, tst_exit, "sscanf");
 -
--/*
-- * This part of the file contains subroutines called by a lex scanner which
-- * is parsing rts-driver-format input and putting it into a multi-level
-- * symbol table.
-- */
--
--/*
-- * References to lex variables
-- */
--/*extern char yytext[];		/ * text matched by last pattern */
--/*extern long yyleng;		/ * length of above */
--
--char **filenames;
--
--int
--lex_files(char **names)
--{
--    /* lex */
--    extern FILE *yyin;
--
--    filenames = names;
--
--    if(*filenames != NULL) {
--#ifdef DEBUGGING
--	DEBUG(D_SCAN, 1)
--	    printf("lex_files: first file is %s\n", *filenames);
+ 	len = nr_iovecs * sizeof(long);
+-	bar = SAFE_MALLOC(tst_exit, len);
++	bar = SAFE_MALLOC(len);
+ 	local.iov_base = bar;
+ 	local.iov_len = len;
+-	remote.iov_base = foo;
++	remote.iov_base = (void *)*data_ptr;
+ 	remote.iov_len = len;
+ 
+-	TEST(tst_syscall(__NR_process_vm_readv, pids[0], &local,
+-			 1UL, &remote, 1UL, 0UL));
+-	if (TEST_RETURN != len)
+-		tst_brkm(TFAIL | TTERRNO, tst_exit, "process_vm_readv");
++	TEST(tst_syscall(__NR_process_vm_readv, pid_alloc, &local, 1UL, &remote,
++					 1UL, 0UL));
++	if (TST_RET != len)
++		tst_brk(TBROK, "process_vm_readv");
+ 
+ 	return local.iov_base;
+ }
+ 
+-static void child_invoke(int *bufsz_arr)
++static void child_invoke(const int *sizes, int nr_iovecs, pid_t pid_alloc,
++						 int buffsize)
+ {
+-	int i, j, count, nr_error;
++	const int num_local_vecs = 4;
++	struct iovec local[num_local_vecs];
++	struct iovec remote[nr_iovecs];
++	int i, j;
++	int count;
++	int nr_error;
++	int *local_sizes;
+ 	unsigned char expect, actual;
+ 	long *addrs;
+-	struct iovec local[NUM_LOCAL_VECS], *remote;
+-	int rcv_arr[NUM_LOCAL_VECS];
+ 
+-	addrs = fetch_remote_addrs();
++	addrs = fetch_remote_addrs(nr_iovecs, pid_alloc);
+ 
+-	remote = SAFE_MALLOC(tst_exit, nr_iovecs * sizeof(struct iovec));
+ 	for (i = 0; i < nr_iovecs; i++) {
+ 		remote[i].iov_base = (void *)addrs[i];
+-		remote[i].iov_len = bufsz_arr[i];
++		remote[i].iov_len = sizes[i];
+ 	}
+-	tst_resm(TINFO, "child 1: %d remote iovecs received.", nr_iovecs);
+ 
+-	gen_random_arr(rcv_arr, NUM_LOCAL_VECS);
+-	for (i = 0; i < NUM_LOCAL_VECS; i++) {
+-		local[i].iov_base = SAFE_MALLOC(tst_exit, rcv_arr[i]);
+-		local[i].iov_len = rcv_arr[i];
++	/* use different buffer sizes for local memory */
++	local_sizes = SAFE_MALLOC(num_local_vecs * sizeof(int));
++	create_data_size(local_sizes, num_local_vecs, buffsize);
++	for (i = 0; i < num_local_vecs; i++) {
++		local[i].iov_base = SAFE_MALLOC(local_sizes[i]);
++		local[i].iov_len = local_sizes[i];
+ 	}
+-	tst_resm(TINFO, "child 1: %d local iovecs initialized.",
+-		 NUM_LOCAL_VECS);
+ 
+-	TEST(tst_syscall(__NR_process_vm_readv, pids[0], local,
+-			    (unsigned long)NUM_LOCAL_VECS, remote,
+-			    (unsigned long)nr_iovecs, 0UL));
+-	if (TEST_RETURN != bufsz)
+-		tst_brkm(TBROK | TTERRNO, tst_exit, "process_vm_readv");
++	tst_res(TINFO, "child 1: reading string from same memory location");
++
++	TEST(tst_syscall(__NR_process_vm_readv, pid_alloc, local, num_local_vecs,
++					 remote, nr_iovecs, 0UL));
++
++	if (TST_RET < 0)
++		tst_brk(TBROK, "process_vm_readv: %s", tst_strerrno(-TST_RET));
++
++	if (TST_RET != buffsize)
++		tst_brk(TBROK, "process_vm_readv: expected %d bytes but got %ld",
++				buffsize, TST_RET);
+ 
+ 	/* verify every byte */
+ 	count = 0;
+ 	nr_error = 0;
+-	for (i = 0; i < NUM_LOCAL_VECS; i++) {
++	for (i = 0; i < num_local_vecs; i++) {
+ 		for (j = 0; j < (int)local[i].iov_len; j++) {
+ 			expect = count % 256;
+ 			actual = ((unsigned char *)local[i].iov_base)[j];
+-			if (expect != actual) {
+-#if DEBUG
+-				tst_resm(TFAIL, "child 1: expected %i, got %i "
+-					 "for byte seq %d",
+-					 expect, actual, count);
 -#endif
--	if((yyin = fopen(*filenames, "r")) == NULL) {
--	    printf("Error opening %s for reading\n", *filenames);
--	    exit(1);
--	}
--    }
--
--    return 0;
--}
--
--/*
-- * Called by lex's end-of-file processing.
-- *  Open the next file on the command line.  If there is no next file,
-- *  return "-1" and lex will end.
-- */
--int
--yywrap(void)
--{
--    extern FILE *yyin;
--    extern int yylineno;	/* Line number from Lex */
--
--    if(*filenames != NULL)
--	if(*++filenames != NULL) {
--#ifdef DEBUGGING
--	DEBUG(D_SCAN, 1)
--	    printf("yywrap: next file is %s\n", *filenames);
--#endif
--	    yylineno=1;
--	    if((yyin = fopen(*filenames, "r")) != NULL)
--		return(0);
--	    else {
--		printf("Error opening %s for reading\n", *filenames);
--		return(1);
--	    }
--	}
--
--    return(-1);
--}
--
-diff --git a/pan/symbol.c b/pan/symbol.c
-deleted file mode 100644
-index 37521143ed..0000000000
---- a/pan/symbol.c
-+++ /dev/null
-@@ -1,467 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: symbol.c,v 1.4 2002/05/28 16:26:16 robbiew Exp $ */
--/*
-- *			Generic Symbol Table
-- *
-- * This is intended to look a lot like ndbm, except that all information
-- * is kept in memory, and a multi-key, hierarchical access mode is provided.
-- * This is largely patterned after the Berkeley "DB" package.
-- *
-- *			    Requirements
-- *
-- *	- "key" is ASCII (a C string, in fact)
-- *
-- *			Symbol Table Structure
-- *
-- *	Two data structures:
-- *		Symbol Table Header
-- *		Symbol Table Node
-- *
-- *	A symbol table header consists of a magic number, a pointer to
-- *	the first node in the symbol table, and a cursor that is used
-- *	when sequentialy stepping thru the entire list.
-- *
-- *	Symbol table nodes contain a pointer to a key, a pointer to this
-- *	key's data, and a pointer to the next node in the chain.
-- *	Note that to create a hierarchical symbol table, a node is created
-- *	whose data points to a symbol table header.
-- */
--
--#include <stdio.h>
--#include <errno.h>
--#include <stdlib.h>
--#include <string.h>
--#include <assert.h>
--#include "symbol.h"
--#include "splitstr.h"
--
--#define SYM_MAGIC	0xbadc0de
--
--/*
-- * Some functions can report an error message by assigning it to this
-- * string.
-- */
--
--static char *sym_error = NULL;
--
--/*
-- *	Memory Allocators
-- *
-- * newsym() allocates a new symbol table header node
-- * mknode(...) allocates a new symbol table entry
-- */
--
--SYM newsym(void)
--{
--	SYM h;
--
--	if ((h = malloc(sizeof(struct symh))) == NULL) {
--		sym_error = "sym header malloc failed!";
--		return (NULL);
--	}
--
--	h->magic = SYM_MAGIC;
--	h->sym = NULL;
--	h->cursor = NULL;
--	return (h);
--}
--
--static struct sym *mknode(struct sym *next, char *key, void *data)
--{
--	struct sym *n;
--
--	if ((n = malloc(sizeof(struct sym))) == NULL) {
--		sym_error = "sym node malloc failed!";
--		return (NULL);
--	}
--
--	n->next = next;
--	n->key = strdup(key);
--	n->data = data;
--
--	if (n->key == NULL) {
--		sym_error = "sym node strdup(key) failed!";
--		free(n);
--		return (NULL);
--	}
--	return (n);
--}
--
--/*
-- * Search for a key in a single-level symbol table hierarchy.
-- */
--static struct sym *find_key1(struct sym *sym, char *key)
--{
--	while (sym != NULL)
--		if (strcmp(sym->key, key) == 0)
--			return (sym);
--		else
--			sym = sym->next;
--	return (NULL);
--}
--
--/*
-- * Create a new key node, add it to the *end* of this list
-- */
--static int add_key(SYM sym, char *key, void *data)
--{
--	register struct sym *sn;
--
--	if (sym->sym == NULL) {
--		sym->sym = mknode(NULL, key, data);
--		if (sym->sym == NULL) {
--			return (-1);
--		}
--	} else {
--		for (sn = sym->sym; sn != NULL && sn->next != NULL;
--		     sn = sn->next) ;
--		sn->next = mknode(NULL, key, data);
--		assert(sn->next != NULL);
--		if (sn->next == NULL)
--			return (-1);
--	}
--	return (0);
--}
--
--/*
-- *  Create a new symbol table
-- */
--SYM sym_open(int flags, int mode, int openinfo)
--{
--	return (newsym());
--}
--
--/*
-- *	Add (key, data) to an existing symbol table
-- *
-- *  If the key does not exist, a new key is added to the end of the list.
-- *  If the key exists and the PUT_REPLACE flag is not supplied, return EEXIST.
-- *  If a symbol table entry in a multi-part key is not a symbol table (i.e.
-- *  element two of a three or more element key), return ENOTDIR.
-- *
-- *  "data" is not duplicated and must not point to a static area that could
-- *  go away before the element is deleted (such as a local string in a
-- *  function)
-- *
-- *  "key" is duplicated as needed, and is not modified.
-- *
-- * Code:
-- * chop up key on commas
-- *
-- * search until a key element isn't found in the key tree, the key list is
-- * exhausted, or a key's data element is not a sub-tree
-- *
-- * if the key list is exhausted, return a "duplicate entry" error
-- *
-- * if the last found key's data element is not a sub-tree, return
-- * something like "ENOTDIR".
-- *
-- * add new keys for sub-trees until key list is exhausted;
-- * last node gets 'data'.
-- *
-- */
--int sym_put(SYM sym, char *key, void *data, int flags)
--{
--	const char **keys;	/* key split into a 2d string array */
--	char **kk;
--	char *nkey;		/* copy of 'key' -- before split */
--	SYM csym, ncsym;	/* search: current symbol table */
--	struct sym *nsym = NULL;	/* search: found symbol entry */
--
--	if (sym == NULL)
--		return (EINVAL);
--
--	nkey = strdup(key);
--	keys = splitstr(key, ",", NULL);
--
--	if (keys == NULL) {
--		free(nkey);
--		return (EINVAL);
--	}
--
--	for (kk = (char **)keys, csym = sym;
--	     *kk != NULL && (nsym = find_key1(csym->sym, *kk)) != NULL;
--	     csym = nsym->data) {
--
--		if (*++kk == NULL)
--			break;
--
--		if (nsym->data == NULL) {	/* fatal error */
--			free(nkey);
--			splitstr_free(keys);
--			return (ENOTDIR);
--		}
--		if (((SYM) (nsym->data))->magic != SYM_MAGIC) {
--			free(nkey);
--			splitstr_free(keys);
--			return (ENOTDIR);
--		}
--	}
--
--	if (*kk == NULL) {	/* found a complete match */
--		free(nkey);
--		splitstr_free(keys);
--
--		if (flags == PUT_REPLACE) {
--			nsym->data = data;
--			return (0);
--		} else {
--			return (EEXIST);
--		}
--	}
--
--	/* csym is a ptr to a list */
--	for (; *kk != NULL; kk++) {
--		if (*(kk + 1) != NULL) {
--			add_key(csym, *kk, (void *)(ncsym = newsym()));
--			csym = ncsym;
--		} else {
--			add_key(csym, *kk, data);	/* last key */
--		}
--	}
--
--	free(nkey);
--	splitstr_free(keys);
--	return (0);
--}
--
--/*
-- *	Retrieve a Symbol's Contents
-- *
-- *  "key" is not modified.
-- *  If the key cannot be found, NULL is returned
-- */
--void *sym_get(SYM sym, char *key)
--{
--	char *nkey;
--	const char **keys;	/* key split into a 2d string array */
--	char **kk;
--	SYM csym;		/* search: current symbol table */
--	struct sym *nsym = NULL;	/* search: found symbol entry */
--
--	if (sym == NULL)
--		return (NULL);
--
--	nkey = strdup(key);
--	keys = splitstr(nkey, ",", NULL);
--	if (keys == NULL)
--		return (NULL);
--
--	for (kk = (char **)keys, csym = sym;
--	     *kk != NULL && (nsym = find_key1(csym->sym, *kk)) != NULL;
--	     csym = nsym->data) {
--
--		if (*++kk == NULL)
--			break;
--
--		if (nsym->data == NULL) {	/* fatal error */
--			free(nkey);
--			splitstr_free(keys);
--			return (NULL);
--		}
--		if (((SYM) (nsym->data))->magic != SYM_MAGIC) {
--			free(nkey);
--			splitstr_free(keys);
--			return (NULL);
--		}
--	}
--
--	if (*kk == NULL) {	/* found a complete match */
--		splitstr_free(keys);
--		free(nkey);
--		return (nsym->data);
--	} else {
--		splitstr_free(keys);
--		free(nkey);
--		return (NULL);
--	}
--}
--
--/*
-- *  Step thru a symbol table list
-- *
-- *  The cursor must be set by R_CURSOR, R_FIRST before using R_NEXT.
-- *  NULL is returned when no more items are available.
-- */
--int sym_seq(SYM sym, DBT * key, DBT * data, int flags)
--{
--	SYM csym;
--
--	switch (flags) {
--		/*
--		 * A number of ways to do this:
--		 * specificly: sym_seq( .., "key,key") sets to Nth element of the 2nd
--		 *  level symbol table
--		 * sym_seq(.., "key,key,") sets to the first element of the 3rd
--		 *  level symbol table
--		 *
--		 * sym_seq(.., "key,key") where both must be complete keys, sets
--		 *  cursor to the first element of the 3rd level symbol table;
--		 *  if there is no 3rd level, return an error.
--		 */
--	case R_CURSOR:
--		csym = (SYM) sym_get(sym, (char *)key->data);
--		if (csym == NULL || csym->magic != SYM_MAGIC) {
--			return (2);
--		}
--		sym->cursor = csym->sym;
--		if (sym->cursor == NULL)
--			return (1);
--		key->data = sym->cursor->key;
--		data->data = sym->cursor->data;
--
--		return (0);
--
--	case R_FIRST:
--		sym->cursor = sym->sym;
--		if (sym->cursor == NULL)
--			return (1);
--		key->data = sym->cursor->key;
--		data->data = sym->cursor->data;
--
--		return (0);
--
--	case R_NEXT:
--		if (sym->cursor == NULL)
--			return (1);
--		sym->cursor = sym->cursor->next;
--
--		if (sym->cursor == NULL)
--			return (1);
--
--		key->data = sym->cursor->key;
--		data->data = sym->cursor->data;
--
--		return (0);
--
--	case R_LAST:
--	case R_PREV:
--	default:
--		return (-1);
--	}
--}
--
--/*
-- *	Dump a symbol table's keys.
-- *	Handles hierarchies, using a double quote to indicate depth, one
-- *	double quote for each level.
-- */
--int sym_dump(SYM sym, int depth)
--{
--
--	register struct sym *se;	/* symbol entry */
--	register int d;
--
--	if (sym == NULL || sym->magic != SYM_MAGIC)
--		return -1;
--
--	for (se = sym->sym; se != NULL; se = se->next) {
--		for (d = 0; d < depth; d++) {
--			putchar('"');
--			putchar(' ');
--		}
--		printf("%s\n", se->key);
--		sym_dump((SYM) se->data, depth + 1);
--	}
--	return 0;
--}
--
--/*
-- * sym dump, but data is _always_ a string (print it)
-- */
--int sym_dump_s(SYM sym, int depth)
--{
--
--	register struct sym *se;	/* symbol entry */
--	register int d;
--
--	if (sym == NULL)
--		return 0;
--
--	if (sym->magic != SYM_MAGIC) {
--		for (d = 0; d < depth; d++) {
--			putchar('"');
--			putchar(' ');
--		}
--		printf(" = %s\n", (char *)sym);
--		return 0;
--	}
--
--	for (se = sym->sym; se != NULL; se = se->next) {
--		for (d = 0; d < depth; d++) {
--			putchar('"');
--			putchar(' ');
--		}
--		printf("%s", se->key);
--		if (((SYM) se->data)->magic == SYM_MAGIC) {
--			putchar('\n');
--			sym_dump_s((SYM) se->data, depth + 1);
--		} else {
--			printf("(%p) = %s (%p)\n", se->key, (char *)se->data,
--			       se->data);
--		}
--	}
--	return 0;
--}
--
--/*
-- *	Remove an entire symbol table (done bottom up)
-- */
--int sym_rm(SYM sym, int flags)
--{
--	register struct sym *se, *nse;	/* symbol entry */
--
--	if (sym == NULL)
--		return 0;
--
--	if (sym->magic != SYM_MAGIC) {
--		if (!(flags & RM_DATA))
--			free(sym);
--		return 0;
--	}
--
--	for (se = sym->sym; se != NULL;) {
--		sym_rm((SYM) se->data, flags);
--		nse = se->next;
--		if (flags & RM_KEY)
--			free(se->key);
--		if (flags & RM_DATA)
--			free(se->data);
--		free(se);
--		se = nse;
--	}
--	if (!(flags & RM_DATA))
--		free(sym);
--	return 0;
--}
-diff --git a/pan/symbol.h b/pan/symbol.h
-deleted file mode 100644
-index 7b2d035fe1..0000000000
---- a/pan/symbol.h
-+++ /dev/null
-@@ -1,104 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: symbol.h,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--#ifndef _SYMBOL_H_
--#define _SYMBOL_H_
--
--/*
-- *	"Generic" Symbol Table
-- *
-- *  These data structures are the internal part of a library providing
-- *  an in-memory dbm-like (key, content) database with hierarchical
-- *  key names.
-- */
--struct sym {
--    struct sym *next;
--    char       *key;
--    void       *data;
--};
--
--/*
-- * Symbol Table Header
-- */
--struct symh {
--    int         magic;
--    struct sym *sym;
--    struct sym *cursor;
--};
--
--/*
-- * The "SYM" typedef is the only external data type.
-- */
--typedef struct symh *SYM;
--
--/*
-- * Data for keys and contents (lifted from dbopen(3))
-- * dbopen(3) uses this for all functions, but I'm hard-wired into chars
-- * for keys and the like; I just need this for sym_get
-- */
--typedef struct {
--    void *data;
--    int   size;
--} DBT;
--
--/*
-- * Prototypes
-- */
--
--SYM   sym_open(int flags, int mode,  int openinfo          );
--int   sym_put (SYM sym,   char *key, void *data, int flags );
--void *sym_get (SYM sym,   char *key                        );
--int   sym_seq (SYM sym,   DBT *key,  DBT *data, int flags  );
--int   sym_rm  (SYM sym,   int flags                        );
--
--/*
-- * Flags for sym_put
-- */
--#define PUT_REPLACE	1	/* replace data on a put */
--
--/*
-- * Flags for sym_rm
-- */
--#define	RM_KEY	001		/* free() on key pointer */
--#define	RM_DATA	002		/* free() on data pointer */
--
--/*
-- * Flags for sym_seq (clones of 44BSD dbopen(3))
-- */
--#define	R_CURSOR	1	/* set "cursor" to where "data" key is */
--#define R_FIRST		2	/* set "cursor" to first item */
--#define	R_NEXT		4	/* set "cursor" to next item */
--#define	R_LAST		3	/* set "cursor" to last item (UNIMP) */
--#define	R_PREV		5	/* set "cursor" to previous item (UNIMP) */
--
--#endif
-diff --git a/pan/tag_report.c b/pan/tag_report.c
-deleted file mode 100644
-index eb8fb3dbcf..0000000000
---- a/pan/tag_report.c
-+++ /dev/null
-@@ -1,478 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: tag_report.c,v 1.2 2006/12/13 22:55:22 vapier Exp $ */
--#include "tag_report.h"
--#include "debug.h"
--#include "reporter.h"
--#include "splitstr.h"
--
--static char *worst_case(char *, char *);
--
--/************************************************************************
-- *			Report Generation				*
-- ************************************************************************/
--
--/*
-- * printf format statement for standard reports
-- * 5 fields with max/min widths
-- */
--#define FORMAT "%-20.20s %-15.15s %10.10s %-20.20s %s\n"
--
--/*
-- *  This is the central results reporting function.  All standard report
-- *  format results are printed thru test_result.
-- */
--int test_result(char *tag, char *tcid, char *tc, char *result, SYM tags)
--{
--	char *expert, expkey[KEYSIZE];
--	register char *c;
--	char **cont;
--	const char **cont_save;
--
--	if (tcid == NULL)
--		tcid = "-";
--	if (tc == NULL)
--		tc = "-";
--	if (tag == NULL)
--		tag = "test_result: no tag";
--	if (result == NULL)
--		result = "(RESULT IS NULL)";
--
--	strcpy(expkey, "contacts");
--	/* note: the sym_get here does _not_ change the "cursor" */
--	if ((expert = (char *)sym_get(tags, expkey)) == NULL) {
--		expert = "UNKNOWN";
--	}
--
--	/* ' tr " " "_" ' */
--	for (c = result; *c; c++) {
--		if (*c == ' ') {
--			*c = '_';
--		}
--	}
--	if (*result == '\0')
--		result = "?";
--
--	/* split contacts on "," and print out a line for each */
--	cont_save = splitstr(expert, ",", NULL);
--	for (cont = (char **)cont_save; *cont != NULL; cont++) {
--		printf(FORMAT, tag, tcid, tc, result, *cont);
--	}
--	splitstr_free(cont_save);
--
--	return 0;
--}
--
--/*
-- * CUTS test reporting.
-- *
-- *  (1) make a list (2d char array) of all TCIDs (see above for why)
-- *  (2) look thru the list:
-- *	(a) keep track of the "worst case" in this *TAG*
-- *	(b) report each testcase's results
-- *	(c) if the testcase number is != 0, count it
-- *  (3) report tag's results
-- *  (4) check the number of expected results with the actual results,
-- *	report an error if they don't match.
-- */
--
--int cuts_report(SYM tags, SYM keys, char *at, char *tag)
--{
--	DBT Key, Data;
--
--	/* analysis type: count of CUTS test cases */
--	const char **ant;
--	char *dat;		/* strdup(at) */
--	int tccount;		/* expected count of testcases */
--	int tcnum;		/* seen count of testcases */
--
--	/* a list of tcids */
--	char **taglist, **tl;
--	int ntags, tagcount;
--
--	char key_get[255];
--
--	char *result = "", *worst_case();	/* overall result */
--
--	/* parse analysis type: cuts:tc-count */
--	ant = splitstr((dat = strdup(at)), ":", NULL);
--	if (ant[1] != NULL)
--		tccount = atoi(ant[1]);
--	else
--		tccount = 0;
--	free(dat);
--	splitstr_free(ant);
--
--	/* extract tcids */
--	ntags = NTCID_START;
--	taglist = (char **)malloc(sizeof(char *) * ntags);
--	tagcount = 0;
--
--	tl = taglist;
--	sym_seq(tags, &Key, &Data, R_FIRST);
--	do {
--		if (tagcount == ntags) {
--			/* exceeded tag array size -- realloc */
--			ntags += NTCID_START;
--			taglist =
--			    (char **)realloc(taglist, sizeof(char *) * ntags);
--			tl = taglist + tagcount;
--		}
--
--		if (strcmp((char *)Key.data, "_keys") == 0)
--			continue;
--		DEBUG(D_REPORT, 10)
--		    printf("cuts_report: tcid %s\n", (char *)Key.data);
--		*tl++ = Key.data;
--		tagcount++;
--	} while (sym_seq(tags, &Key, &Data, R_NEXT) == 0);
--
--	if (tagcount == ntags) {
--		/* exceeded tag array size -- realloc */
--		ntags++;	/* need just one more */
--		taglist = (char **)realloc(taglist, sizeof(char *) * ntags);
--		tl = taglist + tagcount;
--	}
--
--	*tl++ = NULL;
--
--	ntags = tagcount;
--
--	/* dump all found records */
--	tcnum = 0;
--	for (tl = taglist; *tl != NULL; tl++) {
--
--		strcpy(key_get, *tl);
--		Key.data = (void *)key_get;
--
--		/*sym_dump_s(sym_get(tags, key_get), 0); */
--
--		sym_seq(tags, &Key, &Data, R_CURSOR);
--		do {
--			DEBUG(D_REPORT, 10)
--			    printf("cuts_report: tc %s = %s\n",
--				   (char *)Key.data, (char *)Data.data);
--			result = worst_case(result, (char *)Data.data);
--			test_result(tag, *tl, (char *)Key.data,
--				    (char *)Data.data, keys);
--			if (atoi((char *)Key.data))
--				tcnum++;
--		} while (sym_seq(tags, &Key, &Data, R_NEXT) == 0);
--	}
--
--	test_result(tag, "*", "*", result, keys);
--
--	if (tccount != 0 && tccount != tcnum)
--		test_result(tag, "-", "-", "TC count wrong", keys);
--
--	free(taglist);
--
--	return 0;
--}
--
--/*
-- * Do the report generation.
-- *
-- * A problem: I really need multiple cursors.  I'd rather not look into
-- * the depths of the current symbol table implimentation (there are the
-- * cursors there that I could use) so that a different (faster!) symbol
-- * table can be used in the future.
-- *
-- * I could get a key (tag), get it's sub-keys (TCIDs), then get the key
-- * again to reset to the top level, _then_ get the next key.  That would
-- * be very inefficient.
-- *
-- * The solution I chose is to extract all tags into a list (char array),
-- * then go thru that list with the cursor free for other levels to use.
-- *
-- *  (1) make a list (2d char array) of all Tags
-- *  (2) search for the first tag that has a "stime" record, and use that as
-- *      the date (MMDDYY) that the tests were run.
-- *  (3) print the report header
-- *  (4) go thru all tags and report each as described at the beginning of
-- *      this file
-- */
--int tag_report(SYM alltags, SYM ctag, SYM keys)
--{
--
--	extern int extended;
--
--	char key_get[KEYSIZE];
--	char *info;
--
--	/* retrieved _keys values: initation status, start time, duration,
--	 * termination type, termination id, start line, end line.          */
--	char *tag, *contact, *is, *mystime, *duration, *tt, *ti, *sl, *el;
--
--	/* Check all driver-level status first */
--	strcpy(key_get, "tag");
--	if ((tag = (char *)sym_get(keys, key_get)) == NULL) {
--		return -1;
--	}
--
--	/* Check all driver-level status first */
--	strcpy(key_get, "initiation_status");
--	if ((is = (char *)sym_get(keys, key_get)) == NULL) {
--		test_result(tag, NULL, NULL, "no init status", keys);
--		return -1;
--	}
--
--	if (strcmp(is, "ok")) {
--		test_result(tag, NULL, NULL, is, keys);
--	} else {
--
--		strcpy(key_get, "corefile");
--		if ((info = (char *)sym_get(keys, key_get)) != NULL)
--			if (strcmp(info, "no") != 0) {
--				test_result(tag, NULL, NULL, "coredump", keys);
++			if (expect != actual)
+ 				nr_error++;
 -			}
--
--		strcpy(key_get, "termination_type");
--		if ((tt = (char *)sym_get(keys, key_get)) == NULL) {
--			test_result(tag, NULL, NULL, "no Term Type", keys);
--			return -1;
--		}
--
--		if (strcmp(tt, "exited")) {
--			test_result(tag, NULL, NULL, tt, keys);
--		}
--
--		strcpy(key_get, "analysis");
--		if ((info = (char *)sym_get(keys, key_get)) == NULL) {
--			test_result(tag, NULL, NULL, "no Analysis Type", keys);
--			return -1;
--		}
--
--		/* Getting here indicates that there were no fatal driver-level
--		 * errors.  Do the kind of reporting requested by the test.
--		 */
--
--		if (strncmp(info, "none", 4) == 0) {
--			/*
--			 * If analysis is 'none', alway report the test as
--			 * a pass regardless of output or exit status.
--			 */
--			test_result(tag, NULL, NULL, "pass", keys);
--
--		} else if (strncmp(info, "cuts", 4)) {
--
--			/*
--			 * If analysis is not cuts, assume it is 'exit', thus
--			 * the termination_id is used to determine pass/fail result.
--			 */
--			if (strcmp(tt, "timeout")) {
--				strcpy(key_get, "termination_id");
--				if ((info =
--				     (char *)sym_get(keys, key_get)) == NULL) {
--					test_result(tag, NULL, NULL,
--						    "no_Term_Id", keys);
--				} else {
--					if (strcmp(info, "0")) {
--						test_result(tag, NULL, NULL,
--							    "fail", keys);
--					} else {
--						test_result(tag, NULL, NULL,
--							    "pass", keys);
--					}
--				}
--			}
--		} else {
--			cuts_report(ctag, keys, info, tag);
--		}
--	}
--
--	/*
--	 * Extended Format:
--	 *  - tcid+tc = "!"
--	 *  - tab separated fields
--	 *  - no field widths
--	 *  - fields 6 - ~ are:
--	 *  start-time (time_t)
--	 *  duration
--	 *  termination_id
--	 *  termination_type
--	 *  Start Line (of test results in output file)
--	 *  End Line
--	 */
--
--	if (extended) {
--
--		strcpy(key_get, "termination_id");
--		if ((ti = (char *)sym_get(keys, key_get)) == NULL) {
--			ti = "No_Termination_ID";
--		}
--
--		strcpy(key_get, "termination_type");
--		if ((tt = (char *)sym_get(keys, key_get)) == NULL) {
--			tt = "No_Termination_Type";
--		}
--
--		strcpy(key_get, "duration");
--		if ((duration = (char *)sym_get(keys, key_get)) == NULL) {
--			duration = "No_Duration";
--		}
--
--		strcpy(key_get, "_Start_line");
--		if ((sl = (char *)sym_get(keys, key_get)) == NULL) {
--			sl = "No_Start_line";
--		}
--
--		strcpy(key_get, "_End_line");
--		if ((el = (char *)sym_get(keys, key_get)) == NULL) {
--			el = "No_End_line";
--		}
--
--		strcpy(key_get, "contacts");
--		if ((contact = (char *)sym_get(keys, key_get)) == NULL) {
--			contact = "No_Contacts";
--		}
--
--		strcpy(key_get, "stime");
--		if ((mystime = (char *)sym_get(keys, key_get)) == NULL) {
--			mystime = "No_stime";
--		}
--
--		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n",
--		       tag, "!", "!", is, contact, mystime, duration,
--		       ti, tt, sl, el);
--	}
--
--	return 0;
--}
--
--/*
-- *  Print a header made up of the RTS keywords
-- *  In "extended" mode, print the header to stderr.
-- */
--int print_header(SYM tags)
--{
--	DBT Key, Data;
--	char key_get[255];
--
--	FILE *out;
--
--	extern int extended;
--
--	if (extended)
--		out = stderr;
--	else
--		out = stdout;
--
--	fprintf(out, "System Configuration:\n");
--	/* build header out of RTS keywords */
--	sprintf(key_get, "_RTS");
--	Key.data = (void *)key_get;
--	if (sym_seq(tags, &Key, &Data, R_CURSOR) == 0) {
--		do {
--			if (strcmp((char *)Key.data, "PATH") == 0)
--				continue;
--			fprintf(out, "%-20.20s %s\n", (char *)Key.data,
--				(char *)Data.data);
--		} while (sym_seq(tags, &Key, &Data, R_NEXT) == 0);
--	}
--
--	fprintf(out, "\n");
--	fprintf(out, FORMAT, "tag", "tcid", "testcase", "status", "contact");
--	fprintf(out,
--		"-------------------------------------------------------------------------------\n");
--
--	return 0;
--}
--
--/*
-- * CUTS testcase record
-- *
-- * This is passed s SYM for the current tag and the initiation keys.
-- * The text seen by lex is in yytext (global).
-- */
--int cuts_testcase(SYM tag, SYM keys)
--{
--	char *cuts_info[6];
--	char key[KEYSIZE];
--	char *oldresult, *newresult, *worst_case();
--	int tok_num = 0;
--	extern char yytext[];
--
--	cuts_info[tok_num] = strtok(yytext, "\t ");
--	while (tok_num < 5 &&
--	       (cuts_info[++tok_num] = strtok(NULL, "\t ")) != NULL) ;
--
--	strcpy(key, cuts_info[0]);
--	strcat(key, ",");
--	strcat(key, cuts_info[1]);
--
--#ifdef DEBUGGING
--	DEBUG(D_SCAN_CUTS, 1) {
--		printf("cuts_testcase: TCID=%s TC=%s Result=%s\n", cuts_info[0],
--		       cuts_info[1], cuts_info[2]);
--		printf("cuts_testcase: %d %s\n", tok_num, key);
--	}
--#endif
--
--	if ((oldresult = (char *)sym_get(tag, key)) != NULL) {
--		/* Duplicate -- assume mulitple runs */
--		/* keep "worst case" */
--		newresult = worst_case(oldresult, cuts_info[2]);
--		sym_put(tag, key, strdup(newresult), PUT_REPLACE);
--		free(oldresult);	/* remove the "data" portion of the key */
--	} else {
--		sym_put(tag, key, strdup(cuts_info[2]), 0);
--	}
--	return 0;
--}
--
--/*
-- * Determine a "worst case" status from two given statuses.
-- */
--static char *worst_case(char *t1, char *t2)
--{
--	/* NULL-terminated table, ordered from worst-case to best-case */
--	static char *worst[] = {
--		"FAIL", "BROK", "PASS", "CONF",
--		"WARN", "INFO", NULL,
--	};
--
--	char **w1, **w2;
--
--	/* Search the table for each status, then use the index to determine
--	   which has a lower precedence */
--	for (w1 = worst; *w1 != NULL && strcmp(t1, *w1); w1++) ;
--
--	for (w2 = worst; *w2 != NULL && strcmp(t2, *w2); w2++) ;
--
--	if (w1 < w2)
--		return (t1);
--	else
--		return (t2);
--
--}
++
+ 			count++;
+ 		}
+ 	}
++
+ 	if (nr_error)
+-		tst_brkm(TFAIL, tst_exit, "child 1: %d incorrect bytes "
+-			 "received.", nr_error);
++		tst_brk(TFAIL, "child 1: %d incorrect bytes received", nr_error);
+ 	else
+-		tst_resm(TPASS, "child 1: all bytes are correctly received.");
++		tst_res(TPASS, "child 1: all bytes are correctly received");
+ }
+ 
+ static void setup(void)
+ {
+-	tst_require_root();
++	int iov_max;
+ 
+ 	/* Just a sanity check of the existence of syscall */
+ 	tst_syscall(__NR_process_vm_readv, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
+ 
+-	nr_iovecs = nflag ? SAFE_STRTOL(NULL, nr_opt, 1, IOV_MAX) : 10;
+-	bufsz = sflag ? SAFE_STRTOL(NULL, sz_opt, NUM_LOCAL_VECS, LONG_MAX)
+-	    : 100000;
++	if (tst_parse_int(str_buffsize, &bufsize, 4, INT_MAX))
++		tst_brk(TBROK, "Invalid buffer size '%s'", str_buffsize);
+ 
+-	tst_tmpdir();
+-	TST_CHECKPOINT_INIT(cleanup);
+-	srand(time(NULL));
++	iov_max = SAFE_SYSCONF(_SC_IOV_MAX);
++	if (tst_parse_int(str_nr_iovecs, &nriovecs, 1, iov_max))
++		tst_brk(TBROK, "Invalid IO vectors '%s'", str_nr_iovecs);
+ 
+-	TEST_PAUSE;
++	data_ptr = SAFE_MMAP(NULL, sizeof(uintptr_t), PROT_READ | PROT_WRITE,
++						 MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_rmdir();
++	if (data_ptr)
++		SAFE_MUNMAP(data_ptr, sizeof(uintptr_t));
+ }
+ 
+-static void help(void)
++static void run(void)
+ {
+-	printf("    -n NUM  Set the number of iovecs to be allocated.\n");
+-	printf("    -s NUM  Set the size of total buffer size.\n");
++	pid_t pid_alloc;
++	pid_t pid_invoke;
++	int status;
++	int *sizes;
++
++	/* create random iovec data size */
++	sizes = SAFE_MALLOC(nriovecs * sizeof(int));
++	create_data_size(sizes, nriovecs, bufsize);
++
++	pid_alloc = SAFE_FORK();
++	if (!pid_alloc) {
++		child_alloc(sizes, nriovecs);
++		return;
++	}
++
++	TST_CHECKPOINT_WAIT(0);
++
++	pid_invoke = SAFE_FORK();
++	if (!pid_invoke) {
++		child_invoke(sizes, nriovecs, pid_alloc, bufsize);
++		return;
++	}
++
++	/* wait until child_invoke reads from child_alloc's VM */
++	SAFE_WAITPID(pid_invoke, &status, 0);
++	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++		tst_res(TFAIL, "child 1: returns %d", status);
++
++	/* child_alloc is free to exit now */
++	TST_CHECKPOINT_WAKE(0);
++
++	SAFE_WAITPID(pid_alloc, &status, 0);
++	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++		tst_res(TFAIL, "child 0: returns %d", status);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++	.options = (struct tst_option[]) {
++		{"s:", &str_buffsize, "Total buffer size (default 100000)"},
++		{"n:", &str_nr_iovecs, "Number of iovecs to be allocated (default 10)"},
++		{},
++	},
++};
 -- 
 2.34.1
 
