@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A821DC433F5
-	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 06:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5485DC433F5
+	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 06:14:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0ABE13C970F
-	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 07:14:02 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 668713C9704
+	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 07:14:13 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BCDB3C96C0
+ by picard.linux.it (Postfix) with ESMTPS id 8848B3C0DEA
  for <ltp@lists.linux.it>; Thu, 27 Jan 2022 07:13:09 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 308D020015B
- for <ltp@lists.linux.it>; Thu, 27 Jan 2022 07:13:07 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ACC4910006B6
+ for <ltp@lists.linux.it>; Thu, 27 Jan 2022 07:13:08 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6D2EE2190B;
- Thu, 27 Jan 2022 06:13:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 12FBB1F37C;
+ Thu, 27 Jan 2022 06:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1643263987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643263988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Em7u5q4Ek3BfNbo2rYhS8/QrS1/B0XyCjc/uHKk4NIk=;
- b=uHWNro7jjYnBdHSXF+V0reqPNWze9adFUkS8sSdRrJ1kdPBxVeMerZlD1OvnVHLRxvAJFS
- NiLatnbZ85ywQ5/2bNiavbpQ67/ejP0o+DFLY2B8nzTfIEig8vtdIDCBCF5+RuGRhCs3/n
- V9YlXlk8CpHfEM4fDyI2DEOwjPARHXY=
+ bh=qtAmal+PjOf75OLTRfZ5HgJGFQ3V2+z9ietC8SrxRhs=;
+ b=QmnZi75Fl+cXvkjsLalDvHwOf6EPzGQDgMWkixpR9DNZO35h8du4uJkPElK2zncuxRZ/zW
+ w7wWsU9fRsM9xNuKkLub9mVpToD/3Kgpsn0vcQgGY3CCs/kdWQ1WX1AWjxNbRKeYmDRi1r
+ nLLp0bCgKFpIs+rGrmK5o92/FfMzWpc=
 Received: from g78.suse.de (unknown [10.163.24.90])
- by relay2.suse.de (Postfix) with ESMTP id 3EE50A3B81;
+ by relay2.suse.de (Postfix) with ESMTP id C26F4A3B81;
  Thu, 27 Jan 2022 06:13:07 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Thu, 27 Jan 2022 06:12:21 +0000
-Message-Id: <20220127061225.23368-3-rpalethorpe@suse.com>
+Date: Thu, 27 Jan 2022 06:12:23 +0000
+Message-Id: <20220127061225.23368-5-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220127061225.23368-1-rpalethorpe@suse.com>
 References: <20220127061225.23368-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/6] API: Add tst_reap_child
+Subject: [LTP] [PATCH 4/6] API/cgroup: Declare required controllers and
+ version in test struct
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,66 +66,487 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a simple way to wait for a specific child process. This makes
-sense when you want to wait for a child while others continue to run
-in the background.
+This allows the test author to declaratively specify the required
+CGroup controllers in struct tst_test. Also they can optionally
+specify the CGroup API version. In some cases this removes any need for a
+setup function. It also adds CGroup information to the meta-data.
+
+In theory its possible to require that only one controller is on a
+particular version while others are free to be on any. Currently this
+would still need to be handled by calling tst_cgroup_require() and
+checking the controller version. So far we do not have any tests which
+need to be run in such a hybrid scenario. Usually if V2 and V1 are
+mounted at once, V2 is empty. So this does not complicate the
+declaration by allowing the version to be specified on a per
+controller basis.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_test.h |  6 ++++++
- lib/tst_test.c     | 22 ++++++++++++++++++++++
- 2 files changed, 28 insertions(+)
+ include/tst_cgroup.h                          | 15 +++--------
+ include/tst_test.h                            | 17 +++++++++++++
+ lib/newlib_tests/tst_cgroup01.c               |  2 +-
+ lib/newlib_tests/tst_cgroup02.c               |  2 +-
+ lib/tst_cgroup.c                              | 18 ++++++++++---
+ lib/tst_test.c                                | 25 +++++++++++++++++++
+ .../kernel/controllers/memcg/memcontrol01.c   | 13 +++-------
+ .../kernel/controllers/memcg/memcontrol02.c   |  7 ++----
+ testcases/kernel/mem/cpuset/cpuset01.c        |  4 +--
+ testcases/kernel/mem/ksm/ksm02.c              |  4 +--
+ testcases/kernel/mem/ksm/ksm03.c              |  4 +--
+ testcases/kernel/mem/ksm/ksm04.c              |  7 +++---
+ testcases/kernel/mem/oom/oom03.c              |  4 +--
+ testcases/kernel/mem/oom/oom05.c              |  8 +++---
+ .../sched/cfs-scheduler/cfs_bandwidth01.c     |  6 ++---
+ testcases/kernel/syscalls/madvise/madvise06.c |  5 ++--
+ 16 files changed, 88 insertions(+), 53 deletions(-)
 
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index 5190d8794..9b5c49e44 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -83,21 +83,14 @@
+ 
+ #include <sys/types.h>
+ 
+-/* CGroups Kernel API version */
+-enum tst_cgroup_ver {
+-	TST_CGROUP_V1 = 1,
+-	TST_CGROUP_V2 = 2,
+-};
+-
+ /* Used to specify CGroup hierarchy configuration options, allowing a
+  * test to request a particular CGroup structure.
+  */
+ struct tst_cgroup_opts {
+-	/* Only try to mount V1 CGroup controllers. This will not
+-	 * prevent V2 from being used if it is already mounted, it
+-	 * only indicates that we should mount V1 controllers if
+-	 * nothing is present. By default we try to mount V2 first. */
+-	int only_mount_v1:1;
++	/* Call tst_brk with TCONF if the controller is not on this
++	 * version. Defautls to zero to accept any version.
++	 */
++	enum tst_cgroup_ver needs_ver;
+ };
+ 
+ /* A Control Group in LTP's aggregated hierarchy */
 diff --git a/include/tst_test.h b/include/tst_test.h
-index 450ddf086..8faf19141 100644
+index 8faf19141..7c863db07 100644
 --- a/include/tst_test.h
 +++ b/include/tst_test.h
-@@ -106,6 +106,12 @@ pid_t safe_fork(const char *filename, unsigned int lineno);
-  */
- void tst_reap_children(void);
+@@ -139,6 +139,14 @@ extern unsigned int tst_variant;
  
-+/*
-+ * Wait for one child and exit with TBROK if it returns a non-zero
-+ * exit status
-+ */
-+void tst_reap_child(pid_t child);
+ #define TST_NO_HUGEPAGES ((unsigned long)-1)
+ 
++/* CGroups Kernel API version */
++enum tst_cgroup_ver {
++	TST_CGROUP_V1 = 1,
++	TST_CGROUP_V2 = 2,
++};
 +
- struct tst_option {
- 	char *optstr;
- 	char **arg;
++struct tst_cgroup_group;
++
+ struct tst_test {
+ 	/* number of tests available in test() function */
+ 	unsigned int tcnt;
+@@ -286,6 +294,15 @@ struct tst_test {
+ 
+ 	/* NULL terminated array of required commands */
+ 	const char *const *needs_cmds;
++
++	/* Requires a particular CGroup API version. */
++	const enum tst_cgroup_ver needs_cgroup_ver;
++
++	/* {} terminated array of required CGroup controllers */
++	const char *const *needs_cgroup_controllers;
++
++	/* Populated with a reference to this tests's CGroup */
++	const struct tst_cgroup_group **const test_cgroup;
+ };
+ 
+ /*
+diff --git a/lib/newlib_tests/tst_cgroup01.c b/lib/newlib_tests/tst_cgroup01.c
+index 54a370362..62df9aab2 100644
+--- a/lib/newlib_tests/tst_cgroup01.c
++++ b/lib/newlib_tests/tst_cgroup01.c
+@@ -22,7 +22,7 @@ static void do_test(void)
+ 
+ static void setup(void)
+ {
+-	cgopts.only_mount_v1 = !!only_mount_v1,
++	cgopts.needs_ver = !!only_mount_v1 ? TST_CGROUP_V1 : 0;
+ 
+ 	tst_cgroup_scan();
+ 	tst_cgroup_print_config();
+diff --git a/lib/newlib_tests/tst_cgroup02.c b/lib/newlib_tests/tst_cgroup02.c
+index 64b0a1e94..988282f14 100644
+--- a/lib/newlib_tests/tst_cgroup02.c
++++ b/lib/newlib_tests/tst_cgroup02.c
+@@ -59,7 +59,7 @@ static void do_test(void)
+ 
+ static void setup(void)
+ {
+-	cgopts.only_mount_v1 = !!only_mount_v1,
++	cgopts.needs_ver = !!only_mount_v1 ? TST_CGROUP_V1 : 0;
+ 
+ 	tst_cgroup_scan();
+ 	tst_cgroup_print_config();
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 10b65364b..2c63dca54 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -196,7 +196,7 @@ static struct cgroup_ctrl controllers[] = {
+ 	{ }
+ };
+ 
+-static const struct tst_cgroup_opts default_opts = { 0 };
++static const struct tst_cgroup_opts default_opts;
+ 
+ /* We should probably allow these to be set in environment
+  * variables
+@@ -623,13 +623,14 @@ void tst_cgroup_require(const char *const ctrl_name,
+ 	if (ctrl->ctrl_root)
+ 		goto mkdirs;
+ 
+-	if (!cgroup_v2_mounted() && !options->only_mount_v1)
++	if (!cgroup_v2_mounted() && options->needs_ver != TST_CGROUP_V1)
+ 		cgroup_mount_v2();
+ 
+ 	if (ctrl->ctrl_root)
+ 		goto mkdirs;
+ 
+-	cgroup_mount_v1(ctrl);
++	if (options->needs_ver != TST_CGROUP_V2)
++		cgroup_mount_v1(ctrl);
+ 
+ 	if (!ctrl->ctrl_root) {
+ 		tst_brk(TCONF,
+@@ -642,6 +643,17 @@ mkdirs:
+ 	root = ctrl->ctrl_root;
+ 	add_ctrl(&root->mnt_dir.ctrl_field, ctrl);
+ 
++	if (cgroup_ctrl_on_v2(ctrl) && options->needs_ver == TST_CGROUP_V1) {
++		tst_brk(TCONF,
++			"V1 '%s' controller required, but it's mounted on V2",
++			ctrl->ctrl_name);
++	}
++	if (!cgroup_ctrl_on_v2(ctrl) && options->needs_ver == TST_CGROUP_V2) {
++		tst_brk(TCONF,
++			"V2 '%s' controller required, but it's mounted on V1",
++			ctrl->ctrl_name);
++	}
++
+ 	if (cgroup_ctrl_on_v2(ctrl)) {
+ 		if (root->we_mounted_it) {
+ 			SAFE_FILE_PRINTFAT(root->mnt_dir.dir_fd,
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 844756fbd..156a1e4b3 100644
+index 156a1e4b3..bdab524f6 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -416,6 +416,28 @@ void tst_reap_children(void)
+@@ -30,6 +30,7 @@
+ #include "tst_sys_conf.h"
+ #include "tst_kconfig.h"
+ #include "tst_private.h"
++#include "tst_cgroup.h"
+ #include "old_resource.h"
+ #include "old_device.h"
+ #include "old_tmpdir.h"
+@@ -1035,6 +1036,20 @@ static void prepare_device(void)
  	}
  }
  
-+void tst_reap_child(const pid_t pid)
++static void do_cgroup_requires(void)
 +{
-+	int status;
++	const struct tst_cgroup_opts cg_opts = {
++		.needs_ver = tst_test->needs_cgroup_ver,
++	};
++	const char *const *ctrl_names = tst_test->needs_cgroup_controllers;
 +
-+	for (;;) {
-+		const pid_t ret_pid = waitpid(pid, &status, 0);
++	for (; *ctrl_names; ctrl_names++)
++		tst_cgroup_require(*ctrl_names, &cg_opts);
 +
-+		if (ret_pid > 0) {
-+			check_child_status(ret_pid, status);
-+			continue;
-+		}
-+
-+		if (errno == ECHILD)
-+			break;
-+
-+		if (errno == EINTR)
-+			continue;
-+
-+		tst_brk(TBROK | TERRNO, "waitpid(%d, ...) failed", pid);
-+	}
++	if (tst_test->test_cgroup)
++		*(tst_test->test_cgroup) = tst_cgroup_get_test_group();
 +}
 +
- 
- pid_t safe_fork(const char *filename, unsigned int lineno)
+ static void do_setup(int argc, char *argv[])
  {
+ 	if (!tst_test)
+@@ -1187,6 +1202,13 @@ static void do_setup(int argc, char *argv[])
+ 
+ 	if (tst_test->taint_check)
+ 		tst_taint_init(tst_test->taint_check);
++
++	if (tst_test->needs_cgroup_controllers)
++		do_cgroup_requires();
++	else if (tst_test->needs_cgroup_ver)
++		tst_brk(TBROK, "needs_cgroup_ver only works with needs_cgroup_controllers");
++	else if (tst_test->test_cgroup)
++		tst_brk(TBROK, "test_cgroup only works with needs_cgroup_controllers");
+ }
+ 
+ static void do_test_setup(void)
+@@ -1220,6 +1242,9 @@ static void do_test_setup(void)
+ 
+ static void do_cleanup(void)
+ {
++	if (tst_test->needs_cgroup_controllers)
++		tst_cgroup_cleanup();
++
+ 	if (ovl_mounted)
+ 		SAFE_UMOUNT(OVL_MNT);
+ 
+diff --git a/testcases/kernel/controllers/memcg/memcontrol01.c b/testcases/kernel/controllers/memcg/memcontrol01.c
+index f3b45610e..84a1634ee 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol01.c
++++ b/testcases/kernel/controllers/memcg/memcontrol01.c
+@@ -44,15 +44,6 @@ static void test_memcg_subtree_control(void)
+ 	parent = tst_cgroup_group_rm(parent);
+ }
+ 
+-static void setup(void)
+-{
+-	tst_cgroup_require("memory", NULL);
+-	cg_test = tst_cgroup_get_test_group();
+-
+-	if (TST_CGROUP_VER_IS_V1(cg_test, "memory"))
+-		tst_brk(TCONF, "V1 controllers do not have subtree control");
+-}
+-
+ static void cleanup(void)
+ {
+ 	if (child2)
+@@ -68,7 +59,9 @@ static void cleanup(void)
+ }
+ 
+ static struct tst_test test = {
+-	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = test_memcg_subtree_control,
++	.needs_cgroup_ver = TST_CGROUP_V2,
++	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
++	.test_cgroup = &cg_test,
+ };
+diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
+index d5a24cc0a..6f7bc7a4c 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol02.c
++++ b/testcases/kernel/controllers/memcg/memcontrol02.c
+@@ -114,9 +114,6 @@ static void setup(void)
+ {
+ 	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
+ 
+-	tst_cgroup_require("memory", NULL);
+-	cg_test = tst_cgroup_get_test_group();
+-
+ 	switch (tst_fs_type(TMPDIR)) {
+ 	case TST_VFAT_MAGIC:
+ 	case TST_EXFAT_MAGIC:
+@@ -130,8 +127,6 @@ static void cleanup(void)
+ {
+ 	if (cg_child)
+ 		cg_child = tst_cgroup_group_rm(cg_child);
+-
+-	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+@@ -145,4 +140,6 @@ static struct tst_test test = {
+ 	.all_filesystems = 1,
+ 	.forks_child = 1,
+ 	.needs_root = 1,
++	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
++	.test_cgroup = &cg_test,
+ };
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index 66c18f6ab..272a38bd5 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -80,14 +80,12 @@ static void test_cpuset(void)
+ 
+ static void setup(void)
+ {
+-	tst_cgroup_require("cpuset", NULL);
+ 	ncpus = count_cpu();
+ 	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
+ 		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
+ 	if (nnodes <= 1)
+ 		tst_brk(TCONF, "requires a NUMA system.");
+ 
+-	cg = tst_cgroup_get_test_group();
+ 	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+@@ -186,6 +184,8 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = test_cpuset,
+ 	.min_kver = "2.6.32",
++	.needs_cgroup_controllers = (const char *const []){ "cpuset", NULL },
++	.test_cgroup = &cg,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index c578cfb7f..7afa5ee12 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -107,8 +107,6 @@ static void setup(void)
+ 		SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
+ 	}
+ 
+-	tst_cgroup_require("cpuset", NULL);
+-	cg = tst_cgroup_get_test_group();
+ 	cg_drain = tst_cgroup_get_drain_group();
+ }
+ 
+@@ -129,6 +127,8 @@ static struct tst_test test = {
+ 	},
+ 	.test_all = verify_ksm,
+ 	.min_kver = "2.6.32",
++	.needs_cgroup_controllers = (const char *const []){ "cpuset", NULL },
++	.test_cgroup = &cg,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
+index df847cf95..01a908b01 100644
+--- a/testcases/kernel/mem/ksm/ksm03.c
++++ b/testcases/kernel/mem/ksm/ksm03.c
+@@ -79,8 +79,6 @@ static void setup(void)
+ 
+ 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
+ 
+-	tst_cgroup_require("memory", NULL);
+-	cg = tst_cgroup_get_test_group();
+ 	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ 	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+@@ -110,4 +108,6 @@ static struct tst_test test = {
+ 	},
+ 	.test_all = verify_ksm,
+ 	.min_kver = "2.6.32",
++	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
++	.test_cgroup = &cg,
+ };
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index e8bc1de85..0941fcc10 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -106,9 +106,6 @@ static void setup(void)
+ 
+ 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
+ 
+-	tst_cgroup_require("memory", NULL);
+-	tst_cgroup_require("cpuset", NULL);
+-	cg = tst_cgroup_get_test_group();
+ 	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+@@ -129,6 +126,10 @@ static struct tst_test test = {
+ 	},
+ 	.test_all = verify_ksm,
+ 	.min_kver = "2.6.32",
++	.needs_cgroup_controllers = (const char *const []){
++		"memory", "cpuset", NULL
++	},
++	.test_cgroup = &cg,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index 451119166..952c0d031 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -84,8 +84,6 @@ static void setup(void)
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+-	tst_cgroup_require("memory", NULL);
+-	cg = tst_cgroup_get_test_group();
+ 	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ 	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+@@ -104,6 +102,8 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_oom,
++	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
++	.test_cgroup = &cg,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 06497261e..ab2ad788b 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -90,10 +90,6 @@ void setup(void)
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+-	tst_cgroup_require("memory", NULL);
+-	tst_cgroup_require("cpuset", NULL);
+-	cg = tst_cgroup_get_test_group();
+-
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+ 	 * get_allowed_nodes(NH_MEMS) to get a memory
+@@ -124,6 +120,10 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_oom,
++	.needs_cgroup_controllers = (const char *const []){
++		"memory", "cpuset", NULL
++	},
++	.test_cgroup = &cg,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
+index e3eb237da..0c3146fb3 100644
+--- a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
++++ b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
+@@ -132,10 +132,6 @@ static void do_test(void)
+ 
+ static void setup(void)
+ {
+-	tst_cgroup_require("cpu", NULL);
+-
+-	cg_test = tst_cgroup_get_test_group();
+-
+ 	cg_level2 = tst_cgroup_group_mk(cg_test, "level2");
+ 
+ 	cg_level3a = tst_cgroup_group_mk(cg_level2, "level3a");
+@@ -182,6 +178,8 @@ static struct tst_test test = {
+ 		"CONFIG_CFS_BANDWIDTH",
+ 		NULL
+ 	},
++	.needs_cgroup_controllers = (const char *const []){"cpu", NULL},
++	.test_cgroup = &cg_test,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "39f23ce07b93"},
+ 		{"linux-git", "b34cb07dde7c"},
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 263b8e78b..4d8b6575d 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -121,9 +121,6 @@ static void setup(void)
+ 	check_path("/proc/self/oom_score_adj");
+ 	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
+ 
+-	tst_cgroup_require("memory", NULL);
+-	cg = tst_cgroup_get_test_group();
+-
+ 	SAFE_CGROUP_PRINTF(cg, "memory.max", "%ld", MEM_LIMIT);
+ 	if (SAFE_CGROUP_HAS(cg, "memory.swap.max"))
+ 		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%ld", MEMSW_LIMIT);
+@@ -245,6 +242,8 @@ static struct tst_test test = {
+ 		"?/proc/sys/vm/swappiness",
+ 		NULL
+ 	},
++	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
++	.test_cgroup = &cg,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "55231e5c898c"},
+ 		{"linux-git", "8de15e920dc8"},
 -- 
 2.34.1
 
