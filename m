@@ -4,78 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D09AC433F5
-	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 08:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD8E8C433F5
+	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 09:24:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 685C23C9725
-	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 09:39:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 90A3C3C0CC6
+	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 10:24:45 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 360F83C9514
- for <ltp@lists.linux.it>; Thu, 27 Jan 2022 09:38:56 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 741F73C0CC6
+ for <ltp@lists.linux.it>; Thu, 27 Jan 2022 10:24:35 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C9AE91000A09
- for <ltp@lists.linux.it>; Thu, 27 Jan 2022 09:38:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1643272727;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CA7DB1A006A9
+ for <ltp@lists.linux.it>; Thu, 27 Jan 2022 10:24:34 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E57FB210FD;
+ Thu, 27 Jan 2022 09:24:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643275473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=hMsNDrE2nP3fQ98ODXD1iiUYvtIf7/aKDWfnEBdKDQ4=;
- b=QDDq7hzgb5m+A0qAf0wJqRlm6xTRp8oPGw8B+b3+2kNcDpdfJYpE2ATR3S6GvPW5zpA97E
- k0g/3KUWMvER6uhjx8hXKWJ+2RsbaDIuAPZIQpEGFNtlVzgRAPPDW0cbxNFoq/CYsOSx8s
- Z+gZH3FYya52cJ59EFCKB/pAHAfrgsQ=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-256-SoVplGu-P3CC7Gb_jpDClA-1; Thu, 27 Jan 2022 03:38:40 -0500
-X-MC-Unique: SoVplGu-P3CC7Gb_jpDClA-1
-Received: by mail-oo1-f69.google.com with SMTP id
- u13-20020a4ab5cd000000b002e021ad5bbcso1238080ooo.17
- for <ltp@lists.linux.it>; Thu, 27 Jan 2022 00:38:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=hMsNDrE2nP3fQ98ODXD1iiUYvtIf7/aKDWfnEBdKDQ4=;
- b=iGA7gDjSAte0dnjFi7XYfQkreNVhyypFfJ2bqMk/I45dABeJJWNhLAxPpwWPyQeeIn
- FSTl6H5L20bHYwei+Y13+xvXNB0w2ZpwYEpTRO66od6yKn7T9PDIDMlRdF6GDDDz0ugV
- Mpo40FDcc6EDfIAbDyGuoxJjgAMYv6NGYMIFUKpTOU1zZydduU6zXQ4/tIQ0CMAPGCyd
- pdm4IRMlvD2GOoazdJGDpd4dWDduSj9S2z6fflQXgbIMVhxn5Hui+osn5ts/AmKy7H6C
- ln1Ja4cedrBUNAHDgRQGIViPAxa5XlnjMdsf3MmeL+bbe21XlZv/anoIEsLZqt17KPsZ
- xz7g==
-X-Gm-Message-State: AOAM533Lah73SNp1jJw3q2la2ggCZzJtHzNVGnhrYv938x9ujAOUYMqj
- 8v8Dka55hICxr6+PWbJtt27i8bKvejayjatzFE7BPlM2R/mm67n+VsxZNs2S6nG+HLocic6GoNe
- D4A307oQSKK6GRQPILHrQU5XdIjI=
-X-Received: by 2002:a05:6808:15aa:: with SMTP id
- t42mr6144826oiw.227.1643272719325; 
- Thu, 27 Jan 2022 00:38:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwdzy+BnQtU9zRdXPnzaGs63mznz/XBxRgI6OcIGORI+CkOAtDlTkp/PsaT5/5Op/Y1dxZC1AKmtNsDcLXjJRI=
-X-Received: by 2002:a05:6808:15aa:: with SMTP id
- t42mr6144807oiw.227.1643272718925; 
- Thu, 27 Jan 2022 00:38:38 -0800 (PST)
+ bh=uKlgxQ8ERMx0MUeBN1RkU3SJOw8+1S+DZNGI/zIa+8Q=;
+ b=fZxexH0dNpOGUvJhWHGZV992h4BllZYmDZSpRl5UJRO9m76ISWTPHHwjhFg2aFBxtfb+Pq
+ Y3XrbeQ9Zm7ZyfogxeGAaI8mNWWlM8q6BRvdqWfgQgh/mIIdsvYtw/Ht6ZKrlITBxPe0JE
+ GrW5ypYvMSzZoff/ypzqZbIRKrlbfas=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643275473;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uKlgxQ8ERMx0MUeBN1RkU3SJOw8+1S+DZNGI/zIa+8Q=;
+ b=Smb/+LorHtg2U3+dnC5Sl0zi8bxKidO/cIEVFINrXJ0qh/RDTl5qy6vMYh3Xanx53SPsOO
+ 0VOw22ueh5ywg5BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B644C13F74;
+ Thu, 27 Jan 2022 09:24:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id kAqfKtFk8mHLHwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 27 Jan 2022 09:24:33 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 27 Jan 2022 10:24:21 +0100
+Message-Id: <20220127092431.25996-2-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220127092431.25996-1-andrea.cervesato@suse.de>
+References: <20220127092431.25996-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-References: <20220126123547.13298-1-pvorel@suse.cz>
- <20220126123547.13298-2-pvorel@suse.cz>
-In-Reply-To: <20220126123547.13298-2-pvorel@suse.cz>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 27 Jan 2022 09:38:22 +0100
-Message-ID: <CAASaF6wfO3aMjxmAr3=hTA4704Gmr8U2oBUi6BAUugaNadbv7g@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>, maninder1.s@samsung.com,
- weijg.fnst@cn.fujitsu.com
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH v2 1/7] pan: Remove ltp-scanner
+Subject: [LTP] [PATCH v5 01/11] Add KEYCTL_WATCH_KEY to lapi keyctl.h
+ fallback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,55 +77,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: automated-testing <automated-testing@yoctoproject.org>,
- LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jan 26, 2022 at 1:37 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> We believe that nobody uses it.
+Added KEYCTL_WATCH_KEY keyctl syscall command that is required by
+watch queue tests.
 
-There were some fixes to it years ago (I was surprised to find one was
-mine), but I can't recall last time I used it so I'm OK with dropping
-it.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+---
+ include/lapi/keyctl.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
-
->
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> New in v2
->
->  .gitignore        |   1 -
->  INSTALL           |   2 -
->  configure.ac      |   1 -
->  pan/Makefile      |   8 -
->  pan/debug.c       |  84 --------
->  pan/debug.h       |  67 -------
->  pan/ltp-scanner.c | 175 -----------------
->  pan/reporter.c    | 270 --------------------------
->  pan/reporter.h    |  80 --------
->  pan/scan.h        |  42 ----
->  pan/scan.l        | 456 -------------------------------------------
->  pan/symbol.c      | 467 --------------------------------------------
->  pan/symbol.h      | 104 ----------
->  pan/tag_report.c  | 478 ----------------------------------------------
->  14 files changed, 2235 deletions(-)
->  delete mode 100644 pan/debug.c
->  delete mode 100644 pan/debug.h
->  delete mode 100644 pan/ltp-scanner.c
->  delete mode 100644 pan/reporter.c
->  delete mode 100644 pan/reporter.h
->  delete mode 100644 pan/scan.h
->  delete mode 100644 pan/scan.l
->  delete mode 100644 pan/symbol.c
->  delete mode 100644 pan/symbol.h
->  delete mode 100644 pan/tag_report.c
->
+diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
+index d899345c9..3be782494 100644
+--- a/include/lapi/keyctl.h
++++ b/include/lapi/keyctl.h
+@@ -140,6 +140,10 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
+ # define KEYCTL_INVALIDATE 21
+ #endif
+ 
++#ifndef KEYCTL_WATCH_KEY
++# define KEYCTL_WATCH_KEY 32
++#endif
++
+ /* key permissions */
+ #ifndef KEY_POS_VIEW
+ # define KEY_POS_VIEW    0x01000000
+-- 
+2.34.1
 
 
 -- 
