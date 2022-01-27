@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C72FC433F5
-	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 09:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60EDCC433EF
+	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 09:25:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D9D903C9722
-	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 10:25:18 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 874FF3C971C
+	for <ltp@archiver.kernel.org>; Thu, 27 Jan 2022 10:25:28 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9071B3C970E
+ by picard.linux.it (Postfix) with ESMTPS id C92C13C0CC6
  for <ltp@lists.linux.it>; Thu, 27 Jan 2022 10:24:35 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EED4E1400B6B
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CA3B5600832
  for <ltp@lists.linux.it>; Thu, 27 Jan 2022 10:24:34 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8FD1D21100;
- Thu, 27 Jan 2022 09:24:34 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B5881210FB;
+ Thu, 27 Jan 2022 09:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643275474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=x8cs6HjFZcdDJkXZhVE5SWD6Sko92lZHA6VmtYdQJNk=;
- b=2aJUCRwmF65YwNs83ChYhXxUrWIkElQlSjis3cM+33vtRDWmT1JE8Ol+KAwMhxW/lI9A35
- SckrT76JNPlXXEjqpI2sZB9IzVkREMpBbmDswT9el9s5s0Md8MJZuLf6tiM2MOpdAXOPO/
- vKz10W2RrMOLReKrHiCumVcJnisaIC8=
+ t=1643275473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=qjFPNl1AgABSHsZHO68Y3smSvMK2vN7DrJC20RbD9kA=;
+ b=k32HL+/eEOCGVczYz0wDYy5SpvYC13xps1iG96MnL/QWngJzOUfSMI7rDuwwr9zHPor/AC
+ XF1azdlZZIAW108uFUX+1+laTb38NUk/PFrBAVEvXgzM0fK+7F3hoMxFxiDFEXWKpHXpOI
+ V5h0jelWJfdzqnwZjgDwBKUtsQGQ5xg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643275474;
+ s=susede2_ed25519; t=1643275473;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=x8cs6HjFZcdDJkXZhVE5SWD6Sko92lZHA6VmtYdQJNk=;
- b=pMY/EZW+ydlDr9aL3vYDvy3Zjatqurv7vtjJSrnQbEKLmvR3bMRV9ZyPu+BDBH7bctihsh
- fmLNBXpFidoJArCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=qjFPNl1AgABSHsZHO68Y3smSvMK2vN7DrJC20RbD9kA=;
+ b=JN6Vcr7WS/P3mha86Mr4OT6wKbcUeSDI5hJL22skrBfkJhRabEgOts/jSxWZZ1ZfXWkrDu
+ owVs//w3njcB/FAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6616D13CFB;
- Thu, 27 Jan 2022 09:24:34 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 851DC13CFB;
+ Thu, 27 Jan 2022 09:24:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4BHjFtJk8mHLHwAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Thu, 27 Jan 2022 09:24:34 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id pet4HtFk8mHLHwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 27 Jan 2022 09:24:33 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 27 Jan 2022 10:24:24 +0100
-Message-Id: <20220127092431.25996-5-andrea.cervesato@suse.de>
+Date: Thu, 27 Jan 2022 10:24:20 +0100
+Message-Id: <20220127092431.25996-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220127092431.25996-1-andrea.cervesato@suse.de>
-References: <20220127092431.25996-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 04/11] Add wqueue02 test
+Subject: [LTP] [PATCH v5 00/11] watchqueue testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,79 +76,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test is testing NOTIFY_KEY_UNLINKED event
+This patch-set add a new testing suite for the watch queue kernel feature
+described in https://www.kernel.org/doc/html/latest/watch_queue.html
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
- runtest/watchqueue                     |  1 +
- testcases/kernel/watchqueue/.gitignore |  1 +
- testcases/kernel/watchqueue/wqueue02.c | 43 ++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+)
+Andrea Cervesato (11):
+  Add KEYCTL_WATCH_KEY to lapi keyctl.h fallback
+  Add lapi/watch_queue.h header fallback
+  Add wqueue01 test
+  Add wqueue02 test
+  Add wqueue03 test
+  Add wqueue04 test
+  Add wqueue05 test
+  Add wqueue06 test
+  Add wqueue07 test
+  Add wqueue08 test
+  Add wqueue09 test
+
+ include/lapi/keyctl.h                  |   4 +
+ include/lapi/watch_queue.h             | 112 +++++++++++++++++
+ runtest/watchqueue                     |   9 ++
+ scenario_groups/default                |   1 +
+ testcases/kernel/Makefile              |   1 +
+ testcases/kernel/watchqueue/.gitignore |   9 ++
+ testcases/kernel/watchqueue/Makefile   |   8 ++
+ testcases/kernel/watchqueue/common.h   | 167 +++++++++++++++++++++++++
+ testcases/kernel/watchqueue/wqueue01.c |  43 +++++++
+ testcases/kernel/watchqueue/wqueue02.c |  43 +++++++
+ testcases/kernel/watchqueue/wqueue03.c |  43 +++++++
+ testcases/kernel/watchqueue/wqueue04.c |  43 +++++++
+ testcases/kernel/watchqueue/wqueue05.c |  43 +++++++
+ testcases/kernel/watchqueue/wqueue06.c |  42 +++++++
+ testcases/kernel/watchqueue/wqueue07.c |  43 +++++++
+ testcases/kernel/watchqueue/wqueue08.c |  48 +++++++
+ testcases/kernel/watchqueue/wqueue09.c |  55 ++++++++
+ 17 files changed, 714 insertions(+)
+ create mode 100644 include/lapi/watch_queue.h
+ create mode 100644 runtest/watchqueue
+ create mode 100644 testcases/kernel/watchqueue/.gitignore
+ create mode 100644 testcases/kernel/watchqueue/Makefile
+ create mode 100644 testcases/kernel/watchqueue/common.h
+ create mode 100644 testcases/kernel/watchqueue/wqueue01.c
  create mode 100644 testcases/kernel/watchqueue/wqueue02.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue03.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue04.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue05.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue06.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue07.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue08.c
+ create mode 100644 testcases/kernel/watchqueue/wqueue09.c
 
-diff --git a/runtest/watchqueue b/runtest/watchqueue
-index 782577d6d..0d442ff01 100644
---- a/runtest/watchqueue
-+++ b/runtest/watchqueue
-@@ -1 +1,2 @@
- wqueue01 wqueue01
-+wqueue02 wqueue02
-diff --git a/testcases/kernel/watchqueue/.gitignore b/testcases/kernel/watchqueue/.gitignore
-index c61ac6165..4f8695201 100644
---- a/testcases/kernel/watchqueue/.gitignore
-+++ b/testcases/kernel/watchqueue/.gitignore
-@@ -1 +1,2 @@
- wqueue01
-+wqueue02
-diff --git a/testcases/kernel/watchqueue/wqueue02.c b/testcases/kernel/watchqueue/wqueue02.c
-new file mode 100644
-index 000000000..72df32b69
---- /dev/null
-+++ b/testcases/kernel/watchqueue/wqueue02.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test if keyctl unlink is correctly recognized by watch queue.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include "tst_test.h"
-+#include "lapi/keyctl.h"
-+#include "common.h"
-+
-+static void saw_key_unlinked(struct watch_notification *n, size_t len,
-+							 unsigned int wtype)
-+{
-+	if (wqueue_key_event(n, len, wtype, NOTIFY_KEY_UNLINKED))
-+		tst_res(TPASS, "keyctl unlink has been recognized");
-+	else
-+		tst_res(TFAIL, "keyctl unlink has not been recognized");
-+}
-+
-+static void run(void)
-+{
-+	int fd;
-+	key_serial_t key;
-+
-+	fd = wqueue_watch(256, &wqueue_filter);
-+	key = wqueue_add_key(fd);
-+
-+	keyctl(KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING);
-+	wqueue_consumer(fd, saw_key_unlinked);
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
 -- 
 2.34.1
 
