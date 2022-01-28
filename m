@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98B2AC433F5
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 15:48:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57C72C433F5
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 19:06:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 416D73C976F
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 16:48:19 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id ACC363C9766
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 20:06:21 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4F12A3C0214
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 16:48:10 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id ABBB13C9120
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 20:06:11 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A9B321401109
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 16:48:09 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CCBBB600C7F
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 20:06:10 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CA3162114E;
- Fri, 28 Jan 2022 15:48:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 68D22212B5;
+ Fri, 28 Jan 2022 19:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643384888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=y57C1renKCoDnWslOyCOs+WhS9x90+ld6Udv4gq+Oog=;
- b=wtrOi1G7fVA6OUNVK8Uulz4m/SSM0ZE5cErKM1zaYkRZ8Vll/pUxJaAjqSlIAFJDIxUfrJ
- gbOccyddYOITgSMBeP6brDSygOt+bfA+aoNStCy+z6lR9POnjuR8M4OeVBdWbJKAJ+DlNv
- j1bZ7RAhSHGhJPkVeXi+9Ea1J3fNHKs=
+ t=1643396769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TamAa4rDiolUHiShit781+clk4Y5MddXeTW1aDMS9FE=;
+ b=2CYXFOjZDpVLb6NU9XUXynj6GmL3Mi6E+sjsI9OacXMSYrxywAhkDDoLX2qV+/0PAOnqxi
+ ClEUAg1kJfHAmgKyze2a1d3qUP5C2snXDfjqrbu5359KSQrBjaQK++YiduPz9xbsf1U8PO
+ ojqCofFU2ARFGZRSH9A+J5C1loGyTVE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643384888;
+ s=susede2_ed25519; t=1643396769;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=y57C1renKCoDnWslOyCOs+WhS9x90+ld6Udv4gq+Oog=;
- b=elw7zhISh4PCjurQVtcEV0vZuhVb9M9tZHvSQR0ldtFP25wZpDmbVvQ79BETHG9cUx1Iff
- wwUwJWfJb0NEMEAA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TamAa4rDiolUHiShit781+clk4Y5MddXeTW1aDMS9FE=;
+ b=I1S9AmZgN6pxXMX0L7UBaCydZORwd+Px8Pu/KUF4me+2wpgGPzZQOjURbcxH841UwtEG82
+ FkW/pzsJy7C+5gBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D155134CD;
- Fri, 28 Jan 2022 15:48:08 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11A3113A92;
+ Fri, 28 Jan 2022 19:06:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ud+FIjgQ9GGzUQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 28 Jan 2022 15:48:08 +0000
-Date: Fri, 28 Jan 2022 16:50:00 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: tangmeng <tangmeng@uniontech.com>
-Message-ID: <YfQQqOyJ6zW3fo+F@yuki>
-References: <20211119071723.19836-1-tangmeng@uniontech.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id zOV/AqE+9GGKNQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 28 Jan 2022 19:06:09 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 28 Jan 2022 20:06:05 +0100
+Message-Id: <20220128190605.7172-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211119071723.19836-1-tangmeng@uniontech.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/fchmodat_01: Convert to new API
+Subject: [LTP] [PATCH v2 3/5] tst_test.sh: Add $TST_FORMAT_DEVICE and
+ related vars
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,173 +71,125 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->  char pathname[256];
->  char testfile[256];
->  char testfile2[256];
->  char testfile3[256];
-> -int fds[TEST_CASES];
-> -char *filenames[TEST_CASES];
-> -int expected_errno[TEST_CASES] = { 0, 0, ENOTDIR, EBADF, 0, 0 };
-> +int expected_errno[6] = { 0, 0, ENOTDIR, EBADF, 0, 0 };
-> +int fds[ARRAY_SIZE(expected_errno)];
-> +char *filenames[ARRAY_SIZE(expected_errno)];
+i.e.: TST_DEV_EXTRA_OPTS, TST_DEV_FS_OPTS, TST_FS_TYPE
+(to sync with C API).
 
-We usually pack the syscall parameters into a tcase structure, which is
-much easier to read and modify:
+Also stop using pattern 'TST_NEEDS_FOO', sometimes 'NEEDS' just does not
+fit to variable name.
 
-...
-static int dir_at_fdcwd = AT_FDCWD;
-static int file_fd;
-static char testfile1[PATH_MAX];
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2:
+* fixes "Implies 'TST_NEEDS_DEVICE=1' (no need to set it)."
+(was under TST_FS_TYPE, belongs to TST_FORMAT_DEVICE).
+* Add more doc at "Formatting device with a filesystem"
 
-static struct tcase {
-	int *dir_fd;
-	char filename;
-	mode_t mode;
-	int exp_err;
-} tcases[] = {
-	...
-	{&file_fd, testfile1, 0600, ENOTDIR},
-	...
-};
+I wonder where to put variable description. I this case I put it into
+the table "1.2 Library environment variables and functions for shell"
+[1] or at these sections describing it e.g. here "Formatting device with
+a filesystem"?
 
->  int myfchmodat(int dirfd, const char *filename, mode_t mode)
->  {
-> -	return ltp_syscall(__NR_fchmodat, dirfd, filename, mode);
-> +	return tst_syscall(__NR_fchmodat, dirfd, filename, mode);
->  }
+I'd prefer to put it into the section describing it and just link it
+in the table => v3 needed.
 
-This function is now unused.
+Kind regards,
+Petr
 
-> -int main(int ac, char **av)
-> +static void verify_fchmodat(unsigned int i)
->  {
-> -	int lc;
-> -	int i;
-> -
-> -	/* Disable test if the version of the kernel is less than 2.6.16 */
-> -	if ((tst_kvercmp(2, 6, 16)) < 0) {
-> -		tst_resm(TWARN, "This test can only run on kernels that are ");
-> -		tst_resm(TWARN, "2.6.16 and higher");
-> -		exit(0);
-> -	}
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> -			TEST(myfchmodat(fds[i], filenames[i], 0600));
-> -
-> -			if (TEST_ERRNO == expected_errno[i]) {
-> -				tst_resm(TPASS,
-> -					 "fchmodat() returned the expected  errno %d: %s",
-> -					 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			} else {
-> -				tst_resm(TFAIL,
-> -					 "fchmodat() Failed, errno=%d : %s",
-> -					 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			}
-> -		}
-> +	TEST(tst_syscall(__NR_fchmodat, fds[i], filenames[i], 0600));
-> +
-> +	if (TST_ERR == expected_errno[i]) {
-> +		tst_res(TPASS,
-> +			 "fchmodat() returned the expected  errno %d: %s",
-> +			 TST_ERR, strerror(TST_ERR));
-> +	} else {
-> +		tst_res(TFAIL,
-> +			 "fchmodat() Failed, errno=%d : %s",
-> +			 TST_ERR, strerror(TST_ERR));
->  	}
+[1] https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#12-library-environment-variables-and-functions-for-shell
+[2] https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#formatting-device-with-a-filesystem
 
-Ideally the test should be split into two testcases. One for the error
-tests and one for the functionality test so that we can use
-TST_EXP_PASS() and TST_EXP_FAIL().
+ doc/shell-test-api.txt    | 26 ++++++++++++++++++++++++--
+ testcases/lib/tst_test.sh |  7 ++++++-
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
-> -	cleanup();
-> -	tst_exit();
->  }
-> 
-> -void setup(void)
-> +static void setup(void)
->  {
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	tst_tmpdir();
-> -
->  	/* Initialize test dir and file names */
->  	char *abs_path = tst_get_tmpdir();
->  	int p = getpid();
-> @@ -122,31 +65,36 @@ void setup(void)
-> 
->  	free(abs_path);
-> 
-> -	SAFE_MKDIR(cleanup, pathname, 0700);
-> +	SAFE_MKDIR(pathname, 0700);
-> 
-> -	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
-> +	fds[0] = SAFE_OPEN(pathname, O_DIRECTORY);
->  	fds[1] = fds[4] = fds[0];
-> 
-> -	SAFE_FILE_PRINTF(cleanup, testfile, "%s", testfile);
-> -	SAFE_FILE_PRINTF(cleanup, testfile2, "%s", testfile2);
-> +	SAFE_FILE_PRINTF(testfile, "%s", testfile);
-> +	SAFE_FILE_PRINTF(testfile2, "%s", testfile2);
-> 
-> -	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
-> +	fds[2] = SAFE_OPEN(testfile3, O_CREAT | O_RDWR, 0600);
->  	fds[3] = 100;
->  	fds[5] = AT_FDCWD;
-> 
->  	filenames[0] = filenames[2] = filenames[3] = filenames[4] = testfile;
->  	filenames[1] = testfile2;
->  	filenames[5] = testfile3;
-> -
-> -	TEST_PAUSE;
->  }
-> 
-> -void cleanup(void)
-> +static void cleanup(void)
->  {
->  	if (fds[0] > 0)
->  		close(fds[0]);
->  	if (fds[2] > 0)
->  		close(fds[2]);
-> -
-> -	tst_rmdir();
->  }
-> +
-> +static struct tst_test test = {
-> +	.min_kver = "2.6.16",
-> +	.tcnt = ARRAY_SIZE(expected_errno),
-> +	.test = verify_fchmodat,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +};
-> --
-> 2.20.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
+index a5974b4fad..41878004fb 100644
+--- a/doc/shell-test-api.txt
++++ b/doc/shell-test-api.txt
+@@ -189,11 +189,18 @@ space as default value is used. Of course, it's possible to use separate functio
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ Similarily to the C library various checks and preparations can be requested
+-simply by setting right '$TST_NEEDS_FOO'.
++simply by setting right '$TST_FOO'.
+ 
+ [options="header"]
+ |=============================================================================
+ | Variable name            | Action done
++| 'TST_DEV_EXTRA_OPTS'     | Pass additional 'mkfs' options when use 'TST_FORMAT_DEVICE'.
++| 'TST_DEV_FS_OPTS'        | Pass extra 'mkfs' options after the device name
++|                          | when use 'TST_FORMAT_DEVICE'.
++| 'TST_FORMAT_DEVICE'      | Format a block device with a filesystem. See also
++|                          | 'TST_DEV_EXTRA_OPTS', 'TST_DEV_FS_OPTS', 'TST_FS_TYPE'.
++|                          | Implies 'TST_NEEDS_DEVICE=1' (no need to set it).
++| 'TST_FS_TYPE'            | Overwrite the default filesystem to be used.
+ | 'TST_NEEDS_ROOT'         | Exit the test with 'TCONF' unless executed under root.
+ |                          | Alternatively the 'tst_require_root' command can be used.
+ | 'TST_NEEDS_TMPDIR'       | Create test temporary directory and cd into it.
+@@ -495,7 +502,22 @@ tst_random 0 1000
+ Formatting device with a filesystem
+ +++++++++++++++++++++++++++++++++++
+ 
+-The 'tst_mkfs' helper will format device with the filesystem.
++'TST_FORMAT_DEVICE=1' can be used to format device before running the test.
++Uses '$TST_FS_TYPE', '$TST_DEVICE', '$TST_DEV_FS_OPTS' and '$TST_DEV_EXTRA_OPTS.
++Library internally uses 'tst_mkfs', which can be used for more complex setup.
++
++[source,sh]
++-------------------------------------------------------------------------------
++TST_FORMAT_DEVICE=1
++TST_DEV_FS_OPTS="-b 1024 -O quota"
++TST_DEV_EXTRA_OPTS="5m"
++TST_TESTFUNC=test
++
++test1()
++{
++	tst_res TPASS "device formatted"
++}
++-------------------------------------------------------------------------------
+ 
+ [source,sh]
+ -------------------------------------------------------------------------------
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 4707613158..49eee8d00f 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -613,7 +613,7 @@ tst_run()
+ 			NET_SKIP_VARIABLE_INIT|NEEDS_CHECKPOINTS);;
+ 			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
+ 			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
+-			DEFAULT_FS_TYPE);;
++			DEFAULT_FS_TYPE|DEV_EXTRA_OPTS|DEV_FS_OPTS|FORMAT_DEVICE);;
+ 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+ 			esac
+ 		done
+@@ -658,6 +658,7 @@ tst_run()
+ 
+ 	_tst_setup_timer
+ 
++	[ "$TST_FORMAT_DEVICE" = 1 ] && TST_NEEDS_DEVICE=1
+ 	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
+ 
+ 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+@@ -689,6 +690,10 @@ tst_run()
+ 
+ 	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
+ 
++	if [ "$TST_FORMAT_DEVICE" = 1 ]; then
++		tst_mkfs "$TST_FS_TYPE" "$TST_DEVICE" "$TST_DEV_FS_OPTS" "$TST_DEV_EXTRA_OPTS"
++	fi
++
+ 	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
+ 
+ 	if [ -n "$TST_SETUP" ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
