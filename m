@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3132C433F5
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 12:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DBDFC433FE
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 12:32:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9A1C33C976D
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 13:12:29 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id C31743C9760
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 13:32:41 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 088D23C973F
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 13:12:19 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 5DE813C973F
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 13:32:31 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6E19C600A0C
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 13:12:19 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 76E911000BE3
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 13:32:30 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7BF671F384;
- Fri, 28 Jan 2022 12:12:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9CB0B21100;
+ Fri, 28 Jan 2022 12:32:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643371938;
+ t=1643373149;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yMY9iB9lSqqWSzTt9jcr91UKBkq6z6BjfcN/PvIw4ts=;
- b=Utygwy+G0++ot3Iv6TB1xCXMVdfYzqt3RvErXdlhjJMkA0s6PxlqXCUucVublp9pcKUu6q
- i8KCPZLZD3x0YNKWJ6uKfmpKyOgX167RuhO/Q86w5in0wbfOerZfQAvxCwj+txKydqdiDC
- QxzQldtqnYngL2wkj3z+WewnlDtVgCc=
+ bh=MiyQUmQ6ENlHBMwCuzZtIOfiNcLHf/yrFjj3ssODNYs=;
+ b=eeDUS+lsmJrOnOlE5qHLWsCjFC2xDc4jNZCdOSfWwRIAZLnFvCezuk9wr8XTAIcIUM+lr2
+ MBfc3fSdjhA1cxpotFoXbwlQp7lZkUyP3zQY1v9LISKqs7vgyzEtESCGG/Wcgol5FgijB9
+ bP1v+0ojweu7CCZMAImpI4jaVHSmOh4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643371938;
+ s=susede2_ed25519; t=1643373149;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yMY9iB9lSqqWSzTt9jcr91UKBkq6z6BjfcN/PvIw4ts=;
- b=fJmxcc4ZZiZB8+7mQFO2nKGhbmCQTCYlHMRdZnWzGR8eFw61HNoNnPAoEnPt+c+odWtoFi
- nMoRmGKipaYJhXCQ==
+ bh=MiyQUmQ6ENlHBMwCuzZtIOfiNcLHf/yrFjj3ssODNYs=;
+ b=HtB/tAiEE53QjJaGWMbX0apToM/JVW8H69oOk2VSGYoWUZs/IYxi61sbAaLfbXtej+wuGb
+ C5OrVu0yDmCP7RAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CC9A13AB5;
- Fri, 28 Jan 2022 12:12:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 600D213A9F;
+ Fri, 28 Jan 2022 12:32:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ueqeD6Ld82EjUwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 28 Jan 2022 12:12:18 +0000
-Date: Fri, 28 Jan 2022 13:12:16 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id COpGFV3i82HVXgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 28 Jan 2022 12:32:29 +0000
+Date: Fri, 28 Jan 2022 13:32:27 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Kushal Chand <kushalkataria5@gmail.com>
-Message-ID: <YfPdoCAfr8h/4Cnx@pevik>
-References: <20220126050555.14435-1-kushalkataria5@gmail.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>,
+	Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YfPiW998P4/j7RWi@pevik>
+References: <20211220180748.36A90A3B8E@relay2.suse.de>
+ <20211221113042.21357-1-rpalethorpe@suse.com>
+ <YdW/0BUm+vBY3PHy@yuki> <YdXAhgvstNcDz7WY@yuki>
+ <87ilus0zwo.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220126050555.14435-1-kushalkataria5@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <87ilus0zwo.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] tst_taint: print readable error message
- instead of numerical codes
+Subject: Re: [LTP] [RFC PATCH] API: Allow testing of kernel features in
+ development
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,24 +88,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Kushal,
+Hi all,
 
-> Fixes: #776
+> Hello,
 
-> I have did the necessary changes as discussed in our communication.
-> Now we print each taint flag using tst_res(TINFO, ...) and a final
-> tst_brk(TBROK, ...) which informs the kernel is tainted.
+> Cyril Hrubis <chrubis@suse.cz> writes:
 
-> Regards,
-> Kushal
-FYI this test above should be ...
+> > Hi!
+> >> I would be even tempted to add this to the default syscalls runtest file
+> >> but render the test resultless, e.g. replace the tst_res() and tst_brk()
+> >> handlers in tst_res.c so that it will print only INFO messages.
 
-> ---
-... here after '---'. Because everything after '---' does not go to the git
-commit message (designed for notes which should not be preserved in the commit
-message).
+> > And that would also allow us to have env variable switch that would
+> > enable all tests for unrelased features, something as
+> > LTP_ENABLE_UNRELASED or so. Also with that we can really just TCONF if
+> > that variable is not set which would be much simpler.
 
-Anyway, added text "tainted: " and merged. Thanks!
+> I worry this will cause extra work for people reviewing
+> TCONFs. Obviously the meta-data can be used to avoid any issues. However
+> few people have integrated that into their tooling and workflow yet.
+
+Can we solve this to have the policy? I don't have preference between having
+special foo-unstable (or foo-staging) runtest files or TCONF unless
+LTP_ENABLE_UNRELASED
+
+(If we chose the latter, we could add this info into -h, thus people could run
+./foo -h | grep ... to catch this before running; there could be even --json to
+print metadata in json, which would include this info).
 
 Kind regards,
 Petr
