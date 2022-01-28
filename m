@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C35C433EF
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 08:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D69EDC433F5
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 09:47:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 34A1A3C973B
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 09:44:23 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 971A23C976A
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 10:47:06 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3A4F63C7FEC
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 09:44:13 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 7F6653C9736
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 10:46:57 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5729460098C
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 09:44:12 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 443D3100099A
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 10:46:55 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4A9771F385;
- Fri, 28 Jan 2022 08:44:11 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 32BCB1F391;
+ Fri, 28 Jan 2022 09:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643359451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643363215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Ayw3yhdjK6/A0Wdor9rXYCHxjAfhV3yryfmVbgr183k=;
- b=BtMjVMoyAIfB7MlkxZvnm0jG1158qjkC9tYWmwdhkHR0FeXh41D93ANestpGaL2a00bih4
- 2H0jviKmbQnY+mhAqzuGRlQRlZo6e93/+mxWFiGhz+2gZgk/PieeB4mMMBzvx5a/3KuuEW
- dCRoKaPygkVpSnJjjAb2DIRUncyj9sY=
+ bh=qjioJ4YVhUPxPbSIcDl3AxnAduYv8xTfGlkAlkUt4VY=;
+ b=Eop01+hM1dpY9qhOh512w9u1SlUk3fAHcTDCw6kw1wHlV6rNwgRQYNuSD+QBII9Rben0w+
+ COFVE3kX+VJSDHnLmwAWTJSUyeO38ZyZK5d8JHoTg1MHCnQ/8hKsXZ93A+RgBmZ8yEIsHd
+ NYDQuL92fn+xaJcu2UhhaBZBMoTUkqE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643359451;
+ s=susede2_ed25519; t=1643363215;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Ayw3yhdjK6/A0Wdor9rXYCHxjAfhV3yryfmVbgr183k=;
- b=NOlE0a09p/EY9GzxohdxW5KDhURUco94mACYk/9Fx5w4i7MWEoqFTVX+ffVo7/gcu8BUMS
- CJBdojKoOecSR8CA==
+ bh=qjioJ4YVhUPxPbSIcDl3AxnAduYv8xTfGlkAlkUt4VY=;
+ b=M8GVeZJJwBtdfwSx9+0/dhxgIkP3qD/JZyiG/6y94xt/Jf/LO6DdFwoTQBzbxlqU/Squeb
+ 668F3Y8A5VXUlMDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22475139D0;
- Fri, 28 Jan 2022 08:44:11 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A81E13A83;
+ Fri, 28 Jan 2022 09:46:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7s1kBtus82GmYwAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Fri, 28 Jan 2022 08:44:11 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id z/R4AI+782G2BAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 28 Jan 2022 09:46:55 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Fri, 28 Jan 2022 09:44:09 +0100
-Message-Id: <20220128084409.21708-1-andrea.cervesato@suse.de>
+Date: Fri, 28 Jan 2022 10:46:53 +0100
+Message-Id: <20220128094653.18500-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Refactoring setpgid03.c test using new LTP API
+Subject: [LTP] [PATCH v1] Rewrite sighold02.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,84 +81,111 @@ LTP test feature. Simplified source code.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- testcases/kernel/syscalls/setpgid/setpgid03.c | 183 ++++++------------
- .../kernel/syscalls/setpgid/setpgid03_child.c |  28 +--
- 2 files changed, 61 insertions(+), 150 deletions(-)
+ testcases/kernel/syscalls/sighold/sighold02.c | 175 +++++-------------
+ 1 file changed, 49 insertions(+), 126 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
-index 51e0eeb24..6972d6099 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid03.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
-@@ -1,24 +1,14 @@
+diff --git a/testcases/kernel/syscalls/sighold/sighold02.c b/testcases/kernel/syscalls/sighold/sighold02.c
+index b763142df..cf6cc58f3 100644
+--- a/testcases/kernel/syscalls/sighold/sighold02.c
++++ b/testcases/kernel/syscalls/sighold/sighold02.c
+@@ -1,74 +1,36 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+  *  AUTHOR          : Bob Clark
+  *  CO-PILOT        : Barrie Kletscher
+  *  DATE STARTED    : 9/26/86
+  * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
 - *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
 + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
   */
- 
 -/*
+- * TEST ITEMS
++
 +/*\
 + * [Description]
 + *
-  * Test to check the error and trivial conditions in setpgid system call
-  *
-  * EPERM   -  The calling process, process specified by pid and the target
-@@ -28,136 +18,73 @@
-  *            has performed exec()
++ * This test checks following conditions:
+  *	1. sighold action to turn off the receipt of all signals was done
+  *	   without error.
+  *	2. After signals were held, and sent, no signals were trapped.
   */
- 
--#include <sys/wait.h>
--#include <limits.h>
--#include <signal.h>
+-#define _XOPEN_SOURCE 500
 -#include <errno.h>
--#include <sys/param.h>
++
++#define _XOPEN_SOURCE 600
+ #include <signal.h>
+-#include <string.h>
+-#include <fcntl.h>
+-#include <stdlib.h>
 -#include <sys/types.h>
--#include <sys/stat.h>
- #include <unistd.h>
+-#include <sys/wait.h>
 -#include "test.h"
-+#include <sys/wait.h>
+-#include "safe_macros.h"
+-#include "lapi/signal.h"
 +#include "tst_test.h"
  
- #define TEST_APP "setpgid03_child"
+ /* _XOPEN_SOURCE disables NSIG */
+ #ifndef NSIG
+-# define NSIG _NSIG
++#define NSIG _NSIG
+ #endif
  
--char *TCID = "setpgid03";
--int TST_TOTAL = 1;
+ /* ensure NUMSIGS is defined */
+ #ifndef NUMSIGS
+-# define NUMSIGS NSIG
++#define NUMSIGS NSIG
+ #endif
+ 
+-char *TCID = "sighold02";
+-int TST_TOTAL = 2;
 -
+-static int pid;
 -static void do_child(void);
 -static void setup(void);
 -static void cleanup(void);
-+static void do_child(void)
-+{
-+	SAFE_SETSID();
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+}
+-
+ static int sigs_catched;
+ static int sigs_map[NUMSIGS];
+ 
+@@ -88,57 +50,13 @@ static int skip_sig(int sig)
+ 	}
+ }
  
 -int main(int ac, char **av)
-+static void run(void)
- {
--	int child_pid;
-+	pid_t child_pid;
- 	int status;
--	int rval;
+-{
+-	int sig;
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
+-
 -#ifdef UCLINUX
 -	maybe_run_child(&do_child, "");
 -#endif
@@ -165,189 +193,139 @@ index 51e0eeb24..6972d6099 100644
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		if ((pid = FORK_OR_VFORK()) < 0) {
+-			tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
+-		} else if (pid > 0) {
+-			TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
 -
--		tst_count = 0;
+-			for (sig = 1; sig < NUMSIGS; sig++) {
+-				if (skip_sig(sig))
+-					continue;
+-				SAFE_KILL(NULL, pid, sig);
+-			}
 -
--		/* Child is in new session we are not alowed to change pgid */
--		if ((child_pid = FORK_OR_VFORK()) == -1)
--			tst_brkm(TBROK, cleanup, "fork() failed");
+-			TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
+-			tst_record_childstatus(cleanup, pid);
+-		} else {
 -
--		if (child_pid == 0) {
 -#ifdef UCLINUX
--			if (self_exec(av[0], "") < 0)
--				tst_brkm(TBROK, cleanup, "self_exec failed");
+-			if (self_exec(av[0], "") < 0) {
+-				tst_brkm(TBROK | TERRNO, NULL,
+-					 "self_exec() failed");
+-			}
 -#else
 -			do_child();
 -#endif
 -		}
+-	}
 -
--		TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
--		rval = setpgid(child_pid, getppid());
--		if (rval == -1 && errno == EPERM) {
--			tst_resm(TPASS, "setpgid failed with EPERM");
--		} else {
--			tst_resm(TFAIL,
--				"retval %d, errno %d, expected errno %d",
--				rval, errno, EPERM);
+-	cleanup();
+-	tst_exit();
+-}
+-
+ static void handle_sigs(int sig)
+ {
+ 	sigs_map[sig] = 1;
+ 	sigs_catched++;
+ }
+ 
+-void do_child(void)
++static void do_child(void)
+ {
+ 	int cnt;
+ 	int sig;
+@@ -148,55 +66,60 @@ void do_child(void)
+ 		if (skip_sig(sig))
+ 			continue;
+ 
+-		if (signal(sig, handle_sigs) == SIG_ERR) {
+-			tst_resm(TBROK | TERRNO, "signal() %i(%s) failed",
+-				 sig, tst_strsig(sig));
 -		}
--		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
--
--		if (wait(&status) < 0)
--			tst_resm(TFAIL | TERRNO, "wait() for child 1 failed");
--
--		if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
--			tst_resm(TFAIL, "child 1 failed with status %d",
--				WEXITSTATUS(status));
--
--		/* Child after exec() we are no longer allowed to set pgid */
--		if ((child_pid = FORK_OR_VFORK()) == -1)
--			tst_resm(TFAIL, "Fork failed");
--
--		if (child_pid == 0) {
--			if (execlp(TEST_APP, TEST_APP, NULL) < 0)
--				perror("exec failed");
--
--			exit(127);
--		}
--
--		TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
--		rval = setpgid(child_pid, getppid());
--		if (rval == -1 && errno == EACCES) {
--			tst_resm(TPASS, "setpgid failed with EACCES");
--		} else {
--			tst_resm(TFAIL,
--				"retval %d, errno %d, expected errno %d",
--				rval, errno, EACCES);
--		}
--		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
--
--		if (wait(&status) < 0)
--			tst_resm(TFAIL | TERRNO, "wait() for child 2 failed");
--
--		if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
--			tst_resm(TFAIL, "child 2 failed with status %d",
--				WEXITSTATUS(status));
++		SAFE_SIGNAL(sig, handle_sigs);
+ 	}
+ 
+ 	/* all set up to catch signals, now hold them */
+ 	for (cnt = 0, sig = 1; sig < NUMSIGS; sig++) {
+ 		if (skip_sig(sig))
+ 			continue;
 +
-+	child_pid = SAFE_FORK();
-+	if (!child_pid) {
+ 		cnt++;
+-		TEST(sighold(sig));
+-		if (TEST_RETURN != 0) {
+-			tst_resm(TBROK | TTERRNO, "sighold() %i(%s) failed",
+-				 sig, tst_strsig(sig));
+-		}
++
++		if (sighold(sig))
++			tst_brk(TBROK, "sighold() %i(%s) failed", sig,
++				tst_strsig(sig));
+ 	}
+ 
+-	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	if (!sigs_catched) {
+-		tst_resm(TPASS, "All signals were hold");
+-		tst_exit();
++		tst_res(TPASS, "all signals were hold");
++	} else {
++		tst_res(TFAIL, "signal handler was executed");
++
++		for (sig = 1; sig < NUMSIGS; sig++)
++			if (sigs_map[sig])
++				tst_res(TINFO, "Signal %i(%s) catched", sig,
++					tst_strsig(sig));
+ 	}
++}
+ 
+-	tst_resm(TFAIL, "Signal handler was executed");
++static void run(void)
++{
++	pid_t pid_child;
++	int signal;
+ 
+-	for (sig = 1; sig < NUMSIGS; sig++) {
+-		if (sigs_map[sig]) {
+-			tst_resm(TINFO, "Signal %i(%s) catched",
+-			         sig, tst_strsig(sig));
+-		}
++	pid_child = SAFE_FORK();
++	if (!pid_child) {
 +		do_child();
 +		return;
  	}
  
--	cleanup();
 -	tst_exit();
 -}
-+	TST_CHECKPOINT_WAIT(0);
- 
--static void do_child(void)
--{
--	if (setsid() < 0) {
--		printf("CHILD: setsid() failed, errno: %d\n", errno);
--		exit(2);
--	}
-+	TEST(setpgid(child_pid, getppid()));
-+	if (TST_RET == -1 && TST_ERR == EPERM)
-+		tst_res(TPASS, "setpgid failed with EPERM");
-+	else
-+		tst_res(TFAIL, "retval %ld, errno %s, expected EPERM", TST_RET,
-+			tst_strerrno(TST_ERR));
- 
--	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-+	TST_CHECKPOINT_WAKE(0);
- 
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	if (wait(&status) < 0)
-+		tst_res(TFAIL, "wait() for child 1 failed");
- 
--	exit(0);
--}
-+	if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
-+		tst_res(TFAIL, "child 1 failed with status %d",
-+			WEXITSTATUS(status));
- 
+-
 -static void setup(void)
 -{
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	/* child after exec() we are no longer allowed to set pgid */
-+	child_pid = SAFE_FORK();
-+	if (!child_pid)
-+		SAFE_EXECLP(TEST_APP, TEST_APP, NULL);
- 
--	tst_tmpdir();
+-	tst_sig(FORK, DEF_HANDLER, NULL);
 +	TST_CHECKPOINT_WAIT(0);
  
--	TST_CHECKPOINT_INIT(tst_rmdir);
-+	TEST(setpgid(child_pid, getppid()));
-+	if (TST_RET == -1 && TST_ERR == EACCES)
-+		tst_res(TPASS, "setpgid failed with EACCES");
-+	else
-+		tst_res(TFAIL, "retval %ld, errno %s, expected EACCES", TST_RET,
-+			tst_strerrno(TST_ERR));
+-	tst_tmpdir();
++	for (signal = 1; signal < NUMSIGS; signal++) {
++		if (skip_sig(signal))
++			continue;
  
--	umask(0);
-+	TST_CHECKPOINT_WAKE(0);
+-	TST_CHECKPOINT_INIT(tst_rmdir);
++		SAFE_KILL(pid_child, signal);
++	}
  
 -	TEST_PAUSE;
--}
-+	if (wait(&status) < 0)
-+		tst_res(TFAIL, "wait() for child 2 failed");
++	TST_CHECKPOINT_WAKE(0);
+ }
  
 -static void cleanup(void)
 -{
 -	tst_rmdir();
-+	if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
-+		tst_res(TFAIL, "child 2 failed with status %d",
-+			WEXITSTATUS(status));
- }
-+
+-}
 +static struct tst_test test = {
 +	.test_all = run,
 +	.forks_child = 1,
 +	.needs_checkpoints = 1,
 +};
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid03_child.c b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-index 2657422a6..fdb22f24d 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-@@ -1,32 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-  */
- 
--#include "test.h"
--
--char *TCID = "setpgid03_child";
--
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
- 
- int main(void)
- {
--	TST_CHECKPOINT_INIT(NULL);
--
--	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	tst_reinit();
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- 
- 	return 0;
- }
 -- 
 2.34.1
 
