@@ -4,87 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40BB3C433EF
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 05:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C35C433EF
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 08:44:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E2143C974A
-	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 06:51:20 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 34A1A3C973B
+	for <ltp@archiver.kernel.org>; Fri, 28 Jan 2022 09:44:23 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 361533C9728
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 06:51:10 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3A4F63C7FEC
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 09:44:13 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7431E6008A3
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 06:51:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1643349068; i=@fujitsu.com;
- bh=a08omTuZqkKwEfcLyoLtsY50UOpHMHbaXVWBenLW4ys=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=uSnqk/tDVbXKg/i+TyL2ut509L1QQH6m6MXikdaQU6BKjSUA2T/sJz5wWL6BthW4L
- zNUclkKCFCrIydbV153l09DWysJLdP0z8Rg7bRwXD/eZ1OUluFaBTl9z5aflgYDAuQ
- jMacL994ABPhZ6F7ZM9VkX92ruLIw+bEx/9FLA5AnUKa9vZzMNcNX/OboV5KtfZUUD
- Ol24K6+KfYFnWlUOZZKqm5v62ig2LGonlmEJeI3tsWqMNYiXgERlMDNA0MkNJMRk8z
- Q8F8jypPFVfgTxutTfU+zb99EDD9i44eQdca4M/YAJTiCk7dMKF+xGdD8PHXeLZeQI
- cJY0ZNQw2fG2g==
-Received: from [100.115.38.101] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-1.bemta.az-a.eu-west-2.aws.ess.symcld.net id E4/D7-14616-B4483F16;
- Fri, 28 Jan 2022 05:51:07 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRWlGSWpSXmKPExsViZ8ORqOvd8jn
- RYGWbusWK7zsYHRg99v1exxrAGMWamZeUX5HAmvF5/yamgq9CFU9+nmBpYFwu0MXIxSEkcJZR
- 4u2lG4wQzk4midtzFrBBOHsYJSa8WAfkcHKwCWhKPOtcwAxiiwhISHQ0vGUHsZkF1CWWT/rFB
- GILC0RI3P93DqyGRUBVYvLh3ywgNq+Ah8TDc1/B6iUEFCSmPHzPDBEXlDg58wkLxBwJiYMvXj
- BD1ChKXOr4xghhV0jMmtXGBGGrSVw9t4l5AiP/LCTts5C0L2BkWsVolVSUmZ5RkpuYmaNraGC
- ga2hoqmtspGtoopdYpZuol1qqW55aXKJrpJdYXqyXWlysV1yZm5yTopeXWrKJERiWKcUKfDsY
- m1f91DvEKMnBpCTKm9v0OVGILyk/pTIjsTgjvqg0J7X4EKMMB4eSBO+EeqCcYFFqempFWmYOM
- EZg0hIcPEoivDUgrbzFBYm5xZnpEKlTjLocO4/OW8QsxJKXn5cqJc6r2AxUJABSlFGaBzcCFq
- +XGGWlhHkZGRgYhHgKUotyM0tQ5V8xinMwKgnzOoFM4cnMK4Hb9AroCCagI7Yd+QRyREkiQkq
- qgcmz4p7WscW1D6d855x9s/t70us/UjE/e1NedG5u1/a7wvD1m/Umu8nuAVz8TAmSjhvmM/wX
- zZwwv/ZGRrPjlSkr5ly8dvuv/HzfzhniGfO9l6xMen3W1kdgpjVr8Z9Jd3apyL7sO932Wv69s
- P5KEUuFlRUz2uI/r5lpZiKyWSxU+3OkV0i0b6fq44iNyZ4elU69J5YmnJwYHn750u0dcuzZac
- dO5VTPKhXx5ClPSrmW/XGVvssjsQ0Pt9e0yQmt2mo/ZfGGW5EmR/x2azC8udojfeRilNWcSt8
- bFReunS4Pcjn30ex61uVVK5w9e637rhx4dNm31788ueCY+UPuuE0nCo9vVKs8sHCmKc+VxstK
- LMUZiYZazEXFiQBDAjNHUgMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-2.tower-548.messagelabs.com!1643349067!52242!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 26079 invoked from network); 28 Jan 2022 05:51:07 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-2.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 28 Jan 2022 05:51:07 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 4667410019D
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 05:51:07 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5729460098C
+ for <ltp@lists.linux.it>; Fri, 28 Jan 2022 09:44:12 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 39A4D10004D
- for <ltp@lists.linux.it>; Fri, 28 Jan 2022 05:51:07 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.26; Fri, 28 Jan 2022 05:50:44 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Fri, 28 Jan 2022 13:51:11 +0800
-Message-ID: <1643349071-2164-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4A9771F385;
+ Fri, 28 Jan 2022 08:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643359451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ayw3yhdjK6/A0Wdor9rXYCHxjAfhV3yryfmVbgr183k=;
+ b=BtMjVMoyAIfB7MlkxZvnm0jG1158qjkC9tYWmwdhkHR0FeXh41D93ANestpGaL2a00bih4
+ 2H0jviKmbQnY+mhAqzuGRlQRlZo6e93/+mxWFiGhz+2gZgk/PieeB4mMMBzvx5a/3KuuEW
+ dCRoKaPygkVpSnJjjAb2DIRUncyj9sY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643359451;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ayw3yhdjK6/A0Wdor9rXYCHxjAfhV3yryfmVbgr183k=;
+ b=NOlE0a09p/EY9GzxohdxW5KDhURUco94mACYk/9Fx5w4i7MWEoqFTVX+ffVo7/gcu8BUMS
+ CJBdojKoOecSR8CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22475139D0;
+ Fri, 28 Jan 2022 08:44:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 7s1kBtus82GmYwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 28 Jan 2022 08:44:11 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 28 Jan 2022 09:44:09 +0100
+Message-Id: <20220128084409.21708-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sysctl/sysctl03: Test whether return EINVAL when
- passing negative value
+Subject: [LTP] [PATCH v1] Refactoring setpgid03.c test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,86 +75,281 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-It is a regression for kernel commit
-1622ed7d07432 ("sysctl: returns -EINVAL when a negative value is passed to proc_doulongvec_minmax").
+Removed TST_CHECKPOINT_INIT and replaced it with the .needs_checkpoints
+LTP test feature. Simplified source code.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- runtest/commands                      |  1 +
- testcases/commands/sysctl/sysctl03.sh | 52 +++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+)
- create mode 100755 testcases/commands/sysctl/sysctl03.sh
+ testcases/kernel/syscalls/setpgid/setpgid03.c | 183 ++++++------------
+ .../kernel/syscalls/setpgid/setpgid03_child.c |  28 +--
+ 2 files changed, 61 insertions(+), 150 deletions(-)
 
-diff --git a/runtest/commands b/runtest/commands
-index 8cfad0449..c515c7231 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -41,4 +41,5 @@ gdb01_sh gdb01.sh
- unshare01_sh unshare01.sh
- sysctl01_sh sysctl01.sh
- sysctl02_sh sysctl02.sh
-+sysctl03_sh sysctl03.sh
- shell_test01 echo "SUCCESS" | shell_pipe01.sh
-diff --git a/testcases/commands/sysctl/sysctl03.sh b/testcases/commands/sysctl/sysctl03.sh
-new file mode 100755
-index 000000000..ae7bd11c6
---- /dev/null
-+++ b/testcases/commands/sysctl/sysctl03.sh
-@@ -0,0 +1,52 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+# Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+#
-+# When we pass a negative value to the proc_doulongvec_minmax() function,
-+# the function should return EINVAL and the corresponding interface value
-+# does not change.
-+#
-+# It is also a regression test for
-+# commit 1622ed7d0743 ("sysctl: returns -EINVAL when a negative value is passed
-+# to proc_doulongvec_minmax").
-+#
-+# Use fs.epoll.max_user_watches interface to test this.
-+
-+TST_TESTFUNC=do_test
-+TST_SETUP=setup
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_CMDS="sysctl"
-+TST_NEEDS_KCONFIGS="CONFIG_SYSCTL=y, CONFIG_PROC_FS=y, CONFIG_INOTIFY_USER=y"
-+sys_name="fs.epoll.max_user_watches"
-+sys_file="/proc/sys/fs/epoll/max_user_watches"
-+
-+. tst_test.sh
-+
-+setup()
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
+index 51e0eeb24..6972d6099 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid03.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+@@ -1,24 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+  */
+ 
+-/*
++/*\
++ * [Description]
++ *
+  * Test to check the error and trivial conditions in setpgid system call
+  *
+  * EPERM   -  The calling process, process specified by pid and the target
+@@ -28,136 +18,73 @@
+  *            has performed exec()
+  */
+ 
+-#include <sys/wait.h>
+-#include <limits.h>
+-#include <signal.h>
+-#include <errno.h>
+-#include <sys/param.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+ #include <unistd.h>
+-#include "test.h"
++#include <sys/wait.h>
++#include "tst_test.h"
+ 
+ #define TEST_APP "setpgid03_child"
+ 
+-char *TCID = "setpgid03";
+-int TST_TOTAL = 1;
+-
+-static void do_child(void);
+-static void setup(void);
+-static void cleanup(void);
++static void do_child(void)
 +{
-+	orig_value=$(cat "$sys_file")
++	SAFE_SETSID();
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
 +}
+ 
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int child_pid;
++	pid_t child_pid;
+ 	int status;
+-	int rval;
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child, "");
+-#endif
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/* Child is in new session we are not alowed to change pgid */
+-		if ((child_pid = FORK_OR_VFORK()) == -1)
+-			tst_brkm(TBROK, cleanup, "fork() failed");
+-
+-		if (child_pid == 0) {
+-#ifdef UCLINUX
+-			if (self_exec(av[0], "") < 0)
+-				tst_brkm(TBROK, cleanup, "self_exec failed");
+-#else
+-			do_child();
+-#endif
+-		}
+-
+-		TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+-		rval = setpgid(child_pid, getppid());
+-		if (rval == -1 && errno == EPERM) {
+-			tst_resm(TPASS, "setpgid failed with EPERM");
+-		} else {
+-			tst_resm(TFAIL,
+-				"retval %d, errno %d, expected errno %d",
+-				rval, errno, EPERM);
+-		}
+-		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+-
+-		if (wait(&status) < 0)
+-			tst_resm(TFAIL | TERRNO, "wait() for child 1 failed");
+-
+-		if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
+-			tst_resm(TFAIL, "child 1 failed with status %d",
+-				WEXITSTATUS(status));
+-
+-		/* Child after exec() we are no longer allowed to set pgid */
+-		if ((child_pid = FORK_OR_VFORK()) == -1)
+-			tst_resm(TFAIL, "Fork failed");
+-
+-		if (child_pid == 0) {
+-			if (execlp(TEST_APP, TEST_APP, NULL) < 0)
+-				perror("exec failed");
+-
+-			exit(127);
+-		}
+-
+-		TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+-		rval = setpgid(child_pid, getppid());
+-		if (rval == -1 && errno == EACCES) {
+-			tst_resm(TPASS, "setpgid failed with EACCES");
+-		} else {
+-			tst_resm(TFAIL,
+-				"retval %d, errno %d, expected errno %d",
+-				rval, errno, EACCES);
+-		}
+-		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+-
+-		if (wait(&status) < 0)
+-			tst_resm(TFAIL | TERRNO, "wait() for child 2 failed");
+-
+-		if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
+-			tst_resm(TFAIL, "child 2 failed with status %d",
+-				WEXITSTATUS(status));
 +
-+do_test()
-+{
-+	tst_res TINFO "trying to set $sys_name=-1"
-+
-+	sysctl -w -q $sys_name=-1 2>&1 | grep -q "Invalid argument"
-+
-+	if [ $? -eq 0 ]; then
-+		tst_res TPASS "sysctl returns EINVAL when passing a negative value"
++	child_pid = SAFE_FORK();
++	if (!child_pid) {
++		do_child();
++		return;
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
+-}
++	TST_CHECKPOINT_WAIT(0);
+ 
+-static void do_child(void)
+-{
+-	if (setsid() < 0) {
+-		printf("CHILD: setsid() failed, errno: %d\n", errno);
+-		exit(2);
+-	}
++	TEST(setpgid(child_pid, getppid()));
++	if (TST_RET == -1 && TST_ERR == EPERM)
++		tst_res(TPASS, "setpgid failed with EPERM");
 +	else
-+		tst_res TFAIL "sysctl doesn't return EINVAL when passing a negative value"
-+	fi
-+
-+	new_value=$(cat "$sys_file")
-+	if [ $orig_value -eq $new_value ]; then
-+		tst_res TPASS "the interface value doesn't change when passing a negative value"
++		tst_res(TFAIL, "retval %ld, errno %s, expected EPERM", TST_RET,
++			tst_strerrno(TST_ERR));
+ 
+-	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
++	TST_CHECKPOINT_WAKE(0);
+ 
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	if (wait(&status) < 0)
++		tst_res(TFAIL, "wait() for child 1 failed");
+ 
+-	exit(0);
+-}
++	if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
++		tst_res(TFAIL, "child 1 failed with status %d",
++			WEXITSTATUS(status));
+ 
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	/* child after exec() we are no longer allowed to set pgid */
++	child_pid = SAFE_FORK();
++	if (!child_pid)
++		SAFE_EXECLP(TEST_APP, TEST_APP, NULL);
+ 
+-	tst_tmpdir();
++	TST_CHECKPOINT_WAIT(0);
+ 
+-	TST_CHECKPOINT_INIT(tst_rmdir);
++	TEST(setpgid(child_pid, getppid()));
++	if (TST_RET == -1 && TST_ERR == EACCES)
++		tst_res(TPASS, "setpgid failed with EACCES");
 +	else
-+		tst_res TFAIL "the interface value changes when passing a negative value"
-+		sysctl -w -q $sys_name=$orig_value
-+	fi
-+}
++		tst_res(TFAIL, "retval %ld, errno %s, expected EACCES", TST_RET,
++			tst_strerrno(TST_ERR));
+ 
+-	umask(0);
++	TST_CHECKPOINT_WAKE(0);
+ 
+-	TEST_PAUSE;
+-}
++	if (wait(&status) < 0)
++		tst_res(TFAIL, "wait() for child 2 failed");
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
++	if (!(WIFEXITED(status)) || (WEXITSTATUS(status) != 0))
++		tst_res(TFAIL, "child 2 failed with status %d",
++			WEXITSTATUS(status));
+ }
 +
-+tst_run
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++};
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid03_child.c b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
+index 2657422a6..fdb22f24d 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid03_child.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
+@@ -1,32 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software Foundation,
+- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+  */
+ 
+-#include "test.h"
+-
+-char *TCID = "setpgid03_child";
+-
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
+ 
+ int main(void)
+ {
+-	TST_CHECKPOINT_INIT(NULL);
+-
+-	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	tst_reinit();
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	return 0;
+ }
 -- 
-2.23.0
+2.34.1
 
 
 -- 
