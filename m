@@ -4,65 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04C23C433F5
-	for <ltp@archiver.kernel.org>; Tue,  1 Feb 2022 11:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7310BC433EF
+	for <ltp@archiver.kernel.org>; Tue,  1 Feb 2022 11:58:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A720F3C987A
-	for <ltp@archiver.kernel.org>; Tue,  1 Feb 2022 12:56:47 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 548F03C987F
+	for <ltp@archiver.kernel.org>; Tue,  1 Feb 2022 12:58:53 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F1EA3C9826
- for <ltp@lists.linux.it>; Tue,  1 Feb 2022 12:56:38 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 22C003C9826
+ for <ltp@lists.linux.it>; Tue,  1 Feb 2022 12:58:43 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F0FFD1000672
- for <ltp@lists.linux.it>; Tue,  1 Feb 2022 12:56:37 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 261011F3A5;
- Tue,  1 Feb 2022 11:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643716597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E85B6600044
+ for <ltp@lists.linux.it>; Tue,  1 Feb 2022 12:58:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1643716720;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J9beOxuPS4sNmk+REFx0rBjErHp0ugCvo/CShIdz/PA=;
- b=vx5LjEzfQPQ4dfaBrTkR+LoFszTyr3XSJZHW6+3mI9YDa55WC2Ag6ErFyHp6CZeOl91rNy
- iaq/VVlNRurtM/qAXRKtv3dNTXwHEGykunyJcdAewWm0Jp6IfZtUdxHnA/16HNd+xYIzGW
- gTEgujpLKF0a60P/9uj7gO4AYCXScfo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643716597;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=J9beOxuPS4sNmk+REFx0rBjErHp0ugCvo/CShIdz/PA=;
- b=mDXbTc5re9Djm3QTrZyGUoAyyWUGhuHJHVrJJsPJXvnrR008HpLSMvWH+oWPDSIRXmlXWg
- wKsSzs4xBpmrMRAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0836413D67;
- Tue,  1 Feb 2022 11:56:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6b/IAPUf+WHDPwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 01 Feb 2022 11:56:37 +0000
-Date: Tue, 1 Feb 2022 12:58:31 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YfkgZ8Ab6Jl8udbv@yuki>
-References: <20220126164703.7177-1-pvorel@suse.cz>
+ bh=ZDnhgC36kZnMLfNBoh+Nk/i7FrvBXjkmzVtQDxpXQAo=;
+ b=A/RmtlwyJPo+d3XKpwW/eVqK0gcQRJKBTfNZeJTOG7Zs8Jl8PE43+zoQZ7xfuPPekEBx/u
+ Gl9pfD2ec3vxZ7OqukDozjizcqSRtzXLPzwKMlkq9QaXW0374YoRPw07LQuQp/Pust6+LD
+ hx0Ww4aPPOS9ETs7niuFcHiMfrGdI6s=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-14-O3l470igO1aIA6VevKXzGg-1; Tue, 01 Feb 2022 06:58:39 -0500
+X-MC-Unique: O3l470igO1aIA6VevKXzGg-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ g67-20020a25db46000000b0061437d5e4b3so32223360ybf.10
+ for <ltp@lists.linux.it>; Tue, 01 Feb 2022 03:58:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ZDnhgC36kZnMLfNBoh+Nk/i7FrvBXjkmzVtQDxpXQAo=;
+ b=QeW8mQzjXlsmUU88X84Yj3CKadhzBTPyHO2b6dHtdDEm3nV1h3n9mcueZgtHSvysiE
+ nzv1x70TwJKZRT+TBUwQv0aa/It/OVedfufF6YJoomc81O3U9Rjp+aTD+xJolajwRqGW
+ FbWpb31jXdiEEzO77rU/MobT9WPAlMOPKkgkV8cE+UtoA2bUy5ZlGjsAJ+C/FpqNIA5y
+ mBfd3iDuwaz0bw1Pku/ieEnbRoDKyXXRIp/xPwmIzKhArEAOkSwZc6uBLJHnctrYuptP
+ /YJCt2959CEBM7sluWLZzb876yrf6Z9/2U35X8mpuae5Im03qytsVorV+3ToR3Z+9Ox4
+ AL/A==
+X-Gm-Message-State: AOAM5300m7mL2s0EYXqnTLImHqQFkIgInK6IaaxbNtuqztzWBSVhxfT0
+ 8hDmFIAfelWLlLDa+gGObBI0/4HM+ghO28266qTmXnlcC81zHo/liBdToP4Dg2Jh8uMNAsBC3/8
+ vVqfkEM/Px8VWVlhIThd53BJV298=
+X-Received: by 2002:a5b:14c:: with SMTP id c12mr36972734ybp.71.1643716718892; 
+ Tue, 01 Feb 2022 03:58:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzlqt3srwN3rMJYM9pM0+N7L9UE2JTSqyRMl2D5oqObSyMeNqx1cBTwdoh1h2oa+kTCGsq3PwUkPAzx231P9EM=
+X-Received: by 2002:a5b:14c:: with SMTP id c12mr36972708ybp.71.1643716718580; 
+ Tue, 01 Feb 2022 03:58:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220126164703.7177-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220201094451.7651-1-pvorel@suse.cz> <YfkMR3oM/QD9a3I9@yuki>
+ <YfkPfjqRz9j2Jbuw@pevik>
+In-Reply-To: <YfkPfjqRz9j2Jbuw@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 1 Feb 2022 19:58:20 +0800
+Message-ID: <CAEemH2di8y4qiyn45EOgdxQo-oebEsZRhYmyCfkifpvS1rpsaw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] Fix tst_mkfs_ doc
+Subject: Re: [LTP] [PATCH 1/1] ci: Remove CentOS 8
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,53 +83,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/include/old/test.h b/include/old/test.h
-> index 2ae7dba71f..87287a8e7e 100644
-> --- a/include/old/test.h
-> +++ b/include/old/test.h
-> @@ -193,7 +193,8 @@ int self_exec(const char *argv0, const char *fmt, ...);
->   * @dev: path to a device
->   * @fs_type: filesystem type
->   * @fs_opts: NULL or NULL terminated array of mkfs options
-> - * @extra_opt: extra mkfs option which is passed after the device name
-> + * @extra_opts: NULL or NULL terminated array of extra mkfs options which is
-                                                                             ^
-									     are
-> + * passed after the device name.
->   */
->  #define tst_mkfs(cleanup, dev, fs_type, fs_opts, extra_opts) \
->  	tst_mkfs_(__FILE__, __LINE__, cleanup, dev, fs_type, \
-> diff --git a/include/tst_mkfs.h b/include/tst_mkfs.h
-> index b89bf812f6..c2d777facd 100644
-> --- a/include/tst_mkfs.h
-> +++ b/include/tst_mkfs.h
-> @@ -9,7 +9,8 @@
->   * @dev: path to a device
->   * @fs_type: filesystem type
->   * @fs_opts: NULL or NULL terminated array of extra mkfs options
-> - * @extra_opts: NULL or NULL terminated array of extra mkfs options
-> + * @extra_opts: NULL or NULL terminated array of extra mkfs options which is
-                                                                             ^
-									     are
-> + * passed after the device name.
->   */
->  void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
->  	       const char *dev, const char *fs_type,
+On Tue, Feb 1, 2022 at 6:46 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> > Hi!
+> > > It EOL in 12/2021 and CI is failing due removed repo:
+>
+> > Since it's EOL we can't do anything else.
+>
+> > Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+>
+> > I wonder if we should add a different distribution instead. Maybe
+> > replace it with Fedora later on?
+> We have CentOS 7 (EOL 2024) and also fedora:latest, which is 35
+> (their devel called rawhide is currently 36).
 
-With the minor mistake fixed:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Is there any possibility to convert from CentOS 8 to CentOS Stream 8?
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
