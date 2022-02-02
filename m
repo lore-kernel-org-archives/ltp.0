@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D666FC433F5
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 02:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BBF4C433EF
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 03:17:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8A1BB3C98CD
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 03:59:54 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id BFBC73C9893
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 04:17:12 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EEDBA3C9871
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 03:59:41 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 39C433C9097
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 04:17:02 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E14FE10005AF
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 03:59:40 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5F6691A0066A
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 04:17:00 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1643770779;
+ s=mimecast20190719; t=1643771819;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=x5HTf9cjqGzVG57l23cnhjysti0KJ1GoXsI50cGDEL4=;
- b=ePVSvpbR7g6lswNXhiPK1cM7QtRcPq997qlkv0ExBaCw73nA7CBY8+l1Ca18b4cKkUZjV0
- VD/RfKnT5EbhhoRydb59Xj6Kore5pn3ZOcH0Y5zFeaiXfU7v9WN6kfFWuz310vITYttRzo
- z3PFyoGTptchCJuCaMJuqPNxlXTvvz0=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=E4HDp7Aik9w85qAJcYH8vLpKERB5Gq09Ovzo4JfCMa0=;
+ b=cp8Nimgr99ru6m5knM2V3AunVRzg53Guw7jkUOCnwtZpTurbIh95fmastLMmqXa0Mvf4SF
+ ILS1RzyrlVsr9Jo8AGmI3wk+W2N2Gd+GUZmr/lWX+CG7ARVCRxSxFONwKSZogVkg122Z1P
+ O9RqHq9IMUwvV1klnAOQ0X9j3UYvL3U=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-43-p0LoKdWrOo-k2c_oThrjiQ-1; Tue, 01 Feb 2022 21:59:36 -0500
-X-MC-Unique: p0LoKdWrOo-k2c_oThrjiQ-1
-Received: by mail-yb1-f198.google.com with SMTP id
- t8-20020a259ac8000000b00619a3b5977fso19377506ybo.5
- for <ltp@lists.linux.it>; Tue, 01 Feb 2022 18:59:35 -0800 (PST)
+ us-mta-269-OgdIwdZsOjy3iPd2eAjOEg-1; Tue, 01 Feb 2022 22:16:57 -0500
+X-MC-Unique: OgdIwdZsOjy3iPd2eAjOEg-1
+Received: by mail-yb1-f197.google.com with SMTP id
+ b2-20020a252e42000000b00619593ff8ddso25774015ybn.6
+ for <ltp@lists.linux.it>; Tue, 01 Feb 2022 19:16:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=x5HTf9cjqGzVG57l23cnhjysti0KJ1GoXsI50cGDEL4=;
- b=j31b8p/gYiU7aXeKqdrCGKv//RndqAJO7hVqq/9BW1BaIF+5+F1oc1RXnPgoT//pF8
- 6AOcOtbdS/cEZBL1sLhi5Vl9vdcUDSmKVk5392HsOjGjefzgNpQHFcGvvpWu3naigXzw
- qJzQEeR9lRQ/LJ7LuYDYuufo+ali/zE+8cqFl/WSmJdNYO4qhK3lWJ5Cc0oyFsIkeA1L
- SMm50OLOQeI/MTqh15kvynEe0ag9lNbibqbPyCtPnqY3HZhuwO3TWp9oCyOHZiJ48f83
- WtroFGEgmQkhykgjgZALHA96yYRfCWy9kv9kKjLpz6BLaIYlpHWUQYMmKdPJHrS6hOkW
- nRIw==
-X-Gm-Message-State: AOAM5320CHRkNvS6NXmDO5RwJIkx6qGCOk4MbNQNQ3YrbIh//ja4Vhc3
- THp9uahIFLGlvvKgooLcfGem+JLxs8hUw+lQFxEaEzSHsBi33h7ujUaxc+79jbH4TMqzgqQQ4fy
- f5iZfyqkmBAH7CHBUrBv/x7+miM0=
-X-Received: by 2002:a25:3409:: with SMTP id b9mr40550274yba.102.1643770775355; 
- Tue, 01 Feb 2022 18:59:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy6kNqE6fAv/HhQxmFVFeylvwlhHkBFkwrOw5UX79h7uf+hbbwWq8C2qM4H9GLbzk/LyBLd6f7wbEoiqV52ri4=
-X-Received: by 2002:a25:3409:: with SMTP id b9mr40550268yba.102.1643770775147; 
- Tue, 01 Feb 2022 18:59:35 -0800 (PST)
+ bh=E4HDp7Aik9w85qAJcYH8vLpKERB5Gq09Ovzo4JfCMa0=;
+ b=QsMSvMhHfVX1N5ydMRZw+y5pVIrLJZ3vrGa0mlcz1RS23QLJUjMp8zEaxVy1aLFZcM
+ yRaYz4XCOf912kUrLPTss3x2sTPMKSoxtncEXdlq5kVZJI1KGSPlZo5pmF05T2TlRaYk
+ TiGj/Q5gHwOCkC+jg7W3g9I1HjKT6Uwg7hxS3fxYI6D8oW0sJIrri6h3ZmqQHY9w3jiI
+ wjIuMbm6zwrDp4349WaQhqiRuDly3R29Eg3SKzlGwgHdmtg4W1/grIq/vKSlxps9Wifb
+ i3Fz7MJx+ocn1Iy2ZnGYrsrRwTCMOzxSanpXMjwOPcKYu/fLmYEQjx1RiOSYcYsUMhcu
+ cK5w==
+X-Gm-Message-State: AOAM532x4vhlU2f/UnICYm2pzE3Ruq91XftvtYaHyZ5ywEFArnVsTcnQ
+ dhaiztw65Kx1MzygcWxaj/7rZUmHVFwAUbhBxjEGPZxsMcDOHPtzeDHyiziYZ5OkYHPhLER9Qqb
+ KSr3YYRaLYutgnIaLqqZEoguYkH4=
+X-Received: by 2002:a5b:38f:: with SMTP id k15mr43108348ybp.421.1643771816607; 
+ Tue, 01 Feb 2022 19:16:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyKXDlZTkUSU8ArTTwcZps8sbhOo10Vga/3tQ3YSe2/Du+DK9Rijfjff/Q3qijuxjqaoCijUDBXyD1O25Q/HxQ=
+X-Received: by 2002:a5b:38f:: with SMTP id k15mr43108336ybp.421.1643771816430; 
+ Tue, 01 Feb 2022 19:16:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20220127171455.9809-1-pvorel@suse.cz>
- <61F609C7.1080803@fujitsu.com>
- <CAEemH2df5D=MV-bCP5d39F-CxTngHB-OUGxZBfDx+pj5uRTyjw@mail.gmail.com>
- <5e625be6.59ff.17ea9aba81e.Coremail.xuyang_jy_0410@163.com>
-In-Reply-To: <5e625be6.59ff.17ea9aba81e.Coremail.xuyang_jy_0410@163.com>
+References: <20220201094451.7651-1-pvorel@suse.cz> <YfkMR3oM/QD9a3I9@yuki>
+ <YfkPfjqRz9j2Jbuw@pevik>
+ <CAEemH2di8y4qiyn45EOgdxQo-oebEsZRhYmyCfkifpvS1rpsaw@mail.gmail.com>
+ <YfkueuaAfXqVGOO5@yuki> <YflOvov3Ui9OxRPf@pevik>
+In-Reply-To: <YflOvov3Ui9OxRPf@pevik>
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 2 Feb 2022 10:59:20 +0800
-Message-ID: <CAEemH2erJ_Gb0hMQ5Z=OTkH_bP1wGcJ1_+oQsWR6tLhWUVPQeQ@mail.gmail.com>
-To: xuyang <xuyang_jy_0410@163.com>
+Date: Wed, 2 Feb 2022 11:16:40 +0800
+Message-ID: <CAEemH2ff=hhWw=xKoaKz7cixCYQbh=iy6b202ZmtwL+b2c9stQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] lib: Print in summary also tests not run
- at all
+Subject: Re: [LTP] [PATCH 1/1] ci: Remove CentOS 8
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,92 +85,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1080307728=="
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1080307728==
-Content-Type: multipart/alternative; boundary="000000000000252dc805d7003575"
-
---000000000000252dc805d7003575
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Jan 30, 2022 at 2:43 PM xuyang <xuyang_jy_0410@163.com> wrote:
-
-> Yes=EF=BC=8Cbut it still be wrong if we use serval TPASS in sub test case=
-.
+On Tue, Feb 1, 2022 at 11:22 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
+> > Hi!
+> > > > We have CentOS 7 (EOL 2024) and also fedora:latest, which is 35
+> > > > (their devel called rawhide is currently 36).
+>
+> > > Is there any possibility to convert from CentOS 8 to CentOS Stream 8?
+>
+> > Is there an official docker image for it? As far as I can tell I do not
+> > see it at: https://hub.docker.com/_/centos
+>
+> Here some unofficial:
+> https://hub.docker.com/r/tgagor/centos-stream
+> => I'm not sure if we want to use unofficial
+>
+> which also mention official at quay.io:
+> https://quay.io/repository/centos/centos?tab=tags
+> => we'd have to figure out how they could work with GitHub Actions.
+> Li, feel free to look into it.
 
-We can simply avoid that by skipping tst_test->forks_child. But in this cas=
-e
-limited the scope of the "not-run" uses. TBH, I haven't come up with a
-perfect
-idea to satisfy all situations.
+Sure. Thanks for the info.
 
-+               if (tst_test->tcnt && !tst_test->forks_child) {
-+                       fprintf(stderr, "not-run  %d\n",  (tst_test->tcnt *
-test_variants) -
-+                                       results->passed - results->failed -
-results->broken -
-+                                       results->skipped -
-results->warnings);
-+               }
+Ps.
+I'm not good at deploying CI/CD but will try to figure out that.
+Will send a patch if I can achieve it.
 
---=20
+
+-- 
 Regards,
 Li Wang
-
---000000000000252dc805d7003575
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Sun, Jan 30, 2022 at 2:43 PM xuyang &lt;<a href=
-=3D"mailto:xuyang_jy_0410@163.com">xuyang_jy_0410@163.com</a>&gt; wrote:<br=
-></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;=
-border-left:1px solid rgb(204,204,204);padding-left:1ex">
-
-   =20
-
-<div>
-<div style=3D"line-height:1.6;font-family:=E8=8B=B9=E6=96=B9,=E5=BE=AE=E8=
-=BD=AF=E9=9B=85=E9=BB=91,&quot;sans-serif&quot;">Yes=EF=BC=8Cbut it still b=
-e wrong if we use serval TPASS in sub test case.<br></div></div></blockquot=
-e><div><br></div><div class=3D"gmail_default" style=3D"font-size:small">We =
-can simply avoid that by skipping tst_test-&gt;forks_child. But in this cas=
-e</div><div class=3D"gmail_default" style=3D"font-size:small">limited the s=
-cope of the &quot;not-run&quot; uses. TBH, I haven&#39;t come up with a per=
-fect</div><div class=3D"gmail_default" style=3D"font-size:small">idea to sa=
-tisfy all situations.</div><div class=3D"gmail_default" style=3D"font-size:=
-small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">+ =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (tst_test-&gt;tcnt &amp=
-;&amp; !tst_test-&gt;forks_child) {<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 fprintf(stderr, &quot;not-run =
-=C2=A0%d\n&quot;, =C2=A0(tst_test-&gt;tcnt * test_variants) -<br>+ =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 results-&gt;passed - r=
-esults-&gt;failed - results-&gt;broken -<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 results-&gt;skipped - results-&gt;warnings)=
-;<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }</div></div><div><=
-br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"=
-><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000252dc805d7003575--
-
-
---===============1080307728==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1080307728==--
-
