@@ -4,64 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D066C433EF
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 15:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F7F0C433EF
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 15:59:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C4CB3C98ED
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 16:53:23 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 797DD3C98F7
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 16:59:04 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F8B33C9892
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 16:53:14 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 6BC813C9892
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 16:58:56 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4822810011C7
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 16:52:50 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4253821108;
- Wed,  2 Feb 2022 15:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643817170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YQQ9TSSpCYYeEAKBK4xDgF/JBbcpEjuJmGTewrQKJpU=;
- b=GqcDq+efcSG3em5F9iZF0cxV1jDwRzpHxLYP2oucXX+9QHSyf6xq71yPPmunfRNsGZ4IV3
- kjTzdL1FLjuye2BZhmHkbrFnsmFUYxk0h4SCh8piv2l58fPjcwoHQGV1wj3JeosDOSg2PN
- FlatAD1zj8QlNmBqk8aZoziq9FIXFgk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643817170;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YQQ9TSSpCYYeEAKBK4xDgF/JBbcpEjuJmGTewrQKJpU=;
- b=PnYzcRHMxSZ6VTNflUnwXeMXQUT7W0YH8jvNeMGfA37FwFRcV1iflAzebUFiobptc+fPCZ
- cB7tsIfvL7HNEuCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 160DE13E8F;
- Wed,  2 Feb 2022 15:52:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id uG4rBNKo+mEMHwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 02 Feb 2022 15:52:50 +0000
-Date: Wed, 2 Feb 2022 16:54:46 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5D9991401397
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 16:58:12 +0100 (CET)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: krisman) with ESMTPSA id 6C27E1F413B3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1643817491;
+ bh=gypxvvDKG8LXMYwRrXM6M5XchsdQhaATrUYKypq39Lc=;
+ h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+ b=EKLdZKGDedcRgYb/BC/1K/wgsNzp1E7DjKxZ9p+chHUwCU+bevsme1q8s86RVPAI6
+ 86/BI6gYmtRRA2ThhucjV7eIvpp00U0WBSmbPAsFaaQf+MokKE/XcSIswzsx02bTb8
+ Jx/q3qD7mziMGoa6cQ9uUu47dcpo//sYFNUuFu0MObqwVhZjH3Ce3LkWtnBbFNM+xW
+ Go0wquslPtbnhauIXzYjJEjkopIbi5r2/sVe3B53429wI7OW8cR9TOl765JaTcOqGg
+ vLU2WTKuCSEdYfevD+nq/UXp98iYBannVs4zBzsV4T6351v8ie/jccZvnqvHbI4I6A
+ VOBPT5ouNk8RA==
+From: Gabriel Krisman Bertazi <krisman@collabora.com>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YfqpRr6sn8hG7ko6@yuki>
+Organization: Collabora
 References: <20220202142623.18926-1-pvorel@suse.cz>
+Date: Wed, 02 Feb 2022 10:58:04 -0500
+In-Reply-To: <20220202142623.18926-1-pvorel@suse.cz> (Petr Vorel's message of
+ "Wed, 2 Feb 2022 15:26:23 +0100")
+Message-ID: <87sft1gt0z.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220202142623.18926-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] fanotify22: Lower the timeout
 X-BeenThere: ltp@lists.linux.it
@@ -75,22 +58,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Matthew Bobrowski <repnop@google.com>,
- Gabriel Krisman Bertazi <krisman@collabora.com>, ltp@lists.linux.it
+Cc: Matthew Bobrowski <repnop@google.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Petr Vorel <pvorel@suse.cz> writes:
+
+> kernel v5.17-rc1 has a regression which block until the timeout.
+> Thus lower the timeout to 10s (runtime on laptop < 1s, on VM with 2
+> cores < 2s).
+>
 > Suggested-by: Amir Goldstein <amir73il@gmail.com>
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Gabriel Krisman Bertazi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
