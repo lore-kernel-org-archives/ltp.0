@@ -4,49 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F7F0C433EF
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 15:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89118C433F5
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 16:06:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 797DD3C98F7
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 16:59:04 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 62FFE3C98CE
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 17:06:12 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BC813C9892
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 16:58:56 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 39B033C67FA
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 17:06:02 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5D9991401397
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 16:58:12 +0100 (CET)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: krisman) with ESMTPSA id 6C27E1F413B3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1643817491;
- bh=gypxvvDKG8LXMYwRrXM6M5XchsdQhaATrUYKypq39Lc=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=EKLdZKGDedcRgYb/BC/1K/wgsNzp1E7DjKxZ9p+chHUwCU+bevsme1q8s86RVPAI6
- 86/BI6gYmtRRA2ThhucjV7eIvpp00U0WBSmbPAsFaaQf+MokKE/XcSIswzsx02bTb8
- Jx/q3qD7mziMGoa6cQ9uUu47dcpo//sYFNUuFu0MObqwVhZjH3Ce3LkWtnBbFNM+xW
- Go0wquslPtbnhauIXzYjJEjkopIbi5r2/sVe3B53429wI7OW8cR9TOl765JaTcOqGg
- vLU2WTKuCSEdYfevD+nq/UXp98iYBannVs4zBzsV4T6351v8ie/jccZvnqvHbI4I6A
- VOBPT5ouNk8RA==
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-To: Petr Vorel <pvorel@suse.cz>
-Organization: Collabora
-References: <20220202142623.18926-1-pvorel@suse.cz>
-Date: Wed, 02 Feb 2022 10:58:04 -0500
-In-Reply-To: <20220202142623.18926-1-pvorel@suse.cz> (Petr Vorel's message of
- "Wed, 2 Feb 2022 15:26:23 +0100")
-Message-ID: <87sft1gt0z.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7AB3A200AF0
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 17:06:02 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A8A4421108;
+ Wed,  2 Feb 2022 16:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1643817961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LK5OzTyc82UNTRa8rf8jIoZ83St36JRrv5zfsNiXVAw=;
+ b=mSfGd3xJJRbgKO7w1w9SWQFYzLUpzk7cta8oTgRRhhI1vlMQxqu0w47eALDejc+I1drv7T
+ je4Zsjcm33kA8HGI8RNWy3twMcHP/uJYeqmBL/3cFOJhZM4bcSY8X5efUdrKIES9TvMgsN
+ ZuT8p1FyPFdBO4Prhnzj+RE9Z5jWMqw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1643817961;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LK5OzTyc82UNTRa8rf8jIoZ83St36JRrv5zfsNiXVAw=;
+ b=7ZblyjPK9c777e9K1eQUb2CxH7UWn214jAO5Wd+QvepdSCoufiG93nZ35W2jPgbcQx8zg3
+ jS818zr6lX+IZFCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8BACF13E6F;
+ Wed,  2 Feb 2022 16:06:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id P1FcIOmr+mH8JgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 02 Feb 2022 16:06:01 +0000
+Date: Wed, 2 Feb 2022 17:07:57 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Message-ID: <YfqsXZFKZjlf3BWh@yuki>
+References: <20211122080138.55815-1-zhaogongyi@huawei.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20211122080138.55815-1-zhaogongyi@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] fanotify22: Lower the timeout
+Subject: Re: [LTP] [PATCH v2] lib/tst_tmpdir: Add tst_default_rmdir() for
+ old testcases
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,25 +75,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Matthew Bobrowski <repnop@google.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel <pvorel@suse.cz> writes:
+Hi!
+> In some old testcases, cleanup() will not run since it exit
+> form tst_brk. For example, because of the calling of ltp_syscall
+> have no real cleanup when syscall not support, testcase ssetmask01
+> will leave tmp file.
 
-> kernel v5.17-rc1 has a regression which block until the timeout.
-> Thus lower the timeout to 10s (runtime on laptop < 1s, on VM with 2
-> cores < 2s).
->
-> Suggested-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Actually you can pass cleanup to ltp_syscall(), all you need to do is
+ti define CLEANUP before including LTP headers as:
 
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+#define CLEANUP cleanup
+
+#include "test.h"
+...
+...
+
+See the include/old/cleanup.c for details.
+
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> ---
+> v1->v2: add tst_default_rmdir() in tst_tmpdir.c
+> 
+>  lib/tst_tmpdir.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+> index 6e38ae977..0045c7bb6 100644
+> --- a/lib/tst_tmpdir.c
+> +++ b/lib/tst_tmpdir.c
+> @@ -342,6 +342,8 @@ void tst_rmdir(void)
+>  		tst_resm(TWARN, "%s: rmobj(%s) failed: %s",
+>  			 __func__, TESTDIR, errmsg);
+>  	}
+> +
+> +	TESTDIR == NULL;
+
+This is useless statement, it does literaly nothing.
+
+>  }
+> 
+>  void tst_purge_dir(const char *path)
+> @@ -351,3 +353,8 @@ void tst_purge_dir(const char *path)
+>  	if (purge_dir(path, &err))
+>  		tst_brkm(TBROK, NULL, "%s: %s", __func__, err);
+>  }
+> +
+> +void __attribute__((destructor)) tst_default_rmdir(void)
+> +{
+> +	tst_rmdir();
+> +}
+
+I do not think that we should run the tst_rmdir() for all tests like
+this.
+
 
 -- 
-Gabriel Krisman Bertazi
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
