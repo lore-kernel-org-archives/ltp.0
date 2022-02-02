@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E291C433F5
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 14:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 550B6C433F5
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 14:26:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 510403C98B7
-	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 15:22:45 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 82EFD3C98E9
+	for <ltp@archiver.kernel.org>; Wed,  2 Feb 2022 15:26:41 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 886603C8DAA
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 15:22:36 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B7DF33C98C0
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 15:26:32 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D22D91400DA0
- for <ltp@lists.linux.it>; Wed,  2 Feb 2022 15:22:35 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 33D3260096E
+ for <ltp@lists.linux.it>; Wed,  2 Feb 2022 15:26:31 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A680721128;
- Wed,  2 Feb 2022 14:22:34 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6025721136;
+ Wed,  2 Feb 2022 14:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643811754;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EFKOPJuk1IdAkljF/XJSg7G3dUqJ+jpAmQxaqluSBbU=;
- b=AHn7yIdqtPhrxDRq1quEFqpeyTe5jFmr+L60G7vrf005InBjW7ZIR5Cmoeb8sm+G8p+b3p
- 8rJvjhRjss2fujZyaY7nvdc6NsJdnI9SyuuA41jn/PEU+T8vo+mJ36KnwNmdeKQZPiE5bO
- +xhCfm3fFYkgtHfG6ZAXuXtEMnaQRms=
+ t=1643811991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=H+FFhNDg8DjilV/SUBT7SchF4LSPnPLWssl0mMhTXcE=;
+ b=nakCg2InuqrP7AzsUWvLAtZ2LuZqbqOOj/g8Sne6LLq3I2StaWrwOMBw3PCrOMOX3BAjO+
+ TtS76n7XuVr1g+MqD5kcJwWp34OBuj+9jZ+Xo30woCwv1SWgZNsCEJrWcGmibF5YE8xfiX
+ XamL+K2Q1TVkJd939dkMynJwFphspHQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643811754;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EFKOPJuk1IdAkljF/XJSg7G3dUqJ+jpAmQxaqluSBbU=;
- b=UUWSIi2XPje1hcJ2iZr0oQicYBTvjlf0eUnSx/n3fl9kPRuhEUUDeWiqk8ji01vqvA3NLX
- IxVwyP37RTlaWIBw==
+ s=susede2_ed25519; t=1643811991;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=H+FFhNDg8DjilV/SUBT7SchF4LSPnPLWssl0mMhTXcE=;
+ b=pFu288knm1tZFSs9sLhdx3bSUfiiFONXDjMvDKAkChBiV8cmy/i1WjsmWnnqLll5ozTG34
+ sZF7nEMIEnGnb4Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D86E13BBC;
- Wed,  2 Feb 2022 14:22:34 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1468013E64;
+ Wed,  2 Feb 2022 14:26:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RRI9FaqT+mHiaAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 02 Feb 2022 14:22:34 +0000
-Date: Wed, 2 Feb 2022 15:22:32 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id iYqEApeU+mErawAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 02 Feb 2022 14:26:31 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <YfqTqAjEPalXzOK7@pevik>
-References: <20211118235744.802584-1-krisman@collabora.com>
- <YdxN6HBJF+ATgZxP@pevik>
- <CAOQ4uxia2NNMPUCQzjo6Gsnz8xr_9YKTeTqzOu-hgdsjfHHx0w@mail.gmail.com>
+To: ltp@lists.linux.it
+Date: Wed,  2 Feb 2022 15:26:23 +0100
+Message-Id: <20220202142623.18926-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxia2NNMPUCQzjo6Gsnz8xr_9YKTeTqzOu-hgdsjfHHx0w@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 0/9] Test the new fanotify FAN_FS_ERROR event
+Subject: [LTP] [PATCH 1/1] fanotify22: Lower the timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,50 +71,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: kernel@collabora.com, Khazhismel Kumykov <khazhy@google.com>,
- Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.com>,
- Ext4 <linux-ext4@vger.kernel.org>,
- Gabriel Krisman Bertazi <krisman@collabora.com>, LTP List <ltp@lists.linux.it>
+Cc: Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Matthew Bobrowski <repnop@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Amir,
+kernel v5.17-rc1 has a regression which block until the timeout.
+Thus lower the timeout to 10s (runtime on laptop < 1s, on VM with 2
+cores < 2s).
 
-> On Mon, Jan 10, 2022 at 5:16 PM Petr Vorel <pvorel@suse.cz> wrote:
+Suggested-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/fanotify/fanotify22.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > Hi all,
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
+index bd82fbf63d..5173efcbc0 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify22.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
+@@ -305,6 +305,7 @@ static struct tst_test test = {
+ 		{"linux-git", "124e7c61deb2"},
+ 		{}
+ 	},
++	.timeout = 10,
+ 	.needs_cmds = (const char *[]) {
+ 		"debugfs",
+ 		NULL
+-- 
+2.34.1
 
-> > v5.16 released => patchset merged.
-> > Thanks!
-
-
-> Guys,
-
-> Looks like we have a regression.
-> With kernel v5.17-rc1, test fanotify22 blocks on the first test case,
-> because the expected ECORRUPTED event on remount,abort is never received.
-> The multiple error test cases also fail for the same reason.
-
-> Gabriel,
-
-> Are you aware of any ext4 change that could explain this regression?
-
-> In any case, Petr, I suggest adding a short timeout to the test
-> instead of the default 5min.
-> Test takes less than 1 second on my VM on v5.16, so...
-We usually don't lower the default timeout, but here it's a good idea since here
-it blocks. It's similar speed on my machine, but I'd be conservative and put
-timeout 10 sec. Sending patch.
-
-Kind regards,
-Petr
-
-
-> Thanks,
-> Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
