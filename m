@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14ACBC433EF
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 08:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36AE2C433EF
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 08:20:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 04FFD3C98F6
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 09:20:03 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id CB5FC3C98EF
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 09:20:11 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD33A3C98C1
+ by picard.linux.it (Postfix) with ESMTPS id D6B133C98DF
  for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:15 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 110AC6975A5
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 47785600BA7
  for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:15 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A352B21110;
+ by smtp-out1.suse.de (Postfix) with ESMTP id E992E21111;
  Thu,  3 Feb 2022 08:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
  t=1643876354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kHxTlk7J7Dfx6lIwwaESBhLcv9hzb9qa+8frRHBMPds=;
- b=vCMr0CF/c1o/u9yGuPEq61kLc0IQ1oLbvVMLOkbp6O1GA6UA5kYhNz15bLMBy+76QYK+NJ
- HZuYuuF6TGtnSxm5h6hS5WFvvPxsSfneSsaNOul5xPCM+xx+gdx6OjUyTt6dnaH+tvxUWM
- 34kp6dZFoT9nEBjTEAlrNrSofNiVRLM=
+ bh=iGYFGireD2X58lCkDzetpNtVJdpMOIcAJEcVXGfy1mw=;
+ b=TlSXIxVfTS+sgy8VYr2eJ+a/gsEsqgjAchb4CTGn+tVJfuBTEcfJyjObJl/7fx1L5wjEEu
+ G1OMjFJKxEczoLwutoxqnraMbv8pDX/Iz/KGU4iz7YB0yHZf/LlbWC4inDDxB7byc05LKo
+ 4ySt13T4olp1/CnmyZIJdG0jUanP1sc=
 Received: from g78.suse.de (unknown [10.163.24.138])
- by relay2.suse.de (Postfix) with ESMTP id 65EA7A3B81;
+ by relay2.suse.de (Postfix) with ESMTP id B5CC0A3B83;
  Thu,  3 Feb 2022 08:19:14 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Thu,  3 Feb 2022 08:18:19 +0000
-Message-Id: <20220203081820.29521-6-rpalethorpe@suse.com>
+Date: Thu,  3 Feb 2022 08:18:20 +0000
+Message-Id: <20220203081820.29521-7-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220203081820.29521-1-rpalethorpe@suse.com>
 References: <20220203081820.29521-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/5] API/cgroup: Make tst_cgroup_group_mk sprintf
- like
+Subject: [LTP] [PATCH v2 5/5] memcontrol03: Copy from kselftest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,86 +66,302 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Allows the name to be formatted which is trivial because we already
-copy it into a buffer. Also this removes the init function which is
-now just unnecessary verbiage.
+Note that the tolerances had to be increased slightly otherwise the
+test only passed on ext4 in upstream 5.16 on x86_64. In all cases it
+seems more memory is evicted from C than expected and not enough from
+D. This may indicate some tuning is possible, but does not look like a
+serious regression.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_cgroup.h |  5 +++--
- lib/tst_cgroup.c     | 29 ++++++++++++-----------------
- 2 files changed, 15 insertions(+), 19 deletions(-)
+ runtest/controllers                           |   1 +
+ testcases/kernel/controllers/memcg/.gitignore |   1 +
+ .../kernel/controllers/memcg/memcontrol03.c   | 255 ++++++++++++++++++
+ 3 files changed, 257 insertions(+)
+ create mode 100644 testcases/kernel/controllers/memcg/memcontrol03.c
 
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index 17adefd2b..d7a3433fa 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -126,8 +126,9 @@ void tst_cgroup_init(void);
- /* Create a descendant CGroup */
- struct tst_cgroup_group *
- tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
--		    const char *const group_name)
--		    __attribute__ ((nonnull, warn_unused_result));
-+		    const char *const group_name_fmt, ...)
-+	    __attribute__ ((nonnull, warn_unused_result, format (printf, 2, 3)));
+diff --git a/runtest/controllers b/runtest/controllers
+index 09e0107e4..4a6f919af 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -19,6 +19,7 @@ memcg_control		memcg_control_test.sh
+ # kselftest ports
+ memcontrol01 memcontrol01
+ memcontrol02 memcontrol02
++memcontrol03 memcontrol03
+ 
+ cgroup_fj_function_debug cgroup_fj_function.sh debug
+ cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
+diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
+index f7de40d53..49df1582c 100644
+--- a/testcases/kernel/controllers/memcg/.gitignore
++++ b/testcases/kernel/controllers/memcg/.gitignore
+@@ -7,3 +7,4 @@
+ /stress/memcg_process_stress
+ memcontrol01
+ memcontrol02
++memcontrol03
+diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
+new file mode 100644
+index 000000000..8f1d7f8c1
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/memcontrol03.c
+@@ -0,0 +1,255 @@
++// SPDX-License-Identifier: GPL-2.0
++/*\
++ *
++ * [Description]
++ *
++ * Conversion of the third kself test in cgroup/test_memcontrol.c.
++ *
++ * Original description:
++ * "First, this test creates the following hierarchy:
++ * A       memory.min = 50M,  memory.max = 200M
++ * A/B     memory.min = 50M,  memory.current = 50M
++ * A/B/C   memory.min = 75M,  memory.current = 50M
++ * A/B/D   memory.min = 25M,  memory.current = 50M
++ * A/B/E   memory.min = 500M, memory.current = 0
++ * A/B/F   memory.min = 0,    memory.current = 50M
++ *
++ * Usages are pagecache, but the test keeps a running
++ * process in every leaf cgroup.
++ * Then it creates A/G and creates a significant
++ * memory pressure in it.
++ *
++ * A/B    memory.current ~= 50M
++ * A/B/C  memory.current ~= 33M
++ * A/B/D  memory.current ~= 17M
++ * A/B/E  memory.current ~= 0
++ *
++ * After that it tries to allocate more than there is unprotected
++ * memory in A available, and checks that memory.min protects
++ * pagecache even in this case."
++ *
++ * memory.min doesn't appear to exist on V1 so we only test on V2 like
++ * the selftest. We do test on more file systems, but not tempfs
++ * becaue it can't evict the page cache without swap. Also we avoid
++ * filesystems which allocate extra memory for buffer heads.
++ *
++ * The tolerances have been increased from the self tests.
++ */
 +
- const char *
- tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
- 		      __attribute__ ((nonnull, warn_unused_result));
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index d9cd6aa8e..66f17575e 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -840,21 +840,6 @@ clear_data:
- 	memset(roots, 0, sizeof(roots));
- }
- 
--__attribute__((nonnull(1)))
--static void cgroup_group_init(struct tst_cgroup_group *const cg,
--			      const char *const group_name)
--{
--	memset(cg, 0, sizeof(*cg));
--
--	if (!group_name)
--		return;
--
--	if (strlen(group_name) > NAME_MAX)
--		tst_brk(TBROK, "Group name is too long");
--
--	strcpy(cg->group_name, group_name);
--}
--
- __attribute__((nonnull(2, 3)))
- static void cgroup_group_add_dir(const struct tst_cgroup_group *const parent,
- 				 struct tst_cgroup_group *const cg,
-@@ -886,14 +871,24 @@ static void cgroup_group_add_dir(const struct tst_cgroup_group *const parent,
- 
- struct tst_cgroup_group *
- tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
--		    const char *const group_name)
-+		    const char *const group_name_fmt, ...)
- {
- 	struct tst_cgroup_group *cg;
- 	struct cgroup_dir *const *dir;
- 	struct cgroup_dir *new_dir;
-+	va_list ap;
-+	size_t name_len;
- 
- 	cg = SAFE_MALLOC(sizeof(*cg));
--	cgroup_group_init(cg, group_name);
-+	memset(cg, 0, sizeof(*cg));
++#define _GNU_SOURCE
 +
-+	va_start(ap, group_name_fmt);
-+	name_len = vsnprintf(cg->group_name, NAME_MAX,
-+			     group_name_fmt, ap);
-+	va_end(ap);
++#include <inttypes.h>
 +
-+	if (name_len >= NAME_MAX)
-+		tst_brk(TBROK, "CGroup name is too long");
- 
- 	for_each_dir(parent, 0, dir) {
- 		new_dir = SAFE_MALLOC(sizeof(*new_dir));
++#include "memcontrol_common.h"
++
++#define TMPDIR "mntdir"
++
++static struct tst_cgroup_group *trunk_cg[3];
++static struct tst_cgroup_group *leaf_cg[4];
++static int fd = -1;
++
++enum checkpoints {
++	CHILD_IDLE,
++	TEST_DONE,
++};
++
++enum trunk_cg {
++	A,
++	B,
++	G
++};
++
++enum leaf_cg {
++	C,
++	D,
++	E,
++	F
++};
++
++static void cleanup_sub_groups(void)
++{
++	size_t i;
++
++	for (i = ARRAY_SIZE(leaf_cg); i > 0; i--) {
++		if (!leaf_cg[i - 1])
++			continue;
++
++		TST_CHECKPOINT_WAKE2(TEST_DONE,
++				     ARRAY_SIZE(leaf_cg) - 1);
++		tst_reap_children();
++		break;
++	}
++
++	for (i = ARRAY_SIZE(leaf_cg); i > 0; i--) {
++		if (!leaf_cg[i - 1])
++			continue;
++
++		leaf_cg[i - 1] = tst_cgroup_group_rm(leaf_cg[i - 1]);
++	}
++
++	for (i = ARRAY_SIZE(trunk_cg); i > 0; i--) {
++		if (!trunk_cg[i - 1])
++			continue;
++
++		trunk_cg[i - 1] = tst_cgroup_group_rm(trunk_cg[i - 1]);
++	}
++}
++
++static void alloc_anon_in_child(const struct tst_cgroup_group *const cg,
++				const size_t size, const int expect_oom)
++{
++	int status;
++	const pid_t pid = SAFE_FORK();
++
++	if (!pid) {
++		SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++
++		tst_res(TINFO, "%d in %s: Allocating anon: %"PRIdPTR,
++		getpid(), tst_cgroup_group_name(cg), size);
++		alloc_anon(size);
++		exit(0);
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++
++	if (!expect_oom) {
++		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++			return;
++	} else {
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
++			return;
++	}
++
++	tst_res(TFAIL,
++		"Expected child %d to %s, but instead %s",
++		pid,
++		expect_oom ? "be killed" : "exit(0)",
++		tst_strstatus(status));
++}
++
++static void alloc_pagecache_in_child(const struct tst_cgroup_group *const cg,
++				     const size_t size)
++{
++	const pid_t pid = SAFE_FORK();
++
++	if (pid) {
++		TST_CHECKPOINT_WAIT(CHILD_IDLE);
++		return;
++	}
++
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++
++	tst_res(TINFO, "PID %d in %s: Allocating pagecache: %"PRIdPTR,
++		getpid(), tst_cgroup_group_name(cg), size);
++	alloc_pagecache(fd, size);
++
++	TST_CHECKPOINT_WAKE(CHILD_IDLE);
++	TST_CHECKPOINT_WAIT(TEST_DONE);
++	exit(0);
++}
++
++static void test_memcg_min(void)
++{
++	long c[4];
++	unsigned int i;
++	size_t attempts;
++
++	fd = SAFE_OPEN(TMPDIR"/tmpfile", O_RDWR | O_CREAT, 0600);
++	trunk_cg[A] = tst_cgroup_group_mk(tst_cgroup, "trunk_A");
++
++	SAFE_CGROUP_SCANF(trunk_cg[A], "memory.min", "%ld", c);
++	if (c[0]) {
++		tst_brk(TCONF,
++			"memory.min already set to %ld on parent group", c[0]);
++	}
++
++	if (!TST_CGROUP_VER_IS_V1(trunk_cg[A], "memory")) {
++		SAFE_CGROUP_PRINT(trunk_cg[A], "cgroup.subtree_control",
++				  "+memory");
++	}
++	SAFE_CGROUP_PRINT(trunk_cg[A], "memory.max", "200M");
++	SAFE_CGROUP_PRINT(trunk_cg[A], "memory.swap.max", "0");
++
++	trunk_cg[B] = tst_cgroup_group_mk(trunk_cg[A], "trunk_B");
++	if (!TST_CGROUP_VER_IS_V1(trunk_cg[A], "memory")) {
++		SAFE_CGROUP_PRINT(trunk_cg[B], "cgroup.subtree_control",
++				  "+memory");
++	}
++
++	trunk_cg[G] = tst_cgroup_group_mk(trunk_cg[A], "trunk_G");
++
++	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++) {
++		leaf_cg[i] = tst_cgroup_group_mk(trunk_cg[B],
++						 "leaf_%c", 'C' + i);
++
++		if (i == E)
++			continue;
++
++		alloc_pagecache_in_child(leaf_cg[i], MB(50));
++	}
++
++	SAFE_CGROUP_PRINT(trunk_cg[A], "memory.min", "50M");
++	SAFE_CGROUP_PRINT(trunk_cg[B], "memory.min", "50M");
++	SAFE_CGROUP_PRINT(leaf_cg[C], "memory.min", "75M");
++	SAFE_CGROUP_PRINT(leaf_cg[D], "memory.min", "25M");
++	SAFE_CGROUP_PRINT(leaf_cg[E], "memory.min", "500M");
++	SAFE_CGROUP_PRINT(leaf_cg[F], "memory.min", "0");
++
++	for (attempts = 0; attempts < 5; attempts++) {
++		SAFE_CGROUP_SCANF(trunk_cg[B], "memory.current", "%ld", c);
++		if (values_close(c[0], MB(150), 3))
++			break;
++
++		sleep(1);
++	}
++
++	alloc_anon_in_child(trunk_cg[G], MB(148), 0);
++
++	SAFE_CGROUP_SCANF(trunk_cg[B], "memory.current", "%ld", c);
++	TST_EXP_EXPR(values_close(c[0], MB(50), 5),
++		     "(A/B memory.current=%ld) ~= %d", c[0], MB(50));
++
++	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++)
++		SAFE_CGROUP_SCANF(leaf_cg[i], "memory.current", "%ld", c + i);
++
++	TST_EXP_EXPR(values_close(c[0], MB(33), 20),
++		     "(A/B/C memory.current=%ld) ~= %d", c[0], MB(33));
++	TST_EXP_EXPR(values_close(c[1], MB(17), 20),
++		     "(A/B/D memory.current=%ld) ~= %d", c[1], MB(17));
++	TST_EXP_EXPR(values_close(c[2], 0, 1),
++		     "(A/B/E memory.current=%ld) ~= 0", c[2]);
++
++	alloc_anon_in_child(trunk_cg[G], MB(170), 1);
++
++	SAFE_CGROUP_SCANF(trunk_cg[B], "memory.current", "%ld", c);
++	TST_EXP_EXPR(values_close(c[0], MB(50), 5),
++		     "(A/B memory.current=%ld) ~= %d", c[0], MB(50));
++
++	cleanup_sub_groups();
++	SAFE_CLOSE(fd);
++	SAFE_UNLINK(TMPDIR"/tmpfile");
++}
++
++static void cleanup(void)
++{
++	cleanup_sub_groups();
++	if (fd > -1)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.test_all = test_memcg_min,
++	.mount_device = 1,
++	.dev_min_size = 256,
++	.mntpoint = TMPDIR,
++	.all_filesystems = 1,
++	.skip_filesystems = (const char *const[]){
++		"exfat", "vfat", "fuse", "ntfs", "tmpfs", NULL
++	},
++	.forks_child = 1,
++	.needs_root = 1,
++	.needs_checkpoints = 1,
++	.needs_cgroup_ver = TST_CGROUP_V2,
++	.needs_cgroup_controllers = (const char *const[]){ "memory", NULL },
++};
 -- 
 2.34.1
 
