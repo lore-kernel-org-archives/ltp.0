@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01301C433EF
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 08:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14ACBC433EF
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 08:20:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 16D4F3C98ED
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 09:19:54 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 04FFD3C98F6
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 09:20:03 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 77B5C3C8F8A
+ by picard.linux.it (Postfix) with ESMTPS id CD33A3C98C1
  for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:15 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AD3391000CEA
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:14 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 110AC6975A5
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:15 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 52ECF1F43D;
+ by smtp-out1.suse.de (Postfix) with ESMTP id A352B21110;
  Thu,  3 Feb 2022 08:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
  t=1643876354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=G5U+PGl4JiYRrKRiSwFGxTU6DZohMXpM7JgxF2LJlfI=;
- b=V+/nGBIvZVMwLqs5Nkaidgg0XTObIdpnTslDW4xxyGlXTVuAnR4GvA3t1CWQFhFsFxIN5b
- H+XB4thl9MxOeqf8R9OGqsRojiGUMotr9kaq1R5F8rHC48yTvyFNd4D3CN3imIwhJsvT64
- /wqLwPO6XsC7tGntqfGtd+Qu65WDSts=
+ bh=kHxTlk7J7Dfx6lIwwaESBhLcv9hzb9qa+8frRHBMPds=;
+ b=vCMr0CF/c1o/u9yGuPEq61kLc0IQ1oLbvVMLOkbp6O1GA6UA5kYhNz15bLMBy+76QYK+NJ
+ HZuYuuF6TGtnSxm5h6hS5WFvvPxsSfneSsaNOul5xPCM+xx+gdx6OjUyTt6dnaH+tvxUWM
+ 34kp6dZFoT9nEBjTEAlrNrSofNiVRLM=
 Received: from g78.suse.de (unknown [10.163.24.138])
- by relay2.suse.de (Postfix) with ESMTP id 20F4CA3B81;
+ by relay2.suse.de (Postfix) with ESMTP id 65EA7A3B81;
  Thu,  3 Feb 2022 08:19:14 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Thu,  3 Feb 2022 08:18:18 +0000
-Message-Id: <20220203081820.29521-5-rpalethorpe@suse.com>
+Date: Thu,  3 Feb 2022 08:18:19 +0000
+Message-Id: <20220203081820.29521-6-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220203081820.29521-1-rpalethorpe@suse.com>
 References: <20220203081820.29521-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/5] API/cgroup: Allow formatting of new cg names
+Subject: [LTP] [PATCH v2 4/5] API/cgroup: Make tst_cgroup_group_mk sprintf
+ like
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,7 +67,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Allows the name to be formatted which is trivial because we already
+copy it into a buffer. Also this removes the init function which is
+now just unnecessary verbiage.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 ---
  include/tst_cgroup.h |  5 +++--
  lib/tst_cgroup.c     | 29 ++++++++++++-----------------
