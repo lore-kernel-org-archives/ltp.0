@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B314CC433EF
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 13:50:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69476C433F5
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 16:19:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A281D3C9A87
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 14:50:33 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 42D5B3C9AD9
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 17:19:07 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 5B5BD3C6FE5
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 17:18:58 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 617E03C896C
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 14:50:24 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4CFDB200BB5
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 14:50:22 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 47DE6600C63
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 17:18:57 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 557142114E;
- Thu,  3 Feb 2022 13:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643896222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DA5BD1F440;
+ Thu,  3 Feb 2022 16:18:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643905136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=gWv+zmbMO5teGyf0lpsMIII1zhMlswFZUAe7SE1OdZ0=;
- b=qdov2/hsMjLYMqIkyL/lErGQt/P0vcYBcevJ6y4lF+WDC7KiAdOgisVdNfjfyfVfLEb0Jt
- 5mkitgz4uZlCBJmQbIdhlAPvz1MFK/1C80NkMYtSs/ofHiKLqFwFI4z3dQ0q1Ty7SL6sTy
- sP16F+7ZOAsO77LxsSjrf9DH85Ij/bM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643896222;
+ bh=IaTL73ib5fcFVbJTutP6nWgeFsZjc2v76vH9/dfkI2k=;
+ b=AufKHgae0TJ5znxl4Sl7ZK99TECnxCKUSCHO+a8K5CIXAS7t2FEjTr7+cFN4gqFLhU4T1U
+ PnUW2cG4nOBKyA5+TlwxPb59FZwS5UEKo3bGNCD2zUCrm1tjFz5I1I5cuBOfOedYMKDSqH
+ +x6vMhgZbFBS/nrxs1Tu1K4uKhkXEQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643905136;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=gWv+zmbMO5teGyf0lpsMIII1zhMlswFZUAe7SE1OdZ0=;
- b=HCV5Li8L1DqsuundQA9X9HXoyEumqCzsBSrqCIyqHfTnIVdeI5hIchoN4wLfFThKsFUgMh
- wwPA2O8EZ8VplpDA==
+ bh=IaTL73ib5fcFVbJTutP6nWgeFsZjc2v76vH9/dfkI2k=;
+ b=pyK6YhQwBl0vBgYOdrIX0hkYfGToY1KQs966CsW68rLID9D6/seuak339inNI75J6urSC5
+ goLfVwedy+1HkTDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38F7F13C0F;
- Thu,  3 Feb 2022 13:50:22 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 968E3139F7;
+ Thu,  3 Feb 2022 16:18:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8IBSDZ7d+2EURQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 03 Feb 2022 13:50:22 +0000
-Date: Thu, 3 Feb 2022 14:52:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <YfveE3QtrfAQvTac@yuki>
-References: <20220203081820.29521-1-rpalethorpe@suse.com>
- <20220203081820.29521-7-rpalethorpe@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id OB/HInAA/GEQIAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 03 Feb 2022 16:18:56 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Thu,  3 Feb 2022 17:18:53 +0100
+Message-Id: <20220203161853.29349-3-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220203161853.29349-1-andrea.cervesato@suse.de>
+References: <20220203161853.29349-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220203081820.29521-7-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 5/5] memcontrol03: Copy from kselftest
+Subject: [LTP] [PATCH v5 2/2] Update ltp-aio-stress suites using new options
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,328 +76,251 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Note that the tolerances had to be increased slightly otherwise the
-> test only passed on ext4 in upstream 5.16 on x86_64. In all cases it
-> seems more memory is evicted from C than expected and not enough from
-> D. This may indicate some tuning is possible, but does not look like a
-> serious regression.
-> 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  runtest/controllers                           |   1 +
->  testcases/kernel/controllers/memcg/.gitignore |   1 +
->  .../kernel/controllers/memcg/memcontrol03.c   | 255 ++++++++++++++++++
->  3 files changed, 257 insertions(+)
->  create mode 100644 testcases/kernel/controllers/memcg/memcontrol03.c
-> 
-> diff --git a/runtest/controllers b/runtest/controllers
-> index 09e0107e4..4a6f919af 100644
-> --- a/runtest/controllers
-> +++ b/runtest/controllers
-> @@ -19,6 +19,7 @@ memcg_control		memcg_control_test.sh
->  # kselftest ports
->  memcontrol01 memcontrol01
->  memcontrol02 memcontrol02
-> +memcontrol03 memcontrol03
->  
->  cgroup_fj_function_debug cgroup_fj_function.sh debug
->  cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
-> diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
-> index f7de40d53..49df1582c 100644
-> --- a/testcases/kernel/controllers/memcg/.gitignore
-> +++ b/testcases/kernel/controllers/memcg/.gitignore
-> @@ -7,3 +7,4 @@
->  /stress/memcg_process_stress
->  memcontrol01
->  memcontrol02
-> +memcontrol03
-> diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
-> new file mode 100644
-> index 000000000..8f1d7f8c1
-> --- /dev/null
-> +++ b/testcases/kernel/controllers/memcg/memcontrol03.c
-> @@ -0,0 +1,255 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*\
-> + *
-> + * [Description]
-> + *
-> + * Conversion of the third kself test in cgroup/test_memcontrol.c.
-> + *
-> + * Original description:
-> + * "First, this test creates the following hierarchy:
-> + * A       memory.min = 50M,  memory.max = 200M
-> + * A/B     memory.min = 50M,  memory.current = 50M
-> + * A/B/C   memory.min = 75M,  memory.current = 50M
-> + * A/B/D   memory.min = 25M,  memory.current = 50M
-> + * A/B/E   memory.min = 500M, memory.current = 0
-> + * A/B/F   memory.min = 0,    memory.current = 50M
-> + *
-> + * Usages are pagecache, but the test keeps a running
-> + * process in every leaf cgroup.
-> + * Then it creates A/G and creates a significant
-> + * memory pressure in it.
-> + *
-> + * A/B    memory.current ~= 50M
-> + * A/B/C  memory.current ~= 33M
-> + * A/B/D  memory.current ~= 17M
-> + * A/B/E  memory.current ~= 0
-> + *
-> + * After that it tries to allocate more than there is unprotected
-> + * memory in A available, and checks that memory.min protects
-> + * pagecache even in this case."
-> + *
-> + * memory.min doesn't appear to exist on V1 so we only test on V2 like
-> + * the selftest. We do test on more file systems, but not tempfs
-> + * becaue it can't evict the page cache without swap. Also we avoid
-> + * filesystems which allocate extra memory for buffer heads.
-> + *
-> + * The tolerances have been increased from the self tests.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <inttypes.h>
-> +
-> +#include "memcontrol_common.h"
-> +
-> +#define TMPDIR "mntdir"
-> +
-> +static struct tst_cgroup_group *trunk_cg[3];
-> +static struct tst_cgroup_group *leaf_cg[4];
-> +static int fd = -1;
-> +
-> +enum checkpoints {
-> +	CHILD_IDLE,
-> +	TEST_DONE,
-> +};
-> +
-> +enum trunk_cg {
-> +	A,
-> +	B,
-> +	G
-> +};
-> +
-> +enum leaf_cg {
-> +	C,
-> +	D,
-> +	E,
-> +	F
-> +};
-> +
-> +static void cleanup_sub_groups(void)
-> +{
-> +	size_t i;
-> +
-> +	for (i = ARRAY_SIZE(leaf_cg); i > 0; i--) {
-> +		if (!leaf_cg[i - 1])
-> +			continue;
-> +
-> +		TST_CHECKPOINT_WAKE2(TEST_DONE,
-> +				     ARRAY_SIZE(leaf_cg) - 1);
-> +		tst_reap_children();
-> +		break;
-> +	}
-> +
-> +	for (i = ARRAY_SIZE(leaf_cg); i > 0; i--) {
-> +		if (!leaf_cg[i - 1])
-> +			continue;
-> +
-> +		leaf_cg[i - 1] = tst_cgroup_group_rm(leaf_cg[i - 1]);
-> +	}
-> +
-> +	for (i = ARRAY_SIZE(trunk_cg); i > 0; i--) {
-> +		if (!trunk_cg[i - 1])
-> +			continue;
-> +
-> +		trunk_cg[i - 1] = tst_cgroup_group_rm(trunk_cg[i - 1]);
-> +	}
-> +}
-> +
-> +static void alloc_anon_in_child(const struct tst_cgroup_group *const cg,
-> +				const size_t size, const int expect_oom)
-> +{
-> +	int status;
-> +	const pid_t pid = SAFE_FORK();
-> +
-> +	if (!pid) {
-> +		SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
-> +
-> +		tst_res(TINFO, "%d in %s: Allocating anon: %"PRIdPTR,
-> +		getpid(), tst_cgroup_group_name(cg), size);
-> +		alloc_anon(size);
-> +		exit(0);
-> +	}
-> +
-> +	SAFE_WAITPID(pid, &status, 0);
-> +
-> +	if (!expect_oom) {
-> +		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-> +			return;
-> +	} else {
-> +		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
-> +			return;
-> +	}
+Adapted runtest files according with the new aio-stress test
+modifications.
 
-Maybe we should print TPASS in these as well to complement the TFAIL
-below. Also the negation in !expect_oom is kind of useless since we
-handle both cases anyways.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+---
+ runtest/ltp-aio-stress.part1 | 147 +++++++++++++++++------------------
+ runtest/ltp-aio-stress.part2 |  65 +++++++---------
+ 2 files changed, 101 insertions(+), 111 deletions(-)
 
-> +	tst_res(TFAIL,
-> +		"Expected child %d to %s, but instead %s",
-> +		pid,
-> +		expect_oom ? "be killed" : "exit(0)",
-> +		tst_strstatus(status));
-> +}
-> +
-> +static void alloc_pagecache_in_child(const struct tst_cgroup_group *const cg,
-> +				     const size_t size)
-> +{
-> +	const pid_t pid = SAFE_FORK();
-> +
-> +	if (pid) {
-> +		TST_CHECKPOINT_WAIT(CHILD_IDLE);
-> +		return;
-> +	}
-> +
-> +	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
-> +
-> +	tst_res(TINFO, "PID %d in %s: Allocating pagecache: %"PRIdPTR,
-> +		getpid(), tst_cgroup_group_name(cg), size);
-> +	alloc_pagecache(fd, size);
-> +
-> +	TST_CHECKPOINT_WAKE(CHILD_IDLE);
-> +	TST_CHECKPOINT_WAIT(TEST_DONE);
-> +	exit(0);
-> +}
-> +
-> +static void test_memcg_min(void)
-> +{
-> +	long c[4];
-> +	unsigned int i;
-> +	size_t attempts;
-> +
-> +	fd = SAFE_OPEN(TMPDIR"/tmpfile", O_RDWR | O_CREAT, 0600);
-> +	trunk_cg[A] = tst_cgroup_group_mk(tst_cgroup, "trunk_A");
-> +
-> +	SAFE_CGROUP_SCANF(trunk_cg[A], "memory.min", "%ld", c);
-> +	if (c[0]) {
-> +		tst_brk(TCONF,
-> +			"memory.min already set to %ld on parent group", c[0]);
-> +	}
-> +
-> +	if (!TST_CGROUP_VER_IS_V1(trunk_cg[A], "memory")) {
-> +		SAFE_CGROUP_PRINT(trunk_cg[A], "cgroup.subtree_control",
-> +				  "+memory");
-> +	}
-> +	SAFE_CGROUP_PRINT(trunk_cg[A], "memory.max", "200M");
-> +	SAFE_CGROUP_PRINT(trunk_cg[A], "memory.swap.max", "0");
-> +
-> +	trunk_cg[B] = tst_cgroup_group_mk(trunk_cg[A], "trunk_B");
-> +	if (!TST_CGROUP_VER_IS_V1(trunk_cg[A], "memory")) {
-> +		SAFE_CGROUP_PRINT(trunk_cg[B], "cgroup.subtree_control",
-> +				  "+memory");
-> +	}
-
-Don't we require V2 for the whole test anyways?
-
-Also I think I asked if this si really needed in v1, don't we enable the
-required subgroups in group_mk() anyways?
-
-> +	trunk_cg[G] = tst_cgroup_group_mk(trunk_cg[A], "trunk_G");
-> +
-> +	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++) {
-> +		leaf_cg[i] = tst_cgroup_group_mk(trunk_cg[B],
-> +						 "leaf_%c", 'C' + i);
-> +
-> +		if (i == E)
-> +			continue;
-> +
-> +		alloc_pagecache_in_child(leaf_cg[i], MB(50));
-> +	}
-> +
-> +	SAFE_CGROUP_PRINT(trunk_cg[A], "memory.min", "50M");
-> +	SAFE_CGROUP_PRINT(trunk_cg[B], "memory.min", "50M");
-> +	SAFE_CGROUP_PRINT(leaf_cg[C], "memory.min", "75M");
-> +	SAFE_CGROUP_PRINT(leaf_cg[D], "memory.min", "25M");
-> +	SAFE_CGROUP_PRINT(leaf_cg[E], "memory.min", "500M");
-> +	SAFE_CGROUP_PRINT(leaf_cg[F], "memory.min", "0");
-> +
-> +	for (attempts = 0; attempts < 5; attempts++) {
-> +		SAFE_CGROUP_SCANF(trunk_cg[B], "memory.current", "%ld", c);
-> +		if (values_close(c[0], MB(150), 3))
-> +			break;
-> +
-> +		sleep(1);
-> +	}
-> +
-> +	alloc_anon_in_child(trunk_cg[G], MB(148), 0);
-> +
-> +	SAFE_CGROUP_SCANF(trunk_cg[B], "memory.current", "%ld", c);
-> +	TST_EXP_EXPR(values_close(c[0], MB(50), 5),
-> +		     "(A/B memory.current=%ld) ~= %d", c[0], MB(50));
-> +
-> +	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++)
-> +		SAFE_CGROUP_SCANF(leaf_cg[i], "memory.current", "%ld", c + i);
-> +
-> +	TST_EXP_EXPR(values_close(c[0], MB(33), 20),
-> +		     "(A/B/C memory.current=%ld) ~= %d", c[0], MB(33));
-> +	TST_EXP_EXPR(values_close(c[1], MB(17), 20),
-> +		     "(A/B/D memory.current=%ld) ~= %d", c[1], MB(17));
-> +	TST_EXP_EXPR(values_close(c[2], 0, 1),
-> +		     "(A/B/E memory.current=%ld) ~= 0", c[2]);
-> +
-> +	alloc_anon_in_child(trunk_cg[G], MB(170), 1);
-> +
-> +	SAFE_CGROUP_SCANF(trunk_cg[B], "memory.current", "%ld", c);
-> +	TST_EXP_EXPR(values_close(c[0], MB(50), 5),
-> +		     "(A/B memory.current=%ld) ~= %d", c[0], MB(50));
-> +
-> +	cleanup_sub_groups();
-> +	SAFE_CLOSE(fd);
-> +	SAFE_UNLINK(TMPDIR"/tmpfile");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	cleanup_sub_groups();
-> +	if (fd > -1)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.cleanup = cleanup,
-> +	.test_all = test_memcg_min,
-> +	.mount_device = 1,
-> +	.dev_min_size = 256,
-> +	.mntpoint = TMPDIR,
-> +	.all_filesystems = 1,
-> +	.skip_filesystems = (const char *const[]){
-> +		"exfat", "vfat", "fuse", "ntfs", "tmpfs", NULL
-> +	},
-> +	.forks_child = 1,
-> +	.needs_root = 1,
-> +	.needs_checkpoints = 1,
-> +	.needs_cgroup_ver = TST_CGROUP_V2,
-> +	.needs_cgroup_controllers = (const char *const[]){ "memory", NULL },
-> +};
-> -- 
-> 2.34.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/runtest/ltp-aio-stress.part1 b/runtest/ltp-aio-stress.part1
+index a770a40ae..656e71872 100644
+--- a/runtest/ltp-aio-stress.part1
++++ b/runtest/ltp-aio-stress.part1
+@@ -1,79 +1,74 @@
+ #DESCRIPTION:ltp A-sync IO Stress IO tests
+ #
+-# aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
+-#                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
+-#                 file1 [file2 ...]
+-#       -a size in KB at which to align buffers
+-#       -b max number of iocbs to give io_submit at once
+-#       -c number of io contexts per file
+-#       -C offset between contexts, default 2MB
+-#       -s size in MB of the test file(s), default 1024MB
+-#       -r record size in KB used for each io, default 64KB
+-#       -d number of pending aio requests for each file, default 64
+-#       -i number of ios per file sent before switching
+-#          to the next file, default 8
+-#       -O Use O_DIRECT (not available in 2.4 kernels),
+-#       -S Use O_SYNC for writes
+-#       -o add an operation to the list: write=0, read=1,
+-#          random write=2, random read=3.
+-#          repeat -o to specify multiple ops: -o 0 -o 1 etc.
+-#       -m shm use ipc shared memory for io buffers instead of malloc
+-#       -m shmfs mmap a file in /dev/shm for io buffers
+-#       -n no fsyncs between write stage and read stage
+-#       -l print io_submit latencies after each stage
+-#       -t number of threads to run
+-#       -v verification of bytes written
+-#       -x turn off thread stonewalling
+-#       -h this message
++# -f       Number of files to generate
++# -b       Max number of iocbs to give io_submit at once
++# -c       Number of io contexts per file
++# -g       Offset between contexts (default 2M)
++# -s       Size in MB of the test file(s) (default 1024M)
++# -r       Record size in KB used for each io (default 64K)
++# -d       Number of pending aio requests for each file (default 64)
++# -e       Number of I/O per file sent before switching to the next file (default 8)
++# -a       Total number of ayncs I/O the program will run, default is run until Cntl-C
++# -O       Use O_DIRECT (not available in 2.4 kernels)
++# -S       Use O_SYNC for writes
++# -o       Add an operation to the list: write=0, read=1, random write=2, random read=3
++# -m       SHM use ipc shared memory for io buffers instead of malloc
++# -n       No fsyncs between write stage and read stage
++# -l       Print io_submit latencies after each stage
++# -L       Print io completion latencies after each stage
++# -t       Number of threads to run
++# -u       Unlink files after completion
++# -v       Verification of bytes written
++# -x       Turn off thread stonewalling
+ #
+-ADS1000 aio-stress -I500  -o2 -S -r4   $TMPDIR/file1
+-ADS1001 aio-stress -I500  -o2 -S -r8   $TMPDIR/file1
+-ADS1002 aio-stress -I500  -o2 -S -r16  $TMPDIR/file1
+-ADS1003 aio-stress -I500  -o2 -S -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1004 aio-stress -I500  -o2 -S -r64   $TMPDIR/junkfile $TMPDIR/file2
+-ADS1005 aio-stress -I500  -o3 -S -r4    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1006 aio-stress -I500  -o3 -S -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1007 aio-stress -I500  -o3 -S -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1008 aio-stress -I500  -o3 -S -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
+-ADS1009 aio-stress -I500  -o3 -S -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
+-ADS1010 aio-stress -I500  -o3 -S -r128 -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
+-ADS1011 aio-stress -I500  -o3 -S -r256 -t8  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
+-ADS1012 aio-stress -I500  -o3 -S -r512 -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
+-ADS1013 aio-stress -I500  -o2 -O -r4    -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
+-ADS1014 aio-stress -I500  -o2 -O -r8         $TMPDIR/file1 $TMPDIR/file2
+-ADS1015 aio-stress -I500  -o2 -O -r16        $TMPDIR/file1 $TMPDIR/file2
+-ADS1016 aio-stress -I500  -o2 -O -r32   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1017 aio-stress -I500  -o2 -O -r64   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1018 aio-stress -I500  -o3 -O -r4    -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1019 aio-stress -I500  -o3 -O -r8    -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1020 aio-stress -I500  -o3 -O -r16   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1021 aio-stress -I500  -o3 -O -r32   -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1022 aio-stress -I500  -o3 -O -r64   -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1023 aio-stress -I500  -o3 -O -r128  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1024 aio-stress -I500  -o3 -O -r256  -t8  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
+-ADS1025 aio-stress -I500  -o3 -O -r512  -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1026 aio-stress -I500  -o0 -S -r4    -t8  $TMPDIR/junkfile $TMPDIR/file2       $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1027 aio-stress -I500  -o0 -S -r8           $TMPDIR/file2
+-ADS1028 aio-stress -I500  -o0 -S -r16          $TMPDIR/file2
+-ADS1029 aio-stress -I500  -o0 -S -r32   -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1030 aio-stress -I500  -o0 -S -r64   -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1031 aio-stress -I500  -o1 -S -r4    -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1032 aio-stress -I500  -o1 -S -r8    -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1033 aio-stress -I500  -o1 -S -r16   -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1034 aio-stress -I500  -o1 -S -r32   -t4    $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1035 aio-stress -I500  -o1 -S -r64   -t4    $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1036 aio-stress -I500  -o1 -S -r128  -t4    $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1037 aio-stress -I500  -o1 -S -r256  -t8  $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
+-ADS1038 aio-stress -I500  -o1 -S -r512  -t8  -x $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1039 aio-stress -I500  -o1 -O -r4    -t8  -x  $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1040 aio-stress -I500  -o1 -O -r8    -t2  -x $TMPDIR/junkfile $TMPDIR/file2
+-ADS1041 aio-stress -I500  -o1 -O -r16   -t2  -x  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1042 aio-stress -I500  -o1 -O -r32   -t2   $TMPDIR/junkfile $TMPDIR/file2
+-ADS1043 aio-stress -I500  -o1 -O -r64   -t2   $TMPDIR/junkfile $TMPDIR/file2
+-ADS1044 aio-stress -I500  -o1 -O -r4    -t4   $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8
+-ADS1045 aio-stress -I500  -o1 -O -r8    -t4   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1046 aio-stress -I500  -o1 -O -r16   -t4   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1047 aio-stress -I500  -o1 -O -r32   -t8   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
+-ADS1048 aio-stress -I500  -o1 -O -r64   -t8   $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1049 aio-stress -I500  -o1 -O -r128  -t8   $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1050 aio-stress -I500  -o1 -O -r256  -t2   $TMPDIR/junkfile $TMPDIR/file2
++ADS1000 aio-stress -a500  -o2 -S -r4 -f1
++ADS1001 aio-stress -a500  -o2 -S -r8 -f1
++ADS1002 aio-stress -a500  -o2 -S -r16 -f1
++ADS1003 aio-stress -a500  -o2 -S -r32 -t2 -f2
++ADS1004 aio-stress -a500  -o2 -S -r64 -f2
++ADS1005 aio-stress -a500  -o3 -S -r4 -f2
++ADS1006 aio-stress -a500  -o3 -S -r8 -f2
++ADS1007 aio-stress -a500  -o3 -S -r16 -f2
++ADS1008 aio-stress -a500  -o3 -S -r32 -f4
++ADS1009 aio-stress -a500  -o3 -S -r64 -t4 -f4
++ADS1010 aio-stress -a500  -o3 -S -r128 -t4 -f4
++ADS1011 aio-stress -a500  -o3 -S -r256 -t8 -f8
++ADS1012 aio-stress -a500  -o3 -S -r512 -t8 -f8
++ADS1013 aio-stress -a500  -o2 -O -r4 -t8 -f8
++ADS1014 aio-stress -a500  -o2 -O -r8 -f2
++ADS1015 aio-stress -a500  -o2 -O -r16 -f2
++ADS1016 aio-stress -a500  -o2 -O -r32 -t2 -f2
++ADS1017 aio-stress -a500  -o2 -O -r64 -t2 -f2
++ADS1018 aio-stress -a500  -o3 -O -r4 -t2 -f2
++ADS1019 aio-stress -a500  -o3 -O -r8 -t2 -f2
++ADS1020 aio-stress -a500  -o3 -O -r16 -t2 -f2
++ADS1021 aio-stress -a500  -o3 -O -r32 -t4 -f4
++ADS1022 aio-stress -a500  -o3 -O -r64 -t4 -f4
++ADS1023 aio-stress -a500  -o3 -O -r128 -t4 -f4
++ADS1024 aio-stress -a500  -o3 -O -r256 -t8 -f8
++ADS1025 aio-stress -a500  -o3 -O -r512 -t8 -f8
++ADS1026 aio-stress -a500  -o0 -S -r4 -t8 -f8
++ADS1027 aio-stress -a500  -o0 -S -r8 -f1
++ADS1028 aio-stress -a500  -o0 -S -r16 -f1
++ADS1029 aio-stress -a500  -o0 -S -r32 -t2 -f2
++ADS1030 aio-stress -a500  -o0 -S -r64 -t2 -f2
++ADS1031 aio-stress -a500  -o1 -S -r4 -t2 -f1
++ADS1032 aio-stress -a500  -o1 -S -r8 -t2 -f1
++ADS1033 aio-stress -a500  -o1 -S -r16 -t2 -f2
++ADS1034 aio-stress -a500  -o1 -S -r32 -t4 -f4
++ADS1035 aio-stress -a500  -o1 -S -r64 -t4 -f4
++ADS1036 aio-stress -a500  -o1 -S -r128 -t4 -f4
++ADS1037 aio-stress -a500  -o1 -S -r256 -t8 -f8
++ADS1038 aio-stress -a500  -o1 -S -r512 -t8 -f8
++ADS1039 aio-stress -a500  -o1 -O -r4 -t8 -f8
++ADS1040 aio-stress -a500  -o1 -O -r8 -t2 -f2
++ADS1041 aio-stress -a500  -o1 -O -r16 -t2 -f2
++ADS1042 aio-stress -a500  -o1 -O -r32 -t2 -f2
++ADS1043 aio-stress -a500  -o1 -O -r64 -t2 -f2
++ADS1044 aio-stress -a500  -o1 -O -r4 -t4 -f4
++ADS1045 aio-stress -a500  -o1 -O -r8 -t4 -f4
++ADS1046 aio-stress -a500  -o1 -O -r16 -t4 -f4
++ADS1047 aio-stress -a500  -o1 -O -r32 -t8 -f8
++ADS1048 aio-stress -a500  -o1 -O -r64 -t8 -f8
++ADS1049 aio-stress -a500  -o1 -O -r128 -t8 -f8
++ADS1050 aio-stress -a500  -o1 -O -r256 -t2 -f2
+diff --git a/runtest/ltp-aio-stress.part2 b/runtest/ltp-aio-stress.part2
+index 3a60e23e9..e1b837a39 100644
+--- a/runtest/ltp-aio-stress.part2
++++ b/runtest/ltp-aio-stress.part2
+@@ -1,38 +1,33 @@
+ #DESCRIPTION:ltp A-sync IO Stress IO tests
+ #
+-# aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
+-#                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
+-#                 file1 [file2 ...]
+-#       -a size in KB at which to align buffers
+-#       -b max number of iocbs to give io_submit at once
+-#       -c number of io contexts per file
+-#       -C offset between contexts, default 2MB
+-#       -s size in MB of the test file(s), default 1024MB
+-#       -r record size in KB used for each io, default 64KB
+-#       -d number of pending aio requests for each file, default 64
+-#       -i number of ios per file sent before switching
+-#          to the next file, default 8
+-#       -O Use O_DIRECT (not available in 2.4 kernels),
+-#       -S Use O_SYNC for writes
+-#       -o add an operation to the list: write=0, read=1,
+-#          random write=2, random read=3.
+-#          repeat -o to specify multiple ops: -o 0 -o 1 etc.
+-#       -m shm use ipc shared memory for io buffers instead of malloc
+-#       -m shmfs mmap a file in /dev/shm for io buffers
+-#       -n no fsyncs between write stage and read stage
+-#       -l print io_submit latencies after each stage
+-#       -t number of threads to run
+-#       -v verification of bytes written
+-#       -x turn off thread stonewalling
+-#       -h this message
++# -f       Number of files to generate
++# -b       Max number of iocbs to give io_submit at once
++# -c       Number of io contexts per file
++# -g       Offset between contexts (default 2M)
++# -s       Size in MB of the test file(s) (default 1024M)
++# -r       Record size in KB used for each io (default 64K)
++# -d       Number of pending aio requests for each file (default 64)
++# -e       Number of I/O per file sent before switching to the next file (default 8)
++# -a       Total number of ayncs I/O the program will run, default is run until Cntl-C
++# -O       Use O_DIRECT (not available in 2.4 kernels)
++# -S       Use O_SYNC for writes
++# -o       Add an operation to the list: write=0, read=1, random write=2, random read=3
++# -m       SHM use ipc shared memory for io buffers instead of malloc
++# -n       No fsyncs between write stage and read stage
++# -l       Print io_submit latencies after each stage
++# -L       Print io completion latencies after each stage
++# -t       Number of threads to run
++# -u       Unlink files after completion
++# -v       Verification of bytes written
++# -x       Turn off thread stonewalling
+ #
+-ADS2001 aio-stress -I500  -o2 -S -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2002 aio-stress -I500  -o3 -S -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2003 aio-stress -I500  -o3 -S -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2004 aio-stress -I500  -o3 -S -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
+-ADS2005 aio-stress -I500  -o3 -S -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
+-ADS2006 aio-stress -I500  -o2 -O -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2007 aio-stress -I500  -o3 -O -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2008 aio-stress -I500  -o3 -O -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2009 aio-stress -I500  -o3 -O -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
+-ADS2010 aio-stress -I500  -o3 -O -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
++ADS2001 aio-stress -a500  -o2 -S -r32  -t2 -f2
++ADS2002 aio-stress -a500  -o3 -S -r8   -t2 -f2
++ADS2003 aio-stress -a500  -o3 -S -r16  -t2 -f2
++ADS2004 aio-stress -a500  -o3 -S -r32  -t4 -f4
++ADS2005 aio-stress -a500  -o3 -S -r64  -t4 -f4
++ADS2006 aio-stress -a500  -o2 -O -r32  -t2 -f2
++ADS2007 aio-stress -a500  -o3 -O -r8   -t2 -f2
++ADS2008 aio-stress -a500  -o3 -O -r16  -t2 -f2
++ADS2009 aio-stress -a500  -o3 -O -r32  -t4 -f4
++ADS2010 aio-stress -a500  -o3 -O -r64  -t4 -f4
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
