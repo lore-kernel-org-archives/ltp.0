@@ -4,67 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0045FC433F5
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 07:59:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C01FC433F5
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 08:19:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2CD53C98BD
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 08:59:47 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E07CA3C6AF8
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 08:59:39 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id E89E93C98EC
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 09:19:23 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0BC731A00784
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 08:59:38 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ by picard.linux.it (Postfix) with ESMTPS id 71AD83C8F8A
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:14 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EEF081F3A5;
- Thu,  3 Feb 2022 07:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1643875177;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BF237200906
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 09:19:13 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 259FC21111;
+ Thu,  3 Feb 2022 08:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1643876353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3gnhRGlZjo3NseJTm9jfeY3YKsqDlK4PKkAAsHQc2K8=;
- b=UJNqQU2aV61/gi9j4Hz7KsKTfOpU5W5zSJSXXGw+6Fy+knwopJxxJt5bVMEzHnGsynw53d
- 1CBdSSRqKc47zXedIcoeFH6anfD2jPbhOoi8/wFs+yus9U30I+IA8wf8iH4Ug3aHjAm8AT
- MGelURZSNJZdpZcidJrWwd+rWeUkGd4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1643875177;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3gnhRGlZjo3NseJTm9jfeY3YKsqDlK4PKkAAsHQc2K8=;
- b=wvxO/r4YfQXzaOZAxPytnKqG63VKHjQ3Cou6sz137sxiGCSV5jwzpCaVV4pyyU4As8hnfT
- CuQnQTrXlk9CIGCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4EAD13BA0;
- Thu,  3 Feb 2022 07:59:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +8GpKmmL+2GNDQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 03 Feb 2022 07:59:37 +0000
-Date: Thu, 3 Feb 2022 08:59:35 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <YfuLZxav/jI35QQF@pevik>
-References: <20220203061222.625948-1-amir73il@gmail.com>
+ bh=CU37hbo2o5J4fj6vIv/MqGp+YElKsr4wEuMIDGj4Lu4=;
+ b=uhL+IwTWkF4MzN+DpswAy9+ol31r+R7rbh0NJCCO6aCXH80Gef+4zo6q7uo8t7y5VGSxiK
+ x09Z5UMY3lhCJhllnpST1cjFjCJ7FESq3olq9xqHcLxA8Oe+Ak91kGZ1f8WUH79QTzlFhv
+ R7w8se45WY9Y3goazUYOJAPqYZ4xvgE=
+Received: from g78.suse.de (unknown [10.163.24.138])
+ by relay2.suse.de (Postfix) with ESMTP id E95E9A3B81;
+ Thu,  3 Feb 2022 08:19:12 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu,  3 Feb 2022 08:18:15 +0000
+Message-Id: <20220203081820.29521-2-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220203081820.29521-1-rpalethorpe@suse.com>
+References: <20220203081820.29521-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220203061222.625948-1-amir73il@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/inotify: New test for IN_DELETE
- regression
+Subject: [LTP] [PATCH v2 1/5] memcontrol: Lift out some common definitions
+ into a shared header
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,54 +58,139 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Ivan Delalande <colona@arista.com>, Jan Kara <jack@suse.cz>,
- ltp@lists.linux.it
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Amir,
+Some simple functions can be shared between tests. The original
+selftests share a bit more. However this doesn't make as much sense in
+LTP due to library differences.
 
-thanks for this test.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ .../kernel/controllers/memcg/memcontrol02.c   | 32 +------------
+ .../controllers/memcg/memcontrol_common.h     | 48 +++++++++++++++++++
+ 2 files changed, 49 insertions(+), 31 deletions(-)
+ create mode 100644 testcases/kernel/controllers/memcg/memcontrol_common.h
 
-> Check that files cannot be opened after IN_DELETE was reported
-> on them.
+diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
+index 548f36829..d5a24cc0a 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol02.c
++++ b/testcases/kernel/controllers/memcg/memcontrol02.c
+@@ -23,14 +23,7 @@
+  */
+ #define _GNU_SOURCE
+ 
+-#include <stdlib.h>
+-#include <stdio.h>
+-
+-#include "tst_test.h"
+-#include "tst_cgroup.h"
+-
+-#define TMPDIR "mntdir"
+-#define MB(x) (x << 20)
++#include "memcontrol_common.h"
+ 
+ static size_t page_size;
+ static const struct tst_cgroup_group *cg_test;
+@@ -38,20 +31,6 @@ static struct tst_cgroup_group *cg_child;
+ static int fd;
+ static int file_to_all_error = 10;
+ 
+-/*
+- * Checks if two given values differ by less than err% of their
+- * sum. An extra percent is added for every doubling of the page size
+- * to compensate for wastage in page sized allocations.
+- */
+-static inline int values_close(const ssize_t a,
+-			       const ssize_t b,
+-			       const ssize_t err)
+-{
+-	const ssize_t page_adjusted_err = ffs(page_size >> 13) + err;
+-
+-	return 100 * labs(a - b) <= (a + b) * page_adjusted_err;
+-}
+-
+ static void alloc_anon_50M_check(void)
+ {
+ 	const ssize_t size = MB(50);
+@@ -78,15 +57,6 @@ static void alloc_anon_50M_check(void)
+ 		     current, anon);
+ }
+ 
+-static void alloc_pagecache(const int fd, size_t size)
+-{
+-	char buf[BUFSIZ];
+-	size_t i;
+-
+-	for (i = 0; i < size; i += sizeof(buf))
+-		SAFE_WRITE(1, fd, buf, sizeof(buf));
+-}
+-
+ static void alloc_pagecache_50M_check(void)
+ {
+ 	const size_t size = MB(50);
+diff --git a/testcases/kernel/controllers/memcg/memcontrol_common.h b/testcases/kernel/controllers/memcg/memcontrol_common.h
+new file mode 100644
+index 000000000..67f3ca318
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/memcontrol_common.h
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <stdlib.h>
++#include <stdio.h>
++
++#include "tst_test.h"
++#include "tst_cgroup.h"
++
++#define TMPDIR "mntdir"
++#define MB(x) (x << 20)
++
++/*
++ * Checks if two given values differ by less than err% of their
++ * sum. An extra percent is added for every doubling of the page size
++ * to compensate for wastage in page sized allocations.
++ */
++static inline int values_close(const ssize_t a,
++			       const ssize_t b,
++			       const ssize_t err)
++{
++	const size_t page_size = SAFE_SYSCONF(_SC_PAGESIZE);
++	const ssize_t page_adjusted_err = ffs(page_size >> 13) + err;
++
++	return 100 * labs(a - b) <= (a + b) * page_adjusted_err;
++}
++
++static inline void alloc_pagecache(const int fd, size_t size)
++{
++	char buf[BUFSIZ];
++	size_t i;
++
++	SAFE_LSEEK(fd, 0, SEEK_END);
++
++	for (i = 0; i < size; i += sizeof(buf))
++		SAFE_WRITE(1, fd, buf, sizeof(buf));
++}
++
++static inline void alloc_anon(const size_t size)
++{
++	const size_t page_size = SAFE_SYSCONF(_SC_PAGESIZE);
++	char *const buf = SAFE_MALLOC(size);
++	size_t i;
++
++	for (i = 0; i < size; i += page_size)
++		buf[i] = 0;
++
++	free(buf);
++}
+-- 
+2.34.1
 
-> This test is based on the reproducer provided by Ivan Delalande
-> for a regression reported in kernel v5.13:
-> https://lore.kernel.org/linux-fsdevel/YeNyzoDM5hP5LtGW@visor/
-
-> Reported-by: Ivan Delalande <colona@arista.com>
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> ---
-
-> Hi Petr,
-
-> The fix for this regression was applied to stable kernels
-> 5.4.y, 5.10.y, 5.15.y, 5.16.y.
-> The mentioned git tag is only the upstream commit.
-> Feel free to add the stable git tags if you think they are needed.
-FYI we don't track stable git commits which are normally backported
-(vast majority of commits), we track only stable git specific fixes,
-i.e.:
-
-* c4a23c852e80 ("io_uring: Fix current->fs handling in io_sq_wq_submit_work()")
-
-"No upstream commit, this is a fix to a stable 5.4 specific backport."
-
-* cac68d12c531 ("io_uring: grab ->fs as part of async offload")
-
-[ Upstream commits 9392a27d88b9 and ff002b30181d ]
-
-Mentioned at note:
-https://github.com/linux-test-project/ltp/wiki/C-Test-API#138-test-tags
-
-The reason is that user can search simple backports himself.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
