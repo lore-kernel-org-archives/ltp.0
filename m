@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B449C433EF
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 16:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1F7DC433EF
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 17:05:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C45E3C9ABD
-	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 17:19:34 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 7F7CA3C9ACC
+	for <ltp@archiver.kernel.org>; Thu,  3 Feb 2022 18:05:38 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 029013C9AF3
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 17:19:15 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 5263A3C9871
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 18:05:30 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0A51A601259
- for <ltp@lists.linux.it>; Thu,  3 Feb 2022 17:18:56 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C7A251A010C8
+ for <ltp@lists.linux.it>; Thu,  3 Feb 2022 18:05:29 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2D655210F9;
- Thu,  3 Feb 2022 16:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643905136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EB1D11F3AF;
+ Thu,  3 Feb 2022 17:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1643907928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=D67UBDcS37Rviz0nAhy5LZowfpxcYDERc8CQ9ONeaOY=;
- b=RKVn1aSVxKtYr8pXl3tcMt8AynzVj8+dxdfnu91CiQIa0oR5OUM0rYEaWftCZwHwmzDYah
- rOrQHEMkZywKDdLkx0yM/2Lw7JfFIWtyqv+8hKnoGy3f7f38JVkd1hUV3Pb8Uxt/CP3eUp
- QFrbgJonb7tpS3b6ld9uWtI1gF4U8+4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643905136;
+ bh=d7gVBUhdV9vSi1hHDARmL1+gAtLmoGKp5TL9ff04ul8=;
+ b=Ph0m1m/dOfaZVkt8oDE4i9bOiaqVkgohqIldS9xOvy5nJuh92eAFA4a9uz8nKrHAht7slX
+ xRmaBP3QZRRlEQcCDHqxAwxY5bwv6iJ8xEcOqjo1TE3PEbQRhIHjEvABhk5b+twL07ObcK
+ Y1HB6NpeZeKFMjKer5iEBaxo3IZEdMs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1643907928;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=D67UBDcS37Rviz0nAhy5LZowfpxcYDERc8CQ9ONeaOY=;
- b=PwJEdZ9lCEKXmHezvFVbXn1FY+VAsiVzGSYAhfTGoBkoTcFyTbOxOQBH7XeMrW1cJYvrMd
- 3iuqVfrrwS0m1SCQ==
+ bh=d7gVBUhdV9vSi1hHDARmL1+gAtLmoGKp5TL9ff04ul8=;
+ b=SKONZNtAUUl16djZYzFtp8/9AR10qXevV+HaMNQALlRJdcdAQA2eu1IRZVZTO7MP4T2TFR
+ IiN+Qrp1hK/gYwBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D661E139F7;
- Thu,  3 Feb 2022 16:18:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 98CE013A07;
+ Thu,  3 Feb 2022 17:05:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +AdBMm8A/GEQIAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Thu, 03 Feb 2022 16:18:55 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id xN7yIlgL/GEJOAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 03 Feb 2022 17:05:28 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  3 Feb 2022 17:18:51 +0100
-Message-Id: <20220203161853.29349-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.34.1
+Date: Thu,  3 Feb 2022 18:05:20 +0100
+Message-Id: <20220203170522.22051-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 0/2] aio-stress test refactoring
+Subject: [LTP] [PATCH 0/2] Fix SCTP tests on systems with disabled IPv6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,25 +71,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Neil Horman <nhorman@tuxdriver.com>, Vlad Yasevich <vyasevich@gmail.com>,
+ linux-sctp@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Introduced new LTP API in the aio-stress test and updated runtest files
-according with the new test options.
+Hi,
 
-Andrea Cervesato (2):
-  Rewrite aio-stress test using LTP API
-  Update ltp-aio-stress suites using new options
+this is needed for systems which boot with ipv6.disable=1.
+Although we have some discussion what should be the primary repository [1],
+I'd like to get this fixed in LTP sooner than later.
 
- runtest/ltp-aio-stress.part1                | 147 ++-
- runtest/ltp-aio-stress.part2                |  65 +-
- testcases/kernel/io/ltp-aiodio/aio-stress.c | 938 +++++++++-----------
- 3 files changed, 512 insertions(+), 638 deletions(-)
+I could not stop myself to fix little bit of broken formatting (first
+commit), but I can drop it, if that's easier for backporting to the
+other repository.
+
+Kind regards,
+Petr
+
+[1] https://lore.kernel.org/linux-sctp/Yfu4ucYOvXbOqXYt@yuki/T/#md06d317a4200592ed5c3a47ff30884a224c503c9
+
+Petr Vorel (2):
+  sctputil.h: Fix some formatting
+  sctputil.h: TCONF on EAFNOSUPPORT
+
+ utils/sctp/testlib/sctputil.h | 105 ++++++++++++++++++++++++----------
+ 1 file changed, 74 insertions(+), 31 deletions(-)
 
 -- 
-2.34.1
+2.35.1
 
 
 -- 
