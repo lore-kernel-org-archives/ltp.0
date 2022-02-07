@@ -4,78 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B0A5C433FE
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 09:18:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CC41C433EF
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 09:44:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00F7B3C9AC7
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 10:18:08 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A2DE33C9AEC
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 10:44:39 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 630403C9820
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:17:59 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 15ECC3C074D
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:44:30 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 84592600691
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:44:30 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B64EF1F37E;
+ Mon,  7 Feb 2022 09:44:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1644227069;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=r1W7OzTNzWrNEQo3zvFXEUOB6ADZqt9AETzbUldKvaI=;
+ b=Pe5HDDgZEZFCbF/H89Y4azPxAPpIp53d0e8n4qIQWRnnPBgL1GHw3yZ87n2luv0+EXvZhg
+ x9KSca256nFN1PY7YnNKUdWDyMAi9j+kr14JiuWtYojHrfc6oFZKz4GP7SsfMKUkoUJccT
+ /8kzEwM21yZuY1/ySd6IaBmQasNOjBQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1644227069;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=r1W7OzTNzWrNEQo3zvFXEUOB6ADZqt9AETzbUldKvaI=;
+ b=9Ps9RnRqstChnVJa6CBBEeydqT4pE1o+xqt1gnrhGHceHv/PrLAC/SWmlxYiUSTqAYutGp
+ IdxZIT3jpkkcXfCw==
+Received: from g78 (unknown [10.163.24.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CC69D1000993
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:17:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1644225477;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OVTv7cv9JQ1/afqLs27NkwqMrowWgZ+7Sc4P1NdbIsY=;
- b=LCKF+umyUP6R1ST6EnrnNxaTTPPTPs4DRArc3a6VqTpTcDL32M3z2RN0krjOXZFr9uZ+dn
- NkpnRnBU4M6Oxg1Bo0l/NI9HaBFPWklR7kOiwn550LmjwCBqKpYfcmDI2njwXoBGE2ionl
- VWF3+OnrdYgZ3939pyVuLxMYpLGZ2GU=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-284-HvXNsjk0PBezYcGqczObBw-1; Mon, 07 Feb 2022 04:17:56 -0500
-X-MC-Unique: HvXNsjk0PBezYcGqczObBw-1
-Received: by mail-oo1-f72.google.com with SMTP id
- h7-20020a4aa287000000b002eb15de5797so8561844ool.23
- for <ltp@lists.linux.it>; Mon, 07 Feb 2022 01:17:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=OVTv7cv9JQ1/afqLs27NkwqMrowWgZ+7Sc4P1NdbIsY=;
- b=TEBSz+QtJ5NdWyNmEq9BEm781IjgHZgirXnr3KlbUtMJLPiEevfVSHNvPpuRqsCMNN
- DaTNBT3lZVgxvrTvQIdsJZ/Xbg5E/E/VyZAs/cEjELN19lsQ90KZjDDgK8m6d+QcpeLZ
- /Ewf7AVHLomlpHptbH73kbsEmG0f4acTdSvnyjOf4oKgQ3NqMQQI4HYdmaKsjZgtrhcf
- DRPGRIIECDtB5RZs1SjkXA+7b8TI+Xd466GETXWn3wdxRup57wCZfBhxIVtx7zpie0Lf
- l3ReT3dbkwlI+n0OQOv0xHoVF5h42PAF7Ig4uKX6IPeW0TAsnwvw8J9LsdXf8DMwBXvW
- YTBg==
-X-Gm-Message-State: AOAM532Tkhc+XNAzJLM4QBhJWO3hA9vdylQONWG1Y5Kqn0YEG56d8g3n
- HtRwhXs1Oezpj+dzynPdQB8mXGPDrNbJiGLCH/6E8eHjDt7tms6jSRU1ru7ftJmzltoglv3iMtE
- 0RkGfSWERJn6BvZhI6cvWTfuEKEY=
-X-Received: by 2002:a05:6870:822a:: with SMTP id
- n42mr3883714oae.175.1644225475489; 
- Mon, 07 Feb 2022 01:17:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxaQo/6H6IMu7FwTdZxxRYeaOpWveirKZZpbb+ZI6nVt8+dIg0CglX2OKxcUOLNY0aeu5ftnCfdhvVmaCdtEuY=
-X-Received: by 2002:a05:6870:822a:: with SMTP id
- n42mr3883709oae.175.1644225475346; 
- Mon, 07 Feb 2022 01:17:55 -0800 (PST)
+ by relay2.suse.de (Postfix) with ESMTPS id 7A353A3B83;
+ Mon,  7 Feb 2022 09:44:29 +0000 (UTC)
+References: <20220203081820.29521-1-rpalethorpe@suse.com>
+ <20220203081820.29521-6-rpalethorpe@suse.com>
+ <CAEemH2f6PYXGEDrARM7JKCr08K-GEfRa9xJKPLChSG6bnvVpoA@mail.gmail.com>
+ <Yfz5lF4SR0s7bv/N@yuki>
+User-agent: mu4e 1.6.10; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 07 Feb 2022 08:44:33 +0000
+In-reply-to: <Yfz5lF4SR0s7bv/N@yuki>
+Message-ID: <87y22nvwn7.fsf@suse.de>
 MIME-Version: 1.0
-References: <cover.1643980361.git.jstancek@redhat.com>
- <b10d44db50b76cf5332cff491b5f22500b2b88c6.1643980361.git.jstancek@redhat.com>
- <CAEemH2f7=baDouBjo_VwBgVw0a_oT5YSFuOcF=CcWRZGFNi+bQ@mail.gmail.com>
-In-Reply-To: <CAEemH2f7=baDouBjo_VwBgVw0a_oT5YSFuOcF=CcWRZGFNi+bQ@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 7 Feb 2022 10:17:36 +0100
-Message-ID: <CAASaF6w1C9WWHXY36RjdWdUk7pCf=uPzr_x=8CR38nfCA+yBVw@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] tst_test_macros: add TST_EXP_FAIL_SILENT
+Subject: Re: [LTP] [PATCH v2 4/5] API/cgroup: Make tst_cgroup_group_mk
+ sprintf like
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,60 +72,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Sat, Feb 5, 2022 at 4:07 AM Li Wang <liwang@redhat.com> wrote:
->
->
->
-> On Fri, Feb 4, 2022 at 9:14 PM Jan Stancek <jstancek@redhat.com> wrote:
->>
->> This variant does not print TPASS messages when
->> SCALL fails as expected.
->>
->> Signed-off-by: Jan Stancek <jstancek@redhat.com>
->> ---
->>  doc/c-test-api.txt        |  3 +++
->>  include/tst_test_macros.h | 15 ++++++++++-----
->>  2 files changed, 13 insertions(+), 5 deletions(-)
->>
->> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
->> index 6f4de3f80f95..9119e094dbfd 100644
->> --- a/doc/c-test-api.txt
->> +++ b/doc/c-test-api.txt
->> @@ -298,6 +298,9 @@ The 'TST_EXP_FAIL2()' is the same as 'TST_EXP_FAIL()' except the return value is
->>  expected to be non-negative integer if call passes. These macros build upon the
->>  +TEST()+ macro and associated variables.
->>
->> +'TST_EXP_FAIL_SILENT()' and 'TST_EXP_FAIL2_SILENT()' variants are less verbose
->> +and do not print TPASS messages when SCALL fails as expected.
->> +
->>  [source,c]
->>  -------------------------------------------------------------------------------
->>  TEST(socket(AF_INET, SOCK_RAW, 1));
->> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
->> index ec8c38523344..f7de8d00a666 100644
->> --- a/include/tst_test_macros.h
->> +++ b/include/tst_test_macros.h
->> @@ -163,7 +163,7 @@ extern void *TST_RET_PTR;
->>                         TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
->>         } while (0)                                                            \
->>
->> -#define TST_EXP_FAIL_(PASS_COND, SCALL, SSCALL, ERRNO, ...)                    \
->> +#define TST_EXP_FAIL_(SILENT, PASS_COND, SCALL, SSCALL, ERRNO, ...)            \
->
->
-> I think maybe the better way is to define TST_EXP_FAIL_SILENT_
-> but not add a new SILENT parameter. So that it keeps consistent with
-> the existing TST_EXP_PASS_SILENT_ macros.
+Hello,
 
-It looked like smaller change, but I can update it (Along with the
-suggestion to create/delete more directories)
+Cyril Hrubis <chrubis@suse.cz> writes:
 
+> Hi!
+>> Seems this is too strict for some compiling.  e.g.
+>> 
+>> cfs_bandwidth01.c: In function ???mk_cpu_cgroup???:
+>> cfs_bandwidth01.c:64:9: error: format not a string literal and no format
+>> arguments [-Werror=format-security]
+>>    64 |         *cg = tst_cgroup_group_mk(cg_parent, cg_child_name);
+>>       |         ^
+>> cc1: some warnings being treated as errors
+>> make: *** [../../../../include/mk/rules.mk:37: cfs_bandwidth01] Error 1
+>> 
+>> gcc version 11.2.1 20211203 (Red Hat 11.2.1-7) (GCC)
+
+Sorry I should have done a full rebuild.
+
+>
+> Ah, right, that's the __attribute__ format printf. I guess that we would
+> have to live with changing all the calls to
+> tst_cgroup_group_mk(foo, "%s", child_name)
+
+Actually it's just calls where the compiler can't tell if child_name is
+a string literal. Looking at vsnprintf in stdio.h it seems like we
+should be able to add `__attribute__((format(printf,3,0)))` to
+mk_cpu_cgroup and then cg_child_name should be guaranteed to be a string
+literal. Alas it doesn't work, niether does the format_arg attribute in
+this case.
+
+I guess if I made a va arg version of tst_cgroup_group_mk then it would
+work, but this is starting to get silly. So I'll just do "%s".
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
