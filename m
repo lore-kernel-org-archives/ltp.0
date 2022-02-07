@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C018C433F5
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 14:16:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A6E8C433F5
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 14:17:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18E273C9B00
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 15:16:52 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id CF3F23C9B0A
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 15:17:03 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C7783C0720
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 15:16:33 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 1A9FD3C9AF8
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 15:16:37 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2B9E61A0014C
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 15:16:33 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7E57920097D
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 15:16:36 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id BE658210FE;
- Mon,  7 Feb 2022 14:16:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 2ECB71F388;
+ Mon,  7 Feb 2022 14:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1644243392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644243396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=me+7zoVKJp0HYLI4nnapXPAFKVGzKYBf/9XVFM15OaM=;
- b=kyb5rXUijkoQrvZLLxEPxKZIy0qeJqMBGFUs4jcjNuhYZU21ROmWw9ezuUIgVijDmTmquw
- pBDsFybEZybkmfm9Bj/FD8belCokAT2hq+g0henPfAyPlXfk3lo1GTKAPkzx77jvl3mgYG
- ygoXe6q3SaU+ovxaAQAwExDZxjAXkeo=
+ bh=zBQvP2fSVZcaG7RHfkoGX1tCtIlUX3sRq4hZVhuiJ6s=;
+ b=F6OrOBkUaZfx8C8FVdwI4JjKHvid6E41Ce5zUSOH5EnQ0Nb7fMkGOZMtpAwmQcoh94QIVG
+ KAB8+C1kILfVvxUjLqjuMcsyOpDq8ZYU6KrWjfNMtL6zWjWnQGafTI+nK82OsJbnO4dIX/
+ LcTgDEcfjkqwrV9sDuroNeau8Aj+AVU=
 Received: from g78.suse.de (unknown [10.163.24.138])
- by relay2.suse.de (Postfix) with ESMTP id ECFA8A3B81;
- Mon,  7 Feb 2022 14:16:31 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id BD0C4A3B88;
+ Mon,  7 Feb 2022 14:16:35 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Mon,  7 Feb 2022 14:16:14 +0000
-Message-Id: <20220207141618.2844-2-rpalethorpe@suse.com>
+Date: Mon,  7 Feb 2022 14:16:16 +0000
+Message-Id: <20220207141618.2844-4-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220207141618.2844-1-rpalethorpe@suse.com>
 References: <20220207141618.2844-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/5] memcontrol: Lift out some common definitions
- into a shared header
+Subject: [LTP] [PATCH v3 3/5] API/cgroup: Add memory.min
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,130 +66,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some simple functions can be shared between tests. The original
-selftests share a bit more. However this doesn't make as much sense in
-LTP due to library differences.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Li Wang <liwang@redhat.com>
 ---
- .../kernel/controllers/memcg/memcontrol02.c   | 32 +------------
- .../controllers/memcg/memcontrol_common.h     | 48 +++++++++++++++++++
- 2 files changed, 49 insertions(+), 31 deletions(-)
- create mode 100644 testcases/kernel/controllers/memcg/memcontrol_common.h
+ lib/tst_cgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
-index 548f36829..d5a24cc0a 100644
---- a/testcases/kernel/controllers/memcg/memcontrol02.c
-+++ b/testcases/kernel/controllers/memcg/memcontrol02.c
-@@ -23,14 +23,7 @@
-  */
- #define _GNU_SOURCE
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 51b523b80..bb379caf5 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -159,6 +159,7 @@ static const struct cgroup_file cgroup_ctrl_files[] = {
  
--#include <stdlib.h>
--#include <stdio.h>
--
--#include "tst_test.h"
--#include "tst_cgroup.h"
--
--#define TMPDIR "mntdir"
--#define MB(x) (x << 20)
-+#include "memcontrol_common.h"
- 
- static size_t page_size;
- static const struct tst_cgroup_group *cg_test;
-@@ -38,20 +31,6 @@ static struct tst_cgroup_group *cg_child;
- static int fd;
- static int file_to_all_error = 10;
- 
--/*
-- * Checks if two given values differ by less than err% of their
-- * sum. An extra percent is added for every doubling of the page size
-- * to compensate for wastage in page sized allocations.
-- */
--static inline int values_close(const ssize_t a,
--			       const ssize_t b,
--			       const ssize_t err)
--{
--	const ssize_t page_adjusted_err = ffs(page_size >> 13) + err;
--
--	return 100 * labs(a - b) <= (a + b) * page_adjusted_err;
--}
--
- static void alloc_anon_50M_check(void)
- {
- 	const ssize_t size = MB(50);
-@@ -78,15 +57,6 @@ static void alloc_anon_50M_check(void)
- 		     current, anon);
- }
- 
--static void alloc_pagecache(const int fd, size_t size)
--{
--	char buf[BUFSIZ];
--	size_t i;
--
--	for (i = 0; i < size; i += sizeof(buf))
--		SAFE_WRITE(1, fd, buf, sizeof(buf));
--}
--
- static void alloc_pagecache_50M_check(void)
- {
- 	const size_t size = MB(50);
-diff --git a/testcases/kernel/controllers/memcg/memcontrol_common.h b/testcases/kernel/controllers/memcg/memcontrol_common.h
-new file mode 100644
-index 000000000..67f3ca318
---- /dev/null
-+++ b/testcases/kernel/controllers/memcg/memcontrol_common.h
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+
-+#include "tst_test.h"
-+#include "tst_cgroup.h"
-+
-+#define TMPDIR "mntdir"
-+#define MB(x) (x << 20)
-+
-+/*
-+ * Checks if two given values differ by less than err% of their
-+ * sum. An extra percent is added for every doubling of the page size
-+ * to compensate for wastage in page sized allocations.
-+ */
-+static inline int values_close(const ssize_t a,
-+			       const ssize_t b,
-+			       const ssize_t err)
-+{
-+	const size_t page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-+	const ssize_t page_adjusted_err = ffs(page_size >> 13) + err;
-+
-+	return 100 * labs(a - b) <= (a + b) * page_adjusted_err;
-+}
-+
-+static inline void alloc_pagecache(const int fd, size_t size)
-+{
-+	char buf[BUFSIZ];
-+	size_t i;
-+
-+	SAFE_LSEEK(fd, 0, SEEK_END);
-+
-+	for (i = 0; i < size; i += sizeof(buf))
-+		SAFE_WRITE(1, fd, buf, sizeof(buf));
-+}
-+
-+static inline void alloc_anon(const size_t size)
-+{
-+	const size_t page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-+	char *const buf = SAFE_MALLOC(size);
-+	size_t i;
-+
-+	for (i = 0; i < size; i += page_size)
-+		buf[i] = 0;
-+
-+	free(buf);
-+}
+ static const struct cgroup_file memory_ctrl_files[] = {
+ 	{ "memory.current", "memory.usage_in_bytes", CTRL_MEMORY },
++	{ "memory.min", NULL, CTRL_MEMORY },
+ 	{ "memory.max", "memory.limit_in_bytes", CTRL_MEMORY },
+ 	{ "memory.stat", "memory.stat", CTRL_MEMORY },
+ 	{ "memory.swappiness", "memory.swappiness", CTRL_MEMORY },
 -- 
 2.34.1
 
