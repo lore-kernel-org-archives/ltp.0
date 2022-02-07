@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 387C2C433EF
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 15:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 559B3C433F5
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 21:18:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8746D3C9AFB
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 16:43:16 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2001E3C9B0C
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 22:18:39 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A3AC3C986A
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 16:43:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 642503C9179
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 22:18:28 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 60BE12009A6
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 16:43:05 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 609211A00A26
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 22:18:27 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7627A21106;
- Mon,  7 Feb 2022 15:43:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0D0E7210FF;
+ Mon,  7 Feb 2022 21:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644248585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1644268707;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=e90T4DaxBDf7+jXxdZZ5uafjDs1s/SaJD2h20hiBmHcO5TZWkbyszVZnTbJ+PGQAO0tn9F
- EKphectMOgDqqCiJnq9ZP6uk3Eo2fJyeAygqY8lPX+R3fyU4Mc/jDdNwWikMIdWMyDOoj1
- FLlv3vZ5bkXFBo9Zi1k3P0VOBqQjci0=
+ bh=YAoYktXXRGq6qGB9vv83O2AXGbjyqAxnu/RvR2I4ANQ=;
+ b=SUj251bhhyb7ruMUOGkvhGI6/RYwZOvqltbqfcUF6qbRYV2wQ6JLTAOv5BdUO+04WTxjU8
+ tidhzaquCCuG54X23njJyPQkA/2+FZMVAMrgBpL3UwuEsVlbxcpZrQhPFaCqW8Iw1fyxWV
+ YvYNEfb5VLE5pvLHOl6DNFf7/rVIgtg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644248585;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1644268707;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=81lBeDV25SnbpX4kl/NHAIONzbb8ykiXoaCBwY2jN39NZgdBe62uXnOg7f7OXz6zBngPrR
- yKZ2IzgobOcM8PCQ==
+ bh=YAoYktXXRGq6qGB9vv83O2AXGbjyqAxnu/RvR2I4ANQ=;
+ b=7xyhd85UlWEP5b+JzYcLYn9j9g4SRlaXEeO/lyorrVM2RjUbAkRLFtFrHBA4RQMeN27HjO
+ 9Ge7fs1CRmDSkxDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A39813C41;
- Mon,  7 Feb 2022 15:43:05 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C62C613C53;
+ Mon,  7 Feb 2022 21:18:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RCtlFQk+AWKAbAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 07 Feb 2022 15:43:05 +0000
-Date: Mon, 7 Feb 2022 16:45:08 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <YgE+hP/eKw2AhhQE@yuki>
-References: <20220207141618.2844-1-rpalethorpe@suse.com>
- <20220207141618.2844-5-rpalethorpe@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id tdUaLqKMAWJEcgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 07 Feb 2022 21:18:26 +0000
+Date: Mon, 7 Feb 2022 22:18:25 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YgGMoRqNwGJl16Az@pevik>
+References: <20220203061222.625948-1-amir73il@gmail.com>
+ <YgDsIaf5z2rg5tCH@pevik> <YgEw2/ev3gQ05B2Q@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220207141618.2844-5-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <YgEw2/ev3gQ05B2Q@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 4/5] API/cgroup: Make tst_cgroup_group_mk
- sprintf like
+Subject: Re: [LTP] [PATCH] syscalls/inotify: New test for IN_DELETE
+ regression
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,18 +78,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Ivan Delalande <colona@arista.com>, Jan Kara <jack@suse.cz>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Hi Cyril,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi!
+> > > +	/* Kill the child creating / deleting files and wait for it */
+> > > +	SAFE_KILL(pid, SIGKILL);
+> > > +	pid = 0;
+> > > +	SAFE_WAIT(NULL);
+> > Interesting. I didn't figure out why kill and wait cannot be done just in
+> > cleanup.
+
+> I guess that we want to stop the child in the case that we happened to
+> open the deleted file and did abort the testing.
+
+> Technically we send a signal to a zombie process in the case that the
+> bug was not reproduced (as the child exits the verify_inotify() with
+> return it will just do exit(0) once it reaches test library code). But
+> that should be harmless.
+
+> On the other hand I guess that it may make the code a bit more readable
+> if we moved the SAFE_KILL() just after opened = 1 in the inner loop.
+
+Yes, it'd be probably more readable if the code was in after opened = 1.
+But I'm sorry I already merged the original version.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
