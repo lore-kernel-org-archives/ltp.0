@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 676E4C433F5
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 11:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61BE5C433F5
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 11:55:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 592E83C9837
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 12:37:02 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A5F513C9AEB
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 12:55:55 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE8F23C07BD
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 12:36:53 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id F422B3C07BD
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 12:55:45 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 29DDF600768
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 12:36:52 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4A3B4210FD
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 11:36:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1644233812;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eoip4JrZvERW6o8FWwAu6+ltRiQHgWQ7QIrgsMU1Xwc=;
- b=CkC1dIzoFdgfp3gsqyiLQIwQPvi++Fb+btjeUnvRu/+HSgn6PVvFcMmXKUEHdGQMfWdkUV
- WCN/gIYDgn0TMv+ieSuk1xEyBtxI3Z7vOLrlJ9UcxeHj9Z2LOPRGGGka1dTZy1lLNOleyF
- 2g4Gc2pAFS8YJ/u7yRFKeMtdER2wVmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1644233812;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eoip4JrZvERW6o8FWwAu6+ltRiQHgWQ7QIrgsMU1Xwc=;
- b=mhvKmbn1kK4ypIp8CPHK0j2jgydV7MF72+3uUgtY5jY2Vhk0OsGOHk1hawaGMnGZGrqOV2
- cpt/BTbtDp2HMIAg==
-Received: from g78 (unknown [10.163.24.138])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 731F010005FE
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 12:55:44 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 18C2DA3B85;
- Mon,  7 Feb 2022 11:36:52 +0000 (UTC)
-References: <20220203081820.29521-1-rpalethorpe@suse.com>
- <20220203081820.29521-4-rpalethorpe@suse.com> <YfvU6fqZK2d1PKVg@yuki>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 52357210FD;
+ Mon,  7 Feb 2022 11:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1644234944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rBKnMnVxQavYqdVRAeewGfV3vpOGjnIcTgLF5Ail9i0=;
+ b=Y5gouFCjU/a+pWLBdfDSi2W+UvyYxQugpMdnk/rOPnnmrl737sTgLUi2qnFg01S9V/9W3Q
+ xYrOX7Ep+jTfEJqrKGncpA8ShLZlIUltE6PYY/6bGDU8e9MkXmh26AE8GEU5OvGUUkTaVV
+ l7ylTfaBejGq4NEGrnArXArPfjstLLE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1644234944;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rBKnMnVxQavYqdVRAeewGfV3vpOGjnIcTgLF5Ail9i0=;
+ b=SRG+N0o0iBzk5Jr/wmO+PoOOr2AWScrIF6lzDwbg16WeR9h5J/mIdqAc6lSGdorMk6y+E6
+ nm3gYXqVUmRDT7Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A40613B92;
+ Mon,  7 Feb 2022 11:55:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id CtmmBMAIAWIWbgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 07 Feb 2022 11:55:44 +0000
+Date: Mon, 7 Feb 2022 12:55:42 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 07 Feb 2022 11:36:21 +0000
-In-reply-to: <YfvU6fqZK2d1PKVg@yuki>
-Message-ID: <87pmnyx60c.fsf@suse.de>
+Message-ID: <YgEIviW5/HrW4yja@pevik>
+References: <61F36C39.9030806@fujitsu.com>
+ <1643365754-5366-1-git-send-email-daisl.fnst@fujitsu.com>
+ <YgEB9/BvNhgIAl2n@pevik> <YgEDBRSBEUMK3dEF@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YgEDBRSBEUMK3dEF@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/5] API/cgroup: Add memory.min
+Subject: Re: [LTP] [PATCH v4] syscalls/statx09: Add new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,61 +77,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: xuyang2018.jy@cn.fujitsu.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Cyril Hrubis <chrubis@suse.cz> writes:
+Hi all,
 
 > Hi!
->>  static const struct cgroup_file memory_ctrl_files[] = {
->>  	{ "memory.current", "memory.usage_in_bytes", CTRL_MEMORY },
->> +	{ "memory.min", NULL, CTRL_MEMORY },
->
-> This is obviously OK.
->
->>  	{ "memory.max", "memory.limit_in_bytes", CTRL_MEMORY },
->>  	{ "memory.stat", "memory.stat", CTRL_MEMORY },
->>  	{ "memory.swappiness", "memory.swappiness", CTRL_MEMORY },
->> @@ -896,7 +897,7 @@ tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
->>  
->>  	for_each_dir(parent, 0, dir) {
->>  		new_dir = SAFE_MALLOC(sizeof(*new_dir));
->> -		cgroup_dir_mk(*dir, group_name, new_dir);
->> +		cgroup_dir_mk(*dir, cg->group_name, new_dir);
->
-> However this change should go in in a separate ptach.
->
-> I guess that what we do is that we store a pointer passed to us by the
-> user of the API into our structures instead of the copy we made, which
-> is mostly working fine, since we pass pointers to statically allocated
-> strings, but it should be fixed. But please do so in a separate patch.
->
-> If you split this change into two separate patches you can consider both
-> of them to have my Reviewed-by:
+> > > +static void run(unsigned int i)
+> > > +{
+> > > +	tcases[i].tfunc();
+> > > +}
+> > OT: we may lack something in the API, when function like this need to be
+> > defined.
 
-Ah, this should have been in the patch to make it printf like.
+> See:
 
->
->>  		cgroup_group_add_dir(parent, cg, new_dir);
->>  	}
->>  
->> -- 
->> 2.34.1
->> 
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+> https://lists.linux.it/pipermail/ltp/2017-October/005829.html
+> https://lists.linux.it/pipermail/ltp/2017-July/005132.html
+https://lore.kernel.org/ltp/860483630.25581747.1507017497043.JavaMail.zimbra@redhat.com/
+https://lore.kernel.org/ltp/20170727081437.27995-1-chrubis@suse.cz/
 
+Very nice that you remember your old work :) (we didn't have patchwork back then).
 
--- 
-Thank you,
-Richard.
+Now I remember it - you already implemented it in 5 years old RFC, Jan didn't
+see a value and that's why it haven't been merged.
+
+Yes, Jan is right that it complicates code a bit, but even if you replace this
+code:
+
+statx09.c
+static struct test_cases {
+    void (*tfunc)(void);
+} tcases[] = {
+    {&test_flagged},
+    {&test_unflagged},
+};
+
+static void run(unsigned int i)
+{
+    tcases[i].tfunc();
+}
+
+with .test_all where you have the switch it still kind of boilerplate. Thus I
+agree with cyrils argument:
+
+https://lore.kernel.org/ltp/20171003125958.GB11692@rei/
+
+	"aiming to avoid the need to have a switch () in each testcase that
+	implements a similar tests but cannot be easily data driven (as we do
+	for most of tests that loop over an array of structures describing the
+	test data)"
+
+Thus, not sure if we want to rething the implementation, but I'd be for adding
+the support (sure doc and docparse adoption would need to be added but that's
+obvious).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
