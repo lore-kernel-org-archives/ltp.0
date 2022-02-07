@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76A94C433EF
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 09:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B0A5C433FE
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 09:18:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 267433C9B10
-	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 10:16:45 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 00F7B3C9AC7
+	for <ltp@archiver.kernel.org>; Mon,  7 Feb 2022 10:18:08 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CBEE63C07BD
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:16:35 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 630403C9820
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:17:59 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B13BA140021A
- for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:16:34 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CC69D1000993
+ for <ltp@lists.linux.it>; Mon,  7 Feb 2022 10:17:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1644225393;
+ s=mimecast20190719; t=1644225477;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZLmX5S/LNNxm9ZzbzEooCGz3Yu+5pNttWWK5wvTUn/E=;
- b=BnnTaZ4m/bC8hc5d+TPB3YgIOJUvwkwnEN+ICfizE+vdES+RzWsskgKKNINsCqi+1p4upT
- vokSel7XJpWoX2hP5TrFp7lPbO5/xw/L50gI+A8MtWAeIZYWD24Var7qiqmwSYcwkSOsrB
- gNhA0Swdca77I0x+8fYMqQcdLvOkcZQ=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=OVTv7cv9JQ1/afqLs27NkwqMrowWgZ+7Sc4P1NdbIsY=;
+ b=LCKF+umyUP6R1ST6EnrnNxaTTPPTPs4DRArc3a6VqTpTcDL32M3z2RN0krjOXZFr9uZ+dn
+ NkpnRnBU4M6Oxg1Bo0l/NI9HaBFPWklR7kOiwn550LmjwCBqKpYfcmDI2njwXoBGE2ionl
+ VWF3+OnrdYgZ3939pyVuLxMYpLGZ2GU=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-177-6_rDQlSBPjWWoyKRzdAAGg-1; Mon, 07 Feb 2022 04:16:30 -0500
-X-MC-Unique: 6_rDQlSBPjWWoyKRzdAAGg-1
-Received: by mail-ot1-f72.google.com with SMTP id
- l1-20020a9d7341000000b0059c2046f9edso5691567otk.3
- for <ltp@lists.linux.it>; Mon, 07 Feb 2022 01:16:30 -0800 (PST)
+ us-mta-284-HvXNsjk0PBezYcGqczObBw-1; Mon, 07 Feb 2022 04:17:56 -0500
+X-MC-Unique: HvXNsjk0PBezYcGqczObBw-1
+Received: by mail-oo1-f72.google.com with SMTP id
+ h7-20020a4aa287000000b002eb15de5797so8561844ool.23
+ for <ltp@lists.linux.it>; Mon, 07 Feb 2022 01:17:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=ZLmX5S/LNNxm9ZzbzEooCGz3Yu+5pNttWWK5wvTUn/E=;
- b=yYi38mIbYTMkLZ+bvFryarBT2CqcY5di4rlV1PIDxxVRtlggOZkaRn3GJp3Z3FfvqQ
- 9JsQc8achvACzw4H0xmk0gy5VA2BcVQPDnH4J5r6eKF2PnveP6Ia1uZuXtu17VXy4NER
- g3f5oAtaujwMJdfwelbFSDMRkdYiwkCT77a1KSABdAYHv6pMy/XmHO4k4XudVI7X8e7T
- vnO5p0xYv70TH/dCgHpcyO6HQG5RXATOvEhemYQAP5NUohBDVWFNegUtHSVQWzsVXqdC
- //UcBP2FMDFD3PJzgJJNg28ad4fviPqWFY+hP4sNq+8IYFBFED0sxSlU/QtCGa3gdS27
- TOFQ==
-X-Gm-Message-State: AOAM533+EtH5BosMkDv4BfdDGWLnJydi2tRakXC7Rvvzm4OGNRsCWOVP
- HV5DodMgORZfMfNuCIJ/aUl89wfimOEGiTmcXeTxFQHYKSmUPTYYfRoyC0Ox3PNO3MzKgd/qd+u
- MVH4CqSnpe0LnqihEkyRV42Q2H/o=
-X-Received: by 2002:a4a:e705:: with SMTP id y5mr3320021oou.21.1644225389710;
- Mon, 07 Feb 2022 01:16:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwwY8enHi1vXSJ7ODiaPB6zd8CG9B55bqSKyKS3xj3erPad10Pez9kkKy5PdThRqXGfAHsIrWR7ko6EcEfUULw=
-X-Received: by 2002:a4a:e705:: with SMTP id y5mr3320012oou.21.1644225389381;
- Mon, 07 Feb 2022 01:16:29 -0800 (PST)
+ bh=OVTv7cv9JQ1/afqLs27NkwqMrowWgZ+7Sc4P1NdbIsY=;
+ b=TEBSz+QtJ5NdWyNmEq9BEm781IjgHZgirXnr3KlbUtMJLPiEevfVSHNvPpuRqsCMNN
+ DaTNBT3lZVgxvrTvQIdsJZ/Xbg5E/E/VyZAs/cEjELN19lsQ90KZjDDgK8m6d+QcpeLZ
+ /Ewf7AVHLomlpHptbH73kbsEmG0f4acTdSvnyjOf4oKgQ3NqMQQI4HYdmaKsjZgtrhcf
+ DRPGRIIECDtB5RZs1SjkXA+7b8TI+Xd466GETXWn3wdxRup57wCZfBhxIVtx7zpie0Lf
+ l3ReT3dbkwlI+n0OQOv0xHoVF5h42PAF7Ig4uKX6IPeW0TAsnwvw8J9LsdXf8DMwBXvW
+ YTBg==
+X-Gm-Message-State: AOAM532Tkhc+XNAzJLM4QBhJWO3hA9vdylQONWG1Y5Kqn0YEG56d8g3n
+ HtRwhXs1Oezpj+dzynPdQB8mXGPDrNbJiGLCH/6E8eHjDt7tms6jSRU1ru7ftJmzltoglv3iMtE
+ 0RkGfSWERJn6BvZhI6cvWTfuEKEY=
+X-Received: by 2002:a05:6870:822a:: with SMTP id
+ n42mr3883714oae.175.1644225475489; 
+ Mon, 07 Feb 2022 01:17:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxaQo/6H6IMu7FwTdZxxRYeaOpWveirKZZpbb+ZI6nVt8+dIg0CglX2OKxcUOLNY0aeu5ftnCfdhvVmaCdtEuY=
+X-Received: by 2002:a05:6870:822a:: with SMTP id
+ n42mr3883709oae.175.1644225475346; 
+ Mon, 07 Feb 2022 01:17:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20220207040447.2803113-1-liwang@redhat.com>
-In-Reply-To: <20220207040447.2803113-1-liwang@redhat.com>
+References: <cover.1643980361.git.jstancek@redhat.com>
+ <b10d44db50b76cf5332cff491b5f22500b2b88c6.1643980361.git.jstancek@redhat.com>
+ <CAEemH2f7=baDouBjo_VwBgVw0a_oT5YSFuOcF=CcWRZGFNi+bQ@mail.gmail.com>
+In-Reply-To: <CAEemH2f7=baDouBjo_VwBgVw0a_oT5YSFuOcF=CcWRZGFNi+bQ@mail.gmail.com>
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 7 Feb 2022 10:16:10 +0100
-Message-ID: <CAASaF6ytd7ROq_S48NnYWY4-VU+nGjX7NTcgM5aGQG6G0rh_OQ@mail.gmail.com>
+Date: Mon, 7 Feb 2022 10:17:36 +0100
+Message-ID: <CAASaF6w1C9WWHXY36RjdWdUk7pCf=uPzr_x=8CR38nfCA+yBVw@mail.gmail.com>
 To: Li Wang <liwang@redhat.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] getrusage03: skip on small RAM system
+Subject: Re: [LTP] [PATCH v2 1/2] tst_test_macros: add TST_EXP_FAIL_SILENT
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,74 +93,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Feb 7, 2022 at 5:05 AM Li Wang <liwang@redhat.com> wrote:
+On Sat, Feb 5, 2022 at 4:07 AM Li Wang <liwang@redhat.com> wrote:
 >
-> It is easy to get VmSwap increase with a small system, here is
-> run with a 1G RAM kvm guest and TBROK:
 >
->     7   tst_test.c:1365: TINFO: Timeout per run is 0h 05m 00s
->     8   getrusage03.c:43: TPASS: initial.self ~= child.self
->     9   getrusage03.c:57: TPASS: initial.children ~= 100MB
->     10  getrusage03.c:66: TPASS: child.children == 0
->     11  getrusage03.c:84: TPASS: child.children ~= 300MB
->     12  getrusage03.c:104: TPASS: initial.children ~= pre_wait.children
->     13  getrusage03.c:112: TPASS: post_wait.children ~= 400MB
->     14  getrusage03.h:25: TBROK: VmSwap is not zero
->     15  getrusage03.c:133: TPASS: initial.children ~= after_zombie.children
->     16  getrusage03.h:25: TBROK: VmSwap is not zero
->     17  getrusage03_child.c:57: TPASS: initial.self ~= exec.self
->     18  getrusage03_child.c:62: TPASS: initial.children ~= exec.children
 >
-> Signed-off-by: Li Wang <liwang@redhat.com>
+> On Fri, Feb 4, 2022 at 9:14 PM Jan Stancek <jstancek@redhat.com> wrote:
+>>
+>> This variant does not print TPASS messages when
+>> SCALL fails as expected.
+>>
+>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>> ---
+>>  doc/c-test-api.txt        |  3 +++
+>>  include/tst_test_macros.h | 15 ++++++++++-----
+>>  2 files changed, 13 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+>> index 6f4de3f80f95..9119e094dbfd 100644
+>> --- a/doc/c-test-api.txt
+>> +++ b/doc/c-test-api.txt
+>> @@ -298,6 +298,9 @@ The 'TST_EXP_FAIL2()' is the same as 'TST_EXP_FAIL()' except the return value is
+>>  expected to be non-negative integer if call passes. These macros build upon the
+>>  +TEST()+ macro and associated variables.
+>>
+>> +'TST_EXP_FAIL_SILENT()' and 'TST_EXP_FAIL2_SILENT()' variants are less verbose
+>> +and do not print TPASS messages when SCALL fails as expected.
+>> +
+>>  [source,c]
+>>  -------------------------------------------------------------------------------
+>>  TEST(socket(AF_INET, SOCK_RAW, 1));
+>> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+>> index ec8c38523344..f7de8d00a666 100644
+>> --- a/include/tst_test_macros.h
+>> +++ b/include/tst_test_macros.h
+>> @@ -163,7 +163,7 @@ extern void *TST_RET_PTR;
+>>                         TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
+>>         } while (0)                                                            \
+>>
+>> -#define TST_EXP_FAIL_(PASS_COND, SCALL, SSCALL, ERRNO, ...)                    \
+>> +#define TST_EXP_FAIL_(SILENT, PASS_COND, SCALL, SSCALL, ERRNO, ...)            \
+>
+>
+> I think maybe the better way is to define TST_EXP_FAIL_SILENT_
+> but not add a new SILENT parameter. So that it keeps consistent with
+> the existing TST_EXP_PASS_SILENT_ macros.
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
-
-This should fix the immediate failure, just wondering,
-would there be any downside of replacing that TBROK with TCONF?
-
-> ---
->
-> Notes:
->     Ps. I also think we might need .min_mem_[avai|total] field but
->         not sure if it is really necessary to add that.
->
->  testcases/kernel/syscalls/getrusage/getrusage03.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> index bf5127483..5aa0b2326 100644
-> --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> @@ -173,6 +173,14 @@ static void run(unsigned int i)
->         }
->  }
->
-> +static void setup(void)
-> +{
-> +       long long mem_avail = tst_available_mem();
-> +
-> +       if (mem_avail < 512L*1024)
-> +               tst_brk(TCONF, "Needed > 512MB availabe, only have: %ld kB", mem_avail);
-> +}
-> +
->  static struct tst_test test = {
->         .forks_child = 1,
->         .child_needs_reinit = 1,
-> @@ -182,6 +190,7 @@ static struct tst_test test = {
->                 {"linux-git", "1f10206cf8e9"},
->                 {}
->         },
-> +       .setup = setup,
->         .test = run,
->         .tcnt = ARRAY_SIZE(testfunc_list),
->  };
-> --
-> 2.31.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
+It looked like smaller change, but I can update it (Along with the
+suggestion to create/delete more directories)
 
 
 -- 
