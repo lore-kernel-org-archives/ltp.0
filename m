@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE12FC433F5
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 17:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0496FC433F5
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 17:52:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2B28D3C9B54
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 18:36:52 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2DD103C9B54
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 18:52:40 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7DD503C071A
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 18:36:43 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 193E73C071A
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 18:52:30 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E5D311400F8F
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 18:36:42 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5C99C200BA4
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 18:52:29 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E96E9210E7;
- Tue,  8 Feb 2022 17:36:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 70037210F5;
+ Tue,  8 Feb 2022 17:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644341801;
+ t=1644342749;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=i7eZ1n526XqwXHxKHI2VJkQZX7iQAQxoqmx9VUPXeas=;
- b=1as72GaSGybVKWQZgkabayGvi1JTQ39nMnr4OXIHGNU5hpfB4MDVPrX1CGPJ0wORw+syWk
- 0P42NUO41/73o1iA3i/nc5fvVMft5CiFilZ9qAra3hCsoF9pDYK+Po5U79YowaB9Y+G2cE
- Px4vjygxMClEcLPWOWLDrEO7tFPdUGs=
+ bh=WeJLDsmwLBlgdDHrpgR7mXME7NYOqNvS43pMsRTmpOY=;
+ b=bWaH5rteTbJV6hyArp9RZtJQVbiYgm95bQ54/MEP/saaAoUzUDXL5wYQcEBhKPkPVqx8f0
+ qcoPsxbITqKRgdDLJBkRgRv/9ktJguNzvjgtqLPcK7Z6is7hd/YotL2fnbG2hTQyuo7kjE
+ +S0ujyJ8vyefrUq3D4S7Kl5rXcluDMw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644341801;
+ s=susede2_ed25519; t=1644342749;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=i7eZ1n526XqwXHxKHI2VJkQZX7iQAQxoqmx9VUPXeas=;
- b=uqVM4dyM+2MxNLLlngYrNK+KmgX2VXouUzt6nvWvD6Ar8jaAt5yXRMHU8oFzhfGF0LIFR1
- ntVlu+X0hsCl4gAw==
+ bh=WeJLDsmwLBlgdDHrpgR7mXME7NYOqNvS43pMsRTmpOY=;
+ b=JLm6iD4XcN0YbN6k11XfyL6Kh4iiwFIQQ+JCuQ4WlDp7a7UfzicaIMTyIid27M24HiuxLM
+ K8bAqrndysFlvJDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5F121338F;
- Tue,  8 Feb 2022 17:36:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A28B13CDC;
+ Tue,  8 Feb 2022 17:52:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VwvVLSmqAmKnaAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 08 Feb 2022 17:36:41 +0000
-Date: Tue, 8 Feb 2022 18:36:40 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id JgwvEN2tAmIncAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 08 Feb 2022 17:52:29 +0000
+Date: Tue, 8 Feb 2022 18:52:27 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YgKqKM32COAnmxfo@pevik>
-References: <20220126181210.24897-1-pvorel@suse.cz>
- <20220126181210.24897-4-pvorel@suse.cz> <YgJ6dOD7tC+7UQL2@yuki>
+Message-ID: <YgKt20FFsWmNLPT/@pevik>
+References: <20220126145141.13825-1-pvorel@suse.cz>
+ <20220126145141.13825-2-pvorel@suse.cz> <YgJv2+y6v/+Tpb1N@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YgJ6dOD7tC+7UQL2@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <YgJv2+y6v/+Tpb1N@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/5] tst_test.sh: Add $TST_FORMAT_DEVICE and
- related vars
+Subject: Re: [LTP] [PATCH 1/2] tst_test.sh: Print environment variables in
+ help
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,31 +84,58 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
-
-> > +++ b/doc/shell-test-api.txt
-...
-> > +| 'TST_FS_TYPE'            | Overwrite the default filesystem to be used.
->                                   ^
->                                 Override?
-
-+1, thanks!
-
+> Hi!
 > > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-...
-> > +	if [ "$TST_FORMAT_DEVICE" = 1 ]; then
-> > +		tst_mkfs "$TST_FS_TYPE" "$TST_DEVICE" "$TST_DEV_FS_OPTS" "$TST_DEV_EXTRA_OPTS"
+> > index 30614974c3..a7fd7b19c6 100644
+> > --- a/testcases/lib/tst_test.sh
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -448,12 +448,30 @@ tst_usage()
+> >  	if [ -n "$TST_USAGE" ]; then
+> >  		$TST_USAGE
+> >  	else
+> > -		echo "usage: $0"
+> > -		echo "OPTIONS"
+> > +		cat << EOF
+> > +usage: $0
+> > +
+> > +Options
+> > +-------
+> > +EOF
 
-> This would work with the proposed change to tst_mkfs if we swapped the
-> $TST_DEV_FS_OPTS with $TST_DEVICE.
+> I think that the cat EOF syntax inside of else branch is a bit
+> confusing, especially sice it prints just three lines of text...
 
-Do you mean to swap here? i.e.:
-tst_mkfs "$TST_FS_TYPE" "$TST_DEV_FS_OPTS" "$TST_DEVICE" "$TST_DEV_EXTRA_OPTS"
+Good point, I'll replace it with echo.
 
-But in tst_mkfs it has always been the second parameter:
-local device=${2:-$TST_DEVICE}
 
-What am I missing?
+> But other than that:
+
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+How about dropping this?
+echo "usage: $0"
+
+(as a separate commit, I'd sent v2)
+
+Because we don't support it in C API, is it really required to have it in shell.
+
+I mean it's useful to show which options are mandatory or which cannot be
+combined together etc. But in reality most of shell tests does not add it and
+thus they are missing "OPTIONS" line (sure, I can add usage to them if you
+think it's useful).
+
+OTOH some tests have really complex setup, i.e.
+testcases/network/netstress/netstress.c, that adding a support for usage string
+would help them.
+
+If you notice there were extra new lines (\n) to separate client and server side
+to make help at least a bit readable, but Andrea removed them in 98af9ecf9e
+("tst_test: Complete help message adding option before desc"):
+
+git show --word-diff 98af9ecf9e334c07251f2f464191635f161a1603 testcases/network/netstress/netstress.c
+
+These extra lines would not be needed when sort of usage added to C API.
+I can add it, but I'm aware it's so minor, that I'm wasting a time of all of us.
 
 Kind regards,
 Petr
