@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B40ECC433EF
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 14:04:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F29ECC433EF
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 14:11:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F10443C9B53
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 15:04:41 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 788A53C9B50
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 15:11:14 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B19A13C24D6
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 15:04:33 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 058B73C24D6
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 15:11:05 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 389A860019B
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 15:04:32 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 530532009F7
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 15:11:04 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7FEAA210F6;
- Tue,  8 Feb 2022 14:04:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7A13E1F388;
+ Tue,  8 Feb 2022 14:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644329072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644329464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lu7JsNbcP8B+ittO31k03BN/1nuN1Q5GebqpSxs7D6U=;
- b=WSX3vFpjbEIhffCBIIDHV1CUDokZdbGsZzrTY2kLc1/Vo2EiUkZAnnhMoOz1luK0lje1CO
- 0gVsfC+PvAVMGXMhRJLIVcxwqXI7gsTHCYOUHx6GscRa24bdSmQ+UUKc50cKwaZ0qeMSnU
- ZKY3XK4p7xjvNIxiah3HPRaX690IToc=
+ bh=9sA+oKjGoo7ynGsfirJnEmxKx2PUQxQVaZHAhvnKUsY=;
+ b=reqhQTxKzUfBH1Bt4gGd0yppO0JxJwy5pWwAUaq/aS8B8lf1WkE6XrEn3VhnrHGg8WJ+bm
+ /DlCmA+4IZFRxQ6R9X+mf7vOEt5oDwO/Ca+4/4QgbJQlFpDVQpob/pfxBPVS7AcdNlbiqE
+ Lm4pEEsBH46JuHO96peDT/yH0hexjzA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644329072;
+ s=susede2_ed25519; t=1644329464;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lu7JsNbcP8B+ittO31k03BN/1nuN1Q5GebqpSxs7D6U=;
- b=8EnC+ULHl72hDbrGPGY+XTy4m/e/9kUMspzsyIXH3eVcMcfQyAAahh0G3zYMomE22t0WLS
- +8c7XmGBw71TOSCQ==
+ bh=9sA+oKjGoo7ynGsfirJnEmxKx2PUQxQVaZHAhvnKUsY=;
+ b=lefzkB85LQi3hyzS4G7USvxh02HR1CLzjHFZzk1lRBuEpWQXC2Slo+qn5MXyL7cF5JE7eD
+ 6B83pMzjRfY7mbAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6AFFF13C99;
- Tue,  8 Feb 2022 14:04:32 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6663413C99;
+ Tue,  8 Feb 2022 14:11:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lwO4GHB4AmIidgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 08 Feb 2022 14:04:32 +0000
-Date: Tue, 8 Feb 2022 15:06:36 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 4uttF/h5AmKweQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 08 Feb 2022 14:11:04 +0000
+Date: Tue, 8 Feb 2022 15:13:08 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YgJ47NfU3vP3XcyE@yuki>
+Message-ID: <YgJ6dOD7tC+7UQL2@yuki>
 References: <20220126181210.24897-1-pvorel@suse.cz>
- <20220126181210.24897-3-pvorel@suse.cz>
+ <20220126181210.24897-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220126181210.24897-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220126181210.24897-4-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/5] tst_test.sh: tst_mkfs(): Add support for
- extra opts
+Subject: Re: [LTP] [PATCH 3/5] tst_test.sh: Add $TST_FORMAT_DEVICE and
+ related vars
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,67 +82,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Allow to pass options after device name
+On Wed, Jan 26, 2022 at 07:12:08PM +0100, Petr Vorel wrote:
+> i.e.: TST_DEV_EXTRA_OPTS, TST_DEV_FS_OPTS, TST_FS_TYPE
 > (to sync with C API).
 > 
-> NOTE: not adding it to legacy shell API (thus no need to change
-> test_robind.sh).
+> Also stop using pattern 'TST_NEEDS_FOO', sometimes 'NEEDS' just does not
+> fit to variable name.
 > 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/lib/tst_test.sh | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>  doc/shell-test-api.txt    | 9 ++++++++-
+>  testcases/lib/tst_test.sh | 7 ++++++-
+>  2 files changed, 14 insertions(+), 2 deletions(-)
 > 
+> diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
+> index e082808f7e..6605c65b47 100644
+> --- a/doc/shell-test-api.txt
+> +++ b/doc/shell-test-api.txt
+> @@ -189,11 +189,18 @@ space as default value is used. Of course, it's possible to use separate functio
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  
+>  Similarily to the C library various checks and preparations can be requested
+> -simply by setting right '$TST_NEEDS_FOO'.
+> +simply by setting right '$TST_FOO'.
+>  
+>  [options="header"]
+>  |=============================================================================
+>  | Variable name            | Action done
+> +| 'TST_DEV_EXTRA_OPTS'     | Pass additional 'mkfs' options when use 'TST_FORMAT_DEVICE'.
+> +| 'TST_DEV_FS_OPTS'        | Pass extra 'mkfs' options after the device name
+> +|                          | when use 'TST_FORMAT_DEVICE'.
+> +| 'TST_FORMAT_DEVICE'      | Format a block device with a filesystem. See also
+> +|                          | 'TST_DEV_EXTRA_OPTS', 'TST_DEV_FS_OPTS', 'TST_FS_TYPE'.
+> +| 'TST_FS_TYPE'            | Overwrite the default filesystem to be used.
+                                  ^
+                                Override?
+> +|                          | Implies 'TST_NEEDS_DEVICE=1' (no need to set it).
+>  | 'TST_NEEDS_ROOT'         | Exit the test with 'TCONF' unless executed under root.
+>  |                          | Alternatively the 'tst_require_root' command can be used.
+>  | 'TST_NEEDS_TMPDIR'       | Create test temporary directory and cd into it.
 > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index eb3bf0df12..4707613158 100644
+> index 4707613158..49eee8d00f 100644
 > --- a/testcases/lib/tst_test.sh
 > +++ b/testcases/lib/tst_test.sh
-> @@ -343,9 +343,8 @@ tst_mkfs()
->  	[ -z "$fs_type" ] && fs_type="$TST_DEFAULT_FS_TYPE"
+> @@ -613,7 +613,7 @@ tst_run()
+>  			NET_SKIP_VARIABLE_INIT|NEEDS_CHECKPOINTS);;
+>  			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
+>  			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
+> -			DEFAULT_FS_TYPE);;
+> +			DEFAULT_FS_TYPE|DEV_EXTRA_OPTS|DEV_FS_OPTS|FORMAT_DEVICE);;
+>  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+>  			esac
+>  		done
+> @@ -658,6 +658,7 @@ tst_run()
 >  
->  	local device=${2:-$TST_DEVICE}
-> -	[ $# -ge 1 ] && shift
-> -	[ $# -ge 1 ] && shift
-> -	local fs_opts="$@"
-> +	local fs_opts="$3"
-> +	local extra_opts="$4"
-
-Doesn't this actually break the examples described in the
-doc/shell-test-api.txt?
-
-There we do have:
-
-tst_mkfs ext4 /dev/device -T largefile
-
-Which obviously parses as "-T" in the fs_opts and "largefile" in the
-extra_opts.
-
-I do not think that the support for extra opts can be added this way
-without redesigning the tst_mkfs API. Maybe it would make more sense to
-just pass the parameters in the same way we end up passing them on a
-command line, i.e. we would only interpret the first parameter passed to
-tst_mkfs as a filesystem type and pass the rest as $@.
-
->  	if [ -z "$device" ]; then
->  		tst_brk TBROK "No device specified"
-> @@ -353,8 +352,8 @@ tst_mkfs()
+>  	_tst_setup_timer
 >  
->  	tst_require_cmds mkfs.$fs_type
+> +	[ "$TST_FORMAT_DEVICE" = 1 ] && TST_NEEDS_DEVICE=1
+>  	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
 >  
-> -	tst_res TINFO "Formatting $device with $fs_type extra opts='$fs_opts'"
-> -	ROD_SILENT mkfs.$fs_type $fs_opts $device
-> +	tst_res TINFO "Formatting $device with $fs_type opts='$fs_opts' extra opts='$extra_opts'"
-> +	ROD_SILENT mkfs.$fs_type $fs_opts $device $extra_opts
->  }
+>  	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+> @@ -689,6 +690,10 @@ tst_run()
 >  
->  # Detect whether running under hypervisor: Microsoft Hyper-V
-> -- 
-> 2.34.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>  	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
+>  
+> +	if [ "$TST_FORMAT_DEVICE" = 1 ]; then
+> +		tst_mkfs "$TST_FS_TYPE" "$TST_DEVICE" "$TST_DEV_FS_OPTS" "$TST_DEV_EXTRA_OPTS"
+
+This would work with the proposed change to tst_mkfs if we swapped the
+$TST_DEV_FS_OPTS with $TST_DEVICE.
 
 -- 
 Cyril Hrubis
