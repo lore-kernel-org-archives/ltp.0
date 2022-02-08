@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F076C433F5
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 10:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0D7CC433EF
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 11:07:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 254AA3C9B69
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 11:40:38 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 254C93C9B54
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 12:07:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EBB723C5795
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 11:40:28 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C88C03C927F
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 12:07:42 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4C53F600736
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 11:40:27 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EAFD514002AB
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 12:07:41 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 623DF210FB;
- Tue,  8 Feb 2022 10:40:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1E5D01F387;
+ Tue,  8 Feb 2022 11:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644316827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644318461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eHoHmRbtotvmkdwCWe8N6GDMgG94ZTOVL+nvKtzn5bk=;
- b=q4iTUqrO+ww+P/kZ0+zGA8VEGY5qCCFNnG62qQBH0NWCox3qBi7ZnoSON1tQWI5bKiF6ic
- a20pWohduxOp/H3KtJv+Xe+NBqaNKikLdWT3bByiQ9vPJvyYBiIRBqeygl+4VcTq1lHGAw
- c8dcSoFHycZNDeJW6AdvdTnQU0cD3V4=
+ bh=5s4mtikWr6RCX7zdjTH6wuGh0xCvbO4WN9BqqCEpXPQ=;
+ b=ow30F0DSTZmuUWEyLdZ4RvttHLiNFfbmdtpCHilrocC7sjLkY+R0bQOfhuWFWrN97T92Cp
+ CatA2nnro1Aaek5VRmiyKsklaBvzwoolLrez9kqL3+6auT1MIP5Xakci1o4mRUMhFY9OVf
+ fiBEHq1sh9pI7O4MLBo/zvXE1UwedMU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644316827;
+ s=susede2_ed25519; t=1644318461;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eHoHmRbtotvmkdwCWe8N6GDMgG94ZTOVL+nvKtzn5bk=;
- b=qHS7qP2hD8epFW/l5i68Gy+L3PdCOsTOYQhkxNAj7YeCZSCcnrqXR3EduTVNY1bQ6SWRi8
- e6EKvWmyvONIeNCg==
+ bh=5s4mtikWr6RCX7zdjTH6wuGh0xCvbO4WN9BqqCEpXPQ=;
+ b=ge729/iuHCmvy1ZIwVR/rm/qxnyZEGVZwas1bXT7C770XoCatrXn5y4RpU//YBICYG4r+I
+ Q8jt/jsqCXpmgZDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4621D13C08;
- Tue,  8 Feb 2022 10:40:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0910F13C7E;
+ Tue,  8 Feb 2022 11:07:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5vDpD5tIAmJxAgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 08 Feb 2022 10:40:27 +0000
-Date: Tue, 8 Feb 2022 11:42:31 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id /Q5XAP1OAmJMEQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 08 Feb 2022 11:07:41 +0000
+Date: Tue, 8 Feb 2022 12:09:44 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Kushal Chand <kushalkataria5@gmail.com>
-Message-ID: <YgJJF5dtbW48JKMv@yuki>
-References: <20220208100302.44347-1-kushalkataria5@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YgJPeBY+B1H9aq80@yuki>
+References: <20220207144148.27033-1-andrea.cervesato@suse.de>
+ <20220207144148.27033-2-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220208100302.44347-1-kushalkataria5@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20220207144148.27033-2-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] fstat_02: Increase test coverage by creating
- hard links to file and validate using fstat
+Subject: Re: [LTP] [PATCH v4 1/3] Add TST_THREAD_STATE_WAIT macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,46 +83,120 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
->  #define TESTFILE        "test_file"
-> +#define LINK_TESTFILE   "link_test_file"
->  #define FILE_SIZE       1024
->  #define FILE_MODE	0644
-> +#define NLINK	        2
->  
->  static struct stat stat_buf;
->  static uid_t user_id;
-> @@ -61,6 +63,12 @@ static void run(void)
->  		fail++;
->  	}
->  
-> +	if (stat_buf.st_nlink != NLINK) {
-> +		tst_res(TFAIL, "stat_buf.st_nlink = %lu expected %o",
-                                                                  ^
-								  Why %o?
-> +			(stat_buf.st_nlink), NLINK);
-                      ^
-		      this should be casted properly
-> +		fail++;
+> The TST_THREAD_STATE_WAIT macro can be used to wait and check for
+> pthread state changes.
+> 
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+> ---
+>  include/tst_test.h         |  1 +
+>  include/tst_thread_state.h | 33 +++++++++++++++++++++++++++++++++
+>  lib/tst_thread_state.c     | 37 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 71 insertions(+)
+>  create mode 100644 include/tst_thread_state.h
+>  create mode 100644 lib/tst_thread_state.c
+> 
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index 450ddf086..79067f3bf 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -27,6 +27,7 @@
+>  #include "tst_cmd.h"
+>  #include "tst_cpu.h"
+>  #include "tst_process_state.h"
+> +#include "tst_thread_state.h"
+>  #include "tst_atomic.h"
+>  #include "tst_kvercmp.h"
+>  #include "tst_kernel.h"
+> diff --git a/include/tst_thread_state.h b/include/tst_thread_state.h
+> new file mode 100644
+> index 000000000..4d6a345b8
+> --- /dev/null
+> +++ b/include/tst_thread_state.h
+> @@ -0,0 +1,33 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*
+> + * These functions helps you wait till a thread with given tpid changes state.
+> + */
+> +
+> +#ifndef TST_THREAD_STATE__
+> +#define TST_THREAD_STATE__
+> +
+> +#include <unistd.h>
+> +
+> +/*
+> + * Waits for thread state change.
+> + *
+> + * The state is one of the following:
+> + *
+> + * R - running
+> + * S - sleeping
+> + * D - disk sleep
+> + * T - stopped
+> + * t - tracing stopped
+> + * Z - zombie
+> + * X - dead
+> + */
+> +#define TST_THREAD_STATE_WAIT(tid, state, msec_timeout) \
+> +	tst_thread_state_wait((tid), (state), (msec_timeout))
+> +
+> +int tst_thread_state_wait(pid_t tid, const char state, unsigned int msec_timeout);
+> +
+> +#endif /* TST_THREAD_STATE__ */
+> diff --git a/lib/tst_thread_state.c b/lib/tst_thread_state.c
+> new file mode 100644
+> index 000000000..f5580c39e
+> --- /dev/null
+> +++ b/lib/tst_thread_state.c
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +
+> +#include "tst_safe_file_ops.h"
+> +#include "tst_thread_state.h"
+> +
+> +int tst_thread_state_wait(pid_t tid, const char state, unsigned int msec_timeout)
+> +{
+> +	char proc_path[128], cur_state;
+> +	unsigned int msecs = 0;
+> +
+> +	snprintf(proc_path, sizeof(proc_path), "/proc/self/task/%i/stat", tid);
+> +
+> +	for (;;) {
+> +		SAFE_FILE_SCANF(proc_path, "%*i %*s %c", &cur_state);
+> +
+> +		if (state == cur_state)
+> +			break;
+> +
+> +		usleep(1000);
+> +		msecs += 1;
+> +
+> +		if (msec_timeout && msecs >= msec_timeout) {
+> +			errno = ETIMEDOUT;
+> +			return -1;
+> +		}
 > +	}
 > +
->  	if (fail)
->  		return;
->  
-> @@ -78,6 +86,8 @@ static void setup(void)
->  
->  	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
->  		tst_brk(TBROK, "Could not fill Testfile!");
-> +
-> +	SAFE_LINK(TESTFILE, LINK_TESTFILE);
->  }
->  
->  static void cleanup(void)
-> -- 
-> 2.25.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> +	return 0;
+> +}
+
+Maybe we can just put this code into the existing tst_process_state.h
+header and C source.
+
+And we should add some documentaion about the function into the
+doc/c-test-api.txt as well.
+
+Other than that it looks good.
 
 -- 
 Cyril Hrubis
