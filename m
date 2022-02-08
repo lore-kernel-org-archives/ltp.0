@@ -4,67 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17668C433F5
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 13:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A792DC433F5
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 14:03:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D37923C9B5C
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 14:45:50 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 25A6E3C9B47
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 15:03:54 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7ED3D3C9B1B
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 14:45:39 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 713903C24D6
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 15:03:45 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 556A41A00CCE
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 14:45:38 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6D2EA210F6;
- Tue,  8 Feb 2022 13:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644327938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FNHndpDw8/0ROQ3ZUGXqu/7Y3g2Q5hi/C9TQ+O6A/Vk=;
- b=mKaJEK4fEM7+3iTR4Fz6pS+n9e097AUQFMfrFrHcgQ1eigu7QbpWy9IXd3T60wxmG4Rrj1
- it6Zq2Lof5sHoO0W4lIFnEYZb/n6kxnG0LyNNAX9orJ77X6OjabfNLzEhBJaBZLffsTJLz
- ecCDWLhMGqe/aE+WpvbWk2z8ftvvwEE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644327938;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FNHndpDw8/0ROQ3ZUGXqu/7Y3g2Q5hi/C9TQ+O6A/Vk=;
- b=Q1tFJEL4reWpnMlNVxmOeUwFm67O0B8r9SW5ApFb4V7cIS4qHNHprPWNvo0IW1XXq1VzYm
- XYyBf6rSh2NlatAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59B0313C99;
- Tue,  8 Feb 2022 13:45:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id zhghFQJ0AmKvawAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 08 Feb 2022 13:45:38 +0000
-Date: Tue, 8 Feb 2022 14:47:42 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YgJ0fnXClLSKuVu+@yuki>
-References: <20220126181210.24897-1-pvorel@suse.cz>
- <20220126181210.24897-2-pvorel@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E5F9F600A6D
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 15:03:44 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 1148F210F9;
+ Tue,  8 Feb 2022 14:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1644329024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9ez1e0j5hVS7T8kS7EixQ25zV0lLwmU4SYsOp7JfXKk=;
+ b=IKJyVu+9kBOSu7JXe1ugTR92l78He44QfjH2k02lPvAJh9ULPCgEN4f0KQQtm+99OECZKx
+ IAQge6VuOCpOQ3jaDXVPrZk5MWVBR4Qf2UXaYvOT5u9NTGtPYEm2Qb3Ed6qyXStAuDgZ3L
+ kuAl0aMQS7aLTu4loU/ZcvdUvQ7RzqI=
+Received: from g78.suse.de (unknown [10.163.24.138])
+ by relay2.suse.de (Postfix) with ESMTP id D1A46A3B90;
+ Tue,  8 Feb 2022 14:03:43 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue,  8 Feb 2022 14:03:19 +0000
+Message-Id: <20220208140322.6842-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220126181210.24897-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] tst_test.sh: Add $TST_DEFAULT_FS_TYPE
+Subject: [LTP] [PATCH 0/3] memcontrol04 and s/cgroup/cg/
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,133 +53,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> index b821452e60..0d09e290ce 100755
-> --- a/testcases/commands/df/df01.sh
-> +++ b/testcases/commands/df/df01.sh
-> @@ -23,13 +23,11 @@ usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
->  
->  OPTIONS
->  -f	Specify the type of filesystem to be built.  If not
-> -	specified, the default filesystem type (currently ext2)
-> +	specified, the default filesystem type (currently $TST_DEFAULT_FS_TYPE)
->  	is used.
->  EOF
->  }
->  
-> -TST_FS_TYPE=ext2
-> -
->  parse_args()
->  {
->  	TST_FS_TYPE="$2"
-> diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
-> index 17c7fb9e4a..e2896858f9 100755
-> --- a/testcases/commands/mkfs/mkfs01.sh
-> +++ b/testcases/commands/mkfs/mkfs01.sh
-> @@ -23,7 +23,7 @@ usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
->  
->  OPTIONS
->  -f	Specify the type of filesystem to be built.  If not
-> -	specified, the default filesystem type (currently ext2)
-> +	specified, the default filesystem type (currently $TST_DEFAULT_FS_TYPE)
->  	is used.
->  EOF
->  }
-> @@ -45,7 +45,7 @@ setup()
->  mkfs_verify_type()
->  {
->  	if [ -z "$1" ]; then
-> -		blkid $2 -t TYPE="ext2" >/dev/null
-> +		blkid $2 -t TYPE="$TST_DEFAULT_FS_TYPE" >/dev/null
->  	else
->  		if [ "$1" = "msdos" ]; then
->  			blkid $2 -t TYPE="vfat" >/dev/null
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 30614974c3..eb3bf0df12 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -17,6 +17,8 @@ export TST_ITERATIONS=1
->  export TST_TMPDIR_RHOST=0
->  export TST_LIB_LOADED=1
->  
-> +export TST_DEFAULT_FS_TYPE="ext2"
+Hello,
 
-Actually if we wanted to sync with the C library it should be:
+This adds another test from kselftest and tries to improve the
+readability of the cgroup API.
 
-if [ -z "$TST_FS_TYPE" ]; then
-	if [ -n "$LTP_DEV_FS_TYPE" ]; then
-		export TST_FS_TYPE="$LTP_DEV_FS_TYPE"
-	else
-		export TST_FS_TYPE="ext2"
-	fi
-fi
+This is probably the last test I will copy for now. However I may
+rewrite the tests to clone child processes into a CGroup when the
+feature is available.
 
-That's equivalent of the .dev_fs_type in the tst_test structure as we
-do:
+Richard Palethorpe (3):
+  API/cgroup: Add memory.{events, low}
+  API/cgroup: Shorten cgroup to cg in most symbols
+  memcontrol04: Copy from kselftest
 
-	if (tst_test->dev_fs_type)
-		tdev.fs_type = tst_test->dev_fs_type;
-	else
-		tdev.fs_type = tst_dev_fs_type();
-
-And the tst_dev_fs_type() returns either $LTP_DEV_FS_TYPE or "ext2" if
-it's not defined.
-
->  . tst_ansi_color.sh
->  . tst_security.sh
->  
-> @@ -338,15 +340,13 @@ tst_umount()
->  tst_mkfs()
->  {
->  	local fs_type=${1:-$TST_FS_TYPE}
-> +	[ -z "$fs_type" ] && fs_type="$TST_DEFAULT_FS_TYPE"
-> +
->  	local device=${2:-$TST_DEVICE}
->  	[ $# -ge 1 ] && shift
->  	[ $# -ge 1 ] && shift
->  	local fs_opts="$@"
->  
-> -	if [ -z "$fs_type" ]; then
-> -		tst_brk TBROK "No fs_type specified"
-> -	fi
-> -
->  	if [ -z "$device" ]; then
->  		tst_brk TBROK "No device specified"
->  	fi
-> @@ -599,7 +599,7 @@ tst_run()
->  	local _tst_name
->  
->  	if [ -n "$TST_TEST_PATH" ]; then
-> -		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
-> +		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`)].*//'); do
->  			case "$_tst_i" in
->  			DISABLE_APPARMOR|DISABLE_SELINUX);;
->  			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
-> @@ -614,6 +614,7 @@ tst_run()
->  			NET_SKIP_VARIABLE_INIT|NEEDS_CHECKPOINTS);;
->  			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
->  			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
-> +			DEFAULT_FS_TYPE);;
->  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
->  			esac
->  		done
-> -- 
-> 2.34.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+ doc/c-test-api.txt                            |  52 ++--
+ include/tst_cgroup.h                          | 112 ++++-----
+ include/tst_test.h                            |   2 +-
+ lib/newlib_tests/tst_cgroup01.c               |  18 +-
+ lib/newlib_tests/tst_cgroup02.c               |  54 ++---
+ lib/tst_cgroup.c                              | 112 ++++-----
+ lib/tst_test.c                                |   8 +-
+ runtest/controllers                           |   1 +
+ scripts/coccinelle/cgroup-ver.cocci           |  16 +-
+ .../coccinelle/kselftest-cgroup-to-ltp.cocci  |  16 +-
+ testcases/kernel/controllers/memcg/.gitignore |   1 +
+ .../kernel/controllers/memcg/memcontrol01.c   |  36 +--
+ .../kernel/controllers/memcg/memcontrol02.c   |  28 +--
+ .../kernel/controllers/memcg/memcontrol03.c   |  60 ++---
+ .../kernel/controllers/memcg/memcontrol04.c   | 228 ++++++++++++++++++
+ testcases/kernel/mem/cpuset/cpuset01.c        |  14 +-
+ testcases/kernel/mem/include/mem.h            |   2 +-
+ testcases/kernel/mem/ksm/ksm02.c              |   6 +-
+ testcases/kernel/mem/ksm/ksm03.c              |   4 +-
+ testcases/kernel/mem/ksm/ksm04.c              |   6 +-
+ testcases/kernel/mem/lib/mem.c                |   8 +-
+ testcases/kernel/mem/oom/oom03.c              |  18 +-
+ testcases/kernel/mem/oom/oom04.c              |   8 +-
+ testcases/kernel/mem/oom/oom05.c              |  24 +-
+ .../sched/cfs-scheduler/cfs_bandwidth01.c     |  40 +--
+ testcases/kernel/syscalls/madvise/madvise06.c |  16 +-
+ 26 files changed, 561 insertions(+), 329 deletions(-)
+ create mode 100644 testcases/kernel/controllers/memcg/memcontrol04.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
