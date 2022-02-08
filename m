@@ -4,69 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C208AC433EF
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 10:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFAA8C433FE
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 10:10:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6F77F3C9B25
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 11:04:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id B04BF3C9B37
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 11:10:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 8CA193C071A
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 11:09:53 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F4DA3C2824
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 11:04:16 +0100 (CET)
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com
- [IPv6:2607:f8b0:4864:20::62e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CF8FC1400E1C
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 11:09:52 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 16DB2601115
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 11:04:16 +0100 (CET)
-Received: by mail-pl1-x62e.google.com with SMTP id y7so8150130plp.2
- for <ltp@lists.linux.it>; Tue, 08 Feb 2022 02:04:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=uKxXfwvPDP3vYCVYPbtvPpXk4VwOR0MzRZuxPZrVsMw=;
- b=m29Mx6sYXq7I/HSFpabu7KYtizDZV8jCtllee2tS3271BVPwoV7PIjeRnMUaQ7SnKx
- gMvS2wJXtuxcgqO262TTzl1tO7FC5xbgIuw+tGS19feVc4RHCUbBuCn46eszf9tM01SZ
- zcpXVEB6Rlm80mNGGOGPvixGb4kgZ1YqaaJ7i3yeFHoyCm1Z4IUnFHitpoxOyYR2gaYP
- 84o2wk2Nu+q3QXPW+Ls+zYyII3PjRdwfZEZn+PCmxggy729GpwRzspQpFeJ2tckDC4Vs
- ZP/TCOAJci1gH4nzQD1o50NHHA/XDO6yArEinbAgNcQpOBYA7aqh+Xx2m9+hnnQUqg2j
- n2Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=uKxXfwvPDP3vYCVYPbtvPpXk4VwOR0MzRZuxPZrVsMw=;
- b=OPJn8wFVSmY06c8Hde/jpTNwF9H+a6KtVgTZmvThd86nAiE3R7nVu22PtpsMF96gK7
- mR3SKigm9uGma2CSangepQqEQv+1/Z5hlRkBbOk32SXfTe79GkGRyvk0IYxn4yMV8R2K
- 9VpmA5kYrYsqKpGxWibQmwLdILlQzKO/H2yXX/XpUdLoSYfcLb0lP7rlkBmlaPx/U9X9
- KxtPsSIizglI1LV1EpUmZi0+nlKj0mdOw1/dSDd7x13fz0c63+ehU3h+OMtKe7XGMJdM
- rnxPW0lToFkSnw3+ZkBgFgbVd8oEbfqOW4/pfflBITcBSH2RZMoI64VzYeRhifNDg0AL
- cu7Q==
-X-Gm-Message-State: AOAM531UKISlITb+pbJySKwxLWdrDWQzF7eC96UfgTTeyGGcZzE4hFzQ
- xDVava3IDQZO305KvFSHn74XXn5XspA4yA==
-X-Google-Smtp-Source: ABdhPJx9nqjF26FX+LGXVNuc6riTcrAaPjU8w8G+1fV81FjX8ImvphAyIk+B9GHUaidpUnwG2ZD5Sg==
-X-Received: by 2002:a17:90b:3841:: with SMTP id
- nl1mr508387pjb.24.1644314654056; 
- Tue, 08 Feb 2022 02:04:14 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:e030:88d9:6c7d:e496:54b:a827])
- by smtp.gmail.com with ESMTPSA id
- b11sm15480473pfv.192.2022.02.08.02.04.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Feb 2022 02:04:13 -0800 (PST)
-From: Kushal Chand <kushalkataria5@gmail.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0A630210F0;
+ Tue,  8 Feb 2022 10:09:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1644314992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=I460rcnxAWwu71oAb/Cu++VohDnkW5cVA5XCK/8ocgI=;
+ b=Nzu/wN+PO0hHtfNRsVThrq4A3Txj7ypypQDRgBV3KUBNYRQ8LmrBzhBmMYgE6hsTA1Eo2e
+ Hu7jXiA807Op1XTceRUw8yfovEcldbuXmUz8TEKjAKSeIlWjtysqqko0Hahcl9o6YEfWLG
+ jgWB0SEtYcIbbV4OG+Yy1ViBiYu+Wj8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1644314992;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=I460rcnxAWwu71oAb/Cu++VohDnkW5cVA5XCK/8ocgI=;
+ b=4POau7F6bg/ZjKp8VxjESpZS5zJgiai5ziMn3CXCZL4nd/SEjB3ALgGqS+1xgRXYKfnjlw
+ bkbHQOdsxzXjJnAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D55D213BF9;
+ Tue,  8 Feb 2022 10:09:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 58b5MW9BAmIwcQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 08 Feb 2022 10:09:51 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue,  8 Feb 2022 15:33:02 +0530
-Message-Id: <20220208100302.44347-1-kushalkataria5@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Date: Tue,  8 Feb 2022 11:09:39 +0100
+Message-Id: <20220208100948.22913-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] fstat_02: Increase test coverage by creating hard
- links to file and validate using fstat
+Subject: [LTP] [PATCH v1 0/9] Rewrite sysvipc testing suite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,61 +70,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Kushal Chand <kushalkataria5@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patch creates a hard link for a file during setup and checks if number of hardlinks
-match with the expected number.
+Rewritten all sysvipc tests and removed libclone dependency.
+Removed TST_CHECKPOINT_INIT from all tests and replaced it with the
+.checkpoints support.
 
-This is discussed here: https://github.com/linux-test-project/ltp/issues/517#issuecomment-533035589
+Andrea Cervesato (9):
+  Remove libclone dependency from sysvipc
+  Rewrite mesgq_nstest.c using new LTP API
+  Rewrite msg_comm.c using new LTP API
+  Rewrite sem_comm.c using new LTP API
+  Rewrite sem_nstest.c using new LTP API
+  Rewrite semtest_2ns.c using new LTP API
+  Rewrite shm_comm.c using new LTP API
+  Rewrite shmem_2nstest.c using new LTP API
+  Rewrite shmnstest.c using new LTP API
 
-Implements: #517
----
- testcases/kernel/syscalls/fstat/fstat02.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ testcases/kernel/containers/sysvipc/Makefile  |  26 +-
+ testcases/kernel/containers/sysvipc/common.h  | 138 ++++++++
+ .../kernel/containers/sysvipc/ipcns_helper.h  |  41 ---
+ .../kernel/containers/sysvipc/mesgq_nstest.c  | 234 ++++++-------
+ .../kernel/containers/sysvipc/msg_comm.c      | 159 ++++-----
+ .../kernel/containers/sysvipc/sem_comm.c      | 160 ++++-----
+ .../kernel/containers/sysvipc/sem_nstest.c    | 221 ++++++------
+ .../kernel/containers/sysvipc/semtest_2ns.c   | 318 ++++++++----------
+ .../kernel/containers/sysvipc/shm_comm.c      | 144 +++-----
+ .../kernel/containers/sysvipc/shmem_2nstest.c | 262 +++++++--------
+ .../kernel/containers/sysvipc/shmnstest.c     | 185 +++++-----
+ 11 files changed, 887 insertions(+), 1001 deletions(-)
+ create mode 100644 testcases/kernel/containers/sysvipc/common.h
+ delete mode 100644 testcases/kernel/containers/sysvipc/ipcns_helper.h
 
-diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/kernel/syscalls/fstat/fstat02.c
-index c0229de44..f6f6ca456 100644
---- a/testcases/kernel/syscalls/fstat/fstat02.c
-+++ b/testcases/kernel/syscalls/fstat/fstat02.c
-@@ -17,8 +17,10 @@
- #include "tst_safe_macros.h"
- 
- #define TESTFILE        "test_file"
-+#define LINK_TESTFILE   "link_test_file"
- #define FILE_SIZE       1024
- #define FILE_MODE	0644
-+#define NLINK	        2
- 
- static struct stat stat_buf;
- static uid_t user_id;
-@@ -61,6 +63,12 @@ static void run(void)
- 		fail++;
- 	}
- 
-+	if (stat_buf.st_nlink != NLINK) {
-+		tst_res(TFAIL, "stat_buf.st_nlink = %lu expected %o",
-+			(stat_buf.st_nlink), NLINK);
-+		fail++;
-+	}
-+
- 	if (fail)
- 		return;
- 
-@@ -78,6 +86,8 @@ static void setup(void)
- 
- 	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
- 		tst_brk(TBROK, "Could not fill Testfile!");
-+
-+	SAFE_LINK(TESTFILE, LINK_TESTFILE);
- }
- 
- static void cleanup(void)
 -- 
-2.25.1
+2.35.1
 
 
 -- 
