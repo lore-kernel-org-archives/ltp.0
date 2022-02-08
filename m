@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87857C433EF
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 18:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E63FBC433F5
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 18:20:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 35B603C9B68
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 19:08:30 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C5A523C9B6D
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 19:20:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AEF1C3C06B2
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 19:08:21 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 049C63C071A
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 19:20:36 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0B598140006A
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 19:08:20 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 45B78200966
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 19:20:35 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 356621F387;
- Tue,  8 Feb 2022 18:08:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 53A731F383;
+ Tue,  8 Feb 2022 18:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644343700;
+ t=1644344435;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=620+FfggaKx3OOCPdnHDTFobRFDP4+fR+V9fhup4/0w=;
- b=0lM2BdILFLoFhy4C2K7VIWUFAAdJ/QsjcwdMe7bazWdohZbUih0L+ANa50h13U+c/q2woO
- nTwMy5/zSsBEEEKXu5SqdfwLpOvuFZeXVLJPv+929ZVsEKII0AX7oplfyfv5NjpQXLeCb2
- VE7xNCY9ZtClmqwMCuNIdbcutM9SSWA=
+ bh=eQlP6JlKIR+a/jL0/s+4hIEgmVPdGl8I7PYkwRHjxzU=;
+ b=oFJWqrAwEm2eh+BfYcwjPigKHwTNfrsbUvUsE/MlFXpCEAGEQ3A6KRZCHT6NOb8PIWF5Sy
+ rG0Iy6/+zhzck6DOPrhTTGutyRImmcYtY+MFiQzk/6CAzcDurikhka8GzNYN1MK+Wakqsz
+ YAU3KOz87Y6mnCSNZYRu/RjX8kcyTzI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644343700;
+ s=susede2_ed25519; t=1644344435;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=620+FfggaKx3OOCPdnHDTFobRFDP4+fR+V9fhup4/0w=;
- b=33Bq44NZx6r/Xq/mZotxJ1xkbYzA8Uwej/jvEb8FoM4di6wFOWIy3Hu/g8rXMI7oUMwo78
- Bx2VYHo7W9foohBw==
+ bh=eQlP6JlKIR+a/jL0/s+4hIEgmVPdGl8I7PYkwRHjxzU=;
+ b=odAwldkIDORgZRyJKZZwxwFzrRqNkkHwlKAFs0HSmMwcEuqUA4VcYlIe/VMwQdri2iWoIg
+ fPK8u6B9nPKbodAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 05DB013CDC;
- Tue,  8 Feb 2022 18:08:19 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 309A713CDC;
+ Tue,  8 Feb 2022 18:20:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FI8jOpOxAmIZdwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 08 Feb 2022 18:08:19 +0000
-Date: Tue, 8 Feb 2022 19:08:18 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id YZY5CnO0AmIpfAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 08 Feb 2022 18:20:35 +0000
+Date: Tue, 8 Feb 2022 19:20:33 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YgKxkgXjqRXfHDF1@pevik>
+Message-ID: <YgK0cZEPIhiApuaw@pevik>
 References: <20220126181210.24897-1-pvorel@suse.cz>
- <20220126181210.24897-3-pvorel@suse.cz> <YgJ47NfU3vP3XcyE@yuki>
+ <20220126181210.24897-2-pvorel@suse.cz> <YgJ0fnXClLSKuVu+@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YgJ47NfU3vP3XcyE@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <YgJ0fnXClLSKuVu+@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/5] tst_test.sh: tst_mkfs(): Add support for
- extra opts
+Subject: Re: [LTP] [PATCH 1/5] tst_test.sh: Add $TST_DEFAULT_FS_TYPE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,45 +86,60 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-> > +++ b/testcases/lib/tst_test.sh
-> > @@ -343,9 +343,8 @@ tst_mkfs()
-> >  	[ -z "$fs_type" ] && fs_type="$TST_DEFAULT_FS_TYPE"
+> > +export TST_DEFAULT_FS_TYPE="ext2"
 
-> >  	local device=${2:-$TST_DEVICE}
-> > -	[ $# -ge 1 ] && shift
-> > -	[ $# -ge 1 ] && shift
-> > -	local fs_opts="$@"
-> > +	local fs_opts="$3"
-> > +	local extra_opts="$4"
+> Actually if we wanted to sync with the C library it should be:
 
-> Doesn't this actually break the examples described in the
-> doc/shell-test-api.txt?
+> if [ -z "$TST_FS_TYPE" ]; then
+> 	if [ -n "$LTP_DEV_FS_TYPE" ]; then
+> 		export TST_FS_TYPE="$LTP_DEV_FS_TYPE"
+> 	else
+> 		export TST_FS_TYPE="ext2"
+> 	fi
+> fi
 
-> There we do have:
+Ah, I forget on $LTP_DEV_FS_TYPE, thanks.
 
-> tst_mkfs ext4 /dev/device -T largefile
+nit: or shorter
+if [ -z "$TST_FS_TYPE" ]; then
+	export TST_FS_TYPE="${LTP_DEV_FS_TYPE:-ext2}"
+fi
 
-> Which obviously parses as "-T" in the fs_opts and "largefile" in the
-> extra_opts.
-Good catch, I forget to check examples in docs.
+> That's equivalent of the .dev_fs_type in the tst_test structure as we
+> do:
 
--T largefile would have to be quoted:
-tst_mkfs ext4 /dev/device "-T largefile"
+> 	if (tst_test->dev_fs_type)
+> 		tdev.fs_type = tst_test->dev_fs_type;
+> 	else
+> 		tdev.fs_type = tst_dev_fs_type();
+
+> And the tst_dev_fs_type() returns either $LTP_DEV_FS_TYPE or "ext2" if
+> it's not defined.
 
 
-> I do not think that the support for extra opts can be added this way
-> without redesigning the tst_mkfs API. Maybe it would make more sense to
-> just pass the parameters in the same way we end up passing them on a
-> command line, i.e. we would only interpret the first parameter passed to
-> tst_mkfs as a filesystem type and pass the rest as $@.
+BTW I meant TST_DEFAULT_FS_TYPE="ext2" as equivalent of
+#define DEFAULT_FS_TYPE "ext2"
+from include/tst_defaults.h.
 
-But then you'd have to always pass a device ($TST_DEVICE).
-And the problem is that I wanted to specify the options before loading
-tst_test.sh (together with TST_FORMAT_DEVICE=1). At this point TST_DEVICE
-is empty string. Therefore I'd prefer to quote fs-options to be passed to
-tst_mkfs as single option.
+Because df01.sh help uses hardcoded ext2:
 
-OTOH mostly only fs-size is the parameter, not really used now.
+@@ -23,13 +23,11 @@ usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
+
+ OPTIONS
+ -f	Specify the type of filesystem to be built.  If not
+-	specified, the default filesystem type (currently ext2)
++	specified, the default filesystem type (currently $TST_DEFAULT_FS_TYPE)
+ 	is used.
+
+Thus it'd be:
+
+export TST_DEFAULT_FS_TYPE="ext2"
+if [ -z "$TST_FS_TYPE" ]; then
+	export TST_FS_TYPE="${LTP_DEV_FS_TYPE:-$TST_DEFAULT_FS_TYPE}"
+fi
+
+But it's very minor, shell is different than C, we don't have to have variable
+for everything.
 
 Kind regards,
 Petr
