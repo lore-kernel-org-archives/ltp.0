@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35E6CC433EF
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 13:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17668C433F5
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 13:45:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 282953C9B28
-	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 14:37:03 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D37923C9B5C
+	for <ltp@archiver.kernel.org>; Tue,  8 Feb 2022 14:45:50 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C211F3C26B4
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 14:36:53 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7ED3D3C9B1B
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 14:45:39 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 231726007BD
- for <ltp@lists.linux.it>; Tue,  8 Feb 2022 14:36:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1644327411;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 556A41A00CCE
+ for <ltp@lists.linux.it>; Tue,  8 Feb 2022 14:45:38 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6D2EA210F6;
+ Tue,  8 Feb 2022 13:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1644327938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RXiIWV0JLhpPv3UIZxD/9JgcRugEQP+YK5Syjee0oiA=;
- b=VhFRSvp0DCEVA4Adv+UuIdPQVWX9L2hOcH9oLPSb4nK6fZyK1X519URRmiAAFvyNT1YGXT
- KZbjmSTLbWBE2XQ4hqmGifv4abzock+knA/yaGdrWNyriDvWXF97mnUD+xiTPJVOzmXcnu
- DAeI/sjKkGbdKAElEZlmEoKh0T8ueZI=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-343-TyaEFiGZPkyPhMq8n2wQtA-1; Tue, 08 Feb 2022 08:36:48 -0500
-X-MC-Unique: TyaEFiGZPkyPhMq8n2wQtA-1
-Received: by mail-yb1-f197.google.com with SMTP id
- z15-20020a25bb0f000000b00613388c7d99so35343379ybg.8
- for <ltp@lists.linux.it>; Tue, 08 Feb 2022 05:36:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to;
- bh=RXiIWV0JLhpPv3UIZxD/9JgcRugEQP+YK5Syjee0oiA=;
- b=ZDr3GzVSO29T+X/r5S7K6CsD+zwPUjNAB2jsGdHQBSF7Lwya/tmbIPFbrGrJLHuY97
- dPvFUX4dFJJAB8dG2JObIuV1i0bWzGp5NNnk1KQltJCkJlgB3ns2yg0pOMnBspp/Wuf4
- 35gcpfVgM0TW9Z+LR2aKm986KU7jJJ4sfZ8zUAWXkzt4hmKwoGKgkFdoJvw47KzuYmFH
- s3bCO1OmeNE1BpVXB7LoFmF7AtYVLtXUeiBoJ/ECvcg3SNYlQ5MX9/fyv2jZABKY2tDy
- 19T+clOayZ6b3EBt+u3VsX4J1Ns1RZJMM6tjQQzrCLGYSx2XzZwvW63YUJEteLzWxeXu
- hwnA==
-X-Gm-Message-State: AOAM530EWPolWX0dmghuYpoIrWrlh5qEGulnbZWPCXxll4YiggxVQ0H4
- ylv0Js2kKFcuY2RNmBKJ5eD/2/p6mdJNeje4ms9dzqCqDOKNpDoFIPNk6/QVIGz7MgOb6rb2DFc
- 75RSE4xm74fjoCjf9tJwcBwFrnDE=
-X-Received: by 2002:a5b:14c:: with SMTP id c12mr4612100ybp.71.1644327408051;
- Tue, 08 Feb 2022 05:36:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwUiNmnBbjhJvV6te+uJ6O3W+8kPpTSvYUhzHe+95r5nDTbvLv8Uae+O4bxkf8cEOPzxdO5fMucrI+qKQBiX7k=
-X-Received: by 2002:a5b:14c:: with SMTP id c12mr4612072ybp.71.1644327407702;
- Tue, 08 Feb 2022 05:36:47 -0800 (PST)
+ bh=FNHndpDw8/0ROQ3ZUGXqu/7Y3g2Q5hi/C9TQ+O6A/Vk=;
+ b=mKaJEK4fEM7+3iTR4Fz6pS+n9e097AUQFMfrFrHcgQ1eigu7QbpWy9IXd3T60wxmG4Rrj1
+ it6Zq2Lof5sHoO0W4lIFnEYZb/n6kxnG0LyNNAX9orJ77X6OjabfNLzEhBJaBZLffsTJLz
+ ecCDWLhMGqe/aE+WpvbWk2z8ftvvwEE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1644327938;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FNHndpDw8/0ROQ3ZUGXqu/7Y3g2Q5hi/C9TQ+O6A/Vk=;
+ b=Q1tFJEL4reWpnMlNVxmOeUwFm67O0B8r9SW5ApFb4V7cIS4qHNHprPWNvo0IW1XXq1VzYm
+ XYyBf6rSh2NlatAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59B0313C99;
+ Tue,  8 Feb 2022 13:45:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id zhghFQJ0AmKvawAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 08 Feb 2022 13:45:38 +0000
+Date: Tue, 8 Feb 2022 14:47:42 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YgJ0fnXClLSKuVu+@yuki>
+References: <20220126181210.24897-1-pvorel@suse.cz>
+ <20220126181210.24897-2-pvorel@suse.cz>
 MIME-Version: 1.0
-References: <20220208132414.2852202-1-liwang@redhat.com>
-In-Reply-To: <20220208132414.2852202-1-liwang@redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 8 Feb 2022 21:36:33 +0800
-Message-ID: <CAEemH2cE-rydry4ZP3wc04aBw-HszGuESbzKg7d27Obf0cEV4Q@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220126181210.24897-2-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] getrusage03: mlock the memory area in consume_mb
+Subject: Re: [LTP] [PATCH 1/5] tst_test.sh: Add $TST_DEFAULT_FS_TYPE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,135 +76,133 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0518947936=="
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0518947936==
-Content-Type: multipart/alternative; boundary="00000000000007eeb205d781cf54"
+Hi!
+> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
+> index b821452e60..0d09e290ce 100755
+> --- a/testcases/commands/df/df01.sh
+> +++ b/testcases/commands/df/df01.sh
+> @@ -23,13 +23,11 @@ usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
+>  
+>  OPTIONS
+>  -f	Specify the type of filesystem to be built.  If not
+> -	specified, the default filesystem type (currently ext2)
+> +	specified, the default filesystem type (currently $TST_DEFAULT_FS_TYPE)
+>  	is used.
+>  EOF
+>  }
+>  
+> -TST_FS_TYPE=ext2
+> -
+>  parse_args()
+>  {
+>  	TST_FS_TYPE="$2"
+> diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
+> index 17c7fb9e4a..e2896858f9 100755
+> --- a/testcases/commands/mkfs/mkfs01.sh
+> +++ b/testcases/commands/mkfs/mkfs01.sh
+> @@ -23,7 +23,7 @@ usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
+>  
+>  OPTIONS
+>  -f	Specify the type of filesystem to be built.  If not
+> -	specified, the default filesystem type (currently ext2)
+> +	specified, the default filesystem type (currently $TST_DEFAULT_FS_TYPE)
+>  	is used.
+>  EOF
+>  }
+> @@ -45,7 +45,7 @@ setup()
+>  mkfs_verify_type()
+>  {
+>  	if [ -z "$1" ]; then
+> -		blkid $2 -t TYPE="ext2" >/dev/null
+> +		blkid $2 -t TYPE="$TST_DEFAULT_FS_TYPE" >/dev/null
+>  	else
+>  		if [ "$1" = "msdos" ]; then
+>  			blkid $2 -t TYPE="vfat" >/dev/null
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 30614974c3..eb3bf0df12 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -17,6 +17,8 @@ export TST_ITERATIONS=1
+>  export TST_TMPDIR_RHOST=0
+>  export TST_LIB_LOADED=1
+>  
+> +export TST_DEFAULT_FS_TYPE="ext2"
 
---00000000000007eeb205d781cf54
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Actually if we wanted to sync with the C library it should be:
 
-On Tue, Feb 8, 2022 at 9:24 PM Li Wang <liwang@redhat.com> wrote:
+if [ -z "$TST_FS_TYPE" ]; then
+	if [ -n "$LTP_DEV_FS_TYPE" ]; then
+		export TST_FS_TYPE="$LTP_DEV_FS_TYPE"
+	else
+		export TST_FS_TYPE="ext2"
+	fi
+fi
 
-> Seems it trying to test without swap happen to guarantee less
-> disturbing for the =E2=80=99->ru_maxrss=E2=80=98 counting.
->
-> Therefore add mlock() to prevent that memory allocated by consume_mb
-> from being paged to the swap area.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/syscalls/getrusage/getrusage03.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.h
-> b/testcases/kernel/syscalls/getrusage/getrusage03.h
-> index f1bbe9be5..d46fdff85 100644
-> --- a/testcases/kernel/syscalls/getrusage/getrusage03.h
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.h
-> @@ -18,6 +18,7 @@ static void consume_mb(int consume_nr)
->
->         size =3D consume_nr * 1024 * 1024;
->         ptr =3D SAFE_MALLOC(size);
-> +       mlock(ptr, size);
->
+That's equivalent of the .dev_fs_type in the tst_test structure as we
+do:
 
-Hmm, seems using mlockall() will be better than mlock().
+	if (tst_test->dev_fs_type)
+		tdev.fs_type = tst_test->dev_fs_type;
+	else
+		tdev.fs_type = tst_dev_fs_type();
 
-Because that locks all pages mapped into the address space of the calling
-process.
-(includes code, data, stack segment, shared libraries, etc).
+And the tst_dev_fs_type() returns either $LTP_DEV_FS_TYPE or "ext2" if
+it's not defined.
 
-
-
->         memset(ptr, 0, size);
->
->         SAFE_FILE_LINES_SCANF("/proc/self/status", "VmSwap: %lu",
-> &vmswap_size);
-> --
-> 2.31.1
->
->
-> --
+>  . tst_ansi_color.sh
+>  . tst_security.sh
+>  
+> @@ -338,15 +340,13 @@ tst_umount()
+>  tst_mkfs()
+>  {
+>  	local fs_type=${1:-$TST_FS_TYPE}
+> +	[ -z "$fs_type" ] && fs_type="$TST_DEFAULT_FS_TYPE"
+> +
+>  	local device=${2:-$TST_DEVICE}
+>  	[ $# -ge 1 ] && shift
+>  	[ $# -ge 1 ] && shift
+>  	local fs_opts="$@"
+>  
+> -	if [ -z "$fs_type" ]; then
+> -		tst_brk TBROK "No fs_type specified"
+> -	fi
+> -
+>  	if [ -z "$device" ]; then
+>  		tst_brk TBROK "No device specified"
+>  	fi
+> @@ -599,7 +599,7 @@ tst_run()
+>  	local _tst_name
+>  
+>  	if [ -n "$TST_TEST_PATH" ]; then
+> -		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
+> +		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`)].*//'); do
+>  			case "$_tst_i" in
+>  			DISABLE_APPARMOR|DISABLE_SELINUX);;
+>  			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
+> @@ -614,6 +614,7 @@ tst_run()
+>  			NET_SKIP_VARIABLE_INIT|NEEDS_CHECKPOINTS);;
+>  			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
+>  			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
+> +			DEFAULT_FS_TYPE);;
+>  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+>  			esac
+>  		done
+> -- 
+> 2.34.1
+> 
+> 
+> -- 
 > Mailing list info: https://lists.linux.it/listinfo/ltp
->
 
-
---=20
-Regards,
-Li Wang
-
---00000000000007eeb205d781cf54
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Tue, Feb 8, 2022 at 9:24 PM Li Wang &lt;<a href=
-=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></div><bl=
-ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
-t:1px solid rgb(204,204,204);padding-left:1ex">Seems it trying to test with=
-out swap happen to guarantee less<br>
-disturbing for the =E2=80=99-&gt;ru_maxrss=E2=80=98 counting.<br>
-<br>
-Therefore add mlock() to prevent that memory allocated by consume_mb<br>
-from being paged to the swap area.<br>
-<br>
-Signed-off-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_=
-blank">liwang@redhat.com</a>&gt;<br>
----<br>
-=C2=A0testcases/kernel/syscalls/getrusage/getrusage03.h | 1 +<br>
-=C2=A01 file changed, 1 insertion(+)<br>
-<br>
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.h b/testcases/=
-kernel/syscalls/getrusage/getrusage03.h<br>
-index f1bbe9be5..d46fdff85 100644<br>
---- a/testcases/kernel/syscalls/getrusage/getrusage03.h<br>
-+++ b/testcases/kernel/syscalls/getrusage/getrusage03.h<br>
-@@ -18,6 +18,7 @@ static void consume_mb(int consume_nr)<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 size =3D consume_nr * 1024 * 1024;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 ptr =3D SAFE_MALLOC(size);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0mlock(ptr, size);<br></blockquote><div><br></di=
-v><div><div class=3D"gmail_default" style=3D"font-size:small">Hmm, seems=C2=
-=A0using mlockall() will be better than mlock().</div><div class=3D"gmail_d=
-efault" style=3D"font-size:small"><br></div><div class=3D"gmail_default" st=
-yle=3D"font-size:small">Because that locks all pages mapped into the addres=
-s space of the calling process.=C2=A0</div><div class=3D"gmail_default" sty=
-le=3D"font-size:small">(includes code, data, stack segment, shared librarie=
-s, etc).</div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" =
-style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
-dding-left:1ex">
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 memset(ptr, 0, size);<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SAFE_FILE_LINES_SCANF(&quot;/proc/self/status&q=
-uot;, &quot;VmSwap: %lu&quot;, &amp;vmswap_size);<br>
--- <br>
-2.31.1<br>
-<br>
-<br>
--- <br>
-Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
-oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
-</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
- class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
-Wang<br></div></div></div></div>
-
---00000000000007eeb205d781cf54--
-
-
---===============0518947936==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0518947936==--
-
