@@ -4,145 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFF51C433F5
-	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 10:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B58AC433F5
+	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 10:30:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2E433C9B8E
-	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 11:00:50 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1F6D23C9B8D
+	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 11:30:32 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 1E82D3C9B8C
+ for <ltp@lists.linux.it>; Wed,  9 Feb 2022 11:30:18 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECF803C24D6
- for <ltp@lists.linux.it>; Wed,  9 Feb 2022 11:00:40 +0100 (CET)
-Received: from esa20.fujitsucc.c3s2.iphmx.com (esa20.fujitsucc.c3s2.iphmx.com
- [216.71.158.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 297DC600C75
+ for <ltp@lists.linux.it>; Wed,  9 Feb 2022 11:30:16 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D5C516011E5
- for <ltp@lists.linux.it>; Wed,  9 Feb 2022 11:00:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1644400840; x=1675936840;
- h=from:to:subject:date:message-id:references:in-reply-to:
- content-id:content-transfer-encoding:mime-version;
- bh=/Y4vWRWr7BZQ63Lvq+b3GQMB2BXKHs81859MKfopm+4=;
- b=YTe4Jz7iAgnwtsTsZWeyXCBodnFaPG1mJNWvOi0z21chfR1G+7Mfq8Yd
- kM7WmjiUdyc+pLmQWZ6gsiP1a4QTwRRrrf35ezNdCKxKsjZVVEBGBvNlo
- aonwKNB3ltWNac3Qfx71fEp43b5UQwzaCCC6QksSVZcAYSXfquAHWA5uP
- E4XVEAPh8+Bz4EeeA3F+Xt8JV/SbTDITfWCWeyhkHNZ0KCcZNRZJ1XqTh
- tXCkLs/fs+sYt2Vk7asAZO0GDr+XLfhpRvVs6YLtWThXiRa408om1BGrb
- Vt+fyfh21OEJ5Ro6vuLG1pn984rb0GRAvegkpRHQfoFZhF00WowPF96Uy A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="49371373"
-X-IronPort-AV: E=Sophos;i="5.88,355,1635174000"; d="scan'208";a="49371373"
-Received: from mail-tycjpn01lp2176.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.176])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Feb 2022 19:00:38 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ieBMm4Z7bIOExjqkQ/053qLMXQ0379JPa+wf7rW9he9oUz3k91fFQZN7GDEk1d46WcEk7kqjED8GZGB8LHlmfunlhHQfFtlKG69bVp1le8eRvZr+TWkSXPBpPzl0C4RTjTZDgALLP5fefICRIpZMvIrS9znG+yW1/msCAALbslp3tstV0vQb6OeQjoV4knLCuIzezG/IzlcRVYQlbtl49N2Yq0+4HA+6nI+I5kl36ZzPTxf/0R+903LxvFNwomcaZU3yONJUVaXE7Q/A3TC+eon1t2sZH+s27Hn20i/8Hpl4ZzO3Yy4knFPD6q0zZdHGYPsnh++ZRSeZRp16gZEGGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/Y4vWRWr7BZQ63Lvq+b3GQMB2BXKHs81859MKfopm+4=;
- b=ImMYaQNVBzUHcOgvlr+2GCn1AoYwaHKF/FbzDbaGOVWfyr2d2CrBh0fDzqJwyW7SNNcsf1DxAsliUKLSzVjpSgRjIWZ5gcPNVCSKJFyWP2c7w7i1l/JQqbANGLESpMpobTAEAzPP/T5Ndlt8OSrwUFtfVz91RYBwP9non77w78HXmv7rw8CoRTlGYUp9ifGhxBGqbMchr27PWCL8oYDX8i9k76A1YhvBS97D2qMfNK94rtzCGSzxm5Ojl+lKktvJfhDF3tFqgbhx4k/0XyNO3utk94jfXkBNcIy9i4tjlsJnHbdZfB50Kt4qEc2oWRvX0kmSSvlD69uD9RYzuLF/uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Y4vWRWr7BZQ63Lvq+b3GQMB2BXKHs81859MKfopm+4=;
- b=MCEl8VM1VF0bGLTc3k989xhODxbhF8P6JP2AywuRzCmJefZ3VsuhGueHHSY52Zsel1BPU12eXCxYjre+XHdykdvROpcEMSF3o0BS6IoOF0lEqKrbZNZEy4bIMRfRNwwK9l1d5m1EZIXFNosjczoKY3viWPy0lcS1MBcg43DZlew=
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by OSBPR01MB1527.jpnprd01.prod.outlook.com (2603:1096:603:3::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Wed, 9 Feb
- 2022 10:00:35 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::787f:42c2:70b:1fd7]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::787f:42c2:70b:1fd7%3]) with mapi id 15.20.4951.019; Wed, 9 Feb 2022
- 10:00:35 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Thread-Topic: [PATCH 1/2] syscalls/pidfd_open: Simplify code
-Thread-Index: AQHYHZlRfU2P3yMF7k2B22YjBeyn7ayK/L8A
-Date: Wed, 9 Feb 2022 10:00:35 +0000
-Message-ID: <620390EA.7060900@fujitsu.com>
-References: <1644399738-2155-1-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1644399738-2155-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c1700f05-cccf-40de-7133-08d9ebb3043f
-x-ms-traffictypediagnostic: OSBPR01MB1527:EE_
-x-microsoft-antispam-prvs: <OSBPR01MB15279E63FBF5F2140BDCB98AFD2E9@OSBPR01MB1527.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:411;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wDHhYgtZdfnkEitYSgykmxrf0VLDN4WGLYg6JUZlWZLE0kzcQuWYLTSDWHrkp4ZbpdCkGHWQ9Grb6qV3YCdzaIVkfMcoGMbRfLOmxDewqiion9tNmdto7nD2NSRkDmkW5CUk2C9qbqEzRsH41s1G2b743OkKFvhunsNknGDJhyn8LF6g5ApEfqVRtsQfrFC27xZPA1WgMu4gC2XAkG9OE0z8fzfOAPMEbyKVGGdBNys9EGl4Z+ZFIj1zapPFPci/6cRvK2IENfFBCn4YcaRnCb9wl5DXrP7fAitEbwGSNXpNFVgp7ZAmODlyRdjL1o6YZhOzweJQfxvLLhMdKZF4iwkZPlvuQTLt9MUfMrgsb0pbaYwZQDwCR6dP+EK/oF7LdytmgAbm1JDzHusQIMj2YMiqRUPk5ARR+wrNa88JmvEwfkJCdHB0bbXajDGxDa4VHIhZAwdaNXDpKKxGHE/aduG9PHHnfKUvNENHLvKS+jRI8F1fOGtOFXCbeH9HLc+eTbwbete3k9gt75oC1zxUgNRrh490uXTB/1AHGOyNQxr5u1Eg6h6aX6IQ9X7AOaCQrRc3Dgr5V0zF0NeLdADf1zpNdwcxnXURjCqeLZS1oVh8Gaqzfog0kEoqftsMcTLAHDS1AWYWfVnjpRbarknAFT7BVXUiC9qA5gbI/3xzFV5TZ0xQZml2k5yuCq/goy+k4mLz8UIcywdkfiHedMvovQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(76116006)(38100700002)(66446008)(8676002)(66946007)(316002)(2616005)(6506007)(91956017)(66476007)(66556008)(6512007)(8936002)(508600001)(71200400001)(87266011)(64756008)(36756003)(86362001)(85182001)(83380400001)(5660300002)(186003)(82960400001)(6486002)(26005)(6916009)(38070700005)(2906002)(33656002)(122000001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?Y0h5bzd6aUVsQy9JQVU3Wk1uK1VjT2VqOVkzNGV4aWJSZEpQWFpFZ3NJaW54?=
- =?gb2312?B?Y3VTSnJmUk9XbnNSdjE2MWR0M3JzdzFiUEphOWQwcm1GTFArSG8wUHJlaXNp?=
- =?gb2312?B?VjVLM1RYeExORDNXWXBlSlh3anhDZGV3TTgrTlRSaTRCYithdGN0c1A0Z1BV?=
- =?gb2312?B?ZGJYUFIydXdsVXBLSTlTZjZGZVI1YWpBRGdmMUoxdVZuQjI2UC9YMXhEWnA5?=
- =?gb2312?B?WEFXcDJsenBSdkpFakt1NndZNGFpMHZHRFVCZUxGQ1NBWGxqaEx2ZnpPYkhU?=
- =?gb2312?B?RWdUcWwyekdBcFQ3bFY2OWxlZlMvVzk5MTU0SERvUXc0aSszUDd4aFdLbkNN?=
- =?gb2312?B?K2JpaW16KzlDUGIzLzVvUi9xWG1yNk1oTDFyVEpXRUtSZmFlS0s3ckpKMWJj?=
- =?gb2312?B?b0hJbWlzZUd4eEhRQWdvS1NtSjBKOERndzBoaDVUQk5FWWRnSFFsNk1rdjZk?=
- =?gb2312?B?eHJUaXgySU1CdnczNTFTSXJ4S3BmcENaY0dNNWgrMFA3UkFGWUVMaDljQksy?=
- =?gb2312?B?YzVpTVVHRjRnaUM1cndBelIyWFhGQ3BZWFByNzFmWHJrRzZOamhmS3VpMjB2?=
- =?gb2312?B?WFd5L2M2di9XOVdOSzdybDRrVHh6ZXpnNVJURWRLQWFOWTByR3JMaTEyUERQ?=
- =?gb2312?B?ZHc2V1A5cVQ1bkVmeEtaUTE3S1NUVGRNUzIrN0l3bktrRjd4WW42MFljdGda?=
- =?gb2312?B?YWQvTnd0cW15SnQxR3dlZnA2alJacE1xcks3bENtOUJGMktvQVNMSU5kdC9m?=
- =?gb2312?B?a3Y4QWpvcVZkaUdKKzJWTncrMndxdjR3dWVWbm82UFpKNkhKR1llOTluVDNN?=
- =?gb2312?B?OElBZUZBMVpSY0ZrMjdZWWFINXhHS0IvVnFhQndySmdaUSs1VmpLQUo3WnpP?=
- =?gb2312?B?MG81Nm9LOCt4eGduM0xvL1VQZUM1dE9BSHd1ZW9CZ1l0eXFKTzFVVFBIQzhW?=
- =?gb2312?B?SUxpaGwrT1hCVnVxSXhXUCtpODRhWjB5SGhaTmJrWXdSRTBBaUUzczhUWUhJ?=
- =?gb2312?B?YXdpcDhPK3hLTHZ2ZWFPQ05MK2s3c2RsZFdtSG1RNGhBN0JpcW4vczR5eFFX?=
- =?gb2312?B?aTZNMnlVUEFhNmpIYzNzVEcxVEY5Rkg2cWg3R0R6ODlmakcxR2J6NVVtTkdI?=
- =?gb2312?B?a1dKZzZCS3VOajIvc3VKWUJvV2RwaURaVFY0L2lvYnhiRU1ZbTRRcllqeW9I?=
- =?gb2312?B?b3FNT0xMeWVaZWtyQkd5bk5aQUp4dEtnK0pQZVRJcDA1K2F1TFpDQloreGVi?=
- =?gb2312?B?ek4rZnNEWmZtNW9QSjRsTTdOOVZhQmpvRWsrak5CUDEvWkNKaWQ5WkxycnQy?=
- =?gb2312?B?TDFNNzBjMmo2VmFMMnl3TnkySzBSSU5uSG44QVNpbkg0MWhqNE5pWHhwdmJB?=
- =?gb2312?B?OVZCRVFDMlFPRHpLdzFrdzV6SjJEL2dXRVdXMjdPK2tTcC9FU3BSMy9zN0do?=
- =?gb2312?B?Q0k0YkRxL2QrN0JDNTVlV2tJS3ZEMWYwQ2M2WTIzMHRFNDMrbGREZ01Cdlk4?=
- =?gb2312?B?WVB6VThiV3RZaGtIZUVWRHJmemJ1TmlyK1NkVDdzaVA0ZGgremhkVUk2R3RG?=
- =?gb2312?B?WVBkOCtMd1JHTHB1emdlTDlaWU9JMDNRZi9kUjNjeTJLYUJMaVRLczdLZ2xC?=
- =?gb2312?B?S25JMm9SOE9NR2pzY1Y3aFhBb1BDclU4eURqajJnS1VLZ3diekMzaitmYjVY?=
- =?gb2312?B?ZDRpUWIvWXVYUG0wR2NQc1BQVHZCWGFjYXhrYzlscXZJNzhBTmNRLzVjaFl1?=
- =?gb2312?B?L3RaVjFqRyszQS9GdlhhMlRlSlIvU3hBUUYrekgzRFpEcCtubDF2RU5RUGpV?=
- =?gb2312?B?TE5CTmI2NDVHQzVZTnk2NWlnMkdOZUc4ZnZVd3ZSQitwc1FhK3BHa1NjbDlW?=
- =?gb2312?B?bW45dUlhY3p1MmdFQlRoN2s4TkFpQTZaQUZ4UEhNbnoxdjAvK2dldSt5STI3?=
- =?gb2312?B?b3VNaTVGMjNUWm1aajV1VVJyNStLYmRPblhyQ3grTWMwaVpadWtPTVhoQjNq?=
- =?gb2312?B?azQ2ZVJLMit1VWtNQW1VSkxrbklKSUJ3VE05RkFrTVNTR0t5d2lraWNkc3Z0?=
- =?gb2312?B?S0xjejNqaUgzRmxrcTBGNHp4dUl5Q0pDOGdPRm1jaTJQSkR3c2NoRU5XZlFZ?=
- =?gb2312?B?Yjk2M0RKS0tSZk96TWkzSTN4QXF6dVgxdUplODN6Wm9McnV2aUl4YlBQNHRr?=
- =?gb2312?B?OG1QUzNUN0FuMGUrQi81Q0hLUmZLRTB6VEdwVDlYdW1RSHNkS2N0c2tET29y?=
- =?gb2312?Q?mZGe6pNAQYtCStKvIXSJOblQ776UU6wuxhSYdd5ado=3D?=
-Content-ID: <8204DE53E480D346B6B61DC094B86530@jpnprd01.prod.outlook.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 380101F391;
+ Wed,  9 Feb 2022 10:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1644402616; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RoIh6g/tHQU/uA5oQopbub4Wshj+TNtAqubYfjFlL4=;
+ b=Fb+mjrzSeIVbVNzjF5dYg/54+x0+2m4+i43VMPPwLYWmtX+KUEmF9n6YfAD9cbo0ETI3ge
+ SftbYi+mRieDsk+yEgsFIGSWm/YqaQfnMc28gCwpwH6M+mOYq7IKT8dXwDn04vSe0slzSV
+ BqQunvenmt/ddGYiViTEnNKBIPuO81w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1644402616;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RoIh6g/tHQU/uA5oQopbub4Wshj+TNtAqubYfjFlL4=;
+ b=GG8xSD2dl3r81VQURBbtqu8hfoly/j3aR98hOij31nmHdsZ2l/zMGpt6rODTRaa8iTksB2
+ Nmr+akQv4taVUcDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1562E13D23;
+ Wed,  9 Feb 2022 10:30:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Xl38A7iXA2IEYgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 09 Feb 2022 10:30:16 +0000
+Date: Wed, 9 Feb 2022 11:30:10 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YgOXUL6S8yien+Xn@rei>
+References: <20220127094925.1619-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1700f05-cccf-40de-7133-08d9ebb3043f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2022 10:00:35.1794 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: erA2MnMdFfGS6Nda59yKpqwposs2BCBZO3nII+6LfMnQqcHBV7pPFnnlVJdZEOpnqWH7t/JxKIkzQw93FZvkim6UCGDFqcQGDKHpiwRZJyQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB1527
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220127094925.1619-1-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] syscalls/pidfd_open: Simplify code
+Subject: Re: [LTP] [PATCH v2] Rewrite process_vm_readv03.c test with new LTP
+ API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -154,212 +75,483 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi All
-
-It seems I should use TST_EXP_FD_SILENT instead of TST_EXP_PID_SILENT.
-
-Best Regards
-Yang Xu
-> 1) make use of TST_EXP_FAIL2 or TST_EXP_PID_SILENT macros
-> 2) remove min_kver check and use pidfd_open_supported()
-> 3) Add docparse formatting
+Hi!
+> Removed pipe and replaced it with shared memory.
+> Replaced TST_CHECKPOINT_INIT usage with .needs_checkpoints from the new
+> LTP API.
 > 
-> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 > ---
->   include/lapi/pidfd_open.h                     |  8 +++--
->   .../kernel/syscalls/pidfd_open/pidfd_open01.c | 22 +++++++-----
->   .../kernel/syscalls/pidfd_open/pidfd_open02.c | 34 +++++++------------
->   .../kernel/syscalls/pidfd_open/pidfd_open03.c | 16 ++++++---
->   4 files changed, 44 insertions(+), 36 deletions(-)
+> In v2 fixed a memory allocation in the child_alloc function.
 > 
-> diff --git a/include/lapi/pidfd_open.h b/include/lapi/pidfd_open.h
-> index 9806c73d4..5cf10933e 100644
-> --- a/include/lapi/pidfd_open.h
-> +++ b/include/lapi/pidfd_open.h
-> @@ -9,11 +9,15 @@
+>  .../kernel/syscalls/cma/process_vm_readv03.c  | 311 ++++++++----------
+>  1 file changed, 133 insertions(+), 178 deletions(-)
 > 
->   #include<sys/syscall.h>
->   #include<sys/types.h>
-> -
->   #include "lapi/syscalls.h"
-> -
->   #include "config.h"
-> 
-> +static inline void pidfd_open_supported(void)
-> +{
-> +	/* allow the tests to fail early */
-> +	tst_syscall(__NR_pidfd_open);
-> +}
-> +
->   #ifndef HAVE_PIDFD_OPEN
->   static inline int pidfd_open(pid_t pid, unsigned int flags)
->   {
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> index f40e9b624..ed9b82637 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> @@ -1,11 +1,15 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later
->   /*
->    * Copyright (c) 2020 Viresh Kumar<viresh.kumar@linaro.org>
-> + */
-> +
-> +/*\
+Hi!
+> +/* \
+     ^
+     This space preents from the comment to be picked up by the
+     docparser.
 > + * [Description]
->    *
-> - * Description:
->    * Basic pidfd_open() test:
-> - * 1) Fetch the PID of the current process and try to get its file descriptor.
-> - * 2) Check that the close-on-exec flag is set on the file descriptor.
-> + *
-> + * - Fetch the PID of the current process and try to get its file descriptor.
-> + * - Check that the close-on-exec flag is set on the file descriptor.
->    */
-> 
->   #include<unistd.h>
-> @@ -17,10 +21,7 @@ static void run(void)
->   {
->   	int flag;
-> 
-> -	TEST(pidfd_open(getpid(), 0));
+>   *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * Fork two children, one child mallocs randomly sized trunks of memory
+> + * and initializes them; the other child calls process_vm_readv with
+> + * the remote iovecs initialized to the original process memory
+> + * locations and the local iovecs initialized to randomly sized and
+> + * allocated local memory locations. The second child then verifies
+> + * that the data copied is correct.
+>   */
+>  
+> -#define _GNU_SOURCE
+> -#include <sys/types.h>
+> -#include <sys/uio.h>
+> -#include <sys/wait.h>
+> -#include <errno.h>
+> -#include <limits.h>
+>  #include <stdio.h>
+>  #include <stdlib.h>
+> -#include <string.h>
+> -#include <time.h>
+> -#include <unistd.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+>  #include <limits.h>
 > -
-> -	if (TST_RET == -1)
-> -		tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
-> +	TST_EXP_PID_SILENT(pidfd_open(getpid(), 0), "pidfd_open(getpid(), 0)");
-> 
->   	flag = fcntl(TST_RET, F_GETFD);
-> 
-> @@ -35,7 +36,12 @@ static void run(void)
->   	tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
->   }
-> 
-> +static void setup(void)
-> +{
-> +	pidfd_open_supported();
-> +}
-> +
->   static struct tst_test test = {
-> -	.min_kver = "5.3",
-> +	.setup = setup,
->   	.test_all = run,
->   };
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> index dc86cae7a..93a61a51d 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> @@ -1,14 +1,21 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later
->   /*
->    * Copyright (c) 2020 Viresh Kumar<viresh.kumar@linaro.org>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Tests basic error handling of the pidfd_open syscall.
->    *
-> - * Description:
-> - * Basic pidfd_open() test to test invalid arguments.
-> + * - ESRCH the process specified by pid does not exist
-> + * - EINVAL pid is not valid
-> + * - EINVAL flags is not valid
->    */
->   #include "tst_test.h"
->   #include "lapi/pidfd_open.h"
-> 
-> -pid_t expired_pid, my_pid, invalid_pid = -1;
-> +static pid_t expired_pid, my_pid, invalid_pid = -1;
-> 
->   static struct tcase {
->   	char *name;
-> @@ -23,6 +30,7 @@ static struct tcase {
-> 
->   static void setup(void)
->   {
-> +	pidfd_open_supported();
->   	expired_pid = tst_get_unused_pid();
->   	my_pid = getpid();
->   }
-> @@ -31,27 +39,11 @@ static void run(unsigned int n)
->   {
->   	struct tcase *tc =&tcases[n];
-> 
-> -	TEST(pidfd_open(*tc->pid, tc->flags));
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include "tst_test.h"
+>  #include "lapi/syscalls.h"
+>  
+> -char *TCID = "process_vm_readv03";
+> -int TST_TOTAL = 1;
 > -
-> -	if (TST_RET != -1) {
-> -		SAFE_CLOSE(TST_RET);
-> -		tst_res(TFAIL, "%s: pidfd_open succeeded unexpectedly (index: %d)",
-> -			tc->name, n);
-> -		return;
+> -#define NUM_LOCAL_VECS 4
+> -
+> -static int nflag, sflag;
+> -static char *nr_opt, *sz_opt;
+> -static option_t options[] = {
+> -	{"n:", &nflag, &nr_opt},
+> -	{"s:", &sflag, &sz_opt},
+> -	{NULL, NULL, NULL}
+> -};
+> -
+> -static int nr_iovecs;
+> -static long bufsz;
+> -static int pipe_fd[2];
+> -static pid_t pids[2];
+> -
+> -static void gen_random_arr(int *arr, int arr_sz);
+> -static void child_alloc(int *bufsz_arr);
+> -static void child_invoke(int *bufsz_arr);
+> -static long *fetch_remote_addrs(void);
+> -static void setup(void);
+> -static void cleanup(void);
+> -static void help(void);
+> -
+> -int main(int argc, char **argv)
+> -{
+> -	int lc, status;
+> -	int *bufsz_arr;
+> -
+> -	tst_parse_opts(argc, argv, options, &help);
+> -
+> -	setup();
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		SAFE_PIPE(cleanup, pipe_fd);
+> -
+> -		bufsz_arr = SAFE_MALLOC(cleanup, nr_iovecs * sizeof(int));
+> -		gen_random_arr(bufsz_arr, nr_iovecs);
+> -
+> -		/* the start of child_alloc and child_invoke is already
+> -		 * synchronized via pipe */
+> -		pids[0] = fork();
+> -		switch (pids[0]) {
+> -		case -1:
+> -			tst_brkm(TBROK | TERRNO, cleanup, "fork #0");
+> -		case 0:
+> -			child_alloc(bufsz_arr);
+> -			exit(0);
+> -		}
+> -
+> -		pids[1] = fork();
+> -		switch (pids[1]) {
+> -		case -1:
+> -			tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
+> -		case 0:
+> -			child_invoke(bufsz_arr);
+> -			exit(0);
+> -		}
+> -
+> -		/* wait until child_invoke reads from child_alloc's VM */
+> -		SAFE_WAITPID(cleanup, pids[1], &status, 0);
+> -		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> -			tst_resm(TFAIL, "child 1 returns %d", status);
+> -
+> -		/* child_alloc is free to exit now */
+> -		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+> +static uintptr_t *data_ptr;
+>  
+> -		SAFE_WAITPID(cleanup, pids[0], &status, 0);
+> -		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> -			tst_resm(TFAIL, "child 0 returns %d", status);
+> +static char *str_buffsize;
+> +static char *str_nr_iovecs;
+>  
+> -		free(bufsz_arr);
 > -	}
 > -
-> -	if (tc->exp_errno != TST_ERR) {
-> -		tst_res(TFAIL | TTERRNO, "%s: pidfd_open() should fail with %s",
-> -			tc->name, tst_strerrno(tc->exp_errno));
-> -		return;
-> -	}
+> -	cleanup();
+> -	tst_exit();
+> -}
+> +static int bufsize = 100000;
+> +static int nriovecs = 10;
+>  
+> -static void gen_random_arr(int *arr, int arr_sz)
+> +static void create_data_size(int *arr, int arr_sz, int buffsize)
+>  {
+>  	long bufsz_left, bufsz_single;
+>  	int i;
+>  
+> -	bufsz_left = bufsz;
+> +	bufsz_left = buffsize;
+>  	for (i = 0; i < arr_sz - 1; i++) {
+> -		bufsz_single = rand() % (bufsz_left / 2) + 1;
+> +		bufsz_single = rand() % ((bufsz_left / 2) + 1);
+
+It was correct before you added the parenthesis, the + 1 was there to
+make sure we do not end up with an empty buffer if rand() returned
+multiple of bufsz_left/2.
+
+Also I guess that this only works reasonably only for bufsize >
+2^nriovecs otherwise you may end up doing modulo (%) operation by a
+zero which is undefined operation, I guess that the process would end up
+killed with SIGFPE.
+
+Looking at the code we actually depend on the fact that we have two
+iovec sets whose size is the same, and this of course works only if the
+buffer size is large enoug. This is actually quite complicated.
+
+I guess that we will have to change the code to make sure that bufz is
+not consumed until the very end, so maybe:
+
+	for (i = 0; i < arr_sz - 1; i++) {
+		int mod = MAX(1, (bufz_left-arr_sz)/2);
+		arr[i] = rand() % mod + 1
+		bufz_left -= arr[i];
+	}
+
+With that we make sure that bufz_left is large enough as long as the
+bufsize >= arr_size (which is something that has to be so anyways).
+
+But thinking of it again, as long as we allow the iovec_len to be 0 your
+change is actually correct as malloc(0) returns a valid pointer on Linux
+(which is not generally guaranteed). But if we are going to use that
+version we should explicitly check the size == 0 when we allocate the
+iovec buffers and set the iov_base to NULL and iov_len to 0 in that
+case to make it clear that the buffers can have zero size.
+
+
+>  		arr[i] = bufsz_single;
+>  		bufsz_left -= bufsz_single;
+>  	}
+> +
+>  	arr[arr_sz - 1] = bufsz_left;
+>  }
+>  
+> -static void child_alloc(int *bufsz_arr)
+> +static void child_alloc(const int *sizes, int nr_iovecs)
+>  {
+>  	char **foo;
+>  	int i, j;
+> -	char buf[BUFSIZ];
+>  	long count;
+>  
+> -	foo = SAFE_MALLOC(tst_exit, nr_iovecs * sizeof(char *));
+> +	foo = SAFE_MALLOC(nr_iovecs * sizeof(char *));
+>  
+>  	count = 0;
+>  	for (i = 0; i < nr_iovecs; i++) {
+> -		foo[i] = SAFE_MALLOC(tst_exit, bufsz_arr[i]);
+> -		for (j = 0; j < bufsz_arr[i]; j++) {
+> +		foo[i] = SAFE_MALLOC(sizes[i]);
+> +		for (j = 0; j < sizes[i]; j++) {
+>  			foo[i][j] = count % 256;
+>  			count++;
+>  		}
+>  	}
+> -	tst_resm(TINFO, "child 0: %d iovecs allocated and initialized.",
+> -		 nr_iovecs);
+>  
+> -	/* passing addr via pipe */
+> -	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+> -	snprintf(buf, BUFSIZ, "%p", (void *)foo);
+> -	SAFE_WRITE(tst_exit, 1, pipe_fd[1], buf, strlen(buf) + 1);
+> -	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+> +	*data_ptr = (uintptr_t)foo;
+> +
+> +	tst_res(TINFO, "child 0: memory allocated and initialized");
+>  
+> -	/* wait until child_invoke is done reading from our VM */
+> -	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+> +	/* wake and wait until child_invoke is done reading from our VM */
+> +	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>  }
+>  
+> -static long *fetch_remote_addrs(void)
+> +static long *fetch_remote_addrs(int nr_iovecs, pid_t pid_alloc)
+>  {
+> -	long *foo, *bar;
+> -	char buf[BUFSIZ];
+> +	long *bar;
+>  	long len;
+>  	struct iovec local, remote;
+>  
+> -	/* get addr from pipe */
+> -	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+> -	SAFE_READ(tst_exit, 0, pipe_fd[0], buf, BUFSIZ);
+> -	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+> -	if (sscanf(buf, "%p", &foo) != 1)
+> -		tst_brkm(TBROK | TERRNO, tst_exit, "sscanf");
 > -
-> -	tst_res(TPASS | TTERRNO, "%s: pidfd_open() failed as expected",
-> -		tc->name);
-> +	TST_EXP_FAIL2(pidfd_open(*tc->pid, tc->flags), tc->exp_errno,
-> +			"pidfd_open with %s", tc->name);
->   }
-> 
->   static struct tst_test test = {
-> -	.min_kver = "5.3",
->   	.tcnt = ARRAY_SIZE(tcases),
->   	.test = run,
->   	.setup = setup,
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-> index 48470e5e1..f41afa2fc 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-> @@ -1,8 +1,11 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later
->   /*
->    * Copyright (c) 2020 Viresh Kumar<viresh.kumar@linaro.org>
-> + */
+>  	len = nr_iovecs * sizeof(long);
+> -	bar = SAFE_MALLOC(tst_exit, len);
+> +	bar = SAFE_MALLOC(len);
+>  	local.iov_base = bar;
+>  	local.iov_len = len;
+> -	remote.iov_base = foo;
+> +	remote.iov_base = (void *)*data_ptr;
+>  	remote.iov_len = len;
+>  
+> -	TEST(tst_syscall(__NR_process_vm_readv, pids[0], &local,
+> -			 1UL, &remote, 1UL, 0UL));
+> -	if (TEST_RETURN != len)
+> -		tst_brkm(TFAIL | TTERRNO, tst_exit, "process_vm_readv");
+> +	TEST(tst_syscall(__NR_process_vm_readv, pid_alloc, &local, 1UL, &remote,
+> +					 1UL, 0UL));
+> +	if (TST_RET != len)
+> +		tst_brk(TBROK, "process_vm_readv");
+>  
+>  	return local.iov_base;
+
+Given that we do mmap a pointer to begin with I would just map the whole
+array of remote addresses instead of reading them like this...
+
+>  }
+>  
+> -static void child_invoke(int *bufsz_arr)
+> +static void child_invoke(const int *sizes, int nr_iovecs, pid_t pid_alloc,
+> +						 int buffsize)
+>  {
+> -	int i, j, count, nr_error;
+> +	const int num_local_vecs = 4;
+
+So we have the number of remote iovecs passed in paraemter but the local
+one is hardcoded? That does not sound right...
+
+Maybe we should just add an array with several different combinations of
+sizes and let the program loop over them with .tcnt.
+
+> +	struct iovec local[num_local_vecs];
+> +	struct iovec remote[nr_iovecs];
+> +	int i, j;
+> +	int count;
+> +	int nr_error;
+> +	int *local_sizes;
+>  	unsigned char expect, actual;
+>  	long *addrs;
+> -	struct iovec local[NUM_LOCAL_VECS], *remote;
+> -	int rcv_arr[NUM_LOCAL_VECS];
+>  
+> -	addrs = fetch_remote_addrs();
+> +	addrs = fetch_remote_addrs(nr_iovecs, pid_alloc);
+>  
+> -	remote = SAFE_MALLOC(tst_exit, nr_iovecs * sizeof(struct iovec));
+>  	for (i = 0; i < nr_iovecs; i++) {
+>  		remote[i].iov_base = (void *)addrs[i];
+> -		remote[i].iov_len = bufsz_arr[i];
+> +		remote[i].iov_len = sizes[i];
+>  	}
+> -	tst_resm(TINFO, "child 1: %d remote iovecs received.", nr_iovecs);
+>  
+> -	gen_random_arr(rcv_arr, NUM_LOCAL_VECS);
+> -	for (i = 0; i < NUM_LOCAL_VECS; i++) {
+> -		local[i].iov_base = SAFE_MALLOC(tst_exit, rcv_arr[i]);
+> -		local[i].iov_len = rcv_arr[i];
+> +	/* use different buffer sizes for local memory */
+> +	local_sizes = SAFE_MALLOC(num_local_vecs * sizeof(int));
+> +	create_data_size(local_sizes, num_local_vecs, buffsize);
+> +	for (i = 0; i < num_local_vecs; i++) {
+> +		local[i].iov_base = SAFE_MALLOC(local_sizes[i]);
+> +		local[i].iov_len = local_sizes[i];
+>  	}
+> -	tst_resm(TINFO, "child 1: %d local iovecs initialized.",
+> -		 NUM_LOCAL_VECS);
+>  
+> -	TEST(tst_syscall(__NR_process_vm_readv, pids[0], local,
+> -			    (unsigned long)NUM_LOCAL_VECS, remote,
+> -			    (unsigned long)nr_iovecs, 0UL));
+> -	if (TEST_RETURN != bufsz)
+> -		tst_brkm(TBROK | TTERRNO, tst_exit, "process_vm_readv");
+> +	tst_res(TINFO, "child 1: reading string from same memory location");
 > +
-> +/*\
-> + * [Description]
->    *
-> - * Description:
->    * This program opens the PID file descriptor of the child process created with
->    * fork(). It then uses poll to monitor the file descriptor for process exit, as
->    * indicated by an EPOLLIN event.
-> @@ -27,11 +30,9 @@ static void run(void)
->   		exit(EXIT_SUCCESS);
->   	}
-> 
-> -	TEST(pidfd_open(pid, 0));
-> +	TST_EXP_PID_SILENT(pidfd_open(pid, 0), "pidfd_open(%d, 0)", pid);
-> 
->   	fd = TST_RET;
-> -	if (fd == -1)
-> -		tst_brk(TFAIL | TTERRNO, "pidfd_open() failed");
-> 
->   	TST_CHECKPOINT_WAKE(0);
-> 
-> @@ -49,8 +50,13 @@ static void run(void)
->   		tst_res(TPASS, "pidfd_open() passed");
->   }
-> 
-> +static void setup(void)
-> +{
-> +	pidfd_open_supported();
-> +}
+> +	TEST(tst_syscall(__NR_process_vm_readv, pid_alloc, local, num_local_vecs,
+> +					 remote, nr_iovecs, 0UL));
 > +
->   static struct tst_test test = {
-> -	.min_kver = "5.3",
+> +	if (TST_RET < 0)
+> +		tst_brk(TBROK, "process_vm_readv: %s", tst_strerrno(-TST_RET));
+> +
+> +	if (TST_RET != buffsize)
+> +		tst_brk(TBROK, "process_vm_readv: expected %d bytes but got %ld",
+> +				buffsize, TST_RET);
+>  
+>  	/* verify every byte */
+>  	count = 0;
+>  	nr_error = 0;
+> -	for (i = 0; i < NUM_LOCAL_VECS; i++) {
+> +	for (i = 0; i < num_local_vecs; i++) {
+>  		for (j = 0; j < (int)local[i].iov_len; j++) {
+>  			expect = count % 256;
+>  			actual = ((unsigned char *)local[i].iov_base)[j];
+> -			if (expect != actual) {
+> -#if DEBUG
+> -				tst_resm(TFAIL, "child 1: expected %i, got %i "
+> -					 "for byte seq %d",
+> -					 expect, actual, count);
+> -#endif
+> +			if (expect != actual)
+>  				nr_error++;
+> -			}
+> +
+>  			count++;
+>  		}
+>  	}
+> +
+>  	if (nr_error)
+> -		tst_brkm(TFAIL, tst_exit, "child 1: %d incorrect bytes "
+> -			 "received.", nr_error);
+> +		tst_brk(TFAIL, "child 1: %d incorrect bytes received", nr_error);
+>  	else
+> -		tst_resm(TPASS, "child 1: all bytes are correctly received.");
+> +		tst_res(TPASS, "child 1: all bytes are correctly received");
+>  }
+>  
+>  static void setup(void)
+>  {
+> -	tst_require_root();
+> +	int iov_max;
+>  
+>  	/* Just a sanity check of the existence of syscall */
+>  	tst_syscall(__NR_process_vm_readv, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
+>  
+> -	nr_iovecs = nflag ? SAFE_STRTOL(NULL, nr_opt, 1, IOV_MAX) : 10;
+> -	bufsz = sflag ? SAFE_STRTOL(NULL, sz_opt, NUM_LOCAL_VECS, LONG_MAX)
+> -	    : 100000;
+> +	if (tst_parse_int(str_buffsize, &bufsize, 4, INT_MAX))
+> +		tst_brk(TBROK, "Invalid buffer size '%s'", str_buffsize);
+>  
+> -	tst_tmpdir();
+> -	TST_CHECKPOINT_INIT(cleanup);
+> -	srand(time(NULL));
+> +	iov_max = SAFE_SYSCONF(_SC_IOV_MAX);
+> +	if (tst_parse_int(str_nr_iovecs, &nriovecs, 1, iov_max))
+> +		tst_brk(TBROK, "Invalid IO vectors '%s'", str_nr_iovecs);
+>  
+> -	TEST_PAUSE;
+> +	data_ptr = SAFE_MMAP(NULL, sizeof(uintptr_t), PROT_READ | PROT_WRITE,
+> +						 MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> -	tst_rmdir();
+> +	if (data_ptr)
+> +		SAFE_MUNMAP(data_ptr, sizeof(uintptr_t));
+>  }
+>  
+> -static void help(void)
+> +static void run(void)
+>  {
+> -	printf("    -n NUM  Set the number of iovecs to be allocated.\n");
+> -	printf("    -s NUM  Set the size of total buffer size.\n");
+> +	pid_t pid_alloc;
+> +	pid_t pid_invoke;
+> +	int status;
+> +	int *sizes;
+> +
+> +	/* create random iovec data size */
+> +	sizes = SAFE_MALLOC(nriovecs * sizeof(int));
+> +	create_data_size(sizes, nriovecs, bufsize);
+> +
+> +	pid_alloc = SAFE_FORK();
+> +	if (!pid_alloc) {
+> +		child_alloc(sizes, nriovecs);
+> +		return;
+> +	}
+> +
+> +	TST_CHECKPOINT_WAIT(0);
+> +
+> +	pid_invoke = SAFE_FORK();
+> +	if (!pid_invoke) {
+> +		child_invoke(sizes, nriovecs, pid_alloc, bufsize);
+> +		return;
+> +	}
+> +
+> +	/* wait until child_invoke reads from child_alloc's VM */
+> +	SAFE_WAITPID(pid_invoke, &status, 0);
+> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +		tst_res(TFAIL, "child 1: returns %d", status);
+> +
+> +	/* child_alloc is free to exit now */
+> +	TST_CHECKPOINT_WAKE(0);
+> +
+> +	SAFE_WAITPID(pid_alloc, &status, 0);
+> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +		tst_res(TFAIL, "child 0: returns %d", status);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
 > +	.setup = setup,
->   	.test_all = run,
->   	.forks_child = 1,
->   	.needs_checkpoints = 1,
+> +	.cleanup = cleanup,
+> +	.forks_child = 1,
+> +	.needs_checkpoints = 1,
+> +	.options = (struct tst_option[]) {
+> +		{"s:", &str_buffsize, "Total buffer size (default 100000)"},
+> +		{"n:", &str_nr_iovecs, "Number of iovecs to be allocated (default 10)"},
+> +		{},
+> +	},
+> +};
+> -- 
+> 2.34.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
