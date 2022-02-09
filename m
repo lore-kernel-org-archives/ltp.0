@@ -4,87 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FD2EC4332F
-	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 09:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7B25C433EF
+	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 09:42:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A8A53C9B71
-	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 10:42:18 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 161673C9B72
+	for <ltp@archiver.kernel.org>; Wed,  9 Feb 2022 10:42:46 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E362B3C6912
- for <ltp@lists.linux.it>; Wed,  9 Feb 2022 10:42:07 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.4])
+ by picard.linux.it (Postfix) with ESMTPS id 778403C6912
+ for <ltp@lists.linux.it>; Wed,  9 Feb 2022 10:42:36 +0100 (CET)
+Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
+ [85.158.142.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3AD5E1400E62
- for <ltp@lists.linux.it>; Wed,  9 Feb 2022 10:42:05 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BECC81000965
+ for <ltp@lists.linux.it>; Wed,  9 Feb 2022 10:42:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1644399725; i=@fujitsu.com;
- bh=rN+zOCNiEmW7bLqnjOVaQdUnK1d9awlei7Mb1P5KaIs=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=l7kW6yR8eRO8El/E4+qhzyU4hd9uoRyx5rLg+ViB4TG5NGt04L/ktqt1x37ORurzY
- E/ON8pi22H+BVIfFoxmwKHy3Gz8X2aj0Wxe6YKjZzujExUacJGi4zX5P9I1RffS91R
- dSV7QNxiVWf715BLhntuOyyVi8Lvtv6jNjx1PLhZSffcwiRv/kwJbSiZZeP4VC84BW
- cBCxgbvtWnHb3V9c07sCa/VVg5tYKunhq+2HGtQBqaNRZEJU8IxMHfejZZWmfu3nGC
- 48nLiVOBHGG0z2hT9OramZJbjhCNNTKK8eFJF2uajKVuOedMobwWu1Szb4zNIFqi4F
- WtCA4FkeZOliQ==
-Received: from [100.115.34.36] (using TLSv1.2 with cipher
+ s=170520fj; t=1644399755; i=@fujitsu.com;
+ bh=hHfNWXPVq+x4XViCZbj6xMlWdmenKWvxmThYmRJxcJ8=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=L215YmqySF5MdBoqWKHhNI5q6r/jc20kqDCbjRvoUjyC7ml2YSYG8V8ZWV+a1D1cB
+ tTX+qI3l+101aFgwOVRWcRiZQQf+mFfWai6Q8Aw1UPhCotp+HlM6P1nlcZ+om8mBXl
+ XtrBoAC/kj2aAlGwzZCnpgkpzdQprAk7YE/0ckyN7NnV/dUq3ZxVEvSYWNmuuYyieY
+ bg4upH+AYUQ43jy+cBRsXh8m+T6rlrusNMN6WahlBLt0TWHy4pcFlb47MJFnK+LWxW
+ iJ3GBNu+KgDyv7X1rm1lNANNETEY4qdDBVCs8jYN7QPLjX4xHpD0IqrB8mAuUov2jb
+ e8zvtyboAv2JA==
+Received: from [100.115.69.41] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-a.eu-west-2.aws.ess.symcld.net id B0/8E-29321-D6C83026;
- Wed, 09 Feb 2022 09:42:05 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRWlGSWpSXmKPExsViZ8ORqJvTw5x
- k8G6qjcWK7zsYHRg99v1exxrAGMWamZeUX5HAmnG2kbWgXavi8LYOtgbG/cpdjFwcQgJnGSXm
- /XzP3sXICeTsZJJ4+TUAIrGbUWJLywSwBJuApsSzzgXMILaIgIRER8NbsDizgLrE8km/mLoYO
- TiEBcwl2n/HgYRZBFQkvrzpYwGxeQU8JI7uuMIGYksIKEhMefieGSIuKHFy5hMWiDESEgdfvG
- CGqFGUuNTxjRHCrpCYNauNCcJWk7h6bhPzBEb+WUjaZyFpX8DItIrROqkoMz2jJDcxM0fX0MB
- A19DQVNfYUtfIwEAvsUo3US+1VLc8tbhE10gvsbxYL7W4WK+4Mjc5J0UvL7VkEyMwJFOK1U/s
- YHy68qfeIUZJDiYlUd7+mUxJQnxJ+SmVGYnFGfFFpTmpxYcYZTg4lCR4N1cwJwkJFqWmp1akZ
- eYA4wMmLcHBoyTCO6UbKM1bXJCYW5yZDpE6xagoJc67FiQhAJLIKM2Da4PF5CVGWSlhXkYGBg
- YhnoLUotzMElT5V4ziHIxKwrwttUBTeDLzSuCmvwJazAS0eNt0JpDFJYkIKakGJrYyh+r8fTP
- i9/ZuLVwrfiOI6YRvH7up8WrTG1z81dH+b2L/9l0MUsje2zJ3T9Jbi+PdLjciOLOuP/0qIXYi
- IvbH9rR6+8urLlTutrB89sk3fm1IZF7g98R9pWs0+C4vWMqd0Mf8Zq+BX6qB5tF7bYe6/i9cK
- LOtcRfHld8Pjy5sr4myY9t54ZDK2j2bnqyIUpb8V3TueWDOorMfzqQysc//OTvsueBF2YiHp5
- /mK6cEpF4rLwuz9N/o7DA3YeOewzPsbp+dmeMg/z9wbfW0ReKV3TmnPT6+aP259Vy/z5Xt0Vm
- X+TX2+13bV+TVLqJ9aULpurkTN22cOL98zv0dbS8Zj8VP9JIvX5ctNelXrYwSS3FGoqEWc1Fx
- IgDZF3T+RAMAAA==
+ by server-1.bemta.az-a.eu-central-1.aws.ess.symcld.net id EA/6B-24566-B8C83026;
+ Wed, 09 Feb 2022 09:42:35 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOIsWRWlGSWpSXmKPExsViZ8MxSberhzn
+ JYFaLocWK7zsYHRg99v1exxrAGMWamZeUX5HAmjG94SxjwRKZilmN7awNjJskuhi5OIQEzjJK
+ 7Dr6gLGLkRPI2ckk8WGTDERiN6PE7T97wBJsApoSzzoXMIPYIgISEh0Nb9lBbGYBdYnlk34xg
+ djCAoESP6Z/AKrn4GARUJGYsssYxOQV8JD49kEHpEJCQEFiysP3YFM4BTwljh89xApSIgRUsq
+ qpACTMKyAocXLmExaI4RISB1+8YIZoVZS41PGNEcKukJg1q40JwlaTuHpuE/MERsFZSNpnIWl
+ fwMi0itEuqSgzPaMkNzEzR9fQwEDX0NBU18xM18jIQi+xSjdRL7VUNzk1r6QoESitl1herJda
+ XKxXXJmbnJOil5dasokRGMYpxU5PdjC+7vupd4hRkoNJSZS3fyZTkhBfUn5KZUZicUZ8UWlOa
+ vEhRhkODiUJ3s0VzElCgkWp6akVaZk5wJiCSUtw8CiJ8E7pBkrzFhck5hZnpkOkTjHqcrxu+b
+ mDWYglLz8vVUqcdy1IkQBIUUZpHtwIWHxfYpSVEuZlZGBgEOIpSC3KzSxBlX/FKM7BqCTM21I
+ LNIUnM68EbtMroCOYgI7YNp0J5IiSRISUVAPT3UhGZmXTzX1rPv4/MD3hceJbmeuyLVILntQu
+ F3RaYmZpVOsaaVvCcb2WSXC75dr+azvemawyyit6d/Xlv8JHp/sO3Tu7UuPyVu8N8jcOSd1b9
+ /6ie8Meryo/7fTJT2yVbBnXe1ucLrZKub1tT2HG/6jeX0flDFjXCLuEa9jzhdsevXZ7m4iD81
+ TdA3wc/u3zFv+zsH4Z0K9/SGiBV9qhkL8zg83enNiSVWp5eiZnlIW9g6TZtx+e57IUri035tr
+ 8Mmvy26tbTn7ZfzroLg+D2Oe+DeK2POGztOYYLrhkG/PK49nld2vWNIf8rj6fExnxXLHIoetD
+ 6vZFWlvSnxfuCUj8eEdxVcuCkPLiqkoJJZbijERDLeai4kQA7M5l7WoDAAA=
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-8.tower-548.messagelabs.com!1644399724!2626!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-4.tower-528.messagelabs.com!1644399754!15600!1
+X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 8482 invoked from network); 9 Feb 2022 09:42:04 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-8.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 9 Feb 2022 09:42:04 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 866651001A4
- for <ltp@lists.linux.it>; Wed,  9 Feb 2022 09:42:04 +0000 (GMT)
+Received: (qmail 30677 invoked from network); 9 Feb 2022 09:42:34 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-4.tower-528.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 9 Feb 2022 09:42:34 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 5174C10033A
+ for <ltp@lists.linux.it>; Wed,  9 Feb 2022 09:42:34 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 7927910019B
- for <ltp@lists.linux.it>; Wed,  9 Feb 2022 09:42:04 +0000 (GMT)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 451781000FB
+ for <ltp@lists.linux.it>; Wed,  9 Feb 2022 09:42:34 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.28; Wed, 9 Feb 2022 09:41:54 +0000
+ (TLS) id 15.0.1497.28; Wed, 9 Feb 2022 09:42:12 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Wed, 9 Feb 2022 17:42:17 +0800
-Message-ID: <1644399738-2155-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Wed, 9 Feb 2022 17:42:18 +0800
+Message-ID: <1644399738-2155-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1644399738-2155-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1644399738-2155-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open: Simplify code
+Subject: [LTP] [PATCH 2/2] syscalls/pidfd_open04: Add new test with
+ PIDFD_NONBLOCK flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,201 +105,134 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-1) make use of TST_EXP_FAIL2 or TST_EXP_PID_SILENT macros
-2) remove min_kver check and use pidfd_open_supported()
-3) Add docparse formatting
+As pidfd_open man-page said
+"PIDFD_NONBLOCK (since Linux 5.10)
+Return a nonblocking file descriptor.  If the process referred to by
+the file descriptor has not yet terminated, then an attempt to wait
+on the file descriptor using waitid(2) will immediately  return
+the error EAGAIN rather than blocking."
+
+Test this and also test whether set NONBLOCK flag in its pidfd.
+
+Noticed that, don't introduce lapi/pidfd.h because linux/pidfd.h uses
+kernel header fcntl.h but ltp api uses libc header. so it may
+exist redefinition error of 'struct flock'[1].
+
+[1]https://github.com/golang/go/issues/48221
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/lapi/pidfd_open.h                     |  8 +++--
- .../kernel/syscalls/pidfd_open/pidfd_open01.c | 22 +++++++-----
- .../kernel/syscalls/pidfd_open/pidfd_open02.c | 34 +++++++------------
- .../kernel/syscalls/pidfd_open/pidfd_open03.c | 16 ++++++---
- 4 files changed, 44 insertions(+), 36 deletions(-)
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/pidfd_open/.gitignore     |  1 +
+ .../kernel/syscalls/pidfd_open/pidfd_open04.c | 78 +++++++++++++++++++
+ 3 files changed, 80 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
 
-diff --git a/include/lapi/pidfd_open.h b/include/lapi/pidfd_open.h
-index 9806c73d4..5cf10933e 100644
---- a/include/lapi/pidfd_open.h
-+++ b/include/lapi/pidfd_open.h
-@@ -9,11 +9,15 @@
+diff --git a/runtest/syscalls b/runtest/syscalls
+index c3e037f72..ce6f89f88 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -954,6 +954,7 @@ personality02 personality02
+ pidfd_open01 pidfd_open01
+ pidfd_open02 pidfd_open02
+ pidfd_open03 pidfd_open03
++pidfd_open04 pidfd_open04
  
- #include <sys/syscall.h>
- #include <sys/types.h>
--
- #include "lapi/syscalls.h"
--
- #include "config.h"
- 
-+static inline void pidfd_open_supported(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_pidfd_open);
-+}
-+
- #ifndef HAVE_PIDFD_OPEN
- static inline int pidfd_open(pid_t pid, unsigned int flags)
- {
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-index f40e9b624..ed9b82637 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-@@ -1,11 +1,15 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * Description:
-  * Basic pidfd_open() test:
-- * 1) Fetch the PID of the current process and try to get its file descriptor.
-- * 2) Check that the close-on-exec flag is set on the file descriptor.
-+ *
-+ * - Fetch the PID of the current process and try to get its file descriptor.
-+ * - Check that the close-on-exec flag is set on the file descriptor.
-  */
- 
- #include <unistd.h>
-@@ -17,10 +21,7 @@ static void run(void)
- {
- 	int flag;
- 
--	TEST(pidfd_open(getpid(), 0));
--
--	if (TST_RET == -1)
--		tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
-+	TST_EXP_PID_SILENT(pidfd_open(getpid(), 0), "pidfd_open(getpid(), 0)");
- 
- 	flag = fcntl(TST_RET, F_GETFD);
- 
-@@ -35,7 +36,12 @@ static void run(void)
- 	tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
- }
- 
-+static void setup(void)
-+{
-+	pidfd_open_supported();
-+}
-+
- static struct tst_test test = {
--	.min_kver = "5.3",
-+	.setup = setup,
- 	.test_all = run,
- };
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-index dc86cae7a..93a61a51d 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-@@ -1,14 +1,21 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
+ pidfd_send_signal01 pidfd_send_signal01
+ pidfd_send_signal02 pidfd_send_signal02
+diff --git a/testcases/kernel/syscalls/pidfd_open/.gitignore b/testcases/kernel/syscalls/pidfd_open/.gitignore
+index e0b8900c1..cebdc624d 100644
+--- a/testcases/kernel/syscalls/pidfd_open/.gitignore
++++ b/testcases/kernel/syscalls/pidfd_open/.gitignore
+@@ -1,3 +1,4 @@
+ pidfd_open01
+ pidfd_open02
+ pidfd_open03
++pidfd_open04
+diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
+new file mode 100644
+index 000000000..436351f23
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Tests basic error handling of the pidfd_open syscall.
-  *
-- * Description:
-- * Basic pidfd_open() test to test invalid arguments.
-+ * - ESRCH the process specified by pid does not exist
-+ * - EINVAL pid is not valid
-+ * - EINVAL flags is not valid
-  */
- #include "tst_test.h"
- #include "lapi/pidfd_open.h"
- 
--pid_t expired_pid, my_pid, invalid_pid = -1;
-+static pid_t expired_pid, my_pid, invalid_pid = -1;
- 
- static struct tcase {
- 	char *name;
-@@ -23,6 +30,7 @@ static struct tcase {
- 
- static void setup(void)
- {
-+	pidfd_open_supported();
- 	expired_pid = tst_get_unused_pid();
- 	my_pid = getpid();
- }
-@@ -31,27 +39,11 @@ static void run(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
- 
--	TEST(pidfd_open(*tc->pid, tc->flags));
--
--	if (TST_RET != -1) {
--		SAFE_CLOSE(TST_RET);
--		tst_res(TFAIL, "%s: pidfd_open succeeded unexpectedly (index: %d)",
--			tc->name, n);
--		return;
--	}
--
--	if (tc->exp_errno != TST_ERR) {
--		tst_res(TFAIL | TTERRNO, "%s: pidfd_open() should fail with %s",
--			tc->name, tst_strerrno(tc->exp_errno));
--		return;
--	}
--
--	tst_res(TPASS | TTERRNO, "%s: pidfd_open() failed as expected",
--		tc->name);
-+	TST_EXP_FAIL2(pidfd_open(*tc->pid, tc->flags), tc->exp_errno,
-+			"pidfd_open with %s", tc->name);
- }
- 
- static struct tst_test test = {
--	.min_kver = "5.3",
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = run,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-index 48470e5e1..f41afa2fc 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-@@ -1,8 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ * Verify that the PIDFD_NONBLOCK flag works with pidfd_open() and
++ * that waitid() with a non-blocking pidfd returns EAGAIN.
 + */
 +
-+/*\
-+ * [Description]
-  *
-- * Description:
-  * This program opens the PID file descriptor of the child process created with
-  * fork(). It then uses poll to monitor the file descriptor for process exit, as
-  * indicated by an EPOLLIN event.
-@@ -27,11 +30,9 @@ static void run(void)
- 		exit(EXIT_SUCCESS);
- 	}
- 
--	TEST(pidfd_open(pid, 0));
-+	TST_EXP_PID_SILENT(pidfd_open(pid, 0), "pidfd_open(%d, 0)", pid);
- 
- 	fd = TST_RET;
--	if (fd == -1)
--		tst_brk(TFAIL | TTERRNO, "pidfd_open() failed");
- 
- 	TST_CHECKPOINT_WAKE(0);
- 
-@@ -49,8 +50,13 @@ static void run(void)
- 		tst_res(TPASS, "pidfd_open() passed");
- }
- 
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/wait.h>
++#include "tst_test.h"
++#include "lapi/pidfd_open.h"
++
++#ifndef PIDFD_NONBLOCK
++#define PIDFD_NONBLOCK O_NONBLOCK
++#endif
++
++#ifndef P_PIDFD
++#define P_PIDFD  3
++#endif
++
++static void run(void)
++{
++	int flag, pid, pidfd;
++	siginfo_t info;
++
++	pid = SAFE_FORK();
++	if (!pid)
++		pause();
++
++	TST_EXP_PID_SILENT(pidfd_open(pid, PIDFD_NONBLOCK),
++				"pidfd_open(%d,  PIDFD_NONBLOCK)", pid);
++
++	pidfd = TST_RET;
++	flag = fcntl(pidfd, F_GETFL);
++	if (flag == -1)
++		tst_brk(TFAIL | TERRNO, "fcntl(F_GETFL) failed");
++
++	if (!(flag & O_NONBLOCK))
++		tst_brk(TFAIL, "pidfd_open(%d, O_NONBLOCK) didn't set O_NONBLOCK flag", pid);
++
++	tst_res(TPASS, "pidfd_open(%d, O_NONBLOCK) sets O_NONBLOCK flag", pid);
++
++	TST_EXP_FAIL(waitid(P_PIDFD, pidfd, &info, WEXITED), EAGAIN,
++			"waitid(P_PIDFD,...,WEXITED)");
++
++	SAFE_KILL(pid, SIGTERM);
++	SAFE_WAIT(NULL);
++	SAFE_CLOSE(pidfd);
++}
++
 +static void setup(void)
 +{
 +	pidfd_open_supported();
++
++	TEST(pidfd_open(getpid(), PIDFD_NONBLOCK));
++	if (TST_RET == -1) {
++		if (TST_ERR == EINVAL) {
++			tst_brk(TCONF, "PIDFD_NONBLOCK was supported since linux 5.10");
++			return;
++		}
++		tst_brk(TFAIL | TTERRNO,
++			"pidfd_open(getpid(),PIDFD_NONBLOCK) failed unexpectedly");
++	}
 +}
 +
- static struct tst_test test = {
--	.min_kver = "5.3",
++static struct tst_test test = {
++	.needs_root = 1,
++	.forks_child = 1,
 +	.setup = setup,
- 	.test_all = run,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
++	.test_all = run,
++};
 -- 
 2.23.0
 
