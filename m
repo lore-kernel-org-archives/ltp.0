@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 978F0C433F5
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 07:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 450EDC433EF
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 09:25:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 080933C9DDA
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 08:34:17 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id C551A3C9E3E
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 10:25:50 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 341EC3C9DB4
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 08:34:06 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 537503C13C0
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 10:25:40 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 833DC6009D9
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 08:34:06 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AEECF200AEA
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 10:25:39 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8F76F210F6;
- Thu, 10 Feb 2022 07:34:05 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id BF2ED1F382;
+ Thu, 10 Feb 2022 09:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1644478445;
+ t=1644485138;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZxaSwN/QQsXF37FkXMNvqzdVKXgjKxaFZ+IoTpFvaVY=;
- b=Lc91NAnVv5XqtSA5EpiaVhRztXBdmGygcyMT69tVnvRfe16HuQ5LhHhCBbSOY3ciRr/xZB
- B9DgLx4X1M+fzfjnBfrQmimDfVhZl2CO6Z+gBEAoRCiLRi2mQMGUZktnMepTAr0RatVMoQ
- A8DQ+EtrtkAChOaZtx6CKgJcHLo67pI=
+ bh=p1sm5okPPE3MFUxuELnAoSw1HQmnwNeCm/7FaJ2hWBw=;
+ b=V5rBkU6LvCDajyl8+JIYAnwtq3GykCtAlKUzzpYa0Qb7pBhqK8Nf9MBJa6UxSnTTRRMJQQ
+ HbLq57lTtEvGWsYM0B+UXrcE76ME2M4Wi+q5maAj39CPS8Man+UzT/N4p3AdbCNlvNGwuR
+ AIx4zPAz1UTy+ru+GEuXsrtcvFIJ6ZQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1644478445;
+ s=susede2_ed25519; t=1644485138;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZxaSwN/QQsXF37FkXMNvqzdVKXgjKxaFZ+IoTpFvaVY=;
- b=8UX16Z9XEVvw9dJq3KdygFiosgHIc7fo+zahtcTQNYERCpXMjbe/DsnbXLNiij8BLNz3ob
- jCVGxit7gBdhSvAA==
+ bh=p1sm5okPPE3MFUxuELnAoSw1HQmnwNeCm/7FaJ2hWBw=;
+ b=plPUNDg9BQH/ZLsAGS0YSalQi/cebk2m2cJN0QmTm/n4n1e8zopfL2Yvc/B37UUDHWur15
+ 32ByjdKM3DiaNUAA==
 Received: from g78 (unknown [10.163.24.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 5D212A3B85;
- Thu, 10 Feb 2022 07:34:05 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 8E014A3B81;
+ Thu, 10 Feb 2022 09:25:38 +0000 (UTC)
 References: <20220208140322.6842-1-rpalethorpe@suse.com>
- <20220208140322.6842-3-rpalethorpe@suse.com>
- <CAEemH2fjSLAdY4xO7WMekGX=3sPFjt0xVknNxJedk1-agsb3zQ@mail.gmail.com>
+ <20220208140322.6842-4-rpalethorpe@suse.com>
+ <CAEemH2cb65kihwnkMMKSr8FRXJ_SY3jPnSxPPp-Kk_xBrJAeZw@mail.gmail.com>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Li Wang <liwang@redhat.com>
-Date: Thu, 10 Feb 2022 07:32:27 +0000
-In-reply-to: <CAEemH2fjSLAdY4xO7WMekGX=3sPFjt0xVknNxJedk1-agsb3zQ@mail.gmail.com>
-Message-ID: <87a6ezkwes.fsf@suse.de>
+Date: Thu, 10 Feb 2022 07:34:25 +0000
+In-reply-to: <CAEemH2cb65kihwnkMMKSr8FRXJ_SY3jPnSxPPp-Kk_xBrJAeZw@mail.gmail.com>
+Message-ID: <875ypnkr8v.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] API/cgroup: Shorten cgroup to cg in most
- symbols
+Subject: Re: [LTP] [PATCH 3/3] memcontrol04: Copy from kselftest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,33 +82,20 @@ Hello Li,
 
 Li Wang <liwang@redhat.com> writes:
 
-> On Tue, Feb 8, 2022 at 10:04 PM Richard Palethorpe via ltp <ltp@lists.linux.it> wrote:
+> This test has a high repetition with memcontrol03, I'm just
+> wondering if any possibility to merge together by defining a 
+> struct tcase?
 >
->  With the current naming it is common to have 'group' repeated 3 or
->  even 4 times in one line. This causes a number of readability
->  problems. Renaming it to cg reduces the amount of repetition.
->
->  The one place it is not renamed is in tst_test because it won't cause
->  repetition there. Meanwhile it is easier to search the internet for
->  'linux cgroup' than 'linux cg'.
->
->  Li Wang suggested renaming tst_cg to tst_cg_test because it is
->  consistent with tst_cg_drain. However I think tst_cg is used so often
->  that it is more important to have shorter lines.
->
-> To be honest, I only wanted that tst_cg_test pointer :).
+> static struct tcase {
+>        char *ctrl_file;
+> } tcases[] = {
+>        {"memory.min"},
+>        {"memory.low"}
+> };
 
-I understand, but I saw that a lot of lines had become too long with
-other changes. It's starting to get difficult to manage.
-
->
-> But I have no objection to renaming 'tst_cgroup_*' to 'tst_cg_*'
-> for the whole APIs. (Though I don't like it)
->
-> Let's hear more voices from peers.
-
-;-)
-
+There are a number of places where the logic is different. We would end
+up a with a test full of branches. There is some boilerplate which is
+the same for now, but that could also diverge between tests.
 
 -- 
 Thank you,
