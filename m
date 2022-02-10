@@ -4,77 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD305C433EF
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 09:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AB43C433EF
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 10:51:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C634A3C9E17
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 10:28:39 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8646D3C9E3B
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 11:51:32 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9953B3C5F90
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 10:28:26 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 00D6E3C8FB5
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 11:51:22 +0100 (CET)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com
+ [IPv6:2607:f8b0:4864:20::429])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1B197600F0A
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 10:28:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1644485304;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sr1/fAReLK1E8chovgsfuHpqAuDyR0qFRwzSuRIWJnU=;
- b=chv5nLh8jPspB1MUPBUcGKVq0SryP4X+UA1zw1isJdt0pZjT4JMF3aX40CKU6unOftHM70
- V5RG466W8nNUvqkvaUXUDkj5kpSCgpuFNVTPF01M9qK4lWjEhbqllzKM5JWtIl/fvwRN7c
- s1WeyXJ7tza1FxWatNBMYtCi+PPaB/w=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-600-_VynyHVHOtaIi9ga_oSXVw-1; Thu, 10 Feb 2022 04:28:22 -0500
-X-MC-Unique: _VynyHVHOtaIi9ga_oSXVw-1
-Received: by mail-yb1-f199.google.com with SMTP id
- v10-20020a05690204ca00b0061dd584eb83so10672061ybs.21
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 01:28:22 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 64F46200DDB
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 11:51:22 +0100 (CET)
+Received: by mail-pf1-x429.google.com with SMTP id l19so3708504pfu.2
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 02:51:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=6lKV6SombxypFVoalYuhEE1PMHu90Pn4buOA5IzYbLM=;
+ b=JOHfDYMGkpmUdd9z0v5QXz7D8emrsilMGCuGajkSs9CUBf2N4ZhNLBMJ7uymWEUrgf
+ f4TZF4B6w2KgSegfVSADDqxg9V2s8qzzolg814NhV6Law9kHjIo6wypT15Wo+aXvVC5k
+ aY9F1I16IThAAY49GU8otuOMC0DY9TmXQtWUOAbNSumc/JlzDTQ2BUQwt5TO6I36cHnd
+ hTNKMHXSrdFP6aoyDUbVFlv6cz21IO7u1GnxlDov9CGeOZc5CdlwcZSAG0vqeICKaQww
+ dS9LVhyWLZfLNrQDtXaWKKl4veRZuMW9zAPLr2/v/bkU+me1vhM1qJyXw+IVq0I5R1g0
+ VF6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=sr1/fAReLK1E8chovgsfuHpqAuDyR0qFRwzSuRIWJnU=;
- b=WFJjH3yRi1etBNWGBZ7EDYa2z9GEeKZKQ/mKrzECz97F5ZwQxIMzJK+k5REBSD8L+g
- b2VbAWcNv9FQQB/Qjn26AmtvQlaqql+7AC7TR7An/MwRYJCsP08v+SwVGNvyUnXulrvI
- DJaetRC57DQbZOl38hgIF7tUJ9i0A20pi8mfXbWvZzoiTgbdZrZG1+ZAqTDbXhH9orb3
- 0+P1MqB20If/Tr9VswieTKIsLFVJqfxU+pmmUBq11q/oyYaIt2PrNLMErka14UiviQOJ
- C1kA4hFBsG7a8JvtDKqkC7FPShNP6wYXng4GHredBoADA+7+jUOUNgqHxQBRYsXifKzm
- pJAA==
-X-Gm-Message-State: AOAM531iEaS+7freeUUJxnurJY8vOgZt+I9R52Hj2CStO4K5TwxVse+q
- eF329hAwvsOYhNIM6wrQ6tQbxsN6Z721NeDKMVVplRcqDMPLOfSDkpq2HRyglpg+xjX/LWr5YPh
- yk8W6REuoq3/q51+6jUrv+ht8w5U=
-X-Received: by 2002:a05:6902:56a:: with SMTP id
- a10mr6196680ybt.398.1644485301575; 
- Thu, 10 Feb 2022 01:28:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwz2dkDP8hYjI48X22LmLhAbr5cPbn7XFByIkJNmXaw3tTUfiByy/xlIUPwTpzczeG/8FJarXd8W0b1oLu7Rt8=
-X-Received: by 2002:a05:6902:56a:: with SMTP id
- a10mr6196662ybt.398.1644485301063; 
- Thu, 10 Feb 2022 01:28:21 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=6lKV6SombxypFVoalYuhEE1PMHu90Pn4buOA5IzYbLM=;
+ b=UqrAmjzirTobC5qtipzlRPgdCCub5o3NJWXunWa08h8ub6v4/JPDYWwSk8kV/hh+7N
+ ohzLB+N+wIW6iAukpNxA5fuSXGCtU1bMt1M4BMJ+04f/y6cQHNw9sKnQrNDHQBWzRRMY
+ XhF0stQJM3KE6d3dFJ27xlzxqbqGY5ALBjS6uHmBj+zm9Ye5Wi9SvL0ZU6hyjOugTt4k
+ wMLk1UOt+KWeR7Jy3Prd7Y5rn1jELjOlLz0/MXCbChM8Y/8ysVaR405ag7kgsYEeqqnb
+ azjX3snEmIo1AiP3HA/sE6CxWFexVcrHbFMoxDL0oP7VLKDvtJmZDi4aKDgWnX97QD3g
+ 65vQ==
+X-Gm-Message-State: AOAM533opXMvmdRUUsmObfdSKN51NsEEXQdejZ84BI/MioZuxiwoe3HG
+ LDCQqZhSfP3KfmgrBoGr4S35/PUfHV/cgA==
+X-Google-Smtp-Source: ABdhPJzGzGUHbqpDwA4q0Ct+iPDG7rlgscydyiIC2T+pbNEudpPd7CPPc4amEhnJAHLd47QgyQlS5Q==
+X-Received: by 2002:a63:f711:: with SMTP id x17mr5721054pgh.274.1644490280614; 
+ Thu, 10 Feb 2022 02:51:20 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:e030:88d9:c143:e4b1:355b:28be])
+ by smtp.gmail.com with ESMTPSA id g126sm2009232pgc.31.2022.02.10.02.51.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 10 Feb 2022 02:51:20 -0800 (PST)
+From: Kushal Chand <kushalkataria5@gmail.com>
+To: ltp@lists.linux.it
+Date: Thu, 10 Feb 2022 16:21:01 +0530
+Message-Id: <20220210105101.38337-1-kushalkataria5@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220209085700.2882422-1-liwang@redhat.com>
- <CAASaF6z1J4UGTse_8fDRGQSsNp+nHYCi2RNHKjfRd1_-LhCb-w@mail.gmail.com>
-In-Reply-To: <CAASaF6z1J4UGTse_8fDRGQSsNp+nHYCi2RNHKjfRd1_-LhCb-w@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 10 Feb 2022 17:28:07 +0800
-Message-ID: <CAEemH2di0t75N_FE7eWM6ndD1LHctxf_YHhQ86grQ+O=7-ziJA@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lib: add .min_mem_avail in tst_test struct
+Subject: [LTP] [PATCH v2] fstat_02: Increase test coverage by creating hard
+ link to file and validate using fstat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,39 +76,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1412482784=="
+Cc: Kushal Chand <kushalkataria5@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1412482784==
-Content-Type: multipart/alternative; boundary="000000000000357a8305d7a692bc"
+Implements: #517
 
---000000000000357a8305d7a692bc
-Content-Type: text/plain; charset="UTF-8"
+This patch creates a hard link for a file during setup and checks if number of hardlinks
+match with the expected number.
+---
+ testcases/kernel/syscalls/fstat/fstat02.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Pushed.
-
+diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/kernel/syscalls/fstat/fstat02.c
+index c0229de44..2f9632edf 100644
+--- a/testcases/kernel/syscalls/fstat/fstat02.c
++++ b/testcases/kernel/syscalls/fstat/fstat02.c
+@@ -17,8 +17,10 @@
+ #include "tst_safe_macros.h"
+ 
+ #define TESTFILE        "test_file"
++#define LINK_TESTFILE   "link_test_file"
+ #define FILE_SIZE       1024
+ #define FILE_MODE	0644
++#define NLINK	        2
+ 
+ static struct stat stat_buf;
+ static uid_t user_id;
+@@ -61,6 +63,12 @@ static void run(void)
+ 		fail++;
+ 	}
+ 
++	if (stat_buf.st_nlink != NLINK) {
++		tst_res(TFAIL, "stat_buf.st_nlink = %li expected %i",
++			(long)stat_buf.st_nlink, NLINK);
++		fail++;
++	}
++
+ 	if (fail)
+ 		return;
+ 
+@@ -78,6 +86,8 @@ static void setup(void)
+ 
+ 	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
+ 		tst_brk(TBROK, "Could not fill Testfile!");
++
++	SAFE_LINK(TESTFILE, LINK_TESTFILE);
+ }
+ 
+ static void cleanup(void)
 -- 
-Regards,
-Li Wang
-
---000000000000357a8305d7a692bc
-Content-Type: text/html; charset="UTF-8"
-
-<div dir="ltr"><div dir="ltr"><div class="gmail_default" style="font-size:small">Pushed.</div></div><div><br></div>-- <br><div dir="ltr" class="gmail_signature"><div dir="ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000357a8305d7a692bc--
-
-
---===============1412482784==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.25.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1412482784==--
-
