@@ -4,65 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BDE2C433EF
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 13:30:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC6B3C4332F
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 13:38:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BF57E3C9E87
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 14:30:42 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id AD6F93C9E9D
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 14:38:26 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 5F0D73C9D8E
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 14:38:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 402AF3C574A
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 14:30:32 +0100 (CET)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
- [IPv6:2607:f8b0:4864:20::102b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 73B091A01228
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 14:38:16 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 82AB61F399;
+ Thu, 10 Feb 2022 13:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1644500295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CsGrN0HIngRpaMwf7pph6XGhUp0+yfAz7eD5AUDjUa0=;
+ b=PcR4lwmPuoa3Qiz9BtVFC04empPO/ifkPOy8x1sWoCYCEoSPxvnTbj2sw9AXbNs0yBjg0X
+ ua8buMxr5vttsrdOXvUkgYRNBC5jTWGr5wf0VMbXUWT1lB/CYoPrRKtjRvRAtVtsCgeT3l
+ Js6dxVpsv4HQxtNaUsBsA7Ps4drmyu0=
+Received: from localhost.suse.de (unknown [10.163.30.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 60E7F6002AC
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 14:30:32 +0100 (CET)
-Received: by mail-pj1-x102b.google.com with SMTP id
- v13-20020a17090ac90d00b001b87bc106bdso8496048pjt.4
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 05:30:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=XhLiHiZDuDplMFDtJsnflwzcfOSpAEVobIqv2Grl6LU=;
- b=ic6UpIhh9f6laqbRFY3h5bpJHVYNHo4zn7AmodtEduq+r7T/VarbUamLJGOgYTgVPO
- 4Uy9xisd1szkK6CsOtfOMQf2OH8fhlWCGohSrYbTArMl9twMOAn22KD4rx2Gj0ZLCZcw
- n2mKF8i5O/YjysjWzoPDLRBUQubu2dy+BYfBvw0fYCxUjUs8Rk3GURafPauGpW28VKu1
- WBTNbNmy88bZLwBQ/71w170Jn+Apyp5AnIc9puq7fQueQ1UX/xsRlagTiisHfuklBMgJ
- SGAGktr3XKRqPoc04TtKu7/Zqjm3oA1fgu0vbLVrEmyeeQKMXbUfuahkTLfX0oATzzIZ
- XaYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=XhLiHiZDuDplMFDtJsnflwzcfOSpAEVobIqv2Grl6LU=;
- b=3fs+30F7AzVC3HtoyL1gMyhd/cIsuY8wnyGQC+55LqM3eoyQnmI9+0wmV0M4rtHFC9
- J8re2W3lsmA4xWq/SMeXz1ypyivkcrMcbN+YKMfZoNt9BukSclnY642ek/WrlICUxIue
- 3rQNXy87zPyYbg74t/D3nRt57CxzCaMnHKFYBnSqUL8KG3KxQjK5uIjPzucOSyAp60LV
- 6krg6hTKMI3B7vP+85lp6rHflRHISs/MehLXS8Q1HoowDiIkUiZF1Wp6S80aMSnd0bwP
- 0RsBTcC+SY/QmHDl6mLAx/knE1Agrrv0UBtPo99p9Lw3QpohbmvvmacaXcypjW9WSs+W
- EZhA==
-X-Gm-Message-State: AOAM532PPlKwpgL4ZFz8GmE8cmOEzvOKiSZ840k0wg5W6vcB+DtCihbc
- ZIG63M4cRVdH5xVyHWPf/vh2U8nlLbEVBVb6M5w=
-X-Google-Smtp-Source: ABdhPJzR91U9FLrXBXU7BTRUofnPttf7NF96Q3yo2JrcAOaKsr4RDI6pTRZwcdKDCv7YLgmFH43XS6DNe0u+J6Jgw1A=
-X-Received: by 2002:a17:902:eb45:: with SMTP id
- i5mr7550989pli.75.1644499830871; 
- Thu, 10 Feb 2022 05:30:30 -0800 (PST)
+ by relay2.suse.de (Postfix) with ESMTPS id 51DBBA3B89;
+ Thu, 10 Feb 2022 13:38:15 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu, 10 Feb 2022 15:38:12 +0200
+Message-Id: <20220210133812.13368-1-bogdan.lezhepekov@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <CAKWYkK03vnioG=XBmGOzAruwVo_XtZgn9k+dw8HPXyvTwfaVQQ@mail.gmail.com>
- <YgUK/1qWA0qQ304h@yuki> <77bcf013-4ab3-5eb0-8a2c-9f346a5b1a77@suse.cz>
-In-Reply-To: <77bcf013-4ab3-5eb0-8a2c-9f346a5b1a77@suse.cz>
-From: Kautuk Consul <kautuk.consul.80@gmail.com>
-Date: Thu, 10 Feb 2022 19:00:20 +0530
-Message-ID: <CAKWYkK2HwzFNASKA0rotrytAh5KvKkZgiLLc4D9Y0eE+n7x+pg@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Open Question about KVM test-cases.
+Subject: [LTP] [PATCH v1] mem/swapping01: Make sure swap is supported by
+ kernel
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,97 +56,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0683649470=="
+From: Bogdan Lezhepekov via ltp <ltp@lists.linux.it>
+Reply-To: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0683649470==
-Content-Type: multipart/alternative; boundary="000000000000409ba005d7a9f461"
+Previous version caused false positive result
+on machines support no swap in kernel.
 
---000000000000409ba005d7a9f461
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+---
+ testcases/kernel/mem/swapping/swapping01.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Thanks Martin. Will look into it.
-
-On Thu, 10 Feb 2022, 18:30 Martin Doucha, <mdoucha@suse.cz> wrote:
-
-> On 10. 02. 22 13:54, Cyril Hrubis wrote:
-> > Hi!
-> > Currently there are no tests for KVM in LTP, however Martin Doucha is
-> > working on some CVE reproducers and send a RFC while ago (added to CC).
->
-> You can find the RFC patch below. I've rewritten a large chunk of the
-> code in the mean time and the example CVE reproducer doesn't actually
-> work (the setup is incomplete so it passes even when it shouldn't) but
-> I'm getting close to something that actually works. You can expect the
-> first finished version before the end of the month.
->
->
-> https://patchwork.ozlabs.org/project/ltp/patch/20220106165435.16556-1-mdoucha@suse.cz/
->
-> --
-> Martin Doucha   mdoucha@suse.cz
-> QA Engineer for Software Maintenance
-> SUSE LINUX, s.r.o.
-> CORSO IIa
-> Krizikova 148/34
-> 186 00 Prague 8
-> Czech Republic
->
-
---000000000000409ba005d7a9f461
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"auto">Thanks=C2=A0Martin. Will look into it.</div><br><div clas=
-s=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, 10 Feb 2022=
-, 18:30 Martin Doucha, &lt;<a href=3D"mailto:mdoucha@suse.cz">mdoucha@suse.=
-cz</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margi=
-n:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">On 10. 02. 22 13:=
-54, Cyril Hrubis wrote:<br>
-&gt; Hi!<br>
-&gt; Currently there are no tests for KVM in LTP, however Martin Doucha is<=
-br>
-&gt; working on some CVE reproducers and send a RFC while ago (added to CC)=
-.<br>
-<br>
-You can find the RFC patch below. I&#39;ve rewritten a large chunk of the<b=
-r>
-code in the mean time and the example CVE reproducer doesn&#39;t actually<b=
-r>
-work (the setup is incomplete so it passes even when it shouldn&#39;t) but<=
-br>
-I&#39;m getting close to something that actually works. You can expect the<=
-br>
-first finished version before the end of the month.<br>
-<br>
-<a href=3D"https://patchwork.ozlabs.org/project/ltp/patch/20220106165435.16=
-556-1-mdoucha@suse.cz/" rel=3D"noreferrer noreferrer" target=3D"_blank">htt=
-ps://patchwork.ozlabs.org/project/ltp/patch/20220106165435.16556-1-mdoucha@=
-suse.cz/</a><br>
-<br>
--- <br>
-Martin Doucha=C2=A0 =C2=A0<a href=3D"mailto:mdoucha@suse.cz" target=3D"_bla=
-nk" rel=3D"noreferrer">mdoucha@suse.cz</a><br>
-QA Engineer for Software Maintenance<br>
-SUSE LINUX, s.r.o.<br>
-CORSO IIa<br>
-Krizikova 148/34<br>
-186 00 Prague 8<br>
-Czech Republic<br>
-</blockquote></div>
-
---000000000000409ba005d7a9f461--
-
---===============0683649470==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index 1a494bf69..3b4f0a61a 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -155,11 +155,18 @@ static void check_swapping(void)
+ 	SAFE_WAITPID(pid, &status, 0);
+ }
+ 
++static void setup(void)
++{
++	if (access("/proc/swaps", F_OK))
++		tst_brk(TCONF, "swap not supported by kernel");
++}
++
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.min_mem_avail = 10,
+ 	.test_all = test_swapping,
++	.setup = setup,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "50a15981a1fa"},
+ 		{}
+-- 
+2.35.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0683649470==--
