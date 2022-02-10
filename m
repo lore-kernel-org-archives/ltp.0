@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B06FEC433F5
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 11:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0092C433EF
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 11:07:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 16AC93C6D9E
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 12:07:25 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8E3E93C9E34
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 12:07:34 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 41D473C6D9E
+ by picard.linux.it (Postfix) with ESMTPS id 4F44A3C9C7F
  for <ltp@lists.linux.it>; Thu, 10 Feb 2022 12:07:15 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C870C601AF8
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8911D600079
  for <ltp@lists.linux.it>; Thu, 10 Feb 2022 12:07:14 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6A1801F38A;
- Thu, 10 Feb 2022 11:07:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 151D21F3A1;
+ Thu, 10 Feb 2022 11:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1644491233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8VJkDK9zh9X7lnbUX4S7z5j3jjRB746YVzPJ5CuE/EU=;
- b=rUduqM/70Pk0w2iqPglasJKq+qwPR+JTbc4XnwgsVJGGCQ/wNTVuUI+A7Zni2U62GjZSRh
- M5dDw2bkETu24XOiXmZcPhE8+2li4yfgkVZC4MN5bX12UeRjg+twkSYdmP0KVOmWotX5kX
- t1glKeysWarPoQ38KEhbekGJchWVYqs=
+ t=1644491234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=hyfWoK/8+T/qTmCW7DqKa2UkFf7kHYXSUEMK+mJkXm4=;
+ b=VRlhNXnc/S8y7jIE7yfDggCSLaoZ2nNlO+LY0oYvvAYTa0CVFG3HM6zALXAU2K3RDbZsIp
+ LvFLAdp3LcDXKU913kkxq9vYtP12dT2yzOTXGLU6nxesEcFkpx1NEljpFdyn8q7GRNvBA5
+ tfXF5loN2E3mwF09tBgsfYVeoIDcKDc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1644491233;
+ s=susede2_ed25519; t=1644491234;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8VJkDK9zh9X7lnbUX4S7z5j3jjRB746YVzPJ5CuE/EU=;
- b=pnYYVghoRDstg9BMVf4wxczb8C4KuQxgW36FfwlSUvADnrHT26SdVc/hjtq7KP0WpNAl9F
- KPV2Wz664krrfiCw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=hyfWoK/8+T/qTmCW7DqKa2UkFf7kHYXSUEMK+mJkXm4=;
+ b=XqoSLOc6iBp9sZjwuLtLEhzkkikTGTQXj67BdTAdyd9bOolsR1LtgctbLFvMXF0Khm06H/
+ lv7zGKmAQna62RAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3993613B43;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF0FC13B43;
  Thu, 10 Feb 2022 11:07:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id y7UBDOHxBGIYAwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6FRwNOHxBGIYAwAAMHmgww
  (envelope-from <andrea.cervesato@suse.de>); Thu, 10 Feb 2022 11:07:13 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 10 Feb 2022 12:07:08 +0100
-Message-Id: <20220210110712.23596-1-andrea.cervesato@suse.de>
+Date: Thu, 10 Feb 2022 12:07:11 +0100
+Message-Id: <20220210110712.23596-4-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220210110712.23596-1-andrea.cervesato@suse.de>
+References: <20220210110712.23596-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/3] Rewrite cma testing suite using new LTP API
+Subject: [LTP] [PATCH v2 3/3] Rewrite process_vm_writev02.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,16 +86,315 @@ Removed pipe and replaced it with shared memory.
 Replaced TST_CHECKPOINT_INIT usage with .needs_checkpoints from the new
 LTP API.
 
-Andrea Cervesato (3):
-  Rewrite process_vm_readv02.c test with new LTP API
-  Rewrite process_vm_readv03.c test with new LTP API
-  Rewrite process_vm_writev02.c using new LTP API
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+---
+ .../kernel/syscalls/cma/process_vm_writev02.c | 263 +++++++-----------
+ 1 file changed, 94 insertions(+), 169 deletions(-)
 
- .../kernel/syscalls/cma/process_vm_readv02.c  | 215 +++++------
- .../kernel/syscalls/cma/process_vm_readv03.c  | 349 ++++++++----------
- .../kernel/syscalls/cma/process_vm_writev02.c | 263 +++++--------
- 3 files changed, 324 insertions(+), 503 deletions(-)
-
+diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+index e70ead4ed..b535a8ff1 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
++++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+@@ -1,205 +1,130 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2012
+  * Copyright (c) Linux Test Project, 2012
++ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Fork two children, the first one allocates a chunk of memory and the
++ * other one call process_vm_writev to write known data into the first
++ * child. Then first child verifies that the data is as expected.
+  */
+ 
+-#define _GNU_SOURCE
++#include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/uio.h>
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include <limits.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
+-char *TCID = "process_vm_writev02";
+-int TST_TOTAL = 1;
+-
+-#define PADDING_SIZE 10
+-#define DEFAULT_CHAR 53
++static uintptr_t *data_ptr;
++static char *str_buffsize;
++static int bufsize = 100000;
+ 
+-static int sflag;
+-static char *sz_opt;
+-static option_t options[] = {
+-	{"s:", &sflag, &sz_opt},
+-	{NULL, NULL, NULL}
+-};
++static void child_alloc_and_verify(int buffsize)
++{
++	char foo[buffsize];
++	int i;
++	int err;
+ 
+-static long bufsz;
+-static int pipe_fd[2];
+-static pid_t pids[2];
++	tst_res(TINFO, "child 0: allocate memory");
+ 
+-static void child_init_and_verify(void);
+-static void child_write(void);
+-static void setup(void);
+-static void cleanup(void);
+-static void help(void);
++	memset(foo, 'a', buffsize);
++	*data_ptr = (uintptr_t)foo;
+ 
+-int main(int argc, char **argv)
+-{
+-	int lc, status;
+-
+-	tst_parse_opts(argc, argv, options, &help);
+-
+-	setup();
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		SAFE_PIPE(cleanup, pipe_fd);
+-
+-		/* the start of child_init_and_verify and child_write is
+-		 * already synchronized via pipe */
+-		pids[0] = fork();
+-		switch (pids[0]) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork #0");
+-		case 0:
+-			child_init_and_verify();
+-			exit(0);
+-		default:
+-			break;
+-		}
+-
+-		pids[1] = fork();
+-		switch (pids[1]) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
+-		case 0:
+-			child_write();
+-			exit(0);
+-		}
+-
+-		/* wait until child_write writes into
+-		 * child_init_and_verify's VM */
+-		SAFE_WAITPID(cleanup, pids[1], &status, 0);
+-		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			tst_resm(TFAIL, "child 1 returns %d", status);
+-
+-		/* signal child_init_and_verify to verify its VM now */
+-		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+-
+-		SAFE_WAITPID(cleanup, pids[0], &status, 0);
+-		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			tst_resm(TFAIL, "child 0 returns %d", status);
+-	}
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+-	cleanup();
+-	tst_exit();
+-}
++	err = 0;
++	for (i = 0; i < buffsize; i++)
++		if (foo[i] != 'w')
++			err++;
+ 
+-static void child_init_and_verify(void)
+-{
+-	unsigned char *foo;
+-	char buf[bufsz];
+-	long i, nr_err;
+-
+-	foo = SAFE_MALLOC(tst_exit, bufsz);
+-	for (i = 0; i < bufsz; i++)
+-		foo[i] = DEFAULT_CHAR;
+-	tst_resm(TINFO, "child 0: memory allocated.");
+-
+-	/* passing addr of string "foo" via pipe */
+-	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+-	snprintf(buf, bufsz, "%p", foo);
+-	SAFE_WRITE(tst_exit, 1, pipe_fd[1], buf, strlen(buf) + 1);
+-	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+-
+-	/* wait until child_write() is done writing to our VM */
+-	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+-
+-	nr_err = 0;
+-	for (i = 0; i < bufsz; i++) {
+-		if (foo[i] != i % 256) {
+-#if DEBUG
+-			tst_resm(TFAIL, "child 0: expected %i, got %i for "
+-				 "byte seq %ld", i % 256, foo[i], i);
+-#endif
+-			nr_err++;
+-		}
+-	}
+-	if (nr_err)
+-		tst_brkm(TFAIL, tst_exit, "child 0: got %ld incorrect bytes.",
+-			 nr_err);
++	if (err)
++		tst_res(TFAIL, "child 0: found %d differences from expected data", err);
+ 	else
+-		tst_resm(TPASS, "child 0: all bytes are expected.");
++		tst_res(TPASS, "child 0: read back expected data");
+ }
+ 
+-static void child_write(void)
++static void child_write(int buffsize, pid_t pid_alloc)
+ {
+-	unsigned char *lp, *rp;
+-	char buf[bufsz];
++	char lp[buffsize];
+ 	struct iovec local, remote;
+-	long i;
+-
+-	/* get addr from pipe */
+-	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+-	SAFE_READ(tst_exit, 0, pipe_fd[0], buf, bufsz);
+-	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+-	if (sscanf(buf, "%p", &rp) != 1)
+-		tst_brkm(TBROK | TERRNO, tst_exit, "sscanf");
+-
+-	lp = SAFE_MALLOC(tst_exit, bufsz + PADDING_SIZE * 2);
+-
+-	for (i = 0; i < bufsz + PADDING_SIZE * 2; i++)
+-		lp[i] = DEFAULT_CHAR;
+-	for (i = 0; i < bufsz; i++)
+-		lp[i + PADDING_SIZE] = i % 256;
+-
+-	local.iov_base = lp + PADDING_SIZE;
+-	local.iov_len = bufsz;
+-	remote.iov_base = rp;
+-	remote.iov_len = bufsz;
+-
+-	tst_resm(TINFO, "child 2: write to the same memory location.");
+-	TEST(tst_syscall(__NR_process_vm_writev, pids[0], &local,
+-			 1UL, &remote, 1UL, 0UL));
+-	if (TEST_RETURN != bufsz)
+-		tst_brkm(TFAIL | TTERRNO, tst_exit, "process_vm_readv");
++
++	tst_res(TINFO, "child 1: write to the same memory location");
++
++	memset(lp, 'w', buffsize);
++
++	local.iov_base = lp;
++	local.iov_len = buffsize;
++	remote.iov_base = (void *)*data_ptr;
++	remote.iov_len = buffsize;
++
++	TST_EXP_POSITIVE(tst_syscall(__NR_process_vm_writev, pid_alloc, &local,
++				     1UL, &remote, 1UL, 0UL));
++
++	if (TST_RET != buffsize) {
++		tst_brk(TBROK, "process_vm_writev: expected %d bytes but got %ld",
++			buffsize, TST_RET);
++	}
+ }
+ 
+ static void setup(void)
+ {
+-	tst_require_root();
+-
+-	/* Just a sanity check of the existence of syscall */
+ 	tst_syscall(__NR_process_vm_writev, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
+ 
+-	bufsz =
+-	    sflag ? SAFE_STRTOL(NULL, sz_opt, 1, LONG_MAX - PADDING_SIZE * 2)
+-	    : 100000;
++	if (tst_parse_int(str_buffsize, &bufsize, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid buffer size '%s'", str_buffsize);
+ 
+-	tst_tmpdir();
+-	TST_CHECKPOINT_INIT(cleanup);
+-
+-	TEST_PAUSE;
++	data_ptr = SAFE_MMAP(NULL, sizeof(uintptr_t), PROT_READ | PROT_WRITE,
++			     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_rmdir();
++	if (data_ptr)
++		SAFE_MUNMAP(data_ptr, sizeof(uintptr_t));
+ }
+ 
+-static void help(void)
++static void run(void)
+ {
+-	printf("    -s NUM  Set the size of total buffer size.\n");
++	pid_t pid_alloc;
++	pid_t pid_write;
++	int status;
++
++	pid_alloc = SAFE_FORK();
++	if (!pid_alloc) {
++		child_alloc_and_verify(bufsize);
++		return;
++	}
++
++	TST_CHECKPOINT_WAIT(0);
++
++	pid_write = SAFE_FORK();
++	if (!pid_write) {
++		child_write(bufsize, pid_alloc);
++		return;
++	}
++
++	SAFE_WAITPID(pid_write, &status, 0);
++	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++		tst_res(TFAIL, "child 1: returns %s", tst_strstatus(status));
++
++	TST_CHECKPOINT_WAKE(0);
++
++	SAFE_WAITPID(pid_alloc, &status, 0);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++	.options =
++		(struct tst_option[]){
++			{ "s:", &str_buffsize, "Total buffer size (default 100000)" },
++			{},
++		},
++};
 -- 
 2.35.1
 
