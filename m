@@ -4,47 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC6B3C4332F
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 13:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04AF4C433F5
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 14:18:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD6F93C9E9D
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 14:38:26 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A09193C9F15
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 15:18:21 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F0D73C9D8E
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 14:38:17 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 788243C93D2
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 15:18:11 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 73B091A01228
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 14:38:16 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 82AB61F399;
- Thu, 10 Feb 2022 13:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1644500295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CsGrN0HIngRpaMwf7pph6XGhUp0+yfAz7eD5AUDjUa0=;
- b=PcR4lwmPuoa3Qiz9BtVFC04empPO/ifkPOy8x1sWoCYCEoSPxvnTbj2sw9AXbNs0yBjg0X
- ua8buMxr5vttsrdOXvUkgYRNBC5jTWGr5wf0VMbXUWT1lB/CYoPrRKtjRvRAtVtsCgeT3l
- Js6dxVpsv4HQxtNaUsBsA7Ps4drmyu0=
-Received: from localhost.suse.de (unknown [10.163.30.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 966451A0145A
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 15:18:10 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 51DBBA3B89;
- Thu, 10 Feb 2022 13:38:15 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Thu, 10 Feb 2022 15:38:12 +0200
-Message-Id: <20220210133812.13368-1-bogdan.lezhepekov@suse.com>
-X-Mailer: git-send-email 2.35.1
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C728621117;
+ Thu, 10 Feb 2022 14:18:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1644502689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SL775cfIOTHd8Aq93MSSGnmUxzZgY+arE+E2DfWnMFA=;
+ b=REqxZ4YLIYYY0LOcS0wMH/TOmIGFfuRvVAlEXz2271sav1+McN5gvw8ydj4kZMHrMcVu/r
+ IKaPcFS9ZHqd24Up/YR1lq5XefhuF/SyP0ECq4CNN9g8zuJ9bS2W4FVkshe2zSRHOCcl0W
+ CGJfuoCVwyyg5nGctqoGo2Q5SS8zTUI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1644502689;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SL775cfIOTHd8Aq93MSSGnmUxzZgY+arE+E2DfWnMFA=;
+ b=En8NEHwTlot7dudACO041LEBPbu88FtszQnmk4ubXNvSwUEpBCDpREKcLreSS41k1qIZir
+ ICx7NzqxQxALQ9Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B19EE13BB0;
+ Thu, 10 Feb 2022 14:18:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id pgAGKqEeBWLubAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 10 Feb 2022 14:18:09 +0000
+Date: Thu, 10 Feb 2022 15:18:02 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YgUemsGtWLfK7isG@rei>
+References: <20220209091756.17245-1-andrea.cervesato@suse.de>
+ <20220209091756.17245-2-andrea.cervesato@suse.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220209091756.17245-2-andrea.cervesato@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] mem/swapping01: Make sure swap is supported by
- kernel
+Subject: Re: [LTP] [PATCH v5 3/3] Add futex_waitv testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,47 +76,121 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Bogdan Lezhepekov via ltp <ltp@lists.linux.it>
-Reply-To: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Previous version caused false positive result
-on machines support no swap in kernel.
+Hi!
+I've fixed a few things in this patch and pushed the whole patchset,
+thanks.
 
-Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
----
- testcases/kernel/mem/swapping/swapping01.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Full diff:
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 1a494bf69..3b4f0a61a 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -155,11 +155,18 @@ static void check_swapping(void)
- 	SAFE_WAITPID(pid, &status, 0);
- }
+diff --git a/testcases/kernel/syscalls/futex/futex_waitv02.c b/testcases/kernel/syscalls/futex/futex_waitv02.c
+index 2897f6c78..0a0e2b620 100644
+--- a/testcases/kernel/syscalls/futex/futex_waitv02.c
++++ b/testcases/kernel/syscalls/futex/futex_waitv02.c
+@@ -37,10 +37,10 @@ static void setup(void)
+ 	if (tst_parse_int(str_numfutex, &numfutex, 1, FUTEX_WAITV_MAX))
+ 		tst_brk(TBROK, "Invalid number of futexes '%s'", str_numfutex);
  
-+static void setup(void)
-+{
-+	if (access("/proc/swaps", F_OK))
-+		tst_brk(TCONF, "swap not supported by kernel");
-+}
-+
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.forks_child = 1,
- 	.min_mem_avail = 10,
- 	.test_all = test_swapping,
-+	.setup = setup,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "50a15981a1fa"},
- 		{}
--- 
-2.35.1
+-	futexes = SAFE_MALLOC(sizeof(uint32_t) * numfutex);
++	futexes = tst_alloc(sizeof(uint32_t) * numfutex);
+ 	memset(futexes, FUTEX_INITIALIZER, sizeof(uint32_t) * numfutex);
+ 
+-	waitv = SAFE_MALLOC(sizeof(struct futex_waitv) * numfutex);
++	waitv = tst_alloc(sizeof(struct futex_waitv) * numfutex);
+ 	memset(waitv, 0, sizeof(struct futex_waitv) * numfutex);
+ 
+ 	for (i = 0; i < numfutex; i++) {
+@@ -60,8 +60,8 @@ static void *threaded(void *arg)
+ 	TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
+ 			1, FUTEX_PRIVATE_FLAG));
+ 	if (TST_RET < 0) {
+-		tst_brk(TBROK, "futex_wake private returned: %ld %s", TST_RET,
+-			tst_strerrno(TST_ERR));
++		tst_brk(TBROK | TTERRNO,
++			"futex_wake private returned: %ld", TST_RET);
+ 	}
+ 
+ 	return NULL;
+@@ -70,7 +70,7 @@ static void *threaded(void *arg)
+ static void run(void)
+ {
+ 	struct timespec to;
+-	int ret, tid;
++	int tid;
+ 	pthread_t t;
+ 
+ 	tid = tst_syscall(__NR_gettid);
+@@ -81,13 +81,13 @@ static void run(void)
+ 	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &to);
+ 	to.tv_sec++;
+ 
+-	ret = futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC);
+-	if (ret < 0)
+-		tst_brk(TBROK, "futex_waitv returned: %d %s", ret,
+-			tst_strerrno(-ret));
+-	else if (ret != numfutex - 1)
+-		tst_res(TFAIL, "futex_waitv returned: %d, expecting %d", ret,
+-			numfutex - 1);
++	TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
++	if (TST_RET < 0) {
++		tst_brk(TBROK | TTERRNO, "futex_waitv returned: %ld", TST_RET);
++	} else if (TST_RET != numfutex - 1) {
++		tst_res(TFAIL, "futex_waitv returned: %ld, expecting %d",
++			TST_RET,  numfutex - 1);
++	}
+ 
+ 	SAFE_PTHREAD_JOIN(t, NULL);
+ 	tst_res(TPASS, "futex_waitv returned correctly");
+diff --git a/testcases/kernel/syscalls/futex/futex_waitv03.c b/testcases/kernel/syscalls/futex/futex_waitv03.c
+index 773cc5af3..d8e39c76a 100644
+--- a/testcases/kernel/syscalls/futex/futex_waitv03.c
++++ b/testcases/kernel/syscalls/futex/futex_waitv03.c
+@@ -39,7 +39,7 @@ static void setup(void)
+ 	if (tst_parse_int(str_numfutex, &numfutex, 1, FUTEX_WAITV_MAX))
+ 		tst_brk(TBROK, "Invalid number of futexes '%s'", str_numfutex);
+ 
+-	waitv = SAFE_MALLOC(sizeof(struct futex_waitv) * numfutex);
++	waitv = tst_alloc(sizeof(struct futex_waitv) * numfutex);
+ 	memset(waitv, 0, sizeof(struct futex_waitv) * numfutex);
+ 
+ 	for (i = 0; i < numfutex; i++) {
+@@ -72,8 +72,8 @@ static void *threaded(void *arg)
+ 	TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
+ 			1, 0));
+ 	if (TST_RET < 0) {
+-		tst_brk(TBROK, "futex_wake private returned: %ld %s", TST_RET,
+-			tst_strerrno(TST_ERR));
++		tst_brk(TBROK | TTERRNO,
++			"futex_wake private returned: %ld", TST_RET);
+ 	}
+ 
+ 	return NULL;
+@@ -94,12 +94,12 @@ static void run(void)
+ 	to.tv_sec++;
+ 
+ 	TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK, "futex_waitv returned: %ld %s", TST_RET,
+-			tst_strerrno(TST_ERR));
+-	else if (TST_RET != numfutex - 1)
++	if (TST_RET < 0) {
++		tst_brk(TBROK | TTERRNO, "futex_waitv returned: %ld", TST_RET);
++	} else if (TST_RET != numfutex - 1) {
+ 		tst_res(TFAIL, "futex_waitv returned: %ld, expecting %d",
+ 			TST_RET, numfutex - 1);
++	}
+ 
+ 	SAFE_PTHREAD_JOIN(t, NULL);
+ 	tst_res(TPASS, "futex_waitv returned correctly");
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
