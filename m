@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04AF4C433F5
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 14:18:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9054C433F5
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 15:02:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A09193C9F15
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 15:18:21 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8997A3C9EE0
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 16:02:14 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 788243C93D2
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 15:18:11 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 6D6CC3C9E0D
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 16:02:04 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 966451A0145A
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 15:18:10 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7315D600F74
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 16:02:03 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C728621117;
- Thu, 10 Feb 2022 14:18:09 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AB4E41F399;
+ Thu, 10 Feb 2022 15:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644502689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644505321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=SL775cfIOTHd8Aq93MSSGnmUxzZgY+arE+E2DfWnMFA=;
- b=REqxZ4YLIYYY0LOcS0wMH/TOmIGFfuRvVAlEXz2271sav1+McN5gvw8ydj4kZMHrMcVu/r
- IKaPcFS9ZHqd24Up/YR1lq5XefhuF/SyP0ECq4CNN9g8zuJ9bS2W4FVkshe2zSRHOCcl0W
- CGJfuoCVwyyg5nGctqoGo2Q5SS8zTUI=
+ bh=2i5+eVU4h7Q7ttcNhbaEYvp+k3/Zwy0ly2uqx3RXKE4=;
+ b=I9ZGHmm2i3FJCswXgjvpG+psfXtVJbxc5jSTh6t3WzEZxkvNYLwTJoQgiYdo+0tlYGKCYq
+ Vv6mfNKCgBCsoAye3frejyFJeyeTY/J71PiThtvfy6/afz0xItSzIbcrLTQWo5bAZCYUhp
+ NpsyYvgcvq0/E6j38OgN1vleu48FnL8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644502689;
+ s=susede2_ed25519; t=1644505321;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=SL775cfIOTHd8Aq93MSSGnmUxzZgY+arE+E2DfWnMFA=;
- b=En8NEHwTlot7dudACO041LEBPbu88FtszQnmk4ubXNvSwUEpBCDpREKcLreSS41k1qIZir
- ICx7NzqxQxALQ9Dg==
+ bh=2i5+eVU4h7Q7ttcNhbaEYvp+k3/Zwy0ly2uqx3RXKE4=;
+ b=LlEWS8AGWKdUg2daUq6Bop36ZEghgT9hoiKTotGgPb/aPodS0N7NoAWZV5Y4U12uCE6imY
+ HpFZbrcoi4dJ9nBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B19EE13BB0;
- Thu, 10 Feb 2022 14:18:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8201E13B8D;
+ Thu, 10 Feb 2022 15:02:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pgAGKqEeBWLubAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 10 Feb 2022 14:18:09 +0000
-Date: Thu, 10 Feb 2022 15:18:02 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id fWuQGukoBWL+BAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 10 Feb 2022 15:02:01 +0000
+Date: Thu, 10 Feb 2022 16:04:07 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <YgUemsGtWLfK7isG@rei>
-References: <20220209091756.17245-1-andrea.cervesato@suse.de>
- <20220209091756.17245-2-andrea.cervesato@suse.de>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <YgUpZ6lvI3WzL4cM@yuki>
+References: <YgPNWHc+xwKCRcvv@pevik>
+ <1644464477-16644-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1644464477-16644-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220209091756.17245-2-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <1644464477-16644-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 3/3] Add futex_waitv testing suite
+Subject: Re: [LTP] [PATCH v2 2/2] syscalls/pidfd_open04: Add new test with
+ PIDFD_NONBLOCK flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,110 +85,101 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-I've fixed a few things in this patch and pushed the whole patchset,
-thanks.
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that the PIDFD_NONBLOCK flag works with pidfd_open() and
+> + * that waitid() with a non-blocking pidfd returns EAGAIN.
+> + */
+> +
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <sys/wait.h>
+> +#include <stdlib.h>
+> +#include "tst_test.h"
+> +#include "lapi/pidfd_open.h"
+> +
+> +#ifndef PIDFD_NONBLOCK
+> +#define PIDFD_NONBLOCK O_NONBLOCK
+> +#endif
+> +
+> +#ifndef P_PIDFD
+> +#define P_PIDFD  3
+> +#endif
+> +
+> +static void run(void)
+> +{
+> +	int flag, pid, pidfd, ret;
+> +	siginfo_t info;
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
+> +		TST_CHECKPOINT_WAIT(0);
+> +		exit(EXIT_SUCCESS);
+> +	}
+> +
+> +	TST_EXP_FD_SILENT(pidfd_open(pid, PIDFD_NONBLOCK),
+> +				"pidfd_open(%d,  PIDFD_NONBLOCK)", pid);
+> +
+> +	pidfd = TST_RET;
+> +	flag = fcntl(pidfd, F_GETFL);
+> +	if (flag == -1)
+> +		tst_brk(TFAIL | TERRNO, "fcntl(F_GETFL) failed");
+> +
+> +	if (!(flag & O_NONBLOCK))
+> +		tst_brk(TFAIL, "pidfd_open(%d, O_NONBLOCK) didn't set O_NONBLOCK flag", pid);
+> +
+> +	tst_res(TPASS, "pidfd_open(%d, O_NONBLOCK) sets O_NONBLOCK flag", pid);
+> +
+> +	TST_EXP_FAIL(waitid(P_PIDFD, pidfd, &info, WEXITED), EAGAIN,
+> +			"waitid(P_PIDFD,...,WEXITED)");
+> +
+> +	TST_CHECKPOINT_WAKE(0);
+> +
+> +	ret = TST_RETRY_FUNC(waitid(P_PIDFD, pidfd, &info, WEXITED), TST_RETVAL_EQ0);
+> +	if (ret == 0) {
+> +		tst_res(TPASS, "waitid(P_PIDFD) succeeded after child process terminated");
+> +	} else {
+> +		tst_res(TFAIL, "waitid(P_PIDFD) failed after child process terminated");
+> +		SAFE_WAIT(NULL);
+> +	}
+> +
+> +	SAFE_CLOSE(pidfd);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	pidfd_open_supported();
+> +
+> +	TEST(pidfd_open(getpid(), PIDFD_NONBLOCK));
+> +	if (TST_RET == -1) {
+> +		if (TST_ERR == EINVAL) {
+> +			tst_brk(TCONF, "PIDFD_NONBLOCK was supported since linux 5.10");
+> +			return;
+> +		}
+> +		tst_brk(TFAIL | TTERRNO,
+> +			"pidfd_open(getpid(),PIDFD_NONBLOCK) failed unexpectedly");
+> +	}
 
-Full diff:
+I guess that we should do SAFE_CLOSE(TST_RET); here. Otherwise:
 
-diff --git a/testcases/kernel/syscalls/futex/futex_waitv02.c b/testcases/kernel/syscalls/futex/futex_waitv02.c
-index 2897f6c78..0a0e2b620 100644
---- a/testcases/kernel/syscalls/futex/futex_waitv02.c
-+++ b/testcases/kernel/syscalls/futex/futex_waitv02.c
-@@ -37,10 +37,10 @@ static void setup(void)
- 	if (tst_parse_int(str_numfutex, &numfutex, 1, FUTEX_WAITV_MAX))
- 		tst_brk(TBROK, "Invalid number of futexes '%s'", str_numfutex);
- 
--	futexes = SAFE_MALLOC(sizeof(uint32_t) * numfutex);
-+	futexes = tst_alloc(sizeof(uint32_t) * numfutex);
- 	memset(futexes, FUTEX_INITIALIZER, sizeof(uint32_t) * numfutex);
- 
--	waitv = SAFE_MALLOC(sizeof(struct futex_waitv) * numfutex);
-+	waitv = tst_alloc(sizeof(struct futex_waitv) * numfutex);
- 	memset(waitv, 0, sizeof(struct futex_waitv) * numfutex);
- 
- 	for (i = 0; i < numfutex; i++) {
-@@ -60,8 +60,8 @@ static void *threaded(void *arg)
- 	TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
- 			1, FUTEX_PRIVATE_FLAG));
- 	if (TST_RET < 0) {
--		tst_brk(TBROK, "futex_wake private returned: %ld %s", TST_RET,
--			tst_strerrno(TST_ERR));
-+		tst_brk(TBROK | TTERRNO,
-+			"futex_wake private returned: %ld", TST_RET);
- 	}
- 
- 	return NULL;
-@@ -70,7 +70,7 @@ static void *threaded(void *arg)
- static void run(void)
- {
- 	struct timespec to;
--	int ret, tid;
-+	int tid;
- 	pthread_t t;
- 
- 	tid = tst_syscall(__NR_gettid);
-@@ -81,13 +81,13 @@ static void run(void)
- 	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &to);
- 	to.tv_sec++;
- 
--	ret = futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC);
--	if (ret < 0)
--		tst_brk(TBROK, "futex_waitv returned: %d %s", ret,
--			tst_strerrno(-ret));
--	else if (ret != numfutex - 1)
--		tst_res(TFAIL, "futex_waitv returned: %d, expecting %d", ret,
--			numfutex - 1);
-+	TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
-+	if (TST_RET < 0) {
-+		tst_brk(TBROK | TTERRNO, "futex_waitv returned: %ld", TST_RET);
-+	} else if (TST_RET != numfutex - 1) {
-+		tst_res(TFAIL, "futex_waitv returned: %ld, expecting %d",
-+			TST_RET,  numfutex - 1);
-+	}
- 
- 	SAFE_PTHREAD_JOIN(t, NULL);
- 	tst_res(TPASS, "futex_waitv returned correctly");
-diff --git a/testcases/kernel/syscalls/futex/futex_waitv03.c b/testcases/kernel/syscalls/futex/futex_waitv03.c
-index 773cc5af3..d8e39c76a 100644
---- a/testcases/kernel/syscalls/futex/futex_waitv03.c
-+++ b/testcases/kernel/syscalls/futex/futex_waitv03.c
-@@ -39,7 +39,7 @@ static void setup(void)
- 	if (tst_parse_int(str_numfutex, &numfutex, 1, FUTEX_WAITV_MAX))
- 		tst_brk(TBROK, "Invalid number of futexes '%s'", str_numfutex);
- 
--	waitv = SAFE_MALLOC(sizeof(struct futex_waitv) * numfutex);
-+	waitv = tst_alloc(sizeof(struct futex_waitv) * numfutex);
- 	memset(waitv, 0, sizeof(struct futex_waitv) * numfutex);
- 
- 	for (i = 0; i < numfutex; i++) {
-@@ -72,8 +72,8 @@ static void *threaded(void *arg)
- 	TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
- 			1, 0));
- 	if (TST_RET < 0) {
--		tst_brk(TBROK, "futex_wake private returned: %ld %s", TST_RET,
--			tst_strerrno(TST_ERR));
-+		tst_brk(TBROK | TTERRNO,
-+			"futex_wake private returned: %ld", TST_RET);
- 	}
- 
- 	return NULL;
-@@ -94,12 +94,12 @@ static void run(void)
- 	to.tv_sec++;
- 
- 	TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
--	if (TST_RET < 0)
--		tst_brk(TBROK, "futex_waitv returned: %ld %s", TST_RET,
--			tst_strerrno(TST_ERR));
--	else if (TST_RET != numfutex - 1)
-+	if (TST_RET < 0) {
-+		tst_brk(TBROK | TTERRNO, "futex_waitv returned: %ld", TST_RET);
-+	} else if (TST_RET != numfutex - 1) {
- 		tst_res(TFAIL, "futex_waitv returned: %ld, expecting %d",
- 			TST_RET, numfutex - 1);
-+	}
- 
- 	SAFE_PTHREAD_JOIN(t, NULL);
- 	tst_res(TPASS, "futex_waitv returned correctly");
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.needs_checkpoints = 1,
+> +	.setup = setup,
+> +	.test_all = run,
+> +};
+> -- 
+> 2.23.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
