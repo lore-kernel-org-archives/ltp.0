@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AB43C433EF
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 10:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B06FEC433F5
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 11:07:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8646D3C9E3B
-	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 11:51:32 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 16AC93C6D9E
+	for <ltp@archiver.kernel.org>; Thu, 10 Feb 2022 12:07:25 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00D6E3C8FB5
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 11:51:22 +0100 (CET)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com
- [IPv6:2607:f8b0:4864:20::429])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 41D473C6D9E
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 12:07:15 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 64F46200DDB
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 11:51:22 +0100 (CET)
-Received: by mail-pf1-x429.google.com with SMTP id l19so3708504pfu.2
- for <ltp@lists.linux.it>; Thu, 10 Feb 2022 02:51:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=6lKV6SombxypFVoalYuhEE1PMHu90Pn4buOA5IzYbLM=;
- b=JOHfDYMGkpmUdd9z0v5QXz7D8emrsilMGCuGajkSs9CUBf2N4ZhNLBMJ7uymWEUrgf
- f4TZF4B6w2KgSegfVSADDqxg9V2s8qzzolg814NhV6Law9kHjIo6wypT15Wo+aXvVC5k
- aY9F1I16IThAAY49GU8otuOMC0DY9TmXQtWUOAbNSumc/JlzDTQ2BUQwt5TO6I36cHnd
- hTNKMHXSrdFP6aoyDUbVFlv6cz21IO7u1GnxlDov9CGeOZc5CdlwcZSAG0vqeICKaQww
- dS9LVhyWLZfLNrQDtXaWKKl4veRZuMW9zAPLr2/v/bkU+me1vhM1qJyXw+IVq0I5R1g0
- VF6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=6lKV6SombxypFVoalYuhEE1PMHu90Pn4buOA5IzYbLM=;
- b=UqrAmjzirTobC5qtipzlRPgdCCub5o3NJWXunWa08h8ub6v4/JPDYWwSk8kV/hh+7N
- ohzLB+N+wIW6iAukpNxA5fuSXGCtU1bMt1M4BMJ+04f/y6cQHNw9sKnQrNDHQBWzRRMY
- XhF0stQJM3KE6d3dFJ27xlzxqbqGY5ALBjS6uHmBj+zm9Ye5Wi9SvL0ZU6hyjOugTt4k
- wMLk1UOt+KWeR7Jy3Prd7Y5rn1jELjOlLz0/MXCbChM8Y/8ysVaR405ag7kgsYEeqqnb
- azjX3snEmIo1AiP3HA/sE6CxWFexVcrHbFMoxDL0oP7VLKDvtJmZDi4aKDgWnX97QD3g
- 65vQ==
-X-Gm-Message-State: AOAM533opXMvmdRUUsmObfdSKN51NsEEXQdejZ84BI/MioZuxiwoe3HG
- LDCQqZhSfP3KfmgrBoGr4S35/PUfHV/cgA==
-X-Google-Smtp-Source: ABdhPJzGzGUHbqpDwA4q0Ct+iPDG7rlgscydyiIC2T+pbNEudpPd7CPPc4amEhnJAHLd47QgyQlS5Q==
-X-Received: by 2002:a63:f711:: with SMTP id x17mr5721054pgh.274.1644490280614; 
- Thu, 10 Feb 2022 02:51:20 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:e030:88d9:c143:e4b1:355b:28be])
- by smtp.gmail.com with ESMTPSA id g126sm2009232pgc.31.2022.02.10.02.51.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 10 Feb 2022 02:51:20 -0800 (PST)
-From: Kushal Chand <kushalkataria5@gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C870C601AF8
+ for <ltp@lists.linux.it>; Thu, 10 Feb 2022 12:07:14 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6A1801F38A;
+ Thu, 10 Feb 2022 11:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1644491233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=8VJkDK9zh9X7lnbUX4S7z5j3jjRB746YVzPJ5CuE/EU=;
+ b=rUduqM/70Pk0w2iqPglasJKq+qwPR+JTbc4XnwgsVJGGCQ/wNTVuUI+A7Zni2U62GjZSRh
+ M5dDw2bkETu24XOiXmZcPhE8+2li4yfgkVZC4MN5bX12UeRjg+twkSYdmP0KVOmWotX5kX
+ t1glKeysWarPoQ38KEhbekGJchWVYqs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1644491233;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=8VJkDK9zh9X7lnbUX4S7z5j3jjRB746YVzPJ5CuE/EU=;
+ b=pnYYVghoRDstg9BMVf4wxczb8C4KuQxgW36FfwlSUvADnrHT26SdVc/hjtq7KP0WpNAl9F
+ KPV2Wz664krrfiCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3993613B43;
+ Thu, 10 Feb 2022 11:07:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id y7UBDOHxBGIYAwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 10 Feb 2022 11:07:13 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 10 Feb 2022 16:21:01 +0530
-Message-Id: <20220210105101.38337-1-kushalkataria5@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Date: Thu, 10 Feb 2022 12:07:08 +0100
+Message-Id: <20220210110712.23596-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] fstat_02: Increase test coverage by creating hard
- link to file and validate using fstat
+Subject: [LTP] [PATCH v2 0/3] Rewrite cma testing suite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,59 +71,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Kushal Chand <kushalkataria5@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Implements: #517
+Removed pipe and replaced it with shared memory.
+Replaced TST_CHECKPOINT_INIT usage with .needs_checkpoints from the new
+LTP API.
 
-This patch creates a hard link for a file during setup and checks if number of hardlinks
-match with the expected number.
----
- testcases/kernel/syscalls/fstat/fstat02.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Andrea Cervesato (3):
+  Rewrite process_vm_readv02.c test with new LTP API
+  Rewrite process_vm_readv03.c test with new LTP API
+  Rewrite process_vm_writev02.c using new LTP API
 
-diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/kernel/syscalls/fstat/fstat02.c
-index c0229de44..2f9632edf 100644
---- a/testcases/kernel/syscalls/fstat/fstat02.c
-+++ b/testcases/kernel/syscalls/fstat/fstat02.c
-@@ -17,8 +17,10 @@
- #include "tst_safe_macros.h"
- 
- #define TESTFILE        "test_file"
-+#define LINK_TESTFILE   "link_test_file"
- #define FILE_SIZE       1024
- #define FILE_MODE	0644
-+#define NLINK	        2
- 
- static struct stat stat_buf;
- static uid_t user_id;
-@@ -61,6 +63,12 @@ static void run(void)
- 		fail++;
- 	}
- 
-+	if (stat_buf.st_nlink != NLINK) {
-+		tst_res(TFAIL, "stat_buf.st_nlink = %li expected %i",
-+			(long)stat_buf.st_nlink, NLINK);
-+		fail++;
-+	}
-+
- 	if (fail)
- 		return;
- 
-@@ -78,6 +86,8 @@ static void setup(void)
- 
- 	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
- 		tst_brk(TBROK, "Could not fill Testfile!");
-+
-+	SAFE_LINK(TESTFILE, LINK_TESTFILE);
- }
- 
- static void cleanup(void)
+ .../kernel/syscalls/cma/process_vm_readv02.c  | 215 +++++------
+ .../kernel/syscalls/cma/process_vm_readv03.c  | 349 ++++++++----------
+ .../kernel/syscalls/cma/process_vm_writev02.c | 263 +++++--------
+ 3 files changed, 324 insertions(+), 503 deletions(-)
+
 -- 
-2.25.1
+2.35.1
 
 
 -- 
