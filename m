@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76299C433EF
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 13:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8168C433EF
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 13:30:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 807C83C9F05
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 14:21:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7160E3C9F13
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 14:30:03 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FD823C9B4B
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:20:53 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id DA0CC3C9B4B
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:29:54 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 77509140142F
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:20:52 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E2D10601EE9
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:29:53 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B32E321138;
- Fri, 11 Feb 2022 13:20:51 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1BBE21F3A2;
+ Fri, 11 Feb 2022 13:29:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644585651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644586193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vfirxTzaedGbjnaVRd7I22DYRua4/kjigxaWgE05W4Y=;
- b=uFjNl7sgUqII2l/OBSM6u6zB0/jVbrdFRmCI2hvGFJOPnLL+qNTx5d8ibyTpjNHo96SjfF
- xuCh/j86ISFirLyZgVN9F4vMpH45oqFRdOwupmDlqB/rnlURn+934FkukruLE1cw1U53ym
- I8CyeQBD1DvZQo3sR6QJYs64bAUsgpE=
+ bh=ovV3ECxqjxV08mD3TcQtrFW3KsA+HppPMuwirIQt5RE=;
+ b=pJA77T2VTavBvu8xHfkpTMTqDj1p36yNWL94fbMcP+4/gUhI4LWPjE/tGlQOnO3yLCvquE
+ qKN5Chkwz+dH2ohZFRNiYhd62KOO0/s+sgd9It0FEVeTPcjI4lwJuf3/i1z0UeDw+VbwCe
+ jAtLYC1yfnbMiiVsLrrMbhkuvzbU1yQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644585651;
+ s=susede2_ed25519; t=1644586193;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vfirxTzaedGbjnaVRd7I22DYRua4/kjigxaWgE05W4Y=;
- b=Y315sWh+0mH9Foak1uxA+dhEVHqpqbq+NppfNG9pn/yyb6PLlIZIcUoNkXZ1JPaC+SqunS
- 7gHuuBBsL2H413CA==
+ bh=ovV3ECxqjxV08mD3TcQtrFW3KsA+HppPMuwirIQt5RE=;
+ b=TsRenDYuZNFvwvtM6t9cfC7eaQOgOlk7kM/bbi+Kcurjw8QFmjSXAN7eo6er6SKMXUfyy5
+ i/Su19XYt5m+2UAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FF4F13C83;
- Fri, 11 Feb 2022 13:20:51 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 07A6013C87;
+ Fri, 11 Feb 2022 13:29:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id tRBmIbNiBmJ/CwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 11 Feb 2022 13:20:51 +0000
-Date: Fri, 11 Feb 2022 14:22:59 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <YgZjM9UzkkMVVfBQ@yuki>
-References: <20220210110712.23596-1-andrea.cervesato@suse.de>
- <20220210110712.23596-2-andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 74TkANFkBmIvEAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 11 Feb 2022 13:29:53 +0000
+Message-ID: <2e218131-be2b-d6c8-51f7-f12b9091e859@suse.cz>
+Date: Fri, 11 Feb 2022 14:29:52 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220210110712.23596-2-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20220211114401.24663-1-mdoucha@suse.cz> <YgZcu4frLBaKVXL2@yuki>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <YgZcu4frLBaKVXL2@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] Rewrite process_vm_readv02.c test with new
- LTP API
+Subject: Re: [LTP] [PATCH v2] Terminate leftover subprocesses when main test
+ process crashes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,13 +86,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-No need to send this patch, it has been already applied from the
-previous patchset version.
+On 11. 02. 22 13:55, Cyril Hrubis wrote:
+> Hi!
+>> --- a/lib/tst_test.c
+>> +++ b/lib/tst_test.c
+>> @@ -1495,6 +1495,9 @@ static int fork_testrun(void)
+>>  		return TFAIL;
+>>  	}
+>>  
+>> +	if (tst_test->forks_child)
+>> +		kill(-test_pid, SIGKILL);
+>> +
+> 
+> Maybe we can even print a message here if the kill() returns with 0,
+> which would mean that there were any leftover child processes killed.
+
+Feel free to add a message during merge.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
