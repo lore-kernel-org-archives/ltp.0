@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9EC8C433F5
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 11:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 051CEC433F5
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 11:35:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0F4C3C9F2F
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 12:02:08 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6F1DC3C9F40
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 12:35:25 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB4EB3C9ED2
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 12:01:58 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 2F23C3C24D6
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 12:35:14 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 789BB1A014EA
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 12:01:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1644577315;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 994C1600684
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 12:35:13 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8C59121128;
+ Fri, 11 Feb 2022 11:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1644579312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5FUrFtJDzUx+0BPI4LIWLGKqFnm6FKUXZ+gwOGFGP9w=;
- b=AI56nQbiqy49vqFf4tUnCk/AFPqtoGiulfnWrb8+n7UnSc+ramFkUdHZc3g0ZCeHadiuyP
- jHFGhrEQPlyyC8skJIFOfOriBEDaQ/cb4bIIGbK7r1GUQMQD3QuRXl+TgEGJb119QZbPzF
- gGG/vIdHY7DxdvvuD2Ih3nV0TvTIks8=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-641-Y-G1SenONwWcwfO3qlJT4w-1; Fri, 11 Feb 2022 06:01:54 -0500
-X-MC-Unique: Y-G1SenONwWcwfO3qlJT4w-1
-Received: by mail-yb1-f199.google.com with SMTP id
- h6-20020a253a06000000b0061de83305f2so17946408yba.19
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 03:01:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=5FUrFtJDzUx+0BPI4LIWLGKqFnm6FKUXZ+gwOGFGP9w=;
- b=PZHvpeEnsiOvuu+U0w8xKZBhgYGS8+HRJrxj95st67GtOUwXSqFBFmrgvdAc52HB0I
- X0pxmhJZH9aN3hKiREald45mUdXtGmzz8rfTCytPdrmA3nQwmKzBHfR/xbwJS74A45oT
- IewxWRJc9hTbGwUSr/7G8FsDExkkV+3powCTrOcOPH53xoq2Mo/C+biYGZ7x7STO5KW9
- QOlhYyJZnORV/+8v8xXnT8z9ZK/ABIo/WG0MSLMc2VYQDySN2v8XUX/FEMLoiLb4Vouy
- GZFMr4NGG9/ZYVGKnZsa9Xlk0PPd4eORN/9sxErHulBB1fveXY5gn/on4wGi/638dVZv
- SZag==
-X-Gm-Message-State: AOAM531SzSgpUjdf9Pjds3DhLj3wEJFg45SABKcqe8rFrLD4E28vHHz/
- M8dgrw2kZAp0FnF5YweIr6u3rV9h8lUP4zTebIeItqZ9lHHHwE/QMzGuG59LOzxiXEWSKfMJSLO
- jZBxT1T0/h/e61NKf9vOOBiVBTtc=
-X-Received: by 2002:a81:ae0c:: with SMTP id m12mr1010206ywh.19.1644577313875; 
- Fri, 11 Feb 2022 03:01:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx9yQv2ONjgETFYTVlPtGgmYQvSUAR7kJv6qg7GWEXyYNhfmp5C8K6oh+7uM313Lp0Lm6yy6aevgJPNoBch0HM=
-X-Received: by 2002:a81:ae0c:: with SMTP id m12mr1010168ywh.19.1644577313398; 
- Fri, 11 Feb 2022 03:01:53 -0800 (PST)
+ bh=ngwABIH0fGDB8ghsEiDgTqhOHpd1iClMVhrlFITwJss=;
+ b=riSoVPHuLXSOxikUzI99FszcG0KXVURDc2AoPnO/OyVxD/5kEY3wrb4RaG9T3/3bn72Kvf
+ GbtwlvI2dSNEMxyBzjZ8qtlcg4Mu92D0PXdg6U2FGN8IuX2VCqvbukN6ovSSR4nuHOdgak
+ VYxW1aZwi3GcMsUpPFUp8yqMMgX4fnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1644579312;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ngwABIH0fGDB8ghsEiDgTqhOHpd1iClMVhrlFITwJss=;
+ b=auNABFJvjPJbVDb6lXg6JlFk9m8TatZpxcwMJSbYDsOS8i+HJMCHthrq2lj0v4ZFVbIQVa
+ XQJd4qWV8np9elCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 710BB13C03;
+ Fri, 11 Feb 2022 11:35:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id +YgrGvBJBmLRUgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 11 Feb 2022 11:35:12 +0000
+Message-ID: <b71648c0-475a-2404-21a0-f2df8c221ead@suse.cz>
+Date: Fri, 11 Feb 2022 12:35:12 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Content-Language: en-US
+To: Li Wang <liwang@redhat.com>
 References: <20220210161817.11555-1-mdoucha@suse.cz>
  <CAEemH2cmyRbkQ3-4MvY3jhTaEJ+A430WNyKixE2YRKuyiL6djw@mail.gmail.com>
  <014f765e-ce73-e90b-40ac-875cef4842e4@suse.cz>
  <CAEemH2c6muy5xNGAqhTpVqYwbiVUTFg-gOkHg6JZE_DHLgtxyA@mail.gmail.com>
-In-Reply-To: <CAEemH2c6muy5xNGAqhTpVqYwbiVUTFg-gOkHg6JZE_DHLgtxyA@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 11 Feb 2022 19:01:39 +0800
-Message-ID: <CAEemH2d1ECs=3s63UGu1tLuQu8Uy-e9GSfO1t-yCUi+ZGLKsdQ@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ <CAEemH2d1ECs=3s63UGu1tLuQu8Uy-e9GSfO1t-yCUi+ZGLKsdQ@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <CAEemH2d1ECs=3s63UGu1tLuQu8Uy-e9GSfO1t-yCUi+ZGLKsdQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] Terminate leftover subprocesses when main test
  process crashes
@@ -87,260 +85,33 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1560140528=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1560140528==
-Content-Type: multipart/alternative; boundary="000000000000923c6305d7bbfe69"
-
---000000000000923c6305d7bbfe69
-Content-Type: text/plain; charset="UTF-8"
-
-On Fri, Feb 11, 2022 at 6:34 PM Li Wang <liwang@redhat.com> wrote:
-
->
->
-> On Fri, Feb 11, 2022 at 5:17 PM Martin Doucha <mdoucha@suse.cz> wrote:
->
->> On 11. 02. 22 7:47, Li Wang wrote:
->> > On Fri, Feb 11, 2022 at 12:18 AM Martin Doucha <mdoucha@suse.cz
->> > <mailto:mdoucha@suse.cz>> wrote:
->> >     @@ -1560,6 +1568,7 @@ void tst_run_tcases(int argc, char *argv[],
->> >     struct tst_test *self)
->> >
->> >             SAFE_SIGNAL(SIGALRM, alarm_handler);
->> >             SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
->> >     +       SAFE_SIGNAL(SIGCHLD, sigchild_handler);
->> >
->> >
->> > Do we really need setup this signal handler for SIGCHILD?
->> >
->> > Since we have already called 'SAFE_WAITPID(test_pid, &status, 0)'
->> > in the library process (lib_pid) which rely on SIGCHILD as well.
->> > And even this handler will be called everytime when test exit normally.
->> >
->> > Maybe better just add a kill function to cleanup the remain
->> > descendants if main test process exit with abonormal status.
->> >
->> > e.g.
->> >
->> > --- a/lib/tst_test.c
->> > +++ b/lib/tst_test.c
->> > @@ -1503,6 +1503,8 @@ static int fork_testrun(void)
->> >         if (WIFEXITED(status) && WEXITSTATUS(status))
->> >                 return WEXITSTATUS(status);
->> >
->> > +       kill(-test_pid, SIGKILL);
->>
->> This will not work because at this point, the child process was already
->> destroyed by waitpid() and all its remaining children were moved under
->
-> PID 1 (init). The only place where the grandchildren are still reachable
->> this way is in SIGCHLD handler while the dead child process still exists
->> in zombie state.
->
->
-> Signal communicatoin is asynchronous processing, setup SIGCHILD
-> handler can not 100% garantee the libarary process response
-> in time as well.
->
-> Though the test_pid being moved under PID 1(init), kill(-test_pid, SIGKILL)
-> still works well for killing them. That beacuse the dead child process
-> still
-> exists until kernel recliam its all parent.
->
-
-
-I give 5 seconds sleep before sending SIGKILL in lib-process
-and modified the test_children_cleanup.c to print ppid each 1sec
-to verify this:
-
-# ./test_children_cleanup
-tst_test.c:1452: TINFO: Timeout per run is 0h 00m 10s
-test_children_cleanup.c:20: TINFO: Main process 173236 starting
-test_children_cleanup.c:39: TINFO: Forked child 173238
-test_children_cleanup.c:33: TINFO: ppid is 173236
-test_children_cleanup.c:33: TINFO: ppid is 1
-test_children_cleanup.c:33: TINFO: ppid is 1
-test_children_cleanup.c:33: TINFO: ppid is 1
-test_children_cleanup.c:33: TINFO: ppid is 1
-tst_test.c:1502: TINFO: If you are running on slow machine, try exporting
-LTP_TIMEOUT_MUL > 1
-tst_test.c:1504: TBROK: Test killed! (timeout?)
-
-Summary:
-passed   0
-failed   0
-broken   1
-skipped  0
-warnings 0
-=======
-
---- a/lib/newlib_tests/test_children_cleanup.c
-+++ b/lib/newlib_tests/test_children_cleanup.c
-@@ -28,7 +28,11 @@ static void run(void)
-
-        /* Start child that will outlive the main test process */
-        if (!child_pid) {
--               sleep(30);
-+               int i;
-+               for (i = 0; i < 30; i++) {
-+                       tst_res(TINFO, "ppid is %d", getppid());
-+                       sleep(1);
-+               }
-                return;
-        }
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 84ce0a5d3..6f2d93611 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1503,6 +1503,9 @@ static int fork_testrun(void)
-        if (WIFEXITED(status) && WEXITSTATUS(status))
-                return WEXITSTATUS(status);
-
-+       sleep(5);
-+       kill(-test_pid, SIGKILL);
-+
-        if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
-                tst_res(TINFO, "If you are running on slow machine, "
-                               "try exporting LTP_TIMEOUT_MUL > 1");
-
-
--- 
-Regards,
-Li Wang
-
---000000000000923c6305d7bbfe69
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, Feb 11, 2022 at 6:34 PM Li Wang &lt;<a href=
-=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></div><bl=
-ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
-t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D=
-"ltr"><div style=3D"font-size:small"><br></div></div><br><div class=3D"gmai=
-l_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Feb 11, 2022 at 5:17=
- PM Martin Doucha &lt;<a href=3D"mailto:mdoucha@suse.cz" target=3D"_blank">=
-mdoucha@suse.cz</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" s=
-tyle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pad=
-ding-left:1ex">On 11. 02. 22 7:47, Li Wang wrote:<br>
-&gt; On Fri, Feb 11, 2022 at 12:18 AM Martin Doucha &lt;<a href=3D"mailto:m=
-doucha@suse.cz" target=3D"_blank">mdoucha@suse.cz</a><br>
-&gt; &lt;mailto:<a href=3D"mailto:mdoucha@suse.cz" target=3D"_blank">mdouch=
-a@suse.cz</a>&gt;&gt; wrote:<br>
-&gt;=C2=A0 =C2=A0 =C2=A0@@ -1560,6 +1568,7 @@ void tst_run_tcases(int argc,=
- char *argv[],<br>
-&gt;=C2=A0 =C2=A0 =C2=A0struct tst_test *self)<br>
-&gt; <br>
-&gt;=C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0 =C2=A0 =C2=A0 SAFE_SIGNAL(SIGALRM, al=
-arm_handler);<br>
-&gt;=C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0 =C2=A0 =C2=A0 SAFE_SIGNAL(SIGUSR1, he=
-artbeat_handler);<br>
-&gt;=C2=A0 =C2=A0 =C2=A0+=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_SIGNAL(SIGCHLD, si=
-gchild_handler);<br>
-&gt; <br>
-&gt; <br>
-&gt; Do we really need setup this signal handler for SIGCHILD?<br>
-&gt; <br>
-&gt; Since we have already called &#39;SAFE_WAITPID(test_pid, &amp;status, =
-0)&#39;<br>
-&gt; in the library process (lib_pid) which rely on SIGCHILD as well.<br>
-&gt; And even this handler will be called everytime when test exit normally=
-.<br>
-&gt; <br>
-&gt; Maybe better just add a kill function=C2=A0to cleanup the remain<br>
-&gt; descendants if main test process exit with abonormal status.<br>
-&gt; <br>
-&gt; e.g.<br>
-&gt; <br>
-&gt; --- a/lib/tst_test.c<br>
-&gt; +++ b/lib/tst_test.c<br>
-&gt; @@ -1503,6 +1503,8 @@ static int fork_testrun(void)<br>
-&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (WIFEXITED(status) &amp;&amp; WEXITSTAT=
-US(status))<br>
-&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return WEXITST=
-ATUS(status);<br>
-&gt; =C2=A0<br>
-&gt; + =C2=A0 =C2=A0 =C2=A0 kill(-test_pid, SIGKILL);<br>
-<br>
-This will not work because at this point, the child process was already<br>
-destroyed by waitpid() and all its remaining children were moved under</blo=
-ckquote><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
-;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-PID 1 (init). The only place where the grandchildren are still reachable<br=
->
-this way is in SIGCHLD handler while the dead child process still exists<br=
->
-in zombie state.</blockquote><div><br></div><div><div style=3D"font-size:sm=
-all">Signal communicatoin is asynchronous processing, setup SIGCHILD</div><=
-div>handler can not 100% garantee the libarary process response</div><div s=
-tyle=3D"font-size:small">in time as well.</div><br></div><div><div style=3D=
-"font-size:small">Though the test_pid being moved under PID 1(init), kill(-=
-test_pid, SIGKILL)</div><div style=3D"font-size:small">still works well for=
- killing them. That beacuse the dead child process still</div><div style=3D=
-"font-size:small">exists until kernel recliam its all parent.</div></div></=
-div></div></blockquote><div><br></div><div><br></div><div><div class=3D"gma=
-il_default" style=3D"font-size:small">I give 5 seconds sleep before sending=
- SIGKILL in lib-process</div><div class=3D"gmail_default" style=3D"font-siz=
-e:small">and modified the test_children_cleanup.c to print ppid each 1sec</=
-div><div class=3D"gmail_default" style=3D"font-size:small">to verify this:<=
-/div></div><div><br></div><div class=3D"gmail_default" style=3D"font-size:s=
-mall"># ./test_children_cleanup</div>tst_test.c:1452: TINFO: Timeout per ru=
-n is 0h 00m 10s<br>test_children_cleanup.c:20: TINFO: Main process 173236 s=
-tarting<br>test_children_cleanup.c:39: TINFO: Forked child 173238<br>test_c=
-hildren_cleanup.c:33: TINFO: ppid is 173236<br>test_children_cleanup.c:33: =
-TINFO: ppid is 1<br>test_children_cleanup.c:33: TINFO: ppid is 1<br>test_ch=
-ildren_cleanup.c:33: TINFO: ppid is 1<br>test_children_cleanup.c:33: TINFO:=
- ppid is 1<br>tst_test.c:1502: TINFO: If you are running on slow machine, t=
-ry exporting LTP_TIMEOUT_MUL &gt; 1<br>tst_test.c:1504: TBROK: Test killed!=
- (timeout?)<br><br>Summary:<br>passed =C2=A0 0<br>failed =C2=A0 0<br>broken=
- =C2=A0 1<br>skipped =C2=A00<br>warnings 0<br><div class=3D"gmail_default" =
-style=3D"font-size:small"></div></div><div class=3D"gmail_default" style=3D=
-"font-size:small">=3D=3D=3D=3D=3D=3D=3D</div><div class=3D"gmail_default" s=
-tyle=3D"font-size:small"><br></div>--- a/lib/newlib_tests/test_children_cle=
-anup.c<br>+++ b/lib/newlib_tests/test_children_cleanup.c<br>@@ -28,7 +28,11=
- @@ static void run(void)<br>=C2=A0<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 /* Start=
- child that will outlive the main test process */<br>=C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 if (!child_pid) {<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sleep(30);<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int i;=
-<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 for (i =3D 0; i &lt;=
- 30; i++) {<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 tst_res(TINFO, &quot;ppid is %d&quot;, getppid());<br>=
-+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sleep(1);<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>=
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return;<br>=C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 }<br>=C2=A0<br>diff --git a/lib/tst_test.c b/lib/tst_t=
-est.c<br>index 84ce0a5d3..6f2d93611 100644<br>--- a/lib/tst_test.c<br>+++ b=
-/lib/tst_test.c<br>@@ -1503,6 +1503,9 @@ static int fork_testrun(void)<br>=
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (WIFEXITED(status) &amp;&amp; WEXITSTATUS(st=
-atus))<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return WE=
-XITSTATUS(status);<br>=C2=A0<br>+ =C2=A0 =C2=A0 =C2=A0 sleep(5);<br>+ =C2=
-=A0 =C2=A0 =C2=A0 kill(-test_pid, SIGKILL);<br>+<br>=C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 if (WIFSIGNALED(status) &amp;&amp; WTERMSIG(status) =3D=3D SIGKILL) =
-{<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TINFO,=
- &quot;If you are running on slow machine, &quot;<br>=C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0&quot;try exporting LTP_TIMEOUT_MUL &gt; 1&quot;);<br><div=
- class=3D"gmail_default" style=3D"font-size:small"><br></div><div><br></div=
->-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Re=
-gards,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000923c6305d7bbfe69--
-
-
---===============1560140528==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1560140528==--
-
+T24gMTEuIDAyLiAyMiAxMjowMSwgTGkgV2FuZyB3cm90ZToKPiBJIGdpdmUgNSBzZWNvbmRzIHNs
+ZWVwIGJlZm9yZSBzZW5kaW5nIFNJR0tJTEwgaW4gbGliLXByb2Nlc3MKPiBhbmQgbW9kaWZpZWQg
+dGhlIHRlc3RfY2hpbGRyZW5fY2xlYW51cC5jIHRvIHByaW50IHBwaWQgZWFjaCAxc2VjCj4gdG8g
+dmVyaWZ5IHRoaXM6Cj4gCj4gIyAuL3Rlc3RfY2hpbGRyZW5fY2xlYW51cAo+IHRzdF90ZXN0LmM6
+MTQ1MjogVElORk86IFRpbWVvdXQgcGVyIHJ1biBpcyAwaCAwMG0gMTBzCj4gdGVzdF9jaGlsZHJl
+bl9jbGVhbnVwLmM6MjA6IFRJTkZPOiBNYWluIHByb2Nlc3MgMTczMjM2IHN0YXJ0aW5nCj4gdGVz
+dF9jaGlsZHJlbl9jbGVhbnVwLmM6Mzk6IFRJTkZPOiBGb3JrZWQgY2hpbGQgMTczMjM4Cj4gdGVz
+dF9jaGlsZHJlbl9jbGVhbnVwLmM6MzM6IFRJTkZPOiBwcGlkIGlzIDE3MzIzNgo+IHRlc3RfY2hp
+bGRyZW5fY2xlYW51cC5jOjMzOiBUSU5GTzogcHBpZCBpcyAxCj4gdGVzdF9jaGlsZHJlbl9jbGVh
+bnVwLmM6MzM6IFRJTkZPOiBwcGlkIGlzIDEKPiB0ZXN0X2NoaWxkcmVuX2NsZWFudXAuYzozMzog
+VElORk86IHBwaWQgaXMgMQo+IHRlc3RfY2hpbGRyZW5fY2xlYW51cC5jOjMzOiBUSU5GTzogcHBp
+ZCBpcyAxCj4gdHN0X3Rlc3QuYzoxNTAyOiBUSU5GTzogSWYgeW91IGFyZSBydW5uaW5nIG9uIHNs
+b3cgbWFjaGluZSwgdHJ5Cj4gZXhwb3J0aW5nIExUUF9USU1FT1VUX01VTCA+IDEKPiB0c3RfdGVz
+dC5jOjE1MDQ6IFRCUk9LOiBUZXN0IGtpbGxlZCEgKHRpbWVvdXQ/KQo+IAo+IFN1bW1hcnk6Cj4g
+cGFzc2VkIMKgIDAKPiBmYWlsZWQgwqAgMAo+IGJyb2tlbiDCoCAxCj4gc2tpcHBlZCDCoDAKPiB3
+YXJuaW5ncyAwCj4gPT09PT09PQoKSG1tLCB0aGF0J3Mgd2VpcmQsIHdoZW4gSSB0cmllZCB0aGF0
+IGFwcHJvYWNoIHllc3RlcmRheSwgaXQga2VwdCBsZWF2aW5nCnRoZSBjaGlsZCBiZWhpbmQuIE5v
+dyBpdCBzZWVtcyB0byBiZSB3b3JraW5nLiBJIGd1ZXNzIEkgbWVzc2VkIHVwCnNvbWVob3cgYW5k
+IHRoZSB0ZXN0IHByb2dyYW0gZGlkbid0IGdldCByZWxpbmtlZCBhZ2FpbnN0IG5ldyBsaWJsdHAu
+YS4uLgoKT0ssIHNlbmRpbmcgdjIgc29vbiBzaW5jZSBJIGFsc28gbmVlZCB0byBmaXggYSBidWcg
+aW4gdGhlIGxpYnRlc3Qgc2hlbGwKc2NyaXB0LgoKLS0gCk1hcnRpbiBEb3VjaGEgICBtZG91Y2hh
+QHN1c2UuY3oKUUEgRW5naW5lZXIgZm9yIFNvZnR3YXJlIE1haW50ZW5hbmNlClNVU0UgTElOVVgs
+IHMuci5vLgpDT1JTTyBJSWEKS3Jpemlrb3ZhIDE0OC8zNAoxODYgMDAgUHJhZ3VlIDgKQ3plY2gg
+UmVwdWJsaWMKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
+aXN0aW5mby9sdHAK
