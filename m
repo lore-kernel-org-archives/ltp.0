@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 443C2C4332F
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 09:28:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2359AC433F5
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 09:28:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B26733C9F05
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 10:28:17 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 441593C9EF5
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 10:28:27 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E8FA3C9EEA
+ by picard.linux.it (Postfix) with ESMTPS id 6AE193C9888
  for <ltp@lists.linux.it>; Fri, 11 Feb 2022 10:26:54 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B55C2100137D
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 10:26:53 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 070256008C2
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 10:26:54 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 593812112A;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8F8892113A;
  Fri, 11 Feb 2022 09:26:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1644571613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KxsaoypdrfC60P+BuOWrglcqSaB0IyEQ/xdu9c/NpgE=;
- b=VRGaD2pLFwnvpWXkf4XneVEVbAOHnAOoWoe3C0qa45gb+kN6w0N6VuvyQqsrwe0xqxoTAQ
- ErOjZAJCPCKhaZ1jSp9wzqnLSLrn3ebxzExmTRm5xQPrsmjy+kpXREircDrImmBm8LbN36
- +jftpE+shjuPnbxoQpZ/bOPBSykNHGE=
+ bh=JOoCZy/kNXQq3YBYjmP3dHc8D4Io1/zT0ltEvI4Hvl4=;
+ b=j7ABSQkLy9xvQIEejkbJnWnHd+9So4650jH5uAwIhzG4NgWSRoDjhzQAIDBJ1CzLbdl67C
+ n5w1n3zNbi0Gvn8JFeKFd3Gt6Rc+H6WmFBF8D82ER75XaJ4KaAMAvlz/GqrwXAbFXXAOCl
+ yJSgyaJmF6NiWnZIdKCJCyuqF06RlAI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1644571613;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KxsaoypdrfC60P+BuOWrglcqSaB0IyEQ/xdu9c/NpgE=;
- b=YZDcxv23v3hjawOKh12xZYiiVVr0jyXzSJ6+Tl1DBl7E+SIjzbBsQ8epR02Sg4NUoLo7L7
- PLz+7hvoCCw+IHDg==
+ bh=JOoCZy/kNXQq3YBYjmP3dHc8D4Io1/zT0ltEvI4Hvl4=;
+ b=lF26RnER8wyNFuF7BkeNv7b24p8LyMHFVy4w4JD6Wgp8L0eivWteWcnYVBMtOyJoigOhSv
+ xQm0hvl8xNpQQVBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3332413BCF;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 64C3E13BC3;
  Fri, 11 Feb 2022 09:26:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8KddCt0rBmJ7EwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id WOqSFt0rBmJ7EwAAMHmgww
  (envelope-from <andrea.cervesato@suse.de>); Fri, 11 Feb 2022 09:26:53 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Fri, 11 Feb 2022 10:26:45 +0100
-Message-Id: <20220211092646.23748-8-andrea.cervesato@suse.de>
+Date: Fri, 11 Feb 2022 10:26:46 +0100
+Message-Id: <20220211092646.23748-9-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220211092646.23748-1-andrea.cervesato@suse.de>
 References: <20220211092646.23748-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 7/8] Rewrite userns07.c using new LTP API
+Subject: [LTP] [PATCH v1 8/8] Rewrite userns08.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,196 +84,114 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- testcases/kernel/containers/userns/userns07.c | 126 ++++++++----------
- 1 file changed, 52 insertions(+), 74 deletions(-)
+ testcases/kernel/containers/userns/userns08.c | 49 +++++++++----------
+ 1 file changed, 24 insertions(+), 25 deletions(-)
 
-diff --git a/testcases/kernel/containers/userns/userns07.c b/testcases/kernel/containers/userns/userns07.c
-index 49915969e..03b2a49fe 100644
---- a/testcases/kernel/containers/userns/userns07.c
-+++ b/testcases/kernel/containers/userns/userns07.c
-@@ -1,47 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Huawei Technologies Co., Ltd., 2015
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- *  (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-- * the GNU General Public License for more details.
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index c141b1aca..1935fcf11 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -17,6 +17,7 @@
+  * by (the real) root. So on the second level we reset dumpable to 1.
+  *
   */
- 
--/*
-+/*\
-+ * [Description]
-+ *
-  * Verify that:
-  * The kernel imposes a limit of at least 32 nested levels on user namespaces.
-  */
- 
++
  #define _GNU_SOURCE
--#include <sys/wait.h>
--#include <assert.h>
-+
  #include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <errno.h>
--#include "userns_helper.h"
--#include "test.h"
-+#include <stdbool.h>
-+#include <sys/wait.h>
-+#include "common.h"
-+#include "tst_test.h"
+ #include <stdlib.h>
+@@ -30,16 +31,12 @@
  
- #define MAXNEST 32
+ static pid_t clone_newuser(void)
+ {
+-	const struct tst_clone_args cargs = {
+-		CLONE_NEWUSER,
+-		SIGCHLD
+-	};
++	const struct tst_clone_args cargs = { CLONE_NEWUSER, SIGCHLD };
  
--char *TCID = "userns07";
--int TST_TOTAL = 1;
--
+ 	return SAFE_CLONE(&cargs);
+ }
+ 
+-static void write_mapping(const pid_t proc_in_ns,
+-			  const char *const id_mapping)
++static void write_mapping(const pid_t proc_in_ns, const char *const id_mapping)
+ {
+ 	char proc_path[PATH_MAX];
+ 	int proc_dir;
+@@ -61,18 +58,19 @@ static void write_mapping(const pid_t proc_in_ns,
+ static void ns_level2(void)
+ {
+ 	if (prctl(PR_SET_DUMPABLE, 1, 0, 0, 0))
+-		tst_res(TINFO | TERRNO, "Failed to set dumpable flag");
++		tst_brk(TBROK | TTERRNO, "Failed to set dumpable flag");
++
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(1);
+ 
+-	TST_EXP_FAIL(open("restricted", O_WRONLY), EACCES,
+-		     "Denied write access to ./restricted");
++	TST_EXP_FAIL(open("restricted", O_WRONLY), EACCES, "Denied write access to ./restricted");
+ 
+ 	exit(0);
+ }
+ 
+ static void ns_level1(void)
+ {
+-	const char *const map_over_5 = "0 0 1\n1 1 1\n2 2 1\n3 3 1\n4 4 1\n5 5 990";
++	const char *const map_over_5 =
++		"0 0 1\n1 1 1\n2 2 1\n3 3 1\n4 4 1\n5 5 990";
+ 	pid_t level2_proc;
+ 
+ 	TST_CHECKPOINT_WAIT(0);
+@@ -89,7 +87,6 @@ static void ns_level1(void)
+ 	write_mapping(level2_proc, map_over_5);
+ 
+ 	TST_CHECKPOINT_WAKE(1);
+-	tst_reap_children();
+ 
+ 	exit(0);
+ }
+@@ -111,7 +108,6 @@ static void run(void)
+ 	write_mapping(level1_proc, "0 100000 1000");
+ 
+ 	TST_CHECKPOINT_WAKE(0);
+-	tst_reap_children();
+ }
+ 
  static void setup(void)
- {
- 	check_newuser();
--	tst_tmpdir();
--	TST_CHECKPOINT_INIT(NULL);
--}
--
--static void cleanup(void)
--{
--	tst_rmdir();
- }
- 
- static int child_fn1(void *arg)
-@@ -52,40 +34,42 @@ static int child_fn1(void *arg)
- 	int parentuid;
- 	int parentgid;
- 
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAIT(0);
- 
--	if (level == MAXNEST)
-+	if (level == MAXNEST) {
-+		tst_res(TPASS, "nested all children");
- 		return 0;
--	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
--		(void *)child_fn1, (void *)(level + 1));
--	if (cpid1 < 0) {
--		printf("level %ld:unexpected error: (%d) %s\n",
--			level, errno, strerror(errno));
-+	}
-+
-+	TEST(ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1,
-+			     (void *)(level + 1)));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL, "level %ld, unexpected error: (%d) %s", level,
-+			TST_ERR, tst_strerrno(TST_ERR));
- 		return 1;
- 	}
- 
-+	cpid1 = (int)TST_RET;
-+
- 	parentuid = geteuid();
- 	parentgid = getegid();
- 
--	updatemap(cpid1, UID_MAP, 0, parentuid, NULL);
--	updatemap(cpid1, GID_MAP, 0, parentgid, NULL);
-+	updatemap(cpid1, UID_MAP, 0, parentuid);
-+	updatemap(cpid1, GID_MAP, 0, parentgid);
- 
--	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-+	TST_CHECKPOINT_WAKE(0);
- 
--	if (waitpid(cpid1, &status, 0) == -1)
--		return 1;
-+	SAFE_WAITPID(cpid1, &status, 0);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+		tst_brk(TBROK, "child exited abnormally %s", tst_strstatus(status));
-+	else if (WIFSIGNALED(status))
-+		tst_brk(TBROK, "child was killed with signal = %d", WTERMSIG(status));
- 
--	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
--		printf("child exited abnormally\n");
--		return 1;
--	} else if (WIFSIGNALED(status)) {
--		printf("child was killed with signal = %d", WTERMSIG(status));
--		return 1;
--	}
- 	return 0;
- }
- 
--static void test_max_nest(void)
-+static void run(void)
- {
- 	pid_t cpid1;
- 	int parentuid;
-@@ -93,41 +77,35 @@ static void test_max_nest(void)
- 	int fd;
- 	char path[BUFSIZ];
- 
--	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
--		(void *)child_fn1, (void *)0);
-+	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, (void *)0);
- 	if (cpid1 < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-+		tst_brk(TBROK | TTERRNO, "clone failed");
- 
- 	parentuid = geteuid();
- 	parentgid = getegid();
- 
- 	if (access("/proc/self/setgroups", F_OK) == 0) {
- 		sprintf(path, "/proc/%d/setgroups", cpid1);
--		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--		SAFE_WRITE(cleanup, 1, fd, "deny", 4);
--		SAFE_CLOSE(cleanup, fd);
--	}
--
--	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
--	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
- 
--	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
--	tst_record_childstatus(cleanup, cpid1);
--}
--
--int main(int argc, char *argv[])
--{
--	int lc;
--
--	setup();
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		test_max_nest();
-+		fd = SAFE_OPEN(path, O_WRONLY, 0644);
-+		SAFE_WRITE(1, fd, "deny", 4);
-+		SAFE_CLOSE(fd);
- 	}
- 
--	cleanup();
--	tst_exit();
-+	updatemap(cpid1, UID_MAP, 0, parentuid);
-+	updatemap(cpid1, GID_MAP, 0, parentgid);
-+
-+	TST_CHECKPOINT_WAKE(0);
- }
- 
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_checkpoints = 1,
+@@ -130,17 +126,20 @@ static struct tst_test test = {
+ 	.needs_checkpoints = 1,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+-	.needs_kconfigs = (const char *[]) {
+-		"CONFIG_USER_NS",
+-		NULL
+-	},
+-	.save_restore = (const char * const[]) {
+-		"?/proc/sys/user/max_user_namespaces",
+-		NULL,
+-	},
+-	.tags = (const struct tst_tag[]) {
+-		{"linux-git", "d2f007dbe7e4"},
+-		{"CVE", "CVE-2018-18955"},
+-		{}
+-	},
 +	.needs_kconfigs =
 +		(const char *[]){
 +			"CONFIG_USER_NS",
 +			NULL,
 +		},
-+};
++	.save_restore =
++		(const char *const[]){
++			"?/proc/sys/user/max_user_namespaces",
++			NULL,
++		},
++	.tags =
++		(const struct tst_tag[]){
++			{ "linux-git", "d2f007dbe7e4" },
++			{ "CVE", "CVE-2018-18955" },
++			{},
++		},
+ };
 -- 
 2.35.1
 
