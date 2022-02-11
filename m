@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8168C433EF
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 13:30:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D943AC433F5
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 13:34:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7160E3C9F13
-	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 14:30:03 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA0CC3C9B4B
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:29:54 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by picard.linux.it (Postfix) with ESMTP id 826703C9F27
+	for <ltp@archiver.kernel.org>; Fri, 11 Feb 2022 14:34:16 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E2D10601EE9
- for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:29:53 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 2367D3C9B4B
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:34:06 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 984A32010B3
+ for <ltp@lists.linux.it>; Fri, 11 Feb 2022 14:34:05 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1BBE21F3A2;
- Fri, 11 Feb 2022 13:29:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B80CC2113B;
+ Fri, 11 Feb 2022 13:34:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644586193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644586444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ovV3ECxqjxV08mD3TcQtrFW3KsA+HppPMuwirIQt5RE=;
- b=pJA77T2VTavBvu8xHfkpTMTqDj1p36yNWL94fbMcP+4/gUhI4LWPjE/tGlQOnO3yLCvquE
- qKN5Chkwz+dH2ohZFRNiYhd62KOO0/s+sgd9It0FEVeTPcjI4lwJuf3/i1z0UeDw+VbwCe
- jAtLYC1yfnbMiiVsLrrMbhkuvzbU1yQ=
+ bh=nvVMdR4rVuXsScWpVLZI5o+qsCnZ9Ufl4ROyQXA27xY=;
+ b=x34hzKCt7RIWJH+gbzDVBmMwHHX7O85ImEpR0TrZ+tyPBPa20jGr5t7ydbEYMBy2cfxGlP
+ Jy3oaE1nFKYestuyEj7L7+Uj0/yWP00CLokj6Ayq3sdzcBajpbrvgt1wXQ8Ctffia2EBKa
+ Ls8X/QSfkqIqib2IZoXMjy9vLiMoBTU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644586193;
+ s=susede2_ed25519; t=1644586444;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ovV3ECxqjxV08mD3TcQtrFW3KsA+HppPMuwirIQt5RE=;
- b=TsRenDYuZNFvwvtM6t9cfC7eaQOgOlk7kM/bbi+Kcurjw8QFmjSXAN7eo6er6SKMXUfyy5
- i/Su19XYt5m+2UAg==
+ bh=nvVMdR4rVuXsScWpVLZI5o+qsCnZ9Ufl4ROyQXA27xY=;
+ b=QaXy4NFlXoYjEeiBn0fHebx/lP7RJHSO04VRgyrG/dnRPPdKSbD1/PAgC4ftvLyVLqNTO1
+ b1gVToQJbWplXTBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 07A6013C87;
- Fri, 11 Feb 2022 13:29:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8042C13C87;
+ Fri, 11 Feb 2022 13:34:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 74TkANFkBmIvEAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 11 Feb 2022 13:29:53 +0000
-Message-ID: <2e218131-be2b-d6c8-51f7-f12b9091e859@suse.cz>
-Date: Fri, 11 Feb 2022 14:29:52 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id /m1YHsxlBmJ+EgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 11 Feb 2022 13:34:04 +0000
+Date: Fri, 11 Feb 2022 14:36:12 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YgZmTIZ0GtLYKF3D@yuki>
+References: <20220210110712.23596-1-andrea.cervesato@suse.de>
+ <20220210110712.23596-3-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20220211114401.24663-1-mdoucha@suse.cz> <YgZcu4frLBaKVXL2@yuki>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <YgZcu4frLBaKVXL2@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220210110712.23596-3-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Terminate leftover subprocesses when main test
- process crashes
+Subject: Re: [LTP] [PATCH v2 2/3] Rewrite process_vm_readv03.c test with new
+ LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,31 +83,490 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 11. 02. 22 13:55, Cyril Hrubis wrote:
-> Hi!
->> --- a/lib/tst_test.c
->> +++ b/lib/tst_test.c
->> @@ -1495,6 +1495,9 @@ static int fork_testrun(void)
->>  		return TFAIL;
->>  	}
->>  
->> +	if (tst_test->forks_child)
->> +		kill(-test_pid, SIGKILL);
->> +
+Hi!
+> Removed pipe and replaced it with shared memory.
+> Replaced TST_CHECKPOINT_INIT usage with .needs_checkpoints from the new
+> LTP API.
 > 
-> Maybe we can even print a message here if the kill() returns with 0,
-> which would mean that there were any leftover child processes killed.
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+> ---
+>  .../kernel/syscalls/cma/process_vm_readv03.c  | 349 ++++++++----------
+>  1 file changed, 146 insertions(+), 203 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> index 2333f7fd6..91961770f 100644
+> --- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> +++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> @@ -1,274 +1,217 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) International Business Machines  Corp., 2012
+>   * Copyright (c) Linux Test Project, 2012
+> + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+>   *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * Fork two children, one child mallocs randomly sized trunks of memory
+> + * and initializes them; the other child calls process_vm_readv with
+> + * the remote iovecs initialized to the original process memory
+> + * locations and the local iovecs initialized to randomly sized and
+> + * allocated local memory locations. The second child then verifies
+> + * that the data copied is correct.
+>   */
+>  
+> -#define _GNU_SOURCE
+> -#include <sys/types.h>
+> -#include <sys/uio.h>
+> -#include <sys/wait.h>
+> -#include <errno.h>
+> -#include <limits.h>
+>  #include <stdio.h>
+>  #include <stdlib.h>
+> -#include <string.h>
+> -#include <time.h>
+> -#include <unistd.h>
+> -#include <limits.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+>  #include "lapi/syscalls.h"
+>  
+> -char *TCID = "process_vm_readv03";
+> -int TST_TOTAL = 1;
+> -
+> -#define NUM_LOCAL_VECS 4
+> -
+> -static int nflag, sflag;
+> -static char *nr_opt, *sz_opt;
+> -static option_t options[] = {
+> -	{"n:", &nflag, &nr_opt},
+> -	{"s:", &sflag, &sz_opt},
+> -	{NULL, NULL, NULL}
+> +static struct tcase {
+> +	int bufsize;
+> +	int remote_iovecs;
+> +	int local_iovecs;
+> +} testcases[] = {
+> +	{ .bufsize = 1024, .remote_iovecs = 1024, .local_iovecs = 8 },
+> +	{ .bufsize = 1024, .remote_iovecs = 512, .local_iovecs = 16 },
+> +	{ .bufsize = 1024, .remote_iovecs = 256, .local_iovecs = 32 },
+> +	{ .bufsize = 1024, .remote_iovecs = 128, .local_iovecs = 64 },
+> +	{ .bufsize = 1024, .remote_iovecs = 64, .local_iovecs = 128 },
+> +	{ .bufsize = 1024, .remote_iovecs = 32, .local_iovecs = 256 },
+> +	{ .bufsize = 1024, .remote_iovecs = 16, .local_iovecs = 512 },
+> +	{ .bufsize = 1024, .remote_iovecs = 8, .local_iovecs = 1024 },
+> +
+> +	{ .bufsize = 131072, .remote_iovecs = 1024, .local_iovecs = 8 },
+> +	{ .bufsize = 131072, .remote_iovecs = 512, .local_iovecs = 16 },
+> +	{ .bufsize = 131072, .remote_iovecs = 256, .local_iovecs = 32 },
+> +	{ .bufsize = 131072, .remote_iovecs = 128, .local_iovecs = 64 },
+> +	{ .bufsize = 131072, .remote_iovecs = 64, .local_iovecs = 128 },
+> +	{ .bufsize = 131072, .remote_iovecs = 32, .local_iovecs = 256 },
+> +	{ .bufsize = 131072, .remote_iovecs = 16, .local_iovecs = 512 },
+> +	{ .bufsize = 131072, .remote_iovecs = 8, .local_iovecs = 1024 },
+>  };
+>  
+> -static int nr_iovecs;
+> -static long bufsz;
+> -static int pipe_fd[2];
+> -static pid_t pids[2];
+> -
+> -static void gen_random_arr(int *arr, int arr_sz);
+> -static void child_alloc(int *bufsz_arr);
+> -static void child_invoke(int *bufsz_arr);
+> -static long *fetch_remote_addrs(void);
+> -static void setup(void);
+> -static void cleanup(void);
+> -static void help(void);
+> -
+> -int main(int argc, char **argv)
+> -{
+> -	int lc, status;
+> -	int *bufsz_arr;
+> -
+> -	tst_parse_opts(argc, argv, options, &help);
+> -
+> -	setup();
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		SAFE_PIPE(cleanup, pipe_fd);
+> -
+> -		bufsz_arr = SAFE_MALLOC(cleanup, nr_iovecs * sizeof(int));
+> -		gen_random_arr(bufsz_arr, nr_iovecs);
+> -
+> -		/* the start of child_alloc and child_invoke is already
+> -		 * synchronized via pipe */
+> -		pids[0] = fork();
+> -		switch (pids[0]) {
+> -		case -1:
+> -			tst_brkm(TBROK | TERRNO, cleanup, "fork #0");
+> -		case 0:
+> -			child_alloc(bufsz_arr);
+> -			exit(0);
+> -		}
+> -
+> -		pids[1] = fork();
+> -		switch (pids[1]) {
+> -		case -1:
+> -			tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
+> -		case 0:
+> -			child_invoke(bufsz_arr);
+> -			exit(0);
+> -		}
+> -
+> -		/* wait until child_invoke reads from child_alloc's VM */
+> -		SAFE_WAITPID(cleanup, pids[1], &status, 0);
+> -		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> -			tst_resm(TFAIL, "child 1 returns %d", status);
+> -
+> -		/* child_alloc is free to exit now */
+> -		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+> -
+> -		SAFE_WAITPID(cleanup, pids[0], &status, 0);
+> -		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> -			tst_resm(TFAIL, "child 0 returns %d", status);
+> -
+> -		free(bufsz_arr);
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -}
+> +static uintptr_t *data_ptr;
+> +static long *addr_ptr;
+>  
+> -static void gen_random_arr(int *arr, int arr_sz)
+> +static void create_data_size(int *arr, int arr_sz, int buffsize)
+>  {
+> -	long bufsz_left, bufsz_single;
+> +	long bufsz_left;
+>  	int i;
+>  
+> -	bufsz_left = bufsz;
+> +	bufsz_left = buffsize;
+>  	for (i = 0; i < arr_sz - 1; i++) {
+> -		bufsz_single = rand() % (bufsz_left / 2) + 1;
+> -		arr[i] = bufsz_single;
+> -		bufsz_left -= bufsz_single;
+> +		int mod = MAX(1, (bufsz_left - arr_sz) / 2);
+> +
+> +		arr[i] = rand() % mod + 1;
+                                      ^
+				      Haven't we discussed that passing
+				      zero sized buffer will actually
+				      test some corner cases?
 
-Feel free to add a message during merge.
+We should just keep the original code here and just adjust the
+allocation of the buffers as:
+
+	for (i = 0; i < nr_iovecs; i++) {
+		buf_ptrs[i] = size[i] ? SAFE_MALLOC(size[i]) : NULL;
+
+		...
+
+> +		bufsz_left -= arr[i];
+>  	}
+> +
+>  	arr[arr_sz - 1] = bufsz_left;
+>  }
+>  
+> -static void child_alloc(int *bufsz_arr)
+> +static void child_alloc(const int *sizes, int nr_iovecs)
+>  {
+>  	char **foo;
+>  	int i, j;
+> -	char buf[BUFSIZ];
+>  	long count;
+>  
+> -	foo = SAFE_MALLOC(tst_exit, nr_iovecs * sizeof(char *));
+> +	foo = SAFE_MALLOC(nr_iovecs * sizeof(char *));
+>  
+>  	count = 0;
+>  	for (i = 0; i < nr_iovecs; i++) {
+> -		foo[i] = SAFE_MALLOC(tst_exit, bufsz_arr[i]);
+> -		for (j = 0; j < bufsz_arr[i]; j++) {
+> +		foo[i] = SAFE_MALLOC(sizes[i]);
+> +		addr_ptr[i] = (long)foo[i];
+> +
+> +		for (j = 0; j < sizes[i]; j++) {
+>  			foo[i][j] = count % 256;
+>  			count++;
+>  		}
+>  	}
+> -	tst_resm(TINFO, "child 0: %d iovecs allocated and initialized.",
+> -		 nr_iovecs);
+>  
+> -	/* passing addr via pipe */
+> -	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+> -	snprintf(buf, BUFSIZ, "%p", (void *)foo);
+> -	SAFE_WRITE(tst_exit, 1, pipe_fd[1], buf, strlen(buf) + 1);
+> -	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+> +	*data_ptr = (uintptr_t)foo;
+>  
+> -	/* wait until child_invoke is done reading from our VM */
+> -	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+> -}
+> +	tst_res(TINFO, "child 0: memory allocated and initialized");
+>  
+> -static long *fetch_remote_addrs(void)
+> -{
+> -	long *foo, *bar;
+> -	char buf[BUFSIZ];
+> -	long len;
+> -	struct iovec local, remote;
+> -
+> -	/* get addr from pipe */
+> -	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+> -	SAFE_READ(tst_exit, 0, pipe_fd[0], buf, BUFSIZ);
+> -	SAFE_CLOSE(tst_exit, pipe_fd[0]);
+> -	if (sscanf(buf, "%p", &foo) != 1)
+> -		tst_brkm(TBROK | TERRNO, tst_exit, "sscanf");
+> -
+> -	len = nr_iovecs * sizeof(long);
+> -	bar = SAFE_MALLOC(tst_exit, len);
+> -	local.iov_base = bar;
+> -	local.iov_len = len;
+> -	remote.iov_base = foo;
+> -	remote.iov_len = len;
+> -
+> -	TEST(tst_syscall(__NR_process_vm_readv, pids[0], &local,
+> -			 1UL, &remote, 1UL, 0UL));
+> -	if (TEST_RETURN != len)
+> -		tst_brkm(TFAIL | TTERRNO, tst_exit, "process_vm_readv");
+> -
+> -	return local.iov_base;
+> +	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>  }
+>  
+> -static void child_invoke(int *bufsz_arr)
+> +static void child_invoke(const int *sizes, int local_iovecs, int remote_iovecs,
+> +			 pid_t pid_alloc, int buffsize)
+>  {
+> -	int i, j, count, nr_error;
+> +	struct iovec local[local_iovecs];
+> +	struct iovec remote[remote_iovecs];
+> +	int i, j;
+> +	int count;
+> +	int nr_error;
+> +	int *local_sizes;
+>  	unsigned char expect, actual;
+> -	long *addrs;
+> -	struct iovec local[NUM_LOCAL_VECS], *remote;
+> -	int rcv_arr[NUM_LOCAL_VECS];
+>  
+> -	addrs = fetch_remote_addrs();
+> -
+> -	remote = SAFE_MALLOC(tst_exit, nr_iovecs * sizeof(struct iovec));
+> -	for (i = 0; i < nr_iovecs; i++) {
+> -		remote[i].iov_base = (void *)addrs[i];
+> -		remote[i].iov_len = bufsz_arr[i];
+> +	for (i = 0; i < remote_iovecs; i++) {
+> +		remote[i].iov_base = (void *)addr_ptr[i];
+> +		remote[i].iov_len = sizes[i];
+>  	}
+> -	tst_resm(TINFO, "child 1: %d remote iovecs received.", nr_iovecs);
+>  
+> -	gen_random_arr(rcv_arr, NUM_LOCAL_VECS);
+> -	for (i = 0; i < NUM_LOCAL_VECS; i++) {
+> -		local[i].iov_base = SAFE_MALLOC(tst_exit, rcv_arr[i]);
+> -		local[i].iov_len = rcv_arr[i];
+> +	local_sizes = SAFE_MALLOC(local_iovecs * sizeof(int));
+> +	create_data_size(local_sizes, local_iovecs, buffsize);
+> +	for (i = 0; i < local_iovecs; i++) {
+> +		local[i].iov_base = SAFE_MALLOC(local_sizes[i]);
+> +		local[i].iov_len = local_sizes[i];
+>  	}
+> -	tst_resm(TINFO, "child 1: %d local iovecs initialized.",
+> -		 NUM_LOCAL_VECS);
+>  
+> -	TEST(tst_syscall(__NR_process_vm_readv, pids[0], local,
+> -			    (unsigned long)NUM_LOCAL_VECS, remote,
+> -			    (unsigned long)nr_iovecs, 0UL));
+> -	if (TEST_RETURN != bufsz)
+> -		tst_brkm(TBROK | TTERRNO, tst_exit, "process_vm_readv");
+> +	tst_res(TINFO, "child 1: reading string from same memory location");
+> +
+> +	TST_EXP_POSITIVE(tst_syscall(__NR_process_vm_readv, pid_alloc, local,
+> +				     local_iovecs, remote, remote_iovecs, 0UL));
+> +
+> +	if (TST_RET != buffsize) {
+> +		tst_brk(TBROK, "process_vm_readv: expected %d bytes but got %ld",
+> +			buffsize, TST_RET);
+> +	}
+>  
+> -	/* verify every byte */
+>  	count = 0;
+>  	nr_error = 0;
+> -	for (i = 0; i < NUM_LOCAL_VECS; i++) {
+> +	for (i = 0; i < local_iovecs; i++) {
+>  		for (j = 0; j < (int)local[i].iov_len; j++) {
+>  			expect = count % 256;
+>  			actual = ((unsigned char *)local[i].iov_base)[j];
+> -			if (expect != actual) {
+> -#if DEBUG
+> -				tst_resm(TFAIL, "child 1: expected %i, got %i "
+> -					 "for byte seq %d",
+> -					 expect, actual, count);
+> -#endif
+> +			if (expect != actual)
+>  				nr_error++;
+> -			}
+> +
+>  			count++;
+>  		}
+>  	}
+> +
+>  	if (nr_error)
+> -		tst_brkm(TFAIL, tst_exit, "child 1: %d incorrect bytes "
+> -			 "received.", nr_error);
+> +		tst_brk(TFAIL, "child 1: %d incorrect bytes received", nr_error);
+>  	else
+> -		tst_resm(TPASS, "child 1: all bytes are correctly received.");
+> +		tst_res(TPASS, "child 1: all bytes are correctly received");
+>  }
+>  
+>  static void setup(void)
+>  {
+> -	tst_require_root();
+> -
+> -	/* Just a sanity check of the existence of syscall */
+>  	tst_syscall(__NR_process_vm_readv, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
+>  
+> -	nr_iovecs = nflag ? SAFE_STRTOL(NULL, nr_opt, 1, IOV_MAX) : 10;
+> -	bufsz = sflag ? SAFE_STRTOL(NULL, sz_opt, NUM_LOCAL_VECS, LONG_MAX)
+> -	    : 100000;
+> -
+> -	tst_tmpdir();
+> -	TST_CHECKPOINT_INIT(cleanup);
+> -	srand(time(NULL));
+> -
+> -	TEST_PAUSE;
+> +	data_ptr = SAFE_MMAP(NULL, sizeof(uintptr_t), PROT_READ | PROT_WRITE,
+> +			     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+
+This appears to be unused now.
+
+Also why don't we just allocate an array large enough for the biggest
+remote iovec here in the test setup and be done with it, should be as
+easy as:
+
+#define MAX_IOVEC 1024
+
+	char **buf_ptrs;
+
+
+	buf_ptrs = SAFE_MMAP(NULL, sizeof(void*) * MAX_IOVEC, ...);
+
+
+Then we can just do:
+
+	for (i = 0; i < nr_iovecs; i++) {
+		buf_ptrs[i] = SAFE_MALLOC(sizes[i]);
+
+                for (j = 0; j < sizes[i]; j++)
+                        buf_ptrs[i][j] = (count++) % 256;
+        }
+
+No need to allocate the foo buffer, etc.
+
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> -	tst_rmdir();
+> +	if (data_ptr)
+> +		SAFE_MUNMAP(data_ptr, sizeof(uintptr_t));
+> +
+> +	if (addr_ptr)
+> +		SAFE_MUNMAP(addr_ptr, sizeof(uintptr_t));
+>  }
+>  
+> -static void help(void)
+> +static void run(unsigned int i)
+>  {
+> -	printf("    -n NUM  Set the number of iovecs to be allocated.\n");
+> -	printf("    -s NUM  Set the size of total buffer size.\n");
+> +	int bufsize = testcases[i].bufsize;
+> +	int remote_iovecs = testcases[i].remote_iovecs;
+> +	int local_iovecs = testcases[i].local_iovecs;
+> +	pid_t pid_alloc;
+> +	pid_t pid_invoke;
+> +	int status;
+> +	int *sizes;
+> +
+> +	tst_res(TINFO, "bufsize=%d, remote_iovecs=%d, local_iovecs=%d", bufsize,
+> +		remote_iovecs, local_iovecs);
+> +
+> +	addr_ptr = SAFE_MMAP(NULL, sizeof(long) * remote_iovecs, PROT_READ | PROT_WRITE,
+> +			     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> +
+> +	sizes = SAFE_MALLOC(remote_iovecs * sizeof(int));
+> +	create_data_size(sizes, remote_iovecs, bufsize);
+> +
+> +	pid_alloc = SAFE_FORK();
+> +	if (!pid_alloc) {
+> +		child_alloc(sizes, remote_iovecs);
+> +		return;
+> +	}
+> +
+> +	TST_CHECKPOINT_WAIT(0);
+> +
+> +	pid_invoke = SAFE_FORK();
+> +	if (!pid_invoke) {
+> +		child_invoke(sizes, local_iovecs, remote_iovecs, pid_alloc, bufsize);
+> +		return;
+> +	}
+> +
+> +	SAFE_WAITPID(pid_invoke, &status, 0);
+> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +		tst_res(TFAIL, "child 1: returns %s", tst_strstatus(status));
+> +
+> +	TST_CHECKPOINT_WAKE(0);
+> +
+> +	SAFE_WAITPID(pid_alloc, &status, 0);
+> +
+> +	if (addr_ptr)
+> +		SAFE_MUNMAP(addr_ptr, sizeof(uintptr_t));
+>  }
+> +
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.forks_child = 1,
+> +	.needs_checkpoints = 1,
+> +	.tcnt = ARRAY_SIZE(testcases),
+> +	.min_kver = "2.0",
+> +};
+> -- 
+> 2.35.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
