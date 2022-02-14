@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 677B4C433FE
-	for <ltp@archiver.kernel.org>; Mon, 14 Feb 2022 14:41:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0652AC433F5
+	for <ltp@archiver.kernel.org>; Mon, 14 Feb 2022 16:51:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F207B3C9FF1
-	for <ltp@archiver.kernel.org>; Mon, 14 Feb 2022 15:41:32 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 083E13C9FF1
+	for <ltp@archiver.kernel.org>; Mon, 14 Feb 2022 17:51:42 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7083C3C812E
- for <ltp@lists.linux.it>; Mon, 14 Feb 2022 15:41:23 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id D55BA3C9F8F
+ for <ltp@lists.linux.it>; Mon, 14 Feb 2022 17:51:32 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D61E8200BCF
- for <ltp@lists.linux.it>; Mon, 14 Feb 2022 15:41:22 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 85CEC200BAB
+ for <ltp@lists.linux.it>; Mon, 14 Feb 2022 17:51:30 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A7C4B1F38B;
- Mon, 14 Feb 2022 14:41:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7EFF221102
+ for <ltp@lists.linux.it>; Mon, 14 Feb 2022 16:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644849681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wEd8NpJYQ56PgsoFwLSeUkjc6igz4QY2oOEpSrC7wmc=;
- b=Nd8lJHvtLnVjH6SRBiM6Ggt6cOxjn5xcqSMM1pIJsC0qbphu4scGyJHCvWr2alloAsgMSh
- hwo/RZGWpFbFllZb6OxFkvKYc9QEtyytlfhBqvcZ1ROKrB41jrzMlaZYTHAoEEzYgATXRi
- UpGD1PTg1hsRZaxmRA5cYgPNudeSk9I=
+ t=1644857490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=AynKcgm1MD9M2TTS02DSGfA9ksGn4z28Z6/4dsHoOCo=;
+ b=INV3c0S/zqCm2JWNJX83Lzh8HCVP+Vjz54YIYNXxNGk81RfjmWoI95h3zsizI5VoloEikJ
+ w2ic9P85jGHBditcnJsjWPQISsVEe+un7KTc0kX4x8SHNjhWG+auQqnLxC3HUR8LX+8HAM
+ hx7Mu7NXBu5lXcCZkijHNbeZL/cInbc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644849681;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wEd8NpJYQ56PgsoFwLSeUkjc6igz4QY2oOEpSrC7wmc=;
- b=QLSG++YmNKQHHQKGe5w44mp2LpWIr7A2kK2DOgFqWNCRTgaV4GQMRhIdfDEXViA0LvyTat
- H6zkA5H/HNJMfoCg==
+ s=susede2_ed25519; t=1644857490;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=AynKcgm1MD9M2TTS02DSGfA9ksGn4z28Z6/4dsHoOCo=;
+ b=T4XIkU5CrPcYm08L7kC4U0lLH8VA7ubQVtCJ/BlOvvb/bJd/5dBL5d0EGLnSOor09wU2Jc
+ 7jimCkkG/TR8seDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9322D13B3A;
- Mon, 14 Feb 2022 14:41:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E02613B75
+ for <ltp@lists.linux.it>; Mon, 14 Feb 2022 16:51:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vAWrIxFqCmLyTAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 14 Feb 2022 14:41:21 +0000
-Date: Mon, 14 Feb 2022 15:43:27 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <YgpqjzgEADLg5cXb@yuki>
-References: <20220210110712.23596-1-andrea.cervesato@suse.de>
- <20220210110712.23596-4-andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id szH8GZKICmKQFQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 14 Feb 2022 16:51:30 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 14 Feb 2022 17:51:29 +0100
+Message-Id: <20220214165129.32686-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220210110712.23596-4-andrea.cervesato@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] Rewrite process_vm_writev02.c using new
- LTP API
+Subject: [LTP] [PATCH] test_children_cleanup.sh: Fix race condition
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,41 +72,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Applied with minor changes, thanks.
+Processes can stay alive for a short while even after receiving SIGKILL.
+Give the child in subprocess cleanup libtest up to 5 seconds to fully exit
+before reporting that it was left behind.
 
-diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-index b535a8ff1..991110d24 100644
---- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-@@ -109,11 +109,9 @@ static void run(void)
- 
- 	SAFE_WAITPID(pid_write, &status, 0);
- 	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--		tst_res(TFAIL, "child 1: returns %s", tst_strstatus(status));
-+		tst_res(TFAIL, "write child: %s", tst_strstatus(status));
- 
- 	TST_CHECKPOINT_WAKE(0);
--
--	SAFE_WAITPID(pid_alloc, &status, 0);
- }
- 
- static struct tst_test test = {
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ lib/newlib_tests/test_children_cleanup.sh | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-
-I've adjusted the FAIL message a bit and also removed the waitpid(), if
-we want the library to collect the alloc child the test library has to
-wait() it not us.
-
+diff --git a/lib/newlib_tests/test_children_cleanup.sh b/lib/newlib_tests/test_children_cleanup.sh
+index 4b4e8b2f0..44505aa51 100755
+--- a/lib/newlib_tests/test_children_cleanup.sh
++++ b/lib/newlib_tests/test_children_cleanup.sh
+@@ -10,10 +10,19 @@ rm "$TMPFILE"
+ if [ "x$CHILD_PID" = "x" ]; then
+ 	echo "TFAIL: Child process was not created"
+ 	exit 1
+-elif ! kill -s 0 $CHILD_PID &>/dev/null; then
+-	echo "TPASS: Child process was cleaned up"
+-	exit 0
+-else
+-	echo "TFAIL: Child process was left behind"
+-	exit 1
+ fi
++
++# The child process can stay alive for a short while even after receiving
++# SIGKILL, especially if the system is under heavy load. Wait up to 5 seconds
++# for it to fully exit.
++for i in `seq 6`; do
++	if ! [ -e "/proc/$CHILD_PID" ]; then
++		echo "TPASS: Child process was cleaned up"
++		exit 0
++	fi
++
++	sleep 1
++done
++
++echo "TFAIL: Child process was left behind"
++exit 1
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
