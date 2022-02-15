@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA05C433EF
-	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 12:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB278C433F5
+	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 12:57:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B05173CA060
-	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 13:18:50 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7E3603CA068
+	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 13:57:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0B91A3C0EAA
- for <ltp@lists.linux.it>; Tue, 15 Feb 2022 13:18:41 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id B37A83CA010
+ for <ltp@lists.linux.it>; Tue, 15 Feb 2022 13:57:34 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 341621000995
- for <ltp@lists.linux.it>; Tue, 15 Feb 2022 13:18:38 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 23C03200D36
+ for <ltp@lists.linux.it>; Tue, 15 Feb 2022 13:57:33 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 422CF210F6;
- Tue, 15 Feb 2022 12:18:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 557DD1F382;
+ Tue, 15 Feb 2022 12:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644927518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644929853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dqJcLpkMiwfjiXSVRn+OtyCYzS5SnghOLEMFYu4lxnA=;
- b=jLT0cMBFZac+ONGsBAgHmhWD/MpMM5VGSl5nWI/WRJT3EkU+XkcG8R3zjGcF6npgyG9J6t
- OvPo1bUMtNrYHBGNYhumdNMrSCBh36OnW2I/MH1/5xjEIgWlUeuhPRMzb4BCpXz/4LJ9Bc
- ouFZw77yd5wUSW+vsGkzj9KrFC1UPUA=
+ bh=bacIf5313cv5NaKDCJ4fl6oqNIMHkNd0QqaKasCUDC8=;
+ b=2oJWq8giMg1F+RAJqObgFAlbL4736ywA6y2oi7utm54WqYy6XdgHMn/TYo/HKbfft35QnC
+ rvL79Y7jsf5nPg8WLlB2wa9Mh+KNu38GB8Ya9+pFH/g2AvHNbt1551VE/iPu1i4Qnv3sNW
+ dXMtYRKG1ToTcXITWY6hiHHupktbskw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644927518;
+ s=susede2_ed25519; t=1644929853;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dqJcLpkMiwfjiXSVRn+OtyCYzS5SnghOLEMFYu4lxnA=;
- b=2Yt6fRXGshS6/X97JXFdKtDrqMtv593DiXdLIQViaXpLhG39UMf1e+qxlIfOX1bcikICrX
- Ezlb925Nw3JRV2Bg==
+ bh=bacIf5313cv5NaKDCJ4fl6oqNIMHkNd0QqaKasCUDC8=;
+ b=fdoD46G2BaAbtEXeUsMBJS3qAWFRyNyAS9JvqY9qp5zlGjb7V9foTsehcQa/6QvUOmQCBB
+ bB4K5LbQU7Er3kAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D7B413C73;
- Tue, 15 Feb 2022 12:18:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40DDA13C75;
+ Tue, 15 Feb 2022 12:57:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5J9dCR6aC2KjWQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 15 Feb 2022 12:18:38 +0000
-Date: Tue, 15 Feb 2022 13:20:45 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id JNWDDT2jC2JdbwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 15 Feb 2022 12:57:33 +0000
+Date: Tue, 15 Feb 2022 13:59:40 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YguandfUCjFsD3r9@yuki>
-References: <20220215102053.1790-1-mdoucha@suse.cz>
+To: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Message-ID: <YgujvFcL0TIwoE5f@yuki>
+References: <VI1PR04MB49583062AFA205712ABA54B793309@VI1PR04MB4958.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220215102053.1790-1-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <VI1PR04MB49583062AFA205712ABA54B793309@VI1PR04MB4958.eurprd04.prod.outlook.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] test_children_cleanup.sh: Fix race condition
+Subject: Re: [LTP] [PATCH v1] lib/safe_file_ops.c: Fix resource leak
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,65 +74,105 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Processes can stay alive for a short while even after receiving SIGKILL.
-> Give the child in subprocess cleanup libtest up to 5 seconds to fully exit
-> or change state to zombie before reporting that it was left behind.
-> 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> safe_file_scanf and safe_file_vprintf suffered
+> from resource leak, as opened file descriptor
+> was not closed in case of error.
+>
+> Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
 > ---
+>  lib/safe_file_ops.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 > 
-> Changes since v1: Report success even if the child gets stuck in zombie state
+> diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+> index f803691d8..d7231df4d 100644
+> --- a/lib/safe_file_ops.c
+> +++ b/lib/safe_file_ops.c
+> @@ -130,7 +130,7 @@ void safe_file_scanf(const char *file, const int lineno,
+>         if (f == NULL) {
+>                 tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+>                         "Failed to open FILE '%s' for reading", path);
+> -               return;
+> +               goto out;
+
+This one is wrong, we just tested that f == NULL
+
+>         }
+>  
+>         exp_convs = tst_count_scanf_conversions(fmt);
+> @@ -142,14 +142,14 @@ void safe_file_scanf(const char *file, const int lineno,
+>         if (ret == EOF) {
+>                 tst_brkm_(file, lineno, TBROK, cleanup_fn,
+>                         "The FILE '%s' ended prematurely", path);
+> -               return;
+
+Technically this tst_brkm_() call does not return unless we are in the
+test cleanup. During the rest of the test execution it ends up calling
+exit(TBROK). So this return is reached only if something fails during
+the test cleanup. I guess that we can fix it like this, but the test
+will exit shortly after anyways.
+
+> +               goto out;
+>         }
+>  
+>         if (ret != exp_convs) {
+>                 tst_brkm_(file, lineno, TBROK, cleanup_fn,
+>                         "Expected %i conversions got %i FILE '%s'",
+>                         exp_convs, ret, path);
+> -               return;
+> +               goto out;
+>         }
+>  
+>         if (fclose(f)) {
+> @@ -157,6 +157,8 @@ void safe_file_scanf(const char *file, const int lineno,
+>                         "Failed to close FILE '%s'", path);
+>                 return;
+>         }
+> +out:
+> +       fclose(f);
+>  }
+>  
+>  
+> @@ -261,13 +263,13 @@ static void safe_file_vprintf(const char *file, const int lineno,
+>         if (f == NULL) {
+>                 tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+>                         "Failed to open FILE '%s' for writing", path);
+> -               return;
+> +               goto out;
+
+And here as well.
+
+>         }
+>  
+>         if (vfprintf(f, fmt, va) < 0) {
+>                 tst_brkm_(file, lineno, TBROK, cleanup_fn,
+>                         "Failed to print to FILE '%s'", path);
+> -               return;
+> +               goto out;
+>         }
+>  
+>         if (fclose(f)) {
+> @@ -275,6 +277,8 @@ static void safe_file_vprintf(const char *file, const int lineno,
+>                         "Failed to close FILE '%s'", path);
+>                 return;
+>         }
+> +out:
+> +       fclose(f);
+>  }
+>  
+>  void safe_file_printf(const char *file, const int lineno,
+> -- 
+> 2.35.1
 > 
->  lib/newlib_tests/test_children_cleanup.sh | 23 +++++++++++++++++------
->  1 file changed, 17 insertions(+), 6 deletions(-)
 > 
-> diff --git a/lib/newlib_tests/test_children_cleanup.sh b/lib/newlib_tests/test_children_cleanup.sh
-> index 4b4e8b2f0..23408c1bc 100755
-> --- a/lib/newlib_tests/test_children_cleanup.sh
-> +++ b/lib/newlib_tests/test_children_cleanup.sh
-> @@ -10,10 +10,21 @@ rm "$TMPFILE"
->  if [ "x$CHILD_PID" = "x" ]; then
->  	echo "TFAIL: Child process was not created"
->  	exit 1
-> -elif ! kill -s 0 $CHILD_PID &>/dev/null; then
-> -	echo "TPASS: Child process was cleaned up"
-> -	exit 0
-> -else
-> -	echo "TFAIL: Child process was left behind"
-> -	exit 1
->  fi
-> +
-> +# The child process can stay alive for a short while even after receiving
-> +# SIGKILL, especially if the system is under heavy load. Wait up to 5 seconds
-> +# for it to fully exit.
-> +for i in `seq 6`; do
-> +	CHILD_STATE=`sed -ne 's/^State:\s*\([A-Z]\).*$/\1/p' "/proc/$CHILD_PID/status" 2>/dev/null`
-> +
-> +	if [ ! -e "/proc/$CHILD_PID" ] || [ "x$CHILD_STATE" = "xZ" ]; then
-
-As long as we have the variable inside the quotes there is no point in
-adding the 'x'.
-
-Other than that:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-> +		echo "TPASS: Child process was cleaned up"
-> +		exit 0
-> +	fi
-> +
-> +	sleep 1
-> +done
-> +
-> +echo "TFAIL: Child process was left behind"
-> +exit 1
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
