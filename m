@@ -4,67 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7FFAC433EF
-	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 07:34:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B10BC433F5
+	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 08:33:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 95A853CA05D
-	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 08:34:40 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 1FE7C3CA041
+	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 09:33:46 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE9783C9FF4
- for <ltp@lists.linux.it>; Tue, 15 Feb 2022 08:34:32 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id D02193C9FE7
+ for <ltp@lists.linux.it>; Tue, 15 Feb 2022 09:33:35 +0100 (CET)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A57BB14000AA
- for <ltp@lists.linux.it>; Tue, 15 Feb 2022 08:34:31 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9508C210DC;
- Tue, 15 Feb 2022 07:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644910470;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lotg+WbCGiMeXqTLrwUx8QsUFCipjaHsVZIPxoPFHWg=;
- b=r0W3W6OP7uH/K8nTZLn1U8fhun/vf3KI7UIAX32YeytFrwDnWPOU7PloUduFRt2ah8aRwB
- mp/iYjHrbKJN5o8leTeebEMmNLhX65UyHa71m89NbEXhLDkkX+wUS/AODq7G+40J76CIje
- YrWHVu6kaDZDuTpG8AzWYGUoUmcVEFA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644910470;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lotg+WbCGiMeXqTLrwUx8QsUFCipjaHsVZIPxoPFHWg=;
- b=EfSReA6myltzLzjkrwgd9xUTVM1MSmCTqzdXBOITZvLuqbgeO9gEAR3DfX/VhYOriRkcOy
- C25AY/NN172pETBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 610F513BD8;
- Tue, 15 Feb 2022 07:34:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id S0hXFYZXC2KiRQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 15 Feb 2022 07:34:30 +0000
-Date: Tue, 15 Feb 2022 08:34:28 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YgtXhDRi0/U9nc4Z@pevik>
-References: <20220214165129.32686-1-mdoucha@suse.cz>
- <CAEemH2c=+3_HBez0Pn6Yyx+v4PXJpwD3HZtPt87BR6AohtKvUw@mail.gmail.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 350CF1A017A1
+ for <ltp@lists.linux.it>; Tue, 15 Feb 2022 09:33:34 +0100 (CET)
+Received: from [192.168.178.40] (unknown [188.192.100.83])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id A3F3C9FE95;
+ Tue, 15 Feb 2022 08:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1644914013; bh=cZ1c6tTG5stth90jbe7DAgaMvsh7Rlk/Z7ml7Z8Hz5M=;
+ h=Message-ID:Date:MIME-Version:Subject:From:To;
+ b=YmE03bynqqR+c7BI9I4hi5K80iPDLuvnK8G/oO/j0wC5TLYvj9mxmGjaBowZYHk6m
+ aczJkTE/99XY0l/YsijtaqTzaCQrAcnHCkxgwXjwwaxDhUxniY4n+1aHPl17zHgCIX
+ 9YnZpdSeX8DjAH2O2KZrYTSGhEBHRZ2R4+Wgh8DY=
+Message-ID: <894a9125-f606-b430-086b-85b6ff68d08d@jv-coder.de>
+Date: Tue, 15 Feb 2022 09:33:33 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2c=+3_HBez0Pn6Yyx+v4PXJpwD3HZtPt87BR6AohtKvUw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Content-Language: en-US
+From: Joerg Vehlow <lkml@jv-coder.de>
+To: LTP List <ltp@lists.linux.it>, Thomas Gleixner <tglx@linutronix.de>
+References: <83955ca7-07d4-1fcc-098d-253abf8e3f44@jv-coder.de>
+In-Reply-To: <83955ca7-07d4-1fcc-098d-253abf8e3f44@jv-coder.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] test_children_cleanup.sh: Fix race condition
+Subject: Re: [LTP] hrimer-prio test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,56 +55,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Thomas,
 
-...
-> It doesn't work for all platforms and we can not guarantee how long it will
-> cost before PID 1 reaps zombie process.
+I guess no one on the ltp mailing list can help here, maybe since you
+are maintainer of the hrtimer subsystem, maybe you can help.
 
-> Also, I just get to know that  Docker does not run processes under a
-> special init process that properly reaps child processes, so that it is
-> possible for the container to end up with zombie processes that cause
-> all sorts of trouble.
+Thanks,
+Joerg
 
-> I even try adding `kill -SIGCHLD 1` but does not work as expected.
-
-> See CI jobs:
->   https://github.com/wangli5665/ltp/runs/5194270998?check_suite_focus=true
-> <https://mail.google.com/mail/u/1/%E2%80%8Bhttps://github.com/wangli5665/ltp/runs/5194270998?check_suite_focus=true>
-
-> Therefore, I suggest giving a chance to my refined patch V2 :).
-
-> --- a/lib/newlib_tests/test_children_cleanup.sh
-> +++ b/lib/newlib_tests/test_children_cleanup.sh
-> @@ -10,10 +10,16 @@ rm "$TMPFILE"
->  if [ "x$CHILD_PID" = "x" ]; then
->         echo "TFAIL: Child process was not created"
->         exit 1
-> +elif grep -q "Z (zombie)" /proc/$CHILD_PID/status; then
-> +       echo "TPASS: Child process is in zombie state"
-> +       exit 0
->  elif ! kill -s 0 $CHILD_PID &>/dev/null; then
->         echo "TPASS: Child process was cleaned up"
->         exit 0
->  else
->         echo "TFAIL: Child process was left behind"
-> +       echo "cat /proc/$CHILD_PID/status"
-> +       echo "---------------------------"
-> +       cat /proc/$CHILD_PID/status
->         exit 1
->  fi
-
-Li's approach LGTM.
-
-Kind regards,
-Petr
+Am 2/11/2022 um 7:56 AM schrieb Joerg Vehlow:
+> Hi,
+> 
+> I was looking into fails with the test ltp test hrtimer-prio.
+> 
+> For reference here is the test description:
+> ----
+> Test the latency of hrtimers under rt load.	
+> The busy_threads should run at a priority higher than the system
+> softirq_hrtimer, but lower than the timer_thread.  The timer_thread
+> measure the time it takes to return from a nanosleep call.  If the
+> lower priority threads can increase the latency of the higher
+> priority thread, it is considered a failure.
+> ----
+> 
+> The test fails, repeatedly calls clock_nanosleep(10ms) and if the
+> latency of one of these nanosleeps is longer than 10us, the test fails.
+> The latency is measured using clock_gettime(CLOCK_MONOTONIC) In my test
+> on x86_64 hardware, the test sometimes fails, but mostly passes. On an
+> arm board it almost fails, sometimes with a minimal latency of > 30ms.
+> 
+> I have no knowledge of the timer subsystem, so I can't even tell if the
+> test is (still) valid. The test is in ltp since 2007, but wasn't enabled
+> until last year. So maybe the test is invalid and the expected latency
+> is not even guaranteed anymore or does it require a specific kernel
+> config or hardware (e.g. a high precision hardware timer)?
+> 
+> There is a kernel selftest for something similar (nsleep-lat). It only
+> expects the average latency to be less than 40ms, but that has another
+> difference, because it uses TIMER_ABSTIME instead of a relative sleep time.
+> 
+> Joerg
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
