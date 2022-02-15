@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D884C433F5
-	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 09:27:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92B1FC433EF
+	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 09:39:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 60E393CA00E
-	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 10:27:36 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 5EC7B3CA01A
+	for <ltp@archiver.kernel.org>; Tue, 15 Feb 2022 10:39:23 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 25C523C816F
- for <ltp@lists.linux.it>; Tue, 15 Feb 2022 10:27:26 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6FFFF3C97C3
+ for <ltp@lists.linux.it>; Tue, 15 Feb 2022 10:39:13 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 59226200DAA
- for <ltp@lists.linux.it>; Tue, 15 Feb 2022 10:27:25 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CA64B100113E
+ for <ltp@lists.linux.it>; Tue, 15 Feb 2022 10:39:12 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6927C210DC;
- Tue, 15 Feb 2022 09:27:25 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DA2F2210EF;
+ Tue, 15 Feb 2022 09:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1644917245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1644917951;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7hM2kSUa7Hx0yOHo/i9mfg+fg0oo8cPv4qAfxdVMBhA=;
- b=DKXsmHBW99alz9XR0fxmXotuxe4wjU/ZEdXXFSJNNPFjrNmg3asGqChy8NGbSdJ2CkA06J
- O7nEyi9HRPHG7RY9owbIlTCZpcFAcRZjf5ONC6rEGrdl+3BPeIAbYNTDbJ0vaSO34H+oZq
- Cde36zLE2FzkkSlyuYs2KTI6pPeKa+Q=
+ bh=B6MO+8u/H3AQtTfxg+Ox3/yFEnQn2airNiALct7PmDA=;
+ b=tmvGGViUn+Y+FBW8xEqxbjHinFqlIujKWtrr94Vx12Qv5FHP14W+FhcCXa0/pgv9d7eeXq
+ USseqGQj0YQ6qqMb9aGG7D84GO4WRqJOzgwHx1Z3FHp7vAlFMnGPIXUGMDMla+GlnKiR2y
+ gZVx9LYLPh9H8WogGPhd+DF+N0/TSVM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1644917245;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1644917951;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7hM2kSUa7Hx0yOHo/i9mfg+fg0oo8cPv4qAfxdVMBhA=;
- b=wqCIj30GDnXNRadB91QCEtS7YisFkZCW2r/h1ut8KyG/bD/dkjLoul2arkkrivJd2YMx5+
- 3dXIm85ReO2AAIAQ==
+ bh=B6MO+8u/H3AQtTfxg+Ox3/yFEnQn2airNiALct7PmDA=;
+ b=9CvZ2ZyYQx5C/oQAdJUth2Vt0JN4fuuJqbcwOEJ3f3wGtWDw12ATetDGpSumm/INytNU27
+ JSAvdcwQcAaZcSDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4784713C36;
- Tue, 15 Feb 2022 09:27:25 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9ABD513C36;
+ Tue, 15 Feb 2022 09:39:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YGxnEP1xC2KCfQAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Tue, 15 Feb 2022 09:27:25 +0000
-Message-ID: <ec14e0ce-21fe-43bf-a8fb-15b2ccd97c8a@suse.cz>
-Date: Tue, 15 Feb 2022 10:27:24 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Content-Language: en-US
-To: Li Wang <liwang@redhat.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZQvsI790C2LmBAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 15 Feb 2022 09:39:11 +0000
+Date: Tue, 15 Feb 2022 10:39:09 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <Ygt0vbPsoGc8gIsy@pevik>
 References: <20220214165129.32686-1-mdoucha@suse.cz>
  <CAEemH2c=+3_HBez0Pn6Yyx+v4PXJpwD3HZtPt87BR6AohtKvUw@mail.gmail.com>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <CAEemH2c=+3_HBez0Pn6Yyx+v4PXJpwD3HZtPt87BR6AohtKvUw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ <ec14e0ce-21fe-43bf-a8fb-15b2ccd97c8a@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <ec14e0ce-21fe-43bf-a8fb-15b2ccd97c8a@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] test_children_cleanup.sh: Fix race condition
 X-BeenThere: ltp@lists.linux.it
@@ -80,33 +79,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMTUuIDAyLiAyMiA1OjMwLCBMaSBXYW5nIHdyb3RlOgo+IEl0IGRvZXNuJ3Qgd29yayBmb3Ig
-YWxsIHBsYXRmb3JtcyBhbmQgd2UgY2FuIG5vdCBndWFyYW50ZWUgaG93IGxvbmcgaXQgd2lsbAo+
-IGNvc3QgYmVmb3JlIFBJRCAxIHJlYXBzIHpvbWJpZSBwcm9jZXNzLgo+IAo+IEFsc28sIEkganVz
-dCBnZXQgdG8ga25vdyB0aGF0IMKgRG9ja2VyIGRvZXMgbm90IHJ1biBwcm9jZXNzZXMgdW5kZXIg
-YQo+IHNwZWNpYWwgaW5pdCBwcm9jZXNzIHRoYXQgcHJvcGVybHkgcmVhcHMgY2hpbGQgcHJvY2Vz
-c2VzLCBzbyB0aGF0IGl0IGlzCj4gcG9zc2libGUgZm9yIHRoZSBjb250YWluZXIgdG8gZW5kIHVw
-IHdpdGggem9tYmllIHByb2Nlc3NlcyB0aGF0IGNhdXNlCj4gYWxsIHNvcnRzIG9mIHRyb3VibGUu
-Cj4gCj4gSSBldmVuIHRyeSBhZGRpbmcgYGtpbGwgLVNJR0NITEQgMWAgYnV0IGRvZXMgbm90IHdv
-cmsgYXMgZXhwZWN0ZWQuCj4gCj4gU2VlIENJIGpvYnM6Cj4gwqDCoGh0dHBzOi8vZ2l0aHViLmNv
-bS93YW5nbGk1NjY1L2x0cC9ydW5zLzUxOTQyNzA5OTg/Y2hlY2tfc3VpdGVfZm9jdXM9dHJ1ZQo+
-IDxodHRwczovL21haWwuZ29vZ2xlLmNvbS9tYWlsL3UvMS8lRTIlODAlOEJodHRwczovL2dpdGh1
-Yi5jb20vd2FuZ2xpNTY2NS9sdHAvcnVucy81MTk0MjcwOTk4P2NoZWNrX3N1aXRlX2ZvY3VzPXRy
-dWU+Cj4gCj4gVGhlcmVmb3JlLCBJIHN1Z2dlc3QgZ2l2aW5nIGEgY2hhbmNlIHRvIG15IHJlZmlu
-ZWQgcGF0Y2ggVjIgOikuCgpXaGVuIEkgd2FzIHRlc3RpbmcgdGhlIGxpYnRlc3QgeWVzdGVyZGF5
-IG9uIGEgbW9kZXJhdGVseSBzdHJlc3NlZAptYWNoaW5lLCBJIGFjdHVhbGx5IHNhdyB0aGUgY2hp
-bGQgcHJvY2VzcyBzdGlsbCBpbiB0aGUgUiBzdGF0ZSBkdXJpbmcKdGhlIGZpcnN0IHN0YXRlIGNo
-ZWNrIGEgY291cGxlIG9mIHRpbWVzLiBUaGF0J3Mgd2h5IEkndmUgYWRkZWQgbG9vcGluZwp3aXRo
-IGRlbGF5LgoKT24gdGhlIG90aGVyIGhhbmQgSSBkaWQgbm90IHNlZSBhbnkgem9tYmllcyBldmVu
-IGFmdGVyIHNldmVyYWwgaHVuZHJlZAp0cmllcy4gQnV0IEkgY2FuIGFkZCBhIHpvbWJpZSBjaGVj
-ayB0byBteSBwYXRjaCBhIHdlbGwuCgotLSAKTWFydGluIERvdWNoYSAgIG1kb3VjaGFAc3VzZS5j
-egpRQSBFbmdpbmVlciBmb3IgU29mdHdhcmUgTWFpbnRlbmFuY2UKU1VTRSBMSU5VWCwgcy5yLm8u
-CkNPUlNPIElJYQpLcml6aWtvdmEgMTQ4LzM0CjE4NiAwMCBQcmFndWUgOApDemVjaCBSZXB1Ymxp
-YwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZv
-L2x0cAo=
+> On 15. 02. 22 5:30, Li Wang wrote:
+> > It doesn't work for all platforms and we can not guarantee how long it =
+will
+> > cost before PID 1 reaps zombie process.
+
+> > Also, I just get to know that =A0Docker does not run processes under a
+> > special init process that properly reaps child processes, so that it is
+> > possible for the container to end up with zombie processes that cause
+> > all sorts of trouble.
+
+> > I even try adding `kill -SIGCHLD 1` but does not work as expected.
+
+> > See CI jobs:
+> > =A0=A0https://github.com/wangli5665/ltp/runs/5194270998?check_suite_foc=
+us=3Dtrue
+> > <https://mail.google.com/mail/u/1/%E2%80%8Bhttps://github.com/wangli566=
+5/ltp/runs/5194270998?check_suite_focus=3Dtrue>
+
+> > Therefore, I suggest giving a chance to my refined patch V2 :).
+
+> When I was testing the libtest yesterday on a moderately stressed
+> machine, I actually saw the child process still in the R state during
+> the first state check a couple of times. That's why I've added looping
+> with delay.
+
+> On the other hand I did not see any zombies even after several hundred
+> tries. But I can add a zombie check to my patch a well.
+I'd be for it. As Li noticed, containers behave really differently
+(maybe it'd be faster to debug tests using podman).
+
+Kind regards,
+Petr
+
+-- =
+
+Mailing list info: https://lists.linux.it/listinfo/ltp
