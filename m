@@ -4,64 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB59EC433F5
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 05:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BFD3C433F5
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 06:59:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB6CE3C9F27
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 06:39:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 316273CA0AA
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 07:59:49 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 916B93C3206
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 06:39:28 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A723A601D1B
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 06:39:27 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0CBE11F37D;
- Thu, 17 Feb 2022 05:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1645076367;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DTH/Zt+9cpGFOOnaaiLzAwIWW+ZCNSDEEIzomEX7seU=;
- b=QBCbkQ+RgtGekvt7WPGiDaF2LZeuW7PLsoxLQIsow9Se37DEUpX2Y7OO5SqqoS8/G/bcF5
- 4Db5ZsWC9bJFFz2D/1HuJNAJ8A3DqbKj4+LKyPars8soZTnlZ3aXtV1bWfHNHDNkHRbgsT
- kziZumvXCFLsVHz2d45/Uzj3Km6Ta80=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1645076367;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DTH/Zt+9cpGFOOnaaiLzAwIWW+ZCNSDEEIzomEX7seU=;
- b=XY9JW7VUfy659jPtM6jf2pTib2NrBVDAcJUJdQ1JSxYUcMSOjFddE2Lv+btQd+edhhGn3X
- ivuDEQjzOhXVEqAQ==
-Received: from g78 (unknown [10.163.24.138])
+ by picard.linux.it (Postfix) with ESMTPS id 0A3FA3C9299
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 07:59:39 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id BD015A3B83;
- Thu, 17 Feb 2022 05:39:26 +0000 (UTC)
-References: <20220208140322.6842-1-rpalethorpe@suse.com>
- <20220208140322.6842-3-rpalethorpe@suse.com>
- <CAEemH2fjSLAdY4xO7WMekGX=3sPFjt0xVknNxJedk1-agsb3zQ@mail.gmail.com>
- <Yg0XwAb1LOso6dtf@rei>
- <CAEemH2fwb6ggm+aA4DmvbO4Ut0nDK46AyZ7efJSXqsLFPMcwPw@mail.gmail.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Li Wang <liwang@redhat.com>
-Date: Thu, 17 Feb 2022 05:37:50 +0000
-In-reply-to: <CAEemH2fwb6ggm+aA4DmvbO4Ut0nDK46AyZ7efJSXqsLFPMcwPw@mail.gmail.com>
-Message-ID: <87sfsijbld.fsf@suse.de>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A988814013B7
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 07:59:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1645081177;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=RXROvT1B5NJdnIkAjuFZgbq/SvwlCtKJoE+IVeZEgsA=;
+ b=GHkp7Dk1QkUeEhHVAuNo7vMu1t9VC/OBnForocAaUADG3N49NGfxFmF+iq+uQReAQ6WwUh
+ hYfD3RyfN2UyZcJHlZFkOAqXdrdfzJv4IVsMIiS1TvNbSpvyxsuZ2PdMknozOzrjYq4zo2
+ W6YUKvzpgr4zwJYGqWL57BFSlYYyLpo=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-256-XvNhLD-cP5aiwn8FSpfJWw-1; Thu, 17 Feb 2022 01:59:35 -0500
+X-MC-Unique: XvNhLD-cP5aiwn8FSpfJWw-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ b18-20020a25fa12000000b0062412a8200eso2716133ybe.22
+ for <ltp@lists.linux.it>; Wed, 16 Feb 2022 22:59:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=RXROvT1B5NJdnIkAjuFZgbq/SvwlCtKJoE+IVeZEgsA=;
+ b=up7ckZLfyKuzHnEbTJdXMVnUaMORdTPOTd65NJReyOXtNKTqnS4IIkwLo++Z0e2K3W
+ BhBfIZcyPKECNSLsYL73ETAYaW+948WQ06piuCePDVb4yh4+wAV6jaTYZLtfD7z+qq+o
+ C0fZqjErZLAy+G6bBzxKKbyd0+7ok5mm3Xm9qBbpg6kr74QmxmlunYDqdhnhaVac9xH4
+ KEIfMFXEKFmVMAn4rC/aM5pvoaEtAQx/nUWWRlmsk3UgYZrEugEEqScj8DtUH/w3Q9Wh
+ WNsGAJwiWTHJzAH+E9sQWQ+kyotir95MvS5pVPxNjISwwx/mor9MjWClhjQWj/IkyQBw
+ dfkg==
+X-Gm-Message-State: AOAM531Ole2CtFvTJAX3QcjMKs9Xb0czAIM+g3wn2tAIt5IGyNdKyVFv
+ /I1SAVfAd1PEhxTRLY2JX/iTmXoBRm5oKd+wBD4tNDNqj8m0Mb2ygBe5WctyQ9XBVzUN54POiEH
+ kvVI+L/JkIkV/RwYK3EhvNmL8C+A=
+X-Received: by 2002:a81:1416:0:b0:2d6:83d3:6e1a with SMTP id
+ 22-20020a811416000000b002d683d36e1amr1418829ywu.370.1645081174995; 
+ Wed, 16 Feb 2022 22:59:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxxKU7Kp7pynMDWFLCRrki3RmR3aHR4S1X4L3aaXi2CvINSIA7392peYlzV1rhzUiJ9Sk28ikiGq+3CVCMkYU0=
+X-Received: by 2002:a81:1416:0:b0:2d6:83d3:6e1a with SMTP id
+ 22-20020a811416000000b002d683d36e1amr1418819ywu.370.1645081174783; Wed, 16
+ Feb 2022 22:59:34 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <20220208132414.2852202-1-liwang@redhat.com>
+ <20220209085213.2882229-1-liwang@redhat.com> <YgzJwTxk7Lnf7uG+@rei>
+In-Reply-To: <YgzJwTxk7Lnf7uG+@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 17 Feb 2022 14:59:19 +0800
+Message-ID: <CAEemH2dd0Ctejvx2bZvHVWHd4Q=3y1sguoq=-CLCZvTYZafEeQ@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] API/cgroup: Shorten cgroup to cg in most
- symbols
+Subject: Re: [LTP] [PATCH v2] getrusage03: mlock all address space for
+ process calling consume_mb
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,47 +87,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: LTP List <ltp@lists.linux.it>,
- Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0801094870=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Li,
+--===============0801094870==
+Content-Type: multipart/alternative; boundary="0000000000000ccfec05d8314fc5"
 
-Li Wang <liwang@redhat.com> writes:
+--0000000000000ccfec05d8314fc5
+Content-Type: text/plain; charset="UTF-8"
 
-> On Wed, Feb 16, 2022 at 11:27 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
->  Hi!
->  > To be honest, I only wanted that tst_cg_test pointer :).
->  > 
->  > But I have no objection to renaming 'tst_cgroup_*' to 'tst_cg_*'
->  > for the whole APIs. (Though I don't like it)
->  > 
->  > Let's hear more voices from peers.
->
->  Actually I like it, having the common prefix shortened to just tst_cg_
->  makes it easier to read, at least for me.
->
-> Well, two to one, thanks for the comments :).
->
-> @Richard Palethorpe  Hi Richard,
-> Feel free to push 1/3 and 2/3 patches, in case someone (I guess Luke)
-> waiting for the code rebase on it. 
->
-> We can hold patch 3/3(memcontrol04) for a while for fail debugging.
-> (I am involved in another stuff these days, will look back on that
-> soon)
+On Wed, Feb 16, 2022 at 5:54 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Ah, OK, thanks, I will do that. I just sent a V2 with these in, but I
-had not read your's and Cyril's messages.
+> Hi!
+> > --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
+> > +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> > @@ -193,4 +193,8 @@ static struct tst_test test = {
+> >       .setup = setup,
+> >       .test = run,
+> >       .tcnt = ARRAY_SIZE(testfunc_list),
+> > +     .caps = (struct tst_cap []) {
+> > +             TST_CAP(TST_CAP_REQ, CAP_IPC_LOCK),
+> > +             {}
+> > +     },
+> >  };
+>
+> I wonder if we should start to track the capabilities like this instead
+> of the .needs_root approach. I guess that it may be useful to keep
+> things granular in the future.
+>
+
+I think yes, Linux Capabilities makes it possible for specific privileges to
+the test process, and avoid that .needs_root limited many tests scenario
+to skip directly with non-root users. Especially beneficial for running LTP
+in the docker with only part of root privileges for reasons like strict
+security
+verification.
 
 -- 
-Thank you,
-Richard.
+Regards,
+Li Wang
+
+--0000000000000ccfec05d8314fc5
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Wed, Feb 16, 2022 at 5:54 PM Cyril Hrubis &lt;<a=
+ href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
+ft:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; --- a/testcases/kernel/syscalls/getrusage/getrusage03.c<br>
+&gt; +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c<br>
+&gt; @@ -193,4 +193,8 @@ static struct tst_test test =3D {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0.setup =3D setup,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0.test =3D run,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0.tcnt =3D ARRAY_SIZE(testfunc_list),<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0.caps =3D (struct tst_cap []) {<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TST_CAP(TST_CAP_REQ, =
+CAP_IPC_LOCK),<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{}<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0},<br>
+&gt;=C2=A0 };<br>
+<br>
+I wonder if we should start to track the capabilities like this instead<br>
+of the .needs_root approach. I guess that it may be useful to keep<br>
+things granular in the future.<br></blockquote><div><br></div>I think yes, =
+Linux Capabilities makes it possible for specific privileges<span class=3D"=
+gmail_default" style=3D"font-size:small"> to</span></div><div class=3D"gmai=
+l_quote">the test process, and avoid <span class=3D"gmail_default" style=3D=
+"font-size:small">that </span>.needs_root limited many tests scenario</div>=
+<div class=3D"gmail_quote"><div class=3D"gmail_default" style=3D"font-size:=
+small">to skip directly with non-root users. Especially beneficial for runn=
+ing LTP</div><div class=3D"gmail_default" style=3D"font-size:small">in the =
+docker with only part of root privileges for reasons like strict security</=
+div><div class=3D"gmail_default" style=3D"font-size:small">verification.</d=
+iv></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><=
+div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></=
+div>
+
+--0000000000000ccfec05d8314fc5--
+
+
+--===============0801094870==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0801094870==--
+
