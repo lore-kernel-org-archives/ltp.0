@@ -4,60 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1DD7C433F5
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 11:18:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D949BC433EF
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 11:45:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 455C93CA0B3
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 12:18:45 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 5A6F33CA0A7
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 12:45:36 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 9C5073C9564
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 12:45:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B5E03C020F
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 12:18:31 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DA2931A01955
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 12:45:25 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 872A0100143E
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 12:18:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1645096709;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UI94eJLEKz0g/piSujVSk2RTXn2oHuq0klIbGXLarNs=;
- b=UBg7VhjrU8q6qsJg+p8jaN0ow2NDGBZ0r4Ul5WhvU6w9OeVFgWutUTnd6ZGlDkBR39wal7
- 7ni9NFB6ccILP/6dpKXDazhrCdWwoPX6u+R/itAd5dJKcII6SHTUKtB2jUtoLgLU5Eq9Qy
- TrQdnRTrRz7w9oCg71Rl7kNJUpvLZ4o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-644-OHxJqjgCPqGjoCkLg1Igsg-1; Thu, 17 Feb 2022 06:18:27 -0500
-X-MC-Unique: OHxJqjgCPqGjoCkLg1Igsg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
- [10.5.11.13])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0283C210DC;
+ Thu, 17 Feb 2022 11:45:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1645098325;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=loLYtvZYPROQc5ZQMZ4V5vjbczPWRMwCwDS0xewDOb0=;
+ b=iKJ5wJ2+8i9Wv9xBSkMzLpQngwIymtW8BQeViqXqXuBdq7pZ7MoJ5F3aybMMi4Iqg+eWok
+ Tn8VSQPhJ4+VClAhODJNoT72y3a49UOxtK8qxcjXT12rwpg27Z1LZFuJkya7n6LFble3b7
+ jIH1t8jWMkwsg98xbOcj2w2G8brWUXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1645098325;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=loLYtvZYPROQc5ZQMZ4V5vjbczPWRMwCwDS0xewDOb0=;
+ b=fg2+dgVZN4SwakyIJeRQbEWYdlM4g4G801/0LWtKx1y6PVXkcl00InXWvGuzwYGj1IuPdh
+ eLurrq59nAPMljCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E7DE801AA6
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 11:18:27 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.40.192.58])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 89E2C6E1B2
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 11:18:26 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Thu, 17 Feb 2022 12:18:22 +0100
-Message-Id: <b32ed0e56099520bc3e75455e2472841aa0b3020.1645096642.git.jstancek@redhat.com>
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA6AE13BBF;
+ Thu, 17 Feb 2022 11:45:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id HMTzJ1Q1DmJlZQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 17 Feb 2022 11:45:24 +0000
+Date: Thu, 17 Feb 2022 12:45:22 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Yg41Uk3IxfBRX+i8@pevik>
+References: <20220203170522.22051-1-pvorel@suse.cz>
+ <20220203170522.22051-3-pvorel@suse.cz> <Yg4bt2V6rrircZ+x@yuki>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Yg4bt2V6rrircZ+x@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/perf_event_open03: skip test on slower
- systems
+Subject: Re: [LTP] [PATCH 2/2] sctputil.h: TCONF on EAFNOSUPPORT
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,116 +78,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Vlad Yasevich <vyasevich@gmail.com>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Neil Horman <nhorman@tuxdriver.com>, ltp@lists.linux.it,
+ linux-sctp@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some systems (specially with combination of -debug kernel
-with KASAN enabled) have trouble completing this test
-in specified timeout.
-
-Lowering number of iterations would make the test condition
-less accurate as it's based on global counter.
-
-Instead, calculate the rate of iterations system can do in
-first 5 seconds and used that to decide whether to continue
-to run the test. If the rate is too slow, TCONF after 5
-seconds.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../perf_event_open/perf_event_open03.c       | 43 ++++++++++++++++++-
- 1 file changed, 41 insertions(+), 2 deletions(-)
-
-.needs_cmds = NULL gets rid of compile warning.
-
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
-index dcb70962771c..c7bf123a04b4 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
-@@ -16,13 +16,16 @@
- 
- #include "config.h"
- #include "tst_test.h"
-+#include "tst_timer_test.h"
- #include "lapi/syscalls.h"
- 
- #include "perf_event_open.h"
- 
- #define INTEL_PT_PATH "/sys/bus/event_source/devices/intel_pt/type"
- 
-+const int iterations = 12000000;
- static int fd = -1;
-+static int timeout;
- 
- static void setup(void)
- {
-@@ -39,6 +42,38 @@ static void setup(void)
- 
- 	SAFE_FILE_SCANF(INTEL_PT_PATH, "%d", &ev.type);
- 	fd = perf_event_open(&ev, getpid(), -1, -1, 0);
-+
-+	timeout = tst_timeout_remaining();
-+}
-+
-+/*
-+ * Check how fast we can do the iterations after 5 seconds of runtime.
-+ * If the rate is too small to complete for current timeout then
-+ * stop the test.
-+ */
-+static void check_progress(int i)
-+{
-+	static float iter_per_ms;
-+	long long elapsed_ms;
-+
-+	if (iter_per_ms)
-+		return;
-+
-+	if (i % 1000 != 0)
-+		return;
-+
-+	tst_timer_stop();
-+	elapsed_ms = tst_timer_elapsed_ms();
-+	if (elapsed_ms > 5000) {
-+		iter_per_ms = (float) i / elapsed_ms;
-+		tst_res(TINFO, "rate: %f iters/ms", iter_per_ms);
-+		tst_res(TINFO, "needed rate for current test timeout: %f iters/ms",
-+			(float) iterations / (timeout * 1000));
-+
-+		if (iter_per_ms * 1000 * (timeout - 1) < iterations)
-+			tst_brk(TCONF, "System too slow to complete"
-+				" test in specified timeout");
-+	}
- }
- 
- static void run(void)
-@@ -47,10 +82,13 @@ static void run(void)
- 	int i;
- 
- 	diff = SAFE_READ_MEMINFO("MemAvailable:");
-+	tst_timer_start(CLOCK_MONOTONIC);
- 
- 	/* leak about 100MB of RAM */
--	for (i = 0; i < 12000000; i++)
-+	for (i = 0; i < iterations; i++) {
- 		ioctl(fd, PERF_EVENT_IOC_SET_FILTER, "filter,0/0@abcd");
-+		check_progress(i);
-+	}
- 
- 	diff -= SAFE_READ_MEMINFO("MemAvailable:");
- 
-@@ -75,5 +113,6 @@ static struct tst_test test = {
- 		{"linux-git", "7bdb157cdebb"},
- 		{"CVE", "2020-25704"},
- 		{}
--	}
-+	},
-+	.needs_cmds = NULL,
- };
--- 
-2.27.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQ3lyaWwsIGFsbCwKCj4gSGkhCj4gPiBkaWZmIC0tZ2l0IGEvdXRpbHMvc2N0cC90ZXN0bGli
+L3NjdHB1dGlsLmggYi91dGlscy9zY3RwL3Rlc3RsaWIvc2N0cHV0aWwuaAo+ID4gaW5kZXggMWUy
+MTc2MGJlYy4uYzRiZWRiNDdjZiAxMDA2NDQKPiA+IC0tLSBhL3V0aWxzL3NjdHAvdGVzdGxpYi9z
+Y3RwdXRpbC5oCj4gPiArKysgYi91dGlscy9zY3RwL3Rlc3RsaWIvc2N0cHV0aWwuaAo+ID4gQEAg
+LTEzMyw5ICsxMzMsMTQgQEAgZXh0ZXJuIGludCBUU1RfQ05UOwo+ID4gIHN0YXRpYyBpbmxpbmUg
+aW50IHRlc3Rfc29ja2V0KGludCBkb21haW4sIGludCB0eXBlLCBpbnQgcHJvdG9jb2wpCj4gPiAg
+ewo+ID4gIAlpbnQgc2sgPSBzb2NrZXQoZG9tYWluLCB0eXBlLCBwcm90b2NvbCk7Cj4gPiArCWlu
+dCByZXMgPSBUQlJPSzsKCj4gPiAtCWlmIChzayA9PSAtMSkKPiA+IC0JCXRzdF9icmttKFRCUk9L
+LCB0c3RfZXhpdCwgInNvY2tldDogJXMiLCBzdHJlcnJvcihlcnJubykpOwo+ID4gKwlpZiAoc2sg
+PT0gLTEpIHsKPiA+ICsJCWlmIChlcnJubyA9PSBFQUZOT1NVUFBPUlQpCj4gPiArCQkJcmVzID0g
+VENPTkY7Cj4gPiArCj4gPiArCQl0c3RfYnJrbShyZXMsIHRzdF9leGl0LCAic29ja2V0OiAlcyIs
+IHN0cmVycm9yKGVycm5vKSk7Cj4gPiArCX0KCj4gSSB3b3VsZCBrZWVwIHRoZSBtZXNzYWdlcyBz
+ZXBhcmF0ZWQgaGVyZSwgaS5lLiBkbyBzb21ldGhpbmcgYXM6Cgo+IAlpZiAoZXJybm8gPT0gRUFG
+Tk9TVVBQT1JUKQo+IAkJdHN0X2Jya20oVEJST0sgfCBURVJSTk8sICJzb2NrZXQoJWksICVpLCAl
+aSkgbm90IHN1cHBvcnRlZCIsCj4gCQkJIGRvbWFpbiwgdHlwZSwgcHJvdG9jb2wpOwoKPiAJdHN0
+X2Jya20oVEJST0sgfCBURVJSTk8sICJzb2NrZXQoKSIpOworMQoKCj4gQnR3IHRoaXMgY29kZSBh
+Y3R1YWxseSBkdXBsaWNhdGVzIHRoZSBzYWZlX3NvY2tldCgpIGZ1bmN0aW9uIHdlIGRvIGhhdmUK
+PiBhbHJlYWR5LCBzbyBpdCBtYXkgYXMgd2VsbCBiZSBlYXNpZXIgdG8ganVzdCByZXBsYWNlIHRo
+ZSB0ZXN0X3NvY2tldCgpCj4gd2l0aCBTQUZFX1NPQ0tFVCgpIGluIHRoZSB0ZXN0cy4uLgpJIG9y
+aWdpbmFsbHkgd2FudGVkIHRvIHVzZSBzYWZlX21hY3Jvcy5oIGluIHNjdHB1dGlsLmggdG8gcmVw
+bGFjZSB0aGVzZQp0ZXN0X3tiaW5kLGNvbm5lY3QsbGlzdGVuLHNvY2tldH0gd2l0aCB0aGVpciBT
+QUZFXyooKSB2YXJpYW50cy4KCkJ1dCBpdCBsZWFkcyBpbnRvIGRlcGVuZGVuY3kgbWFueSByZWRl
+ZmluaXRpb24gcHJvYmxlbXMgZHVlIG1peGluZwo8bmV0aW5ldC9pbi5oPiBhbmQgPGxpbnV4L2lu
+Lmg+LCBlLmcuOgoKL3Vzci9pbmNsdWRlL25ldGluZXQvaW4uaDo2ODo1OiBlcnJvcjogcmVkZWNs
+YXJhdGlvbiBvZiBlbnVtZXJhdG9yIOKAmElQUFJPVE9fR1JF4oCZCiAgIDY4IHwgICAgIElQUFJP
+VE9fR1JFID0gNDcsICAgICAgLyogR2VuZXJhbCBSb3V0aW5nIEVuY2Fwc3VsYXRpb24uICAqLwov
+dXNyL2luY2x1ZGUvbGludXgvaW4uaDo1NTozOiBub3RlOiBwcmV2aW91cyBkZWZpbml0aW9uIG9m
+IOKAmElQUFJPVE9fR1JF4oCZIHdpdGggdHlwZSDigJhlbnVtIDxhbm9ueW1vdXM+4oCZCiAgIDU1
+IHwgICBJUFBST1RPX0dSRSA9IDQ3LCAgICAgICAgICAgICAvKiBDaXNjbyBHUkUgdHVubmVscyAo
+cmZjIDE3MDEsMTcwMikgICAgKi8KICAgICAgfCAgIF5+fn5+fn5+fn5+CmluIHV0aWxzL3NjdHAv
+ZnVuY190ZXN0cy90ZXN0XzFfdG9fMV9ydG9pbmZvLmMsIHdoaWNoIHJlcXVpcmVzIDxsaW51eC9p
+bi5oPiBmb3IKYXQgbGVhc3QgSVBQUk9UT19TQ1RQIHdoaWNoIGlzIG5vdCBpbiA8bmV0aW5ldC9p
+bi5oPi4KCklQUFJPVE9fU0NUUCBpcyBhbHNvIGluIDxsaW51eC9zY3RwLmg+LCBidXQgaXQgYWxz
+byByZXF1aXJlcyA8bmV0aW5ldC9zY3RwLmg+CmZvciBzY3RwX3JlY3Ztc2coKSBhbmQgaXQgY3Jl
+YXRlcyBhbm90aGVyIHJlZGVmaW5pdGlvbiBjb25mbGljdCBkdWUgdXNpbmcKPG5ldGluZXQvc2N0
+cC5oPiB3aXRoIDxsaW51eC9zY3RwLmg+ID0+IGRlcGVuZGVuY3kgaGVsbCA6KS4KCkZZSSB0ZXN0
+XzFfdG9fMV9ydG9pbmZvLmMgdXNlcyB0ZXN0X3NvY2tldCgpIGFuZCBzY3RwdXRpbC5oLgoKU3Vy
+ZSB0aGlzIGlzIHNvbHZhYmxlIHZpYSBlaXRoZXIgdXNpbmcgbGFwaSBoZWFkZXJzIHdoaWNoIHdv
+dWxkIGxvYWQgb25seSBvbmUgb2YKdGhlbSBhbmQgd2l0aCBhZGRpbmcgZXh0cmEgZGVmaW5pdGlv
+bnMgb3Igc2ltcGxlIGp1c3QgYWRkaW5nIHRoZSBtaXNzaW5nCmRlZmluaXRpb25zIGludG8gc2N0
+cHV0aWwuaC4KCkJ1dCBJTUhPIGEgY2xlYW5lciBzb2x1dGlvbiBpcyB0byByZXdyaXRlIHRlc3Qg
+b25lIGJ5IG9uZSAod2hpY2ggd291bGQgdGFrZQp0aW1lKSwgYnV0IHdlJ3JlIHdhaXRpbmcgcmVw
+bHkgZnJvbSBTQ1RQIG1haW50YWluZXJzIHdoZXJlIChhbmQgd2hvKSBpcyBnb2luZyB0bwptYWlu
+dGFpbiB0aGVzZSB0ZXN0cyB3aGljaCBkZXNlcnZlIGEgbWFzc2l2ZSBjbGVhbnVwLi4uCgpUaHVz
+IGZvciBub3csIEknbGwgZm9sbG93IHlvdXIgb3RoZXIgc3VnZ2VzdGlvbnMgYW5kIG1lcmdlIHNv
+IHRoYXQgd2UgaGF2ZSBJUHY2CmZpeGVzIGluLgoKS2luZCByZWdhcmRzLApQZXRyCgotLSAKTWFp
+bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
