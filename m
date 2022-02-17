@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED6E6C433EF
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 12:18:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B3ABC433EF
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 12:23:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B44EB3C9FF8
-	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 13:18:46 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id B114F3CA0A7
+	for <ltp@archiver.kernel.org>; Thu, 17 Feb 2022 13:23:51 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F3DE43C0309
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 13:18:37 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 346553C93A9
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 13:23:41 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 710D36010E2
- for <ltp@lists.linux.it>; Thu, 17 Feb 2022 13:18:37 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 71E356011E1
+ for <ltp@lists.linux.it>; Thu, 17 Feb 2022 13:23:41 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 79C432198B;
- Thu, 17 Feb 2022 12:18:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A18D91F37D;
+ Thu, 17 Feb 2022 12:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645100316;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Axdt3EO2+0MqS0c3sL0sQw6bvpSjFXBb3syTZCsQbpo=;
- b=uM7Z4JrowsceTFgR4LJ8w6cGo0MW7oQh6wv5mXrm3PLgdcievuMN/xtsk1k81D6k3TMm8Q
- VH7YaRn03hNYZrjMeBomFapqeOt7YlfGRTiiowVFhrJQ7utF6j5i4gWCFdyd2ThaOzoGzW
- vwloyb9W/QTPHjQUQ7YxMe9RIRptoNM=
+ t=1645100620; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=WvKf3lQ1+T8e7Vd9QJTr/OdmHg4iizKGqlVUMtjn7xA=;
+ b=lk0y2+jjHY9IXdo5Zjy0l8AAbhYSNWpdl2bThBELQyDhFWqfsbiwsPA8ntkKg6gr8bGcfw
+ Psr7yEIGG7odFTCZ1l9b7xBCxpzOYaEMFcp0ux7uHK9jx9+9q8rWeIdgENEDa3lHjRcDHF
+ fsDylDUwiqaPp9C7yXpCnzzUyaSklDA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645100316;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Axdt3EO2+0MqS0c3sL0sQw6bvpSjFXBb3syTZCsQbpo=;
- b=Tg26PDacoXaWXUN/IH4a9hpC8qVlGmkaIyJ2eKgkmd+xw9ICX9KgEv78szxrQjdzhU2VvK
- RqrcnJ2GxmDvqtCQ==
+ s=susede2_ed25519; t=1645100620;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=WvKf3lQ1+T8e7Vd9QJTr/OdmHg4iizKGqlVUMtjn7xA=;
+ b=SXZinb53KqQUwQC5FhWQCmXswu+1Yr3Rf9fmdNmqHPNYCIXeNGBQ3/xyNjjZRKBlGFHeza
+ gFz9rg6bMVf88BCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16D8713BF1;
- Thu, 17 Feb 2022 12:18:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 886EA13BF1;
+ Thu, 17 Feb 2022 12:23:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QaWhAxw9DmKOdgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 17 Feb 2022 12:18:36 +0000
-Date: Thu, 17 Feb 2022 13:18:33 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Yg49GRX9Gpyle0pG@pevik>
-References: <20220203170522.22051-1-pvorel@suse.cz>
- <20220203170522.22051-3-pvorel@suse.cz> <Yg4bt2V6rrircZ+x@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id wcptIEw+DmIeeQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 17 Feb 2022 12:23:40 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>,
+	ltp@lists.linux.it
+Date: Thu, 17 Feb 2022 13:23:39 +0100
+Message-Id: <20220217122340.3916-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Yg4bt2V6rrircZ+x@yuki>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] sctputil.h: TCONF on EAFNOSUPPORT
+Subject: [LTP] [PATCH v2] Add test for CVE 2021-22600
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,24 +71,168 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Vlad Yasevich <vyasevich@gmail.com>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Neil Horman <nhorman@tuxdriver.com>, ltp@lists.linux.it,
- linux-sctp@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, all,
+Fixes #917
 
-patchset merged (with suggested changes + few more TERRNO replaced).
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-Thanks!
+Changes since v1: Added missing SAFE_CLOSE() at the end of test run.
 
-Kind regards,
-Petr
+On a vulnerable system, the test will get stuck in the last setsockopt() call
+and become unkillable. Reproducer works reliably on affected SLE kernels.
+
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/setsockopt/.gitignore     |   1 +
+ .../kernel/syscalls/setsockopt/setsockopt09.c | 112 ++++++++++++++++++
+ 3 files changed, 114 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt09.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index ce6f89f88..6c88454cc 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1391,6 +1391,7 @@ setsockopt05 setsockopt05
+ setsockopt06 setsockopt06
+ setsockopt07 setsockopt07
+ setsockopt08 setsockopt08
++setsockopt09 setsockopt09
+ 
+ settimeofday01 settimeofday01
+ settimeofday02 settimeofday02
+diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
+index 95a5e43f8..fd3235bb3 100644
+--- a/testcases/kernel/syscalls/setsockopt/.gitignore
++++ b/testcases/kernel/syscalls/setsockopt/.gitignore
+@@ -6,3 +6,4 @@
+ /setsockopt06
+ /setsockopt07
+ /setsockopt08
++/setsockopt09
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt09.c b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+new file mode 100644
+index 000000000..3bbb2c6df
+--- /dev/null
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 SUSE LLC
++ * Author: Marcos Paulo de Souza <mpdesouza@suse.com>
++ * LTP port: Martin Doucha <mdoucha@suse.cz>
++ */
++
++/*
++ * CVE-2021-22600
++ *
++ * Check for possible double free of rx_owner_map after switching packet
++ * interface versions. Kernel crash fixed in:
++ *
++ *  commit ec6af094ea28f0f2dda1a6a33b14cd57e36a9755
++ *  Author: Willem de Bruijn <willemb@google.com>
++ *  Date:   Wed Dec 15 09:39:37 2021 -0500
++ *
++ *  net/packet: rx_owner_map depends on pg_vec
++ */
++
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sched.h>
++
++#include "tst_test.h"
++#include "lapi/if_packet.h"
++
++static int sock = -1;
++
++static void setup(void)
++{
++	int real_uid = getuid();
++	int real_gid = getgid();
++
++	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++
++	SAFE_UNSHARE(CLONE_NEWUSER);
++	SAFE_UNSHARE(CLONE_NEWNET);
++	SAFE_FILE_PRINTF("/proc/self/setgroups", "deny");
++	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1", real_uid);
++	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1", real_gid);
++}
++
++static void run(void)
++{
++	unsigned int version = TPACKET_V3;
++	struct tpacket_req3 req = {
++		.tp_block_size = 16384,
++		.tp_block_nr = 256,
++		.tp_frame_size = TPACKET_ALIGNMENT << 7,
++		.tp_retire_blk_tov = 64,
++		.tp_feature_req_word = TP_FT_REQ_FILL_RXHASH
++	};
++
++	req.tp_frame_nr = req.tp_block_size * req.tp_block_nr;
++	req.tp_frame_nr /= req.tp_frame_size;
++
++	sock = SAFE_SOCKET(AF_PACKET, SOCK_RAW, 0);
++	TEST(setsockopt(sock, SOL_PACKET, PACKET_VERSION, &version,
++		sizeof(version)));
++
++	if (TST_RET == -1 && TST_ERR == EINVAL)
++		tst_brk(TCONF | TTERRNO, "TPACKET_V3 not supported");
++
++	if (TST_RET) {
++		tst_brk(TBROK | TTERRNO,
++			"setsockopt(PACKET_VERSION, TPACKET_V3");
++	}
++
++	/* Allocate owner map and then free it again */
++	SAFE_SETSOCKOPT(sock, SOL_PACKET, PACKET_RX_RING, &req, sizeof(req));
++	req.tp_block_nr = 0;
++	req.tp_frame_nr = 0;
++	SAFE_SETSOCKOPT(sock, SOL_PACKET, PACKET_RX_RING, &req, sizeof(req));
++
++	/* Switch interface version and trigger double free of owner map */
++	SAFE_SETSOCKOPT_INT(sock, SOL_PACKET, PACKET_VERSION, TPACKET_V2);
++	SAFE_SETSOCKOPT(sock, SOL_PACKET, PACKET_RX_RING, &req, sizeof(req));
++	SAFE_CLOSE(sock);
++
++	tst_res(TPASS, "Nothing bad happened, probably");
++}
++
++static void cleanup(void)
++{
++	if (sock >= 0)
++		SAFE_CLOSE(sock);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.timeout = 5,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS=y",
++		"CONFIG_NET_NS=y",
++		NULL
++	},
++	.save_restore = (const char * const[]) {
++		"?/proc/sys/user/max_user_namespaces",
++		NULL,
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "ec6af094ea28"},
++		{"CVE", "2021-22600"},
++		{}
++	}
++};
+-- 
+2.34.1
 
 
 -- 
