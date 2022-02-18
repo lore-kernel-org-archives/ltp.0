@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37800C433F5
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 16:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92E78C433F5
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 16:12:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B9F73CA141
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 17:10:17 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D0B4C3CA12D
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 17:12:20 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACB803C9678
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 17:10:08 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B86CE3C9678
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 17:12:11 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 155651000600
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 17:10:07 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3CB512011B1
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 17:12:10 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 571B21F37E;
- Fri, 18 Feb 2022 16:10:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7EDAC1F37E;
+ Fri, 18 Feb 2022 16:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645200607;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1645200730; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4rsTXW29qxg2+cqluVcJBFladFntt9qoCTA+JqjSLrk=;
- b=ZFDaKIWe/bUBv5prYNrxv+WtyPIGemglovu2IXKqPPuclQj+FHlrEU64/nNMi4Zu+XVDIp
- GxRshN1MfN1Dzzctt3FXKMMKysQ6IedtiL/T69RJLMe/Rgy2pRMqygsGxPAe2eASo0OOdP
- hEXU19fPDvY1DVjROTRZRqG+P5ZTvR0=
+ bh=0TmRKo+D4oYpxLqP/9fHKakR2PAoqc6ytqL5NNjNhzs=;
+ b=CJ/Kij8UNQIUxoAbR805JJKz4zHv3f2I9g0jzoK/Mi221bMLpGNS7MWTjx4HanD3NkqcBg
+ GP9ZcLtiqoyRPmi+f4ALC77Xy4fn42CUDMxx2pwgP7B4/BfrF7DM7ErQ13ijzoM9qdYkmV
+ aTxTIbUlZbO0+LPGILY02DWCgAcy9Dg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645200607;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1645200730;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4rsTXW29qxg2+cqluVcJBFladFntt9qoCTA+JqjSLrk=;
- b=vygKWWPjx5N6plc3ussIaGbP9T+RNtNP47URu56hzZi+4wVN21PEDQZ9TPg90Sld91yUHY
- 3Tg17KSfHsmIzjCQ==
+ bh=0TmRKo+D4oYpxLqP/9fHKakR2PAoqc6ytqL5NNjNhzs=;
+ b=ucIfUMMuLRVMYHe/0SZKNj1QoNkshdxW97TAfi4IATsohZiAB9a4lUmbiSdh4U7l/guLVn
+ HwnRTs1S/LZ8GYBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CC5713CA1;
- Fri, 18 Feb 2022 16:10:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6003213CA1;
+ Fri, 18 Feb 2022 16:12:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YquCAN/ED2IdOAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 18 Feb 2022 16:10:07 +0000
-Date: Fri, 18 Feb 2022 17:10:05 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <Yg/E3aAwnUWYgchY@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id xeJDFlrFD2LwOAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 18 Feb 2022 16:12:10 +0000
+Date: Fri, 18 Feb 2022 17:14:19 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Yg/F2xuMiy1hJYLB@yuki>
 References: <20220218160035.4121-1-pvorel@suse.cz>
+ <Yg/E3aAwnUWYgchY@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220218160035.4121-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <Yg/E3aAwnUWYgchY@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] netstress: Workaround race between SETSID()
  and exit(0)
@@ -76,43 +76,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>
+Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hm, on one of the machines it blocked after 12 runs:
+Hi!
+> Hm, on one of the machines it blocked after 12 runs:
 
-tcp_ipsec 1 TINFO: run server 'netstress -D ltp_ns_veth1 -R 10 -B /tmp/LTP_tcp_ipsec.txQv6HznbZ'
-tcp_ipsec 1 TINFO: run client 'netstress -l -H 10.0.0.1 -n 100 -N 100 -D ltp_ns_veth2 -a 2 -r 100 -d tst_netload.res' 5 times
+Ah, there is another race there. The new thread may send the signal
+before the parent is sleeping in pause()...
 
-root     22529  0.0  0.0   4812   792 pts/2    S+   11:02   0:00 ns_exec 3181 net mnt sh -c  netstress -D ltp_ns_veth1 -R 10 -B /tmp/LTP_tcp_ipsec.txQv6HznbZ  || echo RTERR
-root     22530  0.0  0.2  18216  2880 pts/2    S+   11:02   0:00 sh -c  netstress -D ltp_ns_veth1 -R 10 -B /tmp/LTP_tcp_ipsec.txQv6HznbZ  || echo RTERR
-root     22531  0.0  0.0   9072   920 pts/2    S+   11:02   0:00 netstress -D ltp_ns_veth1 -R 10 -B /tmp/LTP_tcp_ipsec.txQv6HznbZ
-root     22532  0.0  0.0   9072   160 pts/2    S    11:02   0:00 netstress -D ltp_ns_veth1 -R 10 -B /tmp/LTP_tcp_ipsec.txQv6HznbZ
-root     22533  0.0  0.0   9072   168 ?        Ss   11:02   0:00 netstress -D ltp_ns_veth1 -R 10 -B /tmp/LTP_tcp_ipsec.txQv6HznbZ
+Just use the checkpoint WAKE() WAIT() pair instead, these are
+RaceFree(tm).
 
-# strace -p 22531
-strace: Process 22531 attached
-wait4(22532, strace: Process 22531 detached
- <detached ...>
-
-# strace -p 22532
-strace: Process 22532 attached
-pause(strace: Process 22532 detached
- <detached ...>
-
-# strace -p 22533
-strace: Process 22533 attached
-accept(5,  <unfinished ...>)            = ?
-
-But maybe just caused by running in loop without any sleep (was ok next time):
-i=0; while true; do i=$((i+1)); echo "=== $i ==="; ./tcp_ipsec.sh -s 100:1000:65535:R65535 || break; done
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
