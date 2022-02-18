@@ -4,149 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3126BC433EF
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 09:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F654C433EF
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 10:12:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED4F03C9ABC
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 10:57:10 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 3DC423CA0E1
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 11:12:10 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A00C03C9ABC
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 10:57:01 +0100 (CET)
-Received: from esa4.fujitsucc.c3s2.iphmx.com (esa4.fujitsucc.c3s2.iphmx.com
- [68.232.151.214])
+ by picard.linux.it (Postfix) with ESMTPS id BB02B3CA0B0
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:12:01 +0100 (CET)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 436FF1001721
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 10:56:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1645178220; x=1676714220;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=r8h+kUqgFx05e7SHcXts61XNcygHzn5ns+RjHc4O76g=;
- b=Fokt24EiVQxABPZuhbEWYPtmlrj4SI5IuD5dSZbFYI5Q70r/mKEudTBJ
- zcY7Xuk2BMhYywVjtVR6njP312WR44D9rF0NnyHh7PSnXbVQjKqQRPVTQ
- sSjr9hxI7k2zi9y3p/bw2zP4acaoj0d80UFCumO+TfzviwRvwJSPZ4Xzi
- KSgJ+q0TmCJ58o764LU06wTvjTmRlQ4rsN5bNbCDjc4bHaP/rNNxah39n
- DzMx0KKNYnkLCg6k+Q8a2XiZqbmYjvTxd18kohDb9zlf+2lt2j/7FFaUT
- 68aud+OebXFbpf/IYlczOEBtm2bB2EYEEjo/eWDh8+mEIosivjh9EYVM2 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="57911016"
-X-IronPort-AV: E=Sophos;i="5.88,378,1635174000"; d="scan'208";a="57911016"
-Received: from mail-os0jpn01lp2106.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.106])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2022 18:56:58 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PIjJj/LlUp5pc3L8Ii1JRz/7+vrNRsh6d0Bu50iWxkPEQ2YKc1YAdS8aL8X5RAw/0gwgiJD3PmHt8+HaNJY1AaxCO094Rx9SuC+/IgzVZjdfxAVIQYo4Wg3aXV9QeR4CTD+wXfEg6WSZlgxSBsP6L584IiYVFejBJTfYjAiitVUtyiW9YctqzC8MeAQR8GO4ZVnd269ZUMo0W1qnY7hiOglyagkwGB8rR83CJNH0KSwIBeXB5cpGfTt1/fOLxD5Y6YPwJFv2xZSxuzp9+8g3xdMZqzkzvZvn0ISkPscpO3ak2w0vjKZmvDR07vFTCnwrL38qGWt+Dd8a0XuJGeWkyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r8h+kUqgFx05e7SHcXts61XNcygHzn5ns+RjHc4O76g=;
- b=XqpipUyXhkUA3cf9i8GSmyLlrstrd+rr6ARKGyVLpKQlKfo2IQ4ucVsotaT7OxgJDnJRxgDrgqtGRowoiI7JPVRM/rEsyXr8+/4SwEjoJGoboH3SYdDGcCbPoH83/WCEQDXSJ7h9E47/Erx2srV8aXlLQKGV20fXSWR2gz0oiO43qDaIeJGXdYbxm/ljLGGqTTrPsw64CgVgiPhR4FN8O7gR1PjpTB17g5AORaNt2Xmi8zXO4jGkwRIIrvaGajYL0bQjNPXkt1Q0ucRd90MPw/PR9naRM5Fo8RokPzM9Jb39lqPTxtnh0C0FyHlZDNhCAUzUnTXOBP1HQfdkHbPTgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r8h+kUqgFx05e7SHcXts61XNcygHzn5ns+RjHc4O76g=;
- b=pbi3BbE7dgeI4DGMv86Fi2T/L7TVmSuo+cAt6Y7gR/yzyby9bWH23kk97ShB34oTJdpt92Z7jZOUHcLDnfqdmCcBfDm/bXZio/rze527Q1vBoFRlm3TIsXQ84LDeRT163vR/i1KAiOIokkLKfOpJdFJB1uewefYyApL7S5q1HEQ=
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by OS3PR01MB6705.jpnprd01.prod.outlook.com (2603:1096:604:10f::5)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.15; Fri, 18 Feb
- 2022 09:56:55 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::787f:42c2:70b:1fd7]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::787f:42c2:70b:1fd7%3]) with mapi id 15.20.4975.019; Fri, 18 Feb 2022
- 09:56:55 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH 4/5] Add pidfd_getfd01 test
-Thread-Index: AQHYIxyo0AgRBKwaoEiby0F40YV9n6yYIIkAgACHeACAAFzvgIAAEMGA
-Date: Fri, 18 Feb 2022 09:56:55 +0000
-Message-ID: <620F6D91.1070903@fujitsu.com>
-References: <1645005868-2373-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1645005868-2373-4-git-send-email-xuyang2018.jy@fujitsu.com>
- <Yg6f6p/rdFTfzkoR@pevik> <620F118E.3070306@fujitsu.com>
- <Yg9fg4L26MRmbpny@pevik>
-In-Reply-To: <Yg9fg4L26MRmbpny@pevik>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6ffe8cb9-c98b-4b22-18c9-08d9f2c4ff05
-x-ms-traffictypediagnostic: OS3PR01MB6705:EE_
-x-microsoft-antispam-prvs: <OS3PR01MB670584042C4BA320D52E0E8FFD379@OS3PR01MB6705.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a30IPETo8OKn+ur0OaFB6yhDG3mFIMtNM3jEGVx+jWT7avRnrbRcFOzJqjMa6LAAq8ppo5Ozi2b4D+R9f3yue/DOAeZUpCkV/njOmRcbU94hy1BI7WIWLuE58+68O5NBlwiCxdqnAgCnHDCDJOquOwQcYa+wNZrJW7gENYHVZujCuR2ZzR3SaVN2NSbnPxUa4+ZDC8V3b1vDCqJ8ebgT25xcOxfWec2VbweOy0NfoAOQ1CEW73tvjRYxvj9hCs8zIXyeMghDxjXqiEL4l45fh31pLcM9f5/EXT7+yQWBVyJBFNutqX0jn7/flfD4HV+RGgjB83M84cNryH5hIfgrPQOFOHUNvRbyzS5Cqu3TRYMokRDuPpf4PoZ5JCbr3cn4Hu1LCzovKoGGbOVuQmJTLYVwLM/kSdE/dCUZI95PEwixTYodIxPPU/SiENdgPPDKbKo8HZGEFB2NJ2Pqxy01TG05mYFLhJuhlnDFBftCu7eEOUbCV2XmKMcC+EBUS1j0u8wFW+/UvyspNxVco7qtozim+rxIeMJjSHKjJb7hk45YdN0OQdOvcCVgFqeGfK3jOZnRmErz1fmLHksxzAvkMihdCC8h+hU5JGbpgF5fBXg5TU+7SYpI3Ya0OC8Rc8SsSFGBk4YQFAO4/mH0ItBGuO0PloR36l4zmxa8Sx1wVeH5F9QszMoM2LuqYJrVZQJCEGz+O1NF+Th2l4IjjVOi/A==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(8936002)(38100700002)(36756003)(38070700005)(508600001)(6486002)(122000001)(33656002)(6916009)(87266011)(83380400001)(316002)(2906002)(85182001)(2616005)(82960400001)(91956017)(86362001)(4326008)(6512007)(26005)(8676002)(71200400001)(66446008)(186003)(64756008)(66556008)(5660300002)(66476007)(66946007)(76116006)(6506007);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?TThqNTh6MVZqcStKV0tOcFF5cnQ5eFBOemNSNCtJSVdQcktYSnZQN1dET1NW?=
- =?gb2312?B?eTV1ajh3SnBkTnNqOWVLWkFGcDlZRmNYdEE1TXFOQUdEWlV6Um1rNWVJNDJX?=
- =?gb2312?B?eE5EaHJ0dlpCSC9FQ0hxd3JyRFB1NUtVSmw1c0R1MUg1c2Rmc0VPYnV4cW9h?=
- =?gb2312?B?K1RkVE9RT2NaYXEzc0ZYaWtEZ2tSOVZTdnpPOEtyMlBIdDk0TEpTUjBBN1NV?=
- =?gb2312?B?Tmpid3NOclB6OEtGREpVTS9qL0IyNHJaUUdIbDhsWTRjUFNJVVc4WEpDdkRo?=
- =?gb2312?B?VVBlcHp2cEJzUkdrNlk5M1MwWVBhWjBOQUk5ZFErZlJRS2dra2lTK05scGx2?=
- =?gb2312?B?R1J4VUgzUWgxd1V6QWdza2tQU1lrRG55emFqNDEyNldJRXRxN3NiNnZjRWpx?=
- =?gb2312?B?TDJUTFJvU2hPU2F4VXRqWE1WTzFoUTlqNFdRQWExbXdCcHQvY1hLZ3d1SEUz?=
- =?gb2312?B?YXNPTGhWQ01wVlFnbzhSdVZKejdtQWJQd3ZrUHpBOEYxL3lqMFNDYU15Q09F?=
- =?gb2312?B?ZkNVNGt0aXU4aG5HVTVXSTFsTWR3Tko1ZzBENUdORjRrZDRPeWowNHhPQXVD?=
- =?gb2312?B?Q1BVU0JLb1htS1VnZmtEdnlpTlBvSnZOclB4S3h4VjNxbDFvYTBJQk94d24x?=
- =?gb2312?B?NFJCQThXK2E0VHJKYTh6Ti9hcE1WZjVMK1BUZUxvSGk2QzgzRHJiOW96R0NQ?=
- =?gb2312?B?RFFOYVBUY0c1MzA4MjFPSXhsSXp2bU1Sa081a3ptRkVzbGhXTDQ1UllPOXll?=
- =?gb2312?B?bEVDSEl2U2pEUnovVG9yMm0wak5NWjNDeit4WWhMNHFFYnV6TFFVOU9FYlF3?=
- =?gb2312?B?NmpnajVtaTNDVEpkZUhoNFV4NW11NWhCcEVKWFM5aVEzSkxVZkZiQU9KQTFT?=
- =?gb2312?B?SVRKL3piMGVIQ2MwT2NlWDNEQ0dZNDdaNmNsaGZoSlVudStCUllsNzJSR2NX?=
- =?gb2312?B?RGZScGlQQ3c4ZHA3ZzU2bHFkallqS1JibDdNQWQ4REpSdVFITWNCSUVtb2RC?=
- =?gb2312?B?N3cwaUQwQWlCdHFQZTVvZU45bktneXpOUGMrT2laWkVsOW16RjQ2MWpUcEdF?=
- =?gb2312?B?WFBCTXA4TWorNU1XemFLbmNsakZHSUFtWGhaalhBQkxqRDA1UmN0TTFkTk5l?=
- =?gb2312?B?dWJHeHVnazUrV0dBZjU3YjRjaFRzZXYzUmptVEF2dDh6NXpGRnJJcUJYdy9y?=
- =?gb2312?B?UEdOZDF6aWY2TlVxa1lZeVNsQWJTM3ZLM0ljdWZoOG5Sd21hNlRvTVZYSTJp?=
- =?gb2312?B?K1kyN09Gb3Q3NTR3TEdObklldXZXQXhCVHNsYXQya2Y1N1FYT01hTEk1cS9R?=
- =?gb2312?B?RTlKWWdsU2FuYnpOZFN6akFLZ0ZWdHZ6eWhsZjV0TlZwWWsvQkd1K3g1ZTJh?=
- =?gb2312?B?L2JlenIzZnk3ZjArRk1YbGh3elBON3F0WmVuVGFYVHgrVDVLR0JEN2dGczNE?=
- =?gb2312?B?cTN4QkVFVy9iOS9wa211bG9XNXFZcEQzVFFoVGhKL215TmxJVFAyWmoxWXgr?=
- =?gb2312?B?RzN4bWpzc1ZoVWZDbHJkNmNqK25jaGhPWW90aWlSM01BK05RcmY4am5WS2Vo?=
- =?gb2312?B?bk01SU1ncVN1Wkp5Ry9BeVgwUGtVSERYQzVtMk9JUW83MDVhM3hBLytDRnc3?=
- =?gb2312?B?YTNMZDJpS2VmWFlsVlFiOVg5enVCMmtwODZSbFJTZ0sxdmRDVU8vdnRqVU1X?=
- =?gb2312?B?aEo0QUptU1IzQkdLeTlhK3NqYnEyQmRWMmxuOGp1ZGFjQWtZUitnYk83VldP?=
- =?gb2312?B?Vm91bmhrVCtPOGJBRkZzSVlHdmxwNmJ3ZXJSVkhkWjdtSUhZZ2pMYVhzTW9l?=
- =?gb2312?B?cUNmRVJYOW1kWW42WXIrUXdvaWFBOStLLzB5SG5tQXlWZDM4L1FkZExsd2I4?=
- =?gb2312?B?ZHNKUXpDQ3czeWZLZk96N0hHS0R4cmRHRGdtcVA3ZHIzZjR1c0JXUFh4TmNM?=
- =?gb2312?B?WngzOUppZi9sS0M0dXVjS3JxV1cyNXBpSk5zSTFud2lkMmJ3eTFUUXI4U0lv?=
- =?gb2312?B?MVJ0dTVOV3NoSUsvYXl6QWEralZhK1JNMU5xTkFxN2c3cnBNcjY0MTlaMHF3?=
- =?gb2312?B?bDc3SEM5a3psODhzZXZvenpnMHJ4VFVJVkRFbVJlbDExSjhRWnI1bVRNMUlE?=
- =?gb2312?B?V0JRbWhyQitLbFk4Tk1tWUk2MEgrenJ4NEoxRDQ4V2lML3V0VUgxMWVXcDVp?=
- =?gb2312?B?d21iQ2pKcW9TUlR3TkJEdExTRkQ1VEFZZkpsdGo1Rk91Y0VIMlNpVXhpeXRE?=
- =?gb2312?Q?RRhXaRjdZDx5gmjiqfCHbb0z8neD3sMszhq1Mthbxk=3D?=
-Content-ID: <A0962748A0C5884AAB4D5140240F1CC3@jpnprd01.prod.outlook.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E91362013BD
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:12:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1645179120; i=@fujitsu.com;
+ bh=U9qLch1xUElGxa8RqAxt28CFaxo4+gXsSiUOL+J7unA=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=JBbvAe7owHyNyG2e+xgHXQw2JxcyTQR3b3W5hVyBuh+bO/9TvX06e6k9wgrBKMfyI
+ s5PBQWszbhaLhiD3ZvFihlzYoQYxEvxQyJT5TvGmYewZnQjFqxGTvUsXwZEq9fvLH0
+ F8AkLHTfQLHXlrKUIbMoMXymIANyV/BGHD7nLyr5etKlKmU5i2RVkaWPiOvKXrM1/e
+ 4tC0yMxvqTHI5l6m59NVh0AtI+kPafqN4wnB9fbquXUoj+NuP2KFn0ACnaTohIqlFt
+ zRyzvOwdpfO8aNKdo/a5MnywsRKCOG4uLBYeZAI6LPDda2wrxlOyfJPP7paPDuBTQm
+ ZiMkTT+PnG7Ew==
+Received: from [100.115.32.10] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-2.bemta.az-a.eu-west-2.aws.ess.symcld.net id 87/6C-12680-FE07F026;
+ Fri, 18 Feb 2022 10:11:59 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRWlGSWpSXmKPExsViZ8MxRfd9AX+
+ SwfuXqhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bGFuGCVxoVCz9fZ2tg7FTuYuTiEBJoYpJo
+ vn2ZFcLZwyhxZHETUxcjJwebgKbEs84FzCC2iICEREfDW3YQm1lAXWL5pF9gNcICnhJtb76D2
+ SwCqhKvjnxgBLF5BTwkOm8tYQGxJQQUJKY8fM8MEReUODnzCQvEHAmJgy9eMEPUKEpc6vjGCG
+ FXSMya1cY0gZF3FpKWWUhaFjAyrWK0TirKTM8oyU3MzNE1NDDQNTQ01TU21TW0MNFLrNJN1Es
+ t1S1PLS7RNdJLLC/WSy0u1iuuzE3OSdHLSy3ZxAgMspRi5R07GNtW/dQ7xCjJwaQkymuWxZ8k
+ xJeUn1KZkVicEV9UmpNafIhRhoNDSYJ3Ux5QTrAoNT21Ii0zBxjwMGkJDh4lEd5pUUBp3uKCx
+ NzizHSI1ClGRSlxXi1gnAgJgCQySvPg2mBRdolRVkqYl5GBgUGIpyC1KDezBFX+FaM4B6OSMO
+ +/fKApPJl5JXDTXwEtZgJafLmUD2RxSSJCSqqBqf7u64iTz9oXz+SVa67tUWucaHRkzaMrZdJ
+ v1DNVeCeUHnKS/dEUurHHMeQpc17z583PPNIZI6x/GzEnb2gKe7JEleGKfvmLj2mKWw69K9HK
+ l6+WzN49e58Ovxv3g4MxOX5NC+bVbLIQMXvJXV8Zb6mZdHLtjyc/i2ZUROmFfNnZwvOl/MoKh
+ fYu7rnl/mvnPLzMUdD1NeZhLU/mLruU3ytSZZO2bF2f8nTW4qSHv6vvqJ7Oaw0NWsj6uk7fUl
+ +taYJMwzquZ2KOy/S4P1+yqjp256d0L7t5t+C2i/v/bZys8PTf3JO29XuqZWL7quLtOTjWL9K
+ qyD/24aeY7Jt30+0qOHZL/LMPznJYUSOtxFKckWioxVxUnAgAIVogaS0DAAA=
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-15.tower-571.messagelabs.com!1645179119!85423!1
+X-Originating-IP: [62.60.8.148]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.7; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 24598 invoked from network); 18 Feb 2022 10:11:59 -0000
+Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
+ by server-15.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 18 Feb 2022 10:11:59 -0000
+Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
+ by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 21IABph9006872
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 10:11:59 GMT
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.28; Fri, 18 Feb 2022 10:11:50 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Fri, 18 Feb 2022 18:12:11 +0800
+Message-ID: <1645179132-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ffe8cb9-c98b-4b22-18c9-08d9f2c4ff05
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2022 09:56:55.5046 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dn2uhpVuzIYqbQMJ3JbboKZBNkiYCf06QoxVmToh8woDrDy4UMypmuYF2KBjVSNw2JYbdQ1oYb03O1IGsf8Op4XpQk33YugsMVKm985gok0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6705
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/5] Add pidfd_getfd01 test
+Subject: [LTP] [PATCH v2 1/2] syscalls/pidfd_getfd01: Add basic functional
+ test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,80 +92,194 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr
-> Hi Xu,
->
-> ...
->>>> +	TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
->>>> +	if (TST_RET != 0)
->>>> +		tst_res(TFAIL, "pidfd_getfd() didn't get the same open file description");
->>> Maybe just:
->>>          TST_EXP_PASS_SILENT(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
->> I think we can't use this macro here see below(kcmp manpage about return
->> value):
->> 0 v1 is equal to v2; in other words, the two processes share the resource.
->
->> 1   v1 is less than v2.
->
->> 2   v1 is greater than v2.
->
->> 3   v1 is not equal to v2, but ordering information is unavailable.
->
->> On error, -1 is returned, and errno is set appropriately.
->
->> So 1,2,3 are not invalid return value.
-> I'm sorry, you're right.
->
->> TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
->> if (TST_RET==-1) {
->> 	tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
->> 	goto free;
->> } else {
->> 	if (TST_RET<  0 || TST_RET>  3)
-> +1 (very nit: instead of if/else I'd use 2x if and (TST_RET<  -1 || TST_RET>  3)
-> - readability).
-Good catch. I add the last "if" otherwise 1,2,3 are ignored.
+The pidfd_getfd() system call allocates a new file descriptor in the calling process.
+This new file descriptor is a duplicate of an existing file descriptor, targetfd, in
+the process referred to by the PID file descriptor pidfd.
 
-TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
-         if (TST_RET == -1) {
-                 tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
-                 goto free;
-         }
-         if (TST_RET < 0 || TST_RET > 3) {
-                 tst_res(TFAIL, "kcmp invalid returns value(%d)", 
-(int)TST_RET);
-                 goto free;
-         }
-         if (TST_RET != 0) {
-                 tst_res(TFAIL, "kcmp returns unexpected value(%d) 
-instead of 0",
-                                 (int)TST_RET);
-                 goto free;
-         }
+pidfd_getfd was introduced since kernel 5.6 and pidfd_open was introduced since kernel 5.3.
+pidfd_getfd is not similar to pidfd_send_signal because it didn't support fd from
+/proc/pid directory. So we must check kernel whether support pidfd_open because some linux
+distribution backports pidfd_getfd but not backport pidfd_open.
 
-         tst_res(TPASS, "pidfd_getfd(%d, %d, 0) passed", pidfd, targetfd);
+Here we check whether the newfd set close-on-exce flag and use kcmp to check the two fds whether
+point to the same open file instead of using fstat to check.
 
-free:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/syscalls                              |   2 +
+ .../kernel/syscalls/pidfd_getfd/.gitignore    |   1 +
+ .../kernel/syscalls/pidfd_getfd/Makefile      |   6 +
+ .../syscalls/pidfd_getfd/pidfd_getfd01.c      | 118 ++++++++++++++++++
+ 4 files changed, 127 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pidfd_getfd/.gitignore
+ create mode 100644 testcases/kernel/syscalls/pidfd_getfd/Makefile
+ create mode 100644 testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd01.c
 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index ce6f89f88..6155712cc 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -951,6 +951,8 @@ pause03 pause03
+ personality01 personality01
+ personality02 personality02
+ 
++pidfd_getfd01 pidfd_getfd01
++
+ pidfd_open01 pidfd_open01
+ pidfd_open02 pidfd_open02
+ pidfd_open03 pidfd_open03
+diff --git a/testcases/kernel/syscalls/pidfd_getfd/.gitignore b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
+new file mode 100644
+index 000000000..9328942ac
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
+@@ -0,0 +1 @@
++/pidfd_getfd01
+diff --git a/testcases/kernel/syscalls/pidfd_getfd/Makefile b/testcases/kernel/syscalls/pidfd_getfd/Makefile
+new file mode 100644
+index 000000000..5ea7d67db
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_getfd/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd01.c b/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd01.c
+new file mode 100644
+index 000000000..a8d0c9143
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd01.c
+@@ -0,0 +1,118 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Basic pidfd_getfd() test:
++ *
++ * - the close-on-exec flag is set on the file descriptor returned by
++ *   pidfd_getfd
++ * - use kcmp to check whether a file descriptor idx1 in the process pid1
++ *   refers to the same open file description as file descriptor idx2 in
++ *   the process pid2
++ */
++
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include "tst_test.h"
++#include "lapi/pidfd_open.h"
++#include "lapi/pidfd_getfd.h"
++#include "lapi/kcmp.h"
++#include "tst_safe_macros.h"
++
++#define TESTFILE "testfile"
++
++static int fds[2] = {-1, -1};
++static int pidfd = -1;
++
++static void do_child(void)
++{
++	int fd;
++
++	SAFE_CLOSE(fds[0]);
++	fd = SAFE_CREAT(TESTFILE, 0644);
++	SAFE_WRITE(1, fds[1], &fd, sizeof(fd));
++	TST_CHECKPOINT_WAIT(0);
++	SAFE_CLOSE(fd);
++	SAFE_CLOSE(fds[1]);
++	exit(0);
++}
++
++static void run(void)
++{
++	int flag, pid, targetfd, remotefd;
++
++	SAFE_PIPE(fds);
++	pid = SAFE_FORK();
++	if (!pid)
++		do_child();
++
++	SAFE_CLOSE(fds[1]);
++	TST_PROCESS_STATE_WAIT(pid, 'S', 0);
++
++	TST_EXP_FD_SILENT(pidfd_open(pid, 0), "pidfd_open(pid, 0)");
++	pidfd = TST_RET;
++	SAFE_READ(1, fds[0], &targetfd, sizeof(targetfd));
++	TST_EXP_FD_SILENT(pidfd_getfd(pidfd, targetfd, 0),
++		"pidfd_getfd(%d, %d , 0)", pidfd, targetfd);
++
++	remotefd = TST_RET;
++	flag = SAFE_FCNTL(remotefd, F_GETFD);
++	if (!(flag & FD_CLOEXEC))
++		tst_res(TFAIL, "pidfd_getfd() didn't set close-on-exec flag");
++
++	TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
++		goto free;
++	}
++	if (TST_RET < 0 || TST_RET > 3) {
++		tst_res(TFAIL, "kcmp invalid returns value(%d)", (int)TST_RET);
++		goto free;
++	}
++	if (TST_RET != 0) {
++		tst_res(TFAIL, "kcmp returns unexpected value(%d) instead of 0",
++				(int)TST_RET);
++		goto free;
++	}
++
++	tst_res(TPASS, "pidfd_getfd(%d, %d, 0) passed", pidfd, targetfd);
++
++free:
++	TST_CHECKPOINT_WAKE(0);
++	SAFE_CLOSE(remotefd);
++	SAFE_CLOSE(pidfd);
++	SAFE_CLOSE(fds[0]);
++	tst_reap_children();
++}
++
++static void setup(void)
++{
++	pidfd_open_supported();
++	pidfd_getfd_supported();
++}
++
++static void cleanup(void)
++{
++	if (fds[0] > -1)
++		SAFE_CLOSE(fds[0]);
++	if (fds[1] > -1)
++		SAFE_CLOSE(fds[1]);
++	if (pidfd > -1)
++		SAFE_CLOSE(pidfd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.needs_checkpoints = 1,
++	.forks_child = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++};
+-- 
+2.23.0
 
-Best Regards
-Yang Xu
->
-> Kind regards,
-> Petr
->
->> 	tst_res(TFAIL, "kcmp invalid return value %ld", TST_RET);
->> 	goto free;
->> }
->
->> free:
->>    ....
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
