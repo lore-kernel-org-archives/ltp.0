@@ -4,85 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6A39C433F5
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 10:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19FFBC433F5
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 10:16:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB6A53CA0CF
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 11:12:19 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id E69903CA0DF
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 11:16:10 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B805F3C9B46
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:12:01 +0100 (CET)
-Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
- [85.158.142.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3AF0B3C9DE5
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:16:02 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B457D2013BE
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:12:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1645179120; i=@fujitsu.com;
- bh=8mtpDGjVoABXXLX983+dX0sa+XrZXCPKf3m8cKBoVeQ=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=O+EnxM+NS3Q6mj2pQ2q3oLZbxzCnMjgqg9RF+W+8ON8VfYYhi3LBAX3uQ5mhyeUAs
- PlO5K/MCjEhbjGmJGJiu/99wTx2qtMI0gcZEI/iFB9fU2QGVJemD0oHfWKj6+gSJ+F
- 8JKzhyifH3LoqE7Rj7AOaoWz5OwFQ0tIwPoxl/JkKUKFaJV0uBORu6YdtRkC3Hv8iq
- 9NPSAGaXdwNwjO5INAVt9jxeB7rDkrurulWC1yOeU2bkUrAqA5STvoL/UFM2WrSXCB
- K5dZ32nSxZTwAb69bYe+2a1vz3pY5qi3tDZuVWnD7PO/U3fo4yPV5VZocJXreP2Z/R
- SQGo6i0MeiI/w==
-Received: from [100.115.69.174] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-2.bemta.az-a.eu-central-1.aws.ess.symcld.net id 1F/32-30582-0F07F026;
- Fri, 18 Feb 2022 10:12:00 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMIsWRWlGSWpSXmKPExsViZ8MxRfd9AX+
- Swf/zBhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bTk64FL+UrljzsZ2xgbJbuYuTkEBJoYpL4
- 3ZrexcgFZO9hlFj29jcrSIJNQFPiWecCZhBbREBCoqPhLTuIzSygLrF80i8mEFtYwEXi5OzjY
- DaLgKrEpF2LGEFsXgEPicXXz7OA2BICChJTHr4Hm8Mp4Clx5vUjRojFHhKrtyxjhqgXlDg58w
- kLxHwJiYMvXjBD9CpKXOr4xghhV0jMmtXGNIGRfxaSlllIWhYwMq1itE0qykzPKMlNzMzRNTQ
- w0DU0NNU1s9Q1N9FLrNJN1Est1U1OzSspSgTK6iWWF+ulFhfrFVfmJuek6OWllmxiBIZlSrGr
- 1w7GI30/9Q4xSnIwKYnymmXxJwnxJeWnVGYkFmfEF5XmpBYfYpTh4FCS4N2UB5QTLEpNT61Iy
- 8wBxghMWoKDR0mEd1oUUJq3uCAxtzgzHSJ1ilFRSpx3B0ifAEgiozQPrg0Wl5cYZaWEeRkZGB
- iEeApSi3IzS1DlXzGKczAqCfNeBpnCk5lXAjf9FdBiJqDFl0v5QBaXJCKkpBqYGBMvvFnBGpC
- sv+LXKiONqw+EJj2N1/vtJJtec6Xr3YW2JC3vqWvqH0/7qXt829S6D+yiRUG5PZl8Onzhxms3
- xM/pufxnC+cM1cTWUm6GpI+yKqvXPng1pYz1gHtV9/dPd9m7mfXZFxyvOPhSscdYnHOFc23Fw
- 7XfCphYX8pJZFzYX2wQfE/hm6/EtIV/823PxHb9Y77//3ep772/39bO/hlUvq+vtHpJwLw3rF
- ePOQW++/k4RdD+atLCe0/PWCy5mW0f9fnw78bfTfMM2n7rfn2b9/Gy++Xpiee3KE7m1/2puiS
- d9U/Zs5/L1j5K/KKjsWT+hC0OyX1XusNMb/762/dt2zrRwyp1fKk+J5X+yyuxFGckGmoxFxUn
- AgC7Y8l0RgMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-21.tower-545.messagelabs.com!1645179119!4177!1
-X-Originating-IP: [62.60.8.148]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 30143 invoked from network); 18 Feb 2022 10:11:59 -0000
-Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
- by server-21.tower-545.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 18 Feb 2022 10:11:59 -0000
-Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
- by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 21IABphA006872
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 10:11:59 GMT
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.28; Fri, 18 Feb 2022 10:11:57 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Fri, 18 Feb 2022 18:12:12 +0800
-Message-ID: <1645179132-2247-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1645179132-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1645179132-2247-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A42C42013C3
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:16:01 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C66B51F37D;
+ Fri, 18 Feb 2022 10:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1645179360;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hzU5kZzqGbcDpxYvvrIslOSIVb3VMDk604Jjz1xGxYU=;
+ b=qrIRWCq4DsXFDG7Zb5CmyoUGGZhaUoh2oSPVHugGvkGXN2B+nVMiga0WAxjJWD9OGM/oST
+ wycAxQ68k50OEylTkCi0429cV04yF1y/NiSaGtQ9X+cO7hQ9jKKoCXyiTBoT4uAoBDrRUv
+ jD5ehekHr3asuSkPW87mxLDoSU64qt0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1645179360;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hzU5kZzqGbcDpxYvvrIslOSIVb3VMDk604Jjz1xGxYU=;
+ b=kwzYHONqVWgvyX3jTcPO4TgScAITZCIJM7gEHuWU7CApKBN7bC2kDyKlGwVd8Mv17GuNvV
+ KeIAQa81KIr0TTAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A53E313C5B;
+ Fri, 18 Feb 2022 10:16:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id jA91JuBxD2IEBAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 18 Feb 2022 10:16:00 +0000
+Date: Fri, 18 Feb 2022 11:15:59 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Message-ID: <Yg9x397xUislLTm9@pevik>
+References: <1645005868-2373-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1645005868-2373-4-git-send-email-xuyang2018.jy@fujitsu.com>
+ <Yg6f6p/rdFTfzkoR@pevik> <620F118E.3070306@fujitsu.com>
+ <Yg9fg4L26MRmbpny@pevik> <620F6D91.1070903@fujitsu.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+Content-Disposition: inline
+In-Reply-To: <620F6D91.1070903@fujitsu.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] syscalls/pidfd_getfd02: Add basic error test
+Subject: Re: [LTP] [PATCH 4/5] Add pidfd_getfd01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,152 +79,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/pidfd_getfd/.gitignore    |   1 +
- .../syscalls/pidfd_getfd/pidfd_getfd02.c      | 104 ++++++++++++++++++
- 3 files changed, 106 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
+Hi Xu,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6155712cc..436cc2a0a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -952,6 +952,7 @@ personality01 personality01
- personality02 personality02
- 
- pidfd_getfd01 pidfd_getfd01
-+pidfd_getfd02 pidfd_getfd02
- 
- pidfd_open01 pidfd_open01
- pidfd_open02 pidfd_open02
-diff --git a/testcases/kernel/syscalls/pidfd_getfd/.gitignore b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
-index 9328942ac..8ef904202 100644
---- a/testcases/kernel/syscalls/pidfd_getfd/.gitignore
-+++ b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
-@@ -1 +1,2 @@
- /pidfd_getfd01
-+/pidfd_getfd02
-diff --git a/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c b/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
-new file mode 100644
-index 000000000..ef11de913
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Tests basic error handling of the pidfd_open syscall.
-+ *
-+ * - EBADF pidfd is not a valid PID file descriptor
-+ * - EBADF targetfd is not an open file descriptor in the process referred
-+ *   to by pidfd
-+ * - EINVAL flags is not 0
-+ * - ESRCH the process referred to by pidfd does not exist (it has terminated
-+ *   and been waited on)
-+ * - EPERM the calling process doesn't have PTRACE_MODE_ATTACH_REALCREDS permissions
-+ *   over the process referred to by pidfd
-+ */
-+
-+#include <stdlib.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "lapi/pidfd_open.h"
-+#include "lapi/pidfd_getfd.h"
-+
-+static int valid_pidfd, invalid_pidfd = -1;
-+static uid_t uid;
-+
-+static struct tcase {
-+	char *name;
-+	int *pidfd;
-+	int targetfd;
-+	int flags;
-+	int exp_errno;
-+} tcases[] = {
-+	{"invalid pidfd", &invalid_pidfd, 0, 0, EBADF},
-+	{"invalid targetfd", &valid_pidfd, -1, 0, EBADF},
-+	{"invalid flags", &valid_pidfd, 0, 1, EINVAL},
-+	{"the process referred to by pidfd doesn't exist", NULL, 0, 0, ESRCH},
-+	{"lack of required permission", &valid_pidfd, 0, 0, EPERM},
-+};
-+
-+static void setup(void)
-+{
-+	pidfd_open_supported();
-+	pidfd_getfd_supported();
-+
-+	struct passwd *pw;
-+
-+	pw = SAFE_GETPWNAM("nobody");
-+	uid = pw->pw_uid;
-+
-+	TST_EXP_FD_SILENT(pidfd_open(getpid(), 0), "pidfd_open");
-+	if (!TST_PASS)
-+		tst_brk(TFAIL | TTERRNO, "pidfd_open failed");
-+	valid_pidfd = TST_RET;
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	int pid;
-+
-+	if (tc->exp_errno == EPERM) {
-+		pid = SAFE_FORK();
-+		if (!pid) {
-+			SAFE_SETUID(uid);
-+			TST_EXP_FAIL2(pidfd_getfd(valid_pidfd, tc->targetfd, tc->flags),
-+				tc->exp_errno, "pidfd_getfd(%d, %d, %d) with %s",
-+				valid_pidfd, tc->targetfd, tc->flags, tc->name);
-+			TST_CHECKPOINT_WAKE(0);
-+			exit(0);
-+		}
-+		TST_CHECKPOINT_WAIT(0);
-+		SAFE_WAIT(NULL);
-+	} else if (tc->exp_errno == ESRCH) {
-+		pid = SAFE_FORK();
-+		if (!pid) {
-+			TST_CHECKPOINT_WAIT(0);
-+			exit(0);
-+		}
-+		TST_EXP_FD_SILENT(pidfd_open(pid, 0), "pidfd_open");
-+		TST_CHECKPOINT_WAKE(0);
-+		SAFE_WAIT(NULL);
-+		TST_EXP_FAIL2(pidfd_getfd(TST_RET, tc->targetfd, tc->flags),
-+			tc->exp_errno, "pidfd_getfd(%d, %d, %d) with %s",
-+			(int)TST_RET, tc->targetfd, tc->flags, tc->name);
-+	} else	{
-+		TST_EXP_FAIL2(pidfd_getfd(*tc->pidfd, tc->targetfd, tc->flags),
-+			tc->exp_errno, "pidfd_getfd(%d, %d, %d) with %s",
-+			*tc->pidfd, tc->targetfd, tc->flags, tc->name);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+};
--- 
-2.23.0
+...
+> >> TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
+> >> if (TST_RET==-1) {
+> >> 	tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
+> >> 	goto free;
+> >> } else {
+> >> 	if (TST_RET<  0 || TST_RET>  3)
+> > +1 (very nit: instead of if/else I'd use 2x if and (TST_RET<  -1 || TST_RET>  3)
+> > - readability).
+> Good catch. I add the last "if" otherwise 1,2,3 are ignored.
 
+> TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
+>          if (TST_RET == -1) {
+>                  tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
+>                  goto free;
+>          }
+>          if (TST_RET < 0 || TST_RET > 3) {
+>                  tst_res(TFAIL, "kcmp invalid returns value(%d)", 
+> (int)TST_RET);
+>                  goto free;
+>          }
+>          if (TST_RET != 0) {
+>                  tst_res(TFAIL, "kcmp returns unexpected value(%d) 
+> instead of 0",
+>                                  (int)TST_RET);
+>                  goto free;
+>          }
+
+>          tst_res(TPASS, "pidfd_getfd(%d, %d, 0) passed", pidfd, targetfd);
+
+FYI Unless we want to have explanations why it failed, we could use TST_EXP_VAL() or
+TST_EXP_VAL_SILENT().
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
