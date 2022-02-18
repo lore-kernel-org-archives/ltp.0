@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 467CBC433F5
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 06:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84117C433EF
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 06:59:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 714423CA0D2
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 07:50:39 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AEB6D3CA0DD
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 07:59:41 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C44DE3C9893
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 07:50:30 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id A30F33C9893
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 07:59:33 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 433BF200239
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 07:50:29 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7368E1A019AA
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 07:59:31 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0B1B0210F2;
- Fri, 18 Feb 2022 06:50:29 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7ECD7210F2;
+ Fri, 18 Feb 2022 06:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645167029;
+ t=1645167571;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Ws+xxMKEgNMx+rSNl1TkQFpWj9fgW8uaI/D71aBNhZM=;
- b=ng2J0Z77elowUUZfxbD9TBX4OqnpZgzZQuRxrbaUO8wNsP8qZbsaTL7xBfwMRpdN9+8OKt
- xHwQRjldWxQAylru2NbMKLte5H/hmb13bkV+92bUe8RqxAOGeYyepUfiBLcXTez2syzxDI
- hYq2dkAxryGDdHH77ATIJVfFBTiT78E=
+ bh=mfkUydjQyn3GF4kt3NbRCbwOMWAEBCtHXcbT3IuzpMA=;
+ b=3Qxow9N/5iy9oyvgr9+XwFNx3c7slEx9urN8IHUEVtVfCjjoWadd0M5p8BmcgQ3rJIiAdz
+ rCqzw8UEXFlnk37kvuf7+yPntbi2vA5Qbjz4Nsbm1KXr2wMfgvKcDjz6XXRUjV87pu24ZB
+ +43dKUQtHfzlmj/Jg3kgkn+nBGrNJxo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645167029;
+ s=susede2_ed25519; t=1645167571;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Ws+xxMKEgNMx+rSNl1TkQFpWj9fgW8uaI/D71aBNhZM=;
- b=PkzLifuPIdiRqgrdx354103PA4l8asitAwNk+KXTtrRXp+OYpZr8ZIx7BXQUKPXjK0chtf
- mGvaVd3t8iG68VAA==
+ bh=mfkUydjQyn3GF4kt3NbRCbwOMWAEBCtHXcbT3IuzpMA=;
+ b=3vjrUgvsyC9T2VXarOEKWigpFDbbQsHPf5TkC80LIA17AYm0LDAxc+LRCA20jEYEe36lCF
+ 4kT43KQwHDJ5shCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD7A013A15;
- Fri, 18 Feb 2022 06:50:28 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 455E613BD8;
+ Fri, 18 Feb 2022 06:59:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VpUxNLRBD2JEKAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 18 Feb 2022 06:50:28 +0000
-Date: Fri, 18 Feb 2022 07:50:27 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id L4+/DdNDD2LmKgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 18 Feb 2022 06:59:31 +0000
+Date: Fri, 18 Feb 2022 07:59:23 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <Yg9Bs81ZehfgFZ38@pevik>
+Message-ID: <Yg9Dy1IvZXoRMpfw@pevik>
 References: <1645005868-2373-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1645005868-2373-5-git-send-email-xuyang2018.jy@fujitsu.com>
- <Yg6oZLaYz6Dj1FY4@pevik> <620F1768.7060100@fujitsu.com>
+ <1645005868-2373-4-git-send-email-xuyang2018.jy@fujitsu.com>
+ <Yg6h4jTszPhDT36J@pevik> <620F149A.2070305@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <620F1768.7060100@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <620F149A.2070305@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/5] syscalls/pidfd_getfd02: add basic error test
+Subject: Re: [LTP] [PATCH 4/5] Add pidfd_getfd01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,24 +87,26 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Xu,
 
-> > and get more info.
-> I will look Cyril's patch and wait.
-Thx!
+> >> +++ b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
+> >> @@ -0,0 +1 @@
+> >> +pidfd_getfd01
+> > /pidfd_getfd01
+> Thanks, will add it in v2.
 
-> >> +	if (!TST_PASS)
-> >> +		tst_brk(TFAIL | TTERRNO, "pidfd_open failed");
+> The two ways also work well.
+/ causes pattern to be relative.  Because we have mostly unique files, we
+wouldn't worry whether the pattern is relative or global. And we have 47
+.gitignore files in testcases/ not following this rule :).
 
-> > @Cyril: would it be possible to to allow using also tst_brk() in macros in
-> > tst_test_macros.h?
-
-> Maybe can add SAFE_PIDFD_OPEN.
-I was thinking about it. But you use TFAIL - part of testing.
-But using just SAFE_PIDFD_OPEN() even it's using TBROK might be best.
+> ps:pidfd_open also miss "/". Shoud we add this rule in maintainer review 
+> list and .gitignore info in doc?
+I'm not sure myself if we want to follow this rule. If yes, it should be there.
 
 Kind regards,
 Petr
 
-> > Having TST_*_BRK() (i.e. TST_EXP_FD_SILENT_BRK()) looks too complicated
+> Best Regards
+> Yang Xu
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
