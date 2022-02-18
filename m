@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19FFBC433F5
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 10:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7F8BC433EF
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 10:31:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E69903CA0DF
-	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 11:16:10 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 678EC3CA0F3
+	for <ltp@archiver.kernel.org>; Fri, 18 Feb 2022 11:31:44 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3AF0B3C9DE5
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:16:02 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C27173C9DE5
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:31:34 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A42C42013C3
- for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:16:01 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 48B206015AB
+ for <ltp@lists.linux.it>; Fri, 18 Feb 2022 11:31:33 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C66B51F37D;
- Fri, 18 Feb 2022 10:16:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2D2D11F37D;
+ Fri, 18 Feb 2022 10:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645179360;
+ t=1645180293;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hzU5kZzqGbcDpxYvvrIslOSIVb3VMDk604Jjz1xGxYU=;
- b=qrIRWCq4DsXFDG7Zb5CmyoUGGZhaUoh2oSPVHugGvkGXN2B+nVMiga0WAxjJWD9OGM/oST
- wycAxQ68k50OEylTkCi0429cV04yF1y/NiSaGtQ9X+cO7hQ9jKKoCXyiTBoT4uAoBDrRUv
- jD5ehekHr3asuSkPW87mxLDoSU64qt0=
+ bh=F4D+EJcQL1x/WHCf4PC0bIN+dL4k9G/Vkctty3MOL8g=;
+ b=n219V83WOOiDsoq//0LVna9fRiaR4A5j0+gYsYqASEWsvzU0tjedIlqwgRR5SmREV+VGXY
+ 0yBX3Uj1I1NZ25RYYY41D4sHhiMC3UJ7GB8Zf23nCAkhPUeUjP41JHNj6WOu2qZFjLiVSf
+ JKtMFOXDxtGvN18sAoKtHQRGLfcFrrE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645179360;
+ s=susede2_ed25519; t=1645180293;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hzU5kZzqGbcDpxYvvrIslOSIVb3VMDk604Jjz1xGxYU=;
- b=kwzYHONqVWgvyX3jTcPO4TgScAITZCIJM7gEHuWU7CApKBN7bC2kDyKlGwVd8Mv17GuNvV
- KeIAQa81KIr0TTAA==
+ bh=F4D+EJcQL1x/WHCf4PC0bIN+dL4k9G/Vkctty3MOL8g=;
+ b=65Zg4waCZlHNc5mgTQ/kay6G3wbzeNZDgbHD3bKalcoGbmT6uWxBvk+t4n2pRRT1h4MkV7
+ kaicni3+CSJcCEAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A53E313C5B;
- Fri, 18 Feb 2022 10:16:00 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0864913C47;
+ Fri, 18 Feb 2022 10:31:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id jA91JuBxD2IEBAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 18 Feb 2022 10:16:00 +0000
-Date: Fri, 18 Feb 2022 11:15:59 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id GDaXO4R1D2KSDAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 18 Feb 2022 10:31:32 +0000
+Date: Fri, 18 Feb 2022 11:31:31 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <Yg9x397xUislLTm9@pevik>
-References: <1645005868-2373-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1645005868-2373-4-git-send-email-xuyang2018.jy@fujitsu.com>
- <Yg6f6p/rdFTfzkoR@pevik> <620F118E.3070306@fujitsu.com>
- <Yg9fg4L26MRmbpny@pevik> <620F6D91.1070903@fujitsu.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Yg91g+y5IgF0zifz@pevik>
+References: <20220217142730.19726-1-chrubis@suse.cz> <Yg56J2hVIMMO3cvX@pevik>
+ <Yg9s2lzZmavrQCuf@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <620F6D91.1070903@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <Yg9s2lzZmavrQCuf@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/5] Add pidfd_getfd01 test
+Subject: Re: [LTP] [PATCH] test_macros: TST_EXP_EXPR() add auto
+ stringification
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,46 +79,33 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
+Hi Cyril,
 
-...
-> >> TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
-> >> if (TST_RET==-1) {
-> >> 	tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
-> >> 	goto free;
-> >> } else {
-> >> 	if (TST_RET<  0 || TST_RET>  3)
-> > +1 (very nit: instead of if/else I'd use 2x if and (TST_RET<  -1 || TST_RET>  3)
-> > - readability).
-> Good catch. I add the last "if" otherwise 1,2,3 are ignored.
+> Hi!
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > Good idea.
 
-> TEST(kcmp(getpid(), pid, KCMP_FILE, remotefd, targetfd));
->          if (TST_RET == -1) {
->                  tst_res(TFAIL | TTERRNO, "kcmp failed unexpectedly");
->                  goto free;
->          }
->          if (TST_RET < 0 || TST_RET > 3) {
->                  tst_res(TFAIL, "kcmp invalid returns value(%d)", 
-> (int)TST_RET);
->                  goto free;
->          }
->          if (TST_RET != 0) {
->                  tst_res(TFAIL, "kcmp returns unexpected value(%d) 
-> instead of 0",
->                                  (int)TST_RET);
->                  goto free;
->          }
+> It occured to me that this is probably not the best result though, since
+> in the case of the failure it does not print the expected and actual
+> value. So maybe it would be better to add TST_EXP_EQ() macro instead. I
+> will send a patch later on.
 
->          tst_res(TPASS, "pidfd_getfd(%d, %d, 0) passed", pidfd, targetfd);
+I wonder can't we have both - print stringified parameters and also their
+values? Would it be too confusing?
 
-FYI Unless we want to have explanations why it failed, we could use TST_EXP_VAL() or
-TST_EXP_VAL_SILENT().
+> > BTW I'm thinking to add some comments to "top level" macros.
+> > because it's getting hard to read these macros.
+
+> Well yes, it's getting a bit hard to read indeed.
+I mean it's good to have documented in our wiki. But even we document all
+macros most of us will endup reading the header, thus why useful to document
+at least end user ("top level") macros.
 
 Kind regards,
 Petr
