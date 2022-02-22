@@ -4,67 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFCB4C433EF
-	for <ltp@archiver.kernel.org>; Mon, 21 Feb 2022 18:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86CFDC433F5
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 01:20:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 441543CA18A
-	for <ltp@archiver.kernel.org>; Mon, 21 Feb 2022 19:05:11 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9E4193CA187
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 02:20:09 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 04C673CA167
- for <ltp@lists.linux.it>; Mon, 21 Feb 2022 19:05:01 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9052C3C8D9F
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 02:19:59 +0100 (CET)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7A6E8601B1C
- for <ltp@lists.linux.it>; Mon, 21 Feb 2022 19:05:01 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5897E21138;
- Mon, 21 Feb 2022 18:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645466700;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XpLtogCFOnRJQHt34VFRfoYb80NQgxD5JN1MSIzY8/g=;
- b=1xztKk2qxUMHz+/j2TN6EpbLKSKTDHWJ9ywHaaDYVzOUkgYKYLOh44rBav5cTZ30jEuEP4
- 4W0STigXipjNtJGYkA97mO+y7rogMOnBU+wioG+lo+R1YCdyddrLfEeOnjR77con7Zd3iS
- Hx7k984fENiClz+p+BVvS+bp57iQUXE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645466700;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XpLtogCFOnRJQHt34VFRfoYb80NQgxD5JN1MSIzY8/g=;
- b=kNU7hYU8T4UOMK4d5Mo7fTX1w66BUBOzA/QJsG7nRIvlhZd56KTRe/o6Wxmzz2uUTiJ1/x
- +8s+MJnpRQOYY5CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25C2313B6A;
- Mon, 21 Feb 2022 18:05:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4sbpBkzUE2IDFwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 21 Feb 2022 18:05:00 +0000
-Date: Mon, 21 Feb 2022 19:04:58 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Dai Shili <daisl.fnst@fujitsu.com>
-Message-ID: <YhPUSnQatwz3BFbg@pevik>
-References: <1645459842-1609-1-git-send-email-daisl.fnst@fujitsu.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 120941A0091E
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 02:19:56 +0100 (CET)
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4K2hB94V4xz9st1
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:18:09 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 22 Feb 2022 09:19:48 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 22 Feb 2022 09:19:48 +0800
+To: <ltp@lists.linux.it>
+Date: Tue, 22 Feb 2022 09:19:46 +0800
+Message-ID: <1645492786-67242-1-git-send-email-mafeng.ma@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1645459842-1609-1-git-send-email-daisl.fnst@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lapi/fsmount.h: remove useless sys/mount.h
+Subject: [LTP] [PATCH] syslog: Add TPASS log
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,42 +54,170 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>, ltp@lists.linux.it
+From: Ma Feng via ltp <ltp@lists.linux.it>
+Reply-To: Ma Feng <mafeng.ma@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Dai, Viresh, all,
+Add TPASS log to facilitate the analysis of cases.
 
-[ Cc: Viresh, as he's the author ]
+Signed-off-by: Ma Feng <mafeng.ma@huawei.com>
+---
+ testcases/kernel/syscalls/syslog/syslog01 | 7 +++++--
+ testcases/kernel/syscalls/syslog/syslog03 | 3 +++
+ testcases/kernel/syscalls/syslog/syslog04 | 5 ++++-
+ testcases/kernel/syscalls/syslog/syslog05 | 5 ++++-
+ testcases/kernel/syscalls/syslog/syslog06 | 5 ++++-
+ testcases/kernel/syscalls/syslog/syslog07 | 5 ++++-
+ testcases/kernel/syscalls/syslog/syslog09 | 4 ++++
+ testcases/kernel/syscalls/syslog/syslog10 | 6 +++++-
+ 8 files changed, 33 insertions(+), 7 deletions(-)
 
-> Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
-> ---
->  include/lapi/fsmount.h | 1 -
->  1 file changed, 1 deletion(-)
+diff --git a/testcases/kernel/syscalls/syslog/syslog01 b/testcases/kernel/syscalls/syslog/syslog01
+index 2f3aea0bb..f99c44914 100755
+--- a/testcases/kernel/syscalls/syslog/syslog01
++++ b/testcases/kernel/syscalls/syslog/syslog01
+@@ -88,8 +88,11 @@ syslog_case1()
+ 
+ 		newvalue1=`grep -c "syslogtst: mail info test" $MAILLOG`
+ 		if [ "x$(( $newvalue1 - $oldvalue1 ))" != "x1" ]; then
+-			status_flag=1
+-		fi
++                        tst_resm TFAIL "mail info test: messages are not logged to $MAILLOG"
++                        status_flag=1
++                else
++                        tst_resm TPASS "mail info test: messages are logged to $MAILLOG"
++                fi
+ 	else
+ 		status_flag=1
+ 	fi
+diff --git a/testcases/kernel/syscalls/syslog/syslog03 b/testcases/kernel/syscalls/syslog/syslog03
+index 31b7fd66d..8e8b887eb 100755
+--- a/testcases/kernel/syscalls/syslog/syslog03
++++ b/testcases/kernel/syscalls/syslog/syslog03
+@@ -75,7 +75,10 @@ syslog_case3()
+ 
+ 	newvalue4=`grep -c "SYSLOG_CASE3" /var/log/messages`
+ 	if [ "x$(( $newvalue4 - $oldvalue4 ))" != x1 ]; then
++        tst_resm TFAIL "dameon info test: ident string is not prepended to the message"
+ 		status_flag=1
++        else
++                tst_resm TPASS "dameon info test: ident string is prepended to the message"
+ 	fi
+ }
+ 
+diff --git a/testcases/kernel/syscalls/syslog/syslog04 b/testcases/kernel/syscalls/syslog/syslog04
+index d1739d32a..a551ea003 100755
+--- a/testcases/kernel/syscalls/syslog/syslog04
++++ b/testcases/kernel/syscalls/syslog/syslog04
+@@ -71,7 +71,10 @@ syslog_case4()
+ 
+ 	found=`grep -c "\[$log_pid\]: syslogtst: user info test." /var/log/messages`
+ 	if [ $found -ne 1 ]; then
+-		status_flag=1
++		tst_resm TFAIL "user info test: pid is not logged with /var/log/messages"
++                status_flag=1
++        else
++                tst_resm TPASS "user info test: pid is logged with /var/log/messages"
+ 	fi
+ }
+ 
+diff --git a/testcases/kernel/syscalls/syslog/syslog05 b/testcases/kernel/syscalls/syslog/syslog05
+index 40dd1fa1a..2350765a7 100755
+--- a/testcases/kernel/syscalls/syslog/syslog05
++++ b/testcases/kernel/syscalls/syslog/syslog05
+@@ -80,7 +80,10 @@ syslog_case5()
+ 	newvalue=`grep -c "syslogtst: info to console test." /var/log/messages`
+ 
+ 	if [ "x$(( $newvalue - $oldvalue ))" != "x1" ]; then
+-		status_flag=1
++		tst_resm TFAIL "info to console test: syslog is not written to the console"
++                status_flag=1
++        else
++                tst_resm TPASS "info to console test: syslog is written to the console"
+ 	fi
+ }
+ 
+diff --git a/testcases/kernel/syscalls/syslog/syslog06 b/testcases/kernel/syscalls/syslog/syslog06
+index 7050fd264..bcdda4737 100755
+--- a/testcases/kernel/syscalls/syslog/syslog06
++++ b/testcases/kernel/syscalls/syslog/syslog06
+@@ -59,7 +59,10 @@ syslog_case6()
+ 	restart_syslog_daemon
+ 
+ 	if ! syslogtst 6 2>/dev/null; then
+-		status_flag=1
++		tst_resm TFAIL "openlog fd test: open has returned unexpected fd"
++                status_flag=1
++        else
++                tst_resm TPASS "openlog fd test: open has returned expected fd"
+ 	fi
+ }
+ 
+diff --git a/testcases/kernel/syscalls/syslog/syslog07 b/testcases/kernel/syscalls/syslog/syslog07
+index a24c3e207..cc5f9cdf8 100755
+--- a/testcases/kernel/syscalls/syslog/syslog07
++++ b/testcases/kernel/syscalls/syslog/syslog07
+@@ -119,7 +119,10 @@ syslog_case7()
+ 	if [ $emerg -ne 1 -o $alert -ne 1 -o $crit -ne 1 -o $err -ne 1 -o \
+ 	     $warning -ne 1 -o $notice -ne 1 -o $info -ne 1 -o \
+ 	     $info -ne 1 ]; then
+-		status_flag=1
++		tst_resm TFAIL "syslogtst: not all level logs logged"
++                status_flag=1
++        else
++                tst_resm TPASS "syslogtst: all level logs logged"
+ 	fi
+ }
+ 
+diff --git a/testcases/kernel/syscalls/syslog/syslog09 b/testcases/kernel/syscalls/syslog/syslog09
+index 9cfafa840..2a67faaa4 100755
+--- a/testcases/kernel/syscalls/syslog/syslog09
++++ b/testcases/kernel/syscalls/syslog/syslog09
+@@ -83,12 +83,16 @@ syslog_case9()
+ 		tst_resm TFAIL "Expected message was not logged...."
+ 		status_flag=1
+ 		return
++        else
++                tst_resm TPASS "Expected message was logged..."
+ 	fi
+ 
+ 	diff2=$(( $donot_allow2 - $donot_allow1 ))
+ 	if [ $diff2 -ne 0 ]; then
+ 		tst_resm TFAIL "Unexpected message was logged..."
+ 		status_flag=1
++        else
++                tst_resm TPASS "Unexpected message was not logged..."
+ 	fi
+ }
+ 
+diff --git a/testcases/kernel/syscalls/syslog/syslog10 b/testcases/kernel/syscalls/syslog/syslog10
+index 573ab755e..97f7c54cc 100755
+--- a/testcases/kernel/syscalls/syslog/syslog10
++++ b/testcases/kernel/syscalls/syslog/syslog10
+@@ -85,12 +85,16 @@ syslog_case10()
+ 		tst_resm TFAIL "Expected message was not logged...."
+ 		status_flag=1
+ 		return
+-	fi
++        else
++                tst_resm TPASS "Expected message was logged..."
++        fi
+ 
+ 	diff2=$(( $donot_allow2 - $donot_allow1 ))
+ 	if [ $diff2 -ne 0 ]; then
+ 		tst_resm TFAIL "Unexpected message was logged..."
+ 		status_flag=1
++        else
++                tst_resm TPASS "Unexpected message was not logged..."
+ 	fi
+ 
+ }
+-- 
+2.22.0
 
-> diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-> index fa25306..eb98c97 100644
-> --- a/include/lapi/fsmount.h
-> +++ b/include/lapi/fsmount.h
-> @@ -7,7 +7,6 @@
->  #ifndef LAPI_FSMOUNT_H__
->  #define LAPI_FSMOUNT_H__
-
-> -#include <sys/mount.h>
-
-indeed now is sys/mount.h useless, but we're not sure if there is no wrapper 
-for new syscalls (e.g. fsopen, fsconfig, fspick, move_mount, ...) in any libc in
-the future. Because we have configure checks for these functions.
-@Viresh, was this the reason why you added <sys/mount.h> ?
-
-Kind regards,
-Petr
-
->  #include <sys/syscall.h>
->  #include <sys/types.h>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
