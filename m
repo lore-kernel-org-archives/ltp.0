@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC395C433EF
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 08:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5086FC433EF
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 08:42:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EED923CA1AF
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 09:41:57 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8EAFC3CA1B3
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 09:42:07 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 02E673CA1BA
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:25 +0100 (CET)
-Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
- [85.158.142.2])
+ by picard.linux.it (Postfix) with ESMTPS id 510143CA1B6
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:26 +0100 (CET)
+Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
+ [195.245.230.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ABACC20075C
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2FE7C60087D
  for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:23 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
  s=170520fj; t=1645519283; i=@fujitsu.com;
- bh=sfkiSgRVEdumQ3d117BSxCiul1IAjxncLrRFxpPmxpo=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=TyRT+C5GpRofKj3SuJH1Pn5qnd/pqJKd1makezUzc+yynKsLH2bWAiKzpswKsFbLt
- espif7cHXF58gTFEC9cX1qK8LvfNbSgp65FioMlpMmbBldG0zIQ8JYY10RvcUPkAru
- 80yx35FoL+Mf+fS07qgkv3rSq0m6h83CaVnzCKPoCGK9oXdRB6so19DkUp6E1qMjBn
- 06SqriTyzWb84682k1UadgF4w8UYAY/JhYRiULib4NoVykwwIRgduV4YWhVgewHk+l
- Q82jPpekwI398qjDLTF0rlGXsiR/oUOTbNpL7qmdJGY24eGjQS10odHPieD84axVgG
- DhlZ171/+eGCA==
-Received: from [100.115.69.48] (using TLSv1.2 with cipher
+ bh=4xT10v3OAdy/xh+HyUVrchbYIm5oAEbmDFmwgnN/4us=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=seH7Gj/XuSVRQjnFnjtTduIc+jWmKjWN4mrX3FYQXq1eVO43TgwafhnxbZ1EsBfym
+ 7Tk4+JKD1J7nDi6TQq5HARJl8jvbAWGm54f1zyhO95Mx1Y97mqz8rCp/itJqKfgXTA
+ ezkfaOiOdEGCeCmC9aA7qusYFdKJ/u8J+WbBD/cNioxLIrDpAkLQKvkQ4Qs5jGQS5u
+ Rhb+82B7uzWvu2XFxyD8O1bhLy2uXT7BMczBxiS2jQRS01uDcaXq3NhLi8cmsLkXbI
+ DIAayCcohUCq5VDYoUbFrykiuLO2jjLP9kaYQCALOru6Z4ZLpP5fi6pDsxbeCdxxpd
+ W5iJeARlh9yEQ==
+Received: from [100.115.7.206] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-2.bemta.az-a.eu-central-1.aws.ess.symcld.net id 78/C2-30582-3B1A4126;
+ by server-3.bemta.az-a.eu-west-1.aws.ess.symcld.net id 95/23-00700-3B1A4126;
  Tue, 22 Feb 2022 08:41:23 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOIsWRWlGSWpSXmKPExsViZ8ORqLtyoUi
- Swf2dkhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bGfwtYC274VCxuusbUwPjauYuRi0NI4Cyj
- xKJlR5khnJ1MEq0X/7JCOHsYJX6evsTWxcjJwSagKfGscwEziC0iICHR0fCWHcRmFlCXWD7pF
- xOILSxgL/G98TpYnEVAVeLm6+9gvbwCHhIzp8xkBbElBBQkpjx8zwwRF5Q4OfMJC8QcCYmDL1
- 4wQ9QoSlzq+MYIYVdIzJrVxgRhq0lcPbeJeQIj/ywk7bOQtC9gZFrFaJdUlJmeUZKbmJmja2h
- goGtoaKprZqZraGqql1ilm6iXWqqbnJpXUpQIlNZLLC/WSy0u1iuuzE3OSdHLSy3ZxAgMz5Ri
- p9k7GHf0/dQ7xCjJwaQkyvt1ikiSEF9SfkplRmJxRnxRaU5q8SFGGQ4OJQnepfOAcoJFqempF
- WmZOcBYgUlLcPAoifBumQ2U5i0uSMwtzkyHSJ1iVJQS5xVYAJQQAElklObBtcHi8xKjrJQwLy
- MDA4MQT0FqUW5mCar8K0ZxDkYlYd6w+UBTeDLzSuCmvwJazAS0eEqWEMjikkSElFQDk67Jqym
- 2ez73M145e/JCfdTfp/sCfh8o7amJ+dMc/cA/TGvCiTN3JaR3Te1dLJYbz8i9Q9UjSvu6xhb1
- 3ZFmR68cLRDctkZ05ga/2W+T9P7HlWWZlCwzSn9yc7/+ipC+v2bLp4W9Tbpe16t6tfUa96YN+
- Sq7Vq0IPbtroZLLFGv79gPnl/v9/bjNt1hcKfnFjTXGk8I9eXY2LH3JxtMdsSru1CkO1eexe5
- b3nTi9/BrXS6P8vVYW67Y4avgdeSev8KLwCEPr0in3+65H5lVLbPrg/fyiyLrTvzV2fFW/9vT
- LZ/PeziPT1stut99cslzh+7M9Vxn4XHbPt7vicPY/vzXDPn/Gayvqb5Q/WuUyQ1FZiaU4I9FQ
- i7moOBEAoypCe0oDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRWlGSWpSXmKPExsViZ8MxRXfTQpE
+ kg8N/zS1WfN/B6MDose/3OtYAxijWzLyk/IoE1oyGxmUsBZM4KlreHWRsYOxn72Lk4hASaGKS
+ OLxoKxuEs4dRYsbH04xdjJwcbAKaEs86FzCD2CICEhIdDW/ZQWxmAXWJ5ZN+MYHYwgIeEh2ru
+ 9lAbBYBVYmuOefAenmB4pvebACrlxBQkJjy8D3YHE4BT4kn8+6B2UJANU+O/WaGqBeUODnzCQ
+ vEfAmJgy9eMEP0Kkpc6vjGCGFXSMya1cY0gZF/FpKWWUhaFjAyrWK0TCrKTM8oyU3MzNE1NDD
+ QNTQ01TXUNbXUS6zSTdRLLdUtTy0u0TXUSywv1kstLtYrrsxNzknRy0st2cQIDMmUYkbrHYwd
+ fT/1DjFKcjApifJ+nSKSJMSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mCd+k8oJxgUWp6akVaZg4wP
+ mDSEhw8SiK8W2YDpXmLCxJzizPTIVKnGBWlxHnrFgAlBEASGaV5cG2wmLzEKCslzMvIwMAgxF
+ OQWpSbWYIq/4pRnINRSZj3N8gUnsy8Erjpr4AWMwEtnpIlBLK4JBEhJdXAVHZF2+NB39Zjcq+
+ efkuMMHaTTbs67c3jNd+Mrjd8m/x96eR95lopSoWLFxirWwZknmN4ci+DmcMkQj3b6Xh0limP
+ 5fJD3HZJMgutXsyt4GiocORPmXoqqvzgpwMlT2u6T2paCR0xfM2x6ObyE4Yn3tT/8ZbX7284F
+ vtOM2x2QP0vlQ/tSUedM75bRu/+EWDQ8+1mdpWB7N4OzsRNs9c9S85krAo8c/XprH61HPH/fx
+ 9oLP+udfSR1/WWWLNtNiE2vukvtaqeMnHP5U+e9PzQ0hfTd5zIXKTZ9UteMmPZicrk7K8tD0M
+ lK3JNup1+HY1af2pO1z675XO/Lbfmqp4yt3mXarPNfxa+y86XH0ydrsRSnJFoqMVcVJwIAD05
+ 0ZlEAwAA
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-13.tower-545.messagelabs.com!1645519273!2734!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-14.tower-587.messagelabs.com!1645519282!3153!1
+X-Originating-IP: [62.60.8.148]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 10572 invoked from network); 22 Feb 2022 08:41:13 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-13.tower-545.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 22 Feb 2022 08:41:13 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id DE6EE100196
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:41:12 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id DC11F100192
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:41:12 +0000 (GMT)
+Received: (qmail 18656 invoked from network); 22 Feb 2022 08:41:22 -0000
+Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
+ by server-14.tower-587.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 22 Feb 2022 08:41:22 -0000
+Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
+ by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 21M8fGWD022422
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:41:22 GMT
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.28; Tue, 22 Feb 2022 08:40:50 +0000
+ (TLS) id 15.0.1497.28; Tue, 22 Feb 2022 08:41:14 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Tue, 22 Feb 2022 16:41:06 +0800
-Message-ID: <1645519272-2733-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Tue, 22 Feb 2022 16:41:09 +0800
+Message-ID: <1645519272-2733-4-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1645519272-2733-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1645519272-2733-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/7] Merge multiple pidfd*.h into one header
+Subject: [LTP] [PATCH v3 4/7] syscalls/fanotify21: Make use of
+ SAFE_PIDFD_OPEN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,327 +101,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since pidfd_getfd.h/pidfd_send_signal.h/pidfd_open.h doesn't have own struct
-definition, it only about syscall wrapper. Kernel also doesn't have the same
-name headers.
-
-So use pidfd.h instead of own header. It is also convenient to add the safe
-macros or case uses multiple pidfd syscalls in the future.
-
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/lapi/pidfd.h                          | 58 +++++++++++++++++++
- include/lapi/pidfd_getfd.h                    | 26 ---------
- include/lapi/pidfd_open.h                     | 28 ---------
- include/lapi/pidfd_send_signal.h              | 27 ---------
- testcases/kernel/syscalls/clone3/clone301.c   |  2 +-
- .../kernel/syscalls/fanotify/fanotify21.c     |  2 +-
- .../kernel/syscalls/pidfd_open/pidfd_open01.c |  3 +-
- .../kernel/syscalls/pidfd_open/pidfd_open02.c |  2 +-
- .../kernel/syscalls/pidfd_open/pidfd_open03.c |  2 +-
- .../kernel/syscalls/pidfd_open/pidfd_open04.c |  7 +--
- .../pidfd_send_signal/pidfd_send_signal01.c   |  3 +-
- .../pidfd_send_signal/pidfd_send_signal02.c   |  3 +-
- .../pidfd_send_signal/pidfd_send_signal03.c   |  3 +-
- 13 files changed, 70 insertions(+), 96 deletions(-)
- create mode 100644 include/lapi/pidfd.h
- delete mode 100644 include/lapi/pidfd_getfd.h
- delete mode 100644 include/lapi/pidfd_open.h
- delete mode 100644 include/lapi/pidfd_send_signal.h
+ testcases/kernel/syscalls/fanotify/fanotify21.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/include/lapi/pidfd.h b/include/lapi/pidfd.h
-new file mode 100644
-index 000000000..244d3acaf
---- /dev/null
-+++ b/include/lapi/pidfd.h
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+#ifndef LAPI_PIDFD_H__
-+#define LAPI_PIDFD_H__
-+
-+#include <fcntl.h>
-+#include "config.h"
-+#include "lapi/syscalls.h"
-+
-+#ifndef PIDFD_NONBLOCK
-+#define PIDFD_NONBLOCK O_NONBLOCK
-+#endif
-+
-+static inline void pidfd_send_signal_supported(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_pidfd_send_signal);
-+}
-+
-+#ifndef HAVE_PIDFD_SEND_SIGNAL
-+static inline int pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
-+				    unsigned int flags)
-+{
-+	return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
-+}
-+#endif
-+
-+static inline void pidfd_open_supported(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_pidfd_open);
-+}
-+
-+#ifndef HAVE_PIDFD_OPEN
-+static inline int pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return tst_syscall(__NR_pidfd_open, pid, flags);
-+}
-+#endif
-+
-+static inline void pidfd_getfd_supported(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_pidfd_getfd);
-+}
-+
-+#ifndef HAVE_PIDFD_GETFD
-+static inline int pidfd_getfd(int pidfd, int targetfd, unsigned int flags)
-+{
-+	return tst_syscall(__NR_pidfd_getfd, pidfd, targetfd, flags);
-+}
-+#endif
-+
-+#endif /* LAPI_PIDFD_H__ */
-diff --git a/include/lapi/pidfd_getfd.h b/include/lapi/pidfd_getfd.h
-deleted file mode 100644
-index c6778163d..000000000
---- a/include/lapi/pidfd_getfd.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-- * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-- */
--
--#ifndef LAPI_PIDFD_GETFD_H__
--#define LAPI_PIDFD_GETFD_H__
--
--#include "config.h"
--#include "lapi/syscalls.h"
--
--static inline void pidfd_getfd_supported(void)
--{
--	/* allow the tests to fail early */
--	tst_syscall(__NR_pidfd_getfd);
--}
--
--#ifndef HAVE_PIDFD_GETFD
--static inline int pidfd_getfd(int pidfd, int targetfd, unsigned int flags)
--{
--	return tst_syscall(__NR_pidfd_getfd, pidfd, targetfd, flags);
--}
--#endif
--
--#endif /* LAPI_PIDFD_GETFD_H__ */
-diff --git a/include/lapi/pidfd_open.h b/include/lapi/pidfd_open.h
-deleted file mode 100644
-index 5cf10933e..000000000
---- a/include/lapi/pidfd_open.h
-+++ /dev/null
-@@ -1,28 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) 2020 Linaro Limited. All rights reserved.
-- * Author: Viresh Kumar <viresh.kumar@linaro.org>
-- */
--
--#ifndef LAPI_PIDFD_OPEN_H__
--#define LAPI_PIDFD_OPEN_H__
--
--#include <sys/syscall.h>
--#include <sys/types.h>
--#include "lapi/syscalls.h"
--#include "config.h"
--
--static inline void pidfd_open_supported(void)
--{
--	/* allow the tests to fail early */
--	tst_syscall(__NR_pidfd_open);
--}
--
--#ifndef HAVE_PIDFD_OPEN
--static inline int pidfd_open(pid_t pid, unsigned int flags)
--{
--	return tst_syscall(__NR_pidfd_open, pid, flags);
--}
--#endif
--
--#endif /* LAPI_PIDFD_OPEN_H__ */
-diff --git a/include/lapi/pidfd_send_signal.h b/include/lapi/pidfd_send_signal.h
-deleted file mode 100644
-index 7426a91da..000000000
---- a/include/lapi/pidfd_send_signal.h
-+++ /dev/null
-@@ -1,27 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) 2019 SUSE LLC
-- * Author: Christian Amann <camann@suse.com>
-- */
--
--#ifndef LAPI_PIDFD_SEND_SIGNAL_H__
--#define LAPI_PIDFD_SEND_SIGNAL_H__
--
--#include "tst_test.h"
--#include "lapi/syscalls.h"
--
--static inline void pidfd_send_signal_supported(void)
--{
--	/* allow the tests to fail early */
--	tst_syscall(__NR_pidfd_send_signal);
--}
--
--#ifndef HAVE_PIDFD_SEND_SIGNAL
--static inline int pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
--                                    unsigned int flags)
--{
--	return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
--}
--#endif /* HAVE_PIDFD_SEND_SIGNAL */
--
--#endif /* LAPI_PIDFD_SEND_SIGNAL_H__ */
-diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
-index 7ac4bb5a3..f7ef0b2d7 100644
---- a/testcases/kernel/syscalls/clone3/clone301.c
-+++ b/testcases/kernel/syscalls/clone3/clone301.c
-@@ -16,7 +16,7 @@
- 
- #include "tst_test.h"
- #include "lapi/clone.h"
--#include "lapi/pidfd_send_signal.h"
-+#include "lapi/pidfd.h"
- 
- #define CHILD_SIGNAL	SIGUSR1
- #define DATA	777
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-index 6ae70c57e..bd6429ab5 100644
+index bd6429ab5..d5be3e270 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify21.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
 @@ -23,7 +23,7 @@
  #include <string.h>
  #include "tst_test.h"
  #include "tst_safe_stdio.h"
--#include "lapi/pidfd_open.h"
-+#include "lapi/pidfd.h"
+-#include "lapi/pidfd.h"
++#include "tst_safe_pidfd.h"
  
  #ifdef HAVE_SYS_FANOTIFY_H
  #include "fanotify.h"
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-index c0e88647f..6f1e95ba8 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-@@ -13,9 +13,8 @@
-  */
+@@ -124,12 +124,7 @@ static void do_setup(void)
+ 	SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD, FAN_OPEN, AT_FDCWD,
+ 			   TEST_FILE);
  
- #include <unistd.h>
--#include <fcntl.h>
- #include "tst_test.h"
--#include "lapi/pidfd_open.h"
-+#include "lapi/pidfd.h"
+-	pidfd = pidfd_open(getpid(), 0);
+-	if (pidfd < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"pidfd=%d, pidfd_open(%d, 0) failed",
+-			pidfd, getpid());
+-	}
++	pidfd = SAFE_PIDFD_OPEN(getpid(), 0);
  
- static void run(void)
- {
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-index 93a61a51d..9d6c9321d 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-@@ -13,7 +13,7 @@
-  * - EINVAL flags is not valid
-  */
- #include "tst_test.h"
--#include "lapi/pidfd_open.h"
-+#include "lapi/pidfd.h"
- 
- static pid_t expired_pid, my_pid, invalid_pid = -1;
- 
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-index 7c7c75cb1..16a8442f5 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-@@ -15,7 +15,7 @@
- #include <stdlib.h>
- 
- #include "tst_test.h"
--#include "lapi/pidfd_open.h"
-+#include "lapi/pidfd.h"
- 
- static void run(void)
- {
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
-index e94bb20db..60080c0c8 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
-@@ -12,15 +12,10 @@
-  */
- 
- #include <unistd.h>
--#include <fcntl.h>
- #include <sys/wait.h>
- #include <stdlib.h>
- #include "tst_test.h"
--#include "lapi/pidfd_open.h"
--
--#ifndef PIDFD_NONBLOCK
--#define PIDFD_NONBLOCK O_NONBLOCK
--#endif
-+#include "lapi/pidfd.h"
- 
- #ifndef P_PIDFD
- #define P_PIDFD  3
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-index 4cb5df94c..3d201aa9d 100644
---- a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-@@ -12,7 +12,8 @@
- #define _GNU_SOURCE
- #include <signal.h>
- #include <stdlib.h>
--#include "lapi/pidfd_send_signal.h"
-+#include "tst_test.h"
-+#include "lapi/pidfd.h"
- #include "tst_safe_pthread.h"
- 
- #define SIGNAL  SIGUSR1
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
-index 1e62b417f..9600fc2f9 100644
---- a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
-@@ -24,7 +24,8 @@
- #define _GNU_SOURCE
- #include <pwd.h>
- #include <signal.h>
--#include "lapi/pidfd_send_signal.h"
-+#include "tst_test.h"
-+#include "lapi/pidfd.h"
- #include "tst_safe_pthread.h"
- 
- #define CORRECT_SIGNAL		SIGUSR1
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
-index 0903d6707..fb61516d7 100644
---- a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
-@@ -19,7 +19,8 @@
- #include <signal.h>
- #include <stdio.h>
- #include <unistd.h>
--#include "lapi/pidfd_send_signal.h"
-+#include "tst_test.h"
-+#include "lapi/pidfd.h"
- #include "tst_safe_pthread.h"
- 
- #define PIDTRIES	3
+ 	self_pidfd_fdinfo = read_pidfd_fdinfo(pidfd);
+ 	if (self_pidfd_fdinfo == NULL) {
 -- 
 2.31.1
 
