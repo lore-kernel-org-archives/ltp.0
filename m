@@ -4,62 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78C3BC433F5
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 14:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18667C433EF
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 14:45:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DF403CA1AD
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 15:36:01 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id EC9043CA1BA
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 15:45:22 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0AE113C97EB
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 15:35:52 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 20B953C97EB
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 15:45:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5674B1401627
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 15:35:52 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8052B6023D5
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 15:45:13 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9842321129;
- Tue, 22 Feb 2022 14:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1645540551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mITFFO2AQQXx3OsIMnaqp1ylNS/cA+ROnYEtBrQ+CbQ=;
- b=Was4DUeODstJkDTZTRRFdOvVdy710B9ySUzODObvsEg2HRnKkls/MtsH5aBZDwAtJlgOKA
- EjkXb4pRzLfcKoG1JqwoQVfRiUakfNzzL9tLfbx3TvB1CJUB9vm6JYjJISo4U/A3VhtZA5
- Mk4NmfT9HysZDA6PNnv1l7en4/J4fls=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1645540551;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mITFFO2AQQXx3OsIMnaqp1ylNS/cA+ROnYEtBrQ+CbQ=;
- b=cdIsx+CjZsLvwmr/8jwQcTcgU7A9J2v2iFxJM1abwgQFNHXdd6JFmcw3tWA2Kg8vkUIkUT
- NtwbgNFqdAlP+LDA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9C8A51F39D;
+ Tue, 22 Feb 2022 14:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1645541112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ylvuPtIO/EHY1EQpndBr3i6gZ4mdiq0nlK8G5GyVhDw=;
+ b=ghu2c2O05dxLplKd31OkdZgzlJNqlmRZI8FIgzaYM431bL3+8X2J6D3p3A7coddQNeuyHl
+ NgJe58Vbl4ZxLeZ8JaP1dV7fxapPLghedDUoThsBEoIJh+ude5Q+14ud4v9Lq7c086CN6G
+ 5qK3SaEyd0xMRD57B3177JmJ+cCb1wA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F26FA13BE0;
- Tue, 22 Feb 2022 14:35:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8BB5813BC2;
+ Tue, 22 Feb 2022 14:45:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id F0T1NMb0FGL0BgAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 22 Feb 2022 14:35:50 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 22 Feb 2022 15:35:49 +0100
-Message-Id: <20220222143549.3286-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.1
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZN+DIfj2FGJgDAAAMHmgww
+ (envelope-from <mkoutny@suse.com>); Tue, 22 Feb 2022 14:45:12 +0000
+Date: Tue, 22 Feb 2022 15:45:11 +0100
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Message-ID: <20220222144511.GA12037@blackbody.suse.cz>
+References: <20220222124547.14396-1-rpalethorpe@suse.com>
+ <20220222124547.14396-3-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220222124547.14396-3-rpalethorpe@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Rewrite waitid01.c test using new LTP API
+Subject: Re: [LTP] [PATCH v3 2/2] memcontrol04: Copy from kselftest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,184 +68,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: =?utf-8?q?Michal_Koutn=C3=BD_via_ltp?= <ltp@lists.linux.it>
+Reply-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
- testcases/kernel/syscalls/waitid/waitid01.c | 151 +++++---------------
- 1 file changed, 34 insertions(+), 117 deletions(-)
+Hello.
 
-diff --git a/testcases/kernel/syscalls/waitid/waitid01.c b/testcases/kernel/syscalls/waitid/waitid01.c
-index b6579d91d..60ecf9022 100644
---- a/testcases/kernel/syscalls/waitid/waitid01.c
-+++ b/testcases/kernel/syscalls/waitid/waitid01.c
-@@ -1,126 +1,43 @@
--/******************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007                                   */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software Foundation,   */
--/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
--/*                                                                            */
--/******************************************************************************/
--/******************************************************************************/
--/*                                                                            */
--/* Description: This tests the waitid() syscall                               */
--/*                                                                            */
--/* Test Name:   waitid01                                                      */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
--/******************************************************************************/
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test is checking if waitid() syscall does wait for WEXITED and check for
-+ * the return value.
-+ */
- 
--#include <stdio.h>
--#include <errno.h>
- #include <stdlib.h>
- #include <sys/wait.h>
--#include <sys/types.h>
--#include <unistd.h>
--#include <sys/stat.h>
-+#include "tst_test.h"
- 
--#include "test.h"
-+static siginfo_t *infop;
- 
--char *TCID = "waitid01";
--int testno;
--int TST_TOTAL = 3;
--
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--void display_status(siginfo_t * infop)
-+static void run(void)
- {
--	tst_resm(TINFO, "Process %d terminated:", infop->si_pid);
--	tst_resm(TINFO, "code = %d", infop->si_code);
--	if (infop->si_code == CLD_EXITED)
--		tst_resm(TINFO, "exit value = %d", infop->si_status);
--	else
--		tst_resm(TINFO, "signal = %d", infop->si_status);
--}
--
--int main(int ac, char **av)
--{
--	id_t pid;
--	siginfo_t infop;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
-+	pid_t pidchild;
- 
--	setup();
-+	pidchild = SAFE_FORK();
-+	if (!pidchild)
-+		exit(123);
- 
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--
--			TEST(fork());
--			if (TEST_RETURN < 0)
--				tst_brkm(TBROK | TTERRNO, NULL,
--					"fork() failed");
--
--			if (TEST_RETURN == 0) {
--				exit(123);
--			} else {
--				TEST(waitid(P_ALL, getpid(), &infop, WEXITED));
--				if (TEST_RETURN == -1) {
--					tst_brkm(TFAIL | TTERRNO,
--						 NULL,
--						 "waitid(getpid()) failed");
--				} else
--					display_status(&infop);	//CLD_EXITED = 1
--			}
--
--			TEST(fork());
--			if (TEST_RETURN < 0)
--				tst_brkm(TBROK | TTERRNO, NULL,
--					"fork() failed");
--
--			if (TEST_RETURN == 0) {
--				int a, b = 0;
--				a = 1 / b;
--				tst_exit();
--			} else {
--				TEST(waitid(P_ALL, 0, &infop, WEXITED));
--				if (TEST_RETURN == -1) {
--					tst_brkm(TFAIL | TTERRNO,
--						 NULL, "waitid(0) failed");
--				} else
--					display_status(&infop);	//CLD_DUMPED = 3 ; SIGFPE = 8
--			}
--
--			TEST(pid = fork());
--			if (TEST_RETURN < 0)
--				tst_brkm(TBROK | TTERRNO, NULL,
--					"fork() failed");
--
--			if (TEST_RETURN == 0) {
--				TEST(sleep(10));
--				tst_exit();
--			}
--			TEST(kill(pid, SIGHUP));
--			TEST(waitid(P_ALL, 0, &infop, WEXITED));
--			if (TEST_RETURN == -1) {
--				tst_brkm(TFAIL | TTERRNO, NULL,
--					 "waitid(0) failed");
--			} else
--				display_status(&infop);	//CLD_KILLED = 2 ; SIGHUP = 1
--		}
--	}
--	tst_resm(TPASS, "waitid(): system call passed");
--	tst_exit();
-+	TST_EXP_PASS(waitid(P_ALL, getpid(), infop, WEXITED));
-+	TST_EXP_EQ_LI(infop->si_pid, pidchild);
-+	TST_EXP_EQ_LI(infop->si_status, 123);
-+	TST_EXP_EQ_LI(infop->si_signo, SIGCHLD);
-+	TST_EXP_EQ_LI(infop->si_code, CLD_EXITED);
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.forks_child = 1,
-+	.bufs =
-+		(struct tst_buffers[]){
-+			{ &infop, .size = sizeof(*infop) },
-+			{},
-+		},
-+};
--- 
-2.35.1
+On Tue, Feb 22, 2022 at 12:45:47PM +0000, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+> + * "First, this test creates the following hierarchy:
+> + * A       memory.low = 50M,  memory.max = 200M
+> + * A/B     memory.low = 50M,  memory.current = 50M
+> + * A/B/C   memory.low = 75M,  memory.current = 50M
+> + * A/B/D   memory.low = 25M,  memory.current = 50M
+> + * A/B/E   memory.low = 500M, memory.current = 0
+> + * A/B/F   memory.low = 0,    memory.current = 50M
+> + *
+> + * Usages are pagecache
+> + * Then it creates A/G and creates a significant
+> + * memory pressure in it.
+> + *
+> + * A/B    memory.current ~= 50M
+> + * A/B/C  memory.current ~= 33M
+> + * A/B/D  memory.current ~= 17M
+> + * A/B/E  memory.current ~= 0
 
+This nicely misses the expected consumption of the F cgroup (I see it's
+missing in the original too). But one can expect from complementarity
+it's zero (if one accepts these values, which unfortunately is not true
+with hierarchical & scaled reclaim protection).
+
+> +		if (i < E || (i == F && tst_cg_memory_recursiveprot())) {
+> +			TST_EXP_EXPR(low > 0,
+> +				     "(%c low events=%ld) > 0", id, low);
+> +		} else {
+> +			TST_EXP_EXPR(low == 0,
+> +				     "(%c low events=%ld) == 0", id, low);
+> +		}
+
+Despite this makes the test behavior consistent, I think this is
+unexpected behavior with recursive_memoryprot. With the given
+configuration, there should never be residual protection that F assumes.
+
+Unless there is a good explanation [1], I'd consider non-zero
+memory.events:low in F the test failure here.
+
+Michal
+
+[1] I will need to look into some more detailed tracing data.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
