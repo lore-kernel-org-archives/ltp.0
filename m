@@ -4,80 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E934C433F5
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 08:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E458AC433F5
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 08:41:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 591EA3CA1A9
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 09:41:36 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1433F3CA1B5
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 09:41:48 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5477A3CA18D
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:15 +0100 (CET)
-Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
- [195.245.230.65])
+ by picard.linux.it (Postfix) with ESMTPS id D6EA83CA1C7
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:25 +0100 (CET)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CA7AB10007DA
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:14 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EBB1160085F
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:41:23 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1645519273; i=@fujitsu.com;
- bh=fIaT/eKTpnBHr88cKeJHTkjKkbWbAl0pPok2gAWTtzw=;
+ s=170520fj; t=1645519283; i=@fujitsu.com;
+ bh=olWu3b20Xh1eucVEUlqbMr0p35sJc7gQis9M1pkPIx4=;
  h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=MIf58W0OT9WAnEcje6Cjeu3U63kMN6tujfpDiTD5BTUy7WkSbI+xfi6D/gA5amyVv
- xLfW3GpGloH1J0ZWG/4vYzaXSG7v4A4QLbeguJQKf0rnWnLCyG8PrUUc9VIK4EF41E
- mhhMZyW+LhGcxG67ov4roLO24wSz2TOfQZcqtXu/dcp7NdZXemDQklipkOQ4hgHFRR
- RRZoxLMsUTp7yJoPoFR5pWZDWiha9GYQXtkt70xIFxWv3ZkW/TARFrcFO8FucilFWt
- aXjoXYOjPZm4gEhWrpTNPuzGwoBsa8+kcWttj0SzsQo5bVu1+Ix9y6jBed19fXSKE7
- SnqMPQx4c1cLw==
-Received: from [100.115.7.206] (using TLSv1.2 with cipher
+ b=wCIPyP7dqaYvFg4DwX3SuqJJbjRXc3pD/H4qmWND70NgyMQlyV7q2iuNQDl0bTIl+
+ hU9BlWVuOg0m2daBU8XlQvyZTztUG2O2psHDJcxPnpi47BMK+O13cnoBJPAHGCxmJT
+ hyc093StkaKRzCdtLypiQcc/fj6bTtrqRS/AhxQV+GpzVj9lm/j8e5TW2rLARwNR0s
+ uIpLXqq4N5woZl9TySt+7lXwDX4ITdMtYbm1N2Ll0cD49yi1wp4jNeAOVvDwl8FXBb
+ +wtqeu4x+saCBhYhnGlm7yr7FzNcXR1Y5VmnEm128ByeLtYxraUvWa+6j+k79Yr6SZ
+ 72NojmvDqACtw==
+Received: from [100.115.32.10] (using TLSv1.2 with cipher
  DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-a.eu-west-1.aws.ess.symcld.net id 3D/82-00700-9A1A4126;
- Tue, 22 Feb 2022 08:41:13 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRWlGSWpSXmKPExsViZ8ORqLtyoUi
- SwfN5chYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8aMNVsZCybyVezqnMjewNjJ08XIxSEkcJZR
- YlX/KbYuRk4gZyeTxNZbdhCJPYwSu5YdZQRJsAloSjzrXMAMYosISEh0NLxlB7GZBdQllk/6x
- QRiCwu4SmxY0wU2iEVAVWJOxyOgOAcHr4CHxJ+2WJCwhICCxJSH78HGcAp4SjyZd48ZYq+HxJ
- Njv8FsXgFBiZMzn7BAjJeQOPjiBTNEr6LEpY5vjBB2hcSsWW1MELaaxNVzm5gnMArOQtI+C0n
- 7AkamVYxWSUWZ6RkluYmZObqGBga6hoamuoa6RobmeolVuol6qaW65anFJbqGeonlxXqpxcV6
- xZW5yTkpenmpJZsYgSGcUsx4cwdja99PvUOMkhxMSqK8X6eIJAnxJeWnVGYkFmfEF5XmpBYfY
- pTh4FCS4F06DygnWJSanlqRlpkDjCeYtAQHj5II75bZQGne4oLE3OLMdIjUKUZFKXFegQVACQ
- GQREZpHlwbLIYvMcpKCfMyMjAwCPEUpBblZpagyr9iFOdgVBLmDZsPNIUnM68EbvoroMVMQIu
- nZAmBLC5JREhJNTDtr+s4ZKxhfac+dWb36zQx66d31m1eF37qa1Ww/5Xpe/ViP/82vfSroY7r
- RWxoV+RHg0cSr3fol/gcXdP2RMbi6kb2qOfHFdKnHF1pW7qU6+iOheFcLy6eZ04/MVk6pvPV5
- kyRkIT38zm4Ljfn6jxwTX4y4+HM8xsjxSQviEr+e7q98EPhs9kLfj7Lf3lp0wpm65wTi1gEyv
- vvl019uPG8uY7i0f9Xl95L7J5oe1T30h0Du7eGvqYKWueXsT1UyhYW2KhwrXW75ZsL/ZWlnUs
- iG9tev03ri/9k8pn1R9zqN5/6/qoqfVOMb91VJ7ZdZzHvpex567ezpHJz/WaTOs2gsrWr4/2+
- xkdipnM672t8VGIpzkg01GIuKk4EAFVPjapcAwAA
+ by server-4.bemta.az-a.eu-west-2.aws.ess.symcld.net id 70/C3-29321-3B1A4126;
+ Tue, 22 Feb 2022 08:41:23 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRWlGSWpSXmKPExsViZ8MxRXfTQpE
+ kg9mfDS1WfN/B6MDose/3OtYAxijWzLyk/IoE1owNF3exFSwRrlg6Yy9bA+M6gS5GTg4hgSYm
+ iZfn+SHsPYwSdz9Yg9hsApoSzzoXMIPYIgISEh0Nb9lBbGYBdYnlk34xgdjCAh4SJ+4uB6thE
+ VCVuP64BayGFyh+5d98sBoJAQWJKQ/fg9VwCnhKPJl3jxlil4fEk2O/mSHqBSVOznzCAjFfQu
+ LgixfMEL2KEpc6vjFC2BUSs2a1MU1g5J+FpGUWkpYFjEyrGK2TijLTM0pyEzNzdA0NDHQNDU1
+ 1jY10DY3M9BKrdBP1Ukt1y1OLS3SN9BLLi/VSi4v1iitzk3NS9PJSSzYxAkMypVihbgfjtZU/
+ 9Q4xSnIwKYnyfp0ikiTEl5SfUpmRWJwRX1Sak1p8iFGGg0NJgnfpPKCcYFFqempFWmYOMD5g0
+ hIcPEoivFtmA6V5iwsSc4sz0yFSpxgVpcR5BRYAJQRAEhmleXBtsJi8xCgrJczLyMDAIMRTkF
+ qUm1mCKv+KUZyDUUmYN2w+0BSezLwSuOmvgBYzAS2ekiUEsrgkESEl1cDUEpY09/9b5idff51
+ f0fc+IY7VdWXR/ftvI+rSZYTntCi/L7l+8bTNUu2tZk++zBY69qMwPEmgLXniXOeEv2+LVtjL
+ ahu0bH1ZfcaeR11v5ZNT5+WvfKzZdN5ykvc8f58Kvai515XPSKcxfck4UyMo8q+ue6rq2sjAm
+ LWrOUPbf19TdjBJ5rpgd5NBdIKEr4PRFYHbO5SVPZXmOsmE9tTv5RO187koyfzxL6dPc/8Byw
+ JPm6AU29OK+vpfTqlodtzzX2T3KmPVPr4tXiujFZfLZT5RvXujxHii8df/wnL2KltYFn397ZM
+ 4wVVhZ9bdpLNszSXylyYz3T9ePm2P3K8HBfKrtuhXlPJcnyPd91KJpTgj0VCLuag4EQCVWSd2
+ RAMAAA==
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-8.tower-587.messagelabs.com!1645519273!8977!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-7.tower-571.messagelabs.com!1645519282!3154!1
+X-Originating-IP: [62.60.8.148]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.81.7; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 13753 invoked from network); 22 Feb 2022 08:41:13 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-8.tower-587.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 22 Feb 2022 08:41:13 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 045D710019C
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:41:13 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id E9B7D10019A
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:41:12 +0000 (GMT)
+Received: (qmail 13586 invoked from network); 22 Feb 2022 08:41:22 -0000
+Received: from unknown (HELO mailhost1.uk.fujitsu.com) (62.60.8.148)
+ by server-7.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 22 Feb 2022 08:41:22 -0000
+Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
+ by mailhost1.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 21M8fGWE022422
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:41:22 GMT
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.28; Tue, 22 Feb 2022 08:41:06 +0000
+ (TLS) id 15.0.1497.28; Tue, 22 Feb 2022 08:41:19 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Tue, 22 Feb 2022 16:41:08 +0800
-Message-ID: <1645519272-2733-3-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Tue, 22 Feb 2022 16:41:10 +0800
+Message-ID: <1645519272-2733-5-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1645519272-2733-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <1645519272-2733-1-git-send-email-xuyang2018.jy@fujitsu.com>
@@ -85,9 +81,10 @@ MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/7] lib/tst_safe_pidfd: Add SAFE_PIDFD_OPEN macro
+Subject: [LTP] [PATCH v3 5/7] syscalls/pidfd_open01,
+ 04: Make use of SAFE_FCNTL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,71 +103,99 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/tst_safe_pidfd.h | 19 +++++++++++++++++++
- lib/tst_safe_pidfd.c     | 28 ++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100644 include/tst_safe_pidfd.h
- create mode 100644 lib/tst_safe_pidfd.c
+ .../kernel/syscalls/pidfd_open/pidfd_open01.c   | 17 ++++++++++++-----
+ .../kernel/syscalls/pidfd_open/pidfd_open04.c   | 15 +++++++++++----
+ 2 files changed, 23 insertions(+), 9 deletions(-)
 
-diff --git a/include/tst_safe_pidfd.h b/include/tst_safe_pidfd.h
-new file mode 100644
-index 000000000..5c37099bd
---- /dev/null
-+++ b/include/tst_safe_pidfd.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
+diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+index 6f1e95ba8..ce07e6717 100644
+--- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
++++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+@@ -16,18 +16,18 @@
+ #include "tst_test.h"
+ #include "lapi/pidfd.h"
+ 
++static int pidfd = -1;
 +
-+#ifndef TST_SAFE_PIDFD_H__
-+#define TST_SAFE_PIDFD_H__
-+
-+#include <unistd.h>
-+#include "lapi/pidfd.h"
-+
-+int safe_pidfd_open(const char *file, const int lineno, pid_t pid,
-+		    unsigned int flags);
-+
-+#define SAFE_PIDFD_OPEN(pid, flags) \
-+	safe_pidfd_open(__FILE__, __LINE__, (pid), (flags))
-+
-+#endif /* TST_SAFE_PIDFD_H__ */
-diff --git a/lib/tst_safe_pidfd.c b/lib/tst_safe_pidfd.c
-new file mode 100644
-index 000000000..c9fe5e1d0
---- /dev/null
-+++ b/lib/tst_safe_pidfd.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "tst_safe_pidfd.h"
-+
-+int safe_pidfd_open(const char *file, const int lineno, pid_t pid,
-+		    unsigned int flags)
+ static void run(void)
+ {
+ 	int flag;
+ 
+ 	TST_EXP_FD_SILENT(pidfd_open(getpid(), 0), "pidfd_open(getpid(), 0)");
+ 
+-	flag = fcntl(TST_RET, F_GETFD);
+-
+-	SAFE_CLOSE(TST_RET);
++	pidfd = TST_RET;
++	flag = SAFE_FCNTL(pidfd, F_GETFD);
+ 
+-	if (flag == -1)
+-		tst_brk(TFAIL | TERRNO, "fcntl(F_GETFD) failed");
++	SAFE_CLOSE(pidfd);
+ 
+ 	if (!(flag & FD_CLOEXEC))
+ 		tst_brk(TFAIL, "pidfd_open(getpid(), 0) didn't set close-on-exec flag");
+@@ -35,7 +35,14 @@ static void run(void)
+ 	tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
+ }
+ 
++static void cleanup(void)
 +{
-+	int rval;
-+
-+	rval = pidfd_open(pid, flags);
-+
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "pidfd_open(%i, %i) failed", pid, flags);
-+	} else if (rval < 0) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			  "Invalid pidfd_open(%i, %i) return value %d",
-+			  pid, flags, rval);
-+	}
-+
-+	return rval;
++	if (pidfd > -1)
++		SAFE_CLOSE(pidfd);
 +}
++
+ static struct tst_test test = {
+ 	.setup = pidfd_open_supported,
++	.cleanup = cleanup,
+ 	.test_all = run,
+ };
+diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
+index 60080c0c8..0e8ab6956 100644
+--- a/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
++++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open04.c
+@@ -21,9 +21,11 @@
+ #define P_PIDFD  3
+ #endif
+ 
++static int pidfd = -1;
++
+ static void run(void)
+ {
+-	int flag, pid, pidfd, ret;
++	int flag, pid, ret;
+ 	siginfo_t info;
+ 
+ 	pid = SAFE_FORK();
+@@ -36,9 +38,7 @@ static void run(void)
+ 				"pidfd_open(%d,  PIDFD_NONBLOCK)", pid);
+ 
+ 	pidfd = TST_RET;
+-	flag = fcntl(pidfd, F_GETFL);
+-	if (flag == -1)
+-		tst_brk(TFAIL | TERRNO, "fcntl(F_GETFL) failed");
++	flag = SAFE_FCNTL(pidfd, F_GETFL);
+ 
+ 	if (!(flag & O_NONBLOCK))
+ 		tst_brk(TFAIL, "pidfd_open(%d, O_NONBLOCK) didn't set O_NONBLOCK flag", pid);
+@@ -77,10 +77,17 @@ static void setup(void)
+ 	SAFE_CLOSE(TST_RET);
+ }
+ 
++static void cleanup(void)
++{
++	if (pidfd > -1)
++		SAFE_CLOSE(pidfd);
++}
++
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ 	.setup = setup,
++	.cleanup = cleanup,
+ 	.test_all = run,
+ };
 -- 
 2.31.1
 
