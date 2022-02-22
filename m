@@ -4,90 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87455C433EF
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 08:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51C65C433F5
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 12:44:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 12F093CA199
-	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 09:45:23 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 5D5833CA1E0
+	for <ltp@archiver.kernel.org>; Tue, 22 Feb 2022 13:44:22 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C48B43CA194
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:45:14 +0100 (CET)
-Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
- [195.245.230.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 52ED53C0512
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 13:44:12 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 18532200915
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 09:45:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1645519513; i=@fujitsu.com;
- bh=UywjusWYjH/ELX8EWN7k/TK3P5UREr09jEHvfYaAD9s=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=n6URefXVLSGOhjf8+wetwK7Cir5HrkTcLsmz91u+lFBqXYVhn3i/lS0dr2z1ElCwS
- la1nfGJgIoa0zwqrimoO+CK3cp4vdqZJgcnQF0yRArbGyuW1tQnKEnNjsy5ca1Zxql
- /hyySmHZakUUGBaW4OdU3+nZycF4we1oB2jewBRpI1iAabOLovu3Ef5vrGx0nnMPe8
- lLdyVhq7GYOIL29SF2AMh/bI/sLoZ2nii6DWplJHM2bzAtzZgatwZzxvs9uh1tXjoK
- dxOD8NQ238bXu8UuPDu27KM+pcmqeYUeK/Exjn6WzUFwa5qR/FssK2HgX0GFMTMl95
- 05bWDdKXaKAQw==
-Received: from [100.115.7.114] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-4.bemta.az-a.eu-west-1.aws.ess.symcld.net id 1E/63-12986-992A4126;
- Tue, 22 Feb 2022 08:45:13 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFIsWRWlGSWpSXmKPExsViZ8ORqDtjkUi
- Swc2l2hYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8a35ia2gi6FisU7kxsYe6W7GLk4hATOMkqc
- n7yIHcLZySTx+PQTJghnD6PE0oadrF2MnBxsApoSzzoXMIPYIgISEh0Nb9lBbGYBdYnlk34xg
- djCAi4SU4+tZQOxWQRUJfa1XWUBsXkFPCQmH9wEFpcQUJCY8vA92BxOAU+JFX/vg80XAqq5cO
- s1VL2gxMmZT1gg5ktIHHzxghmiV1HiUsc3Rgi7QmLWrDYmCFtN4uq5TcwTGAVnIWmfhaR9ASP
- TKkarpKLM9IyS3MTMHF1DAwNdQ0NTXRNdI2NLvcQq3US91FLd8tTiEl1DvcTyYr3U4mK94src
- 5JwUvbzUkk2MwCBOKWZ5v4Oxqe+n3iFGSQ4mJVHer1NEkoT4kvJTKjMSizPii0pzUosPMcpwc
- ChJ8C6dB5QTLEpNT61Iy8wBRhRMWoKDR0mEd8tsoDRvcUFibnFmOkTqFKOilDhv10KghABIIq
- M0D64NFsWXGGWlhHkZGRgYhHgKUotyM0tQ5V8xinMwKgnz/l4ANIUnM68EbvoroMVMQIunZAm
- BLC5JREhJNTD5T5zZfODq6/C9aXI+gf1LnLPmMT23Ep4ysSl83Qq9GCn+5Ortd48u6VydfPpm
- WYDnQ3cOwTBJiz13OxJE14jsV3BX+DDVVemPeadNa9j5VwFPn8ftPnr92Zrw1dv/mk1iqb5bv
- /DWmsfP3vibv/wa5DWn/PfTDIagxnP7NczWRrBz2e2Snf7z8C17BtHZ7sqr/KatFNXPnJCmqi
- f4lI15ktv+DObZT7f+mPhJ8c0HUc3g1EcXWRgtArSn/5JhdrRqf8kzSYVpotHVOr/zyqEL2vM
- zPWoX8saoX969QP7aT/Eznf8Fdil03nVsWxpivUZpomLf57WCcoFCUvue7L56dGnB7KYond+K
- qb/71lYpsRRnJBpqMRcVJwIAomavhV0DAAA=
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-23.tower-591.messagelabs.com!1645519512!2820!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.7; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 24676 invoked from network); 22 Feb 2022 08:45:12 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-23.tower-591.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 22 Feb 2022 08:45:12 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 34B55100199
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:45:12 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 56C15200D34
+ for <ltp@lists.linux.it>; Tue, 22 Feb 2022 13:44:11 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 2807B10018E
- for <ltp@lists.linux.it>; Tue, 22 Feb 2022 08:45:12 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.28; Tue, 22 Feb 2022 08:44:55 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Tue, 22 Feb 2022 16:45:14 +0800
-Message-ID: <1645519514-2826-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1645519514-2826-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1645519514-2826-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 29D2B1F39A;
+ Tue, 22 Feb 2022 12:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1645533851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mzEcgeyv4J9B4seIgFxHcBSDDy7pmprDMcKq2AADXAA=;
+ b=3Vrlh5G1r+t4cq3yPtMrJlQpjql6WRog718VHpzd1bI7QYwHYbzpAoiHyg9LnF8ji8bJ0T
+ 08GKI4k8g97m1AWpGp5PqMmnFdA2kWS5j8HwZGMEKV8E3o4pHjPHOHPwbYKqnbP3LM6OGQ
+ 7F9C/K0CAeNYADDFNyFoVr8Qa8IDYP4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1645533851;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mzEcgeyv4J9B4seIgFxHcBSDDy7pmprDMcKq2AADXAA=;
+ b=c0y0ZEu3P3c3rPYRycP6igX1X3eFfMJUeUsDDiHcdZnF9P8e/BuZl411yIsVztZxXGw7tc
+ aVrbq0ZUT2BqlsDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1372513C1E;
+ Tue, 22 Feb 2022 12:44:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3VJ3A5vaFGLvRwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 22 Feb 2022 12:44:11 +0000
+Date: Tue, 22 Feb 2022 13:46:23 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YhTbHxQMmeuse/Wf@yuki>
+References: <20220201091938.23362-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+Content-Disposition: inline
+In-Reply-To: <20220201091938.23362-1-andrea.cervesato@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 7/7] syscalls/pidfd_getfd02: Add basic error test
+Subject: Re: [LTP] [PATCH v4] Refactoring aiodio_sparse.c using LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,159 +75,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/pidfd_getfd/.gitignore    |   1 +
- .../syscalls/pidfd_getfd/pidfd_getfd02.c      | 111 ++++++++++++++++++
- 3 files changed, 113 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
+Hi!
+Pushed with a few changes, thanks.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 126c33fc1..b80786499 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -952,6 +952,7 @@ personality01 personality01
- personality02 personality02
+I've mainly added a few elements to the tst_test structure to match the
+fixes we did for dio_sparse.c and also removed a few obvious comments.
+
+
+diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+index 33a25a28c..2aa5662bb 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+@@ -35,10 +35,10 @@ static char *str_writesize;
+ static char *str_filesize;
+ static char *str_numaio;
  
- pidfd_getfd01 pidfd_getfd01
-+pidfd_getfd02 pidfd_getfd02
+-static int numchildren = 1000;
++static int numchildren = 16;
+ static long long writesize = 1024;
+ static long long filesize = 100 * 1024 * 1024;
+-static long long alignment = 512;
++static long long alignment;
+ static int numaio = 16;
  
- pidfd_open01 pidfd_open01
- pidfd_open02 pidfd_open02
-diff --git a/testcases/kernel/syscalls/pidfd_getfd/.gitignore b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
-index 9328942ac..8ef904202 100644
---- a/testcases/kernel/syscalls/pidfd_getfd/.gitignore
-+++ b/testcases/kernel/syscalls/pidfd_getfd/.gitignore
-@@ -1 +1,2 @@
- /pidfd_getfd01
-+/pidfd_getfd02
-diff --git a/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c b/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
-new file mode 100644
-index 000000000..805085cda
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_getfd/pidfd_getfd02.c
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Tests basic error handling of the pidfd_open syscall.
-+ *
-+ * - EBADF pidfd is not a valid PID file descriptor
-+ * - EBADF targetfd is not an open file descriptor in the process referred
-+ *   to by pidfd
-+ * - EINVAL flags is not 0
-+ * - ESRCH the process referred to by pidfd does not exist (it has terminated
-+ *   and been waited on))
-+ * - EPERM the calling process doesn't have PTRACE_MODE_ATTACH_REALCREDS permissions
-+ *   over the process referred to by pidfd
-+ */
-+
-+#include <stdlib.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "tst_safe_pidfd.h"
-+
-+static int valid_pidfd = -1, invalid_pidfd = -1, pidfd = -1;
-+static uid_t uid;
-+
-+static struct tcase {
-+	char *name;
-+	int *pidfd;
-+	int targetfd;
-+	int flags;
-+	int exp_errno;
-+} tcases[] = {
-+	{"invalid pidfd", &invalid_pidfd, 0, 0, EBADF},
-+	{"invalid targetfd", &valid_pidfd, -1, 0, EBADF},
-+	{"invalid flags", &valid_pidfd, 0, 1, EINVAL},
-+	{"the process referred to by pidfd doesn't exist", NULL, 0, 0, ESRCH},
-+	{"lack of required permission", &valid_pidfd, 0, 0, EPERM},
-+};
-+
-+static void setup(void)
-+{
-+	pidfd_open_supported();
-+	pidfd_getfd_supported();
-+
-+	struct passwd *pw;
-+
-+	pw = SAFE_GETPWNAM("nobody");
-+	uid = pw->pw_uid;
-+
-+	valid_pidfd = SAFE_PIDFD_OPEN(getpid(), 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (valid_pidfd > -1)
-+		SAFE_CLOSE(valid_pidfd);
-+	if (pidfd > -1)
-+		SAFE_CLOSE(pidfd);
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	int pid;
-+
-+	if (tc->exp_errno == EPERM) {
-+		pid = SAFE_FORK();
-+		if (!pid) {
-+			SAFE_SETUID(uid);
-+			TST_EXP_FAIL2(pidfd_getfd(valid_pidfd, tc->targetfd, tc->flags),
-+				tc->exp_errno, "pidfd_getfd(%d, %d, %d) with %s",
-+				valid_pidfd, tc->targetfd, tc->flags, tc->name);
-+			TST_CHECKPOINT_WAKE(0);
-+			exit(0);
-+		}
-+		TST_CHECKPOINT_WAIT(0);
-+		SAFE_WAIT(NULL);
-+		return;
-+	} else if (tc->exp_errno == ESRCH) {
-+		pid = SAFE_FORK();
-+		if (!pid) {
-+			TST_CHECKPOINT_WAIT(0);
-+			exit(0);
-+		}
-+		pidfd = SAFE_PIDFD_OPEN(pid, 0);
-+		TST_CHECKPOINT_WAKE(0);
-+		SAFE_WAIT(NULL);
-+		TST_EXP_FAIL2(pidfd_getfd(pidfd, tc->targetfd, tc->flags),
-+			tc->exp_errno, "pidfd_getfd(%d, %d, %d) with %s",
-+			pidfd, tc->targetfd, tc->flags, tc->name);
-+		SAFE_CLOSE(pidfd);
-+	} else	{
-+		TST_EXP_FAIL2(pidfd_getfd(*tc->pidfd, tc->targetfd, tc->flags),
-+			tc->exp_errno, "pidfd_getfd(%d, %d, %d) with %s",
-+			*tc->pidfd, tc->targetfd, tc->flags, tc->name);
+ static void check_event(struct io_event event)
+@@ -76,9 +76,6 @@ static void aiodio_sparse(char *filename, long long align, long long ws,
+ 	for (i = 0; i < naio; i++)
+ 		iocbs[i] = iocb + i;
+ 
+-	/*
+-	 * allocate the iocbs array and iocbs with buffers
+-	 */
+ 	offset = 0;
+ 	for (i = 0; i < naio; i++) {
+ 		void *bufptr;
+@@ -89,16 +86,10 @@ static void aiodio_sparse(char *filename, long long align, long long ws,
+ 		offset += ws;
+ 	}
+ 
+-	/*
+-	 * start the 1st naio write requests
+-	 */
+ 	w = io_submit(myctx, naio, iocbs);
+ 	if (w < 0)
+ 		tst_brk(TBROK, "io_submit: %s", tst_strerrno(-w));
+ 
+-	/*
+-	 * As AIO requests finish, keep issuing more AIO until done.
+-	 */
+ 	aio_inflight = naio;
+ 
+ 	while (offset < fs) {
+@@ -129,9 +120,6 @@ static void aiodio_sparse(char *filename, long long align, long long ws,
+ 		aio_inflight++;
+ 	}
+ 
+-	/*
+-	 * wait for AIO requests in flight.
+-	 */
+ 	while (aio_inflight > 0) {
+ 		int n;
+ 
+@@ -175,8 +163,7 @@ static void setup(void)
+ 	if ((numaio * writesize) > filesize) {
+ 		numaio = filesize / writesize;
+ 		tst_res(TINFO,
+-			"Numbers of AIO have been reduced to %d so we fit "
+-			"filesize",
++			"Numbers of AIO have been reduced to %d so we fit filesize",
+ 			numaio);
+ 	}
+ 
+@@ -192,8 +179,10 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	*run_child = 0;
+-	SAFE_MUNMAP(run_child, sizeof(int));
++	if (run_child) {
++		*run_child = 0;
++		SAFE_MUNMAP(run_child, sizeof(int));
 +	}
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+};
--- 
-2.31.1
+ }
+ 
+ static void run(void)
+@@ -230,12 +219,17 @@ static struct tst_test test = {
+ 	.needs_tmpdir = 1,
+ 	.forks_child = 1,
+ 	.options = (struct tst_option[]) {
+-		{"n:", &str_numchildren, "Number of threads (default 1000)"},
++		{"n:", &str_numchildren, "Number of threads (default 16)"},
+ 		{"w:", &str_writesize, "Size of writing blocks (default 1K)"},
+ 		{"s:", &str_filesize, "Size of file (default 100M)"},
+ 		{"o:", &str_numaio, "Number of AIO control blocks (default 16)"},
+ 		{},
+ 	},
++	.skip_filesystems = (const char *[]) {
++		"tmpfs",
++		NULL
++	},
++	.timeout = 1800,
+ };
+ #else
+ TST_TEST_TCONF("test requires libaio and its development packages");
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
