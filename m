@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A1FEC433EF
-	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 12:41:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 414F8C433F5
+	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 12:42:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC2663C97AD
-	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 13:41:18 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8A6EB3C97A8
+	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 13:42:19 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 04B823C690D
- for <ltp@lists.linux.it>; Wed, 23 Feb 2022 13:41:08 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id DA4973C690D
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 13:42:10 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E02C41401725
- for <ltp@lists.linux.it>; Wed, 23 Feb 2022 13:41:07 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 50A351A019B1
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 13:42:09 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B4C5A1F3A3;
- Wed, 23 Feb 2022 12:41:06 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7F72B1F3A3;
+ Wed, 23 Feb 2022 12:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645620066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1645620129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0yycEC7AIMNNGhV2UF7k613SbxxioA3/bvTDKP0jy5s=;
- b=EkS+B0wKG+1cK6Jybmz0jXkBSHuXvz+CSbEW5dwdDPT3Wz8IIdY8gjft7CZEKNXhHyzo1E
- AV6dBZ97/3dQal4tyaCcGpl+y8smq4NqbEfEmVl17xULIy4SCGJ4rF/6yTn2l3lUDuIoEQ
- CQOnwUpFOZ/ZufgFbvDwlEl7q9K1dvE=
+ bh=30Cf9/muSiEf8oLqeqhQ9h0EN2amnWy2E7cIiYvCAl8=;
+ b=txzTGd7lcPdIqT9cy47UaylAPJNsN3amonzkI4u+779GMy3d3odYl5jH3vHY3/7g5GpALZ
+ ThFyOcAjyzDjis/j//VHBeLtjPcfVBXHZrQw80TDrQRVq8REamfALzZv1BiCkGNMSiCibX
+ Ot09TTqJ6OvsSv8tsaV9nPbGlLQGpm0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645620066;
+ s=susede2_ed25519; t=1645620129;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0yycEC7AIMNNGhV2UF7k613SbxxioA3/bvTDKP0jy5s=;
- b=N7Ub1Ukdl+0/CeF83UC096n1w/8pU8y34qEcV0XwZmmD1MevI/sUyJNNVzsg5rsv4szywf
- KTomw72c3mCG69Bg==
+ bh=30Cf9/muSiEf8oLqeqhQ9h0EN2amnWy2E7cIiYvCAl8=;
+ b=H8Go6GNlN4NLPeYwRxFyVNOqiFehbDZ98T9TtgJYrehP8zznWVl1RVFcozTs+QmIPR+gsT
+ 0SjzhVVU7hQijeBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BE2413D36;
- Wed, 23 Feb 2022 12:41:06 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6C9EF13D36;
+ Wed, 23 Feb 2022 12:42:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MNwGGWIrFmK4EQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 23 Feb 2022 12:41:06 +0000
-Date: Wed, 23 Feb 2022 13:43:19 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2IinGaErFmIzEgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 23 Feb 2022 12:42:09 +0000
+Date: Wed, 23 Feb 2022 13:44:22 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Kushal Chand <kushalkataria5@gmail.com>
-Message-ID: <YhYr5w2BaHkO9f+q@yuki>
-References: <20220210105101.38337-1-kushalkataria5@gmail.com>
- <YgUw7scGZwUcK22E@yuki>
- <CAKaR1hXZL5vfq_SXXwyh8wCr4Rwwugi4ydDzXKhMwGVUsiHoBQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YhYsJqnjs1kIt13E@yuki>
+References: <20220222155514.2255913-1-nikita.yushchenko@virtuozzo.com>
+ <YhUKtWP8dwNBAcmy@yuki>
+ <26fe8a19-8557-5a63-7e5f-fb126e8eed95@virtuozzo.com>
+ <YhUe1yp0ukdUJs1V@yuki> <YhUsAQKHl8w9AyRq@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAKaR1hXZL5vfq_SXXwyh8wCr4Rwwugi4ydDzXKhMwGVUsiHoBQ@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <YhUsAQKHl8w9AyRq@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] fstat_02: Increase test coverage by creating
- hard link to file and validate using fstat
+Subject: Re: [LTP] [PATCH] testcases/lib: introduce sysctl wrapper
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,40 +78,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: kernel@openvz.org, ltp@lists.linux.it,
+ Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Apology for the late reply.
-> 
-> I am not sure about the st_blocks size. If you can guide me how to check
-> that I might work on that?
+> > Ah, right. But I guess that adding a simple tool that would behave just
+> > as echo but the first parameter would be filename may be cleaner
+> > solution than wrapping around the sysctl command.
+> +1. If really requested please create C binary testcases/lib/tst_sysctl.c.
+> Code which use simple SAFE_FILE_PRINTF() as many C code does would be fairly
+> simple, more portable and probably faster than shell script. FYI we tend to
+> rewrite shell code into C.
 
-Just read the man 2 stat:
-
-...
-               blkcnt_t  st_blocks;      /* Number of 512B blocks allocated */
-...
-
-For large enough files the size/512 rounded up should be close to the
-number of blocks (there would be usually a few more blocks preallocated
-for the file than the actuall size is). Filesystems tend to allocate
-more than one block when file needs to be extended, it looks like common
-value is PAGE_SIZE/512. So I guess that a reasonable test would create a
-few files somewhere between half a megabyte and a few megabytes in size
-and then check that the size/blocks ratio is somewhere between 512 and
-512-epsilon. As long as the file size is order of magnitude larger than
-PAGE_SIZE it should be safe to set the epsion to 10% of the blocksize
-i.e. 51.
-
-> Are you planning to merge this patch with the st_blocks check or the
-> current version is ready to be merged?
-
-The patch has been already merged, I was just pointing out other fields
-that are not validated in the test.
+I would even call it tst_write since it's pretty generic tool that does
+write to a file.
 
 -- 
 Cyril Hrubis
