@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F79FC433F5
-	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 15:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AD4EC433EF
+	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 20:08:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BE4C3C9B46
-	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 16:33:40 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D79EB3C9741
+	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 21:08:08 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 210883C9741
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 21:07:58 +0100 (CET)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C3213C97E3
- for <ltp@lists.linux.it>; Wed, 23 Feb 2022 16:32:58 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 57C1660233B
- for <ltp@lists.linux.it>; Wed, 23 Feb 2022 16:32:58 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 04722212BE;
- Wed, 23 Feb 2022 15:32:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645630378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=naCIqwEGKuKi1e9YaE4P0t448RSSA25dv2Cr0zZPYAc=;
- b=0cl9iRQHi0u0nLvggDzTsyoxAzlL8pWGZmJ2lF+Uq0hgfpmHgBk4KAUeibbxwuznHZkfBg
- G5N4IKKt/Ju/7ikzylKvwKQkydOvICRCoS0MuYkfyPTMHmk/OroaFiApgWQTQSIX/dkDXx
- Gg7D2xOI1nXSgQo2whUo/hOKszsT58U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645630378;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=naCIqwEGKuKi1e9YaE4P0t448RSSA25dv2Cr0zZPYAc=;
- b=UQdbwP34nWrsg2E+iM87vTcRmBsN7eg4wFlqs5SvqO/u8NTaqmHV5dKrFZWAITC2r5Kj44
- Jfl+HbAvSPHop/DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B373113D88;
- Wed, 23 Feb 2022 15:32:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kJBfKqlTFmKZawAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 23 Feb 2022 15:32:57 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6FAF360066D
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 21:07:58 +0100 (CET)
+Received: by mail-yb1-xb49.google.com with SMTP id
+ z15-20020a25bb0f000000b00613388c7d99so28760987ybg.8
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 12:07:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=AgH7G9qMhJjeNsK8pjjl8l2MFRb6uv/e5h3RVBpFjcM=;
+ b=lEvoTqPckwkesDmoXXT2GU4qtC9d2HvwvztmcK6sCsocVzbXr1YMGxD6/mvWS1AT8n
+ vrAj3qUZyCWQtRz+GH6DCGKDjzKqWWCr514C7f1glIUX1IMwosvkkc3zLLIhRNV6QBFP
+ bW5xTzchMMN272yNx+6+qqYkJZ1+9q2C9v9YZWE6dRmh0tHRUfq7Hjq0aFlS8eLOf/fG
+ FptCf0nuWlZdwAHvPaZdPXkvCHkhyYOT6pqwP+OXD02DS48QYGRJKUIiHaOIbT4Jo3j+
+ s8V8U6fykVUYTktsP6M9ZSPjodnr43ATUTNXP/97MHKdVcr0OsBIWtcfjT/aJt4yDVmU
+ SWFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=AgH7G9qMhJjeNsK8pjjl8l2MFRb6uv/e5h3RVBpFjcM=;
+ b=JUFjNuw8eNts93zFXzJHDmyff1Jph162ZO1iG2y/UV31WMEbFYu5s1NayLpcucK7bZ
+ /zoATHVXVtjqjO4PRAw5Z5iKY3EFOWElN5lTkwGeki4BaWyXnBXOGzd3ISs4Ht3sjJ6P
+ w6cgHS/KkyFI9QWFG79P7mo2vyYnaMEmt97kHCt6kWH6rhTVCpA3V0/5ZrWoh6SdcMRV
+ 2+HkBi9XMR7cj8YKDR4FbSKjbGx1LJPR0WmiXqhCY4pOWDXsKOCDwEVyd6+f3fOWCaDG
+ Uz9md7053jT9/Wq4BcV0ZyYe5CtBTeoaIxnfZI9rSeLX9Hm9e3Era4rI218dx11nP+Rx
+ nUaA==
+X-Gm-Message-State: AOAM530GIRaIZcQP93sUt5l5B3IIolqoPn19Oa7dpmSlDKIW8qah/vTa
+ AOAMyJtxCFj6bFZpNfWnf+4F6k80XPfmJ5N2HuknD+JpEplSVrjbwqMkyZMCJXtxlQYX6I9WohB
+ 2qAi0+F8Yx7ZqPXRgblqX4yUQtQDzPU2rzgL0ZmP/RgbqxLI7G37LSA==
+X-Google-Smtp-Source: ABdhPJzAzVL/jgyTyMBdgt10LBLSTNS2DA2lnFUL+O5dsWAxDcT8sK2SlRfFIRynAKemi0S1vNd4CagGZA==
+X-Received: from yaelt.nyc.corp.google.com
+ ([2620:0:1003:415:fdfb:5043:291f:63ca])
+ (user=yaelt job=sendgmr) by 2002:a81:2450:0:b0:2d6:aee8:f0d5 with SMTP id
+ k77-20020a812450000000b002d6aee8f0d5mr1248279ywk.81.1645646877043; Wed, 23
+ Feb 2022 12:07:57 -0800 (PST)
+Date: Wed, 23 Feb 2022 15:07:31 -0500
+Message-Id: <20220223200731.1859670-1-yaelt@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.35.1.473.g83b2b277ed-goog
 To: ltp@lists.linux.it
-Date: Wed, 23 Feb 2022 16:32:43 +0100
-Message-Id: <20220223153243.317-4-pvorel@suse.cz>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220223153243.317-1-pvorel@suse.cz>
-References: <20220223153243.317-1-pvorel@suse.cz>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] quotactl09: Use do_mount()
+Subject: [LTP] [PATCH v4] syscalls/keyctl09: test encrypted keys with
+ provided decrypted data.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,73 +73,116 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Yael Tzur via ltp <ltp@lists.linux.it>
+Reply-To: Yael Tzur <yaelt@google.com>
+Cc: linux-integrity@vger.kernel.org, Yael Tzur <yaelt@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-to change:
-quotactl08.c:160: TBROK: mount(/dev/loop0, mntpoint, ext4, 0, (nil)) failed: ESRCH (3)
+Test that encrypted keys can be instantiated using hex-ascii
+encoded user-provided decrypted data.
+(https://lore.kernel.org/lkml/20220215141953.1557009-1-yaelt@google.com/).
 
-to TCONF if FS quota is not supported (the same fix as 4aab31e4c7).
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Yael Tzur <yaelt@google.com>
 ---
- testcases/kernel/syscalls/quotactl/quotactl09.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl09.c b/testcases/kernel/syscalls/quotactl/quotactl09.c
-index 8b959909ca..57030f7d2e 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl09.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl09.c
-@@ -32,7 +32,7 @@
- #define OPTION_INVALID 999
+Notes:
+    v -> v2: added key revocation and made styling changes.
+    
+    v2 -> v3: updated per latest kernel patch version.
+    
+    v3 -> v4: made styling changes.
+
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/keyctl/.gitignore |  1 +
+ testcases/kernel/syscalls/keyctl/keyctl09.c | 53 +++++++++++++++++++++
+ 3 files changed, 55 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl09.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index bcf3d56c9..ccea1ddbd 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -643,6 +643,7 @@ keyctl05 keyctl05
+ keyctl06 keyctl06
+ keyctl07 keyctl07
+ keyctl08 keyctl08
++keyctl09 keyctl09
  
- static int32_t fmt_id = QFMT_VFS_V1;
--static int test_id;
-+static int test_id, mount_flag;
- static int getnextquota_nsup, socket_fd = -1;
- 
- static struct if_nextdqblk res_ndq;
-@@ -144,6 +144,12 @@ static void setup(void)
- {
- 	unsigned int i;
- 
-+	if (!tst_variant)
-+		SAFE_MKDIR(MNTPOINT, 0777);
+ kcmp01 kcmp01
+ kcmp02 kcmp02
+diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
+index 3544ac79c..f9948c176 100644
+--- a/testcases/kernel/syscalls/keyctl/.gitignore
++++ b/testcases/kernel/syscalls/keyctl/.gitignore
+@@ -6,3 +6,4 @@
+ /keyctl06
+ /keyctl07
+ /keyctl08
++/keyctl09
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl09.c b/testcases/kernel/syscalls/keyctl/keyctl09.c
+new file mode 100644
+index 000000000..71fc2f2a9
+--- /dev/null
++++ b/testcases/kernel/syscalls/keyctl/keyctl09.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 Google, Inc.
++ */
 +
-+	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
-+	mount_flag = 1;
++/*\
++ * [Description]
++ * Test that encrypted keys can be instantiated using user-provided decrypted
++ * data that is hex-ascii encoded.
++ */
 +
- 	quotactl_info();
- 
- 	socket_fd = SAFE_SOCKET(PF_INET, SOCK_STREAM, 0);
-@@ -163,8 +169,12 @@ static void cleanup(void)
- {
- 	if (fd > -1)
- 		SAFE_CLOSE(fd);
++#include "tst_test.h"
++#include "lapi/keyctl.h"
 +
- 	if (socket_fd > -1)
- 		SAFE_CLOSE(socket_fd);
++#define ENCRYPTED_KEY_VALID_PAYLOAD	"new enc32 user:masterkey 32 abcdefABCDEF1234567890aaaaaaaaaa"
++#define ENCRYPTED_KEY_INVALID_PAYLOAD	"new enc32 user:masterkey 32 plaintext123@123!123@123!123@123"
 +
-+	if (mount_flag && tst_umount(MNTPOINT))
-+		tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
- }
- 
- static struct tst_test test = {
-@@ -178,8 +188,8 @@ static struct tst_test test = {
- 	.test = verify_quotactl,
- 	.dev_fs_opts = (const char *const[]){"-O quota", NULL},
- 	.dev_fs_type = "ext4",
--	.mntpoint = MNTPOINT,
--	.mount_device = 1,
-+	//.mntpoint = MNTPOINT,
-+	.format_device = 1,
- 	.needs_root = 1,
- 	.test_variants = QUOTACTL_SYSCALL_VARIANTS,
- 	.needs_cmds = (const char *[]) {
++static void do_test(void)
++{
++	char buffer[128];
++
++	TST_EXP_POSITIVE(add_key("user", "user:masterkey", "foo", 3,
++			    KEY_SPEC_PROCESS_KEYRING));
++
++	if (!TST_PASS)
++		return;
++
++	TST_EXP_POSITIVE(add_key("encrypted", "ltptestkey1",
++			    ENCRYPTED_KEY_VALID_PAYLOAD,
++			    60, KEY_SPEC_PROCESS_KEYRING));
++
++	if (!TST_PASS)
++		return;
++
++	TST_EXP_POSITIVE(keyctl(KEYCTL_READ, TST_RET, buffer, sizeof(buffer)));
++
++	if (!TST_PASS)
++		return;
++
++	TST_EXP_FAIL2(add_key("encrypted", "ltptestkey2",
++			    ENCRYPTED_KEY_INVALID_PAYLOAD, 60,
++			    KEY_SPEC_PROCESS_KEYRING), EINVAL);
++
++	keyctl(KEYCTL_CLEAR, KEY_SPEC_PROCESS_KEYRING);
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_DECRYPTED_DATA=y",
++		NULL
++	}
++};
 -- 
-2.35.1
+2.35.1.473.g83b2b277ed-goog
 
 
 -- 
