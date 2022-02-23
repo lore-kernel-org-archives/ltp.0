@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B3CEC433EF
-	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 09:14:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0435FC433EF
+	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 10:20:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A29A93C9AE1
-	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 10:14:02 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EFC913C9845
+	for <ltp@archiver.kernel.org>; Wed, 23 Feb 2022 11:20:37 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 192F93C0309
- for <ltp@lists.linux.it>; Wed, 23 Feb 2022 10:13:52 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E60D73C9564
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 11:20:26 +0100 (CET)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DD0CC601562
- for <ltp@lists.linux.it>; Wed, 23 Feb 2022 10:13:51 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 976FD1F3A3;
- Wed, 23 Feb 2022 09:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1645607630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=rsbF3c2HruRI+enO1pzX/uVa1sHW4ZA1H1f5z/q8NHU=;
- b=oTF+6r55ObFvwNvO2I7PNITBybV4XzLyeJtt8F1cU3UGKTxWp2Gilheof+M6+6YGSaLCnt
- ifHlmmMrmdVmZ4J5TVcc3H/ISF0C/zlNe9iGc05h4sewzZjz5wWCbDB/KkHtgPF8pR4syn
- m0o+ezo9Lw0aYGRAZFZc68DzrKz5EoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1645607630;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=rsbF3c2HruRI+enO1pzX/uVa1sHW4ZA1H1f5z/q8NHU=;
- b=8fEJjH9BVVW4/uPimVtd3265S4hHIBrwEqm3p4aJEmsdPYhVQAoGXS8gsj4DsZEPrRfR8t
- qmGb9UII3BiOqfDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 46ED113C6A;
- Wed, 23 Feb 2022 09:13:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id HxV+C876FWKEJAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 23 Feb 2022 09:13:50 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 23 Feb 2022 10:13:49 +0100
-Message-Id: <20220223091349.30833-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 128E12009CB
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 11:20:26 +0100 (CET)
+Received: by mail-wr1-x436.google.com with SMTP id s1so12319121wrg.10
+ for <ltp@lists.linux.it>; Wed, 23 Feb 2022 02:20:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=mItomy5BwHd5wz4+WvKFJ894SlALa256ZKkkk0MxlyQ=;
+ b=fSRF0ZKaUGj2H2Mf2ldltITQGg8YpD2cO2mlyXhX1os5qbRy6P1rUnzguouxg+DaU4
+ ILA5NiAjT4Gug2TPSEES/YzjGErZVeF64pR5r6sviwEmSpsXGgX8DyIiPH47+VGxQezi
+ UjpN02k1pSXd7iqWGnCDj3eCmFBIG3xM0SKM3MiIPxbjEeiQdVKmCtSvj/nSzq/YpOGE
+ en5ufJ01ka4swZZU/mpVOjhet0UaAhgU6AT5CtwvDZII1sd21sQiJdT8AKFl4L9kp0jR
+ zZBBCn2U10irDSh18H1onaZNNWn7Ayq2FnRrnnNrJcWpYK9L8ArFaWl0CFjaC0evrz0j
+ eSeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=mItomy5BwHd5wz4+WvKFJ894SlALa256ZKkkk0MxlyQ=;
+ b=GVIVWl3L9EsNqdmqeJ4RKI0/mibeOiwO+pd6Jzdf4biV3wApsszHgLIbCtKDb/qXub
+ 8V1ZJP3xNy6kdfzhf9JoB9ZGWd525DtLNXBUbvPnxYKOuPyTv8VFvwzJA6Xg3ED9y0IO
+ N0wwY3BPTJ0Ia1lqg5vP4Pg/74qCbrDqmPLnK5GtAq8agu7IjzTHYRbK1b+s/XysiVM1
+ UBp0HMLshub3oPaKZ7/DsGxwRRmFEDQDtE7BAP9O6fmgvLoZinh3GM9GLJMGHKUHpXAT
+ XOr3gVy0Wu4Iv8lIhwmaq8SPspcJvdFUXZI4+G2Qwyyn44Tv4lvbopRSv2csCLShJw8a
+ SyoA==
+X-Gm-Message-State: AOAM530r58em3ZV/8YU2PhFonEL+nIxqYIqn2iCDvzwhjbKBI5l9l/Pb
+ VyINeiIj/iDT+wBpyTJIKHTlphFgkYc6Iq2unWQ=
+X-Google-Smtp-Source: ABdhPJyvuieWsXUh531IHnjaiRT1RhZvjOaENkWT+wOhPOyAUYRZFO8MI3KdYa2UTisjjWiwDL7GOISH3ebYGHjcYIM=
+X-Received: by 2002:a5d:6b0f:0:b0:1e7:9432:ee8c with SMTP id
+ v15-20020a5d6b0f000000b001e79432ee8cmr21507510wrw.216.1645611625454; Wed, 23
+ Feb 2022 02:20:25 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20220210105101.38337-1-kushalkataria5@gmail.com>
+ <YgUw7scGZwUcK22E@yuki>
+In-Reply-To: <YgUw7scGZwUcK22E@yuki>
+From: Kushal Chand <kushalkataria5@gmail.com>
+Date: Wed, 23 Feb 2022 15:50:13 +0530
+Message-ID: <CAKaR1hXZL5vfq_SXXwyh8wCr4Rwwugi4ydDzXKhMwGVUsiHoBQ@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Split waitid01.c test into multiple tests
+Subject: Re: [LTP] [PATCH v2] fstat_02: Increase test coverage by creating
+ hard link to file and validate using fstat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,323 +73,354 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============1482928964=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Introduced LTP API usage and splitted waitid01.c into three tests:
-waitid01, waitid10 and waitid11.
+--===============1482928964==
+Content-Type: multipart/alternative; boundary="0000000000005f9e7905d8acd002"
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
- runtest/syscalls                            |   2 +
- testcases/kernel/syscalls/waitid/.gitignore |   2 +
- testcases/kernel/syscalls/waitid/waitid01.c | 151 +++++---------------
- testcases/kernel/syscalls/waitid/waitid10.c |  47 ++++++
- testcases/kernel/syscalls/waitid/waitid11.c |  48 +++++++
- 5 files changed, 133 insertions(+), 117 deletions(-)
- create mode 100644 testcases/kernel/syscalls/waitid/waitid10.c
- create mode 100644 testcases/kernel/syscalls/waitid/waitid11.c
+--0000000000005f9e7905d8acd002
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index d48216a15..59e495193 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1706,6 +1706,8 @@ waitid06 waitid06
- waitid07 waitid07
- waitid08 waitid08
- waitid09 waitid09
-+waitid10 waitid10
-+waitid11 waitid11
- 
- write01 write01
- write02 write02
-diff --git a/testcases/kernel/syscalls/waitid/.gitignore b/testcases/kernel/syscalls/waitid/.gitignore
-index 315af1690..089d860c7 100644
---- a/testcases/kernel/syscalls/waitid/.gitignore
-+++ b/testcases/kernel/syscalls/waitid/.gitignore
-@@ -7,3 +7,5 @@
- /waitid07
- /waitid08
- /waitid09
-+/waitid10
-+/waitid11
-diff --git a/testcases/kernel/syscalls/waitid/waitid01.c b/testcases/kernel/syscalls/waitid/waitid01.c
-index b6579d91d..60ecf9022 100644
---- a/testcases/kernel/syscalls/waitid/waitid01.c
-+++ b/testcases/kernel/syscalls/waitid/waitid01.c
-@@ -1,126 +1,43 @@
--/******************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007                                   */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software Foundation,   */
--/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
--/*                                                                            */
--/******************************************************************************/
--/******************************************************************************/
--/*                                                                            */
--/* Description: This tests the waitid() syscall                               */
--/*                                                                            */
--/* Test Name:   waitid01                                                      */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
--/******************************************************************************/
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test is checking if waitid() syscall does wait for WEXITED and check for
-+ * the return value.
-+ */
- 
--#include <stdio.h>
--#include <errno.h>
- #include <stdlib.h>
- #include <sys/wait.h>
--#include <sys/types.h>
--#include <unistd.h>
--#include <sys/stat.h>
-+#include "tst_test.h"
- 
--#include "test.h"
-+static siginfo_t *infop;
- 
--char *TCID = "waitid01";
--int testno;
--int TST_TOTAL = 3;
--
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--void display_status(siginfo_t * infop)
-+static void run(void)
- {
--	tst_resm(TINFO, "Process %d terminated:", infop->si_pid);
--	tst_resm(TINFO, "code = %d", infop->si_code);
--	if (infop->si_code == CLD_EXITED)
--		tst_resm(TINFO, "exit value = %d", infop->si_status);
--	else
--		tst_resm(TINFO, "signal = %d", infop->si_status);
--}
--
--int main(int ac, char **av)
--{
--	id_t pid;
--	siginfo_t infop;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
-+	pid_t pidchild;
- 
--	setup();
-+	pidchild = SAFE_FORK();
-+	if (!pidchild)
-+		exit(123);
- 
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--
--			TEST(fork());
--			if (TEST_RETURN < 0)
--				tst_brkm(TBROK | TTERRNO, NULL,
--					"fork() failed");
--
--			if (TEST_RETURN == 0) {
--				exit(123);
--			} else {
--				TEST(waitid(P_ALL, getpid(), &infop, WEXITED));
--				if (TEST_RETURN == -1) {
--					tst_brkm(TFAIL | TTERRNO,
--						 NULL,
--						 "waitid(getpid()) failed");
--				} else
--					display_status(&infop);	//CLD_EXITED = 1
--			}
--
--			TEST(fork());
--			if (TEST_RETURN < 0)
--				tst_brkm(TBROK | TTERRNO, NULL,
--					"fork() failed");
--
--			if (TEST_RETURN == 0) {
--				int a, b = 0;
--				a = 1 / b;
--				tst_exit();
--			} else {
--				TEST(waitid(P_ALL, 0, &infop, WEXITED));
--				if (TEST_RETURN == -1) {
--					tst_brkm(TFAIL | TTERRNO,
--						 NULL, "waitid(0) failed");
--				} else
--					display_status(&infop);	//CLD_DUMPED = 3 ; SIGFPE = 8
--			}
--
--			TEST(pid = fork());
--			if (TEST_RETURN < 0)
--				tst_brkm(TBROK | TTERRNO, NULL,
--					"fork() failed");
--
--			if (TEST_RETURN == 0) {
--				TEST(sleep(10));
--				tst_exit();
--			}
--			TEST(kill(pid, SIGHUP));
--			TEST(waitid(P_ALL, 0, &infop, WEXITED));
--			if (TEST_RETURN == -1) {
--				tst_brkm(TFAIL | TTERRNO, NULL,
--					 "waitid(0) failed");
--			} else
--				display_status(&infop);	//CLD_KILLED = 2 ; SIGHUP = 1
--		}
--	}
--	tst_resm(TPASS, "waitid(): system call passed");
--	tst_exit();
-+	TST_EXP_PASS(waitid(P_ALL, getpid(), infop, WEXITED));
-+	TST_EXP_EQ_LI(infop->si_pid, pidchild);
-+	TST_EXP_EQ_LI(infop->si_status, 123);
-+	TST_EXP_EQ_LI(infop->si_signo, SIGCHLD);
-+	TST_EXP_EQ_LI(infop->si_code, CLD_EXITED);
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.forks_child = 1,
-+	.bufs =
-+		(struct tst_buffers[]){
-+			{ &infop, .size = sizeof(*infop) },
-+			{},
-+		},
-+};
-diff --git a/testcases/kernel/syscalls/waitid/waitid10.c b/testcases/kernel/syscalls/waitid/waitid10.c
-new file mode 100644
-index 000000000..3b2b0fae9
---- /dev/null
-+++ b/testcases/kernel/syscalls/waitid/waitid10.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test is checking if waitid() syscall recognizes a process that ended
-+ * with division by zero error.
-+ */
-+
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+#include "tst_test.h"
-+
-+static siginfo_t *infop;
-+
-+static void run(void)
-+{
-+	pid_t pidchild;
-+
-+	pidchild = SAFE_FORK();
-+	if (!pidchild) {
-+		volatile int a, zero = 0;
-+
-+		a = 1 / zero;
-+		exit(0);
-+	}
-+
-+	TST_EXP_PASS(waitid(P_ALL, pidchild, infop, WEXITED));
-+	TST_EXP_EQ_LI(infop->si_pid, pidchild);
-+	TST_EXP_EQ_LI(infop->si_status, SIGFPE);
-+	TST_EXP_EQ_LI(infop->si_signo, SIGCHLD);
-+	TST_EXP_EQ_LI(infop->si_code, CLD_DUMPED);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.forks_child = 1,
-+	.bufs =
-+		(struct tst_buffers[]){
-+			{ &infop, .size = sizeof(*infop) },
-+			{},
-+		},
-+};
-diff --git a/testcases/kernel/syscalls/waitid/waitid11.c b/testcases/kernel/syscalls/waitid/waitid11.c
-new file mode 100644
-index 000000000..8f2b847ea
---- /dev/null
-+++ b/testcases/kernel/syscalls/waitid/waitid11.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This test is checking if waitid() syscall recognizes a process that has been
-+ * killed with SIGKILL.
-+ */
-+
-+#include <time.h>
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+#include "tst_test.h"
-+
-+static siginfo_t *infop;
-+
-+static void run(void)
-+{
-+	pid_t pidchild;
-+
-+	pidchild = SAFE_FORK();
-+	if (!pidchild) {
-+		sleep(10);
-+		return;
-+	}
-+
-+	SAFE_KILL(pidchild, SIGKILL);
-+
-+	TST_EXP_PASS(waitid(P_ALL, 0, infop, WEXITED));
-+	TST_EXP_EQ_LI(infop->si_pid, pidchild);
-+	TST_EXP_EQ_LI(infop->si_status, SIGKILL);
-+	TST_EXP_EQ_LI(infop->si_signo, SIGCHLD);
-+	TST_EXP_EQ_LI(infop->si_code, CLD_KILLED);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.forks_child = 1,
-+	.bufs =
-+		(struct tst_buffers[]){
-+			{ &infop, .size = sizeof(*infop) },
-+			{},
-+		},
-+};
--- 
-2.35.1
+Hi,
+
+Apology for the late reply.
+
+I am not sure about the st_blocks size. If you can guide me how to check
+that I might work on that?
+
+Are you planning to merge this patch with the st_blocks check or the
+current version is ready to be merged?
+
+On Thu, Feb 10, 2022 at 9:04 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> The subject should be shorter and more to the point, something as:
+>
+> "fstat02: Validate st_nlink as well"
+>
+> > Implements: #517
+>
+> The code looks good now, but it's not complete solution to #517, there
+> are still many fields of the structure that are not checked and a few
+> more patches would be required to complete it.
+>
+> For instance the st_blocks should be more or less equal size/512
+>
+> And we should check the atime/mtime/ctime as well, but maybe it would be
+> easier if we do that in a separate test.
+>
+> > This patch creates a hard link for a file during setup and checks if
+> number of hardlinks
+> > match with the expected number.
+>
+> This is missing Signed-off-by: line see:
+>
+>
+> https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+>
+> > ---
+> >  testcases/kernel/syscalls/fstat/fstat02.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/testcases/kernel/syscalls/fstat/fstat02.c
+> b/testcases/kernel/syscalls/fstat/fstat02.c
+> > index c0229de44..2f9632edf 100644
+> > --- a/testcases/kernel/syscalls/fstat/fstat02.c
+> > +++ b/testcases/kernel/syscalls/fstat/fstat02.c
+> > @@ -17,8 +17,10 @@
+> >  #include "tst_safe_macros.h"
+> >
+> >  #define TESTFILE        "test_file"
+> > +#define LINK_TESTFILE   "link_test_file"
+> >  #define FILE_SIZE       1024
+> >  #define FILE_MODE    0644
+> > +#define NLINK                2
+> >
+> >  static struct stat stat_buf;
+> >  static uid_t user_id;
+> > @@ -61,6 +63,12 @@ static void run(void)
+> >               fail++;
+> >       }
+> >
+> > +     if (stat_buf.st_nlink != NLINK) {
+> > +             tst_res(TFAIL, "stat_buf.st_nlink = %li expected %i",
+> > +                     (long)stat_buf.st_nlink, NLINK);
+> > +             fail++;
+> > +     }
+> > +
+> >       if (fail)
+> >               return;
+> >
+> > @@ -78,6 +86,8 @@ static void setup(void)
+> >
+> >       if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
+> >               tst_brk(TBROK, "Could not fill Testfile!");
+> > +
+> > +     SAFE_LINK(TESTFILE, LINK_TESTFILE);
+> >  }
+> >
+> >  static void cleanup(void)
+> > --
+> > 2.25.1
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+
+
+On Thu, Feb 10, 2022 at 9:04 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> The subject should be shorter and more to the point, something as:
+>
+> "fstat02: Validate st_nlink as well"
+>
+> > Implements: #517
+>
+> The code looks good now, but it's not complete solution to #517, there
+> are still many fields of the structure that are not checked and a few
+> more patches would be required to complete it.
+>
+> For instance the st_blocks should be more or less equal size/512
+>
+> And we should check the atime/mtime/ctime as well, but maybe it would be
+> easier if we do that in a separate test.
+>
+> > This patch creates a hard link for a file during setup and checks if
+> number of hardlinks
+> > match with the expected number.
+>
+> This is missing Signed-off-by: line see:
+>
+>
+> https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+>
+> > ---
+> >  testcases/kernel/syscalls/fstat/fstat02.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/testcases/kernel/syscalls/fstat/fstat02.c
+> b/testcases/kernel/syscalls/fstat/fstat02.c
+> > index c0229de44..2f9632edf 100644
+> > --- a/testcases/kernel/syscalls/fstat/fstat02.c
+> > +++ b/testcases/kernel/syscalls/fstat/fstat02.c
+> > @@ -17,8 +17,10 @@
+> >  #include "tst_safe_macros.h"
+> >
+> >  #define TESTFILE        "test_file"
+> > +#define LINK_TESTFILE   "link_test_file"
+> >  #define FILE_SIZE       1024
+> >  #define FILE_MODE    0644
+> > +#define NLINK                2
+> >
+> >  static struct stat stat_buf;
+> >  static uid_t user_id;
+> > @@ -61,6 +63,12 @@ static void run(void)
+> >               fail++;
+> >       }
+> >
+> > +     if (stat_buf.st_nlink != NLINK) {
+> > +             tst_res(TFAIL, "stat_buf.st_nlink = %li expected %i",
+> > +                     (long)stat_buf.st_nlink, NLINK);
+> > +             fail++;
+> > +     }
+> > +
+> >       if (fail)
+> >               return;
+> >
+> > @@ -78,6 +86,8 @@ static void setup(void)
+> >
+> >       if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
+> >               tst_brk(TBROK, "Could not fill Testfile!");
+> > +
+> > +     SAFE_LINK(TESTFILE, LINK_TESTFILE);
+> >  }
+> >
+> >  static void cleanup(void)
+> > --
+> > 2.25.1
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+
+--0000000000005f9e7905d8acd002
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">Hi,<br><br>Apology for the late reply.=C2=
+=A0<br><br>I am not sure about the st_blocks size. If you can guide me how =
+to check that I might work on that?<br><br>Are you planning to merge this p=
+atch with the st_blocks check or the current version is ready to be merged?=
+</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">=
+On Thu, Feb 10, 2022 at 9:04 PM Cyril Hrubis &lt;<a href=3D"mailto:chrubis@=
+suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><blockquote class=3D"gmail=
+_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204=
+,204);padding-left:1ex">Hi!<br>The subject should be shorter and more to th=
+e point, something as:<br><br>&quot;fstat02: Validate st_nlink as well&quot=
+;<br><br>&gt; Implements: #517<br><br>The code looks good now, but it&#39;s=
+ not complete solution to #517, there<br>are still many fields of the struc=
+ture that are not checked and a few<br>more patches would be required to co=
+mplete it.<br><br>For instance the st_blocks should be more or less equal s=
+ize/512<br><br>And we should check the atime/mtime/ctime as well, but maybe=
+ it would be<br>easier if we do that in a separate test.<br><br>&gt; This p=
+atch creates a hard link for a file during setup and checks if number of ha=
+rdlinks<br>&gt; match with the expected number.<br><br>This is missing Sign=
+ed-off-by: line see:<br><br><a href=3D"https://www.kernel.org/doc/html/v4.1=
+7/process/submitting-patches.html#sign-your-work-the-developer-s-certificat=
+e-of-origin" rel=3D"noreferrer" target=3D"_blank">https://www.kernel.org/do=
+c/html/v4.17/process/submitting-patches.html#sign-your-work-the-developer-s=
+-certificate-of-origin</a><br><br>&gt; ---<br>&gt;=C2=A0 testcases/kernel/s=
+yscalls/fstat/fstat02.c | 10 ++++++++++<br>&gt;=C2=A0 1 file changed, 10 in=
+sertions(+)<br>&gt;<br>&gt; diff --git a/testcases/kernel/syscalls/fstat/fs=
+tat02.c b/testcases/kernel/syscalls/fstat/fstat02.c<br>&gt; index c0229de44=
+..2f9632edf 100644<br>&gt; --- a/testcases/kernel/syscalls/fstat/fstat02.c<=
+br>&gt; +++ b/testcases/kernel/syscalls/fstat/fstat02.c<br>&gt; @@ -17,8 +1=
+7,10 @@<br>&gt;=C2=A0 #include &quot;tst_safe_macros.h&quot;<br>&gt;=C2=A0<=
+br>&gt;=C2=A0 #define TESTFILE=C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;test_file&q=
+uot;<br>&gt; +#define LINK_TESTFILE=C2=A0 =C2=A0&quot;link_test_file&quot;<=
+br>&gt;=C2=A0 #define FILE_SIZE=C2=A0 =C2=A0 =C2=A0 =C2=A01024<br>&gt;=C2=
+=A0 #define FILE_MODE=C2=A0 =C2=A0 0644<br>&gt; +#define NLINK=C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 2<br>&gt;=C2=A0<br>&gt;=C2=A0 st=
+atic struct stat stat_buf;<br>&gt;=C2=A0 static uid_t user_id;<br>&gt; @@ -=
+61,6 +63,12 @@ static void run(void)<br>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0fail++;<br>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>&gt;=
+=C2=A0<br>&gt; +=C2=A0 =C2=A0 =C2=A0if (stat_buf.st_nlink !=3D NLINK) {<br>=
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TFAIL, &quot;=
+stat_buf.st_nlink =3D %li expected %i&quot;,<br>&gt; +=C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(long)stat_buf.st_nl=
+ink, NLINK);<br>&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fail+=
++;<br>&gt; +=C2=A0 =C2=A0 =C2=A0}<br>&gt; +<br>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0if (fail)<br>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+return;<br>&gt;=C2=A0<br>&gt; @@ -78,6 +86,8 @@ static void setup(void)<br>=
+&gt;=C2=A0<br>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_fill_file(TESTFILE, &#=
+39;a&#39;, FILE_SIZE, 1))<br>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0tst_brk(TBROK, &quot;Could not fill Testfile!&quot;);<br>&gt; =
++<br>&gt; +=C2=A0 =C2=A0 =C2=A0SAFE_LINK(TESTFILE, LINK_TESTFILE);<br>&gt;=
+=C2=A0 }<br>&gt;=C2=A0<br>&gt;=C2=A0 static void cleanup(void)<br>&gt; --<b=
+r>&gt; 2.25.1<br>&gt;<br>&gt;<br>&gt; --<br>&gt; Mailing list info:=C2=A0<a=
+ href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"noreferrer" target=3D"=
+_blank">https://lists.linux.it/listinfo/ltp</a><br><br>--<br>Cyril Hrubis<b=
+r><a href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a><=
+/blockquote></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" cla=
+ss=3D"gmail_attr">On Thu, Feb 10, 2022 at 9:04 PM Cyril Hrubis &lt;<a href=
+=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+The subject should be shorter and more to the point, something as:<br>
+<br>
+&quot;fstat02: Validate st_nlink as well&quot;<br>
+<br>
+&gt; Implements: #517<br>
+<br>
+The code looks good now, but it&#39;s not complete solution to #517, there<=
+br>
+are still many fields of the structure that are not checked and a few<br>
+more patches would be required to complete it.<br>
+<br>
+For instance the st_blocks should be more or less equal size/512<br>
+<br>
+And we should check the atime/mtime/ctime as well, but maybe it would be<br=
+>
+easier if we do that in a separate test.<br>
+<br>
+&gt; This patch creates a hard link for a file during setup and checks if n=
+umber of hardlinks<br>
+&gt; match with the expected number.<br>
+<br>
+This is missing Signed-off-by: line see:<br>
+<br>
+<a href=3D"https://www.kernel.org/doc/html/v4.17/process/submitting-patches=
+.html#sign-your-work-the-developer-s-certificate-of-origin" rel=3D"noreferr=
+er" target=3D"_blank">https://www.kernel.org/doc/html/v4.17/process/submitt=
+ing-patches.html#sign-your-work-the-developer-s-certificate-of-origin</a><b=
+r>
+<br>
+&gt; ---<br>
+&gt;=C2=A0 testcases/kernel/syscalls/fstat/fstat02.c | 10 ++++++++++<br>
+&gt;=C2=A0 1 file changed, 10 insertions(+)<br>
+&gt; <br>
+&gt; diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/ker=
+nel/syscalls/fstat/fstat02.c<br>
+&gt; index c0229de44..2f9632edf 100644<br>
+&gt; --- a/testcases/kernel/syscalls/fstat/fstat02.c<br>
+&gt; +++ b/testcases/kernel/syscalls/fstat/fstat02.c<br>
+&gt; @@ -17,8 +17,10 @@<br>
+&gt;=C2=A0 #include &quot;tst_safe_macros.h&quot;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 #define TESTFILE=C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;test_file&quot=
+;<br>
+&gt; +#define LINK_TESTFILE=C2=A0 =C2=A0&quot;link_test_file&quot;<br>
+&gt;=C2=A0 #define FILE_SIZE=C2=A0 =C2=A0 =C2=A0 =C2=A01024<br>
+&gt;=C2=A0 #define FILE_MODE=C2=A0 =C2=A0 0644<br>
+&gt; +#define NLINK=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+2<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 static struct stat stat_buf;<br>
+&gt;=C2=A0 static uid_t user_id;<br>
+&gt; @@ -61,6 +63,12 @@ static void run(void)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fail++;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
+&gt;=C2=A0 <br>
+&gt; +=C2=A0 =C2=A0 =C2=A0if (stat_buf.st_nlink !=3D NLINK) {<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TFAIL, &quot;=
+stat_buf.st_nlink =3D %li expected %i&quot;,<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0(long)stat_buf.st_nlink, NLINK);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fail++;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0}<br>
+&gt; +<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (fail)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return;<br>
+&gt;=C2=A0 <br>
+&gt; @@ -78,6 +86,8 @@ static void setup(void)<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_fill_file(TESTFILE, &#39;a&#39;, FIL=
+E_SIZE, 1))<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TBROK, &=
+quot;Could not fill Testfile!&quot;);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0SAFE_LINK(TESTFILE, LINK_TESTFILE);<br>
+&gt;=C2=A0 }<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 static void cleanup(void)<br>
+&gt; -- <br>
+&gt; 2.25.1<br>
+&gt; <br>
+&gt; <br>
+&gt; -- <br>
+&gt; Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=
+=3D"noreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><b=
+r>
+<br>
+-- <br>
+Cyril Hrubis<br>
+<a href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a><br=
+>
+</blockquote></div>
+
+--0000000000005f9e7905d8acd002--
+
+--===============1482928964==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1482928964==--
