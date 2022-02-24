@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFFBC433EF
-	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 09:28:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11DFEC433EF
+	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 15:34:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C5D63C9F2B
-	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 10:28:23 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E92633CA1A9
+	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 16:34:14 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBE353C96B4
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 10:28:13 +0100 (CET)
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com
- [IPv6:2607:f8b0:4864:20::b32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ED3F014044D9
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 10:28:12 +0100 (CET)
-Received: by mail-yb1-xb32.google.com with SMTP id u3so489676ybh.5
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 01:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=ygp7HmSMQP3Q+rbTx5g2DkVDCEdl+SFVfMjp/BmaoiI=;
- b=cepL0hdCN9UbyCzkOyV9cQEdxhgUijKh9zmmcDO5ikU473yp2AMOZcJXilqLRa0sFX
- zfJ9F6q5gR/6iBDSs/MWKl5HIY9yjtZF5m5sa1Ox3N3Gu4/ncdRBYcD3fvzUBnuQqtrM
- nAUWwm6kL8VdrogYpBrNw18wLKWFmZd6DDEvOI6D4H+mHJGqcA8phVZheJzRPgN7lv64
- eRe0E1LIuKHztxG7hg2oe7Qf66pC89aNTF/Ig8zlbtlXZZhzOOy4WbazNK2qNpt4Zstb
- gznQQkwisI3iIEeReJZnQLwDvvvJDXee/MNMui+50vNhX2zNwhqzm+l5ZvFAoJxzA9Pw
- B3iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=ygp7HmSMQP3Q+rbTx5g2DkVDCEdl+SFVfMjp/BmaoiI=;
- b=5hiOhLcwphPiDGdSp1LtFNxi6WHsuL5deuivYnXdvFLq9iTpkJrTRAHNqy/ALlEZN4
- nl97gZUE0sDDU2Z6YZOJHU53PgzPg6MIdIxIx3li5wF0BW79bXtCQlOGs+ky0HW2WdeP
- MRcceBYnXbdEIdWGNu/r1rUrzQQ1Phiiv6IoF8KlmZSeWC0S6l7NxWSq8JIr6slzBvW4
- wwUShyEBTz2GNpwHX+Fks7HbFS4ZZn9P6NaYYT5kqen290gQTJPqy67rxwLzOKyonAL8
- o5h0FiTDbD2NdJhcxuV10Ee6t9dkOMol65vbBPtsGwPk8Z7LUIokg5mhPcBFyXwOYmr3
- VlmQ==
-X-Gm-Message-State: AOAM530bJnkqyZA45onME5ya6Zp5Z/c56FPQC5wi6kgOLdOVbV3jZCNZ
- IQ53RUtQK0HYBtXfSII3/+kTdoZLhjr4Le0WY8vDmvJAXXbzdQ==
-X-Google-Smtp-Source: ABdhPJxscph16DkI7QPkYWvFXGKPAB18KesE5yybvpBkL5Qinq23VhWYa9sR4nWUBegylDrScVJnGI8fPsI6IwGs7nc=
-X-Received: by 2002:a25:6993:0:b0:624:55af:336c with SMTP id
- e141-20020a256993000000b0062455af336cmr1603707ybc.412.1645694890926; Thu, 24
- Feb 2022 01:28:10 -0800 (PST)
+ by picard.linux.it (Postfix) with ESMTPS id EE2FA3C9B4E
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 16:34:05 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9736260063E
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 16:34:04 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AEB1A212C1
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 15:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1645716843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UeaDkLrT+Oih5Da3hzly50VYGtaoGjzcktLMgK2Mihc=;
+ b=JE9w6f2hLQ3tQ/m2fyEDha/qiuyFJuUxpzD4dfzxWxzsdbSW7cBYGRgb76OeofalIzvWz2
+ FTq4STdocra51fKheoFfmWbObZm5aDuFAGybDF8EMVN84B/NeAQf/JddL6nWg406c/sM5n
+ ZkJ7zzCRQWq9fxybI7fdn1WcH8DER7o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1645716843;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UeaDkLrT+Oih5Da3hzly50VYGtaoGjzcktLMgK2Mihc=;
+ b=zBDKDaXqd41a1U6VZr3MVT9rgvkormPuHKtF0XpqFOeGabrIl4kXMnFfejNlaCJ36UqBve
+ QUERPcZcSNgsaOCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9602513AFF
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 15:34:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id xaIAI2ulF2KxYQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 15:34:03 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 24 Feb 2022 16:34:02 +0100
+Message-Id: <20220224153402.1778-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 24 Feb 2022 14:57:59 +0530
-Message-ID: <CA+G9fYs_8ww=Mi4o4XXjQxL2XJiTiAUbMd1WF08zL+FoiA7GRw@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>, open list <linux-kernel@vger.kernel.org>, 
- linux-fsdevel@vger.kernel.org, regressions@lists.linux.dev, 
- lkft-triage@lists.linaro.org
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [next] LTP: readahead02.c:295: TFAIL: readahead failed to
- save any I/O
+Subject: [LTP] [PATCH] Fix setsockopt(PACKET_RX_RING) usage on PPC64
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,35 +72,117 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Kees Cook <keescook@chromium.org>,
- David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Muchun Song <songmuchun@bytedance.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alexey Dobriyan <adobriyan@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Linux next 20220222 tag LTP syscalls test case readahead02 failed.
-Please find detail test output on below link [1]
+struct tpacket_req3.tp_block_size value must be a multiple of page size.
+Replace constants with values calculated from actual page size to fix
+setsockopt() tests on PPC64 which has 64KB pages instead of 4KB.
 
-test failed log:
---------------------
-readahead02.c:181: TPASS: offset is still at 0 as expected
-readahead02.c:285: TINFO: read_testfile(0) took: 37567 usec
-readahead02.c:286: TINFO: read_testfile(1) took: 37263 usec
-readahead02.c:288: TINFO: read_testfile(0) read: 0 bytes
-readahead02.c:290: TINFO: read_testfile(1) read: 0 bytes
-readahead02.c:295: TFAIL: readahead failed to save any I/O
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ testcases/kernel/syscalls/setsockopt/setsockopt06.c | 6 ++++--
+ testcases/kernel/syscalls/setsockopt/setsockopt07.c | 6 ++++--
+ testcases/kernel/syscalls/setsockopt/setsockopt09.c | 4 +++-
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt06.c b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
+index 12a80dee4..644e61f3f 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt06.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
+@@ -28,6 +28,7 @@
+ #include "lapi/if_ether.h"
+ 
+ static int sock = -1;
++static unsigned int pagesize;
+ static struct tst_fzsync_pair fzsync_pair;
+ 
+ static void setup(void)
+@@ -35,6 +36,7 @@ static void setup(void)
+ 	int real_uid = getuid();
+ 	int real_gid = getgid();
+ 
++	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
+ 	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+@@ -52,9 +54,9 @@ static void *thread_run(void *arg)
+ {
+ 	int ret;
+ 	struct tpacket_req3 req = {
+-		.tp_block_size = 4096,
++		.tp_block_size = pagesize,
+ 		.tp_block_nr = 1,
+-		.tp_frame_size = 4096,
++		.tp_frame_size = pagesize,
+ 		.tp_frame_nr = 1,
+ 		.tp_retire_blk_tov = 100
+ 	};
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt07.c b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
+index d2c568e3e..d22f9918b 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt07.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
+@@ -31,6 +31,7 @@
+ #include "lapi/if_ether.h"
+ 
+ static int sock = -1;
++static unsigned int pagesize;
+ static struct tst_fzsync_pair fzsync_pair;
+ 
+ static void setup(void)
+@@ -38,6 +39,7 @@ static void setup(void)
+ 	int real_uid = getuid();
+ 	int real_gid = getgid();
+ 
++	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
+ 	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+@@ -73,9 +75,9 @@ static void run(void)
+ 	unsigned int val, version = TPACKET_V3;
+ 	socklen_t vsize = sizeof(val);
+ 	struct tpacket_req3 req = {
+-		.tp_block_size = 4096,
++		.tp_block_size = pagesize,
+ 		.tp_block_nr = 1,
+-		.tp_frame_size = 4096,
++		.tp_frame_size = pagesize,
+ 		.tp_frame_nr = 1,
+ 		.tp_retire_blk_tov = 100
+ 	};
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt09.c b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+index baaefda15..2fc66ebbc 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt09.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+@@ -31,12 +31,14 @@
+ #include "lapi/if_packet.h"
+ 
+ static int sock = -1;
++static unsigned int pagesize;
+ 
+ static void setup(void)
+ {
+ 	int real_uid = getuid();
+ 	int real_gid = getgid();
+ 
++	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
+ 	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
+ 
+ 	SAFE_UNSHARE(CLONE_NEWUSER);
+@@ -50,7 +52,7 @@ static void run(void)
+ {
+ 	unsigned int version = TPACKET_V3;
+ 	struct tpacket_req3 req = {
+-		.tp_block_size = 16384,
++		.tp_block_size = 4 * pagesize,
+ 		.tp_block_nr = 256,
+ 		.tp_frame_size = TPACKET_ALIGNMENT << 7,
+ 		.tp_retire_blk_tov = 64,
+-- 
+2.34.1
 
---
-Linaro LKFT
-https://lkft.linaro.org
-
-[1] https://lkft.validation.linaro.org/scheduler/job/4607403#L16941
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
