@@ -4,63 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11DFEC433EF
-	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 15:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64A2EC433F5
+	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 19:41:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E92633CA1A9
-	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 16:34:14 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BC00F3CA0FF
+	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 20:41:06 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id C7F253C978E
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 20:40:56 +0100 (CET)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE2FA3C9B4E
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 16:34:05 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9736260063E
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 16:34:04 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AEB1A212C1
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 15:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1645716843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=UeaDkLrT+Oih5Da3hzly50VYGtaoGjzcktLMgK2Mihc=;
- b=JE9w6f2hLQ3tQ/m2fyEDha/qiuyFJuUxpzD4dfzxWxzsdbSW7cBYGRgb76OeofalIzvWz2
- FTq4STdocra51fKheoFfmWbObZm5aDuFAGybDF8EMVN84B/NeAQf/JddL6nWg406c/sM5n
- ZkJ7zzCRQWq9fxybI7fdn1WcH8DER7o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1645716843;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=UeaDkLrT+Oih5Da3hzly50VYGtaoGjzcktLMgK2Mihc=;
- b=zBDKDaXqd41a1U6VZr3MVT9rgvkormPuHKtF0XpqFOeGabrIl4kXMnFfejNlaCJ36UqBve
- QUERPcZcSNgsaOCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9602513AFF
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 15:34:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id xaIAI2ulF2KxYQAAMHmgww
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 15:34:03 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu, 24 Feb 2022 16:34:02 +0100
-Message-Id: <20220224153402.1778-1-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.34.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 12ED81000DEC
+ for <ltp@lists.linux.it>; Thu, 24 Feb 2022 20:40:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=GrbBLAbtvC4chaYdzgUK1w1hf9+xtC4k6cVzY/iVx3U=; b=pUaNsZxVGnEHGlDh9Mk+nY4Puc
+ WDK2PKuOlt4p0TsbO6ETD2kRFFIDMPq93CdkJa9Iab0H00mjKKQLei1dPnXOHapqa58yCw72eYM4E
+ jlgrtc0l94HKpO/qSd6rRHBtIBI62VoEfbYdqDPC3hfIVl7cAWxyarEfP5GMPxxrivrWd2tj/QTtX
+ vMrA9PdF5ZHtwmXXUbcDoAk3PZumDSG6NW/yIway8XVyvJu28V5/hlFS4SmLWB4bDAglam6GIOtPg
+ EIakVt52CXxk2k40RN34UYCk8ko1gF5NiN2m5ieGbD1Qldb3mOTj2Ip+6w3fCOaQJD8L54/o+c8zk
+ OLAW9wCw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1nNJyt-0054y2-Hj; Thu, 24 Feb 2022 19:40:51 +0000
+Date: Thu, 24 Feb 2022 19:40:51 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Message-ID: <YhffQ6XStJycOmK1@casper.infradead.org>
+References: <CA+G9fYs_8ww=Mi4o4XXjQxL2XJiTiAUbMd1WF08zL+FoiA7GRw@mail.gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYs_8ww=Mi4o4XXjQxL2XJiTiAUbMd1WF08zL+FoiA7GRw@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Fix setsockopt(PACKET_RX_RING) usage on PPC64
+Subject: Re: [LTP] [next] LTP: readahead02.c:295: TFAIL: readahead failed to
+ save any I/O
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,117 +57,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, regressions@lists.linux.dev,
+ David Hildenbrand <david@redhat.com>, open list <linux-kernel@vger.kernel.org>,
+ lkft-triage@lists.linaro.org, Luis Chamberlain <mcgrof@kernel.org>,
+ Peter Xu <peterx@redhat.com>, Muchun Song <songmuchun@bytedance.com>,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Alexey Dobriyan <adobriyan@gmail.com>, LTP List <ltp@lists.linux.it>,
+ Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-struct tpacket_req3.tp_block_size value must be a multiple of page size.
-Replace constants with values calculated from actual page size to fix
-setsockopt() tests on PPC64 which has 64KB pages instead of 4KB.
+On Thu, Feb 24, 2022 at 02:57:59PM +0530, Naresh Kamboju wrote:
+> On Linux next 20220222 tag LTP syscalls test case readahead02 failed.
+> Please find detail test output on below link [1]
+> 
+> test failed log:
+> --------------------
+> readahead02.c:181: TPASS: offset is still at 0 as expected
+> readahead02.c:285: TINFO: read_testfile(0) took: 37567 usec
+> readahead02.c:286: TINFO: read_testfile(1) took: 37263 usec
+> readahead02.c:288: TINFO: read_testfile(0) read: 0 bytes
+> readahead02.c:290: TINFO: read_testfile(1) read: 0 bytes
+> readahead02.c:295: TFAIL: readahead failed to save any I/O
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- testcases/kernel/syscalls/setsockopt/setsockopt06.c | 6 ++++--
- testcases/kernel/syscalls/setsockopt/setsockopt07.c | 6 ++++--
- testcases/kernel/syscalls/setsockopt/setsockopt09.c | 4 +++-
- 3 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt06.c b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
-index 12a80dee4..644e61f3f 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt06.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
-@@ -28,6 +28,7 @@
- #include "lapi/if_ether.h"
- 
- static int sock = -1;
-+static unsigned int pagesize;
- static struct tst_fzsync_pair fzsync_pair;
- 
- static void setup(void)
-@@ -35,6 +36,7 @@ static void setup(void)
- 	int real_uid = getuid();
- 	int real_gid = getgid();
- 
-+	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
- 	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
- 
- 	SAFE_UNSHARE(CLONE_NEWUSER);
-@@ -52,9 +54,9 @@ static void *thread_run(void *arg)
- {
- 	int ret;
- 	struct tpacket_req3 req = {
--		.tp_block_size = 4096,
-+		.tp_block_size = pagesize,
- 		.tp_block_nr = 1,
--		.tp_frame_size = 4096,
-+		.tp_frame_size = pagesize,
- 		.tp_frame_nr = 1,
- 		.tp_retire_blk_tov = 100
- 	};
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt07.c b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
-index d2c568e3e..d22f9918b 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt07.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
-@@ -31,6 +31,7 @@
- #include "lapi/if_ether.h"
- 
- static int sock = -1;
-+static unsigned int pagesize;
- static struct tst_fzsync_pair fzsync_pair;
- 
- static void setup(void)
-@@ -38,6 +39,7 @@ static void setup(void)
- 	int real_uid = getuid();
- 	int real_gid = getgid();
- 
-+	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
- 	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
- 
- 	SAFE_UNSHARE(CLONE_NEWUSER);
-@@ -73,9 +75,9 @@ static void run(void)
- 	unsigned int val, version = TPACKET_V3;
- 	socklen_t vsize = sizeof(val);
- 	struct tpacket_req3 req = {
--		.tp_block_size = 4096,
-+		.tp_block_size = pagesize,
- 		.tp_block_nr = 1,
--		.tp_frame_size = 4096,
-+		.tp_frame_size = pagesize,
- 		.tp_frame_nr = 1,
- 		.tp_retire_blk_tov = 100
- 	};
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt09.c b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
-index baaefda15..2fc66ebbc 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt09.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
-@@ -31,12 +31,14 @@
- #include "lapi/if_packet.h"
- 
- static int sock = -1;
-+static unsigned int pagesize;
- 
- static void setup(void)
- {
- 	int real_uid = getuid();
- 	int real_gid = getgid();
- 
-+	pagesize = SAFE_SYSCONF(_SC_PAGESIZE);
- 	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
- 
- 	SAFE_UNSHARE(CLONE_NEWUSER);
-@@ -50,7 +52,7 @@ static void run(void)
- {
- 	unsigned int version = TPACKET_V3;
- 	struct tpacket_req3 req = {
--		.tp_block_size = 16384,
-+		.tp_block_size = 4 * pagesize,
- 		.tp_block_nr = 256,
- 		.tp_frame_size = TPACKET_ALIGNMENT << 7,
- 		.tp_retire_blk_tov = 64,
--- 
-2.34.1
-
+Confirmed, I can reproduce this with the folio tree.  Will work on
+this once I've disposed of the other bug I'm looking at right now.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
