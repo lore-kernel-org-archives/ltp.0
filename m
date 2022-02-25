@@ -4,48 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A4FC433F5
-	for <ltp@archiver.kernel.org>; Fri, 25 Feb 2022 03:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E848C433F5
+	for <ltp@archiver.kernel.org>; Fri, 25 Feb 2022 10:56:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DEA583CA10D
-	for <ltp@archiver.kernel.org>; Fri, 25 Feb 2022 04:36:28 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 363D53CA1DD
+	for <ltp@archiver.kernel.org>; Fri, 25 Feb 2022 11:56:29 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 63F863C9D13
- for <ltp@lists.linux.it>; Fri, 25 Feb 2022 04:36:18 +0100 (CET)
-Received: from cxsh.intel-email.com (cxsh.intel-email.com [121.46.250.151])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id C01D03C9D4E
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:56:19 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 44D111400985
- for <ltp@lists.linux.it>; Fri, 25 Feb 2022 04:36:07 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by cxsh.intel-email.com (Postfix) with ESMTP id 28F19DDA7AE
- for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:36:03 +0800 (CST)
-Received: from cxsh.intel-email.com (localhost [127.0.0.1])
- by cxsh.intel-email.com (Postfix) with ESMTP id D56D6DDA7F5
- for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:36:02 +0800 (CST)
-Authentication-Results: cxsh.intel-email.com; none
-Received: from FZEX3.ruijie.com.cn (unknown [120.35.11.201])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2BF4E20A6C5
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:56:18 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by cxsh.intel-email.com (Postfix) with ESMTPS id 3A6EEDDA7D5
- for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:36:00 +0800 (CST)
-Received: from localhost.localdomain (172.29.46.186) by FZEX3.ruijie.com.cn
- (192.168.58.89) with Microsoft SMTP Server id 14.3.123.3; Fri, 25 Feb 2022
- 11:35:59 +0800
-From: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-To: <ltp@lists.linux.it>
-Date: Thu, 24 Feb 2022 22:34:56 -0500
-Message-ID: <20220225033456.63578-1-xiaoshoukui@ruijie.com.cn>
-X-Mailer: git-send-email 2.20.1
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F15BA212C0;
+ Fri, 25 Feb 2022 10:56:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1645786577;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gaZLy3TIETfZgguA+JYnvaSbyUKKah6RyS1nrcMJkWI=;
+ b=Py87IWBRswybrRNluWpJrHTU3MeE8FrWi/oahX7jEROPwlBoApbcQAu296nKvDoy/PA/yc
+ 7/jtP00l8jhNj08aCXFY1PH5c0am7jfgQWSTOLiVLJTh0SkeoCVP/f2Mcb7r6RAaNG6qSK
+ UpwQc+M7kBDbXlbrE9eXLPxmFh0jzIM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1645786577;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gaZLy3TIETfZgguA+JYnvaSbyUKKah6RyS1nrcMJkWI=;
+ b=+kbUq9gQOnl9MaIkgxvynorFfBjUcrEMOKdyrX9hL7DUSK/DpFbL1WcO8eiEXnY232uYNH
+ 0rz+C1zclCXBKPAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C0ACC13ACB;
+ Fri, 25 Feb 2022 10:56:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8p72LNG1GGKTAQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 25 Feb 2022 10:56:17 +0000
+Date: Fri, 25 Feb 2022 11:56:15 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <Yhi1z+FrkZWMaC8y@pevik>
+References: <20220224153402.1778-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Originating-IP: [172.29.46.186]
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220224153402.1778-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] Add pty06 test for use-after-free in
- con_shutdown()
+Subject: Re: [LTP] [PATCH] Fix setsockopt(PACKET_RX_RING) usage on PPC64
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,119 +76,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
----
- testcases/kernel/pty/Makefile |  4 +-
- testcases/kernel/pty/pty06.c  | 78 +++++++++++++++++++++++++++++++++++
- 2 files changed, 80 insertions(+), 2 deletions(-)
- create mode 100644 testcases/kernel/pty/pty06.c
+Hi Martin,
 
-diff --git a/testcases/kernel/pty/Makefile b/testcases/kernel/pty/Makefile
-index d4c6c87f0..51b7356c2 100644
---- a/testcases/kernel/pty/Makefile
-+++ b/testcases/kernel/pty/Makefile
-@@ -6,7 +6,7 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--pty03 pty05: CFLAGS += -pthread
--pty03 pty05: LDLIBS += -lrt
-+pty03 pty05 pty06: CFLAGS += -pthread
-+pty03 pty05 pty06: LDLIBS += -lrt
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/pty/pty06.c b/testcases/kernel/pty/pty06.c
-new file mode 100644
-index 000000000..9fcd341e6
---- /dev/null
-+++ b/testcases/kernel/pty/pty06.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-+ *
-+ * Test based on Syzkaller reproducer:
-+ * https://syzkaller.appspot.com/bug?extid=522643ab5729b0421998
-+ *
-+ * The VT_DISALLOCATE ioctl can free a virtual console while tty_release()
-+ * is still running, causing a use-after-free in con_shutdown().	This
-+ * occurs because VT_DISALLOCATE only considers a virtual console to be
-+ * in-use if it has a tty_struct with count > 0.	But actually when
-+ * count == 0, the tty is still in the process of being closed.
-+ *
-+ * Fixed by commit ca4463bf8438:
-+ * "vt: vt_ioctl: fix VT_DISALLOCATE freeing in-use virtual console"
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <termios.h>
-+#include <linux/vt.h>
-+#include "lapi/ioctl.h"
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "tst_fuzzy_sync.h"
-+
-+#define BUF_SIZE 256
-+static char tty_path_a[BUF_SIZE];
-+static char tty_path_b[BUF_SIZE];
-+static int tst_tty_port = 8;
-+static struct tst_fzsync_pair fzp;
-+
-+static void *open_close(void *unused) {
-+    sprintf(tty_path_b, "/dev/tty%d", tst_tty_port);
-+    while (tst_fzsync_run_b(&fzp)) {
-+        tst_fzsync_start_race_b(&fzp);
-+        int fd = SAFE_OPEN(tty_path_b, O_RDWR);
-+        SAFE_CLOSE(fd);
-+        tst_fzsync_end_race_b(&fzp);
-+    }
-+    return unused;
-+}
-+
-+static void do_test(void) {
-+    sprintf(tty_path_a, "/dev/tty%d", tst_tty_port + 1);
-+    int fd = SAFE_OPEN(tty_path_a, O_RDWR);
-+    tst_fzsync_pair_reset(&fzp, open_close);
-+    while (tst_fzsync_run_a(&fzp)) {
-+        tst_fzsync_start_race_a(&fzp);
-+        ioctl(fd, VT_DISALLOCATE, tst_tty_port);
-+        tst_fzsync_end_race_a(&fzp);
-+    }
-+    tst_res(TPASS, "Did not crash with VT_DISALLOCATE");
-+}
-+
-+static void setup(void) {
-+    tst_fzsync_pair_init(&fzp);
-+}
-+
-+static void cleanup(void) {
-+    tst_fzsync_pair_cleanup(&fzp);
-+}
-+
-+static struct tst_test test = {
-+        .test_all = do_test,
-+        .setup = setup,
-+        .cleanup = cleanup,
-+        .needs_root = 1,
-+        .tags = (const struct tst_tag[]) {
-+                {"linux-git", "ca4463bf8438"},
-+                {}
-+        }
-+};
--- 
-2.20.1
+> struct tpacket_req3.tp_block_size value must be a multiple of page size.
+> Replace constants with values calculated from actual page size to fix
+> setsockopt() tests on PPC64 which has 64KB pages instead of 4KB.
 
+Thanks!
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Before merging this I'll just fix breaking CI (missing libmm-dev in Debian testing).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
