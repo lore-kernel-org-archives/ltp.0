@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64A2EC433F5
-	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 19:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A4FC433F5
+	for <ltp@archiver.kernel.org>; Fri, 25 Feb 2022 03:36:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC00F3CA0FF
-	for <ltp@archiver.kernel.org>; Thu, 24 Feb 2022 20:41:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id DEA583CA10D
+	for <ltp@archiver.kernel.org>; Fri, 25 Feb 2022 04:36:28 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7F253C978E
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 20:40:56 +0100 (CET)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 63F863C9D13
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 04:36:18 +0100 (CET)
+Received: from cxsh.intel-email.com (cxsh.intel-email.com [121.46.250.151])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 12ED81000DEC
- for <ltp@lists.linux.it>; Thu, 24 Feb 2022 20:40:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=GrbBLAbtvC4chaYdzgUK1w1hf9+xtC4k6cVzY/iVx3U=; b=pUaNsZxVGnEHGlDh9Mk+nY4Puc
- WDK2PKuOlt4p0TsbO6ETD2kRFFIDMPq93CdkJa9Iab0H00mjKKQLei1dPnXOHapqa58yCw72eYM4E
- jlgrtc0l94HKpO/qSd6rRHBtIBI62VoEfbYdqDPC3hfIVl7cAWxyarEfP5GMPxxrivrWd2tj/QTtX
- vMrA9PdF5ZHtwmXXUbcDoAk3PZumDSG6NW/yIway8XVyvJu28V5/hlFS4SmLWB4bDAglam6GIOtPg
- EIakVt52CXxk2k40RN34UYCk8ko1gF5NiN2m5ieGbD1Qldb3mOTj2Ip+6w3fCOaQJD8L54/o+c8zk
- OLAW9wCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1nNJyt-0054y2-Hj; Thu, 24 Feb 2022 19:40:51 +0000
-Date: Thu, 24 Feb 2022 19:40:51 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Message-ID: <YhffQ6XStJycOmK1@casper.infradead.org>
-References: <CA+G9fYs_8ww=Mi4o4XXjQxL2XJiTiAUbMd1WF08zL+FoiA7GRw@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 44D111400985
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 04:36:07 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by cxsh.intel-email.com (Postfix) with ESMTP id 28F19DDA7AE
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:36:03 +0800 (CST)
+Received: from cxsh.intel-email.com (localhost [127.0.0.1])
+ by cxsh.intel-email.com (Postfix) with ESMTP id D56D6DDA7F5
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:36:02 +0800 (CST)
+Authentication-Results: cxsh.intel-email.com; none
+Received: from FZEX3.ruijie.com.cn (unknown [120.35.11.201])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by cxsh.intel-email.com (Postfix) with ESMTPS id 3A6EEDDA7D5
+ for <ltp@lists.linux.it>; Fri, 25 Feb 2022 11:36:00 +0800 (CST)
+Received: from localhost.localdomain (172.29.46.186) by FZEX3.ruijie.com.cn
+ (192.168.58.89) with Microsoft SMTP Server id 14.3.123.3; Fri, 25 Feb 2022
+ 11:35:59 +0800
+From: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+To: <ltp@lists.linux.it>
+Date: Thu, 24 Feb 2022 22:34:56 -0500
+Message-ID: <20220225033456.63578-1-xiaoshoukui@ruijie.com.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYs_8ww=Mi4o4XXjQxL2XJiTiAUbMd1WF08zL+FoiA7GRw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Originating-IP: [172.29.46.186]
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [next] LTP: readahead02.c:295: TFAIL: readahead failed to
- save any I/O
+Subject: [LTP] [PATCH 1/1] Add pty06 test for use-after-free in
+ con_shutdown()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,33 +57,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, regressions@lists.linux.dev,
- David Hildenbrand <david@redhat.com>, open list <linux-kernel@vger.kernel.org>,
- lkft-triage@lists.linaro.org, Luis Chamberlain <mcgrof@kernel.org>,
- Peter Xu <peterx@redhat.com>, Muchun Song <songmuchun@bytedance.com>,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Alexey Dobriyan <adobriyan@gmail.com>, LTP List <ltp@lists.linux.it>,
- Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Feb 24, 2022 at 02:57:59PM +0530, Naresh Kamboju wrote:
-> On Linux next 20220222 tag LTP syscalls test case readahead02 failed.
-> Please find detail test output on below link [1]
-> 
-> test failed log:
-> --------------------
-> readahead02.c:181: TPASS: offset is still at 0 as expected
-> readahead02.c:285: TINFO: read_testfile(0) took: 37567 usec
-> readahead02.c:286: TINFO: read_testfile(1) took: 37263 usec
-> readahead02.c:288: TINFO: read_testfile(0) read: 0 bytes
-> readahead02.c:290: TINFO: read_testfile(1) read: 0 bytes
-> readahead02.c:295: TFAIL: readahead failed to save any I/O
+Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+---
+ testcases/kernel/pty/Makefile |  4 +-
+ testcases/kernel/pty/pty06.c  | 78 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 80 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/pty/pty06.c
 
-Confirmed, I can reproduce this with the folio tree.  Will work on
-this once I've disposed of the other bug I'm looking at right now.
+diff --git a/testcases/kernel/pty/Makefile b/testcases/kernel/pty/Makefile
+index d4c6c87f0..51b7356c2 100644
+--- a/testcases/kernel/pty/Makefile
++++ b/testcases/kernel/pty/Makefile
+@@ -6,7 +6,7 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-pty03 pty05: CFLAGS += -pthread
+-pty03 pty05: LDLIBS += -lrt
++pty03 pty05 pty06: CFLAGS += -pthread
++pty03 pty05 pty06: LDLIBS += -lrt
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/pty/pty06.c b/testcases/kernel/pty/pty06.c
+new file mode 100644
+index 000000000..9fcd341e6
+--- /dev/null
++++ b/testcases/kernel/pty/pty06.c
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 xiaoshoukui <xiaoshoukui@ruijie.com.cn>
++ *
++ * Test based on Syzkaller reproducer:
++ * https://syzkaller.appspot.com/bug?extid=522643ab5729b0421998
++ *
++ * The VT_DISALLOCATE ioctl can free a virtual console while tty_release()
++ * is still running, causing a use-after-free in con_shutdown().	This
++ * occurs because VT_DISALLOCATE only considers a virtual console to be
++ * in-use if it has a tty_struct with count > 0.	But actually when
++ * count == 0, the tty is still in the process of being closed.
++ *
++ * Fixed by commit ca4463bf8438:
++ * "vt: vt_ioctl: fix VT_DISALLOCATE freeing in-use virtual console"
++ *
++ */
++
++#define _GNU_SOURCE
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <errno.h>
++#include <termios.h>
++#include <linux/vt.h>
++#include "lapi/ioctl.h"
++
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
++#include "tst_fuzzy_sync.h"
++
++#define BUF_SIZE 256
++static char tty_path_a[BUF_SIZE];
++static char tty_path_b[BUF_SIZE];
++static int tst_tty_port = 8;
++static struct tst_fzsync_pair fzp;
++
++static void *open_close(void *unused) {
++    sprintf(tty_path_b, "/dev/tty%d", tst_tty_port);
++    while (tst_fzsync_run_b(&fzp)) {
++        tst_fzsync_start_race_b(&fzp);
++        int fd = SAFE_OPEN(tty_path_b, O_RDWR);
++        SAFE_CLOSE(fd);
++        tst_fzsync_end_race_b(&fzp);
++    }
++    return unused;
++}
++
++static void do_test(void) {
++    sprintf(tty_path_a, "/dev/tty%d", tst_tty_port + 1);
++    int fd = SAFE_OPEN(tty_path_a, O_RDWR);
++    tst_fzsync_pair_reset(&fzp, open_close);
++    while (tst_fzsync_run_a(&fzp)) {
++        tst_fzsync_start_race_a(&fzp);
++        ioctl(fd, VT_DISALLOCATE, tst_tty_port);
++        tst_fzsync_end_race_a(&fzp);
++    }
++    tst_res(TPASS, "Did not crash with VT_DISALLOCATE");
++}
++
++static void setup(void) {
++    tst_fzsync_pair_init(&fzp);
++}
++
++static void cleanup(void) {
++    tst_fzsync_pair_cleanup(&fzp);
++}
++
++static struct tst_test test = {
++        .test_all = do_test,
++        .setup = setup,
++        .cleanup = cleanup,
++        .needs_root = 1,
++        .tags = (const struct tst_tag[]) {
++                {"linux-git", "ca4463bf8438"},
++                {}
++        }
++};
+-- 
+2.20.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
