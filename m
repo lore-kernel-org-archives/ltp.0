@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67ACFC433EF
-	for <ltp@archiver.kernel.org>; Mon, 28 Feb 2022 13:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E691FC433EF
+	for <ltp@archiver.kernel.org>; Mon, 28 Feb 2022 13:49:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C80D13CA262
-	for <ltp@archiver.kernel.org>; Mon, 28 Feb 2022 14:34:11 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B57413CA297
+	for <ltp@archiver.kernel.org>; Mon, 28 Feb 2022 14:49:36 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B48303C9ED2
- for <ltp@lists.linux.it>; Mon, 28 Feb 2022 14:33:01 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 86D543C0F97
+ for <ltp@lists.linux.it>; Mon, 28 Feb 2022 14:49:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 33EEC600C30
- for <ltp@lists.linux.it>; Mon, 28 Feb 2022 14:33:01 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9B8DD1000DDA
+ for <ltp@lists.linux.it>; Mon, 28 Feb 2022 14:49:25 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CE6AD1F8A4;
- Mon, 28 Feb 2022 13:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646055180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BC438219A9;
+ Mon, 28 Feb 2022 13:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1646056164;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W2EVAAATpdwiOm9lBKLfQh8wLJPawPrc5VqApkuahc8=;
- b=Sj0AQglZgYLQqU3HjIVv23qTPPROXEyju5Q+CxC7wijH7lDBPJs84HG/tqm2z+VVZc96Lk
- GQw3cTuK5ITuHQX0gKMzUxcnZkumpy/Z4lVFrEuxvbDO/oZOapOGCY42DlvGPHtGzdnlBU
- pFpQSeYiULEviwq36k1qkNGfE0G2+LY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646055180;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ bh=wDeE/Yi/mL7L8TfXrzx/Pq3pvrNyLGP92w5nKjH9BD4=;
+ b=mxYOiXRWSqxRZ9mXVU065czbIcmzonEmEvqVUbfBH+qHKjIoXFdKDnTmexKvifmhxS7DKA
+ O1wkb6a5dsgN/g7JzL+jDfkbTwHlvE590gy3xq+zkmYXmCkGdBjMP+kkZwrak44wE/f4sl
+ 1qSQCB5PE/k4kdmLSrIR9mTr60CBftk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1646056164;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W2EVAAATpdwiOm9lBKLfQh8wLJPawPrc5VqApkuahc8=;
- b=1/TNG5KqKNZvYZfi8jvMjwCouseo/s5CLj9mPMHIlqaEd0ixoOY3Kp3+sdT6jFI5JLlOSs
- O+pRyPWme3E++VDw==
+ bh=wDeE/Yi/mL7L8TfXrzx/Pq3pvrNyLGP92w5nKjH9BD4=;
+ b=5BrnFxdHdMYFfFnjCG+hBFwxFdjrFfkJxb7uor3EKjWvrcC6r2sAcvwT7jyq0R5DM1JNUW
+ U8/BVfPj6berHwBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CBE513C29;
- Mon, 28 Feb 2022 13:33:00 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79F1613ADA;
+ Mon, 28 Feb 2022 13:49:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mKWoIwzPHGKhRQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Mon, 28 Feb 2022 13:33:00 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Mon, 28 Feb 2022 14:32:56 +0100
-Message-Id: <20220228133256.12763-7-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220228133256.12763-1-andrea.cervesato@suse.de>
-References: <20220228133256.12763-1-andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id r0JVGuTSHGIqTQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 28 Feb 2022 13:49:24 +0000
+Date: Mon, 28 Feb 2022 14:49:21 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Message-ID: <YhzS4TYk3s4L4jA8@pevik>
+References: <20220223153243.317-1-pvorel@suse.cz>
+ <20220223153243.317-3-pvorel@suse.cz>
+ <6216E3ED.1050700@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6216E3ED.1050700@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/6] Removed libclone usage from mountns testing
- suite
+Subject: Re: [LTP] [PATCH 2/3] quotactl08: Use do_mount()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,50 +78,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
- testcases/kernel/containers/mountns/Makefile | 21 +++-----------------
- 1 file changed, 3 insertions(+), 18 deletions(-)
+> Hi Petr
+> > to change
+> > quotactl08.c:160: TBROK: mount(/dev/loop0, mntpoint, ext4, 0, (nil)) failed: ESRCH (3)
+> I doubt why fs quota is not supported on this case since we have check
+> kernel config?
 
-diff --git a/testcases/kernel/containers/mountns/Makefile b/testcases/kernel/containers/mountns/Makefile
-index bd42bf41b..16284f4d5 100644
---- a/testcases/kernel/containers/mountns/Makefile
-+++ b/testcases/kernel/containers/mountns/Makefile
-@@ -1,23 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2014 Red Hat, Inc.
--#
--# This program is free software: you can redistribute it and/or modify
--# it under the terms of version 2 the GNU General Public License as
--# published by the Free Software Foundation.
--#
--# This program is distributed in the hope that it will be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program.  If not, see <http://www.gnu.org/licenses/>.
--##############################################################################
-+# Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
- 
--top_srcdir              ?= ../../../..
-+top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--include $(abs_srcdir)/../Makefile.inc
--
--LDLIBS                  := -lclone $(LDLIBS)
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
--- 
-2.35.1
+I have no idea.
+And yes, the config contains CONFIG_QFMT_V2=m
 
+Kind regards,
+Petr
+
+> Best Regards
+> Yang Xu
+
+> > to TCONF if FS quota is not supported (the same fix as 4aab31e4c7).
+
+> > Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> > ---
+> >   testcases/kernel/syscalls/quotactl/quotactl08.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+
+> > diff --git a/testcases/kernel/syscalls/quotactl/quotactl08.c b/testcases/kernel/syscalls/quotactl/quotactl08.c
+> > index 3793867f23..9f54bebcc0 100644
+> > --- a/testcases/kernel/syscalls/quotactl/quotactl08.c
+> > +++ b/testcases/kernel/syscalls/quotactl/quotactl08.c
+> > @@ -157,7 +157,7 @@ static void setup(void)
+> >   	quotactl_info();
+
+> >   	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+> > -	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
+> > +	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
+> >   	mount_flag = 1;
+
+> >   	fd = SAFE_OPEN(MNTPOINT, O_RDONLY);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
