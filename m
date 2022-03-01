@@ -4,48 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2419C433F5
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 07:10:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE10C433FE
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 07:59:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E5C63CA31C
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 08:10:22 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D42323CA305
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 08:59:03 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A2303CA2A9
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 08:10:10 +0100 (CET)
-Received: from cxsh.intel-email.com (cxsh.intel-email.com [121.46.250.151])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id BEB923CA2A9
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 08:58:54 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D8E4F24A70B
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 08:10:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by cxsh.intel-email.com (Postfix) with ESMTP id 7F1ECDDA7CD
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 15:10:01 +0800 (CST)
-Received: from cxsh.intel-email.com (localhost [127.0.0.1])
- by cxsh.intel-email.com (Postfix) with ESMTP id 3295CDDA7AE
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 15:10:01 +0800 (CST)
-Authentication-Results: cxsh.intel-email.com; none
-Received: from FZEX4.ruijie.com.cn (unknown [120.35.11.201])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 39A0BA4AA87
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 08:58:53 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by cxsh.intel-email.com (Postfix) with ESMTPS id 945D8DDA7D4
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 15:09:57 +0800 (CST)
-Received: from localhost.localdomain (172.29.46.186) by FZEX4.ruijie.com.cn
- (192.168.58.89) with Microsoft SMTP Server id 14.3.123.3; Tue, 1 Mar 2022
- 15:09:32 +0800
-From: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-To: <ltp@lists.linux.it>
-Date: Tue, 1 Mar 2022 02:08:40 -0500
-Message-ID: <20220301070840.74753-1-xiaoshoukui@ruijie.com.cn>
-X-Mailer: git-send-email 2.20.1
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C5AEB1F37D;
+ Tue,  1 Mar 2022 07:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1646121532;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4e7BDi6IiWap4fad/BgDorReT1aYnfmJg21NKuy7PWo=;
+ b=abbIuwCy2Uecg6DM0COyPe2+IDkO9wfpXE2UdmqZZtmnfc9UnwoGl2JK74CyC4OaHagPYP
+ PzeStxe/YHCO+e4CJNG2ge+kPw3L8MpSn1TtcSeTisVPYVfIB3guI/cCKTGuyKMRpVAypE
+ IEVfgu+ZaL7cLeqG7y5kJhdcJASKXmE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1646121532;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4e7BDi6IiWap4fad/BgDorReT1aYnfmJg21NKuy7PWo=;
+ b=Qswd8mf963tB3/ne0eKmBNZv4xizpWfJi0AQjkUpQaUDGKmRMmgPSaEJdcSjQmeHOGVZGE
+ OzsnhTQzb6Jtp2Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A55B13B08;
+ Tue,  1 Mar 2022 07:58:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id wdoQJDzSHWKNMwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 01 Mar 2022 07:58:52 +0000
+Date: Tue, 1 Mar 2022 08:58:51 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Message-ID: <Yh3SOwogWwWQdZ4O@pevik>
+References: <20220223153243.317-1-pvorel@suse.cz>
+ <20220223153243.317-3-pvorel@suse.cz>
+ <6216E3ED.1050700@fujitsu.com> <Yhz1+H3SAlwPaO8H@pevik>
+ <621D72EF.50500@fujitsu.com>
 MIME-Version: 1.0
-X-Originating-IP: [172.29.46.186]
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <621D72EF.50500@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Add pty06 test for use-after-free in con_shutdown()
+Subject: Re: [LTP] [PATCH 2/3] quotactl08: Use do_mount()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,163 +78,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Martin Doucha <martin.doucha@suse.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-adjust coding style and convert comment into assciidoc format.
-test on both bug and bug-fix kernels, thanks.
+> Hi Petr
+> > Hi Xu,
 
-Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
----
- runtest/pty                     |  1 +
- testcases/kernel/pty/.gitignore |  1 +
- testcases/kernel/pty/Makefile   |  4 +-
- testcases/kernel/pty/pty06.c    | 96 +++++++++++++++++++++++++++++++++
- 4 files changed, 100 insertions(+), 2 deletions(-)
- create mode 100644 testcases/kernel/pty/pty06.c
+> >> Hi Petr
+> >>> to change
+> >>> quotactl08.c:160: TBROK: mount(/dev/loop0, mntpoint, ext4, 0, (nil)) failed: ESRCH (3)
+> >> I doubt why fs quota is not supported on this case since we have check
+> >> kernel config?
 
-diff --git a/runtest/pty b/runtest/pty
-index a43b18f2d..9e5754fab 100644
---- a/runtest/pty
-+++ b/runtest/pty
-@@ -4,6 +4,7 @@ pty02 pty02
- pty03 pty03
- pty04 pty04
- pty05 pty05
-+pty06 pty06
- ptem01 ptem01
- hangup01 hangup01
- 
-diff --git a/testcases/kernel/pty/.gitignore b/testcases/kernel/pty/.gitignore
-index 7f1048483..9b6058cf9 100644
---- a/testcases/kernel/pty/.gitignore
-+++ b/testcases/kernel/pty/.gitignore
-@@ -5,3 +5,4 @@
- /pty03
- /pty04
- /pty05
-+/pty06
-diff --git a/testcases/kernel/pty/Makefile b/testcases/kernel/pty/Makefile
-index d4c6c87f0..51b7356c2 100644
---- a/testcases/kernel/pty/Makefile
-+++ b/testcases/kernel/pty/Makefile
-@@ -6,7 +6,7 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--pty03 pty05: CFLAGS += -pthread
--pty03 pty05: LDLIBS += -lrt
-+pty03 pty05 pty06: CFLAGS += -pthread
-+pty03 pty05 pty06: LDLIBS += -lrt
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/pty/pty06.c b/testcases/kernel/pty/pty06.c
-new file mode 100644
-index 000000000..bc7aabd70
---- /dev/null
-+++ b/testcases/kernel/pty/pty06.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test based on Syzkaller reproducer:
-+ * https://syzkaller.appspot.com/bug?extid=522643ab5729b0421998
-+ *
-+ * The VT_DISALLOCATE ioctl can free a virtual console while tty_release()
-+ * is still running, causing a use-after-free in con_shutdown().This occurs
-+ * because VT_DISALLOCATE only considers a virtual console to be in-use if
-+ * it has a tty_struct with count > 0.But actually when count == 0, the tty
-+ * is still in the process of being closed.
-+ *
-+ * Fixed by commit ca4463bf8438:
-+ * "vt: vt_ioctl: fix VT_DISALLOCATE freeing in-use virtual console"
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <termios.h>
-+#include <linux/vt.h>
-+#include "lapi/ioctl.h"
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "tst_fuzzy_sync.h"
-+
-+#define BUF_SIZE 256
-+static char tty_path_a[BUF_SIZE];
-+static char tty_path_b[BUF_SIZE];
-+static int test_tty_port = 8;
-+static struct tst_fzsync_pair fzp;
-+
-+static void *open_close(void *unused)
-+{
-+	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
-+
-+	while (tst_fzsync_run_b(&fzp)) {
-+		tst_fzsync_start_race_b(&fzp);
-+		int fd = SAFE_OPEN(tty_path_b, O_RDWR);
-+
-+		SAFE_CLOSE(fd);
-+		tst_fzsync_end_race_b(&fzp);
-+	}
-+
-+	return unused;
-+}
-+
-+static void do_test(void)
-+{
-+	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
-+	int fd = SAFE_OPEN(tty_path_a, O_RDWR);
-+
-+	tst_fzsync_pair_reset(&fzp, open_close);
-+
-+	while (tst_fzsync_run_a(&fzp)) {
-+		tst_fzsync_start_race_a(&fzp);
-+		ioctl(fd, VT_DISALLOCATE, test_tty_port);
-+		tst_fzsync_end_race_a(&fzp);
-+		if (tst_taint_check()) {
-+			tst_res(TFAIL, "Kernel is vulnerable");
-+			return;
-+		}
-+	}
-+	SAFE_CLOSE(fd);
-+	tst_res(TPASS, "Did not crash with VT_DISALLOCATE");
-+}
-+
-+static void setup(void)
-+{
-+	tst_fzsync_pair_init(&fzp);
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_fzsync_pair_cleanup(&fzp);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.tags = (const struct tst_tag[]) {
-+	    { "linux-git", "ca4463bf8438"},
-+	    {}
-+	}
-+};
--- 
-2.20.1
+> > There is probably bug on the SUT, thus it might be correct it fails.
 
+> > But how about martin's fix 4aab31e4c7 ("syscalls/quotactl: Skip tests if FS
+> > quota is not supported") - quotactl04.c also checks for CONFIG_QFMT_V2 and uses
+> > do_mount(). I'll check whether it was another bug on the system.
+> Maybe we miss check the following kernel config?
+In my case it's probably a problem with mkfs.
+
+> CONFIG_QUOTA=y
+Selected by [m]:
+  - OCFS2_FS [=m] && BLOCK [=y] && INET [=y] && SYSFS [=y] && CONFIGFS_FS [=m]
+=> very unlikely not to be selected (but we might want to check also corner case
+configurations; but I guess also CONFIG_QUOTA=m would be ok)
+
+> CONFIG_QUOTA_TREE=y
+Selected by [m]:
+  - OCFS2_FS [=m] && BLOCK [=y] && INET [=y] && SYSFS [=y] && CONFIGFS_FS [=m]
+Selected by [n]:
+  - QFMT_V2 [=n] && QUOTA [=y]
+ditto
+
+> CONFIG_QUOTACTL=y
+Selected by [y]:
+  - QUOTA [=y]
+Selected by [m]:
+  - XFS_QUOTA [=y] && BLOCK [=y] && XFS_FS [=m]
+  - GFS2_FS [=m] && BLOCK [=y]
+even more likely to be selected.
+
+Kind regards,
+Petr
+
+> Best Regards
+> Yang Xu
+
+> > Kind regards,
+> > Petr
+
+> >> Best Regards
+> >> Yang Xu
+
+> >>> to TCONF if FS quota is not supported (the same fix as 4aab31e4c7).
+
+> >>> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> >>> ---
+> >>>    testcases/kernel/syscalls/quotactl/quotactl08.c | 2 +-
+> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+
+> >>> diff --git a/testcases/kernel/syscalls/quotactl/quotactl08.c b/testcases/kernel/syscalls/quotactl/quotactl08.c
+> >>> index 3793867f23..9f54bebcc0 100644
+> >>> --- a/testcases/kernel/syscalls/quotactl/quotactl08.c
+> >>> +++ b/testcases/kernel/syscalls/quotactl/quotactl08.c
+> >>> @@ -157,7 +157,7 @@ static void setup(void)
+> >>>    	quotactl_info();
+
+> >>>    	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+> >>> -	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
+> >>> +	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
+> >>>    	mount_flag = 1;
+
+> >>>    	fd = SAFE_OPEN(MNTPOINT, O_RDONLY);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
