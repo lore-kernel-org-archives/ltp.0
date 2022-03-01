@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D22BCC433F5
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 03:56:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B142BC433F5
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 04:15:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A47173CA27E
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 04:56:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D826F3CA2B5
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 05:15:24 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 78A693C98AB
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 04:55:56 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E915E3CA2AE
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 05:15:14 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 58DDF10009A3
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 04:55:54 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D336B2009C7
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 05:15:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1646106953;
+ s=mimecast20190719; t=1646108112;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Bz7Ekx5ujRSVj+5oxc8wS5ia6YSVyieNwTFjhuF3Wjg=;
- b=Y91tn0vB/03nWYQjdMP8j5ODIe59Yn+fZv5IsgeJPZQPszFkHYqAiuySbF6dooB7LnPX6T
- wrZLZTKhlfUHcy+JIwpl+E83G1FFJEfCbdDlR2dof6PKk0OcYJX2wLRBUkOyVnb/MLogg+
- TeN+QZmlnVdeTI41CW/mLLCfwbrTnoU=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=uN6uut9JAQM0GW1B8xu1Mjb62iKZstdSoKhNDMzIiy8=;
+ b=HR3mPj3iR8/1LDMV7dps7V6ydvCnx4Gpit/cntapxBUDX0+49Mzmpvf6bPkP3ysS+gorNt
+ BokjAA7Co5pTi2xY8jmUNerywf5wPHlIgiHf2en6t6/FqHZwmCNiC6hQcqPFhDe7RrEkc9
+ mtqg9I27CyzanRJgTiiuXbgIxR8jqYc=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-436-XzJRq7iVMQGcHKhMQzqICQ-1; Mon, 28 Feb 2022 22:55:50 -0500
-X-MC-Unique: XzJRq7iVMQGcHKhMQzqICQ-1
-Received: by mail-yw1-f197.google.com with SMTP id
- 00721157ae682-2d6b6cf0cafso117174217b3.21
- for <ltp@lists.linux.it>; Mon, 28 Feb 2022 19:55:50 -0800 (PST)
+ us-mta-396-WcvEQl2YM7yqc8qQxVan-Q-1; Mon, 28 Feb 2022 23:15:10 -0500
+X-MC-Unique: WcvEQl2YM7yqc8qQxVan-Q-1
+Received: by mail-yw1-f200.google.com with SMTP id
+ 00721157ae682-2d6914a097cso117944487b3.10
+ for <ltp@lists.linux.it>; Mon, 28 Feb 2022 20:15:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=Bz7Ekx5ujRSVj+5oxc8wS5ia6YSVyieNwTFjhuF3Wjg=;
- b=71nS8nbeMvvOyPSOO8yVlnZX1xiu3rOvH2es9SgxgsnaFfPA+0TL7mHYsydUYq1JyH
- iceDLZfv/v5VmHhsZbBI+eREjtjC15SGouv32g68Ll8nbRepZAaa2brYed1lRx6sCJqL
- 3aXjwchniQoUx8uy1BecAvvSNb6mUPvSxkdXWtDK4/2W3uuLs1Oc/1JErIne/DB9izgz
- jQCrMXGfvM5dYSR2+DuVBeQfEJRWCbUgGzUf6s1BqkRLWOfUkokJaWsiNs6nUOsjHz25
- UZEpQPdrva6Pb23w7eSvD2ps3c8j4d2d+Ecjfzpy9KuvB451q0oPUFhM9Q5m6B945uDi
- sj8w==
-X-Gm-Message-State: AOAM533LVGGjDaTAxB+AF8GYF/lQKt5D5nIwJKPKiNhV/ihCNy9TYdXE
- PrBBkMe9Jc0ZKu9t5GTWjaFDJH2nng61tVOZ0Fw/GsG5xCLF4uxRVmssXZhTGK1Ago+AyrtNPGY
- Yl1jHBvySO97gafVRBMEQpwBYreU=
-X-Received: by 2002:a81:1611:0:b0:2d6:3290:9bd3 with SMTP id
- 17-20020a811611000000b002d632909bd3mr23446392yww.19.1646106949693; 
- Mon, 28 Feb 2022 19:55:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwhtwST1MJlCiresmCbJwQieCkqu2yb472shgmDmwGXj0J6HxLdqSB0Jc7dkFQxG/6lI53x633bx0sD3lKxNps=
-X-Received: by 2002:a81:1611:0:b0:2d6:3290:9bd3 with SMTP id
- 17-20020a811611000000b002d632909bd3mr23446386yww.19.1646106949268; Mon, 28
- Feb 2022 19:55:49 -0800 (PST)
+ bh=uN6uut9JAQM0GW1B8xu1Mjb62iKZstdSoKhNDMzIiy8=;
+ b=lw9j29ly2uSpatKvpNUI85i0yfDqRuUOOqHa/uIpHr+L8rTS1IKrRlRmh4d0kEtF2v
+ z9ft+ejpAPP2hHlgEERUkTnrMSfgsKlEgcXiIhfbVmn0hedsgKEOo8RaVTrJCncpdvnk
+ ku3FXvUaa+BPReJcuuijOukB9lpcw226qDlXs6DPAIK911iv2rI1lHiIk45Grb3PUDLg
+ p5jLiBuf5kywMQz4ldIwSYAYVr+xHNUmvBBfeB5s1uCkGCozqKGyhucJ2CfOagJEypBq
+ mhdeiraFxwEZJ8EbXwxzmjoMKQm7Vj6/N+BG6zSaO2qVJn4pmViUkVqCO0Yve8P0eC6e
+ 3lBg==
+X-Gm-Message-State: AOAM532vstQgtgICxKHJJ8SVylgfCuXV5fR4CDJfDOX6MxYTCRafiEtU
+ J0zGFmh04d1fVxsheJLcOmqP2ONQ4NGaj1uaUnpNvlJTb3q2fAEtjL5X+RhZu7r0wgNqtrs2EQT
+ T8ipq7kDkZTXkMJ7rR8S1kzA9sTA=
+X-Received: by 2002:a25:76ca:0:b0:628:759f:7990 with SMTP id
+ r193-20020a2576ca000000b00628759f7990mr1909421ybc.273.1646108110165; 
+ Mon, 28 Feb 2022 20:15:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyGGd2kOsGNFTUqzefbmYy4AvpdGlXAEwi5V2y/ZldmpEe5KWSkSuwsFDwT2EKjW5YN+gAebYYQPmhYYGO9JT4=
+X-Received: by 2002:a25:76ca:0:b0:628:759f:7990 with SMTP id
+ r193-20020a2576ca000000b00628759f7990mr1909407ybc.273.1646108109947; Mon, 28
+ Feb 2022 20:15:09 -0800 (PST)
 MIME-Version: 1.0
 References: <20220222124547.14396-1-rpalethorpe@suse.com>
  <20220222124547.14396-3-rpalethorpe@suse.com>
-In-Reply-To: <20220222124547.14396-3-rpalethorpe@suse.com>
+ <20220222144511.GA12037@blackbody.suse.cz>
+In-Reply-To: <20220222144511.GA12037@blackbody.suse.cz>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 1 Mar 2022 11:55:35 +0800
-Message-ID: <CAEemH2fAPvAL3d07MbvhTPR3yUKUUEG-XhxebQH=75N1CcEjVg@mail.gmail.com>
-To: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 1 Mar 2022 12:14:56 +0800
+Message-ID: <CAEemH2csXLfe_3mXUprM6A8HpBwngJjxPz6uPEvk+5H_qQCQMg@mail.gmail.com>
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v3 2/2] memcontrol04: Copy from kselftest
 X-BeenThere: ltp@lists.linux.it
@@ -86,119 +87,161 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1092619009=="
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0459986213=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1092619009==
-Content-Type: multipart/alternative; boundary="000000000000f9524b05d920231c"
+--===============0459986213==
+Content-Type: multipart/alternative; boundary="00000000000027e7ae05d920697a"
 
---000000000000f9524b05d920231c
+--00000000000027e7ae05d920697a
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Richard Palethorpe <rpalethorpe@suse.com> wrote:
+On Tue, Feb 22, 2022 at 10:45 PM Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
+e:
 
-+// SPDX-License-Identifier: GPL-2.0
-> +/*\
-> + *
-> + * [Description]
-> + *
-> + * Conversion of the forth kself test in cgroup/test_memcontrol.c.
-> + *
-> + * Original description:
-> + * "First, this test creates the following hierarchy:
-> + * A       memory.low = 50M,  memory.max = 200M
-> + * A/B     memory.low = 50M,  memory.current = 50M
-> + * A/B/C   memory.low = 75M,  memory.current = 50M
-> + * A/B/D   memory.low = 25M,  memory.current = 50M
-> + * A/B/E   memory.low = 500M, memory.current = 0
-> + * A/B/F   memory.low = 0,    memory.current = 50M
-> + *
-> + * Usages are pagecache
-> + * Then it creates A/G and creates a significant
-> + * memory pressure in it.
-> + *
-> + * A/B    memory.current ~= 50M
-> + * A/B/C  memory.current ~= 33M
-> + * A/B/D  memory.current ~= 17M
-> + * A/B/E  memory.current ~= 0
-> + *
-> + * After that it tries to allocate more than there is unprotected
-> + * memory in A available, and checks that memory.low protects
-> + * pagecache even in this case."
+> Hello.
+>
+> On Tue, Feb 22, 2022 at 12:45:47PM +0000, Richard Palethorpe <
+> rpalethorpe@suse.com> wrote:
+> > + * "First, this test creates the following hierarchy:
+> > + * A       memory.low =3D 50M,  memory.max =3D 200M
+> > + * A/B     memory.low =3D 50M,  memory.current =3D 50M
+> > + * A/B/C   memory.low =3D 75M,  memory.current =3D 50M
+> > + * A/B/D   memory.low =3D 25M,  memory.current =3D 50M
+> > + * A/B/E   memory.low =3D 500M, memory.current =3D 0
+> > + * A/B/F   memory.low =3D 0,    memory.current =3D 50M
+> > + *
+> > + * Usages are pagecache
+> > + * Then it creates A/G and creates a significant
+> > + * memory pressure in it.
+> > + *
+> > + * A/B    memory.current ~=3D 50M
+> > + * A/B/C  memory.current ~=3D 33M
+> > + * A/B/D  memory.current ~=3D 17M
+> > + * A/B/E  memory.current ~=3D 0
+>
+> This nicely misses the expected consumption of the F cgroup (I see it's
 >
 
-
-This is not exactly the original description of memory.low test,
-it looks like modified from memory.min part.
-
-Maybe we'd better copy from line#398~#418.
-https://github.com/torvalds/linux/blob/master/tools/testing/selftests/cgroup/test_memcontrol.c#L398
++1
 
 
--- 
+
+> missing in the original too). But one can expect from complementarity
+> it's zero (if one accepts these values, which unfortunately is not true
+> with hierarchical & scaled reclaim protection).
+>
+> > +             if (i < E || (i =3D=3D F && tst_cg_memory_recursiveprot()=
+)) {
+> > +                     TST_EXP_EXPR(low > 0,
+> > +                                  "(%c low events=3D%ld) > 0", id, low=
+);
+> > +             } else {
+> > +                     TST_EXP_EXPR(low =3D=3D 0,
+> > +                                  "(%c low events=3D%ld) =3D=3D 0", id=
+, low);
+> > +             }
+>
+> Despite this makes the test behavior consistent, I think this is
+> unexpected behavior with recursive_memoryprot. With the given
+> configuration, there should never be residual protection that F assumes.
+>
+> Unless there is a good explanation [1], I'd consider non-zero
+> memory.events:low in F the test failure here.
+>
+
+Hmm, the documentation does not give an explicit description for
+recursive_memoryprot. If things like you said, it is more like a
+CGroup bug in the kernel.
+
+--=20
 Regards,
 Li Wang
 
---000000000000f9524b05d920231c
+--00000000000027e7ae05d920697a
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 <div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse.com=
-">rpalethorpe@suse.com</a>&gt; wrote:<br></div></div><div class=3D"gmail_qu=
-ote"><div dir=3D"ltr" class=3D"gmail_attr"><br></div><blockquote class=3D"g=
-mail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204=
-,204,204);padding-left:1ex">
-+// SPDX-License-Identifier: GPL-2.0<br>
-+/*\<br>
-+ *<br>
-+ * [Description]<br>
-+ *<br>
-+ * Conversion of the forth kself test in cgroup/test_memcontrol.c.<br>
-+ *<br>
-+ * Original description:<br>
-+ * &quot;First, this test creates the following hierarchy:<br>
-+ * A=C2=A0 =C2=A0 =C2=A0 =C2=A0memory.low =3D 50M,=C2=A0 memory.max =3D 20=
-0M<br>
-+ * A/B=C2=A0 =C2=A0 =C2=A0memory.low =3D 50M,=C2=A0 memory.current =3D 50M=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Tue, Feb 22, 2022 at 10:45 PM Michal Koutn=C3=BD=
+ &lt;<a href=3D"mailto:mkoutny@suse.com">mkoutny@suse.com</a>&gt; wrote:<br=
+></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;=
+border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello.<br>
 <br>
-+ * A/B/C=C2=A0 =C2=A0memory.low =3D 75M,=C2=A0 memory.current =3D 50M<br>
-+ * A/B/D=C2=A0 =C2=A0memory.low =3D 25M,=C2=A0 memory.current =3D 50M<br>
-+ * A/B/E=C2=A0 =C2=A0memory.low =3D 500M, memory.current =3D 0<br>
-+ * A/B/F=C2=A0 =C2=A0memory.low =3D 0,=C2=A0 =C2=A0 memory.current =3D 50M=
+On Tue, Feb 22, 2022 at 12:45:47PM +0000, Richard Palethorpe &lt;<a href=3D=
+"mailto:rpalethorpe@suse.com" target=3D"_blank">rpalethorpe@suse.com</a>&gt=
+; wrote:<br>
+&gt; + * &quot;First, this test creates the following hierarchy:<br>
+&gt; + * A=C2=A0 =C2=A0 =C2=A0 =C2=A0memory.low =3D 50M,=C2=A0 memory.max =
+=3D 200M<br>
+&gt; + * A/B=C2=A0 =C2=A0 =C2=A0memory.low =3D 50M,=C2=A0 memory.current =
+=3D 50M<br>
+&gt; + * A/B/C=C2=A0 =C2=A0memory.low =3D 75M,=C2=A0 memory.current =3D 50M=
 <br>
-+ *<br>
-+ * Usages are pagecache<br>
-+ * Then it creates A/G and creates a significant<br>
-+ * memory pressure in it.<br>
-+ *<br>
-+ * A/B=C2=A0 =C2=A0 memory.current ~=3D 50M<br>
-+ * A/B/C=C2=A0 memory.current ~=3D 33M<br>
-+ * A/B/D=C2=A0 memory.current ~=3D 17M<br>
-+ * A/B/E=C2=A0 memory.current ~=3D 0<br>
-+ *<br>
-+ * After that it tries to allocate more than there is unprotected<br>
-+ * memory in A available, and checks that memory.low protects<br>
-+ * pagecache even in this case.&quot;<br></blockquote><div><br></div><div>=
-<div class=3D"gmail_default" style=3D"font-size:small"><br></div><div><div =
-class=3D"gmail_default">This is not exactly the original description of mem=
-ory.low test,</div><div class=3D"gmail_default">it looks like modified from=
- memory.min part.</div><div class=3D"gmail_default"><br></div><div class=3D=
-"gmail_default">Maybe we&#39;d better copy from line#398~#418.</div></div><=
-div class=3D"gmail_default" style=3D"font-size:small"><a href=3D"https://gi=
-thub.com/torvalds/linux/blob/master/tools/testing/selftests/cgroup/test_mem=
-control.c#L398">https://github.com/torvalds/linux/blob/master/tools/testing=
-/selftests/cgroup/test_memcontrol.c#L398</a></div></div><div><br></div></di=
-v><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=
-=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+&gt; + * A/B/D=C2=A0 =C2=A0memory.low =3D 25M,=C2=A0 memory.current =3D 50M=
+<br>
+&gt; + * A/B/E=C2=A0 =C2=A0memory.low =3D 500M, memory.current =3D 0<br>
+&gt; + * A/B/F=C2=A0 =C2=A0memory.low =3D 0,=C2=A0 =C2=A0 memory.current =
+=3D 50M<br>
+&gt; + *<br>
+&gt; + * Usages are pagecache<br>
+&gt; + * Then it creates A/G and creates a significant<br>
+&gt; + * memory pressure in it.<br>
+&gt; + *<br>
+&gt; + * A/B=C2=A0 =C2=A0 memory.current ~=3D 50M<br>
+&gt; + * A/B/C=C2=A0 memory.current ~=3D 33M<br>
+&gt; + * A/B/D=C2=A0 memory.current ~=3D 17M<br>
+&gt; + * A/B/E=C2=A0 memory.current ~=3D 0<br>
+<br>
+This nicely misses the expected consumption of the F cgroup (I see it&#39;s=
+<br></blockquote><div><br></div><div><div class=3D"gmail_default" style=3D"=
+font-size:small">+1</div><br></div><div>=C2=A0</div><blockquote class=3D"gm=
+ail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,=
+204,204);padding-left:1ex">
+missing in the original too). But one can expect from complementarity<br>
+it&#39;s zero (if one accepts these values, which unfortunately is not true=
+<br>
+with hierarchical &amp; scaled reclaim protection).<br>
+<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (i &lt; E || (i =
+=3D=3D F &amp;&amp; tst_cg_memory_recursiveprot())) {<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0TST_EXP_EXPR(low &gt; 0,<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;(%c low events=3D%l=
+d) &gt; 0&quot;, id, low);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0} else {<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0TST_EXP_EXPR(low =3D=3D 0,<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;(%c low events=3D%l=
+d) =3D=3D 0&quot;, id, low);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
+<br>
+Despite this makes the test behavior consistent, I think this is<br>
+unexpected behavior with recursive_memoryprot. With the given<br>
+configuration, there should never be residual protection that F assumes.<br=
+>
+<br>
+Unless there is a good explanation [1], I&#39;d consider non-zero<br>
+memory.events:low in F the test failure here.<br></blockquote><div><br></di=
+v><div class=3D"gmail_default" style=3D"font-size:small">Hmm, the documenta=
+tion does not give an explicit description for</div><div class=3D"gmail_def=
+ault" style=3D"font-size:small">recursive_memoryprot. If things like you sa=
+id, it is more like a=C2=A0</div><div class=3D"gmail_default" style=3D"font=
+-size:small">CGroup bug in the kernel.</div><div class=3D"gmail_default" st=
+yle=3D"font-size:small"><br></div></div>-- <br><div dir=3D"ltr" class=3D"gm=
+ail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></di=
+v></div></div></div>
 
---000000000000f9524b05d920231c--
+--00000000000027e7ae05d920697a--
 
 
---===============1092619009==
+--===============0459986213==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -208,5 +251,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1092619009==--
+--===============0459986213==--
 
