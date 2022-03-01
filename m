@@ -4,70 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA06C433EF
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 10:18:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37A1FC433F5
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 10:19:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 019593CA2EE
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 11:18:07 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DDA433CA313
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 11:19:17 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3849A3CA29B
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 11:17:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 920DF3C30BB
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 11:19:08 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6ADE51401244
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 11:17:55 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 34A2F6009E5
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 11:19:07 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8182E212FE;
- Tue,  1 Mar 2022 10:17:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6CFFE1F37D;
+ Tue,  1 Mar 2022 10:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1646129875;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=au3l4GVlqAwn4jwNZloZBu/2ukHRIR40KItzybFtx+E=;
- b=bI+2WivLbHjUCn5mceTxuV1o7weE7m6gt6Y/UNUIb/0ebjhYGQwUrTg7u1OkWoTbfj58KR
- XoKRq86bzuAjirFZitCHreRaV52Ob9yJMrgVR35tkpkWv7H2Ryjn+31GIXGJspbkwsmWJs
- mPRQqzPYavp6Hq/a4NTAYEbmqJ+SuQM=
+ t=1646129947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hTJ7ULrOq6IgUSKV/4H0wYlsR0a6bG3lW6Zyf6P0j5M=;
+ b=1ASYLzZDrTudeSDSWuMUeaZBFYJ9TY/7Z/ybzL4fHG3PwMob1CZLW1EXZ+Uzb7hTfBKZ8h
+ 3uzll9aHuAh25wPYQJ4xB/m6F7h6FdoeFnJi2MSTqxR3hDqyZd++MdHCwS0L0oqCr9JclH
+ /GJFYeU38vHZ8FHOjB98UGQ18gMxlrI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1646129875;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=au3l4GVlqAwn4jwNZloZBu/2ukHRIR40KItzybFtx+E=;
- b=1VMC1rQbww3nmpGegN9rofMVog8pBBB2FbBpTN7UDTWniTbr6nL6I3ISqCBYNmWrq2PQ2c
- gXF0lyHvjlyvO9BA==
+ s=susede2_ed25519; t=1646129947;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hTJ7ULrOq6IgUSKV/4H0wYlsR0a6bG3lW6Zyf6P0j5M=;
+ b=GM4L8KcJgxb5/X/7KkwfyVLKPp/C4kLQPXC9ICXKwHVGahbsWr7ScDFGZJYM3JrczMg3hR
+ 8u92qyfU+UNNX/Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D958139F9;
- Tue,  1 Mar 2022 10:17:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4318B139F9;
+ Tue,  1 Mar 2022 10:19:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mkfKDNPyHWKIdAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 01 Mar 2022 10:17:55 +0000
-Date: Tue, 1 Mar 2022 11:17:53 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id m2/SDhvzHWJedQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 01 Mar 2022 10:19:07 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <Yh3y0b7WRfYfBWHF@pevik>
-References: <20220223153243.317-1-pvorel@suse.cz>
- <20220223153243.317-3-pvorel@suse.cz>
- <6216E3ED.1050700@fujitsu.com> <Yhz1+H3SAlwPaO8H@pevik>
- <621D72EF.50500@fujitsu.com> <Yh3SOwogWwWQdZ4O@pevik>
- <621DD533.50509@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Tue,  1 Mar 2022 11:19:03 +0100
+Message-Id: <20220301101903.22649-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <621DD533.50509@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] quotactl08: Use do_mount()
+Subject: [LTP] [PATCH 1/1] TESTING PATCH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,38 +70,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
+From: Cyril Hrubis <chrubis@suse.cz>
 
-...
-> >>>>> to change
-> >>>>> quotactl08.c:160: TBROK: mount(/dev/loop0, mntpoint, ext4, 0, (nil)) failed: ESRCH (3)
-> >>>> I doubt why fs quota is not supported on this case since we have check
-> >>>> kernel config?
+Testing only
+---
+ testcases/kernel/mem/lib/mem.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> >>> There is probably bug on the SUT, thus it might be correct it fails.
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 39e3f1791c..ee9fc85b69 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -565,6 +565,9 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+ #endif
+ 
+ 		memset(memory[i], 10, length);
++
++		if (mlock(memory[i], length))
++			tst_res(TWARN | TERRNO, "mlock() failed");
+ 	}
+ 
+ 	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
+-- 
+2.35.1
 
-> >>> But how about martin's fix 4aab31e4c7 ("syscalls/quotactl: Skip tests if FS
-> >>> quota is not supported") - quotactl04.c also checks for CONFIG_QFMT_V2 and uses
-> >>> do_mount(). I'll check whether it was another bug on the system.
-> >> Maybe we miss check the following kernel config?
-> > In my case it's probably a problem with mkfs.
-> Another possible way about loop driver. So do you use default loop image 
-> to create ext4 filesystem or export LTP_DEV?
-FYI: in our case it was JeOS broken due missing quota_v2 kernel driver
-(JeOS tries to be minimal, so it's always a fiddling between space and
-functionality). I'm still not sure if we want to add check for .needs_drivers
-quota_v2.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
