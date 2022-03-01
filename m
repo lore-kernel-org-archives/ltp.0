@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2793C433EF
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 09:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45E7AC433F5
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 09:16:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B749F3CA2FB
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 10:16:17 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7EDC03CA301
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 10:16:27 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0E0F23CA2DC
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:23 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 4EBC53CA2EA
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:24 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F1781100118F
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:22 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A14EE1A010F9
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:23 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 91CE5219A5;
- Tue,  1 Mar 2022 09:15:22 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 19ECA1F37E;
+ Tue,  1 Mar 2022 09:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646126122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1646126123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bDKky1q8pfQwgb5icCvUGJH9F8v0B062H3oIxiawh0M=;
- b=d356pG+DvZJuyJq766wlBb6wa9xyx3eshCQiK/UsApiio6K5Yo37WzkZoH3i7GWV1TZCg4
- ua+4M0BmaPVr8m8yQy7TWeXHRJ7lvsl/uKCekgSoXhp0ncA+IOA8oovXdCoVG/6MlZ9R8d
- i03uv/UXkYXQUL8QAPAry75/RF1mYTE=
+ bh=WJdMA/s7Ef5RGYTzGIgsQnDZb7f+Q+FKJ5U8OJilMTg=;
+ b=RRMMXB6XYHVZO8iSvjccdVmuhUMdYbcnW/y2vy3ZPYYK7bY44NJct+dvHyTur68tSP7uWp
+ qs9h+iznJrIZBQ1hn26y/W5nkpNmvIU0/deXMoiGKpssbIWVJsBXEIH5ObQizXfDz4FuMA
+ cb56Z/u3e2Ku7LgKB/nkkX78HrRkGdc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646126122;
+ s=susede2_ed25519; t=1646126123;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bDKky1q8pfQwgb5icCvUGJH9F8v0B062H3oIxiawh0M=;
- b=xp3DtBe6WcK+UTQ0rDfUO7qUEafMho1toukKYEHYtdRH5RzYty3H/yXBkd6vqPOBF8WbrW
- h/DEwytwp47VijCQ==
+ bh=WJdMA/s7Ef5RGYTzGIgsQnDZb7f+Q+FKJ5U8OJilMTg=;
+ b=x3OtYxNXNxYkjo69SdD8g0WFGpolVgfAsMXHuoJitLfnbAHR5xtb0vteS5jbBQZ/wWIDvF
+ SgPDpgmQdhB/qnAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0DFAF13B08;
- Tue,  1 Mar 2022 09:15:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC15613B08;
+ Tue,  1 Mar 2022 09:15:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id eAUIOSnkHWJ3VwAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 01 Mar 2022 09:15:21 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id qJwVKCrkHWJ3VwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 01 Mar 2022 09:15:22 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue,  1 Mar 2022 10:15:15 +0100
-Message-Id: <20220301091517.11142-5-andrea.cervesato@suse.de>
+Date: Tue,  1 Mar 2022 10:15:16 +0100
+Message-Id: <20220301091517.11142-6-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220301091517.11142-1-andrea.cervesato@suse.de>
 References: <20220301091517.11142-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/6] Rewrite mountns04 test using new LTP API
+Subject: [LTP] [PATCH v3 5/6] Removed obsolete mountns_helper.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,14 +83,16 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- .../kernel/containers/mountns/mountns04.c     | 109 ++++++++----------
- 1 file changed, 46 insertions(+), 63 deletions(-)
+ .../containers/mountns/mountns_helper.h       | 61 -------------------
+ 1 file changed, 61 deletions(-)
+ delete mode 100644 testcases/kernel/containers/mountns/mountns_helper.h
 
-diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
-index 1f022a683..044c90aa7 100644
---- a/testcases/kernel/containers/mountns/mountns04.c
-+++ b/testcases/kernel/containers/mountns/mountns04.c
-@@ -1,89 +1,72 @@
+diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
+deleted file mode 100644
+index 4b4538eb8..000000000
+--- a/testcases/kernel/containers/mountns/mountns_helper.h
++++ /dev/null
+@@ -1,61 +0,0 @@
 -/* Copyright (c) 2014 Red Hat, Inc.
 - *
 - * This program is free software: you can redistribute it and/or modify
@@ -105,128 +106,54 @@ index 1f022a683..044c90aa7 100644
 - *
 - * You should have received a copy of the GNU General Public License
 - * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-- ***********************************************************************
-- * File: mountns04.c
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2014 Red Hat, Inc.
-+ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-  * Tests an unbindable mount: unbindable mount is an unbindable
-  * private mount.
-- * Description:
-- * 1. Creates directories "A", "B" and files "A/A", "B/B"
-- * 2. Unshares mount namespace and makes it private (so mounts/umounts
-- *    have no effect on a real system)
-- * 3. Bind mounts directory "A" to "A"
-- * 4. Makes directory directory "A" unbindable
-- * 5. Tries to bind mount unbindable "A" to "B":
-- *    - if it fails, test passes
-- *    - if it passes, test fails
-- ***********************************************************************/
-+ *
-+ * [Algorithm]
-+ *
-+ * . Creates directories "A", "B" and files "A/A", "B/B"
-+ * . Unshares mount namespace and makes it private (so mounts/umounts have no
-+ *   effect on a real system)
-+ * . Bind mounts directory "A" to "A"
-+ * . Makes directory "A" unbindable
-+ * . Tries to bind mount unbindable "A" to "B":
-+ * .. if it fails, test passes
-+ * .. if it passes, test fails
-+ */
- 
--#define _GNU_SOURCE
- #include <sys/wait.h>
- #include <sys/mount.h>
--#include <stdio.h>
--#include <errno.h>
--#include "mountns_helper.h"
+- */
+-
+-#include "libclone.h"
 -#include "test.h"
 -#include "safe_macros.h"
 -
--char *TCID	= "mountns04";
--int TST_TOTAL	= 1;
+-#define DIRA "A"
+-#define DIRB "B"
 -
--#if defined(MS_SHARED) && defined(MS_PRIVATE) \
--    && defined(MS_REC) && defined(MS_UNBINDABLE)
-+#include "mountns.h"
-+#include "tst_test.h"
- 
--static void test(void)
-+static void run(void)
- {
- 	/* unshares the mount ns */
--	if (unshare(CLONE_NEWNS) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+	SAFE_UNSHARE(CLONE_NEWNS);
-+
- 	/* makes sure mounts/umounts have no effect on a real system */
--	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-+	SAFE_MOUNT("none", "/", "none", MS_REC | MS_PRIVATE, NULL);
- 
- 	/* bind mounts DIRA to itself */
--	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-+	SAFE_MOUNT(DIRA, DIRA, "none", MS_BIND, NULL);
-+
- 	/* makes mount DIRA unbindable */
--	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_UNBINDABLE, NULL);
-+	SAFE_MOUNT("none", DIRA, "none", MS_UNBINDABLE, NULL);
- 
- 	/* tries to bind mount unbindable DIRA to DIRB which should fail */
- 	if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1) {
--		tst_resm(TPASS, "unbindable mount passed");
-+		tst_res(TPASS, "unbindable mount passed");
- 	} else {
--		SAFE_UMOUNT(cleanup, DIRB);
--		tst_resm(TFAIL, "unbindable mount faled");
-+		SAFE_UMOUNT(DIRB);
-+		tst_res(TFAIL, "unbindable mount faled");
- 	}
- 
--	SAFE_UMOUNT(cleanup, DIRA);
-+	SAFE_UMOUNT(DIRA);
- }
- 
--int main(int argc, char *argv[])
-+static void setup(void)
- {
--	int lc;
+-static int dummy_child(void *v)
+-{
+-	(void) v;
+-	return 0;
+-}
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
+-static int check_newns(void)
+-{
+-	int pid, status;
 -
--	setup();
+-	if (tst_kvercmp(2, 4, 19) < 0)
+-		tst_brkm(TCONF, NULL, "CLONE_NEWNS not supported");
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		test();
+-	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWNS, dummy_child, NULL);
+-	if (pid == -1)
+-		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS not supported");
+-	SAFE_WAIT(NULL, &status);
 -
--	cleanup();
--	tst_exit();
-+	check_newns();
-+	create_folders();
- }
- 
--#else
--int main(void)
-+static void cleanup(void)
- {
--	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
-+	umount_folders();
- }
--#endif
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_checkpoints = 1,
-+};
+-	return 0;
+-}
+-
+-static void cleanup(void)
+-{
+-	umount(DIRA);
+-	umount(DIRB);
+-	tst_rmdir();
+-}
+-
+-static void setup(void)
+-{
+-	tst_require_root();
+-	check_newns();
+-	tst_tmpdir();
+-	TST_CHECKPOINT_INIT(tst_rmdir);
+-	SAFE_MKDIR(cleanup, DIRA, 0777);
+-	SAFE_MKDIR(cleanup, DIRB, 0777);
+-	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
+-	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
+-}
 -- 
 2.35.1
 
