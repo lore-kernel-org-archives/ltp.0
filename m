@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45E7AC433F5
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 09:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 899FBC433F5
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 09:16:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EDC03CA301
-	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 10:16:27 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 123B23CA2EE
+	for <ltp@archiver.kernel.org>; Tue,  1 Mar 2022 10:16:39 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4EBC53CA2EA
+ by picard.linux.it (Postfix) with ESMTPS id 83F863CA2EC
  for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:24 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A14EE1A010F9
- for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:23 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 166DD1400BC9
+ for <ltp@lists.linux.it>; Tue,  1 Mar 2022 10:15:24 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 19ECA1F37E;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B2F9F1F3A8;
  Tue,  1 Mar 2022 09:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1646126123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WJdMA/s7Ef5RGYTzGIgsQnDZb7f+Q+FKJ5U8OJilMTg=;
- b=RRMMXB6XYHVZO8iSvjccdVmuhUMdYbcnW/y2vy3ZPYYK7bY44NJct+dvHyTur68tSP7uWp
- qs9h+iznJrIZBQ1hn26y/W5nkpNmvIU0/deXMoiGKpssbIWVJsBXEIH5ObQizXfDz4FuMA
- cb56Z/u3e2Ku7LgKB/nkkX78HrRkGdc=
+ bh=W2EVAAATpdwiOm9lBKLfQh8wLJPawPrc5VqApkuahc8=;
+ b=uXDlvqHY9hksjFswBRThIWApiWyu3fO9BkciCc+9H9XZ04mjmmeDYBRqMrQ219jYNyfJ/Q
+ P3J2yVjxlzywFXClI2ESPs+eFP/byeGsAOOEB3B4S4hSlGNwkNkCHYsEdezI69G3BgNH57
+ CZeflZXvYmLgljZcqNJqvFoPVQeTJLQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1646126123;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WJdMA/s7Ef5RGYTzGIgsQnDZb7f+Q+FKJ5U8OJilMTg=;
- b=x3OtYxNXNxYkjo69SdD8g0WFGpolVgfAsMXHuoJitLfnbAHR5xtb0vteS5jbBQZ/wWIDvF
- SgPDpgmQdhB/qnAg==
+ bh=W2EVAAATpdwiOm9lBKLfQh8wLJPawPrc5VqApkuahc8=;
+ b=WTrMeXudfaGCZlaMW4HSTzbM1eyQBqW5Fnjn3LwWIA0Vn2bkzSLSX3PKR9yvh8tILscC0v
+ PzcqhPFYx/M5JCAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC15613B08;
- Tue,  1 Mar 2022 09:15:22 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4851413B08;
+ Tue,  1 Mar 2022 09:15:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qJwVKCrkHWJ3VwAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 01 Mar 2022 09:15:22 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id wBegCivkHWJ3VwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 01 Mar 2022 09:15:23 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue,  1 Mar 2022 10:15:16 +0100
-Message-Id: <20220301091517.11142-6-andrea.cervesato@suse.de>
+Date: Tue,  1 Mar 2022 10:15:17 +0100
+Message-Id: <20220301091517.11142-7-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220301091517.11142-1-andrea.cervesato@suse.de>
 References: <20220301091517.11142-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 5/6] Removed obsolete mountns_helper.h
+Subject: [LTP] [PATCH v3 6/6] Removed libclone usage from mountns testing
+ suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,77 +84,40 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- .../containers/mountns/mountns_helper.h       | 61 -------------------
- 1 file changed, 61 deletions(-)
- delete mode 100644 testcases/kernel/containers/mountns/mountns_helper.h
+ testcases/kernel/containers/mountns/Makefile | 21 +++-----------------
+ 1 file changed, 3 insertions(+), 18 deletions(-)
 
-diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
-deleted file mode 100644
-index 4b4538eb8..000000000
---- a/testcases/kernel/containers/mountns/mountns_helper.h
-+++ /dev/null
-@@ -1,61 +0,0 @@
--/* Copyright (c) 2014 Red Hat, Inc.
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of version 2 the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-- */
+diff --git a/testcases/kernel/containers/mountns/Makefile b/testcases/kernel/containers/mountns/Makefile
+index bd42bf41b..16284f4d5 100644
+--- a/testcases/kernel/containers/mountns/Makefile
++++ b/testcases/kernel/containers/mountns/Makefile
+@@ -1,23 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2014 Red Hat, Inc.
+-#
+-# This program is free software: you can redistribute it and/or modify
+-# it under the terms of version 2 the GNU General Public License as
+-# published by the Free Software Foundation.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-##############################################################################
++# Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+ 
+-top_srcdir              ?= ../../../..
++top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
 -
--#include "libclone.h"
--#include "test.h"
--#include "safe_macros.h"
+-LDLIBS                  := -lclone $(LDLIBS)
 -
--#define DIRA "A"
--#define DIRB "B"
--
--static int dummy_child(void *v)
--{
--	(void) v;
--	return 0;
--}
--
--static int check_newns(void)
--{
--	int pid, status;
--
--	if (tst_kvercmp(2, 4, 19) < 0)
--		tst_brkm(TCONF, NULL, "CLONE_NEWNS not supported");
--
--	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWNS, dummy_child, NULL);
--	if (pid == -1)
--		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS not supported");
--	SAFE_WAIT(NULL, &status);
--
--	return 0;
--}
--
--static void cleanup(void)
--{
--	umount(DIRA);
--	umount(DIRB);
--	tst_rmdir();
--}
--
--static void setup(void)
--{
--	tst_require_root();
--	check_newns();
--	tst_tmpdir();
--	TST_CHECKPOINT_INIT(tst_rmdir);
--	SAFE_MKDIR(cleanup, DIRA, 0777);
--	SAFE_MKDIR(cleanup, DIRB, 0777);
--	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
--	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
--}
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
 2.35.1
 
