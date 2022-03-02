@@ -4,77 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55AD0C433F5
-	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 02:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0735C433EF
+	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 10:58:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B813A3CA2EA
-	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 03:10:34 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3FE483CA2FD
+	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 11:58:50 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8F00B3CA1D8
- for <ltp@lists.linux.it>; Wed,  2 Mar 2022 03:10:24 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id AE6C93C9798
+ for <ltp@lists.linux.it>; Wed,  2 Mar 2022 11:58:41 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BFD99600702
- for <ltp@lists.linux.it>; Wed,  2 Mar 2022 03:10:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1646187022;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 004126003CB
+ for <ltp@lists.linux.it>; Wed,  2 Mar 2022 11:58:40 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C9E541F37C;
+ Wed,  2 Mar 2022 10:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1646218719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=osc2CRdnBafR+OetflT/MrS5Ol64PiGZA79mx97fxk8=;
- b=FzW6yQ/Zu5DaKnXMkN/Mh0tgTo8H69uc9T46bIKLg6vlBdlqm8zg20shDgrfiIE55lMthe
- EnJ3J8jVQfQfuTgw3of0nHnl9Vg4jC2cMNGM+xaSEM/vP1h1mp1BgZrPP3t6y6UdQRtk2a
- AEH1KradWyTGA8jCJvV3NcDGwgVr3OM=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-151-f6JaD1HPNry7JzbJppecLg-1; Tue, 01 Mar 2022 21:10:20 -0500
-X-MC-Unique: f6JaD1HPNry7JzbJppecLg-1
-Received: by mail-yw1-f198.google.com with SMTP id
- 00721157ae682-2dbd3691096so2074587b3.7
- for <ltp@lists.linux.it>; Tue, 01 Mar 2022 18:10:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=osc2CRdnBafR+OetflT/MrS5Ol64PiGZA79mx97fxk8=;
- b=5lQLZyRPCrPqQC6YxbSjR1JMY/WIg1WO1hJsXnhF9VdP2xW7KZ/tnQAXPlR2XQAnK9
- qFa8/YxBlnJhGudVaFwLrjCbJHwg+AU4OEIEbY1JrSa1HhUnjNsGgruiGs7m9ofsRfI2
- MgKNC/4MsSViZU/Bzk5Ty2aMb/Tuu8JqCCl4+FfXe3aBtC5EwLl1L9etvfz4l5Bvpx6d
- Y1GQP0pG1sQz7oKXPm/+kxGciNSx2EU51j+AN3krMq1ZzF3gcmnMeZhMjvG8AB+QjA2I
- al7XmHG+t0lnETy1qWKWb0oJdCMlHTPBe/pxPLGUow9mCBAJv1/mL4wKIOo+U89Rzzlk
- aUfw==
-X-Gm-Message-State: AOAM531Ysqc83UjLBU6fswAjO2agc2Xic0fC92tm3uRGWqPAh1lULqP/
- vN2e7CJ8EClt+oevoA+VJlF+KeZZYsZGwRgqE8eqMolhsaMRi4HcOuxB/N/wRSZncVj6Kaf0Fo+
- 50vR1t6QOiFT8C8jp5AWK9aomreY=
-X-Received: by 2002:a25:ad07:0:b0:628:78df:ff24 with SMTP id
- y7-20020a25ad07000000b0062878dfff24mr5879549ybi.233.1646187020346; 
- Tue, 01 Mar 2022 18:10:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxxvnRuWltkzgHYtrO3U8KbtkiBQAne6KS/8ZgBugm9UrHAAq7X+zBDB2jv9V/GbirZJPuKWHrGcqcOffCQH9s=
-X-Received: by 2002:a25:ad07:0:b0:628:78df:ff24 with SMTP id
- y7-20020a25ad07000000b0062878dfff24mr5879541ybi.233.1646187020108; Tue, 01
- Mar 2022 18:10:20 -0800 (PST)
+ bh=6wllJewjfi8XfPFKTmgy3FCZb703j/rWD8Hs8ODlJzs=;
+ b=0bf7PqhfxPq6OxX7019vb8brfszIJdESNu1HbT1NhoPjTTXRkZFCrtwT/2Yfp8z+QY8aWx
+ VDHQgPRJOytUvRynFgLkNb/2IDBILn1HIsQ/Yv5blFlYttG1BWBZvg5PVG+HAl8fXEyLgw
+ 2VCD86HqH8De7/+MYoTS0W2tSlRyCWk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1646218719;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6wllJewjfi8XfPFKTmgy3FCZb703j/rWD8Hs8ODlJzs=;
+ b=4NADr2iEOm7+YcoOytDNtZS2CKK/HY9Eo2sY7oSzMOC9eFxkpsiPjKH4pM62034g70/9Ov
+ 1HvDal3GPs587sBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3E1413345;
+ Wed,  2 Mar 2022 10:58:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3vjiKt9NH2ITDgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 02 Mar 2022 10:58:39 +0000
+Date: Wed, 2 Mar 2022 12:00:59 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Yh9Oa917HPGN5Aan@yuki>
+References: <20220204194648.32165-1-pvorel@suse.cz>
+ <20220204194648.32165-2-pvorel@suse.cz>
 MIME-Version: 1.0
-References: <20220301122353.16137-1-rpalethorpe@suse.com>
-In-Reply-To: <20220301122353.16137-1-rpalethorpe@suse.com>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 2 Mar 2022 10:10:06 +0800
-Message-ID: <CAEemH2eyid8c=rXFWXT0g1XFrCw1zLVuTz1b77h3zFe1ZPG48w@mail.gmail.com>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220204194648.32165-2-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] API/cgroup: Try to mount V2 with
- memory_recursiveprot
+Subject: Re: [LTP] [PATCH v2 1/3] tst_net.sh: Fix for disabled IPv6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,75 +75,168 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1365975374=="
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1365975374==
-Content-Type: multipart/alternative; boundary="00000000000091592b05d932c802"
+Hi!
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_net.sh | 71 +++++++++++++++++++++++++++++++++-------
+>  1 file changed, 60 insertions(+), 11 deletions(-)
+> 
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index 047686dc39..15fd595942 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -24,7 +24,9 @@ TST_IPV6_FLAG=${TST_IPV6_FLAG:-}
+>  tst_net_parse_args()
+>  {
+>  	case $1 in
+> -	6) TST_IPV6=6 TST_IPVER=6 TST_IPV6_FLAG="-6";;
+> +	6)  tst_net_require_ipv6
+> +	    TST_IPV6=6 TST_IPVER=6 TST_IPV6_FLAG="-6"
+> +	    ;;
+>  	*) [ "$TST_PARSE_ARGS_CALLER" ] && $TST_PARSE_ARGS_CALLER "$1" "$2";;
+>  	esac
+>  }
+> @@ -100,6 +102,32 @@ tst_brk_()
+>  	[ -z "$TST_USE_LEGACY_API" ] && tst_brk $@ || tst_brkm $@
+>  }
+>  
+> +
+> +tst_net_detect_ipv6()
+> +{
+> +	local type="${1:-lhost}"
+> +	local cmd='[ -f /proc/net/if_inet6 ]'
+> +	local ret
+> +
+> +	if [ "$type" = "lhost" ]; then
+> +		$cmd
+> +	else
+> +		tst_rhost_run -c "$cmd"
+> +	fi
+> +	ret=$?
+> +
+> +	if [ $ret -eq 0 ]; then
+> +		TST_NET_IPV6_ENABLED=1
+> +	else
+> +		tst_res TINFO "IPv6 disabled on $type"
+> +	fi
+> +}
+> +
+> +tst_net_require_ipv6()
+> +{
+> +	[ "$TST_NET_IPV6_ENABLED" = 1 ] || tst_brk_ TCONF "IPv6 disabled"
+> +}
 
---00000000000091592b05d932c802
-Content-Type: text/plain; charset="UTF-8"
+Shouldn't we detect support for IPv6 on both lhost and rhost in the
+tst_net_detect_ipv6() function? I would say that it's pretty obvious
+that we need the support on both machines.
 
-On Tue, Mar 1, 2022 at 8:29 PM Richard Palethorpe <rpalethorpe@suse.com>
-wrote:
-
-> Moving forwards system managers should always mount with
-> memory_recursiveprot. So we should test with this by default when it
-> is available.
->
-> This change will only effect SUTs which do not already have CGroups
-> mounted.
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+>  init_ltp_netspace()
+>  {
+>  	local pid
+> @@ -517,7 +545,9 @@ tst_init_iface()
+>  		ip link set $iface down || return $?
+>  		ip route flush dev $iface || return $?
+>  		ip addr flush dev $iface || return $?
+> -		sysctl -qw net.ipv6.conf.$iface.accept_dad=0 || return $?
+> +		if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> +			sysctl -qw net.ipv6.conf.$iface.accept_dad=0 || return $?
+> +		fi
+>  		ip link set $iface up
+>  		return $?
+>  	fi
+> @@ -529,7 +559,9 @@ tst_init_iface()
+>  	tst_rhost_run -c "ip link set $iface down" || return $?
+>  	tst_rhost_run -c "ip route flush dev $iface" || return $?
+>  	tst_rhost_run -c "ip addr flush dev $iface" || return $?
+> -	tst_rhost_run -c "sysctl -qw net.ipv6.conf.$iface.accept_dad=0" || return $?
+> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> +		tst_rhost_run -c "sysctl -qw net.ipv6.conf.$iface.accept_dad=0" || return $?
+> +	fi
+>  	tst_rhost_run -c "ip link set $iface up"
+>  }
+>  
+> @@ -606,7 +638,9 @@ tst_restore_ipaddr()
+>  	local ret=0
+>  	local backup_tst_ipv6=$TST_IPV6
+>  	TST_IPV6= tst_add_ipaddr $type $link_num || ret=$?
+> -	TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?
+> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> +		TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?
+> +	fi
+>  	TST_IPV6=$backup_tst_ipv6
+>  
+>  	return $ret
+> @@ -937,6 +971,9 @@ tst_default_max_pkt()
+>  	echo "$((mtu + mtu / 10))"
+>  }
+>  
+> +# detect IPv6 support on lhost for tests which don't use test links
+> +tst_net_detect_ipv6
+> +
+>  [ -n "$TST_PRINT_HELP" -o -n "$TST_NET_SKIP_VARIABLE_INIT" ] && return 0
+>  
+>  # Management Link
+> @@ -971,8 +1008,13 @@ IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
+>  if [ -z "$_tst_net_parse_variables" ]; then
+>  	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
+>  	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
+> -	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
+> -	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
+> +
+> +	tst_net_detect_ipv6 rhost
+> +
+> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> +		eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
+> +		eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
+> +	fi
+>  fi
+>  
+>  [ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
+> @@ -981,19 +1023,26 @@ if [ -z "$_tst_net_parse_variables" ]; then
+>  	eval $(tst_net_iface_prefix $IPV4_LHOST || echo "exit $?")
+>  	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST \
+>  		|| echo "exit $?")
+> -	eval $(tst_net_iface_prefix $IPV6_LHOST || echo "exit $?")
+> -	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST \
+> -		|| echo "exit $?")
+> +
+> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> +		eval $(tst_net_iface_prefix $IPV6_LHOST || echo "exit $?")
+> +		eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST \
+> +			|| echo "exit $?")
+> +	fi
+>  
+>  	eval $(tst_net_vars $IPV4_LHOST/$IPV4_LPREFIX \
+>  		$IPV4_RHOST/$IPV4_RPREFIX || echo "exit $?")
+> -	eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX \
+> -		$IPV6_RHOST/$IPV6_RPREFIX || echo "exit $?")
+> +
+> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> +		eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX \
+> +			$IPV6_RHOST/$IPV6_RPREFIX || echo "exit $?")
+> +	fi
+>  
+>  	tst_res_ TINFO "Network config (local -- remote):"
+>  	tst_res_ TINFO "$LHOST_IFACES -- $RHOST_IFACES"
+>  	tst_res_ TINFO "$IPV4_LHOST/$IPV4_LPREFIX -- $IPV4_RHOST/$IPV4_RPREFIX"
+>  	tst_res_ TINFO "$IPV6_LHOST/$IPV6_LPREFIX -- $IPV6_RHOST/$IPV6_RPREFIX"
+> +
+>  	export _tst_net_parse_variables="yes"
+>  fi
+>  
+> -- 
+> 2.35.1
+> 
 
 -- 
-Regards,
-Li Wang
-
---00000000000091592b05d932c802
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Tue, Mar 1, 2022 at 8:29 PM Richard Palethorpe &=
-lt;<a href=3D"mailto:rpalethorpe@suse.com">rpalethorpe@suse.com</a>&gt; wro=
-te:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px =
-0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Moving forwa=
-rds system managers should always mount with<br>
-memory_recursiveprot. So we should test with this by default when it<br>
-is available.<br>
-<br>
-This change will only effect SUTs which do not already have CGroups<br>
-mounted.<br>
-<br>
-Signed-off-by: Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse.co=
-m" target=3D"_blank">rpalethorpe@suse.com</a>&gt;<br></blockquote><div><br>=
-</div><div class=3D"gmail_default" style=3D"font-size:small">Reviewed-by: L=
-i Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@re=
-dhat.com</a>&gt;</div><div class=3D"gmail_default" style=3D"font-size:small=
-"><br></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_sig=
-nature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div=
-></div></div>
-
---00000000000091592b05d932c802--
-
-
---===============1365975374==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1365975374==--
-
