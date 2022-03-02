@@ -4,64 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01AF1C433F5
-	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 20:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5670AC433F5
+	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 20:44:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 20E263CA364
-	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 21:16:39 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 850543CA31F
+	for <ltp@archiver.kernel.org>; Wed,  2 Mar 2022 21:44:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1BD233C9B7F
- for <ltp@lists.linux.it>; Wed,  2 Mar 2022 21:16:30 +0100 (CET)
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com
- [IPv6:2607:f8b0:4864:20::112c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6DBD93C2824
+ for <ltp@lists.linux.it>; Wed,  2 Mar 2022 21:44:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A86C71001340
- for <ltp@lists.linux.it>; Wed,  2 Mar 2022 21:16:29 +0100 (CET)
-Received: by mail-yw1-x112c.google.com with SMTP id
- 00721157ae682-2d07ae0b1c0so31835127b3.2
- for <ltp@lists.linux.it>; Wed, 02 Mar 2022 12:16:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=s67k1EJaVHxhbvHcAvfuqUxfoKCbqS5gFyMqywS2VG8=;
- b=XcytHnVbWT2BCtJIxUY3icFBZrzB/UM6egb4+8ldoQNwtxdhCmQtI0kuab6DQqU6qo
- gREp7w5CH5ciETcu04uh43n3wOUL0XtK/NgBnH5tLLMjYEm+WiN46gn7Fl3yGjipLbuQ
- PZ1W/MJEd/F0PAjXjZRmRjAMCrzJe+N+NRgaVUq/qG+zKn5R7aGFuTlKoebQrLjx/w9y
- PsXY3fEydh4c+QBEe37955ZDdEnyAmoBtwiXUwAHkChgyAqFm/TDdhko67VIx/mABpHA
- wqocT9Ek4mHW7K0k4CusZJO6d9qTP6cgnO878m0rfVkdc5gvMmkaFNTM4zQ2LQozzoVB
- E4uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=s67k1EJaVHxhbvHcAvfuqUxfoKCbqS5gFyMqywS2VG8=;
- b=WVECTNDZE0Lpc8EfXIg4Xo8zDLlBHt2hV0B0wIjijLKMZlFP/WO3AppboUxZLX48UL
- 58hJ10LSgBxUhX0dFWH79HyiHLEgPM/aJjDOVajAtQ0nIlQsry/4n7E7uMDigqfqFx/m
- qEphPMHEefwqbY5gez59B8q4wCTh8G2CTlqOBhpy8gw5zAzary1LPinf9gAAGmKAZw7w
- wJXeWTRXdNKF7HuzlTkXvDyCEB9bzCy8/CSbis18pw0JCpRpHFQkYl5P0Nb0ud1/b+p6
- 0Ek6Jtm7oCGyNvaYZN/O82hRnwMSFQbTT3iJi7r8QBY7mzG59v4gJ+XkTRwCi/J3wUYn
- IboQ==
-X-Gm-Message-State: AOAM531yHxIrsU+sStg6br9961iem5BW90pnmsto4hL+yyvnnoSLuPLc
- DBzIdly8Jvnfurt3Q+hF14ov24W1X5tUP4h6KLILAw==
-X-Google-Smtp-Source: ABdhPJzrH2if6CDf5wHK5EtuFMgfqu1uxju7OgWv0aks44zYH+1hcVNDxiRW4mKpFQe+z5VHbHFZvo9CV5G/1sjJr44=
-X-Received: by 2002:a81:a552:0:b0:2dc:15ce:21e with SMTP id
- v18-20020a81a552000000b002dc15ce021emr3588744ywg.250.1646252188339; Wed, 02
- Mar 2022 12:16:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20220223200731.1859670-1-yaelt@google.com> <Yh+S7JD2q8oalRoM@yuki>
-In-Reply-To: <Yh+S7JD2q8oalRoM@yuki>
-Date: Wed, 2 Mar 2022 15:16:17 -0500
-Message-ID: <CAKoutNsWCE9wuXwBW544FFe5NDNdbRNOUyD335yEEaMQHbqqug@mail.gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C593C20038A
+ for <ltp@lists.linux.it>; Wed,  2 Mar 2022 21:44:46 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B2BDF1F383;
+ Wed,  2 Mar 2022 20:44:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1646253885;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=V31joGOSRmG7YknOdrqMKBNwHog1O2vaQDNA2h/kc/4=;
+ b=Z7SWFMOSxM6vl0C5BmYHT6pRP9pD6niiJMVtXArllvaQASpm/m2LipGyWfxha1bywwWDXA
+ 3wBtYHm2gyP+LSbNRtxAcY3Ehpaxv4P6/uYi1LIwt+yM/HyB5FFn9/BwavPjULwp4uBM2A
+ RH4H6li0gY1yCLotu5MHnBwuY9ir17g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1646253885;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=V31joGOSRmG7YknOdrqMKBNwHog1O2vaQDNA2h/kc/4=;
+ b=KSh539chDkfuEmivBSPZtYse6GnffWUNWqhpb926v4yXqA2WEPDM1HxkjSuhrCZIyYssWW
+ 2Z1UvA5c215u5/Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A6F613AA8;
+ Wed,  2 Mar 2022 20:44:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id kamnGz3XH2KnCgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 02 Mar 2022 20:44:45 +0000
+Date: Wed, 2 Mar 2022 21:44:43 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Message-ID: <Yh/XO1GoK7PLOOU+@pevik>
+References: <20220204194648.32165-1-pvorel@suse.cz>
+ <20220204194648.32165-3-pvorel@suse.cz> <Yh98mQNybj1R1Kga@yuki>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Yh98mQNybj1R1Kga@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] syscalls/keyctl09: test encrypted keys with
- provided decrypted data.
+Subject: Re: [LTP] [PATCH v2 2/3] broken_ip-nexthdr.sh: Check IPv6 support
+ before forcing it
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,34 +78,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Yael Tzur via ltp <ltp@lists.linux.it>
-Reply-To: Yael Tzur <yaelt@google.com>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Mar 2, 2022 at 10:50 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> The test looks good to me now.
->
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
->
-> Looking at the kernel counterpart it is still in the next tree. We
-> usually wait until the kernel functionality is part of a kernel release
-> in order to make sure that there are no changes done to the
-> kernel-userspace API.
->
-> I this case I guess that in this case the change is so minimal that we
-> can add this test into LTP once it reaches Linus tree.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+Hi Cyril,
 
-Sounds good. Thank you!
+first, thanks a lot for a review of network shell tests.
+
+> Hi!
+> > diff --git a/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh b/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh
+> > index ec6643af66..cb4a3dd399 100755
+> > --- a/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh
+> > +++ b/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh
+> > @@ -11,6 +11,7 @@ TST_TESTFUNC="do_test"
+> >  do_test()
+> >  {
+> >  	# not supported on IPv4
+> > +	tst_net_require_ipv6
+> >  	TST_IPV6=6
+> >  	TST_IPVER=6
+
+> I was looking at the code if we can simply instead do:
+
+> [ "$TST_IPVER" == 6 ] && tst_net_require_ipv6
+BTW this code was requested by Alexey, originally I suggested different way
+to declare TST_NET_IPV{4,6}_ONLY=1 in the test:
+
+https://lore.kernel.org/ltp/20210714140716.1568-3-pvorel@suse.cz/
+
+> in the test library, but it looks like the parameters are parsed in the
+> tst_test.sh in the tst_run() function. Which means that the TST_IPVER is
+> not actually set until the test starts and the library has no way of
+> knowing the variable value beforehand.
+Yes.
+
+> I guess that we can actually move the option parsing code in the
+> tst_test.sh so that it happens just right after the script is sourced,
+> which would make things much easier as the TST_IPVER would end up being
+> defined in the tst_network.sh and we coud simply use the statement above
+> without any further hacks like this patch adds.
+Interesting. Originally I thought I'd need IPv6 check for netns_*.sh tests, but
+in the end I realized that better will be if they use tst_net.sh with forcing
+netns only.
+
+Sure, I can have look into putting -6 handling into tst_test.sh. It's just a bit
+strange to me that tst_test.sh parses it, but it's actually used elsewhere.
+
+> As a side effect we could clean up the test option parsing code since we
+> do actually have two different getopts loop in the tst_test.sh library
+> and as far as I can tell we can do just with one.
+When I looked last time into this and it looked to me that both are needed.
+The second one (which is actually run the first - ":hi:$TST_OPTS" is for
+ignoring errors when -h is set. But maybe these warnings ("Invalid number of
+positional parameters:" and "Unexpected positional arguments" might be really
+possible to handle inside of tst_run().
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
