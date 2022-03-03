@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2D73C433EF
-	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 13:33:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CE04C433EF
+	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 13:44:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4AF23CA366
-	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 14:33:34 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 0DB3B3CA32C
+	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 14:44:31 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by picard.linux.it (Postfix) with ESMTPS id 1C8643C93D2
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 14:44:21 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 208E53C9544
- for <ltp@lists.linux.it>; Thu,  3 Mar 2022 14:33:25 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B8901601B14
- for <ltp@lists.linux.it>; Thu,  3 Mar 2022 14:33:24 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 038F3600CC5
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 14:44:19 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D59D61F383;
- Thu,  3 Mar 2022 13:33:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 247E2218B8;
+ Thu,  3 Mar 2022 13:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1646314403;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1646315059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fX6snLfA8j2B3+UOFIJ9Ae2a33z/MC4CKVMoieHV6sk=;
- b=m1wmYYag6Cp3++838Tmo2yc08ktBflnVYEm5Ag58J1j5yiEstduqC9b4G1hdRg1tJYrz9g
- 6O3srOZb+H9M6RmxtBy9mTR0sgbg0/VGKZDCCuhqjw4W0FQapNRDjDABH5GxMf949JzqG3
- Lxs8+ABeVCBPzW5ZgU1cB0KkIKfAceQ=
+ bh=5h6PhZkZVkImb/Kg+DH+jKdsYSfBkNGMeRBt1kpBkV8=;
+ b=Bqr+ROybMtA4eyr0QDUzYW5pvSAVq/F940uBuCZmlLDUqxNV1VLifKgE0isVXz/CGbEwRU
+ OIKx+5bE62wGXCr3zIyZsRfcvjv+F6MuX3U8ZwqrCEgbYlX0h108njj+nnTRcQZOIunJHl
+ H3AWVqr2zDJ8VuGLKm88Fy+X5dvjAXE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1646314403;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1646315059;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fX6snLfA8j2B3+UOFIJ9Ae2a33z/MC4CKVMoieHV6sk=;
- b=SbCqMSCrNkN9CZcwrIPsjP6m2wlkuKdgRTjbjn3maFI9evHcxBtMx9PQdBYPHpT3QaCYeN
- zmhy11pqM4y9jmBA==
+ bh=5h6PhZkZVkImb/Kg+DH+jKdsYSfBkNGMeRBt1kpBkV8=;
+ b=NoASqYIbBUPHz7uELqT0BraHKB4xITt94tWFKXWXIbmLtxiGnCfrkGEwIQumQOy5TV6bxl
+ hKbosJtydOvZOkCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A425B13C23;
- Thu,  3 Mar 2022 13:33:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD01113C23;
+ Thu,  3 Mar 2022 13:44:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id rViLJqPDIGLhXQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 03 Mar 2022 13:33:23 +0000
-Date: Thu, 3 Mar 2022 14:33:22 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YiDDoly4t0N30kfo@pevik>
-References: <YfPiW998P4/j7RWi@pevik>
- <20220203101803.10204-1-rpalethorpe@suse.com>
- <CAEemH2f6ka-vK+O33cxw1ewMWDYZQwtRZUQ3eKFMkynqB2+R3w@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id JV6tLTLGIGICYwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 03 Mar 2022 13:44:18 +0000
+Date: Thu, 3 Mar 2022 14:46:39 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YiDGvzETiI/nxwW/@yuki>
+References: <20220223200731.1859670-1-yaelt@google.com> <Yh+S7JD2q8oalRoM@yuki>
+ <YiBcyvtqTX1CerM4@pevik> <YiC4Pj1sH8UIHY7k@yuki>
+ <YiDB7wO3Se/vN15+@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2f6ka-vK+O33cxw1ewMWDYZQwtRZUQ3eKFMkynqB2+R3w@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <YiDB7wO3Se/vN15+@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Create policy for testing unstable kernel features
+Subject: Re: [LTP] [PATCH v4] syscalls/keyctl09: test encrypted keys with
+ provided decrypted data.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,50 +78,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, LTP List <ltp@lists.linux.it>
+Cc: linux-integrity@vger.kernel.org, Yael Tzur <yaelt@google.com>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi!
+> > > > I this case I guess that in this case the change is so minimal that we
+> > > > can add this test into LTP once it reaches Linus tree.
+> > > Cyril, maybe we could finally merge our policy (waiting ack for you):
+> > > https://patchwork.ozlabs.org/project/ltp/patch/20220203101803.10204-1-rpalethorpe@suse.com/
+> > > and put keyctl09 into runtest/staging now.
+> 
+> > I guess that we still did not agree on exactly how this should be
+> > handled or did we?
+> 
+> Isn't it enough "Once a feature is part of the stable kernel ABI the associated
+> test must be moved out of staging." ?
 
-...
-> > +7 Testing pre-release kernel features
-> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +Tests for features not yet in a mainline kernel release are accepted.
-> > However
-> > +they must only be added to the +staging+ runtest file. Once a feature is
-> > part
-> > +of the stable kernel ABI the associated test must be moved out of staging.
-> > +
-> > +This is primarily to help test kernel RCs by avoiding the need to download
-> > +separate LTP patchsets.
-> > diff --git a/runtest/staging b/runtest/staging
-...
+The main problem is that someone has to make sure that it happens and
+the process would be prone to errors. What I proposed instead was a flag
+that would set a kernel version in which the ABI is going to be merged
+and put the test right into the final runtest files. Then we can simply
+skip the test on older kernels or do anything else we see as a
+reasonable solution. At the same time we can easily add automatic
+checker that would look for these flags in metadata into the CI which
+would, for instance, send email to the ML once the flag is supposed to
+be removed.
 
-FYI keyctl09 [1] patch is a candidate for merging under this policy.
+In this case it does not actually matter, since the test is guarded by a
+kernel config option that is introduced by the patchset and the change
+is fairly miniminal, so I do not think that there would be any changes
+to the ABI anyways.
 
-Cyril wasn't sure [2] that we haven't agreed yet about how this should be
-handled. Not sure what exactly is he missing.
-
-I guess the description is quite open to allow testing both tests in next tree
-or even in maintainer tree (before endup in next tree). From my point it should
-be obvious that not *anything* out of mainline can be added, just tests which
-sooner or later endup in mainline (and if not, they should be deleted).
-
-Also procedure after release is pretty clear: just move everything out of
-staging to expected runtest files (mostly syscalls).
-
-=> I'd merge this.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20220223200731.1859670-1-yaelt@google.com/
-[2] https://lore.kernel.org/ltp/YiC4Pj1sH8UIHY7k@yuki/
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
