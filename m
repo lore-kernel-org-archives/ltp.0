@@ -4,59 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0066EC433EF
-	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 08:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26594C433F5
+	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 08:54:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE7D63CA339
-	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 09:34:47 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B57DB3CA343
+	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 09:54:27 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8FEAF3C5924
- for <ltp@lists.linux.it>; Thu,  3 Mar 2022 09:34:38 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 5D3CE3C9FE6
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 09:54:17 +0100 (CET)
+Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
+ [195.245.230.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9CB0B1001372
- for <ltp@lists.linux.it>; Thu,  3 Mar 2022 09:34:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1646296476;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=BDIrkSmgIWr5gXMjkgrgbySrCm+4oQhaPxC4YpbLyh8=;
- b=OC9cYukc6nkBoqdJF46RzfKjIYMtUatQdYS5LxhLuFTkko/4FOOLFSEPnChoTdJHXdk9/1
- D7TQh6RHZpDP5R0g0oynPLW5dvxsi6tr3POfDP6Ngf/0vRYWr1lBApFbKH4qqVHfHamf8H
- tcdB34P5FVFO0VjBXF3F0Np38tKQhoc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-81-j_cxZkAuMRKdcQ1K-4TEYg-1; Thu, 03 Mar 2022 03:34:34 -0500
-X-MC-Unique: j_cxZkAuMRKdcQ1K-4TEYg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
- [10.5.11.11])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EAE03140110C
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 09:54:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1646297656; i=@fujitsu.com;
+ bh=Uuv9+JkvF05MjsJOCRB2Z54jo+CQ5IhBmc835Y6Y39Q=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=KqdroAXoG5LUmWObPX0Cx0KT/9xMfksEUCt0mDidaWTHQOeGVMdvkdH/65n4pUPmD
+ sdIjTPGf5HOGQpChe//6SG7rQ2co33ddvVRyg6k53yPv/cH9fVNRyFdx06rGQJZZ6Q
+ Smz9HMPqyESyk81xe1JRlYxCI9miGlrxyaFcUT184bioBX8XoS7pvTNqDtqo7iGEEu
+ cy2D/Gz75R2DEdKpYJgBxPHrfQWMdk5mIvsGcYs6Ufkjvjm6zrr/Tlkct0kgNlmWIC
+ J5NhsHvg0J2d8tFw34KOMMS1+g9627fsMh0NrCrK04UIqjIlREsAQQmtLL6L7MinAs
+ EBaUQqgcDWEJw==
+Received: from [100.115.1.77] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-2.bemta.az-a.eu-west-1.aws.ess.symcld.net id D1/17-21232-73280226;
+ Thu, 03 Mar 2022 08:54:15 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRWlGSWpSXmKPExsViZ8ORqGvepJB
+ k0LpKw2LF9x2MDowe+36vYw1gjGLNzEvKr0hgzXhz8SVLwSSuiu0fZjA3MF7n6GLk4hASOMso
+ 8evFBhYIZyeTxOS/h9kgnN2MEof3X2PuYuTkYBPQlHjWuQDMFhGQkOhoeMsOYjMLqEssn/SLC
+ cQWFrCV+HnwKlANBweLgIrExTWpIGFeAQ+JGTMPsoLYEgIKElMevmeGiAtKnJz5hAVijITEwR
+ cvmCFqFCUudXxjhLArJGbNamOCsNUkrp7bxDyBkX8WkvZZSNoXMDKtYrRKKspMzyjJTczM0TU
+ 0MNA1NDTVNdM1NLPUS6zSTdRLLdUtTy0u0TXUSywv1kstLtYrrsxNzknRy0st2cQIDMqUYraV
+ OxhX9v3UO8QoycGkJMo7J0EhSYgvKT+lMiOxOCO+qDQntfgQowwHh5IE79saoJxgUWp6akVaZ
+ g4wQmDSEhw8SiK8b0uA0rzFBYm5xZnpEKlTjMYcV69c2cvMcQNECrHk5eelSonzvm0AKhUAKc
+ 0ozYMbBIvcS4yyUsK8jAwMDEI8BalFuZklqPKvGMU5GJWEeZ1ApvBk5pXA7XsFdAoT0ClbPeR
+ ATilJREhJNTC1dDHFvw1Oev8lb+uyn08Kl8/Rf3kwJ0Lpx4UW7k8Pv+u01O6/4TMhoubTs3Uu
+ Nnq3oxL6Z927wWyxSthrX9uqmy9WbOVdIscZ59G1TE/HqGLahBezK24/3rln6eanD9OmbTk+R
+ 6Tk89aqtycCt13t/m/MztQerSD/7/2TK6p7rRnjNm9SCVPj+jrp6dta19LbXt/3+zafmF7wvq
+ +3LPwRi8SvpVvnF9taPK2ta0zT7K7rdHEL5nT6GOX2/9b14J9nRP+Wyduv3KUzR5ZVcUH+jA1
+ Twr9XHli8/POt+o8eFYVLf/6+KHOkovrdd/6zRfxvdp5bL5dSuUAwR/Xp5QPHvq7ov2jfYvBM
+ 54jxk/5JSUosxRmJhlrMRcWJAI3mlG1XAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-9.tower-587.messagelabs.com!1646297655!86420!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.8; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 19170 invoked from network); 3 Mar 2022 08:54:15 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-9.tower-587.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 3 Mar 2022 08:54:15 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 16BC11001A2
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 08:54:15 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46967801AAD
- for <ltp@lists.linux.it>; Thu,  3 Mar 2022 08:34:33 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com (unknown [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 056845DB9C;
- Thu,  3 Mar 2022 08:34:31 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Thu,  3 Mar 2022 16:34:29 +0800
-Message-Id: <20220303083429.3827302-1-liwang@redhat.com>
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 0A3D810019B
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 08:54:15 +0000 (GMT)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.28; Thu, 3 Mar 2022 08:53:57 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Thu, 3 Mar 2022 16:54:38 +0800
+Message-ID: <1646297678-2141-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] migrate_pages02: check file exist before opening it
+Subject: [LTP] [PATCH] syscalls/setsockopt09: Add another linux git
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,74 +96,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: bgoncalv@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test reports a warning on some special kernel (with NUMA BALANCE
-disabling). The main reason is that prefix '?' makes tst_sys_conf_save
-only silent ignores non-exist paths. But seems we still open it in other
-places (e.g. in setup function).
+On centos7.9ga, I still hit another crash problem because of use-after-free in
+prb_retire_rx_blk_timer_expired(). Since we free it when timer expired, so this
+case will crash after we print TPASS info.
 
-  tst_sys_conf.c:58: TINFO: Path not found: '/proc/sys/kernel/numa_balancing'
-  tst_test.c:1365: TINFO: Timeout per run is 0h 05m 00s
-  migrate_pages02.c:279: TWARN: Failed to open FILE '/proc/sys/kernel/numa_balancing'
-  migrate_pages02.c:317: TINFO: Using nodes: 0 1
-
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
+ testcases/kernel/syscalls/setsockopt/setsockopt09.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Notes:
-    Looks like we have many tests use the prefix '?' for knob save/restore,
-    but none of them check if the paths are valid when opening at other places,
-    by now, I just get informed that migrate_pages02 threw a warning.
-    
-    I'm thinking maybe we can keep the return value of tst_sys_conf_save
-    as a check condition before opening the file, but this is not fit for
-    test with many paths saving:
-    e.g.
-        add_key05.c-	"?/proc/sys/kernel/keys/gc_delay",
-        add_key05.c-	"?/proc/sys/kernel/keys/maxkeys",
-
- testcases/kernel/syscalls/migrate_pages/migrate_pages02.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-index 485a1c5aa..309e707bc 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-@@ -37,6 +37,8 @@
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt09.c b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+index 2fc66ebbc..62c6dea07 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt09.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+@@ -19,6 +19,17 @@
+  *
+  *  net/packet: rx_owner_map depends on pg_vec
+  *
++ * It also triggers another use-after-free problem in
++ * prb_retire_rx_blk_timer_expired.
++ *
++ * Kernel crash fixed in:
++ *
++ * commit c800aaf8d869f2b9b47b10c5c312fe19f0a94042
++ * Author: WANG Cong <xiyou.wangcong@gmail.com>
++ * Date:   Mon Jul 24 10:07:32 2017 -0700
++ *
++ * packet: fix use-after-free in prb_retire_rx_blk_timer_expired()
++ *
   */
- #define NODE_MIN_FREEMEM (32*1024*1024)
  
-+#define NUMA_BALANCING "/proc/sys/kernel/numa_balancing"
-+
- #ifdef HAVE_NUMA_V2
- 
- static const char nobody_uid[] = "nobody";
-@@ -276,7 +278,8 @@ static void setup(void)
- 	else if (tst_kvercmp(2, 6, 18) < 0)
- 		tst_brk(TCONF, "2.6.18 or greater kernel required");
- 
--	FILE_PRINTF("/proc/sys/kernel/numa_balancing", "0");
-+	if (access(NUMA_BALANCING, F_OK) == 0)
-+		FILE_PRINTF(NUMA_BALANCING, "0");
- 	/*
- 	 * find 2 nodes, which can hold NODE_MIN_FREEMEM bytes
- 	 * The reason is that:
-@@ -328,7 +331,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.save_restore = (const char * const[]) {
--		"?/proc/sys/kernel/numa_balancing",
-+		"?NUMA_BALANCING",
+ #define _GNU_SOURCE
+@@ -110,6 +121,7 @@ static struct tst_test test = {
  		NULL,
  	},
- };
+ 	.tags = (const struct tst_tag[]) {
++		{"linux-git", "c800aaf8d869"},
+ 		{"linux-git", "ec6af094ea28"},
+ 		{"CVE", "2021-22600"},
+ 		{}
 -- 
-2.31.1
+2.23.0
 
 
 -- 
