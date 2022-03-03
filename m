@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C7F1C433F5
-	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 14:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EC3DC433EF
+	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 14:49:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B6503CA336
-	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 15:49:18 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3E19F3CA343
+	for <ltp@archiver.kernel.org>; Thu,  3 Mar 2022 15:49:29 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 23FEB3CA32A
+ by picard.linux.it (Postfix) with ESMTPS id 48DF33CA366
  for <ltp@lists.linux.it>; Thu,  3 Mar 2022 15:48:16 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A13D52001D9
- for <ltp@lists.linux.it>; Thu,  3 Mar 2022 15:48:15 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3C3FB10005ED
+ for <ltp@lists.linux.it>; Thu,  3 Mar 2022 15:48:16 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3F44D218A9
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BE3C4210FA
  for <ltp@lists.linux.it>; Thu,  3 Mar 2022 14:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1646318895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Tn3X5M987hJm+Fe0DCF8nlHgc44ZcG7vvlLwnlJgjIM=;
- b=IcGSgZrCpFTIUUDVb8sbiJRVyw/QTxc7SLN73tvoBYislkwf2mZ2aaX2l36gkMii4bhZri
- 00tiiSOJ45PvQlZxzWbbVDDURZBeLVgmlKmgPSOWXnmAqACkePnHIuzFBMBw4XYfTjnSAX
- dUQyFXj2S4LOfPGiSmS01aPB5Nha85c=
+ bh=DNn6CcIjeWnX7BNwqT8E77YG8VnzqpEfPDqkvgq47l0=;
+ b=qe1XNpChe9ucLwmBFacJLpzRpanMoO95MtqML0zWTBtFsDyLOyxNY4HIUIEY6aVTG/ZEfp
+ xOhTr4Y0e/gRSNbTKvHQXa2mBAWWGvX1ruK+3bSsf22ngK/jEa95ckUD+7xljRY8XEtpgm
+ 6tnHb8ku2BTyKIifA/7emUKDOmIFu2M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1646318895;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Tn3X5M987hJm+Fe0DCF8nlHgc44ZcG7vvlLwnlJgjIM=;
- b=7VAifuAi+6oGSMWpN91qTvRSyuiPRP9zkhso6XL/relhbvBh8Uar8XWLjo+SpOg6m0hXf2
- A4wyBH/OlW4ZXVAA==
+ bh=DNn6CcIjeWnX7BNwqT8E77YG8VnzqpEfPDqkvgq47l0=;
+ b=TCc0Rz4W84zmD6yvmksDCrjjNa9VMLGzZJmQ/4siEEBJsa4aZNQi1gHMKorVFKFATw9vQB
+ QArbVxwj4IxIrPAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D1BA13AD9
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A9FD013AD9
  for <ltp@lists.linux.it>; Thu,  3 Mar 2022 14:48:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2ARcCS/VIGIAAwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id dE53KC/VIGICAwAAMHmgww
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Thu, 03 Mar 2022 14:48:15 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  3 Mar 2022 15:50:30 +0100
-Message-Id: <20220303145032.21493-6-chrubis@suse.cz>
+Date: Thu,  3 Mar 2022 15:50:31 +0100
+Message-Id: <20220303145032.21493-7-chrubis@suse.cz>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220303145032.21493-1-chrubis@suse.cz>
 References: <20220303145032.21493-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/7] mem/ksm06: Move ksm restoration into the tst_test
- struct
+Subject: [LTP] [PATCH 6/7] libs: libltpnuma: Fix free memory estimate
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,66 +83,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+On long running systems most of the memory would be consumed by a
+file page cache which is reclaimable. Because of that the numa test will
+be skipped even if the system has plenty of memory. To fix this this
+patch adds 90% of the memory used by the page cache to the free memory
+estimate.
+
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/mem/ksm/ksm06.c | 28 +++-------------------------
- 1 file changed, 3 insertions(+), 25 deletions(-)
+ libs/libltpnuma/tst_numa.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
-index 61507b2aa..f5f7319d7 100644
---- a/testcases/kernel/mem/ksm/ksm06.c
-+++ b/testcases/kernel/mem/ksm/ksm06.c
-@@ -39,9 +39,6 @@
- #ifdef HAVE_NUMA_V2
- #include <numaif.h>
+diff --git a/libs/libltpnuma/tst_numa.c b/libs/libltpnuma/tst_numa.c
+index 417d98ced..7b8c4bc79 100644
+--- a/libs/libltpnuma/tst_numa.c
++++ b/libs/libltpnuma/tst_numa.c
+@@ -129,6 +129,7 @@ static int node_has_enough_memory(int node, size_t min_kb)
+ 	char buf[1024];
+ 	long mem_total = 0;
+ 	long mem_used = 0;
++	long file_pages = 0;
  
--static int run = -1;
--static int sleep_millisecs = -1;
--static int merge_across_nodes = -1;
- static unsigned long nr_pages = 100;
+ 	/* Make sure there is some space for kernel upkeeping as well */
+ 	min_kb += 4096;
+@@ -152,6 +153,9 @@ static int node_has_enough_memory(int node, size_t min_kb)
  
- static char *n_opt;
-@@ -141,27 +138,6 @@ static void setup(void)
+ 		if (sscanf(buf, "%*s %*i MemUsed: %li", &val) == 1)
+ 			mem_used = val;
++
++		if (sscanf(buf, "%*s %*i FilePages: %li", &val) == 1)
++			file_pages = val;
+ 	}
  
- 	if (n_opt)
- 		nr_pages = SAFE_STRTOUL(n_opt, 0, ULONG_MAX);
--
--	/* save the current value */
--	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &run);
--	SAFE_FILE_SCANF(PATH_KSM "merge_across_nodes",
--			"%d", &merge_across_nodes);
--	SAFE_FILE_SCANF(PATH_KSM "sleep_millisecs",
--			"%d", &sleep_millisecs);
--}
--
--static void cleanup(void)
--{
--	if (merge_across_nodes != -1) {
--		FILE_PRINTF(PATH_KSM "merge_across_nodes",
--			    "%d", merge_across_nodes);
--	}
--
--	if (sleep_millisecs != -1)
--		FILE_PRINTF(PATH_KSM "sleep_millisecs", "%d", sleep_millisecs);
--
--	if (run != -1)
--		FILE_PRINTF(PATH_KSM "run", "%d", run);
- }
+ 	fclose(fp);
+@@ -161,7 +165,7 @@ static int node_has_enough_memory(int node, size_t min_kb)
+ 		return 0;
+ 	}
  
- static struct tst_test test = {
-@@ -171,9 +147,11 @@ static struct tst_test test = {
- 		{}
- 	},
- 	.setup = setup,
--	.cleanup = cleanup,
- 	.save_restore = (const char * const[]) {
- 		"?/sys/kernel/mm/ksm/max_page_sharing",
-+		"?/sys/kernel/mm/ksm/run",
-+		"?/sys/kernel/mm/ksm/merge_across_nodes",
-+		"?/sys/kernel/mm/ksm/sleep_millisecs",
- 		NULL,
- 	},
- 	.test_all = test_ksm,
+-	if (mem_total - mem_used < (long)min_kb) {
++	if (mem_total - mem_used + (9 * file_pages)/10 < (long)min_kb) {
+ 		tst_res(TINFO,
+ 		        "Not enough free RAM on node %i, have %likB needs %zukB",
+ 		        node, mem_total - mem_used, min_kb);
 -- 
 2.34.1
 
