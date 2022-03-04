@@ -4,82 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92FA0C433EF
-	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C785C433F5
+	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:19:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EF6CF3CA3A7
-	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:19:08 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 683753C5698
+	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:19:21 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D49833CA3AC
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:35 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id D05CD3CA402
+ for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:39 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2D45E601D7E
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:34 +0100 (CET)
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 613FA140004B
+ for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:39 +0100 (CET)
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CC7143F610
- for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:31 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C73B83F5FC
+ for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1646435911;
- bh=+4lPdYfsBFhxB/RG6P6UoCTmDJkAo9fODjBlMEI8bRM=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=Dw6O7tf7YCu8kTLv3bX7zwRqvgkH6ZTFgp4l5sqEBRM00arDlSWFG3LRRQ9d3HZw3
- xwMV7E6DEbT3KfyW6Db0diChlJYn7ncJDxGoZUeuNkGIW5htoODoqiFfDUqe5XROQa
- i0iIvw7XRnkh/aK4+BlAY2wf2RMAmKt42MzlTEFB7HOHC+pEQOQlSECMoUMngmiLxZ
- XGc42g3uJfWL6b1BEYAltqjOq/XL7cskzdErlinJVKzJQXdc1F3wTRXidh403V6fnr
- Y4wEBsVTNiSF0QIqbd6Aqv8giRwUFVwACC9h4zi0BeU1LQPTP+J2dhZuvKrDmRNzwv
- pjXzeLqu4zvag==
-Received: by mail-pf1-f200.google.com with SMTP id
- a200-20020a621ad1000000b004e191fdcb4dso5935254pfa.1
- for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:31 -0800 (PST)
+ s=20210705; t=1646435918;
+ bh=V/zNYW19fsArbDmTo8kwJPdxMzW2RO0slPhpgjqfsWw=;
+ h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=kchaFFtvlIWA7fS38tfiHyYYatAfd1uhxkafNCso0tq8imFUuRvS+4AQCqVF90YRZ
+ FPLndUHviGYbPCdhbxbnpDitsNXYIDAfSjcAb9R8mlZfNgoxq39U+4aAJCMdzw8eg6
+ XD6TnnF9d2R4HYRFa/RR0dOvPQZAAIk/UcnmRfwV/clqhwyq0kFZ9Z0yTm3DICtQL8
+ XxZmEDX3/hQT6gGmitjbaINcnd5g1HkjvxPQqX57sgXKOIvrKyqScrppRYQ+0FaBrx
+ 10CKBhMYP6RMk9SLB9JNfOgVinsluUaS1IJoRF/i8f+Ij7E0GKvMg+YNg5gj8ZXFVU
+ d8OC+HzQ8qGHQ==
+Received: by mail-pl1-f199.google.com with SMTP id
+ j3-20020a170902da8300b0014fdd4e979cso5342968plx.17
+ for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=+4lPdYfsBFhxB/RG6P6UoCTmDJkAo9fODjBlMEI8bRM=;
- b=tUXhEXJBYqBXndVVm5yjPeOcL2Pu/R8fFx2qU8wpGu7tthCxAMPPbhuxvnvVHUotGD
- amA/zLV+Nto3wWvQzwu6ctIK/SPEWZMvuWYy0YGfuBCBC7X1UowPQ5NF/Ko7vMU2EJu0
- GbTEJq1c0juhHUOvxafatZr3SYhyW7qSFxSdd3P4QhEb130The5nZQBiC38QaQzVxf1u
- Cr++WPPFlHctiCv+6Y+4n0MxwvKSQohmIHQwY26yUjFpikPc6JHOHJi+CQGvJsDWqi7p
- +Fpf2jutkI0efnP4E34Z1/MfkDZmb5817hxQxOpN4UsQGNFaNKqBWd8MNbx9e6xJxyS8
- avcA==
-X-Gm-Message-State: AOAM530F4dX77lBbFDoyzKetKuWtHx1ZefxvcLGCPfxG7jZhZz0X/A4o
- 4Y6t3NKhgDjGVDNFHL5q8wh5KnDDfewZDGWj1uDkH+OBiypQa9bh+jtOZbvNjv9fKFXH7P244kY
- DFX/eKyW/oU4IgKEfRtDTFh5Fimsh
-X-Received: by 2002:a05:6a00:1910:b0:4f3:aa39:1e17 with SMTP id
- y16-20020a056a00191000b004f3aa391e17mr1081916pfi.54.1646435909859; 
- Fri, 04 Mar 2022 15:18:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJweNKG+31zPcsPDGhWjJRk4tVrukiJgZ0hE1Y7fJBBtMQ9eBMSNo4mK1iN5GsaHLgNuMRGUQg==
-X-Received: by 2002:a05:6a00:1910:b0:4f3:aa39:1e17 with SMTP id
- y16-20020a056a00191000b004f3aa391e17mr1081887pfi.54.1646435909450; 
- Fri, 04 Mar 2022 15:18:29 -0800 (PST)
+ h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=V/zNYW19fsArbDmTo8kwJPdxMzW2RO0slPhpgjqfsWw=;
+ b=GoU4sUl6BBIR0wwNmzGG8Zk3VibOlyRe0ylZ0X5jo99E1r/EweNA67GmUnwOR+9a7B
+ I3Qm5qjesxGtfuzL/GHBuGqEtqxdT5qYG7MSW4Ubl+2Y7YiqEEL8JHcFth+3tyXrALmn
+ 4Iw4FQXjownOz9igWf1XwE9UPUxK9s7bZJ5xu2Th4LEfXWETX7D3AXpEcLqdSv5ZngpM
+ 0gK/zO/yEtaus8/tteEuXGrbNIMeALQochdaOUzQqwVNOaRHVF+/k86la9HA4Iql6YKp
+ upOz+ollWmVRM6YGI4vKd31FpJDP8YnPx7YHX1DrWaPIXWKm/08LXWZ4apKsrUSOK0Q8
+ yWjg==
+X-Gm-Message-State: AOAM533uY879O7OsgTsnImA9/zvfVRL6qRGYbgY3L4glvJ3WxEGqGMhD
+ hp9pImdD0GUv8MvIef9cfocX78viTbtDlnrdKELakkaAUW6agUQcGSs2XIB5k4nhjfXWTJ3vu1y
+ tQdTzS6H/+h4EZqpn9XiPQL+KZ8lX
+X-Received: by 2002:a05:6a00:13aa:b0:4f1:1e5f:1c39 with SMTP id
+ t42-20020a056a0013aa00b004f11e5f1c39mr818533pfg.24.1646435916612; 
+ Fri, 04 Mar 2022 15:18:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxsNQa8HDuPJ2IC0uztIE14DRJeVHQjya9uXYB+LswnRzGg17z/xRxjPPLDcrPJnKECXDin7Q==
+X-Received: by 2002:a05:6a00:13aa:b0:4f1:1e5f:1c39 with SMTP id
+ t42-20020a056a0013aa00b004f11e5f1c39mr818513pfg.24.1646435916328; 
+ Fri, 04 Mar 2022 15:18:36 -0800 (PST)
 Received: from luke-ubuntu.. (cpe-66-27-118-101.san.res.rr.com.
  [66.27.118.101]) by smtp.gmail.com with ESMTPSA id
- h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.27
+ h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Mar 2022 15:18:27 -0800 (PST)
+ Fri, 04 Mar 2022 15:18:35 -0800 (PST)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it,
 	rpalethorpe@suse.de,
 	liwang@redhat.com
-Date: Fri,  4 Mar 2022 15:18:10 -0800
-Message-Id: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
+Date: Fri,  4 Mar 2022 15:18:15 -0800
+Message-Id: <4384f778b2664a0ceb561c0b3eac7be42e7cd269.1646434670.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
+References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 00/16] Expand Cgroup lib and modify controller tests
+Subject: [LTP] [PATCH v2 05/16] API/cgroup: Add more controllers to
+ tst_cgroup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,65 +99,137 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patchset aims to expand the cgroup_lib shell library to simplify
-and centralize the whole mounting and cleanup process that can get
-rather confusing and redundant when writing cgroup controller tests from
-a shell environment. This is done by having the shell library make calls
-to the C cgroup API from a binary utility.
+Add the rest of the controllers that are tested in LTP controller tests
+so that they can be mounted using the cgroup api.
 
-In this patch set there are a few tests that have been extensively
-rewritten to work with the new test API and to use the new functionality
-from the cgroup lib. Because the test Cgroup lib handles mounting for v1
-and v2 controllers, some tests were modified to also work under cgroup
-v2. Some tests that were written for v1 controller also effictively test
-v2 controllers, while others were written to test v2 controllers in the
-spirit of the test or skipped outright.
+Control files should be added on an as needed basis.
 
-Luke Nowakowski-Krijger (16):
-  API/cgroup: Modify tst_cg_print_config for parsing and consumption
-  API/cgroup: Add option for specific pid to tst_cg_opts
-  API/cgroup: Add cgroup_find_root helper function
-  API/cgroup: Implement tst_cg_load_config
-  API/cgroup: Add more controllers to tst_cgroup
-  API/cgroup: refuse to mount blkio when io controller is mounted
-  testcases/lib: Implement tst_cgctl binary
-  controllers: Expand cgroup_lib shell library
-  controllers: Update cgroup_fj_* to use newer cgroup lib and test lib
-  controllers: Update memcg_control_test to newer test lib and cgroup
-    lib
-  controllers: Update memcg/regression/* to new test and cgroup lib
-  controllers: Update memcg_stress_test to use newer cgroup lib
-  controllers: update memcg/functional to use newer cgroup lib
-  controllers: Update pids.sh to use newer cgroup lib
-  controllers: update cpuset_regression_test.sh to use newer cgroup lib
-  controllers: update cgroup_regression_test to use newer cgroup lib
+Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+---
+v2: remove rdma controller as that is not used in any LTP tests.
+Remove control files that should be added on an as needed basis.
 
- include/tst_cgroup.h                          |  17 +-
- lib/tst_cgroup.c                              | 203 +++++++++++++++++-
- .../cgroup/cgroup_regression_test.sh          |  17 +-
- .../controllers/cgroup_fj/cgroup_fj_common.sh | 113 +++-------
- .../cgroup_fj/cgroup_fj_function.sh           | 169 ++++++++-------
- .../controllers/cgroup_fj/cgroup_fj_proc.c    |  24 +--
- .../controllers/cgroup_fj/cgroup_fj_stress.sh | 168 +++++++--------
- testcases/kernel/controllers/cgroup_lib.sh    | 129 +++++++++--
- .../cpuset/cpuset_regression_test.sh          |  26 +--
- .../controllers/memcg/control/mem_process.c   |  28 +--
- .../memcg/control/memcg_control_test.sh       | 150 ++++---------
- .../memcg/functional/memcg_force_empty.sh     |   2 +-
- .../controllers/memcg/functional/memcg_lib.sh |  54 ++---
- .../memcg/regression/memcg_regression_test.sh | 202 ++++++++---------
- .../memcg/regression/memcg_test_1.c           |  40 ++--
- .../memcg/regression/memcg_test_2.c           |  24 +--
- .../memcg/regression/memcg_test_3.c           |  38 ++--
- .../memcg/regression/memcg_test_4.c           |  24 +--
- .../memcg/regression/memcg_test_4.sh          |  50 ++---
- .../memcg/stress/memcg_stress_test.sh         |  32 ++-
- testcases/kernel/controllers/pids/pids.sh     |  67 +-----
- testcases/lib/Makefile                        |   2 +-
- testcases/lib/tst_cgctl.c                     |  87 ++++++++
- 23 files changed, 883 insertions(+), 783 deletions(-)
- create mode 100644 testcases/lib/tst_cgctl.c
+ lib/tst_cgroup.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 91 insertions(+), 1 deletion(-)
 
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 90d91d94e..4e14a2895 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -83,8 +83,19 @@ enum cgroup_ctrl_indx {
+ 	CTRL_MEMORY = 1,
+ 	CTRL_CPU,
+ 	CTRL_CPUSET,
++	CTRL_IO,
++	CTRL_PIDS,
++	CTRL_HUGETLB,
++	CTRL_CPUACCT,
++	CTRL_DEVICES,
++	CTRL_FREEZER,
++	CTRL_NETCLS,
++	CTRL_NETPRIO,
++	CTRL_BLKIO,
++	CTRL_MISC,
++	CTRL_PERFEVENT
+ };
+-#define CTRLS_MAX CTRL_CPUSET
++#define CTRLS_MAX CTRL_PERFEVENT
+ 
+ /* At most we can have one cgroup V1 tree for each controller and one
+  * (empty) v2 tree.
+@@ -191,6 +202,52 @@ static const struct cgroup_file cpuset_ctrl_files[] = {
+ 	{ }
+ };
+ 
++static const struct cgroup_file pids_ctrl_files[] = {
++	{ "pids.max", "pids.max", CTRL_PIDS },
++	{ "pids.current", "pids.current", CTRL_PIDS },
++	{ }
++};
++
++static const struct cgroup_file io_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file hugetlb_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file cpuacct_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file devices_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file freezer_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file netcls_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file netprio_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file blkio_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file misc_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file perf_event_ctrl_files[] = {
++	{ }
++};
++
+ /* Lookup tree for item names. */
+ static struct cgroup_ctrl controllers[] = {
+ 	[0] = { "cgroup", cgroup_ctrl_files, 0, NULL, 0 },
+@@ -203,6 +260,39 @@ static struct cgroup_ctrl controllers[] = {
+ 	[CTRL_CPUSET] = {
+ 		"cpuset", cpuset_ctrl_files, CTRL_CPUSET, NULL, 0
+ 	},
++	[CTRL_PIDS] = {
++		"pids", pids_ctrl_files, CTRL_PIDS, NULL, 0
++	},
++	[CTRL_IO] = {
++		"io", io_ctrl_files, CTRL_IO, NULL, 0
++	},
++	[CTRL_HUGETLB] = {
++		"hugetlb", hugetlb_ctrl_files, CTRL_HUGETLB, NULL, 0
++	},
++	[CTRL_CPUACCT] = {
++		"cpuacct", cpuacct_ctrl_files, CTRL_CPUACCT, NULL, 0
++	},
++	[CTRL_DEVICES] = {
++		"devices", devices_ctrl_files, CTRL_DEVICES, NULL, 0
++	},
++	[CTRL_FREEZER] = {
++		"freezer", freezer_ctrl_files, CTRL_FREEZER, NULL, 0
++	},
++	[CTRL_NETCLS] = {
++		"net_cls", netcls_ctrl_files, CTRL_NETCLS, NULL, 0
++	},
++	[CTRL_NETPRIO] = {
++		"net_prio", netprio_ctrl_files, CTRL_NETPRIO, NULL, 0
++	},
++	[CTRL_BLKIO] = {
++		"blkio", blkio_ctrl_files, CTRL_BLKIO, NULL, 0
++	},
++	[CTRL_MISC] = {
++		"misc", misc_ctrl_files, CTRL_MISC, NULL, 0
++	},
++	[CTRL_PERFEVENT] = {
++		"perf_event", perf_event_ctrl_files, CTRL_PERFEVENT, NULL, 0
++	},
+ 	{ }
+ };
+ 
 -- 
 2.32.0
 
