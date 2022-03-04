@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF01BC433EF
-	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FA6DC433F5
+	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:21:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 21B503CA3EF
-	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:20:53 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1DF1B3CA3F8
+	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:21:05 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3CDC33CA3B8
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:49 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id 761F33CA3F3
+ for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:51 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CF601601F4D
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:48 +0100 (CET)
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0D82510008F8
+ for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:50 +0100 (CET)
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5D05B3F615
- for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:44 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 449E33F5F5
+ for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1646435924;
- bh=/YHHYWI8lMSudNxCW6WMyGhG66DqP/6FS/r7mTAgnWA=;
+ s=20210705; t=1646435930;
+ bh=K+1WzYajNsYz63ppTUg3LHQUfDFpmNmoE5gogShWq9E=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=KDN9sxXcP+W9WYK0Ry53lISirYX7zceI8/1uEKiNN7soAQRMmvGYFuD01fuPU84Xc
- 0a2qT3oZEVlP4vLmjVMmQLe0N2VqDRC3Wj05eeArgepEGhrbFC9/+1C2WdrPmKLpee
- eUOjJVy39msGQQDQEtunp4If5jnXDTfGm+CHYXkhDN6Nar18JfZ8ehDjamiTPaAge7
- EopLR/Mjg2DWR7awvmkf1NKXlb2INo+v2ZuIW3DSpT7NPXopt8cyX7c1OY9XzM+kcl
- hpvX6w6bSjFEriOVWhQzZJioRiZC4/pX5IATCUNY5IGuX3oHu+njx4UNDDeqXSwtSs
- 0YUFVrSuwPnkg==
-Received: by mail-pj1-f70.google.com with SMTP id
- t10-20020a17090a5d8a00b001bed9556134so8142304pji.5
- for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:44 -0800 (PST)
+ b=ULjEYeRwxpahM8BJOGJ1SDsqIQDVcFESxsKbhpwYOjAj9meUMJbPZHPgOll1tiUl/
+ c6znwFWpJgeyx6mWrRbLfq8y7hXvMsXT5B1ctXbFjaqi5SsJgaM7UjL8aQIyCkqJ7O
+ Ik7RFZZv3zEL57qWiMGvJSFb1m7cSn8lMLd++yUIVRColvtXAcK6G4PypFub8hLp5V
+ S0MdoHQB3lA1cvvjMnB+IG6HVF7XkIUyPNHDhX6Uml6puk23XGfNW7fdBN3Z3btigh
+ CEWa1oehi0tuR7DOBfh0ZqfooLGOLRsJAkrYThOh6IofeBOEJM4/0L088cQxPmddx0
+ l8jmXvfBZuzNQ==
+Received: by mail-pl1-f199.google.com with SMTP id
+ d4-20020a170902f14400b001518350e5c7so5346964plb.13
+ for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=/YHHYWI8lMSudNxCW6WMyGhG66DqP/6FS/r7mTAgnWA=;
- b=d7juApNloGxa59W/QtNcBXhViOVYKTdD0lBw1hcxtp4NtjNkasasifPPluU+pY9U/8
- /GEK3pA4Z88INJrz4N57zd47RCP2nFOUVUF2XcP+JvXJ4XPEc+bLKxwYegMpbHX0J+tm
- dfNVZ8fDq1i1fFWOdIGGhWBtQsfZ3bl2wxTa81AE/4jLmEOdyW+KlOg+19FOK1zT7WSA
- NpkjF686bbFo9zZUYEjr8MNjGceRWtndfR70sB9gDmpGAXcW65LNcnVp60+nbj4XtEJ3
- QcOJdg8Nbmf2vOjhw7DdVP5DJShGEYWTrbD6OURklp9oOEd9yZsP+fkMC2nRHHmtuhvq
- 2V9Q==
-X-Gm-Message-State: AOAM531MkG10/JVV609mMZ9a1OTq0plCVzHdeRdn5F5X4hGwIYqdvN2t
- Ud+exKNtEezW11IEdEjGB5byjuxYTzj//iOMWLQ/4CQ3PYI0HgMC5cRguUlU1HGc1Enyoj/yGyu
- 1jkDhfANPrXGHmdioMIWSkA5EjB6C
-X-Received: by 2002:a62:8f87:0:b0:4cc:3f6:ca52 with SMTP id
- n129-20020a628f87000000b004cc03f6ca52mr942703pfd.79.1646435917927; 
- Fri, 04 Mar 2022 15:18:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw3kUpGdOPKxPJxZc/nujDjnLoz2k9IsTmzzKtX34FPS7UvGKErUg6CSdl8HE568cZqtyjC+A==
-X-Received: by 2002:a62:8f87:0:b0:4cc:3f6:ca52 with SMTP id
- n129-20020a628f87000000b004cc03f6ca52mr942678pfd.79.1646435917667; 
- Fri, 04 Mar 2022 15:18:37 -0800 (PST)
+ bh=K+1WzYajNsYz63ppTUg3LHQUfDFpmNmoE5gogShWq9E=;
+ b=J+lWqI6sinrbmOjokiPKeyYBiUgYbTfzzXmKqDP6bT/Am/+tzw1mOYMCNbWQDP4afB
+ PATsNUuAGtFZYHUQ9knZM9fOpS9u0COChlgCG2nJSpJn08MsJEE8Srp1MsMztHuCwcqF
+ 88g64fIVJxgpMiSAGjSVja6XDdXFFQdqLf4cqVcrE14UJV47Es4pRRM4L/wxxsfFFuDl
+ 5UMXpti8TUR8bMVULTarp6EpnT3ACZ5w9gInPz5rergHTf8WjFMuDr5fn1mDsiWz1pXc
+ 9Q+Moc8jBSu62QnOfqJke1La6Q9ZGaKCdBaTgK013HqQj7XL4yQv4TC3TlPV2t3eyF37
+ aU5A==
+X-Gm-Message-State: AOAM530eXS2lgzMCpBu2Nx6fxSgqRf72WtQmMhJXBUkilU8ENuEtB6NF
+ pT7g0y5+ArP53t0Bw+Ifh6HE1/mk9pcK3xIqTQx/65k1UgWoga3JQ4FGiri8uq0etk1mQXbKZAH
+ jYVFYXYU7wE12p6idqzDka9xUEofD
+X-Received: by 2002:a17:902:cccc:b0:14e:e89c:c669 with SMTP id
+ z12-20020a170902cccc00b0014ee89cc669mr700205ple.58.1646435928621; 
+ Fri, 04 Mar 2022 15:18:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzSBG/63XARLoW9QCmCaiv+VqmZPhohZ9XMRjHbzrMdHYh8iopEj2/2N1SUZUkJFIIAyz1tcQ==
+X-Received: by 2002:a17:902:cccc:b0:14e:e89c:c669 with SMTP id
+ z12-20020a170902cccc00b0014ee89cc669mr700187ple.58.1646435928325; 
+ Fri, 04 Mar 2022 15:18:48 -0800 (PST)
 Received: from luke-ubuntu.. (cpe-66-27-118-101.san.res.rr.com.
  [66.27.118.101]) by smtp.gmail.com with ESMTPSA id
- h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.36
+ h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Mar 2022 15:18:36 -0800 (PST)
+ Fri, 04 Mar 2022 15:18:47 -0800 (PST)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it,
 	rpalethorpe@suse.de,
 	liwang@redhat.com
-Date: Fri,  4 Mar 2022 15:18:16 -0800
-Message-Id: <031d9481edff991fc3c38da3699364b0f42ae63f.1646434670.git.luke.nowakowskikrijger@canonical.com>
+Date: Fri,  4 Mar 2022 15:18:24 -0800
+Message-Id: <42c4a457da1c50f344b58055692f754f2b0277e6.1646434670.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 06/16] API/cgroup: refuse to mount blkio when io
- controller is mounted
+Subject: [LTP] [PATCH v2 14/16] controllers: Update pids.sh to use newer
+ cgroup lib
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,35 +100,120 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Mounting the v1 blkio controller while v2 io controller is mounted
-unmounts the io controller, triggering a tst_brk that the number of
-controller has gone down.
-
-Because these controllers don't seem to be compatible, tst_brk with
-TCONF and report that we refused to mount the blkio controller while the
-io controller is mounted.
+Updated to use the newer cgroup_lib to make mounting and cleanup
+nicer.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
- lib/tst_cgroup.c | 5 +++++
- 1 file changed, 5 insertions(+)
+v2: Use version number 2 instead of v2
 
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 4e14a2895..52cbf680b 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -691,6 +691,11 @@ static void cgroup_mount_v1(struct cgroup_ctrl *const ctrl)
- 	char mnt_path[PATH_MAX];
- 	int made_dir = 0;
+ testcases/kernel/controllers/pids/pids.sh | 67 +++--------------------
+ 1 file changed, 9 insertions(+), 58 deletions(-)
+
+diff --git a/testcases/kernel/controllers/pids/pids.sh b/testcases/kernel/controllers/pids/pids.sh
+index a3d644eff..ffde41df0 100755
+--- a/testcases/kernel/controllers/pids/pids.sh
++++ b/testcases/kernel/controllers/pids/pids.sh
+@@ -13,7 +13,7 @@ TST_USAGE=usage
+ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="killall"
  
-+	if (ctrl->ctrl_indx == CTRL_BLKIO && controllers[CTRL_IO].ctrl_root) {
-+		tst_brk(TCONF,
-+			"IO controller found on V2 root, skipping blkio mount that would unmount IO controller");
-+	}
-+
- 	sprintf(mnt_path, "%s%s", cgroup_mount_ltp_prefix, ctrl->ctrl_name);
+-. tst_test.sh
++. cgroup_lib.sh
  
- 	if (!mkdir(mnt_path, 0777)) {
+ caseno=$1
+ max=$2
+@@ -38,66 +38,17 @@ cleanup()
+ {
+ 	killall -9 pids_task2 >/dev/null 2>&1
+ 
+-	tst_res TINFO "removing created directories"
+-	rmdir $testpath
+-	if [ "$mounted" -ne "1" ]; then
+-		tst_res TINFO "Umounting pids"
+-		umount $mount_point
+-		rmdir $mount_point
+-	fi
+-}
+-
+-setup_cgroupv2()
+-{
+-	mount_point=$(grep -w cgroup2 /proc/mounts | cut -f 2 | cut -d " " -f2)
+-	if ! grep -q pids "$mount_point"/cgroup.controllers; then
+-		tst_res TINFO "pids not supported on cgroup v2."
+-		return
+-	fi
+-
+-	testpath="$mount_point/ltp_pids_$caseno"
+-	ROD mkdir -p "$testpath"
+-	task_list="cgroup.procs"
+-	cgroup_v="v2"
+-}
+-
+-setup_cgroupv1()
+-{
+-	exist=`grep -w pids /proc/cgroups | cut -f1`;
+-	if [ "$exist" = "" ]; then
+-		tst_brk TCONF NULL "pids not supported"
+-	fi
+-
+-	mount_point=`grep -w pids /proc/mounts | cut -f 2 | cut -d " " -f2`
+-
+-	if [ "$mount_point" = "" ]; then
+-		mounted=0
+-		mount_point=/dev/cgroup
+-	fi
+-
+-	testpath=$mount_point/ltp_pids_$caseno
+-
+-	if [ "$mounted" -eq "0" ]; then
+-		ROD mkdir -p $mount_point
+-		ROD mount -t cgroup -o pids none $mount_point
+-	fi
+-	ROD mkdir -p $testpath
+-	task_list="tasks"
+-	cgroup_v="v1"
++	cgroup_cleanup
+ }
+ 
+ setup()
+ {
+-	# If cgroup2 is mounted already, then let's
+-	# try to start with cgroup v2.
+-	if grep -q cgroup2 /proc/mounts; then
+-		setup_cgroupv2
+-	fi
+-	if [ -z "$cgroup_v" ]; then
+-		setup_cgroupv1
+-	fi
++	cgroup_require "pids"
++	cgroup_version=$(cgroup_get_version "pids")
++	testpath=$(cgroup_get_test_path "pids")
++	task_list=$(cgroup_get_task_list "pids")
+ 
+-	tst_res TINFO "test starts with cgroup $cgroup_v"
++	tst_res TINFO "test starts with cgroup version $cgroup_version"
+ }
+ 
+ start_pids_tasks2()
+@@ -298,7 +249,7 @@ case8()
+ {
+ 	tst_res TINFO "set child cgroup limit smaller than its parent limit"
+ 	ROD echo $max \> $testpath/pids.max
+-	if [ "$cgroup_v" = "v2" ]; then
++	if [ "$cgroup_version" = "2" ]; then
+ 		ROD echo +pids \> "$testpath"/cgroup.subtree_control
+ 	fi
+ 	mkdir $testpath/child
+@@ -328,7 +279,7 @@ case9()
+ 	tst_res TINFO "migrate cgroup"
+ 	lim=$((max - 1))
+ 
+-	if [ "$cgroup_v" = "v2" ]; then
++	if [ "$cgroup_version" = "2" ]; then
+ 		ROD echo +pids \> "$testpath"/cgroup.subtree_control
+ 	fi
+ 	for i in 1 2; do
 -- 
 2.32.0
 
