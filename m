@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F1ABC433EF
-	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:20:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF01BC433EF
+	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:20:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 21A713CA3D3
-	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:20:41 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 21B503CA3EF
+	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:20:53 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F6EC3CA3CC
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:48 +0100 (CET)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ by picard.linux.it (Postfix) with ESMTPS id 3CDC33CA3B8
+ for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:49 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 263AA6011F6
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CF601601F4D
  for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:48 +0100 (CET)
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199])
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id ABE3A3F5F5
- for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:47 +0000 (UTC)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5D05B3F615
+ for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1646435927;
- bh=Ay09Htfrqgp4kT30ikA2xHOj0KjHMeNslESpwVeTfUk=;
+ s=20210705; t=1646435924;
+ bh=/YHHYWI8lMSudNxCW6WMyGhG66DqP/6FS/r7mTAgnWA=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=daJnymBMv8wPcQ2RHZsJo07bAbLGacEYiYXIdmP1XxKYFbpIriTSma/G0tVI1v2nn
- KNRIQjLFPB2UMSvYuFNm9DJqFpYI1w4MOH+GAs18Emsi9psE8DrQ/2roydDm+bcTRe
- 2P1f0SlwRjM7I9uNN8MogD/bSkY2H3eLYMTboVnPS/x0jsUYSbo+F8ITD4IQoXrnJl
- WeedbhpHkSm+sniqIX2CNBtNhhukE//wPsyqPNfIGg74Xymblz54taomjoAytbrZCn
- VoK9VZJMhPs2DE3f4VgPFxOa0yxNqXuOn1PHzScCvEmU5ADycv9VorZqzHCYlJAwP7
- SzrWOsJ3Y6l6w==
-Received: by mail-pg1-f199.google.com with SMTP id
- u10-20020a63df0a000000b0037886b8707bso5221477pgg.23
- for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:47 -0800 (PST)
+ b=KDN9sxXcP+W9WYK0Ry53lISirYX7zceI8/1uEKiNN7soAQRMmvGYFuD01fuPU84Xc
+ 0a2qT3oZEVlP4vLmjVMmQLe0N2VqDRC3Wj05eeArgepEGhrbFC9/+1C2WdrPmKLpee
+ eUOjJVy39msGQQDQEtunp4If5jnXDTfGm+CHYXkhDN6Nar18JfZ8ehDjamiTPaAge7
+ EopLR/Mjg2DWR7awvmkf1NKXlb2INo+v2ZuIW3DSpT7NPXopt8cyX7c1OY9XzM+kcl
+ hpvX6w6bSjFEriOVWhQzZJioRiZC4/pX5IATCUNY5IGuX3oHu+njx4UNDDeqXSwtSs
+ 0YUFVrSuwPnkg==
+Received: by mail-pj1-f70.google.com with SMTP id
+ t10-20020a17090a5d8a00b001bed9556134so8142304pji.5
+ for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Ay09Htfrqgp4kT30ikA2xHOj0KjHMeNslESpwVeTfUk=;
- b=ajobaWti3MnAx8BJDXCjIa0uTw0jJAtwJIFQeAXxUJIaMRp6A9SVFiKQzraiRBYnEc
- e4uw/pZffBHa3n9xYx258yRcTdLSpHUjM+aRff8+qJf5bAPiE13RLqaqInrlyJay++yo
- lolRBlBK3yG9RfrLD6jKM5i9mFtEfPwOsAem34DJeokBblTteBxFlzhU7ZdUsWOKUx09
- Dbrf+Gz5qazyBuiSZwOodnXRLpjxXjFcQmA7CqcndLUFL+3YGKlIIMgYmej/Upx3klso
- 0YBHyCYP8twKCAAWAYfdHe7T2dwh4gTH+OnovBm5M6HJM4XrOCPjRjmKeSNNTknF8aVz
- w8hg==
-X-Gm-Message-State: AOAM532OmLbA9XLZkScijJ8wbAtU1GQJ0twjP1R08v/+JbhDl71oE8gX
- iQK5LU8d/JONN7UeeIzFaAd0haYK0EaBDPb/TptDX2MFZ7FbXQXRy0WzwU7gedznE9H3vrd9xGT
- ynCpJXfg+pXhypn/dRULa3+Y36WXd
-X-Received: by 2002:a17:903:41c7:b0:151:a52c:c63b with SMTP id
- u7-20020a17090341c700b00151a52cc63bmr698683ple.32.1646435925914; 
- Fri, 04 Mar 2022 15:18:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJztacRF7pN0VoBxmL3OfRwTUnlrfBAZ7bLO+t9LSprHpWtns/QNTzubkui3zCZnQ2yco/tYPw==
-X-Received: by 2002:a17:903:41c7:b0:151:a52c:c63b with SMTP id
- u7-20020a17090341c700b00151a52cc63bmr698665ple.32.1646435925654; 
- Fri, 04 Mar 2022 15:18:45 -0800 (PST)
+ bh=/YHHYWI8lMSudNxCW6WMyGhG66DqP/6FS/r7mTAgnWA=;
+ b=d7juApNloGxa59W/QtNcBXhViOVYKTdD0lBw1hcxtp4NtjNkasasifPPluU+pY9U/8
+ /GEK3pA4Z88INJrz4N57zd47RCP2nFOUVUF2XcP+JvXJ4XPEc+bLKxwYegMpbHX0J+tm
+ dfNVZ8fDq1i1fFWOdIGGhWBtQsfZ3bl2wxTa81AE/4jLmEOdyW+KlOg+19FOK1zT7WSA
+ NpkjF686bbFo9zZUYEjr8MNjGceRWtndfR70sB9gDmpGAXcW65LNcnVp60+nbj4XtEJ3
+ QcOJdg8Nbmf2vOjhw7DdVP5DJShGEYWTrbD6OURklp9oOEd9yZsP+fkMC2nRHHmtuhvq
+ 2V9Q==
+X-Gm-Message-State: AOAM531MkG10/JVV609mMZ9a1OTq0plCVzHdeRdn5F5X4hGwIYqdvN2t
+ Ud+exKNtEezW11IEdEjGB5byjuxYTzj//iOMWLQ/4CQ3PYI0HgMC5cRguUlU1HGc1Enyoj/yGyu
+ 1jkDhfANPrXGHmdioMIWSkA5EjB6C
+X-Received: by 2002:a62:8f87:0:b0:4cc:3f6:ca52 with SMTP id
+ n129-20020a628f87000000b004cc03f6ca52mr942703pfd.79.1646435917927; 
+ Fri, 04 Mar 2022 15:18:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw3kUpGdOPKxPJxZc/nujDjnLoz2k9IsTmzzKtX34FPS7UvGKErUg6CSdl8HE568cZqtyjC+A==
+X-Received: by 2002:a62:8f87:0:b0:4cc:3f6:ca52 with SMTP id
+ n129-20020a628f87000000b004cc03f6ca52mr942678pfd.79.1646435917667; 
+ Fri, 04 Mar 2022 15:18:37 -0800 (PST)
 Received: from luke-ubuntu.. (cpe-66-27-118-101.san.res.rr.com.
  [66.27.118.101]) by smtp.gmail.com with ESMTPSA id
- h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.44
+ h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Mar 2022 15:18:45 -0800 (PST)
+ Fri, 04 Mar 2022 15:18:36 -0800 (PST)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it,
 	rpalethorpe@suse.de,
 	liwang@redhat.com
-Date: Fri,  4 Mar 2022 15:18:22 -0800
-Message-Id: <b6481320a6d27c8c51eb66185da980e51af71a3c.1646434670.git.luke.nowakowskikrijger@canonical.com>
+Date: Fri,  4 Mar 2022 15:18:16 -0800
+Message-Id: <031d9481edff991fc3c38da3699364b0f42ae63f.1646434670.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 12/16] controllers: Update memcg_stress_test to use
- newer cgroup lib
+Subject: [LTP] [PATCH 06/16] API/cgroup: refuse to mount blkio when io
+ controller is mounted
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,90 +100,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update the test to use the newer cgroup lib which enables the testing of
-both v1 and v2 memory controllers and makes the setup and cleanup much
-simpler.
+Mounting the v1 blkio controller while v2 io controller is mounted
+unmounts the io controller, triggering a tst_brk that the number of
+controller has gone down.
+
+Because these controllers don't seem to be compatible, tst_brk with
+TCONF and report that we refused to mount the blkio controller while the
+io controller is mounted.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
-v2: Use version number 2 instead of v2
+ lib/tst_cgroup.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
- .../memcg/stress/memcg_stress_test.sh         | 32 +++++++------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index c43d72116..1c0a8bf22 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -23,10 +23,16 @@ TST_TIMEOUT=2100
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 4e14a2895..52cbf680b 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -691,6 +691,11 @@ static void cgroup_mount_v1(struct cgroup_ctrl *const ctrl)
+ 	char mnt_path[PATH_MAX];
+ 	int made_dir = 0;
  
- setup()
- {
--	if ! is_cgroup_subsystem_available_and_enabled "memory"; then
--		tst_brk TCONF "Either kernel does not support Memory Resource Controller or feature not enabled"
-+	cgroup_require "memory"
-+	cgroup_version=$(cgroup_get_version "memory")
-+	test_path=$(cgroup_get_test_path "memory")
-+	task_list=$(cgroup_get_task_list "memory")
-+	if [ "$cgroup_version" = "2" ]; then
-+		ROD echo "+memory" > "$test_path/cgroup.subtree_control"
- 	fi
- 
-+	tst_res TINFO "test starts with cgroup version $cgroup_version"
++	if (ctrl->ctrl_indx == CTRL_BLKIO && controllers[CTRL_IO].ctrl_root) {
++		tst_brk(TCONF,
++			"IO controller found on V2 root, skipping blkio mount that would unmount IO controller");
++	}
 +
- 	echo 3 > /proc/sys/vm/drop_caches
- 	sleep 2
- 	local mem_free=`cat /proc/meminfo | grep MemFree | awk '{ print $2 }'`
-@@ -43,18 +49,7 @@ setup()
+ 	sprintf(mnt_path, "%s%s", cgroup_mount_ltp_prefix, ctrl->ctrl_name);
  
- cleanup()
- {
--	if [ -e /dev/memcg ]; then
--		EXPECT_PASS umount /dev/memcg
--		EXPECT_PASS rmdir /dev/memcg
--	fi
--}
--
--do_mount()
--{
--	cleanup
--
--	EXPECT_PASS mkdir /dev/memcg
--	EXPECT_PASS mount -t cgroup -omemory memcg /dev/memcg
-+	cgroup_cleanup
- }
- 
- # $1 Number of cgroups
-@@ -71,13 +66,11 @@ run_stress()
- 
- 	tst_res TINFO "Testing $cgroups cgroups, using $mem_size MB, interval $interval"
- 
--	do_mount
--
- 	tst_res TINFO "Starting cgroups"
- 	for i in $(seq 0 $(($cgroups-1))); do
--		mkdir /dev/memcg/$i 2> /dev/null
-+		ROD mkdir "$test_path/$i"
- 		memcg_process_stress $mem_size $interval &
--		echo $! > /dev/memcg/$i/tasks
-+		ROD echo $! > "$test_path/$i/$task_list"
- 		pids="$pids $!"
- 	done
- 
-@@ -93,12 +86,11 @@ run_stress()
- 	for pid in $pids; do
- 		kill -KILL $pid 2> /dev/null
- 		wait $pid 2> /dev/null
--		rmdir /dev/memcg/$i 2> /dev/null
-+		ROD rmdir "$test_path/$i"
- 		i=$((i+1))
- 	done
- 
- 	tst_res TPASS "Test passed"
--	cleanup
- }
- 
- test1()
+ 	if (!mkdir(mnt_path, 0777)) {
 -- 
 2.32.0
 
