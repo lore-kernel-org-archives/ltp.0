@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE4CFC433F5
-	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F8A6C433EF
+	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:19:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3912F3CA401
-	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:19:43 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C31C23CA3ED
+	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:19:52 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C2593CA40E
+ by picard.linux.it (Postfix) with ESMTPS id 3C3E23CA3EE
  for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:41 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E1E23601D7E
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:40 +0100 (CET)
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3FBF6140004B
+ for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:41 +0100 (CET)
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CE6E73F613
- for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:38 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B876D3F5FB
+ for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1646435918;
- bh=v2doBMWIGRmqDlTfh7bYbypZbJ8EzVq9R0jIYzIDOUw=;
+ s=20210705; t=1646435920;
+ bh=72ZPFxrJcZtMHXbPzCdArrxPavpNaaMuzIXQRp0fos8=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=LodbPBnpkHrTnMeE5JOkJoiHwQV7g133w7Vvm//rP64s9INtPpt2WyvKbBWwI3LAV
- xYgH1Kxk7bZoyLqCDynkQ6t8tRPn3QyTstdV6dcvxyiqqwj/7m+TfJSc28ZdtXooT+
- koUEgKbzeNI6F/eqRgoEnsmJeqJm4AQ71uaCxaDJRpwHyNFeCtATpRpM3pBvdsnfCI
- AOWVf1HKz1iRIfx6Kpk6t0iu5cbNBLLP8LW1GZWnPlWOTfMM7Yg1uHjz2KmumsJYLP
- ZOfhR5cOPQYsChWhj2EmxHwPhIsU7wKipwUU7FCPdfI6fg5nmwCEcNIb9tsfxh3uwp
- tyNk3uOQzyQxQ==
-Received: by mail-pl1-f199.google.com with SMTP id
- e13-20020a17090301cd00b00150145346f9so5329859plh.23
- for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:38 -0800 (PST)
+ b=rBJ+LAn5jsEHZa1IupydY1jd0g+BMWSMpBdY0nOhoeFYGpyODe5FX/1cn8nPLGYtz
+ I04y43dpySyrzRm0htVqR/sSuzvzLnKgJOrDqeEpzzDpV+e3i2uik+XgjQEO6x/AK2
+ klCDROI3gq6bwUnrybYNjdij4AccJsXa/iG+utp+DmjBfIPtInDHN9qzF2+RAg1pbe
+ jlHeHkJ3Y6kf6lCyG5f0lwV9S/AX5teNLR9VDME4C+CNFDfXym67LifZsWCAbUE549
+ cCOYFlhXFXG04CIM16vyFF+9LJ0MaWqTD/AnrQbIyheSzNDURWVf/M9P28iR9LS/dB
+ WIjaZPm4PZVrQ==
+Received: by mail-pg1-f200.google.com with SMTP id
+ 1-20020a630c41000000b00378d9d6bd91so5243746pgm.17
+ for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=v2doBMWIGRmqDlTfh7bYbypZbJ8EzVq9R0jIYzIDOUw=;
- b=ia8wpPEYyPuN4nNOACzHA4kpIGjHVN2+mBhIwhOBVTuMTBV/B7yijldPpKpt27cvRN
- mp0ip6gko8FequQZKz1OYCIJjblv72XMROIa94HcQ53kkSrM88TEyZxoR4RHppSHEWBE
- OO1UAGWp+1deJSzO8F9oNBUVUfk3l+61DCoSLMSdBXnWhxOtboKFdwnu56Y/FQpgSoRj
- /c+J56cNfIfB0/4+G/Km2pk/d2b5I7pUG6ztT5uvVpYAv5pjTEgmuJLfzcQiYtFATQkU
- x5KIfDMWneoN6xkjqx6JVeky6eQLuaIw7fD0T52ApnaAss8GkXp/NzUnN6WoU6B0aa8N
- +nYg==
-X-Gm-Message-State: AOAM5319XBsZo9P99w0Zzd6Yz57xEDpxxL6tvROy/RsgZGz4EwkASZWo
- Ss5yFfu02BGsSl52n6Fudo6YM/vekml468SX03CkcfjIL3LFnWmw5lusamqR3Y2+J1jjwKtAIS5
- hqJIe3LxjrOS4Q6Hj8ZFbtIc8w0Wm
-X-Received: by 2002:a62:586:0:b0:4e1:dc81:8543 with SMTP id
- 128-20020a620586000000b004e1dc818543mr835660pff.0.1646435915206; 
- Fri, 04 Mar 2022 15:18:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzKuulEMUvAhARXWBavlURimsvQk7+a6T4jGlp2le/+q7AZB1nvgTnR1Dl7pC3Xp9ggX8Q+Yg==
-X-Received: by 2002:a62:586:0:b0:4e1:dc81:8543 with SMTP id
- 128-20020a620586000000b004e1dc818543mr835633pff.0.1646435914874; 
- Fri, 04 Mar 2022 15:18:34 -0800 (PST)
+ bh=72ZPFxrJcZtMHXbPzCdArrxPavpNaaMuzIXQRp0fos8=;
+ b=52+4vNGBtizpwRmdC+UZAzSGcFEUz3Lkl5sBun7NULXufwpCY1xgPEb+659qt7U82D
+ G+QE5VrtPTn9PdNYgtb8Hkjn2vsLqKiQqkrvfiWaU9WCbTux6TSnwsT2RTrcv81awcfj
+ +g90/zFxDxsmiE1GowSQrYlmTkh8KN1qBQDRtXPo112x/9M50C/ybpzqEJ6IIfG+pOQm
+ BcGfDXzq/Os360c/jCCxiRvIwEFKbjaBtsrS9pAium0nLWNRKTqiuYDOlpKhCbk+xdsZ
+ tXV3tl3MRkSYwaELcDAyIw83RQ+22rLBi21VGrzRYPrJhL9Oh1KxdiZ/EoKjGQAdy7kL
+ Q9sQ==
+X-Gm-Message-State: AOAM530XOAmXE/PmI2UQwfm5TNMnLzt9wfmP7wmjPu8W2xfHd2QEoCZX
+ h7UEpGVLorwMyiu7HQ14medEiWvvJ+xkmmwzBOBjTjP8RESa/tIO9KO1p+Dvzq+e609ErUB4PHa
+ BQmCXbTHYKRX+mNhJ9VqfvqzFgW0q
+X-Received: by 2002:a05:6a00:22cc:b0:4e0:58dc:e489 with SMTP id
+ f12-20020a056a0022cc00b004e058dce489mr1080065pfj.58.1646435919122; 
+ Fri, 04 Mar 2022 15:18:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzhMkd6yUui5JqiASf70Wns9bTyCCnRH67GQomwxaOhkTanM7B0utfxUQaL+53SoAMvX2Y0tA==
+X-Received: by 2002:a05:6a00:22cc:b0:4e0:58dc:e489 with SMTP id
+ f12-20020a056a0022cc00b004e058dce489mr1080048pfj.58.1646435918825; 
+ Fri, 04 Mar 2022 15:18:38 -0800 (PST)
 Received: from luke-ubuntu.. (cpe-66-27-118-101.san.res.rr.com.
  [66.27.118.101]) by smtp.gmail.com with ESMTPSA id
- h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.33
+ h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Mar 2022 15:18:34 -0800 (PST)
+ Fri, 04 Mar 2022 15:18:38 -0800 (PST)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it,
 	rpalethorpe@suse.de,
 	liwang@redhat.com
-Date: Fri,  4 Mar 2022 15:18:14 -0800
-Message-Id: <baec527891fe83e75958f9db3634f1a0a828bf07.1646434670.git.luke.nowakowskikrijger@canonical.com>
+Date: Fri,  4 Mar 2022 15:18:17 -0800
+Message-Id: <f0b0fe68ef5fa57e337917d07374af9047d522e5.1646434670.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 04/16] API/cgroup: Implement tst_cg_load_config
+Subject: [LTP] [PATCH v2 07/16] testcases/lib: Implement tst_cgctl binary
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,120 +99,129 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Implement tst_cg_load_config which consumes the state given by
-tst_cg_print_config to update the internal test state to reflect
-the given config.
+Implement a binary utility that creates an interface to make calls to
+the cgroup C API.
 
-This allows for programs using the cgroup C API to load and reload
-state, allowing functionality such as calling tst_cg_require and
-tst_cg_cleanup to function properly between programs or between
-invocations of a binary using the C API.
+This will effectively allow shell scripts to make calls to the cgroup C
+api.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
-v2: Add root null check in parse_root_config.
-    Remove checking for ltp_drain_dir key from config as it was
-    redundant.
-    Remove unsued variable in parse_ctrl_config.
-    Cleanup some compiler warnings.
-v3: Rewrite to consume each line of the config with a scanf to make
-    the parsing much simpler while using new config variables.
+v2: Add license identifier and copyright.
+Reformat with tabs instead of spaces.
+Add help format message and help function.
+Add error gotos to streamline error messaging.
 
- include/tst_cgroup.h |  7 +++++
- lib/tst_cgroup.c     | 62 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+)
+ testcases/lib/Makefile    |  2 +-
+ testcases/lib/tst_cgctl.c | 87 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/lib/tst_cgctl.c
 
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index 87e55f4df..9bad0d366 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -121,6 +121,13 @@ void tst_cg_scan(void);
-  */
- void tst_cg_print_config(void);
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index f2de0c832..f4f8c8524 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -12,6 +12,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+ 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
+ 			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
+-			   tst_check_kconfigs
++			   tst_check_kconfigs tst_cgctl
  
-+/* Load the config printed out by tst_cg_print_config and configure the internal
-+ * libary state to match the config. Used to allow tst_cg_cleanup to properly
-+ * cleanup mounts and directories created by tst_cg_require between program
-+ * invocations.
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_cgctl.c b/testcases/lib/tst_cgctl.c
+new file mode 100644
+index 000000000..4f4fe8542
+--- /dev/null
++++ b/testcases/lib/tst_cgctl.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 Canonical Ltd.
 + */
-+void tst_cg_load_config(const char *const config);
 +
- /* Ensure the specified controller is available in the test's default
-  * CGroup, mounting/enabling it if necessary. Usually this is not
-  * necesary use tst_test.needs_cgroup_controllers instead.
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 8f95064b3..90d91d94e 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -366,6 +366,68 @@ static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
- 	return NULL;
- }
- 
-+static void parse_config(const char *const config_entry)
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <unistd.h>
++#include "tst_cgroup.h"
++
++#define USAGE "Usage: tst_cgctl require [controller] [test_pid]\n\
++	\t cleanup [config (output of tst_cg_print_config)]\n\
++	\t print\n\
++	\t help\n"
++
++static int cgctl_require(const char *ctrl, int test_pid)
 +{
-+	const char ctrl_name[32], mnt_path[PATH_MAX], test_dir_name[NAME_MAX + 1];
-+	int ver, we_require_it, we_mounted_it, ltp_dir_we_created_it;
-+	struct cgroup_root *root;
-+	struct cgroup_ctrl *ctrl;
++	struct tst_cg_opts opts;
 +
-+	sscanf(config_entry, CONFIG_FORMAT,
-+		ctrl_name, &ver, &we_require_it, mnt_path, &we_mounted_it,
-+		&ltp_dir_we_created_it, test_dir_name);
++	memset(&opts, 0, sizeof(opts));
++	opts.test_pid = test_pid;
 +
-+	if (!(ctrl = cgroup_find_ctrl(ctrl_name)))
-+		tst_brk(TBROK, "Could not find ctrl from config. Ctrls changing between calls?");
++	tst_cg_require(ctrl, &opts);
++	tst_cg_print_config();
 +
-+	ctrl->we_require_it = we_require_it;
++	return 0;
++}
 +
-+	if (!(root = cgroup_find_root(mnt_path)))
-+		tst_brk(TBROK, "Could not find root from config. Config possibly malformed?");
++static int cgctl_cleanup(const char *const config)
++{
++	tst_cg_scan();
++	tst_cg_load_config(config);
++	tst_cg_cleanup();
 +
-+	if (we_mounted_it)
-+		root->we_mounted_it = 1;
++	return 0;
++}
 +
-+	if (!root->ltp_dir.dir_name) {
-+		cgroup_dir_mk(&root->mnt_dir, cgroup_ltp_dir, &root->ltp_dir);
-+		cgroup_dir_mk(&root->ltp_dir, cgroup_ltp_drain_dir, &root->drain_dir);
-+		if (ltp_dir_we_created_it) {
-+			root->ltp_dir.we_created_it = 1;
-+			root->drain_dir.we_created_it = 1;
++static int cgctl_print(void)
++{
++	tst_cg_scan();
++	tst_cg_print_config();
++
++	return 0;
++}
++
++int main(int argc, char *argv[])
++{
++	int test_pid;
++	const char *cmd_name = argv[1];
++
++	if (argc < 2)
++		goto error;
++
++	if (!strcmp(cmd_name, "require")) {
++		if (argc != 4)
++			goto arg_num_error;
++		test_pid = atoi(argv[3]);
++		if (!test_pid) {
++			fprintf(stderr, "tst_cgctl: Invalid test_pid '%s' given\n",
++				argv[3]);
++			goto error;
 +		}
++		return cgctl_require(argv[2], test_pid);
++	} else if (!strcmp(cmd_name, "cleanup")) {
++		if (argc != 3)
++			goto arg_num_error;
++		return cgctl_cleanup(argv[2]);
++	} else if (!strcmp(cmd_name, "print")) {
++		return cgctl_print();
++	} else if (!strcmp(cmd_name, "help")) {
++		printf(USAGE);
++		return 0;
 +	}
 +
-+	if (!root->test_dir.dir_name && strcmp(test_dir_name, "NULL")) {
-+		strncpy(cgroup_test_dir, test_dir_name, NAME_MAX);
-+		cgroup_dir_mk(&root->ltp_dir, cgroup_test_dir, &root->test_dir);
-+		root->test_dir.we_created_it = 1;
-+	}
++	fprintf(stderr, "tst_cgctl: Unknown command '%s' given\n", cmd_name);
++	goto error;
++
++arg_num_error:
++	fprintf(stderr,
++		"tst_cgctl: Invalid number of arguments given for command '%s'\n",
++		cmd_name);
++error:
++	fprintf(stderr, USAGE);
++	return 1;
 +}
-+
-+/* Load the test state config provided by tst_cg_print_config
-+ *
-+ * This will reload some internal tst_cgroup state given by the config
-+ * that might otherwise have been lost between calls or between different
-+ * processes. In particular this is used by testcases/lib/tst_cgctl to
-+ * provide access to this C api to shell scripts.
-+ *
-+ * The config keeps track of the minimal state needed for tst_cg_cleanup
-+ * to cleanup mounts and directories created by tst_cg_require.
-+ */
-+void tst_cg_load_config(const char *const config)
-+{
-+	char temp_config[BUFSIZ];
-+	char *line;
-+
-+	if (strlen(config) >= BUFSIZ)
-+		tst_brk(TBROK, "Config has exceeded buffer size?");
-+	strncpy(temp_config, config, BUFSIZ);
-+
-+	line = strtok(temp_config, "\n");
-+	/* Make sure to consume the header. */
-+	for (line = strtok(NULL, "\n"); line; line = strtok(NULL, "\n"))
-+		parse_config(line);
-+}
- 
- /* Determine if a mounted cgroup hierarchy is unique and record it if so.
-  *
 -- 
 2.32.0
 
