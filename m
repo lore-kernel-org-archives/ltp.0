@@ -4,85 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36A80C433F5
-	for <ltp@archiver.kernel.org>; Fri,  4 Mar 2022 23:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3B06C433EF
+	for <ltp@archiver.kernel.org>; Sun,  6 Mar 2022 18:51:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD9C93CA3F3
-	for <ltp@archiver.kernel.org>; Sat,  5 Mar 2022 00:21:51 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id AC1983C1B82
+	for <ltp@archiver.kernel.org>; Sun,  6 Mar 2022 19:51:54 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 71CDF3CA3FF
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:58 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 2CC5D3C0653
+ for <ltp@lists.linux.it>; Sun,  6 Mar 2022 19:51:44 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E2478200923
- for <ltp@lists.linux.it>; Sat,  5 Mar 2022 00:18:57 +0100 (CET)
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 921B43F613
- for <ltp@lists.linux.it>; Fri,  4 Mar 2022 23:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1646435936;
- bh=6i0BCxmqKwBl1nnGesFsEOkqSvj3sOrTD4e81md/lPw=;
- h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
- MIME-Version;
- b=kIQN1evuqfVGgAjauTkBQy7xl+xb/ivnMiEqMOYJ0ILmidcdgjeV2ENsiHcf/CasO
- I8ID5HDCb8JjePPc5Me6YwNKHxQ8+q3RT3BMwJxKAFUyoK16AArm16yTDjUzSHNu7O
- HdN4DcX59FtuyyPppnut6vRJXnxPsAFVGEPns7xCj1scqe3z3YltXW+5NdKSktMQJL
- KZkt5ykb7EKQqjS6IsmOaSV4XR9E6PZZKGXMD6mVNaiCUk1z+hJnIkVzTUgd6T0x35
- 7o6MUc5+6yHD/uJ0xy6s4mlhH0i2CiuTMo/vvtVzXzMyJZG7csCBC3cOhmz+GDDoZP
- OdQA7mMu9RtoQ==
-Received: by mail-pg1-f197.google.com with SMTP id
- o30-20020a634e5e000000b00373598b71d4so5214909pgl.21
- for <ltp@lists.linux.it>; Fri, 04 Mar 2022 15:18:56 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 16B4220009C
+ for <ltp@lists.linux.it>; Sun,  6 Mar 2022 19:51:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1646592701;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PZn58zO0pL3KnoM5ZMC6Yiqd3coNEh9mIX9mutP0thk=;
+ b=ZDTqHBLhXyG3ca3cyLBNyhmhRK5BbQkiTnqjs2BXiSYFWS7maYMWQbyogjQGBUvR2a0vwG
+ 92BTt0hOthf6KvPkSEQ51bO6q2WJoYMY9rwR2U4esPetJRZPU0t0Mv6eLTz1PkNPNnDI/y
+ hF1etVSkmHPJRcemlhuAouPU1LafrHw=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-296-tWaMcqHlOY6Q1bvpyCNVxQ-1; Sun, 06 Mar 2022 13:51:39 -0500
+X-MC-Unique: tWaMcqHlOY6Q1bvpyCNVxQ-1
+Received: by mail-lj1-f200.google.com with SMTP id
+ 6-20020a2eb946000000b002463d2915d2so5477856ljs.9
+ for <ltp@lists.linux.it>; Sun, 06 Mar 2022 10:51:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=6i0BCxmqKwBl1nnGesFsEOkqSvj3sOrTD4e81md/lPw=;
- b=HEiPbLzouyoOWVACNCuBi0F+8ms5xxvYXTOmI42b2/ssWgH/6wxOtCuKqaunXHNZy/
- HlaK0PnmmN0gxMnxQw/X5RVP3mSqSG7gX4ek6bUjLGg51t2dMTt62GLbvYsdA3+T4gee
- S4+/Zui894nfnQ65xvnt5dtktJzKpjrjoUsN5VQ1E3TThhydtwHsVwunXGwfgvzyWZpY
- GpckrbkWmM167wzzj4CZVNKG9ZOMnNiJ8XkW8VshW+t/qBUPfvWtrTt3ZfPoTOut77tt
- sb1UkciTDFgbqyGl2WGFFVddd/mZ2sUzsKmvAptl/yZGejfNRJy0yTUgp8yl6WM3RfMv
- w50A==
-X-Gm-Message-State: AOAM532S5g7TPrhdt1BP3no3GxagYrpFvGtrRkZcGxwlovLCYMMaZrKl
- hYM77lwbbAyiyntp3H6jZU5FSZZgitwxKAUCCMeDURlpO7jME2h7Ulpi0cB+Gq9e4Dz/NhETcXm
- ZeiZJDaqGqbD8QNvjaE7PFyysn7Zs
-X-Received: by 2002:a65:6c0d:0:b0:364:ae2e:9708 with SMTP id
- y13-20020a656c0d000000b00364ae2e9708mr595042pgu.189.1646435929989; 
- Fri, 04 Mar 2022 15:18:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy5KaVA77lp0W7w7iRgUc+hzBXO8pSU1S/UGDNbFVwZaJ/gis7lKRYULVynQgb+G+0HxCnpzA==
-X-Received: by 2002:a65:6c0d:0:b0:364:ae2e:9708 with SMTP id
- y13-20020a656c0d000000b00364ae2e9708mr595030pgu.189.1646435929733; 
- Fri, 04 Mar 2022 15:18:49 -0800 (PST)
-Received: from luke-ubuntu.. (cpe-66-27-118-101.san.res.rr.com.
- [66.27.118.101]) by smtp.gmail.com with ESMTPSA id
- h14-20020a63384e000000b00366ba5335e7sm5335760pgn.72.2022.03.04.15.18.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Mar 2022 15:18:48 -0800 (PST)
-From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-To: ltp@lists.linux.it,
-	rpalethorpe@suse.de,
-	liwang@redhat.com
-Date: Fri,  4 Mar 2022 15:18:25 -0800
-Message-Id: <1a1841553e6687d34701afd40ad0312dca5c54af.1646434670.git.luke.nowakowskikrijger@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
-References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=PZn58zO0pL3KnoM5ZMC6Yiqd3coNEh9mIX9mutP0thk=;
+ b=1cqCQYEMR3sK/M657Y3zLFLHG53Tpf+pURoAXMqw3hQMpP2F8LA/JBrhGEoD0AuzCZ
+ ucOSmn/xiUkdbQ+uHiq+xnB687mkd3T6neDVJmUFAIFMjmuok2WPHSwHZnoBRvkM66Ac
+ 9pISQyzOBTPtNcpGV9JTLBrbUIsHgcA6TQuzvLYJ568UExbwRidGAm5/lNkB1z2Q0WEB
+ HtXV6GUVNAV5uQgK+Plwb5OaSemg58lW6bbzVbrH6PHF4+KItsZH2O4nnJR4rKelUMeO
+ 4JOeu88paRD35fVfFncxmR4GJJyYzCoaI64800Vine03l7ewVfht++sVcVEMcs3Ws6Rs
+ 9tmg==
+X-Gm-Message-State: AOAM5338iDIV+HPxggNmv20EMWpO/Y0ONKYxdndwqny4k4IA1P8TKqJD
+ PUVerwBnASW88kvoDxb/T5P2qpoOnG27L3s0gKCdV8NkgPzrG6d4bM29fv9UBk/X/YuptUJ8eu6
+ QN5rnRcArOofH8LXu4P+QgdT7zZw=
+X-Received: by 2002:a05:651c:2cb:b0:23d:3168:915b with SMTP id
+ f11-20020a05651c02cb00b0023d3168915bmr5253614ljo.22.1646592698350; 
+ Sun, 06 Mar 2022 10:51:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwaNtU2Wh+zjeOzK0tUUXZnVw2V6IDR+gWqUzW+59s+SirJUmfUTeDyEG4++pRGt9mmGu2MU+R9b0Pw3IB5Bws=
+X-Received: by 2002:a05:651c:2cb:b0:23d:3168:915b with SMTP id
+ f11-20020a05651c02cb00b0023d3168915bmr5253607ljo.22.1646592698143; Sun, 06
+ Mar 2022 10:51:38 -0800 (PST)
 MIME-Version: 1.0
+References: <20220303083429.3827302-1-liwang@redhat.com>
+ <YiI4XgwISfrk1BdP@yuki>
+In-Reply-To: <YiI4XgwISfrk1BdP@yuki>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Sun, 6 Mar 2022 19:51:22 +0100
+Message-ID: <CAASaF6xyMDgn1_wCt0nbOhB2dZC901m260Ugdb0DaBOa9dV6OA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 15/16] controllers: update
- cpuset_regression_test.sh to use newer cgroup lib
+Subject: Re: [LTP] [PATCH] migrate_pages02: check file exist before opening
+ it
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,69 +87,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: LTP List <ltp@lists.linux.it>, Bruno Goncalves <bgoncalv@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update the test to use the newer cgroup lib which handles mounting for
-v1 and v2 controllers enabling them both to be tested and cleaning up
-the mounting and cleanup process.
+> +               "?NUMA_BALANCING",
+You probably meant "?"NUMA_BALANCING
 
-Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
----
-v2: Change variable cgroup_v to cgroup_version
+>
+> Maybe we just need to enhance the .save_restore with another parameter;
+> a value to set the knob to if it does exists, so in add_key05.c it would
+> look like:
+>
+> struct tst_path_val {
+>         const char *path;
+>         const char *val;
+> };
+>
+>         .save_restore = (const struct tst_path_val const[]) {
+>                 {"?/proc/sys/kernel/keys/gc_delay", "1"},
+>                 {"?/proc/sys/kernel/keys/maxkeys", "200"},
+>                 {"?/proc/sys/kernel/keys/maxbytes", "20000"}
+>                 NULL,
+>         },
+>
+> And in cases we do not need to set value we would just pass NULL as val...
 
- .../cpuset/cpuset_regression_test.sh          | 26 +++++--------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-index a6806b7b0..67fed791a 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-@@ -123,18 +123,13 @@ cpuset_restore()
- 
- setup()
- {
--	if ! is_cgroup_subsystem_available_and_enabled "cpuset"; then
--		tst_brk TCONF "Either kernel does not support cpuset controller or feature not enabled"
--	fi
--
--	# We need to mount cpuset if it is not found.
--	root_cpuset_dir=$(get_cgroup_mountpoint cpuset)
--	if [ -z "$root_cpuset_dir" ]; then
--		root_cpuset_dir="$LOCAL_MOUNTPOINT"
-+	cgroup_require "cpuset"
-+	cgroup_version=$(cgroup_get_version "cpuset")
-+	root_cpuset_dir=$(cgroup_get_mountpoint "cpuset")
-+	testpath=$(cgroup_get_test_path "cpuset")
-+	task_list=$(cgroup_get_task_list "cpuset")
- 
--		ROD_SILENT mkdir -p ${root_cpuset_dir}
--		ROD_SILENT mount -t cpuset cpuset ${root_cpuset_dir}
--	fi
-+	tst_res TINFO "test starts with cgroup version $cgroup_version"
- 
- 	if ! [ -f ${root_cpuset_dir}/${cpu_exclusive} ]; then
- 		cpu_exclusive=cpu_exclusive
-@@ -181,14 +176,7 @@ cleanup()
- 		echo ${old_cpu_exclusive_value} > ${root_cpuset_dir}/${cpu_exclusive}
- 	fi
- 
--	if [ -d "$LOCAL_MOUNTPOINT" ]; then
--		umount ${LOCAL_MOUNTPOINT}
--		if [ $? -ne 0 ]; then
--			tst_res TWARN "'umount ${LOCAL_MOUNTPOINT}' failed"
--		fi
--
--		rmdir ${LOCAL_MOUNTPOINT}
--	fi
-+	cgroup_cleanup
- }
- 
- test()
--- 
-2.32.0
+That should work for most testcases, I don't recall one where we need
+to cycle through more values.
 
 
 -- 
