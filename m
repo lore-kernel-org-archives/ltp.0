@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 739EDC433F5
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 10:44:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C05A5C433F5
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 11:23:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D847D3C1BC0
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 11:43:56 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 68D613C1BC9
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 12:23:40 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4EE453C1A87
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 11:43:47 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id A83DE3C07BD
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 12:23:30 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 693D1600737
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 11:43:46 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D21396008AE
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 12:23:29 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id ED209210FE;
- Mon,  7 Mar 2022 10:43:44 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 012F0210F4;
+ Mon,  7 Mar 2022 11:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646649824;
+ t=1646652209;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YYqq2T7KtAuK5LmluabuQhFWBa7kVWHx1KM720prglE=;
- b=Mht7AiYrlRkajhuNxIGzVJZ+eNdGqjSCdty/WLSO9douFNFLs3776Y4v0Fp+TGySq/JBjP
- uNnPT+2UnY1PBfytLCq5qEJgxIJQoeQQJUTr1t8pEA1usG1FM6Hm8XGjZRB16pPm+xzys3
- SORBq6+srAvJsahYgodhjsC2/Zc4fIo=
+ bh=l+nz98s/Lu4dorb/xuxVhGsoWODuBHrL//Ss8th/DHo=;
+ b=AwTXxhulkmc2yHWLD6t4jd13iuizHiqsM1h6gpEe0jcSWkhbFa6h5fAnsvmRXlBEhZ/gCW
+ 7+RLLmlTUDwoHf4JsihTyQuBWSCbhlqhK6pOS4+WkH+OCNtshktIaHfTt8qpvFAL6XivPu
+ Ppu0rsjiMqp5I1mzftfJypBr3DnARbo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646649824;
+ s=susede2_ed25519; t=1646652209;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YYqq2T7KtAuK5LmluabuQhFWBa7kVWHx1KM720prglE=;
- b=FMnLdHNrhetRmCY0X9XpgGcwXMI84GblGR1tmUF7GXccII304qdWJVrQzddQUmXXWoAyj6
- 8dUdG2SrFwK7M6Ag==
+ bh=l+nz98s/Lu4dorb/xuxVhGsoWODuBHrL//Ss8th/DHo=;
+ b=fLkD1Oq4y5hzAK4P+iUNFh0f5ZZhrImRfQ0vW2/WFaPa+0BK5iA0vFEg49PrzN9v6fWj1+
+ Wd2MR3H/wzra1tAQ==
 Received: from g78 (unknown [10.163.24.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 9C8E4A3B9C;
- Mon,  7 Mar 2022 10:43:44 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id A21E1A3B81;
+ Mon,  7 Mar 2022 11:23:28 +0000 (UTC)
 References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
- <baec527891fe83e75958f9db3634f1a0a828bf07.1646434670.git.luke.nowakowskikrijger@canonical.com>
+ <ef5d94799195f00c6ab1fffe612e62bf1ee530a7.1646434670.git.luke.nowakowskikrijger@canonical.com>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Date: Mon, 07 Mar 2022 09:05:21 +0000
-In-reply-to: <baec527891fe83e75958f9db3634f1a0a828bf07.1646434670.git.luke.nowakowskikrijger@canonical.com>
-Message-ID: <871qzeniu7.fsf@suse.de>
+Date: Mon, 07 Mar 2022 11:00:09 +0000
+In-reply-to: <ef5d94799195f00c6ab1fffe612e62bf1ee530a7.1646434670.git.luke.nowakowskikrijger@canonical.com>
+Message-ID: <87wnh6m2fp.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 04/16] API/cgroup: Implement tst_cg_load_config
+Subject: Re: [LTP] [PATCH v3 08/16] controllers: Expand cgroup_lib shell
+ library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,154 +80,188 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello Luke,
 
-Really great work for the patch series in general! However see comments
-below.
-
 Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> writes:
 
-> Implement tst_cg_load_config which consumes the state given by
-> tst_cg_print_config to update the internal test state to reflect
-> the given config.
->
-> This allows for programs using the cgroup C API to load and reload
-> state, allowing functionality such as calling tst_cg_require and
-> tst_cg_cleanup to function properly between programs or between
-> invocations of a binary using the C API.
+> Expand the cgroup_lib library by using the tst_cgctl binary
+> utility to make calls to the Cgroup C API to simplify and centralize the
+> mounting and cleanup process of Cgroups
 >
 > Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 > ---
-> v2: Add root null check in parse_root_config.
->     Remove checking for ltp_drain_dir key from config as it was
->     redundant.
->     Remove unsued variable in parse_ctrl_config.
->     Cleanup some compiler warnings.
-> v3: Rewrite to consume each line of the config with a scanf to make
->     the parsing much simpler while using new config variables.
+> v2: Add "^" to propery grep the correct mountpoint.
+>     Removed is_cgroup_enabled_and_available function and put the check
+>     in cgroup_require().
+>     Check if /proc/cgroups exists in cgroup_require().
+>     Change to TCONF if controllers not available.
+> v3: Add copyright.
+>     Change awks to grab new config variables.
+>     Change version from v2 to just 2 to match config variables.
 >
->  include/tst_cgroup.h |  7 +++++
->  lib/tst_cgroup.c     | 62 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 69 insertions(+)
+>  testcases/kernel/controllers/cgroup_lib.sh | 129 +++++++++++++++++----
+>  1 file changed, 109 insertions(+), 20 deletions(-)
 >
-> diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-> index 87e55f4df..9bad0d366 100644
-> --- a/include/tst_cgroup.h
-> +++ b/include/tst_cgroup.h
-> @@ -121,6 +121,13 @@ void tst_cg_scan(void);
->   */
->  void tst_cg_print_config(void);
+> diff --git a/testcases/kernel/controllers/cgroup_lib.sh b/testcases/kernel/controllers/cgroup_lib.sh
+> index 7918b5636..ed8549c70 100644
+> --- a/testcases/kernel/controllers/cgroup_lib.sh
+> +++ b/testcases/kernel/controllers/cgroup_lib.sh
+> @@ -2,38 +2,127 @@
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+>  # Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2018-2019 ARM Ltd. All Rights Reserved.
+> +# Copyright (c) 2022 Canonical Ltd.
 >  
-> +/* Load the config printed out by tst_cg_print_config and configure the internal
-> + * libary state to match the config. Used to allow tst_cg_cleanup to properly
-> + * cleanup mounts and directories created by tst_cg_require between program
-> + * invocations.
-> + */
-> +void tst_cg_load_config(const char *const config);
+>  . tst_test.sh
+>  
+> -# Find mountpoint to given subsystem
+> -# get_cgroup_mountpoint SUBSYSTEM
+> -# RETURN: 0 if mountpoint found, otherwise 1
+> -get_cgroup_mountpoint()
+> +_cgroup_state=
 > +
->  /* Ensure the specified controller is available in the test's default
->   * CGroup, mounting/enabling it if necessary. Usually this is not
->   * necesary use tst_test.needs_cgroup_controllers instead.
-> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-> index 8f95064b3..90d91d94e 100644
-> --- a/lib/tst_cgroup.c
-> +++ b/lib/tst_cgroup.c
-> @@ -366,6 +366,68 @@ static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
->  	return NULL;
+> +# Find mountpoint of the given controller
+> +# USAGE: cgroup_get_mountpoint CONTROLLER
+> +# RETURNS: Prints the mountpoint of the given controller
+> +# Must call cgroup_require before calling
+> +cgroup_get_mountpoint()
+> +{
+> +	local ctrl=$1
+> +	local mountpoint
+> +
+> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_mountpoint: controller not defined"
+> +	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_mountpoint: No previous state found. Forgot to call cgroup_require?"
+> +
+> +	mountpoint=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $4 }')
+> +	echo "$mountpoint"
+> +
+> +	return 0
+> +}
+> +
+> +# Get the test path of a given controller that has been created by the cgroup C API
+> +# USAGE: cgroup_get_test_path CONTROLLER
+> +# RETURNS: Prints the path to the test direcory
+> +# Must call cgroup_require before calling
+> +cgroup_get_test_path()
+> +{
+> +	local ctrl="$1"
+> +	local mountpoint
+> +	local test_path
+> +
+> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_test_path: controller not defined"
+> +	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_test_path: No previous state found. Forgot to call cgroup_require?"
+> +
+> +	mountpoint=$(cgroup_get_mountpoint "$ctrl")
+> +
+> +	test_path="$mountpoint/ltp/test-$$"
+> +
+> +	[ ! -e "$test_path" ] && tst_brk TBROK "cgroup_get_test_path: No test path found. Forgot to call cgroup_require?"
+> +
+> +	echo "$test_path"
+> +
+> +	return 0
+> +}
+> +
+> +# Gets the cgroup version of the given controller
+> +# USAGE: cgroup_get_version CONTROLLER
+> +# RETURNS: "1" if version 1 and "2" if version 2
+> +# Must call cgroup_require before calling
+> +cgroup_get_version()
+> +{
+> +	local ctrl="$1"
+> +	local version
+> +
+> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_version: controller not defined"
+> +	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_version: No previous state found. Forgot to call cgroup_require?"
+> +
+> +	version=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $2 }')
+> +	[ "$version" = "" ] && tst_brk TBROK "cgroup_get_version: Could not find controller $ctrl"
+> +
+> +	echo "$version"
+> +
+> +	return 0
+> +}
+> +
+> +# Cleans up any setup done by calling cgroup_require.
+> +# USAGE: cgroup_cleanup
+> +# Can be safely called even when no setup has been done
+> +cgroup_cleanup()
+>  {
+> -	local subsystem=$1
+> -	local mntpoint
+> +	[ "$_cgroup_state" = "" ] && return 0
+>  
+> -	[ $# -eq 0 ] && tst_brk TBROK "get_cgroup_mountpoint: subsystem not defined"
+> +	tst_cgctl cleanup "$_cgroup_state"
+>  
+> -	mntpoint=$(grep cgroup /proc/mounts | grep -w $subsystem | awk '{ print $2 }')
+> -	[ -z "$mntpoint" ] && return 1
+> +	_cgroup_state=""
+>  
+> -	echo $mntpoint
+>  	return 0
 >  }
 >  
-> +static void parse_config(const char *const config_entry)
-
-cgroup_parse_config_line perhaps? or cgroup_parse_ctrl?
-
-> +{
-> +	const char ctrl_name[32], mnt_path[PATH_MAX],
-> test_dir_name[NAME_MAX + 1];
-
-These buffers are not const.
-
-I have lsp and clangd setup in emacs which warns about this. It's easy
-to miss the warning in the compiler output.
-
-> +	int ver, we_require_it, we_mounted_it, ltp_dir_we_created_it;
-> +	struct cgroup_root *root;
-> +	struct cgroup_ctrl *ctrl;
+> -# Check if given subsystem is supported and enabled
+> -# is_cgroup_subsystem_available_and_enabled SUBSYSTEM
+> -# RETURN: 0 if subsystem supported and enabled, otherwise 1
+> -is_cgroup_subsystem_available_and_enabled()
+> +# Get the task list of the given controller
+> +# USAGE: cgroup_get_task_list CONTROLLER
+> +# RETURNS: prints out "cgroup.procs" if version 2 otherwise "tasks"
+> +# Must call cgroup_require before calling
+> +cgroup_get_task_list()
+>  {
+> -	local val
+> -	local subsystem=$1
+> +	local ctrl="$1"
+> +	local version
 > +
-> +	sscanf(config_entry, CONFIG_FORMAT,
-> +		ctrl_name, &ver, &we_require_it, mnt_path, &we_mounted_it,
-> +		&ltp_dir_we_created_it, test_dir_name);
-
-You need to run 'make check-tst_cgroup' in ltp/lib. The sscanf return
-value is not checked which could result in segfaults and other confusing
-errors if parsing fails.
-
-> +
-> +	if (!(ctrl = cgroup_find_ctrl(ctrl_name)))
-
-check_patch.pl forbids assignments in if statements (it makes static
-analysis difficult). Again this is caught with 'make check'.
-
-> +		tst_brk(TBROK, "Could not find ctrl from config. Ctrls changing between calls?");
-> +
-> +	ctrl->we_require_it = we_require_it;
-> +
-> +	if (!(root = cgroup_find_root(mnt_path)))
-> +		tst_brk(TBROK, "Could not find root from config. Config possibly malformed?");
-> +
-> +	if (we_mounted_it)
-> +		root->we_mounted_it = 1;
-> +
-> +	if (!root->ltp_dir.dir_name) {
-> +		cgroup_dir_mk(&root->mnt_dir, cgroup_ltp_dir, &root->ltp_dir);
-> +		cgroup_dir_mk(&root->ltp_dir, cgroup_ltp_drain_dir, &root->drain_dir);
-> +		if (ltp_dir_we_created_it) {
-> +			root->ltp_dir.we_created_it = 1;
-> +			root->drain_dir.we_created_it = 1;
-> +		}
-> +	}
-> +
-> +	if (!root->test_dir.dir_name && strcmp(test_dir_name, "NULL")) {
-> +		strncpy(cgroup_test_dir, test_dir_name, NAME_MAX);
-
-I think this could result in an unterminated string. strncpy does not
-add a null char after the string that was copied. Note also that the
-format string passed to sscanf does not limit the field width so it
-could overwrite root and ctrl on the stack if the input is long enough.
-
-> +		cgroup_dir_mk(&root->ltp_dir, cgroup_test_dir, &root->test_dir);
-> +		root->test_dir.we_created_it = 1;
-> +	}
-> +}
-> +
-> +/* Load the test state config provided by tst_cg_print_config
-> + *
-> + * This will reload some internal tst_cgroup state given by the config
-> + * that might otherwise have been lost between calls or between different
-> + * processes. In particular this is used by testcases/lib/tst_cgctl to
-> + * provide access to this C api to shell scripts.
-> + *
-> + * The config keeps track of the minimal state needed for tst_cg_cleanup
-> + * to cleanup mounts and directories created by tst_cg_require.
-> + */
-> +void tst_cg_load_config(const char *const config)
-> +{
-> +	char temp_config[BUFSIZ];
-> +	char *line;
-> +
-> +	if (strlen(config) >= BUFSIZ)
-> +		tst_brk(TBROK, "Config has exceeded buffer size?");
-> +	strncpy(temp_config, config, BUFSIZ);
-
-Again, this won't copy the null byte from config if strlen(config) ==
-BUFSIZ. You could use memcpy here anyway if you know the string length.
-
-> +
-> +	line = strtok(temp_config, "\n");
-> +	/* Make sure to consume the header. */
-> +	for (line = strtok(NULL, "\n"); line; line = strtok(NULL, "\n"))
-> +		parse_config(line);
-> +}
+> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_task_list: controller not defined"
 >  
->  /* Determine if a mounted cgroup hierarchy is unique and record it if so.
->   *
+> -	[ $# -eq 0 ] && tst_brk TBROK "is_cgroup_subsystem_available_and_enabled: subsystem not defined"
+> +	version=$(cgroup_get_version "$ctrl")
+>  
+> -	val=$(grep -w $subsystem /proc/cgroups | awk '{ print $4 }')
+> -	[ "$val" = "1" ] && return 0
+> +	if [ "$version" = "2" ]; then
+> +		echo "cgroup.procs"
+> +	else
+> +		echo "tasks"
+> +	fi
+>  
+> -	return 1
+> +	return 0
+> +}
+> +
+> +# Mounts and configures the given controller
+> +# USAGE: cgroup_require CONTROLLER
+> +cgroup_require()
+> +{
+> +	local ctrl="$1"
+> +	local exists
+> +
+> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_require: controller not defined"
+> +
+> +	[ ! -f /proc/cgroups ] && tst_brk TCONF "Kernel does not support
+> control groups"
+
+The tst_cgroup lib can handle this. Also is it guaranteed that
+/proc/cgroups exists if cgroups are enabled?
+
+> +
+> +	exists=$(grep -w $ctrl /proc/cgroups | awk '{ print $4 }')
+> +	[ "$exists" != "1" ] && tst_brk TCONF "cgroup_require:
+> Controller not available or not enabled"
+
+For some reason this fails on my VM where no cgroups are mounted
+already. Also it's redundant because tst_cgroup should handle it.
+
+> +
+> +	_cgroup_state=$(tst_cgctl require "$ctrl" $$)
+> +
+> +	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_require: No state was set after call. Controller '$ctrl' maybe does not exist?"
+> +
+> +	return 0
+>  }
 
 
 -- 
