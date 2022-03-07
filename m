@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B70B7C433FE
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 13:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39CD7C433EF
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 13:04:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 189343C1BD5
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 14:04:08 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id BEB723C1BBF
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 14:04:37 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 65BBD3C1B99
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:58 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 2191A3C1B99
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:04:27 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 81C362009CB
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:57 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5C1482009E0
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:04:27 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id C2AA61F37D
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 13:03:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id B1E7A1F37C
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 13:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646658236;
+ t=1646658266;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IQlzvg7oQYVtO6o8B9TKfrh45oCkKIkSVd4H3NVbXFc=;
- b=F2d9rpNf3VTQY2A/w7P8b9TwCpBjzh6ZAd+oRhHTVrwUwZKx2ahVI/fN6+f/2lDsUtIlN/
- V8m6tH10q/U1aGwjq9u3cPaybpLOsBJtFOHWlYswu+aRpKAZxxhsPcRajx81wjwO0y2D0+
- KJYp5UUuHaQqjeigsvQOjlOsjPeg0nk=
+ bh=96PvQKQL7Y0futYyqDR89qDQ+Ix63Shkgrcafresybo=;
+ b=eVj0wXFI2fepOKIPUOyuWJXK2ZquLG8nZrFA3qL7h8AKBaCUufLGDaPLL58HeVXUslqw7i
+ QPdJtf/+Ub0An/4e/eFgEYnAa9q3MMf/HHWxCYIppBGE/mrO3Di3HJhGBdTsuZpC1fvRNJ
+ ooB7WOfWS5Ie0RBu43kR7LGiPIafXUg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646658236;
+ s=susede2_ed25519; t=1646658266;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IQlzvg7oQYVtO6o8B9TKfrh45oCkKIkSVd4H3NVbXFc=;
- b=gF+BN8ssnEEcYavbom0oBQ95M6uOphvSfKHHi21I3P2gIAPKTumFnaxYBWerTBX7hSPypo
- yMo9MCnpDwZ+yVCQ==
+ bh=96PvQKQL7Y0futYyqDR89qDQ+Ix63Shkgrcafresybo=;
+ b=4mcnoh4sqnqKnruHxJDEyVgpwDEuHBpUe1NwljyCIhxclJ2iAtL4jXpVNA+mZXY0GFqG9G
+ UDtORCNq5oLm/6DQ==
 Received: from g78 (unknown [10.163.24.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 799F5A3B96;
- Mon,  7 Mar 2022 13:03:56 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 820BBA3B89;
+ Mon,  7 Mar 2022 13:04:26 +0000 (UTC)
 References: <20220303145032.21493-1-chrubis@suse.cz>
- <20220303145032.21493-4-chrubis@suse.cz>
+ <20220303145032.21493-5-chrubis@suse.cz>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 07 Mar 2022 13:03:48 +0000
-In-reply-to: <20220303145032.21493-4-chrubis@suse.cz>
-Message-ID: <875yopnccj.fsf@suse.de>
+Date: Mon, 07 Mar 2022 13:04:20 +0000
+In-reply-to: <20220303145032.21493-5-chrubis@suse.cz>
+Message-ID: <871qzdncbp.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/7] mem/ksm06: Move test code from library to the
- test
+Subject: Re: [LTP] [PATCH 4/7] mem/ksm06: SPDX + docparse comment
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,207 +81,58 @@ Hi,
 
 Cyril Hrubis <chrubis@suse.cz> writes:
 
-> There is no point in keeping the test code in the library since ksm06 is
-> the only test that actually uses it.
->
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
 Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 > ---
->  testcases/kernel/mem/ksm/ksm06.c | 82 +++++++++++++++++++++++++++++-
->  testcases/kernel/mem/lib/mem.c   | 85 --------------------------------
->  2 files changed, 81 insertions(+), 86 deletions(-)
+>  testcases/kernel/mem/ksm/ksm06.c | 30 +++++++++++++++---------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
 >
 > diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
-> index 379236f1f..0f5e4b05d 100644
+> index 0f5e4b05d..61507b2aa 100644
 > --- a/testcases/kernel/mem/ksm/ksm06.c
 > +++ b/testcases/kernel/mem/ksm/ksm06.c
-> @@ -48,7 +48,87 @@ static char *n_opt;
+> @@ -1,24 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (C) 2013-2017  Red Hat, Inc.
+> + */
+> +/*\
+> + * [Description]
+>   *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> + * The case is designed to test sysfs boolean knob
+> + * /sys/kernel/mm/ksm/merge_across_nodes.
+>   *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - */
+> -
+> -/*
+> - * The case is designed to test new sysfs boolean knob
+> - * /sys/kernel/mm/ksm/merge_across_nodes, which was introduced by
+> - * commit 90bd6fd31c8097ee (ksm: allow trees per NUMA node).
+> - * when merge_across_nodes is set to zero only pages from the same
+> + * When merge_across_nodes is set to zero only pages from the same
+>   * node are merged, otherwise pages from all nodes can be merged
+>   * together.
+> + *
+> + * Introduced in commit:
+> + *
+> + *  commit 90bd6fd31c8097ee4ddcb74b7e08363134863de5
+> + *   Author: Petr Holasek <pholasek@redhat.com>
+> + *   Date:   Fri Feb 22 16:35:00 2013 -0800
+> + *
+> + *   ksm: allow trees per NUMA node
+>   */
 >  
->  static void test_ksm(void)
->  {
-> -	test_ksm_merge_across_nodes(nr_pages);
-> +	char **memory;
-> +	int i, ret;
-> +	int num_nodes, *nodes;
-> +	unsigned long length;
-> +	unsigned long pagesize;
-> +
-> +#ifdef HAVE_NUMA_V2
-> +	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
-> +#endif
-> +
-> +	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-> +	if (ret != 0)
-> +		tst_brk(TBROK|TERRNO, "get_allowed_nodes_arr");
-> +	if (num_nodes < 2) {
-> +		tst_res(TINFO, "need NUMA system support");
-> +		free(nodes);
-> +		return;
-> +	}
-> +
-> +	pagesize = sysconf(_SC_PAGE_SIZE);
-> +	length = nr_pages * pagesize;
-> +
-> +	memory = SAFE_MALLOC(num_nodes * sizeof(char *));
-> +	for (i = 0; i < num_nodes; i++) {
-> +		memory[i] = SAFE_MMAP(NULL, length, PROT_READ|PROT_WRITE,
-> +			    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-> +#ifdef HAVE_DECL_MADV_MERGEABLE
-> +		if (madvise(memory[i], length, MADV_MERGEABLE) == -1)
-> +			tst_brk(TBROK|TERRNO, "madvise");
-> +#endif
-> +
-> +#ifdef HAVE_NUMA_V2
-> +		clean_node(nmask);
-> +		set_node(nmask, nodes[i]);
-> +		/*
-> +		 * Use mbind() to make sure each node contains
-> +		 * length size memory.
-> +		 */
-> +		ret = mbind(memory[i], length, MPOL_BIND, nmask, MAXNODES, 0);
-> +		if (ret == -1)
-> +			tst_brk(TBROK|TERRNO, "mbind");
-> +#endif
-> +
-> +		memset(memory[i], 10, length);
-> +
-> +		if (mlock(memory[i], length))
-> +			tst_res(TWARN | TERRNO, "mlock() failed");
-> +	}
-> +
-> +	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
-> +	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld",
-> +			 nr_pages * num_nodes);
-> +	/*
-> +	 * merge_across_nodes and max_page_sharing setting can be changed
-> +	 * only when there are no ksm shared pages in system, so set run 2
-> +	 * to unmerge pages first, then to 1 after changing merge_across_nodes,
-> +	 * to remerge according to the new setting.
-> +	 */
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> +	if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> +		SAFE_FILE_PRINTF(PATH_KSM "max_page_sharing",
-> +			"%ld", nr_pages * num_nodes);
-> +	tst_res(TINFO, "Start to test KSM with merge_across_nodes=1");
-> +	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-> +	ksm_group_check(1, 1, nr_pages * num_nodes - 1, 0, 0, 0,
-> +			nr_pages * num_nodes);
-> +
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> +	tst_res(TINFO, "Start to test KSM with merge_across_nodes=0");
-> +	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "0");
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-> +	ksm_group_check(1, num_nodes, nr_pages * num_nodes - num_nodes,
-> +			0, 0, 0, nr_pages * num_nodes);
-> +
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> +
-> +	for (i = 0; i < num_nodes; i++)
-> +		SAFE_MUNMAP(memory[i], length);
-> +
-> +	free(memory);
->  }
->  
->  static void setup(void)
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 102fc5665..090569ebb 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -519,91 +519,6 @@ void create_same_memory(int size, int num, int unit)
->  				 WEXITSTATUS(status));
->  }
->  
-> -void test_ksm_merge_across_nodes(unsigned long nr_pages)
-> -{
-> -	char **memory;
-> -	int i, ret;
-> -	int num_nodes, *nodes;
-> -	unsigned long length;
-> -	unsigned long pagesize;
-> -
-> -#ifdef HAVE_NUMA_V2
-> -	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
-> -#endif
-> -
-> -	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-> -	if (ret != 0)
-> -		tst_brk(TBROK|TERRNO, "get_allowed_nodes_arr");
-> -	if (num_nodes < 2) {
-> -		tst_res(TINFO, "need NUMA system support");
-> -		free(nodes);
-> -		return;
-> -	}
-> -
-> -	pagesize = sysconf(_SC_PAGE_SIZE);
-> -	length = nr_pages * pagesize;
-> -
-> -	memory = SAFE_MALLOC(num_nodes * sizeof(char *));
-> -	for (i = 0; i < num_nodes; i++) {
-> -		memory[i] = SAFE_MMAP(NULL, length, PROT_READ|PROT_WRITE,
-> -			    MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-> -#ifdef HAVE_DECL_MADV_MERGEABLE
-> -		if (madvise(memory[i], length, MADV_MERGEABLE) == -1)
-> -			tst_brk(TBROK|TERRNO, "madvise");
-> -#endif
-> -
-> -#ifdef HAVE_NUMA_V2
-> -		clean_node(nmask);
-> -		set_node(nmask, nodes[i]);
-> -		/*
-> -		 * Use mbind() to make sure each node contains
-> -		 * length size memory.
-> -		 */
-> -		ret = mbind(memory[i], length, MPOL_BIND, nmask, MAXNODES, 0);
-> -		if (ret == -1)
-> -			tst_brk(TBROK|TERRNO, "mbind");
-> -#endif
-> -
-> -		memset(memory[i], 10, length);
-> -
-> -		if (mlock(memory[i], length))
-> -			tst_res(TWARN | TERRNO, "mlock() failed");
-> -	}
-> -
-> -	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
-> -	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld",
-> -			 nr_pages * num_nodes);
-> -	/*
-> -	 * merge_across_nodes and max_page_sharing setting can be changed
-> -	 * only when there are no ksm shared pages in system, so set run 2
-> -	 * to unmerge pages first, then to 1 after changing merge_across_nodes,
-> -	 * to remerge according to the new setting.
-> -	 */
-> -	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> -	if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> -		SAFE_FILE_PRINTF(PATH_KSM "max_page_sharing",
-> -			"%ld", nr_pages * num_nodes);
-> -	tst_res(TINFO, "Start to test KSM with merge_across_nodes=1");
-> -	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
-> -	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-> -	ksm_group_check(1, 1, nr_pages * num_nodes - 1, 0, 0, 0,
-> -		        nr_pages * num_nodes);
-> -
-> -	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> -	tst_res(TINFO, "Start to test KSM with merge_across_nodes=0");
-> -	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "0");
-> -	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-> -	ksm_group_check(1, num_nodes, nr_pages * num_nodes - num_nodes,
-> -		        0, 0, 0, nr_pages * num_nodes);
-> -
-> -	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> -
-> -	for (i = 0; i < num_nodes; i++)
-> -		SAFE_MUNMAP(memory[i], length);
-> -
-> -	free(memory);
-> -}
-> -
->  /* THP */
->  
->  /* cpuset/memcg */
+>  #include "config.h"
 > -- 
 > 2.34.1
 
