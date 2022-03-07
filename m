@@ -4,63 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6D1EC433EF
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 11:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42001C433EF
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 13:03:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 388BA3C1BCB
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 12:42:20 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id B0C3F3C1BB5
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 14:03:13 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 583CA3C07BD
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 12:42:11 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E1B4E3C1A87
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:03 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 814A9600840
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 12:42:10 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3D18810009E0
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:03 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8E698210FE;
- Mon,  7 Mar 2022 11:42:09 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 885B9210F0
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 13:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646653329;
+ t=1646658182;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UkEl7uK6rbjRb/u3FPxdUmzQhWb66Z59MVQKWrI1+Qg=;
- b=X3l0iggJzsr+K12aEJfxmSHMxjzEhW+3T5BkA72QtnTeeydSS1jv0Y0cYDjZqpatXSi7dg
- dP/v3xi6zudox+HQ1ZYlZ+VwmGI0+23G26E9fbGC8XXnrF/Eae9EtV1xBIBkNtGwCZ8Icm
- aR9Dr9B84rW1CbM4LZ9XpPDK6rJbMKU=
+ bh=lkB6MiXHsx7oR6P4Oc/rZxHOsC3gDRsiYUBeAB5jGN4=;
+ b=gFOaBeDF+oCWrIhsVggeqSHCCiHz8kCxEYu6hUe63IBzM3u/w3p7nK1631uG/yTyv9a05c
+ DpAiDftpDGjzve9aNnCqbNP2w6I2aY5taBVib/XnqdhWM58j0m8EObxLtn34HQhVrYmupM
+ 6Qy9a5UKo8hSEeRGAGJTrxFCdY4j6f4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646653329;
+ s=susede2_ed25519; t=1646658182;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UkEl7uK6rbjRb/u3FPxdUmzQhWb66Z59MVQKWrI1+Qg=;
- b=B+rYwa3vCAcchvz+2c0jen7WeJB5AXn1xgB9QxdZAKC11bVoubxHUiSG82Tb/DqYWTmRa2
- V0wOg5N5y6lE+RCA==
+ bh=lkB6MiXHsx7oR6P4Oc/rZxHOsC3gDRsiYUBeAB5jGN4=;
+ b=5vU6iSzg/uWUbQOiPFtfTiEyYegx0r17kCrl5BmUq3Bz/QuDbV1rc+4VCbCfE+hVJ6Qnmi
+ rH1kTVETfLn2y9Ag==
 Received: from g78 (unknown [10.163.24.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 51CFAA3B8D;
- Mon,  7 Mar 2022 11:42:09 +0000 (UTC)
-References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
- <ef5d94799195f00c6ab1fffe612e62bf1ee530a7.1646434670.git.luke.nowakowskikrijger@canonical.com>
- <87wnh6m2fp.fsf@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id 5A9DBA3B8C;
+ Mon,  7 Mar 2022 13:03:02 +0000 (UTC)
+References: <20220303145032.21493-1-chrubis@suse.cz>
+ <20220303145032.21493-2-chrubis@suse.cz>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Date: Mon, 07 Mar 2022 11:39:26 +0000
-In-reply-to: <87wnh6m2fp.fsf@suse.de>
-Message-ID: <87ilsqm1kg.fsf@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 07 Mar 2022 13:02:22 +0000
+In-reply-to: <20220303145032.21493-2-chrubis@suse.cz>
+Message-ID: <87ee3dnce3.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 08/16] controllers: Expand cgroup_lib shell
- library
+Subject: Re: [LTP] [PATCH 1/7] ksm06: Move option parsing into the setup()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,44 +76,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi,
 
->> +
->> +# Mounts and configures the given controller
->> +# USAGE: cgroup_require CONTROLLER
->> +cgroup_require()
->> +{
->> +	local ctrl="$1"
->> +	local exists
->> +
->> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_require: controller not defined"
->> +
->> +	[ ! -f /proc/cgroups ] && tst_brk TCONF "Kernel does not support
->> control groups"
->
-> The tst_cgroup lib can handle this. Also is it guaranteed that
-> /proc/cgroups exists if cgroups are enabled?
->
->> +
->> +	exists=$(grep -w $ctrl /proc/cgroups | awk '{ print $4 }')
->> +	[ "$exists" != "1" ] && tst_brk TCONF "cgroup_require:
->> Controller not available or not enabled"
->
-> For some reason this fails on my VM where no cgroups are mounted
-> already. Also it's redundant because tst_cgroup should handle it.
->
->> +
->> +	_cgroup_state=$(tst_cgctl require "$ctrl" $$)
->> +
->> +	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_require: No
->state was set after call. Controller '$ctrl' maybe does not exist?"
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-Perhaps we can just check the return status of tst_cgctl and exit the
-script if it is >0?
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
->> +
->> +	return 0
->>  }
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+> ---
+>  testcases/kernel/mem/ksm/ksm06.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
+> index c5f219c37..379236f1f 100644
+> --- a/testcases/kernel/mem/ksm/ksm06.c
+> +++ b/testcases/kernel/mem/ksm/ksm06.c
+> @@ -42,17 +42,12 @@
+>  static int run = -1;
+>  static int sleep_millisecs = -1;
+>  static int merge_across_nodes = -1;
+> -static unsigned long nr_pages;
+> +static unsigned long nr_pages = 100;
+>  
+>  static char *n_opt;
+>  
+>  static void test_ksm(void)
+>  {
+> -	if (n_opt)
+> -		nr_pages = SAFE_STRTOUL(n_opt, 0, ULONG_MAX);
+> -	else
+> -		nr_pages = 100;
+> -
+>  	test_ksm_merge_across_nodes(nr_pages);
+>  }
+>  
+> @@ -64,6 +59,9 @@ static void setup(void)
+>  	if (!is_numa(NULL, NH_MEMS, 2))
+>  		tst_brk(TCONF, "The case needs a NUMA system.");
+>  
+> +	if (n_opt)
+> +		nr_pages = SAFE_STRTOUL(n_opt, 0, ULONG_MAX);
+> +
+>  	/* save the current value */
+>  	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &run);
+>  	SAFE_FILE_SCANF(PATH_KSM "merge_across_nodes",
+> -- 
+> 2.34.1
 
 
 -- 
