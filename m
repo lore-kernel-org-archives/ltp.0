@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42001C433EF
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 13:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3ED8C43217
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 13:03:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0C3F3C1BB5
-	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 14:03:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B5C783C1BD1
+	for <ltp@archiver.kernel.org>; Mon,  7 Mar 2022 14:03:40 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1B4E3C1A87
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:03 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 85ACD3C1B99
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:31 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3D18810009E0
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:03 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D53FD1400BD3
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 14:03:30 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 885B9210F0
- for <ltp@lists.linux.it>; Mon,  7 Mar 2022 13:03:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 34DF7210F2
+ for <ltp@lists.linux.it>; Mon,  7 Mar 2022 13:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646658182;
+ t=1646658210;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lkB6MiXHsx7oR6P4Oc/rZxHOsC3gDRsiYUBeAB5jGN4=;
- b=gFOaBeDF+oCWrIhsVggeqSHCCiHz8kCxEYu6hUe63IBzM3u/w3p7nK1631uG/yTyv9a05c
- DpAiDftpDGjzve9aNnCqbNP2w6I2aY5taBVib/XnqdhWM58j0m8EObxLtn34HQhVrYmupM
- 6Qy9a5UKo8hSEeRGAGJTrxFCdY4j6f4=
+ bh=PcgJrU/If2rjvoDoAhUMHk104TpK2gMD3IzhC/veq38=;
+ b=VY+GuFnlXNDMkU5r9u9+9Lxqi4HkjUa7yzYVSXSOWZ0SYf+Sbb4aZI0qykn+O6eY6WuW7m
+ emOiNOivL1QiJ2lFcJciBUkXorYBwTJzOqRk4nYfLgyZDdUlDExxPtV4NJ8gDXi87NNtx9
+ IIAL2mUPzn4L9vBYEJ4uHte/+kzRqwE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646658182;
+ s=susede2_ed25519; t=1646658210;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lkB6MiXHsx7oR6P4Oc/rZxHOsC3gDRsiYUBeAB5jGN4=;
- b=5vU6iSzg/uWUbQOiPFtfTiEyYegx0r17kCrl5BmUq3Bz/QuDbV1rc+4VCbCfE+hVJ6Qnmi
- rH1kTVETfLn2y9Ag==
+ bh=PcgJrU/If2rjvoDoAhUMHk104TpK2gMD3IzhC/veq38=;
+ b=dkF4Y8a/O2DHp0vQcW3bC/1K0mjlNm28kMjIzsVkd/jXC/deI/hgrBkr5hj2FJQKfZATWP
+ v2yjh/Kd3NhnNiDQ==
 Received: from g78 (unknown [10.163.24.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 5A9DBA3B8C;
- Mon,  7 Mar 2022 13:03:02 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id F0BD0A3B83;
+ Mon,  7 Mar 2022 13:03:29 +0000 (UTC)
 References: <20220303145032.21493-1-chrubis@suse.cz>
- <20220303145032.21493-2-chrubis@suse.cz>
+ <20220303145032.21493-3-chrubis@suse.cz>
 User-agent: mu4e 1.6.10; emacs 27.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 07 Mar 2022 13:02:22 +0000
-In-reply-to: <20220303145032.21493-2-chrubis@suse.cz>
-Message-ID: <87ee3dnce3.fsf@suse.de>
+Date: Mon, 07 Mar 2022 13:03:21 +0000
+In-reply-to: <20220303145032.21493-3-chrubis@suse.cz>
+Message-ID: <87a6e1ncda.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/7] ksm06: Move option parsing into the setup()
+Subject: Re: [LTP] [PATCH 2/7] mem/lib: Export group_check() as
+ ksm_group_check()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,47 +81,91 @@ Hi,
 
 Cyril Hrubis <chrubis@suse.cz> writes:
 
+> This is preparing for the move of the code from library to the ksm06.
+>
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
 Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 > ---
->  testcases/kernel/mem/ksm/ksm06.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+>  testcases/kernel/mem/include/mem.h |  2 ++
+>  testcases/kernel/mem/lib/mem.c     | 22 +++++++++++-----------
+>  2 files changed, 13 insertions(+), 11 deletions(-)
 >
-> diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
-> index c5f219c37..379236f1f 100644
-> --- a/testcases/kernel/mem/ksm/ksm06.c
-> +++ b/testcases/kernel/mem/ksm/ksm06.c
-> @@ -42,17 +42,12 @@
->  static int run = -1;
->  static int sleep_millisecs = -1;
->  static int merge_across_nodes = -1;
-> -static unsigned long nr_pages;
-> +static unsigned long nr_pages = 100;
+> diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+> index f1cba5fcb..776809113 100644
+> --- a/testcases/kernel/mem/include/mem.h
+> +++ b/testcases/kernel/mem/include/mem.h
+> @@ -50,6 +50,8 @@ void testoom(int mempolicy, int lite, int retcode, int allow_sigkill);
 >  
->  static char *n_opt;
+>  void create_same_memory(int size, int num, int unit);
+>  void test_ksm_merge_across_nodes(unsigned long nr_pages);
+> +void ksm_group_check(int run, int pg_shared, int pg_sharing, int pg_volatile,
+> +                     int pg_unshared, int sleep_msecs, int pages_to_scan);
 >  
->  static void test_ksm(void)
->  {
-> -	if (n_opt)
-> -		nr_pages = SAFE_STRTOUL(n_opt, 0, ULONG_MAX);
-> -	else
-> -		nr_pages = 100;
-> -
->  	test_ksm_merge_across_nodes(nr_pages);
+>  /* THP */
+>  
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index ee9fc85b6..102fc5665 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -271,9 +271,9 @@ static void final_group_check(int run, int pages_shared, int pages_sharing,
+>  	check("pages_to_scan", pages_to_scan);
 >  }
 >  
-> @@ -64,6 +59,9 @@ static void setup(void)
->  	if (!is_numa(NULL, NH_MEMS, 2))
->  		tst_brk(TCONF, "The case needs a NUMA system.");
+> -static void group_check(int run, int pages_shared, int pages_sharing,
+> -			int pages_volatile, int pages_unshared,
+> -			int sleep_millisecs, int pages_to_scan)
+> +void ksm_group_check(int run, int pages_shared, int pages_sharing,
+> +		     int pages_volatile, int pages_unshared,
+> +		     int sleep_millisecs, int pages_to_scan)
+>  {
+>  	if (run != 1) {
+>  		tst_res(TFAIL, "group_check run is not 1, %d.", run);
+> @@ -489,19 +489,19 @@ void create_same_memory(int size, int num, int unit)
 >  
-> +	if (n_opt)
-> +		nr_pages = SAFE_STRTOUL(n_opt, 0, ULONG_MAX);
-> +
->  	/* save the current value */
->  	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &run);
->  	SAFE_FILE_SCANF(PATH_KSM "merge_across_nodes",
+>  	resume_ksm_children(child, num);
+>  	stop_ksm_children(child, num);
+> -	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+> +	ksm_group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+>  
+>  	resume_ksm_children(child, num);
+>  	stop_ksm_children(child, num);
+> -	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+> +	ksm_group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+>  
+>  	resume_ksm_children(child, num);
+>  	stop_ksm_children(child, num);
+> -	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+> +	ksm_group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+>  
+>  	resume_ksm_children(child, num);
+>  	stop_ksm_children(child, num);
+> -	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+> +	ksm_group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+>  
+>  	tst_res(TINFO, "KSM unmerging...");
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+> @@ -586,15 +586,15 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+>  	tst_res(TINFO, "Start to test KSM with merge_across_nodes=1");
+>  	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+> -	group_check(1, 1, nr_pages * num_nodes - 1, 0, 0, 0,
+> -		    nr_pages * num_nodes);
+> +	ksm_group_check(1, 1, nr_pages * num_nodes - 1, 0, 0, 0,
+> +		        nr_pages * num_nodes);
+>  
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+>  	tst_res(TINFO, "Start to test KSM with merge_across_nodes=0");
+>  	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "0");
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+> -	group_check(1, num_nodes, nr_pages * num_nodes - num_nodes,
+> -		    0, 0, 0, nr_pages * num_nodes);
+> +	ksm_group_check(1, num_nodes, nr_pages * num_nodes - num_nodes,
+> +		        0, 0, 0, nr_pages * num_nodes);
+>  
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+>  
 > -- 
 > 2.34.1
 
