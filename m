@@ -4,61 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D880FC433F5
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 12:19:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1C87C433FE
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 12:34:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8526F3C1BCA
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 13:19:03 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E5A263C80B0
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 13:34:30 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B8BA23C0214
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 13:18:51 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BBE2A601AED
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 13:18:50 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E7C201F381;
- Thu, 10 Mar 2022 12:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646914729;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=aJBc4DuRYrWRFbsoEkV56wWyONQ3cGZGWcwL/RItJSo=;
- b=BiOxDryGxQoB3vYBG3ux35f6f+ddxgOB4goAavKtyGWUTTl46L8I6TQOoZTOsrkQbpbo/H
- 9bO8iYraYmBOx6exgCvjTZb26s+znbLgNLqNywOC6TP4Ba//n76rWhzCuSez8AJu/ukEel
- 6vZCB+sQXjHsVmDxDRxMpdGb5AvuTfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646914729;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=aJBc4DuRYrWRFbsoEkV56wWyONQ3cGZGWcwL/RItJSo=;
- b=OXK1ztmet9MhnEDeGDCHJ5tD250pKC/iIKrxmOGVdEB9lOxA8vKgMs+Aw/kGcjo4FtlRsX
- Lv+ggzU/yY83PiCQ==
-Received: from g78 (unknown [10.163.24.138])
+ by picard.linux.it (Postfix) with ESMTPS id 83B6F3C012D
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 13:34:21 +0100 (CET)
+Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id A15C4A3B96;
- Thu, 10 Mar 2022 12:18:49 +0000 (UTC)
-References: <20220310082251.13173-1-liwang@redhat.com>
- <6229B934.9040606@fujitsu.com> <6229BFAD.1060504@fujitsu.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Date: Thu, 10 Mar 2022 12:09:08 +0000
-In-reply-to: <6229BFAD.1060504@fujitsu.com>
-Message-ID: <87tuc6knks.fsf@suse.de>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CC2481400C5B
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 13:34:15 +0100 (CET)
+X-QQ-mid: bizesmtp75t1646915647tiq9dml8
+Received: from localhost.localdomain ( [58.240.82.166])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Thu, 10 Mar 2022 20:33:58 +0800 (CST)
+X-QQ-SSF: 01400000002000C0I000B00A0000000
+X-QQ-FEAT: F3yR32iATbgXTrR1JwMJzXXgcfsjojdgYTnNVgsN6rjnqKgV/CTMHUJaV3EJz
+ wZot1INozXdpEf3o+/RioBYXwYrL3vQpxdV1tD0cM79pX0PXMnN9z2x39dW+OnFzbPadqFU
+ Egv/ZE8u/dcmV1F/pCPNOe7UNVO8IfvJ654veIMaTr7d+H81EDpaXB/89Tq8bIThwvZICDp
+ 8A+y1J/CbRBGauHJDPEyx/PAcUQlIL9+wmqsdaIj1gNlFJ/E+IY/5U0AHJWQITuGbnEidvt
+ 75xCOJXytVkHN5qjAOPN1vCGSOHIDn4nxEwaEaKDQ+Tu8vjGWDMxPB6CjykwF0PS9QOwen/
+ a3gxKvdnu95TG6hY7qFG4QMcqyXGQ==
+X-QQ-GoodBg: 2
+From: Lianjie Zhang <zhanglianjie@uniontech.com>
+To: ltp@lists.linux.it
+Date: Thu, 10 Mar 2022 20:33:55 +0800
+Message-Id: <20220310123355.26596-1-zhanglianjie@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [COMMITTED] save_restore: remove the duplicate 'const'
- declaration
+Subject: [LTP] [PATCH v2] syscalls/clock_settime03: Fix testcases have been
+ waiting, timeout failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,57 +56,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+From: zhanglianjie <zhanglianjie@uniontech.com>
 
-"xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com> writes:
+If the system enables auto-synchronization time configuration,
+this test case will wait until the timeout. Therefore,
+the automatic synchronization time configuration of the system needs to be turned off in the setup phase.
 
-> Hi Richard
->> Hi Li
->>> --- a/lib/newlib_tests/test19.c
->>> +++ b/lib/newlib_tests/test19.c
->>> @@ -23,7 +23,7 @@ static struct tst_test test = {
->>>    	.needs_root = 1,
->>>    	.test_all = run,
->>>    	.setup = setup,
->>> -	.save_restore = (const struct tst_path_val const[]) {
->>> +	.save_restore = (const struct tst_path_val[]) {
->>>    		{"?/proc/nonexistent", NULL},
->>>    		{"!/proc/sys/kernel/numa_balancing", NULL},
->>>    		{"/proc/sys/kernel/core_pattern", NULL},
->>
->> Since tst_path_val is a struct array, we should use {NULL, NULL} or {}
->> terminated instead of NULL terminated , otherwise it will report missing
->> braces warning.
-> Since we have the following rule
-> LTP-005 Array must terminate with a sentinel value (i.e. NULL or '{}')
->
-> Can we check struct array whether use {} terminated instead of NULL?
+message:
+tst_test.c:1457: TINFO: Timeout per run is 0h 05m 00s
+clock_settime03.c:35: TINFO: Testing variant: syscall with old kernel spec
+tst_test.c:1506: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+tst_test.c:1507: TBROK: Test killed! (timeout?)
 
-I think so, however naively enabling the check causes a segfault in
-ptr_list_empty. Probably because there is no list, it's just NULL.
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 
-It already reports the missing braces, but I suppose this is not very
-helpful.
+diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime03.c b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
+index f196a257c..ce0e7b4c4 100644
+--- a/testcases/kernel/syscalls/clock_settime/clock_settime03.c
++++ b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
+@@ -31,6 +31,7 @@ static struct time64_variants variants[] = {
+ static void setup(void)
+ {
+ 	struct time64_variants *tv = &variants[tst_variant];
++	int ret;
 
->
-> Best Regards
-> Yang Xu
->>
->> Best Regards
->> Yang Xu
->>
+ 	tst_res(TINFO, "Testing variant: %s", tv->desc);
+ 	start.type = end.type = its.type = tv->ts_type;
+@@ -40,6 +41,10 @@ static void setup(void)
+ 	    sizeof(start.ts.kern_old_ts.tv_sec) == 4) {
+ 		tst_brk(TCONF, "Not Y2038 safe to run test");
+ 	}
++
++	ret = tst_system("timedatectl set-ntp false");
++	if (ret)
++		tst_res(TINFO, "failed to timedatectl set-ntp");
+ }
+
+ static void run(void)
+--
+2.20.1
 
 
--- 
-Thank you,
-Richard.
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
