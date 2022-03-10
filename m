@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EFB8C433EF
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 10:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DE7FC433EF
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 10:59:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B38743C1BAE
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 11:56:13 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8D6BD3C5594
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 11:59:32 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B59B43C0209
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 11:56:03 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id B07C63C0CA6
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 11:59:22 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E4A5F601A6E
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 11:56:02 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0A312600E59
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 11:59:21 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 17EE61F38A
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 10:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1646909762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=dAQZv8HmQ68CgoayYQh0SWp/WOXiftO8jXitl1URKnk=;
- b=EpDW6YsLJKM//DMfCw3Q9IMS3dTDUybx0m0u2UBtIy0QNKjGBimr/aFHOK/cUqfMVEnnuG
- 6RwpsTMH8cIJvfJ80hLs4hPtN6TJOsTk8cdjoy7WmtXU3c2GhwbYUZwkArK44wKmSI6ZcX
- l+zhaRN+h/r8ZUiJCP90E214ycQnvGE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1646909762;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=dAQZv8HmQ68CgoayYQh0SWp/WOXiftO8jXitl1URKnk=;
- b=mMUy6eiSO/0jDDDX4OieerpbeoVH1M2Bxd9K8HQAcrf0+kZCqJJFaRHJ5W32+UfTR6Ga36
- OkFx5IXxtg5QPDDA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 56339210EE;
+ Thu, 10 Mar 2022 10:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646909961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=RufOH0q2Sa8fxT6JWG2XOpaafrT5KUJEy05rYIap51U=;
+ b=U6GKUd0jliHWDVoeeaCYudKQ+O6FiRABeJm7cb+8d2/MB8SBiSL+5lcB8LtLOJdNM8z1bv
+ 5D8kYtN9i9vP/arc4I8wTHP1eUNT1zNujClReKrEnjHihRx7Gntyyn5qzFscSKEzVzdVux
+ 2a7+vwC7j2YW5/UCYeWsveAMECmwyzs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646909961;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=RufOH0q2Sa8fxT6JWG2XOpaafrT5KUJEy05rYIap51U=;
+ b=FnvjxXPRZJixJh14FK2p9GmYRIHsXdN5gcLS2LxBDsGvMiCzQruq4bBPIqt6WgWsiX+oJ0
+ 8qgiGshOs++/xVAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03FCB13A3D
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 10:56:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 308C213A3D;
+ Thu, 10 Mar 2022 10:59:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FX9EO0HZKWJQfQAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 10:56:01 +0000
-Date: Thu, 10 Mar 2022 11:58:20 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id xmLgCQnaKWK8fgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 10 Mar 2022 10:59:21 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Message-ID: <YinZzNWCiKalyWhd@yuki>
-References: <20220310105533.3012-1-chrubis@suse.cz>
+Date: Thu, 10 Mar 2022 11:59:06 +0100
+Message-Id: <20220310105916.7960-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220310105533.3012-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/waitid10: Fix on ARM,
- PPC and possibly others
+Subject: [LTP] [PATCH v2 00/10] Rewrite sysvipc testing suite using new LTP
+ API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,52 +77,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> While integer division by zero does trap on x86_64 and causes the SIGFPE
-> signal to be delivered it's not the case on all architecutes. At least
-> on ARM and PPC64LE division by zero simply returns undefined result
-> instead.
-> 
-> This patch adds raise(SIGFPE) at the end of the child as a fallback to
-> make sure the process is killed with the right signal on all
-> architectures.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/syscalls/waitid/waitid10.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/waitid/waitid10.c b/testcases/kernel/syscalls/waitid/waitid10.c
-> index 869ef18bd..8c351d120 100644
-> --- a/testcases/kernel/syscalls/waitid/waitid10.c
-> +++ b/testcases/kernel/syscalls/waitid/waitid10.c
-> @@ -28,7 +28,10 @@ static void run(void)
->  		volatile int a, zero = 0;
->  
->  		a = 1 / zero;
-> -		exit(a);
-> +
-> +		tst_res(TINFO, "Division by zero didn't trap, raising SIGFPE");
+Rewritten all sysvipc tests and removed libclone dependency.
+Removed TST_CHECKPOINT_INIT from all tests and replaced it with the
+.checkpoints support.
 
-This patch inroduces 'set but not used' warning for the a variable so
-maybe the message should look like:
+Andrea Cervesato (10):
+  Rewrite mesgq_nstest.c using new LTP API
+  Rewrite msg_comm.c using new LTP API
+  Rewrite sem_comm.c using new LTP API
+  Rewrite sem_nstest.c using new LTP API
+  Rewrite semtest_2ns.c using new LTP API
+  Rewrite shm_comm.c using new LTP API
+  Rewrite shmem_2nstest.c using new LTP API
+  Rewrite shmnstest.c using new LTP API
+  Remove libclone dependency from sysvipc
+  Delete obsolete ipcns_helper.h in sysvipc suite
 
-		tst_res(TINFO, "1/0 = %i raising SIGFPE", a);
-
-> +		raise(SIGFPE);
->  	}
->  
->  	TST_EXP_PASS(waitid(P_ALL, 0, infop, WEXITED));
-> -- 
-> 2.34.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+ testcases/kernel/containers/sysvipc/Makefile  |  26 +-
+ testcases/kernel/containers/sysvipc/common.h  | 157 ++++++++++
+ .../kernel/containers/sysvipc/ipcns_helper.h  |  41 ---
+ .../kernel/containers/sysvipc/mesgq_nstest.c  | 247 ++++++---------
+ .../kernel/containers/sysvipc/msg_comm.c      | 180 ++++-------
+ .../kernel/containers/sysvipc/sem_comm.c      | 180 ++++-------
+ .../kernel/containers/sysvipc/sem_nstest.c    | 212 +++++--------
+ .../kernel/containers/sysvipc/semtest_2ns.c   | 295 +++++++-----------
+ .../kernel/containers/sysvipc/shm_comm.c      | 167 +++-------
+ .../kernel/containers/sysvipc/shmem_2nstest.c | 239 +++++---------
+ .../kernel/containers/sysvipc/shmnstest.c     | 182 ++++-------
+ 11 files changed, 746 insertions(+), 1180 deletions(-)
+ create mode 100644 testcases/kernel/containers/sysvipc/common.h
+ delete mode 100644 testcases/kernel/containers/sysvipc/ipcns_helper.h
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
