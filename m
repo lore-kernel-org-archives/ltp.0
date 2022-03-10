@@ -4,147 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67743C433EF
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 08:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A67BEC433F5
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 08:58:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6BA7C3C6D07
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 09:53:34 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id ABD023C1FE9
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 09:58:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E3F233C012E
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 09:53:22 +0100 (CET)
-Received: from esa15.fujitsucc.c3s2.iphmx.com (esa15.fujitsucc.c3s2.iphmx.com
- [68.232.156.107])
+ by picard.linux.it (Postfix) with ESMTPS id 2B4B73C010B
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 09:58:32 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 85ABE1400765
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 09:53:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1646902402; x=1678438402;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=eoNHtA0RUS76wJV3FxVJNXHia4jb+rbPmvABHZwQIZw=;
- b=oZ13oyFcCYdQ2Con3RV8gTsK12F+x6agMgv0syBwTqDbzl/A3PqexWME
- I7QwLN0psIRIWxyuOMXm8FjiM0mmaheCK9rpPTovng5f9+mweZgSIOgGO
- 4TMah9Dwd8kCL4DLYG1dB86v4gKVwraK9ZBJAx+/IYYlrSODqkEI8/9bK
- LMvtKBqRg3USBYBlC9LiJ1JcSMoOPswgFxBCOW5Z/7wvLhqdaiZqNWc/d
- 8KF8h+wXTMG4BUweZuLo3ll8wU7S4Q6nk9iruQbu0roRV8uF67tYxfcy1
- rm/wIoraOVVoWgdz8C7cyI/8Vn8urZqLO+qRBnnGf+3KdFBO+if1j9l+X g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="51389859"
-X-IronPort-AV: E=Sophos;i="5.90,169,1643641200"; d="scan'208";a="51389859"
-Received: from mail-tycjpn01lp2175.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.175])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2022 17:53:19 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RSqu7IRVeJ6nQfJQ5D7zo827uYEUS0BfLCvtzK0hyLqBXZj7YIZRhGEyQQLyBGkGi8CDk1mzwOBZIYW8nO2p6M90EGIclV/tYhRY/XLc58CeFSDFlwBU+7nfxScXddBKdOdfQNGhOxYXiBjLmlDrm8fx7/Qn/tbiv8YG+tWJBqf2S+bX1M/QtcJfty8BwDupxzDk01/TOiulfiemYAmsa1j2r+idD/XzByJ+ZnxKkKoGQKRH+ER+3luaRrXXPkWiJI/xyUDbnIWdyLN8tew6KyZy2aVgAOjBEH5AZwy0JbL2hg5ysEUSSQWKLfQD9ec4hZElNFaoiL5usZJunJJqHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eoNHtA0RUS76wJV3FxVJNXHia4jb+rbPmvABHZwQIZw=;
- b=YrU7I1wlJ/mf3l5S18tXbh+kpfF43QBYlqeJpZ86V0ZrKeXPcOCdE6j5mna5Y6820CbILmAhd5VkHJ1BU/ban6d7UAMiXI9y66J1fzoIw9wVrpI0weyRvGPZ7In/m8cnvJsEEFhLZf5xeFEnErdd4E/310FPGuyvwMW/VaN0ALHQftg5HjV75daGumoMlAIZN5hK786MWQtwXtFdDTnEGmFWzoPMb8WNsMPpWNm7SSqX7OoOFHWZTdUPKDBD2K6q4Ca3AVl99Og4rzOpXsQEY+eQ7UTsxRjLx7LAZXmqIs7D+r3QcBlTKcOkP2DqKri5KOskOhzfvTIrVOk9Vn6FHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eoNHtA0RUS76wJV3FxVJNXHia4jb+rbPmvABHZwQIZw=;
- b=EotPIBdpd6oFWySWbcQ98dTypmd3CHDSQqzqbqQYLiIGBW1kr+i5DtylaGICwPIOFtna9glK4i8iDxXDhpgklQgpyTlG6KyDJGuFG7mcEwT90fYEvOdkS40f9mowkAyLucanMu0TdSwk7rD/8DXLrGCrUtiyZ/sC7NUuKP1ZOis=
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TYYPR01MB7879.jpnprd01.prod.outlook.com (2603:1096:400:113::5)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Thu, 10 Mar
- 2022 08:53:16 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354%5]) with mapi id 15.20.5038.027; Thu, 10 Mar 2022
- 08:53:16 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Li Wang <liwang@redhat.com>
-Thread-Topic: [COMMITTED] save_restore: remove the duplicate 'const'
- declaration
-Thread-Index: AQHYNFgSYIbYXI+N5kWF9T931P877ay4S/YAgAABrgCAAAJ5gA==
-Date: Thu, 10 Mar 2022 08:53:16 +0000
-Message-ID: <6229BCAF.1020502@fujitsu.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0CC64200D2E
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 09:58:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1646902710;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=S0ngDcitqUCC1Rquv8l0JYKhxgPABp54eUb+hSNNBmc=;
+ b=h6iS5btV8Y6zX5LVX/RiQjvRCyS9QEjKWeMR0yv9N5XaqrVgVhvuIMIQDEd4wlqobLiDmT
+ YX3H4QMZE9CPjwEc/Q2mNRIP7u3EP4kAbeQx3mYWzNBkVXqXYBE41zAMcqDLHcpIYyFsCs
+ Na2xGkIEWEF3IqeUbGPF0pfjt+wsu0s=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-106-Wli6qVuGNiiu6-outKRzSg-1; Thu, 10 Mar 2022 03:58:28 -0500
+X-MC-Unique: Wli6qVuGNiiu6-outKRzSg-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ j5-20020a056902020500b00628ab64be30so3872690ybs.16
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 00:58:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=S0ngDcitqUCC1Rquv8l0JYKhxgPABp54eUb+hSNNBmc=;
+ b=G5LxYDrzZClRh6h+xRr0klpZlR/h8Qxdg9FJZIA85L1xf3oLMWJh78PHx4JZWw+4Jz
+ LWGHgh9arHaSBr24KBXCYzDPTxZ0MZMXz9FNakIb7IzCpY7eO5hk85xp5TzNP9KXYjp5
+ z6NbGe8aZkUsppzJ8exeCaKhCyLkCjWqFSTcox++uyV1N6A3qkjupzm7hFEQAb3XlkeO
+ pj/PVYGA3wOlLaKXLht2aLhASUlH6LnHLqsKBg9tTWWGwev/quY/OkkW4e4/IvB2EUof
+ xphso6VkIfET85cLo4iVOqcJMPHRNKrYSVuP5Ag/jaKKzCu92SurFflBPKBTTMuDiTzF
+ iyMg==
+X-Gm-Message-State: AOAM533ER5kM9NCupgEY+y+sFRF9ag5zpTy8muxBpSpbCbdAj8Rj4b6E
+ VlKE8OefuTyaGpe6JINx4PIgorsDW9DApp6mnxDwU5taPWqf/8pH69NChtuAn6R9EWAvBXSBf1C
+ LJvQU+iGKzOVajKyZYNsRWKSAF58=
+X-Received: by 2002:a25:2f83:0:b0:629:2551:2309 with SMTP id
+ v125-20020a252f83000000b0062925512309mr3100809ybv.211.1646902708130; 
+ Thu, 10 Mar 2022 00:58:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOlECU9bMP5R24bl62q3OU2+aHMh/EdMJqnlZ1t4hyGr7sOPfA3a0BKXvZyJhkbBIJJR0LGdfB2ij4bscawKE=
+X-Received: by 2002:a25:2f83:0:b0:629:2551:2309 with SMTP id
+ v125-20020a252f83000000b0062925512309mr3100802ybv.211.1646902707905; Thu, 10
+ Mar 2022 00:58:27 -0800 (PST)
+MIME-Version: 1.0
 References: <20220310082251.13173-1-liwang@redhat.com>
  <6229B934.9040606@fujitsu.com>
  <CAEemH2dwawam7iK+E7KnY8Qi0vwz9NWXEf4Bzo3o_9tz-75kjg@mail.gmail.com>
-In-Reply-To: <CAEemH2dwawam7iK+E7KnY8Qi0vwz9NWXEf4Bzo3o_9tz-75kjg@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b8effcd8-8c93-428e-4ee3-08da02736afb
-x-ms-traffictypediagnostic: TYYPR01MB7879:EE_
-x-microsoft-antispam-prvs: <TYYPR01MB7879D851BB53DBEBA0AC1308FD0B9@TYYPR01MB7879.jpnprd01.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ythEoU0fpR4fNkMENuR/WlFVi2BApse5u74PR5D5a81a1r6+a3U+tZXoA946MD5vkFovj5FZ3qIXYAyu2J+SjQfCN95N53pA/2NxihOrt/2udHDRwOPrNsdwSeZjp6t+o9x5FLgkwQotJaXyhzKMB3xUuL70U+PyN2B7ZsOwUc/Ggk2RXClQYMrlFpcAokJkmjYguhQg4pWBBI9G+MWrItGPY0KkG7WMa01h7aeRGZ9qkPnEBdrzQXsNEQG5LhZGsCwjt0etfhp+Qppfc992gEfnwMC5EozEws1Tfrk1ZzB/Tl5FTDorte4ZDLXrMh04/0mRa9bVAnOXXBKwh9ih1YOskSRd//sjuIJ8/grhOV+DbF6SGZj69+rz3322nbbc6xHAxkmrFSftpPzt0DkV83FmqkpNaBJ+Xa6pJit48cgnR+ciGQJh32pfglyUIwVZEKmiMhZXIezgqJnL+32P5OfWkieVYr+Ggr/DpDBMt5ooAvAV7RT94Xc9ChemK9Ruf1pe1ORsoPv9KMsNYI4yiuEzhWyp68CXXjRhEvVGdcXO2vOu8vvClYvbre596rhEuhZVyYf0sAZbDSl6b/p7XWKQSwSlrfSAk/DE325Xh8IksyYr2NRPDjEpVKHVi9gTQYl+nQb/yxQBTNsQ9zqw61ga3IXvE/lp47ZuQBSaDvbxf2XgEW+gmVCknUGD0WaObJOGaJDRdbRaX+c8kxg+uQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(38100700002)(2906002)(6512007)(508600001)(66476007)(66446008)(8676002)(122000001)(5660300002)(2616005)(186003)(33656002)(53546011)(87266011)(26005)(6916009)(83380400001)(6506007)(8936002)(82960400001)(316002)(71200400001)(36756003)(86362001)(85182001)(38070700005)(91956017)(76116006)(6486002)(4326008)(66946007)(64756008)(66556008);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZjFTUjN5Vnp5cnZETW10SHBiNEkvWWU2clgvS2hrdEZ4cnhoZlc5UTdueEFH?=
- =?utf-8?B?N2ZyZWdUTjZNQTQ5WTBUM1lqaS9uWGc4WkJWOS9mQkpiZHRENWZVY0h4Q2pB?=
- =?utf-8?B?OVVjbSszM0JwTndlQWdmT3F2YVl0VzRiOWNLMVRvbm00eXg5NTJuaXNkUWdK?=
- =?utf-8?B?b3BkNTBGWmgxTWlzZE1UK0t6WXdkN0xwODFZOTY4S2RzRDk2VW40R3A5Nzlm?=
- =?utf-8?B?YlBid0JtdHZzM2QzWndUZ01lbzQxR3lPUmZ0N28wdmNyNkszOTB0cXQwaDQw?=
- =?utf-8?B?aGh0eUcvNVVTd3grUXMxVDhNem9jRnd6V3d2aVhTdUx5RDdKVzMxZy9iZ1FE?=
- =?utf-8?B?b2k4aU9iN2Y4OHltaTBaU1dtOVduTThKd0dGbCtIUWFWMjJwblZzc2tBdnNr?=
- =?utf-8?B?NVdNU0xOMVc1L25pQUc2d0tCWWdUaDFLcFJORUpDYWtSaldPRFhoRVE3OXhQ?=
- =?utf-8?B?ekJCV21KNURiQVUwMVg2Z3FjUklvWHJIU0J4VXBQbXpVYUdldEZna1NLa0x3?=
- =?utf-8?B?bGlVMEZQSnBCUlRzZmk3S1FsYVkvNU51aExTSmJwa2lKS2lYMExnRnd5WmlV?=
- =?utf-8?B?N0YrZ0NoelpKazZ1Rm5OcmpqTUhmNURPTUtwTDlET3RFbXFvMjc4WXFMdXB0?=
- =?utf-8?B?Z3RkQi9CRGV1OEpwVjJmb01wS2NvVGtoaXJIZy9tTkVIbkNPSGV2QUthOHZo?=
- =?utf-8?B?QzZkT21qWllwOU5ZdS8wdTFSU1VJdndWQVJGS3IrWHBOdzVHVXIxbHlVNTFI?=
- =?utf-8?B?WE1FRWVlWFN3YUFtMUExcG9Ud0xHN29zY2xjd01ZNG5hbFFxMk9jWEdZL0dv?=
- =?utf-8?B?M2hqWVIvRko0QnBKTWFUNGhtVnN6WlU4RlVMaVFiKzVwaWY5T0JWMzYrVlJO?=
- =?utf-8?B?czdtejI2VjBlY3laZjY2M0t5eXNPT1hxNVB3WkpLbTlvejdsWGNmZ0Q4a1Jp?=
- =?utf-8?B?UnVnWjRqVENDNEJXQXk3WWl2azB3WGRpbnFyaEZDWjB5bmhjMmN0QnhuMHBD?=
- =?utf-8?B?NFFRRkJJRmw5MFJINVRpQ1VNY3B5MnVIbWpXSWJDOGI2ZHRKVnB5TndNZW1n?=
- =?utf-8?B?ZllVM2FhbkVZc0tDaysyK21odHR1N3gxeHduSEEzZkQwREdjVWdsbVprdW1r?=
- =?utf-8?B?L2pDY2VYb25IZGtNempXN1Irc1g2UUluMkZIUi9lUkRkWC9HR29IUFMrUDl3?=
- =?utf-8?B?cWRzMDAvSmFyYml5a0d1SlYrTmJjeVYwalRXWlpyR1gwSGtkSnNFR2xKWkRI?=
- =?utf-8?B?WUx2a3VsL3B6STBLT2FTdDAxOHNCV050RVhzSlhvZVYwc1RZYlRwWmRHNVdJ?=
- =?utf-8?B?ZlhTY1lsNUo2dFFpTnhQSVY4SmJxcEJlY0I1MDUrYjloVUZ6UnZxUDZrcnJo?=
- =?utf-8?B?eTRGS0dQVUxiRFFYQ1VZdVhGVFN1NHpDZEQvVGxyN1l6UFAzdTNsa3JxYXNT?=
- =?utf-8?B?cHlib3FSajRNM21Fb3crcXFQbTZuNEsyWWZnM0xVY1JGZFMzeE5NZEVXNDkz?=
- =?utf-8?B?UjJrS3VTeThBZi9JVW80eUhRMWwwV1NQa3N5WTFZRGRBM2hhZW9lcW1ENk8v?=
- =?utf-8?B?cjRiR0hrb1JjcDJqNFA5MVBGQ2FKc09HVE9LSy9peXAxRE9KRktQQUcramFZ?=
- =?utf-8?B?L2xJc0hxMHFoWTRLczBwUkI3UW5vOU1KZHJGbjdBeWhEWFFjcUpvOXduQ3kx?=
- =?utf-8?B?d0VFMXloRlR5ejVwRWd5UUtLbThaZG9HUVVaRFFpWFZycUtmMGhaK2JWcTJE?=
- =?utf-8?B?aGxSdDdNbDFJWWFkQTJRWEk0aEk3eitONUZXTGNweFViQ3FUS3FobzRtNjdW?=
- =?utf-8?B?YW5OTk1GS3lvOEN0enJGSm1BVVlXRmxXSUorOEJqNVZ5Y3FaamNZOUY2c0Zv?=
- =?utf-8?B?bjVyN1ZJcTNGRmdWY0dHSllIQXJnUCtDUE5DT2RxRkV3Sno3d3VHS1FONm1I?=
- =?utf-8?B?VklvMUFzSlpFR3Zraml1aXNDTkQxS0xuWmlkS0RNL3RZeWRHZ1BHbXZyUFNK?=
- =?utf-8?B?TFRwQUxyNjF6ZUR6ajR4aHNOK2UvWVFNTzY5djN3ODY0NVhPalpUSXNMS2xQ?=
- =?utf-8?B?UGVaNUFIMTFhTzJCUUJHSVRXdU9vK1B2WjErRVpnUlBzb0JSWjIxcGgwS3dr?=
- =?utf-8?B?QmlVYngwcVRzbkJQMXNFOTFBZ2JnSXVzVWc0VUVMNFpsQTNUNUgyejVDaXlQ?=
- =?utf-8?B?SE9ZWURSN0ZoR0tlZG9Xb2ZQbTQwcXNzaXY5V1VvVTQ3VFk0amEvZktHODRJ?=
- =?utf-8?Q?d1hrLmf0QXEZVH+YJutnpE1evWVJAlIGDCxtsixPow=3D?=
-Content-ID: <287077944974AA41AF935441C1C3E15D@jpnprd01.prod.outlook.com>
-MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8effcd8-8c93-428e-4ee3-08da02736afb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2022 08:53:16.5227 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: V3QEskVRtZ/3A2QfBtCfxugsK7dEvm5uZpFae1MsvtZGKYa42fWWC8TjLumiwk5vrqRg75U4m8Fo9z/kpatF8p7efcWDtK2xbRlmxyP3Dj8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB7879
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+ <6229BCAF.1020502@fujitsu.com>
+In-Reply-To: <6229BCAF.1020502@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 10 Mar 2022 16:58:14 +0800
+Message-ID: <CAEemH2cUc6WQisKG0Zth9=PUG-8X4818McyVguvP4t3d+stZaQ@mail.gmail.com>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [COMMITTED] save_restore: remove the duplicate 'const'
  declaration
@@ -160,59 +89,178 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0534426307=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li
->
->
-> On Thu, Mar 10, 2022 at 4:38 PM xuyang2018.jy@fujitsu.com
-> <mailto:xuyang2018.jy@fujitsu.com> <xuyang2018.jy@fujitsu.com
-> <mailto:xuyang2018.jy@fujitsu.com>> wrote:
->
->     Hi Li
->      > --- a/lib/newlib_tests/test19.c
->      > +++ b/lib/newlib_tests/test19.c
->      > @@ -23,7 +23,7 @@ static struct tst_test test = {
->      > .needs_root = 1,
->      > .test_all = run,
->      > .setup = setup,
->      > - .save_restore = (const struct tst_path_val const[]) {
->      > + .save_restore = (const struct tst_path_val[]) {
->      > {"?/proc/nonexistent", NULL},
->      > {"!/proc/sys/kernel/numa_balancing", NULL},
->      > {"/proc/sys/kernel/core_pattern", NULL},
->
->     Since tst_path_val is a struct array, we should use {NULL, NULL} or {}
->     terminated instead of NULL terminated , otherwise it will report
->     missing
->     braces warning.
->
-> Ah, right. Sorry!!!
-Never mind.
->
-> Seems I was in so hurry to fix the const issue but overlook this.
-I also think you can add a separate patch to fix this comment in doc or 
-in  tst_test.h for other struct pointers.
+--===============0534426307==
+Content-Type: multipart/alternative; boundary="000000000000e2772805d9d96a18"
 
-         /*
-          * NULL-terminated array to be allocated buffers.
-          */
-         struct tst_buffers *bufs;
+--000000000000e2772805d9d96a18
+Content-Type: text/plain; charset="UTF-8"
 
-         /*
-          * NULL-terminated array of capability settings
-          */
-         struct tst_cap *caps;
+On Thu, Mar 10, 2022 at 4:53 PM xuyang2018.jy@fujitsu.com <
+xuyang2018.jy@fujitsu.com> wrote:
 
-Best Regards
-Yang Xu
+> Hi Li
+> >
+> >
+> > On Thu, Mar 10, 2022 at 4:38 PM xuyang2018.jy@fujitsu.com
+> > <mailto:xuyang2018.jy@fujitsu.com> <xuyang2018.jy@fujitsu.com
+> > <mailto:xuyang2018.jy@fujitsu.com>> wrote:
+> >
+> >     Hi Li
+> >      > --- a/lib/newlib_tests/test19.c
+> >      > +++ b/lib/newlib_tests/test19.c
+> >      > @@ -23,7 +23,7 @@ static struct tst_test test = {
+> >      > .needs_root = 1,
+> >      > .test_all = run,
+> >      > .setup = setup,
+> >      > - .save_restore = (const struct tst_path_val const[]) {
+> >      > + .save_restore = (const struct tst_path_val[]) {
+> >      > {"?/proc/nonexistent", NULL},
+> >      > {"!/proc/sys/kernel/numa_balancing", NULL},
+> >      > {"/proc/sys/kernel/core_pattern", NULL},
+> >
+> >     Since tst_path_val is a struct array, we should use {NULL, NULL} or
+> {}
+> >     terminated instead of NULL terminated , otherwise it will report
+> >     missing
+> >     braces warning.
+> >
+> > Ah, right. Sorry!!!
+> Never mind.
+> >
+> > Seems I was in so hurry to fix the const issue but overlook this.
+> I also think you can add a separate patch to fix this comment in doc or
+> in  tst_test.h for other struct pointers.
 >
-> --
-> Regards,
-> Li Wang
+
+You are right. I will go through the whole part to see if other places need
+updates.
+
+Thanks for finding this :).
+
+
+
+>
+>          /*
+>           * NULL-terminated array to be allocated buffers.
+>           */
+>          struct tst_buffers *bufs;
+>
+>          /*
+>           * NULL-terminated array of capability settings
+>           */
+>          struct tst_cap *caps;
+>
+> Best Regards
+> Yang Xu
+> >
+> > --
+> > Regards,
+> > Li Wang
+>
+
+
+-- 
+Regards,
+Li Wang
+
+--000000000000e2772805d9d96a18
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Thu, Mar 10, 2022 at 4:53 PM <a href=3D"mailto:x=
+uyang2018.jy@fujitsu.com">xuyang2018.jy@fujitsu.com</a> &lt;<a href=3D"mail=
+to:xuyang2018.jy@fujitsu.com">xuyang2018.jy@fujitsu.com</a>&gt; wrote:<br><=
+/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
+rder-left:1px solid rgb(204,204,204);padding-left:1ex">Hi Li<br>
+&gt;<br>
+&gt;<br>
+&gt; On Thu, Mar 10, 2022 at 4:38 PM <a href=3D"mailto:xuyang2018.jy@fujits=
+u.com" target=3D"_blank">xuyang2018.jy@fujitsu.com</a><br>
+&gt; &lt;mailto:<a href=3D"mailto:xuyang2018.jy@fujitsu.com" target=3D"_bla=
+nk">xuyang2018.jy@fujitsu.com</a>&gt; &lt;<a href=3D"mailto:xuyang2018.jy@f=
+ujitsu.com" target=3D"_blank">xuyang2018.jy@fujitsu.com</a><br>
+&gt; &lt;mailto:<a href=3D"mailto:xuyang2018.jy@fujitsu.com" target=3D"_bla=
+nk">xuyang2018.jy@fujitsu.com</a>&gt;&gt; wrote:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0Hi Li<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; --- a/lib/newlib_tests/test19.c<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; +++ b/lib/newlib_tests/test19.c<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; @@ -23,7 +23,7 @@ static struct tst_test test=
+ =3D {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; .needs_root =3D 1,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; .test_all =3D run,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; .setup =3D setup,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; - .save_restore =3D (const struct tst_path_va=
+l const[]) {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; + .save_restore =3D (const struct tst_path_va=
+l[]) {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; {&quot;?/proc/nonexistent&quot;, NULL},<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; {&quot;!/proc/sys/kernel/numa_balancing&quot;=
+, NULL},<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 &gt; {&quot;/proc/sys/kernel/core_pattern&quot;, N=
+ULL},<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0Since tst_path_val is a struct array, we should use=
+ {NULL, NULL} or {}<br>
+&gt;=C2=A0 =C2=A0 =C2=A0terminated instead of NULL terminated , otherwise i=
+t will report<br>
+&gt;=C2=A0 =C2=A0 =C2=A0missing<br>
+&gt;=C2=A0 =C2=A0 =C2=A0braces warning.<br>
+&gt;<br>
+&gt; Ah, right. Sorry!!!<br>
+Never mind.<br>
+&gt;<br>
+&gt; Seems I was in so hurry to fix the const issue but overlook this.<br>
+I also think you can add a separate patch to fix this comment in doc or <br=
+>
+in=C2=A0 tst_test.h for other struct pointers.<br></blockquote><div><br></d=
+iv><div><div class=3D"gmail_default" style=3D"font-size:small">You are righ=
+t. I will go through the whole part to see if other places need updates.</d=
+iv></div><div><br></div><div><div class=3D"gmail_default" style=3D"font-siz=
+e:small">Thanks for finding this :).</div><br></div><div>=C2=A0</div><block=
+quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
+px solid rgb(204,204,204);padding-left:1ex">
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/*<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 * NULL-terminated array to be allocated =
+buffers.<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0struct tst_buffers *bufs;<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/*<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 * NULL-terminated array of capability se=
+ttings<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0struct tst_cap *caps;<br>
+<br>
+Best Regards<br>
+Yang Xu<br>
+&gt;<br>
+&gt; --<br>
+&gt; Regards,<br>
+&gt; Li Wang<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
+Wang<br></div></div></div></div>
+
+--000000000000e2772805d9d96a18--
+
+
+--===============0534426307==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0534426307==--
+
