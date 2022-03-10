@@ -4,67 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EDC2C433EF
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 20:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF4B0C433F5
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 20:49:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD7AD3C793D
-	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 21:41:40 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C813C3C8BCD
+	for <ltp@archiver.kernel.org>; Thu, 10 Mar 2022 21:49:12 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1476F3C0F41
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 21:41:30 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D33A53C0F41
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 21:49:02 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 06F021000644
- for <ltp@lists.linux.it>; Thu, 10 Mar 2022 21:41:28 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EDDEB601A75
+ for <ltp@lists.linux.it>; Thu, 10 Mar 2022 21:49:01 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DB028210EE;
- Thu, 10 Mar 2022 20:41:27 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0FEF221115;
+ Thu, 10 Mar 2022 20:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1646944887;
+ t=1646945341;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+PvNXUBd6/EPHy0XXbhFlraPyYcUL3GzFFBXIzpnmLE=;
- b=x7r836GBaSqFn1Xygwe6oVwMbwOEtwPQeeD7+96ZZEIPneJiRcSTSSedZW7DqLNFwWe29G
- xOi8XjI872u4+tWDTTgQfS6sgT3/BsZhf6eJea0kmCsPionXHwZ7qeM754lMr42duiWq8j
- 4/nSWtGk/3IrKfo4yhxHLyQkzm3yDyY=
+ bh=/HHj7WEkHGHwx3CzuQL9N9H/6r+YiORVZhZKCh174dk=;
+ b=hNkO79UU04lwaKkZYUG5SjWqTfD09qMWSNSYjLmSdk3ZRgvPL9l7/0oAScu+m3GFuEkf6X
+ NKyzKZjyN5OEL0KJacoVJP4YcgX+Rca4R4xebyRn8xqNUKJKOkvdCSVrpDhnRmVQFPvuI1
+ ZEpGgTR8nv9ac5jGXzVp04Fo263VJWo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1646944887;
+ s=susede2_ed25519; t=1646945341;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+PvNXUBd6/EPHy0XXbhFlraPyYcUL3GzFFBXIzpnmLE=;
- b=JjqhosxRmUsqrFH/rj6/CkBaqUqvDAzln/j+0l0ee+v8puOMKTd9DI1aX8RCjk3q/gZ1Gi
- SCkAQEBPxAxH9gBQ==
+ bh=/HHj7WEkHGHwx3CzuQL9N9H/6r+YiORVZhZKCh174dk=;
+ b=VylmMYmT8NWK7MtBGdHqkaPahO07pWbojlUP8mwhOk8RN0YR8q5v2F0HvP99qglVUSX6C4
+ ShB3U3PIHb1DvNCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92DFF13FA3;
- Thu, 10 Mar 2022 20:41:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A43FD13FA3;
+ Thu, 10 Mar 2022 20:49:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kL8DIXdiKmJBdAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 10 Mar 2022 20:41:27 +0000
-Date: Thu, 10 Mar 2022 21:41:25 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id dQg4IzxkKmJmdgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 10 Mar 2022 20:49:00 +0000
+Date: Thu, 10 Mar 2022 21:48:58 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YipidedAlC6XxX4r@pevik>
-References: <20220309164954.23751-1-mdoucha@suse.cz> <Yij8XwFjK3Ua+jYA@pevik>
- <5e9807b7-3b41-8408-42d2-dffaa71741e1@suse.cz>
+To: Murphy Zhou <jencce.kernel@gmail.com>
+Message-ID: <YipkOjYIeY4NbQuh@pevik>
+References: <20220125024718.jszwoussimqk6trf@xzhoux.usersys.redhat.com>
+ <Ye/ZOo2tlA+Jf+Cf@yuki>
+ <CADJHv_tRGHhLg2YLssu8hQpNU_PLa_iD1qhMWadBRpbTatoFiA@mail.gmail.com>
+ <Yhxu8elhUJakYJHH@pevik> <YiAqwHabM9qCUjAU@xzhouw.hosts>
+ <YiDdRhIdh12/23HM@pevik>
+ <20220308013853.yr5qhlkcdjy3a5d2@xzhouw.hosts.qa.psi.rdu2.redhat.com>
+ <YiiDlHcCscQqPJBi@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5e9807b7-3b41-8408-42d2-dffaa71741e1@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <YiiDlHcCscQqPJBi@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] KVM test infrastructure
+Subject: Re: [LTP] [PATCH v3] kernel/fs/fsnotify-stress: fsnotify stress test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,47 +89,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 09. 03. 22 20:13, Petr Vorel wrote:
-> > Hi Martin,
+Hi,
 
-> > this patchset looks really great.
+...
+> > +static struct tst_test test = {
+> > +	.tcnt = 1,
+> > +	.forks_child = 1,
+> > +	.needs_root = 1,
+> > +	.needs_tmpdir = 1,
+> > +	.needs_cmds = 0,
+> > +	.needs_cgroup_ver = 0,
+> > +	.needs_cgroup_ctrls = 0,
 
-> > Unfortunately there are some compilation time errors [1]. Various
-> > Debian/Ubuntu versions (but not all) and Alpine have problem to
-> > compile it [1]: /usr/bin/ld: bootstrap_x86_64.o: relocation
-> > R_X86_64_16 against symbol `kvm_gdt32_desc' can not be used when
-> > making a PIE object; recompile with -fPIE
+> Please do not set anything to 0 here, that is the default value for any
+> uninitialized variables. Unfortunatelly gcc is buggy and prints warnings
+> for nearly all tst_test initializations in the LTP tree, there is an
+> upstream gcc bug for that that haven't been worked on for quite some
+> time now. But that is not a reason to work around compiler bugs here.
 
-> > Can you please have look into it?
-
-> Can you try whether this one-liner fixes the error? The diff will
-> probably get corrupted by my mail client because GUEST_CFLAGS is too
-> long but it's trivial to apply this by hand:
-
-> diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
-> index 139358961..24ca91fc3 100644
-> --- a/testcases/kernel/kvm/Makefile
-> +++ b/testcases/kernel/kvm/Makefile
-> @@ -9,7 +9,7 @@ ASFLAGS =
->  CPPFLAGS += -I$(abs_srcdir)/include
->  GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
->  GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables
-> -mno-mmx -mno-sse
-> -GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none
-> +GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none,-no-pie
->  GUEST_LDLIBS =
-
->  FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
-
-Unfortunately, just adding -no-pie to GUEST_LDFLAGS does not help:
-https://github.com/pevik/ltp/actions/runs/1965302083
-
-/usr/bin/ld: bootstrap_x86_64.o: relocation R_X86_64_16 against symbol `kvm_gdt32_desc' can not be used when making a PIE object; recompile with -fPIE
-/usr/bin/ld: -pie: error: PHDR segment not covered by LOAD segment
-
-FYI slightly different OS failed on your original version, but that's probably
-not interesting:
-https://github.com/pevik/ltp/actions/runs/1959152447
+FYI
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84685
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82283
 
 Kind regards,
 Petr
