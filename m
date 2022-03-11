@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D53CAC433F5
-	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 12:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 404DAC433EF
+	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 12:35:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C85953C8C82
-	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 13:26:44 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 1FB5E3C8CA6
+	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 13:35:36 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B90963C0CEA
- for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:26:34 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 4B5853C0CEA
+ for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:35:26 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2B2BF1400108
- for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:26:33 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1291A1000544
+ for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:35:25 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 478DE1F381;
- Fri, 11 Mar 2022 12:26:33 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 35B7B1F38D;
+ Fri, 11 Mar 2022 12:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1647001593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1647002125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IodPWrW+K+ddFlmxTkMIzFts8V5NH34wEac1lmKbwAA=;
- b=rP+Ob/Fd+yzE1j3C0ljNwTgYI3Zoqle8UMTLmw0j1BHGiPGEhcw7aZmDrdXNbK0ra/J+gY
- C0yicrAhEDzy0qT6oCz8WLyFqrhcPtp5MT3CLIpnpRBk7Xh9t9BCeq6HZqfODWph6S353g
- su2T+3Zp2T/wrRlMEnInil/ppxdaS5g=
+ bh=ri0jBcqgNMzy8WH0vIeE7L849xMa7qXeJ9wke9N2RbU=;
+ b=JoU1BWjDNvR2HIl9yy5U0EAjQBeKdqQMPFG5bXmdS6q7gdB5tgjiL/YocWfaFEhotEKuY0
+ oh/iMug5MsWIJEuhFJTgDriFUPb9HDohpEZvDIQ83v2ttjd+zvV6tR+my20lYqD3hCwina
+ 0eWLSOKaVHSiHJpSPGYsvD+RgKN3TQI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1647001593;
+ s=susede2_ed25519; t=1647002125;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IodPWrW+K+ddFlmxTkMIzFts8V5NH34wEac1lmKbwAA=;
- b=Ed/DgAt2/7ketuzwY8SGqAD6BrTbPCh7i5Z7xA25RNTMNsnlS17bKBm8kIPO/niCAWUJyf
- gh4rlQ/OdaEa9TCA==
+ bh=ri0jBcqgNMzy8WH0vIeE7L849xMa7qXeJ9wke9N2RbU=;
+ b=IyDSCufuNjY/AUKa4A+/jvyp04FYyxdX7g985l37ALZlxsXm6xnyoV3NPyPWOEWauvtdDy
+ hbi+/SpXFiCCWOAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDB1613A89;
- Fri, 11 Mar 2022 12:26:32 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 120BC13A85;
+ Fri, 11 Mar 2022 12:35:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7GgeOfg/K2ILNAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 11 Mar 2022 12:26:32 +0000
-Date: Fri, 11 Mar 2022 13:28:51 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id LxbmAw1CK2JfOAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 11 Mar 2022 12:35:25 +0000
+Date: Fri, 11 Mar 2022 13:37:43 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YitAg8rGd++vHUlB@yuki>
+Message-ID: <YitCl4v9NSpnbyYH@yuki>
 References: <20220311120151.601-1-pvorel@suse.cz>
+ <20220311120151.601-2-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220311120151.601-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220311120151.601-2-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] madvise06: Fix segfault
+Subject: Re: [LTP] [PATCH 2/2] madvise06: Move oom_score_adj initialization
+ to struct tst_path_val
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,69 +84,44 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Test required update after 687f0cbc00 to use struct tst_path_val.
-> While at it, move the initialization to struct tst_path_val.
-> 
-> Fixes: 687f0cbc00 ("lib: enhance .save_restore to support set expected value")
-> 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
 > Is it ok to define it earlier? i.e. before calling sync() ?
 > 
->  testcases/kernel/syscalls/madvise/madvise06.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  testcases/kernel/syscalls/madvise/madvise06.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
 > diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-> index 54391db283..b21f2cc7de 100644
+> index b21f2cc7de..15171442cb 100644
 > --- a/testcases/kernel/syscalls/madvise/madvise06.c
 > +++ b/testcases/kernel/syscalls/madvise/madvise06.c
-> @@ -54,6 +54,7 @@
->  #define MEMSW_LIMIT (2 * CHUNK_SZ)
+> @@ -55,6 +55,7 @@
 >  #define PASS_THRESHOLD (CHUNK_SZ / 4)
 >  #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
-> +#define SWAPPINESS "60"
+>  #define SWAPPINESS "60"
+> +#define OOM_SCORE_ADJ "-1000"
 >  
 >  static const char drop_caches_fname[] = "/proc/sys/vm/drop_caches";
 >  static int pg_sz, stat_refresh_sup;
-> @@ -123,10 +124,9 @@ static void setup(void)
->  		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%ld", MEMSW_LIMIT);
->  
->  	if (SAFE_CG_HAS(tst_cg, "memory.swappiness")) {
-> -		SAFE_CG_PRINT(tst_cg, "memory.swappiness", "60");
-> +		SAFE_CG_PRINT(tst_cg, "memory.swappiness", SWAPPINESS);
->  	} else {
->  		check_path("/proc/sys/vm/swappiness");
-> -		SAFE_FILE_PRINTF("/proc/sys/vm/swappiness", "%d", 60);
+> @@ -116,9 +117,6 @@ static void setup(void)
+>  			2 * CHUNK_SZ);
 >  	}
-
-I'm not sure if we want to set the "/proc/sys/vm/swappiness"
-unconditinally in the .save_restore as previously we set it only if the
-cgroup was missing the swappines knob.
-
-So maybe we should go for a minimal fix here, just change the
-save_restore to match the new format and don't set the value there.
-
->  	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
-> @@ -229,8 +229,8 @@ static struct tst_test test = {
->  	.min_kver = "3.10.0",
->  	.needs_tmpdir = 1,
+>  
+> -	check_path("/proc/self/oom_score_adj");
+> -	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
+> -
+>  	SAFE_CG_PRINTF(tst_cg, "memory.max", "%ld", MEM_LIMIT);
+>  	if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
+>  		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%ld", MEMSW_LIMIT);
+> @@ -231,6 +229,7 @@ static struct tst_test test = {
 >  	.needs_root = 1,
-> -	.save_restore = (const char * const[]) {
-> -		"?/proc/sys/vm/swappiness",
-> +	.save_restore = (const struct tst_path_val const[]) {
-> +		{"?/proc/sys/vm/swappiness", SWAPPINESS},
->  		NULL
+>  	.save_restore = (const struct tst_path_val const[]) {
+>  		{"?/proc/sys/vm/swappiness", SWAPPINESS},
+> +		{"/proc/self/oom_score_adj", OOM_SCORE_ADJ},
 
-This has to be terminated by {} now.
-
->  	},
->  	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
-> -- 
-> 2.35.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+I do not think that this is even correct, after this change the file is
+being written to by the test library and the 'self' points to a
+different process as far as I can tell.
 
 -- 
 Cyril Hrubis
