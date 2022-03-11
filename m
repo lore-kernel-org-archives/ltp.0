@@ -4,66 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94716C433EF
-	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 09:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D255C433F5
+	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 10:04:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 73AC53C8C98
-	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 10:56:59 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 3CEC83C61C8
+	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 11:04:18 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8292B3C61C8
- for <ltp@lists.linux.it>; Fri, 11 Mar 2022 10:56:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 4CAF93C61C8
+ for <ltp@lists.linux.it>; Fri, 11 Mar 2022 11:04:08 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B700A1001180
- for <ltp@lists.linux.it>; Fri, 11 Mar 2022 10:56:48 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A7CDA100115E
+ for <ltp@lists.linux.it>; Fri, 11 Mar 2022 11:04:07 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E2B9B218FB;
- Fri, 11 Mar 2022 09:56:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C0C84218FB;
+ Fri, 11 Mar 2022 10:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1646992607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1646993046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FWCB21CyM5fT1Bt+Z8Hf9gWAyuHxD//5RDFbmxfzoNI=;
- b=XQOCjr2KDoZF6XKfrBoRNMF0DZhvqNaPg+RgeE+QfOwTsQmM8MB4kSMj1/xVM3rlXGqlYI
- nde2vCNf3Fi95Gu26XwefG/dHiFcITAmsqvewSd1wiuj5qL87H/ZEFwAFEyNbf0bECIY+d
- kgXsQDfGYdmMkLmoHQUd8XWtdzuCCG4=
+ bh=NRaVvXCQCEDeSh8NSWU8Rj0qgz/yJD9wpzKbO9cH48w=;
+ b=ytm/bduJ+oBrXKaTEwTQVqMz/j/o0CROcVBVjB74CbNPfInQsE1k0RSFM7DtL17dLoS753
+ bqC0igNg/rZ8/H3A2ZZgQKPw3yGP3mg1vIFZSYU7SohyWfuX1G7YuxTgtnltbkfkPJEbdF
+ YZF6ISrltiKMgS7lYUE3bqMQGaO7Klc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1646992607;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ s=susede2_ed25519; t=1646993046;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FWCB21CyM5fT1Bt+Z8Hf9gWAyuHxD//5RDFbmxfzoNI=;
- b=6m21p1QrhJPsg0eQY7HMVYJJL3rPDTV6WI2ldigrDgdizg61jk0jYR+TAKwRAn9oBfG/t4
- y81PVirDlLd3UmBQ==
+ bh=NRaVvXCQCEDeSh8NSWU8Rj0qgz/yJD9wpzKbO9cH48w=;
+ b=f3VDGmPo6zDj3pzf3uOgyU6D8xjbX9P6U+JRu8n0hchDIarvUYHCRQjsY8uB1s+1QMbqGX
+ YZINaXYLaUEAF/Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CAF1213A89;
- Fri, 11 Mar 2022 09:56:47 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A540413A89;
+ Fri, 11 Mar 2022 10:04:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id H+hRMN8cK2JVZAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 11 Mar 2022 09:56:47 +0000
-Message-ID: <8378e9dd-31a5-b39e-36cc-f3d3a1d41345@suse.cz>
-Date: Fri, 11 Mar 2022 10:56:47 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+ by imap2.suse-dmz.suse.de with ESMTPSA id vF3SJ5YeK2IOaAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 11 Mar 2022 10:04:06 +0000
+Date: Fri, 11 Mar 2022 11:06:25 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <YisfIWsrgxVt8xc2@yuki>
 References: <20220311095101.10112-1-chrubis@suse.cz>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20220311095101.10112-1-chrubis@suse.cz>
+ <8378e9dd-31a5-b39e-36cc-f3d3a1d41345@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <8378e9dd-31a5-b39e-36cc-f3d3a1d41345@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] pty/pty07: Restore active console after the
@@ -79,82 +76,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-
-On 11. 03. 22 10:51, Cyril Hrubis wrote:
-> The test, as a side effect, switches to a different console during the
-> run, which may confuse both users and automated test systems.
+Hi!
+> >  static void cleanup(void)
+> >  {
+> > -	tst_fzsync_pair_cleanup(&fzp);
+> > -	if (fd >= 0)
+> > +	if (fd >= 0) {
+> > +		tst_res(TINFO, "Restoring active console");
+> > +		SAFE_IOCTL(fd, VT_ACTIVATE, vt_active);
+> >  		SAFE_CLOSE(fd);
+> > +	}
+> > +
+> > +	tst_fzsync_pair_cleanup(&fzp);
 > 
-> Fix that by saving the console active at the start of the test and
-> restore it in the test cleanup.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/pty/pty07.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/pty/pty07.c b/testcases/kernel/pty/pty07.c
-> index 462569c4a..af2dccb32 100644
-> --- a/testcases/kernel/pty/pty07.c
-> +++ b/testcases/kernel/pty/pty07.c
-> @@ -40,6 +40,8 @@ static int test_tty_port = 8;
->  static int fd = -1;
->  static struct tst_fzsync_pair fzp;
->  
-> +static unsigned short vt_active;
-> +
->  static void *open_close(void *unused)
->  {
->  	int i;
-> @@ -76,16 +78,27 @@ static void do_test(void)
->  
->  static void setup(void)
->  {
-> +	struct vt_stat stat;
-> +
->  	sprintf(tty_path, "/dev/tty%d", test_tty_port);
->  	fd = SAFE_OPEN(tty_path, O_RDWR);
-> +	SAFE_IOCTL(fd, VT_GETSTATE, &stat);
-> +	vt_active = stat.v_active;
-> +
-> +	tst_res(TINFO, "Saving active console %i", vt_active);
-> +
->  	tst_fzsync_pair_init(&fzp);
->  }
->  
->  static void cleanup(void)
->  {
-> -	tst_fzsync_pair_cleanup(&fzp);
-> -	if (fd >= 0)
-> +	if (fd >= 0) {
-> +		tst_res(TINFO, "Restoring active console");
-> +		SAFE_IOCTL(fd, VT_ACTIVATE, vt_active);
->  		SAFE_CLOSE(fd);
-> +	}
-> +
-> +	tst_fzsync_pair_cleanup(&fzp);
+> If you move the fzsync cleanup to the end of cleanup(), you can end up
+> with the open_close() thread racing against fd cleanup.
 
-If you move the fzsync cleanup to the end of cleanup(), you can end up
-with the open_close() thread racing against fd cleanup.
+Ah, right, looking closely at the fzsync, the thread B may be racing
+against the restoration in the case that something caused premature exit
+in the thread A.
 
->  }
->  
->  static struct tst_test test = {
-
+Will move the call back to the start of the cleanup().
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
