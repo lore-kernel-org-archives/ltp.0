@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 404DAC433EF
-	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 12:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBBADC433EF
+	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 12:40:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FB5E3C8CA6
-	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 13:35:36 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 211A03C8C94
+	for <ltp@archiver.kernel.org>; Fri, 11 Mar 2022 13:40:12 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4B5853C0CEA
- for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:35:26 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id F0E343C0CEA
+ for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:40:01 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1291A1000544
- for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:35:25 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 76AF3201008
+ for <ltp@lists.linux.it>; Fri, 11 Mar 2022 13:40:01 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 35B7B1F38D;
- Fri, 11 Mar 2022 12:35:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1647002125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ri0jBcqgNMzy8WH0vIeE7L849xMa7qXeJ9wke9N2RbU=;
- b=JoU1BWjDNvR2HIl9yy5U0EAjQBeKdqQMPFG5bXmdS6q7gdB5tgjiL/YocWfaFEhotEKuY0
- oh/iMug5MsWIJEuhFJTgDriFUPb9HDohpEZvDIQ83v2ttjd+zvV6tR+my20lYqD3hCwina
- 0eWLSOKaVHSiHJpSPGYsvD+RgKN3TQI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1647002125;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AC9141F381;
+ Fri, 11 Mar 2022 12:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1647002400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=h80EO7vs9xwIwGrCCDxTAkeFL0MkNv6jrlSCAsnjeTA=;
+ b=rjgyyCS2SfZ+HNpdOSqCPl21WkTTwYBlMya82NSdky3BAghbKV/zRsKM4SBjcRg9R1H5ro
+ IVuu8qOqoyHnrBc9ZGUFT0kvQKFSd52pnCWNZ0GpWhXSJxDjuJpci6J0vNc5yzgwNh4IfG
+ LsEHjZlxYT6HxrOCO3f/fhVVlHsJ6ds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1647002400;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ri0jBcqgNMzy8WH0vIeE7L849xMa7qXeJ9wke9N2RbU=;
- b=IyDSCufuNjY/AUKa4A+/jvyp04FYyxdX7g985l37ALZlxsXm6xnyoV3NPyPWOEWauvtdDy
- hbi+/SpXFiCCWOAw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=h80EO7vs9xwIwGrCCDxTAkeFL0MkNv6jrlSCAsnjeTA=;
+ b=puHg3J3t1xm3vG0SRmw41aTxdfhPOwEfHGEujVSfbyLvCnJtW3kq3eXz7UGVYzMvpjzkh2
+ FdbgKSdrvVyyJdBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 120BC13A85;
- Fri, 11 Mar 2022 12:35:25 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71B2C13A85;
+ Fri, 11 Mar 2022 12:40:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LxbmAw1CK2JfOAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 11 Mar 2022 12:35:25 +0000
-Date: Fri, 11 Mar 2022 13:37:43 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YitCl4v9NSpnbyYH@yuki>
-References: <20220311120151.601-1-pvorel@suse.cz>
- <20220311120151.601-2-pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id n10uGSBDK2LSOgAAMHmgww
+ (envelope-from <blezhepekov@suse.de>); Fri, 11 Mar 2022 12:40:00 +0000
+From: Bogdan Lezhepekov <blezhepekov@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 11 Mar 2022 14:39:57 +0200
+Message-Id: <20220311123957.30998-1-blezhepekov@suse.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220311120151.601-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] madvise06: Move oom_score_adj initialization
- to struct tst_path_val
+Subject: [LTP] [PATCH v1] kernel/pty06: Skip test when TTY not available
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,55 +71,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Is it ok to define it earlier? i.e. before calling sync() ?
-> 
->  testcases/kernel/syscalls/madvise/madvise06.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-> index b21f2cc7de..15171442cb 100644
-> --- a/testcases/kernel/syscalls/madvise/madvise06.c
-> +++ b/testcases/kernel/syscalls/madvise/madvise06.c
-> @@ -55,6 +55,7 @@
->  #define PASS_THRESHOLD (CHUNK_SZ / 4)
->  #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
->  #define SWAPPINESS "60"
-> +#define OOM_SCORE_ADJ "-1000"
->  
->  static const char drop_caches_fname[] = "/proc/sys/vm/drop_caches";
->  static int pg_sz, stat_refresh_sup;
-> @@ -116,9 +117,6 @@ static void setup(void)
->  			2 * CHUNK_SZ);
->  	}
->  
-> -	check_path("/proc/self/oom_score_adj");
-> -	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
-> -
->  	SAFE_CG_PRINTF(tst_cg, "memory.max", "%ld", MEM_LIMIT);
->  	if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
->  		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%ld", MEMSW_LIMIT);
-> @@ -231,6 +229,7 @@ static struct tst_test test = {
->  	.needs_root = 1,
->  	.save_restore = (const struct tst_path_val const[]) {
->  		{"?/proc/sys/vm/swappiness", SWAPPINESS},
-> +		{"/proc/self/oom_score_adj", OOM_SCORE_ADJ},
+Since TTYs under test are hardcoded, they
+might not be available in some systems.
 
-I do not think that this is even correct, after this change the file is
-being written to by the test library and the 'self' points to a
-different process as far as I can tell.
+Signed-off-by: Bogdan Lezhepekov <blezhepekov@suse.de>
+---
+ testcases/kernel/pty/pty06.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
+diff --git a/testcases/kernel/pty/pty06.c b/testcases/kernel/pty/pty06.c
+index b621f584f..250c38f6b 100644
+--- a/testcases/kernel/pty/pty06.c
++++ b/testcases/kernel/pty/pty06.c
+@@ -45,8 +45,6 @@ static struct tst_fzsync_pair fzp;
+ 
+ static void *open_close(void *unused)
+ {
+-	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
+-
+ 	while (tst_fzsync_run_b(&fzp)) {
+ 		tst_fzsync_start_race_b(&fzp);
+ 		int fd = SAFE_OPEN(tty_path_b, O_RDWR);
+@@ -60,7 +58,6 @@ static void *open_close(void *unused)
+ 
+ static void do_test(void)
+ {
+-	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
+ 	int fd = SAFE_OPEN(tty_path_a, O_RDWR);
+ 
+ 	tst_fzsync_pair_reset(&fzp, open_close);
+@@ -80,6 +77,12 @@ static void do_test(void)
+ 
+ static void setup(void)
+ {
++	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
++	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
++
++	if (access(tty_path_a, F_OK) != 0 || access(tty_path_b, F_OK) != 0)
++		tst_brk(TCONF, "TTY(s) under test not available in system");
++
+ 	tst_fzsync_pair_init(&fzp);
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
