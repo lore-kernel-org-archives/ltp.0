@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7E87C433EF
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 12:54:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2A6DC433EF
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 13:30:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 13FC33C9319
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 13:54:25 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5DF883C9345
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 14:30:05 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5E04C3C2C02
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:54:14 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id A11B13C91EA
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 14:29:54 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D7297600977
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:54:13 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0E7A91F397
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 12:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1647348853;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZbBiJSGS3ri69T5UkeQT5U75qUO50t5fqOwI6xOeOlI=;
- b=zUItQ630VHpfXWJ21VU3VsuL4u3zs26Fyelsh7iCsZ3Qfbs4pFHfhFsZTKXkXYWn3a7h9h
- gWJCbN6paZQWUl1EzDVjHoK0rbd2G58cvW26HUhc3IX5poebt2NYbmVBUUj1uhWwSgXd5y
- uPDbgxCuqNxXSqLSFHDftP85MJrjYJc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1647348853;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZbBiJSGS3ri69T5UkeQT5U75qUO50t5fqOwI6xOeOlI=;
- b=D2Y+FyKZxq2tw3FrFNb/BZocfYEh+lzPuI/12e8TzWyyNbng5CW62bXCsFKQJ7sXVP2t0J
- gWK5NW5L67GAhHCg==
-Received: from g78 (unknown [10.163.24.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1883E60122E
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 14:29:53 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id D7293A3B92;
- Tue, 15 Mar 2022 12:54:12 +0000 (UTC)
-References: <20220314130630.9378-1-rpalethorpe@suse.com>
- <YjBZAUelR7ExR83A@pevik>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Mar 2022 12:53:54 +0000
-In-reply-to: <YjBZAUelR7ExR83A@pevik>
-Message-ID: <87sfrj5qc1.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5FA7821112;
+ Tue, 15 Mar 2022 13:29:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1647350993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YxtYJbPHTcJQMjmUaz0GCQ0CD1pbFYwPADgvDt/0NbU=;
+ b=1x95SjEPJPBNVkIY89XYbSZN+XdCo13EXDcHGPaY1MJa/vFHl6Q1LaUr5DQve7k/o+IUeo
+ KPkULm5rSE3tJGxPLgEIz7+aqENTPbE1rrRHTvEBWp2SDoH2OoV0uK66cdnj2ZM5Ugk3/j
+ 3QugXf2A5b8Ic+BWmJQIQOVg4pkbhJQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1647350993;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YxtYJbPHTcJQMjmUaz0GCQ0CD1pbFYwPADgvDt/0NbU=;
+ b=x4gFbU0tQ96Sq3TyeEd2kVUvvDT9Q7UMjziXuiPox+s7Ct2syjoWX2IrUG2nnxp/76pDG1
+ 8FKr/AKT1vUKYNAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23BA913B4E;
+ Tue, 15 Mar 2022 13:29:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id q8qyBtGUMGIYbQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Mar 2022 13:29:53 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Tue, 15 Mar 2022 14:29:51 +0100
+Message-Id: <20220315132951.26787-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220315122351.8556-2-andrea.cervesato@suse.de>
+References: <20220315122351.8556-2-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] tools/sparse-ltp: Check all struct arrays in
- tst_test for ending {}
+Subject: [LTP] [PATCH v2 1/2] Remove libclone from userns test suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,36 +76,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Petr,
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+---
+This patch goes after [PATCH v2 8/8] Rewrite userns08.c using new LTP API
 
-Petr Vorel <pvorel@suse.cz> writes:
+ testcases/kernel/containers/userns/Makefile | 23 ++++-----------------
+ 1 file changed, 4 insertions(+), 19 deletions(-)
 
-> Hi Richie,
->
->> Check for null termination on tst_test.save_restore and all the other
->> struct arrays in tst_test. They are all null terminated.
->
->> Also prevents a segfault when scalar NULL is used as the final entry
->> and print a helpful error message instead.
->
-> thanks for this! LGTM.
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> Kind regards,
-> Petr
-
-Thanks merged!
-
+diff --git a/testcases/kernel/containers/userns/Makefile b/testcases/kernel/containers/userns/Makefile
+index 80681096d..c1f10de20 100644
+--- a/testcases/kernel/containers/userns/Makefile
++++ b/testcases/kernel/containers/userns/Makefile
+@@ -1,26 +1,11 @@
+-###############################################################################
+-#                                                                            ##
+-# Copyright (c) Huawei Technologies Co., Ltd., 2015                          ##
+-#                                                                            ##
+-# This program is free software;  you can redistribute it and#or modify      ##
+-# it under the terms of the GNU General Public License as published by       ##
+-# the Free Software Foundation; either version 2 of the License, or          ##
+-# (at your option) any later version.                                        ##
+-#                                                                            ##
+-# This program is distributed in the hope that it will be useful, but        ##
+-# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-# for more details.                                                          ##
+-#                                                                            ##
+-# You should have received a copy of the GNU General Public License          ##
+-# along with this program.                                                   ##
+-###############################################################################
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) Huawei Technologies Co., Ltd., 2015
++# Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+ 
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
+ 
+-LDLIBS			:= -lclone $(LDLIBS) $(CAP_LIBS)
++LDLIBS  := $(CAP_LIBS) $(LDLIBS)
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-Thank you,
-Richard.
+2.35.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
