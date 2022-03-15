@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB859C433F5
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 10:33:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C0A2C433F5
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 10:33:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B06E03C932C
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 11:33:43 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8C4DE3C920E
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 11:33:57 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7DC33C91FE
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 11:33:00 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 4B6D33C933A
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 11:33:02 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 60930600120
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 11:33:00 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5632D6008EA
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 11:33:01 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E1B801F37E;
- Tue, 15 Mar 2022 10:32:59 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B84C321906;
+ Tue, 15 Mar 2022 10:33:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1647340379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1647340380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=C6iBPr2FHmcincmnnZPRMXZ4euf6dwft8b5fE9Advak=;
- b=gzpiDNmUCb9xG8hnx5IWEfXQVqCm6wsBtS1iPwsbtINvPpst0HNHV9cCOdwzWnEplHK/bT
- HzwJGhhH67vBBk2GRHUyTewpV8o/zaKtpK3SznRasJvkzas029H1+m/vELLzeO1k4ZCDTg
- t7pw9Nmn/JbkyCAmu3056+KMCi8dWQ0=
+ bh=OfDKvQ+V5qAq8+O2XbbZFWZ/QmHHyoUaZyhUEcj8mIg=;
+ b=Cjhiyjb17EarvVOm6YH22rS2EC8BSpybG/SnoF9Jv+JTrFGRD8Awo4MmTmE9rtYuZgM1w8
+ YFooaRkp9hh3mwzHCMu1qaJ231CT6NbLRtCFjwjn07jYE0WT5T2GcRd5vPYbvqQJeN9+hI
+ Qr99kJUwUJx+QxLQEceT5Jelpxp67uw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1647340379;
+ s=susede2_ed25519; t=1647340380;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=C6iBPr2FHmcincmnnZPRMXZ4euf6dwft8b5fE9Advak=;
- b=7MNia9R8fGaUKFneZttQNF5N8txs8W6ciUlWTq47EhQxUvviGyFNWwgAvtmqqChXL8vV9P
- 528TVOcHK0xxMuBw==
+ bh=OfDKvQ+V5qAq8+O2XbbZFWZ/QmHHyoUaZyhUEcj8mIg=;
+ b=DoPm4ynsmoWVdZMBd8Y25Em7SZT0LgSBuSf0N5+QytLB8A46CcuV6PpvhHcrTOfXy/4tNG
+ BQTQpq8vxzLrWVDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F1C513B59;
- Tue, 15 Mar 2022 10:32:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19AB413B59;
+ Tue, 15 Mar 2022 10:33:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KAuYEVtrMGKHHwAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Mar 2022 10:32:59 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id QItrAFxrMGKHHwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Mar 2022 10:33:00 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 15 Mar 2022 11:32:47 +0100
-Message-Id: <20220315103254.7185-4-andrea.cervesato@suse.de>
+Date: Tue, 15 Mar 2022 11:32:48 +0100
+Message-Id: <20220315103254.7185-5-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220315103254.7185-1-andrea.cervesato@suse.de>
 References: <20220315103254.7185-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 03/10] Rewrite sem_comm.c using new LTP API
+Subject: [LTP] [PATCH v3 04/10] Rewrite sem_nstest.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,258 +81,266 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Updated containers runtest file to include new sem_nstest.c options.
+
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- .../kernel/containers/sysvipc/sem_comm.c      | 180 ++++++------------
- 1 file changed, 56 insertions(+), 124 deletions(-)
+ runtest/containers                            |   6 +-
+ .../kernel/containers/sysvipc/sem_nstest.c    | 210 ++++++------------
+ 2 files changed, 76 insertions(+), 140 deletions(-)
 
-diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c b/testcases/kernel/containers/sysvipc/sem_comm.c
-index a2c354a08..854452528 100644
---- a/testcases/kernel/containers/sysvipc/sem_comm.c
-+++ b/testcases/kernel/containers/sysvipc/sem_comm.c
-@@ -1,20 +1,16 @@
--/* Copyright (c) 2014 Red Hat, Inc.
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of version 2 the GNU General Public License as
-- * published by the Free Software Foundation.
+diff --git a/runtest/containers b/runtest/containers
+index d863c10a4..4f56b1b4d 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -54,9 +54,9 @@ mesgq_nstest_none mesgq_nstest -m none
+ mesgq_nstest_clone mesgq_nstest -m clone
+ mesgq_nstest_unshare mesgq_nstest -m unshare
+ msg_comm msg_comm
+-sem_nstest_none sem_nstest none
+-sem_nstest_clone sem_nstest clone
+-sem_nstest_unshare sem_nstest unshare
++sem_nstest_none sem_nstest -m none
++sem_nstest_clone sem_nstest -m clone
++sem_nstest_unshare sem_nstest -m unshare
+ semtest_2ns_none semtest_2ns none
+ semtest_2ns_clone semtest_2ns clone
+ semtest_2ns_unshare semtest_2ns unshare
+diff --git a/testcases/kernel/containers/sysvipc/sem_nstest.c b/testcases/kernel/containers/sysvipc/sem_nstest.c
+index 72e04fe4f..ce927ca91 100644
+--- a/testcases/kernel/containers/sysvipc/sem_nstest.c
++++ b/testcases/kernel/containers/sysvipc/sem_nstest.c
+@@ -1,158 +1,94 @@
+-/* *************************************************************************
+-* Copyright (c) International Business Machines Corp., 2009
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-* Author: Veerendra C <vechandr@in.ibm.com>
+-*
+-* In Parent Process , create semaphore with key 154326L
+-* Now create container by passing 1 of the below flag values..
+-*	clone(NONE), clone(CLONE_NEWIPC), or unshare(CLONE_NEWIPC)
+-* In cloned process, try to access the created semaphore
+-* Test PASS: If the semaphore is readable when flag is None.
+-* Test FAIL: If the semaphore is readable when flag is Unshare or Clone.
+-***************************************************************************/
+-
+-#define _GNU_SOURCE 1
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <sys/ipc.h>
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2014 Red Hat, Inc.
++ * Copyright (c) International Business Machines Corp., 2009
++ *				Veerendra C <vechandr@in.ibm.com>
 + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
 + * [Description]
-  *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-+ * Test SysV IPC semaphore usage between cloned processes.
-  *
-- * You should have received a copy of the GNU General Public License
-- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-- ***********************************************************************
-- * File: sem_comm.c
++ *
++ * Test SysV IPC semaphore usage between namespaces.
++ *
 + * [Algorithm]
-  *
-- * Description:
-  * 1. Clones two child processes with CLONE_NEWIPC flag, each child
-  *    creates System V semaphore (sem) with the _identical_ key.
-  * 2. Child1 locks the semaphore.
-@@ -26,166 +22,102 @@
-  */
- 
- #define _GNU_SOURCE
--#include <sys/ipc.h>
--#include <sys/types.h>
++ *
++ * In parent process create a new semaphore with a specific key.
++ * In cloned process, try to access the created semaphore
++ *
++ * Test PASS if the semaphore is readable when flag is None.
++ * Test FAIL if the semaphore is readable when flag is Unshare or Clone.
++ */
 +
- #include <sys/wait.h>
--#include <stdio.h>
--#include <errno.h>
--#include "ipcns_helper.h"
--#include "test.h"
--#include "safe_macros.h"
++#define _GNU_SOURCE
++
++#include <sys/wait.h>
 +#include <sys/msg.h>
 +#include <sys/types.h>
+ #include <sys/sem.h>
+-#include <libclone.h>
+-#include "test.h"
+-#include "ipcns_helper.h"
 +#include "tst_safe_sysv_ipc.h"
 +#include "tst_test.h"
- #include "lapi/sem.h"
 +#include "common.h"
  
- #define TESTKEY 124426L
--char *TCID	= "sem_comm";
--int TST_TOTAL	= 1;
--
--static void cleanup(void)
--{
--	tst_rmdir();
--}
--
--static void setup(void)
--{
--	tst_require_root();
--	check_newipc();
--	tst_tmpdir();
--	TST_CHECKPOINT_INIT(tst_rmdir);
--}
+-#define MY_KEY     154326L
+-#define UNSHARESTR "unshare"
+-#define CLONESTR   "clone"
+-#define NONESTR    "none"
++#define MY_KEY 154326L
  
--int chld1_sem(void *arg)
-+static int chld1_sem(LTP_ATTRIBUTE_UNUSED void *arg)
+-char *TCID = "sem_nstest";
+-int TST_TOTAL = 1;
+-int p1[2];
+-int p2[2];
++static char *str_op = "clone";
++static int use_clone;
++static int ipc_id = -1;
+ 
+-int check_semaphore(void *vtest)
++static int check_semaphore(LTP_ATTRIBUTE_UNUSED void *vtest)
  {
+-	char buf[3];
  	int id;
- 	union semun su;
- 	struct sembuf sm;
  
--	id = semget(TESTKEY, 1, IPC_CREAT);
--	if (id == -1) {
--		perror("semget");
--		return 2;
--	}
-+	id = SAFE_SEMGET(TESTKEY, 1, IPC_CREAT);
+-	(void) vtest;
++	id = semget(MY_KEY, 1, 0);
  
- 	su.val = 1;
--	if (semctl(id, 0, SETVAL, su) == -1) {
--		perror("semctl");
--		semctl(id, 0, IPC_RMID);
--		return 2;
--	}
-+	SAFE_SEMCTL(id, 0, SETVAL, su);
- 
- 	/* tell child2 to continue and wait for it to create the semaphore */
--	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- 
- 	sm.sem_num = 0;
- 	sm.sem_op = -1;
- 	sm.sem_flg = IPC_NOWAIT;
--	if (semop(id, &sm, 1) == -1) {
--		perror("semop");
--		semctl(id, 0, IPC_RMID);
--		return 2;
--	}
-+	SAFE_SEMOP(id, &sm, 1);
- 
- 	/* tell child2 to continue and wait for it to lock the semaphore */
--	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- 
- 	sm.sem_op = 1;
--	semop(id, &sm, 1);
-+	SAFE_SEMOP(id, &sm, 1);
-+
-+	SAFE_SEMCTL(id, 0, IPC_RMID);
- 
--	semctl(id, 0, IPC_RMID);
- 	return 0;
- }
- 
--int chld2_sem(void *arg)
-+static int chld2_sem(LTP_ATTRIBUTE_UNUSED void *arg)
- {
--	int id, rval = 0;
-+	int id;
- 	struct sembuf sm;
- 	union semun su;
- 
- 	/* wait for child1 to create the semaphore */
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAIT(0);
- 
--	id = semget(TESTKEY, 1, IPC_CREAT);
--	if (id == -1) {
--		perror("semget");
--		return 2;
--	}
-+	id = SAFE_SEMGET(TESTKEY, 1, IPC_CREAT);
- 
- 	su.val = 1;
--	if (semctl(id, 0, SETVAL, su) == -1) {
--		perror("semctl");
--		semctl(id, 0, IPC_RMID);
--		return 2;
--	}
-+	SAFE_SEMCTL(id, 0, SETVAL, su);
- 
- 	/* tell child1 to continue and wait for it to lock the semaphore */
--	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- 
- 	sm.sem_num = 0;
- 	sm.sem_op = -1;
- 	sm.sem_flg = IPC_NOWAIT;
--	if (semop(id, &sm, 1) == -1) {
--		if (errno == EAGAIN) {
--			rval = 1;
--		} else {
--			perror("semop");
--			semctl(id, 0, IPC_RMID);
--			return 2;
--		}
-+	TEST(semop(id, &sm, 1));
-+	if (TST_RET < 0) {
-+		if (TST_ERR != EAGAIN)
-+			tst_brk(TBROK | TERRNO, "semop error");
-+
-+		tst_res(TFAIL, "can't lock semaphore between namespaces");
+-	close(p1[1]);
+-	close(p2[0]);
++	if (id < 0) {
++		if (use_clone == T_NONE)
++			tst_res(TFAIL, "Plain cloned process didn't find semaphore");
++		else
++			tst_res(TPASS, "%s: container didn't find semaphore", str_op);
 +	} else {
-+		tst_res(TPASS, "locked semaphore between namespaces");
++		tst_res(TINFO, "PID %d: fetched existing semaphore..id = %d", getpid(), id);
+ 
+-	read(p1[0], buf, 3);
+-	id = semget(MY_KEY, 1, 0);
+-	if (id == -1)
+-		write(p2[1], "notfnd", 7);
+-	else {
+-		write(p2[1], "exists", 7);
+-		tst_resm(TINFO, "PID %d: Fetched existing semaphore..id = %d",
+-			 getpid(), id);
++		if (use_clone == T_NONE)
++			tst_res(TPASS, "Plain cloned process found semaphore inside container");
++		else
++			tst_res(TFAIL, "%s: Container init process found semaphore", str_op);
  	}
- 
- 	/* tell child1 to continue */
--	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-+	TST_CHECKPOINT_WAKE(0);
- 
- 	sm.sem_op = 1;
--	semop(id, &sm, 1);
-+	SAFE_SEMOP(id, &sm, 1);
+-	tst_exit();
 +
-+	SAFE_SEMCTL(id, 0, IPC_RMID);
- 
--	semctl(id, 0, IPC_RMID);
--	return rval;
 +	return 0;
  }
  
--static void test(void)
+-static void setup(void)
 +static void run(void)
  {
--	int status, ret = 0;
--
--	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_sem, NULL);
--	if (ret == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
--
--	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_sem, NULL);
--	if (ret == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
--
--
--	while (wait(&status) > 0) {
--		if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
--			ret = 1;
--		if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
--			tst_brkm(TBROK | TERRNO, cleanup, "error in child");
--		if (WIFSIGNALED(status)) {
--			tst_resm(TFAIL, "child was killed with signal %s",
--					tst_strsig(WTERMSIG(status)));
--			return;
--		}
--	}
--
--	if (ret)
--		tst_resm(TFAIL, "SysV sem: communication with identical keys"
--				" between namespaces");
--	else
--		tst_resm(TPASS, "SysV sem: communication with identical keys"
--				" between namespaces");
-+	clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_sem, NULL);
-+	clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_sem, NULL);
+-	tst_require_root();
+-	check_newipc();
++	clone_unshare_test(use_clone, CLONE_NEWIPC, check_semaphore, NULL);
  }
  
 -int main(int argc, char *argv[])
 +static void setup(void)
  {
--	int lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
+-	int ret, use_clone = T_NONE, id;
+-	char *tsttype = NONESTR;
+-	char buf[7];
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		test();
+-	if (argc != 2) {
+-		tst_resm(TFAIL, "Usage: %s <clone| unshare| none>", argv[0]);
+-		tst_brkm(TFAIL, NULL, " where clone, unshare, or fork specifies"
+-			 " unshare method.");
+-	}
 -
--	cleanup();
+-	/* Using PIPE's to sync between container and Parent */
+-	if (pipe(p1) == -1) {
+-		perror("pipe");
+-		exit(EXIT_FAILURE);
+-	}
+-	if (pipe(p2) == -1) {
+-		perror("pipe");
+-		exit(EXIT_FAILURE);
+-	}
++	use_clone = get_clone_unshare_enum(str_op);
+ 
+-	if (strcmp(argv[1], "clone") == 0) {
+-		use_clone = T_CLONE;
+-		tsttype = CLONESTR;
+-	} else if (strcmp(argv[1], "unshare") == 0) {
+-		use_clone = T_UNSHARE;
+-		tsttype = UNSHARESTR;
+-	}
+-
+-	/* 1. Create (or fetch if existing) the binary semaphore */
+-	id = semget(MY_KEY, 1, IPC_CREAT | IPC_EXCL | 0666);
+-	if (id == -1) {
+-		perror("Semaphore create");
+-		if (errno != EEXIST) {
+-			perror("semget failure");
+-			tst_brkm(TBROK, NULL, "Semaphore creation failed");
+-		}
+-		id = semget(MY_KEY, 1, 0);
+-		if (id == -1) {
+-			perror("Semaphore create");
+-			tst_brkm(TBROK, NULL, "Semaphore operation failed");
+-		}
+-	}
+-
+-	tst_resm(TINFO, "Semaphore namespaces Isolation test : %s", tsttype);
+-	/* fire off the test */
+-	ret =
+-	    do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_semaphore,
+-				  NULL);
+-	if (ret < 0) {
+-		tst_brkm(TFAIL, NULL, "%s failed", tsttype);
+-	}
++	if (use_clone != T_NONE)
++		check_newipc();
+ 
+-	close(p1[0]);
+-	close(p2[1]);
+-	write(p1[1], "go", 3);
+-	read(p2[0], buf, 7);
++	ipc_id = SAFE_SEMGET(MY_KEY, 1, IPC_CREAT | IPC_EXCL | 0666);
++}
+ 
+-	if (strcmp(buf, "exists") == 0) {
+-		if (use_clone == T_NONE)
+-			tst_resm(TPASS, "Plain cloned process found semaphore "
+-				 "inside container");
+-		else
+-			tst_resm(TFAIL,
+-				 "%s: Container init process found semaphore",
+-				 tsttype);
+-	} else {
+-		if (use_clone == T_NONE)
+-			tst_resm(TFAIL,
+-				 "Plain cloned process didn't find semaphore");
+-		else
+-			tst_resm(TPASS, "%s: Container didn't find semaphore",
+-				 tsttype);
++static void cleanup(void)
++{
++	if (ipc_id != -1) {
++		tst_res(TINFO, "Delete semaphore");
++		SAFE_SEMCTL(ipc_id, IPC_RMID, 0);
+ 	}
+-
+-	/* Delete the semaphore */
+-	id = semget(MY_KEY, 1, 0);
+-	semctl(id, IPC_RMID, 0);
+-
 -	tst_exit();
-+	check_newipc();
  }
 +
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
++	.cleanup = cleanup,
 +	.needs_root = 1,
-+	.needs_checkpoints = 1,
++	.forks_child = 1,
++	.options = (struct tst_option[]) {
++		{ "m:", &str_op, "Test execution mode <clone|unshare|none>" },
++		{},
++	},
 +};
 -- 
 2.35.1
