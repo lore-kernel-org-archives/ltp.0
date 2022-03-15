@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9B22C433F5
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 12:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A54D2C433EF
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 12:25:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C3E913C9363
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 13:25:35 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 19EC63C9345
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 13:25:49 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6158C3C933F
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:23:55 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 89E2A3C931E
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:25:21 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ADF7260035B
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:23:54 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2CEB210005F7
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:25:20 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2F1DC1F399;
- Tue, 15 Mar 2022 12:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1647347034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6C4281F399;
+ Tue, 15 Mar 2022 12:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1647347120; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6kqWcdEbMVFuORawxrYCz8KK/1Skcc2zeohJ6z76QJ4=;
- b=F6Srfm/BGg2IsoHXz+D5kCvsRq3UWeNBEBsN3P5Mh6IDeKiQflfihi8dUpc7WJPRprJDCe
- kuL6Dgv+KRbs+93Fm05kAXvLEyo11B3XpTlaQgfn17Ln22SHaF447QJMs4fI+iNy1shxk+
- R5EZbnc4hiYwOo/ePCEtIq0LRnMFLHw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1647347034;
+ bh=2SoUZn1hEQFjOAEY7RjvewRIUfoGHNTksocmAO1HmFY=;
+ b=NnNVLAPai53Tr+lWenYUXJ4irIWGJKIkVRyKKI8XY9W1wU0woZgkyh01s3v17UXhVf+sJp
+ DSaBq4NwhHg5DdmZSun+xlDYvQdCxbBulxP3obfhcHPtSNcqTKW2DcPS8k8/lv3DXMjjny
+ ECms9XdDr5uneuzkclcPULnbNtgasiA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1647347120;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6kqWcdEbMVFuORawxrYCz8KK/1Skcc2zeohJ6z76QJ4=;
- b=pSIiEiVUxgtizVrXmx+0t47wswf3N1un9ktUPku82Ft6z9ap4eq0Lbnu4xW1S05kRNOy/F
- UqJMCKyx5Y79YGCQ==
+ bh=2SoUZn1hEQFjOAEY7RjvewRIUfoGHNTksocmAO1HmFY=;
+ b=PSZaMBkPMYIiKqT6YljTiKljOjiE/w56Mx9tyfDl4TL/ukyv5+iVZ3sH+KRlQAYRg3VWHg
+ zB+KdwzQDKuFfxDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0535C13EDD;
- Tue, 15 Mar 2022 12:23:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A72813B59;
+ Tue, 15 Mar 2022 12:25:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GMlhOlmFMGJ3UAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Mar 2022 12:23:53 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id kDq2ELCFMGL6UAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 15 Mar 2022 12:25:20 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 15 Mar 2022 13:23:45 +0100
-Message-Id: <20220315122351.8556-3-andrea.cervesato@suse.de>
+Date: Tue, 15 Mar 2022 13:25:15 +0100
+Message-Id: <20220315122516.3864-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220315122351.8556-1-andrea.cervesato@suse.de>
-References: <20220315122351.8556-1-andrea.cervesato@suse.de>
+In-Reply-To: <20220315122516.3864-1-pvorel@suse.cz>
+References: <20220315122516.3864-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/8] Rewrite userns02.c using new LTP API
+Subject: [LTP] [PATCH 1/2] tst_kernel: Fix search for foo-x86-64 module
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,192 +81,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
- testcases/kernel/containers/userns/userns02.c | 139 ++++++++----------
- 1 file changed, 59 insertions(+), 80 deletions(-)
+Although modules.{builtin,dep} contain modules with both dashes and
+underscores and use this consistently, there the only exception: modules
+for x86_64 arch are always named x86_64 no matter whether they use
+dashes or underscore for the rest. E.g. libblake2s-x86-64.
 
-diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
-index ae49a1599..eaf29a1fd 100644
---- a/testcases/kernel/containers/userns/userns02.c
-+++ b/testcases/kernel/containers/userns/userns02.c
-@@ -1,74 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Huawei Technologies Co., Ltd., 2015
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- *  (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-- * the GNU General Public License for more details.
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-  */
- 
--/*
-- * Verify that:
-- *  The user ID and group ID, which are inside a container, can be modified
-- * by its parent process.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that the user ID and group ID, which are inside a container,
-+ * can be modified by its parent process.
-  */
- 
- #define _GNU_SOURCE
--#include <sys/wait.h>
--#include <assert.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <errno.h>
--#include "userns_helper.h"
--#include "test.h"
--
--char *TCID = "user_namespace2";
--int TST_TOTAL = 1;
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include "common.h"
-+#include "tst_test.h"
- 
- /*
-  * child_fn1() - Inside a new user namespace
-  */
- static int child_fn1(void)
- {
--	int exit_val;
- 	int uid, gid;
- 
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAIT(0);
-+
- 	uid = geteuid();
- 	gid = getegid();
- 
--	if (uid == 100 && gid == 100) {
--		printf("Got expected uid and gid.\n");
--		exit_val = 0;
--	} else {
--		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
--		exit_val = 1;
--	}
-+	if (uid == 100 && gid == 100)
-+		tst_res(TPASS, "got expected uid and gid");
-+	else
-+		tst_res(TFAIL, "got unexpected uid=%d gid=%d", uid, gid);
- 
--	return exit_val;
-+	return 0;
- }
- 
- static void setup(void)
- {
- 	check_newuser();
--	tst_tmpdir();
--	TST_CHECKPOINT_INIT(NULL);
- }
- 
--int main(int argc, char *argv[])
-+static void run(void)
- {
--	int lc;
- 	int childpid;
- 	int parentuid;
- 	int parentgid;
-@@ -76,42 +52,45 @@ int main(int argc, char *argv[])
- 	char content[BUFSIZ];
- 	int fd;
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		childpid = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
--			(void *)child_fn1, NULL);
--
--		if (childpid < 0)
--			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
--
--		parentuid = geteuid();
--		parentgid = getegid();
--		sprintf(path, "/proc/%d/uid_map", childpid);
--		sprintf(content, "100 %d 1", parentuid);
--		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
--		SAFE_CLOSE(cleanup, fd);
--
--		if (access("/proc/self/setgroups", F_OK) == 0) {
--			sprintf(path, "/proc/%d/setgroups", childpid);
--			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
--			SAFE_CLOSE(cleanup, fd);
--		}
--
--		sprintf(path, "/proc/%d/gid_map", childpid);
--		sprintf(content, "100 %d 1", parentgid);
--		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
--		SAFE_CLOSE(cleanup, fd);
--
--		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
--
--		tst_record_childstatus(cleanup, childpid);
-+	childpid = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, NULL);
-+	if (childpid < 0)
-+		tst_brk(TBROK | TTERRNO, "clone failed");
-+
-+	parentuid = geteuid();
-+	parentgid = getegid();
-+
-+	sprintf(path, "/proc/%d/uid_map", childpid);
-+	sprintf(content, "100 %d 1", parentuid);
-+
-+	fd = SAFE_OPEN(path, O_WRONLY, 0644);
-+	SAFE_WRITE(1, fd, content, strlen(content));
-+	SAFE_CLOSE(fd);
-+
-+	if (access("/proc/self/setgroups", F_OK) == 0) {
-+		sprintf(path, "/proc/%d/setgroups", childpid);
-+
-+		fd = SAFE_OPEN(path, O_WRONLY, 0644);
-+		SAFE_WRITE(1, fd, "deny", 4);
-+		SAFE_CLOSE(fd);
+modinfo works with all 4 combinations of libblake2s[-_]x86[-_]64,
+thus fix tst_search_driver() to allow the same.
+
+before:
+tst_check_driver 3 TPASS: tst_check_drivers libblake2s-x86_64 2>/dev/null passed as expected
+libblake2s-x86-64tst_check_driver 3 TFAIL: tst_check_drivers libblake2s-x86-64 failed unexpectedly
+
+after fix:
+tst_check_driver 3 TPASS: tst_check_drivers libblake2s-x86_64 2>/dev/null passed as expected
+tst_check_driver 3 TPASS: tst_check_drivers libblake2s-x86-64 2>/dev/null passed as expected
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_kernel.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 6db85bff0e..ecf4b917e7 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -116,6 +116,11 @@ static int tst_search_driver(const char *driver, const char *file)
+ 		return -1;
  	}
--	cleanup();
--	tst_exit();
+ 
++	/* always search for x86_64 */
++	char *fix = strstr(driver, "x86-64");
++	if (fix)
++		fix[3] = '_';
 +
-+	sprintf(path, "/proc/%d/gid_map", childpid);
-+	sprintf(content, "100 %d 1", parentgid);
-+
-+	fd = SAFE_OPEN(path, O_WRONLY, 0644);
-+	SAFE_WRITE(1, fd, content, strlen(content));
-+	SAFE_CLOSE(fd);
-+
-+	TST_CHECKPOINT_WAKE(0);
- }
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_USER_NS",
-+		NULL,
-+	},
-+};
+ 	SAFE_ASPRINTF(NULL, &search, "/%s.ko", driver);
+ 
+ 	f = SAFE_FOPEN(NULL, path, "r");
 -- 
 2.35.1
 
