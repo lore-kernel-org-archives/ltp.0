@@ -4,142 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1BEFC433F5
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 01:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8ADEC433F5
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 02:44:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D22C3CA816
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 02:31:24 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 580193CA80F
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 03:44:54 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B966B3C4EDD
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 02:31:12 +0100 (CET)
-Received: from esa11.fujitsucc.c3s2.iphmx.com (esa11.fujitsucc.c3s2.iphmx.com
- [216.71.156.121])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 2DC893C00BE
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 03:44:42 +0100 (CET)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
+ [IPv6:2607:f8b0:4864:20::102e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EA9D41A0079C
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 02:31:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1647307871; x=1678843871;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=08lnOjXeREt2wJJKzMHFys+ofEh/fZxXnmxzd2noYys=;
- b=KFrqSsFKF3on1NZTQP8Ng4eIWuivjqtqvJxy+vv/M+XDZXjzI8Xsvojt
- tNAm1bQV4o9flhAB0tVEVWvpCF8+57EC3+OP6tz1eldT+uRK3B98AmNZr
- DMH9k3refm97XiA5ZLJvJ7IwSyWDRxwuFwGGBqRkfJGXmg3lhoTBYKfUm
- 97XmxgH4PyiaK1F7xseOMD8PDWEL3kXCCCFmD5md4EPhT+TqAfJP7ezk8
- LXlom8hb7TDgl5D83mcN9PaN1kFFYutQyzPDmnJL2VeURjwVKBAJJTpGo
- Iy8EJhZcNsIi8VwBI4Nco9qS2mPihLbGljy1unyX2+lN+oHf6svCA1eWd g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="52021615"
-X-IronPort-AV: E=Sophos;i="5.90,182,1643641200"; d="scan'208";a="52021615"
-Received: from mail-tycjpn01lp2172.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.172])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Mar 2022 10:31:09 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ojb8Zv6xLwKY2pu6Kf7JgvMQVMur0dCuHhiCu09rRnQmVrQzySxUlKtllqOFnJIFZJCRenqJOox31fOmGf4dC4JvDSeQIwnBwdrvAyWfDhQg7L9VM6/igP+NcXZFciolfUcwZX8nWkpmimE0gaAu1CwgVFnkvQW0HL3+WUZ98jU3gKcAf6Lf5ytw5iJvnGS1X4TkUaThSXtEYAxKX/Vc0eyYYJMh9u8nNs6Crog4QV6wSGxXUE8MIsO1keTCDGxoSt/HRXzE9XIEVsaar2CVveCQu/ym474doFvSxZVCDu5CFmO2MSDfGLBps4PwwxnoEB5gQqpT0IpNPX792C2EYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=08lnOjXeREt2wJJKzMHFys+ofEh/fZxXnmxzd2noYys=;
- b=bJ9UM7lH7SqrFrWAdqUb77FJTlcdEz4cKHPKlDtwx3KZKM0EwHJ59MpHzoESaStRUWi8ubHYCrymLSvaTcw7MBnNUEllPz/JGdKNUMzqLXn7dS5fWZH23+7ToojPCsAsEawb+Ctbif8dpPt48+BCZtzuygxO4Dn2+uHYRWPVpLS6jP/TWweY2BGN0pUmzfUZfgUpjv+/KICzeYAu5cN9LTSyxuHPplfI76/dayjHnpf2cejdbL8BWxga1DYEsnN8zUWAIR5fEe04NFybKtz7InfRclACurjiZP+YLKpNG7DNbBuVQHOzOkIqdD8VQI1yZTreR5CkUnj0Gi6UXauzzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=08lnOjXeREt2wJJKzMHFys+ofEh/fZxXnmxzd2noYys=;
- b=gLe0H/GksNWzgcFmStOt8zbFgNoIsuFGOMjdRZ83ZkfN8bKJT3EP9hcNOUBQXZhSXqHees5xnjdC/5VL7YcCn0Bbj9nkUccpRqNWaPM+T1W6JG9VJ6q2NO4wJDo+7Q4OBY0IMEaFcxRcij8zL16islLVDrR3otKxf4+azujRFXM=
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TYYPR01MB6841.jpnprd01.prod.outlook.com (2603:1096:400:d0::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.21; Tue, 15 Mar
- 2022 01:31:06 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354%6]) with mapi id 15.20.5061.028; Tue, 15 Mar 2022
- 01:31:06 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [PATCH 1/1] quotactl: Check for missing quota_v2 module
-Thread-Index: AQHYN6PUsntQNXYrD0ugd2TDll9RDKy/qZ0A
-Date: Tue, 15 Mar 2022 01:31:06 +0000
-Message-ID: <622FEC88.1040502@fujitsu.com>
-References: <20220314130248.22869-1-pvorel@suse.cz>
-In-Reply-To: <20220314130248.22869-1-pvorel@suse.cz>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 786de90e-fdb0-450e-9426-08da06237a16
-x-ms-traffictypediagnostic: TYYPR01MB6841:EE_
-x-microsoft-antispam-prvs: <TYYPR01MB684101948465167419F36EC6FD109@TYYPR01MB6841.jpnprd01.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kr7Bi3PVdTopXH7PUyaQLD0Pj0VAcm1mp5EGQKYcvpbCj3rlfKf4w6fH/tvjCat0QvCjht2NHMeb/PmKdANX2hGov4I75166q8lI5+pZt1MWQpaY3atc1cf1Ti3Y5gRfPNuo3PbKSXEyaPbwziRjKDjT9qGwRMPxcArYqgQsqnM+bAjaRm+5h+t/yJo1uLKjydRV3unI38PDospc9iPINYLQnkyJ4/JhazBzQSGmKGKr2+vtZnp5kqu1sQPAtn+54tIQnQwk0QuEHTgHT7HdkzgIID5NQQ7Mox8Wo2QJkFJwIUWQ8LXhMEYRfY1ex0yAXUievfg0DBMYRCPiYhzcf3DHtVW8XupDG4DQSOKaqywUW1EODgonqLqKAS+5trFFNRGUSUAqEAiXSPNhpB06dvhUNaeTAgRRqLqhlBJ+EmBBBAWA4iGL+93LT4w2+O1W+c26XP6su1Y3YjQWZYmqawINlVSizdksIQHkMg/F7NmDx5J453UtknZQM6CuuUjOdh8SEHqhYP84Rzya/A8EIpMWrHsDvIQJyfN24KcCkNJ3FMdZwbEktkR/aj4Cy2IRvl7bdUT8dR97ItPEZz05sCVVw7VaQveXBMJbA2sXJ9rC7FaedW56vwwgdumRnnDgf5GHJvulsmMVjDfKpgxZS6BxFRfPqX1rjXHvTgmNrZYnwd7HCCFg907YgL7fOw1ATLv7b7SIczwp5CoZTqheA7ymsnJiCpjU7hCx4JsCu83D3yAcCWvuJBRsGcb9sTBkY0OUMsU4qb+5GyGk1Gz34oK3E9bRlf4sOGDZj31h/0s=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(4326008)(5660300002)(66476007)(91956017)(66446008)(508600001)(6916009)(87266011)(2616005)(186003)(54906003)(8676002)(64756008)(76116006)(66556008)(66946007)(83380400001)(6486002)(966005)(2906002)(71200400001)(122000001)(38070700005)(33656002)(82960400001)(85182001)(6506007)(6512007)(26005)(38100700002)(86362001)(15650500001)(8936002)(316002)(36756003);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?T2Z3ay9VaDgvZFcyeDc0cG1QUEJITVI5N0c4TUpZeHJYVXZsV0d2cXN3dUM5?=
- =?gb2312?B?NFNvZVVkdVl4eC9WZVVFSXorYWo0ZWZFdmpKc1hJa2FBTm54cWNndXM2clFL?=
- =?gb2312?B?K2FUUVd1NmJxRzVnU2tvMU02K2dsYWpPTmpKZ2lwa1E4STI1bGFvWDAyanBo?=
- =?gb2312?B?THdjMm5QZjJTdGNRT2FmakMvQXBVSnhYNjR0UEUyL2ZyZzJja0VGditUZk15?=
- =?gb2312?B?aHRpNy9UcWwyOFFqaXpsVzZBZVo1ZGJCTWxhVG5LN25ubXZqcnNCb0R2eUxU?=
- =?gb2312?B?ZHhRMTBNaWRzMFdCVi9hQld6UjRCd3Q4QlhSOG5hTFl5UkVyL2licGNrcHRQ?=
- =?gb2312?B?SHA1OE9ISldwOXpmRStPUVZJRzFZRHNVNks5UWpXdEY0ak43T3lWZFE4cGpW?=
- =?gb2312?B?VFVOUGdCTWpPR2V3UXVSRFB5aHF0ZWZibVhzSmxmNUQzR09NT25WU0djSmdv?=
- =?gb2312?B?Y1U3VGl5TmUxZHJHam1kRHo5MzBLMVBPLzMwWWE4V2kyYmFnRnBaeXFqaWN4?=
- =?gb2312?B?YURzbUZxdHJCckJPejBIUzZ0UTcwQ3U2S0ZFU0VIY2gzdjcwbGg4RFhHUHFv?=
- =?gb2312?B?RUZkQzlHWTRHZnpTc0haemtXeFpvWDFkTUdwL2IrbjNZVktmWmpqTk4yNkwv?=
- =?gb2312?B?VWFUZXFadFljYnU2bG1ubU1kNWVqakx4VG9KWmlmd1J2NlRUcDIyWWZtMkZi?=
- =?gb2312?B?MldVQXAxajgzbUx2Zk5aMldCNTBCVis1MlptR1kxTjl3RTE4ZVczeEh5UG9t?=
- =?gb2312?B?WGJ5enE3UHA3cjZ4OFFNYTlBOTFiMXNXNG9jdENTU1JjLzE5amRSWUYrNWNJ?=
- =?gb2312?B?Q1pTRXhnY1NXOERPWnRYT0NJSUt1aktFRDdnai83b3lob1FRVnZnZGJRNisz?=
- =?gb2312?B?Z2hWNEFJU05ZVHBkbm9kSTRHVks0VWVzNllyd29TemdpMjV4NEZhUGNkSU13?=
- =?gb2312?B?UzRsNkRXeGwwU3JadG9EY0doNThUYkZjYWZmWGN1M3FpeGJyOEEyL0ZiS01s?=
- =?gb2312?B?ODlja1hqOGRhWTRJeTFMQVo0NGRHL3h0S2xudDF5REYvZlRocGpNRGlYT1FI?=
- =?gb2312?B?T241WTByTk5nVUhBVThFTzNkSDNOZUFuNzc5Z0ZNOFFpUUFPbmZva21uUWQ3?=
- =?gb2312?B?a0wrSXNuVVlGQXZpT2RnczZMMENJMmdLM1hpNHFJc2J1K09iL1YwZDEwLzJI?=
- =?gb2312?B?aUxqKzVaRVZQRkNQZUhSbUw2ZlJjTUNwYmxnYUhFcVhhWUwxUk9RbzZSd1BV?=
- =?gb2312?B?Q3lQWEl6Uzh3a01qQ1BNSWJZeFAzUkhnTUxnUnpmRjFSWmJWSDhuOFhEbVlp?=
- =?gb2312?B?L3laYzNMbzRoa2RzWU9QVVRFSTdLN0FSYUl1NXljVlk3UitKN0VzTElyQ3hV?=
- =?gb2312?B?N2hJM3RqaFlCcERncWdmNUxKaFlGUVluL3V6UmVYVTdqZTBJUXlERnNwYjRs?=
- =?gb2312?B?TXhIR053V0IvSHZRTjR1cGxRSVBKREFOVHQvK2I0Nkh3cDRsQ3J4U1NuMTlC?=
- =?gb2312?B?RzZHRzdZcEl1VjVDc2ZLRnFJczNkdUJkem5xRTZXL2FkaERpRzloWlRjVFBS?=
- =?gb2312?B?MXhZQkU2L0NyOTNRRXprQ2V3cFBjZlhkLzVlTEdWQkdBY2xOK0xHUmFVSW5R?=
- =?gb2312?B?ZVlFakJXNDNZdWxteU9nTHFnOW9wTTRBNnBpQ1JYa2NqNmZ6WnBCOEJ3L0tX?=
- =?gb2312?B?YXlQODhyUEk5Zi9GZWxjanlXZGdvYlhmaXNtRFE2WDNSNjRvMTIwK1owWEUw?=
- =?gb2312?B?a2xDNUR4VlYrTFp0NW04V2lEdWdTcVhlWVlvUXprNXdibHNjWHRDNTNrTkN0?=
- =?gb2312?B?d0JMUHo2SU1KRUNPRUEwNHVBUlIvaE9uOUp2TDBWU05yb0duSVh5TDVSL3F0?=
- =?gb2312?B?MFprcWdDK0JPclBUOElTS1lFN1ZRZm8wU0FlaHVta0ZmcG5pMWZlMkhXZDg0?=
- =?gb2312?B?ZWg3TndxMGxBZ29hcWxNeitOeEhYODNXdHExZ0tFOHRrVkszckxDcFkyV0Zw?=
- =?gb2312?Q?io3zpils36VaTEM6oQBShSK9DEyJlQ=3D?=
-Content-ID: <0A8C9170953F7D40A5CF2A17C56ADE6E@jpnprd01.prod.outlook.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3CC172003B1
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 03:44:42 +0100 (CET)
+Received: by mail-pj1-x102e.google.com with SMTP id
+ rm8-20020a17090b3ec800b001c55791fdb1so1185806pjb.1
+ for <ltp@lists.linux.it>; Mon, 14 Mar 2022 19:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=Tbq0DatDy1Kwpjy5ISodyc3++rb89o9Ra/9aIJPVmqs=;
+ b=N438C6Wdi1bFL83NHj/RnpueNryxiARWzH6JW2a4+tExGrlt/zohiZevhpfKOY59vO
+ nT6P8+anQZI0M2T5FOPEhFLxhZnrI85DfTwGrG/F5D+CLsD/eMWq1Hi/uURZRoFCJu9E
+ OBzjREQ27by+/gCWvaMPfO4jUGl4xdYPwMD5OzpLaXc9RKxNZP5XotceumLYUwQsUZkX
+ 5QOGoWoJ85wgcvdy23XYAIzX7Yyc331jouFqTlkBufwo9Me25/kOZdt/uqOOLr6t+tAH
+ RuFNpSV4ExpYYw8zBA2NkeGFFEbsUFchpLfVAxqKSr+g3ypR41pZ6kc+YXHyKuJxy+xl
+ gGTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=Tbq0DatDy1Kwpjy5ISodyc3++rb89o9Ra/9aIJPVmqs=;
+ b=2PL4sfpSgw0mVlxGlPdi9lpuKo3tg2c/6b7P1lXN77BEgX7idYs7V40/hwq4FM2U9R
+ I2ikJK7ix97bR6sbsFvsoVHXqjfjifUMlb0gGG3uQE7G9IlvoG1ggm99ngP5A3A+Vvc6
+ zSoTV6XbsO65w4CW4eaRmndlYf4v3EOBy87BezrHBT67QYwMBY6QnIn7vv5/gaKvm+Nw
+ dvzSEnjehCiDHZWdVV8n+3vJQzeTKsC4hcjDD6HJmb6IN154qbEfNvJol50KO0RQ6T9U
+ VfUGx2B9navvdyH1SrQcYNz5h6JcfAQA+xom8IqdYsQhBbteE3dHkhQkJCNf5BC42xQc
+ byMA==
+X-Gm-Message-State: AOAM5339B8KStcSUC9C5N+iYe+Z80zPXcGkzgPPGDc3XsfCaJFUnDdkn
+ NBEx4nWZ8mEtti3KPmO2PpQicQ==
+X-Google-Smtp-Source: ABdhPJwsipELBsmyC8zsErRVkuW+LXfEM+ekQjfZGc5ALoD0ofvL1ErWtB73y5/UQpXb8hgf9qmScw==
+X-Received: by 2002:a17:903:4083:b0:153:4103:542d with SMTP id
+ z3-20020a170903408300b001534103542dmr16378622plc.160.1647312280680; 
+ Mon, 14 Mar 2022 19:44:40 -0700 (PDT)
+Received: from localhost ([223.184.83.228]) by smtp.gmail.com with ESMTPSA id
+ h2-20020a056a00218200b004f66d50f054sm21925946pfi.158.2022.03.14.19.44.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 14 Mar 2022 19:44:40 -0700 (PDT)
+Date: Tue, 15 Mar 2022 08:14:36 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
+Message-ID: <20220315024436.fawk4gor6amuicfk@vireshk-i7>
+References: <CA+G9fYtZ0vJaiA2sD+UuUiqAuZ+Yh88YNqgjTU7R9cwsvRcHTQ@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 786de90e-fdb0-450e-9426-08da06237a16
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2022 01:31:06.7956 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FS31S0Lv1Qx5kRQmG43yZ68d5bJ9I6sRH3uNFtOGsIU3e4BsAOrNbhZK7Hh5WLdvJyRW0lvM0r/ccDlWtJcIFVlZMkd75JkNNmx1PtOmASE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB6841
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtZ0vJaiA2sD+UuUiqAuZ+Yh88YNqgjTU7R9cwsvRcHTQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] quotactl: Check for missing quota_v2 module
+Subject: Re: [LTP] arm64: db845c: cpuhotplug: WARNING: CPU: 3 PID: 26 at
+ kernel/irq/manage.c:1887 free_irq+0x348/0x370
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -151,112 +81,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Martin Doucha <martin.doucha@suse.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: Nicolas Dechesne <nicolas.dechesne@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ open list <linux-kernel@vger.kernel.org>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr
++Bjorn.
 
-If so, why not remove kconfig check for these cases?
+On 14-03-22, 19:07, Naresh Kamboju wrote:
+> [ please ignore this email if it is already reported ]
+> 
+> While running LTP cpuhotplug04 tests on linux mainline 5.17.0-rc8 on the
+> arm64 db845c device the following kernel warning was noticed [1] & [2].
+> This is not a regression but this warning was noticed for a while.
+> 
+> /opt/ltp/testcases/bin/cpuhotplug03.sh: line 40:   929 Killed
+>         cpuhotplug_do_spin_loop > /dev/null 2>&1
+> cpuhotplug03 1 TPASS: 1 cpuhotplug_do_spin_loop processes found on CPU1
+> Name:   cpuhotplug04
+> Date:   Thu Jan  1 00:00:43 UTC 1970
+> Desc:   Does it prevent us from offlining the last CPU?
+> 
+> [   34.409899] psci: CPU0 killed (polled 0 ms)
+> [   34.589257] psci: CPU1 killed (polled 0 ms)
+> [   34.748788] migrate_one_irq: 30 callbacks suppressed
+> [   34.748834] IRQ169: set affinity failed(-22).
+> [   34.748867] IRQ171: set affinity failed(-22).
+> [   34.748911] IRQ183: set affinity failed(-22).
+> [   34.748929] IRQ184: set affinity failed(-22).
+> [   34.748945] IRQ185: set affinity failed(-22).
+> [   34.748964] IRQ186: set affinity failed(-22).
+> [   34.748981] IRQ187: set affinity failed(-22).
+> [   34.748999] IRQ188: set affinity failed(-22).
+> [   34.749014] IRQ189: set affinity failed(-22).
+> [   34.749031] IRQ190: set affinity failed(-22).
+> [   34.757748] psci: CPU2 killed (polled 0 ms)
+> [   34.973881] ------------[ cut here ]------------
+> [   34.978667] WARNING: CPU: 3 PID: 26 at kernel/irq/manage.c:1887
+> free_irq+0x348/0x370
+> [   34.986579] Modules linked in: snd_soc_hdmi_codec venus_dec
+> venus_enc lontium_lt9611 videobuf2_dma_contig qcom_spmi_adc5
+> qcom_spmi_temp_alarm qcom_pon rtc_pm8xxx qcom_vadc_common qcom_camss
+> snd_soc_sdm845 crct10dif_ce videobuf2_dma_sg snd_soc_rt5663
+> snd_soc_qcom_common v4l2_fwnode hci_uart venus_core snd_soc_rl6231
+> v4l2_async btqca soundwire_bus v4l2_mem2mem btbcm i2c_qcom_geni
+> videobuf2_memops bluetooth msm camcc_sdm845 videobuf2_v4l2
+> reset_qcom_pdc i2c_qcom_cci videobuf2_common gpu_sched spi_geni_qcom
+> qcom_rng qcom_q6v5_mss ath10k_snoc ath10k_core ath xhci_pci mac80211
+> xhci_pci_renesas qrtr display_connector slim_qcom_ngd_ctrl cfg80211
+> qcom_wdt rfkill qcom_q6v5_pas pdr_interface qcom_pil_info qcom_q6v5
+> icc_osm_l3 lmh slimbus qcom_sysmon drm_kms_helper qcom_common
+> qcom_glink_smem qmi_helpers mdt_loader socinfo drm rmtfs_mem fuse
+> [   35.061476] CPU: 3 PID: 26 Comm: cpuhp/3 Not tainted 5.17.0-rc8 #1
+> [   35.067760] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [   35.073506] pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [   35.080582] pc : free_irq+0x348/0x370
+> [   35.084328] lr : free_irq+0x300/0x370
+> [   35.088073] sp : ffff800008263c90
+> [   35.091457] x29: ffff800008263c90 x28: 0000000000000003 x27: ffff65e489bac000
+> [   35.098720] x26: 0000000000000000 x25: ffff287f41e51edc x24: ffff287f41e51f90
+> [   35.105981] x23: 0000000000000000 x22: 00000000000000ad x21: ffff287f40d06b00
+> [   35.113242] x20: ffff287f41e51e00 x19: ffff287f42bc7300 x18: ffffc29b34722b00
+> [   35.120504] x17: ffffc29b34722b18 x16: ffffc29b31d22ca4 x15: 0000000000050088
+> [   35.127762] x14: 0000000000000010 x13: ffff287f41fbd958 x12: 0005008800000000
+> [   35.135019] x11: 0000000000000040 x10: ffffc29b34401eb8 x9 : ffffc29b32ebc62c
+> [   35.142278] x8 : ffff287f40400270 x7 : 0000000000000000 x6 : 0000000000000000
+> [   35.149535] x5 : ffff287f40400248 x4 : ffff287f40400378 x3 : 0000000000000000
+> [   35.156796] x2 : 0000000002030200 x1 : ffff287f41e51e00 x0 : ffff287f42a57000
+> [   35.164056] Call trace:
+> [   35.166558]  free_irq+0x348/0x370
+> [   35.169955]  qcom_cpufreq_hw_cpu_exit+0x80/0xd0
+> [   35.174584]  cpufreq_offline.isra.0+0x26c/0x2b0
+> [   35.179202]  cpuhp_cpufreq_offline+0x1c/0x30
+> [   35.183561]  cpuhp_invoke_callback+0x16c/0x5b0
+> [   35.188094]  cpuhp_thread_fun+0xd0/0x1c4
+> [   35.192090]  smpboot_thread_fn+0x1ec/0x220
+> [   35.196287]  kthread+0x100/0x110
+> [   35.199607]  ret_from_fork+0x10/0x20
+> [   35.203273] ---[ end trace 0000000000000000 ]---
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> metadata:
+>   git_describe: v5.17-rc8
+>   git_ref: master
+>   git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
+>   git_sha: 09688c0166e76ce2fb85e86b9d99be8b0084cdf9
+>   kernel-config: https://builds.tuxbuild.com/26LbWSfZlShbqStTOvXGslR1RBI/config
+>   build: https://builds.tuxbuild.com/26LbWSfZlShbqStTOvXGslR1RBI/
+> 
+> 
+> steps to reproduce:
+>   # cd /opt/ltp
+>   # ./runltp -s cpuhotplug04
+> 
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+> 
+> [1] https://lkft.validation.linaro.org/scheduler/job/4715107#L4147
+> [2] https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v5.17-rc8/testrun/8446603/suite/linux-log-parser/test/check-kernel-warning-4715107/log
 
-Best Regards
-Yang Xu
-> openSUSE JeOS allowed installation without quota_v2 (they were in
-> kernel-default, but by default kernel-default-base with smaller subset
-> of kernel modules is installed).
-> 
-> Therefore check for the module for all tests which require CONFIG_QFMT_V2
-> config.
-> 
-> Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1196585
-> 
-> Signed-off-by: Petr Vorel<pvorel@suse.cz>
-> ---
->   testcases/kernel/syscalls/quotactl/quotactl01.c | 4 ++++
->   testcases/kernel/syscalls/quotactl/quotactl04.c | 4 ++++
->   testcases/kernel/syscalls/quotactl/quotactl06.c | 4 ++++
->   testcases/kernel/syscalls/quotactl/quotactl08.c | 4 ++++
->   testcases/kernel/syscalls/quotactl/quotactl09.c | 4 ++++
->   5 files changed, 20 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
-> index 561e5030fe..f06e18edca 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl01.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-> @@ -217,6 +217,10 @@ static struct tst_test test = {
->   		"CONFIG_QFMT_V2",
->   		NULL
->   	},
-> +	.needs_drivers = (const char *const []) {
-> +		"quota_v2",
-> +		NULL
-> +	},
->   	.test = verify_quota,
->   	.tcnt = ARRAY_SIZE(tcases),
->   	.mount_device = 1,
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-> index 55da282705..bb2d899f0e 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-> @@ -166,6 +166,10 @@ static struct tst_test test = {
->   		"CONFIG_QFMT_V2",
->   		NULL
->   	},
-> +	.needs_drivers = (const char *const []) {
-> +		"quota_v2",
-> +		NULL
-> +	},
->   	.min_kver = "4.10", /* commit 689c958cbe6b (ext4: add project quota support) */
->   	.test = verify_quota,
->   	.tcnt = ARRAY_SIZE(tcases),
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl06.c b/testcases/kernel/syscalls/quotactl/quotactl06.c
-> index 87715237f5..8c75c87b06 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl06.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
-> @@ -220,6 +220,10 @@ static struct tst_test test = {
->   		"CONFIG_QFMT_V2",
->   		NULL
->   	},
-> +	.needs_drivers = (const char *const []) {
-> +		"quota_v2",
-> +		NULL
-> +	},
->   	.tcnt = ARRAY_SIZE(tcases),
->   	.test = verify_quotactl,
->   	.dev_fs_type = "ext4",
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl08.c b/testcases/kernel/syscalls/quotactl/quotactl08.c
-> index 3793867f23..ae6e582be0 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl08.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl08.c
-> @@ -212,6 +212,10 @@ static struct tst_test test = {
->   		"CONFIG_QFMT_V2",
->   		NULL
->   	},
-> +	.needs_drivers = (const char *const []) {
-> +		"quota_v2",
-> +		NULL
-> +	},
->   	.test = verify_quota,
->   	.tcnt = ARRAY_SIZE(tcases),
->   	.mntpoint = MNTPOINT,
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl09.c b/testcases/kernel/syscalls/quotactl/quotactl09.c
-> index 8b959909ca..12d331b1a0 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl09.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl09.c
-> @@ -174,6 +174,10 @@ static struct tst_test test = {
->   		"CONFIG_QFMT_V2",
->   		NULL
->   	},
-> +	.needs_drivers = (const char *const []) {
-> +		"quota_v2",
-> +		NULL
-> +	},
->   	.tcnt = ARRAY_SIZE(tcases),
->   	.test = verify_quotactl,
->   	.dev_fs_opts = (const char *const[]){"-O quota", NULL},
+-- 
+viresh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
