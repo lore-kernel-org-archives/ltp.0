@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1648BC433EF
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 12:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9EE6C433F5
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 12:25:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 891763C935B
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 13:24:50 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 777AD3C934F
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 13:25:00 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 14C1F3C91F0
+ by picard.linux.it (Postfix) with ESMTPS id 3E0FC3C91F4
  for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:23:56 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5E7AC200B19
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D4C2860013B
  for <ltp@lists.linux.it>; Tue, 15 Mar 2022 13:23:55 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0FD9B1F455;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 82AF11F397;
  Tue, 15 Mar 2022 12:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1647347035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ycb7uRTVMTUlDmt2UHaGKH8NXANx8FS9xjgItuUNLiU=;
- b=qkX1U6dXxxVpScFfvZa71GaBRvBk6L/KCle1f+XxTbAGX4L0Yvziewh4mP1GtMlZuFH40e
- itom+w857IU4GyyiiQH53FiN499fGPgu/MeSl1kpv5F1BBzbNSn4UuxBFYDhXLlyU6uSzt
- YUh4hKHgzOwErOzExq/9215ciFEGpto=
+ bh=P8u2SiozJ8TIVCkAsTrPr6Wd3+Mg9abl+dleKRk/o2A=;
+ b=RP3au3mxY4E7HqzrZAFK72VTKAh4vOObMVvRVysYmMQsduoKWD958tof9RlmnicwBWodK4
+ I659+6E3BSBOUhM9CTSOV2dGoWYtj7M2VmI69ulJEQc3Wu4l4pP6WAzuxBUPvVX6MFfHwN
+ 1W5Pzy3aLngvEBzSedqlrN3h4gQdpnw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1647347035;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ycb7uRTVMTUlDmt2UHaGKH8NXANx8FS9xjgItuUNLiU=;
- b=yCBk+4EHhFqZyObAeGvoKp0DD/DqMEyJH0fdR0LVUYA1gnQ7f2WvdLSCtuYYRhDLSAdshH
- +YGqHzhzakEn29Cg==
+ bh=P8u2SiozJ8TIVCkAsTrPr6Wd3+Mg9abl+dleKRk/o2A=;
+ b=I0cYi0/9bLkKBoeDtGfGbA1hCfglFha9XQkUgHAaeGsvehLmLJWWU9e5cSnMk04su5womu
+ iDSYl0KcOQaTJDDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB14D13B59;
- Tue, 15 Mar 2022 12:23:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5656513B59;
+ Tue, 15 Mar 2022 12:23:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id sAigM1qFMGJ3UAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Mar 2022 12:23:54 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id EHknE1uFMGJ3UAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 15 Mar 2022 12:23:55 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 15 Mar 2022 13:23:49 +0100
-Message-Id: <20220315122351.8556-7-andrea.cervesato@suse.de>
+Date: Tue, 15 Mar 2022 13:23:51 +0100
+Message-Id: <20220315122351.8556-9-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220315122351.8556-1-andrea.cervesato@suse.de>
 References: <20220315122351.8556-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/8] Rewrite userns06.c using new LTP API
+Subject: [LTP] [PATCH v2 8/8] Rewrite userns08.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,383 +83,71 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- testcases/kernel/containers/userns/userns06.c | 179 ++++++++----------
- .../containers/userns/userns06_capcheck.c     |  75 +++++---
- 2 files changed, 126 insertions(+), 128 deletions(-)
+ testcases/kernel/containers/userns/userns08.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/containers/userns/userns06.c b/testcases/kernel/containers/userns/userns06.c
-index 29f635de5..2c9af08cc 100644
---- a/testcases/kernel/containers/userns/userns06.c
-+++ b/testcases/kernel/containers/userns/userns06.c
-@@ -1,65 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Huawei Technologies Co., Ltd., 2015
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the Free
-- * Software Foundation; either version 2 of the License, or (at your option)
-- * any later version. This program is distributed in the hope that it will be
-- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-- * Public License for more details. You should have received a copy of the GNU
-- * General Public License along with this program.
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index bde944f22..1180be494 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -17,6 +17,7 @@
+  * by (the real) root. So on the second level we reset dumpable to 1.
+  *
   */
- 
--/*
-- * Verify that:
-- * When a process with non-zero user IDs performs an execve(), the process's
-- * capability sets are cleared.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that when a process with non-zero user IDs performs an execve(),
-+ * the process's capability sets are cleared.
-  * When a process with zero user IDs performs an execve(), the process's
-  * capability sets are set.
-- *
-  */
- 
-+#include "tst_test.h"
-+#include "config.h"
 +
-+#ifdef HAVE_LIBCAP
  #define _GNU_SOURCE
--#include <sys/wait.h>
--#include <assert.h>
-+
  #include <stdio.h>
--#include <stdlib.h>
- #include <stdbool.h>
--#include <unistd.h>
--#include <string.h>
--#include <errno.h>
--#include "libclone.h"
--#include "test.h"
--#include "config.h"
--#include "userns_helper.h"
-+#include "common.h"
-+
-+#define TEST_APP "userns06_capcheck"
+ #include <stdlib.h>
+@@ -30,16 +31,12 @@
  
- #define CHILD1UID 0
- #define CHILD1GID 0
- #define CHILD2UID 200
- #define CHILD2GID 200
- 
--char *TCID = "user_namespace6";
--int TST_TOTAL = 1;
--
--static int cpid1, parentuid, parentgid;
--
- /*
-  * child_fn1() - Inside a new user namespace
-  */
- static int child_fn1(void)
+ static pid_t clone_newuser(void)
  {
--	int exit_val = 0;
--	char *const args[] = { "userns06_capcheck", "privileged", NULL };
-+	char *const args[] = { TEST_APP, "privileged", NULL };
+-	const struct tst_clone_args cargs = {
+-		CLONE_NEWUSER,
+-		SIGCHLD
+-	};
++	const struct tst_clone_args cargs = { CLONE_NEWUSER, SIGCHLD };
  
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	TST_CHECKPOINT_WAIT(0);
- 
--	if (execve(args[0], args, NULL) == -1) {
--		printf("execvp unexpected error: (%d) %s\n",
--			errno, strerror(errno));
--		exit_val = 1;
--	}
-+	/* execv will replace the main function and it will end this child
-+	 * accordingly.
-+	 */
-+	execv(args[0], args);
- 
--	return exit_val;
-+	return 0;
+ 	return SAFE_CLONE(&cargs);
  }
  
- /*
-@@ -67,97 +52,95 @@ static int child_fn1(void)
-  */
- static int child_fn2(void)
+-static void write_mapping(const pid_t proc_in_ns,
+-			  const char *const id_mapping)
++static void write_mapping(const pid_t proc_in_ns, const char *const id_mapping)
  {
--	int exit_val = 0;
- 	int uid, gid;
--	char *const args[] = { "userns06_capcheck", "unprivileged", NULL };
-+	char *const args[] = { TEST_APP, "unprivileged", NULL };
+ 	char proc_path[PATH_MAX];
+ 	int proc_dir;
+@@ -61,11 +58,11 @@ static void write_mapping(const pid_t proc_in_ns,
+ static void ns_level2(void)
+ {
+ 	if (prctl(PR_SET_DUMPABLE, 1, 0, 0, 0))
+-		tst_res(TINFO | TERRNO, "Failed to set dumpable flag");
++		tst_brk(TBROK | TTERRNO, "Failed to set dumpable flag");
++
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(1);
  
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
-+	TST_CHECKPOINT_WAIT(1);
+-	TST_EXP_FAIL(open("restricted", O_WRONLY), EACCES,
+-		     "Denied write access to ./restricted");
++	TST_EXP_FAIL(open("restricted", O_WRONLY), EACCES, "Denied write access to ./restricted");
  
- 	uid = geteuid();
- 	gid = getegid();
+ 	exit(0);
+ }
+@@ -89,7 +86,6 @@ static void ns_level1(void)
+ 	write_mapping(level2_proc, map_over_5);
  
- 	if (uid != CHILD2UID || gid != CHILD2GID) {
--		printf("unexpected uid=%d gid=%d\n", uid, gid);
--		exit_val = 1;
-+		tst_res(TFAIL, "unexpected uid=%d gid=%d", uid, gid);
-+		return 1;
- 	}
+ 	TST_CHECKPOINT_WAKE(1);
+-	tst_reap_children();
  
--	if (execve(args[0], args, NULL) == -1) {
--		printf("execvp unexpected error: (%d) %s\n",
--			errno, strerror(errno));
--		exit_val = 1;
--	}
-+	tst_res(TPASS, "expected uid and gid");
+ 	exit(0);
+ }
+@@ -111,7 +107,6 @@ static void run(void)
+ 	write_mapping(level1_proc, "0 100000 1000");
  
--	return exit_val;
--}
-+	/* execv will replace the main function and it will end this child
-+	 * accordingly.
-+	 */
-+	execv(args[0], args);
- 
--static void cleanup(void)
--{
--	tst_rmdir();
-+	return 0;
+ 	TST_CHECKPOINT_WAKE(0);
+-	tst_reap_children();
  }
  
  static void setup(void)
- {
- 	check_newuser();
--	tst_tmpdir();
--	TST_CHECKPOINT_INIT(NULL);
--	TST_RESOURCE_COPY(cleanup, "userns06_capcheck", NULL);
- }
- 
--int main(int argc, char *argv[])
-+static void run(void)
- {
-+	pid_t cpid1;
- 	pid_t cpid2;
-+	int parentuid;
-+	int parentgid;
- 	char path[BUFSIZ];
--	int lc;
- 	int fd;
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
--#ifndef HAVE_LIBCAP
--	tst_brkm(TCONF, NULL, "System is missing libcap.");
--#endif
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
-+	parentuid = geteuid();
-+	parentgid = getegid();
- 
--		parentuid = geteuid();
--		parentgid = getegid();
-+	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, NULL);
-+	if (cpid1 < 0)
-+		tst_brk(TBROK | TTERRNO, "cpid1 clone failed");
- 
--		cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
--			(void *)child_fn1, NULL);
--		if (cpid1 < 0)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				"cpid1 clone failed");
-+	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn2, NULL);
-+	if (cpid2 < 0)
-+		tst_brk(TBROK | TTERRNO, "cpid2 clone failed");
- 
--		cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
--			(void *)child_fn2, NULL);
--		if (cpid2 < 0)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				"cpid2 clone failed");
-+	if (access("/proc/self/setgroups", F_OK) == 0) {
-+		sprintf(path, "/proc/%d/setgroups", cpid1);
- 
--		if (access("/proc/self/setgroups", F_OK) == 0) {
--			sprintf(path, "/proc/%d/setgroups", cpid1);
--			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
--			SAFE_CLOSE(cleanup, fd);
-+		fd = SAFE_OPEN(path, O_WRONLY, 0644);
-+		SAFE_WRITE(1, fd, "deny", 4);
-+		SAFE_CLOSE(fd);
- 
--			sprintf(path, "/proc/%d/setgroups", cpid2);
--			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
--			SAFE_CLOSE(cleanup, fd);
--		}
-+		sprintf(path, "/proc/%d/setgroups", cpid2);
- 
--		updatemap(cpid1, UID_MAP, CHILD1UID, parentuid, cleanup);
--		updatemap(cpid2, UID_MAP, CHILD2UID, parentuid, cleanup);
-+		fd = SAFE_OPEN(path, O_WRONLY, 0644);
-+		SAFE_WRITE(1, fd, "deny", 4);
-+		SAFE_CLOSE(fd);
-+	}
- 
--		updatemap(cpid1, GID_MAP, CHILD1GID, parentgid, cleanup);
--		updatemap(cpid2, GID_MAP, CHILD2GID, parentgid, cleanup);
-+	updatemap(cpid1, UID_MAP, CHILD1UID, parentuid);
-+	updatemap(cpid2, UID_MAP, CHILD2UID, parentuid);
- 
--		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
--		TST_SAFE_CHECKPOINT_WAKE(cleanup, 1);
-+	updatemap(cpid1, GID_MAP, CHILD1GID, parentgid);
-+	updatemap(cpid2, GID_MAP, CHILD2GID, parentgid);
- 
--		tst_record_childstatus(cleanup, cpid1);
--		tst_record_childstatus(cleanup, cpid2);
--	}
--	cleanup();
--	tst_exit();
-+	TST_CHECKPOINT_WAKE(0);
-+	TST_CHECKPOINT_WAKE(1);
- }
-+
-+static const char *const resource_files[] = {
-+	TEST_APP,
-+	NULL,
-+};
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_checkpoints = 1,
-+	.resource_files = resource_files,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_USER_NS",
-+		NULL,
-+	},
-+};
-+
-+#else
-+TST_TEST_TCONF("System is missing libcap");
-+#endif
-diff --git a/testcases/kernel/containers/userns/userns06_capcheck.c b/testcases/kernel/containers/userns/userns06_capcheck.c
-index 31f7e0a25..d8e670fb1 100644
---- a/testcases/kernel/containers/userns/userns06_capcheck.c
-+++ b/testcases/kernel/containers/userns/userns06_capcheck.c
-@@ -1,62 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Huawei Technologies Co., Ltd., 2015
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- *  (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-- * the GNU General Public License for more details.
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-  */
- 
--/*
-- * Verify that:
-+/*\
-+ * [Description]
-+ *
-  * When a process with non-zero user IDs performs an execve(), the
-  * process's capability sets are cleared. When a process with zero
-  * user IDs performs an execve(), the process's capability sets
-  * are set.
-  */
- 
--#define _GNU_SOURCE
--#include <sys/wait.h>
--#include <assert.h>
-+#include "config.h"
- #include <stdio.h>
- #include <stdlib.h>
-+
-+#ifdef HAVE_LIBCAP
-+#define _GNU_SOURCE
-+
-+#include <assert.h>
- #include <unistd.h>
- #include <string.h>
- #include <errno.h>
--#include "libclone.h"
--#include "test.h"
--#include "config.h"
--#if HAVE_SYS_CAPABILITY_H
-+#include <sys/wait.h>
- #include <sys/capability.h>
--#endif
--
--char *TCID = "userns06_capcheck";
--int TST_TOTAL = 1;
- 
- int main(int argc, char *argv[])
- {
--#ifdef HAVE_LIBCAP
-+	FILE *f = NULL;
- 	cap_t caps;
- 	int i, last_cap;
- 	cap_flag_value_t flag_val;
- 	cap_flag_value_t expected_flag = 1;
--#endif
--	tst_parse_opts(argc, argv, NULL, NULL);
- 
--#ifdef HAVE_LIBCAP
-+	if (argc < 2) {
-+		printf("userns06_capcheck <privileged|unprivileged>\n");
-+		goto error;
-+	}
-+
-+	f = fopen("/proc/sys/kernel/cap_last_cap", "r");
-+	if (f == NULL) {
-+		printf("fopen error: %s\n", strerror(errno));
-+		goto error;
-+	}
-+
-+	if (!fscanf(f, "%d", &last_cap)) {
-+		printf("fscanf error: %s\n", strerror(errno));
-+		goto error;
-+	}
-+
- 	if (strcmp("privileged", argv[1]))
- 		expected_flag = 0;
- 
- 	caps = cap_get_proc();
--	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/cap_last_cap", "%d", &last_cap);
-+
- 	for (i = 0; i <= last_cap; i++) {
- 		cap_get_flag(caps, i, CAP_EFFECTIVE, &flag_val);
- 		if (flag_val != expected_flag)
- 			break;
-+
- 		cap_get_flag(caps, i, CAP_PERMITTED, &flag_val);
- 		if (flag_val != expected_flag)
- 			break;
-@@ -64,11 +68,22 @@ int main(int argc, char *argv[])
- 
- 	if (flag_val != expected_flag) {
- 		printf("unexpected effective/permitted caps at %d\n", i);
--		exit(1);
-+		goto error;
- 	}
- 
-+	exit(0);
-+
-+error:
-+	if (f)
-+		fclose(f);
-+
-+	exit(1);
-+}
-+
- #else
-+int main(void)
-+{
- 	printf("System is missing libcap.\n");
--#endif
--	tst_exit();
-+	exit(1);
- }
-+#endif
 -- 
 2.35.1
 
