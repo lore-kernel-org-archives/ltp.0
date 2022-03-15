@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D17EC433F5
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 01:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1BEFC433F5
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 01:31:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7612B3CA7C6
-	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 02:27:42 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1D22C3CA816
+	for <ltp@archiver.kernel.org>; Tue, 15 Mar 2022 02:31:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 894D13C4EDD
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 02:27:31 +0100 (CET)
-Received: from esa9.fujitsucc.c3s2.iphmx.com (esa9.fujitsucc.c3s2.iphmx.com
- [68.232.159.90])
+ by picard.linux.it (Postfix) with ESMTPS id B966B3C4EDD
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 02:31:12 +0100 (CET)
+Received: from esa11.fujitsucc.c3s2.iphmx.com (esa11.fujitsucc.c3s2.iphmx.com
+ [216.71.156.121])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4D6686009FA
- for <ltp@lists.linux.it>; Tue, 15 Mar 2022 02:27:29 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EA9D41A0079C
+ for <ltp@lists.linux.it>; Tue, 15 Mar 2022 02:31:11 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1647307650; x=1678843650;
+ t=1647307871; x=1678843871;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=gc3actJ/Z9LeqM1vxM4jk4siPC1/n6hxTVRH2OWBw1U=;
- b=yExVx5K1ca8tH2U1Ic3nU+Fi6IIeqXsDjwa66T+qRmzPHaniqGoLr5n4
- UREK5IsGE1to17z8W98Epe0Ks6ooBo74mL7CPJKI2j4wQdsxBYQOBzd2L
- XE3u9sKycwCjSg+ylrjpetfvb3sR55TRW0CtSfvC/yzXWzqBAyqY7g+tH
- hItLf0iouU6YhKVmyOHtJLIfS0FCd5J9ld/v9nvDGT3zfd7Gq1UyYmqyM
- j/pVCJxRijPHQlWDpc0EicOX0XDLi2acJLdhipTxzVdzO4Kb1MerS75TY
- rnaPQwqr0E2XuoDY+/3Akt0e7tz48SGsmJ8+dz0FzvD0DzqEXBGRBLp6w g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="51848314"
-X-IronPort-AV: E=Sophos;i="5.90,182,1643641200"; d="scan'208";a="51848314"
-Received: from mail-tycjpn01lp2176.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.176])
+ bh=08lnOjXeREt2wJJKzMHFys+ofEh/fZxXnmxzd2noYys=;
+ b=KFrqSsFKF3on1NZTQP8Ng4eIWuivjqtqvJxy+vv/M+XDZXjzI8Xsvojt
+ tNAm1bQV4o9flhAB0tVEVWvpCF8+57EC3+OP6tz1eldT+uRK3B98AmNZr
+ DMH9k3refm97XiA5ZLJvJ7IwSyWDRxwuFwGGBqRkfJGXmg3lhoTBYKfUm
+ 97XmxgH4PyiaK1F7xseOMD8PDWEL3kXCCCFmD5md4EPhT+TqAfJP7ezk8
+ LXlom8hb7TDgl5D83mcN9PaN1kFFYutQyzPDmnJL2VeURjwVKBAJJTpGo
+ Iy8EJhZcNsIi8VwBI4Nco9qS2mPihLbGljy1unyX2+lN+oHf6svCA1eWd g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="52021615"
+X-IronPort-AV: E=Sophos;i="5.90,182,1643641200"; d="scan'208";a="52021615"
+Received: from mail-tycjpn01lp2172.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.172])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Mar 2022 10:27:28 +0900
+ 15 Mar 2022 10:31:09 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kLUsjWZHt7D4fCnTjSN2H+Ahygx2QwD0KvujM5lJtN/ZLI9gOjIQ4mLqdAhEXzVgX12xRSToEq/MXtEda45XTvtUAz2scXwkMCqZJOfeAisofNP91ZLTC1Ey0fmg3TDY1EJZ9xMAgHOKSaNqn27girCxnxFVkrFor3r4YF6+V8B38FH6IizKdXYUiyfP3JOh9BWFq9FHJjZoTlEWH/kaEAkMk0n8vJiCUelUv/NSIsrU1Bn7i8vzhSBs/NTU2YUlepgXvg8lH9afH8z7cUBCkkULp1o6q1OSxnXQLFPDNztiod9kqHQQxCM9e608BOECG2emRmI/4S9D2hAkMjbSNQ==
+ b=Ojb8Zv6xLwKY2pu6Kf7JgvMQVMur0dCuHhiCu09rRnQmVrQzySxUlKtllqOFnJIFZJCRenqJOox31fOmGf4dC4JvDSeQIwnBwdrvAyWfDhQg7L9VM6/igP+NcXZFciolfUcwZX8nWkpmimE0gaAu1CwgVFnkvQW0HL3+WUZ98jU3gKcAf6Lf5ytw5iJvnGS1X4TkUaThSXtEYAxKX/Vc0eyYYJMh9u8nNs6Crog4QV6wSGxXUE8MIsO1keTCDGxoSt/HRXzE9XIEVsaar2CVveCQu/ym474doFvSxZVCDu5CFmO2MSDfGLBps4PwwxnoEB5gQqpT0IpNPX792C2EYw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gc3actJ/Z9LeqM1vxM4jk4siPC1/n6hxTVRH2OWBw1U=;
- b=dv8S9n3rU22//qF9MWp59L2wrMi0ULyCCEcf3LH4bilWApos+Kk5QaRq9q9nwbzsrMAR6gWwtJdinSwC9FIKqrz+pw0wH57wHdsOF5NbYu0LDm+MLmHA5411SXzaPCV3Uy71LlKzZLCLLLCn8Xby+8/cVdnS9PYUQ/3z5pQdoiggPXqElRyT4uNz+nRWNH+Fe3so3UIaABDUsenq2d9p2wy17ndN/eFqFHaq3qGrNIu5p7o7z5fQM82QM2m+tfLwPV2+S3MJqN+dp3d7LSBK55UKPBKwZx8/6PCzwzhrKLBnyLLRZ6OSbjXlOX3qyhH+54UUYLmhTtrnWqRtyDc2cw==
+ bh=08lnOjXeREt2wJJKzMHFys+ofEh/fZxXnmxzd2noYys=;
+ b=bJ9UM7lH7SqrFrWAdqUb77FJTlcdEz4cKHPKlDtwx3KZKM0EwHJ59MpHzoESaStRUWi8ubHYCrymLSvaTcw7MBnNUEllPz/JGdKNUMzqLXn7dS5fWZH23+7ToojPCsAsEawb+Ctbif8dpPt48+BCZtzuygxO4Dn2+uHYRWPVpLS6jP/TWweY2BGN0pUmzfUZfgUpjv+/KICzeYAu5cN9LTSyxuHPplfI76/dayjHnpf2cejdbL8BWxga1DYEsnN8zUWAIR5fEe04NFybKtz7InfRclACurjiZP+YLKpNG7DNbBuVQHOzOkIqdD8VQI1yZTreR5CkUnj0Gi6UXauzzA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gc3actJ/Z9LeqM1vxM4jk4siPC1/n6hxTVRH2OWBw1U=;
- b=AOhGLPu5rcTM5aQubErxck8qAPmpE0WzBQJzs7PUNqIyHUXPKAhap4sX+tNXjvc/JNlM55h65Yz0zE95eKneyoxopMxrZh/oCaRnaZA9ls+ChZSY97Lz5UoX9oo3HK+z6FC4onSh8mbBTUjhN3v3t07BG44u+K3wJ1j7Xs10Pc4=
+ bh=08lnOjXeREt2wJJKzMHFys+ofEh/fZxXnmxzd2noYys=;
+ b=gLe0H/GksNWzgcFmStOt8zbFgNoIsuFGOMjdRZ83ZkfN8bKJT3EP9hcNOUBQXZhSXqHees5xnjdC/5VL7YcCn0Bbj9nkUccpRqNWaPM+T1W6JG9VJ6q2NO4wJDo+7Q4OBY0IMEaFcxRcij8zL16islLVDrR3otKxf4+azujRFXM=
 Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TYAPR01MB4125.jpnprd01.prod.outlook.com (2603:1096:404:c4::15)
+ by TYYPR01MB6841.jpnprd01.prod.outlook.com (2603:1096:400:d0::11)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.24; Tue, 15 Mar
- 2022 01:27:24 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.21; Tue, 15 Mar
+ 2022 01:31:06 +0000
 Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
  ([fe80::dd2e:e671:b3d5:d354]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
  ([fe80::dd2e:e671:b3d5:d354%6]) with mapi id 15.20.5061.028; Tue, 15 Mar 2022
- 01:27:24 +0000
+ 01:31:06 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
 To: Petr Vorel <pvorel@suse.cz>
 Thread-Topic: [PATCH 1/1] quotactl: Check for missing quota_v2 module
-Thread-Index: AQHYN6PUsntQNXYrD0ugd2TDll9RDKy+30CAgADJVAA=
-Date: Tue, 15 Mar 2022 01:27:24 +0000
-Message-ID: <622FEBAA.2020706@fujitsu.com>
-References: <20220314130248.22869-1-pvorel@suse.cz> <Yi9Cx1DTJi3nxxUd@pevik>
-In-Reply-To: <Yi9Cx1DTJi3nxxUd@pevik>
+Thread-Index: AQHYN6PUsntQNXYrD0ugd2TDll9RDKy/qZ0A
+Date: Tue, 15 Mar 2022 01:31:06 +0000
+Message-ID: <622FEC88.1040502@fujitsu.com>
+References: <20220314130248.22869-1-pvorel@suse.cz>
+In-Reply-To: <20220314130248.22869-1-pvorel@suse.cz>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -78,65 +79,65 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6070e1a7-cb26-4721-c3ad-08da0622f577
-x-ms-traffictypediagnostic: TYAPR01MB4125:EE_
-x-microsoft-antispam-prvs: <TYAPR01MB4125026CC5F9D5195C5BD08BFD109@TYAPR01MB4125.jpnprd01.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 786de90e-fdb0-450e-9426-08da06237a16
+x-ms-traffictypediagnostic: TYYPR01MB6841:EE_
+x-microsoft-antispam-prvs: <TYYPR01MB684101948465167419F36EC6FD109@TYYPR01MB6841.jpnprd01.prod.outlook.com>
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EpjoMVKU/9A/KQcxunNZMqGBbwKqnleTlx78I9GLgGo8P3OdjfqKR4YeXeNOtT8scWxIGF8qiIGnMqzBWhnzDmtCKyMnl3DhNGtp3drmG+oIho+pVP0Lk1sZX99ZZwGaEQAznny4atySB90BcaJg4HPXkoeIC6yeEoT9msyQVu64QC/DAgd4wwyX0wTzf+Yamv5ocTFBzn2Jw8U5PULhLFT/Xs2KGL1C1S15EXMoUrrdoObC4/cOQ0dwDcV/d5guxPHkhNzJ1dBv3lyeo5hYkVjU4vR1eZUiYDdsJuILi5J7ZqW+MEb8XYhC9bIYJyYpsTyG0dS22pZ+ez611/v8ns40V6EYMRZKuJc6SuRaXFDEqaTdhdLXOf/fqE5/TwKbxOt3L5ybYWjE9ZDxH2gUMkwU0h1ClAJbQZ2OVCT+3bfgEfBpUB3uos1VF/ICe7s7MHyeZuH88Ry1qTBFPJVuSuIJLmaL3rzcPwi+PXZqzxA+5Bc2kiL4ZGTpYcvvgv84TRGPemp0FP77Qb30Z2I5jYjS2Fcqi+Lne82vOEyH00b1kCKoLet6O/yeGW6woMq2SYxwFA3gyvt6Fgsm12Guh7LMatskTp8zntPoOJ5/baRQLCvByWOE1QVMYqqjR9moNY9JYiKPPh7xKTutuqoP0h1gvBLWkRwVMUhaPGhf7YzPpmQmfvHCTYRl0pHUTVoyasX2scA4g0h1n8KZjGTRIQ==
+x-microsoft-antispam-message-info: kr7Bi3PVdTopXH7PUyaQLD0Pj0VAcm1mp5EGQKYcvpbCj3rlfKf4w6fH/tvjCat0QvCjht2NHMeb/PmKdANX2hGov4I75166q8lI5+pZt1MWQpaY3atc1cf1Ti3Y5gRfPNuo3PbKSXEyaPbwziRjKDjT9qGwRMPxcArYqgQsqnM+bAjaRm+5h+t/yJo1uLKjydRV3unI38PDospc9iPINYLQnkyJ4/JhazBzQSGmKGKr2+vtZnp5kqu1sQPAtn+54tIQnQwk0QuEHTgHT7HdkzgIID5NQQ7Mox8Wo2QJkFJwIUWQ8LXhMEYRfY1ex0yAXUievfg0DBMYRCPiYhzcf3DHtVW8XupDG4DQSOKaqywUW1EODgonqLqKAS+5trFFNRGUSUAqEAiXSPNhpB06dvhUNaeTAgRRqLqhlBJ+EmBBBAWA4iGL+93LT4w2+O1W+c26XP6su1Y3YjQWZYmqawINlVSizdksIQHkMg/F7NmDx5J453UtknZQM6CuuUjOdh8SEHqhYP84Rzya/A8EIpMWrHsDvIQJyfN24KcCkNJ3FMdZwbEktkR/aj4Cy2IRvl7bdUT8dR97ItPEZz05sCVVw7VaQveXBMJbA2sXJ9rC7FaedW56vwwgdumRnnDgf5GHJvulsmMVjDfKpgxZS6BxFRfPqX1rjXHvTgmNrZYnwd7HCCFg907YgL7fOw1ATLv7b7SIczwp5CoZTqheA7ymsnJiCpjU7hCx4JsCu83D3yAcCWvuJBRsGcb9sTBkY0OUMsU4qb+5GyGk1Gz34oK3E9bRlf4sOGDZj31h/0s=
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(85182001)(316002)(36756003)(8676002)(4326008)(91956017)(2906002)(6916009)(15650500001)(76116006)(54906003)(66946007)(66556008)(66476007)(66446008)(64756008)(87266011)(71200400001)(33656002)(6486002)(6506007)(6512007)(8936002)(5660300002)(4744005)(508600001)(26005)(38070700005)(186003)(2616005)(83380400001)(86362001)(122000001)(38100700002)(82960400001);
+ SFS:(13230001)(4636009)(366004)(4326008)(5660300002)(66476007)(91956017)(66446008)(508600001)(6916009)(87266011)(2616005)(186003)(54906003)(8676002)(64756008)(76116006)(66556008)(66946007)(83380400001)(6486002)(966005)(2906002)(71200400001)(122000001)(38070700005)(33656002)(82960400001)(85182001)(6506007)(6512007)(26005)(38100700002)(86362001)(15650500001)(8936002)(316002)(36756003);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?MU9iYlpPVnBKYWhzZWswUU12Y1ZSRUphcmJMQXY5YjcvMDh4bDNUd3loZEdl?=
- =?gb2312?B?UzEvV0pycGhWMXpDTXBzVEwrbGNmS2cyUFpLb0NzOTE2bXZ3V1R1V25BT2Rk?=
- =?gb2312?B?bG5SelpwZjRFbWtGMkd4dzR0YTFiOEJIazdHYytBY1YyWExhcFQzd3hmb0pJ?=
- =?gb2312?B?R0RKVjVScGJ2TXhRZW12Q1hjZlp3aWpHR2NteWNwbzM3Smw5dG5LbEMvUjd0?=
- =?gb2312?B?N1U2VVFwZVhhSHBHQ1k3TmFzMmpXZ2k4amJDN1YyaElkdzJkbGI3N0R3THhT?=
- =?gb2312?B?Zkh3Ky9jdHlzMFZ5VmlhVG1xV0ttWFhla3F0M2s3UDBlVStvQnhIZGtlcTV3?=
- =?gb2312?B?MUltck1talZTTkJSaXJvcC93UUVEc1dvWjhhcndna3VpSWkxTVR2ZGhldkJV?=
- =?gb2312?B?ZkxHWWRCT0MrUXkydThoczR3TThrVFp6SjVWR0g3cFJnUEVSSGxTVUpBWXZH?=
- =?gb2312?B?Y0VmY3k5dGU0bFNuUUlSSkxiZDNNZEJWMlpEbmt5UGhQckFGb1VLMmc0eGNU?=
- =?gb2312?B?aDg5aDNSaDhLQ1pXVyt0YmxtR2pOYTZta1ErVi9MMFN3dDJGR0xkaEFYWm5k?=
- =?gb2312?B?Ni9xbnlIWm9IQVdWSUxCUkdBMFpqL0ZWNUJVYUVtV3VzY2pPOWIwYnVqdTBj?=
- =?gb2312?B?TkZBWW1UY2cyRXhQaGFIUTRYbUd3Mzh4WTlNMUQ5bDlucVMzZHVjVURnTkh0?=
- =?gb2312?B?WjZobithNlc4eHhKZlVoSURjdWN4a044RmhyNDlZWUNpcTNsTGNrcisvcjBE?=
- =?gb2312?B?azg4RWQwRU5OeVlQODd1TFFmZ3RhaDcxSVpSb0pScHQ0UzdmNlBXemM1SXNX?=
- =?gb2312?B?ZVJvZk4xUGpkREFFYjBNUDZoalUwRWRGUHFVbjVrMFQ4SkpGOFB4RWh2RzlP?=
- =?gb2312?B?NEVrcU9EZENEcTFCUkpqdmdkS0ZTdFROd3dKYkcrWjE0WDgvZXVPWDI2NGpv?=
- =?gb2312?B?SVFsSEZSMUxVdXJnakVzOTNSS29RcWtuL3pnVnE5OHpRRUd4ZXVmNFpxbHZj?=
- =?gb2312?B?WkVCbDZqZGVMU3dmSG5FSGpRNCttZ3lMdW5tQy8rcWhYc29oNGw3ejVOczBE?=
- =?gb2312?B?RWpGeHptQUNxRXJLNXJITWJvbVBWZmJtQ1VPYVIweHU1cjl1elFsQjM0TGRZ?=
- =?gb2312?B?Zlc1Tm51WXdCZ3BrU1pCUWNoTnNscFp2UTVUdzAwc0FkSml2elJEbHdHdXJx?=
- =?gb2312?B?bkxOZGo4Zy9MNHNFWG42d2V5NGM5K1ZnaVBQS2hleW0zanF3Y00vTHBxdDcy?=
- =?gb2312?B?cytHbDhYUVlXMmx5TlVMcGxDUzBjV3FmQjlRT1EyTnJpbk1VSjdUWmFvZ2xM?=
- =?gb2312?B?QVhmYmloNE5LMGtKcnlEL3pyVFpVb2VXZVZPOVlVTWlRTkdtd2JJbHp6a0Jy?=
- =?gb2312?B?a2pKQUpwYVkxeThDZ1c1NEk3Y3RPL3I5ODJtclNYVk9DZW1kN2RkWXc3WlJp?=
- =?gb2312?B?RmQ1Uktjd3ptOTJZWTJFanFMd2FTa21sU1JkVlRyOEZqQ0RMcG5KMURrNGVE?=
- =?gb2312?B?RjNDMkpReUhWcXFtVEZWa0h6THdzdDZOWitnUDR1dDNxNXlvSXBDVDEzMVpY?=
- =?gb2312?B?UDJaOGVBRFdJWjlpWDNocWxZeG51SVlHQmlBNmJQOENLOG50RjNTMXdaa1Br?=
- =?gb2312?B?VElLL2xackZVRGdIWmVKdVZta01KK2NiN09QYlNseFpNc21NVytXeGxjOTUr?=
- =?gb2312?B?bW4zSDFqMEJxbU1pMWZtYkhnVWE0Z3RwdlMyYWVuMVNBNXNJN3pZTVRXeHZW?=
- =?gb2312?B?QURlVVdBZEdxVmoxMm9TbXMvSnczem5NLzhWOEkwM3FMdStrbWF6Q1BOWWZp?=
- =?gb2312?B?enYzNjZmWUJXalZlSFdIL1FIbWF3N3d2ZHhWMkRnaDRTcFB6Q25sRXp3dDNr?=
- =?gb2312?B?RThNeUZvdFR4aXFJVHpZNG9Ga21US3BpQnhYb01KV1UvakFENjBqRXBTZzI2?=
- =?gb2312?B?eFV2RWdadm9zV0M4eWt2R3B0K0wvYUFGckJNTFFHckxaclQ0VGhST0lRMGhQ?=
- =?gb2312?Q?I1ZNmBfMq3qR4FjImYqT1on9oeksK8=3D?=
-Content-ID: <D63659795174004AA37FF3084443F7DD@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?T2Z3ay9VaDgvZFcyeDc0cG1QUEJITVI5N0c4TUpZeHJYVXZsV0d2cXN3dUM5?=
+ =?gb2312?B?NFNvZVVkdVl4eC9WZVVFSXorYWo0ZWZFdmpKc1hJa2FBTm54cWNndXM2clFL?=
+ =?gb2312?B?K2FUUVd1NmJxRzVnU2tvMU02K2dsYWpPTmpKZ2lwa1E4STI1bGFvWDAyanBo?=
+ =?gb2312?B?THdjMm5QZjJTdGNRT2FmakMvQXBVSnhYNjR0UEUyL2ZyZzJja0VGditUZk15?=
+ =?gb2312?B?aHRpNy9UcWwyOFFqaXpsVzZBZVo1ZGJCTWxhVG5LN25ubXZqcnNCb0R2eUxU?=
+ =?gb2312?B?ZHhRMTBNaWRzMFdCVi9hQld6UjRCd3Q4QlhSOG5hTFl5UkVyL2licGNrcHRQ?=
+ =?gb2312?B?SHA1OE9ISldwOXpmRStPUVZJRzFZRHNVNks5UWpXdEY0ak43T3lWZFE4cGpW?=
+ =?gb2312?B?VFVOUGdCTWpPR2V3UXVSRFB5aHF0ZWZibVhzSmxmNUQzR09NT25WU0djSmdv?=
+ =?gb2312?B?Y1U3VGl5TmUxZHJHam1kRHo5MzBLMVBPLzMwWWE4V2kyYmFnRnBaeXFqaWN4?=
+ =?gb2312?B?YURzbUZxdHJCckJPejBIUzZ0UTcwQ3U2S0ZFU0VIY2gzdjcwbGg4RFhHUHFv?=
+ =?gb2312?B?RUZkQzlHWTRHZnpTc0haemtXeFpvWDFkTUdwL2IrbjNZVktmWmpqTk4yNkwv?=
+ =?gb2312?B?VWFUZXFadFljYnU2bG1ubU1kNWVqakx4VG9KWmlmd1J2NlRUcDIyWWZtMkZi?=
+ =?gb2312?B?MldVQXAxajgzbUx2Zk5aMldCNTBCVis1MlptR1kxTjl3RTE4ZVczeEh5UG9t?=
+ =?gb2312?B?WGJ5enE3UHA3cjZ4OFFNYTlBOTFiMXNXNG9jdENTU1JjLzE5amRSWUYrNWNJ?=
+ =?gb2312?B?Q1pTRXhnY1NXOERPWnRYT0NJSUt1aktFRDdnai83b3lob1FRVnZnZGJRNisz?=
+ =?gb2312?B?Z2hWNEFJU05ZVHBkbm9kSTRHVks0VWVzNllyd29TemdpMjV4NEZhUGNkSU13?=
+ =?gb2312?B?UzRsNkRXeGwwU3JadG9EY0doNThUYkZjYWZmWGN1M3FpeGJyOEEyL0ZiS01s?=
+ =?gb2312?B?ODlja1hqOGRhWTRJeTFMQVo0NGRHL3h0S2xudDF5REYvZlRocGpNRGlYT1FI?=
+ =?gb2312?B?T241WTByTk5nVUhBVThFTzNkSDNOZUFuNzc5Z0ZNOFFpUUFPbmZva21uUWQ3?=
+ =?gb2312?B?a0wrSXNuVVlGQXZpT2RnczZMMENJMmdLM1hpNHFJc2J1K09iL1YwZDEwLzJI?=
+ =?gb2312?B?aUxqKzVaRVZQRkNQZUhSbUw2ZlJjTUNwYmxnYUhFcVhhWUwxUk9RbzZSd1BV?=
+ =?gb2312?B?Q3lQWEl6Uzh3a01qQ1BNSWJZeFAzUkhnTUxnUnpmRjFSWmJWSDhuOFhEbVlp?=
+ =?gb2312?B?L3laYzNMbzRoa2RzWU9QVVRFSTdLN0FSYUl1NXljVlk3UitKN0VzTElyQ3hV?=
+ =?gb2312?B?N2hJM3RqaFlCcERncWdmNUxKaFlGUVluL3V6UmVYVTdqZTBJUXlERnNwYjRs?=
+ =?gb2312?B?TXhIR053V0IvSHZRTjR1cGxRSVBKREFOVHQvK2I0Nkh3cDRsQ3J4U1NuMTlC?=
+ =?gb2312?B?RzZHRzdZcEl1VjVDc2ZLRnFJczNkdUJkem5xRTZXL2FkaERpRzloWlRjVFBS?=
+ =?gb2312?B?MXhZQkU2L0NyOTNRRXprQ2V3cFBjZlhkLzVlTEdWQkdBY2xOK0xHUmFVSW5R?=
+ =?gb2312?B?ZVlFakJXNDNZdWxteU9nTHFnOW9wTTRBNnBpQ1JYa2NqNmZ6WnBCOEJ3L0tX?=
+ =?gb2312?B?YXlQODhyUEk5Zi9GZWxjanlXZGdvYlhmaXNtRFE2WDNSNjRvMTIwK1owWEUw?=
+ =?gb2312?B?a2xDNUR4VlYrTFp0NW04V2lEdWdTcVhlWVlvUXprNXdibHNjWHRDNTNrTkN0?=
+ =?gb2312?B?d0JMUHo2SU1KRUNPRUEwNHVBUlIvaE9uOUp2TDBWU05yb0duSVh5TDVSL3F0?=
+ =?gb2312?B?MFprcWdDK0JPclBUOElTS1lFN1ZRZm8wU0FlaHVta0ZmcG5pMWZlMkhXZDg0?=
+ =?gb2312?B?ZWg3TndxMGxBZ29hcWxNeitOeEhYODNXdHExZ0tFOHRrVkszckxDcFkyV0Zw?=
+ =?gb2312?Q?io3zpils36VaTEM6oQBShSK9DEyJlQ=3D?=
+Content-ID: <0A8C9170953F7D40A5CF2A17C56ADE6E@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6070e1a7-cb26-4721-c3ad-08da0622f577
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2022 01:27:24.2955 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 786de90e-fdb0-450e-9426-08da06237a16
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2022 01:31:06.7956 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BICrGahuvhHva0uI2/QULBcec0cRsj69sOpo/LAz3gGyOAbwj/MC06IJIuRB93CJYKHk+nPd8qiP9ibirUQ4SIPDVMbuzL9iegmKcmniaY4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4125
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: FS31S0Lv1Qx5kRQmG43yZ68d5bJ9I6sRH3uNFtOGsIU3e4BsAOrNbhZK7Hh5WLdvJyRW0lvM0r/ccDlWtJcIFVlZMkd75JkNNmx1PtOmASE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB6841
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] quotactl: Check for missing quota_v2 module
 X-BeenThere: ltp@lists.linux.it
@@ -158,32 +159,104 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Petr
-> Hi Martin, Xu,
->
-> I wonder whether quotactl04 still needs check for ESRCH search in do_mount()
-> implemented by Martin in 4aab31e4c7 ("syscalls/quotactl: Skip tests if FS quota
-> is not supported"), because that could be caught by CONFIG_QFMT_V2 and now
-> quota_v2, right?
-I think it is right.
->
-> It uses fs_opts[] = {"-I 256", "-O quota,project", NULL} parameters for mkfs,
-> thus it is probably needed.
-If we format ext4 filesystem with quota feature, then the quota 
-information will hidden in filesystem instead of visible file by using 
-quotacheck.
 
-But this feature needs mkfs > 1.43.0.
-
-I guess we can remove do_mount by using SAFE_MOUNT like quotactl08 did.
+If so, why not remove kconfig check for these cases?
 
 Best Regards
 Yang Xu
-
-But shouldn't it be used also in quotactl08, which
-> also uses fs_opts[] = { "-O quota", NULL} ?
->
-> Kind regards,
-> Petr
+> openSUSE JeOS allowed installation without quota_v2 (they were in
+> kernel-default, but by default kernel-default-base with smaller subset
+> of kernel modules is installed).
+> 
+> Therefore check for the module for all tests which require CONFIG_QFMT_V2
+> config.
+> 
+> Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1196585
+> 
+> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> ---
+>   testcases/kernel/syscalls/quotactl/quotactl01.c | 4 ++++
+>   testcases/kernel/syscalls/quotactl/quotactl04.c | 4 ++++
+>   testcases/kernel/syscalls/quotactl/quotactl06.c | 4 ++++
+>   testcases/kernel/syscalls/quotactl/quotactl08.c | 4 ++++
+>   testcases/kernel/syscalls/quotactl/quotactl09.c | 4 ++++
+>   5 files changed, 20 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+> index 561e5030fe..f06e18edca 100644
+> --- a/testcases/kernel/syscalls/quotactl/quotactl01.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+> @@ -217,6 +217,10 @@ static struct tst_test test = {
+>   		"CONFIG_QFMT_V2",
+>   		NULL
+>   	},
+> +	.needs_drivers = (const char *const []) {
+> +		"quota_v2",
+> +		NULL
+> +	},
+>   	.test = verify_quota,
+>   	.tcnt = ARRAY_SIZE(tcases),
+>   	.mount_device = 1,
+> diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
+> index 55da282705..bb2d899f0e 100644
+> --- a/testcases/kernel/syscalls/quotactl/quotactl04.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
+> @@ -166,6 +166,10 @@ static struct tst_test test = {
+>   		"CONFIG_QFMT_V2",
+>   		NULL
+>   	},
+> +	.needs_drivers = (const char *const []) {
+> +		"quota_v2",
+> +		NULL
+> +	},
+>   	.min_kver = "4.10", /* commit 689c958cbe6b (ext4: add project quota support) */
+>   	.test = verify_quota,
+>   	.tcnt = ARRAY_SIZE(tcases),
+> diff --git a/testcases/kernel/syscalls/quotactl/quotactl06.c b/testcases/kernel/syscalls/quotactl/quotactl06.c
+> index 87715237f5..8c75c87b06 100644
+> --- a/testcases/kernel/syscalls/quotactl/quotactl06.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
+> @@ -220,6 +220,10 @@ static struct tst_test test = {
+>   		"CONFIG_QFMT_V2",
+>   		NULL
+>   	},
+> +	.needs_drivers = (const char *const []) {
+> +		"quota_v2",
+> +		NULL
+> +	},
+>   	.tcnt = ARRAY_SIZE(tcases),
+>   	.test = verify_quotactl,
+>   	.dev_fs_type = "ext4",
+> diff --git a/testcases/kernel/syscalls/quotactl/quotactl08.c b/testcases/kernel/syscalls/quotactl/quotactl08.c
+> index 3793867f23..ae6e582be0 100644
+> --- a/testcases/kernel/syscalls/quotactl/quotactl08.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl08.c
+> @@ -212,6 +212,10 @@ static struct tst_test test = {
+>   		"CONFIG_QFMT_V2",
+>   		NULL
+>   	},
+> +	.needs_drivers = (const char *const []) {
+> +		"quota_v2",
+> +		NULL
+> +	},
+>   	.test = verify_quota,
+>   	.tcnt = ARRAY_SIZE(tcases),
+>   	.mntpoint = MNTPOINT,
+> diff --git a/testcases/kernel/syscalls/quotactl/quotactl09.c b/testcases/kernel/syscalls/quotactl/quotactl09.c
+> index 8b959909ca..12d331b1a0 100644
+> --- a/testcases/kernel/syscalls/quotactl/quotactl09.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl09.c
+> @@ -174,6 +174,10 @@ static struct tst_test test = {
+>   		"CONFIG_QFMT_V2",
+>   		NULL
+>   	},
+> +	.needs_drivers = (const char *const []) {
+> +		"quota_v2",
+> +		NULL
+> +	},
+>   	.tcnt = ARRAY_SIZE(tcases),
+>   	.test = verify_quotactl,
+>   	.dev_fs_opts = (const char *const[]){"-O quota", NULL},
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
