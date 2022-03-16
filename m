@@ -4,143 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0909AC433EF
-	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 06:35:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE90CC433F5
+	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 09:09:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA29D3C934A
-	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 07:35:04 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 4FCD43C93E5
+	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 10:09:53 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1DA833C627E
- for <ltp@lists.linux.it>; Wed, 16 Mar 2022 07:34:52 +0100 (CET)
-Received: from esa17.fujitsucc.c3s2.iphmx.com (esa17.fujitsucc.c3s2.iphmx.com
- [216.71.158.34])
+ by picard.linux.it (Postfix) with ESMTPS id 214A23C91FC
+ for <ltp@lists.linux.it>; Wed, 16 Mar 2022 10:09:41 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 65DCD60117B
- for <ltp@lists.linux.it>; Wed, 16 Mar 2022 07:34:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1647412492; x=1678948492;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=xf3Dc6lBuwZ8/7j+JjQzyzIkDPASy3ZzioDtL5qPDuU=;
- b=SyIjDnxJka4nEVVlnLmMQilwM1FKW1rvjSaXmyYfev+TTTVU1HYIRyrs
- WXKXW+1M2Rk3lqgEcxCNmTylkNtuwmwDAteOJIqqcTZoZUKetxsQdSmK3
- JmwEL6426gArXNe5uMbx9m+vNT0gsG48wp0GV9zkyYg3lijHXQFBQVDXV
- HJM2knx5K0PfsKvDY8ZK0b0pW6CNxl3i0pAkCrZxRbXzhJ9ZXnDcW49Ih
- Y04MnTX5OH6Q08VmdqWxvgQD7xU1LwP9TQekNul5E8xDl+xIu76z/ktLy
- TAHBCwzi4xoxnyb56Og3uPO5Dqn0kCh0fGSYBToPZnV+PkS1dZCNA3b/0 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="51809425"
-X-IronPort-AV: E=Sophos;i="5.90,185,1643641200"; d="scan'208";a="51809425"
-Received: from mail-tycjpn01lp2177.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.177])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2022 15:34:49 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IMVT9uj7X6Aw+W/V8lmDVRk4aPsPVBE+U7CZmJrCuPKmr+Ts/FpJsj+4tz85Rqq9jHWlBonYQDhv5tb5TX79GPjf88W7boBx4O6U+jH4Mij7kGlStqfHNlnHIDx/JGQrgh7CaTt258uNaAwQzhuW9i1E2WXhzlwaxhpQREhr4b3l2MHmtZ+GvU4Q7X7Dh6Dsz2aQcLG4nvp+AfXpv/Ya+2x40jzIEapOOQbbwulEEItUjESOnMbU34xcZagf5WUza2Jkko3AiiSVErRfHhJ9JpXzyAZtsh4EAt5i5gLAAoXWlntZb1/pYY+m7o/7JegGFvpdtNQ5vODt4ldDfjmiJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xf3Dc6lBuwZ8/7j+JjQzyzIkDPASy3ZzioDtL5qPDuU=;
- b=XLvud/WptuufhfCh/KpUNJiuHZsKxJKqvSxbyiZJXFlGVlPaTJVF+UaHOmpop2cZOAPzJSyPiXjNaiZtVmD40SdIZj9i/pj/+BMEvxRtOfoq9Ml8NDyQiqZ5E9Ml3FDJFyJSIqvCCjLdbXpTz4kfwFtUAq874ek4zFzSMSpxJZ+CZ/yRxbcrvYLsqrKFf1WA/+busaoq0ot+QQHjT2RTU20+tIPGV/dDuLgccBASN0JL+cLPUhWYSQRSNTX3QDIsdtgfYTJbhKUDpSKuOUGUl0ZVUwmUogjx7LmxCfTS3+NTiYGoktQO4BZ8orw7b8KeRHQ3dg07caySc0p6RVBgYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xf3Dc6lBuwZ8/7j+JjQzyzIkDPASy3ZzioDtL5qPDuU=;
- b=J43dvQESlzpDWKTUfVXdZmZ0CSxJZMvOwq2ToOc1x5HhyLOBrVNTN26HicKcSTg5080gXn5JYbJEJ40xaY7g2O49R02VWfzqYARg/61pgDuEQNZUoxuszKWCHe+HopC1YmjC299XeKkNGFb84vmPkj/p16V/AbdyY0oWDF8++dw=
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TY2PR01MB4393.jpnprd01.prod.outlook.com (2603:1096:404:115::13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.25; Wed, 16 Mar
- 2022 06:34:46 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354%6]) with mapi id 15.20.5061.028; Wed, 16 Mar 2022
- 06:34:45 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH 1/2] tst_kernel: Fix search for foo-x86-64 module
-Thread-Index: AQHYOGfOK+Mfj5w7AUmKhPNSGFY7kazBjzgA
-Date: Wed, 16 Mar 2022 06:34:45 +0000
-Message-ID: <6231852C.5020506@fujitsu.com>
-References: <20220315122516.3864-1-pvorel@suse.cz>
- <20220315122516.3864-2-pvorel@suse.cz>
-In-Reply-To: <20220315122516.3864-2-pvorel@suse.cz>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: db402bd4-fd3d-467a-2556-08da07170fca
-x-ms-traffictypediagnostic: TY2PR01MB4393:EE_
-x-microsoft-antispam-prvs: <TY2PR01MB43932354C71D3468A53D7BB8FD119@TY2PR01MB4393.jpnprd01.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lIsQeg7hA490x2LigK4VjQ9KVe/4DL42aSVJhCQiHY6C9YI9NBoJRheq7aBCiflkuz3CeSKt3+X1ypwcjxFTSIDz3pqHXyXGpPtJIGvodkXh9zcHT9JwaF3gYgtOHGpKu0V8Rm0NIVtSrSWU+QSUE3HywOoWhw5wkW/u27T7DA8a8PYCt26OMCkCnNg0uaBh+C6zynNW+g7O4ZMMaq+PPVutlgkho6V7N0y5jkVZHGDzWy9GnboUJgBDWcEf4K+KntNx+LB8CH/xAQJsIFjYyuzDLJUWA/3zsW+a8oQUCM+PQg9r1PGShzqDTuz6350lJpKV//i/EFkBmqVKU9N05wOgjq6GMDvrsr+vHO1bl4s06iKWhqUBQ+/aTqbwSwgB5w5ZJJ0RQ9uH8UAtcesv7zlzstQC4GiECa+1TkGGYtKCMy/OZl1bGC1S3ZN6ej2Poh7Jv5KOc2xUuHz8Lfiq7VyY4yNpor84BCvX3vng/q4fKoEbQqu+fdgd0V8J3m+KrHXDZ+b+fAoUxkp28Lw7Gsxrj4dshrNA8xq8iJ5EuFVdSGi0ynMUEzhpfXxsdwL6EaNWo5aMPc2TcsXuI3dimsrBKBlScNjPerDRHmSbt5NEn4BPaG/YSzOqJQzqGxnBkQQRGLbnUEklrXsQK9TorxSLLrz0/DEXQewMS/wfY/bOpysjm0Lm9YBJkDrj31G45+936Y/42l53hLJab8ztug==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(87266011)(38070700005)(82960400001)(6506007)(122000001)(186003)(26005)(2906002)(2616005)(6512007)(38100700002)(91956017)(36756003)(66946007)(6486002)(71200400001)(4326008)(66556008)(64756008)(66476007)(33656002)(66446008)(6916009)(76116006)(86362001)(5660300002)(316002)(8936002)(508600001)(85182001)(8676002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?TTZmMEpTY2x4YlJxM3JTL3U2S3gzWGhLYk1IVzhiYUtLQWhxUzR3Y285S2pR?=
- =?gb2312?B?K053VFk2aEk1Yi9HUjhhSXNxcmtHSFFsLzlqS1Nva0Y5Z2pFNG5XOHBLVmZs?=
- =?gb2312?B?dXgxeDNMWUJQdSs2aTRoUU14S1liK3ZqM3hrTVlmOFdhSlJXQVFiSjcvT3Q4?=
- =?gb2312?B?UnN3ejNBM3pDRWpQNk80RU5ZRlpMQ2plK3FJSG1ZTkdMVGo2UjgxU2hQTHlI?=
- =?gb2312?B?dVFlQ09qT011aGxMKytZTWRQSzY5bmpLTG5SVFBOanN6eVFzSGh1SjFVTnhT?=
- =?gb2312?B?SzhmMWRKQXJtZ2lFa21kYk4xRjVCSzEvVmRvMUo2OURnZ1hCS3diMnFyREhV?=
- =?gb2312?B?RWxZeDNUS21DZVBydDhPYTZMMGROWU9nV2xUK0lud0Vwa0ZCcGF4VUZ0aEN3?=
- =?gb2312?B?YTZPTnN3SVJVR29YWmdVOVBndVRENENhenhFc0xNSndSYlJRNjVEWjI5Uk5E?=
- =?gb2312?B?QmhRblBTSWJ5Y2xmZ0Iwc1pkcGh1dUZLRW1rditybVJzV1gwdFFsaGlVR0l5?=
- =?gb2312?B?YnFOL1poT0gxTlpXUVNBL0tIcEpHNnJ4TFNoRlNDT1ROYW1qTUxoaXlMK3J2?=
- =?gb2312?B?cGJuenQrdjlqdFNVL2lqVk03dUVobFE0bWZSWjJJRlZqWXJsd1prMmNKUlFR?=
- =?gb2312?B?UjA2cnlxQzN1N3NuakMzcnZyZEF0TXMrM0VQckFDcTJISklETjBnU2U3aCs2?=
- =?gb2312?B?azNldTk1RnFIN2psbDZHV20vQ01JUFpxbVV6TkNLWlJOeG9tZ3RabUhXRkY4?=
- =?gb2312?B?TkVST1BwYUVSQ04xVWlsSGdJakk2d0FwcWRNaU9QK205TDRFbmw3b3V6bzU0?=
- =?gb2312?B?VGZZdU1tR00zMVNCbW1IVDBSbmZ2TFZhL0lhZkxzQlBFSzVsVjV4WkJjcFdX?=
- =?gb2312?B?a1hYR1pxcnZsaXFEeUczS25yeW4yeWF4V1d3bWN0NjN4RDNPc3R2R1NPUW5G?=
- =?gb2312?B?OGowdlVGSDBLaTVHS0pDcXVPb2Z5T2ZPRkV2Y095a0pjaS9URUsyam9hb0Fi?=
- =?gb2312?B?MUZqckEzTG5uTFpxb2orZlFaTjFkZnZ2dldpOFRnaUl0Q05pcGRKM0VkWjZ5?=
- =?gb2312?B?cFBGdlZlN0lURm9FMmNPQ0NCZXhYamlzb0hLNGtzcGtjVm1LcG1PZDdkN1lt?=
- =?gb2312?B?L3pGOWFHYzBrSy9LZnpVQUZnMlc0c3BGaVp1b205V1NsWUpOdHN5SE5TVFgx?=
- =?gb2312?B?NmFQRTVEYk8vQkRmR2w2dHZpL3FFWW5OcW83V3BGYnd1VGwrT1N1bm5xdFRN?=
- =?gb2312?B?RW1LWUhuazdrTjRLaXNYVmZGQWM0RUs3WkV1NXdhUGdFSG14Z3lCanliUmx3?=
- =?gb2312?B?Q2JBOXVSOFc1dEJURHNnK0xtYS9ETStpNUVqQlN4Vk9vVjFVbUcwMng0YTg3?=
- =?gb2312?B?RWIzVG1uZlBqQ3JNa0gxOHIwSTUyQTY5TTlmTlRIYnJnZlE0ZTRENjBYMDd1?=
- =?gb2312?B?S1o0aDhLS0RQemNML1ljVzMzZ25HRzFqdEE4VEpVWjg5Z2w3YUpCL0d2L0R5?=
- =?gb2312?B?NzA4QklyaWpvZk40azBoMzZ3eVI5clovMFdja1MwYko1Yk83MncrcnowYmI4?=
- =?gb2312?B?WWpPWmx1UjIwbWxoSXpmbUdSVXZCdWExamYvSGVQeWFhSkFtdWxmK252YVJ6?=
- =?gb2312?B?eU11Y1FyM2ZCd0xhaFEvNFlHWmpHUlhteW1YcE54ZDJlNS9hZ1F3SjFtTmNy?=
- =?gb2312?B?MHlYTFlDWGFlR25VNmNEczA3TGxvazBoTUM3cXp5aU5raTNkbDRtNjFWT1d5?=
- =?gb2312?B?eFJMcTdza0JZTlFBRHVhQ0lFV0trSllJY3ozd3RvUE5IelU3OStmcU1qNFhJ?=
- =?gb2312?B?SVdMNnd1OFlsMmRCS3h1akxPNWhBdXlPZTBkYTlmY1hWaFpVVFhLbDNPYUEz?=
- =?gb2312?B?WG95MHZMaHg1YUQ5MXpoSGZSMjljVXBPMVFJNlpMcHhEcmFVZHRKZXRQVDcx?=
- =?gb2312?B?OW9mWjVCUEptaDdPanFuWWc5dnRiY2kxbmlKV2lFRDV0RlRwc2ptd2h1ZCtY?=
- =?gb2312?Q?4S+ypNfrO3xXLLgqI+jO04e9xxzuE8=3D?=
-Content-ID: <3C3AB1F6141BF143B6FAB892583D52B4@jpnprd01.prod.outlook.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 05D5D60045F
+ for <ltp@lists.linux.it>; Wed, 16 Mar 2022 10:09:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1647421779;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XSKvwq0t0zq6iAFrj5RkCV+fKivt7sSeC+pp3FikOiQ=;
+ b=Nr/BZ+kq7P9Q2Rybr2wPOs9855hDwAgcUaiU+j8pWRQYdfgREEKihslAJNGOATz5lp8Gqh
+ IgIZJGzpgdpTuf0ujU91jB8joxk5J5GH6PxhN1POZO9SWV9P1kuGSq4Rj/3UvBYcIsjuV/
+ q8hK34EiXwjBWm2ez1lpyYKxewrLDSI=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-19-0Vcgj1WrMiu4ogxtOqQE7w-1; Wed, 16 Mar 2022 05:09:37 -0400
+X-MC-Unique: 0Vcgj1WrMiu4ogxtOqQE7w-1
+Received: by mail-yw1-f200.google.com with SMTP id
+ 00721157ae682-2dbf52cc4b9so13815477b3.18
+ for <ltp@lists.linux.it>; Wed, 16 Mar 2022 02:09:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=XSKvwq0t0zq6iAFrj5RkCV+fKivt7sSeC+pp3FikOiQ=;
+ b=OTE/lPiC4C7nEJaP2bACyh5cjFmhFTnrBfQeZmqD/DeJj0D9nJ9FGNMeXhnXmMH1FB
+ Jt4Bsa7uRP2dx80a0k+PWNR0zhZBwUSxaejQfTT9Rm1QG6Y7HQfZpxTFgca+BVv6AwD6
+ 0vLqfQPG/xgvAQRdptO+zF5s8SxsgtSQThhMc/1gsTrqDmkb1WUKkdekj7Bf4NpEPYI0
+ f7Hg4oOGv7bREnPEaK4ZTSPOTefUpaXiG67kr4QkzmNxptHE4UA+xcA/9P6RGXMAFo0m
+ aPOb2vbTE957pkDZIY2/TGkfaCwR3EeO/Zfmdjv97vptVXntUEiuqTyGO4sQjE95YuDv
+ lQWw==
+X-Gm-Message-State: AOAM532/hnX++J45ewwLARkIp95xaGe3GEIA1YRm9xAgtlPfrt94MoOl
+ aCLny/fHb+JbB0MlH/7uN3j/g7FEjubNgtnkOr4cgt6CXQUAR8EsE84i4XYn3WSrlxfOVOj7Ikh
+ MiUdw+pKj9sGlcDLPu4wqewv1gr4=
+X-Received: by 2002:a05:690c:314:b0:2e5:9e04:7ed3 with SMTP id
+ bg20-20020a05690c031400b002e59e047ed3mr3821623ywb.370.1647421776439; 
+ Wed, 16 Mar 2022 02:09:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhSaSm66Oofe4d/9EjAn99Tm7pZxzJJx99cpxiwH3VYm6YXUHBlGpnqGeYLNEoW67vHdSlDEowESmpxQdo5r4=
+X-Received: by 2002:a05:690c:314:b0:2e5:9e04:7ed3 with SMTP id
+ bg20-20020a05690c031400b002e59e047ed3mr3821547ywb.370.1647421775113; Wed, 16
+ Mar 2022 02:09:35 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db402bd4-fd3d-467a-2556-08da07170fca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2022 06:34:45.2832 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MORVqjwY2U2+n1yMvxf6K8DXvCfNQ0MhZLczsGh5a7wK1WmMoctnc3TCoGLTHOP/GooP8N0QOzTY5kJOJrKl23emJijgpiXT6SggUAi/3cI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4393
+References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
+ <6cefd04ee35cf06c9771a34d28dcd35015e49ded.1646434670.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <6cefd04ee35cf06c9771a34d28dcd35015e49ded.1646434670.git.luke.nowakowskikrijger@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 16 Mar 2022 17:09:23 +0800
+Message-ID: <CAEemH2cbaH+CM=j=zJ+XWVvpjYLOeHBX=ySmc-TomGdH1Qeceg@mail.gmail.com>
+To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] tst_kernel: Fix search for foo-x86-64 module
+Subject: Re: [LTP] [PATCH 16/16] controllers: update cgroup_regression_test
+ to use newer cgroup lib
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -152,65 +87,188 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0151479275=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr
-I don't understand why we must serach foo-x86-64 module, so what problem 
-do you meet?
+--===============0151479275==
+Content-Type: multipart/alternative; boundary="000000000000b3868605da524500"
 
-I used 5.17-rc8,  it still use foo-x86_64 named rule for 
-kernel/arch/x86/crypto/libblake2s-x86_64.ko.
+--000000000000b3868605da524500
+Content-Type: text/plain; charset="UTF-8"
 
-If kernel has libblake2s-x86_64 module, then tst_check_driver will use 
-libblake2s_x86_64 to find, it should succeed.
+On Sat, Mar 5, 2022 at 7:19 AM Luke Nowakowski-Krijger <
+luke.nowakowskikrijger@canonical.com> wrote:
 
-If kernel doesn't have libblake2s-x86_64 module, then tst_ckeck_driver 
-will search twice ,the first time use libblake2s-x86_64  and the second
-time use libblake2s_x86_64, then search failed.
-
-Best Regards
-Yang Xu
-> Although modules.{builtin,dep} contain modules with both dashes and
-> underscores and use this consistently, there the only exception: modules
-> for x86_64 arch are always named x86_64 no matter whether they use
-> dashes or underscore for the rest. E.g. libblake2s-x86-64.
+> The older function in the cgroup lib 'get_cgroup_mountpoint' has been
+> removed, so instead replace it with its old functionaility to get
+> mountpoint.
 >
-> modinfo works with all 4 combinations of libblake2s[-_]x86[-_]64,
-> thus fix tst_search_driver() to allow the same.
+> Also use the newer cgroup lib require operation to mount and cleanup a
+> cpu controller.
 >
-> before:
-> tst_check_driver 3 TPASS: tst_check_drivers libblake2s-x86_64 2>/dev/null passed as expected
-> libblake2s-x86-64tst_check_driver 3 TFAIL: tst_check_drivers libblake2s-x86-64 failed unexpectedly
->
-> after fix:
-> tst_check_driver 3 TPASS: tst_check_drivers libblake2s-x86_64 2>/dev/null passed as expected
-> tst_check_driver 3 TPASS: tst_check_drivers libblake2s-x86-64 2>/dev/null passed as expected
->
-> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> Signed-off-by: Luke Nowakowski-Krijger <
+> luke.nowakowskikrijger@canonical.com>
 > ---
->   lib/tst_kernel.c | 5 +++++
->   1 file changed, 5 insertions(+)
+>  .../cgroup/cgroup_regression_test.sh            | 17 ++++-------------
+>  1 file changed, 4 insertions(+), 13 deletions(-)
 >
-> diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-> index 6db85bff0e..ecf4b917e7 100644
-> --- a/lib/tst_kernel.c
-> +++ b/lib/tst_kernel.c
-> @@ -116,6 +116,11 @@ static int tst_search_driver(const char *driver, const char *file)
->   		return -1;
->   	}
+> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> index 592a1d3b1..2df216f43 100755
+> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> @@ -170,17 +170,8 @@ test3()
+>                 return
+>         fi
 >
-> +	/* always search for x86_64 */
-> +	char *fix = strstr(driver, "x86-64");
-> +	if (fix)
-> +		fix[3] = '_';
-> +
->   	SAFE_ASPRINTF(NULL,&search, "/%s.ko", driver);
+> -       cpu_subsys_path=$(get_cgroup_mountpoint "cpu")
+> -
+> -       # Run the test for 30 secs
+> -       if [ -z "$cpu_subsys_path" ]; then
+> -               mount -t cgroup -o cpu xxx cgroup/
+> -               if [ $? -ne 0 ]; then
+> -                       tst_res TFAIL "Failed to mount cpu subsys"
+> -                       return
+> -               fi
+> -               cpu_subsys_path=cgroup
+> -       fi
+> +       cgroup_require "cpu"
+> +       cpu_subsys_path=$(cgroup_get_mountpoint "cpu")
 >
->   	f = SAFE_FOPEN(NULL, path, "r");
+>         cgroup_regression_3_1.sh $cpu_subsys_path &
+>         pid1=$!
+> @@ -193,7 +184,7 @@ test3()
+>         wait $pid2 2>/dev/null
+>
+>         rmdir $cpu_subsys_path/0 2> /dev/null
+> -       tst_umount $PWD/cgroup
+> +       cgroup_cleanup
+>         check_kernel_bug
+>  }
+>
+> @@ -310,7 +301,7 @@ test_7_1()
+>         # could be passed here as params and this will lead to ambiguity
+> and
+>         # errors when grepping simply for 'debug' in /proc/mounts since
+> we'll
+>         # find also /sys/kernel/debug. Helper takes care of this.
+> -       local subsys_path=$(get_cgroup_mountpoint $subsys)
+> +       local subsys_path=$(grep cgroup /proc/mounts | grep -w $subsys |
+> awk '{ print $2 }')
+>
+
+Why not use 'cgroup_get_mountpoint' like test3 but
+switch back to grep for getting the subsys path?
+The grep way won't work on Cgroup V2, isn't it?
+
+
+-- 
+Regards,
+Li Wang
+
+--000000000000b3868605da524500
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Sat, Mar 5, 2022 at 7:19 AM Luke Nowakowski-Krij=
+ger &lt;<a href=3D"mailto:luke.nowakowskikrijger@canonical.com">luke.nowako=
+wskikrijger@canonical.com</a>&gt; wrote:<br></div><blockquote class=3D"gmai=
+l_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,20=
+4,204);padding-left:1ex">The older function in the cgroup lib &#39;get_cgro=
+up_mountpoint&#39; has been<br>
+removed, so instead replace it with its old functionaility to get<br>
+mountpoint.<br>
+<br>
+Also use the newer cgroup lib require operation to mount and cleanup a<br>
+cpu controller.<br>
+<br>
+Signed-off-by: Luke Nowakowski-Krijger &lt;<a href=3D"mailto:luke.nowakowsk=
+ikrijger@canonical.com" target=3D"_blank">luke.nowakowskikrijger@canonical.=
+com</a>&gt;<br>
+---<br>
+=C2=A0.../cgroup/cgroup_regression_test.sh=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | 17 ++++-------------<br>
+=C2=A01 file changed, 4 insertions(+), 13 deletions(-)<br>
+<br>
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh =
+b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh<br>
+index 592a1d3b1..2df216f43 100755<br>
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh<br>
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh<br>
+@@ -170,17 +170,8 @@ test3()<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 fi<br>
+<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0cpu_subsys_path=3D$(get_cgroup_mountpoint &quot=
+;cpu&quot;)<br>
+-<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0# Run the test for 30 secs<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0if [ -z &quot;$cpu_subsys_path&quot; ]; then<br=
+>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mount -t cgroup -o =
+cpu xxx cgroup/<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if [ $? -ne 0 ]; th=
+en<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0tst_res TFAIL &quot;Failed to mount cpu subsys&quot;<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0return<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fi<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0cpu_subsys_path=3Dc=
+group<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0fi<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0cgroup_require &quot;cpu&quot;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0cpu_subsys_path=3D$(cgroup_get_mountpoint &quot=
+;cpu&quot;)<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 cgroup_regression_3_1.sh $cpu_subsys_path &amp;=
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 pid1=3D$!<br>
+@@ -193,7 +184,7 @@ test3()<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 wait $pid2 2&gt;/dev/null<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 rmdir $cpu_subsys_path/0 2&gt; /dev/null<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0tst_umount $PWD/cgroup<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0cgroup_cleanup<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 check_kernel_bug<br>
+=C2=A0}<br>
+<br>
+@@ -310,7 +301,7 @@ test_7_1()<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 # could be passed here as params and this will =
+lead to ambiguity and<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 # errors when grepping simply for &#39;debug&#3=
+9; in /proc/mounts since we&#39;ll<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 # find also /sys/kernel/debug. Helper takes car=
+e of this.<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0local subsys_path=3D$(get_cgroup_mountpoint $su=
+bsys)<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0local subsys_path=3D$(grep cgroup /proc/mounts =
+| grep -w $subsys | awk &#39;{ print $2 }&#39;)<br></blockquote><div><br></=
+div><div><div class=3D"gmail_default" style=3D"font-size:small">Why not use=
+ &#39;cgroup_get_mountpoint&#39;=C2=A0like test3 but</div><div class=3D"gma=
+il_default" style=3D"font-size:small">switch back to grep for getting the s=
+ubsys path?=C2=A0</div><div class=3D"gmail_default" style=3D"font-size:smal=
+l">The grep way won&#39;t work on Cgroup V2, isn&#39;t it?</div></div><div =
+class=3D"gmail_default" style=3D"font-size:small"><br></div></div><div><br>=
+</div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><d=
+iv>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000b3868605da524500--
+
+
+--===============0151479275==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0151479275==--
+
