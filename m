@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98836C433F5
-	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 09:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A63C5C433EF
+	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 09:46:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 54C7C3C9364
-	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 10:36:14 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 617253C93C9
+	for <ltp@archiver.kernel.org>; Wed, 16 Mar 2022 10:46:47 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E3B773C91FC
- for <ltp@lists.linux.it>; Wed, 16 Mar 2022 10:36:02 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id CA6B93C91FC
+ for <ltp@lists.linux.it>; Wed, 16 Mar 2022 10:46:36 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D9CB4600837
- for <ltp@lists.linux.it>; Wed, 16 Mar 2022 10:36:01 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3C0EF60081E
+ for <ltp@lists.linux.it>; Wed, 16 Mar 2022 10:46:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1647423360;
+ s=mimecast20190719; t=1647423994;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pdyaNHD3PD9JqPCrcKsweu4kS7zxb9LpW5HKAhnUPZM=;
- b=EiU6mNJ84gLYtB9H6U1Kl8HmQp+UAdnibvUBDhkchUPkJ772qQhPj/6/krcm6q1kI1L5Rp
- xiByM6T1foJtW8CPIzoXSuqA/s6+r7Cm5tCkcvNveYVpijKkUqCYG1HD5q7xDbcmpyaGJi
- SxXhvbbmSeWoe8nYz3GF8Zv2mPlob2s=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=nEl5l0JUwHLLoTM9VFymzHaBsMF09Ru4UQwWInNIf4M=;
+ b=esew7K+5qVQO9gtmvEUCwRisymBcVkboWpxfH9vJJ/eEJSnGkpgFoi43dAYPCAIUSmZlIj
+ cocYjoMGtU75RF0w8C/Ppi0kMhJFhdNhkr9RqDUUYIugqeY0Umi7kD1zb23dh9QTQMtaLb
+ 2fsRGrQJsNlokHngq54+yyxBXwZdDjQ=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-607-JXQZAL1wMC6yKEFU6U5yyw-1; Wed, 16 Mar 2022 05:35:58 -0400
-X-MC-Unique: JXQZAL1wMC6yKEFU6U5yyw-1
-Received: by mail-yb1-f198.google.com with SMTP id
- g2-20020a5b0242000000b0062892750241so1539407ybp.23
- for <ltp@lists.linux.it>; Wed, 16 Mar 2022 02:35:58 -0700 (PDT)
+ us-mta-206-vysrAh8YOxu0qvjYfTSI2A-1; Wed, 16 Mar 2022 05:46:33 -0400
+X-MC-Unique: vysrAh8YOxu0qvjYfTSI2A-1
+Received: by mail-yw1-f197.google.com with SMTP id
+ 00721157ae682-2d726bd83a2so14299497b3.20
+ for <ltp@lists.linux.it>; Wed, 16 Mar 2022 02:46:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=pdyaNHD3PD9JqPCrcKsweu4kS7zxb9LpW5HKAhnUPZM=;
- b=0Ij3p3MOXu+klbDwjImW3rjAADxOpwf+ffRHVVuDjEiD9ciX5eb9fRpr5o7gAJGZVx
- wQb0pj2JDp2uA+rk+sBK26dP8Hgra5HK1hUWiFiQgxhJVjF3KlRbvV4mm+rE/3iW/mUp
- Ksbxg6Ofyt27DvnclvaapG1AG2bSY1p5qYiPFnMBR1Ww+pDbp9MHLErEc2FoO86dgIP9
- FOo/BYojaTogNWJpH+6aadOiqWCMQQjJ2byIj4GJzqW7MKytZa/fx5P3wMmepQywMNs3
- +zadr/9MsuVqtHP7xsorPWlSjgJd4AGx3VxqcgLkdhkMTFqlcBozL0kBhiWDvcepyYAo
- 2S5g==
-X-Gm-Message-State: AOAM533Qno7hE8M/P7IFsm2oICXwv/MHceRefLipB5Cy6Bfp0AiaKVcs
- hXuhxDrW9K+bzalmP9ozud1Pk7KF0rs9+d9W9xNKcL0Qgi0NOxQiRBcKF7zKCRKWFcHAc+tw2vu
- xNCq0BUfQtrJ3zwXr9xJxLU6bBWo=
-X-Received: by 2002:a25:1344:0:b0:633:7592:9c0f with SMTP id
- 65-20020a251344000000b0063375929c0fmr7591733ybt.211.1647423358403; 
- Wed, 16 Mar 2022 02:35:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvhEbVKObiPM7stQazr1jprhtQYLR6FZGlMj3PILuqzEwceTWZC4qIZP2Um/vR+Otm8xEls+eDJtSEuiDSqKg=
-X-Received: by 2002:a25:1344:0:b0:633:7592:9c0f with SMTP id
- 65-20020a251344000000b0063375929c0fmr7591719ybt.211.1647423358152; Wed, 16
- Mar 2022 02:35:58 -0700 (PDT)
+ bh=nEl5l0JUwHLLoTM9VFymzHaBsMF09Ru4UQwWInNIf4M=;
+ b=4TxGCleTzPYkpVj4BFcYFyL4kpNuCZOqimDclb1+N/wkMKzzj5HlwLWZdsZOKcnF+c
+ dG2r3iT5ZHX9OjYnZlG0lkm4Xzb0jjp3IueTeb739j7XSmhEapngPlpE0MphkvkYKoT1
+ +PxlukxCVGg96dJXZJyI1ePWjk70fEMTdkjcTyu4YzJyxLAjJK4Sd7RdLI38i5nZ3RB4
+ OJEQY43qGWIM+qEDdsEPa7Xmj285Q0Z4fiwGfVtn4eYUJUky7xKTkOI7Hi9WtRK2J7W5
+ O0bk2juo2Wdhjyp5SWPbUVtiyNdKYpg7XYCilNvAqBKY+/p7kcTnifMP/MJIuJWtIy3j
+ oAEQ==
+X-Gm-Message-State: AOAM533s5wybRtfhyXZ0gR0rliEZuMd61KE+qw8Hiv0ys/8RqRhxobIp
+ EkTcrLxibESlhKSbI5l6fgHiqzpFABxpX9HoW3rMu2+EVS/SKXVzsu89ibwsuReN6UvvJS1IM+F
+ QNwGgk6iZ93GIAvt9NdZA/fwZrAE=
+X-Received: by 2002:a25:4fc4:0:b0:633:25c8:7d9 with SMTP id
+ d187-20020a254fc4000000b0063325c807d9mr16079529ybb.506.1647423992531; 
+ Wed, 16 Mar 2022 02:46:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwN6XE1brzaneRUlH8P5rgskkuQTqwZPrqfGlrXCuwdOxk68CrsZ/dXziAUQj2llF7UQp8U7uS6eFIMKnKCEPU=
+X-Received: by 2002:a25:4fc4:0:b0:633:25c8:7d9 with SMTP id
+ d187-20020a254fc4000000b0063325c807d9mr16079521ybb.506.1647423992368; Wed, 16
+ Mar 2022 02:46:32 -0700 (PDT)
 MIME-Version: 1.0
 References: <cover.1646434670.git.luke.nowakowskikrijger@canonical.com>
- <4384f778b2664a0ceb561c0b3eac7be42e7cd269.1646434670.git.luke.nowakowskikrijger@canonical.com>
- <87pmmym25m.fsf@suse.de>
-In-Reply-To: <87pmmym25m.fsf@suse.de>
+ <ef5d94799195f00c6ab1fffe612e62bf1ee530a7.1646434670.git.luke.nowakowskikrijger@canonical.com>
+ <87wnh6m2fp.fsf@suse.de> <87ilsqm1kg.fsf@suse.de>
+In-Reply-To: <87ilsqm1kg.fsf@suse.de>
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 16 Mar 2022 17:35:46 +0800
-Message-ID: <CAEemH2dNxKFknG4-Whf8iPC_qBtL9Qvye=m-Fr-_4KH1Sf_YvQ@mail.gmail.com>
+Date: Wed, 16 Mar 2022 17:46:20 +0800
+Message-ID: <CAEemH2fZN6k1hY1BE1dDWtQRi_8w2vBQH9c4EGxz-bRdaYNrFA@mail.gmail.com>
 To: Richard Palethorpe <rpalethorpe@suse.de>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
@@ -75,8 +75,8 @@ X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 05/16] API/cgroup: Add more controllers to
- tst_cgroup
+Subject: Re: [LTP] [PATCH v3 08/16] controllers: Expand cgroup_lib shell
+ library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,49 +90,41 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>,
  Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Content-Type: multipart/mixed; boundary="===============0390914922=="
+Content-Type: multipart/mixed; boundary="===============0990385562=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0390914922==
-Content-Type: multipart/alternative; boundary="0000000000000ec52c05da52a445"
+--===============0990385562==
+Content-Type: multipart/alternative; boundary="000000000000dc23cc05da52c91a"
 
---0000000000000ec52c05da52a445
+--000000000000dc23cc05da52c91a
 Content-Type: text/plain; charset="UTF-8"
 
 Richard Palethorpe <rpalethorpe@suse.de> wrote:
 
 
 
-> > --- a/lib/tst_cgroup.c
-> > +++ b/lib/tst_cgroup.c
-> > @@ -83,8 +83,19 @@ enum cgroup_ctrl_indx {
-> >       CTRL_MEMORY = 1,
-> >       CTRL_CPU,
-> >       CTRL_CPUSET,
-> > +     CTRL_IO,
-> > +     CTRL_PIDS,
-> > +     CTRL_HUGETLB,
-> > +     CTRL_CPUACCT,
-> > +     CTRL_DEVICES,
-> > +     CTRL_FREEZER,
-> > +     CTRL_NETCLS,
-> > +     CTRL_NETPRIO,
-> > +     CTRL_BLKIO,
-> > +     CTRL_MISC,
-> > +     CTRL_PERFEVENT
+> >> +
+> >> +    _cgroup_state=$(tst_cgctl require "$ctrl" $$)
+> >> +
+> >> +    [ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_require: No
+> >state was set after call. Controller '$ctrl' maybe does not exist?"
 >
-> I think we need the debug controller as cgroup_fj_function is called
-> with that in runtest/controllers.
+> Perhaps we can just check the return status of tst_cgctl and exit the
+> script if it is >0?
 >
 
-+1
+That should be work, but we need to check the _cgrou_state
+at other places because many shell APIs require getting Cgroup
+info, I guess this does not make things more easily if check the
+return value only one time.
+
 
 -- 
 Regards,
 Li Wang
 
---0000000000000ec52c05da52a445
+--000000000000dc23cc05da52c91a
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -142,34 +134,31 @@ t-size:small">Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse.de"=
 e"><div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
 =3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
 -left:1ex">
-&gt; --- a/lib/tst_cgroup.c<br>
-&gt; +++ b/lib/tst_cgroup.c<br>
-&gt; @@ -83,8 +83,19 @@ enum cgroup_ctrl_indx {<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0CTRL_MEMORY =3D 1,<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0CTRL_CPU,<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0CTRL_CPUSET,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_IO,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_PIDS,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_HUGETLB,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_CPUACCT,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_DEVICES,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_FREEZER,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_NETCLS,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_NETPRIO,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_BLKIO,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_MISC,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0CTRL_PERFEVENT<br>
+&gt;&gt; +<br>
+&gt;&gt; +=C2=A0 =C2=A0 _cgroup_state=3D$(tst_cgctl require &quot;$ctrl&quo=
+t; $$)<br>
+&gt;&gt; +<br>
+&gt;&gt; +=C2=A0 =C2=A0 [ &quot;$_cgroup_state&quot; =3D &quot;&quot; ] &am=
+p;&amp; tst_brk TBROK &quot;cgroup_require: No<br>
+&gt;state was set after call. Controller &#39;$ctrl&#39; maybe does not exi=
+st?&quot;<br>
 <br>
-I think we need the debug controller as cgroup_fj_function is called<br>
-with that in runtest/controllers.<br></blockquote><div><br></div><div class=
-=3D"gmail_default" style=3D"font-size:small">+1</div></div><div><br></div>-=
-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Rega=
-rds,<br></div><div>Li Wang<br></div></div></div></div>
+Perhaps we can just check the return status of tst_cgctl and exit the<br>
+script if it is &gt;0?<br></blockquote><div><br></div><div class=3D"gmail_d=
+efault" style=3D"font-size:small">That should be work, but we need to check=
+ the _cgrou_state</div><div class=3D"gmail_default" style=3D"font-size:smal=
+l">at other places because many shell APIs require getting Cgroup</div><div=
+ class=3D"gmail_default" style=3D"font-size:small">info, I guess this does =
+not make things more easily=C2=A0if check the</div><div class=3D"gmail_defa=
+ult" style=3D"font-size:small">return value only one time.</div><div class=
+=3D"gmail_default" style=3D"font-size:small"><br></div></div><div><br></div=
+>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Re=
+gards,<br></div><div>Li Wang<br></div></div></div></div>
 
---0000000000000ec52c05da52a445--
+--000000000000dc23cc05da52c91a--
 
 
---===============0390914922==
+--===============0990385562==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -179,5 +168,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0390914922==--
+--===============0990385562==--
 
