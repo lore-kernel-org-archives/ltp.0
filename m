@@ -4,76 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF42C433EF
-	for <ltp@archiver.kernel.org>; Fri, 18 Mar 2022 06:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74407C433F5
+	for <ltp@archiver.kernel.org>; Fri, 18 Mar 2022 06:56:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 770DD3C9477
-	for <ltp@archiver.kernel.org>; Fri, 18 Mar 2022 07:15:24 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id CBEBF3C9450
+	for <ltp@archiver.kernel.org>; Fri, 18 Mar 2022 07:56:50 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 85E673C8CBE
- for <ltp@lists.linux.it>; Fri, 18 Mar 2022 07:15:15 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 5CE143C9447
+ for <ltp@lists.linux.it>; Fri, 18 Mar 2022 07:56:40 +0100 (CET)
+Received: from mail1.bemta36.messagelabs.com (mail1.bemta36.messagelabs.com
+ [85.158.142.112])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1256F100096A
- for <ltp@lists.linux.it>; Fri, 18 Mar 2022 07:15:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1647584112;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E+NqIayJP5HARMCm3bG0+eQak9ofhd57dC4pi55d/r4=;
- b=Wg1B2oLJzLuYfZLWc8HLY7v3uMsromXs1pePBl+a4foCpm7gUN0GJDCCsueKLDbcLw52O6
- DUo0QaSLrmQ9G3P3yUt1e1wJ7i8Z+q1X6k1hnU3cTuFZrNIDiJCMHznWTMLOJiAdO8GMXq
- pCEh/nVkOPMNJgS0RPK0YJ/dJ9vmPso=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-194-YbWtT7BnMG-hh1gD_lNb8A-1; Fri, 18 Mar 2022 02:15:08 -0400
-X-MC-Unique: YbWtT7BnMG-hh1gD_lNb8A-1
-Received: by mail-yb1-f198.google.com with SMTP id
- y10-20020a5b0d0a000000b00633b9765410so975163ybp.18
- for <ltp@lists.linux.it>; Thu, 17 Mar 2022 23:15:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=E+NqIayJP5HARMCm3bG0+eQak9ofhd57dC4pi55d/r4=;
- b=iU6dpTZU4i99s5rWmlgNmZ76uuensXoly883Pf54soEqYJMbnxSnOEA9CREy1sF0xy
- v70pCfooZMXj1X7Z8b6D/ruNuklv6rtBWTaZ5hpO4Jtq7CabZ10JXL22tSWT0E7ub67V
- 1b4wa3tjU2ABpIvCNI6lJT5VpzwDB7nOulx3Bp4VsgoMR6T7k/RJ5v5HVTAnT5lmBT6o
- dEAuhn2l66Ji2uRITLaHodKfU+o3zbJenq9dTYZgM+AUkRihIO/0QKhrBv2Xvx2e3Y0m
- uMp+5sX++Rdb+QjVMPIBdoyN0TYzEugLjXPIoARfogkdzd5U5KqjkAd60C3n/5KwIO5f
- tl+A==
-X-Gm-Message-State: AOAM5301qv6mpguRZMpp7fckkp8FVBHYdy0KEffQjeLagU/TmYLe2ORQ
- irwedBxLNbBfl2v4B/JwIOSbim2DempWALexT7LgFKV5UNofDYUdJ+0hEgQvlGTS9heKHOeQpmn
- eG7oVOREzhfF7Ybp+BddaUvwNfyI=
-X-Received: by 2002:a05:690c:314:b0:2e5:9e04:7ed3 with SMTP id
- bg20-20020a05690c031400b002e59e047ed3mr9964713ywb.370.1647584107807; 
- Thu, 17 Mar 2022 23:15:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDeM0Ha/Rd8fYmUkyo0pyn/BHQ+2D6TGvdNt9wfdM1isR2/mzygf/Yy5TmzMD7hU+12NyBVJJqDlOu4aCkocs=
-X-Received: by 2002:a05:690c:314:b0:2e5:9e04:7ed3 with SMTP id
- bg20-20020a05690c031400b002e59e047ed3mr9964701ywb.370.1647584107430; Thu, 17
- Mar 2022 23:15:07 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8AEF71A00CBA
+ for <ltp@lists.linux.it>; Fri, 18 Mar 2022 07:56:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1647586598; i=@fujitsu.com;
+ bh=ZG1gJ2Xb7fDfCXzFKHArQ7kw/GNB+O9b77oIftJZscI=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=fzwexO5Va34ZYzUbguv3A1vtvX77CaENBn0src0F/ki7FlB5woVbnxRa98DS4Zu2u
+ 97Xy81y0g6PwlQlDDyVBzL/80PbaTqapxESxU2ftUgk/ULWxInNkhjqozDZQd2jlbb
+ qAQL06Yd1PV+C4rZssjHQ4nfDnPGV5gbKKIBi7PlwhwbM2DISYdXlGDSSePSCGNMQL
+ s3kD7UH1gO4kNaTgXYbwSHRSor9lM6OOSysoyY983mXCrJCeuQuYrhvsDlMdPZA6Tl
+ PYT2WBsj2p7kXVFwcd2ZCMVKi7HVQPuIbtJSkA6l2jVtn+POO97PxWIf2yNfypy2Nj
+ 1m3fI42bOb9Qw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRWlGSWpSXmKPExsViZ8MxSVdN1yT
+ JYOEVRosV33cwOjB67Pu9jjWAMYo1My8pvyKBNePZkl7Wgk7uiolXZ7I1MG7g7GLk4hASOMso
+ cXfFJFYIZyeTxMSWX1DOfkaJTw/+M3cxcnKwCWhIXHvcDmaLCMhL7J3QDGYzC9hI7Ls6AcwWF
+ tCV+PSojxXEZhFQlZg8cyJTFyMHB6+Am8S8GYogYQkBBYkpD98zg4Q5BbQlLl40BQkLCWhJrN
+ r4gxHE5hUQlDg58wkLxHQJiYMvXjBDtCpK7N+7kRHCrpCYMWMbG4StJnH13CbmCYyCs5C0z0L
+ SvoCRaRWjbVJRZnpGSW5iZo6uoYGBrqGhqa6ZBZDSS6zSTdRLLdVNTs0rKUoEyuollhfrpRYX
+ 6xVX5ibnpOjlpZZsYgQGckqxC/cOxjt9P/UOMUpyMCmJ8i5TN0kS4kvKT6nMSCzOiC8qzUktP
+ sQow8GhJMGbog2UEyxKTU+tSMvMAUYVTFqCg0dJhLddFSjNW1yQmFucmQ6ROsWoKCXO2wfSJw
+ CSyCjNg2uDRfIlRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK8e0Cm8GTmlcBNfwW0mAlocaO
+ AEcjikkSElFQDk5Gl8rfgGXY/314sy35ztOyD9a8gjaTMc7Oe7L010d0+W3Dq7nadlqnpkzfz
+ R18O888/WW788Sqbk5Jz/AbvQ3zSM70CMrKTp0cqiAmnb7NZpyu37qjMiwc3X/hs+fpL/qFx3
+ 8rG+74rsubta+Bz/xeZtjXVr/TCR5sVc2Ol7YTurZtf1WjU/Ceg+dCfNL6t667M1sza3b9Gpv
+ 9gXV5t+qzp30K/sK5dOPdw6EpNvoZAt2ytow+nzVndOOFP4rK1q7753py87MDcZX9qjbjO3O7
+ jeeT5IdecPdxaYdbqHdfqQ4SaGBgLvauVwtM2m5+cwWZ1R2eB4VQJReu2Fqak3UzP/z9Qvz1t
+ 76b3gfaVYkosxRmJhlrMRcWJALbrzqZfAwAA
+X-Env-Sender: daisl.fnst@fujitsu.com
+X-Msg-Ref: server-18.tower-532.messagelabs.com!1647586597!254!1
+X-Originating-IP: [62.60.8.146]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.81.10; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 20646 invoked from network); 18 Mar 2022 06:56:38 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-18.tower-532.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 18 Mar 2022 06:56:38 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 8093C100463
+ for <ltp@lists.linux.it>; Fri, 18 Mar 2022 06:56:37 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 72080100446
+ for <ltp@lists.linux.it>; Fri, 18 Mar 2022 06:56:37 +0000 (GMT)
+Received: from rhel79.g08.fujitsu.local (10.167.225.51) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Fri, 18 Mar 2022 06:56:15 +0000
+From: Dai Shili <daisl.fnst@fujitsu.com>
+To: <xuyang2018.jy@fujitsu.com>
+Date: Fri, 18 Mar 2022 14:55:45 -0400
+Message-ID: <1647629747-13405-1-git-send-email-daisl.fnst@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <623414B7.6060004@fujitsu.com>
+References: <623414B7.6060004@fujitsu.com>
 MIME-Version: 1.0
-References: <20220316150429.2873-1-pvorel@suse.cz> <YjH9dDef3w7Iu3vG@pevik>
-In-Reply-To: <YjH9dDef3w7Iu3vG@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 18 Mar 2022 14:14:52 +0800
-Message-ID: <CAEemH2cB+k+dbS_N=S0jGs9H3ct1wBUYhuaR-+V7wRVtydVN_g@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Originating-IP: [10.167.225.51]
+X-ClientProxiedBy: G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC][PATCH 1/1] ci: Ubuntu xenial -> bionic
+Subject: [LTP] [PATCH v3 1/3] Add SAFE_ACCESS macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,115 +94,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1622418649=="
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1622418649==
-Content-Type: multipart/alternative; boundary="0000000000007615ee05da7811a5"
+Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+---
+ include/tst_safe_macros.h |  5 +++++
+ lib/tst_safe_macros.c     | 19 +++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
---0000000000007615ee05da7811a5
-Content-Type: text/plain; charset="UTF-8"
-
-Hi Petr,
-
-On Wed, Mar 16, 2022 at 11:08 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-> Tested
->
-> * bionic
-> https://github.com/pevik/ltp/actions/runs/1993375270
->
-> * focal
-> https://github.com/pevik/ltp/actions/runs/1993443143
->
-> And as I noted xenial still works. I wanted to avoid false positives when
-> repos
-> get down, but obviously we have 4 years time (ends in 01 Apr 2026).
->
-
-+1 for bionic. (we can do an upgrade to focal when bionic reach EOL)
-
-According to the release cycle page[1] of ubuntu ORG, the
-Xenial (16.04) version is being deprecated, which means
-no hardware and maintenance updates anymore. But we (LTP)
-still merging new features and regression testcases, I'm afraid
-that will bring some known failures in Xenial then to cost energy
-for debugging.
-
-[1]https://ubuntu.com/about/release-cycle
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 9a543e4..81c4b08 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -24,6 +24,11 @@
+ #include "safe_macros_fn.h"
+ #include "tst_cmd.h"
+ 
++int safe_access(const char *filename, const int lineno, const char *pathname,
++		   int mode);
++#define SAFE_ACCESS(path, mode) \
++	safe_access(__FILE__, __LINE__, (path), (mode))
++
+ #define SAFE_BASENAME(path) \
+ 	safe_basename(__FILE__, __LINE__, NULL, (path))
+ 
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index a9f6aeb..c4cdc87 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -20,6 +20,25 @@
+ #include "lapi/personality.h"
+ #include "lapi/pidfd.h"
+ 
++int safe_access(const char *file, const int lineno,
++	    const char *pathname, int mode)
++{
++	int rval;
++
++	rval = access(pathname, mode);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"access(%s,%d) failed", pathname, mode);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid access(%s,%d) return value %d", pathname,
++			mode, rval);
++	}
++
++	return rval;
++}
++
+ int safe_setpgid(const char *file, const int lineno, pid_t pid, pid_t pgid)
+ {
+ 	int rval;
 -- 
-Regards,
-Li Wang
-
---0000000000007615ee05da7811a5
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Petr,</div></div><br><div class=3D"gmail_quote"><div dir=
-=3D"ltr" class=3D"gmail_attr">On Wed, Mar 16, 2022 at 11:08 PM Petr Vorel &=
-lt;<a href=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></div=
-><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
--left:1px solid rgb(204,204,204);padding-left:1ex">Tested<br>
-<br>
-* bionic<br>
-<a href=3D"https://github.com/pevik/ltp/actions/runs/1993375270" rel=3D"nor=
-eferrer" target=3D"_blank">https://github.com/pevik/ltp/actions/runs/199337=
-5270</a><br>
-<br>
-* focal<br>
-<a href=3D"https://github.com/pevik/ltp/actions/runs/1993443143" rel=3D"nor=
-eferrer" target=3D"_blank">https://github.com/pevik/ltp/actions/runs/199344=
-3143</a><br>
-<br>
-And as I noted xenial still works. I wanted to avoid false positives when r=
-epos<br>
-get down, but obviously we have 4 years time (ends in 01 Apr 2026).<br></bl=
-ockquote><div><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
-ll">+1 for bionic. (we can do an upgrade to focal when bionic reach EOL)</d=
-iv><div class=3D"gmail_default" style=3D"font-size:small"><br></div>Accordi=
-ng to the release cycle page<span class=3D"gmail_default" style=3D"font-siz=
-e:small">[1]</span> <span class=3D"gmail_default" style=3D"font-size:small"=
->of</span>=C2=A0ubuntu<span class=3D"gmail_default" style=3D"font-size:smal=
-l"> ORG</span><span class=3D"gmail_default" style=3D"font-size:small">, the=
-</span></div><div class=3D"gmail_quote">Xenial (16.04) version is being dep=
-recated<span class=3D"gmail_default" style=3D"font-size:small">,</span> whi=
-ch<span class=3D"gmail_default" style=3D"font-size:small"> </span><span cla=
-ss=3D"gmail_default" style=3D"font-size:small"></span>means</div><div class=
-=3D"gmail_quote">no hardware and maintenance updates<span class=3D"gmail_de=
-fault" style=3D"font-size:small"> anymore.=C2=A0</span>But we <span class=
-=3D"gmail_default" style=3D"font-size:small">(</span>LTP<span class=3D"gmai=
-l_default" style=3D"font-size:small">)</span></div><div class=3D"gmail_quot=
-e">still merging new features and regression <span class=3D"gmail_default" =
-style=3D"font-size:small"></span>test<span class=3D"gmail_default" style=3D=
-"font-size:small">cases</span>, I&#39;m afraid</div><div class=3D"gmail_quo=
-te">that will bring=C2=A0<span class=3D"gmail_default" style=3D"font-size:s=
-mall">some</span>=C2=A0known failures in Xenial<span class=3D"gmail_default=
-" style=3D"font-size:small"> then to cost energy</span></div><div class=3D"=
-gmail_quote"><span class=3D"gmail_default" style=3D"font-size:small">for de=
-bugging</span>.</div><div class=3D"gmail_quote"><div class=3D"gmail_default=
-" style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D=
-"font-size:small">[1]<a href=3D"https://ubuntu.com/about/release-cycle">htt=
-ps://ubuntu.com/about/release-cycle</a><br></div><div class=3D"gmail_defaul=
-t" style=3D""></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"g=
-mail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></d=
-iv></div></div></div>
-
---0000000000007615ee05da7811a5--
-
-
---===============1622418649==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+1.8.3.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1622418649==--
-
