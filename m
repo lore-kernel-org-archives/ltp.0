@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DBE8C433EF
-	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 21:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ED53C433FE
+	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 21:38:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9CC023C9345
-	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 22:05:40 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 0E6BB3C91E2
+	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 22:38:39 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0783E3C882C
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 22:05:30 +0100 (CET)
-Received: from a8-35.smtp-out.amazonses.com (a8-35.smtp-out.amazonses.com
- [54.240.8.35])
+ by picard.linux.it (Postfix) with ESMTPS id 7EA163C882C
+ for <ltp@lists.linux.it>; Tue, 22 Mar 2022 22:38:28 +0100 (CET)
+Received: from a48-34.smtp-out.amazonses.com (a48-34.smtp-out.amazonses.com
+ [54.240.48.34])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 51EF06009D7
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 22:05:30 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B4A046009D9
+ for <ltp@lists.linux.it>; Tue, 22 Mar 2022 22:38:27 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1647983128;
+ s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1647985106;
  h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=dL2PWS/uTguofuQFz0bINIgsJlkbYXGOtkORM+7izaU=;
- b=iJS6zPHN7eOxJt9HnBW7Pyf8oUrTbN6r7xZuSvFmlbR3XobROmiVoCmli9/JGjdJ
- SxUYD2G3ONWHRc+Awih78XSUPyNqBMybljPtnawpKNgNhCHpzb/XCohVo6dqmRH1cEd
- gCE8yqqA1Ue8i5plPJpjS2IG8okImrkma0r88hJ4=
+ bh=6OO7OBlbOXPzkexJEJ4Kua+GNPWPVICii8ogML/zMyY=;
+ b=muugliXIusHxX80K5d6hcLdUWzlwySSm1pqvWS0DYJBz8bG4nHcyP07Zkn+qhQS6
+ v3UEglHDjScZT1xcQYbM2bj1DylZdeKpmRwrD3gW53ROsGECYFC3Y3Y3RISbbtW9Bwr
+ xozMmxcjKrV3UGrLeiNvnI9ekNQBzWMHgaSc3z6w=
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1647983128;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1647985106;
  h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=dL2PWS/uTguofuQFz0bINIgsJlkbYXGOtkORM+7izaU=;
- b=O9NYys1+iMlJYRHo/F+/EmXnehbvzfLDgnOX118jdVFBVBUrIM5nKXXojywAksny
- aZnuMGwa33A0QisokJNeSJe6MzuC9PmUBcjuIIyHtKbZX+ThIDlB1AMaCmic44kJ+IJ
- 0MgLqbb7E7RutTUrCbb0q2Y0wYQinB54CUF9GK7Y=
+ bh=6OO7OBlbOXPzkexJEJ4Kua+GNPWPVICii8ogML/zMyY=;
+ b=N3se2+I01hWLNgvoLBAcRHuENvQY/WBkrqBF6LaIfnudBSafOH/lZHg3KGtuANIb
+ CDUpt62wb4coKkTEgUb2nwPI8q/jBqkYarE4Y6RJxbc7ZHEhGhAShP0rqT6n3SgegeW
+ xgOEgHy1pAW7V+UUtWc7wspYJd77ivnrGoi0N1i4=
 From: lkft@linaro.org
 To: ltp@lists.linux.it
 MIME-Version: 1.0
-Message-ID: <0100017fb372ef27-ce859ae9-44a5-4ade-92a7-f367e5a7dead-000000@email.amazonses.com>
-Date: Tue, 22 Mar 2022 21:05:28 +0000
+Message-ID: <0100017fb3911be3-4b9c9c6d-d3ba-4d24-a635-c47069963d41-000000@email.amazonses.com>
+Date: Tue, 22 Mar 2022 21:38:25 +0000
 Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.03.22-54.240.8.35
+X-SES-Outgoing: 2022.03.22-54.240.48.34
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for f4b92b6
+Subject: [LTP] [REGRESSION] lkft ltp for 98b016c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,11 +67,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
 * git branch: linux-5.16.y
 * git commit: 9aed648340400df7f403d41d8558244afd6d69d3
-* git describe: f4b92b6
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/f4b92b6
+* git describe: 98b016c
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/98b016c
 
 ## Test Regressions (compared to e246b2e)
 * bcm2711-rpi-4-b, ltp-controllers-tests
+  - memcg_subgroup_charge
+
+* qemu_x86_64, ltp-controllers-tests
   - memcg_subgroup_charge
 
 * qemu_x86_64, ltp-fs-tests
@@ -85,13 +88,15 @@ Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
 ## Test Fixes (compared to e246b2e)
-No test fixes found.
+* qemu_arm, ltp-syscalls-tests
+  - accept02
+
 
 ## Metric Fixes (compared to e246b2e)
 No metric fixes found.
 
 ## Test result summary
-total: 11946, pass: 10004, fail: 46, skip: 1896, xfail: 0
+total: 12100, pass: 10133, fail: 47, skip: 1920, xfail: 0
 
 ## Build Summary
 
