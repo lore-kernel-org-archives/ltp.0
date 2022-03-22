@@ -4,63 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ABACC433EF
-	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 11:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7661DC433EF
+	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 11:55:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F4053C8C01
-	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 12:42:50 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 7176B3C882A
+	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 12:55:44 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DFB613C5601
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 12:42:39 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 08B893C87D3
+ for <ltp@lists.linux.it>; Tue, 22 Mar 2022 12:55:34 +0100 (CET)
+Received: from a48-34.smtp-out.amazonses.com (a48-34.smtp-out.amazonses.com
+ [54.240.48.34])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 031341A00CA7
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 12:42:38 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 05337210F7
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 11:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1647949358;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2zPFTTs0aHpiBe8H3DJdESdoF6+1BMMsO3HjOvUrHvU=;
- b=dyKbVC/IV4lSBVV1AVN26MRyMuiit75MUj8uuiLGHtWA8WkL96moquePdFcn0HlsZxjeX3
- dfH9hAxP60BtsScXcSo4g5y4Bj/FH7xLKdodzPUZuPLJVgAW0qXlWb2RBHWvtXvStUethq
- p5RbaKWdVVOzXpepapRCYvTeMZdnbWk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1647949358;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2zPFTTs0aHpiBe8H3DJdESdoF6+1BMMsO3HjOvUrHvU=;
- b=/A4eQK+4hIwLn/+YoZEdRJYqx5n53itTh4E9UrLQalCdzNPXn75PWO+GrKfBrbFgoHzjv4
- 6NVqQ9WJUK/i0QDA==
-Received: from g78 (unknown [10.163.24.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id B7C68A3B89;
- Tue, 22 Mar 2022 11:42:37 +0000 (UTC)
-References: <20220311095101.10112-1-chrubis@suse.cz>
- <8378e9dd-31a5-b39e-36cc-f3d3a1d41345@suse.cz> <YisfIWsrgxVt8xc2@yuki>
- <875yo6cr1f.fsf@suse.de> <YjmYJ5yukrrgCNYW@yuki>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Mar 2022 11:41:27 +0000
-In-reply-to: <YjmYJ5yukrrgCNYW@yuki>
-Message-ID: <871qyucixk.fsf@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 20E0C680E59
+ for <ltp@lists.linux.it>; Tue, 22 Mar 2022 12:55:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1647950131;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=zzVZb27KF5u3YBCGCWCw4+paelfqoVL/D9eLieSw7kk=;
+ b=lcybYmKH3V6Dambp6Ugc/gIyHxIvNgugq0fpOPycSr5cRKA1rvVzN+yf5VRu+lQr
+ gEynISRqVArAbfysc3256oZdaVshoXSJRohcwz7dN4Yu4P6whApHEc81szwQDQvF6JF
+ i+0DB7qUSTpD+dCnNp86k4rVQoUm9oPw+qRCUXkk=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1647950131;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=zzVZb27KF5u3YBCGCWCw4+paelfqoVL/D9eLieSw7kk=;
+ b=l0Ak3YSmLSwXsY7xikbomojR3Ws+sGJQZkaWTKL8XOEPJGLqevZuny0vPq5oOhhZ
+ BS9bufO1OQjV2+qWyavj7fTPJLLJ7kq6dNtf1nEpX3KLIAYNKba22IZhUhgDpjRJ3YS
+ ZUnfT8Qw1BDZAKce31aildcbNtGXkyy7di/8ZJUA=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Message-ID: <0100017fb17b6ee9-0e87a99b-ddc2-49a2-87a2-2736b7cc207e-000000@email.amazonses.com>
+Date: Tue, 22 Mar 2022 11:55:31 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.03.22-54.240.48.34
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] pty/pty07: Restore active console after the
- testrun
+Subject: [LTP] [REGRESSION] lkft ltp for f68379f
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,39 +57,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+## Build
+* kernel: 5.16.16
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.16.y
+* git commit: 9aed648340400df7f403d41d8558244afd6d69d3
+* git describe: f68379f
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/f68379f
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+## Test Regressions (compared to a3fabc9)
+* qemu_arm64, ltp-controllers-tests
+  - memcg_move_charge_at_immigrate
 
-> Hi!
->> > Ah, right, looking closely at the fzsync, the thread B may be racing
->> > against the restoration in the case that something caused premature exit
->> > in the thread A.
->> >
->> > Will move the call back to the start of the cleanup().
->> >
->> > -- 
->> > Cyril Hrubis
->> > chrubis@suse.cz
->> 
->> Why are we using /dev/tty8 instead of allocating a pty with /dev/ptmx?
->
-> I do not think that we can VT_ACTIVATE on pseudoterminals, as far as I
-> can tell we have to have real console for that.
 
-OK, this looks good then.
+## Metric Regressions (compared to a3fabc9)
+No metric regressions found.
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-Thank you,
-Richard.
+
+## Test Fixes (compared to a3fabc9)
+* qemu_arm, ltp-controllers-tests
+  - memcg_subgroup_charge
+
+* qemu_arm, ltp-syscalls-tests
+  - accept02
+
+* qemu_arm64, ltp-controllers-tests
+  - memcg_subgroup_charge
+
+* qemu_arm64, ltp-syscalls-tests
+  - accept02
+
+* qemu_i386, ltp-controllers-tests
+  - memcg_subgroup_charge
+
+* qemu_i386, ltp-syscalls-tests
+  - futex_cmp_requeue01
+
+* qemu_x86_64, ltp-syscalls-tests
+  - futex_cmp_requeue01
+
+
+## Metric Fixes (compared to a3fabc9)
+No metric fixes found.
+
+## Test result summary
+total: 11699, pass: 9778, fail: 41, skip: 1880, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
