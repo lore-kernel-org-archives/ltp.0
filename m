@@ -4,68 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE0A9C433F5
-	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 18:25:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFC8AC433EF
+	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 19:20:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC6F43C9628
-	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 19:25:56 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 710753C8F80
+	for <ltp@archiver.kernel.org>; Tue, 22 Mar 2022 20:20:36 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 784A73C006A
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 19:25:45 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id EF8F63C7F3D
+ for <ltp@lists.linux.it>; Tue, 22 Mar 2022 20:20:25 +0100 (CET)
+Received: from a8-81.smtp-out.amazonses.com (a8-81.smtp-out.amazonses.com
+ [54.240.8.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D6E39600853
- for <ltp@lists.linux.it>; Tue, 22 Mar 2022 19:25:44 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E5D8C210E9;
- Tue, 22 Mar 2022 18:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1647973543;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NlSdDHZKoLYItk8mVmEIcKUHi7VJ5n9VL+dP6HBMvt4=;
- b=hxphnnpwFY04j0g+Z6u/pwrhYsexHboZAEgbG3CVQAcuc/e++Oo5tlLV6NFOT2MkK9bV2A
- bqzbxU1mlIuu2i4J7y3uoA38T8lpuc6b0Xyk0Gpgj4h2r1NvXAM/aT+6AGLMJPGwnc7vGg
- JtGk7FODciLzmh8irJ/qUCYVVs9cJbk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1647973543;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NlSdDHZKoLYItk8mVmEIcKUHi7VJ5n9VL+dP6HBMvt4=;
- b=H1BwgG1c59fHWlaO92q+9jM2KOmSOAuCKeuUlKRTfkCzHp7FqF3wuFRoBAw3HQJl0/8OvR
- rqfabtR6m1otfHBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7818133B6;
- Tue, 22 Mar 2022 18:25:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id T0YOK6cUOmKuHAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 22 Mar 2022 18:25:43 +0000
-Date: Tue, 22 Mar 2022 19:25:42 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YjoUprPfTYN1nlt4@pevik>
-References: <20220204194648.32165-1-pvorel@suse.cz>
- <20220204194648.32165-3-pvorel@suse.cz> <Yh98mQNybj1R1Kga@yuki>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 12577200AEB
+ for <ltp@lists.linux.it>; Tue, 22 Mar 2022 20:20:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1647976823;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=PywAXE/8ORaR/94UMLtNS3b4+zAj2s9HOd18mlx+Pcc=;
+ b=iJxvQuubXanT/NwCDw6vli5cVbCWYZoUXAvsuu7/9EdR72mvWcPAENXuJoZ1s0tx
+ xtKWUcDNQXDouZG0PQKTIOrAM1Sqo5rOgb7DVQfdtcWx+fp+8L9Xd0TBcbbBTfDHlO8
+ 9YwsW5T7Qbk18lm8ytefEHa5mSBAJ00Yz76TL6os=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1647976823;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=PywAXE/8ORaR/94UMLtNS3b4+zAj2s9HOd18mlx+Pcc=;
+ b=j0UghLSOrgQwp5fwUok3Ezt7vWYHkj0uIyG4vq+2U0JpFGIlo/M9I0OvriP6nbjN
+ dL1Lw97lnGy4JqMUyYZllEWQeemh0WjHB4dF/AxlOm+Sw7QcE7CTbnTzGb+bKeHdxxB
+ pxGJz2SP9nhuoMXW+J69PLPqUYxzVIZe1Z+DpWY0=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Yh98mQNybj1R1Kga@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Message-ID: <0100017fb312b94b-28d37934-9c00-4608-9030-a5244939b4a6-000000@email.amazonses.com>
+Date: Tue, 22 Mar 2022 19:20:23 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.03.22-54.240.8.81
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] broken_ip-nexthdr.sh: Check IPv6 support
- before forcing it
+Subject: [LTP] [REGRESSION] lkft ltp for 5d13ddf
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,57 +56,81 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+## Build
+* kernel: 5.16.16
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.16.y
+* git commit: 9aed648340400df7f403d41d8558244afd6d69d3
+* git describe: 5d13ddf
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/5d13ddf
 
-> Hi!
-> > diff --git a/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh b/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh
-> > index ec6643af66..cb4a3dd399 100755
-> > --- a/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh
-> > +++ b/testcases/network/stress/broken_ip/broken_ip-nexthdr.sh
-> > @@ -11,6 +11,7 @@ TST_TESTFUNC="do_test"
-> >  do_test()
-> >  {
-> >  	# not supported on IPv4
-> > +	tst_net_require_ipv6
-> >  	TST_IPV6=6
-> >  	TST_IPVER=6
+## Test Regressions (compared to e246b2e)
+* bcm2711-rpi-4-b, ltp-controllers-tests
+  - memcg_subgroup_charge
 
-> I was looking at the code if we can simply instead do:
+* bcm2711-rpi-4-b, ltp-fs-tests
+  - read_all_proc
 
-> [ "$TST_IPVER" == 6 ] && tst_net_require_ipv6
+* qemu_x86_64, ltp-controllers-tests
+  - memcg_subgroup_charge
 
-> in the test library, but it looks like the parameters are parsed in the
-> tst_test.sh in the tst_run() function. Which means that the TST_IPVER is
-> not actually set until the test starts and the library has no way of
-> knowing the variable value beforehand.
 
-> I guess that we can actually move the option parsing code in the
-> tst_test.sh so that it happens just right after the script is sourced,
-> which would make things much easier as the TST_IPVER would end up being
-> defined in the tst_network.sh and we coud simply use the statement above
-> without any further hacks like this patch adds.
+## Metric Regressions (compared to e246b2e)
+No metric regressions found.
 
-> As a side effect we could clean up the test option parsing code since we
-> do actually have two different getopts loop in the tst_test.sh library
-> and as far as I can tell we can do just with one.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I tried to implement this [1] (or [2] if I force push), and using getopts the
-end of the script only would require also to move loading '. tst_test.sh' at the
-end of *all* the test scripts because setup functions needs to be loaded before
-sourcing tst_test.sh. Do we want this?
 
-Kind regards,
-Petr
+## Test Fixes (compared to e246b2e)
+* qemu_i386, ltp-controllers-tests
+  - memcg_subgroup_charge
 
-[1] https://github.com/pevik/ltp/commit/9d77e5d964751ea3f0c8d22c4265c0041e2ebbc9
-[2] https://github.com/pevik/ltp/commits/tst_test.sh/cleanup-getopts
+
+## Metric Fixes (compared to e246b2e)
+No metric fixes found.
+
+## Test result summary
+total: 12109, pass: 10135, fail: 48, skip: 1926, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
