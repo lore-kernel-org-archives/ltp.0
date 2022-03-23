@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91FD7C433F5
-	for <ltp@archiver.kernel.org>; Wed, 23 Mar 2022 09:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51F16C433FE
+	for <ltp@archiver.kernel.org>; Wed, 23 Mar 2022 10:17:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9BDAD3C93D9
-	for <ltp@archiver.kernel.org>; Wed, 23 Mar 2022 10:56:27 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 020E93C9643
+	for <ltp@archiver.kernel.org>; Wed, 23 Mar 2022 11:17:54 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F10153C07B5
- for <ltp@lists.linux.it>; Wed, 23 Mar 2022 10:56:16 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 3E6BE3C3040
+ for <ltp@lists.linux.it>; Wed, 23 Mar 2022 11:17:44 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CDBA1A00CCE
- for <ltp@lists.linux.it>; Wed, 23 Mar 2022 10:56:15 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A4D071400BC2
+ for <ltp@lists.linux.it>; Wed, 23 Mar 2022 11:17:43 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 443521F37F;
- Wed, 23 Mar 2022 09:56:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E934A1F38F;
+ Wed, 23 Mar 2022 10:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648029375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1648030662;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/MbOCuMDRxuiRqL/qG4td2GKREUhkkzJpY8FZM/CIZo=;
- b=iRozMm+swDf9cDcApYtkOQAWv4lbDOm3C1FR7IPrQLzV3Qf8fkxQGtwkm4NbxIFL/PTzIp
- 9K78mQ/imi6YO3EBGCvMx/0wI55s1xC/m+OkoijBYgihbf2jWGAaL5i3McEJG1Ok96FexC
- VSAGdgFxGx04qacdbVK3Or6P02uiCAo=
+ bh=OcYTL9TSffgFv5WZf+84CQkSAve4i/TuNAFrL+ozwW4=;
+ b=2/MPQoHN6eeY2vUF0EsPTxBA4pLpICt2NXwEYiE8mSTa6FvmkG46w+07vO1BqXC1B0LmTq
+ VuEGSgd0TmqHEn3dBy/GKlQ5GEQdfqawbi+NcxlObBQUsJoQ6XxEHTkpO4C+VcbXnqRA8P
+ X3rkEiMU0H350y1Sv2XdS67Xw2E+NF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648029375;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1648030662;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/MbOCuMDRxuiRqL/qG4td2GKREUhkkzJpY8FZM/CIZo=;
- b=RtHQpCrhjRO2/06TnxYP6lbtyQ9MhCY0DibZQWWF5w5GAqkYRCAkBfcbu5SYNe2dLQocnP
- 180NPlQprha/eFAA==
+ bh=OcYTL9TSffgFv5WZf+84CQkSAve4i/TuNAFrL+ozwW4=;
+ b=xrDSf5KNdouI9GKfeZvmRqgIPLsHVLzWKyS/hmJjHAXWX19YvUNf17JJqe/O/ynDAX90Jp
+ NYki0TpDlxhRsmDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31F86132BA;
- Wed, 23 Mar 2022 09:56:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C61AF132BA;
+ Wed, 23 Mar 2022 10:17:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RZg7C7/uOmIsNgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 23 Mar 2022 09:56:15 +0000
-Date: Wed, 23 Mar 2022 10:58:33 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YjrvSVaU2jkLgwPt@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id t/CrLsbzOmJdQgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 23 Mar 2022 10:17:42 +0000
+Date: Wed, 23 Mar 2022 11:17:41 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YjrzxcAZeZKc7CDK@pevik>
 References: <20220315122351.8556-1-andrea.cervesato@suse.de>
- <20220315122351.8556-9-andrea.cervesato@suse.de>
- <YjrqO8Er3NqOG8uc@pevik>
+ <20220315122351.8556-2-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YjrqO8Er3NqOG8uc@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <20220315122351.8556-2-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 8/8] Rewrite userns08.c using new LTP API
+Subject: Re: [LTP] [PATCH v2 1/8] Rewrite userns01.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,46 +77,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> ./userns08 -i50
-> tst_kconfig.c:82: TINFO: Parsing kernel config '/proc/config.gz'
-> tst_test.c:1456: TINFO: Timeout per run is 0h 05m 00s
-> 
-> userns08.c:65: TPASS: Denied write access to ./restricted : EACCES (13)
-> userns08.c:65: TPASS: Denied write access to ./restricted : EACCES (13)
-> userns08.c:65: TPASS: Denied write access to ./restricted : EACCES (13)
-> userns08.c:65: TPASS: Denied write access to ./restricted : EACCES (13)
-> userns08.c:65: TPASS: Denied write access to ./restricted : EACCES (13)
-> userns08.c:36: TBROK: clone3 failed: ENOSPC (28)
-> 
-> Something needs to be closed after each run.
+Hi Andrea,
 
-ENOSPC means that we created too many user namespaces. The problem is
-likely that we are creating the namespaces faster than they are being
-asynchronously cleaned up in the kernel. Adding sleep(1) to the
-clone_newuser() function gives kernel enough time to clean the
-namespaces and the test works with any -i. Also note that we get the
-exact same failure if we execute the test a few times in a row, i.e.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-for i in `seq 10`; do
-	./userns08
-done
+nit: I'd sometimes use underscore to make names more readable
+i.e. update_map, parent_map_pid, OVERFLOW_UID_PATH, OVERFLOW_GID_PATH
 
-The original test fails in the same way, so while it should be fixed,
-it's not really reason to block this patchset.
+> +static inline int check_newuser(void)
+> +{
+> +	int pid, status;
+> +
+> +	if (tst_kvercmp(3, 8, 0) < 0)
+> +		tst_brk(TCONF, "CLONE_NEWUSER not supported");
+Is this limitation needed, when we have the same check with ltp_clone_quick()?
+> +
+> +	pid = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, dummy_child, NULL);
+> +	if (pid == -1)
+> +		tst_brk(TCONF | TTERRNO, "CLONE_NEWUSER not supported");
+> +
+> +	SAFE_WAIT(&status);
+> +
+> +	return 0;
+> +}
+> +
+> +static inline void updatemap(int cpid, bool type, int idnum, int parentmappid)
+> +{
+> +	char path[BUFSIZ];
+> +	char content[BUFSIZ];
+> +	int fd;
+> +
+> +	if (type == UID_MAP)
+> +		sprintf(path, "/proc/%d/uid_map", cpid);
+> +	else if (type == GID_MAP)
+> +		sprintf(path, "/proc/%d/gid_map", cpid);
+> +	else
+> +		tst_brk(TBROK, "invalid type parameter");
 
-And the only correct fix would be retrying the clone() on ENOSPC in the
-SAFE_CLONE().
+nit: maybe switch would be more readable.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+...
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
