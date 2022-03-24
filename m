@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 248E1C433EF
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 20:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCDD4C433F5
+	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 21:08:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EFD0F3C54EB
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 21:55:55 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id BADC83C2DA6
+	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 22:08:31 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A5A43C0358
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 21:55:46 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C43923C020F
+ for <ltp@lists.linux.it>; Thu, 24 Mar 2022 22:08:21 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 25F9A1401118
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 21:55:45 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BD92B601620
+ for <ltp@lists.linux.it>; Thu, 24 Mar 2022 22:08:20 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 352C8210F4;
- Thu, 24 Mar 2022 20:55:45 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0BBFC1F38D;
+ Thu, 24 Mar 2022 21:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648155345;
+ t=1648156100;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=g11vGhB+12oMHqA5EJX/4voWgR+8lgtRN4ZShgkVZtM=;
- b=Pd505GI3b4igH2IAiwbbYzWrfxvJPlPGVdWBdIZxsRN+HQ71RWvLOn6aJLukCdKTV/D3w+
- NS72UMH+juhuqnJcL2+BKUxej1SOfTFyTxN7QQ6WxnKPUDaDHfcEC0Weps5pp0lSncWucb
- aBr5WUL6j5U9WtuuifUUWgh9yfqMY0E=
+ bh=TqCNYoPJd8RvXYZOoM5faWMcsNPwNGhbeD8ZyEAS3yw=;
+ b=c1qXFWfwNyxy4pSzRgV+y7rxL3RoGE/QpjXR5f21p3a/Z8KH+TJu+3EbLPcx/buyk8xNQn
+ tvLWY1efrAPuQRFXc8VN6EBEmfOZ960U2erjragjY0FK27NU1U/hjp1hJEUl/23mKBvGvy
+ tV1KKGbkrHFR6+926QqitpkMSHUqk/g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648155345;
+ s=susede2_ed25519; t=1648156100;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=g11vGhB+12oMHqA5EJX/4voWgR+8lgtRN4ZShgkVZtM=;
- b=kQy8CIsbnegcgLQP6sk5lxSsWsg7TDy0jJ6Zwr3gL48taaYYKM4GrlhtL/9Q1Y8tH3vC+r
- gth35jM4udjlbmDg==
+ bh=TqCNYoPJd8RvXYZOoM5faWMcsNPwNGhbeD8ZyEAS3yw=;
+ b=35jUHUYhsqWo+72Dx0/MrZBqCEvBI615KGOCgabtEWZv5FV4Bq1gHgnjFtY03grmc9huoK
+ kPkezF8ApjU3kpBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A971132E9;
- Thu, 24 Mar 2022 20:55:45 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1C99132E9;
+ Thu, 24 Mar 2022 21:08:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id a0YGANHaPGKSIAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 24 Mar 2022 20:55:44 +0000
-Date: Thu, 24 Mar 2022 21:55:43 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id L0h8McPdPGJjJAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 24 Mar 2022 21:08:19 +0000
+Date: Thu, 24 Mar 2022 22:08:17 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Yjzaz/taJP7u+fTk@pevik>
+Message-ID: <YjzdwTbMbJmLYVek@pevik>
 References: <20220315122351.8556-1-andrea.cervesato@suse.de>
- <20220315122351.8556-5-andrea.cervesato@suse.de>
+ <20220315122351.8556-6-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220315122351.8556-5-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220315122351.8556-6-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 4/8] Rewrite userns04.c using new LTP API
+Subject: Re: [LTP] [PATCH v2 5/8] Rewrite userns05.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,45 +85,70 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-LGTM, thanks!
-
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
->  testcases/kernel/containers/userns/userns04.c | 139 ++++++------------
-..
-> +#include <stdio.h>
-> +#include <stdbool.h>
-<stdbool.h> belongs to common.h.
+LGTM, just anybody merging this should remove return; at the end of run().
 
-> +#include "common.h"
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
+>  testcases/kernel/containers/userns/userns05.c | 148 ++++++++----------
+...
+> -/*
+> - * Verify that:
+> - * A process created via fork(2) or clone(2) without the
+> - * CLONE_NEWUSER flag is a member of the same user namespace as its
+> - * parent.
+> - * When unshare an user namespace, the calling process is moved into
+> - * a new user namespace which is not shared with any previously
+> - * existing process.
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that if a process created via fork(2) or clone(2) without the
+> + * CLONE_NEWUSER flag is a member of the same user namespace as its parent.
+
+I'd put blank space here to create 2 paragraphs in html/pdf doc.
+> + * When unshare an user namespace, the calling process is moved into a new user
+> + * namespace which is not shared with any previously existing process.
+>   */
 
 ...
+>  static int child_fn1(void)
+>  {
+...
+> +	SAFE_READLINK(path, userid, BUFSIZ);
+> +
+> +	if (sscanf(userid, "user:[%u]", &id) < 0)
+> +		tst_brk(TBROK | TERRNO, "sscanf failure");
+Ah, we still don't have SAFE_SSCANF() (nothing urgent, this is the first test
+using new API which would use it).
+
 > +static void run(void)
 >  {
->  	pid_t cpid1, cpid2, cpid3;
->  	char path[BUFSIZ];
->  	int fd;
 ...
-> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, NULL);
+> +	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1, NULL);
 >  	if (cpid1 < 0)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
 > +		tst_brk(TBROK | TTERRNO, "clone failed");
-We could create SAFE_LTP_CLONE_QUICK() (as a separate effort).
+Again, once we implement SAFE_LTP_CLONE_QUICK() we should use it here
+(as a separate effort).
 
-> -	/* child 2 */
->  	sprintf(path, "/proc/%d/ns/user", cpid1);
-> -	fd = SAFE_OPEN(cleanup, path, O_RDONLY, 0644);
-> -	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> -		(void *)child_fn2, (void *)((long)fd));
-> +
-> +	fd = SAFE_OPEN(path, O_RDONLY, 0644);
-> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn2, (void *)((long)fd));
->  	if (cpid2 < 0)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-> +		tst_brk(TBROK | TTERRNO, "clone failed");
 ...
+> +	cpid3 = SAFE_FORK();
+> +	if (!cpid3) {
+> +		SAFE_UNSHARE(CLONE_NEWUSER);
+>  		newparentuserns = getusernsidbypid(getpid());
+
+>  		/* When unshare an user namespace, the calling process
+> +		 * is moved into a new user namespace which is not shared
+> +		 * with any previously existing process
+> +		 */
+>  		if (parentuserns == newparentuserns)
+> +			tst_res(TFAIL, "unshared namespaces with same id");
+> +		else
+> +			tst_res(TPASS, "unshared namespaces with different id");
+
+> +		return;
+Why this empty return?
+> +	}
+>  }
 
 Kind regards,
 Petr
