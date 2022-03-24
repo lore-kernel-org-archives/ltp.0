@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE814C433F5
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 15:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 353BDC433F5
+	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 16:02:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B15A43C9AB5
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 16:10:48 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id CFF943C9AC2
+	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 17:02:18 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D20C43C97EC
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 16:10:38 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id CC5FB3C72C1
+ for <ltp@lists.linux.it>; Thu, 24 Mar 2022 17:02:08 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2ADA71400751
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 16:10:37 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 559CD100112F
+ for <ltp@lists.linux.it>; Thu, 24 Mar 2022 17:02:07 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 697311F7AC;
- Thu, 24 Mar 2022 15:10:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 77ADA210F4;
+ Thu, 24 Mar 2022 16:02:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648134637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1648137727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=B7NN/ls6nQ2BRmXidlGveegGxJ+gIG8+COlsL+5+3sM=;
- b=SkjVZknR7pfHEEYjrQxipsOGUbNxvJNpzxsvnz9HbzX7Ty91F/X1q8A7hDFoIaOrSjveWh
- 06hQr4ggMjYhnhhD0mJbfyYyKOzWNBYlHrvMvhpsUQm3ubZZRDafAoArziSZ5N/+lPlp7I
- /DOVYNCjmcB9kwcJGLq/wZhk4Cmx8fE=
+ bh=rb5cMvchQ/nz2hlD4ki4AsPiLxw3luAb+4XhZ6pQ2K0=;
+ b=yLqvCAtSCJ4QTDXIv+JDX+9A2Q94yH9zsFgvXIcjsZfoStmKzjzwHql4oHzXm3029ebQGH
+ mWWwKyQJyLBva6rb5KubLPVXT2yJ90Bg1Wx5loFxjfvgnTsBa8/TCPRTtOgmSeVXHF8tHp
+ dj8Y8GoBfKQo+M6c7eJg6LvNJpdq0aU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648134637;
+ s=susede2_ed25519; t=1648137727;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=B7NN/ls6nQ2BRmXidlGveegGxJ+gIG8+COlsL+5+3sM=;
- b=6wVrBbbX+BvpBJjnpz9hqPSNSq/VhYwUT+K6MeWFqTBVQLsH9ifdYgg0Oz50Rh2f9wxJUU
- RTuXrl3OUIzTCzBA==
+ bh=rb5cMvchQ/nz2hlD4ki4AsPiLxw3luAb+4XhZ6pQ2K0=;
+ b=oDDdE7oLH2Nt8GPwsJhGcA1npndxkwxv8h6x+HHAVX8meX9RbXE/xToy1zwFzgSLHE7u5m
+ hhJAMEePNxegQFCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12395132E9;
- Thu, 24 Mar 2022 15:10:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 613BC12FF7;
+ Thu, 24 Mar 2022 16:02:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id rpDgAu2JPGLKHQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 24 Mar 2022 15:10:37 +0000
-Date: Thu, 24 Mar 2022 16:12:56 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id jY5tFf+VPGLYNQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 24 Mar 2022 16:02:07 +0000
+Date: Thu, 24 Mar 2022 17:04:26 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <YjyKeIH9JdhD4QPt@yuki>
+Message-ID: <YjyWivLxvEjqa2kH@yuki>
 References: <20220315103254.7185-1-andrea.cervesato@suse.de>
- <20220315103254.7185-5-andrea.cervesato@suse.de>
+ <20220315103254.7185-6-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220315103254.7185-5-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220315103254.7185-6-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 04/10] Rewrite sem_nstest.c using new LTP API
+Subject: Re: [LTP] [PATCH v3 05/10] Rewrite semtest_2ns.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,8 +83,20 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Same problem here as in the msgq_nstest.c the global str_op must not be
-initialized otherwise the test throws a warning.
+> +#include <sys/wait.h>
+> +#include <sys/msg.h>
+> +#include <sys/types.h>
+> +#include <sys/sem.h>
+> +#include "tst_safe_sysv_ipc.h"
+> +#include "tst_test.h"
+> +#include "common.h"
+>  
+> -int check_sem2(void *vtest)
+> +#define MY_KEY 124326L
+> +
+> +static char *str_op = "clone";
+
+Same problem here.
 
 -- 
 Cyril Hrubis
