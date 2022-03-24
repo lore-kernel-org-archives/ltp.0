@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22C20C433F5
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 20:50:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 248E1C433EF
+	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 20:55:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EF1963C19DF
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 21:50:51 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id EFD0F3C54EB
+	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 21:55:55 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 27FC13C0358
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 21:50:42 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 9A5A43C0358
+ for <ltp@lists.linux.it>; Thu, 24 Mar 2022 21:55:46 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E12E200165
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 21:50:41 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 25F9A1401118
+ for <ltp@lists.linux.it>; Thu, 24 Mar 2022 21:55:45 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D53961F38D;
- Thu, 24 Mar 2022 20:50:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 352C8210F4;
+ Thu, 24 Mar 2022 20:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648155040;
+ t=1648155345;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uGbhE6l49GeajLcxAoQSlrApT8wT+FB6S8n3VakMSFU=;
- b=cmWEqkbpnKeT65qKeabQkvIWQZJ69dRMX6NC13YxIlz5fRkGTdrRICicIOXkrdICYZ4SU7
- CK3xKIw36R/Pn7HuJQiraRrsELO8vHIUU83Rm06vjHf9VkfLE4iGIAyu/nmBoR+2EK3XRK
- Hm4hdI3Ay5YKXLadbt37ML4OrWz9+dg=
+ bh=g11vGhB+12oMHqA5EJX/4voWgR+8lgtRN4ZShgkVZtM=;
+ b=Pd505GI3b4igH2IAiwbbYzWrfxvJPlPGVdWBdIZxsRN+HQ71RWvLOn6aJLukCdKTV/D3w+
+ NS72UMH+juhuqnJcL2+BKUxej1SOfTFyTxN7QQ6WxnKPUDaDHfcEC0Weps5pp0lSncWucb
+ aBr5WUL6j5U9WtuuifUUWgh9yfqMY0E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648155040;
+ s=susede2_ed25519; t=1648155345;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uGbhE6l49GeajLcxAoQSlrApT8wT+FB6S8n3VakMSFU=;
- b=zqH2pwOobu/oHaQaOknCCeyLYwdtV6nKUIGkw8SgpFxTkx030s2LWOY3VH/0/ky+TJS2zR
- 23ruL0Z9LrE4CPBQ==
+ bh=g11vGhB+12oMHqA5EJX/4voWgR+8lgtRN4ZShgkVZtM=;
+ b=kQy8CIsbnegcgLQP6sk5lxSsWsg7TDy0jJ6Zwr3gL48taaYYKM4GrlhtL/9Q1Y8tH3vC+r
+ gth35jM4udjlbmDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8CDF132E9;
- Thu, 24 Mar 2022 20:50:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A971132E9;
+ Thu, 24 Mar 2022 20:55:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2oe9JqDZPGJHHwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 24 Mar 2022 20:50:40 +0000
-Date: Thu, 24 Mar 2022 21:50:38 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id a0YGANHaPGKSIAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 24 Mar 2022 20:55:44 +0000
+Date: Thu, 24 Mar 2022 21:55:43 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <YjzZnkrugQyEuWLe@pevik>
+Message-ID: <Yjzaz/taJP7u+fTk@pevik>
 References: <20220315122351.8556-1-andrea.cervesato@suse.de>
- <20220315122351.8556-2-andrea.cervesato@suse.de>
+ <20220315122351.8556-5-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220315122351.8556-2-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220315122351.8556-5-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/8] Rewrite userns01.c using new LTP API
+Subject: Re: [LTP] [PATCH v2 4/8] Rewrite userns04.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,32 +85,48 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
+LGTM, thanks!
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+>  testcases/kernel/containers/userns/userns04.c | 139 ++++++------------
+..
+> +#include <stdio.h>
+> +#include <stdbool.h>
+<stdbool.h> belongs to common.h.
+
+> +#include "common.h"
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+
 ...
-> +static inline void updatemap(int cpid, bool type, int idnum, int parentmappid)
-nit: This header should #include <stdbool.h>, not all tests (they use UID_MAP,
-thus they don't need it).
+> +static void run(void)
+>  {
+>  	pid_t cpid1, cpid2, cpid3;
+>  	char path[BUFSIZ];
+>  	int fd;
+...
+> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, NULL);
+>  	if (cpid1 < 0)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+> +		tst_brk(TBROK | TTERRNO, "clone failed");
+We could create SAFE_LTP_CLONE_QUICK() (as a separate effort).
+
+> -	/* child 2 */
+>  	sprintf(path, "/proc/%d/ns/user", cpid1);
+> -	fd = SAFE_OPEN(cleanup, path, O_RDONLY, 0644);
+> -	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> -		(void *)child_fn2, (void *)((long)fd));
+> +
+> +	fd = SAFE_OPEN(path, O_RDONLY, 0644);
+> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn2, (void *)((long)fd));
+>  	if (cpid2 < 0)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+> +		tst_brk(TBROK | TTERRNO, "clone failed");
+...
 
 Kind regards,
 Petr
-
-> +{
-> +	char path[BUFSIZ];
-> +	char content[BUFSIZ];
-> +	int fd;
-> +
-> +	if (type == UID_MAP)
-> +		sprintf(path, "/proc/%d/uid_map", cpid);
-> +	else if (type == GID_MAP)
-> +		sprintf(path, "/proc/%d/gid_map", cpid);
-> +	else
-> +		tst_brk(TBROK, "invalid type parameter");
-> +
-> +	sprintf(content, "%d %d 1", idnum, parentmappid);
-> +
-> +	fd = SAFE_OPEN(path, O_WRONLY, 0644);
-> +	SAFE_WRITE(1, fd, content, strlen(content));
-> +	SAFE_CLOSE(fd);
-> +}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
