@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9979C433F5
-	for <ltp@archiver.kernel.org>; Thu, 24 Mar 2022 23:58:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C701C433EF
+	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 01:48:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 461153C2DA6
-	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 00:58:54 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4C4113C6983
+	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 02:48:46 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BDC993C06A9
- for <ltp@lists.linux.it>; Fri, 25 Mar 2022 00:58:44 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6719E3C06A9
+ for <ltp@lists.linux.it>; Fri, 25 Mar 2022 02:48:35 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 808D9600476
- for <ltp@lists.linux.it>; Fri, 25 Mar 2022 00:58:42 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EA9741401159
+ for <ltp@lists.linux.it>; Fri, 25 Mar 2022 02:48:34 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1648166321;
+ s=mimecast20190719; t=1648172913;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=Ik2EdHmwllIFZRdMxZBq6XUU+pB2GeoH+/4ZvDM2blw=;
- b=XWZadpI0+BZbZqIQKp2+fZqBT6cF38ecNRUuHpzYFNQAXWXFBzLiwKWctU+N0GuymWY8G/
- PMEAaTkq3WL0Q+RKWMhRzc8YxWszouZE5dUk1MvN+3dduqCjwIS1FippraSewJSbUBZQlk
- 1RwLc9uMVmzzo5SBLWtdQToWFd5Nzk4=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=RWyuLX0ZDxXEyu4ZXYzBgEDFATy1A5G6or3dBusF8xM=;
+ b=Tpla06jdclgSwuYj5t3W/9Og8+9xAR2UoT3ozU+UVZo3IIzaWdiFyj4vKfrkW6DGc2gNfc
+ nroTBqeztmrOZ5ml94gftJxI+Te9/9gRl+uHwAssRlwaph61bTSdNBqtYaKeLRkMrXNrSZ
+ quhu99MOZ2+U9U+09YjgmDRexkRFUU8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-361-1P7JxFXPMKKh3C9KfgAgHg-1; Thu, 24 Mar 2022 19:49:57 -0400
-X-MC-Unique: 1P7JxFXPMKKh3C9KfgAgHg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
+ us-mta-83-jFaeIVtZObCN7uxl597qDQ-1; Thu, 24 Mar 2022 21:48:32 -0400
+X-MC-Unique: jFaeIVtZObCN7uxl597qDQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.4])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 46BDA1C05ADA
- for <ltp@lists.linux.it>; Thu, 24 Mar 2022 23:49:57 +0000 (UTC)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 01086811E78
+ for <ltp@lists.linux.it>; Fri, 25 Mar 2022 01:48:32 +0000 (UTC)
 Received: from localhost.localdomain.com (ovpn-13-193.pek2.redhat.com
  [10.72.13.193])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id B699D401E8B;
- Thu, 24 Mar 2022 23:49:55 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F6DE200C0E3;
+ Fri, 25 Mar 2022 01:48:26 +0000 (UTC)
 From: Chunyu Hu <chuhu@redhat.com>
 To: ltp@lists.linux.it
-Date: Fri, 25 Mar 2022 07:49:50 +0800
-Message-Id: <20220324234950.2229888-1-chuhu@redhat.com>
+Date: Fri, 25 Mar 2022 09:48:21 +0800
+Message-Id: <20220325014821.2286280-1-chuhu@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=chuhu@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] futex_waitv03: cleanup shms
+Subject: [LTP] [PATCH] futex_waitv03: fix SIGSEGV in TCONF cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,56 +75,59 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-cleanup all the created shms, otherwise, it would be left in sys as
-gubbage (ipcs show).
+When futex_time64 is not supported, TCONF will do the test cleanup
+and test quit, in this case, the waitv array and shms are not allocated,
+we can get a segment fault if accessing the waitv[*]. Add the flag
+to record if the memory allocation is done, so the cleanup can do
+correctly in TCONF case.
+
+We can hit the issue on ppc64le:
+
+tst_test.c:1456: TINFO: Timeout per run is 0h 05m 00s
+futex_waitv03.c:36: TINFO: Testing variant: syscall with old kernel spec
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+futex_waitv03.c:108: TPASS: futex_waitv returned correctly
+tst_test.c:1456: TINFO: Timeout per run is 0h 05m 00s
+futex_waitv03.c:36: TINFO: Testing variant: syscall time64 with kernel spec
+../../../../include/tst_timer.h:271: TCONF: syscall(422) __NR_futex_time64 not supported on your arch
+tst_test.c:1512: TBROK: Test killed by SIGSEGV!
 
 Signed-off-by: Chunyu Hu <chuhu@redhat.com>
 ---
- testcases/kernel/syscalls/futex/futex_waitv03.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/futex/futex_waitv03.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/testcases/kernel/syscalls/futex/futex_waitv03.c b/testcases/kernel/syscalls/futex/futex_waitv03.c
-index d8e39c76a..1f53addac 100644
+index 1f53addac..ffe5c66cd 100644
 --- a/testcases/kernel/syscalls/futex/futex_waitv03.c
 +++ b/testcases/kernel/syscalls/futex/futex_waitv03.c
-@@ -26,11 +26,11 @@ static char *str_numfutex;
+@@ -26,6 +26,7 @@ static char *str_numfutex;
  static int numfutex = 30;
  
  static struct futex_waitv *waitv;
-+static int *shmids;
++static unsigned int waitv_allocated;
+ static int *shmids;
  
  static void setup(void)
- {
- 	struct futex_test_variants tv = futex_variant();
--	int shm_id;
- 	int i;
- 
- 	tst_res(TINFO, "Testing variant: %s", tv.desc);
-@@ -41,10 +41,12 @@ static void setup(void)
- 
- 	waitv = tst_alloc(sizeof(struct futex_waitv) * numfutex);
- 	memset(waitv, 0, sizeof(struct futex_waitv) * numfutex);
-+	shmids = tst_alloc(sizeof(int*) * numfutex);
-+	memset(shmids, 0, sizeof(int*) * numfutex);
- 
- 	for (i = 0; i < numfutex; i++) {
--		shm_id = SAFE_SHMGET(IPC_PRIVATE, 4096, IPC_CREAT | 0666);
--		waitv[i].uaddr = (uintptr_t)SAFE_SHMAT(shm_id, NULL, 0);
-+		shmids[i] = SAFE_SHMGET(IPC_PRIVATE, 4096, IPC_CREAT | 0666);
-+		waitv[i].uaddr = (uintptr_t)SAFE_SHMAT(shmids[i], NULL, 0);
+@@ -50,12 +51,16 @@ static void setup(void)
  		waitv[i].flags = FUTEX_32;
  		waitv[i].val = 0;
  	}
-@@ -59,6 +61,7 @@ static void cleanup(void)
- 			continue;
- 
- 		SAFE_SHMDT((void *)(uintptr_t)waitv[i].uaddr);
-+		SAFE_SHMCTL(shmids[i], IPC_RMID, NULL);
- 	}
++	waitv_allocated = tst_variant + 1;
  }
  
+ static void cleanup(void)
+ {
+ 	int i;
+ 
++	if (waitv_allocated != (tst_variant + 1))
++		return;
++
+ 	for (i = 0; i < numfutex; i++) {
+ 		if (!waitv[i].uaddr)
+ 			continue;
 -- 
-2.34.1
+2.35.1
 
 
 -- 
