@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B6E3C433EF
-	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 12:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC099C433F5
+	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 12:56:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C84F53C877C
-	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 13:56:21 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C484F3C932C
+	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 13:56:32 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 566783C189A
+ by picard.linux.it (Postfix) with ESMTPS id 5BF773C1FF3
  for <ltp@lists.linux.it>; Fri, 25 Mar 2022 13:54:49 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 92CCC1001144
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B941B1401193
  for <ltp@lists.linux.it>; Fri, 25 Mar 2022 13:54:48 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 36EAC210FD;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 68F9A1F38D;
  Fri, 25 Mar 2022 12:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1648212888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=isXkOTPlLCPtvf/PmOXSgX01dYpvcyTY30bcH4ku4pE=;
- b=WjRoWOU69o/bY5+AWcn5Eqf6nq7sdQp3aE21BMyOpfHgOdEHdvpYPo5jTRQIAiBe4KAo0/
- eJnR3v5T8+O6rC7xlsggPcVTPLfLCeHxmB2gWxc3QgbTLLaE5gycfJzSK9M0IdO6KaeaKr
- 4N4Xxe8pfkOhkxQo5bvi7DRadXTJgx0=
+ bh=nCwGgLBxduNGFREGs0cswOTgJzLRuo3Y8Lpd5IABBd0=;
+ b=t6E+Gke37nDiQ2H1tmLXpxveqigBIBxvOYRbD5nRavFgsC7wbygFMCSST4iDRbMqHW8iDk
+ MWY3QQ7FF4BZ1attOWSJISmI2Du6WoZnx8h+/jQrzsTLa4WOKi+QPEXZTvTB9LAAx6BSKG
+ FMN68njrxHoBtE4NiTledD5RWzK3ZC0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1648212888;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=isXkOTPlLCPtvf/PmOXSgX01dYpvcyTY30bcH4ku4pE=;
- b=9J7hKuH4jpTMppU8nFGn1AR3+T61z5Ciz1/d26c/vj++VCMKp3OZxKEs/Ax0qRsEdJXTiJ
- szROXhXbltrauXDA==
+ bh=nCwGgLBxduNGFREGs0cswOTgJzLRuo3Y8Lpd5IABBd0=;
+ b=TNbyYUjEO0Qg9hS4aKZIdGzOqbaWUgZs7Lt2YB6DM7dkZnPJcpasFalWstja1FX/va83+y
+ XrvjtN3xHtj/1jAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08F6F1332D;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40C8C1332D;
  Fri, 25 Mar 2022 12:54:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2PE6AJi7PWKoZgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id WDX7DZi7PWKoZgAAMHmgww
  (envelope-from <andrea.cervesato@suse.de>); Fri, 25 Mar 2022 12:54:48 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Fri, 25 Mar 2022 13:54:42 +0100
-Message-Id: <20220325125445.11984-8-andrea.cervesato@suse.de>
+Date: Fri, 25 Mar 2022 13:54:43 +0100
+Message-Id: <20220325125445.11984-9-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220325125445.11984-1-andrea.cervesato@suse.de>
 References: <20220325125445.11984-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 07/10] Rewrite shmem_2nstest.c using new LTP API
+Subject: [LTP] [PATCH v4 08/10] Rewrite shm_comm.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,132 +82,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Updated containers runtime file to include new shmem_2nstest.c options.
-
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
 ---
- runtest/containers                            |   6 +-
- .../kernel/containers/sysvipc/shmem_2nstest.c | 239 ++++++------------
- 2 files changed, 86 insertions(+), 159 deletions(-)
+ .../kernel/containers/sysvipc/shm_comm.c      | 167 ++++++------------
+ 1 file changed, 50 insertions(+), 117 deletions(-)
 
-diff --git a/runtest/containers b/runtest/containers
-index b1b9b522a..591d56b18 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -46,9 +46,9 @@ netns_sysfs netns_sysfs.sh
- shmnstest_none shmnstest -m none
- shmnstest_clone shmnstest -m clone
- shmnstest_unshare shmnstest -m unshare
--shmem_2nstest_none shmem_2nstest none
--shmem_2nstest_clone shmem_2nstest clone
--shmem_2nstest_unshare shmem_2nstest unshare
-+shmem_2nstest_none shmem_2nstest -m none
-+shmem_2nstest_clone shmem_2nstest -m clone
-+shmem_2nstest_unshare shmem_2nstest -m unshare
- shm_comm shm_comm
- mesgq_nstest_none mesgq_nstest -m none
- mesgq_nstest_clone mesgq_nstest -m clone
-diff --git a/testcases/kernel/containers/sysvipc/shmem_2nstest.c b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
-index b172ee07c..e6c1a16fa 100644
---- a/testcases/kernel/containers/sysvipc/shmem_2nstest.c
-+++ b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
-@@ -1,187 +1,114 @@
--/* *************************************************************************
--* Copyright (c) International Business Machines Corp., 2009
--* This program is free software; you can redistribute it and/or modify
--* it under the terms of the GNU General Public License as published by
--* the Free Software Foundation; either version 2 of the License, or
--* (at your option) any later version.
--*
--* This program is distributed in the hope that it will be useful,
--* but WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
--* the GNU General Public License for more details.
--* You should have received a copy of the GNU General Public License
--* along with this program; if not, write to the Free Software
--* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--*
--* Author: Veerendra C <vechandr@in.ibm.com>
--*
--* Test Assertion:
--* This testcase verifies the Shared Memory isoloation in 2 containers.
--* It tries to create/access a Shared Memory created with the same KEY.
--*
--* Description:
--* Create 2 'containers' with the below flag value
--*   Flag = clone, clone(CLONE_NEWIPC), or unshare(CLONE_NEWIPC)
--* In Cont1, create Shared Memory segment with key 124426L
--* In Cont2, try to access the MQ created in Cont1.
--* PASS :
--* 		If flag = None and the shmem seg is accessible in Cont2.
--*		If flag = unshare/clone and the shmem seg is not accessible in Cont2.
--* 		If shmem seg is not accessible in Cont2,
--*		creates new shmem with same key to double check isloation in IPCNS.
--*
--* FAIL :
--* 		If flag = none and the shmem seg is not accessible.
--* 		If flag = unshare/clone and shmem seg is accessible in Cont2.
--*		If the new shmem seg creation Fails.
--***************************************************************************/
--
--#define _GNU_SOURCE 1
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <sys/ipc.h>
--#include <sys/shm.h>
--#include <libclone.h>
--#include "test.h"
--#include "safe_macros.h"
--#include "ipcns_helper.h"
--
--#define TESTKEY    124426L
--#define UNSHARESTR "unshare"
--#define CLONESTR   "clone"
--#define NONESTR    "none"
--
--char *TCID = "shmem_2nstest";
--int TST_TOTAL = 1;
--int p2[2];
--int p1[2];
--
+diff --git a/testcases/kernel/containers/sysvipc/shm_comm.c b/testcases/kernel/containers/sysvipc/shm_comm.c
+index 4b3bbfaa8..12ad49110 100644
+--- a/testcases/kernel/containers/sysvipc/shm_comm.c
++++ b/testcases/kernel/containers/sysvipc/shm_comm.c
+@@ -1,20 +1,17 @@
+-/* Copyright (c) 2014 Red Hat, Inc.
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of version 2 the GNU General Public License as
+- * published by the Free Software Foundation.
 +// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * check_shmem1() does not read -- it writes to check_shmem2() when it's done.
-+ * Copyright (c) International Business Machines Corp., 2009
-+ *				Veerendra C <vechandr@in.ibm.com>
++/*
++ * Copyright (c) 2014 Red Hat, Inc.
 + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
 + * [Description]
-+ *
-+ * Test if SysV IPC shared memory is properly used between two namespaces.
-+ *
+  *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
++ * Test if SysV IPC shared memory is properly working between two different
++ * namespaces.
+  *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- ***********************************************************************
+- * File: shm_comm.c
 + * [Algorithm]
-+ *
-+ * Create two 'containers'.
-+ * In container1, create Shared Memory segment with a specific key.
-+ * In container2, try to access the MQ created in container1.
-+ *
-+ * Test is PASS if flag = none and the shmem seg is accessible in container2.
-+ * If flag = unshare/clone and the shmem seg is not accessible in container2.
-+ * If shmem seg is not accessible in container2, creates new shmem with same
-+ * key to double check isloation in IPCNS.
-+ *
-+ * Test is FAIL if flag = none and the shmem seg is not accessible, if
-+ * flag = unshare/clone and shmem seg is accessible in container2 or if the new
-+ * shmem seg creation Fails.
+  *
+- * Description:
+  * 1. Clones two child processes with CLONE_NEWIPC flag, each child
+  *    allocates System V shared memory segment (shm) with the _identical_
+  *    key and attaches that segment into its address space.
+@@ -27,141 +24,77 @@
   */
--int check_shmem1(void *vtest)
--{
--	int id1;
  
--	(void) vtest;
-+#define _GNU_SOURCE
+ #define _GNU_SOURCE
+-#include <sys/ipc.h>
+-#include <sys/shm.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <stdio.h>
+-#include <errno.h>
+-#include "ipcns_helper.h"
+-#include "test.h"
+-#include "safe_macros.h"
  
--	close(p1[0]);
 +#include <sys/wait.h>
 +#include <sys/msg.h>
 +#include <sys/types.h>
@@ -215,172 +144,165 @@ index b172ee07c..e6c1a16fa 100644
 +#include "tst_test.h"
 +#include "common.h"
  
--	/* first create the key */
--	id1 = shmget(TESTKEY, 100, IPC_CREAT);
--	if (id1 == -1)
--		tst_brkm(TFAIL | TERRNO, NULL, "shmget failed");
-+#define TESTKEY 124426L
- 
--	tst_resm(TINFO, "Cont1: Able to create shared mem segment");
--	write(p1[1], "done", 5);
--	tst_exit();
--}
-+static char *str_op;
-+static int use_clone;
- 
- /*
-- * check_shmem2() reads from check_shmem1() and writes to main() when it's done.
-+ * check_shmem1() does not read -- it writes to check_shmem2() when it's done.
-  */
--int check_shmem2(void *vtest)
-+static int check_shmem1(LTP_ATTRIBUTE_UNUSED void *vtest)
- {
--	char buf[3];
--	int id2;
-+	SAFE_SHMGET(TESTKEY, 100, IPC_CREAT);
- 
--	(void) vtest;
-+	tst_res(TINFO, "container1: able to create shared mem segment");
- 
--	close(p1[1]);
--	close(p2[0]);
-+	TST_CHECKPOINT_WAKE(0);
- 
--	read(p1[0], buf, 3);
--	/* Trying to access shmem, if not existing create new shmem */
--	id2 = shmget(TESTKEY, 100, 0);
--	if (id2 == -1) {
--		id2 = shmget(TESTKEY, 100, IPC_CREAT);
--		if (id2 == -1)
--			tst_resm(TFAIL | TERRNO, "shmget failed");
--		else
--			tst_resm(TINFO,
--				 "Cont2: Able to allocate shmem seg with "
--				 "the same key");
--		write(p2[1], "notfnd", 7);
--	} else
--		write(p2[1], "exists", 7);
+ #define TESTKEY 124426L
+ #define SHMSIZE 50
+-char *TCID	= "shm_comm";
+-int TST_TOTAL	= 1;
 -
--	tst_exit();
+-static void cleanup(void)
+-{
+-	tst_rmdir();
 -}
 -
 -static void setup(void)
 -{
 -	tst_require_root();
 -	check_newipc();
+-	tst_tmpdir();
+-	TST_CHECKPOINT_INIT(tst_rmdir);
+-}
+ 
+-int chld1_shm(void *arg)
++static int chld1_shm(LTP_ATTRIBUTE_UNUSED void *arg)
+ {
+-	int id, rval = 0;
++	int id;
+ 	char *shmem;
+ 
+-	id = shmget(TESTKEY, SHMSIZE, IPC_CREAT);
+-	if (id == -1) {
+-		perror("shmget");
+-		return 2;
+-	}
+-
+-	if ((shmem = shmat(id, NULL, 0)) == (char *) -1) {
+-		perror("shmat");
+-		shmctl(id, IPC_RMID, NULL);
+-		return 2;
+-	}
++	id = SAFE_SHMGET(TESTKEY, SHMSIZE, IPC_CREAT);
+ 
++	shmem = SAFE_SHMAT(id, NULL, 0);
+ 	*shmem = 'A';
+ 
+-	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+-	/* if child1 shared segment has changed (by child2) report fail */
+ 	if (*shmem != 'A')
+-		rval = 1;
++		tst_res(TFAIL, "shared memory leak between namespaces");
++	else
++		tst_res(TPASS, "shared memory didn't leak between namespaces");
++
++	TST_CHECKPOINT_WAKE(0);
+ 
+-	/* tell child2 to continue */
+-	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
++	SAFE_SHMDT(shmem);
++	SAFE_SHMCTL(id, IPC_RMID, NULL);
+ 
+-	shmdt(shmem);
+-	shmctl(id, IPC_RMID, NULL);
+-	return rval;
 +	return 0;
+ }
+ 
+-int chld2_shm(void *arg)
++static int chld2_shm(LTP_ATTRIBUTE_UNUSED void *arg)
+ {
+ 	int id;
+ 	char *shmem;
+ 
+-	id = shmget(TESTKEY, SHMSIZE, IPC_CREAT);
+-	if (id == -1) {
+-		perror("shmget");
+-		return 2;
+-	}
++	id = SAFE_SHMGET(TESTKEY, SHMSIZE, IPC_CREAT);
+ 
+-	if ((shmem = shmat(id, NULL, 0)) == (char *) -1) {
+-		perror("shmat");
+-		shmctl(id, IPC_RMID, NULL);
+-		return 2;
+-	}
++	shmem = SAFE_SHMAT(id, NULL, 0);
+ 
+-	/* wait for child1 to write to his segment */
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	TST_CHECKPOINT_WAIT(0);
+ 
+ 	*shmem = 'B';
+ 
+-	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
++
++	SAFE_SHMDT(shmem);
++	SAFE_SHMCTL(id, IPC_RMID, NULL);
+ 
+-	shmdt(shmem);
+-	shmctl(id, IPC_RMID, NULL);
+ 	return 0;
+ }
+ 
+-static void test(void)
++static void run(void)
+ {
+-	int status, ret = 0;
+-
+-	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_shm, NULL);
+-	if (ret == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+-
+-	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_shm, NULL);
+-	if (ret == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+-
+-
+-	while (wait(&status) > 0) {
+-		if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+-			ret = 1;
+-		if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
+-			tst_brkm(TBROK | TERRNO, cleanup, "error in child");
+-		if (WIFSIGNALED(status)) {
+-			tst_resm(TFAIL, "child was killed with signal %s",
+-					tst_strsig(WTERMSIG(status)));
+-			return;
+-		}
+-	}
+-
+-	if (ret)
+-		tst_resm(TFAIL, "SysV shm: communication with identical keys"
+-				" between namespaces");
+-	else
+-		tst_resm(TPASS, "SysV shm: communication with identical keys"
+-				" between namespaces");
++	clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_shm, NULL);
++	clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_shm, NULL);
  }
  
 -int main(int argc, char *argv[])
-+/*
-+ * check_shmem2() reads from check_shmem1() and writes to main() when it's done.
-+ */
-+static int check_shmem2(LTP_ATTRIBUTE_UNUSED void *vtest)
- {
--	int ret, use_clone = T_NONE;
--	char *tsttype = NONESTR;
--	char buf[7];
- 	int id;
- 
--	setup();
-+	TST_CHECKPOINT_WAIT(0);
- 
--	if (argc != 2) {
--		tst_resm(TINFO, "Usage: %s <clone| unshare| none>", argv[0]);
--		tst_resm(TINFO, " where clone, unshare, or fork specifies"
--			 " unshare method.");
--		tst_exit();
--	}
--
--	/* Using PIPE's to sync between containers and Parent */
--	SAFE_PIPE(NULL, p1);
--	SAFE_PIPE(NULL, p2);
--
--	if (strcmp(argv[1], "clone") == 0) {
--		use_clone = T_CLONE;
--		tsttype = CLONESTR;
--	} else if (strcmp(argv[1], "unshare") == 0) {
--		use_clone = T_UNSHARE;
--		tsttype = UNSHARESTR;
--	}
-+	TEST(shmget(TESTKEY, 100, 0));
- 
--	tst_resm(TINFO, "Shared Memory namespace test : %s", tsttype);
-+	if (TST_RET < 0) {
-+		SAFE_SHMGET(TESTKEY, 100, IPC_CREAT);
- 
--	/* Create 2 containers */
--	ret =
--	    do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_shmem1, NULL);
--	if (ret < 0)
--		tst_brkm(TFAIL, NULL, "clone/unshare failed");
-+		tst_res(TINFO, "container2: able to allocate shmem seg with the same key");
- 
--	ret =
--	    do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_shmem2, NULL);
--	if (ret < 0)
--		tst_brkm(TFAIL, NULL, "clone/unshare failed");
--
--	close(p2[1]);
--	read(p2[0], buf, 7);
--
--	if (strcmp(buf, "exists") == 0) {
- 		if (use_clone == T_NONE)
--			tst_resm(TPASS,
--				 "Plain cloned process able to access shmem "
--				 "segment created");
-+			tst_res(TFAIL, "Plain cloned process didn't find shmem segment");
- 		else
--			tst_resm(TFAIL,
--				 "%s : In namespace2 found the shmem segment "
--				 "created in Namespace1", tsttype);
-+			tst_res(TPASS, "%s: in namespace2 unable to access the shmem seg created in namespace1", str_op);
- 	} else {
- 		if (use_clone == T_NONE)
--			tst_resm(TFAIL,
--				 "Plain cloned process didn't find shmem seg");
-+			tst_res(TPASS, "Plain cloned process able to access shmem segment created");
- 		else
--			tst_resm(TPASS,
--				 "%s : In namespace2 unable to access the shmem seg "
--				 "created in Namespace1", tsttype);
-+			tst_res(TFAIL, "%s: in namespace2 found the shmem segment created in namespace1", str_op);
- 	}
--	/* destroy the key */
- 
--	id = shmget(TESTKEY, 100, 0);
--	shmctl(id, IPC_RMID, NULL);
-+	id = SAFE_SHMGET(TESTKEY, 100, 0);
-+	SAFE_SHMCTL(id, IPC_RMID, NULL);
- 
--	tst_exit();
-+	return 0;
- }
-+
-+static void run(void)
-+{
-+	clone_unshare_test(use_clone, CLONE_NEWIPC, check_shmem1, NULL);
-+	clone_unshare_test(use_clone, CLONE_NEWIPC, check_shmem2, NULL);
-+}
-+
 +static void setup(void)
-+{
-+	use_clone = get_clone_unshare_enum(str_op);
-+
-+	if (use_clone != T_NONE)
-+		check_newipc();
-+}
+ {
+-	int lc;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++)
+-		test();
+-
+-	cleanup();
+-	tst_exit();
++	check_newipc();
+ }
 +
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
-+	.forks_child = 1,
 +	.needs_root = 1,
 +	.needs_checkpoints = 1,
-+	.options = (struct tst_option[]) {
-+		{ "m:", &str_op, "Test execution mode <clone|unshare|none>" },
-+		{},
-+	},
 +};
 -- 
 2.35.1
