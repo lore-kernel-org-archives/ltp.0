@@ -4,76 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F93BC433EF
-	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 07:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03B51C433F5
+	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 07:19:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 443B33C70D9
-	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 08:17:37 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 090113C8781
+	for <ltp@archiver.kernel.org>; Fri, 25 Mar 2022 08:19:04 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 70E3B3C54FB
- for <ltp@lists.linux.it>; Fri, 25 Mar 2022 08:17:27 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E5F8D3C54FB
+ for <ltp@lists.linux.it>; Fri, 25 Mar 2022 08:18:52 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C5CD31001178
- for <ltp@lists.linux.it>; Fri, 25 Mar 2022 08:17:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1648192645;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 185D3601AC5
+ for <ltp@lists.linux.it>; Fri, 25 Mar 2022 08:18:51 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 50EC71F745;
+ Fri, 25 Mar 2022 07:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1648192731;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DLfsXJdGSOzyNyle/FL8TrYi0NCR6ZT7FhJ9Eqa/ZtA=;
- b=T/t50mnNzSO47iOEpj5hwFSPTfxkps7F9QMYjH5OttntHWH7TlTi+s1p/tHsd8tN5LSjcG
- aw+39guQ4Jzwbrfeox6rTyG5Wb2ERlgjV3zzyBdG5f5DIZLyWLWgazYl64dm59fMJ9WYVZ
- 21vnHZ+G4WAZrR1k3gL00Fw2j8COvBQ=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-348-3X6l8NxoOviW4utcmUDKjg-1; Fri, 25 Mar 2022 03:17:23 -0400
-X-MC-Unique: 3X6l8NxoOviW4utcmUDKjg-1
-Received: by mail-yw1-f200.google.com with SMTP id
- 00721157ae682-2e5a3c1384cso54210577b3.4
- for <ltp@lists.linux.it>; Fri, 25 Mar 2022 00:17:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=DLfsXJdGSOzyNyle/FL8TrYi0NCR6ZT7FhJ9Eqa/ZtA=;
- b=UU4BQ+rXCZY+f8kBAm1kxioO5teZHYNXOSww9M3mfWGCBPOMNiRxa3so/2WqlcRF7Z
- vcTf8Iww2AIFHwMD9rzkpUAKVQdMb8a4TpDoqx7icisIUBa5BwSwX8/1cH4qnvPfYVSD
- IoPaDBo9zyEVRiyE3+WhdXlOCWzuwpBchAsoOOX7PGx8OxC54VCbBfLq51kQBKZQCQN2
- sfEx/pkk5aLnmEB3P9PkryhNlT7tn0BHCQxMN9LMepxpGNDniVcKODogcXVw/lI0bXVx
- 1ZIq8JBeenInW+6R/oDLR9EaGGDfIxb0AmzJfcjyYV3dhmhHVbdg6kxbQrfYqPHLdzB7
- 41Jw==
-X-Gm-Message-State: AOAM530Sl8EggXUPeK8qPdmfPCBbz4HYrxYqtEa21L/4wo1Nkk3UWEXM
- TABsesqWIgeZUpJnuYJcc1iGW9m0VmYl0o3Z32u4Wxi/YU2CORMIAUcVJc4Jrcf1MPffVKWV7BR
- 953HLnEug5Yh5XPQoKjpBqMtT9Xg=
-X-Received: by 2002:a81:b8a:0:b0:2e5:c218:14c7 with SMTP id
- 132-20020a810b8a000000b002e5c21814c7mr8723651ywl.90.1648192642595; 
- Fri, 25 Mar 2022 00:17:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjbrFy9Lh2oDO+xwuKqKi0Sf9DD5lyOp4SHz5Z8Au6mgq28xYjQ6IgBcNh7QsimBW9C1EHRJ75T6wIeAJEoiI=
-X-Received: by 2002:a81:b8a:0:b0:2e5:c218:14c7 with SMTP id
- 132-20020a810b8a000000b002e5c21814c7mr8723627ywl.90.1648192642203; Fri, 25
- Mar 2022 00:17:22 -0700 (PDT)
+ bh=H08M900IiwLl2eIucpsi/mxFFkIUbl55M4fw8geM/EM=;
+ b=LfdYTsybPPhswSKRl+HT39Kkh4NwN+0lTqaP2FGsA3N+8GMt5pHRWfZDF1osdCWb1nfHLH
+ RnClr6FgxBSK6fggczvJhee+SvPkmVf7Fqq/vr2gXCHAW9BCsXM1ITFy4vuJ1tF1C+96gE
+ MY8IxhvWh2Nl666Bfl2yKTZqYJTSb8o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1648192731;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=H08M900IiwLl2eIucpsi/mxFFkIUbl55M4fw8geM/EM=;
+ b=g72ug+x1bWvqmldnIh5Zo6TmQ/IJOhw4fHySTgF8ItFJ1aqtBt1bH2DdOdvdHQN7zssA3N
+ A1ph/G9YYD5aw8Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 27AF9132E9;
+ Fri, 25 Mar 2022 07:18:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id mvX/B9tsPWIHTwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 25 Mar 2022 07:18:51 +0000
+Date: Fri, 25 Mar 2022 08:18:49 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <Yj1s2cKWf7oNwSVR@pevik>
+References: <20220315122351.8556-1-andrea.cervesato@suse.de>
+ <20220315122351.8556-9-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-References: <20220324234950.2229888-1-chuhu@redhat.com>
-In-Reply-To: <20220324234950.2229888-1-chuhu@redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 25 Mar 2022 15:17:11 +0800
-Message-ID: <CAEemH2dDhkMAwRjGmY4XNjqt7HOQzvuXT9=Bz4MnUQerENo57w@mail.gmail.com>
-To: Chunyu Hu <chuhu@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220315122351.8556-9-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] futex_waitv03: cleanup shms
+Subject: Re: [LTP] [PATCH v2 8/8] Rewrite userns08.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,48 +76,81 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0780389789=="
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: rpalethorpe@suse.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0780389789==
-Content-Type: multipart/alternative; boundary="000000000000f5d75705db05c0a1"
+Hi Andrea,
 
---000000000000f5d75705db05c0a1
-Content-Type: text/plain; charset="UTF-8"
+[Cc Richie]
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+This subject: "Rewrite userns08.c using new LTP API" is misleading,
+userns08.c was already using new API.
 
+You're:
+* s/tst_res/tst_brk/ (that would deserve explanation why)
+* removing tst_reap_children()
+* changing formatting (some of them create too long lines)
 
--- 
-Regards,
-Li Wang
+...
+>  static pid_t clone_newuser(void)
+>  {
+> -	const struct tst_clone_args cargs = {
+> -		CLONE_NEWUSER,
+> -		SIGCHLD
+> -	};
+> +	const struct tst_clone_args cargs = { CLONE_NEWUSER, SIGCHLD };
 
---000000000000f5d75705db05c0a1
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+>  	return SAFE_CLONE(&cargs);
+>  }
 
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><div class=3D"gmail_quote"><div dir=3D"ltr" c=
-lass=3D"gmail_attr"><div class=3D"gmail_default" style=3D"font-size:small">=
-Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">liwang@redhat=
-.com</a>&gt;</div><br></div></div><div><br></div>-- <br><div dir=3D"ltr" cl=
-ass=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wan=
-g<br></div></div></div></div>
+> -static void write_mapping(const pid_t proc_in_ns,
+> -			  const char *const id_mapping)
+> +static void write_mapping(const pid_t proc_in_ns, const char *const id_mapping)
+>  {
+>  	char proc_path[PATH_MAX];
+>  	int proc_dir;
+> @@ -61,11 +58,11 @@ static void write_mapping(const pid_t proc_in_ns,
+>  static void ns_level2(void)
+>  {
+>  	if (prctl(PR_SET_DUMPABLE, 1, 0, 0, 0))
+> -		tst_res(TINFO | TERRNO, "Failed to set dumpable flag");
+> +		tst_brk(TBROK | TTERRNO, "Failed to set dumpable flag");
+Not sure which one is correct (whether tst_res or tst_brk).
+But TTERRNO is obviously wrong, that's for using TEST(). Here should remain
+TERRNO.
 
---000000000000f5d75705db05c0a1--
+> +
+>  	TST_CHECKPOINT_WAKE_AND_WAIT(1);
 
+> -	TST_EXP_FAIL(open("restricted", O_WRONLY), EACCES,
+> -		     "Denied write access to ./restricted");
+> +	TST_EXP_FAIL(open("restricted", O_WRONLY), EACCES, "Denied write access to ./restricted");
 
---===============0780389789==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I'd keep this one.
 
+>  	exit(0);
+>  }
+> @@ -89,7 +86,6 @@ static void ns_level1(void)
+>  	write_mapping(level2_proc, map_over_5);
+
+>  	TST_CHECKPOINT_WAKE(1);
+> -	tst_reap_children();
+Well, test works without it, but not really sure if it can be removed.
+
+Kind regards,
+Petr
+
+>  	exit(0);
+>  }
+> @@ -111,7 +107,6 @@ static void run(void)
+>  	write_mapping(level1_proc, "0 100000 1000");
+
+>  	TST_CHECKPOINT_WAKE(0);
+> -	tst_reap_children();
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0780389789==--
-
