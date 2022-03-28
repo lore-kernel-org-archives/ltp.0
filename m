@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40AA9C433EF
-	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 09:55:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47F99C433F5
+	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 10:13:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0989D3C980A
-	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 11:55:25 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 138963C97EA
+	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 12:13:41 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 345533C8CA5
- for <ltp@lists.linux.it>; Mon, 28 Mar 2022 11:55:15 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 48E383C07BE
+ for <ltp@lists.linux.it>; Mon, 28 Mar 2022 12:13:30 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 23763600677
- for <ltp@lists.linux.it>; Mon, 28 Mar 2022 11:55:13 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 478AE600698
+ for <ltp@lists.linux.it>; Mon, 28 Mar 2022 12:13:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1648461312;
+ s=mimecast20190719; t=1648462407;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Iln8AHbIBWQswIhohmUM0SBhVe3Y3TcMs03viXmJW34=;
- b=Hk0TUx/NKZMj8UQ8vv+eDb06YtyZh4lQtPB9rfgE07HIKT0nCK1hn0iqZdwDuWCgSGZtcV
- kM+UDI3ZUXroU+gRIZ7rb5b45nVbJcmnBrv3gMnhb4hpHayP+OmQs45tXlqpVoJFRzv7z7
- HX/gv8bi+O1K/X1ljbDBZmzuFVajAKo=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=xqSKVA/VRRfwjU5t9bgH+lPUPCTXXWquRG0IrSNLn9A=;
+ b=BwJpGCG2/VSRL8Jw8NJjlzrLH+OJ5Nh5i8tHH54yfhzavtC+k0oF2TRN2eRiTqE0VsySE8
+ p34tKMqlzyeJ4ZZHlhfgbTcvliM46cegFtDAi/h+Xuz80GHVsXUtE2fjc0kn+1VZ/Yo5no
+ AzUCYFfEjrcDk+Y2igVA1N/Kvx/POmA=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-575-oKQXm4umOFyhtFvhonSysQ-1; Mon, 28 Mar 2022 05:55:10 -0400
-X-MC-Unique: oKQXm4umOFyhtFvhonSysQ-1
-Received: by mail-yb1-f199.google.com with SMTP id
- k13-20020a25c60d000000b006339008b92fso10519402ybf.1
- for <ltp@lists.linux.it>; Mon, 28 Mar 2022 02:55:10 -0700 (PDT)
+ us-mta-637-LS9PsdD0PW2VFfACNubFKg-1; Mon, 28 Mar 2022 06:13:26 -0400
+X-MC-Unique: LS9PsdD0PW2VFfACNubFKg-1
+Received: by mail-yw1-f199.google.com with SMTP id
+ 00721157ae682-2e61c5a0eb7so113975207b3.22
+ for <ltp@lists.linux.it>; Mon, 28 Mar 2022 03:13:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=Iln8AHbIBWQswIhohmUM0SBhVe3Y3TcMs03viXmJW34=;
- b=00D5Y6pbBTLOSCGFV71Mg3cSGAgnmPgdOqA4IKHLPggCm+eliAH/1YgLGmHRkZA+7W
- 5TkI0+TsWCzhRXE3hJ3GxsGeu0NQPumBPUk/SEoQbnv/eqGhoBu3dgNhMSw2lERDAkzn
- +UFd06zzPjGPkSoApB/MzK5xiCdIE5hvt/1kqmGl7/JTbgrFhsCw57VbiIJnQ6lWVnTS
- Dp3zoLp3ytifH1EOv/+5euLg0Syu2Yy0elK+bc1pnp+FUDHK5nwFIb5BBe74Ku0qcDeF
- qhH3cA4IjDA2P1oiPtxUIPdtc5hG47+6MY1N9B0jGYMzHpLb17f8eDHwUVFeGxReydE9
- jMCw==
-X-Gm-Message-State: AOAM531JmAp+5BF2KeB9U4YNfdsgyug5eEUGz7dMao3kN2r7PYqt5+nu
- Q30mAglH6ixHK1u5pGuMwj5oALPlb5jEdn3UM5ln18Bk5Y+vbSbKbT0eh5M0F681yxUoReYPFGT
- jigRFDXY5ymOkFKqLyS6hL474zO0=
-X-Received: by 2002:a81:1211:0:b0:2e5:d8dd:b3d4 with SMTP id
- 17-20020a811211000000b002e5d8ddb3d4mr23780260yws.208.1648461309870; 
- Mon, 28 Mar 2022 02:55:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpZ8IpsIKubxfKy97lswVVMU6c1xcH9Dp1aA9pQc4m32fsWuERfqYsZxBR0RmKTaOzgQ32iTykqu9nQjGginE=
-X-Received: by 2002:a81:1211:0:b0:2e5:d8dd:b3d4 with SMTP id
- 17-20020a811211000000b002e5d8ddb3d4mr23780235yws.208.1648461309530; Mon, 28
- Mar 2022 02:55:09 -0700 (PDT)
+ bh=xqSKVA/VRRfwjU5t9bgH+lPUPCTXXWquRG0IrSNLn9A=;
+ b=n0aymTqYbsDPBzQsnolzj0/WeRy8jU7Gw7ieg/+hWeG//JK40o16KxavLZCNy8CJ3U
+ 77gNrNIHWFxusxoFJJDiwMh5SL/6k5JNewv7+H1l0wwvoOgLDQ0bLgDsf0mfYNKAHvio
+ nPEE0mBJO1o/RcbJJ2Nn26dw8HuZYKysYA0vNDjPBJnYLOKxjHJBR9MvG2uyfGwA2oLc
+ l8ZQ4TnzdTpugUhQEu8PY6nF6Fz6Z+XFeVrH0X7GtoB8hI67hB2Ue8mCoxvoAiX+HQA/
+ xGwjF+odRM3WUYo0PshuiXGbVEjfRbRbnfhwMoNIIL/Dx80fqEmpFgwfKV6QYDUfe27Z
+ udeA==
+X-Gm-Message-State: AOAM532ke0bvVyD/ngMD8h6D6MjHPgTOfgRjfemunw31gpRKe9YNdcaH
+ q+D+xvKKZE+pDfGrMHKMits5X8h2aF12s4H/mG0c1WX1DDxU62OAO5W+N1i5zjHmOlSu7c0VodW
+ T/i+611cOwbIK+pDbitBV7DJtwCI=
+X-Received: by 2002:a25:e78e:0:b0:633:9df1:9fff with SMTP id
+ e136-20020a25e78e000000b006339df19fffmr21527067ybh.233.1648462405879; 
+ Mon, 28 Mar 2022 03:13:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8s/7PiqeHbU5ZPkJ9J6cnXIvKGvlRjP4Yu0jdBrLgz8tf3KgtFzDnrBNBFXsQmHHOSwHdkC1OJuDhmtnizos=
+X-Received: by 2002:a25:e78e:0:b0:633:9df1:9fff with SMTP id
+ e136-20020a25e78e000000b006339df19fffmr21527046ybh.233.1648462405508; Mon, 28
+ Mar 2022 03:13:25 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220325040057.544211-1-liwang@redhat.com> <Yj2V2fu/3Zzio3TZ@yuki>
  <CAEemH2fVf8tMbY4R_O-BrSy7vtmyGgNq3NbYF=LfjyHDbDgkBg@mail.gmail.com>
  <YkF4pVQXMqEO32r2@yuki>
-In-Reply-To: <YkF4pVQXMqEO32r2@yuki>
+ <CAEemH2dSkAFF6Mh7m=o9Ejnut9iKT-Ud=Wm10+98-1BT9w+TPA@mail.gmail.com>
+In-Reply-To: <CAEemH2dSkAFF6Mh7m=o9Ejnut9iKT-Ud=Wm10+98-1BT9w+TPA@mail.gmail.com>
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 28 Mar 2022 17:54:55 +0800
-Message-ID: <CAEemH2dSkAFF6Mh7m=o9Ejnut9iKT-Ud=Wm10+98-1BT9w+TPA@mail.gmail.com>
+Date: Mon, 28 Mar 2022 18:13:09 +0800
+Message-ID: <CAEemH2eSWor_gpVv=vpXCz0+9bt6xK5+2H4zjg66Y=yVPeS1Mg@mail.gmail.com>
 To: Cyril Hrubis <chrubis@suse.cz>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
@@ -90,121 +91,180 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: Viresh Kumar <viresh.kumar@linaro.org>, Eirik Fuller <efuller@redhat.com>,
  Waiman Long <llong@redhat.com>, LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0669577800=="
+Content-Type: multipart/mixed; boundary="===============1729646155=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0669577800==
-Content-Type: multipart/alternative; boundary="000000000000c7e8d705db444eb1"
+--===============1729646155==
+Content-Type: multipart/alternative; boundary="0000000000001b37cc05db449017"
 
---000000000000c7e8d705db444eb1
+--0000000000001b37cc05db449017
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 28, 2022 at 4:56 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi Cyril,
 
-> Hi!
-> > >         clock_getres(CLOCK_REALTIME_COARSE, &res);
-> > >
-> > >         delta = 5 + (res.tv_nsec / 1000000) * 5;
-> > >
-> >
-> > Sounds reasonable.
-> >
-> > But I don't understand why you multiply 5 for the resolution
-> > (in milliseconds) here. Or, a wiser choice is to get the real
-> > resolution for each clockid? i.e.
+Sorry, I didn't complete my input but sent the email by touch
+key combination...  Comments in below.
+
+On Mon, Mar 28, 2022 at 5:54 PM Li Wang <liwang@redhat.com> wrote:
+
+
 >
-> I did multiply it with 5 just to add some error margin. I guess that we
-> can as well multiply it with 2 if that works well enough.
+>> I did multiply it with 5 just to add some error margin. I guess that we
+>> can as well multiply it with 2 if that works well enough.
+>>
+>
+> Ok, I'd like to multiply 5 in case VM needs more.
+>
+>
+>> I do not think that we should get resolution for each clock, the COARSE
+>> clock should have the worst resolution of all clocks.
+>>
+>
+> Yes, quite enough for the rest.
+> For precise clock, the second part will be zero since divided by 1000000.
+>
+>     delta = 5 + (res.tv_nsec / 1000000) * 5;
 >
 
-Ok, I'd like to multiply 5 in case VM needs more.
+
+My concern here is that seems a bit looser to the rest clocks.
+Because "10ms" as delta is a big value to the precise clock since
+the resolution of some is only 1ns.
+(The delta will be "10ms" on x86_64 and "15ms" on aarch64.)
+
+In my path V2, we can make the second part _zero_ by dividing 1000000.
+Then we can keep using the proper delta for each clock.
 
 
-> I do not think that we should get resolution for each clock, the COARSE
-> clock should have the worst resolution of all clocks.
->
+Test data from x86_64:
+========
 
-Yes, quite enough for the rest.
-For precise clock, the second part will be zero since divided by 1000000.
-
-    delta = 5 + (res.tv_nsec / 1000000) * 5;
-
-
-Test data from aarch4 (kernel-5.14) FYI:
-===================
 clock_gettime04.c:108: TINFO: CLOCK_REALTIME: resolution is 1ns
+clock_gettime04.c:112: TINFO: delta = : 5
 ...
-clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution is
-10000000ns
+clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution is 1000000ns
+clock_gettime04.c:112: TINFO: delta = : 10
 clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC: resolution is 1ns
+clock_gettime04.c:112: TINFO: delta = : 5
 clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_COARSE: resolution is
-10000000ns
+1000000ns
+clock_gettime04.c:112: TINFO: delta = : 10
 clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_RAW: resolution is 1ns
+clock_gettime04.c:112: TINFO: delta = : 5
 clock_gettime04.c:108: TINFO: CLOCK_BOOTTIME: resolution is 1ns
+clock_gettime04.c:112: TINFO: delta = : 5
+
+
+
+>
+>
+> Test data from aarch4 (kernel-5.14) FYI:
+> ===================
+> clock_gettime04.c:108: TINFO: CLOCK_REALTIME: resolution is 1ns
+> ...
+> clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution is
+> 10000000ns
+> clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC: resolution is 1ns
+> clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_COARSE: resolution is
+> 10000000ns
+> clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_RAW: resolution is 1ns
+> clock_gettime04.c:108: TINFO: CLOCK_BOOTTIME: resolution is 1ns
+>
+>
+> --
+> Regards,
+> Li Wang
+>
 
 
 -- 
 Regards,
 Li Wang
 
---000000000000c7e8d705db444eb1
+--0000000000001b37cc05db449017
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 <div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Mon, Mar 28, 2022 at 4:56 PM Cyril Hrubis &lt;<a=
- href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; =
-wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
-px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
-&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0clock_getres(CLOCK_REALTIME_COAR=
-SE, &amp;res);<br>
-&gt; &gt;<br>
-&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0delta =3D 5 + (res.tv_nsec / 100=
-0000) * 5;<br>
-&gt; &gt;<br>
-&gt; <br>
-&gt; Sounds reasonable.<br>
-&gt; <br>
-&gt; But I don&#39;t understand why you multiply 5 for the resolution<br>
-&gt; (in milliseconds) here. Or, a wiser choice is to get the real<br>
-&gt; resolution for each clockid? i.e.<br>
+t-size:small">Hi=C2=A0Cyril,</div><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
+ll"><div class=3D"gmail_default">Sorry, I didn&#39;t complete my input but=
+=C2=A0sent the email by touch</div><div class=3D"gmail_default">key combina=
+tion...=C2=A0 Comments in below.</div></div></div><br><div class=3D"gmail_q=
+uote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Mar 28, 2022 at 5:54 PM=
+ Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt;=
+ wrote:<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_quote"><blockquote class=3D=
+"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
+04,204,204);padding-left:1ex">
 <br>
 I did multiply it with 5 just to add some error margin. I guess that we<br>
 can as well multiply it with 2 if that works well enough.<br></blockquote><=
-div><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">O=
-k, I&#39;d like to multiply=C2=A05 in case VM needs more.</div></div><div><=
-br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
-x;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+div><br></div><div><div style=3D"font-size:small">Ok, I&#39;d like to multi=
+ply=C2=A05 in case VM needs more.</div></div><div><br></div><blockquote cla=
+ss=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex">
 <br>
 I do not think that we should get resolution for each clock, the COARSE<br>
 clock should have the worst resolution of all clocks.<br></blockquote><div>=
-<br></div><div><div class=3D"gmail_default" style=3D"font-size:small">Yes, =
-quite enough for the rest.=C2=A0</div><div class=3D"gmail_default" style=3D=
-"font-size:small">For precise clock, the second part will be zero since div=
-ided=C2=A0by 1000000.</div></div><div class=3D"gmail_default" style=3D"font=
--size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:smal=
-l">=C2=A0 =C2=A0 delta =3D 5 + (res.tv_nsec / 1000000) * 5;<br></div><div><=
-br></div><div><br></div><div><div class=3D"gmail_default" style=3D"font-siz=
-e:small">Test data from aarch4 (kernel-5.14) FYI:</div><div class=3D"gmail_=
-default" style=3D"font-size:small">=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D</div></div><div><span class=3D"gmail_default" style=3D"f=
-ont-size:small"></span>clock_gettime04.c:108: TINFO: CLOCK_REALTIME: resolu=
-tion is 1ns<br><div class=3D"gmail_default" style=3D"font-size:small">...</=
-div>clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution is 1000=
-0000ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC: resolution is 1ns<=
-br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_COARSE: resolution is 1000=
-0000ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_RAW: resolution is =
-1ns<br>clock_gettime04.c:108: TINFO: CLOCK_BOOTTIME: resolution is 1ns<br><=
-div class=3D"gmail_default" style=3D"font-size:small"><br></div></div></div=
-><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Regards,<br><=
-/div><div>Li Wang<br></div></div></div></div>
+<br></div><div><div style=3D"font-size:small">Yes, quite enough for the res=
+t.=C2=A0</div><div style=3D"font-size:small">For precise clock, the second =
+part will be zero since divided=C2=A0by 1000000.</div></div><div style=3D"f=
+ont-size:small"><br></div><div style=3D"font-size:small">=C2=A0 =C2=A0 delt=
+a =3D 5 + (res.tv_nsec / 1000000) * 5;<br></div></div></div></blockquote><d=
+iv><br></div><div><div class=3D"gmail_default" style=3D"font-size:small"><b=
+r></div><div class=3D"gmail_default" style=3D"font-size:small">My concern h=
+ere is that seems a bit looser to the rest clocks.</div><div class=3D"gmail=
+_default" style=3D"font-size:small">Because=C2=A0&quot;10ms&quot; as delta =
+is a big value=C2=A0to the precise clock since</div><div class=3D"gmail_def=
+ault" style=3D"font-size:small">the resolution of some is only 1ns.=C2=A0</=
+div><div class=3D"gmail_default" style=3D"font-size:small">(The delta will =
+be &quot;10ms&quot; on x86_64 and &quot;15ms&quot; on aarch64.)</div><div c=
+lass=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gm=
+ail_default" style=3D"font-size:small">In my path V2, we can make the secon=
+d part _zero_ by dividing 1000000.</div><div class=3D"gmail_default" style=
+=3D"font-size:small">Then we can keep using the proper delta for each clock=
+.</div><br></div><div><br></div><div><div class=3D"gmail_default" style=3D"=
+font-size:small">Test data from x86_64:</div><div class=3D"gmail_default" s=
+tyle=3D"font-size:small">=3D=3D=3D=3D=3D=3D=3D=3D</div><br></div><div><div =
+class=3D"gmail_default" style=3D"font-size:small">clock_gettime04.c:108: TI=
+NFO: CLOCK_REALTIME: resolution is 1ns</div>clock_gettime04.c:112: TINFO: d=
+elta =3D : 5<br><span class=3D"gmail_default" style=3D"font-size:small">...=
+</span><br>clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution =
+is 1000000ns<br>clock_gettime04.c:112: TINFO: delta =3D : 10<br>clock_getti=
+me04.c:108: TINFO: CLOCK_MONOTONIC: resolution is 1ns<br>clock_gettime04.c:=
+112: TINFO: delta =3D : 5<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_=
+COARSE: resolution is 1000000ns<br>clock_gettime04.c:112: TINFO: delta =3D =
+: 10<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_RAW: resolution is 1n=
+s<br>clock_gettime04.c:112: TINFO: delta =3D : 5<br>clock_gettime04.c:108: =
+TINFO: CLOCK_BOOTTIME: resolution is 1ns<br>clock_gettime04.c:112: TINFO: d=
+elta =3D : 5<br><div class=3D"gmail_default" style=3D"font-size:small"></di=
+v><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"mar=
+gin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1=
+ex"><div dir=3D"ltr"><div class=3D"gmail_quote"><div style=3D"font-size:sma=
+ll"></div><div><br></div><div><br></div><div><div style=3D"font-size:small"=
+>Test data from aarch4 (kernel-5.14) FYI:</div><div style=3D"font-size:smal=
+l">=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</div></div><di=
+v><span class=3D"gmail_default" style=3D"font-size:small"></span>clock_gett=
+ime04.c:108: TINFO: CLOCK_REALTIME: resolution is 1ns<br><div style=3D"font=
+-size:small">...</div>clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: =
+resolution is 10000000ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC: =
+resolution is 1ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_COARSE: =
+resolution is 10000000ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_R=
+AW: resolution is 1ns<br>clock_gettime04.c:108: TINFO: CLOCK_BOOTTIME: reso=
+lution is 1ns<br><div style=3D"font-size:small"><br></div></div></div><div>=
+<br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Regards,<br></div><=
+div>Li Wang<br></div></div></div></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
+Wang<br></div></div></div></div>
 
---000000000000c7e8d705db444eb1--
+--0000000000001b37cc05db449017--
 
 
---===============0669577800==
+--===============1729646155==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -214,5 +274,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0669577800==--
+--===============1729646155==--
 
