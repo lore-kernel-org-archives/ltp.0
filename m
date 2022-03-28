@@ -4,151 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A067DC433F5
-	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 09:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40AA9C433EF
+	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 09:55:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96D413C9AC2
-	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 11:26:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 0989D3C980A
+	for <ltp@archiver.kernel.org>; Mon, 28 Mar 2022 11:55:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8EAB03C0325
- for <ltp@lists.linux.it>; Mon, 28 Mar 2022 11:26:16 +0200 (CEST)
-Received: from esa10.fujitsucc.c3s2.iphmx.com (esa10.fujitsucc.c3s2.iphmx.com
- [68.232.159.247])
+ by picard.linux.it (Postfix) with ESMTPS id 345533C8CA5
+ for <ltp@lists.linux.it>; Mon, 28 Mar 2022 11:55:15 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 36D2D1A00707
- for <ltp@lists.linux.it>; Mon, 28 Mar 2022 11:26:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1648459574; x=1679995574;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=ODpLtYczGRJUM8v3YA1CUVWD95lb4btFm4ufjsKue9A=;
- b=oWIht6aGBklQvuz49mKVz55D1X+GVSjKt5NeH177Fo7dH22ARhq2mfJq
- t5kY4Max01WxqAkVKzKmxKjc9Xwn1n1ez09YE+Jt9gE1q/miWXpsBDX9R
- vXEELRHhe+WqaHRcoZGIRr/TLqI55t8969W7s+qL7fi+eeDf7YfhQ2y3M
- XahdAhwLLekEWro9b607F6Ata0NXzBNL9tSLdqq9kArcO2O79etuZAZSU
- r+9eQ5iSm3/re/zSf1PMA6UFMqBm+9Kjt1UmF3bWEz4gM7fADBX8H0MwL
- yyB6zKT52yNrWglGgugogmO5lUYj4wfEZOJaHDp9nvcC+cIQ/BlZ0lQvq w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10299"; a="52753249"
-X-IronPort-AV: E=Sophos;i="5.90,217,1643641200"; d="scan'208";a="52753249"
-Received: from mail-tycjpn01lp2174.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.174])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Mar 2022 18:26:12 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WRfw2ntEilmSMWaBJTxcdw8ArXiqpedmKUgSZhztv6tQpGaOwIR2KfNZgGP34FdemmMIUnzs+9QI/AmDa3xurScFuBfa/mtA0iDhGnoDfz6MeaPHS0UwNRClPUslJgew66lysLfgv47BuK/3EWZOBHQcZBTAdtKvmswKeLRNnUGfuRfgrEMDZGtpMLmh95ADE5YvblWJeRhboTWJgg64Ws0Mf9anwWHueDwIYRNfcNBWhElOWsAuyar3MvCGMN6h4dg3GKGUddndGoOUAjabBX/ZlANqGeC02yz0IE+HdD/PTviOTq7CPX7n22h5g6RUKPaUWNz8ZoQJNJT0kU9UNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ODpLtYczGRJUM8v3YA1CUVWD95lb4btFm4ufjsKue9A=;
- b=JJHQ/jZlo8hDCbjmlKaVTpx1nCsKIidri7nnLtwXznRftwzf5JlQU2TZ9gR5VZW2R2uQMGtyXP36hnT/HCDdPFRRiC6cGf7Cqu0FJBv6bcFVdZQc6X+RApGYzjjyE5RGtpKKQRsK4lvxo4QQpcLMWvIp89LdWLLYwMJwNcA+5HJfHNbJvqv1NKfmXM/sDx6lCj8Zm3Pg+l/rqzz10APjJ5sI5FT1QA72ZMtX1XlziTph8Z5xiCg/Ra84MHtxJDZG54/O6Wa3QZt/0UqsyNPuCSDoUTUcTSn7IQMU6ALH9mdqr9EGaOqdxhCtadBClD0ddAJdI93hFzjRMoVwy9OTSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ODpLtYczGRJUM8v3YA1CUVWD95lb4btFm4ufjsKue9A=;
- b=hKimJeaB5/hQud0K1lu8Yv0PNJfBKSPQMeXwVepUo3pZHnLp66E35De9Bp94z1qFqu9lFCd0IiwqgurliTVaSTrbzSGss105I8IqLhy1+gsbJfDulRVc8aTh5mxenndUG0etSimC7eI/BtNYZkmcSNHFtnTnel9gs8iz5Nfoh/g=
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by OSZPR01MB8895.jpnprd01.prod.outlook.com (2603:1096:604:15a::8)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.17; Mon, 28 Mar
- 2022 09:26:08 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::dd2e:e671:b3d5:d354%6]) with mapi id 15.20.5102.022; Mon, 28 Mar 2022
- 09:26:08 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: "daisl.fnst@fujitsu.com" <daisl.fnst@fujitsu.com>
-Thread-Topic: [PATCH] syscalls/umount2_02: use umount2 directly instead of
- TEST macro
-Thread-Index: AQHYQnlqbRn9COXIGkeYSA7y9B7i+KzUhvcA
-Date: Mon, 28 Mar 2022 09:26:08 +0000
-Message-ID: <62417F5C.7000604@fujitsu.com>
-References: <62414819.2010802@fujitsu.com>
- <1648497372-9371-1-git-send-email-daisl.fnst@fujitsu.com>
-In-Reply-To: <1648497372-9371-1-git-send-email-daisl.fnst@fujitsu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 306151a9-be58-4f80-24fc-08da109cfdae
-x-ms-traffictypediagnostic: OSZPR01MB8895:EE_
-x-microsoft-antispam-prvs: <OSZPR01MB8895D891600CFBA397732337FD1D9@OSZPR01MB8895.jpnprd01.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZZA6s93AMpKRUl+al2qjXxibKMZMdoz+aB6/1PCO9BJ6JBsRFPmQUDZqHgyNcdBH6a4SrtNAoA9M5zznAeXGOyqAIx0d7FhxgZgNT0MOWhE2kaTWhO+eKV3CHi/FkxB4tBv8Cg9V9Kt5OdxDEJSKq8BqdJaspCPxL64CuhTUKyfClJ2QTaj4qwQVLYH90WIE0iVHlIFWmNy1/6Yy08FyVVTmUV7hgXjXB37qZqPCawB/SPCWzPfFAWrKD28cg6gSmI/t+tlajwjhq6yL6W3g/37MHnLgu1jr61Mh6zV7vzUP7+EG6hZUSz9tI5dnUxWNxn34wowCIHq7YFS19a+QY8VFK0yjLoVQ2MhSEyjNlX9BPpFiqNlWQNEZyRqwid4lz8Z+QqeBTfP1jLarMZaRPB56gwOjlTNcAy7ExMMh3LwgDXMGCVnb9XZQW1VvgqmkbsPIjtrdRkEu7MGXzSo7vD+gS+qRn4VD85s7LDJgb8MHEmh02uyQlQ4XQmEMNrxfoVmSfaCFqyBdg9CfZK5DMbAJ5zVCgFUUjdrSnl4jmJF0/o7mNHmSn6EOEAQDLnWDjqT1sLyV+Ixvzblqlcj4ObnHuBSfJfnEXmiKi8H0lJ1N8hrXtyz4GihGHocxdNDMNxwFIKNSZRfXvScmGafBgfW51oNF+j+8mqF9DIaAf4ZPqcrvqdiaksC8O6i2FUoOmH/dtDb/3Z7+AwRzey/Lew==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(87266011)(5660300002)(122000001)(38070700005)(86362001)(38100700002)(6512007)(508600001)(33656002)(36756003)(6636002)(2906002)(316002)(8936002)(6862004)(82960400001)(8676002)(64756008)(6486002)(91956017)(186003)(37006003)(83380400001)(71200400001)(66946007)(85182001)(4326008)(54906003)(26005)(2616005)(66476007)(66556008)(66446008)(6506007)(76116006);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?Y0hqa3BweFoyWGdLYm5KeHJKd3lPUUhtMTczZHdHMGwwcm1lZEZ5eFZ1Z0VC?=
- =?gb2312?B?aFlmK1RraVByNG1TNTljcnl2VDRYdzNlckNHV25odWxqSWJCY0xpK1pQTUdJ?=
- =?gb2312?B?R1cycFQ4WkdvSkVmRExuY3N6V3V0S1FIVjl4b3MwN0dBdUFyaFBiMlg2UE04?=
- =?gb2312?B?UVU1TFB1Sko0ZUdKdndncHRJVW1wQzlVdWNsMVZLMk1jMmYwT3gxYkhONWpH?=
- =?gb2312?B?eTZwbGtwRkFIcnZvTFpGSk9CZzhMRXF4ZkhFU2U0WnBQTFB3aFJXNVFZbGRT?=
- =?gb2312?B?Qi9tbXVBVWV6NitaOURtQyt0Z293U05jc2xmVzVERGtRcVhjR0gxTFJRWklp?=
- =?gb2312?B?aTEyQVdkeUxRK3RMRXRNRWRRMlByY0VQQnZQbmFINCt6VzlleTMzaHRwMVVC?=
- =?gb2312?B?S29GdXk1aDB5NWwxYnR4YWpKQStGc0Y4ZHpqTHdOSDIwNFdCRlpQTDRmQzlJ?=
- =?gb2312?B?MmhRNFoxaG9xbE9LYnh1WmhhSm1JSnlPMXZoR3BXKzgyRC81dW9MT2JCN0Nu?=
- =?gb2312?B?QWkxS0ZudWlVNUtPYUpJWHNRR3hXaGtFVm82UXZJNkNtRXJoZHQ5RTQ2dzNp?=
- =?gb2312?B?UnJlanNraTVBVjVHZmtVMzhNRTJCWDVyTXVFVkNuUUtzSktwQ1V6cGVnVHZx?=
- =?gb2312?B?bDI2OEMxbndWVjhYeFpKQi83djF3dkFkamprMDBxZHhaS0pHam0zZzBuUmFT?=
- =?gb2312?B?dlJBbGtSTlEzNVQvcExWQmRJL2krbStLWjNQekZORjRrMHFaRGhDQjRMdGIw?=
- =?gb2312?B?a0Y1MnZjUGZwWkdDeDVFNGV2M3JkQWhmZ0hWQmpaT2M4ekRpZzd2eFZRT211?=
- =?gb2312?B?cTdRZ2xTK3M3UGVwbENrdStrSTJydGs1TTRNYkIzaGxFbWlSWUh0dzBHK2Zx?=
- =?gb2312?B?eTNSRWV0MHk3M04yZmpyVGxUNExUeW9FYjNzQjdsbWYwYWxuZDJ4TmNYNzJj?=
- =?gb2312?B?UkRFamlnZlBvQVRpUmtCcVBNZkZFbDhCcHRHMjVxUlFVc1RQNlo4OEV3bzh0?=
- =?gb2312?B?bFNxS2V4M2pIeUpJc2lyWUdsMllYRVlwd2hqeTdpaGhHZUhBcXN4NmNoN1dq?=
- =?gb2312?B?b2NhVU9qOWl4U3FOQTlaWlJFT2lTV1o4K3RHTkNoOHBoOWwxZU1BVjAzdW1W?=
- =?gb2312?B?dlFLWVg1eEhnVmJNeTkxZ1dlV1BTRkxlSUVHYzFpYXd5OEFZTnJab3BYSUto?=
- =?gb2312?B?bHlPTlc3SFMxUTV5SVBoVGFUR2JPRFZkRSs0QkNqSTBUOUl2MStxRUhISzRU?=
- =?gb2312?B?QjEySTQwUUlNTkJUSjdndmlqRHFWa1RZK2x4NHlUVjBtY0RmOHJyNDVYRW1o?=
- =?gb2312?B?N3ZGVkRINzBTNm1tWVN6cU1STmRlbWsrNGdpY1MzRWVzemVlV2NoK0NaTEQ3?=
- =?gb2312?B?QXFkeXJ0U3BJZHVYaThidENKWmtmaURMZ0pxMm9nbW01TXhxZXNvOGQrczBX?=
- =?gb2312?B?c2pPT1ExczBQZWFNdzU4WGM4NHZwd0t6TVpNMHNVSWVrZTNmK3hxWTZyb2Y1?=
- =?gb2312?B?eWtEWUhzM0tkSkdMdEw5WXYvWHBGa2lHdWNFbFVEZ3JPSUdSdW5zdjJrWi9W?=
- =?gb2312?B?UGdqREJIcWNTSXEzaGIwTk1lRkliU3Mwa1JVbGNNdTlBSWloWXdQcG55dkFU?=
- =?gb2312?B?M2FYTmtZRi95WUdqQkdQeTRxenYvRzE4U0JmZlBWd2lKcEE4YUZHeUtGVFI2?=
- =?gb2312?B?MnlCMmZnVTh4L2szWlp3SEpaNVcza1FFRHJhb2d3RkFpeE9Ld3BXeEtLViti?=
- =?gb2312?B?NmNjRGw2WVRXb3VQSzllSVNJZktQOSsyeVlyWncxU0lXTUhzTTR1cDluSmtD?=
- =?gb2312?B?eXdMZU1NVTN1Q1VIWG83eGZQNU1FdU9TZUhrUzNhQlZsZURnNlNoZkRCTHFh?=
- =?gb2312?B?MHJPdTNTc3FPNFN2Tlo0V1luTERMK2dscUFMb0tCUkg0MjRsOUxzLzlNN0ZY?=
- =?gb2312?B?UTc4cjlWWGZFN0tUa2tIQlRSUjRxN1Q3MmZBeFNtVzBuZHdRVTlDWXhkMXJF?=
- =?gb2312?B?RXVMamM0UU43MmV2eG1WQ0NtRGdLVmtOdFR2dmZidC83QklveVptWWsyb1ll?=
- =?gb2312?B?Y3pIbWUxaU00cm1ZRGl3emRadmdKeTJ3NlpJUCtPemJkaWRnLzFXV0dydU5Q?=
- =?gb2312?B?YW5OZHFrTzNNelZ0YnZ5TU1vQWVtc2FhWHBiVlBFYjBQVy8vczlFVXpHbWxT?=
- =?gb2312?B?N2ZNRG9IMFlCVmNNeGR2OWxPUDYzdklNam52RGpFNTRZMVpydmd3V2thcDZh?=
- =?gb2312?B?cEpMZDFZZjBXRkVzSzVIYkFON0s4M0IzaU1sYVJtc2dsUnBxb0xvNU9LRmpU?=
- =?gb2312?B?OXhEa2tXTm9VZnh3REtGeThoa3hkZldzNmh4Ui9ZR0pwdmRjNCttWVFGd0Fa?=
- =?gb2312?Q?1bUUpjha5nxu05QQ32Ane7aieTyRfWl62Xw96?=
-Content-ID: <82966487A9680A47BD6A97DB0EFD0437@jpnprd01.prod.outlook.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 23763600677
+ for <ltp@lists.linux.it>; Mon, 28 Mar 2022 11:55:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1648461312;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Iln8AHbIBWQswIhohmUM0SBhVe3Y3TcMs03viXmJW34=;
+ b=Hk0TUx/NKZMj8UQ8vv+eDb06YtyZh4lQtPB9rfgE07HIKT0nCK1hn0iqZdwDuWCgSGZtcV
+ kM+UDI3ZUXroU+gRIZ7rb5b45nVbJcmnBrv3gMnhb4hpHayP+OmQs45tXlqpVoJFRzv7z7
+ HX/gv8bi+O1K/X1ljbDBZmzuFVajAKo=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-575-oKQXm4umOFyhtFvhonSysQ-1; Mon, 28 Mar 2022 05:55:10 -0400
+X-MC-Unique: oKQXm4umOFyhtFvhonSysQ-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ k13-20020a25c60d000000b006339008b92fso10519402ybf.1
+ for <ltp@lists.linux.it>; Mon, 28 Mar 2022 02:55:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Iln8AHbIBWQswIhohmUM0SBhVe3Y3TcMs03viXmJW34=;
+ b=00D5Y6pbBTLOSCGFV71Mg3cSGAgnmPgdOqA4IKHLPggCm+eliAH/1YgLGmHRkZA+7W
+ 5TkI0+TsWCzhRXE3hJ3GxsGeu0NQPumBPUk/SEoQbnv/eqGhoBu3dgNhMSw2lERDAkzn
+ +UFd06zzPjGPkSoApB/MzK5xiCdIE5hvt/1kqmGl7/JTbgrFhsCw57VbiIJnQ6lWVnTS
+ Dp3zoLp3ytifH1EOv/+5euLg0Syu2Yy0elK+bc1pnp+FUDHK5nwFIb5BBe74Ku0qcDeF
+ qhH3cA4IjDA2P1oiPtxUIPdtc5hG47+6MY1N9B0jGYMzHpLb17f8eDHwUVFeGxReydE9
+ jMCw==
+X-Gm-Message-State: AOAM531JmAp+5BF2KeB9U4YNfdsgyug5eEUGz7dMao3kN2r7PYqt5+nu
+ Q30mAglH6ixHK1u5pGuMwj5oALPlb5jEdn3UM5ln18Bk5Y+vbSbKbT0eh5M0F681yxUoReYPFGT
+ jigRFDXY5ymOkFKqLyS6hL474zO0=
+X-Received: by 2002:a81:1211:0:b0:2e5:d8dd:b3d4 with SMTP id
+ 17-20020a811211000000b002e5d8ddb3d4mr23780260yws.208.1648461309870; 
+ Mon, 28 Mar 2022 02:55:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpZ8IpsIKubxfKy97lswVVMU6c1xcH9Dp1aA9pQc4m32fsWuERfqYsZxBR0RmKTaOzgQ32iTykqu9nQjGginE=
+X-Received: by 2002:a81:1211:0:b0:2e5:d8dd:b3d4 with SMTP id
+ 17-20020a811211000000b002e5d8ddb3d4mr23780235yws.208.1648461309530; Mon, 28
+ Mar 2022 02:55:09 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 306151a9-be58-4f80-24fc-08da109cfdae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2022 09:26:08.0837 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: doKwMgAxZvWWePDjcXJ4qv8szV2Rupbu8laQZypbNYbSLh9lW/NBH025LPOPhPsYBaU7NTbFAATaVWVgHnOfspVx3JG1HlN0iA3le1FBirs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB8895
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <20220325040057.544211-1-liwang@redhat.com> <Yj2V2fu/3Zzio3TZ@yuki>
+ <CAEemH2fVf8tMbY4R_O-BrSy7vtmyGgNq3NbYF=LfjyHDbDgkBg@mail.gmail.com>
+ <YkF4pVQXMqEO32r2@yuki>
+In-Reply-To: <YkF4pVQXMqEO32r2@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 28 Mar 2022 17:54:55 +0800
+Message-ID: <CAEemH2dSkAFF6Mh7m=o9Ejnut9iKT-Ud=Wm10+98-1BT9w+TPA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/umount2_02: use umount2 directly instead
- of TEST macro
+Subject: Re: [LTP] [PATCH] clock_gettime04: set threshold based on the clock
+ tick rate
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -160,57 +88,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, Eirik Fuller <efuller@redhat.com>,
+ Waiman Long <llong@redhat.com>, LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0669577800=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Dai
+--===============0669577800==
+Content-Type: multipart/alternative; boundary="000000000000c7e8d705db444eb1"
 
-Looks good to me,
-Reviewed-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+--000000000000c7e8d705db444eb1
+Content-Type: text/plain; charset="UTF-8"
 
-Best Regards
-Yang Xu
-> There is no need to use TEST macro in umount2_retry(),
-> because we have used it in TST_EXP_FAIL and TST_EXP_PASS macro.
-> 
-> Signed-off-by: Dai Shili<daisl.fnst@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/umount2/umount2_02.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/umount2/umount2_02.c b/testcases/kernel/syscalls/umount2/umount2_02.c
-> index 4c3b30e..b23f37b 100644
-> --- a/testcases/kernel/syscalls/umount2/umount2_02.c
-> +++ b/testcases/kernel/syscalls/umount2/umount2_02.c
-> @@ -53,12 +53,12 @@ static struct tcase {
-> 
->   static int umount2_retry(const char *target, int flags)
->   {
-> -	int i;
-> +	int i, ret;
-> 
->   	for (i = 0; i<  50; i++) {
-> -		TEST(umount2(target, flags));
-> -		if (TST_RET == 0 || TST_ERR != EBUSY)
-> -			return TST_RET;
-> +		ret = umount2(target, flags);
-> +		if (ret == 0 || errno != EBUSY)
-> +			return ret;
-> 
->   		tst_res(TINFO, "umount('%s', %i) failed with EBUSY, try %2i...",
->   			target, flags, i);
-> @@ -69,7 +69,7 @@ static int umount2_retry(const char *target, int flags)
->   	tst_res(TWARN, "Failed to umount('%s', %i) after 50 retries",
->   		target, flags);
-> 
-> -	TST_ERR = EBUSY;
-> +	errno = EBUSY;
->   	return -1;
->   }
-> 
+On Mon, Mar 28, 2022 at 4:56 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> > >         clock_getres(CLOCK_REALTIME_COARSE, &res);
+> > >
+> > >         delta = 5 + (res.tv_nsec / 1000000) * 5;
+> > >
+> >
+> > Sounds reasonable.
+> >
+> > But I don't understand why you multiply 5 for the resolution
+> > (in milliseconds) here. Or, a wiser choice is to get the real
+> > resolution for each clockid? i.e.
+>
+> I did multiply it with 5 just to add some error margin. I guess that we
+> can as well multiply it with 2 if that works well enough.
+>
+
+Ok, I'd like to multiply 5 in case VM needs more.
+
+
+> I do not think that we should get resolution for each clock, the COARSE
+> clock should have the worst resolution of all clocks.
+>
+
+Yes, quite enough for the rest.
+For precise clock, the second part will be zero since divided by 1000000.
+
+    delta = 5 + (res.tv_nsec / 1000000) * 5;
+
+
+Test data from aarch4 (kernel-5.14) FYI:
+===================
+clock_gettime04.c:108: TINFO: CLOCK_REALTIME: resolution is 1ns
+...
+clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution is
+10000000ns
+clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC: resolution is 1ns
+clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_COARSE: resolution is
+10000000ns
+clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_RAW: resolution is 1ns
+clock_gettime04.c:108: TINFO: CLOCK_BOOTTIME: resolution is 1ns
+
+
+-- 
+Regards,
+Li Wang
+
+--000000000000c7e8d705db444eb1
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Mar 28, 2022 at 4:56 PM Cyril Hrubis &lt;<a=
+ href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; =
+wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0clock_getres(CLOCK_REALTIME_COAR=
+SE, &amp;res);<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0delta =3D 5 + (res.tv_nsec / 100=
+0000) * 5;<br>
+&gt; &gt;<br>
+&gt; <br>
+&gt; Sounds reasonable.<br>
+&gt; <br>
+&gt; But I don&#39;t understand why you multiply 5 for the resolution<br>
+&gt; (in milliseconds) here. Or, a wiser choice is to get the real<br>
+&gt; resolution for each clockid? i.e.<br>
+<br>
+I did multiply it with 5 just to add some error margin. I guess that we<br>
+can as well multiply it with 2 if that works well enough.<br></blockquote><=
+div><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">O=
+k, I&#39;d like to multiply=C2=A05 in case VM needs more.</div></div><div><=
+br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+I do not think that we should get resolution for each clock, the COARSE<br>
+clock should have the worst resolution of all clocks.<br></blockquote><div>=
+<br></div><div><div class=3D"gmail_default" style=3D"font-size:small">Yes, =
+quite enough for the rest.=C2=A0</div><div class=3D"gmail_default" style=3D=
+"font-size:small">For precise clock, the second part will be zero since div=
+ided=C2=A0by 1000000.</div></div><div class=3D"gmail_default" style=3D"font=
+-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:smal=
+l">=C2=A0 =C2=A0 delta =3D 5 + (res.tv_nsec / 1000000) * 5;<br></div><div><=
+br></div><div><br></div><div><div class=3D"gmail_default" style=3D"font-siz=
+e:small">Test data from aarch4 (kernel-5.14) FYI:</div><div class=3D"gmail_=
+default" style=3D"font-size:small">=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D</div></div><div><span class=3D"gmail_default" style=3D"f=
+ont-size:small"></span>clock_gettime04.c:108: TINFO: CLOCK_REALTIME: resolu=
+tion is 1ns<br><div class=3D"gmail_default" style=3D"font-size:small">...</=
+div>clock_gettime04.c:108: TINFO: CLOCK_REALTIME_COARSE: resolution is 1000=
+0000ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC: resolution is 1ns<=
+br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_COARSE: resolution is 1000=
+0000ns<br>clock_gettime04.c:108: TINFO: CLOCK_MONOTONIC_RAW: resolution is =
+1ns<br>clock_gettime04.c:108: TINFO: CLOCK_BOOTTIME: resolution is 1ns<br><=
+div class=3D"gmail_default" style=3D"font-size:small"><br></div></div></div=
+><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Regards,<br><=
+/div><div>Li Wang<br></div></div></div></div>
+
+--000000000000c7e8d705db444eb1--
+
+
+--===============0669577800==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0669577800==--
+
