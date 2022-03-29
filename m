@@ -4,47 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5D92C433F5
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 15:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49A8FC433F5
+	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 16:04:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D5493C9817
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 17:16:08 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E95523C9DED
+	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 18:04:10 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A1E2A3C1FF3
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 17:15:56 +0200 (CEST)
-Received: from a8-81.smtp-out.amazonses.com (a8-81.smtp-out.amazonses.com
- [54.240.8.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 81A9B3C0FED
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 18:04:01 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C6B7B1A01156
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 17:15:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1648566954;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=XQh3APuhUDNLkLESYS2zUZPjjjaH4EOCiAa14yEFTdo=;
- b=CuhfgOHKFRcPh2Ll2NDJ0AYKw8ZlrXoEC4YKynMacnhuwELhW9KXlkH4y24t4K/T
- Tzagyk4oqIboGqzwA3HaARHc//dEhkVOW7AYhlmnax+k6CSqaeqZmyM3LIOZF9Wp4QD
- 0Vl8ci6sh6WXshQArjxz21x4cQ41n7coKEW8j7K8=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1648566954;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=XQh3APuhUDNLkLESYS2zUZPjjjaH4EOCiAa14yEFTdo=;
- b=ZA8YRDGe6FAxL/JXV2iUv9//EjT3ycrdqPNX4Nuxk6H8P+exJlbbWyzwaT987wsc
- 8fnJOXajbHKcxd5uAhrsQqoeGjA/M3pQcAzVo1U5LX48SVCf+1X0JMQq/FNX+K84TbI
- RlT7g2WLZzckaFpASn5vHWKOT6bijM7BBEjaA7iA=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9F9DD1A01146
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 18:04:00 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A7447210DF;
+ Tue, 29 Mar 2022 16:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1648569839;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aycQia48k446wUbZhLoKad7OdPRTZYvVtFNP5A9a0AY=;
+ b=PX+9pIWlHOqTiHbn3juxDEnFSGlFxQORVqEqYBRSiHf5b+FTZG9hFC3xiQQUrMgkksXOn9
+ mf82lQPNdRUFMmozs/pQ8P/rVLxHrhw/ltM4bR9Ahwdgz0fIDQp80/zlRfb8t3Y8nkuE9C
+ Nn8Wr9W5QCNOeErrSezV02oz1PPrdRI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1648569839;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aycQia48k446wUbZhLoKad7OdPRTZYvVtFNP5A9a0AY=;
+ b=pg1kcWBMeQMhCM0HOfOuecwKtiDil2mR7aZ4T4hCzKRRSLMKP2HFwQhnMnH5U9LfO2yIsK
+ K5Bqubz2LRhzNzDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D8DD13A7E;
+ Tue, 29 Mar 2022 16:03:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ekVCJu8tQ2JqCQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 29 Mar 2022 16:03:59 +0000
+Date: Tue, 29 Mar 2022 18:03:58 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YkMt7jRjMwdoIduD@gacrux.arch.suse.de>
+References: <20220328123114.31881-1-andrea.cervesato@suse.de>
+ <YkHNxNcEy/xHv5wz@yuki>
 MIME-Version: 1.0
-Message-ID: <0100017fd63f6819-bfe7d809-1285-478f-9588-b107863fa058-000000@email.amazonses.com>
-Date: Tue, 29 Mar 2022 15:15:54 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.03.29-54.240.8.81
+Content-Disposition: inline
+In-Reply-To: <YkHNxNcEy/xHv5wz@yuki>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 9eb00f3
+Subject: Re: [LTP] [PATCH v1] Fix wqueue09 according with 5.17 kernel updates
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,93 +76,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.16.18
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.16.y
-* git commit: 9fec77b5f094c1bbd0432c3f98d20cca8fc07321
-* git describe: 9eb00f3
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/9eb00f3
+Hi Cyril, Andrea,
 
-## Test Regressions (compared to 7b16c02)
-* bcm2711-rpi-4-b, ltp-fs-tests
-  - read_all_proc
+> >  testcases/kernel/watchqueue/wqueue09.c | 8 ++++----
+...
+> >  	key = wqueue_add_key(fd);
+> > -	keyctl(KEYCTL_UPDATE, key, "b", 1);
+> > -	keyctl(KEYCTL_REVOKE, key);
+> > +	for (i = 0; i < 256; i++)
+> > +		keyctl(KEYCTL_UPDATE, key, "b", 1);
 
-* qemu_arm64, ltp-controllers-tests
-  - memcg_subgroup_charge
+> Have you tried this on any machine with 64k pages? If the minimal size
+> is rounded to a PAGE_SIZE and we get 32 messages in 4k page that would
+> mean that we would fit 512 messages in 64k page. So maybe we would need
+> 512 messages on 65k page size?
 
-* qemu_i386, ltp-controllers-tests
-  - memcg_subgroup_charge
+FYI while test works on small -i, it blocks on higher:
 
-* qemu_x86_64, ltp-fs-tests
-  - read_all_proc
+./wqueue09 -i1000
+...
+common.h:153: TINFO: NOTIFY[000]: ty=000000 sy=01 i=00000008
+wqueue09.c:48: TPASS: Meta loss notification received
+common.h:134: TINFO: Reading watch queue events
+common.h:153: TINFO: NOTIFY[000]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[010]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[020]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[030]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[040]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[050]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[060]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[070]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[080]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[090]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[0a0]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[0b0]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[0c0]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[0d0]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[0e0]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[0f0]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[100]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[110]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[120]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[130]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[140]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[150]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[160]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[170]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[180]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[190]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[1a0]: ty=000001 sy=01 i=00000110
+common.h:134: TINFO: Reading watch queue events
+common.h:153: TINFO: NOTIFY[000]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[010]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[020]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[030]: ty=000001 sy=01 i=00000110
+common.h:153: TINFO: NOTIFY[040]: ty=000001 sy=01 i=00000110
+common.h:134: TINFO: Reading watch queue events
+common.h:153: TINFO: NOTIFY[000]: ty=000000 sy=01 i=00000008
+wqueue09.c:48: TPASS: Meta loss notification received
+common.h:134: TINFO: Reading watch queue events
+=> timeouts
 
+I tested this on ppc64le with 65k page size on 5.17.0-rc5-150400.9-default
+But it's not page size specific, as it fails also on x86_64 with the default 4k
+page size.
 
-## Metric Regressions (compared to 7b16c02)
-No metric regressions found.
+And *without* this patch it's also broken with higher -i (tested on both x86_64
+with the default 4k page size and ppc64le with 65k):
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+./wqueue09 -i1000
+wqueue09.c:48: TPASS: Meta loss notification received
+common.h:134: TINFO: Reading watch queue events
+common.h:152: TINFO: NOTIFY[000]: ty=000001 sy=01 i=00000110
+common.h:134: TINFO: Reading watch queue events
+common.h:152: TINFO: NOTIFY[000]: ty=000000 sy=01 i=00000008
+wqueue09.c:48: TPASS: Meta loss notification received
+common.h:86: TBROK: add_key error: EDQUOT
 
-
-## Test Fixes (compared to 7b16c02)
-* bcm2711-rpi-4-b, ltp-syscalls-tests
-  - inotify11
-
-* qemu_arm, ltp-syscalls-tests
-  - accept02
-
-* qemu_i386, ltp-fs-tests
-  - read_all_proc
-
-* qemu_x86_64, ltp-syscalls-tests
-  - futex_cmp_requeue01
-
-
-## Metric Fixes (compared to 7b16c02)
-No metric fixes found.
-
-## Test result summary
-total: 12109, pass: 10130, fail: 51, skip: 1928, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
