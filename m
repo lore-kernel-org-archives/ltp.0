@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4F4AC433EF
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 10:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D5ADC433F5
+	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 12:33:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A88733C9E08
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 12:46:06 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1BD093C9D7D
+	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 14:33:31 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7A9B23C9817
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 12:45:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id A9D663C279F
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 14:33:19 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D4C6F200B8E
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 12:45:54 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CDD9510006D3
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 14:33:18 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0A75F1FC9E;
- Tue, 29 Mar 2022 10:45:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BC649210E4;
+ Tue, 29 Mar 2022 12:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648550754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1648557197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QGJCKTmOTZPbNjEtdHovbobHG2kWk3W08B/tgOYI1rg=;
- b=Ids44HopbaJRpuq8ZpcNGlbM3E7wUDtUBndqgfa3KuQGMpFYH4J7n5uDmnbPRFqYTmGWqx
- UCUEfjn65/yFfCoF9QlwF3u4BFyi8Y/B7+rGg1hon5gGFYrbozlyXZqjUbuzPggM/tZXUy
- vIYa9BNIyhetB5UszFK0RUjEBpDGkSA=
+ bh=jZX7FxCubzpA+bS1oV5jcrlj30QYTTJamo8nDhZcTv0=;
+ b=nLAfYCJ0qbd9Er0DO+W9ebArBJ6b4BbXyI0Lo3e8oAdoKbvlLYNfNt6a9bY488lPLv4jYk
+ LfGdXbyWx2sAIgWkIuCnmcEobSe4X0ge+fgm89dml2fpUXHzcHiPupl+vvUFpsQepFrdp6
+ x2HIy62IiA2zBt4QXSR5LIaYEK88BX0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648550754;
+ s=susede2_ed25519; t=1648557197;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QGJCKTmOTZPbNjEtdHovbobHG2kWk3W08B/tgOYI1rg=;
- b=kG9tf9ziZ6CVNhhBXBnSVxEisWQba59B07W8Ox9LPC+WMLvW7dGutfYl7s8opaLvipX77I
- AAAgHniVcPel6ACw==
+ bh=jZX7FxCubzpA+bS1oV5jcrlj30QYTTJamo8nDhZcTv0=;
+ b=BpHtpQUgR9Za+DmEYnIeZqT3XZpWK+g/cyU4HWGebsVzvFPtORXmr+sEW5SglLdKZEJPcO
+ 6UD4fF/VPJgizyCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2B0413AB1;
- Tue, 29 Mar 2022 10:45:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A45E413AB1;
+ Tue, 29 Mar 2022 12:33:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UBWgNmHjQmKPbAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 29 Mar 2022 10:45:53 +0000
-Date: Tue, 29 Mar 2022 12:48:13 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id xeUsJo38QmIIIQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 29 Mar 2022 12:33:17 +0000
+Date: Tue, 29 Mar 2022 14:35:37 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <YkLj7VG1wc5xY/4T@yuki>
+Message-ID: <YkL9GXytTFz0Lc0+@yuki>
 References: <20220325093626.11114-1-andrea.cervesato@suse.de>
- <20220325093626.11114-5-andrea.cervesato@suse.de>
+ <20220325093626.11114-7-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220325093626.11114-5-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220325093626.11114-7-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 4/9] Rewrite userns03.c using new LTP API
+Subject: Re: [LTP] [PATCH v3 6/9] Rewrite userns06.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,8 +82,14 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Changed the userns03.c to userns04.c in the commit description and
-pushed, thanks.
+The test is actually broken after this changes.
+
+The problem is that previously the parent waited the children and
+checked the exit values. That is not done at all after this changes so
+the failure is not propagated. Also instead of the propagation the
+execed process should rather do the tst_reinit() which allows it to use
+tst_res(TPASS, ...) and tst_res(TFAIL, ...) to report the test results
+directly. Have a look at the setpgid03.c how it's done.
 
 -- 
 Cyril Hrubis
