@@ -4,76 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FF7EC433F5
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 04:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 372C7C433F5
+	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 05:04:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2E4B3C9BB2
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 06:54:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EB3B43C9C23
+	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 07:04:09 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 388AE3C7883
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 06:54:22 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 000743C279F
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 07:03:59 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1A91E600C44
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 06:54:20 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 968C2200AC2
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 07:03:58 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1648529659;
+ s=mimecast20190719; t=1648530237;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=djHsIIGaNPI18vQ+x8pyOszHdKcKcTd6Oolq5tZWqLc=;
- b=jBTNkVCxLqj7gwqHFBpIr0acwX4SgZW7NN6ONXnlHawSUARG5wlX+2WjbJRFPmO1kTUWDa
- DC3+VuZTZINzxgIl6YQ+pqUgNGEksJSBd5WnycAAW4XlEotTaTuo4URt8LHTz0UbGwrRIe
- sss5hCIlp3c3nRWpHt5g4Gc751NS8qQ=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ content-transfer-encoding:content-transfer-encoding;
+ bh=sptwltsONWruAPWq9LDOKHjz1QQAyNWKh6M+V+9PjaU=;
+ b=bHa+/CDupGbPBo1JwsjW6smTqhgyAnSmKSE4rskVSXfvB60AvjgVSEBS5mLgBzsIm4e/w5
+ i5TKAmYJWEa4nJTuZKr+lCzjikBI/wEfAwENOlXZZv3ukOn7Motq7HwM6p6srhHwWdBVN8
+ 2wg89Jfto2svK5JuMP8yqJQN/j/oajQ=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-621-WiI9GXR_Mrqenj-s1jDPkQ-1; Tue, 29 Mar 2022 00:54:15 -0400
-X-MC-Unique: WiI9GXR_Mrqenj-s1jDPkQ-1
-Received: by mail-yb1-f199.google.com with SMTP id
- j6-20020a25ec06000000b00633c6f3e072so12516388ybh.12
- for <ltp@lists.linux.it>; Mon, 28 Mar 2022 21:54:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=djHsIIGaNPI18vQ+x8pyOszHdKcKcTd6Oolq5tZWqLc=;
- b=mfsqe7K3FUpASc+FMu74IeW18pZ2S3TSSrN6zQjYqQs9WzhNG1hUXWMM4fbMREu6/s
- B6PcRDPwULvlGiNYjgHfQmaypvN1kA7AS7oAb+5R3sRWIbxCvtImfwJKL0jdCmyjKjAR
- RNYM9xo4q0GWRQ1qk2/9HMCgejm7dMvftZYW2gwjCWjwpOzmQ+GciLIETrLiGQY/0mMR
- b0xOedXcbBV5i7Pu6zmmLr2v/f47aKc57tswnWyNi6Iuk7Vam32LnJr+srh+/AyYKr/B
- BoRlld6gKV4Omozpe+FG/b2H1+aKwepTwLjTcW0LW3Nz5hjpnz+rPgCe6O/V/O8k9ZrG
- 0pRA==
-X-Gm-Message-State: AOAM532OQo0hpr0JGUJMCwDlo0ujy8Fz+9vNv5eFzdUvWVr+hq0dvfx9
- +HEjWojMrjkQdCR6dRqmlk7I5wZZVj9vqW4JZjZFQE0nMNEvA8kQ5QdggxkUigPA7dElElv/3MQ
- vPLVe8CzVxKQp4amRqOpKfvTBqVQ=
-X-Received: by 2002:a81:bc5:0:b0:2e6:dcfe:bfcb with SMTP id
- 188-20020a810bc5000000b002e6dcfebfcbmr24977929ywl.19.1648529654908; 
- Mon, 28 Mar 2022 21:54:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJygvcfkrOXG+gwQumgGCqGhOBPqzuxJoUxV40o58xwD8Mk2osrrffMnhJ6oW5PXoAHdOwJrgEGAW+ERy63LILU=
-X-Received: by 2002:a81:bc5:0:b0:2e6:dcfe:bfcb with SMTP id
- 188-20020a810bc5000000b002e6dcfebfcbmr24977908ywl.19.1648529654645; Mon, 28
- Mar 2022 21:54:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220325014821.2286280-1-chuhu@redhat.com>
- <CAEemH2ckzJRMB8HBkHx_3TVS38Ofy-neT8sK+5oYoNk=A0+TBA@mail.gmail.com>
-In-Reply-To: <CAEemH2ckzJRMB8HBkHx_3TVS38Ofy-neT8sK+5oYoNk=A0+TBA@mail.gmail.com>
+ us-mta-612-dE_EDbztPyGqKwokHZQSyw-1; Tue, 29 Mar 2022 01:03:55 -0400
+X-MC-Unique: dE_EDbztPyGqKwokHZQSyw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.7])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3633E3C14CDA;
+ Tue, 29 Mar 2022 05:03:55 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 40388141DC28;
+ Tue, 29 Mar 2022 05:03:52 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 29 Mar 2022 12:54:00 +0800
-Message-ID: <CAEemH2f9Efe9=7mbCY1UtY-w+Mnun8xiCth=RdvJCXBuQB0_WA@mail.gmail.com>
-To: Chunyu Hu <chuhu@redhat.com>
+To: ltp@lists.linux.it
+Date: Tue, 29 Mar 2022 13:03:51 +0800
+Message-Id: <20220329050351.688432-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
 Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] futex_waitv03: fix SIGSEGV in TCONF cleanup
+Subject: [LTP] [PATCH v2] clock_gettime04: set threshold based on the clock
+ resolution
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,48 +71,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1942861635=="
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, Eirik Fuller <efuller@redhat.com>,
+ Waiman Long <llong@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1942861635==
-Content-Type: multipart/alternative; boundary="000000000000779f7705db5438af"
+This is to get rid of the intermittent failures in clock_gettime04,
+which are likely caused by different clock tick rates on platforms.
+Here give two thresholds (in milliseconds) for comparison, one for
+COARSE clock and one for the rest.
 
---000000000000779f7705db5438af
-Content-Type: text/plain; charset="UTF-8"
+Error log:
+  clock_gettime04.c:163: TFAIL: CLOCK_REALTIME_COARSE(syscall with old kernel spec):
+        Difference between successive readings greater than 5 ms (1): 10
+  clock_gettime04.c:163: TFAIL: CLOCK_MONOTONIC_COARSE(vDSO with old kernel spec):
+	Difference between successive readings greater than 5 ms (2): 10
 
->
-> Pushed the two futex_waitv03 related patches, thanks!
+From Waiman Long:
+  That failure happens for CLOCK_REALTIME_COARSE which is a faster but less
+  precise version of CLOCK_REALTIME. The time resolution is actually a clock
+  tick. Since arm64 has a HZ rate of 100. That means each tick is 10ms. So a
+  CLOCK_REALTIME_COARSE threshold of 5ms is probably not enough. I would say
+  in the case of CLOCK_REALTIME_COARSE, we have to increase the threshold based
+  on the clock tick rate of the system. This is more a test failure than is
+  an inherent problem in the kernel.
 
+Fixes #898
+
+Reported-by: Eirik Fuller <efuller@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Waiman Long <llong@redhat.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+---
+
+Notes:
+    v1 --> v2
+        * make use of clock_getres to get clock resolution
+        * involve separate coarse_delta for COARSE clock
+        * count delta as 'clock resolution + elapse (5ms)'
+
+ .../syscalls/clock_gettime/clock_gettime04.c   | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
+index a8d2c5b38..c279da79e 100644
+--- a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
++++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
+@@ -35,7 +35,7 @@ clockid_t clks[] = {
+ };
+ 
+ static gettime_t ptr_vdso_gettime, ptr_vdso_gettime64;
+-static long long delta = 5;
++static long long delta, precise_delta, coarse_delta;
+ 
+ static inline int do_vdso_gettime(gettime_t vdso, clockid_t clk_id, void *ts)
+ {
+@@ -92,9 +92,18 @@ static struct time64_variants variants[] = {
+ 
+ static void setup(void)
+ {
++	struct timespec res;
++
++	clock_getres(CLOCK_REALTIME, &res);
++	precise_delta = 5 + res.tv_nsec / 1000000;
++
++	clock_getres(CLOCK_REALTIME_COARSE, &res);
++	coarse_delta = 5 + res.tv_nsec / 1000000;
++
+ 	if (tst_is_virt(VIRT_ANY)) {
+ 		tst_res(TINFO, "Running in a virtual machine, multiply the delta by 10.");
+-		delta *= 10;
++		precise_delta *= 10;
++		coarse_delta *= 10;
+ 	}
+ 
+ 	find_clock_gettime_vdso(&ptr_vdso_gettime, &ptr_vdso_gettime64);
+@@ -108,6 +117,11 @@ static void run(unsigned int i)
+ 	int count = 10000, ret;
+ 	unsigned int j;
+ 
++	if (clks[i] == CLOCK_REALTIME_COARSE || clks[i] == CLOCK_MONOTONIC_COARSE)
++		delta = coarse_delta;
++	else
++		delta = precise_delta;
++
+ 	do {
+ 		for (j = 0; j < ARRAY_SIZE(variants); j++) {
+ 			/* Refresh time in start */
 -- 
-Regards,
-Li Wang
-
---000000000000779f7705db5438af
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_quote"><blockquote class=3D"gmail_quot=
-e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
-;padding-left:1ex"><div dir=3D"ltr"><div dir=3D"ltr"></div></div>
-</blockquote></div><div class=3D"gmail_default" style=3D"font-size:small">P=
-ushed the two futex_waitv03 related patches, thanks!</div><div><br></div>--=
- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regar=
-ds,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000779f7705db5438af--
-
-
---===============1942861635==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.31.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1942861635==--
-
