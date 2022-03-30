@@ -4,63 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FEBEC433EF
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 21:05:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A580C433F5
+	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 03:17:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D84763C9DFD
-	for <ltp@archiver.kernel.org>; Tue, 29 Mar 2022 23:05:08 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E6EAD3C9DAD
+	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 05:17:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B625A3C968C
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 23:04:57 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 27DCB3C14BC
+ for <ltp@lists.linux.it>; Wed, 30 Mar 2022 05:17:03 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EDF326002FB
- for <ltp@lists.linux.it>; Tue, 29 Mar 2022 23:04:56 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 67C041400BD8
+ for <ltp@lists.linux.it>; Wed, 30 Mar 2022 05:17:01 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1648587895;
+ s=mimecast20190719; t=1648610220;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xLVHjTAw3KB8+itC9M2ZGYKcet8tWDQwT3jbUNaQqm8=;
- b=MYnnjdjoyZs8vk862qzDMnpcgbT7KaurmDSsUVTw8Qhs2qYnw4tvGgwTdzm4qJJBv83Yon
- QURVuTKGldFppwkKBNoiyCUVDRgdavS1aT9E5mIT+KPFd8/X2PGc7W/74PDmlj/8WnjzWM
- 1zxyoF8Zpu5cC/fuB+mNSu65NUTwSyU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=106ktuZrNRb7GE/0u42krK5VqkGBA7sYF5DXlrw8298=;
+ b=TWCNbpJi4OUSg1/b6P4vJy7bTo7WBZ+uSySJ/hlir0rUDE/mqsaIiTxc+XrVOT14ihEgV5
+ DaGX4sCsFtu9QhqYbtZyy6w5FRvFmTLr89PkkDjukTvXp51u/cEPdCE6zhJnIlbeK7Kkk3
+ lc2S8lHI9Ho3vQjdqXXvD0N0+BYfny4=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-616-ADsEfagfOPC0-qIVJ6L3rQ-1; Tue, 29 Mar 2022 17:04:53 -0400
-X-MC-Unique: ADsEfagfOPC0-qIVJ6L3rQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 80FEA38008C6;
- Tue, 29 Mar 2022 21:04:53 +0000 (UTC)
-Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 425D2401E2A;
- Tue, 29 Mar 2022 21:04:48 +0000 (UTC)
-Message-ID: <d14a7c35-db49-4b7c-7951-9ad597b99831@redhat.com>
-Date: Tue, 29 Mar 2022 17:04:42 -0400
+ us-mta-255-CDp1QjEUNniQvTCsRbHU_w-1; Tue, 29 Mar 2022 23:16:57 -0400
+X-MC-Unique: CDp1QjEUNniQvTCsRbHU_w-1
+Received: by mail-yw1-f199.google.com with SMTP id
+ 00721157ae682-2e61c5a0eb7so159370197b3.22
+ for <ltp@lists.linux.it>; Tue, 29 Mar 2022 20:16:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=106ktuZrNRb7GE/0u42krK5VqkGBA7sYF5DXlrw8298=;
+ b=LeisvphkkyThsEbFRHUQAJucM+0ihOcawFXXfik0yJZ0S0tX/XvDWm75ogv3Ddoo/3
+ SxkSpzo40lOUqrwpnxHcjphFCfzROhof9osfCAYuPf8DBKf9SRh3C7g+/EEJOR1jMoLl
+ +G4bsn2X0oNX4LCUpKnXHPcz2eifmvAtIsw/TfqnhoF8dF+Do3RzOzlCiYcyiNVfCGN1
+ NhZMzP2T9vFZwnV+KgJ3TgwD8osQfuSvPOOoGL3jxrdFHzleLGkA5WxHEfxDFuDBHu4a
+ olTZ5z1JyvBSMw1km7Q1bgTzusRkYO1LwNKS82LVgSgIBzJR4J5+3UAQUsw6jXmcSDC+
+ e6OQ==
+X-Gm-Message-State: AOAM533Dhcm6QGYUUDOOv9hB+a3+WLfD8r21eXJfDnl511KK90DQQep3
+ dgFdd4YN+4a2+TkKusnxMlrF1rPHMkooleNq8daUt7jx+kBUpnQWas4xGWaKeLukV9TJCFx6rtJ
+ 33bUEMVtD0Wd3zLwmAtBg4lr0mv0=
+X-Received: by 2002:a25:e78e:0:b0:633:9df1:9fff with SMTP id
+ e136-20020a25e78e000000b006339df19fffmr30232641ybh.233.1648610217245; 
+ Tue, 29 Mar 2022 20:16:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNig4BK9ZeNcRxu0nIq5HnYyuwLpZUAVz9po0d2Nj5cQ++cF0vfAUveYPnRZY083d2+huVIzoKhqVhR4f+Brk=
+X-Received: by 2002:a25:e78e:0:b0:633:9df1:9fff with SMTP id
+ e136-20020a25e78e000000b006339df19fffmr30232627ybh.233.1648610216920; Tue, 29
+ Mar 2022 20:16:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-To: Li Wang <liwang@redhat.com>, ltp@lists.linux.it
 References: <20220329050351.688432-1-liwang@redhat.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20220329050351.688432-1-liwang@redhat.com>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+ <d14a7c35-db49-4b7c-7951-9ad597b99831@redhat.com>
+In-Reply-To: <d14a7c35-db49-4b7c-7951-9ad597b99831@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 30 Mar 2022 11:16:43 +0800
+Message-ID: <CAEemH2eAaSyZiXE4G792U72iQvmOwQcVe+RoMMqjF7Bc0uajGQ@mail.gmail.com>
+To: Waiman Long <longman@redhat.com>
 Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=longman@redhat.com
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] clock_gettime04: set threshold based on the
  clock resolution
@@ -76,76 +87,141 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: Viresh Kumar <viresh.kumar@linaro.org>, Eirik Fuller <efuller@redhat.com>,
- Waiman Long <llong@redhat.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+ Waiman Long <llong@redhat.com>, ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============1102303397=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMy8yOS8yMiAwMTowMywgTGkgV2FuZyB3cm90ZToKPiBUaGlzIGlzIHRvIGdldCByaWQgb2Yg
-dGhlIGludGVybWl0dGVudCBmYWlsdXJlcyBpbiBjbG9ja19nZXR0aW1lMDQsCj4gd2hpY2ggYXJl
-IGxpa2VseSBjYXVzZWQgYnkgZGlmZmVyZW50IGNsb2NrIHRpY2sgcmF0ZXMgb24gcGxhdGZvcm1z
-Lgo+IEhlcmUgZ2l2ZSB0d28gdGhyZXNob2xkcyAoaW4gbWlsbGlzZWNvbmRzKSBmb3IgY29tcGFy
-aXNvbiwgb25lIGZvcgo+IENPQVJTRSBjbG9jayBhbmQgb25lIGZvciB0aGUgcmVzdC4KPgo+IEVy
-cm9yIGxvZzoKPiAgICBjbG9ja19nZXR0aW1lMDQuYzoxNjM6IFRGQUlMOiBDTE9DS19SRUFMVElN
-RV9DT0FSU0Uoc3lzY2FsbCB3aXRoIG9sZCBrZXJuZWwgc3BlYyk6Cj4gICAgICAgICAgRGlmZmVy
-ZW5jZSBiZXR3ZWVuIHN1Y2Nlc3NpdmUgcmVhZGluZ3MgZ3JlYXRlciB0aGFuIDUgbXMgKDEpOiAx
-MAo+ICAgIGNsb2NrX2dldHRpbWUwNC5jOjE2MzogVEZBSUw6IENMT0NLX01PTk9UT05JQ19DT0FS
-U0UodkRTTyB3aXRoIG9sZCBrZXJuZWwgc3BlYyk6Cj4gCURpZmZlcmVuY2UgYmV0d2VlbiBzdWNj
-ZXNzaXZlIHJlYWRpbmdzIGdyZWF0ZXIgdGhhbiA1IG1zICgyKTogMTAKPgo+ICBGcm9tIFdhaW1h
-biBMb25nOgo+ICAgIFRoYXQgZmFpbHVyZSBoYXBwZW5zIGZvciBDTE9DS19SRUFMVElNRV9DT0FS
-U0Ugd2hpY2ggaXMgYSBmYXN0ZXIgYnV0IGxlc3MKPiAgICBwcmVjaXNlIHZlcnNpb24gb2YgQ0xP
-Q0tfUkVBTFRJTUUuIFRoZSB0aW1lIHJlc29sdXRpb24gaXMgYWN0dWFsbHkgYSBjbG9jawo+ICAg
-IHRpY2suIFNpbmNlIGFybTY0IGhhcyBhIEhaIHJhdGUgb2YgMTAwLiBUaGF0IG1lYW5zIGVhY2gg
-dGljayBpcyAxMG1zLiBTbyBhCj4gICAgQ0xPQ0tfUkVBTFRJTUVfQ09BUlNFIHRocmVzaG9sZCBv
-ZiA1bXMgaXMgcHJvYmFibHkgbm90IGVub3VnaC4gSSB3b3VsZCBzYXkKPiAgICBpbiB0aGUgY2Fz
-ZSBvZiBDTE9DS19SRUFMVElNRV9DT0FSU0UsIHdlIGhhdmUgdG8gaW5jcmVhc2UgdGhlIHRocmVz
-aG9sZCBiYXNlZAo+ICAgIG9uIHRoZSBjbG9jayB0aWNrIHJhdGUgb2YgdGhlIHN5c3RlbS4gVGhp
-cyBpcyBtb3JlIGEgdGVzdCBmYWlsdXJlIHRoYW4gaXMKPiAgICBhbiBpbmhlcmVudCBwcm9ibGVt
-IGluIHRoZSBrZXJuZWwuCj4KPiBGaXhlcyAjODk4Cj4KPiBSZXBvcnRlZC1ieTogRWlyaWsgRnVs
-bGVyIDxlZnVsbGVyQHJlZGhhdC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTGkgV2FuZyA8bGl3YW5n
-QHJlZGhhdC5jb20+Cj4gQ2M6IFdhaW1hbiBMb25nIDxsbG9uZ0ByZWRoYXQuY29tPgo+IENjOiBW
-aXJlc2ggS3VtYXIgPHZpcmVzaC5rdW1hckBsaW5hcm8ub3JnPgo+IC0tLQo+Cj4gTm90ZXM6Cj4g
-ICAgICB2MSAtLT4gdjIKPiAgICAgICAgICAqIG1ha2UgdXNlIG9mIGNsb2NrX2dldHJlcyB0byBn
-ZXQgY2xvY2sgcmVzb2x1dGlvbgo+ICAgICAgICAgICogaW52b2x2ZSBzZXBhcmF0ZSBjb2Fyc2Vf
-ZGVsdGEgZm9yIENPQVJTRSBjbG9jawo+ICAgICAgICAgICogY291bnQgZGVsdGEgYXMgJ2Nsb2Nr
-IHJlc29sdXRpb24gKyBlbGFwc2UgKDVtcyknCj4KPiAgIC4uLi9zeXNjYWxscy9jbG9ja19nZXR0
-aW1lL2Nsb2NrX2dldHRpbWUwNC5jICAgfCAxOCArKysrKysrKysrKysrKysrLS0KPiAgIDEgZmls
-ZSBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdp
-dCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvY2tfZ2V0dGltZS9jbG9ja19nZXR0aW1l
-MDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvY2tfZ2V0dGltZS9jbG9ja19nZXR0
-aW1lMDQuYwo+IGluZGV4IGE4ZDJjNWIzOC4uYzI3OWRhNzllIDEwMDY0NAo+IC0tLSBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvY2tfZ2V0dGltZS9jbG9ja19nZXR0aW1lMDQuYwo+ICsr
-KyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvY2tfZ2V0dGltZS9jbG9ja19nZXR0aW1l
-MDQuYwo+IEBAIC0zNSw3ICszNSw3IEBAIGNsb2NraWRfdCBjbGtzW10gPSB7Cj4gICB9Owo+ICAg
-Cj4gICBzdGF0aWMgZ2V0dGltZV90IHB0cl92ZHNvX2dldHRpbWUsIHB0cl92ZHNvX2dldHRpbWU2
-NDsKPiAtc3RhdGljIGxvbmcgbG9uZyBkZWx0YSA9IDU7Cj4gK3N0YXRpYyBsb25nIGxvbmcgZGVs
-dGEsIHByZWNpc2VfZGVsdGEsIGNvYXJzZV9kZWx0YTsKPiAgIAo+ICAgc3RhdGljIGlubGluZSBp
-bnQgZG9fdmRzb19nZXR0aW1lKGdldHRpbWVfdCB2ZHNvLCBjbG9ja2lkX3QgY2xrX2lkLCB2b2lk
-ICp0cykKPiAgIHsKPiBAQCAtOTIsOSArOTIsMTggQEAgc3RhdGljIHN0cnVjdCB0aW1lNjRfdmFy
-aWFudHMgdmFyaWFudHNbXSA9IHsKPiAgIAo+ICAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKPiAg
-IHsKPiArCXN0cnVjdCB0aW1lc3BlYyByZXM7Cj4gKwo+ICsJY2xvY2tfZ2V0cmVzKENMT0NLX1JF
-QUxUSU1FLCAmcmVzKTsKPiArCXByZWNpc2VfZGVsdGEgPSA1ICsgcmVzLnR2X25zZWMgLyAxMDAw
-MDAwOwo+ICsKPiArCWNsb2NrX2dldHJlcyhDTE9DS19SRUFMVElNRV9DT0FSU0UsICZyZXMpOwo+
-ICsJY29hcnNlX2RlbHRhID0gNSArIHJlcy50dl9uc2VjIC8gMTAwMDAwMDsKPiArCj4gICAJaWYg
-KHRzdF9pc192aXJ0KFZJUlRfQU5ZKSkgewo+ICAgCQl0c3RfcmVzKFRJTkZPLCAiUnVubmluZyBp
-biBhIHZpcnR1YWwgbWFjaGluZSwgbXVsdGlwbHkgdGhlIGRlbHRhIGJ5IDEwLiIpOwo+IC0JCWRl
-bHRhICo9IDEwOwo+ICsJCXByZWNpc2VfZGVsdGEgKj0gMTA7Cj4gKwkJY29hcnNlX2RlbHRhICo9
-IDEwOwo+ICAgCX0KClRoZSBwYXRjaCBsb29rcyBnb29kIGluIGdlbmVyYWwuIEhvd2V2ZXIsIG1h
-eWJlIHdlIHNob3VsZCBkbyBzb21ldGhpbmcgbGlrZToKCmRpZmYgLS1naXQgYS9jbG9ja19nZXR0
-aW1lMDQuYyBiL2Nsb2NrX2dldHRpbWUwNC5jCmluZGV4IGE4ZDJjNWIuLjFiYTIxOGIgMTAwNjQ0
-Ci0tLSBhL2Nsb2NrX2dldHRpbWUwNC5jCisrKyBiL2Nsb2NrX2dldHRpbWUwNC5jCkBAIC05Miwx
-MSArOTIsMTggQEAgc3RhdGljIHN0cnVjdCB0aW1lNjRfdmFyaWFudHMgdmFyaWFudHNbXSA9IHsK
-CiDCoHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiDCoHsKK8KgwqDCoMKgwqDCoCBkZWx0YSA9IDU7
-CiDCoMKgwqDCoMKgwqDCoCBpZiAodHN0X2lzX3ZpcnQoVklSVF9BTlkpKSB7CiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgdHN0X3JlcyhUSU5GTywgIlJ1bm5pbmcgaW4gYSB2aXJ0dWFs
-IG1hY2hpbmUsIG11bHRpcGx5IAp0aGUgZGVsdGEgYnkgMTAuIik7CiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgZGVsdGEgKj0gMTA7CiDCoMKgwqDCoMKgwqDCoCB9CgorwqDCoMKgwqDC
-oMKgIGNsb2NrX2dldHJlcyhDTE9DS19SRUFMVElNRSwgJnJlcyk7CivCoMKgwqDCoMKgwqAgcHJl
-Y2lzZV9kZWx0YSA9IGRlbHRhICsgcmVzLnR2X25zZWMgLyAxMDAwMDAwOworCivCoMKgwqDCoMKg
-wqAgY2xvY2tfZ2V0cmVzKENMT0NLX1JFQUxUSU1FX0NPQVJTRSwgJnJlcyk7CivCoMKgwqDCoMKg
-wqAgY29hcnNlX2RlbHRhID0gZGVsdGEgKyByZXMudHZfbnNlYyAvIDEwMDAwMDA7CisKIMKgwqDC
-oMKgwqDCoMKgIGZpbmRfY2xvY2tfZ2V0dGltZV92ZHNvKCZwdHJfdmRzb19nZXR0aW1lLCAmcHRy
-X3Zkc29fZ2V0dGltZTY0KTsKIMKgfQoKdG8gYXZvaWQgYSBjb2Fyc2VfZGVsdGEgdGhhdCBpcyB0
-b28gbGFyZ2UgZm9yIHZtLgoKQ2hlZXJzLApMb25nbWFuCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
-OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+--===============1102303397==
+Content-Type: multipart/alternative; boundary="0000000000005a5d1005db66fab7"
+
+--0000000000005a5d1005db66fab7
+Content-Type: text/plain; charset="UTF-8"
+
+Waiman Long <longman@redhat.com> wrote:
+
+
+The patch looks good in general. However, maybe we should do something like:
+>
+> diff --git a/clock_gettime04.c b/clock_gettime04.c
+> index a8d2c5b..1ba218b 100644
+> --- a/clock_gettime04.c
+> +++ b/clock_gettime04.c
+> @@ -92,11 +92,18 @@ static struct time64_variants variants[] = {
+>
+>   static void setup(void)
+>   {
+> +       delta = 5;
+>          if (tst_is_virt(VIRT_ANY)) {
+>                  tst_res(TINFO, "Running in a virtual machine, multiply
+> the delta by 10.");
+>                  delta *= 10;
+>          }
+>
+> +       clock_getres(CLOCK_REALTIME, &res);
+> +       precise_delta = delta + res.tv_nsec / 1000000;
+> +
+> +       clock_getres(CLOCK_REALTIME_COARSE, &res);
+> +       coarse_delta = delta + res.tv_nsec / 1000000;
+> +
+>          find_clock_gettime_vdso(&ptr_vdso_gettime, &ptr_vdso_gettime64);
+>   }
+>
+> to avoid a coarse_delta that is too large for vm.
+>
+
+Thierically that's right, we only make the resolution as additional value
+to tolerate.
+
+But I'm afraid this is the part we can not guarantee especially for VM.
+As from Eirik's test history, the KVM guest ever failed with "150ms" delay:
+  clock_gettime04.c:163: TFAIL: CLOCK_BOOTTIME(vDSO with old kernel spec):
+Difference between successive readings greater than 50 ms (2): 150
+
+If we decide to go with your suggestion, I think we'd better skip this test
+on VM.
+
+-- 
+Regards,
+Li Wang
+
+--0000000000005a5d1005db66fab7
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Waiman Long &lt;<a href=3D"mailto:longman@redhat.com">longman=
+@redhat.com</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div><=
+br></div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+The patch looks good in general. However, maybe we should do something like=
+:<br>
+<br>
+diff --git a/clock_gettime04.c b/clock_gettime04.c<br>
+index a8d2c5b..1ba218b 100644<br>
+--- a/clock_gettime04.c<br>
++++ b/clock_gettime04.c<br>
+@@ -92,11 +92,18 @@ static struct time64_variants variants[] =3D {<br>
+<br>
+=C2=A0=C2=A0static void setup(void)<br>
+=C2=A0=C2=A0{<br>
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 delta =3D 5;<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (tst_is_virt(VIRT_ANY))=
+ {<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 tst_res(TINFO, &quot;Running in a virtual machine, mu=
+ltiply <br>
+the delta by 10.&quot;);<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 delta *=3D 10;<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }<br>
+<br>
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clock_getres(CLOCK_REALTIME, &amp;res=
+);<br>
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 precise_delta =3D delta + res.tv_nsec=
+ / 1000000;<br>
++<br>
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clock_getres(CLOCK_REALTIME_COARSE, &=
+amp;res);<br>
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 coarse_delta =3D delta + res.tv_nsec =
+/ 1000000;<br>
++<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 find_clock_gettime_vdso(&a=
+mp;ptr_vdso_gettime, &amp;ptr_vdso_gettime64);<br>
+=C2=A0=C2=A0}<br>
+<br>
+to avoid a coarse_delta that is too large for vm.<br></blockquote><div><br>=
+</div><div><div class=3D"gmail_default" style=3D"font-size:small">Thierical=
+ly that&#39;s right, we only make the resolution as additional value to tol=
+erate.</div><div class=3D"gmail_default" style=3D"font-size:small"><br></di=
+v><div class=3D"gmail_default" style=3D"font-size:small">But I&#39;m afraid=
+ this is the part we can not guarantee especially for VM.=C2=A0</div><span =
+class=3D"gmail_default" style=3D"font-size:small">As f</span>rom Eirik<span=
+ class=3D"gmail_default" style=3D"font-size:small">&#39;s</span> test histo=
+ry<span class=3D"gmail_default" style=3D"font-size:small">, the KVM guest e=
+ver failed with &quot;150ms&quot; delay:</span></div><div><div class=3D"gma=
+il_default" style=3D"font-size:small"></div></div><div><span class=3D"gmail=
+_default" style=3D"font-size:small">=C2=A0 </span>clock_gettime04.c:163: TF=
+AIL: CLOCK_BOOTTIME(vDSO with old kernel spec): Difference between successi=
+ve<span class=3D"gmail_default"> </span>readings greater than 50 ms (2): 15=
+0</div><div><br></div></div><div><div class=3D"gmail_default" style=3D"font=
+-size:small">If we decide to go with your suggestion, I think we&#39;d bett=
+er skip this test on VM.</div></div><div><br></div>-- <br><div dir=3D"ltr" =
+class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li W=
+ang<br></div></div></div></div>
+
+--0000000000005a5d1005db66fab7--
+
+
+--===============1102303397==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1102303397==--
+
