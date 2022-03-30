@@ -4,58 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5087DC433EF
-	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 13:35:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80D4AC433F5
+	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 13:38:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 23F5B3C9F37
-	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 15:35:43 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 588C63CA040
+	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 15:38:02 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A0C53C0B78
- for <ltp@lists.linux.it>; Wed, 30 Mar 2022 15:35:32 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C3FE83C9AA2
+ for <ltp@lists.linux.it>; Wed, 30 Mar 2022 15:37:51 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 88D701A0068F
- for <ltp@lists.linux.it>; Wed, 30 Mar 2022 15:35:31 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D061F1F38C
- for <ltp@lists.linux.it>; Wed, 30 Mar 2022 13:35:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1648647330;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=67DEAlLykcCJxe5df3NmhftFWWJkFaFd7/uBGH+USvA=;
- b=IZm/JgzRgGE6ODM6UujI33e2e5TR4rNJmkBhrdHnaxg+51js9VbPgBbscJlwSCZKs1q0lY
- njVRJ6nV0IZQJsTvKfGnjx70DiyJvsaAo+zWWtjVtJr9+jczJHrrBaHjqPTixB11XRk81B
- siuv8Dn4Kt8nu6r1voZgqm8qBthCScs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1648647330;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=67DEAlLykcCJxe5df3NmhftFWWJkFaFd7/uBGH+USvA=;
- b=/HXzNfTGjmDNyCAXAVhqsfUclJ2PFRTThPygZiqu1y8wAcmXfi1HTb42lmyqjIsKpG9mkv
- FVHKld+X1zfL3RDw==
-Received: from g78 (unknown [10.163.24.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 457C0200388
+ for <ltp@lists.linux.it>; Wed, 30 Mar 2022 15:37:50 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 90A02A3B82;
- Wed, 30 Mar 2022 13:35:30 +0000 (UTC)
-References: <20220310105533.3012-1-chrubis@suse.cz> <YinZzNWCiKalyWhd@yuki>
- <87ee2vclsf.fsf@suse.de> <YjmVyZjCrylha0XW@yuki>
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 30 Mar 2022 14:29:15 +0100
-In-reply-to: <YjmVyZjCrylha0XW@yuki>
-Message-ID: <877d8bmulf.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5C21F1F37B;
+ Wed, 30 Mar 2022 13:37:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1648647470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=lUUZEQJylhChe3ZB7pAXkYpwIIIq60cVA/6ATzYPiJI=;
+ b=EVkM4jgB+uSSNq4K3hmnmvb3fHUzlFb20A4iqtmk95yR3eqGV2H41TrjZfmU7apJQn9mBb
+ 7YKZtie20HTvj3P8n0eLy3O4Sqm6sSBopZ5BN+Hwoh6yj5KXLNccxPS4fg1z5uEHZr5RtE
+ ao5LptqDhnh6dDub3VzfLuZQaBzEZs4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1648647470;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=lUUZEQJylhChe3ZB7pAXkYpwIIIq60cVA/6ATzYPiJI=;
+ b=AdvuN8wpXjnvc2kcVPhjDLqV/0IAvUW9rWjfpcLvYBWEohXrgyRdsk3p3UGpYoCfKEdJiF
+ TybQIITyGZ9g4wDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45E6D13AF3;
+ Wed, 30 Mar 2022 13:37:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id t5/HDy5dRGKBWwAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Wed, 30 Mar 2022 13:37:50 +0000
+Message-ID: <c9f5b441-2f3f-f2c3-2c3c-32dd3f9595ae@suse.cz>
+Date: Wed, 30 Mar 2022 15:37:49 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Content-Language: en-US
+To: rpalethorpe@suse.de, Cyril Hrubis <chrubis@suse.cz>
+References: <20220310105533.3012-1-chrubis@suse.cz> <YinZzNWCiKalyWhd@yuki>
+ <87ee2vclsf.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <87ee2vclsf.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] syscalls/waitid10: Fix on ARM,
  PPC and possibly others
@@ -70,88 +81,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+On 21. 03. 22 16:48, Richard Palethorpe wrote:
+> I'm wondering if we should branch on the architecture. If it's x86[_64]
+> then we only do divide by zero as it's reasonable to think that if the
+> signal is not raised then this is a bug.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
-> Hi!
->> >> While integer division by zero does trap on x86_64 and causes the SIGFPE
->> >> signal to be delivered it's not the case on all architecutes. At least
->> >> on ARM and PPC64LE division by zero simply returns undefined result
->> >> instead.
->> 
->> Nit picking: even with this patch we are still testing undefined
->> behaviour.
->> 
->>    There are six signals that can be delivered as a consequence of a
->>    hardware exception: SIGBUS, SIGEMT, SIGFPE, SIGILL, SIGSEGV, and
->>    SIGTRAP.  Which of these signals is delivered, for any given
->>    hard- ware exception, is not documented and does not always make
->>    sense.
->> 
->> If dividing by zero produces SIGEMT then it's still valid according to
->> the specification. FPE does stand for floating point exception, but we
->> are dividing integers.
->
-> Actually as far as I can tell the POSIX says that for integer division
-> by zero you shall get SIGFPE (and si_code in siginfo se tto FPE_INTDIV)
-> if the operation traps. It seems to be pretty well defined:
->
-> https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html
->
->> >> 
->> >> This patch adds raise(SIGFPE) at the end of the child as a fallback to
->> >> make sure the process is killed with the right signal on all
->> >> architectures.
->> >> 
->> >> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
->> >> ---
->> >>  testcases/kernel/syscalls/waitid/waitid10.c | 5 ++++-
->> >>  1 file changed, 4 insertions(+), 1 deletion(-)
->> >> 
->> >> diff --git a/testcases/kernel/syscalls/waitid/waitid10.c b/testcases/kernel/syscalls/waitid/waitid10.c
->> >> index 869ef18bd..8c351d120 100644
->> >> --- a/testcases/kernel/syscalls/waitid/waitid10.c
->> >> +++ b/testcases/kernel/syscalls/waitid/waitid10.c
->> >> @@ -28,7 +28,10 @@ static void run(void)
->> >>  		volatile int a, zero = 0;
->> >>  
->> >>  		a = 1 / zero;
->> >> -		exit(a);
->> >> +
->> >> +		tst_res(TINFO, "Division by zero didn't trap, raising SIGFPE");
->> >
->> > This patch inroduces 'set but not used' warning for the a variable so
->> > maybe the message should look like:
->> >
->> > 		tst_res(TINFO, "1/0 = %i raising SIGFPE", a);
->> >
->> >> +		raise(SIGFPE);
->> 
->> I'm wondering if we should branch on the architecture. If it's x86[_64]
->> then we only do divide by zero as it's reasonable to think that if the
->> signal is not raised then this is a bug.
->
-> That would work too I guess.
-
-I would still use #ifdef to remove raise(SIGFPE) on x86. I think this
-makes it a more solid test on x86. As it is defined in the spec I guess
-you could do the divide by zero on other arches and we can review the
-results to see if any also raise SIGFPE.
-
-With that:
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+It's more likely to be a hardware bug/missing feature though. Do we
+really care? I'd argue that removing the division altogether and just
+calling raise(SIGFPE) in the child process is all we need in this
+particular test.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
