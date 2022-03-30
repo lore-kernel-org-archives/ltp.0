@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 136B4C433F5
-	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 09:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F57DC433EF
+	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 09:23:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9AF573C9F8E
-	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 11:17:36 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 160413C9F4E
+	for <ltp@archiver.kernel.org>; Wed, 30 Mar 2022 11:23:36 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2888E3C089F
- for <ltp@lists.linux.it>; Wed, 30 Mar 2022 11:17:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id AACE53C089F
+ for <ltp@lists.linux.it>; Wed, 30 Mar 2022 11:23:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 681561400550
- for <ltp@lists.linux.it>; Wed, 30 Mar 2022 11:17:24 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5C5C760004A
+ for <ltp@lists.linux.it>; Wed, 30 Mar 2022 11:23:21 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8DD821F38C;
- Wed, 30 Mar 2022 09:17:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6D902210FC;
+ Wed, 30 Mar 2022 09:23:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648631843;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1648632201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GN1p8UuXV+lsJY3Z2UaDVbeihQjx8hjGcksr9G2H/gs=;
- b=ovFCHwZrOEUDXjqg+AzwOhDPxGvVPhXYsIR5W4LxYJFLOoLZqXutWq40wdEle/EMfCpYyv
- deH98zjZ0dBPrU2sGzMoF7PbWqYHJ7QqUlkXXqQeehnENjlIKfdIhthcj9YSdKC9PSFRze
- Xq8/gDBxkBr+eE6klOHv3gZsJqNckfg=
+ bh=DSt8H6/L9YDBYRRf79rnBIwrHb5vtExVMBr/ie1GD2c=;
+ b=H9LZCslol3HCfysDz8ifVCMAGxZICRK+gWJpKe5qdbUJTFeJqlyZ/AlvzP3DlJRGU3ITw/
+ fvXTHdeY+CltKgxPfmbRR+dz1cnOSzMdMLgGHUL5aIgPfHtbZTbToLEIMvNhRzkoZVRzWx
+ uhGpoeWikKQh1UFHY/FLUC/6sv9lCMU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648631843;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1648632201;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GN1p8UuXV+lsJY3Z2UaDVbeihQjx8hjGcksr9G2H/gs=;
- b=R661xYHEKc+lliJb1gE142oayiuN5G5FA/dnLsYTVDKmyuMgLHjLysfxmZvFjrxRs1jNzH
- uTT7l6ssJ8xgaqBg==
+ bh=DSt8H6/L9YDBYRRf79rnBIwrHb5vtExVMBr/ie1GD2c=;
+ b=FNe77GoH9nHHr8Mf1YmM7Kma5t682b2tyX/tVZG3HiCZx3ZyHTBPuyK7padUrrCa90wFgk
+ DbY8EEda5gFcFBAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5871F13A60;
- Wed, 30 Mar 2022 09:17:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5986113A60;
+ Wed, 30 Mar 2022 09:23:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MF2PEyMgRGIKVwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 30 Mar 2022 09:17:23 +0000
-Date: Wed, 30 Mar 2022 11:17:21 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YkQgIdUEMSzLCiR9@pevik>
-References: <20220204194648.32165-1-pvorel@suse.cz>
- <20220204194648.32165-3-pvorel@suse.cz> <Yh98mQNybj1R1Kga@yuki>
- <YjoUprPfTYN1nlt4@pevik> <YkQfyh3ppXPGMarB@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id e84IFYkhRGIFWgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 30 Mar 2022 09:23:21 +0000
+Date: Wed, 30 Mar 2022 11:25:41 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YkQiFRTwAyTsSHC0@yuki>
+References: <20220328123114.31881-1-andrea.cervesato@suse.de>
+ <YkHNxNcEy/xHv5wz@yuki> <YkMt7jRjMwdoIduD@gacrux.arch.suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YkQfyh3ppXPGMarB@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <YkMt7jRjMwdoIduD@gacrux.arch.suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] broken_ip-nexthdr.sh: Check IPv6 support
- before forcing it
+Subject: Re: [LTP] [PATCH v1] Fix wqueue09 according with 5.17 kernel updates
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,25 +75,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > I tried to implement this [1] (or [2] if I force push), and using getopts the
-> > end of the script only would require also to move loading '. tst_test.sh' at the
-> > end of *all* the test scripts because setup functions needs to be loaded before
-> > sourcing tst_test.sh. Do we want this?
+Hi!
+> FYI while test works on small -i, it blocks on higher:
+> 
+> ./wqueue09 -i1000
+> ...
+> common.h:153: TINFO: NOTIFY[000]: ty=000000 sy=01 i=00000008
+> wqueue09.c:48: TPASS: Meta loss notification received
+> common.h:134: TINFO: Reading watch queue events
+> common.h:153: TINFO: NOTIFY[000]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[010]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[020]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[030]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[040]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[050]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[060]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[070]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[080]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[090]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[0a0]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[0b0]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[0c0]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[0d0]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[0e0]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[0f0]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[100]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[110]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[120]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[130]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[140]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[150]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[160]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[170]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[180]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[190]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[1a0]: ty=000001 sy=01 i=00000110
+> common.h:134: TINFO: Reading watch queue events
+> common.h:153: TINFO: NOTIFY[000]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[010]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[020]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[030]: ty=000001 sy=01 i=00000110
+> common.h:153: TINFO: NOTIFY[040]: ty=000001 sy=01 i=00000110
+> common.h:134: TINFO: Reading watch queue events
+> common.h:153: TINFO: NOTIFY[000]: ty=000000 sy=01 i=00000008
+> wqueue09.c:48: TPASS: Meta loss notification received
+> common.h:134: TINFO: Reading watch queue events
+> => timeouts
+> 
+> I tested this on ppc64le with 65k page size on 5.17.0-rc5-150400.9-default
+> But it's not page size specific, as it fails also on x86_64 with the default 4k
+> page size.
 
-> Sounds reasonable. I would go even further and put the line that sources
-> the tst_test.sh to be last line in the test.
-+1, I'll also update docs examples and mention it.
+That would mean that the keyctl() operations did fail, I guess that we
+should check the results of these calls.
 
-Kind regards,
-Petr
+> And *without* this patch it's also broken with higher -i (tested on both x86_64
+> with the default 4k page size and ppc64le with 65k):
+> 
+> ./wqueue09 -i1000
+> wqueue09.c:48: TPASS: Meta loss notification received
+> common.h:134: TINFO: Reading watch queue events
+> common.h:152: TINFO: NOTIFY[000]: ty=000001 sy=01 i=00000110
+> common.h:134: TINFO: Reading watch queue events
+> common.h:152: TINFO: NOTIFY[000]: ty=000000 sy=01 i=00000008
+> wqueue09.c:48: TPASS: Meta loss notification received
+> common.h:86: TBROK: add_key error: EDQUOT
+
+This may be solveable by moving the add_key() call to the test setup.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
