@@ -4,80 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE8E3C433EF
-	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 03:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76623C433F5
+	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 06:21:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 800673CA058
-	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 05:02:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 053833CA092
+	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 08:21:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D68323C31F2
- for <ltp@lists.linux.it>; Thu, 31 Mar 2022 05:02:15 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 29C3F3C9EB1
+ for <ltp@lists.linux.it>; Thu, 31 Mar 2022 08:21:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6D97F20007F
- for <ltp@lists.linux.it>; Thu, 31 Mar 2022 05:02:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1648695732;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2EBEC60081B
+ for <ltp@lists.linux.it>; Thu, 31 Mar 2022 08:21:21 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 05280218F0;
+ Thu, 31 Mar 2022 06:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1648707681;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wPMPMYF4w46V4/+VFr/MDZR2S+Kfdkflu9/C1QGiNAk=;
- b=Um2ntKcitj4GUr0wJPtuC8Dm89G1gvskEO8ufepEBn2RjCIUoCfCNp3qkSn516GvyUaEPd
- LBdEzDfKtEJw9DXr4pg8EEBrVGznddibW5o3aWxOhstoIRtZfO/gr90MC0aTAXqYhBS/Tw
- 1ibUJn7JSqTMYVTQso0S/aeOpsPX8Zc=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-581-QfbP7ONzPmGuSuiLOiBuEQ-1; Wed, 30 Mar 2022 23:02:08 -0400
-X-MC-Unique: QfbP7ONzPmGuSuiLOiBuEQ-1
-Received: by mail-yb1-f198.google.com with SMTP id
- e8-20020a259248000000b0063391b39d14so16864663ybo.10
- for <ltp@lists.linux.it>; Wed, 30 Mar 2022 20:02:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=wPMPMYF4w46V4/+VFr/MDZR2S+Kfdkflu9/C1QGiNAk=;
- b=OFd1s+rOJvosgoyxNczaRfG9xxQ+FEZGKuhzg1eQ8G79s2ou4eEJ0kHRdI6/xgLmaI
- xaQvvGMa/2DslI9rZNAeqi36hbrmGywj+nk6xdb3xj2NNbchydJmb1OuvDgidHrrUE3W
- Q/vWv/9t+jv1RUtNlAPrFLfvr2bu4HAquTH0+aFCzZLqRtGeZZoWOhNMtcPcaQdl/+km
- Ek7J2H4MhmMDsLEsUk/o4CsVBIkjZopcIr2/bztWL0twDsI2+diifF889cL+XWLt6nTG
- JyaN91QTKkYqkdgzozLPH+DntPynuCVrGqxeOpgVJXJlx5/FkImrYzCsYuxXKMo0PH3O
- fsUA==
-X-Gm-Message-State: AOAM530OY+lO0QNZJBm2IfOllQqkXDp98D8m5pH25Xuw+y5OS74uwVuY
- XnWcJ0HuIgqzniRfP9JnfikVTTG9yTdyGdcTLyTPAbgc5UGWswAYDps6Qd09eKldxsNS0/L77N1
- muzmM6aMOYvTf4r/lsoZI3lloRH0=
-X-Received: by 2002:a81:1211:0:b0:2e5:d8dd:b3d4 with SMTP id
- 17-20020a811211000000b002e5d8ddb3d4mr3008449yws.208.1648695728334; 
- Wed, 30 Mar 2022 20:02:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxO7oaeFAp0UwrSQIE4o7w9uI1w1a378zx/p4XHWTs8/emmJA40ilDaBBxdBRseQCZA/a3C/UquzsL5x3Zn7hA=
-X-Received: by 2002:a81:1211:0:b0:2e5:d8dd:b3d4 with SMTP id
- 17-20020a811211000000b002e5d8ddb3d4mr3008434yws.208.1648695728082; Wed, 30
- Mar 2022 20:02:08 -0700 (PDT)
+ bh=/OKyz/RblzhEyVXTb2opK9Emedk3ShBgqMQsUkG+jF8=;
+ b=juB/csVAjYPHNJIbWKlbsmivGp0Z6NDeaO6r2Wr/aHFvtiRW/0paOdFoA5G7rIKxYameyJ
+ by3q1CkEzh6+yPwcJMkZ6WeygsBzjRqR8s99zu4StrKQKVStP2uFkHLRxRQ32XCXg6HUIM
+ kU0LPmCWbZ6QmsHxWOwHdUmzjxX24Nw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1648707681;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/OKyz/RblzhEyVXTb2opK9Emedk3ShBgqMQsUkG+jF8=;
+ b=0uO1FfihZfIZP4r0cy3s8nScEyAx6JB6IbpvJTuGy9ZXSZCCvTpx4TJp1LFqyjsHE27Nav
+ 0+zDZ8qtDmSuDMDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C7E5113B4C;
+ Thu, 31 Mar 2022 06:21:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id gnktL2BIRWIEQwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 31 Mar 2022 06:21:20 +0000
+Date: Thu, 31 Mar 2022 08:21:18 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: pvorel <pvorel@suse.de>
+Message-ID: <YkVIXjarbhum1eux@pevik>
+References: <20220330090817.21950-1-andrea.cervesato@suse.de>
+ <1faf27214b18ef9d3237734388342308@suse.de>
 MIME-Version: 1.0
-References: <20220329050351.688432-1-liwang@redhat.com>
- <d14a7c35-db49-4b7c-7951-9ad597b99831@redhat.com>
- <CAEemH2eAaSyZiXE4G792U72iQvmOwQcVe+RoMMqjF7Bc0uajGQ@mail.gmail.com>
- <4011ef1e-f457-3134-d933-b5d9f2646b20@redhat.com>
-In-Reply-To: <4011ef1e-f457-3134-d933-b5d9f2646b20@redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 31 Mar 2022 11:01:54 +0800
-Message-ID: <CAEemH2c+K1tdXO++DCoSB_ODa43LnCP6Tzbhh_Yz1sK7+7uH1Q@mail.gmail.com>
-To: Waiman Long <longman@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1faf27214b18ef9d3237734388342308@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] clock_gettime04: set threshold based on the
- clock resolution
+Subject: Re: [LTP] [PATCH v2] Fix wqueue09 according with 5.17 kernel updates
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,60 +76,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>, Eirik Fuller <efuller@redhat.com>,
- Waiman Long <llong@redhat.com>, LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0191934367=="
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0191934367==
-Content-Type: multipart/alternative; boundary="000000000000372b9b05db7ae35f"
+Hi all,
 
---000000000000372b9b05db7ae35f
-Content-Type: text/plain; charset="UTF-8"
+> Hi Andrea,
 
-> I see. So we really need more tolerance for vm. I am OK with your current
-> patch then.
->
-> Acked-by: Waiman Long <longman@redhat.com> <longman@redhat.com>
->
-Patch applied, thanks for reviewing.
+> On 2022-03-30 11:08, Andrea Cervesato wrote:
 
--- 
-Regards,
-Li Wang
+> > This patch fixes also the issue of loosing events on big number of
+> > iterations
+> > such as -i 1000.
 
---000000000000372b9b05db7ae35f
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> Unfortunately when testing on machine with older kernel (older Tumbleweed
+> with
+> 5.9.1-1-default) it still blocks and then timeout:
 
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">=C2=A0<br></div></div><div class=3D"gmail_quote"><blockquote =
-class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px sol=
-id rgb(204,204,204);padding-left:1ex"><div><p>I see. So we really need more=
- tolerance for vm. I am OK with your
-      current patch then.</p>
-    <p>Acked-by: Waiman Long <a href=3D"mailto:longman@redhat.com" target=
-=3D"_blank">&lt;longman@redhat.com&gt;</a></p>
-  </div>
+> wqueue09.c:52: TPASS: Meta loss notification received
+> common.h:134: TINFO: Reading watch queue events
 
-</blockquote></div><div class=3D"gmail_default" style=3D"font-size:small">P=
-atch applied, thanks for reviewing.</div><div><br></div>-- <br><div dir=3D"=
-ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div=
->Li Wang<br></div></div></div></div>
+FYI on long enough -i (513 in my case)
+buf_len = SAFE_READ(0, fd, buffer, sizeof(buffer));
 
---000000000000372b9b05db7ae35f--
+This is regardless kernel version (tested on Tumbleweed 5.17.0-3.g6cba016-default
+and SLES 5.14.21) => easily reproducible.
 
+NOTE: keyctl() return value is always 0.
 
---===============0191934367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Also not sure why we are not revoking key any more (removed in this patchset).
 
+Kind regards,
+Petr
+
+> NOTE: I haven't tested it on 5.17 yet.
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0191934367==--
-
