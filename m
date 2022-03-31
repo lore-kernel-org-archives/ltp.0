@@ -4,67 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76623C433F5
-	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 06:21:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8FF5C433EF
+	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 10:25:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 053833CA092
-	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 08:21:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 7DAB33C8AD0
+	for <ltp@archiver.kernel.org>; Thu, 31 Mar 2022 12:25:12 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29C3F3C9EB1
- for <ltp@lists.linux.it>; Thu, 31 Mar 2022 08:21:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 903C63C0711
+ for <ltp@lists.linux.it>; Thu, 31 Mar 2022 12:25:01 +0200 (CEST)
+Received: from a8-35.smtp-out.amazonses.com (a8-35.smtp-out.amazonses.com
+ [54.240.8.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2EBEC60081B
- for <ltp@lists.linux.it>; Thu, 31 Mar 2022 08:21:21 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 05280218F0;
- Thu, 31 Mar 2022 06:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1648707681;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/OKyz/RblzhEyVXTb2opK9Emedk3ShBgqMQsUkG+jF8=;
- b=juB/csVAjYPHNJIbWKlbsmivGp0Z6NDeaO6r2Wr/aHFvtiRW/0paOdFoA5G7rIKxYameyJ
- by3q1CkEzh6+yPwcJMkZ6WeygsBzjRqR8s99zu4StrKQKVStP2uFkHLRxRQ32XCXg6HUIM
- kU0LPmCWbZ6QmsHxWOwHdUmzjxX24Nw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1648707681;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/OKyz/RblzhEyVXTb2opK9Emedk3ShBgqMQsUkG+jF8=;
- b=0uO1FfihZfIZP4r0cy3s8nScEyAx6JB6IbpvJTuGy9ZXSZCCvTpx4TJp1LFqyjsHE27Nav
- 0+zDZ8qtDmSuDMDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C7E5113B4C;
- Thu, 31 Mar 2022 06:21:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gnktL2BIRWIEQwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 31 Mar 2022 06:21:20 +0000
-Date: Thu, 31 Mar 2022 08:21:18 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: pvorel <pvorel@suse.de>
-Message-ID: <YkVIXjarbhum1eux@pevik>
-References: <20220330090817.21950-1-andrea.cervesato@suse.de>
- <1faf27214b18ef9d3237734388342308@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7B945200744
+ for <ltp@lists.linux.it>; Thu, 31 Mar 2022 12:25:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1648722298;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=BNcuakxG80ERCqK5wJtpEhwVrGFKuh9tuwu8SqBH1XY=;
+ b=ksMaKnHHdYVBz0+Oig8Anj7FAe8TlIh1+X1cpCLLzRXZ5VCQfVu/sw7d9ENcgxUE
+ sTKQYaruFj8GnuIuYuGs7+9ycc5gu7rCS1nCv+S8o4gP24RmnN9zFVckcudBwUU6aGL
+ hO2DnZzt1/LGZSYcKQfV+Tv2GNEzgxRwugo05qBw=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1648722298;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=BNcuakxG80ERCqK5wJtpEhwVrGFKuh9tuwu8SqBH1XY=;
+ b=KptkMnH/E9keFp4beunggaekK/RpvU+pVfDgbnkYPV1mZ2LzTFs9paFBKXERElvm
+ z2OwgMgaP4Fn6y5A2FD9FKhTOcd5iLNLwIVkPKBeGRzVtKqRkIHi/R+MFD0Lap3//Qw
+ pSUgT0dV1Lb1XcyovAxcg35TSATgIfSqW8yE6z5U=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1faf27214b18ef9d3237734388342308@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Message-ID: <0100017fdf81c6dc-999d8ac0-9fcb-4415-85d6-18492f8f5b34-000000@email.amazonses.com>
+Date: Thu, 31 Mar 2022 10:24:58 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.03.31-54.240.8.35
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Fix wqueue09 according with 5.17 kernel updates
+Subject: [LTP] [REGRESSION] lkft ltp for 9851deb
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,47 +57,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+## Build
+* kernel: 5.16.18
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.16.y
+* git commit: 9fec77b5f094c1bbd0432c3f98d20cca8fc07321
+* git describe: 9851deb
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/9851deb
 
-> Hi Andrea,
+## Test Regressions (compared to 1979a25)
+* bcm2711-rpi-4-b, ltp-syscalls-tests
+  - inotify11
 
-> On 2022-03-30 11:08, Andrea Cervesato wrote:
 
-> > This patch fixes also the issue of loosing events on big number of
-> > iterations
-> > such as -i 1000.
+## Metric Regressions (compared to 1979a25)
+No metric regressions found.
 
-> Unfortunately when testing on machine with older kernel (older Tumbleweed
-> with
-> 5.9.1-1-default) it still blocks and then timeout:
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> wqueue09.c:52: TPASS: Meta loss notification received
-> common.h:134: TINFO: Reading watch queue events
 
-FYI on long enough -i (513 in my case)
-buf_len = SAFE_READ(0, fd, buffer, sizeof(buffer));
+## Test Fixes (compared to 1979a25)
+* qemu_arm, ltp-syscalls-tests
+  - accept02
 
-This is regardless kernel version (tested on Tumbleweed 5.17.0-3.g6cba016-default
-and SLES 5.14.21) => easily reproducible.
 
-NOTE: keyctl() return value is always 0.
+## Metric Fixes (compared to 1979a25)
+No metric fixes found.
 
-Also not sure why we are not revoking key any more (removed in this patchset).
+## Test result summary
+total: 12036, pass: 10082, fail: 49, skip: 1905, xfail: 0
 
-Kind regards,
-Petr
+## Build Summary
 
-> NOTE: I haven't tested it on 5.17 yet.
+## Test suites summary
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
 
-> Kind regards,
-> Petr
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
