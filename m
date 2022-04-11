@@ -4,78 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B050BC433F5
-	for <ltp@archiver.kernel.org>; Mon, 11 Apr 2022 10:58:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9BCBC433EF
+	for <ltp@archiver.kernel.org>; Mon, 11 Apr 2022 11:53:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 648F83CA45C
-	for <ltp@archiver.kernel.org>; Mon, 11 Apr 2022 12:58:02 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3C78C3CA50F
+	for <ltp@archiver.kernel.org>; Mon, 11 Apr 2022 13:53:48 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C84893CA2D2
- for <ltp@lists.linux.it>; Mon, 11 Apr 2022 12:57:51 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 65BB43C00C2
+ for <ltp@lists.linux.it>; Mon, 11 Apr 2022 13:53:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BBC106005D2
+ for <ltp@lists.linux.it>; Mon, 11 Apr 2022 13:53:36 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 07536210F5
+ for <ltp@lists.linux.it>; Mon, 11 Apr 2022 11:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1649678015;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ohlZc0zz2G9rXIy8nnI3JCsJBWMIy6REhThcZAEDg8s=;
+ b=BSbYZOzD+YDD+22INulkl1yGVXAAS9zHt3Ui3ApnR6xe+P+oEDpeFVHvarJIzweL+GA2q+
+ MxhUwQDU+lMX2o17cLBQ+FCW3ddp/km7dXFcCDZ1ym6l3n6incJkLZpfhXKHLPq2O8WIzn
+ GeKjb5C+iG1zAyNdBLLPP4o9PhMloD8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1649678015;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ohlZc0zz2G9rXIy8nnI3JCsJBWMIy6REhThcZAEDg8s=;
+ b=af+xk1QMp9eK6M7qAq5fWL+i2YdsoUtX8ouLl7OSYRt3joV1fL5/HxuPAHML1ekGYN7HpT
+ QinNIHacaR1TRHBQ==
+Received: from g78 (unknown [10.163.24.182])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E4A98600066
- for <ltp@lists.linux.it>; Mon, 11 Apr 2022 12:57:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1649674669;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XwmfRgkrXzSif891s6L2mY1MN3kWpJ+8H4YxU/DLAiA=;
- b=cJHSo8eJ3pI6gWs4p7E/OXcFOFHub+TksDdxoqLOWfC+H9Gqz8HzhDuBTiW+xfluY/ZIbT
- xKrEsiY6QQFhyAH3KVgQ6SDzCzxyywOqJF2Y6r12sN5wrf5ISmnhggmz2mv+S7FISSGofM
- CFVO4LAYhCtLjevjnTDkaDbvARU+TNw=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-90-bgGdWPh7NquB81yxLMTgIQ-1; Mon, 11 Apr 2022 06:57:48 -0400
-X-MC-Unique: bgGdWPh7NquB81yxLMTgIQ-1
-Received: by mail-lj1-f199.google.com with SMTP id
- 11-20020a2e154b000000b0024967cd6752so5867997ljv.13
- for <ltp@lists.linux.it>; Mon, 11 Apr 2022 03:57:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=XwmfRgkrXzSif891s6L2mY1MN3kWpJ+8H4YxU/DLAiA=;
- b=jUNsFnxDR7IHKveu/R9Yv9ItDPggQ/cAJh+Iu22TBeQoh9Fl4BmBoBVSOhSBWHPBP1
- tUn7nmawFNZ6xzhTUOQn5lFRHV+rKdqLOYvtwMC7orIPO5DDK5sXyRyhODdH9AMz0AdB
- KMXvlCDDw0gHDE+Ka08e9m3CjQCcW0lypRtUlo18PV3CeND5wtkv60xvFG3xt3M8xdXu
- OvuBwx5SOlacDkvozAKJZy0D1Fumi9adpcIbuZt+xftDEV0wr+MvDPQSoa10Q6wCsgLt
- W18zReqCdj30mszz16szgVwuIo03IxuIrz5IL3vOgHzwoGwRAlUS56T7mXfQSjkjEfQH
- vr5g==
-X-Gm-Message-State: AOAM5338L8xRxI0in2TrRTJW/2nz7XaZw6eUfJLYM0ErX3jSeUhpGXG/
- NkANVzoZHUSiSThIGmsdOy1phxz1EWTBYbHr1edDduRj132W43N0nudj6pcdRYyY+fnaQHF6jyB
- clh8pPdrtLVH8HFumwwypCQpPYaE=
-X-Received: by 2002:a2e:b0ee:0:b0:24b:4a8b:4f3d with SMTP id
- h14-20020a2eb0ee000000b0024b4a8b4f3dmr12165940ljl.252.1649674666788; 
- Mon, 11 Apr 2022 03:57:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhKBuS3uEFcpZxhEkCUgoSZsb+5qdLZNqfWgskyPcfcOyLwCrQl2OJyo/CmZJ+4//hRxKKuMMgJVQ2VgOobwY=
-X-Received: by 2002:a2e:b0ee:0:b0:24b:4a8b:4f3d with SMTP id
- h14-20020a2eb0ee000000b0024b4a8b4f3dmr12165921ljl.252.1649674666402; Mon, 11
- Apr 2022 03:57:46 -0700 (PDT)
+ by relay2.suse.de (Postfix) with ESMTPS id C07E1A3B92;
+ Mon, 11 Apr 2022 11:53:34 +0000 (UTC)
+References: <20220311123957.30998-1-blezhepekov@suse.de>
+ <YitrrpkBJheQdUAa@yuki> <4adefcd96534fd7623cec275355c5063@suse.de>
+User-agent: mu4e 1.6.10; emacs 27.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: blezhepekov <blezhepekov@suse.de>
+Date: Mon, 11 Apr 2022 12:25:16 +0100
+In-reply-to: <4adefcd96534fd7623cec275355c5063@suse.de>
+Message-ID: <877d7vhm4i.fsf@suse.de>
 MIME-Version: 1.0
-References: <20220411094048.1143292-1-liwang@redhat.com>
- <20220411094048.1143292-2-liwang@redhat.com>
-In-Reply-To: <20220411094048.1143292-2-liwang@redhat.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 11 Apr 2022 12:57:30 +0200
-Message-ID: <CAASaF6wZSGKi+ePOcYYiuvQ=RNhu5mPTrY-FFiRMA0UhMaO1Zw@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] pkey: correct the PKEY_DISABLE_ACCESS
- definitions on PowerPC
+Subject: Re: [LTP] [PATCH v1] kernel/pty06: Skip test when TTY not available
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,57 +69,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Apr 11, 2022 at 11:41 AM Li Wang <liwang@redhat.com> wrote:
->
-> Reference: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e9506394a159
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/syscalls/pkeys/pkey.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/pkeys/pkey.h b/testcases/kernel/syscalls/pkeys/pkey.h
-> index 6e32326b6..6cda88ff1 100644
-> --- a/testcases/kernel/syscalls/pkeys/pkey.h
-> +++ b/testcases/kernel/syscalls/pkeys/pkey.h
-> @@ -11,6 +11,13 @@
->  #include "lapi/syscalls.h"
->  #include "lapi/mmap.h"
->
-> +#if defined(__powerpc__) || defined(__ppc__)
-> +# undef PKEY_DISABLE_ACCESS
-> +# define PKEY_DISABLE_ACCESS 0x3
+Hello Bogdan,
 
-Where does powerpc define PKEY_DISABLE_ACCESS as 0x3?
+blezhepekov <blezhepekov@suse.de> writes:
 
-Comment in tools/testing/selftests/powerpc/include/pkeys.h says it's
-older glibc that has this problem, but looking at latest glibc it
-still defines it as 0x1:
-https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/bits/mman-shared.h;h=00a1f27c0ef51de1ec657071c5744e09299f7ff2;hb=HEAD#l41
-
-
-
-> +# undef PKEY_DISABLE_WRITE
-> +# define PKEY_DISABLE_WRITE  0x2
-> +#endif
-> +
->  #ifndef PKEY_DISABLE_ACCESS
->  # define PKEY_DISABLE_ACCESS 0x1
->  # define PKEY_DISABLE_WRITE  0x2
-> --
-> 2.31.1
+> On 2022-03-11 17:33, Cyril Hrubis wrote:
+>> Hi!
+>>> Since TTYs under test are hardcoded, they
+>>> might not be available in some systems.
+>> Is the system you are running the tests on completely without ttys?
+>> 
+>>> Signed-off-by: Bogdan Lezhepekov <blezhepekov@suse.de>
+>>> ---
+>>>  testcases/kernel/pty/pty06.c | 9 ++++++---
+>>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>> diff --git a/testcases/kernel/pty/pty06.c 
+>>> b/testcases/kernel/pty/pty06.c
+>>> index b621f584f..250c38f6b 100644
+>>> --- a/testcases/kernel/pty/pty06.c
+>>> +++ b/testcases/kernel/pty/pty06.c
+>>> @@ -45,8 +45,6 @@ static struct tst_fzsync_pair fzp;
+>>>  static void *open_close(void *unused)
+>>>  {
+>>> -	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
+>>> -
+>>>  	while (tst_fzsync_run_b(&fzp)) {
+>>>  		tst_fzsync_start_race_b(&fzp);
+>>>  		int fd = SAFE_OPEN(tty_path_b, O_RDWR);
+>>> @@ -60,7 +58,6 @@ static void *open_close(void *unused)
+>>>  static void do_test(void)
+>>>  {
+>>> -	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
+>>>  	int fd = SAFE_OPEN(tty_path_a, O_RDWR);
+>>>  	tst_fzsync_pair_reset(&fzp, open_close);
+>>> @@ -80,6 +77,12 @@ static void do_test(void)
+>>>  static void setup(void)
+>>>  {
+>>> +	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
+>>> +	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
+>>> +
+>>> +	if (access(tty_path_a, F_OK) != 0 || access(tty_path_b, F_OK) != 0)
+>>> +		tst_brk(TCONF, "TTY(s) under test not available in system");
+>> There is no need for the != 0 could be simplified just to:
+>> 	if (access(...) || access(...))
+>> 		tst_brk(TCONF, ...);
+>> 
+>>>  	tst_fzsync_pair_init(&fzp);
+>>>  }
+>>> --
+>>> 2.35.1
+>>> 
+>>> --
+>>> Mailing list info: https://lists.linux.it/listinfo/ltp
 >
+> Hi Cyril,
 >
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> Sorry for the delayed reply. I see the test requires an emulated
+> terminal (ttyX), whilst our system supports serial console only
+> (ttySX).
 >
+> What would be your recommendation, does it make sense to switch to
+> ttySX? I wasn't sure about it, so disabling seemed more logical.
 
+No, I think this only applies to graphical VTs. I'm not sure if it is
+possible to create one on a system without real graphics.
+
+Unless someone has an answer to the above, I think it is enough for now
+to address Cyril's access comments and post a V2.
+
+>
+> Thanks,
+> Bogdan
+
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
