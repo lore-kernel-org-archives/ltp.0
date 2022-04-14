@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B226C433EF
-	for <ltp@archiver.kernel.org>; Thu, 14 Apr 2022 14:54:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FD54C433EF
+	for <ltp@archiver.kernel.org>; Thu, 14 Apr 2022 14:54:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C81B3CA5FF
-	for <ltp@archiver.kernel.org>; Thu, 14 Apr 2022 16:54:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 245393CA606
+	for <ltp@archiver.kernel.org>; Thu, 14 Apr 2022 16:54:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7F8A3CA5E7
- for <ltp@lists.linux.it>; Thu, 14 Apr 2022 16:54:04 +0200 (CEST)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
+ by picard.linux.it (Postfix) with ESMTPS id 523893CA614
+ for <ltp@lists.linux.it>; Thu, 14 Apr 2022 16:54:06 +0200 (CEST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
+ [IPv6:2a00:1450:4864:20::533])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 25C93200B9C
- for <ltp@lists.linux.it>; Thu, 14 Apr 2022 16:54:04 +0200 (CEST)
-Received: by mail-ed1-x532.google.com with SMTP id z99so6696367ede.5
- for <ltp@lists.linux.it>; Thu, 14 Apr 2022 07:54:04 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8EA4A1400F56
+ for <ltp@lists.linux.it>; Thu, 14 Apr 2022 16:54:05 +0200 (CEST)
+Received: by mail-ed1-x533.google.com with SMTP id c64so6664044edf.11
+ for <ltp@lists.linux.it>; Thu, 14 Apr 2022 07:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=IV+n4H16pa9wMG6Im9WkPZaxBPZXFSl6itZxX5wqh2c=;
- b=HCsMWm3njWWZ8RvfwFKrQF2wCm1ugRtkM9aNJ+WPedribwrs3+a+Tm9SxYuuuA/C1Q
- rA63zaMhud+ueK7oyV34LKFaCRCwzGpGwm2ijHNbwxIp5AgBPh1LviGbNTWRXLJMOED5
- 5qvIU4TVtKeVS+lORNANtN95b9V8eODhLf+WSIqVwkgQIsNhJ1pPTzdSfZbkQKXAdaKr
- w18XnbNcLdU5XVKxtRJ41jC4Gr1wzebZtlnQ4nsWaNOh/avr+7qalm5FRE/014xdp4TL
- qDGwfv5yWMNvALNJje4Y2clNBr31jx83dM4UsvAeAuMNvlBADWqOgccB2w8MumoUpY9g
- Lisw==
+ bh=Nlxl4VK/9+5TLVoSwE9zF4GmkMT59AKrotkFuP1ORHM=;
+ b=YUYdj7efJxhAXGv3YXtU69eWdex8j7VAoWqsc+KIJwRP0CPRTWBr49EBVeWNIY2wR/
+ guGOBV43wwm0zoR1huHECDj9C6YZsfA1kUMqiGGK5n6vC3KqsOshr5sqaWSv4X7w3Kgr
+ 6kZfQXOoz11ED8/Eb8yNkgIifdfSjlARtKXJS4UJpS9ynBQit/wmxV/8t84Pmde6Ndqh
+ 6+DWm8Qs3nVKiQxX0TSuS4JN2YLWrm/z3Epxm9FnQC/lp6SsGu2bEqWx5sSDpNY8R7Jc
+ WVodMBNZFFT6UtmQvfrTfncABN+3kZA9PZ5AE9TbAQ5UEb2CPYi9NXljRIsAqcAr66tp
+ cWUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=IV+n4H16pa9wMG6Im9WkPZaxBPZXFSl6itZxX5wqh2c=;
- b=5j1nfMpsi9QRMroeSCVlsBXRaBoKw58b3oBBYzpa8iWE9qrcr23/Dpakx4GRyY6YPD
- lr+w5kMAKkRG4mUDSzqnHDTa2ccTT/K7fhl74ybMgQXfIEEHdop89PKOPfeHP7shOVGG
- Nemh7BrRUlPE6ctWd7dwDfJhtMyx87lP/nIqHljQ20BblObxYp2+yc8rfCrcSFievM2a
- 7kofL6Zb1NNVJwVUbEYRGCOg5BFahdY2qj93ZIr3ZZXheG+usFnjQhdtnuykLKsWgQoH
- VnookUHo1aNs+sDazOJAy9fIQbsMm4uBphHtoFmbM5EkbxRwsDwyjNOIZWy2Y9nQqNHx
- 0eCw==
-X-Gm-Message-State: AOAM532F35QJ5vbmHoYn3ZrporGPBbZULKiVxV6BKW7Y3BoOHBFTci27
- RVonviTeuMpXnBglvgRiIYe5JwMGtL0=
-X-Google-Smtp-Source: ABdhPJzu4d58IUA36gZIoZLjeHf8MKeKhdg7F67PrI2dnv1aVFfkoRacY3VqQdjGJyDyQrTPZgbVdw==
-X-Received: by 2002:aa7:d753:0:b0:41d:732b:f2d2 with SMTP id
- a19-20020aa7d753000000b0041d732bf2d2mr3493581eds.278.1649948043726; 
- Thu, 14 Apr 2022 07:54:03 -0700 (PDT)
+ bh=Nlxl4VK/9+5TLVoSwE9zF4GmkMT59AKrotkFuP1ORHM=;
+ b=ch8+wtDDOwnx9IF22OxyTa39fFlVdHRc/JHs8wmKqQKc+fgtv//0RFvPof/7m1o8iP
+ mbjmkMytvSRJemlil+JlE3crSsohqyE3yexsUXiM0GGVPM6VWByMQANpWTQA1Qyu5mni
+ HVbthWbHFFdvPLfFyPGEcGaiGOwSAAXm67y2QJ00EgAELuheff0IZJcDz4CfTftXuNQA
+ B5Syf+HzUehJ6Gcv55Y/twMyouMZIchzGwUJK5ErxbEdkxhelKcGx0oO81u1GQSHRkyH
+ BxqzGWjkFraTe0sRE3umxY9bxYy8zPKdN9F07hkJEMy9QAGBg2kfktD6rwO2+yRwj8lW
+ 4EMw==
+X-Gm-Message-State: AOAM532kq6DJEijEtI1I7bm6K99Z07k5V4ys09VRes146PbRm7rNhrT8
+ cuE/t+DUDjQJ+12+OlDhcHI=
+X-Google-Smtp-Source: ABdhPJyQYUASQ5skSOc4LSlO4p3RDLIBN3H0S0rZVhLD9lWLCq6ICr3z1SJiNIkVDpsWTXfhN3fgeA==
+X-Received: by 2002:a05:6402:11d2:b0:41d:8443:6849 with SMTP id
+ j18-20020a05640211d200b0041d84436849mr3453455edw.311.1649948044991; 
+ Thu, 14 Apr 2022 07:54:04 -0700 (PDT)
 Received: from localhost.localdomain ([5.29.13.154])
  by smtp.gmail.com with ESMTPSA id
- kb28-20020a1709070f9c00b006d5d8bf1b72sm695026ejc.78.2022.04.14.07.54.02
+ kb28-20020a1709070f9c00b006d5d8bf1b72sm695026ejc.78.2022.04.14.07.54.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 Apr 2022 07:54:03 -0700 (PDT)
+ Thu, 14 Apr 2022 07:54:04 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 14 Apr 2022 17:53:53 +0300
-Message-Id: <20220414145357.3184012-3-amir73il@gmail.com>
+Date: Thu, 14 Apr 2022 17:53:54 +0300
+Message-Id: <20220414145357.3184012-4-amir73il@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220414145357.3184012-1-amir73il@gmail.com>
 References: <20220414145357.3184012-1-amir73il@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/6] syscalls/fanotify14: Add tests for
- FAN_REPORT_TARGET_FID and FAN_RENAME
+Subject: [LTP] [PATCH 3/6] syscalls/fanotify16: Add test cases for
+ FAN_REPORT_TARGET_FID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,79 +86,203 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Validate flag combinations:
-1) FAN_REPORT_TARGET_FID requires FAN_REPORT_NAME and FAN_REPORT_FID
-2) FAN_RENAME requires FAN_REPORT_NAME
+Verify both parent and child fids are reported for dirent events
+with FAN_REPORT_TARGET_FID.
+
+When child fid is reported for dirent events, they can be merged
+with events "on child" (e.g. open/close).
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h   | 15 +++++++++++++++
- testcases/kernel/syscalls/fanotify/fanotify14.c | 12 ++++++++++++
- 2 files changed, 27 insertions(+)
+ .../kernel/syscalls/fanotify/fanotify16.c     | 69 +++++++++++++++----
+ 1 file changed, 57 insertions(+), 12 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index b2855d292..eb690e332 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -81,6 +81,11 @@ static inline int safe_fanotify_mark(const char *file, const int lineno,
- #ifndef FAN_REPORT_PIDFD
- #define FAN_REPORT_PIDFD	0x00000080
- #endif
-+#ifndef FAN_REPORT_TARGET_FID
-+#define FAN_REPORT_TARGET_FID	0x00001000
-+#define FAN_REPORT_DFID_NAME_TARGET (FAN_REPORT_DFID_NAME | \
-+                                     FAN_REPORT_FID | FAN_REPORT_TARGET_FID)
-+#endif
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
+index 40bcdd581..529d18ee2 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify16.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
+@@ -14,6 +14,7 @@
+  * - FAN_REPORT_DIR_FID   (dir fid)
+  * - FAN_REPORT_DIR_FID | FAN_REPORT_FID   (dir fid + child fid)
+  * - FAN_REPORT_DFID_NAME | FAN_REPORT_FID (dir fid + name + child fid)
++ * - FAN_REPORT_DFID_NAME_TARGET (dir fid + name + created/deleted file fid)
+  */
  
- /* Non-uapi convenience macros */
- #ifndef FAN_REPORT_DFID_NAME_FID
-@@ -130,6 +135,9 @@ static inline int safe_fanotify_mark(const char *file, const int lineno,
- #ifndef FAN_FS_ERROR
- #define FAN_FS_ERROR		0x00008000
- #endif
-+#ifndef FAN_RENAME
-+#define FAN_RENAME		0x10000000
-+#endif
+ #define _GNU_SOURCE
+@@ -64,6 +65,8 @@ static char event_buf[EVENT_BUF_LEN];
+ #define FILE_NAME2 "test_file2"
+ #define MOUNT_PATH "fs_mnt"
  
- /* Additional error status codes that can be returned to userspace */
- #ifndef FAN_NOPIDFD
-@@ -185,6 +193,13 @@ typedef struct {
- #define FAN_EVENT_INFO_TYPE_ERROR	5
- #endif
- 
-+#ifndef FAN_EVENT_INFO_TYPE_OLD_DFID_NAME
-+#define FAN_EVENT_INFO_TYPE_OLD_DFID_NAME	10
-+#endif
-+#ifndef FAN_EVENT_INFO_TYPE_NEW_DFID_NAME
-+#define FAN_EVENT_INFO_TYPE_NEW_DFID_NAME	12
-+#endif
++static int fan_report_target_fid_unsupported;
 +
- #ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
- struct fanotify_event_info_header {
- 	uint8_t info_type;
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-index 1944bcbb4..5d74b9b91 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-@@ -62,6 +62,18 @@ static struct test_case_t {
- 		/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
- 		FAN_CLASS_NOTIF | FAN_REPORT_FID | FAN_REPORT_NAME, 0, 0
+ static struct test_case_t {
+ 	const char *tname;
+ 	struct fanotify_group_type group;
+@@ -148,6 +151,25 @@ static struct test_case_t {
+ 		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_MOVE_SELF | FAN_ONDIR |
+ 		FAN_OPEN | FAN_CLOSE | FAN_EVENT_ON_CHILD,
  	},
 +	{
-+		/* FAN_REPORT_TARGET_FID without FAN_REPORT_FID is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_NAME, 0, 0
++		"FAN_REPORT_DFID_NAME_TARGET monitor filesystem for create/delete/move/open/close",
++		INIT_FANOTIFY_GROUP_TYPE(REPORT_DFID_NAME_TARGET),
++		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
++		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_MOVE_SELF | FAN_ONDIR,
++		/* Mount watch for events possible on children */
++		INIT_FANOTIFY_MARK_TYPE(MOUNT),
++		FAN_OPEN | FAN_CLOSE | FAN_ONDIR,
 +	},
 +	{
-+		/* FAN_REPORT_TARGET_FID without FAN_REPORT_NAME is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_FID, 0, 0
-+	},
-+	{
-+		/* FAN_RENAME without FAN_REPORT_NAME is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_FID, 0, FAN_RENAME
++		"FAN_REPORT_DFID_NAME_TARGET monitor directories for create/delete/move/open/close",
++		INIT_FANOTIFY_GROUP_TYPE(REPORT_DFID_NAME_TARGET),
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_ONDIR,
++		/* Watches for self events on subdir and events on subdir's children */
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_MOVE_SELF | FAN_ONDIR |
++		FAN_OPEN | FAN_CLOSE | FAN_EVENT_ON_CHILD,
 +	},
  };
  
  static void do_test(unsigned int number)
+@@ -158,9 +180,18 @@ static void do_test(unsigned int number)
+ 	struct fanotify_mark_type *mark = &tc->mark;
+ 	struct fanotify_mark_type *sub_mark = &tc->sub_mark;
+ 	struct fanotify_fid_t root_fid, dir_fid, file_fid;
++	struct fanotify_fid_t *child_fid = NULL, *subdir_fid = NULL;
++	int report_name = (group->flag & FAN_REPORT_NAME);
++	int report_target_fid = (group->flag & FAN_REPORT_TARGET_FID);
+ 
+ 	tst_res(TINFO, "Test #%d: %s", number, tc->tname);
+ 
++	if (fan_report_target_fid_unsupported && report_target_fid) {
++		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_TARGET_FID,
++					    fan_report_target_fid_unsupported);
++		return;
++	}
++
+ 	fd_notify = SAFE_FANOTIFY_INIT(group->flag, 0);
+ 
+ 	/*
+@@ -181,6 +212,9 @@ static void do_test(unsigned int number)
+ 
+ 	/* Save the subdir fid */
+ 	fanotify_save_fid(dname1, &dir_fid);
++	/* With FAN_REPORT_TARGET_FID, report subdir fid also for dirent events */
++	if (report_target_fid)
++		subdir_fid = &dir_fid;
+ 
+ 	if (tc->sub_mask)
+ 		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | sub_mark->flag,
+@@ -188,7 +222,7 @@ static void do_test(unsigned int number)
+ 
+ 	event_set[tst_count].mask = FAN_CREATE | FAN_ONDIR;
+ 	event_set[tst_count].fid = &root_fid;
+-	event_set[tst_count].child_fid = NULL;
++	event_set[tst_count].child_fid = subdir_fid;
+ 	strcpy(event_set[tst_count].name, DIR_NAME1);
+ 	tst_count++;
+ 
+@@ -197,6 +231,9 @@ static void do_test(unsigned int number)
+ 
+ 	/* Save the file fid */
+ 	fanotify_save_fid(fname1, &file_fid);
++	/* With FAN_REPORT_TARGET_FID, report child fid also for dirent events */
++	if (report_target_fid)
++		child_fid = &file_fid;
+ 
+ 	SAFE_WRITE(1, fd, "1", 1);
+ 	SAFE_RENAME(fname1, fname2);
+@@ -214,7 +251,7 @@ static void do_test(unsigned int number)
+ 	 */
+ 	event_set[tst_count].mask = FAN_CREATE | FAN_MOVED_FROM;
+ 	event_set[tst_count].fid = &dir_fid;
+-	event_set[tst_count].child_fid = NULL;
++	event_set[tst_count].child_fid = child_fid;
+ 	strcpy(event_set[tst_count].name, FILE_NAME1);
+ 	tst_count++;
+ 	/*
+@@ -224,7 +261,7 @@ static void do_test(unsigned int number)
+ 	 * FAN_REPORT_NAME is not set, then FAN_CREATE above is merged with
+ 	 * FAN_DELETE below and FAN_OPEN will be merged with FAN_CLOSE.
+ 	 */
+-	if (group->flag & FAN_REPORT_NAME) {
++	if (report_name) {
+ 		event_set[tst_count].mask = FAN_OPEN;
+ 		event_set[tst_count].fid = &dir_fid;
+ 		event_set[tst_count].child_fid = &file_fid;
+@@ -233,15 +270,22 @@ static void do_test(unsigned int number)
+ 	}
+ 
+ 	event_set[tst_count].mask = FAN_DELETE | FAN_MOVED_TO;
++	/*
++	 * With FAN_REPORT_TARGET_FID, close of FILE_NAME2 is merged with
++	 * moved_to and delete events, because they all have parent and
++	 * child fid records.
++	 */
++	if (report_target_fid)
++		event_set[tst_count].mask |= FAN_CLOSE_WRITE;
+ 	event_set[tst_count].fid = &dir_fid;
+-	event_set[tst_count].child_fid = NULL;
++	event_set[tst_count].child_fid = child_fid;
+ 	strcpy(event_set[tst_count].name, FILE_NAME2);
+ 	tst_count++;
+ 	/*
+ 	 * When not reporting name, open of FILE_NAME1 is merged
+ 	 * with close of FILE_NAME2.
+ 	 */
+-	if (!(group->flag & FAN_REPORT_NAME)) {
++	if (!report_name) {
+ 		event_set[tst_count].mask = FAN_OPEN | FAN_CLOSE_WRITE;
+ 		event_set[tst_count].fid = &dir_fid;
+ 		event_set[tst_count].child_fid = &file_fid;
+@@ -261,11 +305,10 @@ static void do_test(unsigned int number)
+ 		tst_count++;
+ 	}
+ 	/*
+-	 * When reporting name, close of FILE_NAME2 is not merged with
+-	 * open of FILE_NAME1 and it is received after the merged self
+-	 * events.
++	 * Without FAN_REPORT_TARGET_FID, close of FILE_NAME2 is not merged with
++	 * open of FILE_NAME1 and it is received after the merged self events.
+ 	 */
+-	if (group->flag & FAN_REPORT_NAME) {
++	if (report_name && !report_target_fid) {
+ 		event_set[tst_count].mask = FAN_CLOSE_WRITE;
+ 		event_set[tst_count].fid = &dir_fid;
+ 		event_set[tst_count].child_fid = &file_fid;
+@@ -305,12 +348,12 @@ static void do_test(unsigned int number)
+ 
+ 	event_set[tst_count].mask = FAN_MOVED_FROM | FAN_ONDIR;
+ 	event_set[tst_count].fid = &root_fid;
+-	event_set[tst_count].child_fid = NULL;
++	event_set[tst_count].child_fid = subdir_fid;
+ 	strcpy(event_set[tst_count].name, DIR_NAME1);
+ 	tst_count++;
+ 	event_set[tst_count].mask = FAN_DELETE | FAN_MOVED_TO | FAN_ONDIR;
+ 	event_set[tst_count].fid = &root_fid;
+-	event_set[tst_count].child_fid = NULL;
++	event_set[tst_count].child_fid = subdir_fid;
+ 	strcpy(event_set[tst_count].name, DIR_NAME2);
+ 	tst_count++;
+ 	/* Expect no more events */
+@@ -355,7 +398,7 @@ static void do_test(unsigned int number)
+ 		if (!(group->flag & FAN_REPORT_FID))
+ 			expected_child_fid = NULL;
+ 
+-		if (!(group->flag & FAN_REPORT_NAME))
++		if (!report_name)
+ 			expected->name[0] = 0;
+ 
+ 		if (expected->name[0]) {
+@@ -545,6 +588,8 @@ check_match:
+ static void setup(void)
+ {
+ 	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_DIR_FID, MOUNT_PATH);
++	fan_report_target_fid_unsupported =
++		fanotify_init_flags_supported_on_fs(FAN_REPORT_DFID_NAME_TARGET, MOUNT_PATH);
+ 
+ 	sprintf(dname1, "%s/%s", MOUNT_PATH, DIR_NAME1);
+ 	sprintf(dname2, "%s/%s", MOUNT_PATH, DIR_NAME2);
 -- 
 2.35.1
 
