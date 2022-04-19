@@ -4,42 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 251F6C433EF
-	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 08:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23206C433F5
+	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 10:38:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5A76C3CA645
-	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 10:51:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 9B9203CA68B
+	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 12:38:55 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 744E43C54E8
- for <ltp@lists.linux.it>; Tue, 19 Apr 2022 10:51:17 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 6093E3C8BA5
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 12:38:45 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3856B602117
- for <ltp@lists.linux.it>; Tue, 19 Apr 2022 10:51:12 +0200 (CEST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KjHX652nnzFqQb
- for <ltp@lists.linux.it>; Tue, 19 Apr 2022 16:48:38 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.63) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 19 Apr 2022 16:51:08 +0800
-To: <ltp@lists.linux.it>
-Date: Tue, 19 Apr 2022 16:50:02 +0800
-Message-ID: <20220419085002.65719-1-zhaogongyi@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ADBCA100022D
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 12:38:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1650364723;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2Fe16CeMX7UAhWdmB6IAYbWT5AsvRgaxp0eYD4GN1Zw=;
+ b=OhskrUztT3Esulkwo1vI84T+s7R56xqPn13zNPOdSQwUQeYXGqfcFqvJtGst80OkPikPcN
+ Z8o+GHIDs6curBFw58mPbRgGXvFbpqo8q2wWHS996CRhA6m3xNaIMnjp8NV7M4F2S8jfPl
+ eS/Z0UvdOx40wdVOjXY3gERpE9NTp1w=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-386-DXj6h3R_P-evg8dGd8AkKg-1; Tue, 19 Apr 2022 06:38:42 -0400
+X-MC-Unique: DXj6h3R_P-evg8dGd8AkKg-1
+Received: by mail-lj1-f199.google.com with SMTP id
+ h22-20020a2e9016000000b0024dbafdc47bso1537624ljg.23
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 03:38:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2Fe16CeMX7UAhWdmB6IAYbWT5AsvRgaxp0eYD4GN1Zw=;
+ b=kv+rsBcV+yGLleKFyPqd91XON/koCiH/ipnH5UYLEGadNiy3lYFcSf2MSUBNCwA6rI
+ 7VeYaIRcb8Qf2fSbANrJrBaJCF9mNO6p/rGHk4jOjwuk7Qr2UBlHsf1yCx/Qrg86jBSu
+ OJSQcJ7NliOlA1P3I32QNu5kqZHikYSwgoIWYoNPDLyBV93tz0/CX04LVw45Q0p8vC/g
+ WWpT0rHVJoUqhESh2uwA4/Fo3Hx7xtNwgnZbkFBKLxUls8LcQaXJgV72VZpKVByKj3iA
+ 7i/Tdd3Fir84gaRHne5us8SdXbaHT+AyKD4oqlsAUHx5Z5zSlU6fjw1L5CvztIZX0KJa
+ /J4w==
+X-Gm-Message-State: AOAM530MujLZn+cPhDklPG56S9dvF14Tow8vQnMEbiT+wkxVY4eax9A2
+ ji/4Zii7Kr0JyHc4l0wv8euZRM/+730MDLIb2VbMZX5ms4UZRxVDcVGNyAEexNmDIaRM9RvI10j
+ BWDePXxhk/F+AzmmI5Dt5LcZ3nwc=
+X-Received: by 2002:a2e:548:0:b0:24d:9e27:5008 with SMTP id
+ 69-20020a2e0548000000b0024d9e275008mr9552650ljf.503.1650364720723; 
+ Tue, 19 Apr 2022 03:38:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0cH4tAXTp/7IWrlaAjDbuXKMtyWRQ7qgWZfIu5yil+T8C5fELu2xwr1h2GtIPGc2gx69SOg/4a9KnURYiTbM=
+X-Received: by 2002:a2e:548:0:b0:24d:9e27:5008 with SMTP id
+ 69-20020a2e0548000000b0024d9e275008mr9552647ljf.503.1650364720557; Tue, 19
+ Apr 2022 03:38:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.63]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <d4a52829247d2c2e09544c62c842f70238afac80.1649416881.git.jstancek@redhat.com>
+ <Ylg94+RVAcSWO3iZ@pevik> <Yl5Yg1li5IyX2dEX@pevik>
+In-Reply-To: <Yl5Yg1li5IyX2dEX@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 19 Apr 2022 12:38:23 +0200
+Message-ID: <CAASaF6zkKgNdSh6z0cVFa7_LrRk_MrSYxVFPXqrQjfPCvTRSog@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/io_submit: Add TTERRNO/TERRNO when test fail
+Subject: Re: [LTP] [PATCH] netns_netlink: ensure child opens socket before
+ parent creates tap if
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -51,47 +86,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zhao Gongyi via ltp <ltp@lists.linux.it>
-Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/io_submit/io_submit01.c | 2 +-
- testcases/kernel/syscalls/io_submit/io_submit02.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Tue, Apr 19, 2022 at 8:36 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Jan,
+>
+> Merged your fix, thanks!
 
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
-index db541fc01..ba75f6d81 100644
---- a/testcases/kernel/syscalls/io_submit/io_submit01.c
-+++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
-@@ -130,7 +130,7 @@ static void verify_io_submit(unsigned int n)
- 		return;
- 	}
+Thanks, I was just looking for this email, but you were faster :-)
 
--	tst_res(TFAIL, "io_submit() returned %i(%s), expected %s(%i)",
-+	tst_res(TFAIL | TERRNO, "io_submit() returned %i(%s), expected %s(%i)",
- 		ret, ret < 0 ? tst_strerrno(-ret) : "SUCCESS",
- 		errno_name(t->exp_errno), t->exp_errno);
- }
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit02.c b/testcases/kernel/syscalls/io_submit/io_submit02.c
-index 38b8555d8..6ba4d99a5 100644
---- a/testcases/kernel/syscalls/io_submit/io_submit02.c
-+++ b/testcases/kernel/syscalls/io_submit/io_submit02.c
-@@ -79,7 +79,7 @@ static void run(unsigned int i)
- 	if (TST_RET == tc[i].nr)
- 		tst_res(TPASS, "io_submit() %s", tc[i].desc);
- 	else
--		tst_res(TFAIL, "io_submit() returns %ld, expected %ld", TST_RET, tc[i].nr);
-+		tst_res(TFAIL | TTERRNO, "io_submit() returns %ld, expected %ld", TST_RET, tc[i].nr);
-
- 	for (j = 0; j < TST_RET; j++) {
- 		tst_syscall(__NR_io_getevents, *tc[i].ctx, 1, 1, &evbuf,
---
-2.17.1
+>
+> Kind regards,
+> Petr
+>
 
 
 -- 
