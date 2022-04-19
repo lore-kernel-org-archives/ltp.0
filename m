@@ -4,77 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23206C433F5
-	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 10:38:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3701EC433F5
+	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 10:44:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B9203CA68B
-	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 12:38:55 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 542603CA686
+	for <ltp@archiver.kernel.org>; Tue, 19 Apr 2022 12:44:27 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6093E3C8BA5
- for <ltp@lists.linux.it>; Tue, 19 Apr 2022 12:38:45 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5EEAC3C8BA5
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 12:44:17 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ADBCA100022D
- for <ltp@lists.linux.it>; Tue, 19 Apr 2022 12:38:44 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D08EA6002E8
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 12:44:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1650364723;
+ s=mimecast20190719; t=1650365055;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2Fe16CeMX7UAhWdmB6IAYbWT5AsvRgaxp0eYD4GN1Zw=;
- b=OhskrUztT3Esulkwo1vI84T+s7R56xqPn13zNPOdSQwUQeYXGqfcFqvJtGst80OkPikPcN
- Z8o+GHIDs6curBFw58mPbRgGXvFbpqo8q2wWHS996CRhA6m3xNaIMnjp8NV7M4F2S8jfPl
- eS/Z0UvdOx40wdVOjXY3gERpE9NTp1w=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=w+WDgfWVh5yl06Ihl68oj9L0jX8E3VsaDDk5kxslYdQ=;
+ b=OOCuN4hnoqz6wIPyZDZZqCPRPOgTeFVJrIehneqxeCPA0eP/IsYhryqYyfM2wbROem4itG
+ PnC7NvBqd/phu3y35LNwDNw0x/mkNLsVxyeFJjScSEUhvRL23L7VHJ5fJNEN3aav/rXK0y
+ p+uj+JmZAURcOmcH0M0xfL07sCMBkro=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-386-DXj6h3R_P-evg8dGd8AkKg-1; Tue, 19 Apr 2022 06:38:42 -0400
-X-MC-Unique: DXj6h3R_P-evg8dGd8AkKg-1
-Received: by mail-lj1-f199.google.com with SMTP id
- h22-20020a2e9016000000b0024dbafdc47bso1537624ljg.23
- for <ltp@lists.linux.it>; Tue, 19 Apr 2022 03:38:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=2Fe16CeMX7UAhWdmB6IAYbWT5AsvRgaxp0eYD4GN1Zw=;
- b=kv+rsBcV+yGLleKFyPqd91XON/koCiH/ipnH5UYLEGadNiy3lYFcSf2MSUBNCwA6rI
- 7VeYaIRcb8Qf2fSbANrJrBaJCF9mNO6p/rGHk4jOjwuk7Qr2UBlHsf1yCx/Qrg86jBSu
- OJSQcJ7NliOlA1P3I32QNu5kqZHikYSwgoIWYoNPDLyBV93tz0/CX04LVw45Q0p8vC/g
- WWpT0rHVJoUqhESh2uwA4/Fo3Hx7xtNwgnZbkFBKLxUls8LcQaXJgV72VZpKVByKj3iA
- 7i/Tdd3Fir84gaRHne5us8SdXbaHT+AyKD4oqlsAUHx5Z5zSlU6fjw1L5CvztIZX0KJa
- /J4w==
-X-Gm-Message-State: AOAM530MujLZn+cPhDklPG56S9dvF14Tow8vQnMEbiT+wkxVY4eax9A2
- ji/4Zii7Kr0JyHc4l0wv8euZRM/+730MDLIb2VbMZX5ms4UZRxVDcVGNyAEexNmDIaRM9RvI10j
- BWDePXxhk/F+AzmmI5Dt5LcZ3nwc=
-X-Received: by 2002:a2e:548:0:b0:24d:9e27:5008 with SMTP id
- 69-20020a2e0548000000b0024d9e275008mr9552650ljf.503.1650364720723; 
- Tue, 19 Apr 2022 03:38:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0cH4tAXTp/7IWrlaAjDbuXKMtyWRQ7qgWZfIu5yil+T8C5fELu2xwr1h2GtIPGc2gx69SOg/4a9KnURYiTbM=
-X-Received: by 2002:a2e:548:0:b0:24d:9e27:5008 with SMTP id
- 69-20020a2e0548000000b0024d9e275008mr9552647ljf.503.1650364720557; Tue, 19
- Apr 2022 03:38:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <d4a52829247d2c2e09544c62c842f70238afac80.1649416881.git.jstancek@redhat.com>
- <Ylg94+RVAcSWO3iZ@pevik> <Yl5Yg1li5IyX2dEX@pevik>
-In-Reply-To: <Yl5Yg1li5IyX2dEX@pevik>
+ us-mta-20-rmfgImMJOziORAU9zt3IoA-1; Tue, 19 Apr 2022 06:44:14 -0400
+X-MC-Unique: rmfgImMJOziORAU9zt3IoA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1A02380352D
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 10:44:14 +0000 (UTC)
+Received: from janakin.usersys.redhat.com (unknown [10.40.193.184])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B470440FF716
+ for <ltp@lists.linux.it>; Tue, 19 Apr 2022 10:44:13 +0000 (UTC)
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 19 Apr 2022 12:38:23 +0200
-Message-ID: <CAASaF6zkKgNdSh6z0cVFa7_LrRk_MrSYxVFPXqrQjfPCvTRSog@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 19 Apr 2022 12:44:10 +0200
+Message-Id: <2539516b566aca2a2f419131c7ad28fcdd7a8fcd.1650365029.git.jstancek@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] netns_netlink: ensure child opens socket before
- parent creates tap if
+Subject: [LTP] [PATCH] open_posix_testsuite/lio_listio/2-1: remove check for
+ individual completion
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,24 +69,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Apr 19, 2022 at 8:36 AM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Jan,
->
-> Merged your fix, thanks!
+lio_listio() operations are executed in an unspecified order and
+checking if any specific one from list already completed appears
+meaningless. Remove it.
 
-Thanks, I was just looking for this email, but you were faster :-)
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../conformance/interfaces/lio_listio/2-1.c   | 28 -------------------
+ 1 file changed, 28 deletions(-)
 
->
-> Kind regards,
-> Petr
->
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/2-1.c
+index 72a1113e06a3..efcd5b3fcb39 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/2-1.c
+@@ -37,16 +37,8 @@
+ #define NUM_AIOCBS	256
+ #define BUF_SIZE	1024
+ 
+-static volatile int received_selected;
+ static volatile int received_all;
+ 
+-static void sigrt1_handler(int signum PTS_ATTRIBUTE_UNUSED,
+-	siginfo_t *info,
+-	void *context PTS_ATTRIBUTE_UNUSED)
+-{
+-	received_selected = info->si_value.sival_int;
+-}
+-
+ static void sigrt2_handler(int signum PTS_ATTRIBUTE_UNUSED,
+ 	siginfo_t *info PTS_ATTRIBUTE_UNUSED,
+ 	void *context PTS_ATTRIBUTE_UNUSED)
+@@ -102,11 +94,6 @@ int main(void)
+ 		aiocbs[i]->aio_buf = &bufs[i * BUF_SIZE];
+ 		aiocbs[i]->aio_nbytes = BUF_SIZE;
+ 		aiocbs[i]->aio_lio_opcode = LIO_WRITE;
+-
+-		/* Use SIRTMIN+1 for individual completions */
+-		aiocbs[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+-		aiocbs[i]->aio_sigevent.sigev_signo = SIGRTMIN + 1;
+-		aiocbs[i]->aio_sigevent.sigev_value.sival_int = i;
+ 	}
+ 
+ 	/* Use SIGRTMIN+2 for list completion */
+@@ -114,12 +101,6 @@ int main(void)
+ 	event.sigev_signo = SIGRTMIN + 2;
+ 	event.sigev_value.sival_ptr = NULL;
+ 
+-	/* Setup handler for individual operation completion */
+-	action.sa_sigaction = sigrt1_handler;
+-	sigemptyset(&action.sa_mask);
+-	action.sa_flags = SA_SIGINFO | SA_RESTART;
+-	sigaction(SIGRTMIN + 1, &action, NULL);
+-
+ 	/* Setup handler for list completion */
+ 	action.sa_sigaction = sigrt2_handler;
+ 	sigemptyset(&action.sa_mask);
+@@ -139,15 +120,6 @@ int main(void)
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	if (received_selected == NUM_AIOCBS - 1) {
+-		printf(TNAME " lio_listio() waited\n");
+-		for (i = 0; i < NUM_AIOCBS; i++)
+-			free(aiocbs[i]);
+-		free(bufs);
+-		close(fd);
+-		exit(PTS_FAIL);
+-	}
+-
+ 	if (received_all != 0) {
+ 		printf(TNAME
+ 		       " Error lio_listio() waited for list completion\n");
+-- 
+2.27.0
 
 
 -- 
