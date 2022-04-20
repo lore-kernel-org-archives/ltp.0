@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B3E6C433F5
-	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 11:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2461DC433F5
+	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 12:03:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5B9D43CA6B0
-	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 13:47:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 3C35B3CA6C6
+	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 14:03:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C1183C12C4
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 13:47:28 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8F3A53C192A
+ for <ltp@lists.linux.it>; Wed, 20 Apr 2022 14:03:26 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E28706002F9
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 13:47:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1650455246;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D1DEA20098E
+ for <ltp@lists.linux.it>; Wed, 20 Apr 2022 14:03:25 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C0CEF1F380;
+ Wed, 20 Apr 2022 12:03:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1650456204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6ik82cphj7NntWqsGB76oNU2HZlI0YoG/wJA6YzeCoA=;
- b=NWX4wBDPM4NkrcW+bnub3z7vZJ4rhJi9SxvrYgjbfMPRVrZnvWukwpw6wX0wKuntH4eE/s
- sD+vc62nCoVw/uAfJHkE1fbwglk9EEac+xDwTyxJdozR7E8G6L/qKfU3WUNCD3f+1FBXA9
- mcqw4AiBYgF+g+Kwmd0yEJ6wEBeFhvk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-532-VP1HrYBcMjiHXNorEHyRuQ-1; Wed, 20 Apr 2022 07:47:25 -0400
-X-MC-Unique: VP1HrYBcMjiHXNorEHyRuQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com
- [10.11.54.5])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ bh=az1mXiWhmbwnDy1axFGJb76kPFElU4kxUXwHkXxIk9A=;
+ b=mZ3KRq+eQHXbyCmR1ExmsmDDoPywqsrvbxWxpWK0yiHXcDGXD+Y+LJ69zTiks5OVhgsUUU
+ 8tF+d/GU4wMm0+QhnzcklnNYh39SwHdHCFruqCZahZZoquT/8M+vG010a3SDaRlISrbFY3
+ 8A/1+MWJeb0AGt+a9aHAYGIsOR0xhx0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1650456204;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=az1mXiWhmbwnDy1axFGJb76kPFElU4kxUXwHkXxIk9A=;
+ b=cT97IAJeKd3iGRPYOIicZF7dpBFX/Ow4+isU9GgpyokCJFyrbQ1Cawu6bCyyiRiUAWGjWg
+ T6pTUxy48K7r6XAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1483C185A7A4
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 11:47:25 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com
- (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 20FB37C28
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 11:47:23 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Wed, 20 Apr 2022 19:47:20 +0800
-Message-Id: <20220420114720.1463473-2-liwang@redhat.com>
-In-Reply-To: <20220420114720.1463473-1-liwang@redhat.com>
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEF0E13A30;
+ Wed, 20 Apr 2022 12:03:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id o1h6KYz2X2LSWAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 20 Apr 2022 12:03:24 +0000
+Date: Wed, 20 Apr 2022 14:05:41 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Yl/3FchHScs8YS6c@yuki>
 References: <20220420114720.1463473-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220420114720.1463473-1-liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] mkswap01: wait for the triggered events to
- complete
+Subject: Re: [LTP] [PATCH 1/2] ioctl09: wait for udevd complete the uevent
+ handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,32 +75,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/commands/mkswap/mkswap01.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+> This is quite necessary to wait for uevent handing settled before
+> checking the partition is taken effect.
+> 
+>   `udevadm monitor` listening from another terminal:
+> 
+>   KERNEL[447.077683] change   /devices/virtual/block/loop0 (block)
+>   KERNEL[447.077939] add      /devices/virtual/block/loop0/loop0p1 (block)
+>   KERNEL[447.077999] add      /devices/virtual/block/loop0/loop0p2 (block)
+>   UDEV  [447.081138] change   /devices/virtual/block/loop0 (block)
+>   UDEV  [447.083490] add      /devices/virtual/block/loop0/loop0p1 (block)
+>   UDEV  [447.086898] add      /devices/virtual/block/loop0/loop0p2 (block)
+> 
+> Which helps to get rid of such boring failures:
+> 
+>   ioctl09.c:44: TPASS: access /sys/block/loop0/loop0p1 succeeds
+>   ioctl09.c:52: TPASS: access /dev/loop0p1 succeeds
+>   ioctl09.c:47: TFAIL: access /sys/block/loop0/loop0p2 fails
+>   ioctl09.c:55: TFAIL: access /dev/loop0p2 fails
+> 
+> I manually confirmed those failures disappeared from a reproducible system
+> even with running 10000 times.
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/syscalls/ioctl/ioctl09.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
+> index 9728ecb9c..533a4a5d0 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl09.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
+> @@ -58,6 +58,10 @@ static void check_partition(int part_num, bool value)
+>  
+>  static void verify_ioctl(void)
+>  {
+> +	char cmd[BUFSIZ];
+> +
+> +	sprintf(cmd, "udevadm settle --exit-if-exists=%s", dev_path);
+> +
+>  	const char *const cmd_parted_old[] = {"parted", "-s", "test.img",
+>  					      "mklabel", "msdos", "mkpart",
+>  					      "primary", "ext4", "1M", "10M",
+> @@ -75,11 +79,13 @@ static void verify_ioctl(void)
+>  
+>  	loopinfo.lo_flags =  LO_FLAGS_PARTSCAN;
+>  	SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
+> +	tst_system(cmd);
+>  	check_partition(1, true);
+>  	check_partition(2, false);
+>  
+>  	change_partition(cmd_parted_new);
+>  	TST_RETRY_FUNC(ioctl(dev_fd, BLKRRPART, 0), TST_RETVAL_EQ0);
+> +	tst_system(cmd);
+>  	check_partition(1, true);
+>  	check_partition(2, true);
 
-diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
-index f6494f6e3..cb3563b49 100755
---- a/testcases/commands/mkswap/mkswap01.sh
-+++ b/testcases/commands/mkswap/mkswap01.sh
-@@ -128,7 +128,7 @@ mkswap_test()
- 		return
- 	fi
- 
--	udevadm trigger --name-match=$TST_DEVICE
-+	udevadm trigger --name-match=$TST_DEVICE --settle
- 
- 	if [ -n "$device" ]; then
- 		mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size" "$dev_file"
+We allready use TST_RETRY_FN_EXP_BACKOFF() in there with 30 second
+timeout isn't that enough? And if it isn't wouldn't simply increasing
+the timeout to a minute or two fix the issue?
+
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
