@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CC3CC433EF
-	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 09:09:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAF34C433F5
+	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 09:25:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D6A553CA6B3
-	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 11:09:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 921FD3CA6C6
+	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 11:25:00 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 497AE3CA63D
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 11:09:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id AA8DF3CA683
+ for <ltp@lists.linux.it>; Wed, 20 Apr 2022 11:24:49 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 27E031A00914
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 11:09:07 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BB58D6006C6
+ for <ltp@lists.linux.it>; Wed, 20 Apr 2022 11:24:48 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 370E021115;
- Wed, 20 Apr 2022 09:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1650445747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9S5xaUwarV22FXLfw/4A4P+Jzyy6SoMYpCmBoWK8qxc=;
- b=iaUKxkaa49c7wBO5UVsPALzNPSYMr/c8z762lNsv8x+GJ2NjA1yOZ8vIERm6/Twg4hZXBt
- QqHEGmu0SUIJTsmGFBqv1E6rJI7hfPjRQ38jGngQRoft7cSYjBJNd2jDCho6D9B0X/AdrW
- Qo3mKlSZBhK4+LuA1UNcutzSqwzRGS4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1650445747;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C63791F380;
+ Wed, 20 Apr 2022 09:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1650446687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=bgNhTjKCzOau99B00puisButFkq710+wzbJE5qr8mY8=;
+ b=uNq2V+4XqMG0ouzvLF9KQZrP8dI53VxoF5ORIkWP8pYF+16M6U0PWIT9+kXE4FycqLxCb8
+ QGyR0oulQBaxadEJijFHKq0Rh5s728FbmdzFOYWZYyAIZJfKcknaOOzypRPVb32FvNaNQt
+ JsSQI/DVxP8fDqwOd05urLM6i6NudQ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1650446687;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9S5xaUwarV22FXLfw/4A4P+Jzyy6SoMYpCmBoWK8qxc=;
- b=GQ2geLzpFxdQGCq1jSzjn+JVy8JI6cLXP2mSjDh/P4R6N9W1sN0eHX3T7eEBwRD9/BHfol
- x4FfBOwQKMsctcAA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=bgNhTjKCzOau99B00puisButFkq710+wzbJE5qr8mY8=;
+ b=FChT9Qw51FpD8UOAmf5LKsYPniiFJfuhmOC64+kdmr9OH4Ci3IBYXmXmQBsYDe44CWTyv2
+ fM+OYZ5u/wGDGsBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 20A0B13AD5;
- Wed, 20 Apr 2022 09:09:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 889D113A30;
+ Wed, 20 Apr 2022 09:24:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MulsBrPNX2ItCQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 20 Apr 2022 09:09:07 +0000
-Date: Wed, 20 Apr 2022 11:11:23 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <Yl/OO5mBXW5h1e91@yuki>
-References: <20220331113324.14742-1-mdoucha@suse.cz>
- <20220331113324.14742-3-mdoucha@suse.cz> <Ylf2hd82r1pLFlbd@yuki>
- <a4feb22e-d4f8-00dd-5970-0832dc90ddfa@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id p22fHl/RX2JQEAAAMHmgww
+ (envelope-from <blezhepekov@suse.de>); Wed, 20 Apr 2022 09:24:47 +0000
+From: Bogdan Lezhepekov <blezhepekov@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 20 Apr 2022 12:24:42 +0300
+Message-Id: <20220420092442.31832-1-blezhepekov@suse.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a4feb22e-d4f8-00dd-5970-0832dc90ddfa@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] KVM test infrastructure
+Subject: [LTP] [PATCH v2] kernel/pty06: Skip test when TTY not available
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,102 +70,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> >> +/*
-> >> + * These constants must match the value of corresponding constants defined
-> >> + * in tst_res_flags.h.
-> >> + */
-> >> +#define TPASS	0	/* Test passed flag */
-> >> +#define TFAIL	1	/* Test failed flag */
-> >> +#define TBROK	2	/* Test broken flag */
-> >> +#define TWARN	4	/* Test warning flag */
-> >> +#define TINFO	16	/* Test information flag */
-> >> +#define TCONF	32	/* Test not appropriate for configuration */
-> > 
-> > The tst_res_flags.h header has been created so that there will be no
-> > need to copy these definitions around like this. Why not just include
-> > the header?
-> 
-> I didn't #include the tst_res_flags.h because the main LTP include
-> directory is not passed to the preprocessor when compiling KVM payload.
-> I'd have to do it like this:
-> #include "../../../../include/tst_res_flags.h"
+Since TTYs under test are hardcoded, they
+might not be available in some systems.
 
-And I guess that this is on purpose right?
+Signed-off-by: Bogdan Lezhepekov <blezhepekov@suse.de>
+---
+ testcases/kernel/pty/pty06.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-As we can easily add it by adding -I$(top_src_dir)/include/ to the
-CFLAGS.
-
-> >> +void tst_res_(const char *file, const int lineno, int result,
-> >> +	const char *message);
-> >> +#define tst_res(result, msg) tst_res_(__FILE__, __LINE__, (result), (msg))
-> >> +
-> >> +void tst_brk_(const char *file, const int lineno, int result,
-> >> +	const char *message) __attribute__((noreturn));
-> >> +#define tst_brk(result, msg) tst_brk_(__FILE__, __LINE__, (result), (msg))
-> > 
-> > I think that it may be slightly better to name these kvm_res() and
-> > kvm_brk() to make clear that these are used in the guest context and
-> > that the implementation is actually different. I guess that it would
-> > make sense to have all the functions called from the guest prefixed with
-> > kvm_ just to make the boundary clearer.
-> 
-> My idea was different:
-> - kvm_* prefix for low-level arch-specific functions
-> - tst_* prefix for reimplementation of standard LTP library functions
-> and any other platform-independent helper functions
-> 
-> tst_res() and tst_brk() currently lack the printf-like formatting
-> features (and the TERRNO/TTERRNO/TRERRNO flags are not applicable) but
-> otherwise they do the exact same thing as the standard LTP functions.
-> I'm planning to add some limited printf-like formatting later since
-> sprintf() implementation will be needed eventually anyway.
-
-Ack.
-
-> >> +void *tst_heap_alloc_aligned(size_t size, size_t align)
-> >> +{
-> >> +	uintptr_t addr = (uintptr_t)heap_end;
-> >> +	void *ret;
-> >> +
-> >> +	addr += align - 1;
-> >> +	addr -= addr % align;
-> >> +	ret = (void *)addr;
-> >> +	addr += size + 3;
-> >> +	addr -= addr % 4;
-> >> +	heap_end = (char *)addr;
-> >> +	return ret;
-> >> +}
-> >> +
-> >> +void *tst_heap_alloc(size_t size)
-> >> +{
-> >> +	void *ret = heap_end;
-> >> +
-> >> +	size += 3;
-> >> +	size -= size % 4;
-> >> +	heap_end += size;
-> >> +	return ret;
-> > 
-> > We do have a few similar pieces scattered around the code, can put the
-> > code into a macro that would make the code slightly easier to
-> > understand?
-> > 
-> > We do have LTP_ALIGN() in tst_common.h but I guess that we do not want
-> > to include it here in the guest library.
-> 
-> I guess that copying LTP_ALIGN() to the KVM headers would be useful.
-
-Can you please respin the patchset with this change then?
-
+diff --git a/testcases/kernel/pty/pty06.c b/testcases/kernel/pty/pty06.c
+index b621f584f..cc8eb1f85 100644
+--- a/testcases/kernel/pty/pty06.c
++++ b/testcases/kernel/pty/pty06.c
+@@ -45,8 +45,6 @@ static struct tst_fzsync_pair fzp;
+ 
+ static void *open_close(void *unused)
+ {
+-	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
+-
+ 	while (tst_fzsync_run_b(&fzp)) {
+ 		tst_fzsync_start_race_b(&fzp);
+ 		int fd = SAFE_OPEN(tty_path_b, O_RDWR);
+@@ -60,7 +58,6 @@ static void *open_close(void *unused)
+ 
+ static void do_test(void)
+ {
+-	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
+ 	int fd = SAFE_OPEN(tty_path_a, O_RDWR);
+ 
+ 	tst_fzsync_pair_reset(&fzp, open_close);
+@@ -80,6 +77,12 @@ static void do_test(void)
+ 
+ static void setup(void)
+ {
++	sprintf(tty_path_a, "/dev/tty%d", test_tty_port + 1);
++	sprintf(tty_path_b, "/dev/tty%d", test_tty_port);
++
++	if (access(tty_path_a, F_OK) || access(tty_path_b, F_OK))
++		tst_brk(TCONF, "TTY(s) under test not available in system");
++
+ 	tst_fzsync_pair_init(&fzp);
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
