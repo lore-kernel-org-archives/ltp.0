@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDB5DC433F5
-	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 20:43:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72351C433EF
+	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 20:56:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CDF3A3CA6BB
-	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 22:43:19 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1778D3CA6AC
+	for <ltp@archiver.kernel.org>; Wed, 20 Apr 2022 22:56:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2C4113CA63C
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 22:43:10 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 9D96A3CA63C
+ for <ltp@lists.linux.it>; Wed, 20 Apr 2022 22:56:23 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5807C2009C6
- for <ltp@lists.linux.it>; Wed, 20 Apr 2022 22:43:08 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 12A091400BCE
+ for <ltp@lists.linux.it>; Wed, 20 Apr 2022 22:56:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2220F1F380;
- Wed, 20 Apr 2022 20:43:08 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 112021F747;
+ Wed, 20 Apr 2022 20:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1650487388;
+ t=1650488182;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wd2PqYOQNo+DjwPIfJZIUWx2KUhdB8jS3BiA32Ji5GU=;
- b=tQYCqDZCfBOUi354eq5j001FZ+YjfbJdD6SflA8XgQcs+usB4Ed5pEU4sSomj7O6e4I6zP
- H8hm7z3Sn6v61/wajzRguHFaOLzojeNAMNGTD8wrqIY1MC5xlLABqej2eYnudrRST+nuyL
- td0BdmziDxB2C2aYvk0QKYBtBudamnU=
+ bh=n30vADXsO03HDIoEBiy0aho89nL1t8xWHwovosAnKvQ=;
+ b=nEPX23pzfZNHuklbnlh+gEuUx/Jc3Yy9lSXgK7JlRr1sGUqQkp5AAHxBb4RZ86UclkGDxt
+ PVGXlX8SwpQNZizMihnQYveMTgMJpQ9mrv4APBu0o+dKTPLOFgOy8wVrJkl6GCY1wV+xg6
+ wpm4kvBwI1sNZCBPC3K/kNLDIuQBoMs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1650487388;
+ s=susede2_ed25519; t=1650488182;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wd2PqYOQNo+DjwPIfJZIUWx2KUhdB8jS3BiA32Ji5GU=;
- b=3KfGsgu/W+ga2s6N5ZSOl2ewnaehwnogagpIgw1aLvd5D2NOBnuAdDI0JbEr6MD+47MkbP
- FrL/0cdryiNp7sAA==
+ bh=n30vADXsO03HDIoEBiy0aho89nL1t8xWHwovosAnKvQ=;
+ b=IBSAA4l3hCvpnsgO9sjl/vB3DlGjwGjyRIts8w543+A+QIKME9J0f0TKXIBQecmye+VZUS
+ fuQ6tfVcOCLybyCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E325B13AD5;
- Wed, 20 Apr 2022 20:43:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA18E13A30;
+ Wed, 20 Apr 2022 20:56:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +hInNVtwYGLVIwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 20 Apr 2022 20:43:07 +0000
-Date: Wed, 20 Apr 2022 22:43:06 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id Vm+CL3VzYGK4JwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 20 Apr 2022 20:56:21 +0000
+Date: Wed, 20 Apr 2022 22:56:20 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Chen Hanxiao <chenhx.fnst@cn.fujitsu.com>
-Message-ID: <YmBwWqS0GEuwnb/d@pevik>
-References: <20220420102926.866-1-chenhx.fnst@cn.fujitsu.com>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <YmBzdLLeX3kNfbvu@pevik>
+References: <20220420114720.1463473-1-liwang@redhat.com>
+ <20220420114720.1463473-2-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220420102926.866-1-chenhx.fnst@cn.fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220420114720.1463473-2-liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/mount_setattr01: Add basic functional
- test
+Subject: Re: [LTP] [PATCH 2/2] mkswap01: wait for the triggered events to
+ complete
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,163 +79,45 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Chen, Dai,
+Hi all,
 
-> From: Chen Hanxiao <chenhx.fnst@fujitsu.com>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/commands/mkswap/mkswap01.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-...
-> +/*
-> + * mount_setattr()
-> + */
-> +struct mount_attr {
-> +	uint64_t attr_set;
-> +	uint64_t attr_clr;
-> +	uint64_t propagation;
-> +	uint64_t userns_fd;
-> +};
-Interesting enough: in kernel tools/testing/selftests/mount_setattr/mount_setattr_test.c
-defines it as __u64 (IMHO should be really uint64_t as that test is userspace as
-Cyril pointed out) but real kernel code in fs/namespace.c happily uses "unsigned
-int" :).
+> diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+> index f6494f6e3..cb3563b49 100755
+> --- a/testcases/commands/mkswap/mkswap01.sh
+> +++ b/testcases/commands/mkswap/mkswap01.sh
+> @@ -128,7 +128,7 @@ mkswap_test()
+>  		return
+>  	fi
 
-...
-> diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-> new file mode 100644
-> index 000000000..d63db46fa
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-> @@ -0,0 +1,118 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-> + * Author: Dai Shili <daisl.fnst@fujitsu.com>
-> + * Author: Chen Hanxiao <chenhx.fnst@fujitsu.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Basic mount_setattr() test.
-> + * Test whether the basic mount attributes are set correctly.
-> + *
-> + * Verify some MOUNT_SETATTR(2) attributes:
-> + * 1) MOUNT_ATTR_RDONLY - makes the mount read-only
-> + * 2) MOUNT_ATTR_NOSUID - causes the mount not to honor the
-> + *    set-user-ID and set-group-ID mode bits and file capabilities
-> + *    when executing programs.
-> + * 3) MOUNT_ATTR_NODEV - prevents access to devices on this mount
-> + * 4) MOUNT_ATTR_NOEXEC - prevents executing programs on this mount
-> + * 5) MOUNT_ATTR_NOSYMFOLLOW - prevents following symbolic links
-> + *    on this mount
-> + * 6) MOUNT_ATTR_NODIRATIME - prevents updating access time for
-> + *    directories on this mount
-> + * Minimum Linux version required is v5.12.
-Since we don't check for v5.12, it might be better to state "The functionality
-was added in v5.12." (although only enterprise kernels would backport new
-functionality, mainline stable kernels will not).
-> + */
+> -	udevadm trigger --name-match=$TST_DEVICE
+> +	udevadm trigger --name-match=$TST_DEVICE --settle
 
-This needs some changes in order to be formatted properly as list and have
-paragraphs. Sigh, nobody really runs:
+>  	if [ -n "$device" ]; then
+>  		mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size" "$dev_file"
 
-cd metadata/ && make && chromium ../docparse/metadata.html
+--settle option for udevadm trigger has been added in v238 (in 2018) [1].
+This mean on SLES 12-SP5, RHEL-7.9, 18.04 LTS bionic, ... we get:
 
-to have look what output his docs has :(
-(can be fixed before merge)
+trigger: unrecognized option '--settle'
 
-/*\
- * [Description]
- *
- * Basic mount_setattr() test.
- * Test whether the basic mount attributes are set correctly.
- *
- * Verify some MOUNT_SETATTR(2) attributes:
- *
- * 1. MOUNT_ATTR_RDONLY &ndash; makes the mount read-only
- * 2. MOUNT_ATTR_NOSUID &ndash; causes the mount not to honor the
- *    set-user-ID and set-group-ID mode bits and file capabilities
- *    when executing programs.
- * 3. MOUNT_ATTR_NODEV &ndash; prevents access to devices on this mount
- * 4. MOUNT_ATTR_NOEXEC &ndash; prevents executing programs on this mount
- * 5. MOUNT_ATTR_NOSYMFOLLOW &ndash; prevents following symbolic links
- *    on this mount
- * 6. MOUNT_ATTR_NODIRATIME &ndash; prevents updating access time for
- *    directories on this mount
- *
- * Minimum Linux version required is v5.12.
- */
-
-...
-> +static void run(unsigned int n)
-> +{
-> +	int otfd;
-> +	struct tcase *tc = &tcases[n];
-> +	struct mount_attr attr = {
-> +		.attr_set = tc->mount_attrs,
-> +	};
-> +	struct statvfs buf;
-> +
-> +	TST_EXP_FD_SILENT(open_tree(AT_FDCWD, MNTPOINT, AT_EMPTY_PATH |
-> +		AT_SYMLINK_NOFOLLOW | OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE));
-Although Cyril mentioned only TST_EXP_FD_SILENT(), IMHO it should be followed with:
-	if (!TST_PASS)
-		return;
-
-Or does it make sense to continue testing when open_tree() fails?
-
-> +	otfd = (int)TST_RET;
-> +
-> +	TST_EXP_PASS_SILENT(mount_setattr(otfd, "", AT_EMPTY_PATH, &attr, sizeof(attr)),
-> +		"%s set", tc->name);
-
-Shouldn't be here also :
-	if (!TST_PASS)
-		return;
-
-check? I guess we need SAFE_ variants for not having to check it all the time.
-
-Or does it make sense to continue testing when mount_setattr() fails?
-
-> +	TEST(move_mount(otfd, "", AT_FDCWD, OT_MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "move_mount() failed");
-> +		return;
-> +	}
-
-Maybe instead of TEST() and if use this?
-
-	TST_EXP_PASS_SILENT(move_mount(otfd, "", AT_FDCWD, OT_MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
-
-	if (!TST_PASS)
-		return;
-
-> +
-> +	SAFE_CLOSE(otfd);
-> +
-> +	TST_EXP_PASS_SILENT(statvfs(OT_MNTPOINT, &buf), "statvfs sucess");
-And here as well.
-> +
-> +	if ((buf.f_flag & tc->expect_attrs) == 0)
-> +		tst_res(TFAIL, "%s is not actually set as expected", tc->name);
-> +	else
-> +		tst_res(TPASS, "%s is actually set as expected", tc->name);
-> +
-> +	if (tst_is_mounted_at_tmpdir(OT_MNTPOINT))
-> +		SAFE_UMOUNT(OT_MNTPOINT);
-> +}
-
-The rest LGTM.
+Do we ignore backward compatibility hoping that all distros aren't tested with
+newer LTP?
 
 Kind regards,
 Petr
+
+[1] https://github.com/systemd/systemd/commit/792cc203a67edb201073351f5c766fce3d5eab45
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
