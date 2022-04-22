@@ -4,47 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DADF8C433F5
-	for <ltp@archiver.kernel.org>; Fri, 22 Apr 2022 03:37:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 839FCC433F5
+	for <ltp@archiver.kernel.org>; Fri, 22 Apr 2022 09:23:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2B4B03CA6DF
-	for <ltp@archiver.kernel.org>; Fri, 22 Apr 2022 05:37:16 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id C9F123CA701
+	for <ltp@archiver.kernel.org>; Fri, 22 Apr 2022 11:23:19 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E40723CA581
- for <ltp@lists.linux.it>; Fri, 22 Apr 2022 05:37:06 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id CF4733C889D
+ for <ltp@lists.linux.it>; Fri, 22 Apr 2022 11:23:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5CD806005CE
- for <ltp@lists.linux.it>; Fri, 22 Apr 2022 05:37:03 +0200 (CEST)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Kl0SD56G9z1J9vl
- for <ltp@lists.linux.it>; Fri, 22 Apr 2022 11:36:12 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 22 Apr 2022 11:36:59 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.55) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 22 Apr 2022 11:36:58 +0800
-To: <ltp@lists.linux.it>
-Date: Fri, 22 Apr 2022 11:35:52 +0800
-Message-ID: <20220422033552.257763-1-threefifteen.wangkunfeng@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2EA1D60082D
+ for <ltp@lists.linux.it>; Fri, 22 Apr 2022 11:23:08 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1636B21107;
+ Fri, 22 Apr 2022 09:23:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1650619388;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wmsD43ZsXj16JiYfD5ehMtC/eEhYeD8zAaFN0dS7EC8=;
+ b=W/ZXBNVdr4ylAEIMM4C5OjNR8QwYSMYxOcz447nZQdF+1d+CFbrsWC244erVUL1s/DbiE1
+ 8+GucZk2x7yNPTQFCM3Q4+41YidOhlC7+nJmNs9WwQec+BpaahjNodsE+BCRVZAnaJavv2
+ 9FsXyXnh4gzgGr0MLfzRR9svertjmtE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1650619388;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wmsD43ZsXj16JiYfD5ehMtC/eEhYeD8zAaFN0dS7EC8=;
+ b=f5ADQlFxDvA3AXaaJOlyo+Z3RcpUv4bpEZSzPFW/HxVxWDMXWT3CDufrPcfSXPzIRRcJnM
+ +FzWZEqqcdF8iFCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB2C0131BD;
+ Fri, 22 Apr 2022 09:23:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id eZsMNPtzYmK1DQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 22 Apr 2022 09:23:07 +0000
+Date: Fri, 22 Apr 2022 11:23:06 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it, Martin Doucha <martin.doucha@suse.com>,
+ Cyril Hrubis <chrubis@suse.cz>, Li Wang <liwang@redhat.com>
+Message-ID: <YmJz+odTX8Q8XV56@pevik>
+References: <20220401215951.13976-1-pvorel@suse.cz>
+ <20220401215951.13976-2-pvorel@suse.cz> <Ykd9CAXfi9FZ+iHB@pevik>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.55]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Ykd9CAXfi9FZ+iHB@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] kernel/hugemmap05.c: Skip test when default
- Hugepagesize 1G
+Subject: Re: [LTP] [PATCH 1/2] tst_test.sh: Cleanup getopts usage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,49 +78,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wang Kunfeng via ltp <ltp@lists.linux.it>
-Reply-To: Wang Kunfeng <threefifteen.wangkunfeng@huawei.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel is not allow to change the file that
-/proc/sys/vm/nr_overcommit_hugepages,
-when default Hugepagesize 1G,so the testcase
-will be fail when close it.
+Hi all,
 
-Signen-off-by: Wang Kunfeng <threefifteen.wangkunfeng@huawei.com>
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Martin spotted another error in zram01: setup() function in zram01.sh was not
+called due being overwritten in zram_lib.sh. Replaced with conditional
+expansion.
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-index 40d3bd8da..5c78d0635 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-@@ -61,6 +61,7 @@ static int key = -1, shmid = -1, fd = -1;
- static int mounted, restore_shmmax, restore_overcomm_hgpgs;
- static long hugepagesize, nr_overcommit_hugepages;
- static long size = NR_HPAGES, length = (NR_HPAGES + NR_HPAGES/2) * 2;
-+static long default_hugepagesize = 1048576;
+In case anybody wants to test this latest version is branch
+tst_test.sh/cleanup-getopts.fixes in my fork:
+https://github.com/pevik/ltp/commits/tst_test.sh/cleanup-getopts.fixes
 
- char *opt_sysfs;
- char *opt_alloc;
-@@ -188,6 +189,10 @@ static void setup(void)
- 	if (tst_hugepages != NR_HPAGES)
- 		tst_brk(TCONF, "Not enough hugepages for testing!");
+Kind regards,
+Petr
 
-+	hugepagesize = SAFE_READ_MEMINFO("Hugepagesize:");
-+	if (hugepagesize == default_hugepagesize)
-+		tst_brk(TCONF, "system hugepagesize default 1G,the testcase not support!");
-+
- 	hugepagesize = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 	init_sys_sz_paths();
-
-
-2.17.1
-
+diff --git testcases/kernel/device-drivers/zram/zram_lib.sh testcases/kernel/device-drivers/zram/zram_lib.sh
+index f2280334e8..6ce2ff1d4f 100755
+--- testcases/kernel/device-drivers/zram/zram_lib.sh
++++ testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -12,7 +12,7 @@ sys_control=-1
+ 
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
+-TST_SETUP="zram_load"
++TST_SETUP="${TST_SETUP:-zram_load}"
+ TST_CLEANUP="zram_cleanup"
+ TST_NEEDS_DRIVERS="zram"
+ 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
