@@ -4,76 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22802C433EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 03:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A3A8C433EF
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 06:08:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 964123CA75B
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 05:35:51 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id EB75F3CA750
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 08:08:25 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E91313C0797
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 05:35:40 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F1840100042E
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 05:35:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1650857738;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=nj9cikNM3CPba5yizpTNewjDxsJsjNepy2jQa68gq7Q=;
- b=bJehmYhVedCSANjMCpnoAEzMXQEFkl/F0F2359F8hygZrzPoFhU15EA7UUgvcRBzkEyIhg
- 7p09H91SkpppLP70EpZrU+nhsOvw+zn8jBDhXkDXDZ6O1OHuua7T2Y0ZeG6m+OBjoY9eG1
- DR9S5ziFc3Sgan0Q8xjnuX5GUzAVXFk=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-128-3-KJpeudPj2sTekAoI0Juw-1; Sun, 24 Apr 2022 23:35:34 -0400
-X-MC-Unique: 3-KJpeudPj2sTekAoI0Juw-1
-Received: by mail-yw1-f199.google.com with SMTP id
- 00721157ae682-2f4d9e92a0aso86691907b3.9
- for <ltp@lists.linux.it>; Sun, 24 Apr 2022 20:35:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=nj9cikNM3CPba5yizpTNewjDxsJsjNepy2jQa68gq7Q=;
- b=abXi40ObDePdi1gjFc4THQoSPxbQ4hMULf3csQlRmMB6LSzb6bt0XkMMot/mhEgaa6
- aHgAl3BhpNIXvVehU3unHoSZqTR9AzArfSIJIekcQlVHo3zzUvCNb+mcqV8hyIYx9UMf
- WUYlpqLMBW6ThDAF+rcj7QtRr31txL6B+OtwO8a9gdeaPOGQRz4LVSqFLwo5mPc3MVc1
- kgbz1l1Oq/H/eMuq4LPr7xTF3dlfEtFCobLF0X9XkqRHasa3VCflqDM/gF/krsD6fMSc
- xreM6kncZZS7qBlaXANcutS/pFBO0aWYqH1Opmvla295ziOSBVsLD0AWgej6Z9NhS7r0
- uLgw==
-X-Gm-Message-State: AOAM532sO2dYwKVYW4bIdq+8yoNOajUE9lRhiT+pI2kn9mS1W3sRlgrB
- VqJtUmJli+2SBa0RXI/pHwVkNyQUQAOQ/yfukTNNW1Ew8fnlK7IBc1fcatX+TW85u3xmEvbxrFE
- n3UrYBM/dQHPuiS8H8uQM9bdy6cM=
-X-Received: by 2002:a81:5b56:0:b0:2ec:34e7:9b5c with SMTP id
- p83-20020a815b56000000b002ec34e79b5cmr15307393ywb.300.1650857734261; 
- Sun, 24 Apr 2022 20:35:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxT49LWbiXWmbPndTXiwGzvCh2tmDuRPbuaxHbaavtDKkCmIP5o/qjs98UzawTLdBYZv1fRgRDB29dk2e85dc=
-X-Received: by 2002:a81:5b56:0:b0:2ec:34e7:9b5c with SMTP id
- p83-20020a815b56000000b002ec34e79b5cmr15307384ywb.300.1650857734017; Sun, 24
- Apr 2022 20:35:34 -0700 (PDT)
+ by picard.linux.it (Postfix) with ESMTPS id B87D53CA722
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 08:08:15 +0200 (CEST)
+Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 57E7E200062
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 08:08:11 +0200 (CEST)
+IronPort-Data: =?us-ascii?q?A9a23=3AZkMH56yasUt73XwW3Nt6t+cHxCrEfRIJ4+MujC/?=
+ =?us-ascii?q?XYbTApG5w02YBnGUeUGmFOPqLZ2qjeI1yYN+zp08D7JTUmIJlHQtv/xmBbVoQ9?=
+ =?us-ascii?q?5OdWo7xwmQcns+qBpSaChohtq3yU/GYRCwPZiKa9kfF3oTJ9yEmj/nSHuOkUYY?=
+ =?us-ascii?q?oBwgqLeNaYHZ44f5cs75h6mJYqYDR7zKl4bsekeWGULOW82Ic3lYv1k62gEgHU?=
+ =?us-ascii?q?MIeF98vlgdWifhj5DcynpSOZX4VDfnZw3DQGuG4EgMmLtsvwo1V/kuBl/ssIti?=
+ =?us-ascii?q?j1LjmcEwWWaOUNg+L4pZUc/H6xEEc+WppieBmXBYfQR4/ZzGhlNB8ztVd85K2U?=
+ =?us-ascii?q?hsBMLDOmfgGTl9TFCQW0ahuoeWccSDj6JTLp6HBWz62qxl0N2kyIZUw/udsHXo?=
+ =?us-ascii?q?I8f0eNSBLbwzrr+m22q+xS/JEndk4IY/gLus3om9n1zzdJe07Wp2FSLei2DPy9?=
+ =?us-ascii?q?F/cnegXRbCHOZVfMmEpMXz9j9R0Eg9/IPoDcC2A3xETqwFllW8=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AVhKaqaO+VYMlUcBcTv2jsMiBIKoaSvp037BL?=
+ =?us-ascii?q?7TEUdfUxSKGlfq+V8sjzqiWftN98YhAdcLO7Scy9qBHnhP1ICOAqVN/MYOCMgh?=
+ =?us-ascii?q?rLEGgN1+vf6gylMyj/28oY7q14bpV5YeeaMXFKyer8/ym0euxN/OW6?=
+X-IronPort-AV: E=Sophos;i="5.88,333,1635177600"; d="scan'208";a="123804100"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+ by heian.cn.fujitsu.com with ESMTP; 25 Apr 2022 14:08:08 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+ by cn.fujitsu.com (Postfix) with ESMTP id 8D9314D17172;
+ Mon, 25 Apr 2022 14:08:07 +0800 (CST)
+Received: from G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Mon, 25 Apr 2022 14:08:05 +0800
+Received: from G08FNSTD200033.g08.fujitsu.local (10.167.225.189) by
+ G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Mon, 25 Apr 2022 14:08:07 +0800
+From: Chen Hanxiao <chenhx.fnst@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Mon, 25 Apr 2022 14:08:06 +0800
+Message-ID: <20220425060806.1038-1-chenhx.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20220422144141.16848-1-pvorel@suse.cz>
-In-Reply-To: <20220422144141.16848-1-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 25 Apr 2022 11:35:19 +0800
-Message-ID: <CAEemH2fXi4S+cMot4jLWfr_atQhhZehD3rEYKbV1xkLcuHnz6w@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-yoursite-MailScanner-ID: 8D9314D17172.AC905
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: chenhx.fnst@fujitsu.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/4] shell: Cleanup getopts usage
+Subject: [LTP] [PATCH v3] syscalls/mount_setattr01: Add basic functional test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,76 +65,276 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Martin Doucha <martin.doucha@suse.com>, LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1509428054=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1509428054==
-Content-Type: multipart/alternative; boundary="000000000000cfb2e205dd724420"
+The mount_setattr() system call changes the mount properties of
+a mount or an entire mount tree. Here we check whether the mount
+attributes are set correctly.
 
---000000000000cfb2e205dd724420
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Dai Shili <daisl.fnst@fujitsu.com>
+Signed-off-by: Chen Hanxiao <chenhx.fnst@fujitsu.com>
+---
+v3:
+  1) fix doc issue
+  2) fix bugs according to Petr's comments
+v2:
+  1) fix bugs according to Cyril's comments
+  2) just set and test mount attributes, remove attr_clr section.
 
-Hi Petr,
+ include/lapi/fsmount.h                        |  45 ++++++
+ runtest/syscalls                              |   2 +
+ .../kernel/syscalls/mount_setattr/.gitignore  |   1 +
+ .../kernel/syscalls/mount_setattr/Makefile    |   6 +
+ .../syscalls/mount_setattr/mount_setattr01.c  | 135 ++++++++++++++++++
+ 5 files changed, 189 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mount_setattr/.gitignore
+ create mode 100644 testcases/kernel/syscalls/mount_setattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
 
-On Fri, Apr 22, 2022 at 10:41 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-
->
-> Petr Vorel (4):
->   shell: Use conditional expansion for library setup/cleanup
->   doc: Update library API doc
->   tst_test.sh: Cleanup getopts usage
->   doc: Update shell API examples
->
-
-Basically looks good. Thanks for your update!
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
-
+diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
+index 377af85ec..2aa92dc0c 100644
+--- a/include/lapi/fsmount.h
++++ b/include/lapi/fsmount.h
+@@ -16,6 +16,42 @@
+ #include "lapi/fcntl.h"
+ #include "lapi/syscalls.h"
+ 
++/*
++ * Mount attributes.
++ */
++#ifndef MOUNT_ATTR_RDONLY
++# define MOUNT_ATTR_RDONLY       0x00000001 /* Mount read-only */
++#endif
++#ifndef MOUNT_ATTR_NOSUID
++# define MOUNT_ATTR_NOSUID       0x00000002 /* Ignore suid and sgid bits */
++#endif
++#ifndef MOUNT_ATTR_NODEV
++# define MOUNT_ATTR_NODEV        0x00000004 /* Disallow access to device special files */
++#endif
++#ifndef MOUNT_ATTR_NOEXEC
++# define MOUNT_ATTR_NOEXEC       0x00000008 /* Disallow program execution */
++#endif
++#ifndef MOUNT_ATTR_NODIRATIME
++# define MOUNT_ATTR_NODIRATIME   0x00000080 /* Do not update directory access times */
++#endif
++#ifndef MOUNT_ATTR_NOSYMFOLLOW
++# define MOUNT_ATTR_NOSYMFOLLOW  0x00200000 /* Do not follow symlinks */
++#endif
++
++#ifndef ST_NOSYMFOLLOW
++# define ST_NOSYMFOLLOW 0x2000 /* do not follow symlinks */
++#endif
++
++/*
++ * mount_setattr()
++ */
++struct mount_attr {
++	uint64_t attr_set;
++	uint64_t attr_clr;
++	uint64_t propagation;
++	uint64_t userns_fd;
++};
++
+ #ifndef HAVE_FSOPEN
+ static inline int fsopen(const char *fsname, unsigned int flags)
+ {
+@@ -62,6 +98,15 @@ static inline int open_tree(int dirfd, const char *pathname, unsigned int flags)
+ }
+ #endif /* HAVE_OPEN_TREE */
+ 
++#ifndef HAVE_MOUNT_SETATTR
++static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
++				struct mount_attr *attr, size_t size)
++{
++	return tst_syscall(__NR_mount_setattr, dirfd, from_pathname, flags,
++			   attr, size);
++}
++#endif /* HAVE_MOUNT_SETATTR */
++
+ /*
+  * New headers added in kernel after 5.2 release, create them for old userspace.
+ */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index d43d6983b..307f9bed1 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -803,6 +803,8 @@ mount04 mount04
+ mount05 mount05
+ mount06 mount06
+ 
++mount_setattr01 mount_setattr01
++
+ move_mount01 move_mount01
+ move_mount02 move_mount02
+ 
+diff --git a/testcases/kernel/syscalls/mount_setattr/.gitignore b/testcases/kernel/syscalls/mount_setattr/.gitignore
+new file mode 100644
+index 000000000..52a77b9ca
+--- /dev/null
++++ b/testcases/kernel/syscalls/mount_setattr/.gitignore
+@@ -0,0 +1 @@
++/mount_setattr01
+diff --git a/testcases/kernel/syscalls/mount_setattr/Makefile b/testcases/kernel/syscalls/mount_setattr/Makefile
+new file mode 100644
+index 000000000..5ea7d67db
+--- /dev/null
++++ b/testcases/kernel/syscalls/mount_setattr/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+new file mode 100644
+index 000000000..f56409a40
+--- /dev/null
++++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
++ * Author: Dai Shili <daisl.fnst@fujitsu.com>
++ * Author: Chen Hanxiao <chenhx.fnst@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Basic mount_setattr() test.
++ * Test whether the basic mount attributes are set correctly.
++ *
++ * Verify some MOUNT_SETATTR(2) attributes:
++ *
++ * - 1) MOUNT_ATTR_RDONLY - makes the mount read-only
++ * - 2) MOUNT_ATTR_NOSUID - causes the mount not to honor the
++ *     set-user-ID and set-group-ID mode bits and file capabilities
++ *     when executing programs.
++ * - 3) MOUNT_ATTR_NODEV - prevents access to devices on this mount
++ * - 4) MOUNT_ATTR_NOEXEC - prevents executing programs on this mount
++ * - 5) MOUNT_ATTR_NOSYMFOLLOW - prevents following symbolic links
++ *    on this mount
++ * - 6) MOUNT_ATTR_NODIRATIME - prevents updating access time for
++ *    directories on this mount
++ *
++ * The functionality was added in v5.12.
++ */
++
++#define _GNU_SOURCE
++
++#include <sys/statvfs.h>
++#include "tst_test.h"
++#include "lapi/fsmount.h"
++#include "lapi/stat.h"
++
++#define MNTPOINT        "mntpoint"
++#define OT_MNTPOINT     "ot_mntpoint"
++#define TCASE_ENTRY(attrs, exp_attrs)   \
++	{                                \
++		.name = #attrs,                 \
++		.mount_attrs = attrs,           \
++		.expect_attrs = exp_attrs       \
++	}
++
++static int dir_created;
++static int mount_flag, otfd;
++
++static struct tcase {
++	char *name;
++	unsigned int mount_attrs;
++	unsigned int expect_attrs;
++} tcases[] = {
++	TCASE_ENTRY(MOUNT_ATTR_RDONLY, ST_RDONLY),
++	TCASE_ENTRY(MOUNT_ATTR_NOSUID, ST_NOSUID),
++	TCASE_ENTRY(MOUNT_ATTR_NODEV, ST_NODEV),
++	TCASE_ENTRY(MOUNT_ATTR_NOEXEC, ST_NOEXEC),
++	TCASE_ENTRY(MOUNT_ATTR_NOSYMFOLLOW, ST_NOSYMFOLLOW),
++	TCASE_ENTRY(MOUNT_ATTR_NODIRATIME, ST_NODIRATIME),
++};
++
++static void cleanup(void)
++{
++	if (otfd > -1)
++		SAFE_CLOSE(otfd);
++	if (mount_flag && tst_is_mounted_at_tmpdir(OT_MNTPOINT)) {
++		mount_flag = 0;
++		SAFE_UMOUNT(OT_MNTPOINT);
++	}
++	if (dir_created)
++		SAFE_RMDIR(OT_MNTPOINT);
++}
++
++static void setup(void)
++{
++	fsopen_supported_by_kernel();
++	SAFE_MKDIR(OT_MNTPOINT, 0777);
++	dir_created = 1;
++}
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	struct mount_attr attr = {
++		.attr_set = tc->mount_attrs,
++	};
++	struct statvfs buf;
++
++	TST_EXP_FD_SILENT(open_tree(AT_FDCWD, MNTPOINT, AT_EMPTY_PATH |
++		AT_SYMLINK_NOFOLLOW | OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE));
++	if (!TST_PASS)
++		goto out;
++
++	otfd = (int)TST_RET;
++
++	TST_EXP_PASS_SILENT(mount_setattr(otfd, "", AT_EMPTY_PATH, &attr, sizeof(attr)),
++		"%s set", tc->name);
++	if (!TST_PASS)
++		return;
++
++	TST_EXP_PASS_SILENT(move_mount(otfd, "", AT_FDCWD, OT_MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
++	if (!TST_PASS)
++		goto out;
++	mount_flag = 1;
++
++	TST_EXP_PASS_SILENT(statvfs(OT_MNTPOINT, &buf), "statvfs sucess");
++	if (!TST_PASS)
++		goto out;
++
++	if (buf.f_flag & tc->expect_attrs)
++		tst_res(TPASS, "%s is actually set as expected", tc->name);
++	else
++		tst_res(TFAIL, "%s is not actually set as expected", tc->name);
++
++out:
++	if (otfd > -1)
++		SAFE_CLOSE(otfd);
++
++	if (tst_is_mounted_at_tmpdir(OT_MNTPOINT)) {
++		mount_flag = 0;
++		SAFE_UMOUNT(OT_MNTPOINT);
++	}
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.skip_filesystems = (const char *const []){"fuse", NULL},
++};
 -- 
-Regards,
-Li Wang
-
---000000000000cfb2e205dd724420
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Petr,</div></div><br><div class=3D"gmail_quote"><div dir=
-=3D"ltr" class=3D"gmail_attr">On Fri, Apr 22, 2022 at 10:41 PM Petr Vorel &=
-lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_blank">pvorel@suse.cz</a>&g=
-t; wrote:<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
-=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
--left:1ex">
-<br>
-Petr Vorel (4):<br>
-=C2=A0 shell: Use conditional expansion for library setup/cleanup<br>
-=C2=A0 doc: Update library API doc<br>
-=C2=A0 tst_test.sh: Cleanup getopts usage<br>
-=C2=A0 doc: Update shell API examples<br></blockquote><div><br></div><div><=
-div class=3D"gmail_default" style=3D"font-size:small">Basically looks good.=
- Thanks for your update!</div><div class=3D"gmail_default" style=3D"font-si=
-ze:small"></div><br></div><div><div class=3D"gmail_default" style=3D"font-s=
-ize:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">li=
-wang@redhat.com</a>&gt;</div><div class=3D"gmail_default" style=3D"font-siz=
-e:small"><br></div></div></div><div><br></div>-- <br><div dir=3D"ltr"><div =
-dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000cfb2e205dd724420--
+2.35.1
 
 
---===============1509428054==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1509428054==--
-
