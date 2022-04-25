@@ -4,46 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 387A3C433F5
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 13:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03819C433FE
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 15:19:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A8B113C8D46
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 15:38:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0BE5B3C9449
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 17:19:38 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 405693C60BC
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 15:38:28 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id AC1C73C1769
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 17:19:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 632001A0068F
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 15:38:26 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4E11F1F388;
- Mon, 25 Apr 2022 13:38:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1650893906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0FDE6680E20
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 17:19:25 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 182BA210EC;
+ Mon, 25 Apr 2022 15:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1650899965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=FuItbAqvv2fAGIvDcgROWZCud6qiWKr9OmPakv4ee7U=;
- b=qb+JSzLvUnxgrYigCBDEZS2buecXcTAUu/X3+l2pI6PaU9udlhEEq0nqU161S8TEAJwHzW
- FktRattK5z9HDt2vJVTzNmBWCPGM8Aibzz+OFI1wWxbpldK6w55ONFDU9Nye9yhO+N45YU
- 9CV5tdZEh/U9VPXSPNYERqpFNu4HGxc=
-Received: from g78.suse.de (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.24.182])
- by relay2.suse.de (Postfix) with ESMTP id C02BE2C141;
- Mon, 25 Apr 2022 13:38:25 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Mon, 25 Apr 2022 14:38:16 +0100
-Message-Id: <20220425133816.720-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.35.1
+ in-reply-to:in-reply-to:references:references;
+ bh=oX5dCHroBpJhud0XHJZhyNBrIZslzcmToOcH5dhHPeg=;
+ b=lQZzRJZYqMIkRBOMsQUVVHIY1UKAcQhOODkEB/zlOiNiAdsb8iuRSbS3EANOzMAJL61KMk
+ BheQHcQlDFkPhbVyl4QGtOHG6/6MmhcddsrLewDNu93vwPyXipK4OJ/8QETqtP0TL36dXL
+ yOjKCSaEniuzKA5SLYVwULmZI0xmdT0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1650899965;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oX5dCHroBpJhud0XHJZhyNBrIZslzcmToOcH5dhHPeg=;
+ b=ad6IM8V0OZ97L6Lfxls2TTQVYmR1BbuK8tDCYEFUUzGajLYctlqx6TsrH3KhZfajPgBfTb
+ ccTA3cJGlSyjlvBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 01E5513AED;
+ Mon, 25 Apr 2022 15:19:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id G3asOvy7ZmIFPgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 25 Apr 2022 15:19:24 +0000
+Date: Mon, 25 Apr 2022 17:21:39 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <Yma8g4NUSRAIvMAW@yuki>
+References: <20220406110837.14773-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220406110837.14773-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lapi/signal.h: rm references to _SC_SIGRT_* and
- __SIGRT*
+Subject: Re: [LTP] [PATCH] syscalls: Check for leftover partition info in
+ loopdev ioctl tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,127 +75,95 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhlIG9sZCBBUEkncyB0c3Rfc2lnLmMgdXNlc19TQ19TSUdSVF9NSU4vTUFYIGFyZSBub3QgZXh0
-YW50IGFuZCBhCnF1aWNrIGludGVybmV0IHNlYXJjaCBkb2VzIG5vdCByZXZlYWwgbXVjaC4gSXQn
-cyBhc3N1bWVkIHRoZXkgbWVhbnQKdGhlIHNhbWUgdGhpbmcgYXMgdHN0X3NpZ3J0e21pbixtYXh9
-X2tlcm4uCgpUaGUgZmFsbGJhY2sgdXNpbmcgX19TSUdSVHtNSU4sTUFYfSBpcyBhbHNvIHJlcGxh
-Y2VkIHdpdGgKdHN0X3NpZ25hbF9pc19yZXNlcnZlZF9ydC4gSXQgc2F5cyBzaWdydG1pbiBvbiBI
-UFBBIGlzIDM3LiBIb3dldmVyIGluCnRoZSBrZXJuZWwgYWxsIGFyY2hlcyBoYXZlIGl0IHNldCB0
-byAzMi4KCkluIGFsbCBjYXNlcyBfX1NJR1JUe01JTixNQVh9IGlzIHJlcGxhY2VzIHdpdGggY29u
-c3RhbnRzIHdlIGRlZmluZSBhcwp3ZSBjYW4gbm90IHVzZSBfXyB2YXJpYWJsZXMuIFR3byBmdW5j
-dGlvbnMgYXJlIGludHJvZHVjZWQgdG8gbWFrZSB0aGUKbWVhbmluZyBjbGVhciB3aGVuIHVzaW5n
-IHRoZXNlIGNvbnN0YW50cyB0byBjaGVjayBpZiBhIHNpZ25hbCBpcwpyZXNlcnZlZCBhbmQvb3Ig
-cmVhbHRpbWUuCgpTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFBhbGV0aG9ycGUgPHJwYWxldGhvcnBl
-QHN1c2UuY29tPgpTdWdnZXN0ZWQtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PgpTdWdn
-ZXN0ZWQtYnk6IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PgotLS0KIGluY2x1ZGUvbGFw
-aS9zaWduYWwuaCAgICAgICAgICAgICAgICAgICAgICAgICB8IDM2ICsrKysrKy0tLS0tLS0KIGxp
-Yi90c3Rfc2lnLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDUxICstLS0tLS0t
-LS0tLS0tLS0tLS0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFjZTA1LmMg
-ICB8ICAyICstCiAuLi4vc3lzY2FsbHMvcnRfc2lnc3VzcGVuZC9ydF9zaWdzdXNwZW5kMDEuYyAg
-fCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zaWdob2xkL3NpZ2hvbGQwMi5jIHwg
-IDQgKy0KIDUgZmlsZXMgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgNzIgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9sYXBpL3NpZ25hbC5oIGIvaW5jbHVkZS9sYXBpL3NpZ25h
-bC5oCmluZGV4IDZmNGE3Njg4MS4uYWExODVhNWE2IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xhcGkv
-c2lnbmFsLmgKKysrIGIvaW5jbHVkZS9sYXBpL3NpZ25hbC5oCkBAIC0xLDI0ICsxLDI0IEBACi0v
-LyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgorLyogU1BEWC1MaWNl
-bnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIgKi8KIC8qCi0gKiBDb3B5cmlnaHQgKGMp
-IDIwMTkgTGluYXJvIExpbWl0ZWQuIEFsbCByaWdodHMgcmVzZXJ2ZWQuCi0gKiBBdXRob3I6IERh
-bmllbCBEw61heiA8ZGFuaWVsLmRpYXpAbGluYXJvLm9yZz4KKyAqIENvcHlyaWdodCAoYykgMjAy
-MiBTVVNFIExMQwogICovCi0KLSNpZm5kZWYgTEFQSV9TSUdOQUxfSF9fCi0jZGVmaW5lIExBUElf
-U0lHTkFMX0hfXwotCiAjaW5jbHVkZSA8c2lnbmFsLmg+CiAKLS8qCi0gKiBTb21lIGxpYmMgaW1w
-bGVtZW50YXRpb25zIG1pZ2h0IGRpZmZlciBpbiB0aGUgZGVmaW5pdGlvbnMgdGhleSBpbmNsdWRl
-LiBUaGlzCi0gKiBjb3ZlcnMgdGhvc2UgZGlmZmVyZW5jZXMgZm9yIGFsbCB0ZXN0cyB0byBzdWNj
-ZXNzZnVsbHkgYnVpbGQuCi0gKi8KK2NvbnN0IGludCB0c3Rfc2lncnRtaW5fa2VybiA9IDMyOwor
-Y29uc3QgaW50IHRzdF9zaWdydG1heF9rZXJuID0gNjQ7CiAKLSNpZm5kZWYgX19TSUdSVE1JTgot
-IyBkZWZpbmUgX19TSUdSVE1JTiAzMgotI2VuZGlmCi0jaWZuZGVmIF9fU0lHUlRNQVgKLSMgZGVm
-aW5lIF9fU0lHUlRNQVggKF9OU0lHIC0gMSkKLSNlbmRpZgorLyogSW5kaWNhdGVzIHRoYXQgbGli
-YyBoYXMgcmVzZXJ2ZWQgYSBSVCBzaWduYWwgZm9yIHVzZSBieSB0aGUgc3lzdGVtCisgKiBsaWJy
-YXJpZXMuIFVzdWFsbHkgdGhyZWFkaW5nLCBidXQgY291bGQgYmUgYW55dGhpbmcuICovCitfX2F0
-dHJpYnV0ZV9fKCh3YXJuX3VudXNlZF9yZXN1bHQpKQorc3RhdGljIGlubGluZSBpbnQgdHN0X3Np
-Z25hbF9pc19yZXNlcnZlZF9ydChjb25zdCBpbnQgc2lnKQoreworCXJldHVybiAJc2lnID49IHRz
-dF9zaWdydG1pbl9rZXJuICYmIHNpZyA8IFNJR1JUTUlOOworfQogCi0jZW5kaWYgLyogTEFQSV9T
-SUdOQUxfSF9fICovCisvKiBJbmRpY2F0ZXMgdGhhdCBhIHNpZ25hbCBpcyBpbiB0aGUga2VybmVs
-J3MgcmVhbHRpbWUgc2V0LiBUaGlzCisgKiBpbmNsdWRlcyBzaWduYWxzIHJlc2VydmVkIGJ5IGxp
-YmMuICovCitfX2F0dHJpYnV0ZV9fKChjb25zdCwgd2Fybl91bnVzZWRfcmVzdWx0KSkKK3N0YXRp
-YyBpbmxpbmUgaW50IHRzdF9zaWduYWxfaXNfa2Vybl9ydChjb25zdCBpbnQgc2lnKQoreworCXJl
-dHVybiAJc2lnID49IHRzdF9zaWdydG1pbl9rZXJuICYmIHNpZyA8IHRzdF9zaWdydG1heF9rZXJu
-OworfQpkaWZmIC0tZ2l0IGEvbGliL3RzdF9zaWcuYyBiL2xpYi90c3Rfc2lnLmMKaW5kZXggNmQ3
-N2FlYWZkLi4yZGIzNTYxZjUgMTAwNjQ0Ci0tLSBhL2xpYi90c3Rfc2lnLmMKKysrIGIvbGliL3Rz
-dF9zaWcuYwpAQCAtNjksNyArNjksNiBAQAogCiAjaW5jbHVkZSA8ZXJybm8uaD4KICNpbmNsdWRl
-IDxzdHJpbmcuaD4KLSNpbmNsdWRlIDxzaWduYWwuaD4KICNpbmNsdWRlIDx1bmlzdGQuaD4KICNp
-bmNsdWRlICJ0ZXN0LmgiCiAjaW5jbHVkZSAibGFwaS9zaWduYWwuaCIKQEAgLTkzLDkgKzkyLDYg
-QEAgc3RhdGljIHZvaWQgKCp0c3Rfc2V0dXBfc2lnbmFsKGludCwgdm9pZCAoKikoaW50KSkpIChp
-bnQpOwogdm9pZCB0c3Rfc2lnKGludCBmb3JrX2ZsYWcsIHZvaWQgKCpoYW5kbGVyKSAoKSwgdm9p
-ZCAoKmNsZWFudXApICgpKQogewogCWludCBzaWc7Ci0jaWZkZWYgX1NDX1NJR1JUX01JTgotCWxv
-bmcgc2lncnRtaW4sIHNpZ3J0bWF4OwotI2VuZGlmCiAKIAkvKgogCSAqIHNhdmUgVF9jbGVhbnVw
-IGFuZCBoYW5kbGVyIGZ1bmN0aW9uIHBvaW50ZXJzCkBAIC0xMDYsMTAgKzEwMiw2IEBAIHZvaWQg
-dHN0X3NpZyhpbnQgZm9ya19mbGFnLCB2b2lkICgqaGFuZGxlcikgKCksIHZvaWQgKCpjbGVhbnVw
-KSAoKSkKIAkJLyogdXNlIGRlZmF1bHQgaGFuZGxlciAqLwogCQloYW5kbGVyID0gZGVmX2hhbmRs
-ZXI7CiAJfQotI2lmZGVmIF9TQ19TSUdSVF9NSU4KLQlzaWdydG1pbiA9IHN5c2NvbmYoX1NDX1NJ
-R1JUX01JTik7Ci0Jc2lncnRtYXggPSBzeXNjb25mKF9TQ19TSUdSVF9NQVgpOwotI2VuZGlmCiAK
-IAkvKgogCSAqIG5vdyBsb29wIHRocm91Z2ggYWxsIHNpZ25hbHMgYW5kIHNldCB0aGUgaGFuZGxl
-cnMKQEAgLTEyMyw1NCArMTE1LDEzIEBAIHZvaWQgdHN0X3NpZyhpbnQgZm9ya19mbGFnLCB2b2lk
-ICgqaGFuZGxlcikgKCksIHZvaWQgKCpjbGVhbnVwKSAoKSkKIAkJICogU0lHSU5GTyBpcyB1c2Vk
-IGZvciBmaWxlIHF1b3RhcyBhbmQgc2hvdWxkIGJlIGV4cGVjdGVkCiAJCSAqLwogCi0jaWZkZWYg
-X1NDX1NJR1JUX01JTgotCQlpZiAoc2lnID49IHNpZ3J0bWluICYmIHNpZyA8PSBzaWdydG1heCkK
-KwkJaWYgKHRzdF9zaWduYWxfaXNfa2Vybl9ydChzaWcpKQogCQkJY29udGludWU7Ci0jZW5kaWYK
-IAogCQlzd2l0Y2ggKHNpZykgewogCQljYXNlIFNJR0tJTEw6CiAJCWNhc2UgU0lHU1RPUDoKIAkJ
-Y2FzZSBTSUdDT05UOgotI2lmICFkZWZpbmVkKF9TQ19TSUdSVF9NSU4pICYmIGRlZmluZWQoX19T
-SUdSVE1JTikgJiYgZGVmaW5lZChfX1NJR1JUTUFYKQotCQkJLyogSWdub3JlIGFsbCByZWFsLXRp
-bWUgc2lnbmFscyAqLwotCQljYXNlIF9fU0lHUlRNSU46Ci0JCWNhc2UgX19TSUdSVE1JTiArIDE6
-Ci0JCWNhc2UgX19TSUdSVE1JTiArIDI6Ci0JCWNhc2UgX19TSUdSVE1JTiArIDM6Ci0JCWNhc2Ug
-X19TSUdSVE1JTiArIDQ6Ci0JCWNhc2UgX19TSUdSVE1JTiArIDU6Ci0JCWNhc2UgX19TSUdSVE1J
-TiArIDY6Ci0JCWNhc2UgX19TSUdSVE1JTiArIDc6Ci0JCWNhc2UgX19TSUdSVE1JTiArIDg6Ci0J
-CWNhc2UgX19TSUdSVE1JTiArIDk6Ci0JCWNhc2UgX19TSUdSVE1JTiArIDEwOgotCQljYXNlIF9f
-U0lHUlRNSU4gKyAxMToKLQkJY2FzZSBfX1NJR1JUTUlOICsgMTI6Ci0JCWNhc2UgX19TSUdSVE1J
-TiArIDEzOgotCQljYXNlIF9fU0lHUlRNSU4gKyAxNDoKLQkJY2FzZSBfX1NJR1JUTUlOICsgMTU6
-Ci0vKiBfX1NJR1JUTUlOIGlzIDM3IG9uIEhQUEEgcmF0aGVyIHRoYW4gMzIgKgotICogYXMgb24g
-aTM4NiwgZXRjLiAgICAgICAgICAgICAgICAgICAgICAgICovCi0jaWYgIWRlZmluZWQoX19ocHBh
-X18pCi0JCWNhc2UgX19TSUdSVE1BWCAtIDE1OgotCQljYXNlIF9fU0lHUlRNQVggLSAxNDoKLQkJ
-Y2FzZSBfX1NJR1JUTUFYIC0gMTM6Ci0JCWNhc2UgX19TSUdSVE1BWCAtIDEyOgotCQljYXNlIF9f
-U0lHUlRNQVggLSAxMToKLSNlbmRpZgotCQljYXNlIF9fU0lHUlRNQVggLSAxMDoKLQkJY2FzZSBf
-X1NJR1JUTUFYIC0gOToKLQkJY2FzZSBfX1NJR1JUTUFYIC0gODoKLQkJY2FzZSBfX1NJR1JUTUFY
-IC0gNzoKLQkJY2FzZSBfX1NJR1JUTUFYIC0gNjoKLQkJY2FzZSBfX1NJR1JUTUFYIC0gNToKLQkJ
-Y2FzZSBfX1NJR1JUTUFYIC0gNDoKLQkJY2FzZSBfX1NJR1JUTUFYIC0gMzoKLQkJY2FzZSBfX1NJ
-R1JUTUFYIC0gMjoKLQkJY2FzZSBfX1NJR1JUTUFYIC0gMToKLQkJY2FzZSBfX1NJR1JUTUFYOgot
-I2VuZGlmCiAjaWZkZWYgU0lHU1dBUAogCQljYXNlIFNJR1NXQVA6CiAjZW5kaWYgLyogU0lHU1dB
-UCAqLwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNl
-MDUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFjZTA1LmMKaW5kZXgg
-NTRjZmE0ZDdiLi4xYzE5MTE4NzcgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvcHRyYWNlL3B0cmFjZTA1LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJh
-Y2UvcHRyYWNlMDUuYwpAQCAtNzIsNyArNzIsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAq
-KmFyZ3YpCiAKIAlmb3IgKHNpZ251bSA9IHN0YXJ0X3NpZ251bTsgc2lnbnVtIDw9IGVuZF9zaWdu
-dW07IHNpZ251bSsrKSB7CiAKLQkJaWYgKHNpZ251bSA+PSBfX1NJR1JUTUlOICYmIHNpZ251bSA8
-IFNJR1JUTUlOKQorCQlpZiAodHN0X3NpZ25hbF9pc19rZXJuX3J0KHNpZ251bSkpCiAJCQljb250
-aW51ZTsKIAogCQlzd2l0Y2ggKGNoaWxkID0gZm9yaygpKSB7CmRpZmYgLS1naXQgYS90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3N1c3BlbmQvcnRfc2lnc3VzcGVuZDAxLmMgYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3N1c3BlbmQvcnRfc2lnc3VzcGVuZDAxLmMKaW5k
-ZXggNTExZDVmY2IyLi41ZmJmYWQwNGUgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvcnRfc2lnc3VzcGVuZC9ydF9zaWdzdXNwZW5kMDEuYworKysgYi90ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL3J0X3NpZ3N1c3BlbmQvcnRfc2lnc3VzcGVuZDAxLmMKQEAgLTUwLDcgKzUw
-LDcgQEAgc3RhdGljIHZvaWQgdmVyaWZ5X3J0X3NpZ3N1c3BlbmQodm9pZCkKIAogCVNBRkVfUlRf
-U0lHUFJPQ01BU0soMCwgTlVMTCwgJnNldDIsIFNJR1NFVFNJWkUpOwogCWZvciAoaSA9IDE7IGkg
-PCBTSUdSVE1BWDsgaSsrKSB7Ci0JCWlmIChpID49IF9fU0lHUlRNSU4gJiYgaSA8IFNJR1JUTUlO
-KQorCQlpZiAodHN0X3NpZ25hbF9pc19yZXNlcnZlZF9ydChpKSkKIAkJCWNvbnRpbnVlOwogCQlp
-ZiAoc2lnaXNtZW1iZXIoJnNldDEsIGkpICE9IHNpZ2lzbWVtYmVyKCZzZXQyLCBpKSkKIAkJCXRz
-dF9icmsoVEZBSUwsICJzaWduYWwgbWFzayBub3QgcHJlc2VydmVkIik7CmRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ2hvbGQvc2lnaG9sZDAyLmMgYi90ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL3NpZ2hvbGQvc2lnaG9sZDAyLmMKaW5kZXggMWNmYjc2ODhiLi5jZmE0
-YTQ3NjUgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnaG9sZC9zaWdo
-b2xkMDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ2hvbGQvc2lnaG9sZDAy
-LmMKQEAgLTE3LDcgKzE3LDcgQEAKICAqLwogCiAjZGVmaW5lIF9YT1BFTl9TT1VSQ0UgNjAwCi0j
-aW5jbHVkZSA8c2lnbmFsLmg+CisjaW5jbHVkZSAibGFwaS9zaWduYWwuaCIKICNpbmNsdWRlICJ0
-c3RfdGVzdC5oIgogCiAjaWZuZGVmIE5TSUcKQEAgLTMzLDcgKzMzLDcgQEAgc3RhdGljIGludCBz
-aWdzX21hcFtOVU1TSUdTXTsKIAogc3RhdGljIGludCBza2lwX3NpZyhpbnQgc2lnKQogewotCWlm
-IChzaWcgPj0gMzIgJiYgc2lnIDwgU0lHUlRNSU4pCisJaWYgKHRzdF9zaWduYWxfaXNfcmVzZXJ2
-ZWRfcnQoc2lnKSkKIAkJcmV0dXJuIDE7CiAKIAlzd2l0Y2ggKHNpZykgewotLSAKMi4zNS4xCgoK
-LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
-cAo=
+Hi!
+> Due to a kernel bug, successful ioctl09 and ioctl_loop01 test runs
+> sometimes leave behind stale partition info on the loop device they used,
+> which then causes mkfs.vfat to fail in later tests. Check that partition
+> info was properly removed in cleanup.
+> 
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+> 
+> This does not fix the mkfs.vfat failures but it makes the true cause visible.
+> We could add a workaround for the mkfs.vfat failures by simply initializing
+> the loop device with the LO_FLAGS_PARTSCAN flag by default, or at least when
+> stale partition info is found by tst_find_free_loopdev().
+
+I guess that it would be cleaner to put the stale partition info
+detection into the loop library. We can print a warning there and then
+do the workaround.
+
+Also do we want to add a regression test for the stale partition info?
+Should be easy enough. Or at least add the hash of the kernel commit
+that fixed it to the ioctl tests?
+
+>  testcases/kernel/syscalls/ioctl/ioctl09.c      | 12 +++++++++++-
+>  testcases/kernel/syscalls/ioctl/ioctl_loop01.c |  6 ++++++
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
+> index 9728ecb9c..09867a5c5 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl09.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
+> @@ -19,7 +19,7 @@
+>         ({ value ? TST_RETVAL_EQ0(x) : TST_RETVAL_NOTNULL(x); })
+>  
+>  static char dev_path[1024];
+> -static int dev_num, attach_flag, dev_fd;
+> +static int dev_num = -1, attach_flag, dev_fd;
+>  static char loop_partpath[1026], sys_loop_partpath[1026];
+>  
+>  static void change_partition(const char *const cmd[])
+> @@ -102,6 +102,16 @@ static void cleanup(void)
+>  		SAFE_CLOSE(dev_fd);
+>  	if (attach_flag)
+>  		tst_detach_device(dev_path);
+> +
+> +	if (dev_num < 0)
+> +		return;
+> +
+> +	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", dev_num,
+> +		dev_num);
+> +	sprintf(loop_partpath, "%sp1", dev_path);
+> +
+> +	if (!access(sys_loop_partpath, F_OK) || !access(loop_partpath, F_OK))
+> +		tst_res(TWARN, "Partition info was not cleared from loop dev");
+>  }
+>  
+>  static struct tst_test test = {
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> index 734d803d5..17168ae04 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> @@ -135,6 +135,12 @@ static void cleanup(void)
+>  		SAFE_CLOSE(dev_fd);
+>  	if (attach_flag)
+>  		tst_detach_device(dev_path);
+> +
+> +	if (!*sys_loop_partpath || !*loop_partpath)
+> +		return;
+> +
+> +	if (!access(sys_loop_partpath, F_OK) || !access(loop_partpath, F_OK))
+> +		tst_res(TWARN, "Partition info was not cleared from loop dev");
+>  }
+>  
+>  static struct tst_test test = {
+> -- 
+> 2.35.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
