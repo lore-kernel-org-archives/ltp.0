@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6032EC433EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 11:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 678CFC433FE
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 11:36:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48FF03C4D6B
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 13:23:45 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5A7A23C88F7
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 13:36:54 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 23F883C12C4
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:23:34 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 713B43C089F
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:36:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9FD49200342
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:23:33 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9728160063E
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:36:42 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B156A1F388;
- Mon, 25 Apr 2022 11:23:32 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D3BCC210E7;
+ Mon, 25 Apr 2022 11:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1650885812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1650886601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=R5wtBbOaRrRxjWFLmF940jLqTKZrgZOqjXnEtU3LFA0=;
- b=X6iFmGF4Pi2JmbuCk6HjgBIiaeimBGvznXZh6ee7OVI9SkglfE+HcygRl3TIwKyVLF/hdn
- gJUedOTNzVvNo63gUYNQA0d+QlbelqqOX877A48+/tIaeLjv0BMEcsJOvb1qRhrh1EeX1x
- nSLIpXNWLUWmFSZyjvFgBxBXR1Mvajc=
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=f7fH1H7j1vfqWT0MIhCFgF6c8Yy5MOBFyrZKOYcyYfdjS6SHnhlVs7ygqpg2rAXinmrM63
+ KJXLamqQiLi6PxLGe2uOGnekLcHrpQu768XADXp0QeforOfXkGsQuH1zKdLBNaVsq9rh8L
+ 6c///yoQQwlSyYt5TSdxRasXQ2l8qd4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1650885812;
+ s=susede2_ed25519; t=1650886601;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=R5wtBbOaRrRxjWFLmF940jLqTKZrgZOqjXnEtU3LFA0=;
- b=fCXkWOEbVyfh8Av9yZ72/OGvJU331/yKeXqwKO6yor8L+Pwr3pybw7z40anJEcAvfXtWnN
- m6bUF7vQi5DT01CA==
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=xvtHbGWsNESWkdTU5DR31KIqKqORQo9VGrLKNqtYCSCXTduLsYaw0nKbanqPeAmSHWqGPz
+ HxwDmqQWnr7kyMBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C9D913AE1;
- Mon, 25 Apr 2022 11:23:32 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B32A713AE1;
+ Mon, 25 Apr 2022 11:36:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Z6jeJLSEZmJrTgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 25 Apr 2022 11:23:32 +0000
-Date: Mon, 25 Apr 2022 13:23:06 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id EhAfKsmHZmLsUwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 25 Apr 2022 11:36:41 +0000
+Date: Mon, 25 Apr 2022 13:36:15 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YmaEmnRY9CNL9+Bu@rei>
-References: <20220425092118.21619-1-rpalethorpe@suse.com>
- <YmZrVzxghAnmxIud@rei> <YmaBJM8piHx4Juay@pevik>
- <YmaBfMmDa4O/Lc2N@pevik>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Message-ID: <YmaHr4mDkcZ6gBp8@rei>
+References: <20220421121016.26958-1-zhaogongyi@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YmaBfMmDa4O/Lc2N@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220421121016.26958-1-zhaogongyi@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] sighold02: Fix muslc builds by removing __SIGRTMIN
+Subject: Re: [LTP] [PATCH v2] syscalls/io_submit: Adapt TTERRNO/TERRNO when
+ test fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,25 +76,14 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Ah, looking at the code "if (sig >= __SIGRTMIN && sig < SIGRTMIN)",
-> we need both underscore and non-underscore.
-
-This is code to actually skip signals used internally by libc, so
-anything between 32 and SIGRTMIN. It's pretty safe to hardcode the first
-value to 32 since that is the number of signals allocated by kernel
-which is not going to change.
-
-I guess that we can add something as SIGRTMIN_KERN or SIGRTMIN_BASE and
-define it to 32 in some LTP header instead of hardcoding 32 into
-testcases, which would be way better than misusing glibc internal
-__SIGRTMIN.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
