@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 678CFC433FE
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 11:36:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C641BC433F5
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 11:53:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5A7A23C88F7
-	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 13:36:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 9DF903C8D46
+	for <ltp@archiver.kernel.org>; Mon, 25 Apr 2022 13:53:39 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 713B43C089F
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:36:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 90B353C1348
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:53:29 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9728160063E
- for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:36:42 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 07D6314002A7
+ for <ltp@lists.linux.it>; Mon, 25 Apr 2022 13:53:28 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D3BCC210E7;
- Mon, 25 Apr 2022 11:36:41 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2B34D1F38C;
+ Mon, 25 Apr 2022 11:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1650886601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1650887608; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=f7fH1H7j1vfqWT0MIhCFgF6c8Yy5MOBFyrZKOYcyYfdjS6SHnhlVs7ygqpg2rAXinmrM63
- KJXLamqQiLi6PxLGe2uOGnekLcHrpQu768XADXp0QeforOfXkGsQuH1zKdLBNaVsq9rh8L
- 6c///yoQQwlSyYt5TSdxRasXQ2l8qd4=
+ bh=hsj5vjp5bc6lDQh7hTrCFZsjoy248WCJHfMYDHtwAtc=;
+ b=s81nnBZdDcP2Zr7JfMKcpgfPyVDte7TP9oZ7py1uTCx7HBeEiOXBZ4tpKR6mfpyINwj+4K
+ xKZ6quT3SkgV9Mdgo73LB48ZOpkL3asoZBMmkxCjTVARu+4WZFVOu+V3Tnuka+gJbweFM4
+ ba80Z5d+L16vy6n31VFQxS4XNJwkFg0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1650886601;
+ s=susede2_ed25519; t=1650887608;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=xvtHbGWsNESWkdTU5DR31KIqKqORQo9VGrLKNqtYCSCXTduLsYaw0nKbanqPeAmSHWqGPz
- HxwDmqQWnr7kyMBA==
+ bh=hsj5vjp5bc6lDQh7hTrCFZsjoy248WCJHfMYDHtwAtc=;
+ b=cs7F8BZ8ylnZzcpktbgOimbt6lW2aRiuzJW6gNFyCNxqbafR70f4R/iMPH5k+0MmLr/1Kg
+ 7WpSQKSGpV/mfjCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B32A713AE1;
- Mon, 25 Apr 2022 11:36:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 161E513AE1;
+ Mon, 25 Apr 2022 11:53:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EhAfKsmHZmLsUwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 25 Apr 2022 11:36:41 +0000
-Date: Mon, 25 Apr 2022 13:36:15 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id xxrhA7iLZmKSXAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 25 Apr 2022 11:53:28 +0000
+Date: Mon, 25 Apr 2022 13:53:01 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Zhao Gongyi <zhaogongyi@huawei.com>
-Message-ID: <YmaHr4mDkcZ6gBp8@rei>
-References: <20220421121016.26958-1-zhaogongyi@huawei.com>
+To: Wang Kunfeng <threefifteen.wangkunfeng@huawei.com>
+Message-ID: <YmaLnbeI1N76l3HM@rei>
+References: <20220422033552.257763-1-threefifteen.wangkunfeng@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220421121016.26958-1-zhaogongyi@huawei.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220422033552.257763-1-threefifteen.wangkunfeng@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/io_submit: Adapt TTERRNO/TERRNO when
- test fail
+Subject: Re: [LTP] [PATCH] kernel/hugemmap05.c: Skip test when default
+ Hugepagesize 1G
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,7 +82,16 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Pushed, thanks.
+> The kernel is not allow to change the file that
+> /proc/sys/vm/nr_overcommit_hugepages,
+> when default Hugepagesize 1G,so the testcase
+> will be fail when close it.
+
+I'm not sure what the exact problem is, but I guess that there is not
+enough (continuous) memory to enable the overcommit, right?
+
+In that case disabling the test on 1GB hugepages is certainly wrong.
+What errno do we get if we attempt to close the file?
 
 -- 
 Cyril Hrubis
