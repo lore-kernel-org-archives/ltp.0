@@ -4,65 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6747EC433FE
-	for <ltp@archiver.kernel.org>; Tue, 26 Apr 2022 13:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 574EFC433F5
+	for <ltp@archiver.kernel.org>; Tue, 26 Apr 2022 14:24:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 03EED3CA26E
-	for <ltp@archiver.kernel.org>; Tue, 26 Apr 2022 15:55:55 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 841023CA455
+	for <ltp@archiver.kernel.org>; Tue, 26 Apr 2022 16:24:56 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A47403C9D7D
- for <ltp@lists.linux.it>; Tue, 26 Apr 2022 15:55:44 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id E563F3C9E32
+ for <ltp@lists.linux.it>; Tue, 26 Apr 2022 16:24:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E59C8600546
- for <ltp@lists.linux.it>; Tue, 26 Apr 2022 15:55:43 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5A48760074D
+ for <ltp@lists.linux.it>; Tue, 26 Apr 2022 16:24:44 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 13AAD1F388;
- Tue, 26 Apr 2022 13:55:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 44430210E4;
+ Tue, 26 Apr 2022 14:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1650981343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1650983084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oQ4sdAlQdZ0+w49FVPIZYdqEd07yoq9W0cuAJjEVrVo=;
- b=FMkqgS7hqbRVFI8Z/776U4D2oGvEkl1BgJ0FqTa+QgAsGiBXj1UVbHXZlE84J1MlsPL3dn
- 5I+DxjWIo19qp0bwjnnVlEi1wMYAs768Ak9FZ7Rvdl7d7iQsG18znfIeefaEJP8ZLcttf0
- hif3k3PR7RC3onv2GmmXcVnJ8Dsh85o=
+ bh=C5C32urF8GJq1W8wOWYnSAksyilUc5CWUL1ITZy0p80=;
+ b=S/Lm7S3b2QoQsUwOZiCyHKPzdaQznuU2DN91h4P1ES65qpO/X6PL3KqmPbya4lotj0+S/R
+ r30+VGKGmuGvq7e3gasokDoG6D/6v2zkzRU04kr4mMfcpIRXV5RPYssuRxCh4FNf1+/hpb
+ J97iA5EaXfKSCnSTBmHcL267kaERrL8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1650981343;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1650983084;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oQ4sdAlQdZ0+w49FVPIZYdqEd07yoq9W0cuAJjEVrVo=;
- b=6Zpp/ndyJ63W7wjf3b3ISnsZHUmLfy2uK0wQycpL3vjdBQCY7G2r0QcygPZC0e+K1L7hUo
- g74e6JNLnHP0q9Ag==
+ bh=C5C32urF8GJq1W8wOWYnSAksyilUc5CWUL1ITZy0p80=;
+ b=UMhqkHwN5/acqd1l1Y4gnRo5+0FBfaK3THCwmlcD9Bq1zEuJG79qklSUlhVB755YdcdjtU
+ qiENKnmcRDb4F0Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC19B13223;
- Tue, 26 Apr 2022 13:55:42 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 307EC13223;
+ Tue, 26 Apr 2022 14:24:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 79vfN975Z2IqPAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 26 Apr 2022 13:55:42 +0000
-Date: Tue, 26 Apr 2022 15:57:57 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <Ymf6ZT3a0wxMQrQo@yuki>
-References: <20220426084755.23174-1-andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id SmXYCqwAaGI/SQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Tue, 26 Apr 2022 14:24:44 +0000
+Message-ID: <89738299-f570-b228-3094-1538a13835fd@suse.cz>
+Date: Tue, 26 Apr 2022 16:24:43 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220426084755.23174-1-andrea.cervesato@suse.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20220422144141.16848-1-pvorel@suse.cz>
+ <20220422144141.16848-4-pvorel@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20220422144141.16848-4-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] Rewrite userns06.c using new LTP API
+Subject: Re: [LTP] [PATCH v2 3/4] tst_test.sh: Cleanup getopts usage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,87 +79,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Pushed with minor changes, thanks.
+Hi,
+the patch looks mostly good except for a few issue below.
 
-- removed some useless comments
-- fixed the type for resource files
-- changed the TBROK to TCONF in the helper when libcap is missing
+On 22. 04. 22 16:41, Petr Vorel wrote:
+> diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+> index a80fbe7fa7..673e6f8029 100755
+> --- a/testcases/kernel/device-drivers/zram/zram01.sh
+> +++ b/testcases/kernel/device-drivers/zram/zram01.sh
+> @@ -151,4 +151,5 @@ do_test()
+>  	esac
+>  }
+>  
+> +. zram_lib.sh
 
-diff --git a/testcases/kernel/containers/userns/userns06.c b/testcases/kernel/containers/userns/userns06.c
-index 100ad8274..002c72907 100644
---- a/testcases/kernel/containers/userns/userns06.c
-+++ b/testcases/kernel/containers/userns/userns06.c
-@@ -29,9 +29,6 @@
- #define CHILD2UID 200
- #define CHILD2GID 200
- 
--/*
-- * child_fn1() - Inside a new user namespace
-- */
- static int child_fn1(void)
- {
- 	char *const args[] = { TEST_APP, "privileged", NULL };
-@@ -39,9 +36,6 @@ static int child_fn1(void)
- 
- 	TST_CHECKPOINT_WAIT(0);
- 
--	/* execv will replace the main function and it will end this child
--	 * accordingly.
--	 */
- 	ret = execv(args[0], args);
- 	if (ret == -1)
- 		tst_brk(TBROK | TERRNO, "execv: unexpected error");
-@@ -49,9 +43,6 @@ static int child_fn1(void)
- 	return 0;
- }
- 
--/*
-- * child_fn2() - Inside a new user namespace
-- */
- static int child_fn2(void)
- {
- 	int uid, gid, ret;
-@@ -69,9 +60,6 @@ static int child_fn2(void)
- 
- 	tst_res(TPASS, "expected uid and gid");
- 
--	/* execv will replace the main function and it will end this child
--	 * accordingly.
--	 */
- 	ret = execv(args[0], args);
- 	if (ret == -1)
- 		tst_brk(TBROK | TERRNO, "execv: unexpected error");
-@@ -133,7 +121,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
- 	.needs_checkpoints = 1,
--	.resource_files = (char *const []) {
-+	.resource_files = (const char *[]) {
- 		TEST_APP,
- 		NULL,
- 	},
-diff --git a/testcases/kernel/containers/userns/userns06_capcheck.c b/testcases/kernel/containers/userns/userns06_capcheck.c
-index 589e8bb94..bae4e4e33 100644
---- a/testcases/kernel/containers/userns/userns06_capcheck.c
-+++ b/testcases/kernel/containers/userns/userns06_capcheck.c
-@@ -60,6 +60,6 @@ int main(void)
- {
- 	tst_reinit();
- 
--	tst_brk(TBROK, "System is missing libcap");
-+	tst_brk(TCONF, "System is missing libcap");
- }
+zram_lib.sh appears to be imported twice here after the setup/cleanup fixes.
+
+>  tst_run
+> diff --git a/testcases/network/rpc/basic_tests/rup/rup01.sh b/testcases/network/rpc/basic_tests/rup/rup01.sh
+> index 44f0e73d26..dd0e71be7a 100755
+> --- a/testcases/network/rpc/basic_tests/rup/rup01.sh
+> +++ b/testcases/network/rpc/basic_tests/rup/rup01.sh
+> @@ -19,7 +19,6 @@ TCID="rup01"
+>  TST_TOTAL=7
+>  
+>  TST_USE_LEGACY_API=1
+> -. tst_net.sh
+
+The tst_net.sh import got completely dropped in this file likely because
+there's no call to tst_run(). Instead, the test calls do_setup(),
+do_test() and tst_exit() directly.
+
+>  
+>  do_setup()
+>  {
+> diff --git a/testcases/network/rpc/basic_tests/rusers/rusers01.sh b/testcases/network/rpc/basic_tests/rusers/rusers01.sh
+> index 554bfa01cf..8fef5757e1 100755
+> --- a/testcases/network/rpc/basic_tests/rusers/rusers01.sh
+> +++ b/testcases/network/rpc/basic_tests/rusers/rusers01.sh
+> @@ -19,7 +19,6 @@ TCID="rusers01"
+>  TST_TOTAL=5
+>  
+>  TST_USE_LEGACY_API=1
+> -. tst_net.sh
+
+Same here.
+
+>  
+>  do_setup()
+>  {
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
