@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 921BDC433F5
-	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 14:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 069C2C433EF
+	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 15:12:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 315283CA5AF
-	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 16:37:55 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A914A3CA6A8
+	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 17:12:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DCD633C8977
- for <ltp@lists.linux.it>; Wed, 27 Apr 2022 16:37:44 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 46E3E3CA478
+ for <ltp@lists.linux.it>; Wed, 27 Apr 2022 17:12:35 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6BEAF10006D2
- for <ltp@lists.linux.it>; Wed, 27 Apr 2022 16:37:44 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0BE43600053
+ for <ltp@lists.linux.it>; Wed, 27 Apr 2022 17:12:34 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C0E891F74E;
- Wed, 27 Apr 2022 14:37:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9323F1F74F;
+ Wed, 27 Apr 2022 15:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1651070263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1651072353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8J7VmIvZeqYemfNBcAtO8MLbtEg9CCl2HVIK4866+tg=;
- b=QqQVmSSt0sqjYhZb/0JFjDKfVmiMyEmG18JTzG04c+/Y8Y8MOF1nBTY72fHxaeefcNF8bF
- P/2fY95G0uFkw/a2fglkwxvaPenQtWFVMs9iDRpuMF6AXU5TpYaMbrVmBWTT/bLsYBAYN1
- zLTn6KkXsQPdNbhSAWCsT9ZN4HEgMK0=
+ bh=QtZmV/0/8D5CSTRCbYO9DtofHuvqyIdL3mzVp3s7s+k=;
+ b=biPbw9Hbdjr6Oj6HKQVxt40SvV6VLzYYw7sJSX+aPlOIlGyok/Q4rJ735+Ul82o1KQeMk6
+ 7sKNQ4Y+0JdDuVs+x7OIhpukJChHm0LFjyBPEyuTK8gUvhibKP7LabuFbHWP+Lm+LEUcT/
+ GKHz4BE3KJOcZAWTgJwAohoy8F3Oyq8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1651070263;
+ s=susede2_ed25519; t=1651072353;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8J7VmIvZeqYemfNBcAtO8MLbtEg9CCl2HVIK4866+tg=;
- b=gd2pR2A1lGNzevYka8Xcxjwcsy+7MWTvc4Bw+qW42arBz0D3ivW/BeicSBzzLVKMoQVRIK
- o1cv5P3MfZo4u5BQ==
+ bh=QtZmV/0/8D5CSTRCbYO9DtofHuvqyIdL3mzVp3s7s+k=;
+ b=Crn4y7vqAff+0knxTmHOnXRDFG+pnwr5WY0D8wfFORYjntvi/FQo9oe+vIopnhxVvIiy1l
+ MBjd4jqX2zLy6iDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A45D313A39;
- Wed, 27 Apr 2022 14:37:43 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69A561323E;
+ Wed, 27 Apr 2022 15:12:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mduMJzdVaWJsewAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 27 Apr 2022 14:37:43 +0000
-Date: Wed, 27 Apr 2022 16:39:59 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id r8YgGGFdaWJjDQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 27 Apr 2022 15:12:33 +0000
+Date: Wed, 27 Apr 2022 17:14:49 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <YmlVv3QSmAmIIwA/@yuki>
-References: <1651034524-18799-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <Ymld6Z6zaWVoz0T5@yuki>
+References: <1651034362-18672-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1651034524-18799-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <1651034362-18672-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/fcntl05: Convert into new api
+Subject: Re: [LTP] [PATCH 1/2] syscalls/shmdt01: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,74 +81,40 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +static void verify_fcntl(void)
+> +static int shm_id = -1, shm_key, pass;
+> +static int *shared;
+>  sigjmp_buf env;
+
+^ static sigjmp_buf
+
+> +static void check_functionality(void)
 >  {
-> -	int lc;
-> +	/* F_GETLK will change flock.l_type to F_UNLCK, so need to reset */
-> +	flocks.l_type = F_RDLCK;
+> -	/* stat the shared memory segment */
+> -	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "could not stat in signal handler");
+> +	struct shmid_ds buf;
 >  
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		flocks.l_type = F_RDLCK;
-> -		TEST(fcntl(fd, F_GETLK, &flocks));
-> -
-> -		if (TEST_RETURN == -1)
-> -			tst_resm(TFAIL | TTERRNO, "fcntl failed");
-> -		else {
-> -			tst_resm(TPASS, "fcntl returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> +	TST_EXP_PASS(fcntl(fd, F_GETLK, &flocks), "fcntl(%d, F_GETLK, &flocks)", fd);
+> +	SAFE_SHMCTL(shm_id, IPC_STAT, &buf);
+>  	if (buf.shm_nattch != 0) {
+> -		tst_resm(TFAIL, "# of attaches is incorrect");
+> +		tst_res(TFAIL, "Number of attaches(%ld) is non-zero", buf.shm_nattch);
+>  		return;
+>  	}
 
-Can we also check that the l_type was actually set and that the rest of
-the fields have not changed?
+Maybe just:
 
-Should be as easy as:
+	TST_EXP_EQ_LI(buf.shm_nattch, 0);
 
-        TST_EXP_EQ_LI(flocks.l_type, F_UNLCK);
-        TST_EXP_EQ_LI(flocks.l_whence, SEEK_CUR);
-        TST_EXP_EQ_LI(flocks.l_start, 0);
-        ...
+	if (buf.shm_nattach)
+		return;
 
 
->  }
->  
-> -void setup(void)
-> +static void setup(void)
->  {
-> +	char fname[255];
-> +	int pid;
->  
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> +	pid = getpid();
->  
-> -	sprintf(fname, "tfile_%d", getpid());
-> -	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
-> +	sprintf(fname, "testfile_%d", pid);
-> +	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
 
-The test creates unique temporary directory so tehre is no need to
-include the pid in the filename anymore...
-
-The rest looks good. With the two changes applied:
+Other than these two:
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 
 -- 
 Cyril Hrubis
