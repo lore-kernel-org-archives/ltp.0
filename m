@@ -4,82 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F33DCC433F5
-	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 03:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 517EEC433F5
+	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 03:41:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E3B743CA4F4
-	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 05:38:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E8A803CA502
+	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 05:41:03 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5D8863CA4A1
- for <ltp@lists.linux.it>; Wed, 27 Apr 2022 05:38:30 +0200 (CEST)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.1])
+ by picard.linux.it (Postfix) with ESMTPS id 122993C9E2C
+ for <ltp@lists.linux.it>; Wed, 27 Apr 2022 05:40:53 +0200 (CEST)
+Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
+ [195.245.230.66])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E3FB21A00900
- for <ltp@lists.linux.it>; Wed, 27 Apr 2022 05:38:28 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A308910006B2
+ for <ltp@lists.linux.it>; Wed, 27 Apr 2022 05:40:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1651030707; i=@fujitsu.com;
- bh=MX4+me1kdCqEaLNg+4L3WLR7+LzLq0lkDOof37HnBLI=;
+ s=170520fj; t=1651030851; i=@fujitsu.com;
+ bh=a0NSFKWlk7yH1uGi5VqI+lPTrSITBHX60Pzei6vEzvU=;
  h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=Pp9QfNpG3pXO350uQXq1N1HbTVTVp3NIE8P6JSRbInPxCOKsOi450UH0lyACaGfyw
- iW3jgauQ2oTVBNPJoRrDU4/+q81wLuH0TDBihtol9TFoGHEPG/T20J6YeUWnFv7ZU9
- Zu3QOzO4hpmdh9tLw17zKldRpOVd1VBUzHNzBLxH0t+qOEEtVeTS32d9rnV3l2a9QV
- G/mjFIsyslQxnqZ0E0TfjCeFpPQNUNkHw7dLA0QDG0HIqoyt6Pethx3A/y3fiY8TqM
- M5+HeFO5Vqewy3O1CxVVVLF6/p/tlpFUyoMRBKLueFRaaCtLbzChoqt8jjxicLUK36
- ranvQlI7SMaXQ==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRWlGSWpSXmKPExsViZ8ORqLt5V0a
- SwY2VIhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bec+tYCrY7VZzb28TSwLjetIuRi0NI4Cyj
- xKf7T5khnJ1MEkubljFCOHsYJU4/+wuU4eRgE9CUeNa5AMwWEZCQ6Gh4yw5iMwv4Sey7exUsL
- ixgLdH39wwLiM0ioCpxdcJOJhCbV8BT4vXKL2C2hICCxJSH75kh4oISJ2c+YYGYIyFx8MULZo
- gaRYlLHd8YIewKiVmz2qB61SSuntvEPIGRfxaS9llI2hcwMq1itE4qykzPKMlNzMzRNTQw0DU
- 0NNU1NtU1tDDRS6zSTdRLLdUtTy0u0TXSSywv1kstLtYrrsxNzknRy0st2cQIDMyUYuUdOxjb
- Vv3UO8QoycGkJMqbPDUjSYgvKT+lMiOxOCO+qDQntfgQowwHh5IEb8dOoJxgUWp6akVaZg4wS
- mDSEhw8SiK8k0HSvMUFibnFmekQqVOMilLivD/XACUEQBIZpXlwbbDIvMQoKyXMy8jAwCDEU5
- BalJtZgir/ilGcg1FJmHcTyHiezLwSuOmvgBYzAS3+VJsKsrgkESEl1cDktv3HqjOHGg/tSfk
- 1V+5RxMdJEgZ34mdtOcnHzP3l8vuO3I+Xcv6FbVkUtfJJbcCtqXYfTnG75hlkOhzpcq42fHHu
- Ocu3NabSa1i25hzIMm4siL217JZ6trSS6+PAEC8HjoR81xal4iOlactvr7pzSOjWPNmkjy+y/
- 7+R2zJb+PmyqfEzEq5ZyOra6c+WEr2mZMr29oerrJKN3oEnqmdSrCQXLSmdbDR3d9veTMZ3Fk
- /E0+d9O/u+edanV9uy69suzVq4ZtaXwHmrNv1pTyncsuBIucupk0XPFyrKy8v+eFW/1GGlWZb
- 3OY4TUy/Z7rmXzLx+Kv9NsZdbC0rtVkwp322cvsbPT+Fy0I3VKouOLlJiKc5INNRiLipOBACO
- QZw0RwMAAA==
+ b=ycEI4doMjh5hpuWpQIPasgVUT3lKgOTExBPZV7Mwc88ywmdsIbxtqL5AW6nCdwrjk
+ vP3Oen28b4gwKMHjIwYcJ+NZAbWxwfe4+JCdY1v0gN8GWQvdJDCHFQxdT6mhPpdWgF
+ KMDbdrsCSTrI1RnL1XTc2mC8WzWGY6lJWE5QtDHV/ddaWMNnLEFCobQ6xVc3zPsv21
+ NrbhRSfXidNq05qEydcfTxqPFGdU3l8uM0irNj9rRpjGzq2Sk2kBMDrisZrSEbeHzv
+ gaRkGJOZ7K6GHKwMkRa66h4Y5mGpNU16VqzT8aoQVIKtdXsC9rNK1G0upAjCBeP0rA
+ 1GjshuLWNFfpw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRWlGSWpSXmKPExsViZ8MRouu0OyP
+ JoPOArMWK7zsYHRg99v1exxrAGMWamZeUX5HAmrFtygumgla9ijUnb7I1MP5S6WLk5BASaGGS
+ +L1TqIuRC8jewyixcW4nG0iCTUBT4lnnAmYQW0RAQqKj4S07iM0s4Cex7+5VsLiwgLnE96cPw
+ OIsAqoSKx9OBbI5OHgFPCW2n1AFCUsIKEhMefgerJxXQFDi5MwnLBBjJCQOvnjBDFGjKHGp4x
+ sjhF0hMWtWG9MERt5ZSFpmIWlZwMi0itEqqSgzPaMkNzEzR9fQwEDX0NBU11DXyNBcL7FKN1E
+ vtVS3PLW4RNdQL7G8WC+1uFivuDI3OSdFLy+1ZBMjMMBSihlv7mBs7fupd4hRkoNJSZQ3eWpG
+ khBfUn5KZUZicUZ8UWlOavEhRhkODiUJ3o6dQDnBotT01Iq0zBxgsMOkJTh4lER4J4OkeYsLE
+ nOLM9MhUqcYFaXEeX+uAUoIgCQySvPg2mARdolRVkqYl5GBgUGIpyC1KDezBFX+FaM4B6OSMO
+ 8mkPE8mXklcNNfAS1mAlr8qTYVZHFJIkJKqoHJ4NjPu8f+rZl1c9+GT9Yn043E7MQVqh7Y5wt
+ XTmBSXLt/8dH8KRkbIm2z/oYpf0w53sPwxaiCd26Yq/+Nyr9FSStMa8V2uxSnTi/knT53z6E9
+ 7++xtDmuTf0QeIFD/hzX/pQ5c0rk/vFemTdRUbb/5v1pDt9eJi0/nKtnO+fVpXeXTzhkbn794
+ SHbZL03dxaeUzU/vLRrt4NB3I2zX/jcPXKWPPc3y24Jvm+yV2xr+bNHwatSbuY9+PG3aEmabG
+ mhReiKwO46772Meg8e9vIe1p2ocGf5QkbWHczlU84o7rm4hO3Nsw/sc02TT8cqx/H4Mb97L9V
+ spjR36pVL0x8GHfJRat8mfsH408ZNFWtFnJVYijMSDbWYi4oTAcCeY64rAwAA
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-13.tower-548.messagelabs.com!1651030707!27584!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-6.tower-591.messagelabs.com!1651030850!58944!1
+X-Originating-IP: [62.60.8.84]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
-X-StarScan-Version: 9.86.4; banners=-,-,-
+X-StarScan-Version: 9.85.8; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 18945 invoked from network); 27 Apr 2022 03:38:27 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-13.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 27 Apr 2022 03:38:27 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id DFCAF10018F
- for <ltp@lists.linux.it>; Wed, 27 Apr 2022 04:38:26 +0100 (BST)
-Received: from R01UKEXCASM126.r01.fujitsu.local (unknown [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id C17EB10018B
- for <ltp@lists.linux.it>; Wed, 27 Apr 2022 04:38:26 +0100 (BST)
+Received: (qmail 18221 invoked from network); 27 Apr 2022 03:40:50 -0000
+Received: from unknown (HELO mailhost3.uk.fujitsu.com) (62.60.8.84)
+ by server-6.tower-591.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 27 Apr 2022 03:40:50 -0000
+Received: from R01UKEXCASM126.r01.fujitsu.local ([10.183.43.178])
+ by mailhost3.uk.fujitsu.com (8.14.5/8.14.5) with ESMTP id 23R3egrN000320
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL)
+ for <ltp@lists.linux.it>; Wed, 27 Apr 2022 04:40:50 +0100
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Wed, 27 Apr 2022 04:38:03 +0100
+ (TLS) id 15.0.1497.32; Wed, 27 Apr 2022 04:40:40 +0100
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Wed, 27 Apr 2022 12:39:21 +0800
-Message-ID: <1651034362-18672-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Wed, 27 Apr 2022 12:42:04 +0800
+Message-ID: <1651034524-18799-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] syscalls/shmdt01: Convert into new api
+Subject: [LTP] [PATCH] syscalls/fcntl05: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,307 +95,231 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Signed-off-by: Liao Huangjie <liaohj.jy@fujitsu.com>
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/ipc/shmdt/Makefile  |   7 +-
- testcases/kernel/syscalls/ipc/shmdt/shmdt01.c | 241 ++++--------------
- 2 files changed, 55 insertions(+), 193 deletions(-)
+ testcases/kernel/syscalls/fcntl/fcntl05.c | 186 ++++------------------
+ 1 file changed, 34 insertions(+), 152 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmdt/Makefile b/testcases/kernel/syscalls/ipc/shmdt/Makefile
-index 26b9f264d..a48dbf48f 100644
---- a/testcases/kernel/syscalls/ipc/shmdt/Makefile
-+++ b/testcases/kernel/syscalls/ipc/shmdt/Makefile
-@@ -3,10 +3,13 @@
- 
- top_srcdir              ?= ../../../../..
- 
--LTPLIBS = ltpipc
-+LTPLIBS = ltpipc ltpnewipc
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LTPLDLIBS  = -lltpipc
-+shmdt01: LTPLDLIBS = -lltpnewipc
-+shmdt02: LTPLDLIBS = -lltpipc
-+
-+LTPLDLIBS  = -lltpipc ltpnewipc
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c b/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
-index 697613a47..0b754da29 100644
---- a/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
-+++ b/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
-@@ -1,223 +1,82 @@
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl05.c b/testcases/kernel/syscalls/fcntl/fcntl05.c
+index fb4a0f9a8..33602d76f 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl05.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl05.c
+@@ -1,25 +1,6 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- *   Copyright (c) International Business Machines  Corp., 2001
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines Corp., 2001
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * Copyright (c) 2000 Silicon Graphics, Inc. All Rights Reserved.
+  * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+  * Mountain View, CA  94043, or:
+  *
+@@ -29,158 +10,59 @@
+  *
+  * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+  *
++ * AUTHOR            : William Roske
++ * CO-PILOT          : Dave Fenner
   */
- 
--/*
-- * NAME
-- *	shmdt01.c
+-/* $Id: fcntl05.c,v 1.8 2009/11/02 13:57:16 subrata_modak Exp $ */
+-/**********************************************************
 - *
-- * DESCRIPTION
-- *	shmdt01 - check that shared memory is detached correctly
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: fcntl05
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for fcntl(2) using F_GETLK argument.
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- *	1.) fcntl(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- *	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *
+- *    DURATION
+- *	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- *	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- *	None
+- *
+- *    INTERCASE DEPENDENCIES
+- *	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the fcntl(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	fcntl(2).
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
++
 +/*\
 + * [Description]
   *
-- * ALGORITHM
-- *	create a shared memory resource of size sizeof(int)
-- *	attach it to the current process and give it a value
-- *	call shmdt() using the TEST macro
-- *	check the return code
-- *	  if failure, issue a FAIL message.
-- *	otherwise,
-- *	  if doing functionality testing
-- *		attempt to write a value to the shared memory address
-- *		this should generate a SIGSEGV which will be caught in
-- *		    the signal handler
-- *	  	if correct,
-- *			issue a PASS message
-- *		otherwise
-- *			issue a FAIL message
-- *	call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  shmdt01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- *      06/03/2008 Renaud Lottiaux (Renaud.Lottiaux@kerlabs.com)
-- *      - Fix wrong return value check on shmat system call (leading to
-- *        segfault in case of error with this syscall).
-- *
-- * RESTRICTIONS
-- *	none
-+ * This case check whether we get SIGSEGV when write a value to a detached
-+ * shared memory resource.
-  */
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
++ * Basic test for fcntl(2) using F_GETLK argument.
++ */
  
-+#include <sys/types.h>
-+#include <sys/ipc.h>
-+#include <sys/shm.h>
- #include <setjmp.h>
--#include "ipcshm.h"
++#include <stdio.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <sys/stat.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
 -
--char *TCID = "shmdt01";
+-void setup();
+-void cleanup();
+-
+-char *TCID = "fcntl05";
 -int TST_TOTAL = 1;
--
--void sighandler(int);
--struct shmid_ds buf;
 +#include "tst_test.h"
-+#include "libnewipc.h"
-+#include "tst_safe_sysv_ipc.h"
  
--int shm_id_1 = -1;
--int *shared;			/* variable to use for shared memory attach */
--int new;
--int pass = 0;
-+static int shm_id = -1, shm_key, pass;
-+static int *shared;
- sigjmp_buf env;
+-char fname[255];
+-int fd;
++static int fd = -1;
+ struct flock flocks;
  
 -int main(int ac, char **av)
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
++static void verify_fcntl(void)
  {
 -	int lc;
--	void check_functionality(void);
--
++	/* F_GETLK will change flock.l_type to F_UNLCK, so need to reset */
++	flocks.l_type = F_RDLCK;
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
+-	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
+-
 -		tst_count = 0;
 -
--		/*
--		 * Use TEST macro to make the shmdt() call
--		 */
+-		flocks.l_type = F_RDLCK;
+-		TEST(fcntl(fd, F_GETLK, &flocks));
 -
--		TEST(shmdt((const void *)shared));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "%s call failed - errno = %d : %s",
--				 TCID, TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			check_functionality();
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "fcntl failed");
+-		else {
+-			tst_resm(TPASS, "fcntl returned %ld",
+-				 TEST_RETURN);
 -		}
 -
--		/* reattach the shared memory segment in case we are looping */
--		shared = shmat(shm_id_1, 0, 0);
--
--		if (shared == (void *)-1) {
--			tst_brkm(TBROK, cleanup, "memory reattach failed");
--		}
--
--		/* also reset pass */
--		pass = 0;
 -	}
 -
 -	cleanup();
--
 -	tst_exit();
-+	pass = 1;
-+	siglongjmp(env, 1);
++	TST_EXP_PASS(fcntl(fd, F_GETLK, &flocks), "fcntl(%d, F_GETLK, &flocks)", fd);
  }
  
--/*
-- * check_functionality() - make sure the memory is detached correctly
-- */
--void check_functionality(void)
-+static void check_functionality(void)
- {
--	/* stat the shared memory segment */
--	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "could not stat in signal handler");
-+	struct shmid_ds buf;
- 
-+	SAFE_SHMCTL(shm_id, IPC_STAT, &buf);
- 	if (buf.shm_nattch != 0) {
--		tst_resm(TFAIL, "# of attaches is incorrect");
-+		tst_res(TFAIL, "Number of attaches(%ld) is non-zero", buf.shm_nattch);
- 		return;
- 	}
- 
--	/*
--	 * Try writing to the shared memory.  This should generate a
--	 * SIGSEGV which will be caught below.
--	 *
--	 * This is wrapped by the sigsetjmp() call that will take care of
--	 * restoring the program's context in an elegant way in conjunction
--	 * with the call to siglongjmp() in the signal handler.
--	 *
--	 * An attempt to do the assignment without using the sigsetjmp()
--	 * and siglongjmp() calls will result in an infinite loop.  Program
--	 * control is returned to the assignment statement after the execution
--	 * of the signal handler and another SIGSEGV will be generated.
--	 */
--
--	if (sigsetjmp(env, 1) == 0) {
-+	if (sigsetjmp(env, 1) == 0)
- 		*shared = 2;
--	}
--
--	if (pass) {
--		tst_resm(TPASS, "shared memory detached correctly");
--	} else {
--		tst_resm(TFAIL, "shared memory was not detached correctly");
--	}
--}
- 
--void sighandler(int sig)
--{
--	/* if we have received a SIGSEGV, we are almost done */
--	if (sig == SIGSEGV) {
--		/* set the global variable and jump back */
--		pass = 1;
--		siglongjmp(env, 1);
--	} else
--		tst_brkm(TBROK, cleanup,
--			 "received an unexpected signal: %d", sig);
-+	if (pass)
-+		tst_res(TPASS, "shared memory detached correctly");
-+	else
-+		tst_res(TFAIL, "shared memory was not detached correctly");
- }
- 
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
 -void setup(void)
-+static void verify_shmdt(void)
++static void setup(void)
  {
--
--	tst_sig(NOFORK, sighandler, cleanup);
++	char fname[255];
++	int pid;
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
--	/*
--	 * Create a temporary directory and cd into it.
--	 * This helps to ensure that a unique msgkey is created.
--	 * See libs/libltpipc/libipc.c for more information.
--	 */
 -	tst_tmpdir();
--
--	/* get an IPC resource key */
--	shmkey = getipckey();
--
--	/* create a shared memory resource with read and write permissions */
--	if ((shm_id_1 = shmget(shmkey, INT_SIZE, SHM_RW | IPC_CREAT |
--			       IPC_EXCL)) == -1) {
--		tst_brkm(TBROK, cleanup, "Failed to create shared memory "
--			 "resource in setup()");
--	}
--
--	/* attach the shared memory segment */
--	shared = shmat(shm_id_1, 0, 0);
--
--	if (shared == (void *)-1) {
--		tst_brkm(TBROK, cleanup, "Couldn't attach shared memory");
-+	TST_EXP_PASS_SILENT(shmdt(shared));
-+	if (TST_PASS) {
-+		check_functionality();
-+		shared = SAFE_SHMAT(shm_id, 0, 0);
- 	}
++	pid = getpid();
  
--	/* give a value to the shared memory integer */
--	*shared = 4;
-+	pass = 0;
+-	sprintf(fname, "tfile_%d", getpid());
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
++	sprintf(fname, "testfile_%d", pid);
++	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
+ 
+-	/* set needed flags in the flocks structure */
+-	flocks.l_whence = 1;
++	flocks.l_whence = SEEK_CUR;
+ 	flocks.l_start = 0;
+ 	flocks.l_len = 0;
+-	flocks.l_pid = getpid();
++	flocks.l_pid = pid;
  }
  
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
 -void cleanup(void)
-+static void setup(void)
- {
--	/* if it exists, delete the shared memory resource */
--	rm_shm(shm_id_1);
-+	shm_key = GETIPCKEY();
-+	shm_id = SAFE_SHMGET(shm_key, INT_SIZE, SHM_RW | IPC_CREAT | IPC_EXCL);
- 
--	tst_rmdir();
-+	SAFE_SIGNAL(SIGSEGV, sighandler);
-+	shared = SAFE_SHMAT(shm_id, 0, 0);
-+}
- 
 +static void cleanup(void)
-+{
-+	if (shm_id != -1)
-+		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+ {
+-	if (close(fd) == -1)
+-		tst_resm(TWARN | TERRNO, "close failed");
+-
+-	tst_rmdir();
+-
++	if (fd > -1)
++		SAFE_CLOSE(fd);
  }
 +
 +static struct tst_test test = {
 +	.needs_tmpdir = 1,
-+	.needs_root = 1,
++	.test_all = verify_fcntl,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_shmdt,
 +};
 -- 
 2.23.0
