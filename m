@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DDD1C433EF
-	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 12:50:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E921C433F5
+	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 12:50:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B20EC3CA68B
-	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 14:50:19 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 304993CA563
+	for <ltp@archiver.kernel.org>; Wed, 27 Apr 2022 14:50:31 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7CCB23C0677
+ by picard.linux.it (Postfix) with ESMTPS id C3DE93C0677
  for <ltp@lists.linux.it>; Wed, 27 Apr 2022 14:50:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E583B1400BC8
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E39616008C0
  for <ltp@lists.linux.it>; Wed, 27 Apr 2022 14:50:07 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8484C210FC;
- Wed, 27 Apr 2022 12:50:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EE9F21F74E;
+ Wed, 27 Apr 2022 12:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1651063807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=SZ3lVmDbSrLkBfvo7lX/KXAJ1YTdDpX0JdEBxcSR0o4=;
- b=1oRx5tIyMgxY6vZk/eVd8dZQqpobRGoE9nsmOdLAtywe352GJga1JYIi0qzB8wzhjC3xRH
- rzMd6s7agDZoRGXKz6ABrwUFacsewAOOrdHn3jRwzl6BWkolo1aS83AAGyjt83bok+Vl3x
- vW1ZQ9AU40I/JzxTpC6r9fY0slnhY/c=
+ t=1651063806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=2Ls+TxgUBpJD7d1sHqHMMUIgcgCA0K2S1WQ9HUFigLc=;
+ b=KrmrIX3nFlTDqS3sS5tTgPYH5EYindT6Zo7rI7yDdVfHm7g7QDvX30pF1nuQmnwpsN5ae4
+ Oyx29NPuDWE6KXxxQ8tpIpHbCfhyf5b9+vD+mO5jOluCppifDntWvUjjx1tmAdp8LmyAMW
+ eT+Ai8aYa2n+XTIMkdtDD3wwMiNYjQs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1651063807;
+ s=susede2_ed25519; t=1651063806;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=SZ3lVmDbSrLkBfvo7lX/KXAJ1YTdDpX0JdEBxcSR0o4=;
- b=vuFHOPSjitlamx7WDvbczZqujMHcBi9+zMlATNSG/8+hPXX95HxW0ybkN1/TQOsJCLb3WM
- AtzbnalRDfo2+iCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=2Ls+TxgUBpJD7d1sHqHMMUIgcgCA0K2S1WQ9HUFigLc=;
+ b=eJnk07rL58YI33SfZi1Yyjr9orLLS0EEO2y8jnBHR8l+z5S7tC4VfeDhEwP4F0ixv1WXSH
+ 6ZDj0+5Ns8dlaxAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44B6C1323E;
- Wed, 27 Apr 2022 12:50:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1FD71323E;
+ Wed, 27 Apr 2022 12:50:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KLr1Dv87aWK5RgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 27 Apr 2022 12:50:07 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id iNfCKf47aWK5RgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 27 Apr 2022 12:50:06 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 27 Apr 2022 14:50:00 +0200
-Message-Id: <20220427125003.20815-3-pvorel@suse.cz>
+Date: Wed, 27 Apr 2022 14:49:58 +0200
+Message-Id: <20220427125003.20815-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220427125003.20815-1-pvorel@suse.cz>
-References: <20220427125003.20815-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/5] shell: Use conditional expansion for library
- setup/cleanup
+Subject: [LTP] [PATCH v3 0/5] shell: Cleanup getopts usage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,168 +76,346 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To avoid surprises when test specific setup/cleanup function is
-redefined by shell library.
+NOTE: for testing you can use my fork
+https://github.com/pevik/ltp/commits/tst_test.sh/cleanup-getopts.v3
 
-Although there is not an optimal general solution because usually test
-which have specific setup/cleanup also needs to call library setup/cleanup,
-but it's better not to require TST_{SETUP,CLEANUP} to be on specific place.
+Kind regards,
+Petr
 
-Added to all shell libraries, regardless it's required or not.
+Petr Vorel (5):
+  busy_poll_lib.sh: Mention setup/cleanup defined in tests
+  shell: Use conditional expansion for library setup/cleanup
+  doc: Update library API doc
+  tst_test.sh: Cleanup getopts usage
+  doc: Update shell API examples
 
-Suggested-by: Martin Doucha <mdoucha@suse.cz>
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-changes v2->v3:
-* remove copyright only changes
-* busy_poll_lib.sh: revert conditional expansion (note that
-  setup/cleanup defined by test was added in previous commit)
+ doc/library-api-writing-guidelines.txt        | 21 ++++++
+ doc/shell-test-api.txt                        |  8 +++
+ lib/newlib_tests/shell/net/tst_ipaddr_un.sh   |  2 +-
+ lib/newlib_tests/shell/net/tst_rhost_run.sh   |  2 +-
+ lib/newlib_tests/shell/timeout01.sh           |  2 +-
+ lib/newlib_tests/shell/timeout02.sh           |  2 +-
+ lib/newlib_tests/shell/timeout03.sh           |  2 +-
+ lib/newlib_tests/shell/timeout04.sh           |  2 +-
+ lib/newlib_tests/shell/tst_check_driver.sh    |  2 +-
+ lib/newlib_tests/shell/tst_check_kconfig01.sh |  3 +-
+ lib/newlib_tests/shell/tst_check_kconfig02.sh |  2 +-
+ lib/newlib_tests/shell/tst_check_kconfig03.sh |  2 +-
+ lib/newlib_tests/shell/tst_check_kconfig04.sh |  2 +-
+ lib/newlib_tests/shell/tst_check_kconfig05.sh |  2 +-
+ lib/newlib_tests/shell/tst_format_device.sh   |  2 +-
+ testcases/commands/ar/ar01.sh                 |  3 +-
+ testcases/commands/cp/cp_tests.sh             |  2 +-
+ testcases/commands/cpio/cpio_tests.sh         |  3 +-
+ testcases/commands/df/df01.sh                 |  2 +-
+ testcases/commands/du/du01.sh                 |  2 +-
+ testcases/commands/eject/eject-tests.sh       |  2 +-
+ testcases/commands/file/file01.sh             |  3 +-
+ testcases/commands/gdb/gdb01.sh               |  3 +-
+ testcases/commands/gzip/gzip_tests.sh         |  2 +-
+ testcases/commands/insmod/insmod01.sh         |  2 +-
+ testcases/commands/keyctl/keyctl01.sh         |  2 +-
+ testcases/commands/ld/ld01.sh                 |  2 +-
+ testcases/commands/ldd/ldd01.sh               |  2 +-
+ testcases/commands/ln/ln_tests.sh             |  2 +-
+ testcases/commands/lsmod/lsmod01.sh           |  2 +-
+ testcases/commands/mkdir/mkdir_tests.sh       |  2 +-
+ testcases/commands/mkfs/mkfs01.sh             |  2 +-
+ testcases/commands/mkswap/mkswap01.sh         |  2 +-
+ testcases/commands/mv/mv_tests.sh             |  2 +-
+ testcases/commands/nm/nm01.sh                 |  2 +-
+ testcases/commands/shell/shell_pipe01.sh      |  3 +-
+ testcases/commands/sysctl/sysctl01.sh         |  3 +-
+ testcases/commands/sysctl/sysctl02.sh         |  4 +-
+ testcases/commands/tar/tar_tests.sh           |  3 +-
+ testcases/commands/unshare/unshare01.sh       |  2 +-
+ testcases/commands/unzip/unzip01.sh           |  2 +-
+ testcases/commands/vmcp/vmcp_m.sh             |  3 +-
+ testcases/commands/wc/wc01.sh                 |  2 +-
+ testcases/commands/which/which01.sh           |  2 +-
+ testcases/kernel/connectors/pec/cn_pec.sh     |  3 +-
+ .../kernel/containers/netns/netns_breakns.sh  | 11 ++--
+ .../kernel/containers/netns/netns_comm.sh     | 11 ++--
+ .../kernel/containers/netns/netns_helper.sh   |  3 +-
+ .../kernel/containers/netns/netns_sysfs.sh    |  3 +-
+ .../cgroup/cgroup_regression_test.sh          |  5 +-
+ testcases/kernel/controllers/cgroup_lib.sh    |  6 +-
+ .../kernel/controllers/cpuacct/cpuacct.sh     |  3 +-
+ .../cpuset/cpuset_regression_test.sh          |  4 +-
+ .../memcg/functional/memcg_failcnt.sh         |  2 +-
+ .../memcg/functional/memcg_force_empty.sh     |  2 +-
+ .../controllers/memcg/functional/memcg_lib.sh | 64 +++++++++----------
+ .../memcg/functional/memcg_limit_in_bytes.sh  |  2 +-
+ .../memcg_max_usage_in_bytes_test.sh          |  2 +-
+ .../memcg_memsw_limit_in_bytes_test.sh        |  2 +-
+ .../memcg_move_charge_at_immigrate_test.sh    |  2 +-
+ .../memcg/functional/memcg_stat_rss.sh        |  2 +-
+ .../memcg/functional/memcg_stat_test.sh       |  2 +-
+ .../memcg/functional/memcg_subgroup_charge.sh |  2 +-
+ .../functional/memcg_usage_in_bytes_test.sh   |  2 +-
+ .../functional/memcg_use_hierarchy_test.sh    |  2 +-
+ .../memcg/stress/memcg_stress_test.sh         |  5 +-
+ testcases/kernel/controllers/pids/pids.sh     |  3 +-
+ .../kernel/device-drivers/rcu/rcu_torture.sh  |  3 +-
+ .../kernel/device-drivers/zram/zram01.sh      |  4 +-
+ .../kernel/device-drivers/zram/zram02.sh      |  2 +-
+ .../kernel/device-drivers/zram/zram_lib.sh    |  9 +--
+ .../kernel/fs/binfmt_misc/binfmt_misc01.sh    |  2 +-
+ .../kernel/fs/binfmt_misc/binfmt_misc02.sh    |  2 +-
+ .../kernel/fs/binfmt_misc/binfmt_misc_lib.sh  |  8 +--
+ testcases/kernel/fs/fs_bind/bind/fs_bind01.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind02.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind03.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind04.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind05.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind06.sh |  2 +-
+ .../kernel/fs/fs_bind/bind/fs_bind07-2.sh     |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind07.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind08.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind09.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind10.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind11.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind12.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind13.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind14.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind15.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind16.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind17.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind18.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind19.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind20.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind21.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind22.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind23.sh |  2 +-
+ testcases/kernel/fs/fs_bind/bind/fs_bind24.sh |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS01.sh   |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS02.sh   |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS03.sh   |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS04.sh   |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS05.sh   |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS06.sh   |  2 +-
+ .../fs/fs_bind/cloneNS/fs_bind_cloneNS07.sh   |  2 +-
+ testcases/kernel/fs/fs_bind/fs_bind_lib.sh    | 11 ++--
+ .../kernel/fs/fs_bind/fs_bind_regression.sh   |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move01.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move02.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move03.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move04.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move05.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move06.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move07.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move08.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move09.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move10.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move11.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move12.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move13.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move14.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move15.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move16.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move17.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move18.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move19.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move20.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move21.sh  |  2 +-
+ .../kernel/fs/fs_bind/move/fs_bind_move22.sh  |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind01.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind02.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind03.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind04.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind05.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind06.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind07-2.sh     |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind07.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind08.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind09.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind10.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind11.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind12.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind13.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind14.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind15.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind16.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind17.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind18.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind19.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind20.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind21.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind22.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind23.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind24.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind25.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind26.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind27.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind28.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind29.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind30.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind31.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind32.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind33.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind34.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind35.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind36.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind37.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind38.sh       |  2 +-
+ .../fs/fs_bind/rbind/fs_bind_rbind39.sh       |  2 +-
+ testcases/kernel/fs/iso9660/isofs.sh          |  3 +-
+ testcases/kernel/fs/linktest/linktest.sh      |  3 +-
+ .../fs/quota_remount/quota_remount_test01.sh  |  3 +-
+ testcases/kernel/mem/vma/vma05.sh             |  3 +-
+ testcases/kernel/numa/numa01.sh               |  3 +-
+ .../integrity/ima/tests/evm_overlay.sh        |  2 +-
+ .../integrity/ima/tests/ima_conditionals.sh   |  3 +-
+ .../security/integrity/ima/tests/ima_kexec.sh |  3 +-
+ .../security/integrity/ima/tests/ima_keys.sh  |  4 +-
+ .../integrity/ima/tests/ima_measurements.sh   |  3 +-
+ .../integrity/ima/tests/ima_policy.sh         |  3 +-
+ .../integrity/ima/tests/ima_selinux.sh        |  3 +-
+ .../security/integrity/ima/tests/ima_setup.sh |  4 +-
+ .../security/integrity/ima/tests/ima_tpm.sh   |  3 +-
+ .../integrity/ima/tests/ima_violations.sh     |  5 +-
+ .../tracing/dynamic_debug/dynamic_debug01.sh  |  5 +-
+ testcases/lib/tst_net.sh                      |  5 +-
+ testcases/lib/tst_test.sh                     | 29 ++++-----
+ testcases/misc/lvm/cleanup_lvm.sh             |  2 +-
+ testcases/misc/lvm/generate_lvm_runfile.sh    |  2 +-
+ testcases/misc/lvm/prepare_lvm.sh             |  2 +-
+ testcases/network/busy_poll/busy_poll01.sh    |  3 +-
+ testcases/network/busy_poll/busy_poll02.sh    |  3 +-
+ testcases/network/busy_poll/busy_poll03.sh    |  3 +-
+ testcases/network/busy_poll/busy_poll_lib.sh  | 10 ++-
+ testcases/network/dccp/dccp01.sh              |  2 +-
+ testcases/network/dhcp/dhcp_lib.sh            | 12 ++--
+ testcases/network/dhcp/dhcpd_tests.sh         |  6 +-
+ testcases/network/dhcp/dnsmasq_tests.sh       | 28 ++++----
+ testcases/network/iproute/ip_tests.sh         |  2 +-
+ testcases/network/iptables/iptables01.sh      |  1 -
+ testcases/network/iptables/iptables_lib.sh    |  5 +-
+ testcases/network/iptables/nft01.sh           |  3 +-
+ testcases/network/mpls/mpls01.sh              |  2 +-
+ testcases/network/mpls/mpls02.sh              |  3 +-
+ testcases/network/mpls/mpls03.sh              |  5 +-
+ testcases/network/mpls/mpls04.sh              |  5 +-
+ testcases/network/mpls/mpls_lib.sh            |  4 +-
+ .../network/multicast/mc_cmds/mc_cmds.sh      |  6 +-
+ .../network/multicast/mc_commo/mc_commo.sh    |  5 +-
+ .../network/multicast/mc_member/mc_member.sh  |  6 +-
+ testcases/network/nfs/fsx-linux/fsx.sh        |  3 +-
+ testcases/network/nfs/nfs_stress/nfs01.sh     |  3 +-
+ testcases/network/nfs/nfs_stress/nfs02.sh     |  3 +-
+ testcases/network/nfs/nfs_stress/nfs03.sh     |  3 +-
+ testcases/network/nfs/nfs_stress/nfs04.sh     |  2 +-
+ testcases/network/nfs/nfs_stress/nfs05.sh     |  3 +-
+ testcases/network/nfs/nfs_stress/nfs06.sh     |  2 +-
+ testcases/network/nfs/nfs_stress/nfs07.sh     |  8 +--
+ testcases/network/nfs/nfs_stress/nfs_lib.sh   |  5 +-
+ testcases/network/nfs/nfslock01/nfslock01.sh  |  3 +-
+ testcases/network/nfs/nfsstat01/nfsstat01.sh  |  3 +-
+ .../network/rpc/basic_tests/rpc01/rpc01.sh    |  2 +-
+ testcases/network/rpc/basic_tests/rpc_lib.sh  |  5 +-
+ .../rpc/basic_tests/rpcinfo/rpcinfo01.sh      |  2 +-
+ testcases/network/rpc/rpc-tirpc/rpc_test.sh   |  2 +-
+ testcases/network/sctp/sctp01.sh              |  2 +-
+ testcases/network/sockets/bind_noport01.sh    |  2 +-
+ .../stress/broken_ip/broken_ip-checksum.sh    |  2 +-
+ .../stress/broken_ip/broken_ip-dstaddr.sh     |  2 +-
+ .../stress/broken_ip/broken_ip-fragment.sh    |  2 +-
+ .../network/stress/broken_ip/broken_ip-ihl.sh |  2 +-
+ .../stress/broken_ip/broken_ip-nexthdr.sh     | 10 +--
+ .../stress/broken_ip/broken_ip-plen.sh        |  2 +-
+ .../stress/broken_ip/broken_ip-protcol.sh     |  2 +-
+ .../stress/broken_ip/broken_ip-version.sh     |  2 +-
+ testcases/network/stress/dccp/dccp_ipsec.sh   |  4 +-
+ .../network/stress/dccp/dccp_ipsec_vti.sh     |  4 +-
+ testcases/network/stress/dns/dns-stress.sh    |  6 +-
+ .../network/stress/ftp/ftp-download-stress.sh |  4 +-
+ .../network/stress/ftp/ftp-upload-stress.sh   |  4 +-
+ testcases/network/stress/http/http-stress.sh  |  4 +-
+ .../network/stress/icmp/icmp-uni-basic.sh     |  4 +-
+ testcases/network/stress/icmp/icmp-uni-vti.sh |  4 +-
+ .../stress/interface/if-addr-adddel.sh        |  4 +-
+ .../stress/interface/if-addr-addlarge.sh      |  4 +-
+ testcases/network/stress/interface/if-lib.sh  | 12 ++--
+ .../network/stress/interface/if-mtu-change.sh |  4 +-
+ .../stress/interface/if-route-adddel.sh       |  4 +-
+ .../stress/interface/if-route-addlarge.sh     |  4 +-
+ .../network/stress/interface/if-updown.sh     |  4 +-
+ .../stress/interface/if4-addr-change.sh       |  2 +-
+ testcases/network/stress/ipsec/ipsec_lib.sh   | 15 +++--
+ .../mcast-group-multiple-socket.sh            |  2 +-
+ .../grp-operation/mcast-group-same-group.sh   |  2 +-
+ .../mcast-group-single-socket.sh              |  2 +-
+ .../mcast-group-source-filter.sh              |  2 +-
+ .../multicast/grp-operation/mcast-lib.sh      |  6 +-
+ .../multicast/packet-flood/mcast-pktfld01.sh  |  2 +-
+ .../multicast/packet-flood/mcast-pktfld02.sh  |  2 +-
+ .../multicast/query-flood/mcast-queryfld01.sh |  2 +-
+ .../multicast/query-flood/mcast-queryfld02.sh |  2 +-
+ .../multicast/query-flood/mcast-queryfld03.sh |  2 +-
+ .../multicast/query-flood/mcast-queryfld04.sh |  2 +-
+ .../multicast/query-flood/mcast-queryfld05.sh |  2 +-
+ .../multicast/query-flood/mcast-queryfld06.sh |  2 +-
+ .../network/stress/ns-tools/tst_net_stress.sh |  4 +-
+ .../network/stress/route/route-change-dst.sh  |  6 +-
+ .../network/stress/route/route-change-gw.sh   |  6 +-
+ .../network/stress/route/route-change-if.sh   |  6 +-
+ .../stress/route/route-change-netlink-dst.sh  |  4 +-
+ .../stress/route/route-change-netlink-gw.sh   |  4 +-
+ .../stress/route/route-change-netlink-if.sh   |  4 +-
+ testcases/network/stress/route/route-lib.sh   |  5 +-
+ .../network/stress/route/route-redirect.sh    |  4 +-
+ testcases/network/stress/sctp/sctp_ipsec.sh   |  4 +-
+ .../network/stress/sctp/sctp_ipsec_vti.sh     |  4 +-
+ testcases/network/stress/ssh/ssh-stress.sh    |  2 +-
+ testcases/network/stress/tcp/tcp_ipsec.sh     |  4 +-
+ testcases/network/stress/tcp/tcp_ipsec_vti.sh |  4 +-
+ testcases/network/stress/udp/udp_ipsec.sh     |  4 +-
+ testcases/network/stress/udp/udp_ipsec_vti.sh |  4 +-
+ testcases/network/tcp_cc/bbr01.sh             |  3 +-
+ testcases/network/tcp_cc/bbr02.sh             |  4 +-
+ testcases/network/tcp_cc/dctcp01.sh           |  3 +-
+ testcases/network/tcp_cc/tcp_cc_lib.sh        |  5 +-
+ testcases/network/tcp_cmds/arping/arping01.sh |  2 +-
+ .../network/tcp_cmds/clockdiff/clockdiff01.sh |  2 +-
+ testcases/network/tcp_cmds/host/host01.sh     |  2 +-
+ .../network/tcp_cmds/ipneigh/ipneigh01.sh     |  2 +-
+ .../network/tcp_cmds/netstat/netstat01.sh     |  2 +-
+ testcases/network/tcp_cmds/ping/ping01.sh     |  2 +-
+ testcases/network/tcp_cmds/ping/ping02.sh     |  2 +-
+ .../network/tcp_cmds/sendfile/sendfile01.sh   |  2 +-
+ testcases/network/tcp_cmds/tc/tc01.sh         |  3 +-
+ .../network/tcp_cmds/tcpdump/tcpdump01.sh     |  3 +-
+ testcases/network/tcp_cmds/telnet/telnet01.sh |  3 +-
+ .../network/tcp_cmds/tracepath/tracepath01.sh |  2 +-
+ .../network/tcp_fastopen/tcp_fastopen_run.sh  |  2 +-
+ testcases/network/traceroute/traceroute01.sh  |  2 +-
+ testcases/network/virt/fou01.sh               |  2 +-
+ testcases/network/virt/geneve01.sh            |  9 ++-
+ testcases/network/virt/geneve02.sh            | 14 ++--
+ testcases/network/virt/gre01.sh               |  2 +-
+ testcases/network/virt/gre02.sh               |  2 +-
+ testcases/network/virt/ipvlan01.sh            |  2 +-
+ testcases/network/virt/macsec01.sh            |  1 -
+ testcases/network/virt/macsec02.sh            |  1 -
+ testcases/network/virt/macsec03.sh            |  3 +-
+ testcases/network/virt/macsec_lib.sh          | 11 ++--
+ testcases/network/virt/macvlan01.sh           |  2 +-
+ testcases/network/virt/macvtap01.sh           |  2 +-
+ testcases/network/virt/sit01.sh               |  2 +-
+ testcases/network/virt/virt_lib.sh            | 36 +++++------
+ testcases/network/virt/vlan01.sh              |  2 +-
+ testcases/network/virt/vlan02.sh              |  2 +-
+ testcases/network/virt/vlan03.sh              |  2 +-
+ testcases/network/virt/vxlan01.sh             |  9 ++-
+ testcases/network/virt/vxlan02.sh             |  5 +-
+ testcases/network/virt/vxlan03.sh             |  2 +-
+ testcases/network/virt/vxlan04.sh             |  2 +-
+ testcases/network/virt/wireguard01.sh         |  3 +-
+ testcases/network/virt/wireguard02.sh         |  6 +-
+ testcases/network/virt/wireguard_lib.sh       |  4 +-
+ testcases/network/xinetd/xinetd_tests.sh      |  2 +-
+ 325 files changed, 554 insertions(+), 588 deletions(-)
 
- testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 4 ++--
- testcases/kernel/device-drivers/zram/zram_lib.sh           | 6 +++---
- testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh         | 4 ++--
- testcases/kernel/fs/fs_bind/fs_bind_lib.sh                 | 4 ++--
- testcases/network/dhcp/dhcp_lib.sh                         | 6 +++---
- testcases/network/stress/interface/if-lib.sh               | 7 +++++--
- testcases/network/virt/macsec_lib.sh                       | 6 +++---
- 7 files changed, 20 insertions(+), 17 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 1b76b6597..db010acc7 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -10,8 +10,8 @@ TST_NEEDS_CHECKPOINTS=1
- TST_NEEDS_ROOT=1
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_CMDS="killall find kill"
--TST_CLEANUP=memcg_cleanup
--TST_SETUP=memcg_setup
-+TST_SETUP="${TST_SETUP:-memcg_setup}"
-+TST_CLEANUP="${TST_CLEANUP:-memcg_cleanup}"
- TST_TESTFUNC=memcg_testfunc
- 
- MEMCG_SHMMAX=${MEMCG_SHMMAX:-0}
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index a420fb672..803fd9825 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
--# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2019-2022 Petr Vorel <pvorel@suse.cz>
- # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
- 
- dev_makeswap=-1
-@@ -12,8 +12,8 @@ sys_control=-1
- 
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
--TST_SETUP="zram_load"
--TST_CLEANUP="zram_cleanup"
-+TST_SETUP="${TST_SETUP:-zram_load}"
-+TST_CLEANUP="${TST_CLEANUP:-zram_cleanup}"
- TST_NEEDS_DRIVERS="zram"
- . tst_test.sh
- 
-diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh
-index 497682531..ff862db43 100755
---- a/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh
-+++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh
-@@ -4,8 +4,8 @@
- # Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
- # Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
- 
--TST_SETUP=binfmt_misc_setup
--TST_CLEANUP=binfmt_misc_cleanup
-+TST_SETUP="${TST_SETUP:-binfmt_misc_setup}"
-+TST_CLEANUP="${TST_CLEANUP:-binfmt_misc_cleanup}"
- TST_NEEDS_DRIVERS="binfmt_misc"
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
-diff --git a/testcases/kernel/fs/fs_bind/fs_bind_lib.sh b/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
-index a5356fa36..6676d1021 100644
---- a/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
-+++ b/testcases/kernel/fs/fs_bind/fs_bind_lib.sh
-@@ -7,8 +7,8 @@
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
- TST_MIN_KVER=2.6.15
--TST_SETUP=fs_bind_setup
--TST_CLEANUP=fs_bind_cleanup
-+TST_SETUP="${TST_SETUP:-fs_bind_setup}"
-+TST_CLEANUP="${TST_CLEANUP:-fs_bind_cleanup}"
- TST_TESTFUNC=fs_bind_test
- TST_NEEDS_CMDS="mount umount awk sed"
- 
-diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
-index 5537112c8..ebee0c2e9 100755
---- a/testcases/network/dhcp/dhcp_lib.sh
-+++ b/testcases/network/dhcp/dhcp_lib.sh
-@@ -1,11 +1,11 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2014-2018 Oracle and/or its affiliates. All Rights Reserved.
--# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2018-2022 Petr Vorel <pvorel@suse.cz>
- # Author:       Alexey Kodanev alexey.kodanev@oracle.com
- 
--TST_SETUP="dhcp_lib_setup"
--TST_CLEANUP="dhcp_lib_cleanup"
-+TST_SETUP="${TST_SETUP:-dhcp_lib_setup}"
-+TST_CLEANUP="${TST_CLEANUP:-dhcp_lib_cleanup}"
- TST_TESTFUNC="test01"
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
-diff --git a/testcases/network/stress/interface/if-lib.sh b/testcases/network/stress/interface/if-lib.sh
-index b398be1ad..2b1db6e00 100644
---- a/testcases/network/stress/interface/if-lib.sh
-+++ b/testcases/network/stress/interface/if-lib.sh
-@@ -5,7 +5,11 @@
- 
- CMD="${CMD:-ip}"
- 
--TST_SETUP="${TST_SETUP:-if_setup}"
-+if [ -z "$TST_SETUP" ]; then
-+	TST_SETUP="if_setup"
-+	TST_CLEANUP="${TST_CLEANUP:-netstress_cleanup}"
-+fi
-+
- TST_TESTFUNC="test_body"
- TST_PARSE_ARGS="if_parse_args"
- TST_USAGE="if_usage"
-@@ -32,7 +36,6 @@ if_setup()
- 
- 	tst_require_cmds "$CMD"
- 	netstress_setup
--	TST_CLEANUP="${TST_CLEANUP:-netstress_cleanup}"
- }
- 
- if_cleanup_restore()
-diff --git a/testcases/network/virt/macsec_lib.sh b/testcases/network/virt/macsec_lib.sh
-index c2573c572..ac77f0976 100755
---- a/testcases/network/virt/macsec_lib.sh
-+++ b/testcases/network/virt/macsec_lib.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2018-2022 Petr Vorel <pvorel@suse.cz>
- # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
- # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
- 
-@@ -10,8 +10,8 @@ IPSEC_MODE="transport"
- 
- TST_NEEDS_TMPDIR=1
- TST_TESTFUNC=virt_netperf_msg_sizes
--TST_SETUP=macsec_lib_setup
--TST_CLEANUP=macsec_lib_cleanup
-+TST_SETUP="${TST_SETUP:-macsec_lib_setup}"
-+TST_CLEANUP="${TST_CLEANUP:-macsec_lib_cleanup}"
- TST_NEEDS_DRIVERS="macsec"
- . ipsec_lib.sh
- . virt_lib.sh
 -- 
 2.35.3
 
