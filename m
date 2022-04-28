@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B037C433EF
-	for <ltp@archiver.kernel.org>; Thu, 28 Apr 2022 20:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B797C433F5
+	for <ltp@archiver.kernel.org>; Thu, 28 Apr 2022 20:42:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E5CB3CA755
-	for <ltp@archiver.kernel.org>; Thu, 28 Apr 2022 22:41:55 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E0DEC3CA763
+	for <ltp@archiver.kernel.org>; Thu, 28 Apr 2022 22:42:04 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 101DA3CA76D
+ by picard.linux.it (Postfix) with ESMTPS id DB96B3CA73D
  for <ltp@lists.linux.it>; Thu, 28 Apr 2022 22:40:41 +0200 (CEST)
 Received: from smtp-relay-internal-1.canonical.com
  (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3F4C41400B9E
- for <ltp@lists.linux.it>; Thu, 28 Apr 2022 22:40:39 +0200 (CEST)
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1ED001400BCB
+ for <ltp@lists.linux.it>; Thu, 28 Apr 2022 22:40:41 +0200 (CEST)
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 692BB3F21E
- for <ltp@lists.linux.it>; Thu, 28 Apr 2022 20:40:39 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A7C533F21C
+ for <ltp@lists.linux.it>; Thu, 28 Apr 2022 20:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1651178439;
- bh=9CzRBac2nrdXcDOgi8sl/vBoqWG0GI04eyLc4wXxRk8=;
+ s=20210705; t=1651178440;
+ bh=uLKhbna3EfMpgumBSMyNq1OwnwGeQ2jYvSY2TbVrQFs=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=pCbVo3qDzRHKXjArXJ/Bz1RA3/tnSmh8w2ToXK0MtdCW1/zvSw+fCr+4UXhGtEXTV
- qQaRH8npQHbOTGhD198RN0+5i/ze0YTyZ6XQiPjD5WMX6Z5xGMQjDLZOvMJeEEMQ+B
- nP6Rf+yjRKp9sesjO2JIVCTOi5BjYppid6wpyRwrCP7D0qt3QCf9XdEiJ9IOPa/hcK
- yFrqqXejUxtlScHCoY83TsmEcyXX8tRj+ADNK3qbnEWB2khYgpG1r49qxtRgeGT3QW
- +ZFjkub5sxiqag96MWCQa0CrW7PRcvpbW0QO9E3vR0866w7sa6BstrQl+oUAlx8SDF
- w/O+t4zE+RyHg==
-Received: by mail-pj1-f72.google.com with SMTP id
- t24-20020a17090a449800b001d2d6e740c3so5751770pjg.9
- for <ltp@lists.linux.it>; Thu, 28 Apr 2022 13:40:39 -0700 (PDT)
+ b=Oj6ag1ZTJOUu1B+QewIGIm4h3yThhx5MpflSp1aYrzXJB8OA1Ub9V4K+jHAy+vv3Q
+ nr4t4/siszh6tn+u4DgckEJvjoveIu68WfoJ5w1FQyLREg37C5pPOp3XcOhDG8ugon
+ QjN/6EWgL7Jbb8IHu3ciN8X/6mlLVYTxI2ncggnslxNl+VTT9svKbcdH6YOByExlr2
+ pVkPZQcgZOuZ6mx+QtDNqRxElouO3/mrGNiHK/BFAvtYo71GUwvmonX1uoGq34LY9H
+ D3bkpm60ZAxnAlDhyjP1FmWmgZp8Jck9LCtVoSrcWKGXd+EeUk1ruZrqv38tTrkgKL
+ zUxt4zIzsgZ3w==
+Received: by mail-pg1-f199.google.com with SMTP id
+ x2-20020a63aa42000000b003aafe948eeeso2957204pgo.0
+ for <ltp@lists.linux.it>; Thu, 28 Apr 2022 13:40:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=9CzRBac2nrdXcDOgi8sl/vBoqWG0GI04eyLc4wXxRk8=;
- b=Bf+UczhkuXlocmuLY1k9UqI26XAj4KbvcklI3hi22S2vK9Lv0a7Prhg9AVd0ew4qiN
- oU5NHIPc+lwFDQmsnvW9yCRhYL0WJKgcyNWYSR6N6oiXwB1YG0n+ERDCc4+hV0HNzHnp
- /fohhJAiw7Dpodao3nCzxqXF1YIAEVBZ6NmVCtZXetpl+nAcRRep3D7aEg1G5dVJUBtt
- dS1SYgT61FK5h7ucbIz0cX5FW85aQNullz5sJNLW0zvyPyFWrbIR0TKOdRdhQoVL32RU
- FredssNC8cSiadS6poeuK6WHjSLt+hnv8K+Im1XQ8qTDKMgZeldCSiVRKWh1cgU7aB/c
- vYyQ==
-X-Gm-Message-State: AOAM532VFkmMNjYqUHTObTImoSQppS11bzrn32YwawNZPOyL937aG/M3
- KFYllTbqSUEgZMGX08cGmc2lRrhlwsUqsCyYss4CCmokv2Wj6vuk51fPNpisF6oMiUFoaRmIXsL
- rhEdEoH3P+gTgyGExzYKwQvc7wqn1
-X-Received: by 2002:a05:6a00:1907:b0:4f7:945:14cf with SMTP id
- y7-20020a056a00190700b004f7094514cfmr36885445pfi.47.1651178437647; 
- Thu, 28 Apr 2022 13:40:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqu6wOujKJ1pzSiQsl7JpAKujbzDc7gFkFVemqF5D/b7Ah0W1A7soshzURK/rH/b1gwAg8mw==
-X-Received: by 2002:a05:6a00:1907:b0:4f7:945:14cf with SMTP id
- y7-20020a056a00190700b004f7094514cfmr36885413pfi.47.1651178437220; 
- Thu, 28 Apr 2022 13:40:37 -0700 (PDT)
+ bh=uLKhbna3EfMpgumBSMyNq1OwnwGeQ2jYvSY2TbVrQFs=;
+ b=DfUryTVrsEYqu2KflPHG7k5fm1B7YLUshsQJ24k0fIDxlUDmMi4HsoDBvJEAD/CpU3
+ lf1AOA1MwogXyBP4fZETzsYe4WLgTYtIfvrIqsNPANy5URWwp0xi0dixUgSq7jejxPSP
+ s51WLR1hT+soVYz98N/bioTU7C21ujujqxuQBDqh3TKZoccBR4rlcadpVjFl+F7QN4wa
+ tIDLEk6Vr690DkE/7kVCPbYZNF+dHn40x/+7H89+fUND2CWAMPfzBp3pycCD1Q/6jzKz
+ xuadxPOdkk/4rdwb06FJhfrAffW4W06B520MDkQqqTWgDJW5POGRPYXkl2ILiOii6DSw
+ 4bYQ==
+X-Gm-Message-State: AOAM5306US37JCl0tAIikOM/StgRiLy2laeB+PTypMP2H3261XPIEp4r
+ g8YlOhxG7mSIgDZG96NQfO7HhvB2ZxnCr/kIylAKngk5zQuAGRv1zlXD0IbwCdPcrtg94aSg85K
+ 9BuN0JIewzwhAqKq3YTInodRhUlHP
+X-Received: by 2002:a17:90b:3a81:b0:1d9:54a0:9362 with SMTP id
+ om1-20020a17090b3a8100b001d954a09362mr68110pjb.144.1651178438885; 
+ Thu, 28 Apr 2022 13:40:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzu0cLOLprjspCHdacdwkqgu8ueqBRXzYxjd/Jy3lwxrDz2dD+Ho6GICDztO3st3Owj8HDpyQ==
+X-Received: by 2002:a17:90b:3a81:b0:1d9:54a0:9362 with SMTP id
+ om1-20020a17090b3a8100b001d954a09362mr68082pjb.144.1651178438595; 
+ Thu, 28 Apr 2022 13:40:38 -0700 (PDT)
 Received: from luke-ubuntu.buildd (cpe-66-27-118-101.san.res.rr.com.
  [66.27.118.101]) by smtp.gmail.com with ESMTPSA id
- f63-20020a62db42000000b0050d35bcdbc0sm659027pfg.181.2022.04.28.13.40.36
+ f63-20020a62db42000000b0050d35bcdbc0sm659027pfg.181.2022.04.28.13.40.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Apr 2022 13:40:36 -0700 (PDT)
+ Thu, 28 Apr 2022 13:40:37 -0700 (PDT)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it,
 	rpalethorpe@suse.de,
 	liwang@redhat.com
-Date: Thu, 28 Apr 2022 13:39:31 -0700
-Message-Id: <e01538f44e048afd2127d60c9dfcd5dccc39e16d.1651176646.git.luke.nowakowskikrijger@canonical.com>
+Date: Thu, 28 Apr 2022 13:39:32 -0700
+Message-Id: <7b92172f2e12b4d72af5574570bada11927c57d2.1651176646.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1651176645.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1651176645.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 06/19] API/cgroup: Implement tst_cg_load_config
+Subject: [LTP] [PATCH v3 07/19] API/cgroup: Add more controllers to
+ tst_cgroup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,159 +99,138 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Implement tst_cg_load_config which consumes the state given by
-tst_cg_print_config to update the internal test state to reflect
-the given config.
+Add the rest of the controllers that are tested in LTP controller tests
+so that they can be mounted using the cgroup api.
 
-This allows for programs using the cgroup C API to load and reload
-state, allowing functionality such as calling tst_cg_require and
-tst_cg_cleanup to function properly between programs or between
-invocations of a binary using the C API.
+Control files should be added on an as needed basis.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
-v2: Add root null check in parse_root_config.
-    Remove checking for ltp_drain_dir key from config as it was
-    redundant.
-    Remove unsued variable in parse_ctrl_config.
-    Cleanup some compiler warnings.
-v3: Rewrite to consume each line of the config with a scanf to make
-    the parsing much simpler while using new config variables.
-v4: Modify CONFIG_FORMAT to have variable delimits for sscanf to make it
-    more safe. Add extra checks for sscanf reading.
+v2: remove rdma controller as that is not used in any LTP tests.
+Remove control files that should be added on an as needed basis.
+v3: Add debug controllers
 
- include/tst_cgroup.h |  7 ++++
- lib/tst_cgroup.c     | 77 ++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 81 insertions(+), 3 deletions(-)
+ lib/tst_cgroup.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 91 insertions(+), 1 deletion(-)
 
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index 87e55f4df..9bad0d366 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -121,6 +121,13 @@ void tst_cg_scan(void);
-  */
- void tst_cg_print_config(void);
- 
-+/* Load the config printed out by tst_cg_print_config and configure the internal
-+ * libary state to match the config. Used to allow tst_cg_cleanup to properly
-+ * cleanup mounts and directories created by tst_cg_require between program
-+ * invocations.
-+ */
-+void tst_cg_load_config(const char *const config);
-+
- /* Ensure the specified controller is available in the test's default
-  * CGroup, mounting/enabling it if necessary. Usually this is not
-  * necesary use tst_test.needs_cgroup_controllers instead.
 diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 2d4e4a2fe..55c57b20d 100644
+index 55c57b20d..254f4aaca 100644
 --- a/lib/tst_cgroup.c
 +++ b/lib/tst_cgroup.c
-@@ -319,8 +319,9 @@ opendir:
- 				  O_PATH | O_DIRECTORY);
- }
+@@ -84,8 +84,19 @@ enum cgroup_ctrl_indx {
+ 	CTRL_CPU,
+ 	CTRL_CPUSET,
+ 	CTRL_IO,
++	CTRL_PIDS,
++	CTRL_HUGETLB,
++	CTRL_CPUACCT,
++	CTRL_DEVICES,
++	CTRL_FREEZER,
++	CTRL_NETCLS,
++	CTRL_NETPRIO,
++	CTRL_BLKIO,
++	CTRL_MISC,
++	CTRL_PERFEVENT,
++	CTRL_DEBUG
+ };
+-#define CTRLS_MAX CTRL_CPUSET
++#define CTRLS_MAX CTRL_DEBUG
  
-+#define PATH_MAX_STRLEN 4095
- #define CONFIG_HEADER "ctrl_name ver we_require_it mnt_path we_mounted_it ltp_dir.we_created_it test_dir.dir_name"
--#define CONFIG_FORMAT "%s\t%d\t%d\t%s\t%d\t%d\t%s"
-+#define CONFIG_FORMAT "%" TST_TOSTR(CTRL_NAME_MAX) "s\t%d\t%d\t%" TST_TOSTR(PATH_MAX_STRLEN) "s\t%d\t%d\t%" TST_TOSTR(NAME_MAX) "s"
- /* Prints out the state associated with each controller to be consumed by
-  * tst_cg_load_config.
-  *
-@@ -339,7 +340,7 @@ void tst_cg_print_config(void)
- 		if (!root)
- 			continue;
+ /* At most we can have one cgroup V1 tree for each controller and one
+  * (empty) v2 tree.
+@@ -197,6 +208,52 @@ static const struct cgroup_file io_ctrl_files[] = {
+ 	{ }
+ };
  
--		printf(CONFIG_FORMAT,
-+		printf("%s\t%d\t%d\t%s\t%d\t%d\t%s\n",
- 			ctrl->ctrl_name,
- 			root->ver,
- 			ctrl->we_require_it,
-@@ -347,7 +348,6 @@ void tst_cg_print_config(void)
- 			root->we_mounted_it,
- 			root->ltp_dir.we_created_it,
- 			root->test_dir.dir_name ? root->test_dir.dir_name : "NULL");
--		printf("\n");
- 	}
- }
++static const struct cgroup_file pids_ctrl_files[] = {
++	{ "pids.max", "pids.max", CTRL_PIDS },
++	{ "pids.current", "pids.current", CTRL_PIDS },
++	{ }
++};
++
++static const struct cgroup_file hugetlb_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file cpuacct_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file devices_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file freezer_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file netcls_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file netprio_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file blkio_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file misc_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file perf_event_ctrl_files[] = {
++	{ }
++};
++
++static const struct cgroup_file debug_ctrl_files[] = {
++	{ }
++};
++
+ #define CTRL_NAME_MAX 31
+ /* Lookup tree for item names. */
+ static struct cgroup_ctrl controllers[] = {
+@@ -213,6 +270,39 @@ static struct cgroup_ctrl controllers[] = {
+ 	[CTRL_IO] = {
+ 		"io", io_ctrl_files, CTRL_IO, NULL, 0
+ 	},
++	[CTRL_PIDS] = {
++		"pids", pids_ctrl_files, CTRL_PIDS, NULL, 0
++	},
++	[CTRL_HUGETLB] = {
++		"hugetlb", hugetlb_ctrl_files, CTRL_HUGETLB, NULL, 0
++	},
++	[CTRL_CPUACCT] = {
++		"cpuacct", cpuacct_ctrl_files, CTRL_CPUACCT, NULL, 0
++	},
++	[CTRL_DEVICES] = {
++		"devices", devices_ctrl_files, CTRL_DEVICES, NULL, 0
++	},
++	[CTRL_FREEZER] = {
++		"freezer", freezer_ctrl_files, CTRL_FREEZER, NULL, 0
++	},
++	[CTRL_NETCLS] = {
++		"net_cls", netcls_ctrl_files, CTRL_NETCLS, NULL, 0
++	},
++	[CTRL_NETPRIO] = {
++		"net_prio", netprio_ctrl_files, CTRL_NETPRIO, NULL, 0
++	},
++	[CTRL_BLKIO] = {
++		"blkio", blkio_ctrl_files, CTRL_BLKIO, NULL, 0
++	},
++	[CTRL_MISC] = {
++		"misc", misc_ctrl_files, CTRL_MISC, NULL, 0
++	},
++	[CTRL_PERFEVENT] = {
++		"perf_event", perf_event_ctrl_files, CTRL_PERFEVENT, NULL, 0
++	},
++	[CTRL_DEBUG] = {
++		"debug", debug_ctrl_files, CTRL_DEBUG, NULL, 0
++	},
+ 	{ }
+ };
  
-@@ -376,6 +376,77 @@ static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
- 	return NULL;
- }
- 
-+static void cgroup_parse_config_line(const char *const config_entry)
-+{
-+	char ctrl_name[CTRL_NAME_MAX + 1], mnt_path[PATH_MAX_STRLEN + 1], test_dir_name[NAME_MAX + 1];
-+	int ver, we_require_it, we_mounted_it, ltp_dir_we_created_it, vars_read;
-+	size_t len;
-+	struct cgroup_root *root;
-+	struct cgroup_ctrl *ctrl;
-+
-+	vars_read = sscanf(config_entry, CONFIG_FORMAT,
-+		ctrl_name, &ver, &we_require_it, mnt_path, &we_mounted_it,
-+		&ltp_dir_we_created_it, test_dir_name);
-+
-+	if (vars_read != 7)
-+		tst_brk(TBROK, "Incorrect number of vars read from config. Config possibly malformed?");
-+
-+	ctrl = cgroup_find_ctrl(ctrl_name);
-+	if (!ctrl)
-+		tst_brk(TBROK, "Could not find ctrl from config. Ctrls changing between calls?");
-+
-+	ctrl->we_require_it = we_require_it;
-+
-+	root = cgroup_find_root(mnt_path);
-+	if (!root)
-+		tst_brk(TBROK, "Could not find root from config. Config possibly malformed?");
-+
-+	if (we_mounted_it)
-+		root->we_mounted_it = 1;
-+
-+	if (!root->ltp_dir.dir_name) {
-+		cgroup_dir_mk(&root->mnt_dir, cgroup_ltp_dir, &root->ltp_dir);
-+		cgroup_dir_mk(&root->ltp_dir, cgroup_ltp_drain_dir, &root->drain_dir);
-+		if (ltp_dir_we_created_it) {
-+			root->ltp_dir.we_created_it = 1;
-+			root->drain_dir.we_created_it = 1;
-+		}
-+	}
-+
-+	if (!root->test_dir.dir_name && strcmp(test_dir_name, "NULL")) {
-+		strncpy(cgroup_test_dir, test_dir_name, NAME_MAX);
-+		cgroup_dir_mk(&root->ltp_dir, cgroup_test_dir, &root->test_dir);
-+		root->test_dir.we_created_it = 1;
-+	}
-+}
-+
-+/* Load the test state config provided by tst_cg_print_config
-+ *
-+ * This will reload some internal tst_cgroup state given by the config
-+ * that might otherwise have been lost between calls or between different
-+ * processes. In particular this is used by testcases/lib/tst_cgctl to
-+ * provide access to this C api to shell scripts.
-+ *
-+ * The config keeps track of the minimal state needed for tst_cg_cleanup
-+ * to cleanup mounts and directories created by tst_cg_require.
-+ */
-+void tst_cg_load_config(const char *const config)
-+{
-+	char temp_config[BUFSIZ];
-+	char *line;
-+	const size_t config_len = strlen(config) + 1;
-+
-+	if (config_len >= BUFSIZ)
-+		tst_brk(TBROK, "Config has exceeded buffer size?");
-+
-+	memcpy(temp_config, config, config_len);
-+	temp_config[config_len] = '\0';
-+
-+	line = strtok(temp_config, "\n");
-+	/* Make sure to consume the header. */
-+	for (line = strtok(NULL, "\n"); line; line = strtok(NULL, "\n"))
-+		cgroup_parse_config_line(line);
-+}
- 
- /* Determine if a mounted cgroup hierarchy is unique and record it if so.
-  *
 -- 
 2.32.0
 
