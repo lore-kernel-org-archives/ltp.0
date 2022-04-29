@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D4C8C433F5
-	for <ltp@archiver.kernel.org>; Fri, 29 Apr 2022 11:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE6E1C433EF
+	for <ltp@archiver.kernel.org>; Fri, 29 Apr 2022 16:06:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E8C4C3CA798
-	for <ltp@archiver.kernel.org>; Fri, 29 Apr 2022 13:12:35 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4B71B3CA77D
+	for <ltp@archiver.kernel.org>; Fri, 29 Apr 2022 18:06:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 203C93CA710
- for <ltp@lists.linux.it>; Fri, 29 Apr 2022 13:12:26 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 6086D3C8972
+ for <ltp@lists.linux.it>; Fri, 29 Apr 2022 18:05:50 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6A9BF600835
- for <ltp@lists.linux.it>; Fri, 29 Apr 2022 13:12:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1651230743;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 77A1D1000A50
+ for <ltp@lists.linux.it>; Fri, 29 Apr 2022 18:05:49 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 33288210DF;
+ Fri, 29 Apr 2022 16:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1651248348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=9devpSmXmelJ7uzkspgc9F0NgqeTiyW7+AwqE1HwnBQ=;
- b=ADZGSGSPn330HVKexBcx10AW3QqNo19h+cg4vYJm4r1yUSdzRzBo2JAWAT4mO7Teh3IytN
- irIPVbTc2rZ/jQiJyoWNJsAzRRwOtBn/N4r9T4yUpqw8wTVI4r8V9D9fXfo8U+hHV/PQQU
- KcuzWG2r8AuVKJHKnKTaojzgsRaiO7M=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-477-eNNI4IG6N1uvoygA-ZK5YQ-1; Fri, 29 Apr 2022 07:12:22 -0400
-X-MC-Unique: eNNI4IG6N1uvoygA-ZK5YQ-1
-Received: by mail-yw1-f198.google.com with SMTP id
- 00721157ae682-2f7c5767f0fso71756807b3.4
- for <ltp@lists.linux.it>; Fri, 29 Apr 2022 04:12:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=9devpSmXmelJ7uzkspgc9F0NgqeTiyW7+AwqE1HwnBQ=;
- b=zT/yvATc9gLq3MUbt0ZX56jjLMyQcSJqyGkv3AlYCDREw663i67nC/2jM/rUzXUEr2
- OZ5GfGJIDZAGJc1+PcW2gl+0lNRCwnSwtcnZnDuMA9qtPNE3LjYewpCtYx/x+84Cqv6K
- JwAAYzbVCF+mToQPP+2jWKHCWh0j8fKFAtUdnewbLD/+BOKYWH+AIXCj8El8ixKStx3S
- 1y4lLrQDjSMEwyEK08qS2LXx+mUXKlpuTWJPgAry4iJDN+oEzUv/Jzg8UdquGpGFTXvg
- 96lyRIGM3n4f04JZHj8lYUs2EwvhzWbrHT99UGjBkkNLnKk7cWDvaUqN4dDn/12NvP5j
- 3m+A==
-X-Gm-Message-State: AOAM533CFgBNt8QCJoT6Y89pLb7f/sJNNKmYDDZ28LIf8gsi7kZGwJ4M
- L1mTt0r8l3xUYnEpeNPS2QFWa5pwPyIPBlcDNGXr9NjR+vNBuX6yIsNgHgYJxlxvWtDiWOcv3qn
- xaXuRJaEFeEL4MIsaZRavgU0Mjls=
-X-Received: by 2002:a25:107:0:b0:645:d3ed:3cb7 with SMTP id
- 7-20020a250107000000b00645d3ed3cb7mr32513301ybb.26.1651230741743; 
- Fri, 29 Apr 2022 04:12:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyeLORNMsuiRnWiDSZWtw0wWURrMgSyU3HRvKLQi4hO643E9mtnXTBrTt5wHneUD/7gZAS/w+RZgbeosVyD00A=
-X-Received: by 2002:a25:107:0:b0:645:d3ed:3cb7 with SMTP id
- 7-20020a250107000000b00645d3ed3cb7mr32513272ybb.26.1651230741444; Fri, 29 Apr
- 2022 04:12:21 -0700 (PDT)
+ bh=QYlQ00pa3l1UwhXTbpGnCKAN1Gy0QXDNrOlHxAIiitI=;
+ b=Mjz8nOlDr1eRTc/D0DeDdoQn0VIEBrU//FtsDkW01B4ls+AunOirG2HkuwooIm9KlLf2jm
+ 9pVfuI2uitOOBwY7S35zDrr49vqwSfgm2mX8MgcNTDYuLX6aaexg/euplQXi9EH1HXQXVN
+ +U41KxDGOtfyrBN4zA6CKLkU1ZRjR/M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1651248348;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=QYlQ00pa3l1UwhXTbpGnCKAN1Gy0QXDNrOlHxAIiitI=;
+ b=zZyzUQGnHQOOwvK0Of5VWwylc+WJHUTJOlLwzbSSvJDzzQDVvNuAo70UjTh6KRhA9L/lYE
+ lquQnHyKUqL+1iBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D08A13446;
+ Fri, 29 Apr 2022 16:05:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id jUBQAdwMbGJ+PgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 29 Apr 2022 16:05:48 +0000
+Message-ID: <539e2eb7-05d5-470c-3287-b1e9b7220532@suse.cz>
+Date: Fri, 29 Apr 2022 18:05:47 +0200
 MIME-Version: 1.0
-References: <20220428132656.11075-1-liwang@redhat.com>
- <20220428132656.11075-2-liwang@redhat.com> <YmvHDc8esDqfAJj/@yuki>
-In-Reply-To: <YmvHDc8esDqfAJj/@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 29 Apr 2022 19:12:04 +0800
-Message-ID: <CAEemH2fq4OCqOpHehuSpgbT9FEUUzWYyOdaWfjDgKK9edUAY9w@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>, Hiroyuki Yasuhara <hyasuhar@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20220428065657.32046-1-pvorel@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20220428065657.32046-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] rtc02: skip test with unsupport set RTC
- platform
+Subject: Re: [LTP] [PATCH v3 5/5] busy_poll: Move TST_{SETUP,
+ CLEANUP} to the tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,70 +79,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0740655010=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0740655010==
-Content-Type: multipart/alternative; boundary="000000000000c94f5f05ddc91d65"
+Hi,
+TST_TESTFUNC should be moved to individual test scripts as well, for the
+same reason. Other than that, the whole patchset looks good:
 
---000000000000c94f5f05ddc91d65
-Content-Type: text/plain; charset="UTF-8"
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-On Fri, Apr 29, 2022 at 7:05 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On 28. 04. 22 8:56, Petr Vorel wrote:
+> Although having variables in both busy_poll_lib.sh and the tests which
+> are using it isn't optimal, hooking up callbacks on the reverse end of
+> include is even worse code.
+> 
+> Suggested-by: Martin Doucha <mdoucha@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Follow-up of "v3 shell: Cleanup getopts usage" patchset [1],
+> replacing first commit.
+> 
+> Kind regards,
+> Petr
+> 
+> [1] https://patchwork.ozlabs.org/project/ltp/list/?series=297175
+> 
+>  testcases/network/busy_poll/busy_poll01.sh   | 3 +++
+>  testcases/network/busy_poll/busy_poll02.sh   | 3 +++
+>  testcases/network/busy_poll/busy_poll03.sh   | 2 ++
+>  testcases/network/busy_poll/busy_poll_lib.sh | 3 +--
+>  4 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/busy_poll/busy_poll01.sh b/testcases/network/busy_poll/busy_poll01.sh
+> index 65f4db3fe..1f7097771 100755
+> --- a/testcases/network/busy_poll/busy_poll01.sh
+> +++ b/testcases/network/busy_poll/busy_poll01.sh
+> @@ -4,6 +4,9 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  
+> +TST_SETUP="setup"
+> +TST_CLEANUP="cleanup"
+> +
+>  cleanup()
+>  {
+>  	[ -n "$busy_read_old" ] && \
+> diff --git a/testcases/network/busy_poll/busy_poll02.sh b/testcases/network/busy_poll/busy_poll02.sh
+> index ebae4d2f5..634bbd6bd 100755
+> --- a/testcases/network/busy_poll/busy_poll02.sh
+> +++ b/testcases/network/busy_poll/busy_poll02.sh
+> @@ -4,6 +4,9 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  
+> +TST_SETUP="setup"
+> +TST_CLEANUP="cleanup"
+> +
+>  cleanup()
+>  {
+>  	[ -n "$busy_poll_old" ] && \
+> diff --git a/testcases/network/busy_poll/busy_poll03.sh b/testcases/network/busy_poll/busy_poll03.sh
+> index 04d5978f7..b2e1c0a7a 100755
+> --- a/testcases/network/busy_poll/busy_poll03.sh
+> +++ b/testcases/network/busy_poll/busy_poll03.sh
+> @@ -4,6 +4,8 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  
+> +TST_SETUP="setup"
+> +TST_CLEANUP="cleanup"
+>  TST_TEST_DATA="udp udp_lite"
+>  
+>  cleanup()
+> diff --git a/testcases/network/busy_poll/busy_poll_lib.sh b/testcases/network/busy_poll/busy_poll_lib.sh
+> index de61d3fcd..446ae3d65 100755
+> --- a/testcases/network/busy_poll/busy_poll_lib.sh
+> +++ b/testcases/network/busy_poll/busy_poll_lib.sh
+> @@ -1,10 +1,9 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) Linux Test Project, 2016-2022
+>  # Copyright (c) 2016-2018 Oracle and/or its affiliates. All Rights Reserved.
+>  
+> -TST_SETUP="setup"
+>  TST_TESTFUNC="test"
 
+^^ here
 
->
-> I wonder if there is a different way how to figure out setting RTC is
-> not supported, this may potentionaly mask away a breakage in a driver
-> that is supposed to be able to set time like this.
->
-
-Yes, that is what I really hope to know as well.
-
-Not sure if Hiroyuki Yasuhara (already on CC list) can provide more info
-here.
+> -TST_CLEANUP="cleanup"
+>  TST_MIN_KVER="3.11"
+>  TST_NEEDS_TMPDIR=1
+>  TST_NEEDS_ROOT=1
 
 
 -- 
-Regards,
-Li Wang
-
---000000000000c94f5f05ddc91d65
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, Apr 29, 2022 at 7:05 PM Cyril Hrubis &lt;<a=
- href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><d=
-iv>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
-x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-I wonder if there is a different way how to figure out setting RTC is<br>
-not supported, this may potentionaly mask away a breakage in a driver<br>
-that is supposed to be able to set time like this.<br></blockquote><div><br=
-></div><div><div class=3D"gmail_default" style=3D"font-size:small">Yes, tha=
-t is what I really hope to know as well.</div><div class=3D"gmail_default" =
-style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"f=
-ont-size:small">Not sure if Hiroyuki Yasuhara (already on CC list) can prov=
-ide more info here.</div></div></div><br clear=3D"all"><div><br></div>-- <b=
-r><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,=
-<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000c94f5f05ddc91d65--
-
-
---===============0740655010==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0740655010==--
-
