@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1A5EC433F5
-	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 17:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D4DC433F5
+	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 17:47:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B7CD3CAB83
-	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 19:47:23 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id ABEBE3CABA8
+	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 19:47:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E46163CA95D
- for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 762C53CA988
+ for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2CC3A20006D
- for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:07 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D1552600149
+ for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:08 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 831D2210DF;
- Tue,  3 May 2022 17:45:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 844651F750;
+ Tue,  3 May 2022 17:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1651599907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1651599908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/opg+5m4bhh18NsUdNanNPcaKS2VRzysrPoX9aHMczU=;
- b=tZ8DpS51pQPshrG/JO6klo5QckqrLmTaMXd8j7u/ZlkqJmACQwCYRO1OIAC2T0PhbBG3nk
- EzQ1FF+Lmu1admioL6Jl8zbYhK8BXROiJTvAULLmTy92UM8p3ZaPk68hCMQE0Gxpb1HcGP
- IyJrI/OjX7/ph4md34xTiiHjHsE/7is=
+ bh=2y+r3C50Zn/8uc0wz/gBU2THYvayC3Sxn8vt25DX99g=;
+ b=exOhCvi/PsPOu/dkFRK/9TV9xs857liEXVoSfcBipDwxGZgbI6V2C/LJrtyabcr1jIvHMR
+ u3VwVSIa/E2P5LgbAOj0v28AgRMe9o66z04n8cOEfBONDZOHsWwLysgvqZPCO6FUiEb/wL
+ 6vGnRnw5SoBm8AN6UuHj4VTh2huTWdU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1651599907;
+ s=susede2_ed25519; t=1651599908;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/opg+5m4bhh18NsUdNanNPcaKS2VRzysrPoX9aHMczU=;
- b=dWbizc0s0eX0SH3ZCyBkH7+va968b0qk/u1lBgnagOAFAg74Gzm7Q0+ZblddPB3DTvJcPU
- D3PzfDXHeunGMLAA==
+ bh=2y+r3C50Zn/8uc0wz/gBU2THYvayC3Sxn8vt25DX99g=;
+ b=VfjCKN2EXWuh9pLGQMYprVkQ1PWafpNn2rC3jPUKcX/PAjEtIeX0eeA0C52eKtnpt7uKGm
+ anV/6gL+p3uOYwBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6381913ABE;
- Tue,  3 May 2022 17:45:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 701E013ABE;
+ Tue,  3 May 2022 17:45:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FTjEFSNqcWL+PQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 03 May 2022 17:45:07 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id SP8bGiRqcWICPgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 03 May 2022 17:45:08 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue,  3 May 2022 19:46:58 +0200
-Message-Id: <20220503174718.21205-11-chrubis@suse.cz>
+Date: Tue,  3 May 2022 19:47:00 +0200
+Message-Id: <20220503174718.21205-13-chrubis@suse.cz>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220503174718.21205-1-chrubis@suse.cz>
 References: <20220503174718.21205-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 10/30] syscalls/gettimeofday02: Convert to runtime.
+Subject: [LTP] [PATCH v2 12/30] syscalls/inotify01: Remove now useless
+ timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,53 +86,21 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../kernel/syscalls/gettimeofday/gettimeofday02.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/inotify/inotify11.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-index 948d2d8ec..6f175e79b 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-@@ -25,8 +25,6 @@
- #include "lapi/syscalls.h"
- 
- static volatile sig_atomic_t done;
--static char *str_rtime;
--static int rtime = 10;
- 
- static void breakout(int sig)
- {
-@@ -37,6 +35,7 @@ static void verify_gettimeofday(void)
- {
- 	struct __kernel_old_timeval tv1, tv2;
- 	unsigned long long cnt = 0;
-+	int rtime = tst_remaining_runtime();
- 
- 	done = 0;
- 
-@@ -68,21 +67,11 @@ static void verify_gettimeofday(void)
- 
- static void setup(void)
- {
--	if (str_rtime) {
--		rtime = atoi(str_rtime);
--		if (rtime <= 0)
--			tst_brk(TBROK, "Invalid runtime '%s'", str_rtime);
--		tst_set_timeout(rtime + 60);
--	}
--
- 	SAFE_SIGNAL(SIGALRM, breakout);
+diff --git a/testcases/kernel/syscalls/inotify/inotify11.c b/testcases/kernel/syscalls/inotify/inotify11.c
+index 062b92409..e426f9e1c 100644
+--- a/testcases/kernel/syscalls/inotify/inotify11.c
++++ b/testcases/kernel/syscalls/inotify/inotify11.c
+@@ -117,7 +117,6 @@ static void cleanup(void)
  }
  
  static struct tst_test test = {
- 	.setup = setup,
--	.options = (struct tst_option[]) {
--		{"T:", &str_rtime, "Test iteration runtime in seconds"},
--		{},
--	},
-+	.max_iteration_runtime = 10,
- 	.test_all = verify_gettimeofday,
- };
+-	.timeout = 10,
+ 	.needs_tmpdir = 1,
+ 	.forks_child = 1,
+ 	.cleanup = cleanup,
 -- 
 2.35.1
 
