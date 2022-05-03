@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0735DC433F5
-	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 17:49:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C357BC433F5
+	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 17:50:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 88B583CACC8
-	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 19:49:54 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0FD873CACB5
+	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 19:50:04 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 685BB3CA9A7
+ by picard.linux.it (Postfix) with ESMTPS id D394C3CA996
  for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D70221400535
- for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:16 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 62DD0600454
+ for <ltp@lists.linux.it>; Tue,  3 May 2022 19:45:17 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 81F4521872;
- Tue,  3 May 2022 17:45:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 12BC71F74B;
+ Tue,  3 May 2022 17:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1651599916; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1651599917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=QrVukndCbOkeqmE2IJpoTqUwgj3/pN3CP79NeYW0w6A=;
- b=MMTi/PASaRuAWwiJmiU/rvGiOwQkcmQxrA84aQaIpZecgLaNFZ9J4SexcmVDuHDUBwCbib
- veVxbzPTgkESbkgs0Do0aVRdA7dgx66fCpeHLlc01MhwmIYJi+5GNaNlonEAll2LF9CgqI
- pC69EDvwMxNPuiNt831mZplfvviRaHA=
+ bh=Z7M6VVpL5cAG9IhGs4ori93XimJJNg0fANX8//D6rYQ=;
+ b=0ZOUsZue4zumw2SZmrEMaf2VqRpYEirtBIPrycT+weNCu3y5V20Y21v+NQ+myR/0k9GMFM
+ c+mZkJ7t86NOij0lRVJlZZlFSPeMS23xxMQ5yenX5xuHst36KIUmQr24YdRWelKsv9ILVJ
+ 6njUlp4FQ/IDbHRxtSiX2ghRNylEAKE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1651599916;
+ s=susede2_ed25519; t=1651599917;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=QrVukndCbOkeqmE2IJpoTqUwgj3/pN3CP79NeYW0w6A=;
- b=qDHqi/uzhyC0BAGYbcjO3ZUmhLbelAkH1h9L/jHMRvv9H8wJXZxYqYDUmkWbA1GtSmma2J
- gflgqcm2rqeBLjAA==
+ bh=Z7M6VVpL5cAG9IhGs4ori93XimJJNg0fANX8//D6rYQ=;
+ b=pV7nkq7hiytG+oE899ToURv7O3iAJgH7galHW/ZSThqyuEKfN8Vwzy4OGQnWbZTgO4ujQv
+ qZ158TBm/ZbilrBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B63F13ABE;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F334A13ABE;
  Tue,  3 May 2022 17:45:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gQxOGSxqcWInPgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id Obn1OSxqcWIpPgAAMHmgww
  (envelope-from <chrubis@suse.cz>); Tue, 03 May 2022 17:45:16 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue,  3 May 2022 19:47:14 +0200
-Message-Id: <20220503174718.21205-27-chrubis@suse.cz>
+Date: Tue,  3 May 2022 19:47:15 +0200
+Message-Id: <20220503174718.21205-28-chrubis@suse.cz>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220503174718.21205-1-chrubis@suse.cz>
 References: <20220503174718.21205-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 26/30] ltp-aiodio/dio_{truncate,
- append}: Convert to runtime
+Subject: [LTP] [PATCH v2 27/30] ltp-aiodio/dio_read: Convert to runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,84 +83,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Change the code so that the test runtime is capped at the maximal
-runtime allowed for the test, which is set to 30 minutes by default.
-
-The io_append() in common.h has to check for runtime to make this work.
+And cap the runtime on 30 minutes by default.
 
 CC: Andrea Cervesato <andrea.cervesato@suse.de>
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/io/ltp-aiodio/common.h       | 6 +++++-
- testcases/kernel/io/ltp-aiodio/dio_append.c   | 4 ++++
- testcases/kernel/io/ltp-aiodio/dio_truncate.c | 6 ++++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
+ testcases/kernel/io/ltp-aiodio/dio_read.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/testcases/kernel/io/ltp-aiodio/common.h b/testcases/kernel/io/ltp-aiodio/common.h
-index 0a242b91e..d9cbd8611 100644
---- a/testcases/kernel/io/ltp-aiodio/common.h
-+++ b/testcases/kernel/io/ltp-aiodio/common.h
-@@ -44,9 +44,13 @@ static inline void io_append(const char *path, char pattern, int flags, size_t b
+diff --git a/testcases/kernel/io/ltp-aiodio/dio_read.c b/testcases/kernel/io/ltp-aiodio/dio_read.c
+index f6ed59782..8a16307a7 100644
+--- a/testcases/kernel/io/ltp-aiodio/dio_read.c
++++ b/testcases/kernel/io/ltp-aiodio/dio_read.c
+@@ -51,6 +51,9 @@ static void do_buffered_writes(int fd, char *bufptr, long long fsize, long long
+ 			tst_brk(TBROK, "pwrite: wrote %lld bytes out of %lld", w, wsize);
  
- 	fd = SAFE_OPEN(path, flags, 0666);
- 
--	for (i = 0; i < bcount; i++)
-+	for (i = 0; i < bcount; i++) {
- 		SAFE_WRITE(1, fd, bufptr, bs);
- 
+ 		SAFE_FSYNC(fd);
++
 +		if (!tst_remaining_runtime())
-+			break;
-+	}
-+
- 	free(bufptr);
- 	SAFE_CLOSE(fd);
- }
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_append.c b/testcases/kernel/io/ltp-aiodio/dio_append.c
-index c099793f6..3a950f3c6 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_append.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_append.c
-@@ -71,6 +71,9 @@ static void run(void)
- 
- 	io_append(filename, 0, O_DIRECT | O_WRONLY | O_CREAT, writesize, appends);
- 
-+	if (!tst_remaining_runtime())
-+		tst_res(TINFO, "Test out of runtime, exitting");
-+
- 	if (SAFE_WAITPID(-1, &status, WNOHANG))
- 		tst_res(TFAIL, "Non zero bytes read");
- 	else
-@@ -87,6 +90,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.needs_tmpdir = 1,
- 	.forks_child = 1,
-+	.max_iteration_runtime = 1800,
- 	.options = (struct tst_option[]) {
- 		{"n:", &str_numchildren, "Number of processes (default 16)"},
- 		{"w:", &str_writesize, "Write size for each append (default 64K)"},
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_truncate.c b/testcases/kernel/io/ltp-aiodio/dio_truncate.c
-index 1fbf83de0..b04302a7b 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_truncate.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_truncate.c
-@@ -142,6 +142,11 @@ static void run(void)
- 			fail = 1;
- 			break;
- 		}
-+
-+		if (!tst_remaining_runtime()) {
-+			tst_res(TINFO, "Test out of runtime, exitting");
-+			break;
-+		}
++			return;
  	}
+ }
  
- 	if (fail)
-@@ -158,6 +163,7 @@ static struct tst_test test = {
+@@ -75,6 +78,11 @@ static int do_direct_reads(char *filename, char *bufptr, long long fsize, long l
+ 				goto exit;
+ 			}
+ 
++			if (!tst_remaining_runtime()) {
++				tst_res(TINFO, "Test out of runtime, exitting");
++				goto exit;
++			}
++
+ 			w = pread(fd, bufptr, rsize, offset);
+ 			if (w < 0)
+ 				tst_brk(TBROK, "pread: %s", tst_strerrno(-w));
+@@ -170,6 +178,7 @@ static struct tst_test test = {
  	.cleanup = cleanup,
  	.needs_tmpdir = 1,
  	.forks_child = 1,
 +	.max_iteration_runtime = 1800,
  	.options = (struct tst_option[]) {
- 		{"n:", &str_numchildren, "Number of threads (default 16)"},
- 		{"s:", &str_filesize, "Size of file (default 64K)"},
+ 		{"n:", &str_numchildren, "Number of threads (default 8)"},
+ 		{"w:", &str_writesize, "Size of writing blocks (default 32M)"},
 -- 
 2.35.1
 
