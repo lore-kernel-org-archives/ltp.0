@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D142C433FE
-	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 14:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D1AC433EF
+	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 15:10:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD8F53CA8C8
-	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 16:38:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5E9B73CA8D9
+	for <ltp@archiver.kernel.org>; Tue,  3 May 2022 17:10:45 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B05653CA48D
- for <ltp@lists.linux.it>; Tue,  3 May 2022 16:38:05 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E91383CA8A1
+ for <ltp@lists.linux.it>; Tue,  3 May 2022 17:10:34 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4DB686000EC
- for <ltp@lists.linux.it>; Tue,  3 May 2022 16:38:04 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 163ED140097D
+ for <ltp@lists.linux.it>; Tue,  3 May 2022 17:10:33 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8378D1F749;
- Tue,  3 May 2022 14:38:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2D7A61F38D;
+ Tue,  3 May 2022 15:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1651588684;
+ t=1651590633;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TvgMKhvz5t6eCTXAPaaIG8f+eawTHbBB7SKYrcZGueY=;
- b=bA3Vg/iNTRIRXLS8U14gViLpAIJPIbOpDAoMtes0GWrr4DZv5GXlBWTcU9h2sdLo3DyckB
- OG8+hIDUjND4dH/Ch3iHyYZtL89RbBKOJw7ge/hNF8l/dWwvvv2BLpQn7yCNisQwYssXx2
- bTXekLKDP0e7ZEFd2lE2yfTF1RxpQUI=
+ bh=JzZp62RQarHaUU9DFRMz45N9YLauIMcUjqdnYFi1m+M=;
+ b=kyg7+stnVOwYdWO/nCZf7eC0lCgD5Gh2YTRm3cujqIG15Zuy5ZXhxIZ6RKbUqkqr1yPyr5
+ kwpyTpPxSJlSHTmCbf9W58s6lsu1ZgaYFHeS/4YOqXBF4qT5KIWOgGX+oMWtvr4ywX9Gm7
+ T6bonMHo0xm1TI6Ktzx9e76jJWIjICk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1651588684;
+ s=susede2_ed25519; t=1651590633;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TvgMKhvz5t6eCTXAPaaIG8f+eawTHbBB7SKYrcZGueY=;
- b=oKFEwrQJ9iyqBtQNP//Z3hI8FnbhDpr8nS7oT0Ym2F5XAPQuHMyZM7vGkoogpx4TxsIyIb
- iOL5lTRZdYzRB5AA==
+ bh=JzZp62RQarHaUU9DFRMz45N9YLauIMcUjqdnYFi1m+M=;
+ b=G87cbb3bbyrQt282q08DcGWWdWQI0rfjSR1MekL9grgtfYRRSa9dO7D4ZGt5fNFouITB9W
+ LEWW5thuKGF1eFBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55B5B13AA3;
- Tue,  3 May 2022 14:38:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EA9BC13ABE;
+ Tue,  3 May 2022 15:10:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id e6hME0w+cWKNawAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 03 May 2022 14:38:04 +0000
-Date: Tue, 3 May 2022 16:38:02 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id Up/fN+hFcWLvegAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 03 May 2022 15:10:32 +0000
+Date: Tue, 3 May 2022 17:10:31 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Message-ID: <YnE+SjQ9E5yQ6RIM@pevik>
+Message-ID: <YnFF54y/OJ/v2B14@pevik>
 References: <cover.1651176645.git.luke.nowakowskikrijger@canonical.com>
- <2a67385fe34905b5b631abadb6daefb6f595a924.1651176646.git.luke.nowakowskikrijger@canonical.com>
+ <81ac339d9c92668acabbdd396092bc4b67119872.1651176646.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2a67385fe34905b5b631abadb6daefb6f595a924.1651176646.git.luke.nowakowskikrijger@canonical.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <81ac339d9c92668acabbdd396092bc4b67119872.1651176646.git.luke.nowakowskikrijger@canonical.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 05/19] tst_test_macros: Add TST_TOSTR macro
+Subject: Re: [LTP] [PATCH 08/19] API/cgroup: refuse to mount blkio when io
+ controller is mounted
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,43 +86,44 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Luke,
 
-> Add the TST_TOSTR macro which uses a preprocessor trick to concetenate
-> variables into strings.
+> Mounting the v1 blkio controller while v2 io controller is mounted
+> unmounts the io controller, triggering a tst_brk that the number of
+> controller has gone down.
 
-> Useful when needing to create strings from other #define variables.
+> Because these controllers don't seem to be compatible, tst_brk with
+> TCONF and report that we refused to mount the blkio controller while the
+> io controller is mounted.
 
 > Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 > ---
->  include/tst_test_macros.h | 3 +++
->  1 file changed, 3 insertions(+)
+>  lib/tst_cgroup.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-> index 2e7b7871c..f5d86c421 100644
-> --- a/include/tst_test_macros.h
-> +++ b/include/tst_test_macros.h
-include/tst_common.h would be probably a better place.
-Because tst_test_macros.h contains tests which call TEST() helpers.
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index 254f4aaca..6794046e2 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -717,6 +717,11 @@ static void cgroup_mount_v1(struct cgroup_ctrl *const ctrl)
+>  	char mnt_path[PATH_MAX];
+>  	int made_dir = 0;
 
-> @@ -36,6 +36,9 @@ extern void *TST_RET_PTR;
-
->  #define TST_2_(_1, _2, ...) _2
-
-> +#define _TST_TOSTR(STR) #STR
-At least 3 tests have:
-#define str(s) #s (or STR)
-
-(testcases/network/stress/route/route-change-netlink.c
-testcases/kernel/controllers/freezer/vfork.c
-testcases/kernel/pty/pty04.c)
-
-therefore IMHO it'd be better to define:
-#define TST_STR(s) #s
-#define TST_TOSTR(s) TST_STR(s)
-
-> +#define TST_TOSTR(STR) _TST_TOSTR(STR)
+> +	if (ctrl->ctrl_indx == CTRL_BLKIO && controllers[CTRL_IO].ctrl_root) {
+> +		tst_brk(TCONF,
+> +			"IO controller found on V2 root, skipping blkio mount that would unmount IO controller");
+Good catch! I'm just not sure if it wouldn't be better to use tst_res(TCONF,
+..); return;
+Because with tst_brk we're not skipping the test but quiting, right?
+That's not true for tst_cgctl.c used in shell API (your changes),
+but it'd be for tests which use C API.
 
 Kind regards,
 Petr
+
+> +	}
+> +
+>  	sprintf(mnt_path, "%s%s", cgroup_mount_ltp_prefix, ctrl->ctrl_name);
+
+>  	if (!mkdir(mnt_path, 0777)) {
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
