@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C780C433EF
-	for <ltp@archiver.kernel.org>; Thu,  5 May 2022 08:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03933C433F5
+	for <ltp@archiver.kernel.org>; Thu,  5 May 2022 09:46:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 218273CA891
-	for <ltp@archiver.kernel.org>; Thu,  5 May 2022 10:54:43 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 072B43CA8D6
+	for <ltp@archiver.kernel.org>; Thu,  5 May 2022 11:46:09 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 908543CA789
- for <ltp@lists.linux.it>; Thu,  5 May 2022 10:54:32 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 69DE23CA3BE
+ for <ltp@lists.linux.it>; Thu,  5 May 2022 11:45:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 02E8E600943
- for <ltp@lists.linux.it>; Thu,  5 May 2022 10:54:31 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 25CF8218EA;
- Thu,  5 May 2022 08:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1651740871;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=T9rvd2LB0zod5FlJB+LI3MNJvS5mv+sZD6WFHRnO1J8=;
- b=nkeu1llNDwLhGohP3y6LRpRPZ++g7A3logxO+uJD2rGuqe8dONJ9gQX14Niuj0Zia41woh
- +KvnqMDDg1RLFi7sqAd3Wdkp/4uGZj/9EnOi5E+YFtMdpP48TGZ9wGWaA/AsnHtQ3YMaX+
- tOCCGFX7IWC8LUmpDuuE1eJWmnNIZfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1651740871;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=T9rvd2LB0zod5FlJB+LI3MNJvS5mv+sZD6WFHRnO1J8=;
- b=UxHQ7f6Johy82moYBxCrIlPR9kLEb2kDwijqRM1PP4Q6xrCooekx3UfipnKxccy/3DaGyk
- hgex7aMlCGxZuQDQ==
-Received: from g78 (unknown [10.163.24.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 077CB200A1A
+ for <ltp@lists.linux.it>; Thu,  5 May 2022 11:45:57 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id CDD9E2C141;
- Thu,  5 May 2022 08:54:30 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 360CD1F892;
+ Thu,  5 May 2022 09:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1651743957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DmfLnOY9/EGHP94q+9QniSo62lYKSX3MPeJpJ3MyHnQ=;
+ b=TMEz+wmebmDCXt/mhrBCMbZmD+YIsqiVcRm167Uu5yUv4J7uY1NG/3+9oJpVNW5JpTSFPM
+ QvG8y3X7JgvTsDiIRP6HhnxNAsnr79P3Ky5fHIgPxB/TKvgaWHKusFS4E8w6x4TYJoz7sx
+ hUuCUWopML14t0DK9bCAlX1K05cnrVE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1651743957;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DmfLnOY9/EGHP94q+9QniSo62lYKSX3MPeJpJ3MyHnQ=;
+ b=+aJhLmr1e3ccT9Rp7+qgL7nS/P5UCzLiHlMvfFuEneUsVCW8dXqguCNkqf7/DHUXmhGBwF
+ 3ctzEt/+GdcOAqAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1582013A65;
+ Thu,  5 May 2022 09:45:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id kILEA9Wcc2IKMwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 05 May 2022 09:45:57 +0000
+Date: Thu, 5 May 2022 11:48:13 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <YnOdXct59/QFXd1Z@yuki>
 References: <20220503174718.21205-1-chrubis@suse.cz>
- <20220503174718.21205-24-chrubis@suse.cz> <YnGe7Z5mw03+UuLa@pevik>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 05 May 2022 09:51:49 +0100
-In-reply-to: <YnGe7Z5mw03+UuLa@pevik>
-Message-ID: <87o80ccqbd.fsf@suse.de>
+ <20220503174718.21205-2-chrubis@suse.cz> <87a6bwe7ps.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87a6bwe7ps.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Automated-testing] [PATCH v2 23/30] fuzzy_sync: Convert
- to runtime
+Subject: Re: [LTP] [Automated-testing] [PATCH v2 01/30] Introduce a concept
+ of max runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,57 +77,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> > +	int max_iteration_runtime;
+> 
+> It's not immediately clear if iteration refers to the inner test loop
+> (e.g. Fuzzy Sync) or the outer loop performed by adding '-i N'. Perhaps
+> it would be better to call it max_runtime and document that it is scaled
+> by '-i N'?
 
-Petr Vorel <pvorel@suse.cz> writes:
+It's not only the -i N paramater, it's carthesian product of:
 
-> Hi Cyril,
->
->> The runtime for fuzzy sync tests are computed as timeout * exec_time_p.
->> The default timeout was 300 and the default was 0.5.
->
->> CC: Richard Palethorpe <rpalethorpe@suse.com>
->> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
->> ---
->>  include/tst_fuzzy_sync.h                      | 19 ++++---------------
->>  testcases/kernel/crypto/af_alg07.c            |  1 +
->>  testcases/kernel/mem/thp/thp04.c              |  1 +
->>  testcases/kernel/pty/pty03.c                  |  2 +-
->>  testcases/kernel/pty/pty05.c                  |  1 +
->>  testcases/kernel/pty/pty06.c                  |  1 +
->>  testcases/kernel/pty/pty07.c                  |  1 +
->>  testcases/kernel/sound/snd_seq01.c            |  2 +-
->>  testcases/kernel/sound/snd_timer01.c          |  1 +
->>  testcases/kernel/syscalls/bind/bind06.c       |  2 +-
->>  testcases/kernel/syscalls/inotify/inotify09.c |  1 +
->>  .../kernel/syscalls/ipc/shmctl/shmctl05.c     |  2 +-
->>  testcases/kernel/syscalls/sendmsg/sendmsg03.c |  1 +
->>  .../kernel/syscalls/setsockopt/setsockopt06.c |  2 +-
->>  .../kernel/syscalls/setsockopt/setsockopt07.c |  1 +
->>  .../syscalls/timerfd/timerfd_settime02.c      |  1 +
->>  testcases/kernel/syscalls/writev/writev03.c   |  2 +-
->>  17 files changed, 20 insertions(+), 21 deletions(-)
->
-> FYI you haven't converted fuzzy sync tests.
-> I suppose these errors must be fix in first commit.
->
-> ./tst_fuzzy_sync01
-> tst_test.c:1522: TINFO: Timeout per run is 0h 00m 30s
-> tst_test.c:1483: TBROK: Runtime not set!
+	-i parameter x all_filesystems x test_variants
 
-Ah, I see the missing runtime actually causes an error. I would have
-expected it to use a default 5 seconds?
+And every single instance of that product is limited by the runtime
+value, which is the reason I want to have iteration explicitly in the
+name. Maybe we should call it instance instead or whatever else that may
+be more fitting.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
