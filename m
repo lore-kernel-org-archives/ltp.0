@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C830C433F5
-	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 12:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FA27C433EF
+	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 13:51:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C5053CA96D
-	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 14:48:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 22F1C3CA972
+	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 15:51:35 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EAE133CA8FF
- for <ltp@lists.linux.it>; Mon,  9 May 2022 14:48:15 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id CF6433CA788
+ for <ltp@lists.linux.it>; Mon,  9 May 2022 15:51:24 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1C5AF200763
- for <ltp@lists.linux.it>; Mon,  9 May 2022 14:48:14 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D31BE600147
+ for <ltp@lists.linux.it>; Mon,  9 May 2022 15:51:23 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 427E321C30
- for <ltp@lists.linux.it>; Mon,  9 May 2022 12:48:14 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 213CC21B65;
+ Mon,  9 May 2022 13:51:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652100494; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type;
- bh=tX4hQ3zhRCryf2kJd2lGv8pF9ly7Biq2QKFXA2fwSEs=;
- b=JsrGcjp1Nl1WG/xF2YHp6cBSx/jB7MQbT+EQIF746cWXx7V7t3JUjPJlSORxPtJcYveYe+
- D36ZPLRIyzIqa7k7j0m0LnD+DQ8SFTQIs3sTrvrs/dx50iMhHt53Du37XUmCazY8lg0JWU
- bstDWqW7oZeYSa6KBdgOCpg5nSTyrrM=
+ t=1652104283;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LyVbMy5wmmE3CynI7xiad5JqRUHNztPzEPDLLyfLDVk=;
+ b=iCc+LnOzC7FpvlDw+CN0YUbcx47HCg0FSZkGS92NT+JvorcfXP8rUlDmrpdKLpLapDU+Jw
+ HpraAR/pDrrwOEVV/dQjktYGTsJxRv0VjxZP2+Uvzh7n4K88ZiCZyJDdL0jlm+N+exZDhj
+ yrOXhrR/8r7HtsiRoHOB3XW7eoENbe4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652100494;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type;
- bh=tX4hQ3zhRCryf2kJd2lGv8pF9ly7Biq2QKFXA2fwSEs=;
- b=1uYdH4FB3LwmVOU8sFutvqjalQNoLjg8SVnihOvVRsFIIFRkCDk7WWsoQblueWLlkAVmg1
- YeB+t0a19oJIZ6Bw==
+ s=susede2_ed25519; t=1652104283;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LyVbMy5wmmE3CynI7xiad5JqRUHNztPzEPDLLyfLDVk=;
+ b=UsYLyBt1uuf56zw+uR1mrtdMW9WmWbL49+Lfsp6D+elilteM4LMeAJVSJNrdrQYxuQKSx5
+ f7+lwfjxBcV00nBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23204132C0
- for <ltp@lists.linux.it>; Mon,  9 May 2022 12:48:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F385D13AA5;
+ Mon,  9 May 2022 13:51:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id BHIbB44NeWLFTAAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Mon, 09 May 2022 12:48:14 +0000
-Date: Mon, 9 May 2022 14:50:26 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <YnkOEruIKIwEeC3M@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id jn4LOloceWKsbAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 09 May 2022 13:51:22 +0000
+Date: Mon, 9 May 2022 15:51:21 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YnkcWZm/T0snqiSG@pevik>
+References: <YnkOEruIKIwEeC3M@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <YnkOEruIKIwEeC3M@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] LTP release preparations
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,23 +76,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-It's time to start working on pre-release preparations. As usually we
-should start by considering patches that should be applied before we
-freeze the git.
+Hi Cyril,
 
-As for me I would like to get the runtime patchset in if possible.
+> What else should be considered for the release?
 
-What else should be considered for the release?
+Fixes (worth to merge before)
+* if-mtu-change.sh: Fix using functions
+https://patchwork.ozlabs.org/project/ltp/patch/20220509094322.10959-1-pvorel@suse.cz/
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+* Fix constant redefinition
+https://patchwork.ozlabs.org/project/ltp/list/?series=298174
+
+I'd also like to post rebased
+* shell: Fixes for disabled IPv6
+https://patchwork.ozlabs.org/project/ltp/list/?series=284532
+* shell: Add $TST_MOUNT_DEVICE support
+https://patchwork.ozlabs.org/project/ltp/list/?series=291724
+
+Could we decide whether this fix is worth of merging?
+* Fix tst_search_driver for x86-64 modules
+https://patchwork.ozlabs.org/project/ltp/list/?series=290523
+
+2 additions to runtest/smoketest
+* smoketest: Add macsec02.sh
+https://patchwork.ozlabs.org/project/ltp/patch/20220310104457.764-1-pvorel@suse.cz/
+* smoketest: Add df01.sh
+https://patchwork.ozlabs.org/project/ltp/patch/20220322165042.20658-1-pvorel@suse.cz/
+
+I guess we can postpone switching to bionic after the release
+* ci: Ubuntu xenial -> bionic
+https://patchwork.ozlabs.org/project/ltp/patch/20220316150429.2873-1-pvorel@suse.cz/
+
+also remove rup and rusers can be decided after the release (although it's not
+working on my VMs and I don't think it's worth to fix them)
+* Remove RPC rup and rusers tests
+https://patchwork.ozlabs.org/project/ltp/list/?series=297407
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
