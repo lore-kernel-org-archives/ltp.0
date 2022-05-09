@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88A59C433F5
-	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 15:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64AE5C433EF
+	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 15:26:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8E7773CA958
-	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 17:22:30 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2C0FB3CA94D
+	for <ltp@archiver.kernel.org>; Mon,  9 May 2022 17:26:23 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2FD913C062C
- for <ltp@lists.linux.it>; Mon,  9 May 2022 17:22:20 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id EF3FC3C062C
+ for <ltp@lists.linux.it>; Mon,  9 May 2022 17:26:11 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 416DB1000778
- for <ltp@lists.linux.it>; Mon,  9 May 2022 17:22:18 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 44CB71A00797
+ for <ltp@lists.linux.it>; Mon,  9 May 2022 17:26:10 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4E0BF21BCE;
- Mon,  9 May 2022 15:22:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9B30021C40;
+ Mon,  9 May 2022 15:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652109738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1652109970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=haC8px4rzPJvLMIWIh5Z9VDsQhJLbFDX0VSrI5cqAmY=;
- b=kqq+VY6tKJOXqHA8g4x5PeQS+JxxscMjfGZIytDABpvDXk+TJhg3b4773dlLy9KNQ7rZ4B
- tRQVOhMRqp1fNl61HlwHVOIDxe+BlmHb0Xv0QkEAfXOXAdXW6PzNka9uRMHwmFUpkSsz13
- v8e9TqkZPgFlhZxfY+kH+cFY/6UPUb0=
+ bh=Iuhcv9T4PPDaQ+C/gRSPMDKbcZX/WvkesQN86jW3Fyk=;
+ b=Axdqb9vb5EBeIeGHhSAJPvS+PtP1CXsrAg3R/bRQR13OVqORMB5KOymUM3usJyOInzUBD6
+ 4e2KZQfygM1xfJZ+krx1jPB3YzvOdpnDextI0itMnWPyrNzSvPxg9+tyw2yysYtXxLg7QM
+ lyl11EuQ70/idEccc6sVCNaLyaxSU14=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652109738;
+ s=susede2_ed25519; t=1652109970;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=haC8px4rzPJvLMIWIh5Z9VDsQhJLbFDX0VSrI5cqAmY=;
- b=+R8XXkLI5oapgETqEPqg6Ojwkxbb1jxElAXqdA8Jip4uXuB+RPe4RMmZnjBn8Fs6UIRA3E
- 1IK7F51OlQsLi4DQ==
+ bh=Iuhcv9T4PPDaQ+C/gRSPMDKbcZX/WvkesQN86jW3Fyk=;
+ b=49yCHEMXL188l5xtNDubMpvmayCmEa58BdRAPG+u7bBSTPpVhj2OAXIWpBM5nfRpXbfgyV
+ XXH4rPrzpZYDC5DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30399132C0;
- Mon,  9 May 2022 15:22:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 88B3C132C0;
+ Mon,  9 May 2022 15:26:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id okNnCqoxeWIiGQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 09 May 2022 15:22:18 +0000
-Date: Mon, 9 May 2022 17:24:31 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id Sv2qIJIyeWK+GgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 09 May 2022 15:26:10 +0000
+Date: Mon, 9 May 2022 17:28:23 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YnkyL5XmJ1Nh/bXZ@yuki>
-References: <20220322165042.20658-1-pvorel@suse.cz>
+Message-ID: <YnkzFzxszzAo26Oc@yuki>
+References: <20220310104457.764-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220322165042.20658-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20220310104457.764-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] smoketest: Add df01.sh
+Subject: Re: [LTP] [PATCH 1/1] smoketest: Add macsec02.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,12 +82,15 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> To test 1) pure tst_test.sh usage (other shell tests are network tests)
-> 2) loop device usage from shell
+> macsec02.sh is a network tests which uses macsec_lib.sh, which uses
+> ipsec_lib.sh and virt_lib.sh which use tst_net.sh.
+> 
+> Adding this test to smoketest to cover functionality of nested
+> libraries. Use macsec02.sh as it requires more setup (unlike macsec01.sh).
 
-Sounds good to me.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+I'm not 100% sure how big should the smoketest be. I guess adding this
+will be still fine, but we should stop adding new tests in there after a
+while, it's supposed to be small and fast.
 
 -- 
 Cyril Hrubis
