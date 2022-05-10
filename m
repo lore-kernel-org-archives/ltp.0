@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C3DCC433EF
-	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 12:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E6F2C433F5
+	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 13:07:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 10EB13CA96E
-	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 14:12:18 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D8D583CA981
+	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 15:07:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 48C043CA44E
- for <ltp@lists.linux.it>; Tue, 10 May 2022 14:12:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id F36EF3C9C87
+ for <ltp@lists.linux.it>; Tue, 10 May 2022 15:07:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 231D01A008AD
- for <ltp@lists.linux.it>; Tue, 10 May 2022 14:12:06 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8E4AE1400BD1
+ for <ltp@lists.linux.it>; Tue, 10 May 2022 15:06:59 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6310B21B2A;
- Tue, 10 May 2022 12:12:06 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CFDC51F8BA;
+ Tue, 10 May 2022 13:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652184726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1652188018;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YgQktGu5J5uKUXuSe96ma6gW7PJiiWLEp9YWwyQ+XgQ=;
- b=pAuQ0QmCr2fXAgdI9S3gYk+Sdaoaux4wPi2r4f+GmajDyuFEd6vXZsAk26shT528zc5FjV
- MWNjLJOpGPEENMKd3ml9KvUEpKWTcpXxmdB6fne2nQ7dZTGyQfg1p97w6OogKVLLbFmPZs
- zsBLmpyGJ0U10zxF3VMtwIUYKtWyDh4=
+ bh=8ZwMYpZk4Sr6nbDMG2YML92BwJGlvyOugCkEe4Ikfmc=;
+ b=WwlX3g6WyIyaXHm9hS+VHw3QoDFKs62qCsnR08xtWaupEKwEDCT0okz5No7tnX6CFmysTG
+ fTRqzMxhsQvzxVWV0cp8lZEWrtKntU9YbmVntBrbACBinBMdLuL8uMn1UkHJ6eRDvsd0vZ
+ 8I8rcK0O/L9gU55GIYHc1zeWKI3TqdE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652184726;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1652188018;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YgQktGu5J5uKUXuSe96ma6gW7PJiiWLEp9YWwyQ+XgQ=;
- b=Qk6CBqkhL8+eErQkpTrbLejBW96KFHIL/q7mbyxdFGnsnKyqqeUW1vChmCzX7D3SpcD9IK
- V6B4xKLGLgqOWiDw==
+ bh=8ZwMYpZk4Sr6nbDMG2YML92BwJGlvyOugCkEe4Ikfmc=;
+ b=X0CQQ0qPvrlea0EUGTQuvTK11WC2ETTP5SlwCcDD2uLOyQsYPvgCaPvGrczSfFRs1QS6Bv
+ TyVygmQBM7kKNhCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4E63513AA5;
- Tue, 10 May 2022 12:12:06 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8ABBF13AC1;
+ Tue, 10 May 2022 13:06:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 9HebEZZWemJFAQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 10 May 2022 12:12:06 +0000
-Date: Tue, 10 May 2022 14:14:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YnpXGnJyjjZhxuRN@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3kiwH3JjemI9HgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 10 May 2022 13:06:58 +0000
+Date: Tue, 10 May 2022 15:06:56 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YnpjcH4i33YxyeFJ@pevik>
 References: <20220510065104.1199-1-pvorel@suse.cz>
- <20220510065104.1199-2-pvorel@suse.cz>
+ <20220510065104.1199-2-pvorel@suse.cz> <YnpXGnJyjjZhxuRN@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220510065104.1199-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YnpXGnJyjjZhxuRN@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v3 1/3] tst_net.sh: Fix for disabled IPv6
 X-BeenThere: ltp@lists.linux.it
@@ -75,111 +77,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +tst_net_detect_ipv6()
-> +{
-> +	local type="${1:-lhost}"
-> +	local cmd='[ -f /proc/net/if_inet6 ]'
-> +	local ret
-> +
-> +	if [ "$type" = "lhost" ]; then
-> +		$cmd
-> +	else
-> +		tst_rhost_run -c "$cmd"
-> +	fi
-> +	ret=$?
-> +
-> +	if [ $ret -eq 0 ]; then
-> +		TST_NET_IPV6_ENABLED=1
-> +	else
-> +		tst_res TINFO "IPv6 disabled on $type"
-> +	fi
-> +}
-> +
-> +tst_net_require_ipv6()
-> +{
-> +	[ "$TST_NET_IPV6_ENABLED" = 1 ] || tst_brk_ TCONF "IPv6 disabled"
-> +}
-> +
->  init_ltp_netspace()
->  {
->  	local pid
-> @@ -515,7 +542,9 @@ tst_init_iface()
->  		ip link set $iface down || return $?
->  		ip route flush dev $iface || return $?
->  		ip addr flush dev $iface || return $?
-> -		sysctl -qw net.ipv6.conf.$iface.accept_dad=0 || return $?
-> +		if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
-> +			sysctl -qw net.ipv6.conf.$iface.accept_dad=0 || return $?
-> +		fi
->  		ip link set $iface up
->  		return $?
->  	fi
-> @@ -527,7 +556,9 @@ tst_init_iface()
->  	tst_rhost_run -c "ip link set $iface down" || return $?
->  	tst_rhost_run -c "ip route flush dev $iface" || return $?
->  	tst_rhost_run -c "ip addr flush dev $iface" || return $?
-> -	tst_rhost_run -c "sysctl -qw net.ipv6.conf.$iface.accept_dad=0" || return $?
-> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
-> +		tst_rhost_run -c "sysctl -qw net.ipv6.conf.$iface.accept_dad=0" || return $?
-> +	fi
->  	tst_rhost_run -c "ip link set $iface up"
->  }
->  
-> @@ -604,7 +635,9 @@ tst_restore_ipaddr()
->  	local ret=0
->  	local backup_tst_ipv6=$TST_IPV6
->  	TST_IPV6= tst_add_ipaddr $type $link_num || ret=$?
-> -	TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?
-> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
-> +		TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?
-> +	fi
->  	TST_IPV6=$backup_tst_ipv6
->  
->  	return $ret
-> @@ -936,6 +969,10 @@ tst_default_max_pkt()
->  }
->  
->  [ -n "$TST_USE_LEGACY_API" ] && . test.sh || . tst_test.sh
-> +
-> +# detect IPv6 support on lhost for tests which don't use test links
-> +tst_net_detect_ipv6
-> +
->  [ -n "$TST_NET_SKIP_VARIABLE_INIT" ] && return 0
->  
->  # Management Link
-> @@ -970,8 +1007,13 @@ IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
->  if [ -z "$_tst_net_parse_variables" ]; then
->  	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
->  	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
-> -	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
-> -	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
-> +
-> +	tst_net_detect_ipv6 rhost
-> +
-> +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
-> +		eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
-> +		eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
-> +	fi
+Hi Cyril,
 
-If I'm looking right at this piece of code we do run the
-tst_net_detect_ipv6 twice once for lhost and once for rhost when the
-script is sourced and we only set the TST_NET_IPV6_ENABLED when the
-check succeeds, right?
+...
+> > +# detect IPv6 support on lhost for tests which don't use test links
+> > +tst_net_detect_ipv6
+> > +
+> >  [ -n "$TST_NET_SKIP_VARIABLE_INIT" ] && return 0
 
-Shouldn't we also unset it when the check fails because otherwise the
-check for rhost is basically no-op as long as the lhost supports ipv6?
+> >  # Management Link
+> > @@ -970,8 +1007,13 @@ IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
+> >  if [ -z "$_tst_net_parse_variables" ]; then
+> >  	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
+> >  	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
+> > -	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
+> > -	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
+> > +
+> > +	tst_net_detect_ipv6 rhost
+> > +
+> > +	if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+> > +		eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
+> > +		eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
+> > +	fi
+
+> If I'm looking right at this piece of code we do run the
+> tst_net_detect_ipv6 twice once for lhost and once for rhost when the
+> script is sourced and we only set the TST_NET_IPV6_ENABLED when the
+> check succeeds, right?
+
+Yes.
+
+FYI 2 tests run only first run for lhost - these which use
+TST_NET_SKIP_VARIABLE_INIT=1:
+* lib/newlib_tests/shell/net/tst_ipaddr_un.sh (which does not need this feature
+  as test runs for both IPv4 and IPv6 and does not need IPv6 functionality)
+* and with this patchset also for testcases/kernel/containers/netns/netns_lib.sh
+  netns tests require IPv6 only for lhost, thus that's enough for
+  TST_NET_SKIP_VARIABLE_INIT=1
+
+> Shouldn't we also unset it when the check fails because otherwise the
+> check for rhost is basically no-op as long as the lhost supports ipv6?
+
+Hm, that's right. Patch below would will fix it.
+Anyway I'm not much happy with tst_net_detect_ipv6 setting global variable
+$TST_NET_IPV6_ENABLED. But I wanted to stay compatible with the rest of
+tst_net.sh, which becomes more an more messy (rewriting/deleting old tests
+will allow cleanup code for TST_USE_LEGACY_API=1). Anyway, feel free to suggest
+something better.
+
+Kind regards,
+Petr
+
+diff --git testcases/lib/tst_net.sh testcases/lib/tst_net.sh
+index 29d80df89..48dd6e8eb 100644
+--- testcases/lib/tst_net.sh
++++ testcases/lib/tst_net.sh
+@@ -1008,7 +1008,7 @@ if [ -z "$_tst_net_parse_variables" ]; then
+        eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
+        eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
+
+-       tst_net_detect_ipv6 rhost
++       [ "$TST_NET_IPV6_ENABLED" = 1 ] && tst_net_detect_ipv6 rhost
+
+        if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
+                eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
