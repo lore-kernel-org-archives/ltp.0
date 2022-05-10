@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DFF4C433F5
-	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 15:55:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 410CFC433F5
+	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 15:55:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8BD6F3CA961
-	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 17:55:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8B9DA3CA974
+	for <ltp@archiver.kernel.org>; Tue, 10 May 2022 17:55:37 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 033493CA932
+ by picard.linux.it (Postfix) with ESMTPS id 01C1F3CA724
  for <ltp@lists.linux.it>; Tue, 10 May 2022 17:54:43 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6981D20076F
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6D46A60084D
  for <ltp@lists.linux.it>; Tue, 10 May 2022 17:54:43 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C2EAC1F8B5;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E8DAF21BEE;
  Tue, 10 May 2022 15:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1652198082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=gbnw5z+t3cDTDSn/gWXqUfm1orHUE00fqickNCsNOM4=;
- b=feJyIxIbbXBUN1bvZPKamQp6ZL/L5snBfB5DBjqVdxgDtbLi+WuXOm2jQYeNSknnk1l6zk
- 8CmM10M7Z/Wk0EKlb74OEq1pbNhBBTQBftjwuoQ/b11Il0wlWlxNkW4zoaP3ewJFtWXDLU
- qk7fx+FbzTtb5dTefHa3QQ0/4vk6rQY=
+ bh=M47yWDMHAwFaadfjZRt6+qKGQrbA1HTuMc7xoQo9io8=;
+ b=KhJQVvBW15yA7p8j8Qbc7NQcfVEQs/2vygNJWICbXKi7iGf1hau90Losy2uRrw7swh2v2u
+ bX8YO2ebbJk/GI0O81Vj6hBAVyKF5MarEYTGder2jLtzNYcZetoVr/wj5DKWnL1nJkzNKs
+ BMd9HMp5jAZ5Hz3/njz01wh+7vpmGAI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1652198082;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=gbnw5z+t3cDTDSn/gWXqUfm1orHUE00fqickNCsNOM4=;
- b=5uCYQPBmqlGtW7WthHSxYKtovzS3+xxnGKZg8GlU/K/WVacx+gBcUhCuExMcHMERheSYRH
- zdNaQHPtGBlir/Dg==
+ bh=M47yWDMHAwFaadfjZRt6+qKGQrbA1HTuMc7xoQo9io8=;
+ b=wpMKg/EmjR7X/uEckIlo7FlTPSn6I/eQ10sGWpzSUaBuL1GTeTlirGNJXPuktSTSUC4xN1
+ IoRgkjI91bGH5qBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94C8613AA5;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4C2013ACD;
  Tue, 10 May 2022 15:54:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4NQ8IsKKemIScwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id UNXjLcKKemIScwAAMHmgww
  (envelope-from <pvorel@suse.cz>); Tue, 10 May 2022 15:54:42 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 10 May 2022 17:54:35 +0200
-Message-Id: <20220510155438.15754-2-pvorel@suse.cz>
+Date: Tue, 10 May 2022 17:54:36 +0200
+Message-Id: <20220510155438.15754-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <20220510155438.15754-1-pvorel@suse.cz>
 References: <20220510155438.15754-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/4] tst_test.sh: Add $TST_MOUNT_DEVICE
+Subject: [LTP] [PATCH v2 2/4] df01.sh: Use TST_MOUNT_DEVICE=1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,67 +83,38 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/shell-test-api.txt    |  2 ++
- testcases/lib/tst_test.sh | 12 +++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ testcases/commands/df/df01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
-index df5ebbdf0..65444541e 100644
---- a/doc/shell-test-api.txt
-+++ b/doc/shell-test-api.txt
-@@ -214,6 +214,8 @@ simply by setting right '$TST_FOO'.
-                              https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#formatting-device-with-a-filesystem[Formatting device with a filesystem].
- | 'TST_MNT_PARAMS'         | Extra mount params for 'tst_mount', see
-                              https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#formatting-device-with-a-filesystem[Formatting device with a filesystem].
-+| 'TST_MOUNT_DEVICE'       | Mount device, see
-+                             https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#mounting-and-unmounting-filesystems[Mounting and unmounting filesystems].
- | 'TST_NEEDS_ROOT'         | Exit the test with 'TCONF' unless executed under root.
-                              Alternatively the 'tst_require_root' command can be used.
- | 'TST_NEEDS_TMPDIR'       | Create test temporary directory and cd into it.
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 28b7d12ba..1fe77d50d 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -41,6 +41,10 @@ _tst_do_exit()
- 		fi
- 	fi
+diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
+index f74032c96..cfc8feab8 100755
+--- a/testcases/commands/df/df01.sh
++++ b/testcases/commands/df/df01.sh
+@@ -1,6 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2015 Fujitsu Ltd.
++# Copyright (c) 2018-2022 Petr Vorel <pvorel@suse.cz>
+ # Author: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
+ #
+ # Test df command with some basic options.
+@@ -13,7 +14,7 @@ TST_OPTS="f:"
+ TST_USAGE=usage
+ TST_PARSE_ARGS=parse_args
+ TST_NEEDS_ROOT=1
+-TST_FORMAT_DEVICE=1
++TST_MOUNT_DEVICE=1
  
-+	if [ "$TST_MOUNT_DEVICE" = 1 -a "$TST_MOUNT_FLAG" = 1 ]; then
-+		tst_umount
-+	fi
-+
- 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
- 		if ! tst_device release "$TST_DEVICE"; then
- 			tst_res TWARN "Failed to release device '$TST_DEVICE'"
-@@ -632,7 +636,7 @@ tst_run()
- 			NET_SKIP_VARIABLE_INIT|NEEDS_CHECKPOINTS);;
- 			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
- 			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
--			DEV_EXTRA_OPTS|DEV_FS_OPTS|FORMAT_DEVICE);;
-+			DEV_EXTRA_OPTS|DEV_FS_OPTS|FORMAT_DEVICE|MOUNT_DEVICE);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
- 			esac
- 		done
-@@ -666,6 +670,7 @@ tst_run()
+ usage()
+ {
+@@ -34,7 +35,6 @@ parse_args()
  
- 	_tst_setup_timer
+ setup()
+ {
+-	tst_mount
+ 	DF_FS_TYPE=$(mount | grep "$TST_DEVICE" | awk 'NR==1{print $5}')
+ }
  
-+	[ "$TST_MOUNT_DEVICE" = 1 ] && TST_FORMAT_DEVICE=1
- 	[ "$TST_FORMAT_DEVICE" = 1 ] && TST_NEEDS_DEVICE=1
- 	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
- 
-@@ -702,6 +707,11 @@ tst_run()
- 		tst_mkfs $TST_FS_TYPE $TST_DEV_FS_OPTS $TST_DEVICE $TST_DEV_EXTRA_OPTS
- 	fi
- 
-+	if [ "$TST_MOUNT_DEVICE" = 1 ]; then
-+		tst_mount
-+		TST_MOUNT_FLAG=1
-+	fi
-+
- 	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
- 
- 	if [ -n "$TST_SETUP" ]; then
 -- 
 2.36.0
 
