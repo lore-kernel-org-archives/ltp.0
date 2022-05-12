@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA843C433F5
-	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 12:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 922B3C433EF
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 12:37:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 327933CA9C5
-	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 14:37:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id F203C3CA9C5
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 14:37:15 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8520D3C70BF
- for <ltp@lists.linux.it>; Thu, 12 May 2022 14:36:05 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 082FF3C053F
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 14:36:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 25CFB1000A25
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9A5661400759
  for <ltp@lists.linux.it>; Thu, 12 May 2022 14:36:05 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CAA2021C82;
- Thu, 12 May 2022 12:36:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4ED041F897;
+ Thu, 12 May 2022 12:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652358964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1652358965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F6IutTJYH6iTilwV6wWLM9swwqBMKcgWI7LqPZ4JA1I=;
- b=nMki40LNmG3FbZXBAhIk6DYJjDvoTVdaM+PasBPOHx44jYCIlZBwx6stAgCZO1AL0Dj5o5
- kZeosOvtZ+cUGLXY98JpcmG7mDkm/NZPnXzfo452zoPA1Nd555ruG4teDEenXPl5DoAQ4o
- Kw703wtx5MCEcbbQ3NaFlfW3DFMFOVQ=
+ bh=oBYaZ0/YuZB4LerHT2CzO5rxa/VLakq7AQNQ675Q7Ck=;
+ b=EUa6jRNNMw6Hhmvzh9EMofvsTJKAyA6FkykpGK1Nd1EjnzDQdSd/R0VR3RjQYCFCWUmevH
+ NOLVBUbmeBZjOeH/EgvQJm608Hu5BqEDuHgOAzA5APNbLVma3HEcWxNL+Q5cx33qtDzmgW
+ 9AHf4rv5cRaboQXFxoZSebjewA5TF4I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652358964;
+ s=susede2_ed25519; t=1652358965;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F6IutTJYH6iTilwV6wWLM9swwqBMKcgWI7LqPZ4JA1I=;
- b=jkIqCfYeQ/HTowtJgJZchc2F8oWpNunIwAFI51hu1b1yJptvj93hd/hti6q+E3kF0/itRV
- 9JZ6pHnKdSzf1+Bg==
+ bh=oBYaZ0/YuZB4LerHT2CzO5rxa/VLakq7AQNQ675Q7Ck=;
+ b=fZV37i+hspUNhqbM4oYAB8l39tkPZHKlG44IOdxGMXaQ9BERYAXJh9N9u1+7ZaeEO5dxfA
+ bY43H9lqLFSsEyAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B787413ABE;
- Thu, 12 May 2022 12:36:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A0D513ABE;
+ Thu, 12 May 2022 12:36:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id xVqfKzT/fGITGgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 12 May 2022 12:36:04 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id SHI+DTX/fGIXGgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 12 May 2022 12:36:05 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 12 May 2022 14:37:51 +0200
-Message-Id: <20220512123816.24399-5-chrubis@suse.cz>
+Date: Thu, 12 May 2022 14:37:52 +0200
+Message-Id: <20220512123816.24399-6-chrubis@suse.cz>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220512123816.24399-1-chrubis@suse.cz>
 References: <20220512123816.24399-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 04/29] mtest01/mtest01: Convert to runtime
+Subject: [LTP] [PATCH v3 05/29] cve/cve-2015-3290: Convert to runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,68 +84,42 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/mem/mtest01/mtest01.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ testcases/cve/cve-2015-3290.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
-index 20cb95191..fb991ce8b 100644
---- a/testcases/kernel/mem/mtest01/mtest01.c
-+++ b/testcases/kernel/mem/mtest01/mtest01.c
-@@ -41,8 +41,6 @@
- #define ALLOC_THRESHOLD		(6*FIVE_HUNDRED_MB)
- #endif
+diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
+index fd1abe136..f61d2809b 100644
+--- a/testcases/cve/cve-2015-3290.c
++++ b/testcases/cve/cve-2015-3290.c
+@@ -395,10 +395,6 @@ static void *child_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ 	return (void *)niter;
+ }
  
--#define STOP_THRESHOLD 15	/* seconds remaining before reaching timeout */
+-#define TIMEOUT		(180)
+-#define TIME_TO_GIVEUP	(TIMEOUT - 5)
+-#define TIMER_TYPE	CLOCK_MONOTONIC
 -
- static pid_t *pid_list;
- static sig_atomic_t children_done;
- static int max_pids;
-@@ -137,6 +135,7 @@ static void child_loop_alloc(unsigned long long alloc_bytes)
+ static void do_child(void)
  {
- 	unsigned long bytecount = 0;
- 	char *mem;
-+	int runtime_rem;
+ 	int i, ncpus;
+@@ -415,7 +411,7 @@ static void do_child(void)
+ 	for (i = 0; i < ncpus; i++)
+ 		SAFE_PTHREAD_CREATE(&threads[i], NULL, child_thread, NULL);
  
- 	tst_res(TINFO, "... child %d starting", getpid());
+-	sleep(TIME_TO_GIVEUP);
++	sleep(tst_remaining_runtime());
+ 	running = 0;
  
-@@ -153,12 +152,15 @@ static void child_loop_alloc(unsigned long long alloc_bytes)
- 		if (bytecount >= alloc_bytes)
- 			break;
- 	}
-+
-+	runtime_rem = tst_remaining_runtime();
-+
- 	if (dowrite)
- 		tst_res(TINFO, "... [t=%d] %lu bytes allocated and used in child %d",
--				tst_timeout_remaining(), bytecount, getpid());
-+				runtime_rem, bytecount, getpid());
- 	else
- 		tst_res(TINFO, "... [t=%d] %lu bytes allocated only in child %d",
--				tst_timeout_remaining(), bytecount, getpid());
-+				runtime_rem, bytecount, getpid());
- 
- 	kill(getppid(), SIGRTMIN);
- 	raise(SIGSTOP);
-@@ -195,10 +197,9 @@ static void mem_test(void)
- 
- 	/* wait in the loop for all children finish allocating */
- 	while (children_done < pid_cntr) {
--		if (tst_timeout_remaining() < STOP_THRESHOLD) {
-+		if (!tst_remaining_runtime()) {
- 			tst_res(TWARN,
- 				"the remaininig time is not enough for testing");
--
- 			break;
- 		}
- 
-@@ -234,6 +235,7 @@ static struct tst_test test = {
- 		{"v",  &verbose,     	"Verbose"},
- 		{}
- 	},
-+	.max_runtime = 300,
+ 	for (i = 0; i < ncpus; i++) {
+@@ -468,7 +464,7 @@ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.needs_checkpoints = 1,
  	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = mem_test,
+-	.timeout = TIMEOUT,
++	.max_runtime = 180,
+ 	.test_all = run,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "9b6e6a8334d5"},
 -- 
 2.35.1
 
