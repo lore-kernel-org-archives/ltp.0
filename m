@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E71D3C433F5
-	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 12:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D704AC433FE
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 12:39:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 245CC3CA9C2
-	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 14:38:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4145E3CA9DD
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 14:39:01 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 805F53CA9DC
- for <ltp@lists.linux.it>; Thu, 12 May 2022 14:36:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 5CDC43CA9DD
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 14:36:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 37D50600280
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F35FE1000A25
  for <ltp@lists.linux.it>; Thu, 12 May 2022 14:36:10 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E93C121C80;
- Thu, 12 May 2022 12:36:09 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 831FE1F460;
+ Thu, 12 May 2022 12:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652358969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1652358970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dDI+kxOQ/xvFfNrUmt3iRhZ/j7Q8VtXAPuP+N65iZeY=;
- b=xmBaFi6Xu4qWy8cTYdq5EmTG9krp1ie/zkiAMajsvYMqtO3+EEH+9JPOlOYcKe2+GgFgw2
- qZw9Lptvc1axXJ4Cmrd+BuU83yJVoyOe2Ye0ongbBUsyJVGXKVtsIiBKkdvOtlRO5NQ0wU
- RTb7NhzjAIqdjukkISLUtw9bSkB+BQE=
+ bh=0I5KJ2ihHqCd/8vJAbL6VkOrnUpl9Qw8ty22c4pPOeY=;
+ b=TM9azcpa2nfrPK8gO79bh2TvNuuSm8qxCywgvw/7rIK7axj5N1pmIb3sRIwu4Nxo9ENbmW
+ zNUOuFKzd2MDBreMe3tdAZKq39O0JCNftUOvvDfFocbF2Qlx5TvNUqht7mUEvuoV8ZarM6
+ Z9eRjoY8yv9KUco7xu57BsXKthUfnes=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652358969;
+ s=susede2_ed25519; t=1652358970;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dDI+kxOQ/xvFfNrUmt3iRhZ/j7Q8VtXAPuP+N65iZeY=;
- b=immesD41A92GBNryzyHRCFuDsol2DcYiHdSaz7GgRE43pH903uF2d2zTYcQpOJeZmDBNmC
- 1r4UJags4YOoOJAw==
+ bh=0I5KJ2ihHqCd/8vJAbL6VkOrnUpl9Qw8ty22c4pPOeY=;
+ b=kUAmr0Z7P5I19S3uYWyH70lwA1cE5NveGSyxrIJp/mmlp+22UXS/+YMHKks60L904w7wyP
+ qEwwa9Q+u5A59lCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5EDE13ABE;
- Thu, 12 May 2022 12:36:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 700A413ABE;
+ Thu, 12 May 2022 12:36:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YETAMzn/fGI/GgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 12 May 2022 12:36:09 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id IvZ2GTr/fGJBGgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 12 May 2022 12:36:10 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 12 May 2022 14:38:01 +0200
-Message-Id: <20220512123816.24399-15-chrubis@suse.cz>
+Date: Thu, 12 May 2022 14:38:02 +0200
+Message-Id: <20220512123816.24399-16-chrubis@suse.cz>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220512123816.24399-1-chrubis@suse.cz>
 References: <20220512123816.24399-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 14/29] syscalls/readv01: Remove now useless timeout
+Subject: [LTP] [PATCH v3 15/29] syscalls/tgkill03: Remove now unused timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,21 +84,19 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/readv/readv01.c | 1 -
+ testcases/kernel/syscalls/tgkill/tgkill03.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/readv/readv01.c b/testcases/kernel/syscalls/readv/readv01.c
-index f12b3f09f..2bd3fd5eb 100644
---- a/testcases/kernel/syscalls/readv/readv01.c
-+++ b/testcases/kernel/syscalls/readv/readv01.c
-@@ -110,7 +110,6 @@ static struct tst_test test = {
- 	.test = test_readv,
- 	.tcnt = ARRAY_SIZE(testcase_list),
- 	.needs_tmpdir = 1,
--	.timeout = 15,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "19f18459330f"},
- 		{}
+diff --git a/testcases/kernel/syscalls/tgkill/tgkill03.c b/testcases/kernel/syscalls/tgkill/tgkill03.c
+index 0002f3278..e46e95f73 100644
+--- a/testcases/kernel/syscalls/tgkill/tgkill03.c
++++ b/testcases/kernel/syscalls/tgkill/tgkill03.c
+@@ -117,5 +117,4 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test = run,
+-	.timeout = 20,
+ };
 -- 
 2.35.1
 
