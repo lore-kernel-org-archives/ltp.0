@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 234B1C433EF
-	for <ltp@archiver.kernel.org>; Wed, 11 May 2022 17:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 154FBC433EF
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 01:38:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9432B3CA863
-	for <ltp@archiver.kernel.org>; Wed, 11 May 2022 19:03:24 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 146723CA99D
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 03:38:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 851BC3CA863
- for <ltp@lists.linux.it>; Wed, 11 May 2022 19:03:14 +0200 (CEST)
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com
- [IPv6:2607:f8b0:4864:20::112f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 6F01F3CA988
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 03:38:35 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 74E311A0048F
- for <ltp@lists.linux.it>; Wed, 11 May 2022 19:03:13 +0200 (CEST)
-Received: by mail-yw1-x112f.google.com with SMTP id
- 00721157ae682-2ebf4b91212so28453537b3.8
- for <ltp@lists.linux.it>; Wed, 11 May 2022 10:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=IpFPdO/uhoos0ytjMYOded4nPoWVZB+GddWGBdrYbMs=;
- b=DftVrELHUbG6fAglpJBSkYraK/JxtyLTYij8BRwZtbKjUIRS9rXC3CRLLTATNg0yT6
- /BV+kAxtxbvLKnrVBCq0rp4iVtB/4xhip7cMbKBqncF40dKtWBU/O75l6+6mtUQuc9Jf
- 7OqdNr68dN+aTIx2kNYySQZF4SNazr9zk17XEMjMRw6dwpWf8ZA09XtvmjNzAv1U0y1d
- GEKn6XWp/zxkLAVu5hg1NlJ4KHcUSYtjiCCzmG5lBNHBzItUWlQVzKhpeEGOwAitnl8d
- uP2bBRoM5MySUSBzHeW1tUa+DBONyCkjwtBe+nX1wiLYnPvzR87oYgJ7gr9jdyn54zaf
- II6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=IpFPdO/uhoos0ytjMYOded4nPoWVZB+GddWGBdrYbMs=;
- b=IC1gwIK6J2u/npJUPui9bFbeMHjpSb0dmy8WKUQ7jmIsjWhW92t1kn+4/dou7Nl8Sy
- CTSZNn03rwSpexRlp+RewhDHZaST6V1ksQRq020Ybt2QIwPAhjKDlMJszX0Plf1iHmU1
- sKxggvz6gaQfwUnpYoJ/ETeogK8YX9tWBSQIe/uwbpBGT3cbcDEcotkIA7UQ7xEFPqIj
- P/Chc1BlwjPOknOOnIK1u3/m3NMkzg1ayIU2lKfsz0df+IhnHr8d0JdK/CDffBiBp0+O
- fqYb6QdFndbBozaRYZUaRpSx+PgcyrrEVtCRUgSwoU1MQhtJP5umKFRevQKFZIBNNbp5
- jvyg==
-X-Gm-Message-State: AOAM530Hf1E71d8+xQmg4lJxRZhXOB0Q9USTOn4/HxQcwd6sabACPk07
- roP7dA90kTmWezuRWtIJ461y+FQgmZKb/KhmdPvlVg==
-X-Google-Smtp-Source: ABdhPJwPNDG2qz9xm6hazjQfNV88Bgu3tDJb25KA7U+2Gg82o7sTH39Xql9UQcRPBTAYCAQHCh1Bu4zryk5beAVHzQY=
-X-Received: by 2002:a0d:d88c:0:b0:2f7:bb41:1bd0 with SMTP id
- a134-20020a0dd88c000000b002f7bb411bd0mr25670953ywe.199.1652288592004; Wed, 11
- May 2022 10:03:12 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C1424600ACB
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 03:38:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1652319513;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=yDDabYY8a+Q5tBeqZKXMCQQBzWv/QKrca15NTrr/LYI=;
+ b=bM5kQsa6DnycW366vdupXoAf+ua7Op4KQHIFEvdO3aKewCed0s8C/qa832MgkYFWD9o7/8
+ ji89BOws0mbC2clgzhT4AhcSzvT6M8bVEdVtC3xlCPtplrkf8iYLlS/9qiGeFKOIY4gM4z
+ Le2s2GMqr6xWWz7husRywnJWB4Vea/w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-93-lQiHM-V2NY-IJfMIt3ddLg-1; Wed, 11 May 2022 21:38:31 -0400
+X-MC-Unique: lQiHM-V2NY-IJfMIt3ddLg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.8])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8A3AE100BAAC;
+ Thu, 12 May 2022 01:38:31 +0000 (UTC)
+Received: from mail (unknown [10.22.8.118])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id DE8BAC28122;
+ Thu, 12 May 2022 01:38:30 +0000 (UTC)
+From: Andrea Arcangeli <aarcange@redhat.com>
+To: ltp@lists.linux.it
+Date: Wed, 11 May 2022 21:38:30 -0400
+Message-Id: <20220512013830.8534-2-aarcange@redhat.com>
+In-Reply-To: <20220512013830.8534-1-aarcange@redhat.com>
+References: <20220512013830.8534-1-aarcange@redhat.com>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 11 May 2022 22:33:00 +0530
-Message-ID: <CA+G9fYtKJ_a2rLSvxsYFrkUjNHpGeTn_xsL8kyz=-pBoeA+eXA@mail.gmail.com>
-To: open list <linux-kernel@vger.kernel.org>, 
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, 
- lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=aarcange@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [next] mm: overcommit_memory: failed - TFAIL: alloc passed,
- expected to fail
+Subject: [LTP] [PATCH 1/1] ksm: fix occasional page_volatile false positives
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,67 +72,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Michal Hocko <mhocko@suse.com>,
- Arnd Bergmann <arnd@arndb.de>, Ganesan Rajagopal <rganesan@arista.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Peter Xu <peterx@redhat.com>,
- Shakeel Butt <shakeelb@google.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Andrew Morton <akpm@linux-foundation.org>
+Cc: Eirik Fuller <efuller@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following LTP test regressions were noticed on Linux next-20220511 tag on
-all the devices.
+The KSM scan keeps running while checking the KSM status in sysfs, but
+during the KSM scan the the rmap_items in the stale unstable tree of
+the old pass are removed from it and are later reinserted in the new
+unstable tree of the current pass, leading to some page_volatile
+false positives.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The fix is stop the KSM scan temporarily while the KSM status is being
+read from sysfs.
 
-Regressions found on x86 and arm64.
+For reference here's an instance of the fixed false positives:
 
-   ltp-mm-tests/overcommit_memory04
-   ltp-mm-tests/overcommit_memory06
-   ltp-mm-tests/overcommit_memory03
-   ltp-mm-tests/min_free_kbytes
-   ltp-mm-tests/overcommit_memory01
-   ltp-mm-tests/oom01
-   ltp-mm-tests/overcommit_memory05
+mem.c:255: TFAIL: pages_volatile is not 0 but 1.
+mem.c:255: TFAIL: pages_unshared is not 1 but 0.
 
+Reported-by: Eirik Fuller <efuller@redhat.com>
+Co-developed-by: Li Wang <liwan@redhat.com>
+Tested-by: Li Wang <liwan@redhat.com>
+Tested-by: Eirik Fuller <efuller@redhat.com>
+Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-mem.c:154: TFAIL: victim signalled: (9) SIGKILL
-overcommit_memory.c:203: TFAIL: alloc passed, expected to fail
-overcommit_memory.c:176: TINFO: malloc 7102100 kB successfully
-overcommit_memory.c:203: TFAIL: alloc passed, expected to fail
-overcommit_memory.c:176: TINFO: malloc 3523530 kB successfully
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 090569ebb..8ddd7adf7 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -261,14 +261,31 @@ static void final_group_check(int run, int pages_shared, int pages_sharing,
+ 			  int pages_volatile, int pages_unshared,
+ 			  int sleep_millisecs, int pages_to_scan)
+ {
++	int ksm_run_orig;
++
+ 	tst_res(TINFO, "check!");
+ 	check("run", run);
++
++	/*
++	 * Temporarily stop the KSM scan during the checks: during the
++	 * KSM scan the rmap_items in the stale unstable tree of the
++	 * old pass are removed from it and are later reinserted in
++	 * the new unstable tree of the current pass. So if the checks
++	 * run in the race window between removal and re-insertion, it
++	 * can lead to unexpected false positives where page_volatile
++	 * is elevated and page_unshared is recessed.
++	 */
++	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &ksm_run_orig);
++	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
++
+ 	check("pages_shared", pages_shared);
+ 	check("pages_sharing", pages_sharing);
+ 	check("pages_volatile", pages_volatile);
+ 	check("pages_unshared", pages_unshared);
+ 	check("sleep_millisecs", sleep_millisecs);
+ 	check("pages_to_scan", pages_to_scan);
++
++	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", ksm_run_orig);
+ }
+ 
+ void ksm_group_check(int run, int pages_shared, int pages_sharing,
 
-overcommit_memory.c:203: TFAIL: alloc passed, expected to fail
-overcommit_memory.c:176: TINFO: malloc 8456472 kB successfully
-overcommit_memory.c:203: TFAIL: alloc passed, expected to fail
-overcommit_memory.c:176: TINFO: malloc 4283276 kB successfully
-overcommit_memory.c:203: TFAIL: alloc passed, expected to fail
-overcommit_memory.c:176: TINFO: malloc 2114118 kB successfully
-
-
-metadata:
-  git_ref: master
-  git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-  git_sha: 6107040c99d5dfc920721c198d45ed2d639b113a
-  git_describe: next-20220511
-  kernel_version: 5.18.0-rc6
-  kernel-config: https://builds.tuxbuild.com/291BWBU964yoppGqYfnVF8AJMg4/config
-  build-url: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/pipelines/536448964
-  artifact-location: https://builds.tuxbuild.com/291BWBU964yoppGqYfnVF8AJMg4
-  toolchain: gcc-11
-
-
-Full test log on x86:
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20220511/testrun/9438084/suite/ltp-mm-tests/test/overcommit_memory01/log
-https://lkft.validation.linaro.org/scheduler/job/5012581#L10525
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
