@@ -4,59 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B195EC433F5
-	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 01:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACA0C433F5
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 11:44:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C4C443CA9C7
-	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 03:38:57 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4367A3CA9DE
+	for <ltp@archiver.kernel.org>; Thu, 12 May 2022 13:44:04 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F8C83CA9C9
- for <ltp@lists.linux.it>; Thu, 12 May 2022 03:38:42 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D8D0B3C8CC3
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 13:43:54 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 791631400E1C
- for <ltp@lists.linux.it>; Thu, 12 May 2022 03:38:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1652319520;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=xBEK/eujM2j6sku00fG5CpKRZFDMmP70WOz/CF0cDSk=;
- b=RWbA7XSJZdn10braU1erXKQ+pe1MtToNPfAAJ7ap8td6DTc7tqYOY4j3OQQKMZxmOOqFZ0
- tJsgbbvbAEBhy3A+dcTGovRpxt2ZZW1tIWo+V7nvhC3sYS1XghccvDMbJrzmP6O0bpMgOt
- n6Y5CzHBFqN7ddbxL7n71K0QQZ8VomQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-317-haNmi_WWPdGxqoxJwgI-Sg-1; Wed, 11 May 2022 21:38:31 -0400
-X-MC-Unique: haNmi_WWPdGxqoxJwgI-Sg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
- [10.11.54.7])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ED1B61000484
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 13:43:53 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1702F811E84;
- Thu, 12 May 2022 01:38:31 +0000 (UTC)
-Received: from mail (unknown [10.22.8.118])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id DE978150592B;
- Thu, 12 May 2022 01:38:30 +0000 (UTC)
-From: Andrea Arcangeli <aarcange@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DC9141F88F
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 11:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1652355832;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fNa/64PsNmZ7Edbc3sLEV6Bi26OKqG2SwBedhVf3WJE=;
+ b=O8c8Ogo9uct3Sn4EO918m9UZ3JZ5Hp9VwJPEVEICoALOfTrvEsjJ18a/Q9CEveZwzzsj7h
+ u9VMasoiekjOIkydIlOIU2cjJK8RfhE7fSN56ZrkDcArR3AAl1+IiUBg4c9DJHzop+MUs5
+ 2UWaKZKrE84hOfCGkRKNUqa8bviFZEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1652355832;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fNa/64PsNmZ7Edbc3sLEV6Bi26OKqG2SwBedhVf3WJE=;
+ b=HWV7QLPGCSbe7KWCipd+B4CU7VczOXOFlkCRipXJsQV0acGb/aCULx9xXAiwEL/+iDrYlc
+ LjzYN/cwEYu77XAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B665113A84
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 11:43:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3z1/KfjyfGJOewAAMHmgww
+ (envelope-from <pvorel@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 12 May 2022 11:43:52 +0000
+Date: Thu, 12 May 2022 13:43:50 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 11 May 2022 21:38:29 -0400
-Message-Id: <20220512013830.8534-1-aarcange@redhat.com>
+Message-ID: <Ynzy9inZ9vsKA4sB@pevik>
+References: <20220510155438.15754-1-pvorel@suse.cz>
+ <20220510155438.15754-5-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=aarcange@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220510155438.15754-5-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/1] ksm: fix occasional page_volatile false positives
+Subject: Re: [LTP] [PATCH v2 4/4] shell: Add test for TST_MOUNT_DEVICE=1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,30 +78,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Eirik Fuller <efuller@redhat.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello everyone,
+Hi all,
 
-Some LTP KSM tests (ksm0[2-4]) occasionally reported some
-page_volatile elevated failure that turned out to be a false positive
-from LTP.
+> +++ b/lib/newlib_tests/shell/tst_mount_device.sh
+...
+> +TST_MOUNT_DEVICE=1
+> +TST_FS_TYPE=ext4
+> +TST_TESTFUNC=test
+> +TST_CNT=2
+> +. tst_test.sh
+Obviously loading should be later.
+> +
+> +test1()
+> +{
+> +	tst_res TPASS "device formatted"
+> +}
+> +
+> +test2()
+> +{
+> +	EXPECT_PASS "grep '$TST_MNTPOINT $TST_FS_TYPE' /proc/mounts"
+> +}
+> +
+Here.
+I'll fix it before merge (if it's the only change requested).
+> +tst_run
 
-This proposed fix has been verified by running the tests in a loop
-like this: "while ./ksm02; do : ; done".
-
-Thanks,
-Andrea
-
-Andrea Arcangeli (1):
-  ksm: fix occasional page_volatile false positives
-
- testcases/kernel/mem/lib/mem.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
