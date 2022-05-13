@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2599C433EF
-	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 09:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0300C433F5
+	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 09:08:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D6FB53CA9CB
-	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 11:05:37 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id AC6FE3CA9E8
+	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 11:08:43 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B2C9C3C1BCA
- for <ltp@lists.linux.it>; Fri, 13 May 2022 11:05:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 14C4C3CA9CC
+ for <ltp@lists.linux.it>; Fri, 13 May 2022 11:08:33 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 36FDF6001E1
- for <ltp@lists.linux.it>; Fri, 13 May 2022 11:05:26 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CD1061A01178
+ for <ltp@lists.linux.it>; Fri, 13 May 2022 11:08:32 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5AE3921AA4;
- Fri, 13 May 2022 09:05:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 33F421F932;
+ Fri, 13 May 2022 09:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652432726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1652432912;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=p6IpurA2kKyi5YYCZnMlgNsFoiBUB6wgkbvzAqCleHo=;
- b=k2bjk1FvTsWHyO+nAuDDKDcnyRKC2Xp3Fnpy/59utws//9lu7yjHX3CYr7vXP/FYWk7okg
- e3kLriLfxfiW7xfi+Vdee449fSozDWgl87L+DdKb69ZlWlrXC2P/BSf2KaYGr4hXnOs12F
- 7+Y97QwjpD9fO8NcAoL6nhHiiXhT8oI=
+ bh=+bwbYtGBQiQ0BFK+mBmAzqTkMstvnNNGKGi+xtCy8Fs=;
+ b=lNYVg6NU4mPUeDvIVQMUMXUNM7/uwHZ9AkeIWigApuBCf4nUL3EfQydo6qIr5EzihgX7Vi
+ w1gzm/vsdXcqWE21rJjUE0ip3JuK1Sz+e8JiBuwgL7MYGuwpDIxiQvPbRP1x/5LJQ/SyD0
+ Ij5BKRP4zsqjd59R1kxYMa8hrXcYpNQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652432726;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1652432912;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=p6IpurA2kKyi5YYCZnMlgNsFoiBUB6wgkbvzAqCleHo=;
- b=96OAtSYlF815h/eyLmLZE9z0kW85Gb3LCo7xpB8UpucZOxlU2xYlnY2nhAQQi3GYxPSdog
- wwySPprUdruyryBg==
+ bh=+bwbYtGBQiQ0BFK+mBmAzqTkMstvnNNGKGi+xtCy8Fs=;
+ b=7BP5zxUmQQULhzq0iKflo5s1gNUXOVWZHIxQjqzqqJ9Oyp3CEkcYq+EIRKqU3rSm4tWSTe
+ 3lgH+t85m0uZexCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C86413A84;
- Fri, 13 May 2022 09:05:26 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F286513A84;
+ Fri, 13 May 2022 09:08:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EiOIC1YffmJ6cQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 13 May 2022 09:05:26 +0000
-Date: Fri, 13 May 2022 11:07:40 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Yn4f3HLBTJ/ehtyh@yuki>
-References: <20220512131002.26093-1-chrubis@suse.cz>
- <CAEemH2dV04-F1mFHiCodQV+uWMbMWxEVy3hW+iqSv6zyJwjyMg@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 9XqgOQ8gfmLVcgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 13 May 2022 09:08:31 +0000
+Date: Fri, 13 May 2022 11:08:30 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <Yn4gDgUqjBo8naOa@pevik>
+References: <20220512194557.30911-1-pvorel@suse.cz>
+ <20220512194557.30911-9-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2dV04-F1mFHiCodQV+uWMbMWxEVy3hW+iqSv6zyJwjyMg@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20220512194557.30911-9-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] waitid10: raise SIGFPE directly
+Subject: Re: [LTP] [PATCH 8/8] nfs07.sh: Use TST_ALL_FILESYSTEMS=1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,30 +77,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Martin Doucha <martin.doucha@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Better to have code comments to explain the reason here,
-> just for better readability.
+Hi,
 
-What exactly should we comment there, something as:
+>  testcases/network/nfs/nfs_stress/nfs07.sh | 2 ++
+...
+>  TST_TESTFUNC="do_test"
+>  TST_SETUP="do_setup"
+>  TST_USAGE="show_usage"
+> +TST_ALL_FILESYSTEMS=1
 
-Triggering SIGFPE by invalid instruction is not always possible, some
-architectures does not trap division-by-zero at all and even when it's
-possible we would have to fight the compiler optimizations that have
-tendency to remove undefined operations.
+It will not be that simple. Because $TST_TMPDIR is not the mountpoint
+($TST_MNTPOINT mountpoint is $PWD/mntpoint, which is $TST_TMPDIR/mntpoint for
+$TST_ALL_FILESYSTEMS) IMHO we need at least to:
 
-> And vote for merging before the new release as well.
+1) cd to $TST_MNTPOINT on lhost and rhost (nfs_setup_server() runs NFS server
+on lhost for netns, otherwise on rhost)
+2) local_dir and remote_dir in nfs_setup need to use $TST_MNTPOINT instead of $TST_TMPDIR
+=> it'd be easier to port *all* NFS tests to $TST_ALL_FILESYSTEMS, not sure if we
+want that.
 
-That's what I'm aiming for.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
