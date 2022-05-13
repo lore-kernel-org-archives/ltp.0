@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E589C433F5
-	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 08:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2599C433EF
+	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 09:05:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB5583CA9E3
-	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 10:49:04 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D6FB53CA9CB
+	for <ltp@archiver.kernel.org>; Fri, 13 May 2022 11:05:37 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 846933CA9CF
- for <ltp@lists.linux.it>; Fri, 13 May 2022 10:48:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id B2C9C3C1BCA
+ for <ltp@lists.linux.it>; Fri, 13 May 2022 11:05:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 05B751000D53
- for <ltp@lists.linux.it>; Fri, 13 May 2022 10:48:54 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 36FDF6001E1
+ for <ltp@lists.linux.it>; Fri, 13 May 2022 11:05:26 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3BD131F92D;
- Fri, 13 May 2022 08:48:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5AE3921AA4;
+ Fri, 13 May 2022 09:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652431734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1652432726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Vpk0iTlDTUzHrj5jvWsQrQNpvLCfmfjuqboXHJxy7ZM=;
- b=jKIQC7CwZstXlVPPrBHvCaU6AklBh4cR45YGL+7+BsDu24GKcZcLqIJmhci4KxfvO09h1a
- 8OqvAZ8u1TWMQ1wqjcdPFxCG4tdJsGfBAgddwydXJ7F9pXUoQAbK56gEtVB4TXZtI5KSKg
- 4aPgIiWZX1yvTrJsxqUFubVcavf7KbE=
+ bh=p6IpurA2kKyi5YYCZnMlgNsFoiBUB6wgkbvzAqCleHo=;
+ b=k2bjk1FvTsWHyO+nAuDDKDcnyRKC2Xp3Fnpy/59utws//9lu7yjHX3CYr7vXP/FYWk7okg
+ e3kLriLfxfiW7xfi+Vdee449fSozDWgl87L+DdKb69ZlWlrXC2P/BSf2KaYGr4hXnOs12F
+ 7+Y97QwjpD9fO8NcAoL6nhHiiXhT8oI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652431734;
+ s=susede2_ed25519; t=1652432726;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Vpk0iTlDTUzHrj5jvWsQrQNpvLCfmfjuqboXHJxy7ZM=;
- b=vqVV3uePhKBY/CLH06KJY3KLmkdZT+BoT8gNh/6/z/EpHTmHcFTtTkm6rg1+1WSS5sHALU
- nnwSgujycbqdtEAQ==
+ bh=p6IpurA2kKyi5YYCZnMlgNsFoiBUB6wgkbvzAqCleHo=;
+ b=96OAtSYlF815h/eyLmLZE9z0kW85Gb3LCo7xpB8UpucZOxlU2xYlnY2nhAQQi3GYxPSdog
+ wwySPprUdruyryBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BD0113446;
- Fri, 13 May 2022 08:48:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C86413A84;
+ Fri, 13 May 2022 09:05:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OCiBBXYbfmKzaAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 13 May 2022 08:48:54 +0000
-Date: Fri, 13 May 2022 10:51:08 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id EiOIC1YffmJ6cQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 13 May 2022 09:05:26 +0000
+Date: Fri, 13 May 2022 11:07:40 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <Yn4b/OMSptdNsLkW@yuki>
-References: <20220512013830.8534-1-aarcange@redhat.com>
- <20220512013830.8534-2-aarcange@redhat.com>
- <CAEemH2cSfESfver7zM9CetNbAjUfdTELBvyoAf_VSNB_Qw4mCw@mail.gmail.com>
+Message-ID: <Yn4f3HLBTJ/ehtyh@yuki>
+References: <20220512131002.26093-1-chrubis@suse.cz>
+ <CAEemH2dV04-F1mFHiCodQV+uWMbMWxEVy3hW+iqSv6zyJwjyMg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2cSfESfver7zM9CetNbAjUfdTELBvyoAf_VSNB_Qw4mCw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <CAEemH2dV04-F1mFHiCodQV+uWMbMWxEVy3hW+iqSv6zyJwjyMg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] ksm: fix occasional page_volatile false
- positives
+Subject: Re: [LTP] [PATCH v2] waitid10: raise SIGFPE directly
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,19 +75,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Eirik Fuller <efuller@redhat.com>, LTP List <ltp@lists.linux.it>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Reviewed-by: Li Wang <liwang@redhat.com>
-> 
-> @Cryril, I vote for adding this patch in the new release.
-> Plz take this into consideration, thanks.
+> Better to have code comments to explain the reason here,
+> just for better readability.
 
-Pushed, thanks.
+What exactly should we comment there, something as:
+
+Triggering SIGFPE by invalid instruction is not always possible, some
+architectures does not trap division-by-zero at all and even when it's
+possible we would have to fight the compiler optimizations that have
+tendency to remove undefined operations.
+
+> And vote for merging before the new release as well.
+
+That's what I'm aiming for.
 
 -- 
 Cyril Hrubis
