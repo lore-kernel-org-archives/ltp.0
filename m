@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBC65C433EF
-	for <ltp@archiver.kernel.org>; Sat, 14 May 2022 03:00:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2EB1C433F5
+	for <ltp@archiver.kernel.org>; Sat, 14 May 2022 04:21:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6157F3CAA05
-	for <ltp@archiver.kernel.org>; Sat, 14 May 2022 05:00:03 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 6ADF43CAA0A
+	for <ltp@archiver.kernel.org>; Sat, 14 May 2022 06:21:42 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A67623C01CF
- for <ltp@lists.linux.it>; Sat, 14 May 2022 04:59:51 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 01C1B3C0717
+ for <ltp@lists.linux.it>; Sat, 14 May 2022 06:21:26 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3C2816018B3
- for <ltp@lists.linux.it>; Sat, 14 May 2022 04:59:49 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D32AC6018BD
+ for <ltp@lists.linux.it>; Sat, 14 May 2022 06:21:25 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1652497188;
+ s=mimecast20190719; t=1652502084;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=AXuyIN2C1ilhlPDLC9COHmL3K9D1eKCE0zKsC5W3Dtc=;
- b=W1zqE8FhpV8aET4SSfV6PkW/BhuOeb5g8ud7cdEubeVkiIiStO/6rTxqzaRty4CCxAFeSi
- Z8QhRjaOveYXfXpNs0bJyDG2m8olgIa/irrBDcS4bbw82yKpAyVytmzz2lNRHlRH4scwz5
- lG2yyHrwc/DpEUwQf9DSFc79+jlUZzU=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=x34UDFwURA02lyIH2Zu04dNZGPgcmwVhjpis1FuVK4Q=;
+ b=RJh1IY05jZ7F0d+rmqX7L6Cm+VAnfFDIEYVl1/tFupySHcMEcIHqk74CNvOJU20RjHXnN2
+ C+ULKP0xXW9wp+K/gGgLEHoK/wbjy6AhdH+44TEWfQQvOuFzJoXA/fZddghz6zQaGn0pEr
+ QuaT6bExZJ9NzZPKBU0Vh8UxUQdOU1Q=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-298-Rz6w_qyxP1SS3n5lugNMXQ-1; Fri, 13 May 2022 22:59:46 -0400
-X-MC-Unique: Rz6w_qyxP1SS3n5lugNMXQ-1
-Received: by mail-yw1-f199.google.com with SMTP id
- 00721157ae682-2f4e28ae604so87524217b3.8
- for <ltp@lists.linux.it>; Fri, 13 May 2022 19:59:46 -0700 (PDT)
+ us-mta-608-iTFl65OGNJmuYYT0u6CW2Q-1; Sat, 14 May 2022 00:21:19 -0400
+X-MC-Unique: iTFl65OGNJmuYYT0u6CW2Q-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ f201-20020a2538d2000000b0064d6dbc76d2so68924yba.6
+ for <ltp@lists.linux.it>; Fri, 13 May 2022 21:21:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=AXuyIN2C1ilhlPDLC9COHmL3K9D1eKCE0zKsC5W3Dtc=;
- b=37VC4A/CZn0DHeXvAQs/CEXKHMzVo8nh/KQaCXNSS9sAvUQ0n3++ueZSEqcoRFKoYH
- ly/um2phlJTE/aXQPDUJEF/ElaMvncNODx/dQN8+HE1acWH9Uyo5YMnDtPDg2AWNG8kD
- bH7Qz5CX/1Cv6yp5zrxdHTbZACh92yB1L+TvmrjMJB/K+4qGsuyK3mWXt514yKltj+4r
- MRiH6jjzp8MyF+wt7AdngtJaIn8N/51HvLoeHxl7Z0SvESb2yzlaOb+JOYxNGeK5quct
- doQ0CXLR+MNtgwBJPyLZPOxXdtKdW5IfFt/SYtuiUqtf9ML3PWSTokpyWGqtkGSRYsNn
- n9uA==
-X-Gm-Message-State: AOAM533YIydoRBRhaUAHXczmTyKE5Ti9UZEvPjYnYeNYb85l+mFYqlYr
- ii3N8z14X3UiySrsooiHm3d7BpnCfm36HHObnS9XyqbgHua92OkSHRg5xp3m/c54TyTvffn7U6W
- Io0LzdNjvWldvUSh1gDYPD9MvFao=
-X-Received: by 2002:a81:194d:0:b0:2f7:cb5d:eaa7 with SMTP id
- 74-20020a81194d000000b002f7cb5deaa7mr8951178ywz.25.1652497186197; 
- Fri, 13 May 2022 19:59:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTcVTjbYTumszV86nWfyavJks4lxuubLFlhqvvpA98F3YoZao3VX+qL9oRKFiyZnO7BhwyPQUBcWX3oGno2wE=
-X-Received: by 2002:a81:194d:0:b0:2f7:cb5d:eaa7 with SMTP id
- 74-20020a81194d000000b002f7cb5deaa7mr8951158ywz.25.1652497185788; Fri, 13 May
- 2022 19:59:45 -0700 (PDT)
+ bh=x34UDFwURA02lyIH2Zu04dNZGPgcmwVhjpis1FuVK4Q=;
+ b=5d6RxTNf27Xvl4XoxAvZXTgcmVRYhDnK6GQUUOBIIyh3/uc6pAHl3XeBv/OTuFwAEh
+ 1Rw0IZ45Efp6ypxQfSE8oDV9qrt1+S9jkImAhsR8mXJhRidn+kPLTwr3VDj2w0fRj3oA
+ WdkwGg2natQKE/l7VvwacT6mD/sya/I+F+AFpxgU/PQWkxOLg1BxX/eDKQFTePqGXC25
+ VYt7mSSDPizbuPgtEyimbAoEnDPp7FBdfAcDasCOmHujNXbb6LVlJFE9GMt1MWEO383M
+ 6N3O72Oihy871odOjoboqOxDgajzeADRqK2EE+3lJTt2+elXJ5JsaDxRzkNctWMsIDm5
+ IO/A==
+X-Gm-Message-State: AOAM531Te/+6sB+M4lyoBR8SmAFSRH/WoRwpuedIvMULGU+TKyO0m4Zk
+ b1VuJo76hwvN6yereOjV9481ejxOe7g3RJ/1iPly80sPlE1rDGG3BFvgLzI29OGlVUZW7ZUVkWu
+ mRPkqLYjsuB2rxixv6alHCnrTYLg=
+X-Received: by 2002:a25:a081:0:b0:649:12da:9996 with SMTP id
+ y1-20020a25a081000000b0064912da9996mr8204593ybh.161.1652502079134; 
+ Fri, 13 May 2022 21:21:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcSb1VIoCrffYZ/cjgZ+iRVXiTHIeio5azvpoJfSTJFBIG9w0W/sbjXymmpH9XozoPL2HiJZK9CqX8IZ4GwxU=
+X-Received: by 2002:a25:a081:0:b0:649:12da:9996 with SMTP id
+ y1-20020a25a081000000b0064912da9996mr8204586ybh.161.1652502078908; Fri, 13
+ May 2022 21:21:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220512123816.24399-1-chrubis@suse.cz>
- <20220512123816.24399-23-chrubis@suse.cz>
- <CAEemH2dAfUEjA877h0Lwy9Qw12YgQ6zgQbf1BJemyr7=xfj0Rg@mail.gmail.com>
- <Yn5NGPpfoddFYTs2@yuki>
- <CAEemH2fHsa+JECK5dW64-coQBwdGR3W9W+jKex8zRmKzfLX1=w@mail.gmail.com>
- <Yn5prUjpZEUjoxbL@yuki>
-In-Reply-To: <Yn5prUjpZEUjoxbL@yuki>
+ <20220512123816.24399-2-chrubis@suse.cz>
+In-Reply-To: <20220512123816.24399-2-chrubis@suse.cz>
 From: Li Wang <liwang@redhat.com>
-Date: Sat, 14 May 2022 10:59:34 +0800
-Message-ID: <CAEemH2ea4qvLJGuxymU9D+6QZkUrrH2GsYFRyS-JnOW+hmTxxw@mail.gmail.com>
+Date: Sat, 14 May 2022 12:21:08 +0800
+Message-ID: <CAEemH2dnwFBJxqPxjzLo7GiVOp-dng79jMN0V_Z1ZBzAvVx+gg@mail.gmail.com>
 To: Cyril Hrubis <chrubis@suse.cz>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
@@ -77,7 +73,7 @@ X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 22/29] fuzzy_sync: Convert to runtime
+Subject: Re: [LTP] [PATCH v3 01/29] Introduce a concept of max runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,160 +85,252 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, LTP List <ltp@lists.linux.it>,
- automated-testing@lists.yoctoproject.org
-Content-Type: multipart/mixed; boundary="===============1559875240=="
+Cc: LTP List <ltp@lists.linux.it>, automated-testing@lists.yoctoproject.org
+Content-Type: multipart/mixed; boundary="===============0901347065=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1559875240==
-Content-Type: multipart/alternative; boundary="000000000000c06e0e05deeffbbb"
+--===============0901347065==
+Content-Type: multipart/alternative; boundary="000000000000678a9e05def11f84"
 
---000000000000c06e0e05deeffbbb
+--000000000000678a9e05def11f84
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, May 13, 2022 at 10:20 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Thu, May 12, 2022 at 8:36 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> Hi!
-> > > > I hit a new problem while testing new pty03, that seems here
-> > > > will fall into an infinite loop and test timed out finally. The
-> printf
-> > > > shows rem_p will be overflow I haven't figured out why.
-> > > >
-> > > > But with comparing with 0.9, it always gets passed on to the same
-> system.
-> > >
-> > > That is strange, since we do:
-> > >
-> > >         rem_p = 1 - tst_remaining_runtime()/pair->time_exec_start;
-> > >
-> >
-> > I guess the root cause is that 'pair->time_exec_start' has a possibility
-> > to reach zero. in pty03 it has ".tcnt = 9" which made the
-> > tst_fzsync_pair_reset()
-> > to be re-run many times, but in that function 'pair->time_exec_start'
-> will
-> > be set only based on the original .max_runtime, with time elapsed the
-> > remaining time tends to be zero.
+> This commit introduces a concept of max test runtime. In other words
+> test runtime is capped at a certain value in order to make testruns more
+> deterministic. Test is free to to finish before the runtime is used up,
+> for example when maximal number of iterations was reached, but test must
+> stop once the runtime has been used up.
 >
-> I guess that that the interaction of tcnt and runtime is not optimal
-> here. You are right that as long as we call tst_fzsync_pair_reset() on
-> each invocation of the run() function we may eventually get to state
-> where the runtime is exhausted, especially on slower hardware we end up
-> with division by zero and overflow.
+> Testcases that run for more than a second or two must check for
+> remaining runtime by regular calls to tst_remaining_runtime() and should
+> exit when zero is returned.
 >
-> The cleanest solution would be to rewrite the test to use .test_variants =
-> 9
-> and setting the .max_runtime to a smaller value. That way we would have
-> precisely defined runtime for each iteration. What do you think?
+> The test max runtime must be set either by the .max_iteration_runtime in
 >
 
-Yes, that should work, but people have to painstakingly remember
-that to avoid this interaction of tcnt and runtime in test writing.
+.max_runtime
 
-Another simple choice I can think of is to use tst_set_max_runtime()
-to reset both 'timeout' and 'runtime' at the beginning of each invocation
-of the run().
 
-And maybe we should invoke it in the tst_fzsync_pair_reset directly?
-I'm not very sure about fixing this in fzsync-lib or out.
 
---- a/testcases/kernel/pty/pty03.c
-+++ b/testcases/kernel/pty/pty03.c
-@@ -105,6 +105,7 @@ static void do_test(unsigned int n)
+> the tst_test structure or in the test setup by a call to
+> tst_set_runtime().
+>
 
-        tst_res(TINFO, "Creating PTY with %s line discipline", ldisc->name);
+tst_set_max_runtime()
 
-+       tst_set_max_runtime(test.runtime);
-        tst_fzsync_pair_reset(&fzp, hangup);
-        while (tst_fzsync_run_a(&fzp)) {
-                ptmx = SAFE_OPEN("/dev/ptmx", O_RDONLY);
+
+
+>
+> The test timeout is then computed as a sum of DEFAULT_TIMEOUT (currently
+> set to 30 seconds) and the test runtime. The DEFAULT_TIMEOUT is nothing
+> more than a safety margin for teardown of the test.
+>
+> This commit also maps the -I parameter to the test max runtime if
+> available and introduces LTP_RUNTIME_MUL enviroment variable so that we
+> have an easy controll over the runtime cap.
+>
+> Lastly but not least the function related to the timeout are turned into
+> no-op by this commit and removed after all test are converted to the
+> runtime API.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  doc/c-test-api.txt                       |  42 +++++--
+>  doc/user-guide.txt                       |  30 ++++-
+>  include/tst_test.h                       |  27 ++++
+>  lib/newlib_tests/.gitignore              |   5 +-
+>  lib/newlib_tests/runtest.sh              |   2 +-
+>  lib/newlib_tests/test10.c                |  22 ----
+>  lib/newlib_tests/test12.c                |  21 ----
+>  lib/newlib_tests/test13.c                |   1 -
+>  lib/newlib_tests/test18.c                |  22 ----
+>  lib/newlib_tests/test_children_cleanup.c |   1 -
+>  lib/newlib_tests/test_runtime01.c        |  30 +++++
+>  lib/newlib_tests/test_runtime02.c        |  28 +++++
+>  lib/tst_test.c                           | 150 +++++++++++++++++------
+>  13 files changed, 264 insertions(+), 117 deletions(-)
+>  delete mode 100644 lib/newlib_tests/test10.c
+>  delete mode 100644 lib/newlib_tests/test12.c
+>  delete mode 100644 lib/newlib_tests/test18.c
+>  create mode 100644 lib/newlib_tests/test_runtime01.c
+>  create mode 100644 lib/newlib_tests/test_runtime02.c
+>
+> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> index 9f104ecd7..711b445d9 100644
+> --- a/doc/c-test-api.txt
+> +++ b/doc/c-test-api.txt
+> @@ -93,14 +93,35 @@ in range of [0, '.tcnt' - 1].
+>
+>  IMPORTANT: Only one of '.test' and '.test_all' can be set at a time.
+>
+> -Each test has a default timeout set to 300s. The default timeout can be
+> -overridden by setting '.timeout' in the test structure or by calling
+> -'tst_set_timeout()' in the test 'setup()'. There are a few testcases
+> whose run
+> -time may vary arbitrarily, for these timeout can be disabled by setting
+> it to
+> --1.
+> +Each test has a limit on how long it can run and the limit composes of two
+> +parts max_runtime and timeout. The max_runtime is a limit for how long
+> can the
+> +'.test_all' or a set of '.test' functions take and the timeout is static
+> part
+> +that should cover the duration of test setup and cleanup plus some safety.
+>
+> -Test can find out how much time (in seconds) is remaining to timeout,
+> -by calling 'tst_timeout_remaining()'.
+> +Any test that runs for more than a second or two has to make sure to:
+> +
+> +- set the runtime either by setting the '.max_runtime' in tst_test or by
+> +  calling 'tst_set_runtime()' in the test setup
+>
+
+     ^ calling 'tst_set_max_runtime()'
+
+Apart from the patch-22 tiny issue, the rest part looks good.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 
 -- 
 Regards,
 Li Wang
 
---000000000000c06e0e05deeffbbb
+--000000000000678a9e05def11f84
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 <div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
 t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, May 13, 2022 at 10:20 PM Cyril Hrubis &lt;<=
-a href=3D"mailto:chrubis@suse.cz">chrubis@suse.cz</a>&gt; wrote:<br></div><=
-blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-l=
-eft:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
-&gt; &gt; &gt; I hit a new problem while testing new pty03, that seems here=
+r" class=3D"gmail_attr">On Thu, May 12, 2022 at 8:36 PM Cyril Hrubis &lt;<a=
+ href=3D"mailto:chrubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; =
+wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">This comm=
+it introduces a concept of max test runtime. In other words<br>
+test runtime is capped at a certain value in order to make testruns more<br=
+>
+deterministic. Test is free to to finish before the runtime is used up,<br>
+for example when maximal number of iterations was reached, but test must<br=
+>
+stop once the runtime has been used up.<br>
 <br>
-&gt; &gt; &gt; will fall into an infinite loop and test timed out finally. =
-The printf<br>
-&gt; &gt; &gt; shows rem_p will be overflow I haven&#39;t figured out why.<=
-br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; But with comparing with 0.9, it always gets passed on to the=
- same system.<br>
-&gt; &gt;<br>
-&gt; &gt; That is strange, since we do:<br>
-&gt; &gt;<br>
-&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0rem_p =3D 1 - tst_remaining_runt=
-ime()/pair-&gt;time_exec_start;<br>
-&gt; &gt;<br>
-&gt; <br>
-&gt; I guess the root cause is that &#39;pair-&gt;time_exec_start&#39; has =
-a possibility<br>
-&gt; to reach zero. in pty03 it has &quot;.tcnt =3D 9&quot; which made the<=
-br>
-&gt; tst_fzsync_pair_reset()<br>
-&gt; to be re-run many times, but in that function &#39;pair-&gt;time_exec_=
-start&#39; will<br>
-&gt; be set only based on the original .max_runtime, with time elapsed the<=
-br>
-&gt; remaining time tends to be zero.<br>
+Testcases that run for more than a second or two must check for<br>
+remaining runtime by regular calls to tst_remaining_runtime() and should<br=
+>
+exit when zero is returned.<br>
 <br>
-I guess that that the interaction of tcnt and runtime is not optimal<br>
-here. You are right that as long as we call tst_fzsync_pair_reset() on<br>
-each invocation of the run() function we may eventually get to state<br>
-where the runtime is exhausted, especially on slower hardware we end up<br>
-with division by zero and overflow.<br>
+The test max runtime must be set either by the .max_iteration_runtime in<br=
+></blockquote><div><br></div><div><div class=3D"gmail_default" style=3D"fon=
+t-size:small">.max_runtime</div><br></div><div>=C2=A0</div><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex">
+the tst_test structure or in the test setup by a call to<br>
+tst_set_runtime().<br></blockquote><div><br></div><div><div class=3D"gmail_=
+default" style=3D"font-size:small">tst_set_max_runtime()</div><br></div><di=
+v>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px=
+ 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
 <br>
-The cleanest solution would be to rewrite the test to use .test_variants =
-=3D 9<br>
-and setting the .max_runtime to a smaller value. That way we would have<br>
-precisely defined runtime for each iteration. What do you think?<br></block=
-quote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:s=
-mall">Yes, that should work, but people have=C2=A0to painstakingly remember=
-</div><div class=3D"gmail_default" style=3D"font-size:small">that to avoid =
-this interaction of tcnt and runtime in test=C2=A0writing.=C2=A0</div><div =
-class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D"g=
-mail_default" style=3D"font-size:small">Another simple choice I can think o=
-f is to use tst_set_max_runtime()</div><div class=3D"gmail_default" style=
-=3D"font-size:small">to reset both &#39;timeout&#39; and &#39;runtime&#39; =
-at the beginning of=C2=A0each invocation</div><div class=3D"gmail_default" =
-style=3D"font-size:small">of the run(). </div></div><div class=3D"gmail_def=
-ault" style=3D"font-size:small"><br></div><div class=3D"gmail_default" styl=
-e=3D"font-size:small">And maybe we should invoke it in the=C2=A0<span class=
-=3D"gmail_default"></span>tst_fzsync_pair_reset directly?</div><div class=
-=3D"gmail_default" style=3D"font-size:small">I&#39;m not very sure about=C2=
-=A0fixing=C2=A0this in=C2=A0fzsync-lib or out.</div><div><br></div><div><di=
-v class=3D"gmail_default" style=3D"font-size:small">--- a/testcases/kernel/=
-pty/pty03.c</div>+++ b/testcases/kernel/pty/pty03.c<br>@@ -105,6 +105,7 @@ =
-static void do_test(unsigned int n)<br>=C2=A0<br>=C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 tst_res(TINFO, &quot;Creating PTY with %s line discipline&quot;, ldisc-=
-&gt;name);<br>=C2=A0<br>+ =C2=A0 =C2=A0 =C2=A0 tst_set_max_runtime(test.<sp=
-an class=3D"gmail_default" style=3D"font-size:small">runtime</span>);<br>=
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 <span class=3D"gmail_default" style=3D"font-siz=
-e:small"></span>tst_fzsync_pair_reset(&amp;fzp, hangup);<br>=C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 while (tst_fzsync_run_a(&amp;fzp)) {<br>=C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ptmx =3D SAFE_OPEN(&quot;/dev/ptmx&quot;=
-, O_RDONLY);<br><br></div></div><div><br></div>-- <br><div dir=3D"ltr" clas=
-s=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<=
-br></div></div></div></div>
+The test timeout is then computed as a sum of DEFAULT_TIMEOUT (currently<br=
+>
+set to 30 seconds) and the test runtime. The DEFAULT_TIMEOUT is nothing<br>
+more than a safety margin for teardown of the test.<br>
+<br>
+This commit also maps the -I parameter to the test max runtime if<br>
+available and introduces LTP_RUNTIME_MUL enviroment variable so that we<br>
+have an easy controll over the runtime cap.<br>
+<br>
+Lastly but not least the function related to the timeout are turned into<br=
+>
+no-op by this commit and removed after all test are converted to the<br>
+runtime API.<br>
+<br>
+Signed-off-by: Cyril Hrubis &lt;<a href=3D"mailto:chrubis@suse.cz" target=
+=3D"_blank">chrubis@suse.cz</a>&gt;<br>
+---<br>
+=C2=A0doc/c-test-api.txt=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|=C2=A0 42 +++++--<br>
+=C2=A0doc/user-guide.txt=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|=C2=A0 30 ++++-<br>
+=C2=A0include/tst_test.h=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|=C2=A0 27 ++++<br>
+=C2=A0lib/newlib_tests/.gitignore=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 |=C2=A0 =C2=A05 +-<br>
+=C2=A0lib/newlib_tests/runtest.sh=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 |=C2=A0 =C2=A02 +-<br>
+=C2=A0lib/newlib_tests/test10.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 |=C2=A0 22 ----<br>
+=C2=A0lib/newlib_tests/test12.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 |=C2=A0 21 ----<br>
+=C2=A0lib/newlib_tests/test13.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 |=C2=A0 =C2=A01 -<br>
+=C2=A0lib/newlib_tests/test18.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 |=C2=A0 22 ----<br>
+=C2=A0lib/newlib_tests/test_children_cleanup.c |=C2=A0 =C2=A01 -<br>
+=C2=A0lib/newlib_tests/test_runtime01.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 |=C2=A0 =
+30 +++++<br>
+=C2=A0lib/newlib_tests/test_runtime02.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 |=C2=A0 =
+28 +++++<br>
+=C2=A0lib/tst_test.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| 150 +++++++++++++++++------<br>
+=C2=A013 files changed, 264 insertions(+), 117 deletions(-)<br>
+=C2=A0delete mode 100644 lib/newlib_tests/test10.c<br>
+=C2=A0delete mode 100644 lib/newlib_tests/test12.c<br>
+=C2=A0delete mode 100644 lib/newlib_tests/test18.c<br>
+=C2=A0create mode 100644 lib/newlib_tests/test_runtime01.c<br>
+=C2=A0create mode 100644 lib/newlib_tests/test_runtime02.c<br>
+<br>
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt<br>
+index 9f104ecd7..711b445d9 100644<br>
+--- a/doc/c-test-api.txt<br>
++++ b/doc/c-test-api.txt<br>
+@@ -93,14 +93,35 @@ in range of [0, &#39;.tcnt&#39; - 1].<br>
+<br>
+=C2=A0IMPORTANT: Only one of &#39;.test&#39; and &#39;.test_all&#39; can be=
+ set at a time.<br>
+<br>
+-Each test has a default timeout set to 300s. The default timeout can be<br=
+>
+-overridden by setting &#39;.timeout&#39; in the test structure or by calli=
+ng<br>
+-&#39;tst_set_timeout()&#39; in the test &#39;setup()&#39;. There are a few=
+ testcases whose run<br>
+-time may vary arbitrarily, for these timeout can be disabled by setting it=
+ to<br>
+--1.<br>
++Each test has a limit on how long it can run and the limit composes of two=
+<br>
++parts max_runtime and timeout. The max_runtime is a limit for how long can=
+ the<br>
++&#39;.test_all&#39; or a set of &#39;.test&#39; functions take and the tim=
+eout is static part<br>
++that should cover the duration of test setup and cleanup plus some safety.=
+<br>
+<br>
+-Test can find out how much time (in seconds) is remaining to timeout,<br>
+-by calling &#39;tst_timeout_remaining()&#39;.<br>
++Any test that runs for more than a second or two has to make sure to:<br>
++<br>
++- set the runtime either by setting the &#39;.max_runtime&#39; in tst_test=
+ or by<br>
++=C2=A0 calling &#39;tst_set_runtime()&#39; in the test setup<br></blockquo=
+te><div><br></div><div class=3D"gmail_default" style=3D"font-size:small">=
+=C2=A0 =C2=A0 =C2=A0^ calling &#39;tst_set_max_runtime()&#39;</div><div cla=
+ss=3D"gmail_quote"><div class=3D"gmail_default"><br></div><div class=3D"gma=
+il_default">Apart from the patch-22 tiny issue, the rest part looks good.</=
+div><div class=3D"gmail_default"><br></div><div class=3D"gmail_default"></d=
+iv></div><div class=3D"gmail_default" style=3D"font-size:small">Reviewed-by=
+: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang=
+@redhat.com</a>&gt;</div><div class=3D"gmail_default" style=3D"font-size:sm=
+all"><br></div></div><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr=
+"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
 
---000000000000c06e0e05deeffbbb--
+--000000000000678a9e05def11f84--
 
 
---===============1559875240==
+--===============0901347065==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -252,5 +340,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1559875240==--
+--===============0901347065==--
 
