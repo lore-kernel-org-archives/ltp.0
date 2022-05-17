@@ -4,74 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE230C433EF
-	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 11:07:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87FE8C433EF
+	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 11:16:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E6303CAA74
-	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 13:07:26 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 21F443CAA8B
+	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 13:16:35 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7C263C0370
- for <ltp@lists.linux.it>; Tue, 17 May 2022 13:07:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id DA22B3C021D
+ for <ltp@lists.linux.it>; Tue, 17 May 2022 13:16:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 37C781400184
- for <ltp@lists.linux.it>; Tue, 17 May 2022 13:07:15 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 40CF4140013E
+ for <ltp@lists.linux.it>; Tue, 17 May 2022 13:16:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 71FCD21CFB;
- Tue, 17 May 2022 11:07:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 71B3E1F383;
+ Tue, 17 May 2022 11:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652785635;
+ t=1652786182;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=T0ScsRlj3bZu/mfN+ySiyR/u/LoLj6mIoR9P0dDm/O8=;
- b=cngOgJIvHARQh+JTw9ElKWpEqrWBRrfs7FAYYm28XYFMS2rOKaFnB/nJBoMw8hO3d1Pnv1
- EjWvht+Y8EmadS3xTzZayA8QW364kPNYaZ0LVhJt0ZS8jYDWs6eOWCl7Q6Q/gAcMKFUN/h
- 5qde/DsAwCdA1JI+1EKPjv2bDL8JYAo=
+ bh=YuFVPIs3Roe5bW61Fxm/aq93R7gztFaR4citUQUMeVI=;
+ b=k9v5SEsqlCxejYbHzZ2FD4ErDhgc19De0s4Ls1UYFdZGCHY3nvmnJhzofMZkZm+XdlOSu0
+ PmWa9T04vk0CAMkKo3QOwW3+D6mz4CfwFn6sXH8KmM2L12C6oA+9eguynGYOh/XiVdxtX8
+ zPKOq4e6PU0Su2+Eq1mvJrp7ULuVx+s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652785635;
+ s=susede2_ed25519; t=1652786182;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=T0ScsRlj3bZu/mfN+ySiyR/u/LoLj6mIoR9P0dDm/O8=;
- b=DRjlxNLw10u2tsYHkIqOt9wMvmC1NtUAOIEiIepKvFaC5xr/Ikp30fHZrjE2s5O9BcjLZ3
- BKCMHEVv7MUgITBw==
+ bh=YuFVPIs3Roe5bW61Fxm/aq93R7gztFaR4citUQUMeVI=;
+ b=KrzNkV8fIEm/2p3Bbv20Y5HeQbYgwIizGQ2Ii1h/lo0rXhveengmmpOgf3JT6rK/G7RXHH
+ T0l6Noy5CAssaLDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 295DA13AA2;
- Tue, 17 May 2022 11:07:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3FD5213AA2;
+ Tue, 17 May 2022 11:16:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aMpFCOOBg2LIZwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 17 May 2022 11:07:15 +0000
-Date: Tue, 17 May 2022 13:07:13 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id +whHDgaEg2LYbAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 17 May 2022 11:16:22 +0000
+Date: Tue, 17 May 2022 13:16:20 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YoOB4SxiNFAg7nhW@pevik>
-References: <20220512123816.24399-1-chrubis@suse.cz>
- <20220512123816.24399-23-chrubis@suse.cz>
- <CAEemH2dAfUEjA877h0Lwy9Qw12YgQ6zgQbf1BJemyr7=xfj0Rg@mail.gmail.com>
- <Yn5NGPpfoddFYTs2@yuki>
- <CAEemH2fHsa+JECK5dW64-coQBwdGR3W9W+jKex8zRmKzfLX1=w@mail.gmail.com>
- <Yn5prUjpZEUjoxbL@yuki> <875ym5di8f.fsf@suse.de>
- <YoN/W4wbow2fyOut@yuki>
+To: ltp@lists.linux.it
+Message-ID: <YoOEBEHyBDFXUc/A@pevik>
+References: <20220322165042.20658-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YoN/W4wbow2fyOut@yuki>
+In-Reply-To: <20220322165042.20658-1-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Automated-testing] [PATCH v3 22/29] fuzzy_sync: Convert
- to runtime
+Subject: Re: [LTP] [PATCH 1/1] smoketest: Add df01.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,7 +77,6 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: LTP List <ltp@lists.linux.it>, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -92,48 +84,9 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi all,
 
-> Hi!
-> > >> I guess the root cause is that 'pair->time_exec_start' has a possibility
-> > >> to reach zero. in pty03 it has ".tcnt = 9" which made the
-> > >> tst_fzsync_pair_reset()
-> > >> to be re-run many times, but in that function 'pair->time_exec_start' will
-> > >> be set only based on the original .max_runtime, with time elapsed the
-> > >> remaining time tends to be zero.
-
-> > > I guess that that the interaction of tcnt and runtime is not optimal
-> > > here. You are right that as long as we call tst_fzsync_pair_reset() on
-> > > each invocation of the run() function we may eventually get to state
-> > > where the runtime is exhausted, especially on slower hardware we end up
-> > > with division by zero and overflow.
-
-> > > The cleanest solution would be to rewrite the test to use .test_variants = 9
-> > > and setting the .max_runtime to a smaller value. That way we would have
-> > > precisely defined runtime for each iteration. What do you think?
-
-> > Or each test case (defined by tcnt) could be given an equal share of the
-> > runtime?
-LGTM
-
-> That would be solution as well. If everyone agrees on this I will go
-> with this version, it should be as easy as:
-
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index dad8aad92..69d7799c3 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1349,6 +1349,8 @@ static void run_tests(void)
-
->                 if (results_equal(&saved_results, results))
->                         tst_brk(TBROK, "Test %i haven't reported results!", i);
-> +
-> +               kill(getppid(), SIGUSR1);
->         }
->  }
-
-
-> With this we do reset the test timeout after each test iteration.
-
-+1.
+> To test 1) pure tst_test.sh usage (other shell tests are network tests)
+> 2) loop device usage from shell
+Merged this one.
 
 Kind regards,
 Petr
