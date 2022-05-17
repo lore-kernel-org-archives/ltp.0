@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 040B3C433EF
-	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 11:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81D75C433F5
+	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 12:20:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 250463CAA7C
-	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 13:42:28 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 9A9EA3CAA68
+	for <ltp@archiver.kernel.org>; Tue, 17 May 2022 14:20:06 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 73FB53CAA50
- for <ltp@lists.linux.it>; Tue, 17 May 2022 13:42:14 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9637D3CA60C
+ for <ltp@lists.linux.it>; Tue, 17 May 2022 14:19:54 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 069C01A0065A
- for <ltp@lists.linux.it>; Tue, 17 May 2022 13:42:13 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3CC301F8F7;
- Tue, 17 May 2022 11:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1652787733;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B8C146007B7
+ for <ltp@lists.linux.it>; Tue, 17 May 2022 14:19:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1652789992;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VQkTu4JO77SNhGFlzfRA/5M19yPOI7OrGFj/PAHpz00=;
- b=H9arHIRZvFG6dEtgCyGPGKff7QDyj/jbNtwT3mq2YbjG8yRFxYqt7lfjyaSrwn5pUUsREl
- s58hcuNrA8IcTMQQPGcZ2XD8VET5on3Tz/bOvwWgNFEtbZxRaz9Kl33xddd41HVZmn4/Xa
- JIZy+AED/ARez5fDumZS/0UAqrZQIpQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1652787733;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=VQkTu4JO77SNhGFlzfRA/5M19yPOI7OrGFj/PAHpz00=;
- b=jkWeDnnWhcgP6rQTNfu3loIlYkSucMj9vNeoi9BO0FC/+5EToyUoTgxTnG5DSu7ewETvqj
- l/7mO+kk1kwY/ECw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=InsoR6xzND9akkqKYdzjMhPTA8I5L9xJwZN13gDXp1c=;
+ b=d84gr47/HxyD9asuHx0wiPQr6YJwv7nqjEIyorbfjkEHQWgJCPlKONYTWkeoIPp/+eJe4v
+ im0BkpH0oNkiQGs9h96xX6HrGz7r/wVVfFfxIijjtJ+bfKcWOCEMvv7Yv1pyVUhoETvJmA
+ U0dnF7mTxRKn080NU6CxG5E7g4IKbJM=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-503-CLKG5P6HPQK96YMX6X0ehg-1; Tue, 17 May 2022 08:19:50 -0400
+X-MC-Unique: CLKG5P6HPQK96YMX6X0ehg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.7])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1135F13AA2;
- Tue, 17 May 2022 11:42:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZWW0AhWKg2JMegAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 17 May 2022 11:42:13 +0000
-Date: Tue, 17 May 2022 13:42:11 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 956C63979683
+ for <ltp@lists.linux.it>; Tue, 17 May 2022 12:19:50 +0000 (UTC)
+Received: from janakin.usersys.redhat.com (unknown [10.40.192.14])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 3C9CB14A569D
+ for <ltp@lists.linux.it>; Tue, 17 May 2022 12:19:50 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
 To: ltp@lists.linux.it
-Message-ID: <YoOKE71nG6tG8T4S@pevik>
-References: <20220310104457.764-1-pvorel@suse.cz>
+Date: Tue, 17 May 2022 14:19:44 +0200
+Message-Id: <65a82dbc6ea54c5d02a1238f5fa26d19388c5d2a.1652789936.git.jstancek@redhat.com>
+In-Reply-To: <f38ee2905aa8b765c243896fa326b5507919a446.1651061197.git.jstancek@redhat.com>
+References: <f38ee2905aa8b765c243896fa326b5507919a446.1651061197.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220310104457.764-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] smoketest: Add macsec02.sh
+Subject: [LTP] [PATCH v2] tst_find_backing_dev: match mount point if
+ major/minor can't be found
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,28 +72,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+ioctl_loop05 fails on btrfs, because tst_find_backing_dev doesn't find
+major/minor returned by stat()
 
-> macsec02.sh is a network tests which uses macsec_lib.sh, which uses
-> ipsec_lib.sh and virt_lib.sh which use tst_net.sh.
+Per https://lwn.net/Articles/866582
+  "btrfs allocates a separate device number (the usual major/minor pair)
+  for each subvolume ... and call to on a file within a subvolume will
+  return a device number that does not exist in files like mountinfo."
 
-> Adding this test to smoketest to cover functionality of nested
-> libraries. Use macsec02.sh as it requires more setup (unlike macsec01.sh).
+As fallback, if there's no major/minor match, use best match of mount path.
 
-I merged this one, replacing ping01.sh, to keep number of the tests the same.
-NOTE: Although it's a performance test unlike other tests in net.features
-macsec02.sh is very stable (looked for results for 4 architectures). In case
-anybody complains about the stability we can always revert
-be1888a9e ("smoketest: Add macsec02.sh, remove ping01.sh")
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ lib/tst_device.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index d296f9118cde..b1af0f0146d4 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -506,6 +506,16 @@ unsigned long tst_dev_bytes_written(const char *dev)
+ 	return dev_bytes_written;
+ }
+ 
++static int count_match_len(const char *first, const char *second)
++{
++	int len = 0;
++
++	while (*first && *first++ == *second++)
++		len++;
++
++	return len;
++}
++
+ void tst_find_backing_dev(const char *path, char *dev)
+ {
+ 	struct stat buf;
+@@ -514,6 +524,8 @@ void tst_find_backing_dev(const char *path, char *dev)
+ 	char *pre = NULL;
+ 	char *next = NULL;
+ 	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
++	unsigned int len, best_match_len = 0;
++	char mnt_point[PATH_MAX];
+ 
+ 	if (stat(path, &buf) < 0)
+ 		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+@@ -524,17 +536,25 @@ void tst_find_backing_dev(const char *path, char *dev)
+ 	*dev = '\0';
+ 
+ 	while (fgets(line, sizeof(line), file)) {
+-		if (sscanf(line, "%*d %*d %d:%d", &line_mjr, &line_mnr) != 2)
++		if (sscanf(line, "%*d %*d %d:%d %*s %s",
++			&line_mjr, &line_mnr, mnt_point) != 3)
+ 			continue;
+ 
++		pre = strstr(line, " - ");
++		pre = strtok_r(pre, " ", &next);
++		pre = strtok_r(NULL, " ", &next);
++		pre = strtok_r(NULL, " ", &next);
++
+ 		if (line_mjr == dev_major && line_mnr == dev_minor) {
+-			pre = strstr(line, " - ");
+-			pre = strtok_r(pre, " ", &next);
+-			pre = strtok_r(NULL, " ", &next);
+-			pre = strtok_r(NULL, " ", &next);
+ 			strcpy(dev, pre);
+ 			break;
+ 		}
++
++		len = count_match_len(path, mnt_point);
++		if (len > best_match_len) {
++			strcpy(dev, pre);
++			best_match_len = len;
++		}
+ 	}
+ 
+ 	SAFE_FCLOSE(NULL, file);
+-- 
+2.27.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
