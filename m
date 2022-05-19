@@ -4,84 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68044C433EF
-	for <ltp@archiver.kernel.org>; Thu, 19 May 2022 10:30:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2981DC433EF
+	for <ltp@archiver.kernel.org>; Thu, 19 May 2022 11:42:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD9CF3CAAE1
-	for <ltp@archiver.kernel.org>; Thu, 19 May 2022 12:30:03 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 562673CAAD6
+	for <ltp@archiver.kernel.org>; Thu, 19 May 2022 13:42:46 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D7E13C0CD0
- for <ltp@lists.linux.it>; Thu, 19 May 2022 12:29:53 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8CED43C0894
+ for <ltp@lists.linux.it>; Thu, 19 May 2022 13:42:35 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2A64B60071F
- for <ltp@lists.linux.it>; Thu, 19 May 2022 12:29:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1652956191;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A26961A0115A
+ for <ltp@lists.linux.it>; Thu, 19 May 2022 13:42:34 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C2EFE1F9E1;
+ Thu, 19 May 2022 11:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1652960553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=d0ld7syqJrkwQRE32SqxlierByucMP9gs8/jj/VaeD4=;
- b=Ld2YamDkZ7pWVRGZWxT1DjLPaNHsZK2LX2pvSkaisCAcMtIQAz0ziEEvftOmslJ9Pupimk
- KJnYCjxa6F1iEX7Y5LaPiwU1sFNrgAcPmPQWzZISVudCcFYCrFlAbYkiA6WDA3BNiu0r4o
- VLf+INaWPXmOpp/lfWfzLiyNuSJm0l0=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-612-pqoAJEGROleS9YPzVju2FA-1; Thu, 19 May 2022 06:29:50 -0400
-X-MC-Unique: pqoAJEGROleS9YPzVju2FA-1
-Received: by mail-yb1-f199.google.com with SMTP id
- g7-20020a5b0707000000b0064f39e75da4so891586ybq.17
- for <ltp@lists.linux.it>; Thu, 19 May 2022 03:29:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=d0ld7syqJrkwQRE32SqxlierByucMP9gs8/jj/VaeD4=;
- b=KSRrIqZBY/L9sH/y7qjklAr5kmXnSlI31XgncTpRVxGII/pEboPw/decV28WdDhZzg
- xIw5A5LuvWTI9NuWAf0Y3TaL9CsXiFVt5zPcemNDBv/qVx9WpkQ7YOJ7aGeRaoL1NWQb
- 91hJNN3xfPD7zRu6StfN965qnpPpAkJKxfsh2BT5oxD0A8S32y0mz9QzL8N+I9owJaiE
- chedIsd46JI3VfIqsrn881Hq7t8iWOjw/D3m7bMno//fEdWSu/fCM7wxcq+O7+wWhVmC
- ldp3k+xeTff6ysLmcpO09holR0pj3qQEKAvuoCJSM4kt7r9j3Ib3ssUvPvvkENhzCas8
- UZ9A==
-X-Gm-Message-State: AOAM533VBVirLgNjAqzoGBeJ9fAy+x3hjr7ggVUyy6jKwvVxQ9+kzzRP
- BgcT/1/eFSzv/NJ7yakBFSmyEvZOR3jdWcHM/vKzYGdUqNtPFVcdnJ1FJKENPHEXVrcaqigjW+f
- Q3TP2zajmj3Jy8DvJ00z2/wRlzSk=
-X-Received: by 2002:a25:4148:0:b0:64d:7347:7269 with SMTP id
- o69-20020a254148000000b0064d73477269mr3842116yba.161.1652956189966; 
- Thu, 19 May 2022 03:29:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyEJsvL73xw3ui/StE4PXrk7TqNPgHs9Wmi+qEaEwWddk1tekgTD5RAeVquTwRG9eXW23NFHEHHbZOMUvSskgM=
-X-Received: by 2002:a25:4148:0:b0:64d:7347:7269 with SMTP id
- o69-20020a254148000000b0064d73477269mr3842099yba.161.1652956189773; Thu, 19
- May 2022 03:29:49 -0700 (PDT)
+ bh=sVmTqDW0PmZsZK9gVw4hPVZWzQM8AZBJ6YJQ2jLTk6o=;
+ b=n+fdUyKbbfKS/KfNQr3xdDxZu1Yq2H14Q5xBnCv99IyrvHW1DOLrdz0SCts5hgK3ZzNEBd
+ yqdsZtQy5cNulDugqQ3/XwnziSGV/685+GNrx2vVM21h4v2WnSTvdovVqxmbLStsIbFADk
+ dJQLjmuef33LgPYZO7Bi6nHBbdlKDjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1652960553;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sVmTqDW0PmZsZK9gVw4hPVZWzQM8AZBJ6YJQ2jLTk6o=;
+ b=Or+hhWcgIxZUznN+c1DL2vw5O0mcYwOLPpCUhNRuTbxUGc+WWgEJMoYgWpQ+dZTKVZM/0O
+ nBM1rWfCtyH2eSCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACB2E13456;
+ Thu, 19 May 2022 11:42:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id LzklKSkthmI3cQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 19 May 2022 11:42:33 +0000
+Message-ID: <2a205b3e-9d80-5134-fa9a-b28fbbf31297@suse.cz>
+Date: Thu, 19 May 2022 13:42:33 +0200
 MIME-Version: 1.0
-References: <CAEemH2dAfUEjA877h0Lwy9Qw12YgQ6zgQbf1BJemyr7=xfj0Rg@mail.gmail.com>
- <Yn5NGPpfoddFYTs2@yuki>
- <CAEemH2fHsa+JECK5dW64-coQBwdGR3W9W+jKex8zRmKzfLX1=w@mail.gmail.com>
- <Yn5prUjpZEUjoxbL@yuki> <875ym5di8f.fsf@suse.de> <YoN/W4wbow2fyOut@yuki>
- <CAEemH2cazgjqj4C1nuqPcRCC0dZoxwi-yiJymRgJxr0woXXFWw@mail.gmail.com>
- <CAEemH2dYwMczBhFj28yc9xDu0VBg50orjeQBK2s13-8BspK=WQ@mail.gmail.com>
- <YoYIVaJJDzryYNeg@yuki>
- <CAEemH2c50gr-G91_4nbdaDkCeGivCg3OQcYN4O0HTzyP2nf_jw@mail.gmail.com>
- <YoYbm487vwfD8Wne@yuki>
-In-Reply-To: <YoYbm487vwfD8Wne@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 19 May 2022 18:29:38 +0800
-Message-ID: <CAEemH2cRhznzW+mVZwSeWk_p9REvwd76t0H2mwJBQS_M7jn4CA@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <YnkOEruIKIwEeC3M@yuki>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <YnkOEruIKIwEeC3M@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 22/29] fuzzy_sync: Convert to runtime
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,64 +78,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>, automated-testing@lists.yoctoproject.org
-Content-Type: multipart/mixed; boundary="===============0119207859=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0119207859==
-Content-Type: multipart/alternative; boundary="000000000000856d9f05df5adad3"
+On 09. 05. 22 14:50, Cyril Hrubis wrote:
+> Hi!
+> It's time to start working on pre-release preparations. As usually we
+> should start by considering patches that should be applied before we
+> freeze the git.
+> 
+> As for me I would like to get the runtime patchset in if possible.
+> 
+> What else should be considered for the release?
 
---000000000000856d9f05df5adad3
-Content-Type: text/plain; charset="UTF-8"
-
-Cyril Hrubis <chrubis@suse.cz> wrote:
-
-
->
-> Should I send a V4 with this patch included?
->
-
-No need. You can push with this new patch adding,
-then I will kick start release testing for the whole LTP
-from our side.
-
+I'd like to add the two KVM patches - memory access helper functions and
+multiple iteration support. I can't finish the KVM documentation until
+they're merged.
 
 -- 
-Regards,
-Li Wang
-
---000000000000856d9f05df5adad3
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Cyril Hrubis &lt;<a href=3D"mailto:chrubis@suse.cz">chrubis@s=
-use.cz</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div>=C2=A0=
-</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
-order-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-Should I send a V4 with this patch included?<br></blockquote><div><br></div=
-><div class=3D"gmail_default" style=3D"font-size:small">No need. You can pu=
-sh with this new patch adding,</div><div class=3D"gmail_default" style=3D"f=
-ont-size:small">then I will kick start release testing for the whole LTP</d=
-iv><div class=3D"gmail_default" style=3D"font-size:small">from our side.</d=
-iv></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr" class=3D"=
-gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></=
-div></div></div></div>
-
---000000000000856d9f05df5adad3--
-
-
---===============0119207859==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0119207859==--
-
