@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD55CC433F5
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 11:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE25AC433EF
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 12:01:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 113FF3CABB1
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 13:56:03 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 92EDC3CABA9
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 14:01:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B53D3C021D
- for <ltp@lists.linux.it>; Fri, 20 May 2022 13:55:51 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3AA1A3C001D
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 14:01:23 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 386EF60005F
- for <ltp@lists.linux.it>; Fri, 20 May 2022 13:55:50 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4E8C2140111B
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 14:01:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 977471F9B5;
- Fri, 20 May 2022 11:55:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 786F41FA42;
+ Fri, 20 May 2022 12:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1653047750;
+ t=1653048082;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XRDKAQqSr1/b3JEVEh77wa/UiPr0Md8AxFo3ZVU6+Ss=;
- b=EmBRrRB1Ny9o3StpUrmDphmT9jJMdiknAMbjCUfST4YxgLt2LZNsFVU5vW3e2/0RDP0WgL
- pCMyouDXhxCqLn0LkasFP1JDWAcMYWuDxTJ4Qr33tWOotvNK7dUPCfLFU5bt57MO7m/r5S
- tGnHNvwS/G7ky4aDc5TFVN2Z6ldpIt0=
+ bh=eLplvZF4V70e1v4/r0QKJRgbN/UtmdYl5PmA6eZGYC8=;
+ b=MYBHdcH2rxJYgLlz0PUM+skefh3bUd/QF9HEbtcS26pLnzH5bnLbaZkVrWpjiPcbem2j8i
+ YTpmngMcDAQjjEnoH6PhBCw8bG5pkCGzQ+GSCIN0SNfTsUb+x6N0dDqsxW6MOvgoUOmPR1
+ kd+awaf0ukKUk7H7llV4Glv1g86CiIc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1653047750;
+ s=susede2_ed25519; t=1653048082;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XRDKAQqSr1/b3JEVEh77wa/UiPr0Md8AxFo3ZVU6+Ss=;
- b=qoAvMLX6g83uDx9oGXduyeNzudaCjFh00C8veD/x3sipu2IJ5AQmsjupizSFEVMQvi0UAn
- CSzlYo7nw30Qj0CQ==
+ bh=eLplvZF4V70e1v4/r0QKJRgbN/UtmdYl5PmA6eZGYC8=;
+ b=MUplYjkW0ass3yxbPxn53HCeN5LZqMXWzz8cGmBpZveolw6VHo5IPnXE8480F/jaotBCf3
+ 4tV7wXY8zxdcb7CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D7BE13AF4;
- Fri, 20 May 2022 11:55:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C76E13AF4;
+ Fri, 20 May 2022 12:01:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wgLED8aBh2JINwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 11:55:50 +0000
-Date: Fri, 20 May 2022 13:55:48 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id Wp0UCBKDh2JKOgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 12:01:22 +0000
+Date: Fri, 20 May 2022 14:01:19 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YoeBxOCf70lM9rR5@pevik>
-References: <20220519121056.1181-1-mdoucha@suse.cz>
- <20220519121056.1181-2-mdoucha@suse.cz> <Yodd4rfJHWzB+VSs@yuki>
+Message-ID: <YoeDD1LxiDYJ1vRc@pevik>
+References: <20220519174151.14114-1-andrea.cervesato@suse.de>
+ <YoddOjuTgALjgdP9@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yodd4rfJHWzB+VSs@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <YoddOjuTgALjgdP9@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] pty04: Fix cleanup
+Subject: Re: [LTP] [PATCH v1] Fix ltp-aiodio tests failing on s390
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,7 +86,20 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi all,
 
-merged this one, thanks Martin!
+> Hi!
+> > run_child flag is commonly used by aiodio tests in order to check if
+> > tests are passed or not and compiler seems to optimize run_child flag
+>             ^
+> 	    test has finished?
+
+> > because it's not defined as volatile. With this patch we ensure that the
+> > flag is set as volatile so tests will work as expected on s390.
+
+> > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
+
+> The change itself looks fine and should go in before the release.
+
+Merged with amended commit message. Thanks Andrea!
 
 Kind regards,
 Petr
