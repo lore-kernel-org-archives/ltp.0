@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D7C9C433F5
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 11:51:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD55CC433F5
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 11:56:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 580193CAB0D
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 13:51:12 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 113FF3CABB1
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 13:56:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B91523C021D
- for <ltp@lists.linux.it>; Fri, 20 May 2022 13:51:00 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2B53D3C021D
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 13:55:51 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 977EA200BC5
- for <ltp@lists.linux.it>; Fri, 20 May 2022 13:50:59 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 386EF60005F
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 13:55:50 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E18BC1FA42;
- Fri, 20 May 2022 11:50:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 977471F9B5;
+ Fri, 20 May 2022 11:55:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1653047458;
+ t=1653047750;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Elave8608Lp9y9MqFmqOED3+xiV8mUeUOEDwXT6L7Ks=;
- b=wQWoBxa8+2+EsTgJ8d4K8+0ZD1TGUxPG8wWQb6NzySJYR2A9v0r6gnJ0SkhcaUBTSvf2Xb
- 8rwaGLcAbzFLwI6s1NGjY8YUnDaXjYW6Xu58tf6gF9DIOuNYEp8BhweXzKp3mtlAFcnL22
- COb6NWKUm8nKe1KG77UXBnsHP/52/Fw=
+ bh=XRDKAQqSr1/b3JEVEh77wa/UiPr0Md8AxFo3ZVU6+Ss=;
+ b=EmBRrRB1Ny9o3StpUrmDphmT9jJMdiknAMbjCUfST4YxgLt2LZNsFVU5vW3e2/0RDP0WgL
+ pCMyouDXhxCqLn0LkasFP1JDWAcMYWuDxTJ4Qr33tWOotvNK7dUPCfLFU5bt57MO7m/r5S
+ tGnHNvwS/G7ky4aDc5TFVN2Z6ldpIt0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1653047458;
+ s=susede2_ed25519; t=1653047750;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Elave8608Lp9y9MqFmqOED3+xiV8mUeUOEDwXT6L7Ks=;
- b=B0b5HA5G8XBCj6DIxZ1g8gLzcZn938irffn/jhDTOCS3kWh8LejPW1mMK4tX0Dw9/qt4f2
- 3jd89rLK/v6YI7DQ==
+ bh=XRDKAQqSr1/b3JEVEh77wa/UiPr0Md8AxFo3ZVU6+Ss=;
+ b=qoAvMLX6g83uDx9oGXduyeNzudaCjFh00C8veD/x3sipu2IJ5AQmsjupizSFEVMQvi0UAn
+ CSzlYo7nw30Qj0CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF9C613AF4;
- Fri, 20 May 2022 11:50:58 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D7BE13AF4;
+ Fri, 20 May 2022 11:55:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YiJSLaKAh2IkNQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 11:50:58 +0000
-Date: Fri, 20 May 2022 13:50:56 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id wgLED8aBh2JINwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 11:55:50 +0000
+Date: Fri, 20 May 2022 13:55:48 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YoeAoLQ0Wfp7SOJb@pevik>
-References: <20220519121056.1181-1-mdoucha@suse.cz> <Yodes44v5tnei8p9@yuki>
- <e5fd3db9-d113-c3b0-82a6-58d45bb4a246@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YoeBxOCf70lM9rR5@pevik>
+References: <20220519121056.1181-1-mdoucha@suse.cz>
+ <20220519121056.1181-2-mdoucha@suse.cz> <Yodd4rfJHWzB+VSs@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <e5fd3db9-d113-c3b0-82a6-58d45bb4a246@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <Yodd4rfJHWzB+VSs@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] pty07: Resize console to the same size as
- before
+Subject: Re: [LTP] [PATCH 2/2] pty04: Fix cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,19 +84,9 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 20. 05. 22 11:26, Cyril Hrubis wrote:
-> > I guess that the actual size we pass to VT_RESIZEX does not matter when
-> > we attempt to trigger the race.
+Hi all,
 
-> I've tested this on SLE-15SP1 GM kernel which is older than the fix and
-> this version still triggers the crash. Technically we could even pass
-> all zeroes which would simply leave all console parameters unchanged and
-> it'd still work because the ioctl implementation sets a flag in the
-> freed memory anyway. But that behavior might change in the future so
-> I've decided to just set the rows and cols to the values queried from
-> kernel.
-
-+1. Merged this one, thank you!
+merged this one, thanks Martin!
 
 Kind regards,
 Petr
