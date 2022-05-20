@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BAEC433F5
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 12:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 254C3C433F5
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 12:44:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BEF303CAB2B
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 14:43:54 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 496FC3CAB2D
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 14:44:05 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 82EE33CAAE6
+ by picard.linux.it (Postfix) with ESMTPS id 3E1353CAB11
  for <ltp@lists.linux.it>; Fri, 20 May 2022 14:43:21 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2A59E6005C3
- for <ltp@lists.linux.it>; Fri, 20 May 2022 14:43:21 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B6DA3600A4B
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 14:43:20 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CE8B721BFD;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3344321BFB;
  Fri, 20 May 2022 12:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1653050600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vSqL8nsgAv00sDiUATTy88034b/XQOvdak++T4C3w5I=;
- b=xxHvgPM3zfRwigoOuFq/5ehteCnmXoEiWGKy8ukNBawY6qckxlOmvQ5Ir6ouIffmbJBHgi
- X+l31WlGk2YLggardWLgNYCPi2xEE3030ynYem1rHm3EuUEdR3CPwL+5UrH3gScnKwsdzr
- R5Fe52s1lcjc1k/u6+11Mu2S3jcUWjY=
+ bh=gDfIBiBQ/TB22gjYeTG3+sK6eChzlKXU5IU8EZhTkRY=;
+ b=QUB1u7QCBCgYiDpTVn1g7HM60HX5WVQCr9LQTqssLmg3aHuWBSvc54WQoiZ+eeQ4896n/e
+ mQplE9pprQYz0RjLKRTooYy4yFOY9qkHPTgp9QeAu7NP1NKr5E0KxeyaDf6b52pjA7U/xA
+ CVdecqD1c25/JftgG6eL8/HlAL4x3fY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1653050600;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vSqL8nsgAv00sDiUATTy88034b/XQOvdak++T4C3w5I=;
- b=HWFZWgMwJjFuypXSIe6NKFyvp71V3ddM395yOQg9LahdsHLgMwkmjU+SocTCtJpwfjNKxK
- 3PLnz7S27JGL7fDw==
+ bh=gDfIBiBQ/TB22gjYeTG3+sK6eChzlKXU5IU8EZhTkRY=;
+ b=p/RvA4MbdNpaaK6FQFcIjHrxRB5NiSh8lUgnyShQY9aDo//7swAln4hNgMnIc9Y8P08rdv
+ 9sGf4TEknMSoeKDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89CDC13AF4;
- Fri, 20 May 2022 12:43:20 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EB77513AF4;
+ Fri, 20 May 2022 12:43:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id uKw0IOiMh2JETgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 12:43:20 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id SDndN+eMh2JETgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 12:43:19 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 20 May 2022 14:43:14 +0200
-Message-Id: <20220520124314.20251-4-pvorel@suse.cz>
+Date: Fri, 20 May 2022 14:43:12 +0200
+Message-Id: <20220520124314.20251-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220520124314.20251-1-pvorel@suse.cz>
 References: <20220520124314.20251-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] doc/maintainer: Check also -i0
+Subject: [LTP] [PATCH 1/3] tst_test.sh: Allow -i0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,23 +83,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+-i0 is supported in C API, allowing to test only that setup and
+cleanup are coded properly (no test is being run), which is useful for
+debugging.
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/maintainer-patch-review-checklist.txt | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/lib/tst_test.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
-index 4e10dc514..5d3c6886a 100644
---- a/doc/maintainer-patch-review-checklist.txt
-+++ b/doc/maintainer-patch-review-checklist.txt
-@@ -30,6 +30,7 @@ New test should
- * Have a record in runtest file
- * Test should work fine with more than one iteration
-   (e.g. run with `-i 100`)
-+* Run with `-i 0` to check that setup and cleanup are coded properly (no test is being run)
- * Have a brief description
- * License: the default license for new tests is GPL v2 or later, use
-   GPL-2.0-or-later; the licence for test (e.g. GPL-2.0) should not change
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 28b7d12ba..c6e0752f3 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -646,8 +646,8 @@ tst_run()
+ 		tst_brk TBROK "Expected number (-i) not '$TST_ITERATIONS'"
+ 	fi
+ 
+-	if [ "$TST_ITERATIONS" -le 0 ]; then
+-		tst_brk TBROK "Number of iterations (-i) must be > 0"
++	if [ "$TST_ITERATIONS" -lt 0 ]; then
++		tst_brk TBROK "Number of iterations (-i) must be >= 0"
+ 	fi
+ 
+ 	[ "$TST_NEEDS_ROOT" = 1 ] && tst_require_root
 -- 
 2.36.1
 
