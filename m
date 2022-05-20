@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48585C433F5
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 12:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EA8AC433EF
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 12:43:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 31DE13CAB08
-	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 14:16:35 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 4DBB43CAAF7
+	for <ltp@archiver.kernel.org>; Fri, 20 May 2022 14:43:32 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA3363C006A
- for <ltp@lists.linux.it>; Fri, 20 May 2022 14:16:22 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3B4043CA948
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 14:43:21 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5EDBC20038B
- for <ltp@lists.linux.it>; Fri, 20 May 2022 14:16:20 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B8D91A01167
+ for <ltp@lists.linux.it>; Fri, 20 May 2022 14:43:20 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8FEA91F9B5;
- Fri, 20 May 2022 12:16:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E33F61FA2F;
+ Fri, 20 May 2022 12:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1653048980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CJi5KuaANtidydy64vDyvGciWNUdPC4dkzn4xdefZ4E=;
- b=ZwBDbiDKXGJ86+M89CEYLPELgppwjnNn6OJv2iPBN2i8edZgIWVORRJitnf9lN/vOXWdtF
- s4NLaPWypdaoNQ8UC+KA2RHpNS1kciHR7cXYOioKX9mHW+M/X3SQKhAo5ZZM8XadLm9t3w
- /95hbWr6qb9a6O/Cqto7Y5Ei3EFmwEo=
+ t=1653050599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mRTVb9Kr6+nr8D+igYSxCDY7NKpBKTfHprPyv+JJ7A8=;
+ b=wVmHhRWwWBpZfI2ewf3oO9KwUdCqlLW/yhJXYZR3Wj7fN1v2vBie5w0jOqdQXQvjPyVYwa
+ JTvCjzmjgA4eyUJxbq9IXeS+FPerJ7hLVzEzaXl0xun7iOvoggfUTrUXR5KN0LLuo0hjXt
+ YyzFwlv1aWweQenlCqBNV57i7JolWqo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1653048980;
+ s=susede2_ed25519; t=1653050599;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CJi5KuaANtidydy64vDyvGciWNUdPC4dkzn4xdefZ4E=;
- b=y10h4ieWHbaOgnFkkQwCUW4JBLk91wWUCJhOhaWWO10qjFRDsjdThnwyEaAa2B2SO0gmqX
- wYwKKar2m2v/sTBg==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mRTVb9Kr6+nr8D+igYSxCDY7NKpBKTfHprPyv+JJ7A8=;
+ b=DUwd32i7sPePxMFzDEjRxHcrZvHau2PPYaZBmjDgbqDTsLk/LtwE9buQ2gQjzphA31/kQm
+ r8iuiEhj/O0yk0CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 70DD113AF4;
- Fri, 20 May 2022 12:16:20 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A5F513AF4;
+ Fri, 20 May 2022 12:43:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id NhLPGZSGh2JpQQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 20 May 2022 12:16:20 +0000
-Date: Fri, 20 May 2022 14:18:32 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YoeHGDpo1XgQYb+o@yuki>
-References: <20220512123816.24399-1-chrubis@suse.cz>
- <20220520083627.2499121-1-liwang@redhat.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id shTLHueMh2JETgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 20 May 2022 12:43:19 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 20 May 2022 14:43:11 +0200
+Message-Id: <20220520124314.20251-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220520083627.2499121-1-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] two follow up fix for Introduce-of-max-runtime
+Subject: [LTP] [PATCH 0/3] Check for -i0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,31 +70,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Martin Doucha <martin.doucha@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> I run a quick test for verifying those patches with the latest mainline kernel.
-> Apart from these two tiny issues, the result looks good.
+NOTE: this should be merged after Cyril's runtime patch
+(will need to get rebased).
 
-Can we merge the patchset now?
+Kind regards,
+Petr
 
-There are three things that should be fixed over the latest version,
-that are:
+Petr Vorel (3):
+  tst_test.sh: Allow -i0
+  tst_test: Check for -i >= 0
+  doc/maintainer: Check also -i0
 
-- the heartbeat() call after each test for .tcnt
-- the missing runtime for fuzzy sync
-- default to something more sane in mmap3 and fix the runtest file
-  (could be ammended to the convert mmap3 patch as well)
-
-Should I send v4 after all?
+ doc/maintainer-patch-review-checklist.txt | 1 +
+ lib/tst_test.c                            | 2 ++
+ testcases/lib/tst_test.sh                 | 4 ++--
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.36.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
