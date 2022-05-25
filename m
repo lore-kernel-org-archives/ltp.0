@@ -4,48 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07926C433EF
-	for <ltp@archiver.kernel.org>; Tue, 24 May 2022 16:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B01EC433EF
+	for <ltp@archiver.kernel.org>; Wed, 25 May 2022 06:51:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F1C03CAC50
-	for <ltp@archiver.kernel.org>; Tue, 24 May 2022 18:16:58 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D25693CAC5E
+	for <ltp@archiver.kernel.org>; Wed, 25 May 2022 08:51:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A8943C0895
- for <ltp@lists.linux.it>; Tue, 24 May 2022 18:16:48 +0200 (CEST)
-Received: from a8-97.smtp-out.amazonses.com (a8-97.smtp-out.amazonses.com
- [54.240.8.97])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D824D3C08DA
+ for <ltp@lists.linux.it>; Wed, 25 May 2022 08:51:32 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0A2056008CE
- for <ltp@lists.linux.it>; Tue, 24 May 2022 18:16:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=sqsu7gnbk3ckn4qeg5tktvky4q6bd77q; d=linaro.org; t=1653409005;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=LJHqafnDrvf0Z8bcYvq5vcvsdZALfRNrohoOM8bxgxs=;
- b=rmee34UAWX0tYs3MkX4fd1YdSeESfh8JYFbe7hre0/3tjRjG9yD1IVF6yYZlf5Ho
- frV4zgnbHpsagAieFnAmtWiqdqMs1yA6qidwea901bl0y1gpZlvWewSb2U8G5qfBqDg
- PRa1yxoeojEfF8jPH3VraNe0TmFKEkA7y5ZWmIHA=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1653409005;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=LJHqafnDrvf0Z8bcYvq5vcvsdZALfRNrohoOM8bxgxs=;
- b=FNu7PPvzNKhE+TIHhpOwDIOwSN0026m4td4zT8HmY5/pnDbAH8E7jj3KjU/RwnD3
- OvtWWC6EoPwTKob2hjMbJ30TRa6KtenKBRX464dBWU72zOrW3itQEdEUqTT2fScVsfP
- iUupCB61pVfbETfcug0hBLqWgz4ahHhYyzDgfv+k=
-From: lkft@linaro.org
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 56275140004F
+ for <ltp@lists.linux.it>; Wed, 25 May 2022 08:51:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1653461489;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=n/k4/TLkX32y95DgKZgSNTsZ6/+6QLn58kMo5hk7EAM=;
+ b=icwe/0p0GJEKswUIp3MLthczaMDBtf0zdjpoC8Kc6p9Y90D1kqxT7qSEiFEgEnN9lNXcxD
+ UJZb2AP63oZ+QS8GCHHE0/B6Q1pEcXYLewnt8XZq91meTD/kXRCmFbQg4ES7TggUyhRSDH
+ 4aKU0YtEKRKX2U47bjqAUjGl3lRPnZ0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-145-3xU2BkU1MkWsQtBABioOuw-1; Wed, 25 May 2022 02:51:28 -0400
+X-MC-Unique: 3xU2BkU1MkWsQtBABioOuw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.7])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DE3D5858EED;
+ Wed, 25 May 2022 06:51:27 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 9BAEF1410DD5;
+ Wed, 25 May 2022 06:51:26 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
+Date: Wed, 25 May 2022 14:51:24 +0800
+Message-Id: <20220525065124.2665801-1-liwang@redhat.com>
+In-Reply-To: <YozXG/f0HHSrhm9E@yuki>
+References: <YozXG/f0HHSrhm9E@yuki>
 MIME-Version: 1.0
-Message-ID: <01000180f6db3dd1-1de9653a-dda5-4920-b708-9efa89490277-000000@email.amazonses.com>
-Date: Tue, 24 May 2022 16:16:45 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.05.24-54.240.8.97
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for bf96787
+Subject: [LTP] [PATCH] preadv203: set max_runtime to 270s
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,83 +72,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.9
-* git: 
-* git branch: linux-5.17.y
-* git commit: 5c2fc53857eb993952e932da8222b11b063c2581
-* git describe: bf96787
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/bf96787
+Before the runtime patchset preadv203 use 5min as default timeout
+per fs, that's really long enough for prepare_device(). But after
+that, its now only has 30s which might be short for a slower system
+to do preparation work.
 
-## Test Regressions (compared to 6dd6876)
-* qemu_arm, ltp-crypto-tests
-  - af_alg07
+Let's set max_runtime to 270s to make the timeout at least equal
+to previously.
 
-* qemu_arm, ltp-syscalls-tests
-  - accept02
+  ==== Before =====
+  # ./preadv203
+  ...
+  tst_test.c:1459: TINFO: Timeout per run is 0h 05m 00s
+  preadv203.c:143: TINFO: Number of full_reads 2567, short reads 10, zero len reads 0, EAGAIN(s) 2530185
+  preadv203.c:180: TINFO: Number of writes 682740
+  preadv203.c:194: TINFO: Cache dropped 114 times
+  preadv203.c:223: TPASS: Got some EAGAIN
+  tst_test.c:1531: TINFO: Testing on ext3
+  tst_test.c:999: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+  mke2fs 1.46.5 (30-Dec-2021)
+  tst_test.c:1459: TINFO: Timeout per run is 0h 05m 00s
+  ...
 
+  ==== After =====
+  # time ./preadv203
+  tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+  tst_test.c:1524: TINFO: Timeout per run is 0h 00m 30s
+  tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
+  ...
+  tst_test.c:1597: TINFO: Testing on ext2
+  tst_test.c:1062: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+  mke2fs 1.46.5 (30-Dec-2021)
+  Test timeouted, sending SIGKILL!
+  tst_test.c:1575: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+  tst_test.c:1577: TBROK: Test killed! (timeout?)
 
-## Metric Regressions (compared to 6dd6876)
-No metric regressions found.
+  Summary:
+  passed   0
+  failed   0
+  broken   1
+  skipped  0
+  warnings 0
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+  real	0m36.246s
+  user	0m0.706s
+  sys	1m2.965s
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+---
 
-## Test Fixes (compared to 6dd6876)
-* qemu_arm, ltp-syscalls-tests
-  - futex_waitv02
-  - futex_waitv03
+Notes:
+    Another fixe way is going with define DEFAULT_TIMEOUT to 60, that
+    generally extends all timeout for each fs to perform prepare_device().
+    And this will impact all test cases with setting .all_filesystems.
 
-* qemu_arm64, ltp-fs-tests
-  - read_all_proc
+ testcases/kernel/syscalls/preadv2/preadv203.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+index 01622ad15..46bb39ef1 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv203.c
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -279,5 +279,6 @@ static struct tst_test test = {
+ 	.mntpoint = MNTPOINT,
+ 	.mount_device = 1,
+ 	.all_filesystems = 1,
++	.max_runtime = 270,
+ 	.needs_root = 1,
+ };
+-- 
+2.31.1
 
-## Metric Fixes (compared to 6dd6876)
-No metric fixes found.
-
-## Test result summary
-total: 11240, pass: 9430, fail: 60, skip: 1750, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
