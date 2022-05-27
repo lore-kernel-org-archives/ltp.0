@@ -4,47 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CCEBC433F5
-	for <ltp@archiver.kernel.org>; Thu, 26 May 2022 15:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6AA8C433EF
+	for <ltp@archiver.kernel.org>; Fri, 27 May 2022 01:35:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DCAF3C0F6E
-	for <ltp@archiver.kernel.org>; Thu, 26 May 2022 17:59:53 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id DE1623C1B93
+	for <ltp@archiver.kernel.org>; Fri, 27 May 2022 03:35:43 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A3C7E3C0596
- for <ltp@lists.linux.it>; Thu, 26 May 2022 17:59:42 +0200 (CEST)
-Received: from a48-37.smtp-out.amazonses.com (a48-37.smtp-out.amazonses.com
- [54.240.48.37])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id F27013C051B
+ for <ltp@lists.linux.it>; Fri, 27 May 2022 03:35:31 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DDA281000DED
- for <ltp@lists.linux.it>; Thu, 26 May 2022 17:59:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1653580780;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=NQrxYoG3WSO3bXJoF/5Cl67gWNDaUrKIgX6/rNtJbkc=;
- b=tZdFH20BSvFTppLEfQPdmJxuH32ArwOEqYEzLtSh2bS6WDvpJOolvNCTlBpG4Uu0
- yBh/HPpb3aZ2YuXUfaEN7Kdkek9t9lsYVVesWus9H2KN+eXFu2FpW2yJW+poFjdE4cv
- vlXGpTjD3hhCeNUCEr9GvnAJplN3sUSelep8vURQ=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1653580780;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=NQrxYoG3WSO3bXJoF/5Cl67gWNDaUrKIgX6/rNtJbkc=;
- b=BHXqtjDPl8kDTydFfZxHhhTy1ygk6at8AhjZzBM8hsj8aAMjPlTHXSimuBnpnQMU
- TjMR+rROWpQQlNFWbjvUPTDhRJNQLRVZUH/lWWP05827cVPPBMVKu+Yw0S0Id06bMxd
- 3oWH71GGSlD/+jWWQkwXX0/q8qrS2iyntc1PWXnw=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 904E21000763
+ for <ltp@lists.linux.it>; Fri, 27 May 2022 03:35:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1653615329;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=eQhEgvwaj5nyB9hVq8J96zC830xICD0/MAr65+ov+iY=;
+ b=AbrJlZR/UHkwnWjXpy1sLz68hnyqMUKhTWL57DYOSGQwXaExmysMoIyqolNRq0Bw6VfbBR
+ ++F9Et22S5rykWY0GM5Bj6rxkubZj0TslDHrEGiAsSGTZCzH5JejscBUMorpCAF5iAYOKB
+ pJi1x/VZyBsYkon0qycX0NFZTQN/FIc=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-461-SQ48RI7XNRSRLF3jZCLS3Q-1; Thu, 26 May 2022 21:35:26 -0400
+X-MC-Unique: SQ48RI7XNRSRLF3jZCLS3Q-1
+Received: by mail-yw1-f197.google.com with SMTP id
+ 00721157ae682-2f7dbceab08so27403087b3.10
+ for <ltp@lists.linux.it>; Thu, 26 May 2022 18:35:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=eQhEgvwaj5nyB9hVq8J96zC830xICD0/MAr65+ov+iY=;
+ b=43YfWkHk08dD2+k0VYTTJ7tApM6btQm6eLxNw2c6sjCLtHSyeb3OC6+TDASS/pRF8K
+ H1MV+0zdsJN/S/oA+JGn6aNRhkLh6syN5Zn48BjS1GbuDyNvF6CrvMBCWjq6M75rq3Ay
+ Cw+AnirQMVjUpGJ1ArmLSsneVKkjhfUkGnt+wD252EB/CYGiiHQEACexU3JLoxhBbQyO
+ nFU82eHg1aVnp2gUwyOmOn1GeN+TyyskeNvaOCTh5RDBGr+ulKSwJl4aiESTm8P22nxY
+ 5o1aFcNEP4/fkr5sxQPpx3IOsYgmZlhWPTXmX9zA/yyVO4nT1+CAejvw20UfuWIAdZRo
+ gSwQ==
+X-Gm-Message-State: AOAM531jnCeUFElioIzQkcxKPl9d7kmfXSY4oTSC7msAAmvVjWcdyrGG
+ hVMsl2WfAdf74gNKSotm5OWDxSf2h6YShyW/bToxVeXEiURN6Bc0AXHZdXJ3oZ3kMThN7hyP7oF
+ l25piCVxUk1OKS4sNs6cRjjF/X3w=
+X-Received: by 2002:a0d:d853:0:b0:306:ec2c:67f7 with SMTP id
+ a80-20020a0dd853000000b00306ec2c67f7mr98926ywe.15.1653615325976; 
+ Thu, 26 May 2022 18:35:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZpqR1lKnZac0FqHz+G02f2I28FCJwAbRgBPj40FGz8Zd9D7Zxz2yGpdU3kGwCpOuWzF8Ztq50PlpaHwhYGM4=
+X-Received: by 2002:a0d:d853:0:b0:306:ec2c:67f7 with SMTP id
+ a80-20020a0dd853000000b00306ec2c67f7mr98907ywe.15.1653615325639; Thu, 26 May
+ 2022 18:35:25 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <0100018101185217-6c9acef6-430a-4945-a496-799acbaf50dc-000000@email.amazonses.com>
-Date: Thu, 26 May 2022 15:59:40 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.05.26-54.240.48.37
+References: <20220525113113.9811-1-chrubis@suse.cz>
+ <CAEemH2dsasry++GmBxgbTRRAryrBs3FPtYgXMNEmDcOK--r4XQ@mail.gmail.com>
+ <Yo9+wTjKm3H9lgpd@pevik> <Yo+ZhTGlhQ7Go0l+@yuki>
+In-Reply-To: <Yo+ZhTGlhQ7Go0l+@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 27 May 2022 09:35:14 +0800
+Message-ID: <CAEemH2cy2d_2Cx7oG5HWjxU82zFUat9V_Vg5v5Rma=0kt6uLeg@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for a7362af
+Subject: Re: [LTP] [PATCH] syscalls/timer_settime03: Scale interval with
+ clock precision
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,88 +87,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============2037214265=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.11
-* git: 
-* git branch: linux-5.17.y
-* git commit: e960d734930b58bd6ce00c631ea117af0764473c
-* git describe: a7362af
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/a7362af
+--===============2037214265==
+Content-Type: multipart/alternative; boundary="000000000000148de805dff4528a"
 
-## Test Regressions (compared to c5b8b34)
-* qemu_arm, ltp-syscalls-tests
-  - accept02
+--000000000000148de805dff4528a
+Content-Type: text/plain; charset="UTF-8"
 
-* qemu_arm64, ltp-cve-tests
-  - cve-2019-8912
+> > Could we merge this before release?
+>
+> I guess that this is pretty safe, it does not change the test behavior
+> on high resolution timers and fixes false possitive without them. So I
+> would vote for merging it now.
+>
 
-* qemu_x86_64, ltp-syscalls-tests
-  - clock_adjtime01
+Yes, tested also good from my side.
+Pushed, thanks!
+
+-- 
+Regards,
+Li Wang
+
+--000000000000148de805dff4528a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
+&gt; Could we merge this before release?<br>
+<br>
+I guess that this is pretty safe, it does not change the test behavior<br>
+on high resolution timers and fixes false possitive without them. So I<br>
+would vote for merging it now.<br></blockquote><div><br></div><div class=3D=
+"gmail_default" style=3D"font-size:small">Yes, tested also good from my sid=
+e.</div><div class=3D"gmail_default" style=3D"font-size:small">Pushed, than=
+ks!</div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signat=
+ure"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></=
+div></div>
+
+--000000000000148de805dff4528a--
 
 
-## Metric Regressions (compared to c5b8b34)
-No metric regressions found.
+--===============2037214265==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## Test Fixes (compared to c5b8b34)
-* bcm2711-rpi-4-b, ltp-fs-tests
-  - read_all_proc
-
-* qemu_arm64, ltp-fs-tests
-  - read_all_proc
-
-* qemu_i386, ltp-fs-tests
-  - read_all_proc
-
-
-## Metric Fixes (compared to c5b8b34)
-No metric fixes found.
-
-## Test result summary
-total: 12634, pass: 10638, fail: 60, skip: 1936, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============2037214265==--
+
