@@ -4,66 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8CCFC433EF
-	for <ltp@archiver.kernel.org>; Tue, 31 May 2022 13:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74DE8C433EF
+	for <ltp@archiver.kernel.org>; Tue, 31 May 2022 14:29:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B458B3C32BB
-	for <ltp@archiver.kernel.org>; Tue, 31 May 2022 15:25:48 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2BB323C2D44
+	for <ltp@archiver.kernel.org>; Tue, 31 May 2022 16:29:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 131603C01FE
- for <ltp@lists.linux.it>; Tue, 31 May 2022 15:25:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 166CB1A009BC
- for <ltp@lists.linux.it>; Tue, 31 May 2022 15:25:32 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 46CDD1F99E;
- Tue, 31 May 2022 13:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1654003532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=obQ3N0DdkHxGwCFUhm0D5e+Q51CAJD/HLjUhl5erWvo=;
- b=1+WL0pGv53NbpPfGPXhHTUp+nQiZf5kTSKhewv3EOo6lzeE7UOBWnkdyQcEvDTm3ULDNsJ
- uwYf2fZfhPzTuNDYJ6fWSD1QmW4prg6An8jas6EXGal8NTeBokt5ANcNh67m4IQo1SicWN
- eV1pJ8IcqcjzDzKi0y4TEHRfYhTrtVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1654003532;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=obQ3N0DdkHxGwCFUhm0D5e+Q51CAJD/HLjUhl5erWvo=;
- b=ESmwQOSNVg9C9EXPYELZ1m/kZJbCEPrgBMGJH2D+tBuEB0DyoxYysoz1gSNnoRVD9XuV1B
- DtPJH7yDzPLkFuDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F51713AA2;
- Tue, 31 May 2022 13:25:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id zXPgCUwXlmIxDgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 31 May 2022 13:25:32 +0000
-Date: Tue, 31 May 2022 15:27:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YpYXyb4jyx0zV2Vg@yuki>
-References: <20220428144308.32639-1-pvorel@suse.cz>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220428144308.32639-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ by picard.linux.it (Postfix) with ESMTPS id 4932B3C0FD6
+ for <ltp@lists.linux.it>; Fri, 27 May 2022 09:17:00 +0200 (CEST)
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id DB47660084F
+ for <ltp@lists.linux.it>; Fri, 27 May 2022 09:16:57 +0200 (CEST)
+Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
+ by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxWeThepBiUsIDAA--.12997S2; 
+ Fri, 27 May 2022 15:16:52 +0800 (CST)
+From: Hongchen Zhang <zhanghongchen@loongson.cn>
+To: Wang Xin <wangxin410@huawei.com>, Petr Vorel <pvorel@suse.cz>,
+ Li Wang <liwang@redhat.com>
+Date: Fri, 27 May 2022 15:16:47 +0800
+Message-Id: <1653635807-13238-1-git-send-email-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9BxWeThepBiUsIDAA--.12997S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw1UuryfuryrWryfCFykKrg_yoWkGrb_ZF
+ 4xKF1S9wn8Aas2gFn7Jrs5JrnIyryUCFWrua48Gw4UGa4UArn7uryjy3y5AF15Gr4kZrWI
+ g3ZrGFn5Jw4DAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUb2AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+ 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+ A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+ Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+ Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+ I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+ 4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE-syl42xK
+ 82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+ C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+ MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+ IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+ x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUywZ7UUUUU=
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 0/3] Remove RPC rup and rusers tests
+X-Mailman-Approved-At: Tue, 31 May 2022 16:29:11 +0200
+Subject: [LTP] [PATCH] controllers/cpuset: default cpuset.sched_load_balance
+ to 1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,21 +60,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "J . Bruce Fields" <bfields@fieldses.org>, linux-nfs@vger.kernel.org,
- automated-testing@yoctoproject.org, Steve Dickson <steved@redhat.com>,
- Chuck Lever <chuck.lever@oracle.com>, libtirpc-devel@lists.sourceforge.net,
- Trond Myklebust <trondmy@hammerspace.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it, Hongchen Zhang <zhanghongchen@loongson.cn>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Patchset pushed, thanks.
+when we exited between the cpuset test,we may leave /dev/cpuset
+not cleared. And we did the cpuset test again, we would set the
+cpuset.sched_load_balance to 0 as following:
+	setup()
+        if [ -e "$CPUSET" ]
+        cleanup
+	echo $SCHED_LB_VALUE > $SCHED_LB
+as the default value of cpuset.sched_load_balance is 1 at the time
+cpuset mounted, so it is reasonably to be set to 1.
 
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+---
+ testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+index 9939f13..3991475 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+@@ -61,7 +61,7 @@ CLONE_CHILDREN="/dev/cpuset/cgroup.clone_children"
+ CHILDREN_VALUE="0"
+ HOTPLUG_CPU="1"
+ SCHED_LB="/dev/cpuset/cpuset.sched_load_balance"
+-SCHED_LB_VALUE="0"
++SCHED_LB_VALUE="1"
+ 
+ cpuset_log()
+ {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
