@@ -4,47 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA783C43334
-	for <ltp@archiver.kernel.org>; Thu,  2 Jun 2022 23:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15BBCC433EF
+	for <ltp@archiver.kernel.org>; Fri,  3 Jun 2022 08:48:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14B5E3C7F60
-	for <ltp@archiver.kernel.org>; Fri,  3 Jun 2022 01:51:45 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 8E8093C88B9
+	for <ltp@archiver.kernel.org>; Fri,  3 Jun 2022 10:48:47 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B8BD3C31FC
- for <ltp@lists.linux.it>; Fri,  3 Jun 2022 01:51:36 +0200 (CEST)
-Received: from a8-97.smtp-out.amazonses.com (a8-97.smtp-out.amazonses.com
- [54.240.8.97])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id C31283C3030
+ for <ltp@lists.linux.it>; Fri,  3 Jun 2022 10:48:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6061A1400330
- for <ltp@lists.linux.it>; Fri,  3 Jun 2022 01:51:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1654213893;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=RQEpH58I/0Kfw8n+f7F4ZP1iKshRgq2xWFbj9ERM/Do=;
- b=f5Lc4eT4wFS14YHJbJav+Uin8j1MUq27rLeeT3ksaJJQMZcCyOH/HKwPI283go8c
- F0clLEl7Lt1kcnL+G9zNZ9JnSlWzWf4V66VJMY6xodJQVwaNBzM2IviEzGIn5fOVKUC
- jneeUDD9dDA1G3iWl4/nma8zDSHMMohSI6e5Up5E=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1654213893;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=RQEpH58I/0Kfw8n+f7F4ZP1iKshRgq2xWFbj9ERM/Do=;
- b=fMNbaPyqWHlKgzE7CX8AD8nR4OcXzPPoE9qqyLFpOzv8lOXTPbsA3KNouo6U2Swd
- ub+4a1/c24QIN/21e/si3PtaHDxPx5mQRGG3XWmx9j7mTrUtg9m6YcRmDjfM8LgiCbu
- 7XpaWHIo+/OWGfut4MfYaztPUqosxskfxy9VFQBM=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C9307600D1C
+ for <ltp@lists.linux.it>; Fri,  3 Jun 2022 10:48:36 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 97A2921A24;
+ Fri,  3 Jun 2022 08:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1654246115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6I+320UOxz3383wKddvgeR9BJTY0UnhOCjgLa8Q0oUw=;
+ b=mgtW1vCXyqK9X/ainIRYKX7KszhHLPNj/gSS+qs/NJ8HXIzwvfPR1a+VBsOO4kyJRRnpGp
+ lZcMcwVH89faYAUzhwkT9pBEMbS1VWqHWCOiKhCMm7a0/cS7MYCjR6SEAftiIDBH3qsMG9
+ 9bV64uc+Qtz0ukhHUxeLyR1S6O9UN4o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1654246115;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6I+320UOxz3383wKddvgeR9BJTY0UnhOCjgLa8Q0oUw=;
+ b=mxO4zWw01dxlhSelR+H88zFtwVfrEP27TJBlk+1ktjw4mzZ/VRE3/h75pbLQTOL4SIl/XX
+ Fx9swlf317DrbNDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82E2713AA2;
+ Fri,  3 Jun 2022 08:48:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id yeiSHuPKmWImdgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 03 Jun 2022 08:48:35 +0000
+Date: Fri, 3 Jun 2022 10:50:43 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <YpnLY8Md3SNM268M@yuki>
+References: <20220325125445.11984-1-andrea.cervesato@suse.de>
+ <20220325125445.11984-6-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-Message-ID: <0100018126d4de22-5ebcbf7b-3564-4c81-8c9b-4209eb857754-000000@email.amazonses.com>
-Date: Thu, 2 Jun 2022 23:51:33 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.06.02-54.240.8.97
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220325125445.11984-6-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 20220527-25-g1ef4772
+Subject: Re: [LTP] [PATCH v4 05/10] Rewrite semtest_2ns.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,79 +75,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.11
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.17.y
-* git commit: e960d734930b58bd6ce00c631ea117af0764473c
-* git describe: 20220527-25-g1ef4772
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/20220527-25-g1ef4772
+Hi!
+Pushed with cosmetic changes, thanks.
 
-## Test Regressions (compared to 20220527-18-gf9715d7)
-* qemu_arm, ltp-syscalls-tests
-  - accept02
-
-
-## Metric Regressions (compared to 20220527-18-gf9715d7)
-No metric regressions found.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## Test Fixes (compared to 20220527-18-gf9715d7)
-* qemu_arm64, ltp-crypto-tests
-  - af_alg07
-
-* qemu_x86_64, ltp-controllers-tests
-  - memcg_stat_rss
-
-
-## Metric Fixes (compared to 20220527-18-gf9715d7)
-No metric fixes found.
-
-## Test result summary
-total: 12296, pass: 10333, fail: 58, skip: 1905, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
