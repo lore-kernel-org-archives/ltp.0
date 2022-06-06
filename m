@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EA5EC43334
-	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 14:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73121C43334
+	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 18:43:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B3863C81F1
-	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 16:33:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A0C4C3C8D6D
+	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 20:43:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E03EA3C00D5
- for <ltp@lists.linux.it>; Mon,  6 Jun 2022 16:33:14 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6277A3C01AA
+ for <ltp@lists.linux.it>; Mon,  6 Jun 2022 20:43:40 +0200 (CEST)
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com
+ [IPv6:2607:f8b0:4864:20::f2d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3D928140075B
- for <ltp@lists.linux.it>; Mon,  6 Jun 2022 16:33:13 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 575DE1F939;
- Mon,  6 Jun 2022 14:33:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1654525993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oni46wNQn12v2Hjy7U0tDVzuCSiwgJIyUpV6Gqlox6M=;
- b=zWBWGkEjWHdIrFkrBPjg513Buajtq1n9IL6C4h0kUuluZRFoOIrL4dDXjbjYx0J44mzVC6
- OO0mkAAPxZ8XX5efByRXzuyHH9MVMJ38QxEG9kpEoxVMfZ9dUIkZrXUweSlkKxUMTgRBsG
- Arl8heSDp7zePAtNp+sNupo5sRdEsio=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1654525993;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oni46wNQn12v2Hjy7U0tDVzuCSiwgJIyUpV6Gqlox6M=;
- b=hU7YKiEzqRXZUw97NYFIFOjqxD3Jt0cNXe8AiMNjxl5ESYfCTz6giA6/DFAOCR8TG6S8d+
- yOwk7RpDViJoPdAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44F07139F5;
- Mon,  6 Jun 2022 14:33:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6uIZECkQnmKbYgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 06 Jun 2022 14:33:13 +0000
-Date: Mon, 6 Jun 2022 16:35:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: zhaogongyi <zhaogongyi@huawei.com>
-Message-ID: <Yp4Qpt5ho7UR8CPP@yuki>
-References: <c9aee645b8c146aa9b87b2cb26a6dfd1@huawei.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F15411A003D0
+ for <ltp@lists.linux.it>; Mon,  6 Jun 2022 20:43:39 +0200 (CEST)
+Received: by mail-qv1-xf2d.google.com with SMTP id i19so10786418qvu.13
+ for <ltp@lists.linux.it>; Mon, 06 Jun 2022 11:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=iqu941lzTAMX+oaALcJPphLtVNbm3omYD1fanuV+3bQ=;
+ b=UodjcFvV2gT88Pd59oJsueHKUtddZZ4+1d6GaYSBAqRND/g6Tebt6flUgNZE3YQzSa
+ F3A5VTAT4ipV3OC2X8abfr2sbYaazV/lj9+QiA12TMb0f8IE7a1M4ktkKHtSAOyznb/l
+ 4peHVkEaeYnoZ2bbEIXTAux063xy0dGiSA99yBhf3BpGlTjxqrM1n5Xfdj4l5+kXZa1E
+ ff2rWfcAqrvjJI0VXo0CscO1pyNrGb/zu1sf3Ig2mF4zQgbd0Q5gkBTwB0phkPpvNCbt
+ YG8J6GaNA+jiy/oDKvuxpKLDYmk0C72RwLBS6xWWa+0vi/NejRJm7aBNFPJ2vJntcMdJ
+ q+Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=iqu941lzTAMX+oaALcJPphLtVNbm3omYD1fanuV+3bQ=;
+ b=k21UYxwkCeMx5xKQ03AIjI360Yi4OuIbMjEJjJVg8VfQ39/TNKgRDiCXjjTnAxkg/Y
+ EpUj1Vo2rKdYgRpKNa9/Pd1oZK9pVHi0YrZYqscw6OetsN2xck4QvCH5UtUunHY/qlB0
+ CJXSA1eKq7fobXkQ+X1mSqS7Bd6Zzoh98nCUjC0YeDGkNZ3Wz0MMU6WPeg8ykYBWrVaX
+ WqpYNy9oPV6mGoUeEteRnUJutySnSlLIRmZtQKa9qY1ZWqyTgB2GXsZG4v2MiOQq5PyP
+ jVgqKz8itSBKZlsEU520hCvYXHh1pzAab/vGaBT31xx68LV8sxl+3MqI55RKHywNXXlF
+ vmGw==
+X-Gm-Message-State: AOAM532zO+Vrl3DUCQBGH+FFzHOZzucvlIUqMVwTyeAJtAX82DR7sTyv
+ UwSqPVlARC11QcTK+Zz5p182QN1c9vwghEkC
+X-Google-Smtp-Source: ABdhPJwoShGMRMlJYjLu9vRtMwQxGGavqGckxG4fAGiXtj7kpfhe/jvkIfvxjN9skw/is88lRlD7ng==
+X-Received: by 2002:ad4:49ac:0:b0:46a:effd:fbd0 with SMTP id
+ u12-20020ad449ac000000b0046aeffdfbd0mr8605728qvx.13.1654541018754; 
+ Mon, 06 Jun 2022 11:43:38 -0700 (PDT)
+Received: from dell5510.arch.suse.de (gw1.ms-free.net. [185.243.124.10])
+ by smtp.gmail.com with ESMTPSA id
+ m16-20020a05620a291000b006a6bb044740sm3584880qkp.66.2022.06.06.11.43.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 06 Jun 2022 11:43:38 -0700 (PDT)
+From: Petr Vorel <petr.vorel@gmail.com>
+To: ltp@lists.linux.it
+Date: Mon,  6 Jun 2022 20:43:19 +0200
+Message-Id: <20220606184320.8210-2-petr.vorel@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220606184320.8210-1-petr.vorel@gmail.com>
+References: <20220606184320.8210-1-petr.vorel@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c9aee645b8c146aa9b87b2cb26a6dfd1@huawei.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] futex_waitv04: Add test for futex_waitv syscall
+Subject: [LTP] [PATCH 1/2] kvm: Fix compilation on x86
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,29 +78,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: "Yann E. MORIN" <yann.morin.1998@free.fr>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Buildroot Mailing List <buildroot@buildroot.org>,
+ Fabrice Fontaine <fontaine.fabrice@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> I also wondered whether to add these two testcases into
-> futex_waitv01.c, there is a consideration that there are alse two
+Buildroot supports i386 pentium toolchains (br-i386-pentium-mmx-musl,
+br-i386-pentium4-full) which fail to compile because as is run without --32.
 
-Will you send a patch that adds these cases to the futext_waitv01.c
-then?
+Suggested-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ testcases/kernel/kvm/Makefile | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> other testcases need to be added according to linux manual:
-> 1. A signal was sent to the sleeping task, returning -ERESTARTSYS.
-> 2. Some futex at the list was woken, returning the index of some waked futex.
-
-Feel free to send more patches, adding more test coverage is always
-welcomed.
-
+diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+index adab56952..8d5193d8e 100644
+--- a/testcases/kernel/kvm/Makefile
++++ b/testcases/kernel/kvm/Makefile
+@@ -17,11 +17,14 @@ FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+ ifeq ($(HOST_CPU),x86_64)
+ 	ifneq (,$(findstring m32,$(CFLAGS)))
+ 		HOST_CPU = x86
+-		GUEST_CFLAGS += -m32
+-		ASFLAGS += --32
+ 	endif
+ endif
+ 
++ifeq ($(HOST_CPU),x86)
++	GUEST_CFLAGS += -m32
++	ASFLAGS += --32
++endif
++
+ # Some distros enable -pie by default. That breaks KVM payload linking.
+ ifdef LTP_CFLAGS_NOPIE
+ 	GUEST_CFLAGS += -fno-pie
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.36.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
