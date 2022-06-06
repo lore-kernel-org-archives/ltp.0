@@ -4,47 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F106AC43334
-	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 09:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A5C6C433EF
+	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 10:00:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 99B403C8D3E
-	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 11:32:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D32073C8CCD
+	for <ltp@archiver.kernel.org>; Mon,  6 Jun 2022 12:00:51 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35C1D3C0945
- for <ltp@lists.linux.it>; Mon,  6 Jun 2022 11:32:16 +0200 (CEST)
-Received: from a8-29.smtp-out.amazonses.com (a8-29.smtp-out.amazonses.com
- [54.240.8.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 4F4DA3C4CA9
+ for <ltp@lists.linux.it>; Mon,  6 Jun 2022 12:00:42 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 724C22002D2
- for <ltp@lists.linux.it>; Mon,  6 Jun 2022 11:32:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1654507933;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=YFIgQL+ClAhMnsqwpMR1hIImpn8wmeTDpstJbteIV4M=;
- b=PsqFGfIwdo+ZxegnrezryBMhNhtRAULXGvZDTzMhJ3Ls85HAlWZ7oENLIFg6xP/c
- Rw+7niu2AQjNwg98p5yj+8xzc2gHqhEtH9xnK2W2WQNUNdfNe7KslYNgn0huY4p+AHx
- xLqqjOC/zhg6tQaWuWd2YwENWZXHbNF094anGXc4=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1654507933;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=YFIgQL+ClAhMnsqwpMR1hIImpn8wmeTDpstJbteIV4M=;
- b=hYqR0IByPv32xdvXOsvi0H/+n5qtgD2MSb+HY0QzVFIrocYfq1DYnhuDVWcxLumv
- 9HAdd+T+6ddE5OSSokWulRLHb1RUTfydJe4wz2szyyEgZ5aDrzHGhstuLD8UvylPdey
- nILvkJZwtvSWFSEdtjsbN6/+DcucTLAUyWjcbwSY=
-From: lkft@linaro.org
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1E4CE1A006B9
+ for <ltp@lists.linux.it>; Mon,  6 Jun 2022 12:00:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1654509639;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Qe7jBvkrJgcUHmV9hL0gCF2JGvQwlXYEQd9InFJx9t0=;
+ b=NCACkYa/EVHbfu2wrB/EU11cugFcil0GpMD6fvULfsQX3Vo7JPQCyVqTzBHRwj5Ly8s3aM
+ j6VucLYwgJa/0euFhwZWKWu9DyXYvuiCCkZ3sPI0W1Fi/FtzqKdFWK8V3H+v7XUDhLVNqr
+ F+GiRrx5AwMTtqGbUd/078p0wTgQBSE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-152-y7SvmNQEPqe759r4yB0SjQ-1; Mon, 06 Jun 2022 06:00:37 -0400
+X-MC-Unique: y7SvmNQEPqe759r4yB0SjQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.10])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D54A811E84
+ for <ltp@lists.linux.it>; Mon,  6 Jun 2022 10:00:37 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 6A50D401E5C
+ for <ltp@lists.linux.it>; Mon,  6 Jun 2022 10:00:36 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
+Date: Mon,  6 Jun 2022 18:00:32 +0800
+Message-Id: <20220606100034.169493-1-liwang@redhat.com>
 MIME-Version: 1.0
-Message-ID: <01000181385b900b-d37c7c27-d1b4-4ef6-baf5-4d70117b79e8-000000@email.amazonses.com>
-Date: Mon, 6 Jun 2022 09:32:13 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.06.06-54.240.8.29
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 20220527-32-g9bc65ed
+Subject: [LTP] [PATCH v3 0/2] extend .request_hugepages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,80 +69,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.11
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.17.y
-* git commit: e960d734930b58bd6ce00c631ea117af0764473c
-* git describe: 20220527-32-g9bc65ed
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/20220527-32-g9bc65ed
+From v2 to v3:
+  * Merge patch-3/3 into patch-1/3
+  * refine the documentation
+  * simplify the TST_NO_HUGEPAGES usage
 
-## Test Regressions (compared to 20220527-31-gaa0d8ff)
-* bcm2711-rpi-4-b, ltp-syscalls-tests
-  - inotify11
+Li Wang (2):
+  lib: extend .request_hugepages to guarantee enough hpages
+  memfd_create03: make use of new .hugepages
 
-* qemu_arm, ltp-mm-tests
-  - ksm03
+ doc/c-test-api.txt                            | 37 ++++++----
+ include/tst_hugepage.h                        | 14 +++-
+ include/tst_test.h                            | 26 +++++--
+ lib/newlib_tests/test20.c                     | 14 ++--
+ lib/newlib_tests/test_zero_hugepage.c         |  9 ++-
+ lib/tst_hugepage.c                            | 22 +++++-
+ lib/tst_test.c                                |  4 +-
+ .../kernel/mem/hugetlb/hugemmap/hugemmap01.c  |  2 +-
+ .../kernel/mem/hugetlb/hugemmap/hugemmap02.c  |  2 +-
+ .../kernel/mem/hugetlb/hugemmap/hugemmap04.c  |  2 +-
+ .../kernel/mem/hugetlb/hugemmap/hugemmap05.c  |  5 +-
+ .../kernel/mem/hugetlb/hugemmap/hugemmap06.c  |  4 +-
+ .../mem/hugetlb/hugeshmat/hugeshmat01.c       |  2 +-
+ .../mem/hugetlb/hugeshmat/hugeshmat02.c       |  2 +-
+ .../mem/hugetlb/hugeshmat/hugeshmat03.c       |  2 +-
+ .../mem/hugetlb/hugeshmat/hugeshmat04.c       | 12 +--
+ .../mem/hugetlb/hugeshmat/hugeshmat05.c       |  5 +-
+ .../mem/hugetlb/hugeshmctl/hugeshmctl01.c     |  2 +-
+ .../mem/hugetlb/hugeshmctl/hugeshmctl02.c     |  2 +-
+ .../mem/hugetlb/hugeshmctl/hugeshmctl03.c     |  2 +-
+ .../mem/hugetlb/hugeshmdt/hugeshmdt01.c       |  2 +-
+ .../mem/hugetlb/hugeshmget/hugeshmget01.c     |  2 +-
+ .../mem/hugetlb/hugeshmget/hugeshmget02.c     |  2 +-
+ .../mem/hugetlb/hugeshmget/hugeshmget03.c     |  2 +-
+ .../mem/hugetlb/hugeshmget/hugeshmget05.c     |  2 +-
+ .../kernel/syscalls/futex/futex_wake04.c      |  5 +-
+ .../kernel/syscalls/ipc/shmget/shmget02.c     |  2 +-
+ .../syscalls/memfd_create/memfd_create03.c    | 74 +------------------
+ testcases/kernel/syscalls/pkeys/pkey01.c      |  4 +-
+ 29 files changed, 115 insertions(+), 150 deletions(-)
 
-* qemu_x86_64, ltp-fs-tests
-  - read_all_proc
+-- 
+2.36.1
 
-
-## Metric Regressions (compared to 20220527-31-gaa0d8ff)
-No metric regressions found.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## Test Fixes (compared to 20220527-31-gaa0d8ff)
-No test fixes found.
-
-## Metric Fixes (compared to 20220527-31-gaa0d8ff)
-No metric fixes found.
-
-## Test result summary
-total: 12639, pass: 10640, fail: 61, skip: 1938, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
