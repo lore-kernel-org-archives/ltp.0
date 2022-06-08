@@ -4,48 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4563BC43334
-	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 03:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01552C433EF
+	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 14:34:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4F18D3C8F51
-	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 05:24:30 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3196D3C917C
+	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 16:34:23 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C29D03C06E0
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 05:24:20 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id AB1973C207C
+ for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:34:12 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AC62F1A0099F
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 05:24:19 +0200 (CEST)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LHswg5vz6zggBH
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 11:22:27 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 8 Jun 2022 11:24:16 +0800
-Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
- canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.024; 
- Wed, 8 Jun 2022 11:24:16 +0800
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [PATCH v2] futex_waitv01: Add test verifies EAGIN/ETIMEDOUT
-Thread-Index: Adh65u1rTXI+2i4lhkyiAcYtsL6TFw==
-Date: Wed, 8 Jun 2022 03:24:16 +0000
-Message-ID: <731d89efc64e4444be65dc6fe860e346@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 258656008E1
+ for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:34:11 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 288541F926;
+ Wed,  8 Jun 2022 14:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1654698851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JP4yqWx7eyTbKRU02SnGE+87TyAXqKyrUjihd+H9NHk=;
+ b=V8/iovZ6tJCgowzgT1wqDvY8Mm3QNR862Q2vamy9h+fLX6EBOxrEvTd7XRZdOeLTEpE3Qe
+ 83KsEYGtn4MbvyKPMhf+ehiJyS7uaU2CHafbAQ5gNHa6hVON8K9DGK2Esnp0W0eu8bwxzh
+ hlljD6d9/GyCdSfOFR3h3sPNunkkij0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1654698851;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JP4yqWx7eyTbKRU02SnGE+87TyAXqKyrUjihd+H9NHk=;
+ b=AJp9jmxQIFVS9GPZ8VgY0sn/vw0iP0lSd8r6cb5yQQjAZz+/Pf+CONb8qxx8HAr2/loq0G
+ 3DXnPxN7zw6Z0MCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1233213A15;
+ Wed,  8 Jun 2022 14:34:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id qD8HA2OzoGJCewAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 08 Jun 2022 14:34:11 +0000
+Date: Wed, 8 Jun 2022 16:36:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <petr.vorel@gmail.com>
+Message-ID: <YqCz4TeYnZH8XsOj@yuki>
+References: <20220606184320.8210-1-petr.vorel@gmail.com>
+ <20220606184320.8210-3-petr.vorel@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220606184320.8210-3-petr.vorel@gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] futex_waitv01: Add test verifies
- EAGIN/ETIMEDOUT
+Subject: Re: [LTP] [PATCH 2/2] kvm: Fix undefined reference to
+ __stack_chk_fail()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,97 +76,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: zhaogongyi via ltp <ltp@lists.linux.it>
-Reply-To: zhaogongyi <zhaogongyi@huawei.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Buildroot Mailing List <buildroot@buildroot.org>,
+ Fabrice Fontaine <fontaine.fabrice@gmail.com>,
+ "Yann E. MORIN" <yann.morin.1998@free.fr>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> Some x86_64 buildroot toolchains (bootlin-x86-64-glibc,
+> bootlin-x86-64-musl) try to link to __stack_chk_fail().
+> -nostdlib is not enough, it requires also -fstack-protector.
+>
+> x86_64-buildroot-linux-gnu/bin/ld: /tmp/ccgBXEoR.o: in function `handle_page_fault':
+> kvm_pagefault01.c:(.text+0x5d): undefined reference to `__stack_chk_fail'
+> collect2: error: ld returned 1 exit status
 
-I have submit a new patch according your review, please see: https://patchwork.ozlabs.org/project/ltp/patch/20220608031953.152525-1-zhaogongyi@huawei.com/
+I'm still puzzled on why does it try to link it. Why is stack protection
+turned on for the code. Does buildroot pass -fstack-protector to the
+CFLAGS?
 
-Thanks for your review!
+I guess that -nostdlib causes the libssp (which implements
+__stack_chk_fail() not to be linked by default, but the
+__stack_chk_fail() shouldn't be called unless unless the feature is
+enabled in the first place.
 
-Best wishes,
-Gongyi
+Also does -fno-stack-protector passed in GUEST_CFLAGS make it disappear?
 
+> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> ---
+>  testcases/kernel/kvm/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Hi!
-> > +static void test_mismatch_between_uaddr_and_val(void)
-> > +{
-> > +	struct timespec to;
-> > +
-> > +	waitv->uaddr = (uintptr_t)futex;
-> > +	waitv->flags = FUTEX_32 | FUTEX_PRIVATE_FLAG;
-> > +	waitv->val = 1;
-> > +
-> > +	init_timeout(&to);
-> > +
-> > +	TST_EXP_FAIL(futex_waitv(waitv, 1, 0, &to, CLOCK_MONOTONIC),
-> EAGAIN,
-> > +			"futex_waitv mismatch between value of uaddr and val");
+> diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+> index 8d5193d8e..bce1a4eb5 100644
+> --- a/testcases/kernel/kvm/Makefile
+> +++ b/testcases/kernel/kvm/Makefile
+> @@ -9,7 +9,7 @@ ASFLAGS =
+>  CPPFLAGS += -I$(abs_srcdir)/include
+>  GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
+>  GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
+> -GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none
+> +GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fstack-protector
+>  GUEST_LDLIBS =
+>  
+>  FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+> -- 
+> 2.36.1
 > 
-> The init_timeout(&to) inits the timeout with CLOCK_REALTIME time, so we
-> should pass CLOCK_REALTIME to the futex_waitv() as well.
-> 
-> > +}
-> > +
-> > +static void test_timeout(void)
-> > +{
-> > +	struct timespec to;
-> > +
-> > +	waitv->uaddr = (uintptr_t)futex;
-> > +	waitv->flags = FUTEX_32 | FUTEX_PRIVATE_FLAG;
-> > +	waitv->val = 0;
-> > +
-> > +	init_timeout(&to);
-> 
-> I guess that we can as well just do:
-> 
-> SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &to);
-> 
-> Which would make the test much faster as we will not have to wait for one
-> second for the timeout.
-> 
-> Eventually we can as well add a few miliseconds to the timeout, we do
-> have a nice functions to work with different time structures in this case we
-> can just do:
-> 
-> 	to = tst_timespec_add_us(to, 10000);
-> 
-> To add 10ms to the timeout.
-> 
-> > +	TST_EXP_FAIL(futex_waitv(waitv, 1, 0, &to, CLOCK_REALTIME),
-> ETIMEDOUT,
-> > +			"futex_waitv timeout");
-> > +
-> > +}
-> > +
-> >  static void cleanup(void)
-> >  {
-> >  	free(futex);
-> > @@ -126,6 +154,8 @@ static void run(void)
-> >  	test_null_waiters();
-> >  	test_invalid_clockid();
-> >  	test_invalid_nr_futexes();
-> > +	test_mismatch_between_uaddr_and_val();
-> > +	test_timeout();
-> >  }
-> >
-> >  static struct tst_test test = {
-> > --
-> > 2.17.1
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
