@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01552C433EF
-	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 14:34:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EACC8C43334
+	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 14:37:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3196D3C917C
-	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 16:34:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A3D3E3C8FC8
+	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 16:37:51 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB1973C207C
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:34:12 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 21C5B3C207C
+ for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:37:40 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 258656008E1
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:34:11 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ACF601A006F0
+ for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:37:39 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 288541F926;
- Wed,  8 Jun 2022 14:34:11 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 24D171F962;
+ Wed,  8 Jun 2022 14:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1654698851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1654699059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=JP4yqWx7eyTbKRU02SnGE+87TyAXqKyrUjihd+H9NHk=;
- b=V8/iovZ6tJCgowzgT1wqDvY8Mm3QNR862Q2vamy9h+fLX6EBOxrEvTd7XRZdOeLTEpE3Qe
- 83KsEYGtn4MbvyKPMhf+ehiJyS7uaU2CHafbAQ5gNHa6hVON8K9DGK2Esnp0W0eu8bwxzh
- hlljD6d9/GyCdSfOFR3h3sPNunkkij0=
+ bh=OLg7lk1r8UNmseAf/y80yiqKvXAR1cNekHGn1dIn0DY=;
+ b=qBZsC6x4oRinDLWatLij/LpWRfSxKB2/tbsS2jTfKx+3mAAHK6FS3LD/DTu7TbMuLKWoMT
+ q1+iam72JUHzNk5VwpfME9LIczz8pQfA4rKvyExdkXp3ALxdp6Td3M8BR5X7EWoA90p7iL
+ 79+OyyPPpJsw39RFQD5UW/cxHn5gDsk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1654698851;
+ s=susede2_ed25519; t=1654699059;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=JP4yqWx7eyTbKRU02SnGE+87TyAXqKyrUjihd+H9NHk=;
- b=AJp9jmxQIFVS9GPZ8VgY0sn/vw0iP0lSd8r6cb5yQQjAZz+/Pf+CONb8qxx8HAr2/loq0G
- 3DXnPxN7zw6Z0MCA==
+ bh=OLg7lk1r8UNmseAf/y80yiqKvXAR1cNekHGn1dIn0DY=;
+ b=ic0dEIlGXi22awkDGuDzT3+vhLMeDMzdBhh5T8XNHLHA1Xote37LXJvYVgf9PVIkFaNJaa
+ Cd/TqZ7j1U/Fm3Cg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1233213A15;
- Wed,  8 Jun 2022 14:34:11 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1077613A15;
+ Wed,  8 Jun 2022 14:37:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qD8HA2OzoGJCewAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 08 Jun 2022 14:34:11 +0000
-Date: Wed, 8 Jun 2022 16:36:17 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id zEubATO0oGLPfAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 08 Jun 2022 14:37:39 +0000
+Date: Wed, 8 Jun 2022 16:39:45 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <petr.vorel@gmail.com>
-Message-ID: <YqCz4TeYnZH8XsOj@yuki>
+Message-ID: <YqC0sSfMjolMEeKx@yuki>
 References: <20220606184320.8210-1-petr.vorel@gmail.com>
- <20220606184320.8210-3-petr.vorel@gmail.com>
+ <20220606184320.8210-2-petr.vorel@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220606184320.8210-3-petr.vorel@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220606184320.8210-2-petr.vorel@gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] kvm: Fix undefined reference to
- __stack_chk_fail()
+Subject: Re: [LTP] [PATCH 1/2] kvm: Fix compilation on x86
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,43 +86,43 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Some x86_64 buildroot toolchains (bootlin-x86-64-glibc,
-> bootlin-x86-64-musl) try to link to __stack_chk_fail().
-> -nostdlib is not enough, it requires also -fstack-protector.
->
-> x86_64-buildroot-linux-gnu/bin/ld: /tmp/ccgBXEoR.o: in function `handle_page_fault':
-> kvm_pagefault01.c:(.text+0x5d): undefined reference to `__stack_chk_fail'
-> collect2: error: ld returned 1 exit status
+> Buildroot supports i386 pentium toolchains (br-i386-pentium-mmx-musl,
+> br-i386-pentium4-full) which fail to compile because as is run without --32.
 
-I'm still puzzled on why does it try to link it. Why is stack protection
-turned on for the code. Does buildroot pass -fstack-protector to the
-CFLAGS?
+So we have a 32bit compiler but 64bit linker?
 
-I guess that -nostdlib causes the libssp (which implements
-__stack_chk_fail() not to be linked by default, but the
-__stack_chk_fail() shouldn't be called unless unless the feature is
-enabled in the first place.
+I guess that passing -m32 to 32bit compiler is harmless, so this can go
+in.
 
-Also does -fno-stack-protector passed in GUEST_CFLAGS make it disappear?
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
+> Suggested-by: Martin Doucha <mdoucha@suse.cz>
 > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 > ---
->  testcases/kernel/kvm/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  testcases/kernel/kvm/Makefile | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
 > diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
-> index 8d5193d8e..bce1a4eb5 100644
+> index adab56952..8d5193d8e 100644
 > --- a/testcases/kernel/kvm/Makefile
 > +++ b/testcases/kernel/kvm/Makefile
-> @@ -9,7 +9,7 @@ ASFLAGS =
->  CPPFLAGS += -I$(abs_srcdir)/include
->  GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
->  GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
-> -GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none
-> +GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fstack-protector
->  GUEST_LDLIBS =
+> @@ -17,11 +17,14 @@ FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+>  ifeq ($(HOST_CPU),x86_64)
+>  	ifneq (,$(findstring m32,$(CFLAGS)))
+>  		HOST_CPU = x86
+> -		GUEST_CFLAGS += -m32
+> -		ASFLAGS += --32
+>  	endif
+>  endif
 >  
->  FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+> +ifeq ($(HOST_CPU),x86)
+> +	GUEST_CFLAGS += -m32
+> +	ASFLAGS += --32
+> +endif
+> +
+>  # Some distros enable -pie by default. That breaks KVM payload linking.
+>  ifdef LTP_CFLAGS_NOPIE
+>  	GUEST_CFLAGS += -fno-pie
 > -- 
 > 2.36.1
 > 
