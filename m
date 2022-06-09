@@ -4,70 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33F1EC433EF
-	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 08:30:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AD80C43334
+	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 11:25:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B97A73C9188
-	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 10:30:26 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D88103C91D2
+	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 13:25:52 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1FD953C0895
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 00:18:31 +0200 (CEST)
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
- [IPv6:2607:f8b0:4864:20::102e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E82043C910C
+ for <ltp@lists.linux.it>; Thu,  9 Jun 2022 13:25:43 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 832AB1000950
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 00:18:30 +0200 (CEST)
-Received: by mail-pj1-x102e.google.com with SMTP id e24so16918223pjt.0
- for <ltp@lists.linux.it>; Tue, 07 Jun 2022 15:18:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=1QjWhYAIck0B+prMafRHntt3bLismQ6kOqKOMO119oY=;
- b=QpG9YI+p8wys8iMNroCwiNn3PWH+m96gVTFF/8cijC+HWOhATNx5A50YzpMenJHXdZ
- Tc0MOgArFY7BsESVZdgnHMpWt2TaeOnQ0Z4cQb6RLe5GEqJ0Tf0xkwmBRP/v1RnT9M5o
- 7VLsm745KaiwNOzwVNihfBPFTua9dakzCDT8Kf71+R1F4X8C/qNxqXzOuUZc1/ZGsdko
- od0hfivqrEXRtRN4BI3eup8OVdOPmtQNeI2Djk/vnBeeE3sixBj+djMAaapMM2nCm4J6
- OtUaY1ij6w0uKVwjqHDbtG0u07d7Ygf9Vr0Ir8bsEQ0bGNKp2NJV0WPRdwMyDH7vamve
- xeiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=1QjWhYAIck0B+prMafRHntt3bLismQ6kOqKOMO119oY=;
- b=BST5P5+jBby+NvfoY7omE+LmmyYw+lj2HA4qoUPeOmxbzPgnJBLnnpEcH0rBrNaYdE
- OVC9DhqfyR8JsiLCCLemOIsBsTUFNtdNlYzHv4yw8jahXccj7gWetMili49SxYV1ePfm
- 4C4o1OID6i6sbv8Zem9dIw2fjr1CzpFx3zoRJKH5ZqRZQnhkzVAdCL/No4Frcv6whsjq
- RBPuRJjFJx5uh3oXcHjbgXZ6bLORFnfKgtVGbngqqU2O3gqebxrTwlRoMOlziBXNv0DO
- C2PhIiKexYgwtP1ZZ8/IN5vKEfQBXKEqF9QNnPjGJKIWxOgsHlfuT2z81jj1irUQNf12
- vuBQ==
-X-Gm-Message-State: AOAM532ff6l5VXuk7IoARwOYkYLxPbReiD441YARXGZ8YBPB53UJ25NV
- 3W5xR3jox70vxqUmowRd7JZQ538jaSc=
-X-Google-Smtp-Source: ABdhPJygBovanCIc4m5pLbO6dVxl7WzcEK56j/E0oJhhL25YYqjN6+0c0ZprrxYmDoTV8Z9O34YDfw==
-X-Received: by 2002:a17:902:bb90:b0:156:2c05:b34f with SMTP id
- m16-20020a170902bb9000b001562c05b34fmr31554045pls.53.1654640308246; 
- Tue, 07 Jun 2022 15:18:28 -0700 (PDT)
-Received: from ubuntu.localdomain (nat61-196.net.kcls.org. [206.188.61.196])
- by smtp.gmail.com with ESMTPSA id
- v9-20020a17090331c900b0016796cdd802sm1985048ple.19.2022.06.07.15.18.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jun 2022 15:18:27 -0700 (PDT)
-From: shatur.linux@gmail.com
-X-Google-Original-From: sturlapati@vmware.com
-To: ltp@lists.linux.it
-Date: Tue,  7 Jun 2022 15:18:16 -0700
-Message-Id: <20220607221816.50955-1-sturlapati@vmware.com>
-X-Mailer: git-send-email 2.25.1
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BF15B14004EC
+ for <ltp@lists.linux.it>; Thu,  9 Jun 2022 13:25:42 +0200 (CEST)
+Received: from [10.40.94.1] (unknown [37.24.96.116])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 5CEE69F6A4
+ for <ltp@lists.linux.it>; Thu,  9 Jun 2022 11:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1654773941; bh=vT86ORW6pTYJqpwJxeRAbid7rwJdN4sN8dINOHI5eVo=;
+ h=Message-ID:Date:MIME-Version:To:From:Subject;
+ b=uSOIHqt7s5s0ifheA+l6aveHYJA7bcg5fU8ZlEcwWnp1SsYR92afB0XK4jDX9HvLI
+ PYw9cnSvUC9EGY4tSFOywnY5U20kA3DoxNqvwu3lD29Ned56AaxGs29ZxNeeBp8iug
+ ZZHA0HXIqYbzQvP+28ktl+gqUD44qDjO03q51S68=
+Message-ID: <3e9f91c4-b94b-21c4-4cfa-cb39af5e1110@jv-coder.de>
+Date: Thu, 9 Jun 2022 13:25:40 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Content-Language: en-US
+To: LTP List <ltp@lists.linux.it>
+From: Joerg Vehlow <lkml@jv-coder.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 09 Jun 2022 10:30:07 +0200
-Subject: [LTP] [PATCH] run-posix-option-group-test.sh: Log and exit if one
- attempts to run tests without compiling
+Subject: [LTP] [RFC] Open Posix Testsuite install layout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,55 +53,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: shatur.linux@gmail.com, sturlapati@vmware.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Sharan Turlapati <sturlapati@vmware.com>
+Hi,
 
-Currently, run-posix-option-group-test.sh erroneously
-logs "***Tests Completed***" when no test has actually run if the script is invoked
-to run without actually compiling the tests.
+I am currently reviewing openembedded's recipe ([1]). It is currently
+installing the openposix testsuite twice: Once in
+/opt/ltp/testcases/open_posix_testsuite and also directly into
+/opt/ltp/. This is probably due to the fact, that the open posix
+testsuite had no install target until 20110606 and then it was installed
+into a different directory:
 
-Check if the .run-test files actually exist before attempting to run them.
-If not found, log a message indicating the problem and suggest to check if
-the tests were compiled. Exit the script without attempting to run other
-tests.
 
-Signed-off-by: Sharan Turlapati <sturlapati@vmware.com>
----
- .../bin/run-posix-option-group-test.sh              | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-index 0d4c9bd80..56773f0f0 100755
---- a/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-+++ b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-@@ -22,9 +22,16 @@ EOF
- 
- run_option_group_tests()
- {
--	for test_script in $(find $1 -name '*.run-test' | sort); do
--		(cd "$(dirname "$test_script")" && ./$(basename "$test_script"))
--	done
-+	list_of_tests=`find $1 -name '*.run-test' | sort`
-+	if [[ -n $list_of_tests ]]
-+	then
-+		for test_script in $list_of_tests; do
-+			(cd "$(dirname "$test_script")" && ./$(basename "$test_script"))
-+		done
-+	else
-+		echo ".run-test files not found under $1. Were the tests compiled?"
-+		exit 1
-+	fi
- }
- 
- case $1 in
--- 
-2.19.0
 
+In 3b808b4 ("Add install target; shuffle around/cleanup code."), make
+install was added to open posix testsuite, but the install layout is a
+bit odd.
+
+It installs:
+
+/opt/ltp/bin/run-all-posix-option-group-tests.sh
+/opt/ltp/bin/t0
+/opt/ltp/bin/run-tests.sh
+/opt/ltp/bin/Makefile
+/opt/ltp/bin/run-posix-option-group-test.sh
+
+This is mostly ok, although run-tests.sh should be called
+run-posix-tests.sh, otherwise it looks like it would run "normal" ltp tests.
+And the scripts are structured a bit weird, at least
+run-all-posix-option-group-tests.sh and run-posix-option-group-test.sh
+could be merged into a single script. And
+run-all-posix-option-group-tests.sh does not execute all tests, but only
+(maybe not even all) conformance/interface tests. Based on the name of
+the script and the available documentation, this makes sense, but I
+don't see how these scripts are useful. Why would anyone want to only
+run tests for optional posix features, but not for other?
+
+The Makefile shouldn't be installed at all.
+
+
+But what is worth is the fact, that the open posix testsuites are
+installed directly into /opt/ltp
+
+/opt/ltp/stress
+/opt/ltp/conformance
+/opt/ltp/functional
+
+They should be installed into /opt/ltp/testcases/open_posix_testsuite or
+maybe /opt/ltp/open_posix_testsuite otherwise it is very confusing.
+This would of course require the shell scripts, that execute open posix
+tests to be changed during installation (currently they use "$(dirname
+"$0")/../conformance/interfaces"). Additionally all generated run.sh
+scripts would need adaption, as they use run-tests.sh.
+
+
+
+I would propose and volunteer to:
+1. Move testsuites to /opt/ltp/testcases/open_posix_testsuite
+2. Move run-tests.sh and t0 to /opt/ltp/testcases
+   /open_posix_testsuite/bin, because it is only used by run.sh scriptss
+   from the suites directories
+3. Fix paths in run-posix-option-group-test.sh during installation
+   (or drop them completely? Are they even used by anyone?)
+2. Remove the Makefile from /opt/ltp/bin
+
+
+
+For the future it would probably be a good idea to integrate the tests
+into the default ltp testrunner or at least provide something, that can
+execute the installed tests automatically. But to be honest, I don't
+care about this, because we are executing the tests with our own testrunner.
+
+
+Joerg
+
+[1]
+https://git.openembedded.org/openembedded-core/tree/meta/recipes-extended/ltp/ltp_20220527.bb
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
