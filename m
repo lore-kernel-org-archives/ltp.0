@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EACC8C43334
-	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 14:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79271C433EF
+	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 08:27:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A3D3E3C8FC8
-	for <ltp@archiver.kernel.org>; Wed,  8 Jun 2022 16:37:51 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 071ED3C9207
+	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 10:27:08 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 21C5B3C207C
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:37:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 211F33C06E0
+ for <ltp@lists.linux.it>; Thu,  9 Jun 2022 10:26:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ACF601A006F0
- for <ltp@lists.linux.it>; Wed,  8 Jun 2022 16:37:39 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 314921A00E32
+ for <ltp@lists.linux.it>; Thu,  9 Jun 2022 10:26:56 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 24D171F962;
- Wed,  8 Jun 2022 14:37:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AF40B21DE6;
+ Thu,  9 Jun 2022 08:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1654699059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1654763215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OLg7lk1r8UNmseAf/y80yiqKvXAR1cNekHGn1dIn0DY=;
- b=qBZsC6x4oRinDLWatLij/LpWRfSxKB2/tbsS2jTfKx+3mAAHK6FS3LD/DTu7TbMuLKWoMT
- q1+iam72JUHzNk5VwpfME9LIczz8pQfA4rKvyExdkXp3ALxdp6Td3M8BR5X7EWoA90p7iL
- 79+OyyPPpJsw39RFQD5UW/cxHn5gDsk=
+ bh=AfURaI2Jg4CFdxz54jkCHhfZs/Ryz2Gjr5WE33ou6vU=;
+ b=bYlpgAX7cCQ58QbR11NqmIM3yZmcvX2wQGB1StTr8nDn1TCdtp1toZPkZJ6SDXtgjA1Prg
+ TmfuE8OF+9mVe164tQurnmSyor7sChNbkxogpmclXAdB+t4UA2rff/UtI5SBgR/cXx7iRu
+ SRNNUNc7cmW8We2eX23mhqjjv/WexI8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1654699059;
+ s=susede2_ed25519; t=1654763215;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OLg7lk1r8UNmseAf/y80yiqKvXAR1cNekHGn1dIn0DY=;
- b=ic0dEIlGXi22awkDGuDzT3+vhLMeDMzdBhh5T8XNHLHA1Xote37LXJvYVgf9PVIkFaNJaa
- Cd/TqZ7j1U/Fm3Cg==
+ bh=AfURaI2Jg4CFdxz54jkCHhfZs/Ryz2Gjr5WE33ou6vU=;
+ b=bxeWYkU4saYy6BUSuPL1dIRc0A4+3cXOSiGybRFnfGdi9lugEty/BjvcXRSsfI6JrTcQLS
+ 5CBei+dZG5sZlNAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1077613A15;
- Wed,  8 Jun 2022 14:37:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7118413A8C;
+ Thu,  9 Jun 2022 08:26:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id zEubATO0oGLPfAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 08 Jun 2022 14:37:39 +0000
-Date: Wed, 8 Jun 2022 16:39:45 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <petr.vorel@gmail.com>
-Message-ID: <YqC0sSfMjolMEeKx@yuki>
-References: <20220606184320.8210-1-petr.vorel@gmail.com>
- <20220606184320.8210-2-petr.vorel@gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id nScPGs+uoWKRTAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 09 Jun 2022 08:26:55 +0000
+Message-ID: <5d4a4e2b-4d1d-88d6-4905-67083c154775@suse.cz>
+Date: Thu, 9 Jun 2022 10:26:55 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220606184320.8210-2-petr.vorel@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Content-Language: en-US
+To: Petr Vorel <petr.vorel@gmail.com>, ltp@lists.linux.it
+References: <20220606184320.8210-1-petr.vorel@gmail.com>
+ <20220606184320.8210-3-petr.vorel@gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20220606184320.8210-3-petr.vorel@gmail.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] kvm: Fix compilation on x86
+Subject: Re: [LTP] [PATCH 2/2] kvm: Fix undefined reference to
+ __stack_chk_fail()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,59 +82,57 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ "Yann E. MORIN" <yann.morin.1998@free.fr>,
  Buildroot Mailing List <buildroot@buildroot.org>,
- Fabrice Fontaine <fontaine.fabrice@gmail.com>,
- "Yann E. MORIN" <yann.morin.1998@free.fr>, ltp@lists.linux.it
+ Fabrice Fontaine <fontaine.fabrice@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Buildroot supports i386 pentium toolchains (br-i386-pentium-mmx-musl,
-> br-i386-pentium4-full) which fail to compile because as is run without --32.
-
-So we have a 32bit compiler but 64bit linker?
-
-I guess that passing -m32 to 32bit compiler is harmless, so this can go
-in.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-> Suggested-by: Martin Doucha <mdoucha@suse.cz>
+On 06. 06. 22 20:43, Petr Vorel wrote:
+> Some x86_64 buildroot toolchains (bootlin-x86-64-glibc,
+> bootlin-x86-64-musl) try to link to __stack_chk_fail().
+> -nostdlib is not enough, it requires also -fstack-protector.
+> 
+> x86_64-buildroot-linux-gnu/bin/ld: /tmp/ccgBXEoR.o: in function `handle_page_fault':
+> kvm_pagefault01.c:(.text+0x5d): undefined reference to `__stack_chk_fail'
+> collect2: error: ld returned 1 exit status
+> 
 > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 > ---
->  testcases/kernel/kvm/Makefile | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  testcases/kernel/kvm/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
-> index adab56952..8d5193d8e 100644
+> index 8d5193d8e..bce1a4eb5 100644
 > --- a/testcases/kernel/kvm/Makefile
 > +++ b/testcases/kernel/kvm/Makefile
-> @@ -17,11 +17,14 @@ FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
->  ifeq ($(HOST_CPU),x86_64)
->  	ifneq (,$(findstring m32,$(CFLAGS)))
->  		HOST_CPU = x86
-> -		GUEST_CFLAGS += -m32
-> -		ASFLAGS += --32
->  	endif
->  endif
+> @@ -9,7 +9,7 @@ ASFLAGS =
+>  CPPFLAGS += -I$(abs_srcdir)/include
+>  GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
+>  GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
+> -GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none
+> +GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fstack-protector
+
+We should use -fno-stack-protector here instead. Your patch probably
+enables linking of libssp despite -nostdlib which we don't want. The GCC
+stack protector may also break tests because bootstrap initializes stack
+manually instead of letting GCC handle it.
+
+>  GUEST_LDLIBS =
 >  
-> +ifeq ($(HOST_CPU),x86)
-> +	GUEST_CFLAGS += -m32
-> +	ASFLAGS += --32
-> +endif
-> +
->  # Some distros enable -pie by default. That breaks KVM payload linking.
->  ifdef LTP_CFLAGS_NOPIE
->  	GUEST_CFLAGS += -fno-pie
-> -- 
-> 2.36.1
-> 
+>  FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
