@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38C03C43334
-	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 21:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A46C433EF
+	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 21:43:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1BFF93C9266
-	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 23:42:56 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 0E5653C9270
+	for <ltp@archiver.kernel.org>; Thu,  9 Jun 2022 23:43:06 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D5FA83C03B1
- for <ltp@lists.linux.it>; Thu,  9 Jun 2022 23:42:32 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 0781F3C91AF
+ for <ltp@lists.linux.it>; Thu,  9 Jun 2022 23:42:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 88E766007B1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B1F36600C89
  for <ltp@lists.linux.it>; Thu,  9 Jun 2022 23:42:32 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 32E5A1FEAC;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6F11222090;
  Thu,  9 Jun 2022 21:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1654810952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6HrRVZFTBvoOPs9/0Zi/jcFYEykhb5yK/tjBbBcJcPk=;
- b=xcPukXRpHO7MLo8W7PQU30ZvNtcPgk6y5CgRWB5X747ZaeTaTl68F4t9rGoii06N/tHEz2
- 2rz7nOlpFIz6yfTFXWqwBjZAzn6MPO7i5rmXd1Bhc/hk4pP1VlNB2WRma9aNBvYXfWBBXi
- bo8P4PT+0GJ9nIYKlT1QMWOXnBwqcjY=
+ bh=K+4tIzneSRbXDM3XWl74zqNPPnbr/cbhyDXTom6R6N0=;
+ b=PpoWsU0EZiOXdsvjzNaAyJo3Jd+xt+eqFNyhKXsPIXPHxgUiPJanWO/413ibxGWs/GGpZk
+ EWCQvv+PYo9qALto9V/Wh3Lgt0xmOWTzxZu/l0ch2rEib22b59OMKtoHQ31evoLsACmuaa
+ suwyRx9zgmKeX+uwBhtIegv1+p29SSE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1654810952;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6HrRVZFTBvoOPs9/0Zi/jcFYEykhb5yK/tjBbBcJcPk=;
- b=RjREvChVpKmQ1kHl/DLH+n1pGaxTuyaLj+nvPVKikeyWDEkqmzLDt9HdBCTn46o70abbpE
- cBz87A1YJSx+RaAQ==
+ bh=K+4tIzneSRbXDM3XWl74zqNPPnbr/cbhyDXTom6R6N0=;
+ b=3SX7rRT5VMOHkTxEegGUO59CLRfnqshwRCUYrH1WAAkKcjVHXxJkY/LjHqa9Qv1RSKlxKP
+ a0o+wcRhxuqkTdCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9405C13A8C;
- Thu,  9 Jun 2022 21:42:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F5D513A8C;
+ Thu,  9 Jun 2022 21:42:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id cNU+IUdpomIQDgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 09 Jun 2022 21:42:31 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id IF9BDUhpomIQDgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 09 Jun 2022 21:42:32 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  9 Jun 2022 23:42:16 +0200
-Message-Id: <20220609214223.4608-3-pvorel@suse.cz>
+Date: Thu,  9 Jun 2022 23:42:17 +0200
+Message-Id: <20220609214223.4608-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220609214223.4608-1-pvorel@suse.cz>
 References: <20220609214223.4608-1-pvorel@suse.cz>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/9] df01.sh: Use TST_MOUNT_DEVICE=1
+Subject: [LTP] [PATCH v2 3/9] tst_test.sh: allow ' in pattern for allowed
+ variables
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,46 +83,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+to allow using '... $TST_FOO'
+
+i.e. without filtering '
+EXPECT_PASS "grep '$TST_MNTPOINT $TST_FS_TYPE' /proc/mounts"
+would produce warning:
+tst_mount_device 1 TWARN: Reserved variable TST_FS_TYPE' used!
+because sed filters it as: FS_TYPE'
+
+Will be needed for next commit.
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/commands/df/df01.sh | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-index f74032c96..976e205bf 100755
---- a/testcases/commands/df/df01.sh
-+++ b/testcases/commands/df/df01.sh
-@@ -1,19 +1,19 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2015 Fujitsu Ltd.
-+# Copyright (c) 2018-2022 Petr Vorel <pvorel@suse.cz>
- # Author: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
- #
- # Test df command with some basic options.
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 740115385..f9ff9bcb4 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -621,7 +621,7 @@ tst_run()
+ 	local _tst_name
  
- TST_CNT=12
- TST_SETUP=setup
--TST_CLEANUP=tst_umount
- TST_TESTFUNC=test
- TST_OPTS="f:"
- TST_USAGE=usage
- TST_PARSE_ARGS=parse_args
- TST_NEEDS_ROOT=1
--TST_FORMAT_DEVICE=1
-+TST_MOUNT_DEVICE=1
- 
- usage()
- {
-@@ -34,7 +34,6 @@ parse_args()
- 
- setup()
- {
--	tst_mount
- 	DF_FS_TYPE=$(mount | grep "$TST_DEVICE" | awk 'NR==1{print $5}')
- }
- 
+ 	if [ -n "$TST_TEST_PATH" ]; then
+-		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
++		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[='\''"} \t\/:`].*//'); do
+ 			case "$_tst_i" in
+ 			DISABLE_APPARMOR|DISABLE_SELINUX);;
+ 			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
 -- 
 2.36.1
 
