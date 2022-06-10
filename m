@@ -4,67 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4EF3C43334
-	for <ltp@archiver.kernel.org>; Fri, 10 Jun 2022 05:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80A17C43334
+	for <ltp@archiver.kernel.org>; Fri, 10 Jun 2022 07:56:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A43CC3C927B
-	for <ltp@archiver.kernel.org>; Fri, 10 Jun 2022 07:42:09 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2AB673C9293
+	for <ltp@archiver.kernel.org>; Fri, 10 Jun 2022 09:56:55 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11C353C2E42
- for <ltp@lists.linux.it>; Fri, 10 Jun 2022 07:41:58 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 237A53C72FC
+ for <ltp@lists.linux.it>; Fri, 10 Jun 2022 09:56:43 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 28906200045
- for <ltp@lists.linux.it>; Fri, 10 Jun 2022 07:41:57 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1D239220A0;
- Fri, 10 Jun 2022 05:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1654839717;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=esLjcoaPUNxrLG/YLQ8uqU+G8GOwoOzX//s4XF29i3A=;
- b=tiLtH1IYN688hx2CCINb7lDRIP9GbBmWZqoVhzS9I7EBKlSvYn5sso2F7KGP92MT9a0pxl
- ucr2laddjv/hwi/SZN0qnF0s8gvqSf1h8xx+WRUwX0ClxBfuXOeGwdyBCpt60pjxRm+opC
- yA8V40uMni/azG3EL1kTiaGZlNV2q3M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1654839717;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=esLjcoaPUNxrLG/YLQ8uqU+G8GOwoOzX//s4XF29i3A=;
- b=ijvC1trvd4qyj6YYkG9uwmu6IzE+X2Dxmxnz9N558D74nkCtC+tvFzsvyaTo6WXiLiE91h
- OqgFQaGqfSBR+2Dg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E574A132F1;
- Fri, 10 Jun 2022 05:41:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LOh/NaTZomICEQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 10 Jun 2022 05:41:56 +0000
-Date: Fri, 10 Jun 2022 07:41:55 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: shatur.linux@gmail.com
-Message-ID: <YqLZoyKV2Y8VDIya@pevik>
-References: <20220607221816.50955-1-sturlapati@vmware.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 581366011FA
+ for <ltp@lists.linux.it>; Fri, 10 Jun 2022 09:56:42 +0200 (CEST)
+Received: from [192.168.178.40] (unknown [188.192.100.83])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 0AF029F7FD;
+ Fri, 10 Jun 2022 07:56:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1654847801; bh=UcxItkrDeA53KDoAn9EK9iz11MbqK/qHgy6LNmyGSwo=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=VrTbZwazEy7cTQf/F4D4tg0cYgyyKm1MCngLs2JM9VI8CUnn4bn6Pr02hxkPVvPyb
+ 0anQW+YpZg7yZB/bGC7xW0D4GsoH584s8vyKKSfE1Cn7MWT5+PLh8xmzBvWoe65agW
+ Xk8TBwuCLMMmFsM2SQFZDQ6ZOGLRkyHQ6z7DFKqM=
+Message-ID: <024cf3d9-f9c1-80a4-8b06-799309912c7f@jv-coder.de>
+Date: Fri, 10 Jun 2022 09:56:40 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220607221816.50955-1-sturlapati@vmware.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To: Martin Doucha <mdoucha@suse.cz>, Petr Vorel <petr.vorel@gmail.com>,
+ ltp@lists.linux.it
+References: <20220606184320.8210-1-petr.vorel@gmail.com>
+ <20220606184320.8210-3-petr.vorel@gmail.com>
+ <5d4a4e2b-4d1d-88d6-4905-67083c154775@suse.cz>
+From: Joerg Vehlow <lkml@jv-coder.de>
+In-Reply-To: <5d4a4e2b-4d1d-88d6-4905-67083c154775@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] run-posix-option-group-test.sh: Log and exit if
- one attempts to run tests without compiling
+Subject: Re: [LTP] [PATCH 2/2] kvm: Fix undefined reference to
+ __stack_chk_fail()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,84 +59,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, sturlapati@vmware.com
+Cc: Fabrice Fontaine <fontaine.fabrice@gmail.com>,
+ "Yann E. MORIN" <yann.morin.1998@free.fr>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Buildroot Mailing List <buildroot@buildroot.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sharan,
+Hi,
 
-> From: Sharan Turlapati <sturlapati@vmware.com>
 
-> Currently, run-posix-option-group-test.sh erroneously
-> logs "***Tests Completed***" when no test has actually run if the script is invoked
-> to run without actually compiling the tests.
+Am 6/9/2022 um 10:26 AM schrieb Martin Doucha:
+> On 06. 06. 22 20:43, Petr Vorel wrote:
+>> Some x86_64 buildroot toolchains (bootlin-x86-64-glibc,
+>> bootlin-x86-64-musl) try to link to __stack_chk_fail().
+>> -nostdlib is not enough, it requires also -fstack-protector.
+>>
+>> x86_64-buildroot-linux-gnu/bin/ld: /tmp/ccgBXEoR.o: in function `handle_page_fault':
+>> kvm_pagefault01.c:(.text+0x5d): undefined reference to `__stack_chk_fail'
+>> collect2: error: ld returned 1 exit status
+>>
+>> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+>> ---
+>>  testcases/kernel/kvm/Makefile | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+>> index 8d5193d8e..bce1a4eb5 100644
+>> --- a/testcases/kernel/kvm/Makefile
+>> +++ b/testcases/kernel/kvm/Makefile
+>> @@ -9,7 +9,7 @@ ASFLAGS =
+>>  CPPFLAGS += -I$(abs_srcdir)/include
+>>  GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
+>>  GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
+>> -GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none
+>> +GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fstack-protector
+> 
+> We should use -fno-stack-protector here instead. Your patch probably
+> enables linking of libssp despite -nostdlib which we don't want. The GCC
+> stack protector may also break tests because bootstrap initializes stack
+> manually instead of letting GCC handle it.
+I can confirm, that adding -fno-stack-protector to GUEST_LDFLAGS fixes
+the linker error.
 
-> Check if the .run-test files actually exist before attempting to run them.
-> If not found, log a message indicating the problem and suggest to check if
-> the tests were compiled. Exit the script without attempting to run other
-> tests.
-Can you please describe how this happen? open POSIX failed to compile?
+> 
+>>  GUEST_LDLIBS =
+>>  
+>>  FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+> 
+> 
 
-...
-> +++ b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
-> @@ -22,9 +22,16 @@ EOF
-
->  run_option_group_tests()
->  {
-> -	for test_script in $(find $1 -name '*.run-test' | sort); do
-> -		(cd "$(dirname "$test_script")" && ./$(basename "$test_script"))
-> -	done
-> +	list_of_tests=`find $1 -name '*.run-test' | sort`
-> +	if [[ -n $list_of_tests ]]
-[[ ]] are bashisms, we require support for POSIX shell (i.e. dash, busybox sh)
-
-TL;DR: simply use:
-if [ -n "$list_of_tests" ]; then
-NOTE [ ] require using quotes (unlike [[ ]]).
-
-You can check similar error yourself:
-$ checkbashisms run-posix-option-group-test.sh
-possible bashism in run-posix-option-group-test.sh line 26 (alternative test command ([[ foo ]] should be [ foo ])):
-	if [[ -n $list_of_tests ]]
-
-All is described in:
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-shell-coding-style
-
-> +	then
-> +		for test_script in $list_of_tests; do
-> +			(cd "$(dirname "$test_script")" && ./$(basename "$test_script"))
-> +		done
-> +	else
-> +		echo ".run-test files not found under $1. Were the tests compiled?"
-> +		exit 1
-> +	fi
->  }
-
-I'd prefer slightly different version:
-* check for error first, then for can be out of else (readability)
-* add local
-
-run_option_group_tests()
-{
-	local list_of_tests
-
-	list_of_tests=`find $1 -name '*.run-test' | sort`
-
-	if [ -z "$list_of_tests" ]; then
-		echo ".run-test files not found under $1. Were the tests compiled?"
-		exit 1
-	fi
-
-	for test_script in $list_of_tests; do
-		(cd "$(dirname "$test_script")" && ./$(basename "$test_script"))
-	done
-}
-
-Kind regards,
-Petr
+Joerg
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
