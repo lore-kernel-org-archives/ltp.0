@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D2DC43334
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 14:38:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 474FCC43334
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 14:39:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 970ED3C9420
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 16:38:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 306F03C9413
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 16:39:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA4AF3C93E8
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 16:38:34 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
+ by picard.linux.it (Postfix) with ESMTPS id E3FEF3C9427
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 16:38:35 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D77B3600640
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 16:38:33 +0200 (CEST)
-Received: by mail-wm1-x334.google.com with SMTP id
- r123-20020a1c2b81000000b0039c1439c33cso3223193wmr.5
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 07:38:33 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 57ECA600640
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 16:38:35 +0200 (CEST)
+Received: by mail-wr1-x436.google.com with SMTP id m24so7383592wrb.10
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 07:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=IW5AdrwJFJkTCOddg+sOCkT4UMYNnOvVEDncLamUJ+k=;
- b=jsNA/tfaLPOM6Qtgp5DHLwRQo1uHMWs36NpA3cDegXedNOFEcgDAwTAWNpxNM0nvxi
- 5BaAINL9oP9BYmfO+wcT1ibAd4J3wuW7Zn8Y63A2YnjK6nq8EVKGcl72LAGYICwPNA5E
- evt9qeA6wcriHLmL3IK3zmC4bY/x/LdUTinqqenc+Ikwk/23aHvRYBd5rvqfxuwraXPB
- A40l57WyHtkwWv4Y1OSyN+PNgajIY6vBFaYV4/2hfaKTDFEudxNAobrHaH171PYDfZZm
- y7FRsK94Z8hGSaecQY2hzqRlD2sGTiE1DrFQywnZLWA8ZOPL+IJAmm1WitS5Mf/ZdI8D
- MRLA==
+ bh=lo5JVObPqyHZlqzSHMg/lL8M+xIMSYWzuRdFcqRAtOQ=;
+ b=CEI5XOlCxiF7DHqWdOcsVpFZga+b+gvvJ5XXiI+9ul1Xjc6D5WVDYYkg3tTLvz6WgO
+ XJDag3Ouww90SQF3KkXBhlCgqyrKb3IHT4mbs7oexzDWzHAELLswt4jUNFwGwHs4ozoW
+ YQ6ihya+QjHvmCT4E/RqRf9M0esp28SIISCCxR+gVjx13MDVjuI0ZwHbJqbhMPt8guH8
+ Td37b633qFBbuzOkoZ1IkSv5sQdi+ynHkGq25LB+5HPX2b4hHQfo+v2jTsgvbyetuW0E
+ QWb3yIjcyxgmpclKURHv0A14pmEK5f1og1PnvMEPwOt6SjMxJTyASKSfqMjrUkp2j7K7
+ qBqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=IW5AdrwJFJkTCOddg+sOCkT4UMYNnOvVEDncLamUJ+k=;
- b=sdZaVbKo81PP/Cv5Udd16LMBb+zzQ+HYSSi8BrnH6JA9RcHeA3kcW3TAC9RiuRsGEO
- t8TKP47Xe6LzJh5yhFsX7Y89PrP2hND0rBEdx7EOlZGM+9BCy1uLmSZPcs2JU63oc6Mp
- +H6X7islIfezJQoi/MHIkfe6y6at4Lw10leCPRu1sGhQeB5SHtQGcJUq/HAPx8V/S7rj
- f/u6mYcN4ttMb8WtQ1edGbIWWypTvRIW+q8wLDjMJZwXc+RQ665CNylpT3OxW8H1vO3c
- 83eb+DAb6ES1+/qn+F5ssQrQLKOQ6R++qgbQ+iBYQLV8kWocwMEhWL++Qq3UbkgCNzMy
- BnxQ==
-X-Gm-Message-State: AOAM530GIu9IA5yFTFWteHjuE2veqttfrV09ww2g51xd5pGUz8GPX+Vq
- FZU8Vu0EfjC3jZ7v3jQBzT0=
-X-Google-Smtp-Source: ABdhPJw3hZQq5xlio+Ee/gpORWUgEkuXj+atg5RHJ+4lghnbnUtvkjjdU2NHXVcynsjdNjYe/TY1rQ==
-X-Received: by 2002:a05:600c:3d99:b0:39c:55ba:ecc3 with SMTP id
- bi25-20020a05600c3d9900b0039c55baecc3mr15497535wmb.42.1655131113214; 
- Mon, 13 Jun 2022 07:38:33 -0700 (PDT)
+ bh=lo5JVObPqyHZlqzSHMg/lL8M+xIMSYWzuRdFcqRAtOQ=;
+ b=PUGAx3DJc41jsp8CTPJuDSl8vbywrNNEIToIot5cjp0B77POnoDORsK26aparZFebE
+ L8ieKXdp0RhFmToVZ1pjkSNfNOMpJZlE6rX1goiiyMSH04HMIaq644AK9cZXwiLBlH9r
+ di5LIcrM8n8tJhN5+2+iOiytG7Fqs6MDLZfcxUTrbMmk1fWkb7BXTfWPhUfsVg313TUC
+ K4CaY0sT0ZMZJnDfvwGCmx01n5yf26ujTcX5c1UPhdETnF8wcREVeev4WS6n3ZDrO/SR
+ YOaS+xRYeOTT4nPblqnxU17AWPUp9aMcj9PS8ZdxoPIQzvew/jFie8/cDVqH9J/1ixD1
+ m/Jw==
+X-Gm-Message-State: AJIora9DVQv7iVQg6RPThXpDuXHxfHuODA8S7XlhCt7fwQM3RNbFaapk
+ 8az2E4lOvBW8iAGJS7mAhDk=
+X-Google-Smtp-Source: AGRyM1sloCBPtKcyoBXEm/w1c830WzGxOcz0mJjcGEHx3gw26qpUKWfoKd3Kx/o6wwrBpmkZwnmkvg==
+X-Received: by 2002:a05:6000:1a89:b0:219:b255:d874 with SMTP id
+ f9-20020a0560001a8900b00219b255d874mr213589wry.50.1655131114665; 
+ Mon, 13 Jun 2022 07:38:34 -0700 (PDT)
 Received: from amir-ThinkPad-T480.ctera.local
  (bzq-166-168-31-246.red.bezeqint.net. [31.168.166.246])
  by smtp.gmail.com with ESMTPSA id
- o19-20020a05600c4fd300b0039c55bc2c97sm14833072wmq.16.2022.06.13.07.38.31
+ o19-20020a05600c4fd300b0039c55bc2c97sm14833072wmq.16.2022.06.13.07.38.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jun 2022 07:38:32 -0700 (PDT)
+ Mon, 13 Jun 2022 07:38:34 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 13 Jun 2022 17:38:22 +0300
-Message-Id: <20220613143826.1328830-2-amir73il@gmail.com>
+Date: Mon, 13 Jun 2022 17:38:23 +0300
+Message-Id: <20220613143826.1328830-3-amir73il@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220613143826.1328830-1-amir73il@gmail.com>
 References: <20220613143826.1328830-1-amir73il@gmail.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/5] syscalls/inotify12: Introduce test for inotify
- mask flags
+Subject: [LTP] [PATCH 2/5] syscalls/fanotify23: Introduce FAN_MARK_EVICTABLE
+ test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,210 +87,321 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test behavior of IN_ONESHOT and IN_EXCL_UNLINK.
+Verify that evictable mark does not pin inode to cache and that
+drop_caches evicts inode from cache and removes the evictable mark.
+
+Verify that evictable mark can be upgraded to non-evictable but not
+downgraded to evictable afterwards.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
  runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/inotify/.gitignore  |   1 +
- testcases/kernel/syscalls/inotify/inotify12.c | 168 ++++++++++++++++++
- 3 files changed, 170 insertions(+)
- create mode 100644 testcases/kernel/syscalls/inotify/inotify12.c
+ testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify.h |   4 +
+ .../kernel/syscalls/fanotify/fanotify23.c     | 258 ++++++++++++++++++
+ 4 files changed, 264 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify23.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 3b26d19e6..1259e41f1 100644
+index 1259e41f1..e9ee6e5ba 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -588,6 +588,7 @@ inotify08 inotify08
- inotify09 inotify09
- inotify10 inotify10
- inotify11 inotify11
-+inotify12 inotify12
+@@ -612,6 +612,7 @@ fanotify19 fanotify19
+ fanotify20 fanotify20
+ fanotify21 fanotify21
+ fanotify22 fanotify22
++fanotify23 fanotify23
  
- fanotify01 fanotify01
- fanotify02 fanotify02
-diff --git a/testcases/kernel/syscalls/inotify/.gitignore b/testcases/kernel/syscalls/inotify/.gitignore
-index 593cf6c04..f6e5c546a 100644
---- a/testcases/kernel/syscalls/inotify/.gitignore
-+++ b/testcases/kernel/syscalls/inotify/.gitignore
-@@ -9,3 +9,4 @@
- /inotify09
- /inotify10
- /inotify11
-+/inotify12
-diff --git a/testcases/kernel/syscalls/inotify/inotify12.c b/testcases/kernel/syscalls/inotify/inotify12.c
+ ioperm01 ioperm01
+ ioperm02 ioperm02
+diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+index 6d4ab4ca3..a0a7d20d3 100644
+--- a/testcases/kernel/syscalls/fanotify/.gitignore
++++ b/testcases/kernel/syscalls/fanotify/.gitignore
+@@ -20,4 +20,5 @@
+ /fanotify20
+ /fanotify21
+ /fanotify22
++/fanotify23
+ /fanotify_child
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index eb690e332..0ad7ef21b 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -101,6 +101,10 @@ static inline int safe_fanotify_mark(const char *file, const int lineno,
+ #ifndef FAN_MARK_FILESYSTEM
+ #define FAN_MARK_FILESYSTEM	0x00000100
+ #endif
++#ifndef FAN_MARK_EVICTABLE
++#define FAN_MARK_EVICTABLE	0x00000200
++#endif
++
+ /* New dirent event masks */
+ #ifndef FAN_ATTRIB
+ #define FAN_ATTRIB		0x00000004
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify23.c b/testcases/kernel/syscalls/fanotify/fanotify23.c
 new file mode 100644
-index 000000000..fe72771c5
+index 000000000..64787d627
 --- /dev/null
-+++ b/testcases/kernel/syscalls/inotify/inotify12.c
-@@ -0,0 +1,168 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/testcases/kernel/syscalls/fanotify/fanotify23.c
+@@ -0,0 +1,258 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Copyright (c) 2022 CTERA Networks. All Rights Reserved.
++ * Copyright (c) 2022 CTERA Networks.  All Rights Reserved.
 + *
 + * Author: Amir Goldstein <amir73il@gmail.com>
 + */
 +
 +/*\
 + * [Description]
-+ * Test special inotify mask flags.
-+ *
-+ * Regression test for kernel commit a32e697cda27:
-+ *
-+ *     inotify: show inotify mask flags in proc fdinfo
++ * Check evictable fanotify inode marks.
 + */
 +
++#define _GNU_SOURCE
 +#include "config.h"
 +
 +#include <stdio.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <sys/wait.h>
-+
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/syscall.h>
 +#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "inotify.h"
 +
-+#if defined(HAVE_SYS_INOTIFY_H)
-+#include <sys/inotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
 +
-+#define EVENT_MAX 32
-+/* Size of the event structure, not including the name */
-+#define EVENT_SIZE	(sizeof(struct inotify_event))
-+#define EVENT_BUF_LEN	(EVENT_MAX * (EVENT_SIZE + 16))
++#define EVENT_MAX 1024
++/* size of the event structure, not counting name */
++#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
++/* reasonable guess as to size of 1024 events */
++#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
 +
-+#define	TEST_FILE	"test_file"
++#define MOUNT_PATH "fs_mnt"
++#define TEST_FILE MOUNT_PATH "/testfile"
++
++#define DROP_CACHES_FILE "/proc/sys/vm/drop_caches"
++#define CACHE_PRESSURE_FILE "/proc/sys/vm/vfs_cache_pressure"
++
++static int old_cache_pressure;
++static int fd_notify;
++
++static unsigned long long event_set[EVENT_MAX];
 +
 +static char event_buf[EVENT_BUF_LEN];
 +
-+static struct tcase {
-+	const char *tname;
-+	unsigned int mask;
-+	int expect_events;
-+} tcases[] = {
-+	{
-+		"Watch for multi events",
-+		IN_MODIFY,
-+		2,
-+	},
-+	{
-+		"Watch for single event",
-+		IN_MODIFY | IN_ONESHOT,
-+		1,
-+	},
-+	{
-+		"Watch for events on linked file",
-+		IN_MODIFY | IN_EXCL_UNLINK,
-+		1,
-+	},
-+};
-+
-+int fd_notify;
-+
-+static void verify_inotify(unsigned int n)
++static void fsync_file(const char *path)
 +{
-+	struct tcase *tc = &tcases[n];
-+	int fd, len;
-+	unsigned int tmpmask;
-+	char procfdinfo[100];
-+	struct inotify_event *event = (struct inotify_event *)event_buf;
++	int fd = SAFE_OPEN(path, O_RDONLY);
 +
-+	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
-+
-+	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
-+
-+	SAFE_FILE_PRINTF(TEST_FILE, "1");
-+
-+	SAFE_MYINOTIFY_ADD_WATCH(fd_notify, ".", tc->mask);
-+
-+	sprintf(procfdinfo, "/proc/%d/fdinfo/%d", (int)getpid(), fd_notify);
-+	if (FILE_LINES_SCANF(procfdinfo, "inotify wd:%*d ino:%*x sdev:%*x mask:%x",
-+			     &tmpmask)) {
-+		tst_res(TFAIL, "Could not parse inotify fdinfo");
-+	} else if (tmpmask != tc->mask) {
-+		tst_res(TFAIL, "Incorrect mask %x in inotify fdinfo (expected %x)",
-+			tmpmask, tc->mask);
-+	} else {
-+		tst_res(TPASS, "Correct mask in inotify fdinfo");
-+	}
-+
-+	fd = SAFE_OPEN(TEST_FILE, O_RDWR);
-+	SAFE_WRITE(1, fd, "2", 1);
-+
-+	/*
-+	 * Read the 1st IN_MODIFY event
-+	 */
-+	len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
-+
-+	if (len < (int)sizeof(*event)) {
-+		tst_res(TFAIL, "Got no events");
-+	} else if (event->mask == IN_MODIFY) {
-+		tst_res(TPASS, "Got 1st event as expected");
-+	} else {
-+		tst_res(TFAIL, "Got event 0x%x (expected 0x%x)",
-+				event->mask, IN_MODIFY);
-+	}
-+
-+	/*
-+	 * Unlink file so IN_EXCL_UNLINK won't get IN_ACCESS event.
-+	 * IN_ONESHOT won't get IN_ACCESS event because IN_MODIFY
-+	 * was already generated.
-+	 */
-+	SAFE_UNLINK(TEST_FILE);
-+	SAFE_WRITE(1, fd, "3", 1);
++	SAFE_FSYNC(fd);
 +	SAFE_CLOSE(fd);
++}
++
++/* Flush out all pending dirty inodes and destructing marks */
++static void mount_cycle(void)
++{
++	SAFE_UMOUNT(MOUNT_PATH);
++	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
++}
++
++static int verify_mark_removed(const char *path, const char *when)
++{
++	int ret;
 +
 +	/*
-+	 * Possibly read the 2nd IN_MODIFY event
++	 * We know that inode with evictable mark was evicted when a
++	 * bogus call remove ACCESS from event mask returns ENOENT.
 +	 */
 +	errno = 0;
-+	len = read(fd_notify, event_buf, EVENT_BUF_LEN);
-+	SAFE_CLOSE(fd_notify);
-+	if (len < 0 && errno == EAGAIN) {
-+		/* Treat no event same as we treat IN_IGNORED */
-+		event->mask = IN_IGNORED;
-+	} else if (len < (int)sizeof(*event)) {
-+		tst_res(TFAIL | TERRNO, "Failed to read events");
-+		return;
++	ret = fanotify_mark(fd_notify, FAN_MARK_REMOVE,
++			    FAN_ACCESS, AT_FDCWD, path);
++	if (ret == -1 && errno == ENOENT) {
++		tst_res(TPASS,
++			"FAN_MARK_REMOVE failed with ENOENT as expected"
++			" %s", when);
++		return 1;
++	} else {
++		tst_res(TFAIL | TERRNO,
++			"FAN_MARK_REMOVE did not fail with ENOENT as expected"
++			" %s", when);
++		return 0;
++	}
++}
++
++static void test_fanotify(void)
++{
++	int ret, len, test_num = 0;
++	struct fanotify_event_metadata *event;
++	int tst_count = 0;
++
++	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF | FAN_REPORT_FID |
++				       FAN_NONBLOCK, O_RDONLY);
++
++	/*
++	 * Verify that evictable mark can be upgraded to non-evictable
++	 * and cannot be downgraded to evictable.
++	 */
++	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_EVICTABLE,
++			   FAN_ACCESS,
++			   AT_FDCWD, TEST_FILE);
++	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD,
++			   FAN_ACCESS,
++			   AT_FDCWD, TEST_FILE);
++	errno = 0;
++	ret = fanotify_mark(fd_notify, FAN_MARK_ADD | FAN_MARK_EVICTABLE,
++			    FAN_ACCESS,
++			    AT_FDCWD, TEST_FILE);
++	if (ret == -1 && errno == EEXIST) {
++		tst_res(TPASS,
++			"FAN_MARK_ADD failed with EEXIST as expected"
++			" when trying to downgrade to evictable mark");
++	} else {
++		tst_res(TFAIL | TERRNO,
++			"FAN_MARK_ADD did not fail with EEXIST as expected"
++			" when trying to downgrade to evictable mark");
++	}
++	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE,
++			   FAN_ACCESS,
++			   AT_FDCWD, TEST_FILE);
++	verify_mark_removed(TEST_FILE, "after empty mask");
++
++
++	/*
++	 * Watch ATTRIB events on entire mount
++	 */
++	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
++			   FAN_ATTRIB, AT_FDCWD, MOUNT_PATH);
++
++	/*
++	 * Generate events
++	 */
++	SAFE_CHMOD(TEST_FILE, 0600);
++	event_set[tst_count] = FAN_ATTRIB;
++	tst_count++;
++
++	/* Read events so far */
++	ret = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
++	len = ret;
++
++	/*
++	 * Evictable mark on file ignores ATTRIB events
++	 */
++	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_EVICTABLE |
++			   FAN_MARK_IGNORED_MASK | FAN_MARK_IGNORED_SURV_MODIFY,
++			   FAN_ATTRIB, AT_FDCWD, TEST_FILE);
++
++	/* ATTRIB event should be ignored */
++	SAFE_CHMOD(TEST_FILE, 0600);
++
++	/*
++	 * Read events to verify event was ignored
++	 */
++	ret = read(fd_notify, event_buf + len, EVENT_BUF_LEN - len);
++	if (ret < 0 && errno == EAGAIN) {
++		tst_res(TPASS, "Got no events as expected");
++	} else {
++		tst_res(TFAIL, "Got expected events");
++		len += ret;
 +	}
 +
-+	if (event->mask == IN_MODIFY) {
-+		if (tc->expect_events > 1)
-+			tst_res(TPASS, "Got 2nd event as expected");
-+		else
-+			tst_res(TFAIL, "Got unexpected 2nd event");
-+	} else if (event->mask == IN_IGNORED) {
-+		if (tc->expect_events == 1)
-+			tst_res(TPASS, "Got no more events as expected");
-+		else
-+			tst_res(TFAIL, "Got only one event (expected %d)",
-+					tc->expect_events);
-+	} else {
-+		tst_res(TFAIL, "Got unexpected event 0x%x",
-+				event->mask);
++	/*
++	 * drop_caches should evict inode from cache and remove evictable mark
++	 */
++	fsync_file(TEST_FILE);
++	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
++
++	verify_mark_removed(TEST_FILE, "after drop_caches");
++
++	SAFE_CHMOD(TEST_FILE, 0600);
++	event_set[tst_count] = FAN_ATTRIB;
++	tst_count++;
++
++	/* Read events to verify ATTRIB event was properly generated */
++	ret = SAFE_READ(0, fd_notify, event_buf + len, EVENT_BUF_LEN - len);
++	len += ret;
++
++	/*
++	 * Check events
++	 */
++	event = (struct fanotify_event_metadata *)event_buf;
++
++	/* Iterate over and validate events against expected result set */
++	while (FAN_EVENT_OK(event, len) && test_num < tst_count) {
++		if (!(event->mask & event_set[test_num])) {
++			tst_res(TFAIL,
++				"got event: mask=%llx (expected %llx)",
++				(unsigned long long)event->mask,
++				event_set[test_num]);
++		} else {
++			tst_res(TPASS,
++				"got event: mask=%llx",
++				(unsigned long long)event->mask);
++		}
++		/*
++		 * Close fd and invalidate it so that we don't check it again
++		 * unnecessarily
++		 */
++		if (event->fd >= 0)
++			SAFE_CLOSE(event->fd);
++		event->fd = FAN_NOFD;
++		event->mask &= ~event_set[test_num];
++		/* No events left in current mask? Go for next event */
++		if (event->mask == 0) {
++			event = FAN_EVENT_NEXT(event, len);
++		}
++		test_num++;
 +	}
++
++	while (FAN_EVENT_OK(event, len)) {
++		tst_res(TFAIL,
++			"got unnecessary event: mask=%llx",
++			(unsigned long long)event->mask);
++		if (event->fd != FAN_NOFD)
++			SAFE_CLOSE(event->fd);
++		event = FAN_EVENT_NEXT(event, len);
++	}
++
++	SAFE_CLOSE(fd_notify);
++	/* Flush out all pending dirty inodes and destructing marks */
++	mount_cycle();
++}
++
++static void setup(void)
++{
++	SAFE_TOUCH(TEST_FILE, 0666, NULL);
++
++	REQUIRE_MARK_TYPE_SUPPORTED_BY_KERNEL(FAN_MARK_EVICTABLE);
++	REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_NOTIF|FAN_REPORT_FID,
++						FAN_MARK_FILESYSTEM,
++						FAN_ATTRIB, ".");
++
++	SAFE_FILE_SCANF(CACHE_PRESSURE_FILE, "%d", &old_cache_pressure);
++	/* Set high priority for evicting inodes */
++	SAFE_FILE_PRINTF(CACHE_PRESSURE_FILE, "500");
 +}
 +
 +static void cleanup(void)
 +{
 +	if (fd_notify > 0)
 +		SAFE_CLOSE(fd_notify);
++
++	SAFE_FILE_PRINTF(CACHE_PRESSURE_FILE, "%d", old_cache_pressure);
 +}
 +
 +static struct tst_test test = {
-+	.timeout = 10,
-+	.needs_tmpdir = 1,
++	.test_all = test_fanotify,
++	.setup = setup,
 +	.cleanup = cleanup,
-+	.test = verify_inotify,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "a32e697cda27"},
-+		{}
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MOUNT_PATH,
++	/* Shrinkers on other fs do not work reliably enough to guarantee mark eviction on drop_caches */
++	.dev_fs_type = "ext2",
 +};
 +
 +#else
-+	TST_TEST_TCONF("system doesn't have required inotify support");
++	TST_TEST_TCONF("system doesn't have required fanotify support");
 +#endif
 -- 
 2.25.1
