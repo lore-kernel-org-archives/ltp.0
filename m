@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E63F1C43334
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 13:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B20D1C433EF
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 13:51:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 799913C895D
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 15:49:23 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0B7963C9458
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 15:51:35 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 23D9F3C257E
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 15:49:11 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 24F2B3C257E
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 15:51:23 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 61A7E1400527
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 15:49:11 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 40CDB60075F
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 15:51:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AB8091F38A;
- Mon, 13 Jun 2022 13:49:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6771F1F38A;
+ Mon, 13 Jun 2022 13:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655128150;
+ t=1655128282;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OVhDteopZL7E1oFymClA9NEiOGEPxjVQlQjLkKHV77A=;
- b=0CNaOSxlNRQZbAcyC7pVo0aHvarj61JlV8bjVQ6hpXsp+wS49x3JBQSxkBg+20UXDFrpQU
- dIrulDcxt28X/nnWRPQHMvhAcOptt2jwQfzlOnMJGtqZwlffZkCu0gmwOYw+PTMvZm3GNl
- bSQG01+IbH3g9q5KaCG7FuCIwM+b7ss=
+ bh=GDDGc858geMcJO2NLiKQC78kcDOxtdXqolgPaGwvbyc=;
+ b=DRVSUkyEgNBn1b1BZ35TgjaoFnKYC06oCdr8gygYgX5lutBbvxU0SxY8LBpEipnxws3qrz
+ 4WV26Wx6H4MqN27aCICm493QW6PVEi8vLOlaDririfEwnLDBk1OYqFVZAP7y06DmSB6gwZ
+ QV5UgveLT1xxDm0BpO3R0OVNgD99XMA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655128150;
+ s=susede2_ed25519; t=1655128282;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OVhDteopZL7E1oFymClA9NEiOGEPxjVQlQjLkKHV77A=;
- b=FD+kuCow9T7ox9E2r/yGR7lstw4ZrnWF7kIkqbUksZ5/xAO5z5tRCBmTtvksTGAc8G3GYU
- ZeLnsdfSBSoa1rCQ==
+ bh=GDDGc858geMcJO2NLiKQC78kcDOxtdXqolgPaGwvbyc=;
+ b=IFWC3PbXyv7wTbZMcsvhC9fyYKZd649f31uLXCzGXmicA8XbCf22UDS/5Ts04np1oSEJX9
+ MG2COAS32jEFmxBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 88937134CF;
- Mon, 13 Jun 2022 13:49:10 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30D08134CF;
+ Mon, 13 Jun 2022 13:51:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id N+fRH1ZAp2JONAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 13 Jun 2022 13:49:10 +0000
-Date: Mon, 13 Jun 2022 15:49:08 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id h4bzCdpAp2LLNQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 13 Jun 2022 13:51:22 +0000
+Date: Mon, 13 Jun 2022 15:51:20 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YqdAVH7VZq0IW4hV@pevik>
-References: <20220610131442.5032-1-mdoucha@suse.cz> <YqNIIb/NFVBjsZdb@rei>
- <156915a0-cd2b-e6b8-1b7c-273c67911d4b@suse.cz>
- <YqbyFKN999MTr6Xf@yuki> <Yqcmuv8dwtU+tntL@pevik>
- <f527c92a-97f0-9d07-87e9-58ab3e521aaf@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YqdA2P+NCeGKdB5q@pevik>
+References: <20220613125153.20423-1-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <f527c92a-97f0-9d07-87e9-58ab3e521aaf@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220613125153.20423-1-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] configure: Check for KVM linker script support
+Subject: Re: [LTP] [PATCH] syscalls/execve06: Add test for argv[0] = NULL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,16 +82,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+HI Cyril,
 
-> > I thought we're using TST_TEST_TCONF() for non-x86 archs.
+> Adds a test that kernel sets argv[0] to a dummy empty string if NULL was
+> passed to the execve() syscall. This was introduced in commit:
 
-> We will use TST_TEST_TCONF() for KVM on unsupported archs once they have
-> their own guest bootstrap code (which is currently available only for
-> 32bit and 64bit x86). But it is not possible to link test binaries
-> without bootstrap code so non-x86 archs are currently skipped during build.
+> commit dcd46d897adb70d63e025f175a00a89797d31a43
+> Author: Kees Cook <keescook@chromium.org>
+> Date:   Mon Jan 31 16:09:47 2022 -0800
 
-Ah, makes sense. Thanks for info!
+>     exec: Force single empty string when argv is empty
+
+> in order to fix all potential CVEs where userspace programs attempt to
+> blindly process the argv[] list starting at argv[1]. There was at least
+> one example of this caught in the wild CVE-2021-4034 in polkit but there
+> are likely more.
+
+Great, thanks for addressing this.
+
+> Fixes: #911
+
+>  testcases/kernel/syscalls/execve/.gitignore   |  2 +
+>  testcases/kernel/syscalls/execve/execve06.c   | 49 +++++++++++++++++++
+>  .../kernel/syscalls/execve/execve06_child.c   | 27 ++++++++++
+>  3 files changed, 78 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/execve/execve06.c
+>  create mode 100644 testcases/kernel/syscalls/execve/execve06_child.c
+
+This should go to runtest/syscalls and runtest/cve, right?
+(can be fixed before merge).
 
 Kind regards,
 Petr
