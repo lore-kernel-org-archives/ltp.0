@@ -4,71 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33759C433EF
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 16:06:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B1B5C433EF
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 20:34:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2D033C948F
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 18:06:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E2C3C3C9485
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 22:34:03 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F39F53C8F82
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 18:05:49 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 3350D3C4D12
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 22:33:52 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6BD4A10005A0
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 18:05:49 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6063C1A00346
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 22:33:52 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BD9A01F895;
- Mon, 13 Jun 2022 16:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655136348;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZW302WPZ/im3La6j5oscAa2aDVFM9Z1OekTYKMqChfg=;
- b=yngpcgAo5YbIU0RPM6H+FxliUFsiYLYLRjEGdBzGBHWc77GmVmxLBGKpiO1wqqv4YZWVxV
- 5tuUGzXuqj3g5LorS/UV1DUSAvYpyxiId2Fp+HJCUzqrL6GgFju4buqvc5lCv8cEOUsMOf
- N7SnP1XLv2t/ewvOrIMdGEyLzNTOtMQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655136348;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZW302WPZ/im3La6j5oscAa2aDVFM9Z1OekTYKMqChfg=;
- b=RzkLVSn+Piym9dl13Q9kp9Zm6ENAdw56b0RNKiTxTTdWAqYlbrUoFwt2xhTL1AiKPaFRKb
- DZbAUzovNlb2BkCA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 794D521A26;
+ Mon, 13 Jun 2022 20:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655152431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ew410Vw1oyMljJIy9glObXq1kEKGf20MXxUEzSFWVeg=;
+ b=eDJxOjFkHWz8RsvOVVqAzYH8vE55eyBynKmIai8t/2mJuJKfQ5euB/CEHGM33LBmSA9Mgb
+ 9GXn1+D/OEkfHKfwhmn7iB77/nc7jfjkyiaeg6nM9wLV9gn6q+wHlaaFFykpOhjOlWBdfx
+ 5uF2rFF/QP+RAmOTTmaX27GtkG155hw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655152431;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ew410Vw1oyMljJIy9glObXq1kEKGf20MXxUEzSFWVeg=;
+ b=9IjtYTJ2ykvvnL3nRVxaXF9DRbVqlaHjo223LiwvSCYqTMXqOSLf26r33SMtz9l2dv6HsS
+ Uxv7eJEYbv1GyXDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72587134CF;
- Mon, 13 Jun 2022 16:05:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4146A134CF;
+ Mon, 13 Jun 2022 20:33:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id p2fKGVxgp2KlaQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 13 Jun 2022 16:05:48 +0000
-Date: Mon, 13 Jun 2022 18:05:46 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <YqdgWvHoiqeANzCi@pevik>
-References: <20220613143826.1328830-1-amir73il@gmail.com>
- <20220613143826.1328830-2-amir73il@gmail.com>
- <CAOQ4uxjfuQ5oj8V8weD+-ChvXZ9nXy=MB285dAn1zQKV6dn2cA@mail.gmail.com>
- <YqdWY1C/xBi3/tgG@pevik>
- <CAOQ4uxh6aJq+uMsFOBBeG+S3OTGABP2qmb7oDXOATa35A83H3g@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id hLXODC+fp2L3QgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 13 Jun 2022 20:33:51 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Mon, 13 Jun 2022 22:33:27 +0200
+Message-Id: <20220613203333.24839-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxh6aJq+uMsFOBBeG+S3OTGABP2qmb7oDXOATa35A83H3g@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] syscalls/inotify12: Introduce test for
- inotify mask flags
+Subject: [LTP] [PATCH v1 0/6] Refactor mqns testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,52 +70,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.cz>,
- LTP List <ltp@lists.linux.it>, Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Mon, Jun 13, 2022 at 6:23 PM Petr Vorel <pvorel@suse.cz> wrote:
+mqns testing suite has been refactored using new LTP API
 
-> > Hi Amir,
+Andrea Cervesato (6):
+  Rewrite mqns_01 test using new LTP API
+  Rewrite mqns_02 test using new LTP API
+  Rewrite mqns_03 test using new LTP API
+  Rewrite mqns_04 test using new LTP API
+  Delete header files from mqns tests
+  Rename common header in mqns test suite
 
-> > > > diff --git a/testcases/kernel/syscalls/inotify/inotify12.c b/testcases/kernel/syscalls/inotify/inotify12.c
-> > ...
-> > > > +static struct tst_test test = {
-> > > > +       .timeout = 10,
+ runtest/containers                            |  19 +-
+ testcases/kernel/containers/mqns/Makefile     |  27 +-
+ testcases/kernel/containers/mqns/mqns.h       | 108 ++++++-
+ testcases/kernel/containers/mqns/mqns_01.c    | 189 ++++--------
+ testcases/kernel/containers/mqns/mqns_02.c    | 221 ++++----------
+ testcases/kernel/containers/mqns/mqns_03.c    | 285 +++++++-----------
+ testcases/kernel/containers/mqns/mqns_04.c    | 273 +++++++----------
+ .../kernel/containers/mqns/mqns_helper.h      |  56 ----
+ 8 files changed, 461 insertions(+), 717 deletions(-)
+ delete mode 100644 testcases/kernel/containers/mqns/mqns_helper.h
 
-> > > OOPS should be changed to .max_runtime = 10
+-- 
+2.35.3
 
-> > > > +       .needs_tmpdir = 1,
-> > > > +       .cleanup = cleanup,
-> > > > +       .test = verify_inotify,
-> > > > +       .tcnt = ARRAY_SIZE(tcases),
-> > > > +       .tags = (const struct tst_tag[]) {
-> > > > +               {"linux-git", "a32e697cda27"},
-> > > > +               {}
-
-> > > Missing }
-
-> > > Sorry, I hadn't notice this build failure before posting.
-
-> > No big deal, we can fix this before merge.
-
-> > And we have to try again to decide how to quickly merge tests for rc kernel.
-
-> Right.. forgot about that.
-> FWIW, the specific fix of test inotify12 is already in stable kernels
-> (v5.10.121, ...)
-Correct, I have searched for this before. That means we merge this one very
-soon. I'm just waiting if Jan has some comments.
-
-Kind regards,
-Petr
-
-> Thanks,
-> Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
