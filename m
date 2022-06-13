@@ -4,67 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 911F9CCA47B
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 20:35:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EDA9C43334
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 21:31:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9C6D3C9468
-	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 22:35:16 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B56583C947A
+	for <ltp@archiver.kernel.org>; Mon, 13 Jun 2022 23:31:30 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 78A643C91E8
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 22:33:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2F0A83C895D
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 23:31:20 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1302F200388
- for <ltp@lists.linux.it>; Mon, 13 Jun 2022 22:33:54 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B92BD21A26;
- Mon, 13 Jun 2022 20:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655152433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=iYPMeVbEpCqbc4Kcon8LoojRKKZyHkwo1Kl6rjcLIBw=;
- b=jiMHLDatKCv0nBQ4GXRkTYM4l4aqFOSi5G61kC/ULeS08HOVZVF0x/8Yl8wyY8Qj+6xiq6
- Eco0JMXH6cc5J7mU6kxhstBEs+CDRevBh90LwVNJqJgV/CganqfT2G7xsHiW9Ke7ub8gPS
- cezNCuYcTn3hQsDZtz7N6Nr7awMxcAg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655152433;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=iYPMeVbEpCqbc4Kcon8LoojRKKZyHkwo1Kl6rjcLIBw=;
- b=Esp7jNT5k8r6Vce9qJ+lHrTYDYej5IySv6VLqUilXT+secYulgzq/ZJ36xvFiGuIMvrhLk
- i4HHT5j2nAr0bgCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81929134CF;
- Mon, 13 Jun 2022 20:33:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aG+JHDGfp2L3QgAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Mon, 13 Jun 2022 20:33:53 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Mon, 13 Jun 2022 22:33:33 +0200
-Message-Id: <20220613203333.24839-7-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220613203333.24839-1-andrea.cervesato@suse.de>
-References: <20220613203333.24839-1-andrea.cervesato@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 85CB76008B4
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 23:31:19 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ r123-20020a1c2b81000000b0039c1439c33cso3778426wmr.5
+ for <ltp@lists.linux.it>; Mon, 13 Jun 2022 14:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=bWRXKgPnhqxfXZsvcuTBnjVrWKn7V7LNUx8GhgEu6SA=;
+ b=a9pjcH+aJw04uuHwmBhhHJWBULeRIbSUYxUsnCGgxCs9/h5IvQCVHbzQUG2ZDUzeUW
+ Vbird6TunscmhTt8XCtIra+01BL9I4TLmSay99xMj6DuIP44uOhh6CBm+cXZ3/8A9PoL
+ QbAfoL+P0Pt/8qFs0INfU08VuyAzdoaL7E/qPJd/IvOO97K8GMyHcorLOkDjzQQtIkd6
+ aCZD/S38P+v9fUR2+ZYuZXNHa81l8uU8kRmTTPtbISS289pSQ+BdxKlWqzYiK+Bhg3ir
+ bKGN/2dJQLcJduToCkr0G5rDPEgBW5fCvztK/+EdivgRg0jWter4bj8cyBnvaVqp2bBB
+ CfFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=bWRXKgPnhqxfXZsvcuTBnjVrWKn7V7LNUx8GhgEu6SA=;
+ b=AKbxRsYzpSqF1MROyS23SOnrUlaqEZAQ4Jc0yzeD4OJL0wEZMsLdgrJd57cV2w8tcZ
+ BHWP2bJzkbG6+c1rwHUFg5IYlV5rOOoSh0QqqfchAkf2BGTqIeXBxdNWHp6IGuwAGLzB
+ aq2P6Y45qEkdpyxizrPTLtHJWlaiMZZbp7oB53lgW9AGpoFHjloehuQqoGr5b6Lgq4uM
+ IMWiUQ2YIJylL82ipWTCMsO2Dp9XebPJpwVPBuMCad18nrTEcwMwjheFZHjhAEq0lQfD
+ Sis7ZkeQ5IV3MG8aeAqdCOONuGV6kqN8zWrIovyr+PTEwrFweFBYe+YZio4bg/dOQSsM
+ CPxQ==
+X-Gm-Message-State: AOAM533R3Af+LgnpZAr2NVBBiWqHTzRCV03N20702+NewgU0erFdLt3a
+ 4Caf3dck6Ejt+u24kUb7ITg=
+X-Google-Smtp-Source: ABdhPJzONC70ikiwdtkVw1ey6gQw1AlQ/1RiHNFY2i5gZUqHfyD2A3MhaVDvRilWyuIqqNxylfvibQ==
+X-Received: by 2002:a05:600c:3516:b0:39c:8091:31b6 with SMTP id
+ h22-20020a05600c351600b0039c809131b6mr711372wmq.164.1655155878952; 
+ Mon, 13 Jun 2022 14:31:18 -0700 (PDT)
+Received: from pevik (37-188-191-82.red.o2.cz. [37.188.191.82])
+ by smtp.gmail.com with ESMTPSA id
+ v187-20020a1cacc4000000b0039749256d74sm14781714wme.2.2022.06.13.14.31.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Jun 2022 14:31:18 -0700 (PDT)
+Date: Mon, 13 Jun 2022 23:31:15 +0200
+From: Petr Vorel <petr.vorel@gmail.com>
+To: Joerg Vehlow <lkml@jv-coder.de>
+Message-ID: <Yqeso3ZYuZZatAfQ@pevik>
+References: <20220606184320.8210-1-petr.vorel@gmail.com>
+ <20220606184320.8210-3-petr.vorel@gmail.com>
+ <5d4a4e2b-4d1d-88d6-4905-67083c154775@suse.cz>
+ <024cf3d9-f9c1-80a4-8b06-799309912c7f@jv-coder.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <024cf3d9-f9c1-80a4-8b06-799309912c7f@jv-coder.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 6/6] Rename common header in mqns test suite
+Subject: Re: [LTP] [PATCH 2/2] kvm: Fix undefined reference to
+ __stack_chk_fail()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,80 +83,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
+Cc: "Yann E. MORIN" <yann.morin.1998@free.fr>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Buildroot Mailing List <buildroot@buildroot.org>,
+ Fabrice Fontaine <fontaine.fabrice@gmail.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.de>
----
- testcases/kernel/containers/mqns/{common.h => mqns.h} | 0
- testcases/kernel/containers/mqns/mqns_01.c            | 2 +-
- testcases/kernel/containers/mqns/mqns_02.c            | 2 +-
- testcases/kernel/containers/mqns/mqns_03.c            | 2 +-
- testcases/kernel/containers/mqns/mqns_04.c            | 2 +-
- 5 files changed, 4 insertions(+), 4 deletions(-)
- rename testcases/kernel/containers/mqns/{common.h => mqns.h} (100%)
+Hi all,
 
-diff --git a/testcases/kernel/containers/mqns/common.h b/testcases/kernel/containers/mqns/mqns.h
-similarity index 100%
-rename from testcases/kernel/containers/mqns/common.h
-rename to testcases/kernel/containers/mqns/mqns.h
-diff --git a/testcases/kernel/containers/mqns/mqns_01.c b/testcases/kernel/containers/mqns/mqns_01.c
-index e6ebe0ea8..8521c5448 100644
---- a/testcases/kernel/containers/mqns/mqns_01.c
-+++ b/testcases/kernel/containers/mqns/mqns_01.c
-@@ -13,7 +13,7 @@
-  */
- 
- #include <mqueue.h>
--#include "common.h"
-+#include "mqns.h"
- 
- #define MQNAME "/MQ1"
- 
-diff --git a/testcases/kernel/containers/mqns/mqns_02.c b/testcases/kernel/containers/mqns/mqns_02.c
-index b2130b624..27c1d86fe 100644
---- a/testcases/kernel/containers/mqns/mqns_02.c
-+++ b/testcases/kernel/containers/mqns/mqns_02.c
-@@ -13,7 +13,7 @@
-  */
- 
- #include <mqueue.h>
--#include "common.h"
-+#include "mqns.h"
- 
- #define MQNAME "/MQ1"
- 
-diff --git a/testcases/kernel/containers/mqns/mqns_03.c b/testcases/kernel/containers/mqns/mqns_03.c
-index 51909217d..67a6be1e2 100644
---- a/testcases/kernel/containers/mqns/mqns_03.c
-+++ b/testcases/kernel/containers/mqns/mqns_03.c
-@@ -27,7 +27,7 @@
- #include <stdio.h>
- #include <mqueue.h>
- #include "tst_safe_stdio.h"
--#include "common.h"
-+#include "mqns.h"
- 
- #define MQNAME1 "/MQ1"
- #define MQNAME2 "/MQ2"
-diff --git a/testcases/kernel/containers/mqns/mqns_04.c b/testcases/kernel/containers/mqns/mqns_04.c
-index ce7a86e64..76604d666 100644
---- a/testcases/kernel/containers/mqns/mqns_04.c
-+++ b/testcases/kernel/containers/mqns/mqns_04.c
-@@ -26,7 +26,7 @@
- #include <stdio.h>
- #include <mqueue.h>
- #include "tst_safe_stdio.h"
--#include "common.h"
-+#include "mqns.h"
- 
- #define CHECK_MQ_OPEN_RET(x) ((x) >= 0 || ((x) == -1 && errno != EMFILE))
- 
--- 
-2.35.3
+> Hi,
 
+
+> Am 6/9/2022 um 10:26 AM schrieb Martin Doucha:
+> > On 06. 06. 22 20:43, Petr Vorel wrote:
+> >> Some x86_64 buildroot toolchains (bootlin-x86-64-glibc,
+> >> bootlin-x86-64-musl) try to link to __stack_chk_fail().
+> >> -nostdlib is not enough, it requires also -fstack-protector.
+
+> >> x86_64-buildroot-linux-gnu/bin/ld: /tmp/ccgBXEoR.o: in function `handle_page_fault':
+> >> kvm_pagefault01.c:(.text+0x5d): undefined reference to `__stack_chk_fail'
+> >> collect2: error: ld returned 1 exit status
+
+> >> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> >> ---
+> >>  testcases/kernel/kvm/Makefile | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+> >> diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+> >> index 8d5193d8e..bce1a4eb5 100644
+> >> --- a/testcases/kernel/kvm/Makefile
+> >> +++ b/testcases/kernel/kvm/Makefile
+> >> @@ -9,7 +9,7 @@ ASFLAGS =
+> >>  CPPFLAGS += -I$(abs_srcdir)/include
+> >>  GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
+> >>  GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
+> >> -GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none
+> >> +GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fstack-protector
+
+> > We should use -fno-stack-protector here instead. Your patch probably
+> > enables linking of libssp despite -nostdlib which we don't want. The GCC
+> > stack protector may also break tests because bootstrap initializes stack
+> > manually instead of letting GCC handle it.
+> I can confirm, that adding -fno-stack-protector to GUEST_LDFLAGS fixes
+> the linker error.
+
+Thanks a lot for your input. Martin, thanks a lot for testing.
+I also verified that -fno-stack-protector fix compilation, thus patchset merged.
+
+Kind regards,
+Petr
+
+> >>  GUEST_LDLIBS =
+
+> >>  FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
+
+
+
+> Joerg
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
