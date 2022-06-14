@@ -4,77 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88E03C43334
-	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 07:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0741AC433EF
+	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 10:19:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B3E23C9407
-	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 09:23:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 256763C9504
+	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 12:19:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C28EB3C8CA7
- for <ltp@lists.linux.it>; Tue, 14 Jun 2022 09:23:26 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id D0DE63C217F
+ for <ltp@lists.linux.it>; Tue, 14 Jun 2022 12:19:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D35E11400759
+ for <ltp@lists.linux.it>; Tue, 14 Jun 2022 12:19:05 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id EE63F1F460;
+ Tue, 14 Jun 2022 10:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655201944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wYeyLCpesYaEry5Qu54liaplVniDQPV1DVLPDaCNvIs=;
+ b=WED7Je3Bn+SqLSaDETbVTFG5yjCovnpG9lRjWJEgwZLOejT4dsIzmL/78lgDV4m2XrZkrd
+ iQt24YoQ8wC07RB7fZr8adTibJlH7WhoE/1cRJ47XVQMq/bLXfsdm577dxfojHh5fhqXiC
+ VKK3LuPnh+ojPuV6riBhmSIpu5m40GA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655201944;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wYeyLCpesYaEry5Qu54liaplVniDQPV1DVLPDaCNvIs=;
+ b=tPtijHjdEX7+RanyHC81R4OkL7kw9N5W3+EFXjBTlNChgo5Us3Alv0/Kb9O1zwfDnYJjP4
+ swBb3CJvhehYsJDw==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 667EC600241
- for <ltp@lists.linux.it>; Tue, 14 Jun 2022 09:23:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655191403;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lbc/UKtcev7uSeZK2Agu2kI4RBW3epAL75jEDuZeZwY=;
- b=MkAlnXNXIDT3fJbrMmXCEXUsgGnHwleU3+gcb0+7dW7PpZQ8230fAErOcHaq0qTCj5lvID
- gobVwUYAnPXothiNtIMixJMiJp8xV3/Q/XzNXQPrGBhBymXMy0u4Q7XUoffL8RDSR4u1qE
- 0IPUJ/Xg/xtLgkQbgtfJFfT/YcawTxw=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-166-O9K9F6dNNgiBCx33reWmhg-1; Tue, 14 Jun 2022 03:23:22 -0400
-X-MC-Unique: O9K9F6dNNgiBCx33reWmhg-1
-Received: by mail-yb1-f199.google.com with SMTP id
- 10-20020a250d0a000000b0065ca0e7be90so6909072ybn.17
- for <ltp@lists.linux.it>; Tue, 14 Jun 2022 00:23:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=lbc/UKtcev7uSeZK2Agu2kI4RBW3epAL75jEDuZeZwY=;
- b=d9SZi7IIJrX0WutsKaOUqlCjkgGLaMXfa1nekhsKlkalnYzRw58JnxesKVvurDP+xl
- Ad2rYFt1SnddwxaB4QWmwfnc0xHzW2TXQecxuWPnaKLme7gWj2nz3dqHsMPgP2fZ5Ms2
- NWjHsYDfa91zR46t8ah8FG9NTe+Ni290Pq7OxH2rjB9gsZ4xQhNjqJn9PqwxR9MU2ASz
- oS3Sv9EscSWrW1PIpgwn9mnRNQsdNj0MW8judI4hayg0TS4ruC8eZ2LQwjBy1xumWCOQ
- uk3G+qW+EGJ6z+bVCdCJSLO2d20ktFpmVVDBHKgPS7ApJqyxZ9JPzjImRjDNNeVzIjOI
- hz1A==
-X-Gm-Message-State: AJIora9MwdEo7gfyksFTrs8BJJb5VpckAJ1GDnvPcYbFZa7VkEGoxPLF
- 36eX+hpKOP6J+Z/JMhu2VGYFZhyJbvCXmfWXyiolGJaLB0/P84nd+57CVLsv/piVGtflp0km2HA
- y8cGCL6CRdQPsRsz6cNFQU7uNG/w=
-X-Received: by 2002:a81:74a:0:b0:30f:ea59:f12f with SMTP id
- 71-20020a81074a000000b0030fea59f12fmr3983435ywh.82.1655191401851; 
- Tue, 14 Jun 2022 00:23:21 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1veTJyP/CXVPqURLyqkl0HmoW83sJSmShrkCtpMlPR3qtG9WbpFUKDjd3G+cg9Wr3ZI2rvJr4laQB19Jhe3CHM=
-X-Received: by 2002:a81:74a:0:b0:30f:ea59:f12f with SMTP id
- 71-20020a81074a000000b0030fea59f12fmr3983426ywh.82.1655191401632; Tue, 14 Jun
- 2022 00:23:21 -0700 (PDT)
+ by relay2.suse.de (Postfix) with ESMTPS id D4DD72C141;
+ Tue, 14 Jun 2022 10:19:04 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 92D1AA062E; Tue, 14 Jun 2022 12:19:04 +0200 (CEST)
+Date: Tue, 14 Jun 2022 12:19:04 +0200
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20220614101904.tgvigmckvvaxtcpa@quack3.lan>
+References: <20220613143826.1328830-1-amir73il@gmail.com>
+ <20220613143826.1328830-2-amir73il@gmail.com>
 MIME-Version: 1.0
-References: <20220411094048.1143292-1-liwang@redhat.com>
- <YqL96JmZdDfL4ziv@yuki>
-In-Reply-To: <YqL96JmZdDfL4ziv@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 14 Jun 2022 15:23:10 +0800
-Message-ID: <CAEemH2d9_psdQHtUF5TOmpKAHeqRMaNXvQcotzx_qp6+BdKmPg@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220613143826.1328830-2-amir73il@gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] pkey01: print more info when write buff fail
+Subject: Re: [LTP] [PATCH 1/5] syscalls/inotify12: Introduce test for
+ inotify mask flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,52 +72,233 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0150532803=="
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it,
+ Matthew Bobrowski <repnop@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0150532803==
-Content-Type: multipart/alternative; boundary="00000000000087b10605e16347ce"
+On Mon 13-06-22 17:38:22, Amir Goldstein wrote:
+> Test behavior of IN_ONESHOT and IN_EXCL_UNLINK.
+> 
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 
---00000000000087b10605e16347ce
-Content-Type: text/plain; charset="UTF-8"
+Looks good to me after fixing those small bugs you've found. Feel free to
+add:
 
-> This looks good to me, in case you are going to push the patch:
->
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Thanks, I have pushed patch-1/2, hope it helps to catch something useful.
+								Honza
 
+> ---
+>  runtest/syscalls                              |   1 +
+>  testcases/kernel/syscalls/inotify/.gitignore  |   1 +
+>  testcases/kernel/syscalls/inotify/inotify12.c | 168 ++++++++++++++++++
+>  3 files changed, 170 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/inotify/inotify12.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 3b26d19e6..1259e41f1 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -588,6 +588,7 @@ inotify08 inotify08
+>  inotify09 inotify09
+>  inotify10 inotify10
+>  inotify11 inotify11
+> +inotify12 inotify12
+>  
+>  fanotify01 fanotify01
+>  fanotify02 fanotify02
+> diff --git a/testcases/kernel/syscalls/inotify/.gitignore b/testcases/kernel/syscalls/inotify/.gitignore
+> index 593cf6c04..f6e5c546a 100644
+> --- a/testcases/kernel/syscalls/inotify/.gitignore
+> +++ b/testcases/kernel/syscalls/inotify/.gitignore
+> @@ -9,3 +9,4 @@
+>  /inotify09
+>  /inotify10
+>  /inotify11
+> +/inotify12
+> diff --git a/testcases/kernel/syscalls/inotify/inotify12.c b/testcases/kernel/syscalls/inotify/inotify12.c
+> new file mode 100644
+> index 000000000..fe72771c5
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/inotify/inotify12.c
+> @@ -0,0 +1,168 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2022 CTERA Networks. All Rights Reserved.
+> + *
+> + * Author: Amir Goldstein <amir73il@gmail.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + * Test special inotify mask flags.
+> + *
+> + * Regression test for kernel commit a32e697cda27:
+> + *
+> + *     inotify: show inotify mask flags in proc fdinfo
+> + */
+> +
+> +#include "config.h"
+> +
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <signal.h>
+> +#include <sys/wait.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+> +#include "inotify.h"
+> +
+> +#if defined(HAVE_SYS_INOTIFY_H)
+> +#include <sys/inotify.h>
+> +
+> +#define EVENT_MAX 32
+> +/* Size of the event structure, not including the name */
+> +#define EVENT_SIZE	(sizeof(struct inotify_event))
+> +#define EVENT_BUF_LEN	(EVENT_MAX * (EVENT_SIZE + 16))
+> +
+> +#define	TEST_FILE	"test_file"
+> +
+> +static char event_buf[EVENT_BUF_LEN];
+> +
+> +static struct tcase {
+> +	const char *tname;
+> +	unsigned int mask;
+> +	int expect_events;
+> +} tcases[] = {
+> +	{
+> +		"Watch for multi events",
+> +		IN_MODIFY,
+> +		2,
+> +	},
+> +	{
+> +		"Watch for single event",
+> +		IN_MODIFY | IN_ONESHOT,
+> +		1,
+> +	},
+> +	{
+> +		"Watch for events on linked file",
+> +		IN_MODIFY | IN_EXCL_UNLINK,
+> +		1,
+> +	},
+> +};
+> +
+> +int fd_notify;
+> +
+> +static void verify_inotify(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	int fd, len;
+> +	unsigned int tmpmask;
+> +	char procfdinfo[100];
+> +	struct inotify_event *event = (struct inotify_event *)event_buf;
+> +
+> +	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+> +
+> +	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
+> +
+> +	SAFE_FILE_PRINTF(TEST_FILE, "1");
+> +
+> +	SAFE_MYINOTIFY_ADD_WATCH(fd_notify, ".", tc->mask);
+> +
+> +	sprintf(procfdinfo, "/proc/%d/fdinfo/%d", (int)getpid(), fd_notify);
+> +	if (FILE_LINES_SCANF(procfdinfo, "inotify wd:%*d ino:%*x sdev:%*x mask:%x",
+> +			     &tmpmask)) {
+> +		tst_res(TFAIL, "Could not parse inotify fdinfo");
+> +	} else if (tmpmask != tc->mask) {
+> +		tst_res(TFAIL, "Incorrect mask %x in inotify fdinfo (expected %x)",
+> +			tmpmask, tc->mask);
+> +	} else {
+> +		tst_res(TPASS, "Correct mask in inotify fdinfo");
+> +	}
+> +
+> +	fd = SAFE_OPEN(TEST_FILE, O_RDWR);
+> +	SAFE_WRITE(1, fd, "2", 1);
+> +
+> +	/*
+> +	 * Read the 1st IN_MODIFY event
+> +	 */
+> +	len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
+> +
+> +	if (len < (int)sizeof(*event)) {
+> +		tst_res(TFAIL, "Got no events");
+> +	} else if (event->mask == IN_MODIFY) {
+> +		tst_res(TPASS, "Got 1st event as expected");
+> +	} else {
+> +		tst_res(TFAIL, "Got event 0x%x (expected 0x%x)",
+> +				event->mask, IN_MODIFY);
+> +	}
+> +
+> +	/*
+> +	 * Unlink file so IN_EXCL_UNLINK won't get IN_ACCESS event.
+> +	 * IN_ONESHOT won't get IN_ACCESS event because IN_MODIFY
+> +	 * was already generated.
+> +	 */
+> +	SAFE_UNLINK(TEST_FILE);
+> +	SAFE_WRITE(1, fd, "3", 1);
+> +	SAFE_CLOSE(fd);
+> +
+> +	/*
+> +	 * Possibly read the 2nd IN_MODIFY event
+> +	 */
+> +	errno = 0;
+> +	len = read(fd_notify, event_buf, EVENT_BUF_LEN);
+> +	SAFE_CLOSE(fd_notify);
+> +	if (len < 0 && errno == EAGAIN) {
+> +		/* Treat no event same as we treat IN_IGNORED */
+> +		event->mask = IN_IGNORED;
+> +	} else if (len < (int)sizeof(*event)) {
+> +		tst_res(TFAIL | TERRNO, "Failed to read events");
+> +		return;
+> +	}
+> +
+> +	if (event->mask == IN_MODIFY) {
+> +		if (tc->expect_events > 1)
+> +			tst_res(TPASS, "Got 2nd event as expected");
+> +		else
+> +			tst_res(TFAIL, "Got unexpected 2nd event");
+> +	} else if (event->mask == IN_IGNORED) {
+> +		if (tc->expect_events == 1)
+> +			tst_res(TPASS, "Got no more events as expected");
+> +		else
+> +			tst_res(TFAIL, "Got only one event (expected %d)",
+> +					tc->expect_events);
+> +	} else {
+> +		tst_res(TFAIL, "Got unexpected event 0x%x",
+> +				event->mask);
+> +	}
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd_notify > 0)
+> +		SAFE_CLOSE(fd_notify);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.timeout = 10,
+> +	.needs_tmpdir = 1,
+> +	.cleanup = cleanup,
+> +	.test = verify_inotify,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "a32e697cda27"},
+> +		{}
+> +};
+> +
+> +#else
+> +	TST_TEST_TCONF("system doesn't have required inotify support");
+> +#endif
+> -- 
+> 2.25.1
+> 
 -- 
-Regards,
-Li Wang
-
---00000000000087b10605e16347ce
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
-ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
- rgb(204,204,204);padding-left:1ex">
-This looks good to me, in case you are going to push the patch:<br></blockq=
-uote><div><br></div><div class=3D"gmail_default" style=3D"font-size:small">=
-Thanks, I have pushed patch-1/2, hope it helps to catch something useful.</=
-div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature">=
-<div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div><=
-/div>
-
---00000000000087b10605e16347ce--
-
-
---===============0150532803==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0150532803==--
-
