@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B1AEC43334
-	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 10:26:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE35C433EF
+	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 10:48:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6035D3C9468
-	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 12:26:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1A3603C94F3
+	for <ltp@archiver.kernel.org>; Tue, 14 Jun 2022 12:48:08 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F114E3C217F
- for <ltp@lists.linux.it>; Tue, 14 Jun 2022 12:26:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id B44503C1926
+ for <ltp@lists.linux.it>; Tue, 14 Jun 2022 12:47:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 354E32009F4
- for <ltp@lists.linux.it>; Tue, 14 Jun 2022 12:26:10 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D453A100052D
+ for <ltp@lists.linux.it>; Tue, 14 Jun 2022 12:47:57 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5F25A1F460;
- Tue, 14 Jun 2022 10:26:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 15C9621A82;
+ Tue, 14 Jun 2022 10:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655202370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1655203677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uNO5C+ivOZ2yZr9voVWlMXGXW4q1ijlS8s2+2l2ULJc=;
- b=p6Ex6hj/AZ/WfffLV1dVyg6TWiHkjCO7njPlqorwlurXQ3qiKUwxKV8/R3YHsJmVBELyrz
- 1wzvCIrFNHrtT2wOSsBayih9NX9hkNABiU8HD0/e0V4tMwm23Z6uG6EzoD2rU+U4e7sk9K
- KRIEcvPJKPDgsmy4lnlUIAJzuo7BCwc=
+ bh=wTC4tNqwKtMa0igc+ep8rf+cEwBvn0w8Rpc5b/lQV3g=;
+ b=cYDAK5+lA9ApTywWGvLzgHhRSkIwPN8bhyJyL62UPz2fPceIx6f/pv9D44VYOnGTM54Teh
+ mvN3EofqQeLf9gjRkWe4RQTPZUTZ0FeSrBPzA0zIVJlf9PhOFHat6CT9VBAPMOzkdvoWF5
+ XOovPtRWzd64Qqk3TEGt0S/l/VyVn2o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655202370;
+ s=susede2_ed25519; t=1655203677;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uNO5C+ivOZ2yZr9voVWlMXGXW4q1ijlS8s2+2l2ULJc=;
- b=vM8UvmDivPJXV0rWB1Q2DnAeOk7OCcdG8DxH5MXlmSAwWLH+T9ytITrPWNo8Pr+SqvIZVN
- WgiWamxVVr3QGWAA==
+ bh=wTC4tNqwKtMa0igc+ep8rf+cEwBvn0w8Rpc5b/lQV3g=;
+ b=SsG6GFrK7+sbsTv6I2nCTiuN3eV2CsGj9hmC/UhTV/sC8SRWaN8Sk6q7AKrheHDbfMndi5
+ LFzwP1ca0Zuzw8Aw==
 Received: from quack3.suse.cz (unknown [10.163.28.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 4C5252C141;
- Tue, 14 Jun 2022 10:26:10 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 05C422C141;
+ Tue, 14 Jun 2022 10:47:57 +0000 (UTC)
 Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 080C4A062E; Tue, 14 Jun 2022 12:26:10 +0200 (CEST)
-Date: Tue, 14 Jun 2022 12:26:09 +0200
+ id B98CBA062E; Tue, 14 Jun 2022 12:47:56 +0200 (CEST)
+Date: Tue, 14 Jun 2022 12:47:56 +0200
 From: Jan Kara <jack@suse.cz>
 To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <20220614102609.matiab5wmhc43nm4@quack3.lan>
+Message-ID: <20220614104756.jvaaasc5vm5cm6rq@quack3.lan>
 References: <20220613143826.1328830-1-amir73il@gmail.com>
- <20220613143826.1328830-4-amir73il@gmail.com>
+ <20220613143826.1328830-5-amir73il@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220613143826.1328830-4-amir73il@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220613143826.1328830-5-amir73il@gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/5] syscalls/fanotify10: Watch directory that is
- not the mount path
+Subject: Re: [LTP] [PATCH 4/5] syscalls/fanotify10: Mount cycle between test
+ cases
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,115 +78,84 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon 13-06-22 17:38:24, Amir Goldstein wrote:
-> Move the test file into a test directory, so we won't set a mark
-> on the mount path when watching the children of a directory.
+On Mon 13-06-22 17:38:25, Amir Goldstein wrote:
+> Mount cycle detects inode refcount errors and waits for all marks
+> of test case to be destructed before continuing to next test case.
 > 
 > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 
-One question below...
+Looks good to me. Feel free to add:
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> index 067dd65ae..efef25135 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> @@ -74,16 +74,19 @@ static int filesystem_mark_unsupported;
->  
->  #define MOUNT_PATH "fs_mnt"
->  #define MNT2_PATH "mntpoint"
-> +#define DIR_NAME "testdir"
->  #define FILE_NAME "testfile"
->  #define FILE2_NAME "testfile2"
->  #define TEST_APP "fanotify_child"
->  #define TEST_APP2 "fanotify_child2"
-> -#define FILE_PATH MOUNT_PATH"/"FILE_NAME
-> -#define FILE2_PATH MOUNT_PATH"/"FILE2_NAME
-> +#define DIR_PATH MOUNT_PATH"/"DIR_NAME
-> +#define FILE_PATH DIR_PATH"/"FILE_NAME
-> +#define FILE2_PATH DIR_PATH"/"FILE2_NAME
->  #define FILE_EXEC_PATH MOUNT_PATH"/"TEST_APP
->  #define FILE2_EXEC_PATH MOUNT_PATH"/"TEST_APP2
-> -#define FILE_MNT2 MNT2_PATH"/"FILE_NAME
-> -#define FILE2_MNT2 MNT2_PATH"/"FILE2_NAME
-> +#define DIR_MNT2 MNT2_PATH"/"DIR_NAME
-> +#define FILE_MNT2 DIR_MNT2"/"FILE_NAME
-> +#define FILE2_MNT2 DIR_MNT2"/"FILE2_NAME
->  #define FILE_EXEC_PATH2 MNT2_PATH"/"TEST_APP
->  #define FILE2_EXEC_PATH2 MNT2_PATH"/"TEST_APP2
->  
-> @@ -239,50 +242,50 @@ static struct tcase {
->  	},
->  	{
->  		"ignore events on children of directory created on a specific file",
-> -		MNT2_PATH, FANOTIFY_INODE,
-> -		FILE_PATH, FANOTIFY_INODE,
-> +		DIR_MNT2, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
-
-I'm somewhat confused here why you remove the FILE_PATH test here... In all
-the other tests you just replace MNT2_PATH with DIR_PATH which makes sense.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
->  		FAN_EVENT_ON_CHILD,
->  		FILE_PATH, 0, FAN_OPEN
->  	},
->  	{
->  		"ignore events on file created inside a parent watching children",
->  		FILE_PATH, FANOTIFY_INODE,
-> -		MNT2_PATH, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
->  		FAN_EVENT_ON_CHILD,
->  		FILE_PATH, 0, FAN_OPEN
->  	},
->  	{
->  		"don't ignore events on file created inside a parent not watching children",
->  		FILE_PATH, FANOTIFY_INODE,
-> -		MNT2_PATH, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
->  		0,
->  		FILE_PATH, FAN_OPEN, FAN_OPEN
->  	},
->  	{
->  		"ignore mount events created inside a parent watching children",
->  		FILE_PATH, FANOTIFY_MOUNT,
-> -		MNT2_PATH, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
->  		FAN_EVENT_ON_CHILD,
->  		FILE_PATH, 0, FAN_OPEN
->  	},
->  	{
->  		"don't ignore mount events created inside a parent not watching children",
->  		FILE_PATH, FANOTIFY_MOUNT,
-> -		MNT2_PATH, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
->  		0,
->  		FILE_PATH, FAN_OPEN, FAN_OPEN
->  	},
->  	{
->  		"ignore fs events created inside a parent watching children",
->  		FILE_PATH, FANOTIFY_FILESYSTEM,
-> -		MNT2_PATH, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
->  		FAN_EVENT_ON_CHILD,
->  		FILE_PATH, 0, FAN_OPEN
->  	},
->  	{
->  		"don't ignore fs events created inside a parent not watching children",
->  		FILE_PATH, FANOTIFY_FILESYSTEM,
-> -		MNT2_PATH, FANOTIFY_INODE,
-> +		DIR_PATH, FANOTIFY_INODE,
->  		0,
->  		FILE_PATH, FAN_OPEN, FAN_OPEN
->  	},
-> @@ -525,6 +528,7 @@ static void setup(void)
->  	SAFE_MOUNT(MOUNT_PATH, MNT2_PATH, "none", MS_BIND, NULL);
->  	bind_mount_created = 1;
+> ---
+>  .../kernel/syscalls/fanotify/fanotify10.c     | 25 +++++++++++++------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> index efef25135..b9a50672d 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> @@ -360,6 +360,17 @@ static void cleanup_fanotify_groups(void)
+>  	}
+>  }
 >  
-> +	SAFE_MKDIR(DIR_PATH, 0755);
+> +/* Flush out all pending dirty inodes and destructing marks */
+> +static void mount_cycle(void)
+> +{
+> +	if (bind_mount_created)
+> +		SAFE_UMOUNT(MNT2_PATH);
+> +	SAFE_UMOUNT(MOUNT_PATH);
+> +	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+> +	SAFE_MOUNT(MOUNT_PATH, MNT2_PATH, "none", MS_BIND, NULL);
+> +	bind_mount_created = 1;
+> +}
+> +
+>  static void verify_event(int p, int group, struct fanotify_event_metadata *event,
+>  			 unsigned long long expected_mask)
+>  {
+> @@ -508,6 +519,7 @@ static void test_fanotify(unsigned int n)
+>  	}
+>  cleanup:
+>  	cleanup_fanotify_groups();
+> +	mount_cycle();
+>  }
+>  
+>  static void setup(void)
+> @@ -523,25 +535,24 @@ static void setup(void)
+>  		num_classes = NUM_PRIORITIES;
+>  	}
+>  
+> -	/* Create another bind mount at another path for generating events */
+> -	SAFE_MKDIR(MNT2_PATH, 0755);
+> -	SAFE_MOUNT(MOUNT_PATH, MNT2_PATH, "none", MS_BIND, NULL);
+> -	bind_mount_created = 1;
+> -
+>  	SAFE_MKDIR(DIR_PATH, 0755);
 >  	SAFE_FILE_PRINTF(FILE_PATH, "1");
 >  	SAFE_FILE_PRINTF(FILE2_PATH, "1");
 >  
+>  	SAFE_CP(TEST_APP, FILE_EXEC_PATH);
+>  	SAFE_CP(TEST_APP, FILE2_EXEC_PATH);
+> +
+> +	/* Create another bind mount at another path for generating events */
+> +	SAFE_MKDIR(MNT2_PATH, 0755);
+> +	mount_cycle();
+>  }
+>  
+>  static void cleanup(void)
+>  {
+>  	cleanup_fanotify_groups();
+>  
+> -	if (bind_mount_created && tst_umount(MNT2_PATH) < 0)
+> -		tst_brk(TBROK | TERRNO, "bind umount failed");
+> +	if (bind_mount_created)
+> +		SAFE_UMOUNT(MNT2_PATH);
+>  }
+>  
+>  static const char *const resource_files[] = {
 > -- 
 > 2.25.1
 > 
