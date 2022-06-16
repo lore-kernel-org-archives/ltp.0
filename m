@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F07C43334
-	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 13:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08BD7C433EF
+	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 13:47:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC6683C62DF
-	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 15:46:58 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id F002E3C60BC
+	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 15:47:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B4403C0277
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 15:46:48 +0200 (CEST)
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com
- [IPv6:2607:f8b0:4864:20::934])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 900D63C0277
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 15:47:12 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E8E3C6018CB
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 15:46:47 +0200 (CEST)
-Received: by mail-ua1-x934.google.com with SMTP id l9so494096uac.4
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 06:46:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=MtJmxtjJPlpegJJKN0mRFELEJZbCKd3jrV1JS6QczXU=;
- b=bVIBjw6S7pViqOdg0soanNUfw/VeAmtu0x3btAl4hFWFV+OHA1SDQC4iZ+DgVamODb
- xEJSih4xkQA+Dkqx3hbT5dsR8uEqC4wel/HriE4XIBMe9HBG7leyMKhiEycW6KN9eIzT
- 3NMTaZz9/GP3oHSeDLwJg+FgN04hcpI36t64HRASRN+Tw0TzXbeO4s5x5QsHHP4FJmnT
- 6oSaC/YsT1Kup2JLty4Rw6e58pTyo50Ii8Y1aej0nyPXl5YRKm7hjD5c5nXd9pJHUGhS
- uiHXIUnEhTqqtIFG2SyWD/s01aAoMUM+h9oY916be/T9nuR8PS17QVdb2T3KBuoF3mAR
- /+rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=MtJmxtjJPlpegJJKN0mRFELEJZbCKd3jrV1JS6QczXU=;
- b=3ON8q67VElqJUy2F37iG8U78R/Q19TK3e4KZA1Hqp1RB4nc5uK3BiGKLZ9XI+fvdel
- kp89CWsLbeiGqPV6+EpELgR8WjycS+6RZTDjqyqSiOauCktA8DVD/ALE3dkjbBiQNEOs
- eawTrVFffiufwrl/PsPqrZI+gHJeWllf4k6kzACkeiPBv7KAe2FZ/rxFrYycTz5fu8qt
- +DEBD4vomCdNVkTXCl9YMAUKDs7sjiR56jx0E0BghxizDw0iQkBHn7uyVfyxyXmpYaDb
- +PDYNYhQ3mbrVEEczkBLyC8eZHhk/aICf7YU1Nt89XMWULFj4m1NjgJLwniMbeF9S1Ek
- 07Fg==
-X-Gm-Message-State: AJIora/IS0zpffEOU+utUWIACcCqqCxLA9xjrI8ovOaRi48U87pCLcWm
- TwiiQ7ZBW7+hIXKXWvlqMMuWJSY70aCy2dkhoa/HwD9oRYaZTg==
-X-Google-Smtp-Source: AGRyM1uE+cMm+Luh5h6J5Df2XYy4IKdpdQ4XZMvNqeD//f3W5Fy0WE+Y3Acnw7xxXX9NCetNhGHYsHLRgBYB1J1YSnw=
-X-Received: by 2002:a9f:23c2:0:b0:365:958:e807 with SMTP id
- 60-20020a9f23c2000000b003650958e807mr2016170uao.114.1655387206851; Thu, 16
- Jun 2022 06:46:46 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 814AF1000F4F
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 15:47:10 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9D35C1F7AB
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 13:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655387230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=B3H8+9MiOIVHCAe1c9esZ1xj3ugCO/UezNhC9qr0Gjg=;
+ b=V8pIBZGblKN6WKV2GUOMBeFR1v6Nsc+biHtQy2UBKFSXgcGVVkohB5fI5y4Cx38UdpbEaD
+ LXz7Q+tqbqkmNbDx4yEcEulbcPofm/+Z7rQD3F4Ps9Ym+F/Mrh1j63lp9uEknmNkB5cu4m
+ Baj/22V7T+4DvgYQ28ze/FlTHCe3w54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655387230;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=B3H8+9MiOIVHCAe1c9esZ1xj3ugCO/UezNhC9qr0Gjg=;
+ b=A9fl3xAHrdjlZ+Y2JMoaO4Nr8NfoKQwB408fJmivU141e6wIY9GGiOXth0RKNVog7cEzgi
+ iwDjFCvebwEMdHAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85C6E13A70
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 13:47:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id tfWfH140q2LiHwAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 13:47:10 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 16 Jun 2022 15:49:19 +0200
+Message-Id: <20220616134919.8248-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220613143826.1328830-1-amir73il@gmail.com>
- <20220613143826.1328830-4-amir73il@gmail.com>
- <20220614102609.matiab5wmhc43nm4@quack3.lan>
- <CAOQ4uxitmPwwGHiAonZjyqJKG=+SvzraGG9ot1=a2iNrcscAAQ@mail.gmail.com>
- <YqswlUo82GnEzEnE@pevik>
-In-Reply-To: <YqswlUo82GnEzEnE@pevik>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 16 Jun 2022 16:46:35 +0300
-Message-ID: <CAOQ4uxhOitNbnQVCx0RdEh2ne6wMnFD-UEc=+QHpGn_7Xez81w@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/5] syscalls/fanotify10: Watch directory that is
- not the mount path
+Subject: [LTP] [PATCH] syscalls/fork13: Rewrite to new API + add .max_runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,93 +72,271 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.cz>,
- LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jun 16, 2022 at 4:31 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> > On Tue, Jun 14, 2022 at 1:26 PM Jan Kara <jack@suse.cz> wrote:
->
-> > > On Mon 13-06-22 17:38:24, Amir Goldstein wrote:
-> > > > Move the test file into a test directory, so we won't set a mark
-> > > > on the mount path when watching the children of a directory.
->
-> > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
->
-> > > One question below...
->
-> > > > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > > > index 067dd65ae..efef25135 100644
-> > > > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > > > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > > > @@ -74,16 +74,19 @@ static int filesystem_mark_unsupported;
->
-> > > >  #define MOUNT_PATH "fs_mnt"
-> > > >  #define MNT2_PATH "mntpoint"
-> > > > +#define DIR_NAME "testdir"
-> > > >  #define FILE_NAME "testfile"
-> > > >  #define FILE2_NAME "testfile2"
-> > > >  #define TEST_APP "fanotify_child"
-> > > >  #define TEST_APP2 "fanotify_child2"
-> > > > -#define FILE_PATH MOUNT_PATH"/"FILE_NAME
-> > > > -#define FILE2_PATH MOUNT_PATH"/"FILE2_NAME
-> > > > +#define DIR_PATH MOUNT_PATH"/"DIR_NAME
-> > > > +#define FILE_PATH DIR_PATH"/"FILE_NAME
-> > > > +#define FILE2_PATH DIR_PATH"/"FILE2_NAME
-> > > >  #define FILE_EXEC_PATH MOUNT_PATH"/"TEST_APP
-> > > >  #define FILE2_EXEC_PATH MOUNT_PATH"/"TEST_APP2
-> > > > -#define FILE_MNT2 MNT2_PATH"/"FILE_NAME
-> > > > -#define FILE2_MNT2 MNT2_PATH"/"FILE2_NAME
-> > > > +#define DIR_MNT2 MNT2_PATH"/"DIR_NAME
-> > > > +#define FILE_MNT2 DIR_MNT2"/"FILE_NAME
-> > > > +#define FILE2_MNT2 DIR_MNT2"/"FILE2_NAME
-> > > >  #define FILE_EXEC_PATH2 MNT2_PATH"/"TEST_APP
-> > > >  #define FILE2_EXEC_PATH2 MNT2_PATH"/"TEST_APP2
->
-> > > > @@ -239,50 +242,50 @@ static struct tcase {
-> > > >       },
-> > > >       {
-> > > >               "ignore events on children of directory created on a specific file",
-> > > > -             MNT2_PATH, FANOTIFY_INODE,
-> > > > -             FILE_PATH, FANOTIFY_INODE,
-> > > > +             DIR_MNT2, FANOTIFY_INODE,
-> > > > +             DIR_PATH, FANOTIFY_INODE,
-> > > >               FAN_EVENT_ON_CHILD,
-> > > >               FILE_PATH, 0, FAN_OPEN
-> > > >       },
->
-> > > I'm somewhat confused here why you remove the FILE_PATH test here... In all
-> > > the other tests you just replace MNT2_PATH with DIR_PATH which makes sense.
->
->
-> > Good question.
-> > I guess while doing the conversion, I realized that the test case definition
-> > was wrong, so I fixed it and forgot to mention it in the commit message.
->
-> > The test case (#17) should be placing an ignored mask on a directory
-> > (DIR_PATH) with FAN_EVENT_ON_CHILD and see that the event on
-> > a child (FILE_PATH) is ignored.
->
-> > But what the test case was doing is setting an ignored mask
-> > with FAN_EVENT_ON_CHILD on the child (FILE_PATH).
->
-> > Petr,
->
-> > Do you want to add this to the commit message?
-> > Or split to a separate patch?
->
-> Both ways work for me. Could you please rebase your LTP fork, do either of these
-> changes and ping me to pull?
+This fixes a problem we had for years, the test can run for more than
+half an hour on slow systems and it used to timeout quite often.
 
-Done:
-https://github.com/amir73il/ltp/commits/fan_evictable
+This commit introduces a max_runtime with a 10 minute limit which is
+more than enough for the test to complete on a modern hardware but at
+the same time it limits the runtime to a sensible value on older
+hardware and embedded.
 
-Thanks,
-Amir.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ README.md                               |   2 +-
+ runtest/syscalls                        |   2 +-
+ testcases/kernel/syscalls/fork/fork13.c | 168 ++++++++++--------------
+ 3 files changed, 71 insertions(+), 101 deletions(-)
+
+diff --git a/README.md b/README.md
+index 7764eb81a..3a0fd7f96 100644
+--- a/README.md
++++ b/README.md
+@@ -150,7 +150,7 @@ $ testcases/bin/abort01
+ Some have arguments
+ 
+ ```
+-$ testcases/bin/fork13 -i 37
++$ testcases/bin/mesgq\_nstest -m none
+ ```
+ 
+ The vast majority of test cases accept the -h (help) switch
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 88c31db06..36fc50aeb 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -372,7 +372,7 @@ fork08 fork08
+ fork09 fork09
+ fork10 fork10
+ fork11 fork11
+-fork13 fork13 -i 1000000
++fork13 fork13
+ fork14 fork14
+ 
+ fpathconf01 fpathconf01
+diff --git a/testcases/kernel/syscalls/fork/fork13.c b/testcases/kernel/syscalls/fork/fork13.c
+index 583c8bd4d..1714beff3 100644
+--- a/testcases/kernel/syscalls/fork/fork13.c
++++ b/testcases/kernel/syscalls/fork/fork13.c
+@@ -1,5 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * a race in pid generation that causes pids to be reused immediately
++ * Copyright (C) 2010  Red Hat, Inc.
++ * Copyright (C) 2022 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++/*\
++ * [Description]
++ *
++ * A race in pid generation that causes pids to be reused immediately
+  *
+  * From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
+  *
+@@ -9,6 +17,7 @@
+  * implementation.  Furthermore, many shell scripts assume that pid
+  * numbers will not be used for some length of time.
+  *
++ * ---------------------------------------------------------------------
+  * Race Description:
+  *
+  * A                                B
+@@ -23,27 +32,7 @@
+  *                                  // Next fork()...
+  *                                  last = pid_ns->last_pid; // == n
+  *                                  pid = last + 1;
+- *
+- * Copyright (C) 2010  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * ---------------------------------------------------------------------
+  */
+ 
+ #include <sys/types.h>
+@@ -54,101 +43,82 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include "test.h"
+-
+-char *TCID = "fork13";
+-int TST_TOTAL = 1;
+ 
+-static unsigned long pid_max;
++#include "tst_test.h"
+ 
+-#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
+ #define PID_MAX 32768
++#define PID_MAX_STR "32768"
+ #define RETURN 256
++#define MAX_ITERATIONS 1000000
+ 
+-static void setup(void);
+-static int pid_distance(pid_t first, pid_t second);
+-static void cleanup(void);
+-static void check(void);
+-
+-int main(int argc, char *argv[])
++/* The distance mod PIDMAX between two pids, where the first pid is
++   expected to be smaller than the second. */
++static int pid_distance(pid_t first, pid_t second)
+ {
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-	setup();
+-	check();
+-	cleanup();
+-	tst_exit();
++	return (second + PID_MAX - first) % PID_MAX;
+ }
+ 
+ static void check(void)
+ {
+-	long lc;
+-	pid_t last_pid = 0;
++	pid_t prev_pid = 0;
+ 	pid_t pid;
+-	int child_exit_code, distance, reaped, status;
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-		child_exit_code = lc % RETURN;
+-		switch (pid = fork()) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-		case 0:
+-			exit(child_exit_code);
+-		default:
+-			if (lc > 0) {
+-				distance = pid_distance(last_pid, pid);
+-				if (distance == 0) {
+-					tst_resm(TFAIL,
+-						 "Unexpected pid sequence: "
+-						 "previous fork: pid=%d, "
+-						 "current fork: pid=%d for "
+-						 "iteration=%ld.", last_pid,
+-						 pid, lc);
+-					return;
+-				}
+-			}
+-			last_pid = pid;
+-
+-			reaped = waitpid(pid, &status, 0);
+-			if (reaped != pid) {
+-				tst_resm(TFAIL,
+-					 "Wait return value: expected pid=%d, "
+-					 "got %d, iteration %ld.", pid, reaped,
+-					 lc);
+-				return;
+-			} else if (WEXITSTATUS(status) != child_exit_code) {
+-				tst_resm(TFAIL, "Unexpected exit status %x, "
+-					 "iteration %ld.", WEXITSTATUS(status),
+-					 lc);
++	int i, distance, reaped, status, retval;
++
++	for (i = 0; i < MAX_ITERATIONS; i++) {
++		retval = i % RETURN;
++
++		pid = SAFE_FORK();
++		if (!pid)
++			exit(retval);
++
++		if (prev_pid) {
++			distance = pid_distance(prev_pid, pid);
++			if (distance == 0) {
++				tst_res(TFAIL,
++					"Unexpected pid sequence: prev_pid=%i, pid=%i for iteration=%i",
++					prev_pid, pid, i);
+ 				return;
+ 			}
+ 		}
+-	}
+-	tst_resm(TPASS, "%ld pids forked, all passed", lc);
+-}
+ 
+-static void setup(void)
+-{
+-	tst_require_root();
++		prev_pid = pid;
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
++		reaped = SAFE_WAITPID(pid, &status, 0);
+ 
+-	/* Backup pid_max value. */
+-	SAFE_FILE_SCANF(NULL, PID_MAX_PATH, "%lu", &pid_max);
++		if (reaped != pid) {
++			tst_res(TFAIL,
++				"Wrong pid %i returned from waitpid() expected %i",
++				reaped, pid);
++			return;
++		}
+ 
+-	SAFE_FILE_PRINTF(NULL, PID_MAX_PATH, "%d", PID_MAX);
+-}
++		if (WEXITSTATUS(status) != retval) {
++			tst_res(TFAIL,
++				"Wrong process exit value %i expected %i",
++				WEXITSTATUS(status), retval);
++			return;
++		}
+ 
+-static void cleanup(void)
+-{
+-	/* Restore pid_max value. */
+-	FILE_PRINTF(PID_MAX_PATH, "%lu", pid_max);
+-}
++		if (!tst_remaining_runtime()) {
++			tst_res(TINFO, "Runtime exhausted, exiting...");
++			break;
++		}
++	}
+ 
+-/* The distance mod PIDMAX between two pids, where the first pid is
+-   expected to be smaller than the second. */
+-static int pid_distance(pid_t first, pid_t second)
+-{
+-	return (second + PID_MAX - first) % PID_MAX;
++	tst_res(TPASS, "%i pids forked, all passed", i);
+ }
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.forks_child = 1,
++	.max_runtime = 600,
++	.test_all = check,
++	.save_restore = (const struct tst_path_val[]) {
++		{"!/proc/sys/kernel/pid_max", PID_MAX_STR},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "5fdee8c4a5e1"},
++		{}
++	}
++};
+-- 
+2.35.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
