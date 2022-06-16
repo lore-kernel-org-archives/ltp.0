@@ -4,63 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08BD7C433EF
-	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 13:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5578AC433EF
+	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 14:07:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F002E3C60BC
-	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 15:47:22 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 836E63C641F
+	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 16:07:36 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 900D63C0277
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 15:47:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 771913C19CA
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 16:07:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 814AF1000F4F
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 15:47:10 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BDFC91A01140
+ for <ltp@lists.linux.it>; Thu, 16 Jun 2022 16:07:24 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9D35C1F7AB
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 13:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655387230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=B3H8+9MiOIVHCAe1c9esZ1xj3ugCO/UezNhC9qr0Gjg=;
- b=V8pIBZGblKN6WKV2GUOMBeFR1v6Nsc+biHtQy2UBKFSXgcGVVkohB5fI5y4Cx38UdpbEaD
- LXz7Q+tqbqkmNbDx4yEcEulbcPofm/+Z7rQD3F4Ps9Ym+F/Mrh1j63lp9uEknmNkB5cu4m
- Baj/22V7T+4DvgYQ28ze/FlTHCe3w54=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655387230;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=B3H8+9MiOIVHCAe1c9esZ1xj3ugCO/UezNhC9qr0Gjg=;
- b=A9fl3xAHrdjlZ+Y2JMoaO4Nr8NfoKQwB408fJmivU141e6wIY9GGiOXth0RKNVog7cEzgi
- iwDjFCvebwEMdHAQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6C06521B6F;
+ Thu, 16 Jun 2022 14:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1655388444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8zltuR2MX4Gko7X3fxOtDU3+j1JUopQHP+a3TRbRsqg=;
+ b=V5QhGzhgXlUEPQ2VhI9U4pjMVcJLdJimuvXAo8cKXffC7AhTSXr7az+YeRY6si82fstMVq
+ af5O5r2E9iOpXPx73fNdznP1L/qqq9CVuRXSpFGrDnB+nA/cKKlcLTJ9PL3Bd5SUP2FXI4
+ Hv/VmGJ5VBKOL6liRd75Ysha53DQXkk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85C6E13A70
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 13:47:10 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3DF0A13A70;
+ Thu, 16 Jun 2022 14:07:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id tfWfH140q2LiHwAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 13:47:10 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0EmnDBw5q2IlJwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Thu, 16 Jun 2022 14:07:24 +0000
 To: ltp@lists.linux.it
-Date: Thu, 16 Jun 2022 15:49:19 +0200
-Message-Id: <20220616134919.8248-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.35.1
+Date: Thu, 16 Jun 2022 16:07:12 +0200
+Message-Id: <20220616140717.23708-3-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220616140717.23708-1-andrea.cervesato@suse.com>
+References: <20220616140717.23708-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/fork13: Rewrite to new API + add .max_runtime
+Subject: [LTP] [PATCH v2 2/7] Refactor mqns_01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,270 +66,364 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This fixes a problem we had for years, the test can run for more than
-half an hour on slow systems and it used to timeout quite often.
-
-This commit introduces a max_runtime with a 10 minute limit which is
-more than enough for the test to complete on a modern hardware but at
-the same time it limits the runtime to a sensible value on older
-hardware and embedded.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- README.md                               |   2 +-
- runtest/syscalls                        |   2 +-
- testcases/kernel/syscalls/fork/fork13.c | 168 ++++++++++--------------
- 3 files changed, 71 insertions(+), 101 deletions(-)
+ runtest/containers                         |   5 +-
+ testcases/kernel/containers/mqns/common.h  | 101 +++++++++++
+ testcases/kernel/containers/mqns/mqns_01.c | 195 +++++++--------------
+ 3 files changed, 169 insertions(+), 132 deletions(-)
+ create mode 100644 testcases/kernel/containers/mqns/common.h
 
-diff --git a/README.md b/README.md
-index 7764eb81a..3a0fd7f96 100644
---- a/README.md
-+++ b/README.md
-@@ -150,7 +150,7 @@ $ testcases/bin/abort01
- Some have arguments
+diff --git a/runtest/containers b/runtest/containers
+index 2637b62fe..073e206d0 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -15,8 +15,9 @@ pidns30 pidns30
+ pidns31 pidns31
+ pidns32 pidns32
  
- ```
--$ testcases/bin/fork13 -i 37
-+$ testcases/bin/mesgq\_nstest -m none
- ```
- 
- The vast majority of test cases accept the -h (help) switch
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 88c31db06..36fc50aeb 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -372,7 +372,7 @@ fork08 fork08
- fork09 fork09
- fork10 fork10
- fork11 fork11
--fork13 fork13 -i 1000000
-+fork13 fork13
- fork14 fork14
- 
- fpathconf01 fpathconf01
-diff --git a/testcases/kernel/syscalls/fork/fork13.c b/testcases/kernel/syscalls/fork/fork13.c
-index 583c8bd4d..1714beff3 100644
---- a/testcases/kernel/syscalls/fork/fork13.c
-+++ b/testcases/kernel/syscalls/fork/fork13.c
-@@ -1,5 +1,13 @@
+-mqns_01 mqns_01
+-mqns_01_clone mqns_01 -clone
++mqns_01_none mqns_01 -m none
++mqns_01_clone mqns_01 -m clone
++mqns_01_unshare mqns_01 -m unshare
+ mqns_02 mqns_02
+ mqns_02_clone mqns_02 -clone
+ mqns_03 mqns_03
+diff --git a/testcases/kernel/containers/mqns/common.h b/testcases/kernel/containers/mqns/common.h
+new file mode 100644
+index 000000000..58ddfe5f4
+--- /dev/null
++++ b/testcases/kernel/containers/mqns/common.h
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++#ifndef MQNS_COMMON_H
++#define MQNS_COMMON_H
++
++#include <stdlib.h>
++#include "lapi/namespaces_constants.h"
++#include "tst_test.h"
++#include "tst_safe_posix_ipc.h"
++
++enum {
++	T_CLONE,
++	T_UNSHARE,
++	T_NONE,
++};
++
++static int dummy_child1(void *v)
++{
++	(void)v;
++	return 0;
++}
++
++static void check_newipc(void)
++{
++	int pid, status;
++
++	pid = ltp_clone_quick(CLONE_NEWIPC | SIGCHLD, dummy_child1, NULL);
++	if (pid < 0)
++		tst_brk(TCONF | TERRNO, "CLONE_NEWIPC not supported");
++
++	SAFE_WAITPID(pid, &status, 0);
++}
++
++static inline int get_clone_unshare_enum(const char* str_op)
++{
++	if (!str_op || !strcmp(str_op, "none"))
++		return T_NONE;
++	else if (!strcmp(str_op, "clone"))
++		return T_CLONE;
++	else if (!strcmp(str_op, "unshare"))
++		return T_UNSHARE;
++
++	return T_NONE;
++}
++
++static void clone_test(unsigned long clone_flags, int (*fn1)(void *arg), void *arg1)
++{
++	int pid;
++
++	pid = ltp_clone_quick(clone_flags | SIGCHLD, fn1, arg1);
++	if (pid < 0)
++		tst_brk(TBROK | TERRNO, "ltp_clone_quick error");
++}
++
++static void unshare_test(unsigned long clone_flags, int (*fn1)(void *arg), void *arg1)
++{
++	int pid;
++
++	pid = SAFE_FORK();
++	if (!pid) {
++		SAFE_UNSHARE(clone_flags);
++
++		fn1(arg1);
++		exit(0);
++	}
++}
++
++static void plain_test(int (*fn1)(void *arg), void *arg1)
++{
++	int pid;
++
++	pid = SAFE_FORK();
++	if (!pid) {
++		fn1(arg1);
++		exit(0);
++	}
++}
++
++static void clone_unshare_test(int use_clone, unsigned long clone_flags,
++			       int (*fn1)(void *arg), void *arg1)
++{
++	switch (use_clone) {
++	case T_NONE:
++		plain_test(fn1, arg1);
++	break;
++	case T_CLONE:
++		clone_test(clone_flags, fn1, arg1);
++	break;
++	case T_UNSHARE:
++		unshare_test(clone_flags, fn1, arg1);
++	break;
++	default:
++		tst_brk(TBROK, "%s: bad use_clone option: %d", __FUNCTION__, use_clone);
++	break;
++	}
++}
++
++#endif /* MQNS_COMMON_H */
+diff --git a/testcases/kernel/containers/mqns/mqns_01.c b/testcases/kernel/containers/mqns/mqns_01.c
+index 1d109e020..40f08fa77 100644
+--- a/testcases/kernel/containers/mqns/mqns_01.c
++++ b/testcases/kernel/containers/mqns/mqns_01.c
+@@ -1,148 +1,83 @@
 +// SPDX-License-Identifier: GPL-2.0
  /*
-- * a race in pid generation that causes pids to be reused immediately
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ * Copyright (C) 2022 Cyril Hrubis <chrubis@suse.cz>
+-* Copyright (c) International Business Machines Corp., 2009
+-* Copyright (c) Nadia Derbey, 2009
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-* Author: Nadia Derbey <Nadia.Derbey@bull.net>
+-*
+-* Check mqns isolation: father mqns cannot be accessed from newinstance
+-*
+-* Mount mqueue fs
+-* Create a posix mq -->mq1
+-* unshare
+-* In unshared process:
+-*    Mount newinstance mqueuefs
+-*    Check that mq1 is not readable from new ns
+-
+-***************************************************************************/
+-
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include "mqns.h"
+-#include "mqns_helper.h"
+-
+-char *TCID = "posixmq_namespace_01";
+-int TST_TOTAL = 1;
+-
+-int p1[2];
+-int p2[2];
+-
+-int check_mqueue(void *vtest)
++ * Copyright (c) International Business Machines Corp., 2009
++ * Copyright (c) Nadia Derbey, 2009 <Nadia.Derbey@bull.net>
++ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * A race in pid generation that causes pids to be reused immediately
-  *
-  * From the mainline commit 5fdee8c4a5e1800489ce61963208f8cc55e42ea1:
-  *
-@@ -9,6 +17,7 @@
-  * implementation.  Furthermore, many shell scripts assume that pid
-  * numbers will not be used for some length of time.
-  *
-+ * ---------------------------------------------------------------------
-  * Race Description:
-  *
-  * A                                B
-@@ -23,27 +32,7 @@
-  *                                  // Next fork()...
-  *                                  last = pid_ns->last_pid; // == n
-  *                                  pid = last + 1;
-- *
-- * Copyright (C) 2010  Red Hat, Inc.
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it
-- * is free of the rightful claim of any third person regarding
-- * infringement or the like.  Any license provided herein, whether
-- * implied or otherwise, applies only to this software file.  Patent
-- * licenses, if any, provided herein do not apply to combinations of
-- * this program with other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-+ * ---------------------------------------------------------------------
-  */
- 
- #include <sys/types.h>
-@@ -54,101 +43,82 @@
- #include <unistd.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include "test.h"
--
--char *TCID = "fork13";
--int TST_TOTAL = 1;
- 
--static unsigned long pid_max;
-+#include "tst_test.h"
- 
--#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
- #define PID_MAX 32768
-+#define PID_MAX_STR "32768"
- #define RETURN 256
-+#define MAX_ITERATIONS 1000000
- 
--static void setup(void);
--static int pid_distance(pid_t first, pid_t second);
--static void cleanup(void);
--static void check(void);
--
--int main(int argc, char *argv[])
-+/* The distance mod PIDMAX between two pids, where the first pid is
-+   expected to be smaller than the second. */
-+static int pid_distance(pid_t first, pid_t second)
++ * Create a mqueue inside the parent and check if it can be accessed from
++ * the isolated/forked child namespace.
++ */
++
++#include "common.h"
++
++#define MQNAME "/MQ1"
++
++static mqd_t mqd;
++static char *str_op;
++static int use_clone;
++
++static int check_mqueue(LTP_ATTRIBUTE_UNUSED void *vtest)
  {
--	tst_parse_opts(argc, argv, NULL, NULL);
--	setup();
--	check();
--	cleanup();
--	tst_exit();
-+	return (second + PID_MAX - first) % PID_MAX;
+-	char buf[30];
+-	mqd_t mqd;
++	mqd_t mqd1;
+ 
+-	(void) vtest;
++	mqd1 = mq_open(MQNAME, O_RDONLY);
+ 
+-	close(p1[1]);
+-	close(p2[0]);
++	if (use_clone == T_NONE) {
++		if (mqd1 == -1)
++			tst_res(TFAIL, "Queue has been accessed form plain cloned process");
++		else
++			tst_res(TPASS, "Can't access to queue from plain cloned process");
+ 
+-	if (read(p1[0], buf, strlen("go") + 1) < 0) {
+-		printf("read(p1[0], ...) failed: %s\n", strerror(errno));
+-		exit(1);
+-	}
+-	mqd = tst_syscall(__NR_mq_open, NOSLASH_MQ1, O_RDONLY);
+-	if (mqd == -1) {
+-		if (write(p2[1], "notfnd", strlen("notfnd") + 1) < 0) {
+-			perror("write(p2[1], ...) failed");
+-			exit(1);
+-		}
+-	} else {
+-		if (write(p2[1], "exists", strlen("exists") + 1) < 0) {
+-			perror("write(p2[1], \"exists\", 7) failed");
+-			exit(1);
+-		} else if (mq_close(mqd) < 0) {
+-			perror("mq_close(mqd) failed");
+-			exit(1);
+-		}
++		return 0;
+ 	}
+ 
+-	exit(0);
++	if (mqd1 == -1)
++		tst_res(TPASS, "Can't access to queue from isolated process");
++	else
++		tst_res(TFAIL, "Queue has been accessed from isolated process");
++
++	return 0;
  }
  
- static void check(void)
- {
--	long lc;
--	pid_t last_pid = 0;
-+	pid_t prev_pid = 0;
- 	pid_t pid;
--	int child_exit_code, distance, reaped, status;
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		child_exit_code = lc % RETURN;
--		switch (pid = fork()) {
--		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork");
--		case 0:
--			exit(child_exit_code);
--		default:
--			if (lc > 0) {
--				distance = pid_distance(last_pid, pid);
--				if (distance == 0) {
--					tst_resm(TFAIL,
--						 "Unexpected pid sequence: "
--						 "previous fork: pid=%d, "
--						 "current fork: pid=%d for "
--						 "iteration=%ld.", last_pid,
--						 pid, lc);
--					return;
--				}
--			}
--			last_pid = pid;
--
--			reaped = waitpid(pid, &status, 0);
--			if (reaped != pid) {
--				tst_resm(TFAIL,
--					 "Wait return value: expected pid=%d, "
--					 "got %d, iteration %ld.", pid, reaped,
--					 lc);
--				return;
--			} else if (WEXITSTATUS(status) != child_exit_code) {
--				tst_resm(TFAIL, "Unexpected exit status %x, "
--					 "iteration %ld.", WEXITSTATUS(status),
--					 lc);
-+	int i, distance, reaped, status, retval;
-+
-+	for (i = 0; i < MAX_ITERATIONS; i++) {
-+		retval = i % RETURN;
-+
-+		pid = SAFE_FORK();
-+		if (!pid)
-+			exit(retval);
-+
-+		if (prev_pid) {
-+			distance = pid_distance(prev_pid, pid);
-+			if (distance == 0) {
-+				tst_res(TFAIL,
-+					"Unexpected pid sequence: prev_pid=%i, pid=%i for iteration=%i",
-+					prev_pid, pid, i);
- 				return;
- 			}
- 		}
--	}
--	tst_resm(TPASS, "%ld pids forked, all passed", lc);
--}
- 
 -static void setup(void)
--{
++static void run(void)
+ {
 -	tst_require_root();
-+		prev_pid = pid;
+-	check_mqns();
++	tst_res(TINFO, "Checking namespaces isolation from parent to child");
++
++	clone_unshare_test(use_clone, CLONE_NEWIPC, check_mqueue, NULL);
+ }
  
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
-+		reaped = SAFE_WAITPID(pid, &status, 0);
+-int main(int argc, char *argv[])
++static void setup(void)
+ {
+-	int r;
+-	mqd_t mqd;
+-	char buf[30];
+-	int use_clone = T_UNSHARE;
+-
+-	setup();
+-
+-	if (argc == 2 && strcmp(argv[1], "-clone") == 0) {
+-		tst_resm(TINFO,
+-			 "Testing posix mq namespaces through clone(2).");
+-		use_clone = T_CLONE;
+-	} else
+-		tst_resm(TINFO,
+-			 "Testing posix mq namespaces through unshare(2).");
+-
+-	if (pipe(p1) == -1 || pipe(p2) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "pipe failed");
+-	}
++	use_clone = get_clone_unshare_enum(str_op);
  
--	/* Backup pid_max value. */
--	SAFE_FILE_SCANF(NULL, PID_MAX_PATH, "%lu", &pid_max);
-+		if (reaped != pid) {
-+			tst_res(TFAIL,
-+				"Wrong pid %i returned from waitpid() expected %i",
-+				reaped, pid);
-+			return;
-+		}
+-	mqd = tst_syscall(__NR_mq_open, NOSLASH_MQ1, O_RDWR | O_CREAT | O_EXCL,
+-		0777, NULL);
+-	if (mqd == -1) {
+-		perror("mq_open");
+-		tst_brkm(TFAIL, NULL, "mq_open failed");
+-	}
++	if (use_clone != T_NONE)
++		check_newipc();
  
--	SAFE_FILE_PRINTF(NULL, PID_MAX_PATH, "%d", PID_MAX);
--}
-+		if (WEXITSTATUS(status) != retval) {
-+			tst_res(TFAIL,
-+				"Wrong process exit value %i expected %i",
-+				WEXITSTATUS(status), retval);
-+			return;
-+		}
+-	tst_resm(TINFO, "Checking namespaces isolation from parent to child");
+-	/* fire off the test */
+-	r = do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_mqueue, NULL);
+-	if (r < 0) {
+-		tst_resm(TFAIL, "failed clone/unshare");
+-		mq_close(mqd);
+-		tst_syscall(__NR_mq_unlink, NOSLASH_MQ1);
+-		tst_exit();
+-	}
+-
+-	close(p1[0]);
+-	close(p2[1]);
+-	if (write(p1[1], "go", strlen("go") + 1) < 0)
+-		tst_resm(TBROK | TERRNO, "write(p1[1], \"go\", ...) failed");
+-	else if (read(p2[0], buf, 7) < 0)
+-		tst_resm(TBROK | TERRNO, "read(p2[0], buf, ...) failed");
+-	else {
+-		if (!strcmp(buf, "exists")) {
+-			tst_resm(TFAIL, "child process found mqueue");
+-		} else if (!strcmp(buf, "notfnd")) {
+-			tst_resm(TPASS, "child process didn't find mqueue");
+-		} else {
+-			tst_resm(TFAIL, "UNKNOWN RESULT");
+-		}
+-	}
++	mqd = SAFE_MQ_OPEN(MQNAME, O_RDWR | O_CREAT | O_EXCL, 0777, NULL);
++	if (mqd == -1)
++		tst_brk(TBROK | TERRNO, "mq_open failed");
++}
  
--static void cleanup(void)
--{
--	/* Restore pid_max value. */
--	FILE_PRINTF(PID_MAX_PATH, "%lu", pid_max);
--}
-+		if (!tst_remaining_runtime()) {
-+			tst_res(TINFO, "Runtime exhausted, exiting...");
-+			break;
-+		}
-+	}
- 
--/* The distance mod PIDMAX between two pids, where the first pid is
--   expected to be smaller than the second. */
--static int pid_distance(pid_t first, pid_t second)
--{
--	return (second + PID_MAX - first) % PID_MAX;
-+	tst_res(TPASS, "%i pids forked, all passed", i);
+-	/* destroy the mqueue */
+-	if (mq_close(mqd) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "mq_close failed");
++static void cleanup(void)
++{
++	if (mqd != -1) {
++		SAFE_MQ_CLOSE(mqd);
++		SAFE_MQ_UNLINK(MQNAME);
+ 	}
+-	tst_syscall(__NR_mq_unlink, NOSLASH_MQ1);
+-
+-	tst_exit();
  }
 +
 +static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
 +	.needs_root = 1,
 +	.forks_child = 1,
-+	.max_runtime = 600,
-+	.test_all = check,
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"!/proc/sys/kernel/pid_max", PID_MAX_STR},
-+		{}
++	.options = (struct tst_option[]) {
++		{ "m:", &str_op, "Test execution mode <clone|unshare|none>" },
++		{},
 +	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "5fdee8c4a5e1"},
-+		{}
-+	}
 +};
 -- 
-2.35.1
+2.35.3
 
 
 -- 
