@@ -4,69 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13E72C43334
-	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 21:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 601DEC43334
+	for <ltp@archiver.kernel.org>; Fri, 17 Jun 2022 01:17:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4F4F53C8796
-	for <ltp@archiver.kernel.org>; Thu, 16 Jun 2022 23:57:51 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 293153C87AD
+	for <ltp@archiver.kernel.org>; Fri, 17 Jun 2022 03:17:20 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8FFE23C021D
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 23:57:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 2EE813C19CA
+ for <ltp@lists.linux.it>; Fri, 17 Jun 2022 03:17:09 +0200 (CEST)
+Received: from a8-29.smtp-out.amazonses.com (a8-29.smtp-out.amazonses.com
+ [54.240.8.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9B871200D27
- for <ltp@lists.linux.it>; Thu, 16 Jun 2022 23:57:39 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EF5E621CA6;
- Thu, 16 Jun 2022 21:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655416658;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KBSDwIsIyBkCg2uu3lP7OJhHTmh7uakbg+pGLeOy9cI=;
- b=uYX2Ede7YWK5V0r7OxNFrwXtdaq0q4vX5PBAqkIKja9WiVQho2fVJsUTW17NqlV/jfLLpz
- SQsYNzv4xBnRQen382IRtHuzAxwbUL/gaZwsujhLp/+o5zIy4VEcm6EC6nra6eVq/CpY4q
- cIGcLNrPhWVVSYASO6Rz/dTb937eXo4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655416658;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KBSDwIsIyBkCg2uu3lP7OJhHTmh7uakbg+pGLeOy9cI=;
- b=V9pTnFrIPeyNSmC9N1L1pys41K4graZsPPUstvZuZYH14W7aJ4WakJlrnuIvd21iIhnnHt
- QSPMR1TdRKyXOYDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFC961344E;
- Thu, 16 Jun 2022 21:57:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GDwfMVKnq2LNQQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 16 Jun 2022 21:57:38 +0000
-Date: Thu, 16 Jun 2022 23:57:37 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>, ltp@lists.linux.it
-Message-ID: <YqunUfT847rSDkLY@pevik>
-References: <20220616140717.23708-1-andrea.cervesato@suse.com>
- <20220616140717.23708-2-andrea.cervesato@suse.com>
- <YqumDWnqP35qT0t0@pevik>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 53A40601350
+ for <ltp@lists.linux.it>; Fri, 17 Jun 2022 03:17:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1655428626;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=O1kc1RRnjup5cDWVcgxDbNM/AYrMVcjeOUVzCJEXWl4=;
+ b=c03rZL1fJmtpBnSL6nHuRuZ5ryFliolzHeBmPZvsqZoQs9LzrtrX4RltTd2pVjAC
+ SxnjQckGcdnVrxsmXMHjrV36FyK0RDTQcQel9h4iJpG8pxQ7UOR5xIl9oYnbVcswoTT
+ 6cR9Bf8uWZ+VU2U7r4dJAQDfNK1QEYvxtntgL0dk=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1655428626;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=O1kc1RRnjup5cDWVcgxDbNM/AYrMVcjeOUVzCJEXWl4=;
+ b=C77tTaNZ40ZlNcNDr7RZL1OE+lrhhP8DCFvA6CnD2UCHRSZkdxz2Trd1PqjCE4wC
+ PmRGgssBX1s6NThaydCTYBxTv+9lmx5kGNsq3XaEKy6Dy4heAJqwNMeD5Z3fHTxQubf
+ KFj0swnUfRdLJQT54SYgU4NX3RmneHzIr9IrdiyQ=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YqumDWnqP35qT0t0@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Message-ID: <010001816f3c352e-f5ee78c6-1425-42f5-b673-409a0a92ef74-000000@email.amazonses.com>
+Date: Fri, 17 Jun 2022 01:17:05 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.06.17-54.240.8.29
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/7] Add more safe macros for mqueue API
+Subject: [LTP] [REGRESSION] lkft ltp for 6763a36
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,38 +57,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+## Build
+* kernel: 5.17.15
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.17.y
+* git commit: eed68052d2016d9f96d6656435099762608120e3
+* git describe: 6763a36
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/6763a36
 
-...
-> > +static inline int safe_mq_close(const char *file, const int lineno,
-> > +				mqd_t __mqdes)
-> > +{
-> > +	int rval;
-> > +
-> > +	rval = mq_close(__mqdes);
-> > +
-> > +	if (rval == -1) {
-> > +		tst_brk_(file, lineno, TBROK | TERRNO,
-> > +			"mq_close(%d) failed", __mqdes);
-> > +	}
+## Test Regressions (compared to 20220527-48-g47ebb84)
+* qemu_arm, ltp-syscalls-tests
+  - accept02
 
-> How about check for invalid return value?
 
-> 	} else if (rval < 0) {
-> 		tst_brk_(file, lineno, TBROK | TERRNO,
-> 			"Invalid mq_close(%d) return value %d", __mqdes, rval);
-> 	}
+## Metric Regressions (compared to 20220527-48-g47ebb84)
+No metric regressions found.
 
-Also safe_mq_open() could have check for invalid return value.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Kind regards,
-Petr
+
+## Test Fixes (compared to 20220527-48-g47ebb84)
+* qemu_arm, ltp-syscalls-tests
+  - inotify12
+
+* qemu_arm64, ltp-crypto-tests
+  - af_alg07
+
+* qemu_arm64, ltp-syscalls-tests
+  - inotify12
+
+* qemu_i386, ltp-fs-tests
+  - read_all_proc
+
+* qemu_i386, ltp-syscalls-tests
+  - inotify12
+
+* qemu_x86_64, ltp-syscalls-tests
+  - inotify12
+
+
+## Metric Fixes (compared to 20220527-48-g47ebb84)
+No metric fixes found.
+
+## Test result summary
+total: 12654, pass: 10650, fail: 63, skip: 1941, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
