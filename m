@@ -4,35 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08FECC43334
-	for <ltp@archiver.kernel.org>; Fri, 17 Jun 2022 17:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5528FC43334
+	for <ltp@archiver.kernel.org>; Sat, 18 Jun 2022 01:42:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0EA1F3C8D4A
-	for <ltp@archiver.kernel.org>; Fri, 17 Jun 2022 19:27:03 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DBFDE3C8F38
+	for <ltp@archiver.kernel.org>; Sat, 18 Jun 2022 03:42:52 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 54DB73C0675
- for <ltp@lists.linux.it>; Fri, 17 Jun 2022 19:26:51 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id 66A43600F88
- for <ltp@lists.linux.it>; Fri, 17 Jun 2022 19:26:50 +0200 (CEST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0EA31474;
- Fri, 17 Jun 2022 10:26:48 -0700 (PDT)
-Received: from deb-build-vm.home (unknown [172.31.20.19])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF91C3F792;
- Fri, 17 Jun 2022 10:26:47 -0700 (PDT)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: ltp@lists.linux.it
-Date: Fri, 17 Jun 2022 18:26:41 +0100
-Message-Id: <20220617172641.122296-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.30.2
+ by picard.linux.it (Postfix) with ESMTPS id 47B893C0763
+ for <ltp@lists.linux.it>; Sat, 18 Jun 2022 03:42:39 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B0D81A00142
+ for <ltp@lists.linux.it>; Sat, 18 Jun 2022 03:42:27 +0200 (CEST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LPzCH1dZmzjXbN
+ for <ltp@lists.linux.it>; Sat, 18 Jun 2022 09:41:15 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.63) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 18 Jun 2022 09:42:22 +0800
+To: <ltp@lists.linux.it>
+Date: Sat, 18 Jun 2022 09:40:14 +0800
+Message-ID: <20220618014014.224668-1-zhaogongyi@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.67.174.63]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Fix mountns01/02/03/04 removing unneeded final umounts
+Subject: [LTP] [PATCH v2] syscalls/nice05: Add testcase for nice() syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -44,107 +51,267 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Zhao Gongyi via ltp <ltp@lists.linux.it>
+Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Running LTP20220527 release it appears that the recently re-written tests
-mountns02/03/04 now throw a warning on their final umount attempt:
+Add test verifies that the low nice thread executes more
+time than the high nice thread since the two thread binded
+on the same cpu.
 
-<<<test_output>>>
-tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
-mountns04.c:38: TPASS: unbindable mount passed
-tst_device.c:395: TWARN: umount('A') failed with EINVAL
-mountns.h:36: TWARN: umount(A) failed: EINVAL (22)
-tst_device.c:434: TINFO: No device is mounted at B
-
-Moreover, the underlying safe_umount() then upgrades the TWARN emitted
-from tst_umount to a TBROK, so causing the test to completely fail:
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 2
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=4 corefile=no
-
-In fact, the final umounts on DIRA seem not needed in mountns02/03/04
-looking at the previous chain of umounts calls and the tests logic and,
-in any case, the .cleanup functions of all these tests take care to
-finally unmount both DIRA/DIRB after having checked if they were still
-mounted at all.
-
-Remove all the final SAFE_UMOUNT calls (even for mountns01) since all the
-possibly needed umounts are already eventually performed by .cleanup.
-
-Cc: Andrea Cervesato <andrea.cervesato@suse.de>
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- testcases/kernel/containers/mountns/mountns01.c | 2 --
- testcases/kernel/containers/mountns/mountns02.c | 2 --
- testcases/kernel/containers/mountns/mountns03.c | 2 --
- testcases/kernel/containers/mountns/mountns04.c | 2 --
- 4 files changed, 8 deletions(-)
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/nice/.gitignore |   1 +
+ testcases/kernel/syscalls/nice/Makefile   |   5 +
+ testcases/kernel/syscalls/nice/nice05.c   | 196 ++++++++++++++++++++++
+ 4 files changed, 203 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/nice/nice05.c
 
-diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
-index 452fe1d10..7c9461e4d 100644
---- a/testcases/kernel/containers/mountns/mountns01.c
-+++ b/testcases/kernel/containers/mountns/mountns01.c
-@@ -85,8 +85,6 @@ static void run(void)
- 		tst_res(TFAIL, "shared mount in child failed");
- 
- 	TST_CHECKPOINT_WAKE(0);
--
--	SAFE_UMOUNT(DIRA);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
-index cbd435958..0693bb9f6 100644
---- a/testcases/kernel/containers/mountns/mountns02.c
-+++ b/testcases/kernel/containers/mountns/mountns02.c
-@@ -86,8 +86,6 @@ static void run(void)
- 		tst_res(TPASS, "private mount in child passed");
- 
- 	TST_CHECKPOINT_WAKE(0);
--
--	SAFE_UMOUNT(DIRA);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/containers/mountns/mountns03.c b/testcases/kernel/containers/mountns/mountns03.c
-index 5c19a96a9..aceab32ae 100644
---- a/testcases/kernel/containers/mountns/mountns03.c
-+++ b/testcases/kernel/containers/mountns/mountns03.c
-@@ -96,8 +96,6 @@ static void run(void)
- 		tst_res(TFAIL, "propagation form slave mount failed");
- 
- 	TST_CHECKPOINT_WAKE(0);
--
--	SAFE_UMOUNT(DIRA);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
-index cc63a03d9..d0ecf7667 100644
---- a/testcases/kernel/containers/mountns/mountns04.c
-+++ b/testcases/kernel/containers/mountns/mountns04.c
-@@ -40,8 +40,6 @@ static void run(void)
- 		SAFE_UMOUNT(DIRB);
- 		tst_res(TFAIL, "unbindable mount faled");
- 	}
--
--	SAFE_UMOUNT(DIRA);
- }
- 
- static void setup(void)
--- 
-2.30.2
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 88c31db06..a1f741d6a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -901,6 +901,7 @@ nice01 nice01
+ nice02 nice02
+ nice03 nice03
+ nice04 nice04
++nice05 nice05
+
+ open01 open01
+ open01A symlink01 -T open01
+diff --git a/testcases/kernel/syscalls/nice/.gitignore b/testcases/kernel/syscalls/nice/.gitignore
+index 9d7a1bb43..58d64779e 100644
+--- a/testcases/kernel/syscalls/nice/.gitignore
++++ b/testcases/kernel/syscalls/nice/.gitignore
+@@ -2,3 +2,4 @@
+ /nice02
+ /nice03
+ /nice04
++/nice05
+diff --git a/testcases/kernel/syscalls/nice/Makefile b/testcases/kernel/syscalls/nice/Makefile
+index 044619fb8..9b155295e 100644
+--- a/testcases/kernel/syscalls/nice/Makefile
++++ b/testcases/kernel/syscalls/nice/Makefile
+@@ -3,6 +3,11 @@
+
+ top_srcdir		?= ../../../..
+
++LTPLIBS = ltpnewipc
++
++nice05: CFLAGS += -pthread
++nice05: LTPLDLIBS  += -lltpnewipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/nice/nice05.c b/testcases/kernel/syscalls/nice/nice05.c
+new file mode 100644
+index 000000000..cdaa96e97
+--- /dev/null
++++ b/testcases/kernel/syscalls/nice/nice05.c
+@@ -0,0 +1,196 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright(c) 2022 Huawei Technologies Co., Ltd
++ * Author: Li Mengfei <limengfei4@huawei.com>
++ *         Zhao Gongyi <zhaogongyi@huawei.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * 1. Create a high nice thread and a low nice thread, the main
++ *    thread wake them at the same time
++ * 2. Both threads run on the same CPU
++ * 3. Verify that the low nice thread executes more time than
++ *    the high nice thread
++ */
++
++#define _GNU_SOURCE
++#include <pthread.h>
++#include <sys/types.h>
++#include <stdio.h>
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++#include "tst_safe_sysv_ipc.h"
++#include "lapi/syscalls.h"
++#include "libnewipc.h"
++
++static pthread_barrier_t barrier;
++static int some_cpu;
++static cpu_set_t *set;
++static pid_t *child_tid;
++static key_t shm_key;
++static int shm_id;
++
++static void set_nice(int nice_inc)
++{
++	int orig_nice;
++
++	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
++	TEST(nice(nice_inc));
++
++	if (TST_RET != (orig_nice + nice_inc)) {
++		tst_brk(TFAIL | TTERRNO, "nice(%d) returned %li, expected %i",
++				nice_inc, TST_RET, orig_nice + nice_inc);
++	}
++
++	if (TST_ERR)
++		tst_brk(TFAIL | TTERRNO, "nice(%d) failed", nice_inc);
++
++}
++
++static void *nice_low_thread(void *arg)
++{
++	int number = 0;
++	int ret = 0;
++
++	child_tid[0] = tst_syscall(__NR_gettid);
++	set_nice(*(int *)arg);
++	ret = pthread_barrier_wait(&barrier);
++	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
++		tst_brk(TBROK, "pthread_barrier_wait() returned %s",
++				tst_strerrno(-ret));
++	}
++
++	while (1)
++		number++;
++
++	return NULL;
++}
++
++static void *nice_high_thread(void *arg)
++{
++	int number = 0;
++	int ret = 0;
++
++	child_tid[1] = tst_syscall(__NR_gettid);
++	set_nice(*(int *)arg);
++	ret = pthread_barrier_wait(&barrier);
++	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
++		tst_brk(TBROK, "pthread_barrier_wait() returned %s",
++				tst_strerrno(-ret));
++	}
++
++	while (1)
++		number++;
++
++	return NULL;
++}
++
++static void setup(void)
++{
++	size_t size;
++	int index;
++	int nrcpus = 1024;
++
++	set = CPU_ALLOC(nrcpus);
++	if (!set)
++		tst_brk(TBROK | TERRNO, "CPU_ALLOC()");
++
++	size = CPU_ALLOC_SIZE(nrcpus);
++	CPU_ZERO_S(size, set);
++	if (sched_getaffinity(0, size, set) < 0)
++		tst_brk(TBROK | TERRNO, "sched_getaffinity()");
++
++	for (index = 0; index < (int)size * 8; index++)
++		if (CPU_ISSET_S(index, size, set))
++			some_cpu = index;
++
++	CPU_ZERO_S(size, set);
++	CPU_SET_S(some_cpu, size, set);
++	if (sched_setaffinity(0, size, set) < 0)
++		tst_brk(TBROK | TERRNO, "sched_setaffinity()");
++
++	shm_key = GETIPCKEY();
++	shm_id = SAFE_SHMGET(shm_key, getpagesize(), 0666 | IPC_CREAT);
++	child_tid = SAFE_SHMAT(shm_id, 0, 0);
++}
++
++static void cleanup(void)
++{
++	if (set)
++		CPU_FREE(set);
++
++	if (child_tid)
++		SAFE_SHMDT(child_tid);
++
++	if (shm_id)
++		SAFE_SHMCTL(shm_id, IPC_RMID, 0);
++}
++
++static void verify_nice(void)
++{
++	int ret;
++	int nice_inc_high = -1;
++	int nice_inc_low = -2;
++	char buf[4096] = {0};
++	float sum_exec_runtime[2];
++	pthread_t nice_low, nice_high;
++	pid_t pid;
++
++	pid = SAFE_FORK();
++	if (!pid) {
++		ret = pthread_barrier_init(&barrier, NULL, 3);
++		if (ret != 0) {
++			tst_brk(TBROK, "pthread_barrier_init() returned %s",
++					tst_strerrno(-ret));
++		}
++
++		SAFE_PTHREAD_CREATE(&nice_high, NULL, nice_high_thread,
++				(void *)&nice_inc_high);
++		SAFE_PTHREAD_CREATE(&nice_low, NULL, nice_low_thread,
++				(void *)&nice_inc_low);
++
++		ret = pthread_barrier_wait(&barrier);
++		if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
++			tst_brk(TBROK, "pthread_barrier_wait() returned %s",
++					tst_strerrno(-ret));
++		}
++
++		while (1)
++			sleep(1);
++	} else {
++		sleep(3);
++		SAFE_KILL(pid, SIGSTOP);
++
++		sprintf(buf, "/proc/%d/sched", child_tid[0]);
++		SAFE_FILE_SCANF(buf, "%*s %*s %*s %*s %*s"
++				"%*s %*s %*f %*s %*s %*f %*s %*s %f",
++				&sum_exec_runtime[0]);
++
++		sprintf(buf, "/proc/%d/sched", child_tid[1]);
++		SAFE_FILE_SCANF(buf, "%*s %*s %*s %*s %*s"
++				"%*s %*s %*f %*s %*s %*f %*s %*s %f",
++				&sum_exec_runtime[1]);
++
++		if (sum_exec_runtime[0] < sum_exec_runtime[1]) {
++			tst_brk(TFAIL, "nice_low_thread sum_exec_runtime: %f "
++				"nice_high_thread sum_exec_runtime: %f",
++				sum_exec_runtime[0], sum_exec_runtime[1]);
++		} else {
++			tst_res(TPASS, "executes more cycles "
++				"than the high nice thread");
++		}
++
++		SAFE_KILL(pid, SIGKILL);
++		SAFE_WAIT(NULL);
++	}
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_nice,
++	.needs_root = 1,
++	.forks_child = 1,
++};
+--
+2.17.1
 
 
 -- 
