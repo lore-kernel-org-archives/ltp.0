@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14DAAC433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 17:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80B2CC43334
+	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 20:36:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6948E3C937A
-	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 19:00:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B390E3C9357
+	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 22:36:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 708B33C920D
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 19:00:01 +0200 (CEST)
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com
- [IPv6:2607:f8b0:4864:20::e31])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4B9273C075E
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 22:35:51 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BEAE4200279
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 19:00:00 +0200 (CEST)
-Received: by mail-vs1-xe31.google.com with SMTP id j6so2938546vsi.0
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 10:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=AqLdcTyOwARJlxiVMZbtVs6cLsScSWdQklKECh/6Om8=;
- b=k/lHIvOeHiJmTaQ/2fFjyAwHAMq/PGThWv3OfIAsxOjwDsnX382difXIhweKhp8Vln
- pcH66HB/psGV+8I1xDf93u/v+qseXCgpM2xlb/C1ggHrxIVm6EQMb61aN6mjK3tXNxLF
- g/59xXE2hKNDmwOCzNrYO0baXgqHilWFFSuJBfKMN3Msv8bNe0kORXycRFSha67AeA3x
- riwgUIaiTFfHplUfkciDW80WxxD7c4s+ppRXO4q1gqBcaXsMx3Sl7nar0ddu0WZtW8uM
- UMLDZDiYzi/4vDj1OapL5SP2PdVLn6oi75TJxHGrjJzdA6tpEQnr7JuIgEGamcWOFkHK
- 3/wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=AqLdcTyOwARJlxiVMZbtVs6cLsScSWdQklKECh/6Om8=;
- b=lbym86BaWEtIuK/0CciWr2YhdisY/KpJ2R408bXF3TmgGJ4fRCHep85FCVBhRCfIVC
- JARcueObJbDqryFHRmSdyplbSmi4klAk/vau7fYA41GCjbq+5MIE1VvUSaAyZqIDaXSx
- ZPzTHb9uwwiIU66SC66uQwYqr2g4HXPVS/hXpO0XG8AEP2LLxLPo6ARmmgbyvEOMTk2z
- q68CGOPe0OCjQfzYpzM84fpy6HATm4fZN/Jqw/7ZvaDj5pxJE1bgsnw9LLr0csXdMBMc
- +ESrZiZnTgcQR1quHbsuVMieVTZsiQncNM4pqeD5FJhNRs1egc9ZpwlqHQocH1h1Q+Fu
- sTaQ==
-X-Gm-Message-State: AJIora9uaWoFx9IkqsEvUBb2zJVBbMd7qt8NzefTjw8Q2kjBWuoVAF4S
- urOurpE1Q3/L2PyiibAGV8CId0tVw1O2brMHLug=
-X-Google-Smtp-Source: AGRyM1uPNN+LgJueobcm3Bbf23A/YnwDwVVExHjJUxS+eNCbJsjZoU6S6Q1yAZ+Ex2Gim8JMG5U17PBExnmflW3WEqk=
-X-Received: by 2002:a67:cd0f:0:b0:34b:cb17:892c with SMTP id
- u15-20020a67cd0f000000b0034bcb17892cmr9506935vsl.36.1655744399540; Mon, 20
- Jun 2022 09:59:59 -0700 (PDT)
-MIME-Version: 1.0
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 470CB1400345
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 22:35:49 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 30D4821FD7;
+ Mon, 20 Jun 2022 20:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655757349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aCfGW3g2aeFSpzq9KI/ficVNsamlEFMX6CXuTmqyEuM=;
+ b=UxM5OaUZrHBzpx0QWyf0khe2ucrxH3u9vxA6wep9+VqXNEuIjhfu6GYY4+atPOKAjP7A26
+ npTiLE+JhjBvgaTYaa6GveN/Se6/Jzox+LuiuKyx96CZqVcanEr0N3q2609PxPirn//mvH
+ /wk8h1ZhkO1kvGXvgUA0nzKk9GaKD54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655757349;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aCfGW3g2aeFSpzq9KI/ficVNsamlEFMX6CXuTmqyEuM=;
+ b=4LRhCHC3wvg19VvQexpMpF221WBJG3q0wBb7FanVobvbp0sUGilDkc33yFlXJ/205XNziQ
+ uG79onjKxwGgc1Bw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 019CE2C141;
+ Mon, 20 Jun 2022 20:35:49 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id A3FB6A0636; Mon, 20 Jun 2022 22:35:45 +0200 (CEST)
+Date: Mon, 20 Jun 2022 22:35:45 +0200
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20220620203545.hejk7faw3liw2kxw@quack3.lan>
 References: <20220620132737.2015073-1-amir73il@gmail.com>
  <20220620132737.2015073-5-amir73il@gmail.com>
  <20220620152032.jbrhicuscem2f4kd@quack3.lan>
-In-Reply-To: <20220620152032.jbrhicuscem2f4kd@quack3.lan>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 20 Jun 2022 19:59:48 +0300
-Message-ID: <CAOQ4uxgmuS6qDVLQPqzNAoO2BtqcO55Mokcc70n2BukAhaH_Xw@mail.gmail.com>
-To: Jan Kara <jack@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ <CAOQ4uxgmuS6qDVLQPqzNAoO2BtqcO55Mokcc70n2BukAhaH_Xw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxgmuS6qDVLQPqzNAoO2BtqcO55Mokcc70n2BukAhaH_Xw@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 4/4] syscalls/fanotify09: Add test cases for merge
  of ignore mask
@@ -74,39 +73,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>, Matthew Bobrowski <repnop@google.com>
+Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>,
+ Matthew Bobrowski <repnop@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Jun 20, 2022 at 6:20 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Mon 20-06-22 16:27:37, Amir Goldstein wrote:
-> > 1. Verify that an ignore mask that does not survive modify event,
-> >    does survive a modify event on child, if parent is not watching
-> >    events on children.
+On Mon 20-06-22 19:59:48, Amir Goldstein wrote:
+> On Mon, Jun 20, 2022 at 6:20 PM Jan Kara <jack@suse.cz> wrote:
 > >
-> > 2. Verify that an ignore mask on parent does not ignore close events
-> >    sent to mount mark, if parent is not watching events on children.
+> > On Mon 20-06-22 16:27:37, Amir Goldstein wrote:
+> > > 1. Verify that an ignore mask that does not survive modify event,
+> > >    does survive a modify event on child, if parent is not watching
+> > >    events on children.
+> > >
+> > > 2. Verify that an ignore mask on parent does not ignore close events
+> > >    sent to mount mark, if parent is not watching events on children.
+> > >
+> > > The behavior of these corner cases of ignore mask on parent dir have
+> > > always been undefined, so do not run the test for kernel < v5.19.
+> > >
+> > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 > >
-> > The behavior of these corner cases of ignore mask on parent dir have
-> > always been undefined, so do not run the test for kernel < v5.19.
-> >
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
->
-> Hum, I was looking into the testcase. What does generate a modify event
-> there and checks that ignore mask does not survive it?
+> > Hum, I was looking into the testcase. What does generate a modify event
+> > there and checks that ignore mask does not survive it?
+> 
+> I think this does:
+> 
+>         /*
+>          * generate MODIFY event and no FAN_CLOSE_NOWRITE event.
+>          */
+>         SAFE_FILE_PRINTF(fname, "1");
 
-I think this does:
+Yeah, I was looking at that but then I'm somewhat confused because this
+gets called in .setup() hook while the notification groups get created only
+in .test() hook that gets called later. What am I missing?
 
-        /*
-         * generate MODIFY event and no FAN_CLOSE_NOWRITE event.
-         */
-        SAFE_FILE_PRINTF(fname, "1");
+								Honza
 
-Thanks,
-Amir.
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
