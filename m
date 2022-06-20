@@ -4,47 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D270C43334
-	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 15:38:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14DAAC433EF
+	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 17:00:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 683F83C9427
-	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 17:38:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6948E3C937A
+	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 19:00:13 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DBDD83C0611
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 17:38:00 +0200 (CEST)
-Received: from a48-34.smtp-out.amazonses.com (a48-34.smtp-out.amazonses.com
- [54.240.48.34])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 708B33C920D
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 19:00:01 +0200 (CEST)
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com
+ [IPv6:2607:f8b0:4864:20::e31])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C28E16006C6
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 17:37:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1655739477;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=lxIBTpvrvymAoDVrCNHRJsmTJW+e/DT+QGEfnNJFfVE=;
- b=HTS8k5PS4lKrO7QmqlVvEMv7dUFlaNlIUBOvjwNtwm6fnR0jPZnl5tC7XZk5axWW
- SXfDDat5reXouzDk2DIFTrigecTZ96OT1rpBVkilH605N6bpfn1Y9C/xKTixotS/YyS
- OTulRW4kgzyOQoS62ekdXOYOzUN1/CYil9ik4f8o=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1655739477;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=lxIBTpvrvymAoDVrCNHRJsmTJW+e/DT+QGEfnNJFfVE=;
- b=hyRcic8PkMuFH3spz7f8HYN0ooyN6tRQnrIW/XgI+ymclKPJ2FJyAUN8hZCtZlrX
- QltjczoRvff3APpDALlS1dMbO6NFSBL46tZzOLoOn/XansmCpmfhP/Yw+xyHE90YUT1
- vCwttR4MqlYjNH0boPb9i/lmt+VHXkiDuyQQ5hdk=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BEAE4200279
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 19:00:00 +0200 (CEST)
+Received: by mail-vs1-xe31.google.com with SMTP id j6so2938546vsi.0
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 10:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=AqLdcTyOwARJlxiVMZbtVs6cLsScSWdQklKECh/6Om8=;
+ b=k/lHIvOeHiJmTaQ/2fFjyAwHAMq/PGThWv3OfIAsxOjwDsnX382difXIhweKhp8Vln
+ pcH66HB/psGV+8I1xDf93u/v+qseXCgpM2xlb/C1ggHrxIVm6EQMb61aN6mjK3tXNxLF
+ g/59xXE2hKNDmwOCzNrYO0baXgqHilWFFSuJBfKMN3Msv8bNe0kORXycRFSha67AeA3x
+ riwgUIaiTFfHplUfkciDW80WxxD7c4s+ppRXO4q1gqBcaXsMx3Sl7nar0ddu0WZtW8uM
+ UMLDZDiYzi/4vDj1OapL5SP2PdVLn6oi75TJxHGrjJzdA6tpEQnr7JuIgEGamcWOFkHK
+ 3/wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=AqLdcTyOwARJlxiVMZbtVs6cLsScSWdQklKECh/6Om8=;
+ b=lbym86BaWEtIuK/0CciWr2YhdisY/KpJ2R408bXF3TmgGJ4fRCHep85FCVBhRCfIVC
+ JARcueObJbDqryFHRmSdyplbSmi4klAk/vau7fYA41GCjbq+5MIE1VvUSaAyZqIDaXSx
+ ZPzTHb9uwwiIU66SC66uQwYqr2g4HXPVS/hXpO0XG8AEP2LLxLPo6ARmmgbyvEOMTk2z
+ q68CGOPe0OCjQfzYpzM84fpy6HATm4fZN/Jqw/7ZvaDj5pxJE1bgsnw9LLr0csXdMBMc
+ +ESrZiZnTgcQR1quHbsuVMieVTZsiQncNM4pqeD5FJhNRs1egc9ZpwlqHQocH1h1Q+Fu
+ sTaQ==
+X-Gm-Message-State: AJIora9uaWoFx9IkqsEvUBb2zJVBbMd7qt8NzefTjw8Q2kjBWuoVAF4S
+ urOurpE1Q3/L2PyiibAGV8CId0tVw1O2brMHLug=
+X-Google-Smtp-Source: AGRyM1uPNN+LgJueobcm3Bbf23A/YnwDwVVExHjJUxS+eNCbJsjZoU6S6Q1yAZ+Ex2Gim8JMG5U17PBExnmflW3WEqk=
+X-Received: by 2002:a67:cd0f:0:b0:34b:cb17:892c with SMTP id
+ u15-20020a67cd0f000000b0034bcb17892cmr9506935vsl.36.1655744399540; Mon, 20
+ Jun 2022 09:59:59 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <0100018181c36bde-030c448a-9756-4375-b979-c2cc93d3072d-000000@email.amazonses.com>
-Date: Mon, 20 Jun 2022 15:37:57 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.06.20-54.240.48.34
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20220620132737.2015073-1-amir73il@gmail.com>
+ <20220620132737.2015073-5-amir73il@gmail.com>
+ <20220620152032.jbrhicuscem2f4kd@quack3.lan>
+In-Reply-To: <20220620152032.jbrhicuscem2f4kd@quack3.lan>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 20 Jun 2022 19:59:48 +0300
+Message-ID: <CAOQ4uxgmuS6qDVLQPqzNAoO2BtqcO55Mokcc70n2BukAhaH_Xw@mail.gmail.com>
+To: Jan Kara <jack@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 53ae719
+Subject: Re: [LTP] [PATCH 4/4] syscalls/fanotify09: Add test cases for merge
+ of ignore mask
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,83 +74,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
+Cc: LTP List <ltp@lists.linux.it>, Matthew Bobrowski <repnop@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.15
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.17.y
-* git commit: eed68052d2016d9f96d6656435099762608120e3
-* git describe: 53ae719
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/53ae719
+On Mon, Jun 20, 2022 at 6:20 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Mon 20-06-22 16:27:37, Amir Goldstein wrote:
+> > 1. Verify that an ignore mask that does not survive modify event,
+> >    does survive a modify event on child, if parent is not watching
+> >    events on children.
+> >
+> > 2. Verify that an ignore mask on parent does not ignore close events
+> >    sent to mount mark, if parent is not watching events on children.
+> >
+> > The behavior of these corner cases of ignore mask on parent dir have
+> > always been undefined, so do not run the test for kernel < v5.19.
+> >
+> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+>
+> Hum, I was looking into the testcase. What does generate a modify event
+> there and checks that ignore mask does not survive it?
 
-## Test Regressions (compared to 6763a36)
-* bcm2711-rpi-4-b, ltp-syscalls-tests
-  - syncfs01
+I think this does:
 
-* qemu_arm64, ltp-cve-tests
-  - cve-2019-8912
+        /*
+         * generate MODIFY event and no FAN_CLOSE_NOWRITE event.
+         */
+        SAFE_FILE_PRINTF(fname, "1");
 
-* qemu_arm64, ltp-fs-tests
-  - fs_fill
-  - read_all_proc
-
-
-## Metric Regressions (compared to 6763a36)
-No metric regressions found.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## Test Fixes (compared to 6763a36)
-* bcm2711-rpi-4-b, ltp-fs-tests
-  - read_all_proc
-
-
-## Metric Fixes (compared to 6763a36)
-No metric fixes found.
-
-## Test result summary
-total: 12311, pass: 10345, fail: 61, skip: 1905, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
