@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F40BC433EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 06:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F14C433EF
+	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 08:08:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B97B3C9185
-	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 08:35:15 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 885C73C93B3
+	for <ltp@archiver.kernel.org>; Mon, 20 Jun 2022 10:08:48 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E64053C215A
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 08:35:05 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id BECA83C039E
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 10:08:36 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C253A6008A7
+ for <ltp@lists.linux.it>; Mon, 20 Jun 2022 10:08:35 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id F3C501F383;
+ Mon, 20 Jun 2022 08:08:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655712515;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a85kQP03KlwNMa6r5AB7BE9gDrhG4quaSOidpxS/8c0=;
+ b=0hmec/tbzVpEdZYOv/4adSy2pYa8W0glEwk/U8l6IcZVonHfw+tUYMj4XFg6ZdLZ26B4Q5
+ hBI3RWPGx0h9Ef/C0IYD8wZkOuAbz7D3D9ZZyXFsorox6P8e2iJnLajT33wdMqNWfjfxE1
+ LPjwVQhvMmpqncRaGpcYC+UejMhkQwU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655712515;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a85kQP03KlwNMa6r5AB7BE9gDrhG4quaSOidpxS/8c0=;
+ b=1olbsvx4J/x69RiJqpEaPrpUOvJkOhO60gULB5WjHZObFBLQh0c/hhznKY7Y3fv6HMlk7u
+ EywhSgTBMl43HGBw==
+Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7C3A7600810
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 08:35:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655706902;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=1eoAWF0llfDblTKQ8BR/lmSTlRHdJDimYaLtJLK/tR0=;
- b=AI8tUE/quQ36X8VC9SeBV4/fdZ1HootjzXqrhl6ABQgiXHRll7bwBzE0sdUqpxqS4FjoTX
- 77n8QlTd6ObTd7Wgd6TF5iL1pzuvCbSUe18gd6ccxFtKcmP79AmDBLnLzoWJYPG+Ck3sno
- +PPuGQyRIv6PfNKMBo9IYv+5ckwHues=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-122-gOhByEFkO0Ghx95AXswNTA-1; Mon, 20 Jun 2022 02:35:00 -0400
-X-MC-Unique: gOhByEFkO0Ghx95AXswNTA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
- [10.11.54.3])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B6D1B185A7BA;
- Mon, 20 Jun 2022 06:34:59 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com
- (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 6B4391121314;
- Mon, 20 Jun 2022 06:34:58 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 20 Jun 2022 14:34:56 +0800
-Message-Id: <20220620063456.528113-1-liwang@redhat.com>
+ by relay2.suse.de (Postfix) with ESMTPS id A62832C141;
+ Mon, 20 Jun 2022 08:08:34 +0000 (UTC)
+References: <20220615090648.405100-1-liwang@redhat.com>
+ <875yl1jbkq.fsf@suse.de>
+ <CAEemH2egR16PDbTASg9pJxBdY3w8B_=XEf+Du9hbLaqR0X3Wsw@mail.gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Mon, 20 Jun 2022 08:44:35 +0100
+In-reply-to: <CAEemH2egR16PDbTASg9pJxBdY3w8B_=XEf+Du9hbLaqR0X3Wsw@mail.gmail.com>
+Message-ID: <87a6a769kt.fsf@suse.de>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] swapping01: make use of remaining runtime in test
- looping
+Subject: Re: [LTP] [RFC PATCH] madvise06: shrink to 1 MADV_WILLNEED page to
+ stabilize the test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,100 +72,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: Paul Bunyan <pbunyan@redhat.com>, Rafael Aquini <aquini@redhat.com>,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Here go with default to 10 minutes for max_runtime. At the same time limit
-the loop that waits for the swap usage to settle to run for a reminder
-of max_runtime/2 instead of the hardcoded 30 seconds.
+Hello Li,
 
-This fix can significantly improve timeouts on slower systems:
+Li Wang <liwang@redhat.com> writes:
 
-  # free -h
-                total        used        free      shared  buff/cache   available
-  Mem:          2.9Gi       1.1Gi       1.1Gi        20Mi       732Mi       1.5Gi
-  Swap:         2.0Gi          0B       2.0Gi
+> Hi Richard,
+>
+> Richard Palethorpe <rpalethorpe@suse.de> wrote:
+>  
+>  > --- a/testcases/kernel/syscalls/madvise/madvise06.c
+>  > +++ b/testcases/kernel/syscalls/madvise/madvise06.c
+>  > @@ -164,7 +164,7 @@ static int get_page_fault_num(void)
+>  >  
+>  >  static void test_advice_willneed(void)
+>  >  {
+>  > -     int loops = 50, res;
+>  > +     int loops = 100, res;
+>  >       char *target;
+>  >       long swapcached_start, swapcached;
+>  >       int page_fault_num_1, page_fault_num_2;
+>  > @@ -202,23 +202,32 @@ static void test_advice_willneed(void)
+>  >               "%s than %ld Kb were moved to the swap cache",
+>  >               res ? "more" : "less", PASS_THRESHOLD_KB);
+>  >  
+>  > -
+>  > -     TEST(madvise(target, PASS_THRESHOLD, MADV_WILLNEED));
+>  > +     loops = 100;
+>  > +     SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld", &swapcached_start);
+>  > +     TEST(madvise(target, pg_sz, MADV_WILLNEED));
+>  >       if (TST_RET == -1)
+>  >               tst_brk(TBROK | TTERRNO, "madvise failed");
+>  > +     do {
+>  > +             loops--;
+>  > +             usleep(100000);
+>  > +             if (stat_refresh_sup)
+>  > +                     SAFE_FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
+>  > +             SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld",
+>  > +                             &swapcached);
+>  > +     } while (swapcached < swapcached_start + pg_sz/1024 && loops > 0);
+>  >  
+>  >       page_fault_num_1 = get_page_fault_num();
+>  >       tst_res(TINFO, "PageFault(madvice / no mem access): %d",
+>  >                       page_fault_num_1);
+>  > -     dirty_pages(target, PASS_THRESHOLD);
+>  > +     dirty_pages(target, pg_sz);
+>
+>  Adding the loop makes sense to me. However I don't understand why you
+>  have also switched from PASS_THRESHOLD to only a single page?
+>
+> In the test, we use two checks combined to confirm the bug reproduces:
+>
+>   1. swap cached increasing less than PASS_THRESHOLD_KB
+>   2. page_fault number large than expected
+>
+> The 2. case is more easily get failed on kind of platforms and hard
+> to count an average value for tolerating. So maybe we just reduce
+> the page to one that would not affect the final result. Because we
+> rely on both checks happening simultaneously then assume a bug.
+>
+>  
+>  
+>  I guess calling MADV_WILLNEED on a single page is the least realistic
+>  scenario.
+>
+> Okay, perhaps it's a step backward:).
+>
+> I was just thinking it is a regression test and if 1 page works to reproduce
+> that (but more chunks of memory easily cause false positive), why not.
 
-  # time ./swapping01
-  tst_kconfig.c:82: TINFO: Parsing kernel config '/boot/config-4.18.0-309.el8.x86_64+debug'
-  tst_test.c:1528: TINFO: Timeout per run is 0h 02m 00s
-  swapping01.c:110: TINFO: available physical memory: 1545 MB
-  swapping01.c:113: TINFO: try to allocate: 2008 MB
-  swapping01.c:152: TPASS: no heavy swapping detected, 218 MB swapped.
-  ...
+That makes sense, but this test has also found other bugs. I'm not sure
+if they are reproducible with only one page.
 
-  real    0m34.241s
-  user    0m0.386s
-  sys     0m16.040s
+>
+>  
+>  
+>  If there is an issue with PASS_THRESHOLD perhaps we could scale it based
+>  on page size?
+>
+> This sounds acceptable too.
+>
+> How many pages do you think are proper, 100 or more?
+> and, loosen the faulted-out numbers to 1/10 pages?
 
-Co-developed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/mem/swapping/swapping01.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+I suppose that 100 pages would be too much memory on some systems. I
+guess at least 2 or 3 pages are needed so there is some
+traversal. Beyond that I don't know what would make a difference.
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index f6133cc0d..fc225e4a6 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -58,6 +58,7 @@ static long swap_free_init;
- static long mem_over;
- static long mem_over_max;
- static pid_t pid;
-+static unsigned int start_runtime;
- 
- static void test_swapping(void)
- {
-@@ -67,6 +68,8 @@ static void test_swapping(void)
- 	FILE *file;
- 	char line[PATH_MAX];
- 
-+	start_runtime = tst_remaining_runtime();
-+
- 	file = SAFE_FOPEN("/proc/swaps", "r");
- 	while (fgets(line, sizeof(line), file)) {
- 		if (strstr(line, "/dev/zram")) {
-@@ -122,7 +125,7 @@ static void do_alloc(int allow_raise)
- 
- static void check_swapping(void)
- {
--	int status, i;
-+	int status;
- 	long swap_free_now, swapped;
- 
- 	/* wait child stop */
-@@ -131,14 +134,14 @@ static void check_swapping(void)
- 		tst_brk(TBROK, "child was not stopped.");
- 
- 	/* Still occupying memory, loop for a while */
--	i = 0;
--	while (i < 30) {
-+	while (tst_remaining_runtime() > start_runtime/2) {
- 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
- 		sleep(1);
--		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 10)
-+		long diff = labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:"));
-+		if (diff < 10)
- 			break;
- 
--		i++;
-+		tst_res(TINFO, "SwapFree difference %li", diff);
- 	}
- 
- 	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
-@@ -159,6 +162,7 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.forks_child = 1,
- 	.min_mem_avail = 10,
-+	.max_runtime = 600,
- 	.test_all = test_swapping,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_SWAP=y",
+If there are only max 3 pages and we have a loop, I would not expect any
+to be faulted. Although maybe we could allow 1/3 because MADV_WILLNEED
+is only an advisory and a lot of time has been spent discussing this
+test already.
+
 -- 
-2.35.3
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
