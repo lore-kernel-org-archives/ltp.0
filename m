@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 626EAC43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 09:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 914FDC433EF
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 09:57:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EF3F3C9411
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 11:47:31 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 4F50D3C0282
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 11:57:12 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A43153C2806
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 11:47:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 182DA3C0282
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 11:57:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C5EF8600063
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 11:47:19 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 47EB26008D4
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 11:56:58 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0BBBC21E79;
- Tue, 21 Jun 2022 09:47:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 636601F932;
+ Tue, 21 Jun 2022 09:56:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655804839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1655805418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gv/SIHnjpCDtNGNXZVBNjid/NxszdW+bzMjsydS76j0=;
- b=rV5EPzeVv6EjAQmwQjLeDbd8F8DcVdUNuoT1FfDJ4fUwd44mFiwySiiM/CZO0WabSJs4dB
- J2xmhraGgt127jPeebEbAuDWJlUg9mI+4vBV7ZdQy+RpC4OkaZTWOCQwQKX6hshoKEdktP
- CC70YbCLPx0yQ+T1w9zB49jQCL0Osl0=
+ bh=W/unxOdLALGhSppQz4yYAIV368hBeIWJIMjSYOHdMbE=;
+ b=Wi2gui9UTGKuZviPE6wnUfBSpVxphABoBMSiGLI+7mWn8dPprlvyIQT4818gEAPIgCxuVt
+ tPekewG+brhkz0NabNMVCj4r1weq7OtWYHN5dCdU3ArC5Gx8IYugRMKAaH3s1EQJwSlM1j
+ b7+AGsBHTnyrf8fN9lTOtYNfyDdOp6A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655804839;
+ s=susede2_ed25519; t=1655805418;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gv/SIHnjpCDtNGNXZVBNjid/NxszdW+bzMjsydS76j0=;
- b=D0O16PhsPl75o43fg4F+Qq9nNpQZh2obA2/NDwcULhAca83Py2mGXuKo4e1Ttrj+lkHXfU
- tANcPlWtwWl5Y6Dw==
+ bh=W/unxOdLALGhSppQz4yYAIV368hBeIWJIMjSYOHdMbE=;
+ b=OMKC9me4+pPJZYm9OJFYCsqzHJR0oEkOllZCQvmbYQoFbTkCnmSTEGlvr4KL2o8BPF2uDK
+ iKCdxTZY2NIhdrDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDCBE13638;
- Tue, 21 Jun 2022 09:47:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4FED713638;
+ Tue, 21 Jun 2022 09:56:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4HSGOaaTsWL5MgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 09:47:18 +0000
-Date: Tue, 21 Jun 2022 11:49:26 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id /D56E+qVsWIyOAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 09:56:58 +0000
+Date: Tue, 21 Jun 2022 11:59:05 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <YrGUJmmVzhFJhlcX@yuki>
-References: <2873e7f25ac44d2c103a030bfc5f1d30e0fe80a9.1655795105.git.jstancek@redhat.com>
- <6616c11cdf55d2fd89f6f3c8f9ab1a8c1a3916e7.1655800610.git.jstancek@redhat.com>
+Message-ID: <YrGWaXzqNyS4TZOL@yuki>
+References: <e942179576028d20ad2c381d442fefec1af6a556.1655797247.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6616c11cdf55d2fd89f6f3c8f9ab1a8c1a3916e7.1655800610.git.jstancek@redhat.com>
+In-Reply-To: <e942179576028d20ad2c381d442fefec1af6a556.1655797247.git.jstancek@redhat.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/migrate_pages03: restore runtime to 5m
+Subject: Re: [LTP] [PATCH] syscalls/utime03: print more details when test
+ fails
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,33 +83,11 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Arches with large pages have trouble completing all loops in 30s,
-> restore runtime to 5m. Also check for remaining runtime and
-> exit if we run out.
+> Test is sporadically failing in past couple months on upstream
+> kernels. Print more data when that happens to see by how much
+> we are failing the checks.
 > 
 > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/migrate_pages/migrate_pages03.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
-> index c6afb4cce05d..2866c96e6b8d 100644
-> --- a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
-> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
-> @@ -127,6 +127,11 @@ static void migrate_test(void)
->  			tst_res(TFAIL | TERRNO, "migrate_pages() failed");
->  			return;
->  		}
-> +
-> +		if (!tst_remaining_runtime()) {
-> +			tst_res(TINFO, "Out of runtime, exitting...");
-                                                            ^
-							    Just one
-							    't' here
-
-Sorry I tend to make this typo quite often.
-
-With that fixed:
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
