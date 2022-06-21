@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5C80C43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 10:18:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF3F1C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 10:22:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 444583C93F3
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:17:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BAEDB3C93F3
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:22:45 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B72843C04EF
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:17:49 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 46D293C1BAD
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:22:36 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 54D396000F2
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:17:49 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 96572200211
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:22:35 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B3C8921E9F;
- Tue, 21 Jun 2022 10:17:48 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CF31321E79;
+ Tue, 21 Jun 2022 10:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655806668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1655806954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=whIpcf7LaFLxy7juPbB1qowXMUam+4cs39TmvcIMpDM=;
- b=ATA2dveYl8s81hxrNDbu2eL6yBildPY0Ekn4CjpVgn7sR8/5OTef+b1UyKd6gYVfmyejVs
- TjZP4hXg/LVabKuL6WdWJlS7pMdsKgW8mwTlYYS11mD3klAjsVkioN6wZs33TC1KH9lp8e
- fnlFqyIHIzuM6zV+uyRUQLiBz1ehYoc=
+ bh=b565p1FFNTM0ixjwWG+w83pjlBMMc4uBo/eUSCBo73s=;
+ b=stgKJUW3Nd3K0EN4oHP54iWHodjRwtaY0aieUI9XpT4+BYc7v3GRbEoxb3FIUw1ph3axpK
+ ZzKLhePbR6AdnNvc8FhkSCwQuvvn25bvovrT1OfQr2Wt+8Tbx7U178Tv9UfS+ykBUYdTPn
+ py9zNU7x21jF7ZnsNR+bHJ6j2p4LNtw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655806668;
+ s=susede2_ed25519; t=1655806954;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=whIpcf7LaFLxy7juPbB1qowXMUam+4cs39TmvcIMpDM=;
- b=BBvJNqfG1o/yVsGAmLvaW6c1N7TLPUKgRHATVGcsu8hG4gNcuVSg+EMFkuLyt/AflcEFqp
- GN7TO34PkRumgKBA==
+ bh=b565p1FFNTM0ixjwWG+w83pjlBMMc4uBo/eUSCBo73s=;
+ b=Z7quAL+r5vZJnVNch4YmvsQ9QAQPpjz/D6D63VYFY79qoH9WKEEFGJtzUbkquESXuxAXCR
+ J/6RAiSuqjwDTpCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94E3813638;
- Tue, 21 Jun 2022 10:17:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B8FDC13638;
+ Tue, 21 Jun 2022 10:22:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id C6c3I8yasWJ4QwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 10:17:48 +0000
-Date: Tue, 21 Jun 2022 12:19:56 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6gRsLOqbsWLURQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 10:22:34 +0000
+Date: Tue, 21 Jun 2022 12:24:42 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YrGbTL30pG+Vqs9L@yuki>
+Message-ID: <YrGcahVSR5fC5rus@yuki>
 References: <20220617172025.23975-1-akumar@suse.de>
- <20220617172025.23975-3-akumar@suse.de>
+ <20220617172025.23975-4-akumar@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220617172025.23975-3-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220617172025.23975-4-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/6] Rewrite utime02.c using new LTP API
+Subject: Re: [LTP] [PATCH 3/6] Remove unnecessary header includes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,7 +82,53 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Same comments as for utime01.c apply here as well.
+> ---
+>  testcases/kernel/syscalls/utime/utime03.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+> index 2358fd70b..0c64518d2 100644
+> --- a/testcases/kernel/syscalls/utime/utime03.c
+> +++ b/testcases/kernel/syscalls/utime/utime03.c
+> @@ -18,11 +18,8 @@
+>   * - The user ID of the process has write access to the file.
+>   */
+>  
+> -#include <sys/types.h>
+>  #include <pwd.h>
+>  #include <utime.h>
+> -#include <sys/stat.h>
+> -#include <time.h>
+>  
+>  #include "tst_test.h"
+>  #include "tst_uid.h"
+> @@ -60,7 +57,7 @@ static void run(void)
+>  	struct stat statbuf;
+>  	time_t mintime, maxtime;
+>  
+> -	utbuf.modtime = time(0) - 5;
+> +	utbuf.modtime = tst_get_fs_timestamp() - 5;
+
+This change is not explained in the patch description moreover ideally
+patches should do one logical change so if we are going to accept these
+changes they should be split into a patch that removes includes and
+patch that replaces the time(0).
+
+Although usage of time(0) is not really critical here, the difference
+between the time(0) and tst_get_fs_timestamp() is that they may be out
+of sync by 1 second as they are not incremenented at the exactly same
+time. Hence it does not matter if we set time 5 +-1 seconds in the past
+since the result is 100% different from current time.
+
+>  	utbuf.actime = utbuf.modtime + 1;
+>  	TST_EXP_PASS_SILENT(utime(TEMP_FILE, &utbuf));
+>  	SAFE_STAT(TEMP_FILE, &statbuf);
+> -- 
+> 2.36.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
