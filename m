@@ -4,62 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 901D0C43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 03:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADDD6C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 06:52:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5535E3C93D9
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 05:47:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id E2E393C93DC
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 08:52:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 230873C075E
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 05:47:37 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 628043C21D9
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 08:52:07 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6CF6D1400211
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 05:47:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655783254;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=cud/RJwvf1MrmDPFE/IwDIJRc2ySgV/Z6+rOzHu4Nzs=;
- b=fC7Mkedob/nqZzjePJxlKfKEKxbRQm7nQ97F9PZjUrK91EYb8zVFl3iaJw/VeJTwiYFLWf
- 52sohby3U4YODw+xbKCj2rDxkW6D2I19K8ouBaPZ7qV8UaTZ04dpCGJJxpNNeOokGppaM0
- AfAzVlYt9gRpV9uXkwcIGesfXu9zx+k=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-449-zGBVtlG2PuCBO_idQF8i_A-1; Mon, 20 Jun 2022 23:47:33 -0400
-X-MC-Unique: zGBVtlG2PuCBO_idQF8i_A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
- [10.11.54.1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1177F811E7A;
- Tue, 21 Jun 2022 03:47:33 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com
- (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 3268140CFD0A;
- Tue, 21 Jun 2022 03:47:30 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Tue, 21 Jun 2022 11:47:29 +0800
-Message-Id: <20220621034729.551200-1-liwang@redhat.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 71B986001E9
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 08:52:06 +0200 (CEST)
+Received: from [10.40.94.3] (unknown [37.24.96.116])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 6EF739F7FD;
+ Tue, 21 Jun 2022 06:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1655794306; bh=5AkBPEz+YxaMX2AatPeBhBSjCb0OEBJJi/NKKgNpDLg=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=Vqfh0Hgvr/Pba2lFT8khFTXUO2Xn3Qhe8h2eIp19tquBu/EmhkkiIloGKoYRFK2d9
+ qCIAvP1KT33mmysn5vUaVxzrpDOw9mNGUxKP5qmLSt/+hEX+O8exgk6S6XQmrlTKTM
+ XROHBvikXJLTDsBblclho2Q3xw0FT+Gcz4GicL0g=
+Message-ID: <762be123-13ad-1fcf-e4f3-846c7e1b236a@jv-coder.de>
+Date: Tue, 21 Jun 2022 08:51:45 +0200
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To: Cristian Marussi <cristian.marussi@arm.com>, ltp@lists.linux.it
+References: <20220620133746.99167-1-cristian.marussi@arm.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+In-Reply-To: <20220620133746.99167-1-cristian.marussi@arm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] madvise06: shrink to 3 MADV_WILLNEED pages to
- stabilize the test
+Subject: Re: [LTP] [PATCH v2] Fix mountns01/02/03/04 final umounts using
+ more peculiar dir names
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,110 +55,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Paul Bunyan <pbunyan@redhat.com>, Rafael Aquini <aquini@redhat.com>,
- Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Paul Bunyan reports that the madvise06 test fails intermittently with many
-LTS kernels, after checking with mm developer we prefer to think this is
-more like a test issue (but not kernel bug):
+Hi,
 
-   madvise06.c:231: TFAIL: 4 pages were faulted out of 2 max
+Am 6/20/2022 um 3:37 PM schrieb Cristian Marussi:
+> Running LTP20220527 release it appears that the recently re-written tests
+> mountns02/03/04 can now throw a warning on their final umount attempt in
+> some setup:
+> 
+> <<<test_output>>>
+> tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
+> mountns04.c:38: TPASS: unbindable mount passed
+> tst_device.c:395: TWARN: umount('A') failed with EINVAL
+> mountns.h:36: TWARN: umount(A) failed: EINVAL (22)
+> tst_device.c:434: TINFO: No device is mounted at B
+> 
+> Moreover, the underlying safe_umount() then upgrades the TWARN emitted
+> from tst_umount to a TBROK, so causing the test to completely fail:
+> 
+> Summary:
+> passed   1
+> failed   0
+> broken   0
+> skipped  0
+> warnings 2
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=4 corefile=no
+> 
+> Even though the final SAFE_UMOUNTs in the test body properly unmount the
+> test created mountpoints, the final cleanup functions, that finally check
+> to see if those mountpoints are still mounted, can be fooled into falsely
+> thinking that test-chosen mountpoints "A" or "B" are still there: this is
+> due to the fact that the internal helper tst_is_mounted() uses a simple
+> strstr() on /proc/mounts to check if a directory is still mounted and
+> clearly the currently test-chosen names are far too much simple, being
+> one-letter, and they can be easily matched by other unrelated mountpoints
+> that happen to exist on a specific setup.
+> 
+> Use a more peculiar naming for the test chosen mountpoints and generalize
+> accordingly all the comments.
+> 
+> Cc: Andrea Cervesato <andrea.cervesato@suse.de>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+> v1 --> v2
+> - using more peculiar naming for mountpoints
+> - fix comments
+> - dropped previous SAFE_UMONUT removal
+> 
+> A better, more long term fix should be to fix/harden tst_is_mounted logic,
+> but looking at mountpoint(1) implementation this is far from trivial to
+> be done (especially for bind mounts) and it would require a bit of
+> 're-inventing the wheel' to bring all the mountpoint/libmount helpers and
+> logic inside LTP; on the other side a dirty and ugly solution based on
+> something like tst_system("mountpoint -q <dir>") would be less portable
+> since would add the new mountpoint application as an LTP pre-requisite.
+> (and so just breaking a few CI probably without having a 'mountpoint-less'
+> failover mechanism)...so I just generalized the chosen names for now...
+> ---
+>  testcases/kernel/containers/mountns/mountns.h  |  4 ++--
+>  .../kernel/containers/mountns/mountns01.c      | 18 +++++++++---------
+>  .../kernel/containers/mountns/mountns02.c      | 18 +++++++++---------
+>  .../kernel/containers/mountns/mountns03.c      | 18 +++++++++---------
+>  .../kernel/containers/mountns/mountns04.c      |  8 ++++----
+>  5 files changed, 33 insertions(+), 33 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/mountns/mountns.h b/testcases/kernel/containers/mountns/mountns.h
+> index ad8befa71..347f0783a 100644
+> --- a/testcases/kernel/containers/mountns/mountns.h
+> +++ b/testcases/kernel/containers/mountns/mountns.h
+> @@ -10,8 +10,8 @@
+>  #include "tst_test.h"
+>  #include "lapi/namespaces_constants.h"
+>  
+> -#define DIRA "A"
+> -#define DIRB "B"
+> +#define DIRA "__DIR_A"
+> +#define DIRB "__DIR_B"
+This is the only non-comment change. How does renaming the directories
+change anything? Am I missing something?
 
-So this improvement is target to reduce the false positive happens from
-three points:
-
-  1. Adding the while-loop to give more chances for madvise_willneed()
-     reads memory asynchronously
-  2. Raise value of `loop` to let test waiting for more times if swapchache
-     haven't reached the expected
-  3. Shrink to only 3 pages for verifying MADV_WILLNEED that to make the
-     system easily takes effect on it
-
-From Rafael Aquini:
-
-  The problem here is that MADV_WILLNEED is an asynchronous non-blocking
-  hint, which will tell the kernel to start doing read-ahead work for the
-  hinted memory chunk, but will not wait up for the read-ahead to finish.
-  So, it is possible that when the dirty_pages() call start re-dirtying
-  the pages in that target area, is racing against a scheduled swap-in
-  read-ahead that hasn't yet finished. Expecting faulting only 2 pages
-  out of 102400 also seems too strict for a PASS threshold.
-
-Note:
-  As Rafael suggested, another possible approach to tackle this failure
-  is to tally up, and loosen the threshold to more than 2 major faults
-  after a call to madvise() with MADV_WILLNEED.
-  But from my test, seems the faulted-out page shows a significant
-  variance in different platforms, so I didn't take this way.
-
-Btw, this patch get passed on my two easy reproducible systems more than 1000 times
-
-Reported-by: Paul Bunyan <pbunyan@redhat.com>
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Rafael Aquini <aquini@redhat.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/syscalls/madvise/madvise06.c | 21 +++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-index 6d218801c..27aff18f1 100644
---- a/testcases/kernel/syscalls/madvise/madvise06.c
-+++ b/testcases/kernel/syscalls/madvise/madvise06.c
-@@ -164,7 +164,7 @@ static int get_page_fault_num(void)
- 
- static void test_advice_willneed(void)
- {
--	int loops = 50, res;
-+	int loops = 100, res;
- 	char *target;
- 	long swapcached_start, swapcached;
- 	int page_fault_num_1, page_fault_num_2;
-@@ -202,23 +202,32 @@ static void test_advice_willneed(void)
- 		"%s than %ld Kb were moved to the swap cache",
- 		res ? "more" : "less", PASS_THRESHOLD_KB);
- 
--
--	TEST(madvise(target, PASS_THRESHOLD, MADV_WILLNEED));
-+	loops = 100;
-+	SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld", &swapcached_start);
-+	TEST(madvise(target, pg_sz * 3, MADV_WILLNEED));
- 	if (TST_RET == -1)
- 		tst_brk(TBROK | TTERRNO, "madvise failed");
-+	do {
-+		loops--;
-+		usleep(100000);
-+		if (stat_refresh_sup)
-+			SAFE_FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
-+		SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld",
-+				&swapcached);
-+	} while (swapcached < swapcached_start + pg_sz*3/1024 && loops > 0);
- 
- 	page_fault_num_1 = get_page_fault_num();
- 	tst_res(TINFO, "PageFault(madvice / no mem access): %d",
- 			page_fault_num_1);
--	dirty_pages(target, PASS_THRESHOLD);
-+	dirty_pages(target, pg_sz * 3);
- 	page_fault_num_2 = get_page_fault_num();
- 	tst_res(TINFO, "PageFault(madvice / mem access): %d",
- 			page_fault_num_2);
- 	meminfo_diag("After page access");
- 
- 	res = page_fault_num_2 - page_fault_num_1;
--	tst_res(res < 3 ? TPASS : TFAIL,
--		"%d pages were faulted out of 2 max", res);
-+	tst_res(res == 0 ? TPASS : TFAIL,
-+		"%d pages were faulted out of 3 max", res);
- 
- 	SAFE_MUNMAP(target, CHUNK_SZ);
- }
--- 
-2.35.3
-
+Joerg
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
