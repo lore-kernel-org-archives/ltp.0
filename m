@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70CD0C43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 03:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 901D0C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 03:47:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D3B33C93BA
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 05:02:42 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 5535E3C93D9
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 05:47:48 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F9653C8D43
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 05:02:30 +0200 (CEST)
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com
- [IPv6:2607:f8b0:4864:20::e2e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 230873C075E
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 05:47:37 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5E85C1400973
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 05:02:30 +0200 (CEST)
-Received: by mail-vs1-xe2e.google.com with SMTP id r12so12482350vsg.8
- for <ltp@lists.linux.it>; Mon, 20 Jun 2022 20:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=NJerPTq078DJLa1/5hyKjJHRkGPlUs6wW4pK67FiTLA=;
- b=RaK8QBKRfA+OMUUU3hJlDkW39Rk7zpkxVerF6JCYsjbrXhViF7EXjqlumtMNQXJ3CO
- dmQtPiLwYkfZc3ueP3wGTYn3zqoCgjAgMZt+en6vOE0yk1YS87bAZtlMKg7u9pxHnXmV
- 7LHxfHvaSsrPe6G70cFIEoulPjDeUunP8VnGQtFxw+q73HdxXHGV+hKaS5U4xj2gD9Hv
- Qtucbe8J4sL+AYf0sVuK8piCF60HndOHX+biVYCLYeJF+KCZ1VMcyT06QMOFeJX3vEQw
- 82uTERHja2jSRAtnSYqRvofICE1uZURQUjnF+6DkFqemR2BQ5RQBkFQhgBZLdeXYWJkf
- VabQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=NJerPTq078DJLa1/5hyKjJHRkGPlUs6wW4pK67FiTLA=;
- b=ZbL61H5YeSH+rWIc7lEze6hIM3aPd8HwHUE9UIEa47aSbmR9q1UBW2/odoiPdPldGh
- Dcfvr3AUXtw0jRk3rtsqKbvCsGBeF0I85JE7ANxV/X4P2juyCPTFt1RMg15+Puvq1J8p
- 9d1/gVWmZaSzHk499DvlG6lhth2GleEk53SazZpXC+JnFcGyL8s63F/rCpCjV8AJK2RF
- MvphdCMYFWKv8eFDxcdR3rnzK61drTNN3MgRQq6PtnGLF90xViMJSOZ/J4wfES0AOgOA
- Y2kVoauDdCFgdhctr9lwlwJex0vrDwB8Nc7TA1Kl2QQZ2kqulfWeXheylPh5q+AQambK
- cwHg==
-X-Gm-Message-State: AJIora+Ya8rCwRdedMOmZZ89mUSX8coCrTpU9s2Dwq3PdRngRKWouEw9
- 3czAq3Z+6lhQiGdzF//lduHhzcDaUxwsO21BRJ8=
-X-Google-Smtp-Source: AGRyM1ueoDXdSFk7Ales17n2LjoqsyVK4Qmlu9oKl7cxZYZBnnpvqBJMitf9RCfl/hPXTXD8Jauxo5Z782lLLKapMyg=
-X-Received: by 2002:a05:6102:c50:b0:34c:2063:ae5e with SMTP id
- y16-20020a0561020c5000b0034c2063ae5emr10343058vss.71.1655780549203; Mon, 20
- Jun 2022 20:02:29 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6CF6D1400211
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 05:47:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1655783254;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cud/RJwvf1MrmDPFE/IwDIJRc2ySgV/Z6+rOzHu4Nzs=;
+ b=fC7Mkedob/nqZzjePJxlKfKEKxbRQm7nQ97F9PZjUrK91EYb8zVFl3iaJw/VeJTwiYFLWf
+ 52sohby3U4YODw+xbKCj2rDxkW6D2I19K8ouBaPZ7qV8UaTZ04dpCGJJxpNNeOokGppaM0
+ AfAzVlYt9gRpV9uXkwcIGesfXu9zx+k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-449-zGBVtlG2PuCBO_idQF8i_A-1; Mon, 20 Jun 2022 23:47:33 -0400
+X-MC-Unique: zGBVtlG2PuCBO_idQF8i_A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1177F811E7A;
+ Tue, 21 Jun 2022 03:47:33 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 3268140CFD0A;
+ Tue, 21 Jun 2022 03:47:30 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Tue, 21 Jun 2022 11:47:29 +0800
+Message-Id: <20220621034729.551200-1-liwang@redhat.com>
 MIME-Version: 1.0
-References: <20220620132737.2015073-1-amir73il@gmail.com>
- <20220620132737.2015073-5-amir73il@gmail.com>
- <20220620152032.jbrhicuscem2f4kd@quack3.lan>
- <CAOQ4uxgmuS6qDVLQPqzNAoO2BtqcO55Mokcc70n2BukAhaH_Xw@mail.gmail.com>
- <20220620203545.hejk7faw3liw2kxw@quack3.lan>
-In-Reply-To: <20220620203545.hejk7faw3liw2kxw@quack3.lan>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 21 Jun 2022 06:02:24 +0300
-Message-ID: <CAOQ4uxg_F+BeuYou1CTM-UMURiFpW362=f7-FJD5MKXDJpw=4A@mail.gmail.com>
-To: Jan Kara <jack@suse.cz>
+X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwang@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/4] syscalls/fanotify09: Add test cases for merge
- of ignore mask
+Subject: [LTP] [PATCH v2] madvise06: shrink to 3 MADV_WILLNEED pages to
+ stabilize the test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,49 +71,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>, Matthew Bobrowski <repnop@google.com>
+Cc: Paul Bunyan <pbunyan@redhat.com>, Rafael Aquini <aquini@redhat.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Jun 20, 2022 at 11:35 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Mon 20-06-22 19:59:48, Amir Goldstein wrote:
-> > On Mon, Jun 20, 2022 at 6:20 PM Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > On Mon 20-06-22 16:27:37, Amir Goldstein wrote:
-> > > > 1. Verify that an ignore mask that does not survive modify event,
-> > > >    does survive a modify event on child, if parent is not watching
-> > > >    events on children.
-> > > >
-> > > > 2. Verify that an ignore mask on parent does not ignore close events
-> > > >    sent to mount mark, if parent is not watching events on children.
-> > > >
-> > > > The behavior of these corner cases of ignore mask on parent dir have
-> > > > always been undefined, so do not run the test for kernel < v5.19.
-> > > >
-> > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > >
-> > > Hum, I was looking into the testcase. What does generate a modify event
-> > > there and checks that ignore mask does not survive it?
-> >
-> > I think this does:
-> >
-> >         /*
-> >          * generate MODIFY event and no FAN_CLOSE_NOWRITE event.
-> >          */
-> >         SAFE_FILE_PRINTF(fname, "1");
->
-> Yeah, I was looking at that but then I'm somewhat confused because this
-> gets called in .setup() hook while the notification groups get created only
-> in .test() hook that gets called later. What am I missing?
+Paul Bunyan reports that the madvise06 test fails intermittently with many
+LTS kernels, after checking with mm developer we prefer to think this is
+more like a test issue (but not kernel bug):
 
-There is one in setup().
-The one with the comment above is from test_fanotify().
+   madvise06.c:231: TFAIL: 4 pages were faulted out of 2 max
 
-Thanks,
-Amir.
+So this improvement is target to reduce the false positive happens from
+three points:
+
+  1. Adding the while-loop to give more chances for madvise_willneed()
+     reads memory asynchronously
+  2. Raise value of `loop` to let test waiting for more times if swapchache
+     haven't reached the expected
+  3. Shrink to only 3 pages for verifying MADV_WILLNEED that to make the
+     system easily takes effect on it
+
+From Rafael Aquini:
+
+  The problem here is that MADV_WILLNEED is an asynchronous non-blocking
+  hint, which will tell the kernel to start doing read-ahead work for the
+  hinted memory chunk, but will not wait up for the read-ahead to finish.
+  So, it is possible that when the dirty_pages() call start re-dirtying
+  the pages in that target area, is racing against a scheduled swap-in
+  read-ahead that hasn't yet finished. Expecting faulting only 2 pages
+  out of 102400 also seems too strict for a PASS threshold.
+
+Note:
+  As Rafael suggested, another possible approach to tackle this failure
+  is to tally up, and loosen the threshold to more than 2 major faults
+  after a call to madvise() with MADV_WILLNEED.
+  But from my test, seems the faulted-out page shows a significant
+  variance in different platforms, so I didn't take this way.
+
+Btw, this patch get passed on my two easy reproducible systems more than 1000 times
+
+Reported-by: Paul Bunyan <pbunyan@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Rafael Aquini <aquini@redhat.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/kernel/syscalls/madvise/madvise06.c | 21 +++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 6d218801c..27aff18f1 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -164,7 +164,7 @@ static int get_page_fault_num(void)
+ 
+ static void test_advice_willneed(void)
+ {
+-	int loops = 50, res;
++	int loops = 100, res;
+ 	char *target;
+ 	long swapcached_start, swapcached;
+ 	int page_fault_num_1, page_fault_num_2;
+@@ -202,23 +202,32 @@ static void test_advice_willneed(void)
+ 		"%s than %ld Kb were moved to the swap cache",
+ 		res ? "more" : "less", PASS_THRESHOLD_KB);
+ 
+-
+-	TEST(madvise(target, PASS_THRESHOLD, MADV_WILLNEED));
++	loops = 100;
++	SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld", &swapcached_start);
++	TEST(madvise(target, pg_sz * 3, MADV_WILLNEED));
+ 	if (TST_RET == -1)
+ 		tst_brk(TBROK | TTERRNO, "madvise failed");
++	do {
++		loops--;
++		usleep(100000);
++		if (stat_refresh_sup)
++			SAFE_FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
++		SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld",
++				&swapcached);
++	} while (swapcached < swapcached_start + pg_sz*3/1024 && loops > 0);
+ 
+ 	page_fault_num_1 = get_page_fault_num();
+ 	tst_res(TINFO, "PageFault(madvice / no mem access): %d",
+ 			page_fault_num_1);
+-	dirty_pages(target, PASS_THRESHOLD);
++	dirty_pages(target, pg_sz * 3);
+ 	page_fault_num_2 = get_page_fault_num();
+ 	tst_res(TINFO, "PageFault(madvice / mem access): %d",
+ 			page_fault_num_2);
+ 	meminfo_diag("After page access");
+ 
+ 	res = page_fault_num_2 - page_fault_num_1;
+-	tst_res(res < 3 ? TPASS : TFAIL,
+-		"%d pages were faulted out of 2 max", res);
++	tst_res(res == 0 ? TPASS : TFAIL,
++		"%d pages were faulted out of 3 max", res);
+ 
+ 	SAFE_MUNMAP(target, CHUNK_SZ);
+ }
+-- 
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
