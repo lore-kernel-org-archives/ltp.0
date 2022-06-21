@@ -4,59 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C51DC433EF
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 13:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68507C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 13:20:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 667203C1BBD
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 15:04:20 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 117333C9442
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 15:20:10 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D561D3C1BBD
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 15:04:09 +0200 (CEST)
-Received: from eu-smtp-delivery-151.mimecast.com
- (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id CB0B33C93E4
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 15:19:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2BE5A14002D3
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 15:04:07 +0200 (CEST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-12-D7su6iPqNO-F5Tx2uXwdog-1; Tue, 21 Jun 2022 14:04:05 +0100
-X-MC-Unique: D7su6iPqNO-F5Tx2uXwdog-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.36; Tue, 21 Jun 2022 14:04:04 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.036; Tue, 21 Jun 2022 14:04:04 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Cyril Hrubis' <chrubis@suse.cz>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Thread-Topic: [PATCH v3] uapi: Make __{u,s}64 match {u,}int64_t in userspace
-Thread-Index: AQHYhWa4Wwgq8v8s30aZYtCosiJuGq1Z063Q
-Date: Tue, 21 Jun 2022 13:04:04 +0000
-Message-ID: <a26ab9bfc27a430bb8a7b6aa2f39d724@AcuMS.aculab.com>
-References: <20220621120355.2903-1-chrubis@suse.cz>
-In-Reply-To: <20220621120355.2903-1-chrubis@suse.cz>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E4C22600907
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 15:19:54 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F3BB1219E9;
+ Tue, 21 Jun 2022 13:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655817594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y+cthWpyg0EVee/7DjyG+PNX4Hgy3l87bKTOIkRdtKc=;
+ b=DlwCMQyRV/nzNhDiGHlv7iVOb1iDuPR/6VmNDy7w7Wa8adDEbHJMl3utHAl1FBUp+c+LUE
+ e0Ff6gX2h3ZgKwPhx9QkaPBXdBjRmBf5npUHzYZP8XWX15XZEm6H8blHdvx2Xyfwb+AyAC
+ im/t7TaQcOo+wkZ/iB4V3n6fDpcWkrE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655817594;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Y+cthWpyg0EVee/7DjyG+PNX4Hgy3l87bKTOIkRdtKc=;
+ b=tpXAclzetvWZEX1aekuVXar/9sL6gQX0GkqXJWP9jZfF8zSyIENaC4RZVAQAPYfSgm45+T
+ iA4mK3wWKxkkM3Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA35713A88;
+ Tue, 21 Jun 2022 13:19:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5L0yMHnFsWK3KAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 13:19:53 +0000
+Date: Tue, 21 Jun 2022 15:22:01 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: "Kane Wong (??????)" <wangkaiyuan@inspur.com>
+Message-ID: <YrHF+XhIDwQglbBF@yuki>
+References: <e993933bccac3dbf38c6aa661c9263e9@sslemail.net>
+ <YqMu/4Qh9hU333xL@yuki>
+ <6d6f7ae3098648018781effd62b2f6e5@inspur.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6d6f7ae3098648018781effd62b2f6e5@inspur.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] uapi: Make __{u, s}64 match {u,
- }int64_t in userspace
+Subject: Re: [LTP] ????: [PATCH] Fix the statistical number of results in
+ the html
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,38 +77,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
- "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
- "arnd@arndb.de" <arnd@arndb.de>,
- "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
- "dhowells@redhat.com" <dhowells@redhat.com>,
- "zack@owlfolio.org" <zack@owlfolio.org>,
+Cc: Harris Song <songkai01@inspur.com>,
  "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Cyril Hrubis 
-> Sent: 21 June 2022 13:04
-> 
-> This changes the __u64 and __s64 in userspace on 64bit platforms from
-> long long (unsigned) int to just long (unsigned) int in order to match
-> the uint64_t and int64_t size in userspace for C code.
-> 
-> We cannot make the change for C++ since that would be non-backwards
-> compatible change and may cause possible regressions and even
-> compilation failures, e.g. overloaded function may no longer find a
-> correct match.
+Hi!
+Please send plain text emails only to the mailing list.
 
-Isn't is enough just to mention C++ name mangling?
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
