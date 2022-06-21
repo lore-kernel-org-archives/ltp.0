@@ -4,51 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C3D8C433EF
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:51:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FA51C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:57:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D61353C948F
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 14:51:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BCBEF3C9420
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 14:57:41 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A4D563C8CC0
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:51:15 +0200 (CEST)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ by picard.linux.it (Postfix) with ESMTPS id 9467D3C8CC0
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:57:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5E7FA1A008A9
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:51:14 +0200 (CEST)
-Received: from [10.40.94.3] (unknown [37.24.96.116])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 97E339F6A4;
- Tue, 21 Jun 2022 12:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1655815872; bh=YuuPFnx+CuutvBYezlQ4Ikb4Zlw8l9+VS/nGLGOOCXI=;
- h=Message-ID:Date:MIME-Version:Subject:To:From;
- b=JgcPu6akO0WaTMAwNTmv7q4UrkhFt4IsedSlXUtbtetOHAlPJSxUO0mgxoj4R2aMZ
- WLmjqYFx90s0SsC3elc2gYiREmZ0fOblr3tdy2xUNAVR0WcEKk9JBubgdJ8j2uOEAP
- Jz63UNhYPSjjs8uz7Yq7z9ezFl666NowKnimJURg=
-Message-ID: <05f07b62-9751-a900-130b-b7ecc10ccacb@jv-coder.de>
-Date: Tue, 21 Jun 2022 14:51:11 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C2065600906
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:57:29 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E537D1F8A3;
+ Tue, 21 Jun 2022 12:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655816248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1bSAdn+0ktTFyt2YxZKmE4IFG1mjBdlzvAdY0hf26yI=;
+ b=aypYZzMm5G/wSmVzO1tmu0xyFt+1VISN6ExerqmT0p+jxFEikSReIB8hnMu7I5T7ybxv4N
+ zjJ6ujqBXNClhgQuTdEbRIuSTdUL9PzG1XcbvN26aEmddYI/gPtofLLQeKSDMIlHugpu+X
+ tuZpXhY7DhtT72Yt1p97OqeZpX/9IOk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655816248;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1bSAdn+0ktTFyt2YxZKmE4IFG1mjBdlzvAdY0hf26yI=;
+ b=nV+R2K0Yra5kq5W9m8Ve8yJpgpYB+dDJeAOkE1KtIl3Q/wxabTbp0pxiY8G15/QK3ai+KZ
+ CW44TnudKcKoe2DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFF9213A88;
+ Tue, 21 Jun 2022 12:57:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id zaEZMDjAsWL3GwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 12:57:28 +0000
+Date: Tue, 21 Jun 2022 14:59:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <YrHAuGuLo502sZS+@yuki>
+References: <20220617172025.23975-1-akumar@suse.de>
+ <20220617172025.23975-7-akumar@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Content-Language: en-US
-To: rpalethorpe@suse.de, Li Wang <liwang@redhat.com>
-References: <010001816f3c352e-f5ee78c6-1425-42f5-b673-409a0a92ef74-000000@email.amazonses.com>
- <11d7d8a6-c062-03aa-7e7c-f7d3c3c2f095@jv-coder.de>
- <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
- <60876a29-d589-1de9-b4fd-a9000b8e7d68@jv-coder.de> <871qvi5r97.fsf@suse.de>
- <CAEemH2c=xxHrGiqtaRjM89S==JfsODnJ=D9b+mzaF68sjGRVJw@mail.gmail.com>
- <87wnda43ge.fsf@suse.de>
-From: Joerg Vehlow <lkml@jv-coder.de>
-In-Reply-To: <87wnda43ge.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220617172025.23975-7-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] lkft ltp for 6763a36
+Subject: Re: [LTP] [PATCH 6/6] Rewrite utime06.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -60,93 +75,241 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> -/*
+> - * Test Description:
+> - * 1. Verify that the system call utime() fails to set the modification
+> - *    and access times of a file to the current time, under the following
+> - *    constraints,
+> - *	 - The times argument is null.
+> +/*\
+> + * [Description]
+> + * 1. Verify that the system call utime() fails to change the last access
+> + *    and modification times of a file to the current time, and errno is
+> + *    set to EACCES, when
+> + *	 - The times argument is NULL.
+> + *   - The user ID of the process does not match the owner of the file.
+>   *	 - The user ID of the process is not "root".
 
-Am 6/21/2022 um 1:38 PM schrieb Richard Palethorpe:
-> Hello Li,
-> 
-> Li Wang <liwang@redhat.com> writes:
-> 
->> On Tue, Jun 21, 2022 at 4:56 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->>
->>  Hello,
->>
->>  Joerg Vehlow <lkml@jv-coder.de> writes:
->>
->>  > Hi Jan,
->>  >
->>  > Am 6/21/2022 um 9:22 AM schrieb Jan Stancek:
->>  >> On Tue, Jun 21, 2022 at 9:15 AM Joerg Vehlow <lkml@jv-coder.de> wrote:
->>  >>>
->>  >>> Hi,
->>  >>>
->>  >>> Am 6/17/2022 um 3:17 AM schrieb lkft@linaro.org:
->>  >>>> * qemu_i386, ltp-fs-tests
->>  >>>>   - read_all_proc
->>  >>> I've seen this test fail a lot, has anyone ever tried to analyze it? I
->>  >>> was unable to reproduce the problem when running the test in isolation.
->>  >> 
->>  >> I see it hit timeouts too (read_all_sys as well). I think it needs
->>  >> runtime restored to 5minutes as well, atm. it has 30s.
->>  > Didn't think about that, but at least for the failures I've seen, this
->>  > is not the reason. The message printed by the test is "Test timeout 5
->>  > minutes exceeded."
->>  >
->>  > Joerg
->>
->>  The main issue with read_all is that it also acts as a stress
->>  test. Reading some files in proc and sys is very resource intensive
->>  (e.g. due to lock contention) and varies depending on what state the
->>  system is in. On some systems this test will take a long time. Also
->>  there are some files which have to be filtered from the test. This
->>  varies by system as well.
->>
->> Does it make sense to have a lite version of read_all_sys?
->> which may only go through files sequentially or under slight stress.
-> 
-> IIRC the reason I started doing it in parallel is because sequential
-> opens and reads are even slower and unreliable. Some level of parallism
-> is required, but too much and it causes issues.
-> 
-> Thinking about it now, on a single or two core system only one worker
-> process will be spawned. Which could get blocked for a long time on some
-> reads because of the way some sys/proc files are implemented.
-> 
-> The worker count can be overridden with -w if someone wants to try
-> increasing it to see if that actually helps on systems with <3
-> cpus. Also the number of reads is set to 3 in the runtest file, that can
-> be reduced to 1 with -r.
-> 
->>
->> With regard to this stressful read_all, I guess we can put into a dedicated
->> set and run separately in stress testing.
-> 
-> I don't think I'd want to run that. IMO just doing enough to test
-> parallel accesses is whats required. More than that we will run into
-> diminishing returns . However I'm not against creating another runtest
-> file/entry for that.
-> 
-> On bigger systems I think the test is already quite limited even though
-> it does 3 reads. It only spwans a max of 15 workers which should prevent
-> it from causing huge lock contention on machines with >16 CPUs. At least
-> I've not seen problems with that.
-> 
-> It looks like the log from lkft is for a smaller machine?
-I just used this regression report as an anchor point, because I am
-seeing the same intermittent error on a 4 and an 8 core aarch64 system.
-The system state at the time of the test execution is very reproducible
-and sometimes the 5 minutes are exceeded, while it only takes ~3s, when
-it is successful. Maybe there is a very time sensitive kernel bug here?
-I am still not sure how to debug this, because I was never able to
-reproduce it without executing all ltp tests, that run before in out setup.
+This does not render particulary well in the asciidoc docparser also the
+text is way more verbose than it should be. Let's keept it short and to
+to point with something as:
 
-Joerg
+ /*\
+  * [Description]
+  *
+  * Verify that utime() fails with:
+  * - EACCESS when user does not have rights to modify the file.
+  * - ENOENT when specified file does not exists.
+  * - ...
+  *
+
+> - * 2. Verify that the system call utime() fails to set the modification
+> - *    and access times of a file if the specified file doesn't exist.
+> - * 3. Verify that the system call utime() fails to set the modification
+> - *    and access times of a file to the current time, under the following
+> - *    constraints,
+> - *	 - The times argument is not null.
+> + * 2. Verify that the system call utime() fails to change the last access
+> + *    and modification times of a file, and the errno is set to ENOENT,
+> + *    when
+> + *    - The specified file does not exist.
+> + * 3. Verify that the system call utime() fails to change the last access
+> + *    and modification times of a file to the current time, and errno is
+> + *    set to EPERM, when
+> + *	 - The times argument is not NULL.
+> + *   - The user ID of the process does not match the owner of the file.
+>   *	 - The user ID of the process is not "root".
+> - * 4. Verify that the system call utime() fails to set the modification
+> - *    and access times of a file that resides on a read-only file system.
+> + * 4. Verify that the system call utime() fails to change the last access
+> + *    and modification times of a file, and errno is set to EROFS, when
+> + *   - The path resides on a read-only filesystem.
+>   */
+>  
+> -#include <errno.h>
+> -#include <fcntl.h>
+>  #include <pwd.h>
+> -#include <stdio.h>
+> -#include <stdlib.h>
+> -#include <signal.h>
+> -#include <string.h>
+> -#include <unistd.h>
+>  #include <utime.h>
+> -#include <sys/wait.h>
+> -#include <sys/stat.h>
+> -#include <sys/types.h>
+> -#include <sys/mount.h>
+>  
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include "tst_test.h"
+>  
+>  #define TEMP_FILE	"tmp_file"
+>  #define MNT_POINT	"mntpoint"
+> +#define FILE_MODE	0644
+> +#define TEST_USERNAME "nobody"
+>  
+> -char *TCID = "utime06";
+> -static struct passwd *ltpuser;
+>  static const struct utimbuf times;
+> -static const char *dev;
+> -static int mount_flag;
+> -static void setup_nobody(void);
+> -static void cleanup_nobody(void);
+>  
+> -struct test_case_t {
+> +static struct tcase {
+>  	char *pathname;
+>  	int exp_errno;
+> -	const struct utimbuf *times;
+> -	void (*setup_func)(void);
+> -	void (*cleanup_func)(void);
+> -} Test_cases[] = {
+> -	{TEMP_FILE, EACCES, NULL, setup_nobody, cleanup_nobody},
+> -	{"", ENOENT, NULL, NULL, NULL},
+> -	{TEMP_FILE, EPERM, &times, setup_nobody, cleanup_nobody},
+> -	{MNT_POINT, EROFS, NULL, NULL, NULL},
+> +	const struct utimbuf *utimbuf;
+> +	char *err_desc;
+> +} tcases[] = {
+> +	{TEMP_FILE, EACCES, NULL, "No write access"},
+> +	{"", ENOENT, NULL, "File not exist"},
+> +	{TEMP_FILE, EPERM, &times, "Not file owner"},
+> +	{MNT_POINT, EROFS, NULL, "Read-only filesystem"}
+>  };
+>  
+> -int TST_TOTAL = ARRAY_SIZE(Test_cases);
+> -static void setup(void);
+> -static void utime_verify(const struct test_case_t *);
+> -static void cleanup(void);
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -	int i;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -		for (i = 0; i < TST_TOTAL; i++)
+> -			utime_verify(&Test_cases[i]);
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -}
+>  
+>  static void setup(void)
+>  {
+> -	const char *fs_type;
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	tst_require_root();
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	SAFE_TOUCH(cleanup, TEMP_FILE, 0644, NULL);
+> -
+> -	fs_type = tst_dev_fs_type();
+> -	dev = tst_acquire_device(cleanup);
+> -	if (!dev)
+> -		tst_brkm(TCONF, cleanup, "Failed to acquire test device");
+> -
+> -	tst_mkfs(cleanup, dev, fs_type, NULL, NULL);
+> +	struct passwd *pw;
+>  
+> -	SAFE_MKDIR(cleanup, MNT_POINT, 0644);
+> -	SAFE_MOUNT(cleanup, dev, MNT_POINT, fs_type, MS_RDONLY, NULL);
+> -	mount_flag = 1;
+> +	SAFE_TOUCH(TEMP_FILE, FILE_MODE, NULL);
+>  
+> -	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+> +	pw = SAFE_GETPWNAM(TEST_USERNAME);
+> +	tst_res(TINFO, "Switching effective user ID to user: %s", pw->pw_name);
+> +	SAFE_SETEUID(pw->pw_uid);
+>  }
+>  
+> -static void utime_verify(const struct test_case_t *test)
+> +static void run(unsigned int i)
+>  {
+> -	if (test->setup_func != NULL)
+> -		test->setup_func();
+> +	struct tcase *tc = &tcases[i];
+>  
+> -	TEST(utime(test->pathname, test->times));
+> -
+> -	if (test->cleanup_func != NULL)
+> -		test->cleanup_func();
+> -
+> -	if (TEST_RETURN != -1) {
+> -		tst_resm(TFAIL, "utime succeeded unexpectedly");
+> -		return;
+> -	}
+> -
+> -	if (TEST_ERRNO == test->exp_errno) {
+> -		tst_resm(TPASS | TTERRNO, "utime failed as expected");
+> -	} else {
+> -		tst_resm(TFAIL | TTERRNO,
+> -			 "utime failed unexpectedly; expected: %d - %s",
+> -			 test->exp_errno, strerror(test->exp_errno));
+> -	}
+> -}
+> -
+> -static void setup_nobody(void)
+> -{
+> -	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> -}
+> -
+> -static void cleanup_nobody(void)
+> -{
+> -	SAFE_SETEUID(cleanup, 0);
+> +	tst_res(TINFO, "running %s test", tc->err_desc);
+
+We print the tc->err_desc in the TST_EXP_FAIL() right? No need to print
+it twice.
+
+> +	TST_EXP_FAIL(utime(tc->pathname, tc->utimbuf),
+> +				tc->exp_errno, "%s", tc->err_desc);
+>  }
+>  
+> -static void cleanup(void)
+> -{
+> -	if (mount_flag && tst_umount(MNT_POINT) < 0)
+> -		tst_resm(TWARN | TERRNO, "umount device:%s failed", dev);
+> -
+> -	if (dev)
+> -		tst_release_device(dev);
+> -
+> -	tst_rmdir();
+> -}
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.mntpoint = MNT_POINT,
+> +	.needs_rofs = 1
+> +};
+
+Otherwise it looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
