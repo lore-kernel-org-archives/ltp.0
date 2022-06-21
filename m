@@ -4,66 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF3F1C43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 10:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A00C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 10:58:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BAEDB3C93F3
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:22:45 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id BB3CA3C9423
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:58:48 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 46D293C1BAD
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:22:36 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 0D91D3C93D9
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:58:38 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 96572200211
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:22:35 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CF31321E79;
- Tue, 21 Jun 2022 10:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655806954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C9507200051
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 12:58:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1655809116;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=b565p1FFNTM0ixjwWG+w83pjlBMMc4uBo/eUSCBo73s=;
- b=stgKJUW3Nd3K0EN4oHP54iWHodjRwtaY0aieUI9XpT4+BYc7v3GRbEoxb3FIUw1ph3axpK
- ZzKLhePbR6AdnNvc8FhkSCwQuvvn25bvovrT1OfQr2Wt+8Tbx7U178Tv9UfS+ykBUYdTPn
- py9zNU7x21jF7ZnsNR+bHJ6j2p4LNtw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655806954;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b565p1FFNTM0ixjwWG+w83pjlBMMc4uBo/eUSCBo73s=;
- b=Z7quAL+r5vZJnVNch4YmvsQ9QAQPpjz/D6D63VYFY79qoH9WKEEFGJtzUbkquESXuxAXCR
- J/6RAiSuqjwDTpCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=Hy6KOcY0sRAojRWcsjR0aWULa6jJaSKcS71iuLiH50w=;
+ b=PNkwbpVQ+QLpflGF78SW1uNx+JBLefmxla6VcjUjWmnGBqh6Jn/1QBmDhrPTxLBwRYuGZN
+ uvnQZrq0710fnQ4Cb9DUy36Vx+JHwTsphx6DJ6b1Hy9fZLuDzcNzYVUVUvkwfRjQs8fCPj
+ wMkFLrXJi0qiURpNMk8ERLRGbOwMzG8=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-207-WzjmQB9zNRa7eiyrfXXRvQ-1; Tue, 21 Jun 2022 06:58:27 -0400
+X-MC-Unique: WzjmQB9zNRa7eiyrfXXRvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B8FDC13638;
- Tue, 21 Jun 2022 10:22:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6gRsLOqbsWLURQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 10:22:34 +0000
-Date: Tue, 21 Jun 2022 12:24:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YrGcahVSR5fC5rus@yuki>
-References: <20220617172025.23975-1-akumar@suse.de>
- <20220617172025.23975-4-akumar@suse.de>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E8F69299E773;
+ Tue, 21 Jun 2022 10:58:26 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.87])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id F239C2166B26;
+ Tue, 21 Jun 2022 10:58:24 +0000 (UTC)
+From: Florian Weimer <fweimer@redhat.com>
+To: Cyril Hrubis <metan@ucw.cz>
+References: <20220621090951.29911-1-metan@ucw.cz>
+Date: Tue, 21 Jun 2022 12:58:23 +0200
+In-Reply-To: <20220621090951.29911-1-metan@ucw.cz> (Cyril Hrubis's message of
+ "Tue, 21 Jun 2022 11:09:51 +0200")
+Message-ID: <877d5a1dww.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220617172025.23975-4-akumar@suse.de>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/6] Remove unnecessary header includes
+Subject: Re: [LTP] [PATCH v2] uapi: Make __{u, s}64 match {u,
+ }int64_t in userspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,64 +69,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-arch@vger.kernel.org, libc-alpha@sourceware.org, arnd@arndb.de,
+ linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, dhowells@redhat.com,
+ David.Laight@aculab.com, zack@owlfolio.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> ---
->  testcases/kernel/syscalls/utime/utime03.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
-> index 2358fd70b..0c64518d2 100644
-> --- a/testcases/kernel/syscalls/utime/utime03.c
-> +++ b/testcases/kernel/syscalls/utime/utime03.c
-> @@ -18,11 +18,8 @@
->   * - The user ID of the process has write access to the file.
->   */
->  
-> -#include <sys/types.h>
->  #include <pwd.h>
->  #include <utime.h>
-> -#include <sys/stat.h>
-> -#include <time.h>
->  
->  #include "tst_test.h"
->  #include "tst_uid.h"
-> @@ -60,7 +57,7 @@ static void run(void)
->  	struct stat statbuf;
->  	time_t mintime, maxtime;
->  
-> -	utbuf.modtime = time(0) - 5;
-> +	utbuf.modtime = tst_get_fs_timestamp() - 5;
+* Cyril Hrubis:
 
-This change is not explained in the patch description moreover ideally
-patches should do one logical change so if we are going to accept these
-changes they should be split into a patch that removes includes and
-patch that replaces the time(0).
+> From: Cyril Hrubis <chrubis@suse.cz>
+>
+> This changes the __u64 and __s64 in userspace on 64bit platforms from
+> long long (unsigned) int to just long (unsigned) int in order to match
+> the uint64_t and int64_t size in userspace.
+>
+> This allows us to use the kernel structure definitions in userspace.
+>
+> For example we can use PRIu64 and PRId64 modifiers in printf() to print
+> structure membere. Morever with this there would be no need to redefine
+> these structures in an libc implementations as it is done now.
+>
+> Consider for example the newly added statx() syscall. If we use the
+> header from uapi we will get warnings when attempting to print it's
+> members as:
+>
+> 	printf("%" PRIu64 "\n", stx.stx_size);
+>
+> We get:
+>
+> 	warning: format '%lu' expects argument of type 'long unsigned int',
+> 	         but argument 5 has type '__u64' {aka 'long long unsigned int'}
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-Although usage of time(0) is not really critical here, the difference
-between the time(0) and tst_get_fs_timestamp() is that they may be out
-of sync by 1 second as they are not incremenented at the exactly same
-time. Hence it does not matter if we set time 5 +-1 seconds in the past
-since the result is 100% different from current time.
+Could you add some motivation for the C++ condition to the commit
+message?
 
->  	utbuf.actime = utbuf.modtime + 1;
->  	TST_EXP_PASS_SILENT(utime(TEMP_FILE, &utbuf));
->  	SAFE_STAT(TEMP_FILE, &statbuf);
-> -- 
-> 2.36.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Thanks,
+Florian
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
