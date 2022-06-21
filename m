@@ -4,66 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FA51C43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B33E9C43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 13:01:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BCBEF3C9420
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 14:57:41 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D37523C93F3
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 15:01:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9467D3C8CC0
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:57:30 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B9F8C3C1BBD
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 15:01:27 +0200 (CEST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C2065600906
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:57:29 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E537D1F8A3;
- Tue, 21 Jun 2022 12:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655816248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1bSAdn+0ktTFyt2YxZKmE4IFG1mjBdlzvAdY0hf26yI=;
- b=aypYZzMm5G/wSmVzO1tmu0xyFt+1VISN6ExerqmT0p+jxFEikSReIB8hnMu7I5T7ybxv4N
- zjJ6ujqBXNClhgQuTdEbRIuSTdUL9PzG1XcbvN26aEmddYI/gPtofLLQeKSDMIlHugpu+X
- tuZpXhY7DhtT72Yt1p97OqeZpX/9IOk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655816248;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1bSAdn+0ktTFyt2YxZKmE4IFG1mjBdlzvAdY0hf26yI=;
- b=nV+R2K0Yra5kq5W9m8Ve8yJpgpYB+dDJeAOkE1KtIl3Q/wxabTbp0pxiY8G15/QK3ai+KZ
- CW44TnudKcKoe2DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFF9213A88;
- Tue, 21 Jun 2022 12:57:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id zaEZMDjAsWL3GwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 12:57:28 +0000
-Date: Tue, 21 Jun 2022 14:59:36 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YrHAuGuLo502sZS+@yuki>
-References: <20220617172025.23975-1-akumar@suse.de>
- <20220617172025.23975-7-akumar@suse.de>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 571581000426
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 15:01:27 +0200 (CEST)
+Received: by mail-wr1-x42c.google.com with SMTP id o8so18856601wro.3
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 06:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=sender:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=6Y0ATUV8Qb4XZ2PUuFjYWiAEtClTIxxHJKputShJ2zA=;
+ b=SxFRCysvo2ayNNvRxbNmb2m3TtNeYut7NtJ6Y+am/HXsSaVoL3J0TuLErblx443GDc
+ EpZrC2rIylJZ/YJ72tFldX6Qpe2AoLBeBD3cBYRihIBWKd6KGbBTyZtqvpIEzzijZzLH
+ a/ne8Gy9d3HjTKAsiy11MQPKGENUFt8lJX9iGe2rNdDaHL22U0fR52zebFJ//a7GeEl8
+ 415jHF5PqNOKmPt/mWITyZ6omTLM/onIHt7jILtV4Mor7b+afC4Ji1Xh+K8/A+kHC6k7
+ RrMMAf7oegYrI8/wV5UWZ3jlE2xEQT9zVGz1GWJ+lZgeWhAowO1Nv6WSZBq2xdKJAVBn
+ 1NOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+ :subject:content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=6Y0ATUV8Qb4XZ2PUuFjYWiAEtClTIxxHJKputShJ2zA=;
+ b=w7A2pW2E2FJ/DR0K7RJJey0LDVUecx26SYrF1hhNaxUyspfwHJVBeTTUU2PHkGFz4j
+ PX7ob7o8VqqL1+soit8zNCuJHt8TjPGFF2uTiwMoHy17uA0yjqW3z7x2O/4r+YhqR/FW
+ APQnPLddkq+XmLBuVeuX922OHpc+ozTtwbDo20LRbP5/t+zgDNOPETSpYP0aDn5zmAPk
+ xtuJeJz/f5JK68BQ1aDqEQAnv42xlLw1OVfwOgV7Tc9MsINWw9yEYGp5jgmV9zlfJuEm
+ zESC9ehCFH8ilmaXui228NK60aYZ5vCo+XVoka2+vPDGprI4qpX1Wovfp3z81+OvGdbW
+ Wehw==
+X-Gm-Message-State: AJIora9LlB4Pv8fjmfLNrdua6xNwzfwPMcboRhOimbogJ0Kg2OhM0Eg9
+ L1tLci+2fSaGxvW1lD7IKQY=
+X-Google-Smtp-Source: AGRyM1vo+xb8luqoL3byYFbo+WDU6/cNpN4MpBrUrjsxEByYipZtEKB6XXcpChcQlOEJXq1ziaWg6g==
+X-Received: by 2002:a05:6000:1e1b:b0:219:e32d:cbe8 with SMTP id
+ bj27-20020a0560001e1b00b00219e32dcbe8mr28439512wrb.129.1655816486830; 
+ Tue, 21 Jun 2022 06:01:26 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+ by smtp.gmail.com with ESMTPSA id
+ n1-20020a5d6b81000000b0021b9416fa13sm4608770wrx.90.2022.06.21.06.01.25
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 21 Jun 2022 06:01:26 -0700 (PDT)
+Message-ID: <3d18d50a-b96f-befc-d905-c9f68f7542ab@gmail.com>
+Date: Tue, 21 Jun 2022 15:01:24 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220617172025.23975-7-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>, linux-kernel@vger.kernel.org
+References: <20220621120355.2903-1-chrubis@suse.cz>
+From: Alejandro Colomar <alx.manpages@gmail.com>
+In-Reply-To: <20220621120355.2903-1-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6/6] Rewrite utime06.c using new LTP API
+Subject: Re: [LTP] [PATCH v3] uapi: Make __{u, s}64 match {u,
+ }int64_t in userspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,241 +83,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch@vger.kernel.org, linux-man <linux-man@vger.kernel.org>,
+ libc-alpha@sourceware.org, linux-api@vger.kernel.org, dhowells@redhat.com,
+ David.Laight@aculab.com, zack@owlfolio.org, ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> -/*
-> - * Test Description:
-> - * 1. Verify that the system call utime() fails to set the modification
-> - *    and access times of a file to the current time, under the following
-> - *    constraints,
-> - *	 - The times argument is null.
-> +/*\
-> + * [Description]
-> + * 1. Verify that the system call utime() fails to change the last access
-> + *    and modification times of a file to the current time, and errno is
-> + *    set to EACCES, when
-> + *	 - The times argument is NULL.
-> + *   - The user ID of the process does not match the owner of the file.
->   *	 - The user ID of the process is not "root".
+On 6/21/22 14:03, Cyril Hrubis wrote:
+> This changes the __u64 and __s64 in userspace on 64bit platforms from
+> long long (unsigned) int to just long (unsigned) int in order to match
+> the uint64_t and int64_t size in userspace for C code.
+> 
+> We cannot make the change for C++ since that would be non-backwards
+> compatible change and may cause possible regressions and even
+> compilation failures, e.g. overloaded function may no longer find a
+> correct match.
+> 
+> This allows us to use the kernel structure definitions in userspace in C
+> code. For example we can use PRIu64 and PRId64 modifiers in printf() to
+> print structure membere. Morever with this there would be no need to
+> redefine these structures in an libc implementations as it is done now.
+> 
+> Consider for example the newly added statx() syscall. If we use the
+> header from uapi we will get warnings when attempting to print it's
+> members as:
+> 
+> 	printf("%" PRIu64 "\n", stx.stx_size);
+> 
+> We get:
+> 
+> 	warning: format '%lu' expects argument of type 'long unsigned int',
+> 	         but argument 5 has type '__u64' {aka 'long long unsigned int'}
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-This does not render particulary well in the asciidoc docparser also the
-text is way more verbose than it should be. Let's keept it short and to
-to point with something as:
+Acked-by: Alejandro Colomar <alx.manpages@gmail.com>
 
- /*\
-  * [Description]
-  *
-  * Verify that utime() fails with:
-  * - EACCESS when user does not have rights to modify the file.
-  * - ENOENT when specified file does not exists.
-  * - ...
-  *
-
-> - * 2. Verify that the system call utime() fails to set the modification
-> - *    and access times of a file if the specified file doesn't exist.
-> - * 3. Verify that the system call utime() fails to set the modification
-> - *    and access times of a file to the current time, under the following
-> - *    constraints,
-> - *	 - The times argument is not null.
-> + * 2. Verify that the system call utime() fails to change the last access
-> + *    and modification times of a file, and the errno is set to ENOENT,
-> + *    when
-> + *    - The specified file does not exist.
-> + * 3. Verify that the system call utime() fails to change the last access
-> + *    and modification times of a file to the current time, and errno is
-> + *    set to EPERM, when
-> + *	 - The times argument is not NULL.
-> + *   - The user ID of the process does not match the owner of the file.
->   *	 - The user ID of the process is not "root".
-> - * 4. Verify that the system call utime() fails to set the modification
-> - *    and access times of a file that resides on a read-only file system.
-> + * 4. Verify that the system call utime() fails to change the last access
-> + *    and modification times of a file, and errno is set to EROFS, when
-> + *   - The path resides on a read-only filesystem.
->   */
->  
-> -#include <errno.h>
-> -#include <fcntl.h>
->  #include <pwd.h>
-> -#include <stdio.h>
-> -#include <stdlib.h>
-> -#include <signal.h>
-> -#include <string.h>
-> -#include <unistd.h>
->  #include <utime.h>
-> -#include <sys/wait.h>
-> -#include <sys/stat.h>
-> -#include <sys/types.h>
-> -#include <sys/mount.h>
->  
-> -#include "test.h"
-> -#include "safe_macros.h"
-> +#include "tst_test.h"
->  
->  #define TEMP_FILE	"tmp_file"
->  #define MNT_POINT	"mntpoint"
-> +#define FILE_MODE	0644
-> +#define TEST_USERNAME "nobody"
->  
-> -char *TCID = "utime06";
-> -static struct passwd *ltpuser;
->  static const struct utimbuf times;
-> -static const char *dev;
-> -static int mount_flag;
-> -static void setup_nobody(void);
-> -static void cleanup_nobody(void);
->  
-> -struct test_case_t {
-> +static struct tcase {
->  	char *pathname;
->  	int exp_errno;
-> -	const struct utimbuf *times;
-> -	void (*setup_func)(void);
-> -	void (*cleanup_func)(void);
-> -} Test_cases[] = {
-> -	{TEMP_FILE, EACCES, NULL, setup_nobody, cleanup_nobody},
-> -	{"", ENOENT, NULL, NULL, NULL},
-> -	{TEMP_FILE, EPERM, &times, setup_nobody, cleanup_nobody},
-> -	{MNT_POINT, EROFS, NULL, NULL, NULL},
-> +	const struct utimbuf *utimbuf;
-> +	char *err_desc;
-> +} tcases[] = {
-> +	{TEMP_FILE, EACCES, NULL, "No write access"},
-> +	{"", ENOENT, NULL, "File not exist"},
-> +	{TEMP_FILE, EPERM, &times, "Not file owner"},
-> +	{MNT_POINT, EROFS, NULL, "Read-only filesystem"}
->  };
->  
-> -int TST_TOTAL = ARRAY_SIZE(Test_cases);
-> -static void setup(void);
-> -static void utime_verify(const struct test_case_t *);
-> -static void cleanup(void);
-> -
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -		for (i = 0; i < TST_TOTAL; i++)
-> -			utime_verify(&Test_cases[i]);
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
->  
->  static void setup(void)
->  {
-> -	const char *fs_type;
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	tst_require_root();
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
-> -	SAFE_TOUCH(cleanup, TEMP_FILE, 0644, NULL);
-> -
-> -	fs_type = tst_dev_fs_type();
-> -	dev = tst_acquire_device(cleanup);
-> -	if (!dev)
-> -		tst_brkm(TCONF, cleanup, "Failed to acquire test device");
-> -
-> -	tst_mkfs(cleanup, dev, fs_type, NULL, NULL);
-> +	struct passwd *pw;
->  
-> -	SAFE_MKDIR(cleanup, MNT_POINT, 0644);
-> -	SAFE_MOUNT(cleanup, dev, MNT_POINT, fs_type, MS_RDONLY, NULL);
-> -	mount_flag = 1;
-> +	SAFE_TOUCH(TEMP_FILE, FILE_MODE, NULL);
->  
-> -	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
-> +	pw = SAFE_GETPWNAM(TEST_USERNAME);
-> +	tst_res(TINFO, "Switching effective user ID to user: %s", pw->pw_name);
-> +	SAFE_SETEUID(pw->pw_uid);
->  }
->  
-> -static void utime_verify(const struct test_case_t *test)
-> +static void run(unsigned int i)
->  {
-> -	if (test->setup_func != NULL)
-> -		test->setup_func();
-> +	struct tcase *tc = &tcases[i];
->  
-> -	TEST(utime(test->pathname, test->times));
-> -
-> -	if (test->cleanup_func != NULL)
-> -		test->cleanup_func();
-> -
-> -	if (TEST_RETURN != -1) {
-> -		tst_resm(TFAIL, "utime succeeded unexpectedly");
-> -		return;
-> -	}
-> -
-> -	if (TEST_ERRNO == test->exp_errno) {
-> -		tst_resm(TPASS | TTERRNO, "utime failed as expected");
-> -	} else {
-> -		tst_resm(TFAIL | TTERRNO,
-> -			 "utime failed unexpectedly; expected: %d - %s",
-> -			 test->exp_errno, strerror(test->exp_errno));
-> -	}
-> -}
-> -
-> -static void setup_nobody(void)
-> -{
-> -	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> -}
-> -
-> -static void cleanup_nobody(void)
-> -{
-> -	SAFE_SETEUID(cleanup, 0);
-> +	tst_res(TINFO, "running %s test", tc->err_desc);
-
-We print the tc->err_desc in the TST_EXP_FAIL() right? No need to print
-it twice.
-
-> +	TST_EXP_FAIL(utime(tc->pathname, tc->utimbuf),
-> +				tc->exp_errno, "%s", tc->err_desc);
->  }
->  
-> -static void cleanup(void)
-> -{
-> -	if (mount_flag && tst_umount(MNT_POINT) < 0)
-> -		tst_resm(TWARN | TERRNO, "umount device:%s failed", dev);
-> -
-> -	if (dev)
-> -		tst_release_device(dev);
-> -
-> -	tst_rmdir();
-> -}
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +	.mntpoint = MNT_POINT,
-> +	.needs_rofs = 1
-> +};
-
-Otherwise it looks good.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>   include/uapi/asm-generic/types.h | 11 +++++++++--
+>   1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> v2: Make sure we do not break C++ applications
+> v3: Update commit message to explain C++ exclusion
+> 
+> diff --git a/include/uapi/asm-generic/types.h b/include/uapi/asm-generic/types.h
+> index dfaa50d99d8f..11e468a39d1e 100644
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
