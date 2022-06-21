@@ -4,47 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F3BFC433EF
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 07:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2D3CC43334
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 08:25:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DBB4F3C94F6
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 09:56:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 773A03C949B
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 10:25:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA9B63C0726
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 09:56:23 +0200 (CEST)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ by picard.linux.it (Postfix) with ESMTPS id 6C4DB3C21D9
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 10:25:31 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 18ACF60090D
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 09:56:22 +0200 (CEST)
-Received: from [10.40.94.3] (unknown [37.24.96.116])
- by mail.jv-coder.de (Postfix) with ESMTPSA id A8AC69F7FD;
- Tue, 21 Jun 2022 07:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1655798182; bh=AFa7/QWMDSEvu4iRQPswmZkWQ4r1+p7TfOSMveva3Cg=;
- h=Message-ID:Date:MIME-Version:Subject:To:From;
- b=OFX9jbVJ/2lF0DPbtArAsTO0vsC6PqF7ihlsD0eq5YbbFq0p7cphOjNcZCt0skf74
- zdJvb6jeV9BzZlzCIxevtGjK4riVQWpIJaqcDtcFH53YmLu9ledTupAfYowu5sm5WR
- zlYMHjlZtYUGBEBGYVu8eBhRn0atJ3ePIrce7eas=
-Message-ID: <60876a29-d589-1de9-b4fd-a9000b8e7d68@jv-coder.de>
-Date: Tue, 21 Jun 2022 09:56:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Content-Language: en-US
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4BB961A002CF
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 10:25:29 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 33EA322068;
+ Tue, 21 Jun 2022 08:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655799929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=O1zLghUx5jnfgMUOs9tAgHJt14RIRZTti+UayVBVRIQ=;
+ b=X6XyFIJPhOi8X8CRG/aySZrXafBPygvl3nOpl2LUDqXYQNWF8um+XNKePcKyNmSoAdv+1U
+ tyV/YFRZUe7zDjpxHIS+r5BGTOZUgZ2X7613HAbvzvGB1fE0abe1ECpIz9hgxfkwO+vi/x
+ OSggW81WBmIzIFnDfzuOvmU1YCQNAoc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655799929;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=O1zLghUx5jnfgMUOs9tAgHJt14RIRZTti+UayVBVRIQ=;
+ b=hvO7bfwBVfwR/BoPA8JFhtyxI74mT01ZHgit/5HMKWY/NdwVO94yHSJ1f27TvcNn/oGEd/
+ 8HPpsjA5jvK/4jBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2116D13A88;
+ Tue, 21 Jun 2022 08:25:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8nxFB3mAsWJ5BAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 08:25:29 +0000
+Date: Tue, 21 Jun 2022 10:27:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Jan Stancek <jstancek@redhat.com>
-References: <010001816f3c352e-f5ee78c6-1425-42f5-b673-409a0a92ef74-000000@email.amazonses.com>
- <11d7d8a6-c062-03aa-7e7c-f7d3c3c2f095@jv-coder.de>
- <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
-From: Joerg Vehlow <lkml@jv-coder.de>
-In-Reply-To: <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Message-ID: <YrGA+HbsJEUSHkcR@yuki>
+References: <2873e7f25ac44d2c103a030bfc5f1d30e0fe80a9.1655795105.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2873e7f25ac44d2c103a030bfc5f1d30e0fe80a9.1655795105.git.jstancek@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] lkft ltp for 6763a36
+Subject: Re: [LTP] [PATCH] syscalls/migrate_pages03: restore runtime to 5m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,32 +74,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>, Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi!
+> Arches with large pages have trouble completing all loops in 30s,
+> restore runtime to 5m.
 
-Am 6/21/2022 um 9:22 AM schrieb Jan Stancek:
-> On Tue, Jun 21, 2022 at 9:15 AM Joerg Vehlow <lkml@jv-coder.de> wrote:
->>
->> Hi,
->>
->> Am 6/17/2022 um 3:17 AM schrieb lkft@linaro.org:
->>> * qemu_i386, ltp-fs-tests
->>>   - read_all_proc
->> I've seen this test fail a lot, has anyone ever tried to analyze it? I
->> was unable to reproduce the problem when running the test in isolation.
-> 
-> I see it hit timeouts too (read_all_sys as well). I think it needs
-> runtime restored to 5minutes as well, atm. it has 30s.
-Didn't think about that, but at least for the failures I've seen, this
-is not the reason. The message printed by the test is "Test timeout 5
-minutes exceeded."
+Can we please also exit the test when it's out of runtime?
 
-Joerg
+The whole point of runtime is that test inner loop actively checks for
+remaining runtime so that the runtime is capped.
+
+Should be as easy as:
+
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+index c6afb4cce..2866c96e6 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+@@ -127,6 +127,11 @@ static void migrate_test(void)
+                        tst_res(TFAIL | TERRNO, "migrate_pages() failed");
+                        return;
+                }
++
++               if (!tst_remaining_runtime()) {
++                       tst_res(TINFO, "Out of runtime, exitting...");
++                       break;
++               }
+        }
+        SAFE_SETEUID(0);
+
+@@ -134,6 +139,7 @@ static void migrate_test(void)
+ }
+
+ static struct tst_test test = {
++       .max_runtime = 300,
+        .min_kver = "2.6.32",
+        .needs_root = 1,
+        .setup = setup,
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
