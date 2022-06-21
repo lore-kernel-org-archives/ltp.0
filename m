@@ -4,60 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74D50CCA480
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 07:41:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F3BFC433EF
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 07:56:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0CF693C9441
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 09:41:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id DBB4F3C94F6
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 09:56:33 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6C5653C1BAD
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 09:41:11 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id BA9B63C0726
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 09:56:23 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B33C0140004E
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 09:41:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655797269;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=/6g9BLMblO48PzrWhdhFgS73dFiubBsgZNcFGO7uNNM=;
- b=NDWLjFaW1PCrN4+Oax6U70r30fruDeYFASo3/Z+yzqzNWnyPv6O/W9uGwXmiHKza1Bn61S
- YuyhfHGukGSAvlbc72tp2RzV0gWsX0lBRoSJrusvivYIlQDNIIknQrJcsS2WrX/yAp0hJb
- dEmgma9fyLJFeWaHstKg91RN+lIR7xE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-14-JygxGa7jMyKMYIcpm5WFTg-1; Tue, 21 Jun 2022 03:41:06 -0400
-X-MC-Unique: JygxGa7jMyKMYIcpm5WFTg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com
- [10.11.54.5])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 46D01801756
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 07:41:06 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.40.195.95])
- by smtp.corp.redhat.com (Postfix) with ESMTP id DC7F59D7F
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 07:41:05 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Tue, 21 Jun 2022 09:41:00 +0200
-Message-Id: <e942179576028d20ad2c381d442fefec1af6a556.1655797247.git.jstancek@redhat.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 18ACF60090D
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 09:56:22 +0200 (CEST)
+Received: from [10.40.94.3] (unknown [37.24.96.116])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id A8AC69F7FD;
+ Tue, 21 Jun 2022 07:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1655798182; bh=AFa7/QWMDSEvu4iRQPswmZkWQ4r1+p7TfOSMveva3Cg=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=OFX9jbVJ/2lF0DPbtArAsTO0vsC6PqF7ihlsD0eq5YbbFq0p7cphOjNcZCt0skf74
+ zdJvb6jeV9BzZlzCIxevtGjK4riVQWpIJaqcDtcFH53YmLu9ledTupAfYowu5sm5WR
+ zlYMHjlZtYUGBEBGYVu8eBhRn0atJ3ePIrce7eas=
+Message-ID: <60876a29-d589-1de9-b4fd-a9000b8e7d68@jv-coder.de>
+Date: Tue, 21 Jun 2022 09:56:20 +0200
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To: Jan Stancek <jstancek@redhat.com>
+References: <010001816f3c352e-f5ee78c6-1425-42f5-b673-409a0a92ef74-000000@email.amazonses.com>
+ <11d7d8a6-c062-03aa-7e7c-f7d3c3c2f095@jv-coder.de>
+ <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+In-Reply-To: <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/utime03: print more details when test fails
+Subject: Re: [LTP] [REGRESSION] lkft ltp for 6763a36
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,44 +56,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: LTP List <ltp@lists.linux.it>, Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test is sporadically failing in past couple months on upstream
-kernels. Print more data when that happens to see by how much
-we are failing the checks.
+Hi Jan,
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/utime/utime03.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Am 6/21/2022 um 9:22 AM schrieb Jan Stancek:
+> On Tue, Jun 21, 2022 at 9:15 AM Joerg Vehlow <lkml@jv-coder.de> wrote:
+>>
+>> Hi,
+>>
+>> Am 6/17/2022 um 3:17 AM schrieb lkft@linaro.org:
+>>> * qemu_i386, ltp-fs-tests
+>>>   - read_all_proc
+>> I've seen this test fail a lot, has anyone ever tried to analyze it? I
+>> was unable to reproduce the problem when running the test in isolation.
+> 
+> I see it hit timeouts too (read_all_sys as well). I think it needs
+> runtime restored to 5minutes as well, atm. it has 30s.
+Didn't think about that, but at least for the failures I've seen, this
+is not the reason. The message printed by the test is "Test timeout 5
+minutes exceeded."
 
-diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
-index 2358fd70b4db..8c1167fdbd84 100644
---- a/testcases/kernel/syscalls/utime/utime03.c
-+++ b/testcases/kernel/syscalls/utime/utime03.c
-@@ -79,10 +79,14 @@ static void run(void)
- 	SAFE_STAT(TEMP_FILE, &statbuf);
- 
- 	if (statbuf.st_atime < mintime || statbuf.st_atime > maxtime)
--		tst_res(TFAIL, "utime() did not set expected atime");
-+		tst_res(TFAIL, "utime() did not set expected atime, "
-+			"mintime: %ld, maxtime: %ld, st_atime: %ld",
-+			mintime, maxtime, statbuf.st_atime);
- 
- 	if (statbuf.st_mtime < mintime || statbuf.st_mtime > maxtime)
--		tst_res(TFAIL, "utime() did not set expected mtime");
-+		tst_res(TFAIL, "utime() did not set expected mtime, "
-+			"mintime: %ld, maxtime: %ld, st_mtime: %ld",
-+			mintime, maxtime, statbuf.st_mtime);
- }
- 
- static struct tst_test test = {
--- 
-2.27.0
-
+Joerg
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
