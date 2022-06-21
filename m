@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70FF5C43334
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:02:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47C7CC433EF
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 12:16:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0B8113C948B
-	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 14:02:15 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D6B5A3C9430
+	for <ltp@archiver.kernel.org>; Tue, 21 Jun 2022 14:16:15 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1AF3C3C925A
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:02:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 1F0263C034D
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:16:04 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 666BF1A002DB
- for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:02:02 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 94D4B6008D1
+ for <ltp@lists.linux.it>; Tue, 21 Jun 2022 14:16:03 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id C256321A70;
+ Tue, 21 Jun 2022 12:16:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655813762;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iD1d7pIt6IG6wkijy+I6yc1eZUq16bB27ONeDlNai34=;
+ b=krTX61yjoOXvT7282YBglTO7BDOnGLookHrrOnMP51WY2Q7xIvU01Ue5/zTvXAaaWthUbd
+ I9Tt52EfouSji/cAAaVtKzX7M2YfbE9+ECU9eBo/6nArdi8sl7dR9vyruFWi55p5Coz0g5
+ scp2aD7Bpb8pz+zui6aInH3WOyUIlas=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655813762;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iD1d7pIt6IG6wkijy+I6yc1eZUq16bB27ONeDlNai34=;
+ b=xUooqHGGWrxZM0o03EwAUJLz+8waPM+FaAKxK/QRR2fECZ8grCBefqSNY9Y7fxCC6anhZJ
+ SkoeiSN8ko/qgrAw==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2140D1F8A3;
- Tue, 21 Jun 2022 12:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1655812922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=uU2jiNk6Ug60ZbuSPO6zGopTbMqjO7aR6mTRO4CzwJg=;
- b=j60xuo3mlUkeVlZ0C46eHEJwpKdE9M7ag0GKfxhoJoPWEyBl/IshNczI8+QXPnbalYIc48
- 64gC+gHfpUNhd9KaS/SD44DIvReFkLqiBFPURtWLpvOsJGmD5Q+je1k5KwCVkRHUJaG2t1
- RJMTSTGe4/Qcc/hPG4fSXKvTJCsRnvI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1655812922;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=uU2jiNk6Ug60ZbuSPO6zGopTbMqjO7aR6mTRO4CzwJg=;
- b=l6PIt3b/6fWF1z3LBUP/Ez7zJNMHL1V2ZccxhDw7dVRnN2O8rKAH9kHDoeExpdUPSTHM8m
- ZcBq+h5bHnXNZuDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 046E913638;
- Tue, 21 Jun 2022 12:02:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vTmVOjmzsWJ7ewAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 21 Jun 2022 12:02:01 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: linux-kernel@vger.kernel.org
-Date: Tue, 21 Jun 2022 14:03:55 +0200
-Message-Id: <20220621120355.2903-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.35.1
+ by relay2.suse.de (Postfix) with ESMTPS id 63A4F2C141;
+ Tue, 21 Jun 2022 12:16:02 +0000 (UTC)
+References: <010001816f3c352e-f5ee78c6-1425-42f5-b673-409a0a92ef74-000000@email.amazonses.com>
+ <11d7d8a6-c062-03aa-7e7c-f7d3c3c2f095@jv-coder.de>
+ <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
+ <60876a29-d589-1de9-b4fd-a9000b8e7d68@jv-coder.de>
+ <871qvi5r97.fsf@suse.de>
+ <CAEemH2c=xxHrGiqtaRjM89S==JfsODnJ=D9b+mzaF68sjGRVJw@mail.gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Tue, 21 Jun 2022 12:38:40 +0100
+In-reply-to: <CAEemH2c=xxHrGiqtaRjM89S==JfsODnJ=D9b+mzaF68sjGRVJw@mail.gmail.com>
+Message-ID: <87wnda43ge.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] uapi: Make __{u, s}64 match {u,
- }int64_t in userspace
+Subject: Re: [LTP] [REGRESSION] lkft ltp for 6763a36
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,73 +73,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-arch@vger.kernel.org, libc-alpha@sourceware.org, arnd@arndb.de,
- linux-api@vger.kernel.org, dhowells@redhat.com, David.Laight@aculab.com,
- zack@owlfolio.org, ltp@lists.linux.it
+Reply-To: rpalethorpe@suse.de
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This changes the __u64 and __s64 in userspace on 64bit platforms from
-long long (unsigned) int to just long (unsigned) int in order to match
-the uint64_t and int64_t size in userspace for C code.
+Hello Li,
 
-We cannot make the change for C++ since that would be non-backwards
-compatible change and may cause possible regressions and even
-compilation failures, e.g. overloaded function may no longer find a
-correct match.
+Li Wang <liwang@redhat.com> writes:
 
-This allows us to use the kernel structure definitions in userspace in C
-code. For example we can use PRIu64 and PRId64 modifiers in printf() to
-print structure membere. Morever with this there would be no need to
-redefine these structures in an libc implementations as it is done now.
+> On Tue, Jun 21, 2022 at 4:56 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
+>
+>  Hello,
+>
+>  Joerg Vehlow <lkml@jv-coder.de> writes:
+>
+>  > Hi Jan,
+>  >
+>  > Am 6/21/2022 um 9:22 AM schrieb Jan Stancek:
+>  >> On Tue, Jun 21, 2022 at 9:15 AM Joerg Vehlow <lkml@jv-coder.de> wrote:
+>  >>>
+>  >>> Hi,
+>  >>>
+>  >>> Am 6/17/2022 um 3:17 AM schrieb lkft@linaro.org:
+>  >>>> * qemu_i386, ltp-fs-tests
+>  >>>>   - read_all_proc
+>  >>> I've seen this test fail a lot, has anyone ever tried to analyze it? I
+>  >>> was unable to reproduce the problem when running the test in isolation.
+>  >> 
+>  >> I see it hit timeouts too (read_all_sys as well). I think it needs
+>  >> runtime restored to 5minutes as well, atm. it has 30s.
+>  > Didn't think about that, but at least for the failures I've seen, this
+>  > is not the reason. The message printed by the test is "Test timeout 5
+>  > minutes exceeded."
+>  >
+>  > Joerg
+>
+>  The main issue with read_all is that it also acts as a stress
+>  test. Reading some files in proc and sys is very resource intensive
+>  (e.g. due to lock contention) and varies depending on what state the
+>  system is in. On some systems this test will take a long time. Also
+>  there are some files which have to be filtered from the test. This
+>  varies by system as well.
+>
+> Does it make sense to have a lite version of read_all_sys?
+> which may only go through files sequentially or under slight stress.
 
-Consider for example the newly added statx() syscall. If we use the
-header from uapi we will get warnings when attempting to print it's
-members as:
+IIRC the reason I started doing it in parallel is because sequential
+opens and reads are even slower and unreliable. Some level of parallism
+is required, but too much and it causes issues.
 
-	printf("%" PRIu64 "\n", stx.stx_size);
+Thinking about it now, on a single or two core system only one worker
+process will be spawned. Which could get blocked for a long time on some
+reads because of the way some sys/proc files are implemented.
 
-We get:
+The worker count can be overridden with -w if someone wants to try
+increasing it to see if that actually helps on systems with <3
+cpus. Also the number of reads is set to 3 in the runtest file, that can
+be reduced to 1 with -r.
 
-	warning: format '%lu' expects argument of type 'long unsigned int',
-	         but argument 5 has type '__u64' {aka 'long long unsigned int'}
+>
+> With regard to this stressful read_all, I guess we can put into a dedicated
+> set and run separately in stress testing.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/uapi/asm-generic/types.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+I don't think I'd want to run that. IMO just doing enough to test
+parallel accesses is whats required. More than that we will run into
+diminishing returns . However I'm not against creating another runtest
+file/entry for that.
 
-v2: Make sure we do not break C++ applications
-v3: Update commit message to explain C++ exclusion
+On bigger systems I think the test is already quite limited even though
+it does 3 reads. It only spwans a max of 15 workers which should prevent
+it from causing huge lock contention on machines with >16 CPUs. At least
+I've not seen problems with that.
 
-diff --git a/include/uapi/asm-generic/types.h b/include/uapi/asm-generic/types.h
-index dfaa50d99d8f..11e468a39d1e 100644
---- a/include/uapi/asm-generic/types.h
-+++ b/include/uapi/asm-generic/types.h
-@@ -1,9 +1,16 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
- #ifndef _ASM_GENERIC_TYPES_H
- #define _ASM_GENERIC_TYPES_H
-+
-+#include <asm/bitsperlong.h>
-+
- /*
-- * int-ll64 is used everywhere now.
-+ * int-ll64 is used everywhere in kernel now.
-  */
--#include <asm-generic/int-ll64.h>
-+#if !defined(__KERNEL__) && !defined(__cplusplus) && __BITSPERLONG == 64
-+# include <asm-generic/int-l64.h>
-+#else
-+# include <asm-generic/int-ll64.h>
-+#endif
- 
- #endif /* _ASM_GENERIC_TYPES_H */
+It looks like the log from lkft is for a smaller machine?
+
 -- 
-2.35.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
