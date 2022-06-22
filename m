@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CD23C433EF
-	for <ltp@archiver.kernel.org>; Wed, 22 Jun 2022 07:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECCA6C433EF
+	for <ltp@archiver.kernel.org>; Wed, 22 Jun 2022 07:03:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A733A3C9507
-	for <ltp@archiver.kernel.org>; Wed, 22 Jun 2022 09:03:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 65A713C94DB
+	for <ltp@archiver.kernel.org>; Wed, 22 Jun 2022 09:03:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 870EE3C955B
- for <ltp@lists.linux.it>; Wed, 22 Jun 2022 09:02:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id D35823C94B4
+ for <ltp@lists.linux.it>; Wed, 22 Jun 2022 09:02:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3944520097A
- for <ltp@lists.linux.it>; Wed, 22 Jun 2022 09:02:03 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CEC2C1A00995
+ for <ltp@lists.linux.it>; Wed, 22 Jun 2022 09:02:05 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A8ED41FA12;
- Wed, 22 Jun 2022 07:02:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1C15721C45;
+ Wed, 22 Jun 2022 07:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655881322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1655881325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fObxV5+l3XAyKf+okor/Cd0ub+nEIYSL2RT/ypmIEsY=;
- b=u6QxXc3gw+0Fy5WJ7ZjmFXbt6wR/bD3CXfPME2D5F3IqvB4p9Jveko835ryYKIvmy0ELub
- lquVvuvPYkQtleoFuvYT05rL/EAmtNskQqGXOs5O5pp+MpxQXKDi8WxyMVUjcffboGh8Rl
- say43yLl8Jqh4YJRYwB1ts74qsd4W9M=
+ bh=QshzFe8CSVqRo8F3onX4FK6+jSdZmHxWGikI3kqVAKQ=;
+ b=vqwydKMN5qDCC+dxJBZUqrASKqlMDoOwt6ZF8uFv4Eu3U41BE+RiibS+7IL6ctiZvoPUhh
+ J94nZBifALcKeryDD/LJrla0LvR9tpsdLaWE5BXmbpJJPwh+LayLSzHxJoBo63KLQvPGN5
+ Y3KKBkX+/ze2HOlbVrwuD3IIJn5i/NM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655881322;
+ s=susede2_ed25519; t=1655881325;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fObxV5+l3XAyKf+okor/Cd0ub+nEIYSL2RT/ypmIEsY=;
- b=kNue7Y1WtGc7W1Gte5OExpoZmOLtOW63gnhqSeCn6t4d7YeYnfn14reluEUBzbvk8DnXvD
- n1Nf24tXAZ+pa5BA==
+ bh=QshzFe8CSVqRo8F3onX4FK6+jSdZmHxWGikI3kqVAKQ=;
+ b=vXKIPICzEy817zP+vnLLi6q5CjcroOmrWIQ9YlIKtvo6MQgJ5naHS8Y5AFP69sELOIXCoe
+ PTA54HGLEumzhLDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 50B67134A9;
- Wed, 22 Jun 2022 07:02:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7724134A9;
+ Wed, 22 Jun 2022 07:02:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RemrCWq+smLiWgAAMHmgww
- (envelope-from <akumar@suse.de>); Wed, 22 Jun 2022 07:02:02 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8tnwImy+smLsWgAAMHmgww
+ (envelope-from <akumar@suse.de>); Wed, 22 Jun 2022 07:02:04 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 22 Jun 2022 12:31:36 +0530
-Message-Id: <20220622070137.24286-9-akumar@suse.de>
+Date: Wed, 22 Jun 2022 12:31:37 +0530
+Message-Id: <20220622070137.24286-10-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220622070137.24286-1-akumar@suse.de>
 References: <20220622070137.24286-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 8/9] Rewrite rename08.c using new LTP API
+Subject: [LTP] [PATCH 9/9] Rewrite rename10.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,14 +83,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/rename/rename08.c | 200 +++-----------------
- 1 file changed, 24 insertions(+), 176 deletions(-)
+ testcases/kernel/syscalls/rename/rename10.c | 182 +++-----------------
+ 1 file changed, 22 insertions(+), 160 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/rename/rename08.c b/testcases/kernel/syscalls/rename/rename08.c
-index 2efdfd390..e019d9b3b 100644
---- a/testcases/kernel/syscalls/rename/rename08.c
-+++ b/testcases/kernel/syscalls/rename/rename08.c
-@@ -1,190 +1,38 @@
+diff --git a/testcases/kernel/syscalls/rename/rename10.c b/testcases/kernel/syscalls/rename/rename10.c
+index 4f0933320..0b6865857 100644
+--- a/testcases/kernel/syscalls/rename/rename10.c
++++ b/testcases/kernel/syscalls/rename/rename10.c
+@@ -1,175 +1,37 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -117,97 +116,87 @@ index 2efdfd390..e019d9b3b 100644
  
 -/*
 - * NAME
-- *	rename08
+- *	rename10
 - *
 - * DESCRIPTION
-- *	This test will verify that rename(2) syscall failed in EFAULT
+- *	This test will verify that rename(2) syscall fails with ENAMETOOLONG
+- *      and ENOENT
 - *
 - * ALGORITHM
 - *	Setup:
 - *		Setup signal handling.
 - *		Create temporary directory.
 - *		Pause for SIGUSR1 if option specified.
-- *		Create a valid file to use in the rename() call.
+- *              create the "old" file
 - *
 - *	Test:
 - *		Loop if the proper options are given.
-- *              1.  "old" is a valid file, newpath points to address
-- *                   outside allocated address space
-- *                  rename the "old" to the "new" file
-- *                  verify rename() failed with error EFAULT
+- *              1.  rename the "old" to the "new" file
+- *                  verify rename() failed with error ENAMETOOLONG
 - *
-- *              2.  "old" points to address outside allocated address space
-- *                  ,"new" is a valid file
+- *              2.  "new" path contains a directory that does not exist
 - *                  rename the "old" to the "new"
-- *                  verify rename() failed with error EFAULT
-- *
-- *              3.  oldpath and newpath are all NULL
-- *                  try to rename NULL to NULL
-- *                  verify rename() failed with error EFAULT
+- *                  verify rename() failed with error ENOENT
 - *	Cleanup:
 - *		Print errno log and/or timing stats if options given
 - *		Delete the temporary directory created.*
+- *
 - * USAGE
-- *	rename08 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	rename10 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *	where,  -c n : Run n copies concurrently.
 - *		-e   : Turn on errno logging.
 - *		-i n : Execute test n times.
 - *		-I x : Execute test for x seconds.
 - *		-P x : Pause for x seconds between iterations.
 - *		-t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
 +/*\
 + * [DESCRIPTION]
   *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
 - * RESTRICTIONS
 - *	None.
-+ * Verify that rename(2) fails and errno is set to EFAULT, when
-+ * oldpath or newpath points outside of accessible address space.
++ * Verify that rename(2) fails and errno is set to ENAMETOOLONG, when
++ * oldpath or newpath is too long.
   */
 -#include <sys/types.h>
 -#include <fcntl.h>
--#include <sys/mman.h>
 -#include <unistd.h>
 -#include <errno.h>
- 
+-
 -#include "test.h"
+-
+-void setup();
+-void cleanup();
+ 
+-char *TCID = "rename10";
+-int TST_TOTAL = 2;
 +#include <stdio.h>
 +#include "tst_test.h"
  
--void setup();
--void cleanup();
+-char badmname[] =
+-    "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
 +#define TEMP_FILE "tmpfile"
-+#define INVALID_PATH (void *)-1
  
--char *TCID = "rename08";
--
--char *bad_addr = 0;
--
 -int fd;
--char fname[255];
+-char fname[255], mname[255];
+-char mdir[255];
 -
 -struct test_case_t {
--	char *fd;
+-	char *fd1;
 -	char *fd2;
 -	int error;
 -} TC[] = {
--#if !defined(UCLINUX)
--	/* "new" file is invalid - EFAULT */
+-	/* badmname is too long for a file name - ENAMETOOLONG */
 -	{
--	fname, (char *)-1, EFAULT},
--	    /* "old" file is invalid - EFAULT */
+-	fname, badmname, ENAMETOOLONG},
+-	    /* mname contains a directory component which does not exist - ENOENT */
 -	{
--	(char *)-1, fname, EFAULT},
--#endif
--	    /* both files are NULL - EFAULT */
--	{
--	NULL, NULL, EFAULT}
+-	fname, mname, ENOENT}
 -};
--
--int TST_TOTAL = ARRAY_SIZE(TC);
--
++static char long_path[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
+ 
 -int main(int ac, char **av)
 +static void setup(void)
  {
@@ -219,6 +208,9 @@ index 2efdfd390..e019d9b3b 100644
 -	 */
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
+-	/*
+-	 * perform global setup for test
+-	 */
 -	setup();
 -
 -	/*
@@ -231,7 +223,7 @@ index 2efdfd390..e019d9b3b 100644
 -		/* loop through the test cases */
 -		for (i = 0; i < TST_TOTAL; i++) {
 -
--			TEST(rename(TC[i].fd, TC[i].fd2));
+-			TEST(rename(TC[i].fd1, TC[i].fd2));
 -
 -			if (TEST_RETURN != -1) {
 -				tst_resm(TFAIL, "call succeeded unexpectedly");
@@ -271,27 +263,17 @@ index 2efdfd390..e019d9b3b 100644
 -	tst_tmpdir();
 -
 -	sprintf(fname, "./tfile_%d", getpid());
+-	sprintf(mdir, "./rndir_%d", getpid());
+-	sprintf(mname, "%s/rnfile_%d", mdir, getpid());
 -
 -	SAFE_TOUCH(cleanup, fname, 0700, NULL);
--
--#if !defined(UCLINUX)
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK, cleanup, "mmap failed");
--	}
--	TC[0].fd2 = bad_addr;
--	TC[1].fd = bad_addr;
--#endif
-+	TST_EXP_FAIL(rename(INVALID_PATH, TEMP_FILE),
-+				EFAULT);
-+	TST_EXP_FAIL(rename(TEMP_FILE, INVALID_PATH),
-+				EFAULT);
++	TST_EXP_FAIL(rename(TEMP_FILE, long_path),
++				ENAMETOOLONG);
  }
  
 -/*
 - * cleanup() - performs all ONE TIME cleanup for this test at
-- *              completion or premature exit.
+- *             completion or premature exit.
 - */
 -void cleanup(void)
 -{
