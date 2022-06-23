@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7FFDC43334
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 08:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D622DC43334
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 08:03:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4054C3C94F5
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 10:03:20 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DFA243C94B4
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 10:03:30 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 273A03C9539
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:02:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 03E7B3C9564
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:02:41 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4C95460073E
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:02:36 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EFE911A00A5E
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:02:39 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 950AA1FD43;
- Thu, 23 Jun 2022 08:02:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 306CC21C09;
+ Thu, 23 Jun 2022 08:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655971356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1655971359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MdPY1YhfMouwEUlCWFE3OOvOcGLtj3uLl1uAZdAC5C0=;
- b=d1RBkK//sjW4ZFXZ4YiP4+8xFc3tkP/dhSBH5Y6ZUHQjXFndGPtOlT3AEU7x9n6hxjpQug
- Yw8GlvRCO3TYHXlfQ9enw2HfH12tSvE2/OUMP1F1UDspgqjIexmlDlVp5zcmYDIJ2JKWct
- Z7dgSbOJ8yIPjGUR/oddUIXbVPZdOEE=
+ bh=/7vc98AWe++Klm3+ivHonmgQhyEB30zqrBVteXb4Ypc=;
+ b=qrsFUQpoetLnMDXTIcXyTTAp4jvdyUIJte4PjJVIDFFfz0Ga2OxVQlM1xT4g8XZRiTZGQt
+ JMFPOUNYN9iuv5XAvqOy29UNCA1DZ8eqQ7n8LdGvIm+f6IjcHjYeqM7bOLa04g9LnV0foa
+ E97ra12ltr9qZU5sHqlfQTY2ggZ+IKA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655971356;
+ s=susede2_ed25519; t=1655971359;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MdPY1YhfMouwEUlCWFE3OOvOcGLtj3uLl1uAZdAC5C0=;
- b=0QXwOyXG+U2yI7n3Jegw20oZaLW0FseOc+036DCVgHDnEUq9r/WgKIkgVfDSXMWWq+AFFy
- BnyBOJm3TNWYiDCA==
+ bh=/7vc98AWe++Klm3+ivHonmgQhyEB30zqrBVteXb4Ypc=;
+ b=yDe/g1ESaPqAeXu52jg4odKJgzdk+ElCDUYZqXfu/TdtHe+q+129KM7fxd6f4/rlq9Rayk
+ gOsnKTlr6F0ZmaDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36399133A6;
- Thu, 23 Jun 2022 08:02:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5C39133A6;
+ Thu, 23 Jun 2022 08:02:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ujaKAhwetGKKdgAAMHmgww
- (envelope-from <akumar@suse.de>); Thu, 23 Jun 2022 08:02:36 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3d23JR4etGKXdgAAMHmgww
+ (envelope-from <akumar@suse.de>); Thu, 23 Jun 2022 08:02:38 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 23 Jun 2022 13:32:13 +0530
-Message-Id: <20220623080215.24186-5-akumar@suse.de>
+Date: Thu, 23 Jun 2022 13:32:14 +0530
+Message-Id: <20220623080215.24186-6-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220623080215.24186-1-akumar@suse.de>
 References: <20220623080215.24186-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/6] Rewrite utime04.c using new LTP API
+Subject: [LTP] [PATCH v2 5/6] Rewrite utime05.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,14 +83,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/utime/utime04.c | 203 ++++------------------
- 1 file changed, 34 insertions(+), 169 deletions(-)
+ testcases/kernel/syscalls/utime/utime05.c | 213 ++++------------------
+ 1 file changed, 40 insertions(+), 173 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/utime/utime04.c b/testcases/kernel/syscalls/utime/utime04.c
-index 5253f768a..84558d762 100644
---- a/testcases/kernel/syscalls/utime/utime04.c
-+++ b/testcases/kernel/syscalls/utime/utime04.c
-@@ -1,190 +1,55 @@
+diff --git a/testcases/kernel/syscalls/utime/utime05.c b/testcases/kernel/syscalls/utime/utime05.c
+index b2d2450bf..ad035330c 100644
+--- a/testcases/kernel/syscalls/utime/utime05.c
++++ b/testcases/kernel/syscalls/utime/utime05.c
+@@ -1,200 +1,67 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -115,16 +114,19 @@ index 5253f768a..84558d762 100644
   */
  
 -/*
-- * Test Name: utime04
+- * Test Name: utime05
 - *
 - * Test Description:
 - *  Verify that the system call utime() successfully sets the modification
-- *  and access times of a file to the time specified by times argument, if
-- *  the times argument is not null, and the user ID of the process is "root".
+- *  and access times of a file to the value specified by the times argument
+- *  under the following constraints,
+- *		- The times argument is not null,
+- *		- The user ID of the process is not "root".
+- *		- The file is owned by the user ID of the process.
 - *
 - * Expected Result:
-- *   utime succeeds returning zero and sets the access and modification
-- *   times of the file to that specified by the times argument.
+- *  utime succeeds returning zero and sets the access and modification
+- *  times of the file to that specified by the times argument.
 - *
 - * Algorithm:
 - *  Setup:
@@ -148,21 +150,20 @@ index 5253f768a..84558d762 100644
 - *   Delete the temporary directory created.
 - *
 - * Usage:  <for command-line>
-- *  utime04 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
-- *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-f   : Turn off functionality Testing.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-t   : Turn on syscall timing.
+- *  utime05 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *		where,	-c n : Run n copies concurrently.
+- *			-e   : Turn on errno logging.
+- *			-f   : Turn off functionality Testing.
+- *			-i n : Execute test n times.
+- *			-I x : Execute test for x seconds.
+- *			-P x : Pause for x seconds between iterations.
+- *			-t   : Turn on syscall timing.
 - *
 - * History
 - *	07/2001 John George
 - *		-Ported
 - *
 - * Restrictions:
-- *  This test should be run by 'super-user' (root) only.
 +/*\
 + * [Description]
   *
@@ -170,7 +171,8 @@ index 5253f768a..84558d762 100644
 + * access and modification times of a file to the values specified by
 + * times argument, under the following constraints:
 + * - The times argument is not NULL.
-+ * - The user ID of the process is "root".
++ * - The user ID of the process is not "root".
++ * - The file is owned by the user ID of the process.
   */
  
 -#include <stdio.h>
@@ -182,7 +184,8 @@ index 5253f768a..84558d762 100644
 -#include <string.h>
 -#include <sys/stat.h>
 -#include <signal.h>
--
+ #include <pwd.h>
+ 
 -#include "test.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
@@ -191,11 +194,15 @@ index 5253f768a..84558d762 100644
 -#define FILE_MODE	S_IRUSR | S_IRGRP | S_IROTH
 -#define NEW_TIME	10000
 -
--char *TCID = "utime04";
+-char *TCID = "utime05";
 -int TST_TOTAL = 1;
 +#define FILE_MODE	0444
 +#define NEW_MODF_TIME	10000
 +#define NEW_ACCESS_TIME	20000
+ 
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
++#define TEST_USERNAME "nobody"
  
 -struct utimbuf times;		/* struct. buffer for utime() */
 +static struct utimbuf times = {
@@ -219,16 +226,20 @@ index 5253f768a..84558d762 100644
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
++	struct passwd *pw;
+ 
 -		tst_count = 0;
--
++	pw = SAFE_GETPWNAM(TEST_USERNAME);
+ 
 -		/*
 -		 * Invoke utime(2) to set TEMP_FILE access and
 -		 * modification times to that specified by
 -		 * times argument.
 -		 */
 -		TEST(utime(TEMP_FILE, &times));
--
++	tst_res(TINFO, "Switching effective user ID to user: %s", pw->pw_name);
++	SAFE_SETEUID(pw->pw_uid);
+ 
 -		if (TEST_RETURN == -1) {
 -			tst_resm(TFAIL|TTERRNO, "utime(%s) failed", TEMP_FILE);
 -		} else {
@@ -273,16 +284,20 @@ index 5253f768a..84558d762 100644
 -
 -	tst_require_root();
 -
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	/* Switch to nobody user for correct error code collection */
+-	ltpuser = SAFE_GETPWNAM(NULL, nobody_uid);
+-	SAFE_SETUID(NULL, ltpuser->pw_uid);
+-
+-	TEST_PAUSE;
 +	struct stat stat_buf;
  
--	TEST_PAUSE;
+-	tst_tmpdir();
 +	TST_EXP_PASS(utime(TEMP_FILE, &times), "utime(%s, &times)", TEMP_FILE);
 +	if (!TST_PASS)
 +		return;
  
--	tst_tmpdir();
--
 -	/* Creat a temporary file under above directory */
 -	fildes = SAFE_CREAT(cleanup, TEMP_FILE, FILE_MODE);
 -
@@ -300,9 +315,9 @@ index 5253f768a..84558d762 100644
  
 -/*
 - * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *  Remove the test directory and testfile created in the setup.
+- * cleanup() -	performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- *		Remove the test directory and testfile created in the setup.
 - */
 -void cleanup(void)
 -{
