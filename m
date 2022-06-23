@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4297CCA47C
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 08:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE877C43334
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 08:31:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A58E53C952F
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 10:27:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 38A4A3C958C
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 10:31:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 418703C071A
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:27:17 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6E59B3C3129
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:30:55 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3BFD0200ACF
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:27:15 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A6CE91000ADD
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:30:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655972834;
+ s=mimecast20190719; t=1655973053;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lz7mr2V/7c3Juhxs5JNUR4vQ7JC8Wx4U8OuqU3TkBGc=;
- b=hT6sqwOkfoHcCe0VN+GRw8SZp7l5yv3UN1/c4HR2a5c33MNC7rGik76WExOP6Bd0dXjTjn
- nhPgdZv9cOMtuBJk95y9TwkIxk59RaEXTSKQG+SJHggPFBYSEX00UPPOpCLzS6MzZS3GJG
- 6dK0lCfwA0f+ZqjvAQzSLkipW/QGC6Q=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=lJtzS1KT3BeRk/0ehu8+YUmA874goCvHvTKpNy6d4wo=;
+ b=WRGmouYIOAZ781YlkArbSkMcrwYpC451H75nqWLRCQ/Sa40JgC0rqkJwEXpPTHsUtL3c+E
+ N/I68D6watVIVWUEz8jUcZT/BbwIfnGpTSzIQfGjj8hgH1z44XEA5cYuKjTbHR76q0dhsJ
+ lSnFLLyjC96KtojahTjwFwF52OwH02Q=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-592-8SaiAL-CNP-DAu2LTciwCg-1; Thu, 23 Jun 2022 04:27:13 -0400
-X-MC-Unique: 8SaiAL-CNP-DAu2LTciwCg-1
-Received: by mail-yb1-f198.google.com with SMTP id
- l6-20020a25bf86000000b00668c915a3f2so13434796ybk.4
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 01:27:13 -0700 (PDT)
+ us-mta-539-K0fYneTqOdazN1SMlcHyhQ-1; Thu, 23 Jun 2022 04:30:51 -0400
+X-MC-Unique: K0fYneTqOdazN1SMlcHyhQ-1
+Received: by mail-lj1-f197.google.com with SMTP id
+ m20-20020a2ea594000000b00258f0218017so2883809ljp.2
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 01:30:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=lz7mr2V/7c3Juhxs5JNUR4vQ7JC8Wx4U8OuqU3TkBGc=;
- b=0oJR1Rx5WtheVRD0SyzvlxHe1YVmIEFboVYeAz+7zJwHnF1Aq3BeDFjnIai6WRGK1r
- YS4PhwSj7U8F/k2sa9AY/kmCUHQIlDs79UPFMhRoRz60tkClB1xK9q9iPWqcUxL2ZI2K
- XH82Zt/4eQ6ux/PzVvLJBQbboGo3dU4LwnT3IT8UBWo2bzn3duJ6tLwvhv01ezw7r0fV
- pR5Q0EI42ysX4sZXdG4sYVt++BIuW9/dUj8VJdC4ez+SxNiH8khZYd5aaEVt+ClF7dXW
- +ueKbnCVOH71qPl2VSWSgVqGGV41oQyvLO2ddUhRyo7lGn869ZcPgmnn7rhpB/aKki1/
- zdWA==
-X-Gm-Message-State: AJIora8fs82mJDDzVhwESIffaAfHkoAz2lG35qeXMEseA0PlAGuwf/4n
- TRrpkL+ufEmZXl2G5YiCg+Mi3rXWT2wlVXYLoqFSNtuinfb/mMBUS6alzZCpmX/DSUBT/R0UiyK
- J/n2+AykxWvvKkRLvmJ0KNQqP1VU=
-X-Received: by 2002:a0d:c585:0:b0:317:f0d6:1d8 with SMTP id
- h127-20020a0dc585000000b00317f0d601d8mr9375961ywd.86.1655972832671; 
- Thu, 23 Jun 2022 01:27:12 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1t0LPUWo5sEyzkDyHCMp9wceq9Lt0ih9LGZiGuteJg1wTlTK3aoDqKz10WPdkmazVUYxN7FK7kE6pB0kOIxxxU=
-X-Received: by 2002:a0d:c585:0:b0:317:f0d6:1d8 with SMTP id
- h127-20020a0dc585000000b00317f0d601d8mr9375949ywd.86.1655972832445; Thu, 23
- Jun 2022 01:27:12 -0700 (PDT)
+ bh=lJtzS1KT3BeRk/0ehu8+YUmA874goCvHvTKpNy6d4wo=;
+ b=470DJGcSNvFsGGDMItZaL6WiHitw2APgRlboxgTqALXzgPSG9iPlmWfzeyPATJQNrX
+ JeXdmYAMEC4C8tZzFRR0/2RAPrNp75RNz5vvFK+277/Ft5t2dMI8Az92+q190mcm+4sk
+ y0ip31t+93QLo+2Qu1nrRV3gk0mIfMiVCCD1JEEHEdN9wpOx8NHC+uGvjX9yorU7UbLd
+ VvsZbqjzZlRMnSdDQtkKFKmjPgyWzU2qC/hbVZfZeIRUkfzCKByB3/k6jz6F0GJKxDsQ
+ O9s6q+LAVBZiNvOzKgDaEe7rqcAJ+EkGDf2PmpXllFR4hdHZpLHEb25NjX/oGmrB7PHZ
+ e5jg==
+X-Gm-Message-State: AJIora/zzdaL8bPe5BV6daFuwyT6akGGuOMC6+seBx4DlXNzPTBIp4Dr
+ zliTNyG+ONg1fbv9KvZWT6Ed8OmrMDNrNGXLpln53ijBQN1UIHsq3SPcSwzdEU6FB8VQp+KyTwD
+ k220eqojQCP0uYtyr2Mfkva2E/Qc=
+X-Received: by 2002:a05:6512:108b:b0:47f:a41b:f2f1 with SMTP id
+ j11-20020a056512108b00b0047fa41bf2f1mr1553359lfg.430.1655973050018; 
+ Thu, 23 Jun 2022 01:30:50 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sqb8PdBUqZLXflvH3JDayfcy0CrbfDTtZLCPb4kHy4E2S+pNSg/GuKIqPgznOOXnah17gl4xU7YvGyyDU4Hwo=
+X-Received: by 2002:a05:6512:108b:b0:47f:a41b:f2f1 with SMTP id
+ j11-20020a056512108b00b0047fa41bf2f1mr1553352lfg.430.1655973049829; Thu, 23
+ Jun 2022 01:30:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <e942179576028d20ad2c381d442fefec1af6a556.1655797247.git.jstancek@redhat.com>
- <YrGWaXzqNyS4TZOL@yuki>
-In-Reply-To: <YrGWaXzqNyS4TZOL@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 23 Jun 2022 16:27:01 +0800
-Message-ID: <CAEemH2cit9OOSvQ5wv0oMB5yOgEjC6Qnf1qLwKpTnDgvXGcp0w@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
+References: <20220620063456.528113-1-liwang@redhat.com>
+In-Reply-To: <20220620063456.528113-1-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 23 Jun 2022 10:30:33 +0200
+Message-ID: <CAASaF6xjARnhNAh7cU0pTE5vBfsA7wvvLAdosOmbrAEkHWY2-Q@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
 Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/utime03: print more details when test
- fails
+Subject: Re: [LTP] [PATCH v2] swapping01: make use of remaining runtime in
+ test looping
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,47 +87,41 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1253374242=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1253374242==
-Content-Type: multipart/alternative; boundary="0000000000006f9f6005e2193875"
+On Mon, Jun 20, 2022 at 8:35 AM Li Wang <liwang@redhat.com> wrote:
+>
+> Here go with default to 10 minutes for max_runtime. At the same time limit
+> the loop that waits for the swap usage to settle to run for a reminder
+> of max_runtime/2 instead of the hardcoded 30 seconds.
+>
+> This fix can significantly improve timeouts on slower systems:
+>
+>   # free -h
+>                 total        used        free      shared  buff/cache   available
+>   Mem:          2.9Gi       1.1Gi       1.1Gi        20Mi       732Mi       1.5Gi
+>   Swap:         2.0Gi          0B       2.0Gi
+>
+>   # time ./swapping01
+>   tst_kconfig.c:82: TINFO: Parsing kernel config '/boot/config-4.18.0-309.el8.x86_64+debug'
+>   tst_test.c:1528: TINFO: Timeout per run is 0h 02m 00s
+>   swapping01.c:110: TINFO: available physical memory: 1545 MB
+>   swapping01.c:113: TINFO: try to allocate: 2008 MB
+>   swapping01.c:152: TPASS: no heavy swapping detected, 218 MB swapped.
+>   ...
+>
+>   real    0m34.241s
+>   user    0m0.386s
+>   sys     0m16.040s
+>
+> Co-developed-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Li Wang <liwang@redhat.com>
 
---0000000000006f9f6005e2193875
-Content-Type: text/plain; charset="UTF-8"
-
-Applied, let's see how that show in next.
-
-Thanks!
-
--- 
-Regards,
-Li Wang
-
---0000000000006f9f6005e2193875
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Applied, let&#39;s see how that show in next.</div><div class=
-=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_=
-default" style=3D"font-size:small">Thanks!</div></div><div><br></div>-- <br=
-><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<=
-br></div><div>Li Wang<br></div></div></div></div>
-
---0000000000006f9f6005e2193875--
-
-
---===============1253374242==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Acked-by: Jan Stancek <jstancek@redhat.com>
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1253374242==--
-
