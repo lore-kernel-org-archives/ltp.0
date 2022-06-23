@@ -4,76 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB384C43334
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 08:50:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C31E8C433EF
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 09:57:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C4C73C9528
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 10:49:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id C2EE73C9486
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 11:57:43 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 637943C075E
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:49:48 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5DB343C1FED
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 11:57:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 919AF600B73
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 10:49:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655974186;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 53AA91A00612
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 11:57:32 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6F71121E4E;
+ Thu, 23 Jun 2022 09:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1655978252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OUjzvIiyQkJDa7wt3TbisV8aJ6L9B2z1cTg8NeyqJFI=;
- b=Yy3YW70W4KCfstOQvlJzf3vgOcNYO1jJu5KwbbSoqna2NmklBI6spG67Kzcf8aS1hlM98s
- tZOinhIVphKFoW43v0ft5/yAeV8H6GD7tC6HDp9QUf14lZiiA96p+UlYYbNrwmHvLAgxBk
- ZOpLSGAlG6dtC8GR22c2uYa/0I407qg=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-292-rW840OJrNJKtaIFZokfKCg-1; Thu, 23 Jun 2022 04:49:44 -0400
-X-MC-Unique: rW840OJrNJKtaIFZokfKCg-1
-Received: by mail-yw1-f199.google.com with SMTP id
- 00721157ae682-2fed274f3fbso164281447b3.17
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 01:49:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=OUjzvIiyQkJDa7wt3TbisV8aJ6L9B2z1cTg8NeyqJFI=;
- b=5Mc4cZSMkJZSh8Dp4nkF+CqFa+saHaQbSIkDGU3yhBqI5jK+vepcZgBBKAejR8lNDH
- s9GEEJFg56NHBRQFlAMXSQFfGkiWXA5Ao/pe/S2ROfbX+Dw3YzwrjQJh4orx7Ne2Koz1
- v8MzJKTBz58JPDtomcM6IzV1MDONDhiVCk9X1oPJQiqYol+3rgzyTjZ0oxykiYythTF0
- sP/ezlS4Z6/e4XLoMXRQXnCEtKnZzmWHqQi1zfD/2qDTgaAUkEZ7XmfkapiuSrKTCkdI
- WrbNOh3Qt1OnMWoSqBMPfI6Rqk2HUHKpmgg25ijDDEuT3uksj5gkCrCVvQ2LYY7VFC+e
- GbfA==
-X-Gm-Message-State: AJIora/NoCcOUIsySbtRn1Mq9YmmkSU1wv7oEIMGqFvCcNi/YqLVD1l9
- T1Zx8SEi/H8ROreUjktS6sPwaf0HlQsnOaeLE9MyDdl9y/AXitUpqHnGHrZGUI5fcVcS1YGKg5B
- Eo7FaOUtf2SC70/PU4vAqHQ/Yz3U=
-X-Received: by 2002:a5b:88e:0:b0:668:f134:f743 with SMTP id
- e14-20020a5b088e000000b00668f134f743mr8302914ybq.301.1655974184012; 
- Thu, 23 Jun 2022 01:49:44 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vKyLXNDxJra4NnjKQ2soi4q1hRT1yBOjRRQYpFnJtmnFMCKnlV5in/DS5uGXvEIK8W2hhspbG6MX2saNgQIjc=
-X-Received: by 2002:a5b:88e:0:b0:668:f134:f743 with SMTP id
- e14-20020a5b088e000000b00668f134f743mr8302902ybq.301.1655974183796; Thu, 23
- Jun 2022 01:49:43 -0700 (PDT)
+ bh=XwMIwqaRahrOLk2LNpQJ6tq2S40QE8vCToNgcp7mwe8=;
+ b=IyKgcrnT74+IFf2mKzM9/OUtgwBdlvGPbfAkNEHXl0VZf0eHnuwYj21YZDWzRNX1BmZXI8
+ Ob3FAD2wbfbUsZA3OmuOaFfUgT9YwSvpA/w4Sb5VbxKquQfonZAf747kNiMXTxLe38RlY2
+ +N83lTQuM806bI2mQOnyHyRZ09Op8VU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1655978252;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XwMIwqaRahrOLk2LNpQJ6tq2S40QE8vCToNgcp7mwe8=;
+ b=OHCtr/HbDNiswuugtn6KnCv3KZJdNtYOqR2DSutlEarBkEYBEyxzM6J0+YGvrbDOgNEXP0
+ pxumMICWarRcUYAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D181133A6;
+ Thu, 23 Jun 2022 09:57:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id qbivFQw5tGLcNQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 23 Jun 2022 09:57:32 +0000
+Message-ID: <91377e86-da37-2987-72a2-3e5cf44bdec6@suse.cz>
+Date: Thu, 23 Jun 2022 11:57:32 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
 References: <20220620092146.7604-1-chrubis@suse.cz>
-In-Reply-To: <20220620092146.7604-1-chrubis@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 23 Jun 2022 16:49:32 +0800
-Message-ID: <CAEemH2eEvbaYyMrqSHxCLPPPuZGAuX8Fot7YvFzCp94GyhzC1w@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+ <20220620092146.7604-5-chrubis@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20220620092146.7604-5-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/7] openposix: Fix 'no return in nonvoid
- function' warnings
+Subject: Re: [LTP] [PATCH 4/7] openposix: sem_timedwait/11-1: Fix
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,59 +80,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1703559835=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1703559835==
-Content-Type: multipart/alternative; boundary="000000000000fb955b05e21988d2"
+Hi,
+small suggestion below, otherwise it looks good.
 
---000000000000fb955b05e21988d2
-Content-Type: text/plain; charset="UTF-8"
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-Hi Cyril,
+On 20. 06. 22 11:21, Cyril Hrubis wrote:
+> Actually run both of the cases (valid timeout and invalid timeout).
+> 
+> The timeout is not actually invalid, but rather in the past, which is
+> important to test as the system has to try to lock the semaphore first
+> and only if that fails it should check the timeout.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  .../conformance/interfaces/sem_timedwait/11-1.c          | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c
+> index f87afaa43..663edd836 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c
+> @@ -24,7 +24,7 @@
+>  #include "posixtest.h"
+>  
+>  #define TIMEOUT 2
+> -#define INVALIDTIMEOUT -2
+> +#define NEGATIVETIMEOUT -2
+>  #define TEST "11-1"
+>  #define FUNCTION "sem_timedwait"
+>  #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+> @@ -45,7 +45,7 @@ int main(void)
+>  			ts[i].tv_sec = time(NULL) + TIMEOUT;
+>  			ts[i].tv_nsec = 0;
+>  		} else if (i == 1) {
+> -			ts[i].tv_sec = time(NULL) + INVALIDTIMEOUT;
+> +			ts[i].tv_sec = time(NULL) + NEGATIVETIMEOUT;
+>  			ts[i].tv_nsec = 0;
+>  		}
+>  		/* Lock Semaphore */
+> @@ -63,13 +63,14 @@ int main(void)
+>  
+>  		/* Checking if the value of the Semaphore decremented by one */
+>  		if ((val[i] == 0) && (sts[i] == 0)) {
+> -			puts("TEST PASSED");
+>  			sem_destroy(&mysemp[i]);
 
-Generally looks good, thanks for the fix and cleanup.
-Tests work well from my side.
+It'd be better to move sem_destroy() above the condition. See code
+example at the end.
 
-For the series:
-Reviewed-by: Li Wang <liwang@redhat.com>
+> -			return PTS_PASS;
+>  		} else {
+>  			puts("TEST FAILED");
+>  			sem_destroy(&mysemp[i]);
+>  			return PTS_FAIL;
+>  		}
+>  	}
+> +
+> +	puts("TEST PASSED");
+> +	return PTS_PASS;
+>  }
 
+...
+
+	sem_destroy(&mysemp[i]);
+
+	/* Checking if the value of the Semaphore decremented by one */
+	if ((val[i] != 0) || (sts[i] != 0)) {
+		puts("TEST FAILED");
+		return PTS_FAIL;
+	}
+
+	puts("TEST PASSED");
+	return PTS_PASS;
+}
 
 -- 
-Regards,
-Li Wang
-
---000000000000fb955b05e21988d2
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Cyril,</div><div class=3D"gmail_default" style=3D"font-siz=
-e:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">G=
-enerally looks good, thanks for the fix and cleanup.</div><div class=3D"gma=
-il_default" style=3D"font-size:small">Tests work well from my side.</div><d=
-iv class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=
-=3D"gmail_default" style=3D"font-size:small">For the series:</div><div clas=
-s=3D"gmail_default" style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a h=
-ref=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt;<br></div></div><=
-div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr"><br></div><=
-/div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div =
-dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000fb955b05e21988d2--
-
-
---===============1703559835==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1703559835==--
-
