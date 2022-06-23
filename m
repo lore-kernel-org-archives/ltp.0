@@ -4,49 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13E27C433EF
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 10:42:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A203CCCA47C
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 11:14:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9AFD3C9592
-	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 12:42:53 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 61FDE3C955B
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 13:14:05 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 09DDC3C0F3F
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 12:42:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 6FC9B3C0F84
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 13:13:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 28B796009FF
- for <ltp@lists.linux.it>; Thu, 23 Jun 2022 12:42:33 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 92E8A600136
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 13:13:54 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A130221C91;
- Thu, 23 Jun 2022 10:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1655980952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by smtp-out2.suse.de (Postfix) with ESMTP id D04121F8B4;
+ Thu, 23 Jun 2022 11:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655982833;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Py1aWWbpS6dOjlpMNQE4H4wkv8FW36AB4KKR6GrTqV0=;
- b=XHb0f34qOh8V8KAXGXz0IShTqIP8yw8oMHQjAigR07kbx1ryx9lfYyEe03ggB9hmhUr7lB
- D73IT5xTTt7GuhqwgkNqJB2c2arjFtdsR2rgApmnax5B4/tQ1eNxFRuWoqCNgFsitN+IV2
- Q9yqyKGchsUlLlOnuzVZ7Lk05E/xCoQ=
-Received: from g78.suse.de (unknown [10.163.24.226])
- by relay2.suse.de (Postfix) with ESMTP id 64D2D2C142;
- Thu, 23 Jun 2022 10:42:32 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Thu, 23 Jun 2022 11:42:24 +0100
-Message-Id: <20220623104224.18751-2-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220623104224.18751-1-rpalethorpe@suse.com>
-References: <20220623104224.18751-1-rpalethorpe@suse.com>
+ bh=1wOnHCxyNA5NAORtr3TI9s9iFqG47VVepaVyEHfQ8SI=;
+ b=hr/p2ijOGvqmcSvfOtMY3kAkrVcyrVagHYR8hA1qSoPuuHZBK06vvfrRI3WML5sTwSUrT8
+ MOrkmbHP8sc5+SRzTsQSC90aQJAFF0uXKWoZFURRtAazFhGNDpfdPmx1qyoQ5jpwJUJGsd
+ /Q5kocXAu0iC3DQBmrxyhM1c69SvyF0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655982833;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1wOnHCxyNA5NAORtr3TI9s9iFqG47VVepaVyEHfQ8SI=;
+ b=WBEsoh5Z2EuEBXeK2EkpDtVZdLvMSP8WGiPXychu5uw3fXDv1McebBBm7B7NaTuDVrMzLC
+ BkW2DgYxd082akCA==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 735612C142;
+ Thu, 23 Jun 2022 11:13:53 +0000 (UTC)
+References: <010001816f3c352e-f5ee78c6-1425-42f5-b673-409a0a92ef74-000000@email.amazonses.com>
+ <11d7d8a6-c062-03aa-7e7c-f7d3c3c2f095@jv-coder.de>
+ <CAASaF6wyH7YJtNaGfR9n-yhnHv9Pc7BvCMYe1EWvwnCMtNhfDQ@mail.gmail.com>
+ <60876a29-d589-1de9-b4fd-a9000b8e7d68@jv-coder.de>
+ <871qvi5r97.fsf@suse.de>
+ <CAEemH2c=xxHrGiqtaRjM89S==JfsODnJ=D9b+mzaF68sjGRVJw@mail.gmail.com>
+ <87wnda43ge.fsf@suse.de>
+ <05f07b62-9751-a900-130b-b7ecc10ccacb@jv-coder.de>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Joerg Vehlow <lkml@jv-coder.de>
+Date: Thu, 23 Jun 2022 11:51:26 +0100
+In-reply-to: <05f07b62-9751-a900-130b-b7ecc10ccacb@jv-coder.de>
+Message-ID: <87sfnv4opb.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls/bpf: Add test for CVE-2021-4204
+Subject: Re: [LTP] [REGRESSION] lkft ltp for 6763a36
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,212 +76,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Reply-To: rpalethorpe@suse.de
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: #944
+Hello Joerg,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/bpf/.gitignore   |   1 +
- testcases/kernel/syscalls/bpf/bpf_prog06.c | 158 +++++++++++++++++++++
- 3 files changed, 160 insertions(+)
- create mode 100644 testcases/kernel/syscalls/bpf/bpf_prog06.c
+Joerg Vehlow <lkml@jv-coder.de> writes:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 36fc50aeb..770b28137 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -43,6 +43,7 @@ bpf_prog02 bpf_prog02
- bpf_prog03 bpf_prog03
- bpf_prog04 bpf_prog04
- bpf_prog05 bpf_prog05
-+bpf_prog06 bpf_prog06
- 
- brk01 brk01
- brk02 brk02
-diff --git a/testcases/kernel/syscalls/bpf/.gitignore b/testcases/kernel/syscalls/bpf/.gitignore
-index 42365cef5..2af9c6ff0 100644
---- a/testcases/kernel/syscalls/bpf/.gitignore
-+++ b/testcases/kernel/syscalls/bpf/.gitignore
-@@ -4,3 +4,4 @@ bpf_prog02
- bpf_prog03
- bpf_prog04
- bpf_prog05
-+bpf_prog06
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog06.c b/testcases/kernel/syscalls/bpf/bpf_prog06.c
-new file mode 100644
-index 000000000..c38dd8239
---- /dev/null
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog06.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022 SUSE LLC <rpalethorpe@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * ringbuf_submit takes a pointer to a ringbuf record, but not the
-+ * size of this record. The verifier only validates offset ptrs[1] passed
-+ * to functions if the function has a size parameter. So we can
-+ * perform a wide range of ptr arithmetic on this record ptr.
-+ *
-+ * ringbuf_submit updates some data (i.e. the length) in the
-+ * ringbuf header which is calculated from the record ptr. So this can
-+ * be used to corrupt memory.
-+ *
-+ * This test does not try to cause a crash. Howver it does run the
-+ * eBPF if it can. This will result in an instant crash or memory
-+ * corruption which may later cause a crash.
-+ *
-+ * This test is adapted from a full reproducer which can be found here:
-+ * https://github.com/tr3ee/CVE-2021-4204
-+ *
-+ * It's recommended to disable unprivileged eBPF by setting
-+ * /proc/sys/kernel/unprivileged_bpf_disabled. Also there is a
-+ * specific fix for this issue:
-+ *
-+ * commit 64620e0a1e712a778095bd35cbb277dc2259281f
-+ * Author: Daniel Borkmann <daniel@iogearbox.net>
-+ * Date:   Tue Jan 11 14:43:41 2022 +0000
-+ *
-+ *  bpf: Fix out of bounds access for ringbuf helpers
-+ *
-+ * [1]: Depending on the ptr/reg type
-+ */
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <inttypes.h>
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "tst_taint.h"
-+#include "tst_capability.h"
-+#include "lapi/bpf.h"
-+#include "bpf_common.h"
-+
-+#define BUFSIZE 8192
-+
-+static const char MSG[] = "Ahoj!";
-+static char *msg;
-+
-+static int map_fd;
-+static uint32_t *key;
-+static uint64_t *val;
-+static char *log;
-+static union bpf_attr *attr;
-+
-+static int load_prog(void)
-+{
-+	int ret;
-+	const struct bpf_insn prog_insn[] = {
-+		// r0 = bpf_ringbuf_reserve(ctx->ringbuf_fd, 0xff0, 0)
-+		BPF_LD_MAP_FD(BPF_REG_1, map_fd),
-+		BPF_MOV64_IMM(BPF_REG_2, 0xff0),
-+		BPF_MOV64_IMM(BPF_REG_3, 0x00),
-+		BPF_EMIT_CALL(BPF_FUNC_ringbuf_reserve),
-+
-+		// if (r0 == NULL) exit(2)
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
-+		BPF_MOV64_IMM(BPF_REG_0, 2),
-+		BPF_EXIT_INSN(),
-+
-+		// r0 = BPF_FUNC_ringbuf_submit(r0-(0x3008-0x38), BPF_RB_NO_WAKEUP)
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_0, (0x3008-0x38)),
-+		BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+		BPF_MOV64_IMM(BPF_REG_2, 1),
-+		BPF_EMIT_CALL(BPF_FUNC_ringbuf_submit),
-+
-+		/* exit(0) */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN()
-+	};
-+
-+	bpf_init_prog_attr(attr, prog_insn, sizeof(prog_insn), log, BUFSIZE);
-+
-+	ret = TST_RETRY_FUNC(bpf(BPF_PROG_LOAD, attr, sizeof(*attr)),
-+			     TST_RETVAL_GE0);
-+
-+	if (ret >= 0)
-+		return ret;
-+
-+	if (ret != -1)
-+		tst_brk(TBROK, "Invalid bpf() return value: %d", ret);
-+
-+	if (log[0] != 0)
-+		tst_printf("%s\n", log);
-+
-+	return ret;
-+}
-+
-+static void setup(void)
-+{
-+	rlimit_bump_memlock();
-+	memcpy(msg, MSG, sizeof(MSG));
-+}
-+
-+static void run(void)
-+{
-+	int prog_fd;
-+
-+	map_fd = bpf_map_create(&(union bpf_attr){
-+			.map_type = BPF_MAP_TYPE_RINGBUF,
-+			.key_size = 0,
-+			.value_size = 0,
-+			.max_entries = getpagesize()
-+		});
-+
-+	tst_res(TINFO, "Trying to load eBPF with OOB write");
-+	prog_fd = load_prog();
-+	if (prog_fd == -1) {
-+		tst_res(TPASS, "Failed verification");
-+		return;
-+	}
-+
-+	tst_res(TFAIL, "Loaded program with OOB write");
-+	tst_res(TINFO, "Running eBPF with OOB");
-+	bpf_run_prog(prog_fd, msg, sizeof(MSG));
-+	tst_res(TINFO, "Ran eBPF");
-+
-+	SAFE_CLOSE(prog_fd);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.min_kver = "5.8",
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.caps = (struct tst_cap []) {
-+		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-+		TST_CAP(TST_CAP_DROP, CAP_BPF),
-+		{}
-+	},
-+	.bufs = (struct tst_buffers []) {
-+		{&key, .size = sizeof(*key)},
-+		{&val, .size = sizeof(*val)},
-+		{&log, .size = BUFSIZE},
-+		{&attr, .size = sizeof(*attr)},
-+		{&msg, .size = sizeof(MSG)},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "64620e0a1e71"},
-+		{"CVE", "CVE-2021-4204"},
-+		{}
-+	}
-+};
+> Hi,
+>
+> Am 6/21/2022 um 1:38 PM schrieb Richard Palethorpe:
+>> Hello Li,
+>> 
+>> Li Wang <liwang@redhat.com> writes:
+>> 
+>>> On Tue, Jun 21, 2022 at 4:56 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
+>>>
+>>>  Hello,
+>>>
+>>>  Joerg Vehlow <lkml@jv-coder.de> writes:
+>>>
+>>>  > Hi Jan,
+>>>  >
+>>>  > Am 6/21/2022 um 9:22 AM schrieb Jan Stancek:
+>>>  >> On Tue, Jun 21, 2022 at 9:15 AM Joerg Vehlow <lkml@jv-coder.de> wrote:
+>>>  >>>
+>>>  >>> Hi,
+>>>  >>>
+>>>  >>> Am 6/17/2022 um 3:17 AM schrieb lkft@linaro.org:
+>>>  >>>> * qemu_i386, ltp-fs-tests
+>>>  >>>>   - read_all_proc
+>>>  >>> I've seen this test fail a lot, has anyone ever tried to analyze it? I
+>>>  >>> was unable to reproduce the problem when running the test in isolation.
+>>>  >> 
+>>>  >> I see it hit timeouts too (read_all_sys as well). I think it needs
+>>>  >> runtime restored to 5minutes as well, atm. it has 30s.
+>>>  > Didn't think about that, but at least for the failures I've seen, this
+>>>  > is not the reason. The message printed by the test is "Test timeout 5
+>>>  > minutes exceeded."
+>>>  >
+>>>  > Joerg
+>>>
+>>>  The main issue with read_all is that it also acts as a stress
+>>>  test. Reading some files in proc and sys is very resource intensive
+>>>  (e.g. due to lock contention) and varies depending on what state the
+>>>  system is in. On some systems this test will take a long time. Also
+>>>  there are some files which have to be filtered from the test. This
+>>>  varies by system as well.
+>>>
+>>> Does it make sense to have a lite version of read_all_sys?
+>>> which may only go through files sequentially or under slight stress.
+>> 
+>> IIRC the reason I started doing it in parallel is because sequential
+>> opens and reads are even slower and unreliable. Some level of parallism
+>> is required, but too much and it causes issues.
+>> 
+>> Thinking about it now, on a single or two core system only one worker
+>> process will be spawned. Which could get blocked for a long time on some
+>> reads because of the way some sys/proc files are implemented.
+>> 
+>> The worker count can be overridden with -w if someone wants to try
+>> increasing it to see if that actually helps on systems with <3
+>> cpus. Also the number of reads is set to 3 in the runtest file, that can
+>> be reduced to 1 with -r.
+>> 
+>>>
+>>> With regard to this stressful read_all, I guess we can put into a dedicated
+>>> set and run separately in stress testing.
+>> 
+>> I don't think I'd want to run that. IMO just doing enough to test
+>> parallel accesses is whats required. More than that we will run into
+>> diminishing returns . However I'm not against creating another runtest
+>> file/entry for that.
+>> 
+>> On bigger systems I think the test is already quite limited even though
+>> it does 3 reads. It only spwans a max of 15 workers which should prevent
+>> it from causing huge lock contention on machines with >16 CPUs. At least
+>> I've not seen problems with that.
+>> 
+>> It looks like the log from lkft is for a smaller machine?
+> I just used this regression report as an anchor point, because I am
+> seeing the same intermittent error on a 4 and an 8 core aarch64 system.
+> The system state at the time of the test execution is very reproducible
+> and sometimes the 5 minutes are exceeded, while it only takes ~3s, when
+> it is successful. Maybe there is a very time sensitive kernel bug here?
+> I am still not sure how to debug this, because I was never able to
+> reproduce it without executing all ltp tests, that run before in out
+> setup.
+
+Very interesting. Well, running tests can cause files to appear in proc
+and sys. Including ones which remain after testing has finished. The
+most obvious example being when a module is loaded and it creates some
+sys files.
+
+Also it could be some reasources are added which are probed by existing
+files. Which could be time sensitive if they are cleaned up
+asynchronously.
+
+Anyway it should be possible to profile the open and read syscalls with
+ftrace or similar. Or you can just set '-v' and inspect the log. We
+should also have a per read timeout. I just haven't got around to
+implementing it. Probably it requires monitoring, killing and restarting
+stuck workers due to how read is implemented on some files.
+
+>
+> Joerg
+
+
 -- 
-2.36.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
