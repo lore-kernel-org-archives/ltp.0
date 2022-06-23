@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52DD3C433EF
-	for <ltp@archiver.kernel.org>; Wed, 22 Jun 2022 18:46:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB26DC43334
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 04:02:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A24C83C2306
-	for <ltp@archiver.kernel.org>; Wed, 22 Jun 2022 20:46:17 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 326303C9539
+	for <ltp@archiver.kernel.org>; Thu, 23 Jun 2022 06:02:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA70A3C0726
- for <ltp@lists.linux.it>; Wed, 22 Jun 2022 20:46:07 +0200 (CEST)
-Received: from a8-97.smtp-out.amazonses.com (a8-97.smtp-out.amazonses.com
- [54.240.8.97])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 926CD3C67FA
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 06:02:42 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AD52E1000984
- for <ltp@lists.linux.it>; Wed, 22 Jun 2022 20:46:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1655923565;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=tjKkgir/baDOGRIfGGZKdfXLUfduUTvW1J3rk1W6owk=;
- b=LcL+4MDwpF1ZPscLm6aaVKBWTlKdpxbCuMYqqRCVIC00YhvwbmYiWYVrPN16E5pc
- E7FTjMvsdDTLwif6nvPIt/ceTNTLVMX87mWxk7X6YPlq0Q4i2AW/0gfsULRmWg3ExeJ
- 0OW8tcuHvABa7r+hbWDNlJoe8Tkf1QJ9Xfoaboxw=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1655923565;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=tjKkgir/baDOGRIfGGZKdfXLUfduUTvW1J3rk1W6owk=;
- b=jxPbiMZDyWQOj4iUkWC7/bXq+CWE8/Z22E6nQuLX/LqOSPEoNO7bn3r/CnxWjUMI
- 0Qnz7kR2T/adUuXKNVaefpZ5w0uDowH/ZSGg6VT4NexQ2lwZpOCGbyk80C94BueC3mb
- ooc/Wl1zrzY4IFjEthHoaElYJofrGez24LBCOyF0=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8262A2009FA
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 06:02:38 +0200 (CEST)
+Received: from canpemm100007.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LT63Y0fYWzhXWX
+ for <ltp@lists.linux.it>; Thu, 23 Jun 2022 12:00:25 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ canpemm100007.china.huawei.com (7.192.105.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 23 Jun 2022 12:02:33 +0800
+Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
+ canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.024; 
+ Thu, 23 Jun 2022 12:02:33 +0800
+To: Cyril Hrubis <chrubis@suse.cz>
+Thread-Topic: [LTP] [PATCH v2] syscalls/nice05: Add testcase for nice() syscall
+Thread-Index: AdiGGvkDpCkdBwF8TZWYRzHL3psAjw==
+Date: Thu, 23 Jun 2022 04:02:33 +0000
+Message-ID: <531492970f1746ffa966e77dbf0d14ac@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
-Message-ID: <010001818cbc60b3-27296150-fa5d-4453-b061-3152293d85e2-000000@email.amazonses.com>
-Date: Wed, 22 Jun 2022 18:46:04 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.06.22-54.240.8.97
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 00e769e
+Subject: Re: [LTP] [PATCH v2] syscalls/nice05: Add testcase for nice()
+ syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,85 +57,347 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
+From: zhaogongyi via ltp <ltp@lists.linux.it>
+Reply-To: zhaogongyi <zhaogongyi@huawei.com>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.15
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.17.y
-* git commit: eed68052d2016d9f96d6656435099762608120e3
-* git describe: 00e769e
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/00e769e
+Hi Cyril,
 
-## Test Regressions (compared to 53ae719)
-* bcm2711-rpi-4-b, ltp-fs-tests
-  - read_all_proc
+Thanks for your review!
 
-* qemu_arm64, ltp-crypto-tests
-  - af_alg07
+Best wishes,
+Gongyi
+
+> 
+> Hi!
+> > diff --git a/runtest/syscalls b/runtest/syscalls index
+> > 88c31db06..a1f741d6a 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -901,6 +901,7 @@ nice01 nice01
+> >  nice02 nice02
+> >  nice03 nice03
+> >  nice04 nice04
+> > +nice05 nice05
+> >
+> >  open01 open01
+> >  open01A symlink01 -T open01
+> > diff --git a/testcases/kernel/syscalls/nice/.gitignore
+> > b/testcases/kernel/syscalls/nice/.gitignore
+> > index 9d7a1bb43..58d64779e 100644
+> > --- a/testcases/kernel/syscalls/nice/.gitignore
+> > +++ b/testcases/kernel/syscalls/nice/.gitignore
+> > @@ -2,3 +2,4 @@
+> >  /nice02
+> >  /nice03
+> >  /nice04
+> > +/nice05
+> > diff --git a/testcases/kernel/syscalls/nice/Makefile
+> > b/testcases/kernel/syscalls/nice/Makefile
+> > index 044619fb8..9b155295e 100644
+> > --- a/testcases/kernel/syscalls/nice/Makefile
+> > +++ b/testcases/kernel/syscalls/nice/Makefile
+> > @@ -3,6 +3,11 @@
+> >
+> >  top_srcdir		?= ../../../..
+> >
+> > +LTPLIBS = ltpnewipc
+> > +
+> > +nice05: CFLAGS += -pthread
+> > +nice05: LTPLDLIBS  += -lltpnewipc
+> > +
+> >  include $(top_srcdir)/include/mk/testcases.mk
+> >
+> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > diff --git a/testcases/kernel/syscalls/nice/nice05.c
+> > b/testcases/kernel/syscalls/nice/nice05.c
+> > new file mode 100644
+> > index 000000000..cdaa96e97
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/nice/nice05.c
+> > @@ -0,0 +1,196 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright(c) 2022 Huawei Technologies Co., Ltd
+> > + * Author: Li Mengfei <limengfei4@huawei.com>
+> > + *         Zhao Gongyi <zhaogongyi@huawei.com>
+> > + */
+> > +
+> > +/*\
+> > + * [Description]
+> > + *
+> > + * 1. Create a high nice thread and a low nice thread, the main
+> > + *    thread wake them at the same time
+> > + * 2. Both threads run on the same CPU
+> > + * 3. Verify that the low nice thread executes more time than
+> > + *    the high nice thread
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <pthread.h>
+> > +#include <sys/types.h>
+> > +#include <stdio.h>
+> > +#include "tst_test.h"
+> > +#include "tst_safe_pthread.h"
+> > +#include "tst_safe_sysv_ipc.h"
+> > +#include "lapi/syscalls.h"
+> > +#include "libnewipc.h"
+> > +
+> > +static pthread_barrier_t barrier;
+> > +static int some_cpu;
+> > +static cpu_set_t *set;
+> > +static pid_t *child_tid;
+> > +static key_t shm_key;
+> > +static int shm_id;
+> > +
+> > +static void set_nice(int nice_inc)
+> > +{
+> > +	int orig_nice;
+> > +
+> > +	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
+> 
+> Why not just nice(0) ?
+
+Nice(0) is ok, but there are no safe API for nice() now, so we need to add it?
+
+> 
+> > +	TEST(nice(nice_inc));
+> > +
+> > +	if (TST_RET != (orig_nice + nice_inc)) {
+> > +		tst_brk(TFAIL | TTERRNO, "nice(%d) returned %li, expected %i",
+> > +				nice_inc, TST_RET, orig_nice + nice_inc);
+> 
+> You cannot use tst_brk() with TFAIL unfortunatelly.
+> 
+> See: https://github.com/linux-test-project/ltp/issues/462
+> 
+> > +	}
+> > +
+> > +	if (TST_ERR)
+> > +		tst_brk(TFAIL | TTERRNO, "nice(%d) failed", nice_inc);
+> > +
+> > +}
+> > +
+> > +static void *nice_low_thread(void *arg) {
+> > +	int number = 0;
+> 
+> We may need to change the number to volatile in order to avoid for
+> compiler being too smart about it's value.
+> 
+
+LGTM
+
+> > +	int ret = 0;
+> > +
+> > +	child_tid[0] = tst_syscall(__NR_gettid);
+> > +	set_nice(*(int *)arg);
+> > +	ret = pthread_barrier_wait(&barrier);
+> > +	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
+> > +		tst_brk(TBROK, "pthread_barrier_wait() returned %s",
+> > +				tst_strerrno(-ret));
+> > +	}
+> > +
+> > +	while (1)
+> > +		number++;
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +static void *nice_high_thread(void *arg) {
+> > +	int number = 0;
+> > +	int ret = 0;
+> > +
+> > +	child_tid[1] = tst_syscall(__NR_gettid);
+> > +	set_nice(*(int *)arg);
+> > +	ret = pthread_barrier_wait(&barrier);
+> > +	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
+> > +		tst_brk(TBROK, "pthread_barrier_wait() returned %s",
+> > +				tst_strerrno(-ret));
+> > +	}
+> > +
+> > +	while (1)
+> > +		number++;
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +	size_t size;
+> > +	int index;
+> > +	int nrcpus = 1024;
+> > +
+> > +	set = CPU_ALLOC(nrcpus);
+> > +	if (!set)
+> > +		tst_brk(TBROK | TERRNO, "CPU_ALLOC()");
+> > +
+> > +	size = CPU_ALLOC_SIZE(nrcpus);
+> > +	CPU_ZERO_S(size, set);
+> > +	if (sched_getaffinity(0, size, set) < 0)
+> > +		tst_brk(TBROK | TERRNO, "sched_getaffinity()");
+> > +
+> > +	for (index = 0; index < (int)size * 8; index++)
+> > +		if (CPU_ISSET_S(index, size, set))
+> > +			some_cpu = index;
+> 
+> Can we just use i instead of index? Also if you define the loop variable as
+> size_t there would be no need for the cast.
+> 
+
+It seems more better.
+
+> > +	CPU_ZERO_S(size, set);
+> > +	CPU_SET_S(some_cpu, size, set);
+> > +	if (sched_setaffinity(0, size, set) < 0)
+> > +		tst_brk(TBROK | TERRNO, "sched_setaffinity()");
+> > +
+> > +	shm_key = GETIPCKEY();
+> > +	shm_id = SAFE_SHMGET(shm_key, getpagesize(), 0666 | IPC_CREAT);
+> > +	child_tid = SAFE_SHMAT(shm_id, 0, 0);
+> 
+> We can jdust do a single mmap() instead all of this. There is no need to
+> bother with the IPC complexity since the forked child will simply have
+> access to the shared memory mmaped by mmap(). Not to mention there
+> are systems that does not have support for SysV IPC compiled in.
+> 
+It seems more better.
 
 
-## Metric Regressions (compared to 53ae719)
-No metric regressions found.
+> > +}
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +	if (set)
+> > +		CPU_FREE(set);
+> > +
+> > +	if (child_tid)
+> > +		SAFE_SHMDT(child_tid);
+> > +
+> > +	if (shm_id)
+> > +		SAFE_SHMCTL(shm_id, IPC_RMID, 0);
+> > +}
+> > +
+> > +static void verify_nice(void)
+> > +{
+> > +	int ret;
+> > +	int nice_inc_high = -1;
+> > +	int nice_inc_low = -2;
+> > +	char buf[4096] = {0};
+> > +	float sum_exec_runtime[2];
+> > +	pthread_t nice_low, nice_high;
+> > +	pid_t pid;
+> > +
+> > +	pid = SAFE_FORK();
+> > +	if (!pid) {
+> > +		ret = pthread_barrier_init(&barrier, NULL, 3);
+> > +		if (ret != 0) {
+> > +			tst_brk(TBROK, "pthread_barrier_init() returned %s",
+> > +					tst_strerrno(-ret));
+> > +		}
+> > +
+> > +		SAFE_PTHREAD_CREATE(&nice_high, NULL, nice_high_thread,
+> > +				(void *)&nice_inc_high);
+> > +		SAFE_PTHREAD_CREATE(&nice_low, NULL, nice_low_thread,
+> > +				(void *)&nice_inc_low);
+> 
+> The usuall way how to pass an integer to a thread is to pass it by a value
+> create with/casted to a correct size, we can for instance do:
+> 
+> 	intptr_t nice_inc_high = -1;
+> 
+> 
+> 	pthread_create(...., (void*)nice_inc_high);
+> 
+> 
+> 	And then cast it back to intptr_t int he thread function as:
+> 
+> 	set_nice((intptr_t)arg);
+> 
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+It seems more better.
 
 
-## Test Fixes (compared to 53ae719)
-* bcm2711-rpi-4-b, ltp-syscalls-tests
-  - syncfs01
+> > +		ret = pthread_barrier_wait(&barrier);
+> > +		if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
+> > +			tst_brk(TBROK, "pthread_barrier_wait() returned %s",
+> > +					tst_strerrno(-ret));
+> > +		}
+> > +
+> > +		while (1)
+> > +			sleep(1);
+> 
+> Maybe even better:
+> 		while (1)
+> 			pause();
+> 
+> As that would not wake up every second unnecessarily.
+> 
+> > +	} else {
+> 
+> There is no need for the else branch, the child process does not return
+> from the if branch at all.
+> 
+> > +		sleep(3);
+> 
+> This has to be tied to runtime now, so the test has to:
+> 
+> - set .max_runtime = 3, in the tst_test structure
+> - do sleep(tst_remaining_runtime()) here.
+> 
+> The bonus point is that you can then change for how long the sampling
+> runs with the -I commandline parameter.
+> 
 
-* qemu_arm64, ltp-cve-tests
-  - cve-2019-8912
-
-* qemu_arm64, ltp-fs-tests
-  - fs_fill
+Thanks for your suggestiones, it seems more better.
 
 
-## Metric Fixes (compared to 53ae719)
-No metric fixes found.
-
-## Test result summary
-total: 12654, pass: 10647, fail: 66, skip: 1941, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> > +		SAFE_KILL(pid, SIGSTOP);
+> > +
+> > +		sprintf(buf, "/proc/%d/sched", child_tid[0]);
+> > +		SAFE_FILE_SCANF(buf, "%*s %*s %*s %*s %*s"
+> > +				"%*s %*s %*f %*s %*s %*f %*s %*s %f",
+> > +				&sum_exec_runtime[0]);
+> > +
+> > +		sprintf(buf, "/proc/%d/sched", child_tid[1]);
+> > +		SAFE_FILE_SCANF(buf, "%*s %*s %*s %*s %*s"
+> > +				"%*s %*s %*f %*s %*s %*f %*s %*s %f",
+> > +				&sum_exec_runtime[1]);
+> > +
+> > +		if (sum_exec_runtime[0] < sum_exec_runtime[1]) {
+> > +			tst_brk(TFAIL, "nice_low_thread sum_exec_runtime: %f "
+> > +				"nice_high_thread sum_exec_runtime: %f",
+> > +				sum_exec_runtime[0], sum_exec_runtime[1]);
+> > +		} else {
+> > +			tst_res(TPASS, "executes more cycles "
+> > +				"than the high nice thread");
+> > +		}
+> > +
+> > +		SAFE_KILL(pid, SIGKILL);
+> > +		SAFE_WAIT(NULL);
+> > +	}
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.setup = setup,
+> > +	.cleanup = cleanup,
+> > +	.test_all = verify_nice,
+> > +	.needs_root = 1,
+> > +	.forks_child = 1,
+> > +};
+> > --
+> > 2.17.1
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
