@@ -4,43 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 104BFC433EF
-	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 07:27:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27F1EC43334
+	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 07:40:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3615B3C8FF0
-	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 09:27:44 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 842823C910D
+	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 09:40:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3735B3C14B2
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 09:27:32 +0200 (CEST)
-Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5FBD61000465
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 09:27:31 +0200 (CEST)
-Received: from ubuntu.localdomain (unknown [37.24.96.116])
- by mail.jv-coder.de (Postfix) with ESMTPSA id 93A609FF8E;
- Mon, 27 Jun 2022 07:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
- t=1656314850; bh=u5ndKJAr6Xib1GaIdTBFEQFJ0V0dWMhVWaL0cPIBA+w=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=emTP8P8u+8FBxOv9ug1jFoBYu3fW5h0aNcbyLMlv0iFTOSp9MNOziU6f1YanKNdCH
- dNjvaFTJrfMAbNHfh1Ky28Gb28qvy+mjj+wP21uV6ixd+JVBkzfwktEAIOp1/fHKk8
- 66QSNp6v0VX0vSvmzN2hGdkPU+P+YlHdX8yw3zI4=
-From: Joerg Vehlow <lkml@jv-coder.de>
-To: ltp@lists.linux.it,
-	pvorel@suse.cz
-Date: Mon, 27 Jun 2022 09:27:09 +0200
-Message-Id: <20220627072709.709035-1-lkml@jv-coder.de>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+ by picard.linux.it (Postfix) with ESMTPS id 3D97A3C14B2
+ for <ltp@lists.linux.it>; Mon, 27 Jun 2022 09:40:20 +0200 (CEST)
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id D154D1400743
+ for <ltp@lists.linux.it>; Mon, 27 Jun 2022 09:40:17 +0200 (CEST)
+Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
+ by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX9fSXrlid8BfAA--.5229S2;
+ Mon, 27 Jun 2022 15:40:13 +0800 (CST)
+From: Hongchen Zhang <zhanghongchen@loongson.cn>
+To: Cyril Hrubis <chrubis@suse.cz>,
+	Jan Stancek <jstancek@redhat.com>
+Date: Mon, 27 Jun 2022 15:40:00 +0800
+Message-Id: <1656315600-22268-1-git-send-email-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9DxX9fSXrlid8BfAA--.5229S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4kKrW5Ar1fWF48tr4UCFg_yoW8WF47pr
+ n7Gr1rtrs5JFyxJrZ3Gw1qvFWrCwn5tFs8X3yqyw45Z3Z5JrWDZrsFqas8Jr10qrW0grWY
+ 9Fs5ZFW3Kr9Iy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUkS14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+ JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+ xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+ 6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+ 0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm-wCF
+ 04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+ 18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+ r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+ 1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+ cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] net_stress: Fix usage of variables from tst_net.sh
+Subject: [LTP] [PATCH] syslog11: fix console loglevel changed after test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,159 +59,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox.de>
+Cc: Lingling Li <lilingling@loongson.cn>, ltp@lists.linux.it,
+ Hongchen Zhang <zhanghongchen@loongson.cn>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Joerg Vehlow <joerg.vehlow@aox.de>
+the console loglevel is force to be 7(LOGLEVEL_DEFAULT) after test,
+which is not the desired behavior.So we reset the console loglevel
+to its original value after the test body.The method what we take
+is just same as commit:
+a2ff1c2d141d ("kmsg01: set/restore console log level").
 
-These tests use variables (NS_TIMES, IP_TOTAL, ROUTE_TOTAL
-and IF_UPDOWN_TIMES) from tst_net.sh, before sourcing it.
-
-Fixes: 04021637f4749a4797bf105862c45fe07374a161 ("tst_test.sh: Cleanup getopts usage")
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox.de>
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+Signed-off-by: Lingling Li <lilingling@loongson.cn>
 ---
- testcases/network/stress/interface/if-addr-adddel.sh    | 7 ++++---
- testcases/network/stress/interface/if-addr-addlarge.sh  | 7 ++++---
- testcases/network/stress/interface/if-route-adddel.sh   | 5 +++--
- testcases/network/stress/interface/if-route-addlarge.sh | 5 +++--
- testcases/network/stress/interface/if-updown.sh         | 5 +++--
- testcases/network/stress/interface/if4-addr-change.sh   | 4 +++-
- 6 files changed, 20 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/syslog/syslog11.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/network/stress/interface/if-addr-adddel.sh b/testcases/network/stress/interface/if-addr-adddel.sh
-index cb453e612..0750501f0 100755
---- a/testcases/network/stress/interface/if-addr-adddel.sh
-+++ b/testcases/network/stress/interface/if-addr-adddel.sh
-@@ -7,9 +7,6 @@
+diff --git a/testcases/kernel/syscalls/syslog/syslog11.c b/testcases/kernel/syscalls/syslog/syslog11.c
+index b9540ef..78a7cc4 100644
+--- a/testcases/kernel/syscalls/syslog/syslog11.c
++++ b/testcases/kernel/syscalls/syslog/syslog11.c
+@@ -84,6 +84,11 @@ struct test_case_t {		/* test case structure */
+ 	char *desc;		/* Test description */
+ };
  
- IF_CMD='ifconfig'
++#define PRINTK "/proc/sys/kernel/printk"
++#define CONSOLE_LOGLEVEL_QUIET   4
++
++static int console_loglevel = -1;
++
+ char *TCID = "syslog11";
+ static int testno;
+ static char buf;
+@@ -195,6 +200,11 @@ void setup(void)
+ 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
+ 	}
  
--# The interval of the check interface activity
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
--
- test_body()
++	if (access(PRINTK, F_OK) == 0) {
++		SAFE_FILE_SCANF(NULL, PRINTK, "%d", &console_loglevel);
++		SAFE_FILE_PRINTF(NULL, PRINTK, "%d", CONSOLE_LOGLEVEL_QUIET);
++	}
++
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -c option.
+ 	 */
+@@ -208,5 +218,6 @@ void setup(void)
+  */
+ void cleanup(void)
  {
- 	local cmd="$CMD"
-@@ -89,4 +86,8 @@ test_body()
- }
- 
- . if-lib.sh
-+
-+# The interval of the check interface activity
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
-+
- tst_run
-diff --git a/testcases/network/stress/interface/if-addr-addlarge.sh b/testcases/network/stress/interface/if-addr-addlarge.sh
-index 3c876c17d..d0759c86b 100755
---- a/testcases/network/stress/interface/if-addr-addlarge.sh
-+++ b/testcases/network/stress/interface/if-addr-addlarge.sh
-@@ -7,9 +7,6 @@
- 
- IF_CMD='ifconfig'
- 
--# The interval of the check interface activity
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IP_TOTAL / 20))}
 -
- test_body()
- {
- 	local cmd="$CMD"
-@@ -110,4 +107,8 @@ test_body()
++	if (console_loglevel != -1)
++		SAFE_FILE_PRINTF(NULL, PRINTK, "%d", console_loglevel);
  }
- 
- . if-lib.sh
-+
-+# The interval of the check interface activity
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IP_TOTAL / 20))}
-+
- tst_run
-diff --git a/testcases/network/stress/interface/if-route-adddel.sh b/testcases/network/stress/interface/if-route-adddel.sh
-index b50da268a..51445e4f7 100755
---- a/testcases/network/stress/interface/if-route-adddel.sh
-+++ b/testcases/network/stress/interface/if-route-adddel.sh
-@@ -7,8 +7,6 @@
- 
- IF_CMD='route'
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
--
- test_body()
- {
- 	local cmd="$CMD"
-@@ -64,4 +62,7 @@ test_body()
- }
- 
- . if-lib.sh
-+
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
-+
- tst_run
-diff --git a/testcases/network/stress/interface/if-route-addlarge.sh b/testcases/network/stress/interface/if-route-addlarge.sh
-index 7d09d1216..355b6b4ab 100755
---- a/testcases/network/stress/interface/if-route-addlarge.sh
-+++ b/testcases/network/stress/interface/if-route-addlarge.sh
-@@ -7,8 +7,6 @@
- 
- IF_CMD='route'
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
--
- test_body()
- {
- 	local cmd="$CMD"
-@@ -76,4 +74,7 @@ test_body()
- }
- 
- . if-lib.sh
-+
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
-+
- tst_run
-diff --git a/testcases/network/stress/interface/if-updown.sh b/testcases/network/stress/interface/if-updown.sh
-index 9a5709c85..71c78d785 100755
---- a/testcases/network/stress/interface/if-updown.sh
-+++ b/testcases/network/stress/interface/if-updown.sh
-@@ -8,8 +8,6 @@
- IF_CMD='ifconfig'
- TST_CLEANUP="if_cleanup_restore"
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
--
- test_body()
- {
- 	local cmd="$CMD"
-@@ -47,4 +45,7 @@ test_body()
- }
- 
- . if-lib.sh
-+
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
-+
- tst_run
-diff --git a/testcases/network/stress/interface/if4-addr-change.sh b/testcases/network/stress/interface/if4-addr-change.sh
-index b9ece2af9..f162e6a51 100755
---- a/testcases/network/stress/interface/if4-addr-change.sh
-+++ b/testcases/network/stress/interface/if4-addr-change.sh
-@@ -9,7 +9,6 @@ TST_CLEANUP="do_cleanup"
- TST_TESTFUNC="test_body"
- TST_NEEDS_CMDS="ifconfig"
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- # Maximum host portion of the IPv4 address on the local host
- LHOST_IPV4_HOST_MAX="254"
- 
-@@ -61,4 +60,7 @@ test_body()
- }
- 
- . tst_net.sh
-+
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
-+
- tst_run
 -- 
-2.25.1
+1.8.3.1
 
 
 -- 
