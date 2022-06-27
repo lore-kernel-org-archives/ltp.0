@@ -4,63 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A7A9C43334
-	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 10:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75E85C433EF
+	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 12:53:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D67593C93D0
-	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 12:47:14 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BDE823C88F4
+	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 14:53:41 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE3AF3C1B7F
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 12:47:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 4257F3C88F4
+ for <ltp@lists.linux.it>; Mon, 27 Jun 2022 14:53:30 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DC1A560065F
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 12:47:03 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B3F881FD7F
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 10:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1656326822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type;
- bh=NFx3rCH8mEW3yL0p7n+jmJ0NCr+fciVnuK3CBNVj/Jw=;
- b=BbR5O3Wnr9TICtBlMmb0GP13g5HdzRyK80Wmj7AA6UQeXRB8go/QVKBUBoynRVUwackT+0
- DgD1fUMKDLbrFvzlFvQ+jKF8oXixX3asEPdUiXhDT80WfJD75c7GlEcm2PkEWqOx2KkeiM
- uh7xW2nXv/ET8s8+87FoKuHr4b/JWf8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1656326822;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type;
- bh=NFx3rCH8mEW3yL0p7n+jmJ0NCr+fciVnuK3CBNVj/Jw=;
- b=WVExpxfg+wi1tpuo4Onca0zLOpETxeTWpzKpvGwOIiVDwpbmJWEVqo/qjBd42zpFaJIysD
- gWPoNbjlg0KmEABg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 98AAC13AB2
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 10:47:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qN7qI6aKuWKDTwAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 10:47:02 +0000
-Date: Mon, 27 Jun 2022 12:49:04 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <YrmLIEuvRRhqWS/d@yuki>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6EC8C200908
+ for <ltp@lists.linux.it>; Mon, 27 Jun 2022 14:53:30 +0200 (CEST)
+Received: from ubuntu.localdomain (unknown [37.24.96.116])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 82FCAA345F;
+ Mon, 27 Jun 2022 12:53:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1656334409; bh=6RjkiwowBRIgS2Jns/m2YVgpAlm0ulI0s7+kyB3eZt8=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=SVx/EMBrPTdNvFclrwsms+qLyCj+ZuZTFW1BYaRaMEl5bKNUGOw97H4ktTcwk7B3C
+ V53d8A++iiE67YqxkTME1dKKlv9xqYD7Rop16NSGGeXSS9jJ4ISuUg2U1zfzCgVJq9
+ twtJUcLi47CReINgJyf0GRLYxOeF59z+qk1DcLSc=
+From: Joerg Vehlow <lkml@jv-coder.de>
+To: ltp@lists.linux.it,
+	chrubis@suse.cz
+Date: Mon, 27 Jun 2022 14:53:19 +0200
+Message-Id: <20220627125321.1560677-2-lkml@jv-coder.de>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220627125321.1560677-1-lkml@jv-coder.de>
+References: <20220627125321.1560677-1-lkml@jv-coder.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] SUSE Hackweek
+Subject: [LTP] [PATCH 1/3] openposix: Fix existence test for local flag-files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,20 +54,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Joerg Vehlow <joerg.vehlow@aox.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Just FYI we do have a hackweek[1] this week in SUSE, hence most of the SUSE
-devs will not even read emails during the week.
+From: Joerg Vehlow <joerg.vehlow@aox.de>
 
-[1] https://hackweek.opensuse.org/
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox.de>
+---
+ testcases/open_posix_testsuite/scripts/generate-makefiles.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
+index 5cfb8e38c..3234aa454 100755
+--- a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
++++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
+@@ -136,7 +136,7 @@ EOF
+ EOF
+ 
+ 		for var in CFLAGS LDFLAGS LDLIBS; do
+-			if [ -f "${TOP_SRCDIR}/$var" ]; then
++			if [ -f "${prereq_cache_dir}/$var" ]; then
+ 				cat >> "$makefile.1" <<EOF
+ ${var}+=		`cat "${prereq_cache_dir}/${var}" 2>/dev/null`
+ EOF
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
