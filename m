@@ -4,50 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27F1EC43334
-	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 07:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 049BFC43334
+	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 08:45:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 842823C910D
-	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 09:40:33 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 138753C9428
+	for <ltp@archiver.kernel.org>; Mon, 27 Jun 2022 10:45:11 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3D97A3C14B2
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 09:40:20 +0200 (CEST)
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-6.smtp.seeweb.it (Postfix) with ESMTP id D154D1400743
- for <ltp@lists.linux.it>; Mon, 27 Jun 2022 09:40:17 +0200 (CEST)
-Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
- by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX9fSXrlid8BfAA--.5229S2;
- Mon, 27 Jun 2022 15:40:13 +0800 (CST)
-From: Hongchen Zhang <zhanghongchen@loongson.cn>
-To: Cyril Hrubis <chrubis@suse.cz>,
-	Jan Stancek <jstancek@redhat.com>
-Date: Mon, 27 Jun 2022 15:40:00 +0800
-Message-Id: <1656315600-22268-1-git-send-email-zhanghongchen@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9DxX9fSXrlid8BfAA--.5229S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4kKrW5Ar1fWF48tr4UCFg_yoW8WF47pr
- n7Gr1rtrs5JFyxJrZ3Gw1qvFWrCwn5tFs8X3yqyw45Z3Z5JrWDZrsFqas8Jr10qrW0grWY
- 9Fs5ZFW3Kr9Iy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDU0xBIdaVrnRJUUUkS14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
- rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
- 1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
- JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
- xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
- 6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
- 0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm-wCF
- 04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
- 18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
- r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
- 1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
- cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+ by picard.linux.it (Postfix) with ESMTPS id D19053C8CA7
+ for <ltp@lists.linux.it>; Mon, 27 Jun 2022 10:44:59 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 97B7F1A007F2
+ for <ltp@lists.linux.it>; Mon, 27 Jun 2022 10:44:58 +0200 (CEST)
+Received: from ubuntu.localdomain (unknown [37.24.96.116])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 3396E9FF8E;
+ Mon, 27 Jun 2022 08:44:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1656319497; bh=mjQWI7Q7anWSccUfQwuTKeGxMmgehJ8ulfAVs4xStDI=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=KlXnOGhrc2HSDsVxAYZK5IFgQ//I7ElXI1wlNIZbLVpb1a1iFc8mz5DSA0TLFqmZ6
+ sZvutaqhZxsYY1rGtD+KZ1s3pwBx0a0O8Fly29Jjn1OSls4ZVlHJIWi2yJVI8C9ImV
+ uEahSUE0c03Ejh621oPqNrP0JEvuKgaugqMZjJAU=
+From: Joerg Vehlow <lkml@jv-coder.de>
+To: ltp@lists.linux.it,
+	pvorel@suse.cz
+Date: Mon, 27 Jun 2022 10:44:49 +0200
+Message-Id: <20220627084449.970621-1-lkml@jv-coder.de>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syslog11: fix console loglevel changed after test
+Subject: [LTP] [PATCH] memcg/functional: Fix usage of PAGESIZE from
+ memcg_lib.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,64 +53,126 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Lingling Li <lilingling@loongson.cn>, ltp@lists.linux.it,
- Hongchen Zhang <zhanghongchen@loongson.cn>
-MIME-Version: 1.0
+Cc: Joerg Vehlow <joerg.vehlow@aox.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-the console loglevel is force to be 7(LOGLEVEL_DEFAULT) after test,
-which is not the desired behavior.So we reset the console loglevel
-to its original value after the test body.The method what we take
-is just same as commit:
-a2ff1c2d141d ("kmsg01: set/restore console log level").
+From: Joerg Vehlow <joerg.vehlow@aox.de>
 
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
-Signed-off-by: Lingling Li <lilingling@loongson.cn>
+$PAGESIZES is set in memcg_lib.sh, which was moved to the bottom of the file.
+
+Fixes: 04021637f4749a4797bf105862c45fe07374a161 ("tst_test.sh: Cleanup getopts usage")
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox.de>
 ---
- testcases/kernel/syscalls/syslog/syslog11.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ .../controllers/memcg/functional/memcg_failcnt.sh      |  7 ++++---
+ .../memcg/functional/memcg_max_usage_in_bytes_test.sh  | 10 +++++-----
+ .../memcg/functional/memcg_subgroup_charge.sh          |  8 ++++----
+ .../memcg/functional/memcg_usage_in_bytes_test.sh      | 10 +++++-----
+ 4 files changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/syslog/syslog11.c b/testcases/kernel/syscalls/syslog/syslog11.c
-index b9540ef..78a7cc4 100644
---- a/testcases/kernel/syscalls/syslog/syslog11.c
-+++ b/testcases/kernel/syscalls/syslog/syslog11.c
-@@ -84,6 +84,11 @@ struct test_case_t {		/* test case structure */
- 	char *desc;		/* Test description */
- };
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh b/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
+index 1fed01569..1be98a056 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
+@@ -12,9 +12,6 @@ MEMCG_TESTFUNC=test
+ MEMCG_SHMMAX=1
+ TST_TEST_DATA="--mmap-anon --mmap-file --shm"
  
-+#define PRINTK "/proc/sys/kernel/printk"
-+#define CONSOLE_LOGLEVEL_QUIET   4
-+
-+static int console_loglevel = -1;
-+
- char *TCID = "syslog11";
- static int testno;
- static char buf;
-@@ -195,6 +200,11 @@ void setup(void)
- 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
- 	}
- 
-+	if (access(PRINTK, F_OK) == 0) {
-+		SAFE_FILE_SCANF(NULL, PRINTK, "%d", &console_loglevel);
-+		SAFE_FILE_PRINTF(NULL, PRINTK, "%d", CONSOLE_LOGLEVEL_QUIET);
-+	}
-+
- 	/* Pause if that option was specified
- 	 * TEST_PAUSE contains the code to fork the test with the -c option.
- 	 */
-@@ -208,5 +218,6 @@ void setup(void)
-  */
- void cleanup(void)
- {
+-MEMORY_LIMIT=$PAGESIZE
+-MEMORY_TO_ALLOCATE=$((MEMORY_LIMIT * 2))
 -
-+	if (console_loglevel != -1)
-+		SAFE_FILE_PRINTF(NULL, PRINTK, "%d", console_loglevel);
+ test()
+ {
+ 	ROD echo $MEMORY_LIMIT \> memory.limit_in_bytes
+@@ -36,4 +33,8 @@ test()
  }
+ 
+ . memcg_lib.sh
++
++MEMORY_LIMIT=$PAGESIZE
++MEMORY_TO_ALLOCATE=$((MEMORY_LIMIT * 2))
++
+ tst_run
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+index d1ffbe053..302810513 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_max_usage_in_bytes_test.sh
+@@ -9,11 +9,6 @@
+ MEMCG_TESTFUNC=test
+ TST_CNT=4
+ 
+-
+-MEM_TO_ALLOC=$((PAGESIZE * 1024))
+-MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + MEM_USAGE_RANGE))
+-MEM_LIMIT=$((MEM_TO_ALLOC * 2))
+-
+ # Run test cases which checks memory.[memsw.]max_usage_in_bytes after make
+ # some memory allocation
+ test_max_usage_in_bytes()
+@@ -88,4 +83,9 @@ test4()
+ }
+ 
+ . memcg_lib.sh
++
++MEM_TO_ALLOC=$((PAGESIZE * 1024))
++MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + MEM_USAGE_RANGE))
++MEM_LIMIT=$((MEM_TO_ALLOC * 2))
++
+ tst_run
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+index 08b6697d4..9bcc01258 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+@@ -12,10 +12,6 @@
+ MEMCG_TESTFUNC=test
+ TST_CNT=3
+ 
+-
+-# Allocate memory bigger than per-cpu kernel memory
+-MEM_TO_ALLOC=$((PAGESIZES * 2))
+-
+ # Test the memory charge won't move to subgroup
+ # $1 - memory.limit_in_bytes in sub group
+ test_subgroup()
+@@ -67,4 +63,8 @@ test3()
+ }
+ 
+ . memcg_lib.sh
++
++# Allocate memory bigger than per-cpu kernel memory
++MEM_TO_ALLOC=$((PAGESIZES * 2))
++
+ tst_run
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
+index 6f932124e..125d88e55 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
+@@ -9,11 +9,6 @@
+ MEMCG_TESTFUNC=test
+ TST_CNT=2
+ 
+-
+-MEM_TO_ALLOC=$((PAGESIZE * 1024))
+-MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + MEM_USAGE_RANGE))
+-MEM_LIMIT=$((MEM_TO_ALLOC * 2))
+-
+ test1()
+ {
+ 	tst_res TINFO "Test memory.usage_in_bytes"
+@@ -35,4 +30,9 @@ test2()
+ }
+ 
+ . memcg_lib.sh
++
++MEM_TO_ALLOC=$((PAGESIZE * 1024))
++MEM_EXPECTED_UPPER=$((MEM_TO_ALLOC + MEM_USAGE_RANGE))
++MEM_LIMIT=$((MEM_TO_ALLOC * 2))
++
+ tst_run
 -- 
-1.8.3.1
+2.25.1
 
 
 -- 
