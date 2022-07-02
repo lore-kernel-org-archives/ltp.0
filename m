@@ -4,64 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1B60C43334
-	for <ltp@archiver.kernel.org>; Fri,  1 Jul 2022 21:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EBC6C43334
+	for <ltp@archiver.kernel.org>; Sat,  2 Jul 2022 02:47:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 356123C97FA
-	for <ltp@archiver.kernel.org>; Fri,  1 Jul 2022 23:38:14 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EFB393C9B52
+	for <ltp@archiver.kernel.org>; Sat,  2 Jul 2022 04:47:08 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 18FC13C1D12
- for <ltp@lists.linux.it>; Fri,  1 Jul 2022 23:38:03 +0200 (CEST)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
- [IPv6:2607:f8b0:4864:20::1149])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9154A3C8CCF
+ for <ltp@lists.linux.it>; Sat,  2 Jul 2022 04:46:58 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6CD736007A6
- for <ltp@lists.linux.it>; Fri,  1 Jul 2022 23:38:03 +0200 (CEST)
-Received: by mail-yw1-x1149.google.com with SMTP id
- 00721157ae682-317765eb7ccso27788307b3.13
- for <ltp@lists.linux.it>; Fri, 01 Jul 2022 14:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=1nysJa4g5+mw2Jx1vbrbk3d8erJUfbWG8NJLrFOhw9U=;
- b=gckztCmqBr8NQNtnCwplqOIBZxTonodoY09BJ55OQe28fMtOyAbBY7ZtUB5+WLTiSl
- 1PaqhjAQfwwPTKgGokgQQHniQOHmatVFqoTSgUsJFMqqG76SejbA3puNywrRbB+tkhhr
- zhKzbS5u1ynf77lZureuPQR3GdhUUw8bV0cficnAvhMd/9WB/wLQUFIRYE5imbsIERB4
- 1Xuej783aZehsIfXQlBlrroeZeJlUeg6wAa8tfdC+UPgd29TaK6G6oPkmPsxCqHsuAaW
- eCxl46arFidygxOIMO1/L4E6ndco2/5LZet6x9n2wU6xIxVnBSB4OE/LEXyCdoNLBAvE
- tWlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=1nysJa4g5+mw2Jx1vbrbk3d8erJUfbWG8NJLrFOhw9U=;
- b=0T6M5lfQ3W3YjAE7zQw31T9uyDY57ARJGgmtlt6Atk/7IdAA7jj42MabLLpOTdohJz
- neB+YgCjS7T5zrFJ9dBF5iMvrUSd45yCig3cagPUvEToYMu3ScPZDSelDX2QPpyTSM9z
- aErTuF1GboHtu1oesfFKE8w/s7F8dznFqeG31emEsTsY8YHtFdt0JRqsYn65PXwtewd8
- z3Th1+QyVQEERxithyTQRhNUODYjGMtL+kWVFzylGAINoEeSBKBybJ393QHmoYSt3L7M
- eXlXAXTElJKHa9Qe+K/wZLu0GePOIGOElSEDxaEoq7SCN2w5ApZ1vOXgi2HhtBRZrSDK
- EspQ==
-X-Gm-Message-State: AJIora+WCJ5tZH+2FhlOF/wxuxCxgFP2q7wMG5CR64NpN5tnIduCeHg0
- qs36N3ZgzqgCeAPjzWB6jQ1WIQLogdVN1TGw0KsrM5eRtl23wmpXs56cLHrk+YfGQPMWS3CpZxf
- qRqqiHE/KdVVguw89WijOE94S8oXaL4bBk9R3PnYJxgjFRR0SyYDH3Rk7
-X-Google-Smtp-Source: AGRyM1sFOT/g8UFaDrgKCsuhHJkflxIvwWEGF/8Lb3Ig5vy/tDJCGKr+FBusKvHmVOKDKEVkYgZsDK/1mD4=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4be])
- (user=edliaw job=sendgmr) by 2002:a25:abc9:0:b0:66c:9e77:585b with
- SMTP id
- v67-20020a25abc9000000b0066c9e77585bmr16507278ybi.96.1656711481876; Fri, 01
- Jul 2022 14:38:01 -0700 (PDT)
-Date: Fri,  1 Jul 2022 21:37:49 +0000
-Message-Id: <20220701213749.3744031-1-edliaw@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-To: ltp@lists.linux.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F1D0F600A6D
+ for <ltp@lists.linux.it>; Sat,  2 Jul 2022 04:46:55 +0200 (CEST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LZbxq1W4mz1L8X3
+ for <ltp@lists.linux.it>; Sat,  2 Jul 2022 10:44:31 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.63) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 2 Jul 2022 10:46:50 +0800
+To: <ltp@lists.linux.it>
+Date: Sat, 2 Jul 2022 10:44:28 +0800
+Message-ID: <20220702024428.207153-1-zhaogongyi@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+X-Originating-IP: [10.67.174.63]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] controllers.memcg_regression: add trap to clean up
- directories
+Subject: [LTP] [PATCH v3] syscalls/nice05: Add testcase for nice() syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,111 +51,252 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+From: Zhao Gongyi via ltp <ltp@lists.linux.it>
+Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The memcg_regression test creates a memcg/ directory that can be left
-behind if the test exits unexpectedly.  Use a trap to clean up the
-directories on exit.
+Add test verifies that the low nice thread executes more
+time than the high nice thread since the two thread binded
+on the same cpu.
 
-Signed-off-by: Edward Liaw <edliaw@google.com>
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- .../memcg/regression/memcg_regression_test.sh | 20 +++++++++++--------
- .../memcg/regression/memcg_test_4.sh          | 11 ++++++----
- 2 files changed, 19 insertions(+), 12 deletions(-)
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/nice/.gitignore |   1 +
+ testcases/kernel/syscalls/nice/Makefile   |   2 +
+ testcases/kernel/syscalls/nice/nice05.c   | 184 ++++++++++++++++++++++
+ 4 files changed, 188 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/nice/nice05.c
 
-diff --git a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
-index c91a4069e..2467ae0e6 100755
---- a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
-+++ b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
-@@ -54,6 +54,15 @@ nr_null=0
- nr_warning=0
- nr_lockdep=0
- 
-+clean_up()
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 36fc50aeb..784f3184d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -901,6 +901,7 @@ nice01 nice01
+ nice02 nice02
+ nice03 nice03
+ nice04 nice04
++nice05 nice05
+
+ open01 open01
+ open01A symlink01 -T open01
+diff --git a/testcases/kernel/syscalls/nice/.gitignore b/testcases/kernel/syscalls/nice/.gitignore
+index 9d7a1bb43..58d64779e 100644
+--- a/testcases/kernel/syscalls/nice/.gitignore
++++ b/testcases/kernel/syscalls/nice/.gitignore
+@@ -2,3 +2,4 @@
+ /nice02
+ /nice03
+ /nice04
++/nice05
+diff --git a/testcases/kernel/syscalls/nice/Makefile b/testcases/kernel/syscalls/nice/Makefile
+index 044619fb8..02e78a295 100644
+--- a/testcases/kernel/syscalls/nice/Makefile
++++ b/testcases/kernel/syscalls/nice/Makefile
+@@ -3,6 +3,8 @@
+
+ top_srcdir		?= ../../../..
+
++nice05: CFLAGS += -pthread
++
+ include $(top_srcdir)/include/mk/testcases.mk
+
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/nice/nice05.c b/testcases/kernel/syscalls/nice/nice05.c
+new file mode 100644
+index 000000000..c0a528974
+--- /dev/null
++++ b/testcases/kernel/syscalls/nice/nice05.c
+@@ -0,0 +1,184 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright(c) 2022 Huawei Technologies Co., Ltd
++ * Author: Li Mengfei <limengfei4@huawei.com>
++ *         Zhao Gongyi <zhaogongyi@huawei.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * 1. Create a high nice thread and a low nice thread, the main
++ *    thread wake them at the same time
++ * 2. Both threads run on the same CPU
++ * 3. Verify that the low nice thread executes more time than
++ *    the high nice thread
++ */
++
++#define _GNU_SOURCE
++#include <pthread.h>
++#include <sys/types.h>
++#include <stdio.h>
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++#include "lapi/syscalls.h"
++
++static pthread_barrier_t barrier;
++static int some_cpu;
++static cpu_set_t *set;
++static pid_t *child_tid;
++
++static void set_nice(int nice_inc)
 +{
-+	# remove the cgroup
-+	rmdir memcg/0 2> /dev/null
-+	# unmount cgroup if still mounted
-+	umount memcg/
-+	rmdir memcg/
++	int orig_nice;
++
++	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
++
++	TEST(nice(nice_inc));
++
++	if (TST_RET != (orig_nice + nice_inc)) {
++		tst_brk(TBROK | TTERRNO, "nice(%d) returned %li, expected %i",
++			nice_inc, TST_RET, orig_nice + nice_inc);
++	}
++
++	if (TST_ERR)
++		tst_brk(TBROK | TTERRNO, "nice(%d) failed", nice_inc);
++
 +}
 +
- # check_kernel_bug - check if some kind of kernel bug happened
- check_kernel_bug()
- {
-@@ -102,12 +111,12 @@ check_kernel_bug()
- #---------------------------------------------------------------------------
- test_1()
- {
--	mkdir memcg/0/
-+	mkdir memcg/0
- 	echo 0 > memcg/0/memory.limit_in_bytes
- 
- 	./memcg_test_1
- 
--	rmdir memcg/0/
-+	rmdir memcg/0
- 
- 	check_kernel_bug
- 	if [ $? -eq 1 ]; then
-@@ -211,14 +220,12 @@ test_4()
- 	killall -9 memcg_test_4 2> /dev/null
- 	killall -9 memcg_test_4.sh 2> /dev/null
- 
--	# if test_4.sh gets killed, it won't clean cgroup it created
--	rmdir memcg/0 2> /dev/null
--
- 	swapon -a
- }
- 
- # main
- failed=0
-+trap clean_up EXIT
- mkdir memcg/
- 
- for cur in $(seq 1 $TST_TOTAL); do
-@@ -236,7 +243,4 @@ for cur in $(seq 1 $TST_TOTAL); do
- 	umount memcg/
- done
- 
--rmdir memcg/
--
- exit $failed
--
-diff --git a/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh b/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
-index 620031366..d002601f1 100755
---- a/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
-+++ b/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
-@@ -22,6 +22,13 @@
- ##                                                                            ##
- ################################################################################
- 
-+clean_up()
++static void *nice_low_thread(void *arg)
 +{
-+	# remove the cgroup when exiting
-+	rmdir memcg/0
++	volatile int number = 0;
++
++	child_tid[0] = tst_syscall(__NR_gettid);
++	set_nice((intptr_t)arg);
++	TEST(pthread_barrier_wait(&barrier));
++	if (TST_RET != 0 && TST_RET != PTHREAD_BARRIER_SERIAL_THREAD)
++		tst_brk(TBROK | TRERRNO, "pthread_barrier_wait() failed");
++
++	while (1)
++		number++;
++
++	return NULL;
 +}
 +
-+trap clean_up EXIT
- # attach current task to memcg/0/
- mkdir memcg/0
- echo $$ > memcg/0/tasks
-@@ -42,7 +49,3 @@ swapoff -a
- sleep 1
- echo $pid > memcg/tasks 2> /dev/null
- echo $$ > memcg/tasks 2> /dev/null
--
--# now remove the cgroup
--rmdir memcg/0
--
--- 
-2.37.0.rc0.161.g10f37bed90-goog
++static void *nice_high_thread(void *arg)
++{
++	volatile int number = 0;
++
++	child_tid[1] = tst_syscall(__NR_gettid);
++	set_nice((intptr_t)arg);
++	TEST(pthread_barrier_wait(&barrier));
++	if (TST_RET != 0 && TST_RET != PTHREAD_BARRIER_SERIAL_THREAD)
++		tst_brk(TBROK | TRERRNO, "pthread_barrier_wait() failed");
++
++	while (1)
++		number++;
++
++	return NULL;
++}
++
++static void setup(void)
++{
++	size_t size;
++	size_t i;
++	int nrcpus = 1024;
++
++	set = CPU_ALLOC(nrcpus);
++	if (!set)
++		tst_brk(TBROK | TERRNO, "CPU_ALLOC()");
++
++	size = CPU_ALLOC_SIZE(nrcpus);
++	CPU_ZERO_S(size, set);
++	if (sched_getaffinity(0, size, set) < 0)
++		tst_brk(TBROK | TERRNO, "sched_getaffinity()");
++
++	for (i = 0; i < size * 8; i++)
++		if (CPU_ISSET_S(i, size, set))
++			some_cpu = i;
++
++	CPU_ZERO_S(size, set);
++	CPU_SET_S(some_cpu, size, set);
++	if (sched_setaffinity(0, size, set) < 0)
++		tst_brk(TBROK | TERRNO, "sched_setaffinity()");
++
++	child_tid = SAFE_MMAP(0, sizeof(pid_t) * 2,
++			PROT_WRITE | PROT_READ,
++			MAP_SHARED | MAP_ANONYMOUS, 0, 0);
++}
++
++static void cleanup(void)
++{
++	if (set)
++		CPU_FREE(set);
++
++	if (child_tid)
++		SAFE_MUNMAP(child_tid, sizeof(pid_t) * 2);
++}
++
++static void verify_nice(void)
++{
++	intptr_t nice_inc_high = -1;
++	intptr_t nice_inc_low = -2;
++	char buf[4096] = {0};
++	float sum_exec_runtime[2];
++	pthread_t nice_low, nice_high;
++	pid_t pid;
++
++	pid = SAFE_FORK();
++	if (!pid) {
++		TEST(pthread_barrier_init(&barrier, NULL, 3));
++		if (TST_RET != 0) {
++			tst_brk(TBROK | TTERRNO,
++				"pthread_barrier_init() failed");
++		}
++
++		SAFE_PTHREAD_CREATE(&nice_high, NULL, nice_high_thread,
++			(void *)nice_inc_high);
++		SAFE_PTHREAD_CREATE(&nice_low, NULL, nice_low_thread,
++			(void *)nice_inc_low);
++
++		TEST(pthread_barrier_wait(&barrier));
++		if (TST_RET != 0 && TST_RET != PTHREAD_BARRIER_SERIAL_THREAD) {
++			tst_brk(TBROK | TTERRNO,
++				"pthread_barrier_wait() failed");
++		}
++
++		while (1)
++			pause();
++	}
++
++	sleep(tst_remaining_runtime());
++	SAFE_KILL(pid, SIGSTOP);
++
++	sprintf(buf, "/proc/%d/sched", child_tid[0]);
++	SAFE_FILE_SCANF(buf, "%*s %*s %*s %*s %*s"
++			"%*s %*s %*f %*s %*s %*f %*s %*s %f",
++			&sum_exec_runtime[0]);
++
++	sprintf(buf, "/proc/%d/sched", child_tid[1]);
++	SAFE_FILE_SCANF(buf, "%*s %*s %*s %*s %*s"
++			"%*s %*s %*f %*s %*s %*f %*s %*s %f",
++			&sum_exec_runtime[1]);
++
++	if (sum_exec_runtime[0] < sum_exec_runtime[1]) {
++		tst_res(TFAIL, "nice_low_thread sum_exec_runtime: %f "
++			"nice_high_thread sum_exec_runtime: %f",
++			sum_exec_runtime[0], sum_exec_runtime[1]);
++	} else {
++		tst_res(TPASS, "executes more cycles "
++			"than the high nice thread");
++	}
++
++	SAFE_KILL(pid, SIGKILL);
++	SAFE_WAIT(NULL);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_nice,
++	.needs_root = 1,
++	.forks_child = 1,
++	.max_runtime = 3,
++};
+--
+2.17.1
 
 
 -- 
