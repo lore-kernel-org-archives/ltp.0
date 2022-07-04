@@ -4,62 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15D8CCA479
-	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 10:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D7C1C43334
+	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 11:26:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 728683CA045
-	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 12:22:08 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3E9CB3CA03E
+	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 13:26:27 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A11C3C1BD5
- for <ltp@lists.linux.it>; Mon,  4 Jul 2022 12:21:57 +0200 (CEST)
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com
- [IPv6:2607:f8b0:4864:20::d36])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id EF1023C9839
+ for <ltp@lists.linux.it>; Mon,  4 Jul 2022 13:26:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 68CA560080C
- for <ltp@lists.linux.it>; Mon,  4 Jul 2022 12:21:57 +0200 (CEST)
-Received: by mail-io1-xd36.google.com with SMTP id l24so8192727ion.13
- for <ltp@lists.linux.it>; Mon, 04 Jul 2022 03:21:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=MHtsF8BuM0s8sZdzZdBF2dNP7G8scNA896vfo1rkN6A=;
- b=MvOVTIbuHVF8RUyQSed7BrWw7zTkUuJMey/HH+HaiIewtWiqBftpb3cM/fuxKVDbbb
- Wt0SLLcc38/gzO7UpT7i5UXwVCvFS1FEJZppvU5OvTbFckajEP2xXBa8lNrcIGYYZ2ph
- BbcS8FPZa2LLimFQkEvvDzxhYnOXQ8o0hEFTU6AsxxmeBrWIf7Lv+3nOw4lIvq7Wamu/
- cXQLlt/ILpvvKaHXnmsJIW6Y+Kz/tlyXM5flsncOGyKpKiM3e3W3YtQXxFXtz+lylhY1
- DErtA7pIXS6HQLJoTecglPvy1givmGtQsCglBNoyteCM0RD63wbdzDExwceqNlIW6/JE
- zx+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=MHtsF8BuM0s8sZdzZdBF2dNP7G8scNA896vfo1rkN6A=;
- b=nLkLb6LPHFusJTU5V6/ptIKz83ZWPsri3wmFCvF/FSjTN37n5QAE4Xw1by9LjT2Aie
- EH7DQiXuRyfzmMcNaLQ0IIJb9AmS6mKY+L3fST3gN3keOZ2yyVkwy+KIOC/Cr4JVHbQN
- Ad4RNLYHbWKGtPfKMtXijw8m8U6LYewawTJGw6rCzQm4akvvCFByt6aZvyCVOksR8w4/
- 7iSwEmFxpoBO7YW0/fVSkVOTYlAlGgsil71k6wuA+Y8pniW9CnXGORS0gZ9druZ9pjTh
- Ahm2vTmg5U14FYAj0bUxR2gMYRlUKwEoJHDlsUVI/vmd3/hEyLLHoKys2JFoLTtHlXLq
- GJCg==
-X-Gm-Message-State: AJIora+dig6jLlkSaggW4oG6BneNgc4pSz4T+eG6q2BmmYzEq1hVTm+H
- MYbaUyyxMIdPq0xOD7u35IAI5gBRqCCN4xvRBKryr4dLbXbcFQ==
-X-Google-Smtp-Source: AGRyM1twJSnXUeK56KDrtuQvf3/Xbvfy61F/5TOiJt+rgJDaLehSSBxzBGJSypmwdI8AXp2HmlJQgocLjhAaDUD9pb8=
-X-Received: by 2002:a5d:8f96:0:b0:675:573e:6eb5 with SMTP id
- l22-20020a5d8f96000000b00675573e6eb5mr15588227iol.144.1656930115976; Mon, 04
- Jul 2022 03:21:55 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E33F1140019D
+ for <ltp@lists.linux.it>; Mon,  4 Jul 2022 13:26:14 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 640D66164B;
+ Mon,  4 Jul 2022 11:26:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6A59C341D1;
+ Mon,  4 Jul 2022 11:26:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656933971;
+ bh=RxQ+WPdK+8ljus8FYxhhp+i2WQDSKsXRyAKp1y5aKuI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=IQGCOcGNIg9srb3P060dF/JcdvLQ/lKKW6K9hBHhqg466hXnhrCkjy1p4RUerAbgJ
+ 5yUA33dTMBD1n7hcjNKeLWR9JbW9PVxktu9AIbv2s9D9uDsfYTcRoXlkiYMiWfYwDO
+ eDdLIl94OCId2IpV75BVjmP18+5f0UGUJvgvOHF6S78uD5vucg9rMi3CnXMGeOKUfx
+ DFBAz2BbsxCOReoBFs0YSVOQCDCv7zocME3kAdw9MA7RXGnfpRJN8fwduw7177ARBL
+ QeGdUDDh/fvj4ZFWq1OuMdNFtMCC0np/LxxRjTUegOnbP+AXFV6djciJUuRmPqKLJd
+ /AwTNktqmdWaA==
+Date: Mon, 4 Jul 2022 12:26:06 +0100
+From: Will Deacon <will@kernel.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Message-ID: <20220704112605.GB31553@willie-the-truck>
+References: <CA+G9fYtu1G4oGtKZQ_g5VJbQoET8c7hN_Ds-O1-1HD3PwV4wkQ@mail.gmail.com>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 4 Jul 2022 15:51:44 +0530
-Message-ID: <CA+G9fYvB5KmpJmwu+gkM4UiWFTwFVuRFZvAj7Kojw0o-raCezA@mail.gmail.com>
-To: open list <linux-kernel@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
- regressions@lists.linux.dev, lkft-triage@lists.linaro.org
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtu1G4oGtKZQ_g5VJbQoET8c7hN_Ds-O1-1HD3PwV4wkQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] 5.19.0-rc5: qemu-i386: traps: PANIC: double fault,
- error_code: 0x0
+Subject: Re: [LTP] 5.19.0-rc5 : Raspberry Pi 4 : Unable to handle kernel
+ paging request at virtual address
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,98 +62,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andy Lutomirski <luto@amacapital.net>
+Cc: brauner@kernel.org, Vincent Guittot <vincent.guittot@linaro.org>,
+ regressions@lists.linux.dev, Catalin Marinas <catalin.marinas@arm.com>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ LTP List <ltp@lists.linux.it>, Linus Torvalds <torvalds@linux-foundation.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following kernel crash noticed on qemu-i386 while running LTP cve tests
+On Mon, Jul 04, 2022 at 01:28:30PM +0530, Naresh Kamboju wrote:
+> While running LTP controllers tests on arm64 Raspberry Pi 4 Model B
+> the following kernel crash noticed.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> metadata:
+>   git_ref: master
+>   git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
+>   git_sha: 88084a3df1672e131ddc1b4e39eeacfd39864acf
+>   kernel_version: 5.19.0-rc5
+>   kernel-config: https://builds.tuxbuild.com/2BSEyt8Sb19HSj6SnBFiMo6kiQh/config
+>   build-url: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline/-/pipelines/579007773
+>   artifact-location: https://builds.tuxbuild.com/2BSEyt8Sb19HSj6SnBFiMo6kiQh
+>   vmlinux.xz: https://builds.tuxbuild.com/2BSEyt8Sb19HSj6SnBFiMo6kiQh/vmlinux.xz
+>   System.map: https://builds.tuxbuild.com/2BSEyt8Sb19HSj6SnBFiMo6kiQh/System.map
+>   toolchain: gcc-11
+> 
+> Steps to reproduce:
+> -------------------
+> ./runltp -p -q -f controllers
+> 
+> Test log:
+> ----------
+> cgroup_fj_stress_blkio_4_4_each 1 TPASS: All done!
+> cgroup_fj_stress_blkio_4_4_each 2 TINFO: Removing all ltp subgroups...
+> cgroup_fj_stress_blkio_2_9_each 1 TINFO: Subsystem blkio is mounted at
+> /sys/fs/cgroup/blkio
+> cgroup_fj_stress_blkio_2_9_each 1 TINFO: Creating subgroups ...
+> [ 2414.973441] Unable to handle kernel paging request at virtual
+> address 00620000090336a0
+> [ 2414.981581] Mem abort info:
+> [ 2414.984480]   ESR = 0x0000000086000004
+> [ 2414.988323]   EC = 0x21: IABT (current EL), IL = 32 bits
+> [ 2414.993765]   SET = 0, FnV = 0
+> [ 2414.996905]   EA = 0, S1PTW = 0
+> [ 2415.000124]   FSC = 0x04: level 0 translation fault
+> [ 2415.005118] [00620000090336a0] address between user and kernel address ranges
+> [ 2415.012393] Internal error: Oops: 86000004 [#1] PREEMPT SMP
+> [ 2415.018048] Modules linked in: btrfs blake2b_generic libcrc32c
+> raid6_pq zstd_compress xhci_pci snd_soc_hdmi_codec xhci_pci_renesas
+> raspberrypi_cpufreq hci_uart btqca brcmfmac brcmutil btbcm vc4
+> bluetooth cfg80211 cec drm_display_helper drm_cma_helper rfkill
+> clk_raspberrypi reset_raspberrypi drm_kms_helper crct10dif_ce
+> raspberrypi_hwmon drm i2c_bcm2835 iproc_rng200 rng_core pwm_bcm2835
+> bcm2711_thermal pcie_brcmstb fuse
+> [ 2415.055725] CPU: 0 PID: 11626 Comm: cgroup_fj_stres Not taintedlinu#1
+> [ 2415.062965] Hardware name: Raspberry Pi 4 Model B (DT)
+> [ 2415.068175] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [ 2415.075238] pc : 0x620000090336a0
+> [ 2415.078600] lr : ktime_get+0x50/0xac
+> [ 2415.082228] sp : ffff80000dfdbb90
+> [ 2415.085585] x29: ffff80000dfdbb90 x28: 00000000ffffffff x27: ffff00006405e580
+> [ 2415.092832] x26: ffff00006405e748 x25: 0000000001200000 x24: ffff00006405e180
+> [ 2415.100076] x23: ffff80000dfdbd68 x22: 0000000000000000 x21: 000002321545f201
+> [ 2415.107320] x20: 000000000012017e x19: ffff80000ae3b440 x18: ffff000000000000
+> [ 2415.114564] x17: 0000000000000000 x16: 0000000000000000 x15: 00000000000000dc
+> [ 2415.121809] x14: 0000000001200011 x13: 0000000060000000 x12: 0000ffffa7b6c1e8
+> [ 2415.129052] x11: 0000000000000040 x10: ffff80000a96c5c0 x9 : ffff8000080990d4
+> [ 2415.136295] x8 : 0000000000000000 x7 : 0000000000a9c84a x6 : 4480001ec1769752
+> [ 2415.143538] x5 : 00ffbffeffffffff x4 : 0000000900000000 x3 : 0000000000000000
+> [ 2415.150781] x2 : ffff80000a94e000 x1 : ffff8000090336a0 x0 : ffff80000ad102f0
+> [ 2415.158025] Call trace:
+> [ 2415.160498]  0x620000090336a0
+> [ 2415.163505]  copy_process+0xe34/0x1534
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Do you have the disassembly (and source:line infor) around
+copy_process+0xe34/0x1534? The faulting PC is like a messed up copy of x1
+where the upper bits have been corrupted somehow.
 
-metadata:
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
-  git_sha: 88084a3df1672e131ddc1b4e39eeacfd39864acf
-  git_describe: v5.19-rc5
-  kernel_version: 5.19.0-rc5
-  kernel-config: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/config
-  artifact-location: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/
-  System.map: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/System.map
-  vmlinux.xz: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/vmlinux.xz
-
-steps to reproduce:
-cd /opt/ltp
-./runltp -p -q -f cve
-
-cve-2014-0196.c:125: TPASS: Nothing bad happened, probably.
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
-gethostbyname_r01    1  TPASS  :  not vulnerable
-tst_test.c:1433: TINFO: Timeout per run is 0h 15m 00s
-<47>[  916.714682] systemd-journald[195]: Sent WATCHDOG=1 notification.
-<47>[  916.915653] systemd-journald[195]: Successfully sent stream
-file descriptor to service manager.
-<0>[  920.086226] traps: PANIC: double fault, error_code: 0x0
-<4>[  920.087343] double fault: 0000 [#1] PREEMPT SMP
-<4>[  920.087914] CPU: 1 PID: 15074 Comm: keyctl02 Not tainted 5.19.0-rc5 #1
-<4>[  920.088131] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.14.0-2 04/01/2014
-<4>[  920.088484] EIP: atomic64_add_return_cx8+0x21/0x2c
-<4>[  920.088700] Code: 90 f0 0f c7 0e 75 fa c3 90 55 53 56 57 89 c6
-89 d7 89 cd 89 d8 89 ca f0 0f c7 09 89 c3 89 d1 01 f3 11 f9 f0 0f c7
-4d 00 75 f1 <89> d8 89 ca 5f 5e 5b 5d c3 90 90 55 53 56 57 89 c6 89 d7
-89 cd 89
-<4>[  920.088700] EAX: 00000011 EBX: 00000010 ECX: 00000000 EDX: 00000000
-<4>[  920.088700] ESI: ffffffff EDI: ffffffff EBP: c1df3bb0 ESP: c3479eb0
-<4>[  920.088700] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: ffffffff
-<4>[  920.088700] CR0: 80050033 CR2: 01f17320 CR3: 0a126000 CR4: 000006d0
-<4>[  920.088700] Call Trace:
-<4>[  920.088700]  ? pids_release+0x32/0x50
-<4>[  920.088700]  ? cgroup_release+0x41/0xe0
-<4>[  920.088700]  ? release_task+0x61/0x640
-<4>[  920.088700]  ? trace_preempt_on+0x28/0x30
-<4>[  920.088700]  ? _raw_write_unlock_irq+0x1b/0x30
-<4>[  920.088700]  ? preempt_count_sub+0x7a/0xe0
-<4>[  920.088700]  ? do_exit+0x50a/0x910
-<4>[  920.088700]  ? syscall_enter_from_user_mode_work+0x135/0x150
-<4>[  920.088700]  ? __ia32_sys_exit+0x15/0x20
-<4>[  920.088700]  ? __do_fast_syscall_32+0x86/0xd0
-<4>[  920.088700]  ? __this_cpu_preempt_check+0xf/0x11
-<4>[  920.088700]  ? fpregs_restore_userregs+0x71/0xf0
-<4>[  920.088700]  ? syscall_exit_to_user_mode+0x3c/0x60
-<4>[  920.088700]  ? ret_from_fork+0x10/0x28
-<4>[  920.088700]  ? do_fast_syscall_32+0x29/0x60
-<4>[  920.088700]  ? do_SYSENTER_32+0x12/0x20
-<4>[  920.088700]  ? entry_SYSENTER_32+0x98/0xf1
-<4>[  920.088700] Modules linked in:
-<4>[  920.088700] ---[ end trace 0000000000000000 ]---
-<4>[  920.088700] EIP: atomic64_add_return_cx8+0x21/0x2c
-<4>[  920.088700] Code: 90 f0 0f c7 0e 75 fa c3 90 55 53 56 57 89 c6
-89 d7 89 cd 89 d8 89 ca f0 0f c7 09 89 c3 89 d1 01 f3 11 f9 f0 0f c7
-4d 00 75 f1 <89> d8 89 ca 5f 5e 5b 5d c3 90 90 55 53 56 57 89 c6 89 d7
-89 cd 89
-<4>[  920.088700] EAX: 00000011 EBX: 00000010 ECX: 00000000 EDX: 00000000
-<4>[  920.088700] ESI: ffffffff EDI: ffffffff EBP: c1df3bb0 ESP: c3479eb0
-<4>[  920.088700] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: ffffffff
-<4>[  920.088700] CR0: 80050033 CR2: 01f17320 CR3: 0a126000 CR4: 000006d0
-<0>[  920.088700] Kernel panic - not syncing: Fatal exception in interrupt
-<0>[  920.088700] Kernel Offset: disabled
-
-links,
-https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v5.19-rc5/testrun/10489457/suite/log-parser-test/tests/
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Will
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
