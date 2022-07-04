@@ -4,59 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE1CCCA479
-	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 10:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15D8CCA479
+	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 10:22:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FA0C3C9FDE
-	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 12:03:03 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 728683CA045
+	for <ltp@archiver.kernel.org>; Mon,  4 Jul 2022 12:22:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D381F3C9C35
- for <ltp@lists.linux.it>; Mon,  4 Jul 2022 12:02:52 +0200 (CEST)
-Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id 8560C1A00886
- for <ltp@lists.linux.it>; Mon,  4 Jul 2022 12:02:50 +0200 (CEST)
-IronPort-Data: =?us-ascii?q?A9a23=3AVdz/ha+xMlc/De3WyQbkDrUDkXyTJUtcMsCJ2f8?=
- =?us-ascii?q?bfWQNrUok0DwCmmsWCm2CP/uOYWX3e9t2a4+0oUgF78WBztZkTldlrnsFo1Bi8?=
- =?us-ascii?q?5ScXYvDRqvT04J+FuWaFQQ/qZx2huDodKjYdVeB4Ef9WlTdhSMkj/vQHOKlULe?=
- =?us-ascii?q?s1h1ZHmeIdg9w0HqPpMZp2uaEsfDha++8kYuaT//3YTdJ6BYoWo4g0J9vnTs01?=
- =?us-ascii?q?BjEVJz0iXRlDRxDlAe2e3D4l/vzL4npR5fzatE88uJX24/+IL+FEmPxp3/BC/u?=
- =?us-ascii?q?ulPD1b08LXqXPewOJjxK6WYD72l4b+HN0if19aZLwam8O49mNt9txxdNNpdq+T?=
- =?us-ascii?q?xw1FqPRmuUBSAQeGCZ7VUFD0OadfiLm4ZfLkCUqdFOpmZ2CFnoeOZEA0uJ2Gn1?=
- =?us-ascii?q?Vs/gZLi0dKBGf799aaprTpvJE35xldZe0ethE/CwI8N0QNt5+KbirfkkAzYYwM?=
- =?us-ascii?q?O8Mu/1z?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ATFGcSK4t1k2oXpzzJAPXwDnXdLJyesId70hD?=
- =?us-ascii?q?6qkXc20xTiX4rbHLoB11737JYVoqNE3I+urwWpVoI0m9yXcd2+B4Vt3OYOCMgg?=
- =?us-ascii?q?WVxe9ZgrcKuweQeBEW6NQtrZtIQuxvDsHqF1hmgYLf6Am8Kdwpx96K68mT9IHj?=
- =?us-ascii?q?5kYoXQd3cLth8gs8Lg6aF3d9TA5ACYF8O4Gb4qN81kOdUEVSfsKmHWMEQuSGg9?=
- =?us-ascii?q?XKkajtaRkACwViyCTmt0LO1ILH?=
-X-IronPort-AV: E=Sophos;i="5.88,333,1635177600"; d="scan'208";a="127218307"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
- by heian.cn.fujitsu.com with ESMTP; 04 Jul 2022 18:02:48 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
- by cn.fujitsu.com (Postfix) with ESMTP id D773E4D17179
- for <ltp@lists.linux.it>; Mon,  4 Jul 2022 18:02:43 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Mon, 4 Jul 2022 18:02:42 +0800
-Received: from G08FNSTD200033.g08.fujitsu.local (10.167.225.189) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Mon, 4 Jul 2022 18:02:46 +0800
-From: Chen Hanxiao <chenhx.fnst@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Mon, 4 Jul 2022 18:02:43 +0800
-Message-ID: <20220704100243.844-1-chenhx.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+ by picard.linux.it (Postfix) with ESMTPS id 0A11C3C1BD5
+ for <ltp@lists.linux.it>; Mon,  4 Jul 2022 12:21:57 +0200 (CEST)
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com
+ [IPv6:2607:f8b0:4864:20::d36])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 68CA560080C
+ for <ltp@lists.linux.it>; Mon,  4 Jul 2022 12:21:57 +0200 (CEST)
+Received: by mail-io1-xd36.google.com with SMTP id l24so8192727ion.13
+ for <ltp@lists.linux.it>; Mon, 04 Jul 2022 03:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=MHtsF8BuM0s8sZdzZdBF2dNP7G8scNA896vfo1rkN6A=;
+ b=MvOVTIbuHVF8RUyQSed7BrWw7zTkUuJMey/HH+HaiIewtWiqBftpb3cM/fuxKVDbbb
+ Wt0SLLcc38/gzO7UpT7i5UXwVCvFS1FEJZppvU5OvTbFckajEP2xXBa8lNrcIGYYZ2ph
+ BbcS8FPZa2LLimFQkEvvDzxhYnOXQ8o0hEFTU6AsxxmeBrWIf7Lv+3nOw4lIvq7Wamu/
+ cXQLlt/ILpvvKaHXnmsJIW6Y+Kz/tlyXM5flsncOGyKpKiM3e3W3YtQXxFXtz+lylhY1
+ DErtA7pIXS6HQLJoTecglPvy1givmGtQsCglBNoyteCM0RD63wbdzDExwceqNlIW6/JE
+ zx+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=MHtsF8BuM0s8sZdzZdBF2dNP7G8scNA896vfo1rkN6A=;
+ b=nLkLb6LPHFusJTU5V6/ptIKz83ZWPsri3wmFCvF/FSjTN37n5QAE4Xw1by9LjT2Aie
+ EH7DQiXuRyfzmMcNaLQ0IIJb9AmS6mKY+L3fST3gN3keOZ2yyVkwy+KIOC/Cr4JVHbQN
+ Ad4RNLYHbWKGtPfKMtXijw8m8U6LYewawTJGw6rCzQm4akvvCFByt6aZvyCVOksR8w4/
+ 7iSwEmFxpoBO7YW0/fVSkVOTYlAlGgsil71k6wuA+Y8pniW9CnXGORS0gZ9druZ9pjTh
+ Ahm2vTmg5U14FYAj0bUxR2gMYRlUKwEoJHDlsUVI/vmd3/hEyLLHoKys2JFoLTtHlXLq
+ GJCg==
+X-Gm-Message-State: AJIora+dig6jLlkSaggW4oG6BneNgc4pSz4T+eG6q2BmmYzEq1hVTm+H
+ MYbaUyyxMIdPq0xOD7u35IAI5gBRqCCN4xvRBKryr4dLbXbcFQ==
+X-Google-Smtp-Source: AGRyM1twJSnXUeK56KDrtuQvf3/Xbvfy61F/5TOiJt+rgJDaLehSSBxzBGJSypmwdI8AXp2HmlJQgocLjhAaDUD9pb8=
+X-Received: by 2002:a5d:8f96:0:b0:675:573e:6eb5 with SMTP id
+ l22-20020a5d8f96000000b00675573e6eb5mr15588227iol.144.1656930115976; Mon, 04
+ Jul 2022 03:21:55 -0700 (PDT)
 MIME-Version: 1.0
-X-yoursite-MailScanner-ID: D773E4D17179.AD7E5
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: chenhx.fnst@fujitsu.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 4 Jul 2022 15:51:44 +0530
+Message-ID: <CA+G9fYvB5KmpJmwu+gkM4UiWFTwFVuRFZvAj7Kojw0o-raCezA@mail.gmail.com>
+To: open list <linux-kernel@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
+ regressions@lists.linux.dev, lkft-triage@lists.linaro.org
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] docparse/Makefile: fix a typo
+Subject: [LTP] 5.19.0-rc5: qemu-i386: traps: PANIC: double fault,
+ error_code: 0x0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,36 +71,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Andy Lutomirski <luto@amacapital.net>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-s/not not/not
+Following kernel crash noticed on qemu-i386 while running LTP cve tests
 
-Signed-off-by: Chen Hanxiao <chenhx.fnst@fujitsu.com>
----
- docparse/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/docparse/Makefile b/docparse/Makefile
-index e6e9f05ba..20851fba6 100644
---- a/docparse/Makefile
-+++ b/docparse/Makefile
-@@ -19,7 +19,7 @@ METADATA_GENERATOR_PARAMS_HTML := -f xhtml
- METADATA_GENERATOR_PARAMS_PDF := -f pdf
- METADATA_GENERATOR_PARAMS_HTML_CHUNKED := -f chunked
- else ifeq ($(METADATA_GENERATOR),)
--$(error 'METADATA_GENERATOR' not not configured, run ./configure in the root directory)
-+$(error 'METADATA_GENERATOR' not configured, run ./configure in the root directory)
- else
- $(error '$(METADATA_GENERATOR)' not supported, only asciidoctor and asciidoc are supported)
- endif
--- 
-2.18.1
+metadata:
+  git_ref: master
+  git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
+  git_sha: 88084a3df1672e131ddc1b4e39eeacfd39864acf
+  git_describe: v5.19-rc5
+  kernel_version: 5.19.0-rc5
+  kernel-config: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/config
+  artifact-location: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/
+  System.map: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/System.map
+  vmlinux.xz: https://builds.tuxbuild.com/2BSF0Azg4qZOVFsPdPsWOT0KBzM/vmlinux.xz
+
+steps to reproduce:
+cd /opt/ltp
+./runltp -p -q -f cve
+
+cve-2014-0196.c:125: TPASS: Nothing bad happened, probably.
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+gethostbyname_r01    1  TPASS  :  not vulnerable
+tst_test.c:1433: TINFO: Timeout per run is 0h 15m 00s
+<47>[  916.714682] systemd-journald[195]: Sent WATCHDOG=1 notification.
+<47>[  916.915653] systemd-journald[195]: Successfully sent stream
+file descriptor to service manager.
+<0>[  920.086226] traps: PANIC: double fault, error_code: 0x0
+<4>[  920.087343] double fault: 0000 [#1] PREEMPT SMP
+<4>[  920.087914] CPU: 1 PID: 15074 Comm: keyctl02 Not tainted 5.19.0-rc5 #1
+<4>[  920.088131] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.14.0-2 04/01/2014
+<4>[  920.088484] EIP: atomic64_add_return_cx8+0x21/0x2c
+<4>[  920.088700] Code: 90 f0 0f c7 0e 75 fa c3 90 55 53 56 57 89 c6
+89 d7 89 cd 89 d8 89 ca f0 0f c7 09 89 c3 89 d1 01 f3 11 f9 f0 0f c7
+4d 00 75 f1 <89> d8 89 ca 5f 5e 5b 5d c3 90 90 55 53 56 57 89 c6 89 d7
+89 cd 89
+<4>[  920.088700] EAX: 00000011 EBX: 00000010 ECX: 00000000 EDX: 00000000
+<4>[  920.088700] ESI: ffffffff EDI: ffffffff EBP: c1df3bb0 ESP: c3479eb0
+<4>[  920.088700] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: ffffffff
+<4>[  920.088700] CR0: 80050033 CR2: 01f17320 CR3: 0a126000 CR4: 000006d0
+<4>[  920.088700] Call Trace:
+<4>[  920.088700]  ? pids_release+0x32/0x50
+<4>[  920.088700]  ? cgroup_release+0x41/0xe0
+<4>[  920.088700]  ? release_task+0x61/0x640
+<4>[  920.088700]  ? trace_preempt_on+0x28/0x30
+<4>[  920.088700]  ? _raw_write_unlock_irq+0x1b/0x30
+<4>[  920.088700]  ? preempt_count_sub+0x7a/0xe0
+<4>[  920.088700]  ? do_exit+0x50a/0x910
+<4>[  920.088700]  ? syscall_enter_from_user_mode_work+0x135/0x150
+<4>[  920.088700]  ? __ia32_sys_exit+0x15/0x20
+<4>[  920.088700]  ? __do_fast_syscall_32+0x86/0xd0
+<4>[  920.088700]  ? __this_cpu_preempt_check+0xf/0x11
+<4>[  920.088700]  ? fpregs_restore_userregs+0x71/0xf0
+<4>[  920.088700]  ? syscall_exit_to_user_mode+0x3c/0x60
+<4>[  920.088700]  ? ret_from_fork+0x10/0x28
+<4>[  920.088700]  ? do_fast_syscall_32+0x29/0x60
+<4>[  920.088700]  ? do_SYSENTER_32+0x12/0x20
+<4>[  920.088700]  ? entry_SYSENTER_32+0x98/0xf1
+<4>[  920.088700] Modules linked in:
+<4>[  920.088700] ---[ end trace 0000000000000000 ]---
+<4>[  920.088700] EIP: atomic64_add_return_cx8+0x21/0x2c
+<4>[  920.088700] Code: 90 f0 0f c7 0e 75 fa c3 90 55 53 56 57 89 c6
+89 d7 89 cd 89 d8 89 ca f0 0f c7 09 89 c3 89 d1 01 f3 11 f9 f0 0f c7
+4d 00 75 f1 <89> d8 89 ca 5f 5e 5b 5d c3 90 90 55 53 56 57 89 c6 89 d7
+89 cd 89
+<4>[  920.088700] EAX: 00000011 EBX: 00000010 ECX: 00000000 EDX: 00000000
+<4>[  920.088700] ESI: ffffffff EDI: ffffffff EBP: c1df3bb0 ESP: c3479eb0
+<4>[  920.088700] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: ffffffff
+<4>[  920.088700] CR0: 80050033 CR2: 01f17320 CR3: 0a126000 CR4: 000006d0
+<0>[  920.088700] Kernel panic - not syncing: Fatal exception in interrupt
+<0>[  920.088700] Kernel Offset: disabled
+
+links,
+https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v5.19-rc5/testrun/10489457/suite/log-parser-test/tests/
 
 
-
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
