@@ -4,63 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEE65C43334
-	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 06:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA05C433EF
+	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 06:43:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C593F3CA0E2
-	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 08:43:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8C9863CA08B
+	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 08:43:38 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15A503C649E
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 08:43:06 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 8D2FF3C649E
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 08:43:28 +0200 (CEST)
+Received: from mail.jv-coder.de (mail.jv-coder.de [5.9.79.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BE1F0200908
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 08:43:05 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B70F622449
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 06:43:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657003384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=9uCU5R0uBae0nZ1/R02Wo7WAG69nivoTUiQBDXRX12Y=;
- b=NZ2EhanVf3VQFXaxfYHNHNFuHtrZEqq+7T2T1Zi5oksYhA8YHs1k3yTZIprJYJUNeT1h4y
- hMQTycJWBwMGAM64YxpWTBUpDIRlzAO92DCGnpPYjrONzeYNDEE74mlUPfpKiLe/i8aXVj
- tHh81+3Id+EiGmhh31ioZsWwKEwIc1E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657003384;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=9uCU5R0uBae0nZ1/R02Wo7WAG69nivoTUiQBDXRX12Y=;
- b=U4LVvE+uqgXVTdS5+3s7bMDCtZleaTA8ppUBqm4J66E1j9adF60I7N2Aa3K7IjDLq6HbKl
- /KDtKsypQN7uGABA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 315CC13A79
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 06:43:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id S0WQOHfdw2J5IwAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 05 Jul 2022 06:43:03 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Tue,  5 Jul 2022 12:13:01 +0530
-Message-Id: <20220705064301.4003-1-akumar@suse.de>
-X-Mailer: git-send-email 2.36.1
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC0FE1400B7C
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 08:43:27 +0200 (CEST)
+Received: from [192.168.178.40] (unknown [188.192.100.83])
+ by mail.jv-coder.de (Postfix) with ESMTPSA id 0F6ED9FE98;
+ Tue,  5 Jul 2022 06:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+ t=1657003406; bh=6krwBjwsj0zUqIS8eMcU1wjDfgq+UsxsA+YDIG+s5VA=;
+ h=Message-ID:Date:MIME-Version:Subject:To:From;
+ b=tfE7qP7+00iW54XQ0oi9T5+KpttoBdKi4Ljb8oEDwGIys8AptxMmxJTOPhRzXvPa0
+ SASr1qk3seKS91S70IQXXecLFQ841fO1lhx1z1zYWlJhhgDPtqnsNiEIGYl2wr9nOM
+ r1Kb01ngGWtjpYqnUuBsc77F/BRLti77wLmiKrjI=
+Message-ID: <ff33060e-07d1-a552-caa2-dda8188f2131@jv-coder.de>
+Date: Tue, 5 Jul 2022 08:43:26 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Content-Language: en-US
+To: rpalethorpe@suse.de
+References: <20220627125321.1560677-1-lkml@jv-coder.de>
+ <20220627125321.1560677-3-lkml@jv-coder.de> <87czekrseu.fsf@suse.de>
+From: Joerg Vehlow <lkml@jv-coder.de>
+In-Reply-To: <87czekrseu.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Rewrite utime04.c using new LTP API
+Subject: Re: [LTP] [PATCH 2/3] openposix: Setup autoconf and fix
+ installation layout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,261 +57,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it, Joerg Vehlow <joerg.vehlow@aox.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Converted to new LTP API and enabled the test to run 
-on all filesystems skipping vfat and exfat.
+Hi,
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/utime/utime04.c | 213 +++++-----------------
- 1 file changed, 44 insertions(+), 169 deletions(-)
+Am 7/5/2022 um 7:57 AM schrieb Richard Palethorpe:
+> Hello Joerg,
+> 
+> Joerg Vehlow <lkml@jv-coder.de> writes:
+>> +AC_PROG_CC_C99
+> 
+> This causes a deprecation warning for me
 
-diff --git a/testcases/kernel/syscalls/utime/utime04.c b/testcases/kernel/syscalls/utime/utime04.c
-index 5253f768a..319ac39ac 100644
---- a/testcases/kernel/syscalls/utime/utime04.c
-+++ b/testcases/kernel/syscalls/utime/utime04.c
-@@ -1,190 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *		07/2001 ported by John George
-+ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
-- * Test Name: utime04
-- *
-- * Test Description:
-- *  Verify that the system call utime() successfully sets the modification
-- *  and access times of a file to the time specified by times argument, if
-- *  the times argument is not null, and the user ID of the process is "root".
-- *
-- * Expected Result:
-- *   utime succeeds returning zero and sets the access and modification
-- *   times of the file to that specified by the times argument.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *	Verify the Functionality of system call
-- *      if successful,
-- *		Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  utime04 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
-- *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-f   : Turn off functionality Testing.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *
-- * Restrictions:
-- *  This test should be run by 'super-user' (root) only.
-+/*\
-+ * [Description]
-  *
-+ * Verify that the system call utime() successfully changes the last
-+ * access and modification times of a file to the values specified by
-+ * times argument, under the following constraints:
-+ * - The times argument is not NULL.
-+ * - The user ID of the process is "root".
-  */
- 
--#include <stdio.h>
--#include <sys/types.h>
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
- #include <utime.h>
--#include <string.h>
--#include <sys/stat.h>
--#include <signal.h>
--
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
- 
--#define TEMP_FILE	"tmp_file"
--#define FILE_MODE	S_IRUSR | S_IRGRP | S_IROTH
--#define NEW_TIME	10000
-+#define MNT_POINT	"mntpoint"
-+#define TEMP_FILE	MNT_POINT"/tmp_file"
- 
--char *TCID = "utime04";
--int TST_TOTAL = 1;
-+#define FILE_MODE	0444
-+#define NEW_MODF_TIME	10000
-+#define NEW_ACCESS_TIME	20000
- 
--struct utimbuf times;		/* struct. buffer for utime() */
-+static struct utimbuf times = {
-+	.modtime = NEW_MODF_TIME,
-+	.actime = NEW_ACCESS_TIME
-+};
- 
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
--
--int main(int ac, char **av)
-+static void setup(void)
- {
--	struct stat stat_buf;	/* struct buffer to hold file info. */
--	int lc;
--	time_t modf_time, access_time;
--	/* file modification/access time */
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Invoke utime(2) to set TEMP_FILE access and
--		 * modification times to that specified by
--		 * times argument.
--		 */
--		TEST(utime(TEMP_FILE, &times));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL|TTERRNO, "utime(%s) failed", TEMP_FILE);
--		} else {
--			/*
--			 * Get the modification and access times of
--			 * temporary file using stat(2).
--			 */
--			SAFE_STAT(cleanup, TEMP_FILE, &stat_buf);
--			modf_time = stat_buf.st_mtime;
--			access_time = stat_buf.st_atime;
--
--			/* Now do the actual verification */
--			if ((modf_time != NEW_TIME) ||
--			    (access_time != NEW_TIME)) {
--				tst_resm(TFAIL, "%s access and "
--					 "modification times not set",
--					 TEMP_FILE);
--			} else {
--				tst_resm(TPASS, "Functionality of "
--					 "utime(%s, &times) successful",
--					 TEMP_FILE);
--			}
--		}
--		tst_count++;	/* incr TEST_LOOP counter */
--	}
--
--	cleanup();
--	tst_exit();
-+	SAFE_TOUCH(TEMP_FILE, FILE_MODE, NULL);
- }
- 
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and change directory to it.
-- *  Create a test file under temporary directory and close it
-- */
--void setup(void)
-+static void run(void)
- {
--	int fildes;		/* file handle for temp file */
--
--	tst_require_root();
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	struct stat stat_buf;
- 
--	tst_tmpdir();
-+	TST_EXP_PASS(utime(TEMP_FILE, &times), "utime(%s, &times)", TEMP_FILE);
-+	if (!TST_PASS)
-+		return;
- 
--	/* Creat a temporary file under above directory */
--	fildes = SAFE_CREAT(cleanup, TEMP_FILE, FILE_MODE);
--
--	/* Close the temporary file created */
--	SAFE_CLOSE(cleanup, fildes);
--
--	/* Initialize the modification and access time in the times arg */
--	times.actime = NEW_TIME;
--	times.modtime = NEW_TIME;
-+	SAFE_STAT(TEMP_FILE, &stat_buf);
- 
-+	TST_EXP_EQ_LI(stat_buf.st_mtime, NEW_MODF_TIME);
-+	TST_EXP_EQ_LI(stat_buf.st_atime, NEW_ACCESS_TIME);
- }
- 
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *  Remove the test directory and testfile created in the setup.
-- */
--void cleanup(void)
--{
--
--	tst_rmdir();
--
--}
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNT_POINT,
-+	.all_filesystems = 1,
-+	.skip_filesystems = (const char *const[]) {
-+		"vfat",
-+		"exfat",
-+		NULL
-+	}
-+};
--- 
-2.36.1
+I think autoconf developers messed up here. They obsoleted the macro in
+2.70 and told users to replace it with just AC_PROG_CC, which defaults
+to C11, but also excepts C89. It is not possible (without adding more
+code), to verify if the required C version is available. What is even
+worse, that autoconf does not fallback to a version, where this was
+still not obsolete, even if an older autoconf version is defined in
+AC_PREREQ.
+Nevertheless, I guess in case of C99, we can just switch to AC_PROG_CC,
+because every compiler should support C99 nowadays. I just wanted to be
+explicit, because C99 us currenty selected in the CFLAGS file, that I
+dropped.
 
+Joerg
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
