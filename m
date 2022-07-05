@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 569DEC433EF
-	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 05:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70057C433EF
+	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 05:36:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 435753CA105
-	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 07:35:29 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 50B5E3CA0ED
+	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 07:36:03 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D26F43C7C07
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:35:17 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E00D73C7C07
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:35:51 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0D838140099D
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:35:16 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B372F20077F
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:35:50 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 518942235A
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 05:35:16 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2F3A92235E
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 05:35:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1656999316;
+ t=1656999350;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qkBPTjCXLa1A9qauzSVz36jrVJ3wr2pBqPIheStZxAY=;
- b=LP1CkD2eVJhIyWj/eA2XELPHSIMS4dBinyyU6onu1BnAvuyXvngHNR8hgk5HUqJAubHE26
- sU2O/G+/4pWQM/Ruy8zSL9aw24cBeAIxLPbH0jS/CKJmSIPeYHrzg+TVOomQSHS1pGpQeK
- wueOg7Qnh1jqqB+d9R0IH0Io34ZRuqI=
+ bh=rsmYYVoNmNqhPEJfAJH3MTSaYMiGTb5uwR36MC783EE=;
+ b=px/+PLlwtKj7gA2jyDCWnaYmTglZk2siSUekJ5ZU2gXNZwq0uDDxqYmHfo9u7hcoDLbNHq
+ mL+pmrLSi+I5Ai7WKG5MTvKSzrHiR0wcvZqMaKXlPwxuEUKdUXFqJKxQb/DBaa+Gnca1Yx
+ x7c3PcMnGAjPvFMO2A1NQp4kfFfVfFE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1656999316;
+ s=susede2_ed25519; t=1656999350;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qkBPTjCXLa1A9qauzSVz36jrVJ3wr2pBqPIheStZxAY=;
- b=+JCsFSUFxy8XveA4hFhNwnoV4nSwtyrXN1DpZpZIl00/8XsT1fRBCA1hUVPHuyFR0UCCwV
- xhT9QPfCIJ+B2PDA==
+ bh=rsmYYVoNmNqhPEJfAJH3MTSaYMiGTb5uwR36MC783EE=;
+ b=dR7xsV2gVGZSC5RtY0Z5ICAcuvL/P1QpmfnIXZAqO2bezW5tl6AYEcbJYX6LwCoEPKSyvu
+ seJM3FM5s76ttvBA==
 Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 11E572C141;
- Tue,  5 Jul 2022 05:35:16 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id E61352C141;
+ Tue,  5 Jul 2022 05:35:49 +0000 (UTC)
 References: <20220620092146.7604-1-chrubis@suse.cz>
- <20220620092146.7604-5-chrubis@suse.cz>
- <91377e86-da37-2987-72a2-3e5cf44bdec6@suse.cz>
+ <20220620092146.7604-8-chrubis@suse.cz>
+ <0168e60b-9c56-af45-d754-75ce09b359fc@suse.cz>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 05 Jul 2022 06:34:44 +0100
-In-reply-to: <91377e86-da37-2987-72a2-3e5cf44bdec6@suse.cz>
-Message-ID: <87let8rujw.fsf@suse.de>
+Date: Tue, 05 Jul 2022 06:35:33 +0100
+In-reply-to: <0168e60b-9c56-af45-d754-75ce09b359fc@suse.cz>
+Message-ID: <87h73wruiy.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/7] openposix: sem_timedwait/11-1: Fix
+Subject: Re: [LTP] [PATCH 7/7] opeposix: pthread_barrierattr_getpshared/2-1:
+ Simplify codeflow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,84 +83,56 @@ Hello,
 Martin Doucha <mdoucha@suse.cz> writes:
 
 > Hi,
-> small suggestion below, otherwise it looks good.
+> one small suggestion below, otherwise for the whole patchset:
 >
 > Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 >
 > On 20. 06. 22 11:21, Cyril Hrubis wrote:
->> Actually run both of the cases (valid timeout and invalid timeout).
->> 
->> The timeout is not actually invalid, but rather in the past, which is
->> important to test as the system has to try to lock the semaphore first
->> and only if that fails it should check the timeout.
+>> This actually fixes a 'no return in nonvoid function' warning since gcc
+>> may get confused during the codeflow analysis.
 >> 
 >> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 >> ---
->>  .../conformance/interfaces/sem_timedwait/11-1.c          | 9 +++++----
->>  1 file changed, 5 insertions(+), 4 deletions(-)
+>>  .../interfaces/pthread_barrierattr_getpshared/2-1.c   | 11 +++++------
+>>  1 file changed, 5 insertions(+), 6 deletions(-)
 >> 
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c
->> index f87afaa43..663edd836 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/11-1.c
->> @@ -24,7 +24,7 @@
->>  #include "posixtest.h"
->>  
->>  #define TIMEOUT 2
->> -#define INVALIDTIMEOUT -2
->> +#define NEGATIVETIMEOUT -2
->>  #define TEST "11-1"
->>  #define FUNCTION "sem_timedwait"
->>  #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
->> @@ -45,7 +45,7 @@ int main(void)
->>  			ts[i].tv_sec = time(NULL) + TIMEOUT;
->>  			ts[i].tv_nsec = 0;
->>  		} else if (i == 1) {
->> -			ts[i].tv_sec = time(NULL) + INVALIDTIMEOUT;
->> +			ts[i].tv_sec = time(NULL) + NEGATIVETIMEOUT;
->>  			ts[i].tv_nsec = 0;
->>  		}
->>  		/* Lock Semaphore */
->> @@ -63,13 +63,14 @@ int main(void)
->>  
->>  		/* Checking if the value of the Semaphore decremented by one */
->>  		if ((val[i] == 0) && (sts[i] == 0)) {
->> -			puts("TEST PASSED");
->>  			sem_destroy(&mysemp[i]);
->
-> It'd be better to move sem_destroy() above the condition. See code
-> example at the end.
->
->> -			return PTS_PASS;
->>  		} else {
->>  			puts("TEST FAILED");
->>  			sem_destroy(&mysemp[i]);
->>  			return PTS_FAIL;
->>  		}
->>  	}
+>> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_barrierattr_getpshared/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_barrierattr_getpshared/2-1.c
+>> index a21a5a507..52c074173 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_barrierattr_getpshared/2-1.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_barrierattr_getpshared/2-1.c
+>> @@ -141,7 +141,9 @@ int main(void)
+>>  	if (pid == -1) {
+>>  		perror("Error at fork()");
+>>  		return PTS_UNRESOLVED;
+>> -	} else if (pid == 0) {
+>> +	}
 >> +
->> +	puts("TEST PASSED");
->> +	return PTS_PASS;
->>  }
+>> +	if (pid == 0) {
+>>  		/* Child */
+>>  		/* Map the shared object to child's memory */
+>>  		barrier =
+>> @@ -209,10 +211,7 @@ int main(void)
+>>  
+>>  		printf("Test PASSED\n");
+>>  		return PTS_PASS;
+>> +	} else {
+>> +		return serial;
 >
-> ...
->
-> 	sem_destroy(&mysemp[i]);
+> The return can be unconditional.
 
 And with that also:
 
 Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 >
-> 	/* Checking if the value of the Semaphore decremented by one */
-> 	if ((val[i] != 0) || (sts[i] != 0)) {
-> 		puts("TEST FAILED");
-> 		return PTS_FAIL;
-> 	}
+>>  	}
+>> -
+>> -	if (pid == 0) {
+>> -		exit(serial);
+>> -	}
+>> -
+>>  }
 >
-> 	puts("TEST PASSED");
-> 	return PTS_PASS;
-> }
 >
 > -- 
 > Martin Doucha   mdoucha@suse.cz
