@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A09CCCCA47C
-	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 05:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9DCEC43334
+	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 05:26:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CEB983CA115
-	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 07:25:04 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id ECD013CA15B
+	for <ltp@archiver.kernel.org>; Tue,  5 Jul 2022 07:26:05 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F081C3C7C07
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:24:53 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6A9023C7C07
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:25:56 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6EC8B1A00796
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:24:53 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E33BF1A0070B
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 07:25:55 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CF1161FE31
- for <ltp@lists.linux.it>; Tue,  5 Jul 2022 05:24:52 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5E8751FE3E
+ for <ltp@lists.linux.it>; Tue,  5 Jul 2022 05:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1656998692;
+ t=1656998755;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Rk7Du9IVA6pWZAM+7VHIXTGrzbI+zH5YMWHHChYpoPM=;
- b=RipOgBbNhqp3cxpeC9TS55uUDbowm0lo/noVZSSkbP0fEnxbo0Djo7oRycEVSvr4gZvGW/
- QsZoaAa79N1OTAh0+1eIBFAKWijwYS4arFA87lfFq3Fyrw0txrKglFqcEheq5v+xvLAyBg
- 3ADZizTqjD/8VEWs774qH8h9iIVyZCQ=
+ bh=RBKimGFFxkwL+FQrj05MrBpcYas/XfY/olH64MFtWr0=;
+ b=hwURmSAYwDEGb1n85rkWMFprvMPqfdeo+ehEe4U73SlUczU4QIv7ue+5nU0Fl2aBfLjoQT
+ vyeYCjCztcXaqTu7P8Z03wVuw30gWXI9i8VJaxSCIBvt3GcuKQyJ3ZpkCZIdRpkv2zcPDU
+ tZU7EyVWdS40w4PUAVL/lm6mBCOoCBg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1656998692;
+ s=susede2_ed25519; t=1656998755;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Rk7Du9IVA6pWZAM+7VHIXTGrzbI+zH5YMWHHChYpoPM=;
- b=rLDkYPOhWSAZLdcaUKhQ/9uzIDH1P10W1OtMUIZpiiB6zhbfDBCBjX6YJXMeejtlr/l12R
- tfyOl9akYycw17Cw==
+ bh=RBKimGFFxkwL+FQrj05MrBpcYas/XfY/olH64MFtWr0=;
+ b=rduAihSEHLCm3B6F6tozJyaR2/RyViO+6p47VjPOezqPgUNFsxuzKE6j2NqKRHvnUQvn9Y
+ 8HEvrIxrQNla39Cg==
 Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 9DC622C141;
- Tue,  5 Jul 2022 05:24:52 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 25ABA2C141;
+ Tue,  5 Jul 2022 05:25:55 +0000 (UTC)
 References: <20220620092146.7604-1-chrubis@suse.cz>
- <20220620092146.7604-6-chrubis@suse.cz>
+ <20220620092146.7604-7-chrubis@suse.cz>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 05 Jul 2022 06:24:43 +0100
-In-reply-to: <20220620092146.7604-6-chrubis@suse.cz>
-Message-ID: <87tu7wrv17.fsf@suse.de>
+Date: Tue, 05 Jul 2022 06:25:51 +0100
+In-reply-to: <20220620092146.7604-7-chrubis@suse.cz>
+Message-ID: <87pmikruzh.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/7] openposix: aio_h/2-1: Add return at the end
- of main()
+Subject: Re: [LTP] [PATCH 6/7] openposix: mq_timedreceive: Silence warning
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,24 +81,24 @@ Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 Cyril Hrubis <chrubis@suse.cz> writes:
 
-> This is compile-only test so the return value is not actually used but
-> that's not a reason not to fix warnings.
+> We do not use the exit value from the child at all, but that's not a
+> reason to produce warnings.
 >
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 > ---
->  .../open_posix_testsuite/conformance/definitions/aio_h/2-1.c    | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../conformance/interfaces/mq_timedreceive/5-3.c                 | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/testcases/open_posix_testsuite/conformance/definitions/aio_h/2-1.c b/testcases/open_posix_testsuite/conformance/definitions/aio_h/2-1.c
-> index 39fb41d22..133b3a516 100644
-> --- a/testcases/open_posix_testsuite/conformance/definitions/aio_h/2-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/definitions/aio_h/2-1.c
-> @@ -25,4 +25,6 @@ int main(void)
->  	aiocb.aio_nbytes = 0;
->  	aiocb.aio_sigevent = sigevent;
->  	aiocb.aio_reqprio = -1;
-> +
-> +	return 0;
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c
+> index a843c13ee..d79d9720d 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c
+> @@ -110,5 +110,6 @@ int main(void)
+>  		sleep(1);	/* give time to parent to set up handler */
+>  		/* send signal to parent */
+>  		kill(getppid(), SIGABRT);
+> +		return 0;
+>  	}
 >  }
 > -- 
 > 2.35.1
