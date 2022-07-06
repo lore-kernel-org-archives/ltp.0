@@ -4,79 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12D1CC43334
-	for <ltp@archiver.kernel.org>; Wed,  6 Jul 2022 06:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A93AC433EF
+	for <ltp@archiver.kernel.org>; Wed,  6 Jul 2022 08:43:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B46D93CA0DB
-	for <ltp@archiver.kernel.org>; Wed,  6 Jul 2022 08:25:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id B42073C9A5D
+	for <ltp@archiver.kernel.org>; Wed,  6 Jul 2022 10:43:36 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 355183C8BCB
- for <ltp@lists.linux.it>; Wed,  6 Jul 2022 08:25:44 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 8BE233C04C3
+ for <ltp@lists.linux.it>; Wed,  6 Jul 2022 10:43:25 +0200 (CEST)
+Received: from esa2.fujitsucc.c3s2.iphmx.com (esa2.fujitsucc.c3s2.iphmx.com
+ [68.232.152.246])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 88C821A00CA4
- for <ltp@lists.linux.it>; Wed,  6 Jul 2022 08:25:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1657088742;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SactpO3fo3Z89hJP5p5hNpmLNBa89BtoY0ywmJl2aMA=;
- b=dUiVu7hf8Y7q7LNPQ13tD0sYTq6U9Ri5iR9gQz/HihmmqjYJu8H49N9NuwmNrbM01C1pSy
- /9ekcFwwJmvl2Dbki3JeC/IRyLiWNjPc8E/hLVP9Wc3NjdmYNLAqNmgLXujtYPPMaUu4gL
- fyXwZSLIXYvOCqnlFOinUHD8l0RpJP8=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-534-0Q1UsVv7Ptms0cYp4qx7WA-1; Wed, 06 Jul 2022 02:25:35 -0400
-X-MC-Unique: 0Q1UsVv7Ptms0cYp4qx7WA-1
-Received: by mail-yw1-f199.google.com with SMTP id
- 00721157ae682-31c89c753b3so57706957b3.5
- for <ltp@lists.linux.it>; Tue, 05 Jul 2022 23:25:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=SactpO3fo3Z89hJP5p5hNpmLNBa89BtoY0ywmJl2aMA=;
- b=z4t2MOc6pLH2tnJnmtnEJ3/xDnHsWtOzuusj7IL3Oj3gXEaZ/gGLGYV8QUr+wT9Xnb
- DEQDQPhYXdbm4yXJSQDeOKjl5CZNmxCEwZ1Hmo7A//UVzfuiYdFwgKA1OMxDy7e3Q9xt
- 5IZUjLRSBKEgVrA0qWT9Tt/xrU+dpRZY42O/Z7NKhgFV92b+eyrY9p9auKjfgPpPGS9B
- PRgYWjoVk7QNgW69pvB2QnpMMl2/nFoNvfLPkICjnbwkqZ2M3O/wiKxpH9Go/oBJiEFA
- Trnu4JEpXi38cAlMIY+Mb3fvcY+R8u0NBKvEXhMWM51lqF0K+m+urZG1L5UMVvtDCjJF
- p3EQ==
-X-Gm-Message-State: AJIora/XGbi/3WpvwzFJqM1KppujfKdcxtkw5b0IVuZ+EtJRyQAavo4c
- 3KgjXUSyedcs1oYl8QtjG5507gklg4qy0neQOPmJCrHI3O0FH+sARVg4SaFir5iOu4Qa7myTXNf
- qDu0EecKj6iyJbfhLiMpkyDUGZ98=
-X-Received: by 2002:a81:4987:0:b0:31c:89bd:dfc5 with SMTP id
- w129-20020a814987000000b0031c89bddfc5mr21407774ywa.53.1657088734599; 
- Tue, 05 Jul 2022 23:25:34 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uMagI4TGjLPYrnv8GepST7rvTLo2en44zi91TKeNl/qTQXhEUmTzETD1ehi5mpV8CPHjA0/daSb4m0lGhZM5k=
-X-Received: by 2002:a81:4987:0:b0:31c:89bd:dfc5 with SMTP id
- w129-20020a814987000000b0031c89bddfc5mr21407759ywa.53.1657088734441; Tue, 05
- Jul 2022 23:25:34 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 745A41A00113
+ for <ltp@lists.linux.it>; Wed,  6 Jul 2022 10:43:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1657097004; x=1688633004;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=hIRsJWw25y5+t6a5ve59SNnpDNsQrDEnWHEto1GB1BM=;
+ b=X7xAssPSV6rsCVCK1Jd90biVnTogBNJwZrBvinj0BZbkCW4e/a9pMdzA
+ 5lu3aKDlpF39FrTMJVRtdKxJEckAxaCMZvkdVCxsSrrQPvNoav6/l6jHw
+ ygpAGSBnJm31TgA6TM3by18C3U3i4A5Omd8cO9aLSroCKkQ/+dkJr8W8E
+ iRaO58YlaKY3ia8vTiL6oxiUWFIUzgAyRwJnXK/Mx7kLr3wU+CxBci00X
+ THCV0tSrrqkT5wiWyOYvfocWaOm02EM2qe547C6SWjlgmaZl36Poj4z+l
+ yg3YsIiLE1Ir4BxCmWS/orK4nCN31TZTyT6fufc7N/i9EPcoYyEG1yBTe w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="68005859"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650898800"; d="scan'208";a="68005859"
+Received: from mail-tycjpn01lp2172.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.172])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jul 2022 17:43:21 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R77udmluMbUKHsPXWkQQm2ZrGAKmf4R9kNOyusSXXdF5Bu3l876aKY+UtZ2J2Hxb40uNlQPLB/mxtyrCl69QIrqA1G3nLL+QPe5iPiEltrwdzQC4MaUK2V02sSuGXnuenpuHlLfWUAXeWFskdFL3j33RHA7/GAE3rPF0DhMWuG49PwiS+N1PeD7tO5NzUdvROVs4uHFFmbAan7RRdxUucjeEypMlWXylgobkxOmgx7n8HZiVisccclFm4UzSefCXiPUmElm/WMo3Nto7WmiBWc7mUiVxAYir4wbrQFJucDzGgkVGxTANvjvtrGuYBABKZgqqNpwk0mRjW38xV8CpCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hIRsJWw25y5+t6a5ve59SNnpDNsQrDEnWHEto1GB1BM=;
+ b=lkvufMvLn/LiOo3Iw8sLSfUaxXIV9pMUWPuC9AmJdlD3botXxeFD45sdwI18x/DiPSRWaQyn6wa8V9iDwcwCDaht80yOHJrH43Xr/PkpMvGMquOpeRcxlLNak4XQwolEgqVW++TnrXY5fNp6pcjZLaf+lZMxmoqW4qTguUPoLde/PmUffJ4Zoft8vqTRQjPQnUPq5B88OnkWmghQPULmlPqYxwOJy7ODt8SWqlhTCWJlNBDRDsKaikdCaa6f8XSe2VSTuAYJicgcrBf5clgEB+zP78fByV5cIaehF5iJHJaPQc6lF7YRRbwtoCyXyryGw0OYNI9u/K8L297xj3sY5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hIRsJWw25y5+t6a5ve59SNnpDNsQrDEnWHEto1GB1BM=;
+ b=hdr+uq91tGh44dApcDXbFgFetDHFRIGIyOE9XCrYRczusHIwTnU0rDRNnGIzhJfubUyZDZ8mybp+sYRjkz3RQyBgS40jdclQnkM0QRTWh0vg44czde2+UCCYFbmowQim+WYgeGZNOfizJwhCdcSUlbfiEwZ8qknbNl+GR6Wj5gA=
+Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
+ by OSAPR01MB3620.jpnprd01.prod.outlook.com (2603:1096:604:30::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14; Wed, 6 Jul
+ 2022 08:43:19 +0000
+Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
+ ([fe80::fd30:6d2d:85fb:8160]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
+ ([fe80::fd30:6d2d:85fb:8160%5]) with mapi id 15.20.5395.021; Wed, 6 Jul 2022
+ 08:43:18 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: Cristian Marussi <cristian.marussi@arm.com>
+Thread-Topic: [PATCH v3] Fix mountns01/02/03/04 final umounts using more
+ peculiar dir names
+Thread-Index: AQHYhhkxPHDNdEpWokyM2Ummwaqs5a1xLbQA
+Date: Wed, 6 Jul 2022 08:43:18 +0000
+Message-ID: <62C5596E.6010608@fujitsu.com>
+References: <20220622091919.19468-1-cristian.marussi@arm.com>
+In-Reply-To: <20220622091919.19468-1-cristian.marussi@arm.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 358adf60-b3c7-4b1f-5025-08da5f2b9386
+x-ms-traffictypediagnostic: OSAPR01MB3620:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TUyr27rVCwDeZoZ4mIW06OPVvTbgOfiIi441ENaUv2EzsDMbqK7u4APEOYu01WgYo1MBTBHcCCaZ2NLcS7MWkqfro49rOEpN1t+6aQSlsjDiyTx91hT5RvLHzzfNPxmd5+IAOLJ+2/MSRehCw/hljXuR+jg6fdO69t2N5T63xoqHa9lXkEtYrn1SaEXpJo+DZh9HNe6wVIUXw2iiFofTQlA/sTSBJ6CgAiNlSnC2knm7qZxMah7SxhdEtcHWiRl1pBeYgRY4MOQnPIkQTTewlAkj1BGk58m1xoeFe0aBZ4QANCEX26mRw6VvxuxJq/xbTSnpLCrFgXQw4oVjTedxkHCYhyi2ST5NSjVLSu1fVbqfThkzQ4VyCUmBKRTvlVVO6wVXcxI/oZJXZrSaP+35uz7sFa/t/QD3P5Hu1wjJZIoLUggjcG7FIBKhTYrB3uA6O/QNfKrv1YVH2fHHM4Pc1T28Z0lHMB9TbrKL/K2+Y7h3KHDrnv2sQE2UhSJYi6URfPjsnIIlOPJ4GzvgFKtUBVgsbmGloyAI6oLjMl4rqZPl8RlWo+CwGWWrQta4IeoGwpTUFVsHjSy+4QgGjONmafAvnz7vfrtyJOTcnLFBMpH7ORDccqVlE0y7Gecmo4nCh2bZucMHXfsZgNdpVFkjjgyI4jL4dkN3ZAyXRmWhj3OTScFUT4u6a4v3HXCaNe4Z5NhZchS/l0zEsYsZRKJJm4pqcFVr6dMa498NeoN+OwRSMZAELvyKuElFjtHyIanRWEWf949BwLlddcrdQnWztMxqyJ6LOl7QIQMMPf7ukZlV1nKB0hOyWItEsMGcnx7Y
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230016)(4636009)(39860400002)(366004)(396003)(376002)(346002)(136003)(478600001)(38100700002)(6486002)(71200400001)(186003)(4270600006)(2616005)(2906002)(558084003)(19618925003)(6506007)(41300700001)(87266011)(85182001)(36756003)(33656002)(66556008)(54906003)(6916009)(122000001)(316002)(8936002)(5660300002)(86362001)(38070700005)(82960400001)(6512007)(26005)(4326008)(66946007)(66476007)(66446008)(64756008)(76116006)(8676002)(91956017);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?SUFtL2hZYjlWd3d6U3lYZEdQb01vY1lYckkwVWFrR1I3V3o0cG5ldnNISnFo?=
+ =?gb2312?B?c3V6Mlc0MVk1RjRNT3hqaVl1Nm9wQzVkNlRjY2sxWFBjbTh5bXFQSFI1TUpn?=
+ =?gb2312?B?a1JKTFRRZmJoK2lDTFRKd2JLNWIrUVAycDFWMmNaZVpMMWx4Sk1KWndEOU9H?=
+ =?gb2312?B?ZjNwNUI4WFhkUXRmT01uQVFBTHZwRkxYRWs2UVdZaGh3eUwxUEZ2ZElBbkRu?=
+ =?gb2312?B?b1VMdXBqdlBzc1hzbHVFS2FIdmdRSDhQSnpmc0dPYkVXYnM5cHhJOVdET1kr?=
+ =?gb2312?B?Y1ZUbHlKK1pOck9Nb1RlYStCR0VDeUkrNStjZSszZ1gvODhFb3YrRk1sUVQr?=
+ =?gb2312?B?RzhFdUFTYjRxRlI4dG9PK0wvRDlMU1cwbSs3UkZNcUhkaWJFaUFsaktCZG9o?=
+ =?gb2312?B?dzY3WndkT2ZuaWNhbW1wN29xcDhyQ2RCM201MVB3Vkd1azFSOW5NSlVoY2RC?=
+ =?gb2312?B?RU5NcDFUemZDWkhLTllKNytVajJJV25QM1QxMlV0aEZlZk1rbnRFQjZJT2Jm?=
+ =?gb2312?B?QzdGNFpxWVNHQ21EREpWZWJCNFphTFI3clNyWGtMQjNCNXdjRWFoYTJoRUU0?=
+ =?gb2312?B?QXBDR0Z6NGg0MWtPaDk4ODBtcXNYdzd3TmJXTmlVOE14Y1BNZDY5NE5vVjVh?=
+ =?gb2312?B?bWZ3QkVZbnZTWE94b2NXZFpHVEk1amI1eXNXTitCQnFBREs2eEFRVUtKTFh5?=
+ =?gb2312?B?c3piWWMvRGxjVHg0YmZlUWdsbnpzRnA2NFhTSmhGc2ZIb3pta1dxVVM2bHNw?=
+ =?gb2312?B?L1FMQ0tTMzNlcFFjb2ZCc3A1YWxJOXdLUFkyY0Y2cHRHUlFTN3ZVaWJJYVVa?=
+ =?gb2312?B?bGpWZGE1d1czUnhuRGgraXBCNldhWDYzQXE1cEpvcUJrZGJVOUN4UFkxam1P?=
+ =?gb2312?B?Zmx2RnJEbG9aTTFYbDdKM3YyRzd0OFAyYTBpVTJhVjA5YzZFcEwvK2VFbGJ5?=
+ =?gb2312?B?OEZ5K0R5YUExUy9Gek5rU2xsSEtDTU5aVlFHOGswRCt5cWZTT0VlUUVpdzla?=
+ =?gb2312?B?OTlDbzBzcDIyenFMNFFUVFE5ZVFQdWllb0o5Szgra2lkNVpqOC9mMS9UcUFB?=
+ =?gb2312?B?Ni9RYVZGd216c2h3aFJlRTdxb3Q5bVkvUlhpdjYxR3YwZUJnUy9WTEsyNEQr?=
+ =?gb2312?B?WGZNc2JZcW1ONldHNXA4MzdUdkVCSkVrTk5wQS9CSW5wUkEvTFE3d1BBSVFn?=
+ =?gb2312?B?WTBxR08rOHU0bng5d0t4ay9TNnJtbERZU2dvY0g2MllFN0ljWjFiQktQMjVu?=
+ =?gb2312?B?ekxrdUFrY1cvdDVFUS9ENTM0RFJsVWNHZVgzd3ZsMFVRSWpKUjZMUzRVWUN5?=
+ =?gb2312?B?bzhhSDArM0RKNnV3U3lTSHRkdlo2ZFNkaGlsaHFUVGRjYU9NOHVJUktxU1Ur?=
+ =?gb2312?B?RGU1OGlrY3FTdC90MkRPbGZ3WHdEVzZnU3F5bW1xZVBwUUlQNmFmMUlEUzZk?=
+ =?gb2312?B?dExia3NPcFdyTytwQTFtN0pVOUlIdWxLZkxLT0J4K21vRXI1Z1JyOTRrS2Ux?=
+ =?gb2312?B?UnBQYnRKaUlPVVBmUlhjMFJvOWxEUHBoMWtha3BWNFhIRWw1TU1GUUx5aEt0?=
+ =?gb2312?B?eDhkZENLNzJkWVFKTmw0Nmp0TTJIRGJlUHljWlFPTXgvbWpJeTJScHBxQmRI?=
+ =?gb2312?B?UVpJZ2Vhb0ZkV2U4eExWRHR5Qnhpa21NWmJyYmYzSzczOEVROEN6TWFwZmta?=
+ =?gb2312?B?clVsVTNFRTJpbXJTV3Q4NUJyS0gwZzBERnhod3N0KzMvVUtkelA4d2phK0lW?=
+ =?gb2312?B?TjlxOXkyOWJMU2sxWkU2Y2luczQ1NXFZbVlsMXgzS3BYb1hJU3QxcXAzaVM2?=
+ =?gb2312?B?NWZUbTQwdzl1akVJTmUraHY4VFhaUDgyRHpSM0kwRUlTeFJ4ZzJOcEVIYWM0?=
+ =?gb2312?B?d3JSeFRndGRRUnFhc2l2Q0lsT0NJdHFnTDU3K2tyLzBaVkZrRENtTk1YRnJo?=
+ =?gb2312?B?elZ2K3VjNUxFckxSc3RxcXJETHFuUU9TMTZmZ1M3bTRYSEtFUDczMUdVUmgv?=
+ =?gb2312?B?K0I5SEdoTkpQeWhKNFdWaC9PcmM3ZDNLOTlUcG1MRFo0UGFMQjVHa2pRODY4?=
+ =?gb2312?B?NUt4OG9Ja0xCOHZxMHVWZEk0VTk3NjRQeURlaFBSSXVsc3pTU1FNUURzdlVj?=
+ =?gb2312?B?M3lQbWpoMU9DT0lQaFV3KyttdVd6c2V5OWlwVTNPRVAzODlVOGhxL0dmaCta?=
+ =?gb2312?B?NlE9PQ==?=
+Content-ID: <F403CE16C9A80A428FCE92788381E119@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <cover.1651176645.git.luke.nowakowskikrijger@canonical.com>
- <YnOBiI6OgjhrAjr7@pevik>
- <CAEemH2fa3fmdTZxzFv0Yx3HG0XxrVrrEuK+XdCY8_CYrX7B2Bw@mail.gmail.com>
-In-Reply-To: <CAEemH2fa3fmdTZxzFv0Yx3HG0XxrVrrEuK+XdCY8_CYrX7B2Bw@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 6 Jul 2022 14:25:23 +0800
-Message-ID: <CAEemH2fVc28ahv1aU+hwqsww8i3QJb_PF+K=tCOncbbSpx=zTg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>, 
- Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 358adf60-b3c7-4b1f-5025-08da5f2b9386
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2022 08:43:18.9475 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rtKALwNOp2pzO+ac4jFnAbzmP4GEXAbY4+Q6IbFK47I82Bq0MCGLOUCKbHIEumDtsqIKmld0zmCAgj/iSyX6YshweQ1r9IibeDUfJ56dryo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB3620
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 00/19] Expand Cgroup lib and modify controller
- tests
+Subject: Re: [LTP] [PATCH v3] Fix mountns01/02/03/04 final umounts using
+ more peculiar dir names
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,123 +155,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0695612519=="
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0695612519==
-Content-Type: multipart/alternative; boundary="00000000000060cbb805e31d0990"
+Hi Cristian
 
---00000000000060cbb805e31d0990
-Content-Type: text/plain; charset="UTF-8"
+Thanks for this patch, merged!
 
-On Wed, Jul 6, 2022 at 2:17 PM Li Wang <liwang@redhat.com> wrote:
-
-> Hi Petr, Luke,
->
-> On Thu, May 5, 2022 at 3:49 PM Petr Vorel <pvorel@suse.cz> wrote:
->
->> Hi Luke,
->>
->> I suppose this patchset supersedes your PR #933, thus I closed it.
->>
->> FYI If I remember correctly we intended to slowly rewrite all cgroups
->> tests from
->> shell to C (that's general approach due shell being fragile and less
->> reliably,
->> in long future shell API may disappear). But to add v2 support in a
->> meanwhile
->> should be ok. Richard, Li or Cyril are the experts for LTP cgroups tests
->> to
->> decide this.
->>
->
-> Right, but Luke's patchset does really help stabilize current Cgroup shell
-> tests, I think it's great to have them at this moment. At least it makes
-> use
-> of the Cgroup C API and that's substantial progress:).
->
-> Feel free to add my review after doing rebase in V3:
->
-
-Correction: sorry, the newer patchset should be V5, I misread the patch
-version in numbers.
-
->
-> Reviewed-by: Li Wang <liwang@redhat.com>
->
->
-> --
-> Regards,
-> Li Wang
->
-
-
--- 
-Regards,
-Li Wang
-
---00000000000060cbb805e31d0990
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Wed, Jul 6, 2022 at 2:17 PM Li Wang &lt;<a href=
-=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></div><bl=
-ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
-t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D=
-"ltr"><div style=3D"font-size:small">Hi Petr, Luke,</div></div><br><div cla=
-ss=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, May 5, 202=
-2 at 3:49 PM Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_bl=
-ank">pvorel@suse.cz</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quot=
-e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
-;padding-left:1ex">Hi Luke,<br>
-<br>
-I suppose this patchset supersedes your PR #933, thus I closed it.<br>
-<br>
-FYI If I remember correctly we intended to slowly rewrite all cgroups tests=
- from<br>
-shell to C (that&#39;s general approach due shell being fragile and less re=
-liably,<br>
-in long future shell API may disappear). But to add v2 support in a meanwhi=
-le<br>
-should be ok. Richard, Li or Cyril are the experts for LTP cgroups tests to=
-<br>
-decide this.<br></blockquote><div><br></div><div><div style=3D"font-size:sm=
-all">Right, but Luke&#39;s patchset does really help stabilize current Cgro=
-up shell</div><div style=3D"font-size:small">tests, I think it&#39;s great =
-to have them at this moment. At least it makes use</div><div style=3D"font-=
-size:small">of the Cgroup C API and that&#39;s substantial=C2=A0progress:).=
-</div></div><div><br></div><div><div style=3D"font-size:small">Feel free to=
- add my review after doing rebase in V3:</div></div></div></div></blockquot=
-e><div><br></div><div class=3D"gmail_default" style=3D"font-size:small">Cor=
-rection: sorry, the=C2=A0newer patchset should be V5, I misread the patch v=
-ersion in numbers.</div><div class=3D"gmail_default" style=3D"font-size:sma=
-ll"></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
-ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr=
-"><div class=3D"gmail_quote"><div><div style=3D"font-size:small"><br></div>=
-<div style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:l=
-iwang@redhat.com" target=3D"_blank">liwang@redhat.com</a>&gt;</div></div><d=
-iv>=C2=A0</div></div><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr=
-"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
- class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
-Wang<br></div></div></div></div>
-
---00000000000060cbb805e31d0990--
-
-
---===============0695612519==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Best Regards
+Yang Xu
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0695612519==--
-
