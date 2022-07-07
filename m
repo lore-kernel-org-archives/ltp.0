@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9205C433EF
-	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 16:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 048CFC43334
+	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 16:56:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4B6583CA2B7
-	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 18:51:11 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9F0B53CA31F
+	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 18:56:41 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 40FF03CA1EF
- for <ltp@lists.linux.it>; Thu,  7 Jul 2022 18:51:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id F0BDE3CA178
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 18:56:30 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7DA2C20039F
- for <ltp@lists.linux.it>; Thu,  7 Jul 2022 18:51:00 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DA7B31401145
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 18:56:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1657212988;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=I14fU+bS/AWFWjYR6m+iZw1K0qT9FXXh9AohO3MfvzQ=;
+ b=B1Zoe+akdWcJzjM/Ezv6tbZ/Bzitt+vO/cjWxgJDscBCxSV0D+3zNkGLTEXdm3nq31EHfa
+ 7dnLUC1ma3tS7J220BHBQ7F7smwAoMw70wcoWeDYJP1LXHR9Tyw/hx8FLL7d+143+XRJQP
+ AqZkc9OjbyfPdmnlS4/sYCImeeLOvVE=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-57-SNYVsjTGMYqDoLR8SB4fUw-1; Thu, 07 Jul 2022 12:56:24 -0400
+X-MC-Unique: SNYVsjTGMYqDoLR8SB4fUw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.3])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 958B91F8E6;
- Thu,  7 Jul 2022 16:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657212659; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VtD0mXMQYRUHPktOVU8AmWHZZ9pZeCHzxT3v98W1eYw=;
- b=ssdCtWGzlq1gSh7AYNOd3gETz9WJ/SOZbiidbm1hvXzNIZNuWCqcZig2iZXj4CnZra3ZPn
- bzH6jtUJLecfoo44Vm0fP2ytoWl9m3ZZCm5FFX7QbZPcBlzPQy3ffI5zG85HO/vFL88pl/
- 2gI3DckBUCmoQszvSQUTuP2WAy4RKkg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657212659;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VtD0mXMQYRUHPktOVU8AmWHZZ9pZeCHzxT3v98W1eYw=;
- b=Z60c/8k8VgfpYi/LVMZxQdYC8DMJYoDjNa16Vk4io1nfYyO+Bw7sVzoiR5qC+TaKCIGtDJ
- ivLmyHNKi1KorKCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 151F913461;
- Thu,  7 Jul 2022 16:50:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YEj/MfIOx2JybgAAMHmgww
- (envelope-from <akumar@suse.de>); Thu, 07 Jul 2022 16:50:58 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CA64C3C11E64
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 16:56:21 +0000 (UTC)
+Received: from janakin.usersys.redhat.com (unknown [10.22.34.215])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 79CD61121315
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 16:56:21 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
 To: ltp@lists.linux.it
-Date: Thu,  7 Jul 2022 22:20:54 +0530
-Message-Id: <20220707165054.16723-1-akumar@suse.de>
-X-Mailer: git-send-email 2.36.1
+Date: Thu,  7 Jul 2022 18:56:18 +0200
+Message-Id: <d9cddda87dd121a4c57baa7f2d0e221b7a99bc1c.1657212941.git.jstancek@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Typo and grammar corrections in the documentation
+Subject: [LTP] [PATCH] syscalls/futex_waitv03: replace TST_THREAD_STATE_WAIT
+ with repeated wake
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,84 +75,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- README.md                       | 2 +-
- doc/c-test-tutorial-simple.txt  | 6 +++---
- doc/test-writing-guidelines.txt | 6 +++---
- 3 files changed, 7 insertions(+), 7 deletions(-)
+TST_THREAD_STATE_WAIT isn't reliable to tell that it's safe to call futex_wake().
+futex_wake() can be called prematurely and return 0, which leaves other thread
+timing out on futex call:
+  tst_test.c:1459: TINFO: Timeout per run is 0h 10m 00s
+  futex_waitv03.c:37: TINFO: Testing variant: syscall with old kernel spec
+  tst_buffers.c:55: TINFO: Test is using guarded buffers
+  futex_waitv03.c:106: TBROK: futex_waitv returned: -1: ETIMEDOUT (110)
 
-diff --git a/README.md b/README.md
-index 3a0fd7f96..b86b81942 100644
---- a/README.md
-+++ b/README.md
-@@ -206,4 +206,4 @@ Although we accept GitHub pull requests, the preferred way is sending patches to
- It's a good idea to test patches on GitHub Actions before posting to mailing
- list. Our GitHub Actions setup covers various architectures and distributions in
- order to make sure LTP compiles cleanly on most common configurations.
--For testing you need to just to push your changes to your own LTP fork on GitHub.
-+For testing you need to just push your changes to your own LTP fork on GitHub.
-diff --git a/doc/c-test-tutorial-simple.txt b/doc/c-test-tutorial-simple.txt
-index 867c26532..06d2ca55d 100644
---- a/doc/c-test-tutorial-simple.txt
-+++ b/doc/c-test-tutorial-simple.txt
-@@ -228,12 +228,12 @@ the lines starting with a +++.
- --------------------------------------------------------------------------------
-  statvfs01 statvfs01
-  statvfs02 statvfs02
-- 
-+
- +statx01 statx01
- +
-  stime01 stime01
-  stime02 stime02
-- 
-+
- --------------------------------------------------------------------------------
+Replace it with repeated futex_wake() until it fails or wakes at least 1 waiter.
+Also extend timeout to 5 seconds to avoid false positives from systems with
+high steal time (e.g. overloaded s390x host).
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../kernel/syscalls/futex/futex_waitv03.c     | 25 ++++++++-----------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/futex/futex_waitv03.c b/testcases/kernel/syscalls/futex/futex_waitv03.c
+index ffe5c66cde77..ee79728474ee 100644
+--- a/testcases/kernel/syscalls/futex/futex_waitv03.c
++++ b/testcases/kernel/syscalls/futex/futex_waitv03.c
+@@ -70,19 +70,19 @@ static void cleanup(void)
+ 	}
+ }
  
- The +runtest+ files are in a two column format. The first column is the test
-@@ -1053,7 +1053,7 @@ systems programming across multiple Kernel and C lib versions as well as
- different hardware architectures. The important thing to take away from this
- is that you have to be conscientious of what will happen on systems different
- from yours. The LTP has a huge and varied user base, so situations you may
--thing are unlikely can and do happen to somebody.
-+think are unlikely can and do happen to somebody.
+-static void *threaded(void *arg)
++static void *threaded(LTP_ATTRIBUTE_UNUSED void *arg)
+ {
+ 	struct futex_test_variants tv = futex_variant();
+-	int tid = *(int *)arg;
  
- Of course you don't want to spend time allowing for situations which may never
- arise either, so you have to do your research and think about each situation
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 8ca014d45..552bbef63 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -150,7 +150,7 @@ When writing testcases in shell write in *portable shell* only, it's a good
- idea to try to run the test using alternative shell (alternative to bash, for
- example dash) too.
+-	TST_THREAD_STATE_WAIT(tid, 'S', 0);
+-
+-	TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
++	do {
++		TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
+ 			1, 0));
+-	if (TST_RET < 0) {
+-		tst_brk(TBROK | TTERRNO,
+-			"futex_wake private returned: %ld", TST_RET);
+-	}
++		if (TST_RET < 0) {
++			tst_brk(TBROK | TTERRNO,
++				"futex_wake private returned: %ld", TST_RET);
++		}
++		usleep(1000);
++	} while (TST_RET < 1);
  
--*Portable shell* means Shell Command Language as defined by POSIX with a
-+*Portable shell* means Shell Command Language as defined by POSIX with an
- exception of few widely used extensions, namely 'local' keyword used inside of
- functions and '-o' and '-a' test parameters (that are marked as obsolete in
- POSIX).
-@@ -215,7 +215,7 @@ expression of kernel config variables that has to be satisfied in order for a
- test to run. This is mostly used for kernel namespaces at the moment.
+ 	return NULL;
+ }
+@@ -90,16 +90,13 @@ static void *threaded(void *arg)
+ static void run(void)
+ {
+ 	struct timespec to;
+-	int tid;
+ 	pthread_t t;
  
- Sometimes it also makes sense to define a few macros instead of creating
--configure test. One example are Linux specific POSIX clock ids in
-+configure test. One example is Linux specific POSIX clock ids in
- 'include/lapi/posix_clocks.h'.
+-	tid = tst_syscall(__NR_gettid);
+-
+-	SAFE_PTHREAD_CREATE(&t, NULL, threaded, (void *)&tid);
++	SAFE_PTHREAD_CREATE(&t, NULL, threaded, NULL);
  
- 3.1 Dealing with messed up legacy code
-@@ -304,7 +304,7 @@ See 'testcases/commands/file/' for example.
- 5.3 Subexecutables
- ^^^^^^^^^^^^^^^^^^
+ 	/* setting absolute timeout for futex2 */
+ 	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &to);
+-	to.tv_sec++;
++	to.tv_sec += 5;
  
--If you test needs to execute a binary, place it in the same directory as the
-+If your test needs to execute a binary, place it in the same directory as the
- testcase and name the file starting with '${test_binary_name}_'.  Once the
- test is executed by the framework, the path to the directory with all LTP
- binaries is added to the '$PATH' and you can execute it just by its name.
+ 	TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
+ 	if (TST_RET < 0) {
 -- 
-2.36.1
+2.27.0
 
 
 -- 
