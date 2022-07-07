@@ -4,78 +4,143 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34424C433EF
-	for <ltp@archiver.kernel.org>; Wed,  6 Jul 2022 18:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFF04C43334
+	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 01:29:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E57033CA19C
-	for <ltp@archiver.kernel.org>; Wed,  6 Jul 2022 20:43:09 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 71AC73C94FD
+	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 03:29:30 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B69C3C97E3
- for <ltp@lists.linux.it>; Wed,  6 Jul 2022 20:42:57 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 425FC3C81F1
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 03:29:17 +0200 (CEST)
+Received: from esa3.fujitsucc.c3s2.iphmx.com (esa3.fujitsucc.c3s2.iphmx.com
+ [68.232.151.212])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E1F9A601179
- for <ltp@lists.linux.it>; Wed,  6 Jul 2022 20:42:56 +0200 (CEST)
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5426C40274
- for <ltp@lists.linux.it>; Wed,  6 Jul 2022 18:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1657132972;
- bh=efZ7K4c0cgcdqlk/ipzYS9BgF0mkGiivePmGESrC8AM=;
- h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
- To:Cc:Content-Type;
- b=vCCmAOc4IsluhEpan2be40ihiEmnQf2q7X8Yv9jpJC2OCvDj8GVSygnFTwMpwcwr4
- jBqJpQBTzCDhqkPnXTGO/titnhmVIbJKvlUKbfqpANWAl1UVt6B8WLG6mjux88AjEL
- FY+ZX6BDW0k8uUxa1iPAvc9ILougu/aQyTOpFRcn01XKagHruz/ZOiHRpfSC+OhNca
- Hehra5kh/ImuYWgquFIH7KKBuXRln8bT9HgEDV4QA+pHY4Bh9B+xAUVBJQMGHnczAn
- gXGf9kaAy/u+DhunnEPdSnu0TmOQAXyOw+fSoX1ChKpOf7KJ+rKUq0/fvI183A4NfE
- SonUktoo44sTA==
-Received: by mail-ej1-f69.google.com with SMTP id
- qa41-20020a17090786a900b00722f313a60eso4065335ejc.13
- for <ltp@lists.linux.it>; Wed, 06 Jul 2022 11:42:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=efZ7K4c0cgcdqlk/ipzYS9BgF0mkGiivePmGESrC8AM=;
- b=Vn5wZ7DJztN3B3o3DpgGKdrk1h/yMvX7sBbztUJBYMBoxTKI25wwwW5I+FGgFH97Ai
- 9TII40WIo6F6lrFjaE5AMPtuZmLkoVHGQ1Kc82sWAp1sd+/w6GUdl5KeQUe2Of+MH0WE
- OTBezoU2RUdDz5cAnqF46SUGfCr0g7JLm2cBOwh/impgcTEF2Uu9PX3+JRuSmbODFocY
- DIUlIO92DaYzq4SmL7y1DZruInBah3/6qjQDvO3djB3ZkPp8JMUshf8jAY99sLmMyPWb
- MdzxBaucnXv0jZxkuZJiVCnhqmaZJK5nKEWJ6UZbZ/FXjl8Jr3KUuOitmFnqYYpJKck1
- 5Hvg==
-X-Gm-Message-State: AJIora8knE8O2IO5tT3RPAXW6b9wJvaTR1ZQ6Uqb4WwCZf1Esg7WvRan
- DrD/1d9juHge2eCElYdWmA6DYIFcBxQlRYPcOuFnLGtnfj89EenBehnsVrqeTzbt4IeuMWF5qHu
- 9TmMpPgkm9lQcisStzSyZ7C3jINAPApWaYaUQJfau8Luq
-X-Received: by 2002:a17:907:3f92:b0:72a:b80c:ef3 with SMTP id
- hr18-20020a1709073f9200b0072ab80c0ef3mr20712883ejc.264.1657132971940; 
- Wed, 06 Jul 2022 11:42:51 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1stvlcbGZgLZG1LPw6GLc4vtQIipBIueCDOS/71em62jlQQZEnBCZsmYcix73e48PK2JIF5HertY1o6EHGrqDs=
-X-Received: by 2002:a17:907:3f92:b0:72a:b80c:ef3 with SMTP id
- hr18-20020a1709073f9200b0072ab80c0ef3mr20712869ejc.264.1657132971711; Wed, 06
- Jul 2022 11:42:51 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0EDDA600D31
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 03:29:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1657157355; x=1688693355;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=MyZnpUjT2Q5Cfawxy1EjPb1SL6E0yshZ3UpyKtEsI9E=;
+ b=NaOpoVX01uVDWWmzcuclulREbmMqBaM8rYyQbRQy4F6ywH5969OPeRrH
+ +NqUVinujG4rf64n29Z/r16bfRfY5H9G3jwTcMl+c4le+BWchgJ1Gn1aS
+ RHjDEJJNIfWJNIpXyJnPzFC4vWn9djP851dwi7npAAuvUMT275WFHrtQx
+ XtYZ5R0pJfcCEFCj+TyGszmMglKcserkE8yogXVgtUpHAZOpjVDkZMCJ0
+ +08PyEtu/0MhFIfsb7mMqbfCenJHQou5xdoQlPQiPPoPbguGfm/T/gph4
+ mZC0j1iyXCndDzIiAZNDN1Hbpf/5ck3+3YgkuRgs019S53Qpp42N0qivC A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="67889526"
+X-IronPort-AV: E=Sophos;i="5.92,251,1650898800"; d="scan'208";a="67889526"
+Received: from mail-tycjpn01lp2175.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.175])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jul 2022 10:29:13 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BIRTMefasqTaRw3wBxOXYT0dnczWLWisW8O3nxaFQSfr8IMb5vv+fTVXxLjooVS+rmfXqEcHPKrBmfeSbDZ7CkBgkXn6rkaBOwBj8vYYY9d57J0IulybpshNRB9SoqbOcOZ1wOYdGj3ezUovYxoHwiJQAsitFwq7YmzQxGZIKuQrf1pMo8o8ZSYC6cn3Zjkn5K8LW5GCoj7rt+V6L0mTw9/yOJ6d/M6QDaDJZZUpuIDr5MdGc2SWGY1KCvO1CJC06YxQESD+REw6i/F609900n0NgStSj9JBu8wWWHRwV8p1m3a7lJCKhE7e8KI2XwK6HGDvtV5sV0SVoTbU8UFb6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MyZnpUjT2Q5Cfawxy1EjPb1SL6E0yshZ3UpyKtEsI9E=;
+ b=lZzL5pLrTVZqgDEkVByvTxVcW32S6ReRXXyBx3/Q/5eOZmFVJOr1EKnutnuTjowHpuCh+i62rf45ytMvFpR5sQrjVxz5kFLBymYAwmEwoBwM2SDQ6prB2mz4X50h2od0qYY+Agv/ISjeB2D/1tlwmlhrRZWINfz3xfL6P5KrrfDFMJb9aWPhvC1MlmC7hziKHutPbdlRKpID+1HtBKGNaIn0XIuqBNIIKpS8WvExHT9X/UDNlvm/6uihankrT1y0TXVBiK7/3pdxsnMuHJTCrkQEiQ71tzSWKVS6N7LVjvdUXcw+b0JaAKg/y/A8TxIahc38NrZgdIYYArMQO0uJsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MyZnpUjT2Q5Cfawxy1EjPb1SL6E0yshZ3UpyKtEsI9E=;
+ b=C7UN3ZlcfQGUFIB0lWhiml1zLvf54jzFYzttj1rAN7ln5GZB2UV6Ghml+xPfvUVVLQrr6cQa7ssUKz13KIlSeSoXad5mvgVjEzglwazkN6YxniqamL/KE6fdMzufOH7E9fhSotnViRiPVrNL1v2Qbw42UTYcdArkqm2T2ABsjbQ=
+Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
+ by TYAPR01MB3615.jpnprd01.prod.outlook.com (2603:1096:404:c0::22)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.15; Thu, 7 Jul
+ 2022 01:29:10 +0000
+Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
+ ([fe80::fd30:6d2d:85fb:8160]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
+ ([fe80::fd30:6d2d:85fb:8160%5]) with mapi id 15.20.5395.021; Thu, 7 Jul 2022
+ 01:29:10 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: Avinesh Kumar <akumar@suse.de>
+Thread-Topic: [LTP] [PATCH] dup07.c: Rewrite using new LTP API
+Thread-Index: AQHYkVFBP8crJI0m40uvffiPrPUZPa1yME+A
+Date: Thu, 7 Jul 2022 01:29:10 +0000
+Message-ID: <62C6452F.907@fujitsu.com>
+References: <20220706155817.28340-1-akumar@suse.de>
+In-Reply-To: <20220706155817.28340-1-akumar@suse.de>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bc11771a-5502-4811-8112-08da5fb817e1
+x-ms-traffictypediagnostic: TYAPR01MB3615:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: h7AkFNWTYmWwAwht5zsIsQgfx5DdfR8Yxhp5ViBKc66OdiDwCx+9DEneJtZIgsYmNDccC8NZ57TEB1QrQrvnf0wzucIhAPeJ0zgvZ6FuXrVIIWd6UZUk4AugDs22XrPF2LaGB/Ixcoz5mNfG23PlFVlUNinB7SA0aoaI6f+N5SNErssLuan8ZLYp1vtMGFUoBS6w4kBeAXiGt4qTUvc6AtIBuNKGF8LNuIT7LPtZ8vqZqEAfyaR24r7Fzto722ohwFj/slY7nLeU0labzCA6qLVPfHyb+QNoVdesueAB7r4oL83JFjNYADFmM8Dibk0+RkTso3ULzp/nB5gaioY2uuqf87vnh9shOGsE/GGafrgad0CA7r4XVqDEZ6dBJc6Bf9Mo+/qAPC+eX/oMFz4PvqoYr9fOkiO2vEjcTJ7MFBOt7VkqEBU37j92cMJBbcPYKnwRMrn2xhuEuc4akoel43mkM1yZpsemf6bn0oJl2y9GtiSTwkSniBvi4UfnGuDq/p3R+3noNfvIDcehMkUDpSz43nTZ426WGZWF3Al0fKEA1aYCJWeXnEgsmxk8NRcyxqCsg/KDQb1v5at7vRxmpnmGPZ7FduvcImn9bqAoN38EHx9OwnUsZSzhZRGaf9+vQqNu2GBkwimWNmN7klep4+3hgVtPL7xQC9maI08HM3FvGAIaZpT5rorNATttSJwXiBmXs7IJfiAWFvQJIRZQ9H9mCQXxO6TZ0Z26ZsWRCfEaxZDwaEaJUNqwFEn9HLPTmLl97AI/qlRG8KCnjQCKuHCLPgS7ehAzyNBcFxNZx3uCxuoG2nILcgxB/f6SnCEYK7qFu8RMxz3SeF4K0oLzOw==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230016)(4636009)(366004)(136003)(39860400002)(396003)(346002)(376002)(41300700001)(122000001)(478600001)(26005)(2906002)(82960400001)(8936002)(33656002)(5660300002)(85182001)(71200400001)(6486002)(66446008)(4326008)(38100700002)(64756008)(76116006)(66556008)(91956017)(66946007)(66476007)(6506007)(36756003)(86362001)(8676002)(6512007)(83380400001)(38070700005)(186003)(6916009)(316002)(2616005)(2004002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?ZnZvNzZ6WSszZEdTYXpyUDgxdEVwdktuNHpwaDlvSk9yZWFSWU1ZQ2tYWE5q?=
+ =?gb2312?B?VGc0QVZRM3UrMmZZR24vcVIwNVNZTTRlODM2d2o5L2ttaGVTdDFld2xDUUZo?=
+ =?gb2312?B?QlZNU1BrOW0rK0lnd1VpM0h0MXRvSDFuZEJBeldUUW44T1V3MzdIenA5eHo3?=
+ =?gb2312?B?dDRuSFZINTdlejQwZWVMY2FTQkhOT29NYTlOYzFrZjFSWGhURDJQL3VKcGRz?=
+ =?gb2312?B?SmNtanlobTNOTmIrazh5RHk1OG4yS0xQSjJyZW8rcmp1dk1OWnlqVm9FUlhF?=
+ =?gb2312?B?L0l3NGNjRVBCejdaU2YvYjlheTFnQVZaRGU2VURNN2FmN1BZd1pDSGc2SXJi?=
+ =?gb2312?B?Q2picHhvZmFLRW1KWlBVTjhyc0F2YitHNFR0RGxyeWI4MUxxYlB3bE80YStr?=
+ =?gb2312?B?SUZHWUJmRG9PWjE5ZjNQN0dBK0Nna2FkM0ExWmJwZG8vb3BXdVJoR2VKVE5i?=
+ =?gb2312?B?U3hsODVodGlIOWhVcjRrOUZBdVQ0L0NNQ1pyT1N4aUFTWS81MERJdmVxdDdS?=
+ =?gb2312?B?cFdwZHVyUzVMTVZKbHp1Z1hWOUFJVXRyM1NERnB3dXViejlSOGk1eEVSK0FV?=
+ =?gb2312?B?ekV5dUdzd0xTUmFSbDZOWmZ0MTYwbzNtSEZhOC9BV3RwK0trYzhrSmpweXBV?=
+ =?gb2312?B?c1dMSTg3eFVxdkVxL0ovWW1GQTFBNUN4NytEY3d5R005TmNMb2w2ZFZUZzNU?=
+ =?gb2312?B?UmU5Q2Q3RnJWQlRNbzlmeGkzS3hvaDhJTENXZTdMeDhNSm5XcWlST2RsRDJm?=
+ =?gb2312?B?VVZJZExISndjVGRQK282cTdDWjdaN3RmbjM5eDcvVnY4ZkY4N0lnRmptZzZW?=
+ =?gb2312?B?SndwWW9kNysycnUrT2xNQ3RzRTRkMUxOakhoNEhhcVJTZUxjNDRxUzA2Mlly?=
+ =?gb2312?B?bHlqTDZRQ0R3SldtcmpFNWVEZVhsWDcvWW1GV0dYWEZKcGJoRnRtOXZrZm04?=
+ =?gb2312?B?UEtMcjNhcHUzQ3d2VHJpMjk4K093UHlGbTdhc1NweUYzLzdhZ1o2dnNOOEY3?=
+ =?gb2312?B?dDJLUVV0WC90Yjk0ajN4VlRTU3dBK3RyN0dDTmlraEY5eHdiTVBxeGZidlAv?=
+ =?gb2312?B?N05EQWd5SjFxNEZMckpFWng1YndKWmN0U1g1d1l6ZHFoekZXdGNvL3krK2FL?=
+ =?gb2312?B?TEZhV0RsQkdSclJMTnpOSUlmbWtKWnNMMjFENXA1MEdRd2tLUUNXTjNCWTFu?=
+ =?gb2312?B?am93K0ZEb3lyRnB2VS9XcEJFUTNUVklNV1BDQXRFUGZVZDBjT1hlOS9aL2My?=
+ =?gb2312?B?K1lTNDJUcG9MNVVYZGVnQnJBQ3AzMWFXT3IrRmJ1N1VKc28vSkpxblBWUnI5?=
+ =?gb2312?B?c0xhQUtsSGJ0SnZPTGlkSEZQTjE4WWhFUkc0bUhqT2ZCT2hkeXY1a01pRmRi?=
+ =?gb2312?B?TURCZWxiRDNyYit5MlY5ek1jUlRib0Q0eSsvUTM2T1d5VGF0R0ZQNVFFU09w?=
+ =?gb2312?B?MjR4cFcwR0hURHNobE0yWlUwK1FTOGZneFNrZEI3eVJ1RnhCbUV1YWhTRFZD?=
+ =?gb2312?B?NFZnVUxZdWVpMWZTTnREQ3Q0OEJKaU1RektURlY5bTN4OUt3MjdKa3QyQkww?=
+ =?gb2312?B?UHlmVDRPYjA5WWNvWS9naWRzQXdRL2k5NVg3dzdzZTBLWE9id0dabmlnWDZi?=
+ =?gb2312?B?REtKZEhFbWV3dytQbktzQmNOUWRXNVNJcnBuRmswNmRvbGNyMzVOdDlVeUpX?=
+ =?gb2312?B?cndOTmI1ODE1Z0JmR0M2WW5zVXNOUzc1aTF3MlRaME54RG1IYzRUQXpwTjNS?=
+ =?gb2312?B?ZHc5bEpWSUdjeGViVkxUREU3eHk0Zll0OXZDNTBJUUNmNGVhMWFacDV4eFFa?=
+ =?gb2312?B?YVhObFMvdVN0YndhSjc1OGV0WjVLb2UrNjBtL2haa1YvRXpUK3NUYjMxcFhX?=
+ =?gb2312?B?d2VGS0R1TmR6ckU0YVFxeHBPZnI4NTkvWVlkNkV3VlpOS0k4UFpWaStLVit5?=
+ =?gb2312?B?VDhraTdXaW5aMGw4TUV6YU9jZ0VjR2JJajdSOEZ6Tm9kOG9UMEg3aStiK1Br?=
+ =?gb2312?B?MDloKyt4eVRpTWJUdURwTFllNXN4OUxWV0VMS05WNVFNRFcwVlZLNE52c21P?=
+ =?gb2312?B?S0xYbWUvaUpCZ1ltR2ZjT3pPRHNEZnlnbGFLOFJHdTNKWFlQaVdCc05xZ2o1?=
+ =?gb2312?B?amdNc2IwdUtyRjRnTzdOMCs1aVUrQ0hUWUNHYkpRTUZObXEyTTFFTnZLS1ZE?=
+ =?gb2312?B?d0E9PQ==?=
+Content-ID: <315EE15BFFE1E244AA4DE460E32C8D3C@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20220701213749.3744031-1-edliaw@google.com>
- <CAEemH2cQBinVjFP27NkRQJpEVCvfA08=gxdb5tk1nDRo0eN_nA@mail.gmail.com>
-In-Reply-To: <CAEemH2cQBinVjFP27NkRQJpEVCvfA08=gxdb5tk1nDRo0eN_nA@mail.gmail.com>
-From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Date: Wed, 6 Jul 2022 11:42:15 -0700
-Message-ID: <CADS1e3eAZ13nKP4Yq2MX0Xz5dOFR3ZuzF+HVJF7CsptSUgmbkQ@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc11771a-5502-4811-8112-08da5fb817e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2022 01:29:10.5153 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5ytwgHLjNijZ0VyRzVNnaCPvTHF8Md4YKqUPmjcXq1CVHPLUxqyL+Z1PHvaSvqu+V+51tErtK7cjZ7AtRspJBBv5+O1B09n7nX6fJeo8tYM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3615
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] controllers.memcg_regression: add trap to
- clean up directories
+Subject: Re: [LTP] [PATCH] dup07.c: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,327 +152,233 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel-team <kernel-team@android.com>, LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0764149396=="
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0764149396==
-Content-Type: multipart/alternative; boundary="00000000000020041205e32756c8"
+Hi Avinesh
 
---00000000000020041205e32756c8
-Content-Type: text/plain; charset="UTF-8"
+I did't look this cleanup patch, but I see the old code is same as 
+dup202.c(This case covers more situation, ie using chmod). Maybe we can 
+just add a test_variant to use dup  syscall in dup202.c?
 
-Hey,
+Then remove this case directly.
 
-On Tue, Jul 5, 2022 at 11:00 PM Li Wang <liwang@redhat.com> wrote:
-
-> Hi Edward,
+Best Regards
+Yang Xu
+> Signed-off-by: Avinesh Kumar<akumar@suse.de>
+> ---
+>   testcases/kernel/syscalls/dup/dup07.c | 180 +++++++++-----------------
+>   1 file changed, 59 insertions(+), 121 deletions(-)
 >
-> Thanks for your patch and I believe it makes sense.
-> But the whole memcg test has been re-written by Luke's patchset which is
-> still reviewing.
-> https://lists.linux.it/pipermail/ltp/2022-April/028777.html
+> diff --git a/testcases/kernel/syscalls/dup/dup07.c b/testcases/kernel/syscalls/dup/dup07.c
+> index a100f5d58..b696d54e0 100644
+> --- a/testcases/kernel/syscalls/dup/dup07.c
+> +++ b/testcases/kernel/syscalls/dup/dup07.c
+> @@ -1,142 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>   /*
+> - *
+>    *   Copyright (c) International Business Machines  Corp., 2002
+>    *    ported from SPIE, section2/iosuite/dup3.c, by Airong Zhang
+>    *   Copyright (c) 2013 Cyril Hrubis<chrubis@suse.cz>
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + *   Copyright (c) 2022SUSE LLC Avinesh Kumar<avinesh.kumar@suse.com>
+>    */
 >
-> @Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-> Luke, I guess V3 should be the final version (if you take the time to do
-> rebase/modification) and we'll happy to help merge those patches next:).
+> -/*
+> -  WHAT:  Is the access mode the same for both file descriptors?
+> -          0: read only?
+> -          1: write only?
+> -          2: read/write?
+> -  HOW:   Creat a file with each access mode; dup each file descriptor;
+> -         stat each file descriptor and compare mode of each pair
+> -*/
+> -
+> -#include<stdio.h>
+> -#include<fcntl.h>
+> -#include<sys/types.h>
+> -#include<sys/stat.h>
+> -#include<sys/types.h>
+> -#include<sys/stat.h>
+> -#include "test.h"
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that new file descriptor allocated by dup() has the same
+> + * permissions mode as oldfd.
+> + */
 >
+> -char *TCID = "dup07";
+> -int TST_TOTAL = 3;
+> +#include "tst_test.h"
 >
-Let me finally get around to putting up the (hopefully) final revision so
-that people don't start doing things I already did :)
-
-
+> -static const char *testfile = "dup07";
+> +static const char *temp_file1 = "tmpfile1";
+> +static const char *temp_file2 = "tmpfile2";
+> +static const char *temp_file3 = "tmpfile3";
 >
+> -static void setup(void);
+> -static void cleanup(void);
+> +static int rdo_fd, wro_fd, rdwr_fd;
+> +static struct stat rdo_st_buf, wro_st_buf, rdwr_st_buf;
 >
-> On Sat, Jul 2, 2022 at 5:38 AM Edward Liaw via ltp <ltp@lists.linux.it>
-> wrote:
+> -int main(int ac, char **av)
+> +static void setup(void)
+>   {
+> -	struct stat retbuf;
+> -	struct stat dupbuf;
+> -	int rdoret, wroret, rdwret;
+> -	int duprdo, dupwro, duprdwr;
+> -
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> +	rdo_fd = SAFE_CREAT(temp_file1, 0444);
+> +	wro_fd = SAFE_CREAT(temp_file2, 0222);
+> +	rdwr_fd = SAFE_CREAT(temp_file3, 0666);
 >
->> The memcg_regression test creates a memcg/ directory that can be left
->> behind if the test exits unexpectedly.  Use a trap to clean up the
->> directories on exit.
->>
->> Signed-off-by: Edward Liaw <edliaw@google.com>
->> ---
->>  .../memcg/regression/memcg_regression_test.sh | 20 +++++++++++--------
->>  .../memcg/regression/memcg_test_4.sh          | 11 ++++++----
->>  2 files changed, 19 insertions(+), 12 deletions(-)
->>
->> diff --git
->> a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> index c91a4069e..2467ae0e6 100755
->> ---
->> a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> +++
->> b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> @@ -54,6 +54,15 @@ nr_null=0
->>  nr_warning=0
->>  nr_lockdep=0
->>
->> +clean_up()
->> +{
->> +       # remove the cgroup
->> +       rmdir memcg/0 2> /dev/null
->> +       # unmount cgroup if still mounted
->> +       umount memcg/
->> +       rmdir memcg/
->> +}
->> +
->>  # check_kernel_bug - check if some kind of kernel bug happened
->>  check_kernel_bug()
->>  {
->> @@ -102,12 +111,12 @@ check_kernel_bug()
->>
->>  #---------------------------------------------------------------------------
->>  test_1()
->>  {
->> -       mkdir memcg/0/
->> +       mkdir memcg/0
->>         echo 0 > memcg/0/memory.limit_in_bytes
->>
->>         ./memcg_test_1
->>
->> -       rmdir memcg/0/
->> +       rmdir memcg/0
->>
->>         check_kernel_bug
->>         if [ $? -eq 1 ]; then
->> @@ -211,14 +220,12 @@ test_4()
->>         killall -9 memcg_test_4 2> /dev/null
->>         killall -9 memcg_test_4.sh 2> /dev/null
->>
->> -       # if test_4.sh gets killed, it won't clean cgroup it created
->> -       rmdir memcg/0 2> /dev/null
->> -
->>         swapon -a
->>  }
->>
->>  # main
->>  failed=0
->> +trap clean_up EXIT
->>  mkdir memcg/
->>
->>  for cur in $(seq 1 $TST_TOTAL); do
->> @@ -236,7 +243,4 @@ for cur in $(seq 1 $TST_TOTAL); do
->>         umount memcg/
->>  done
->>
->> -rmdir memcg/
->> -
->>  exit $failed
->> -
->> diff --git
->> a/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
->> b/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
->> index 620031366..d002601f1 100755
->> --- a/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
->> +++ b/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
->> @@ -22,6 +22,13 @@
->>  ##
->>       ##
->>
->>  ################################################################################
->>
->> +clean_up()
->> +{
->> +       # remove the cgroup when exiting
->> +       rmdir memcg/0
->> +}
->> +
->> +trap clean_up EXIT
->>  # attach current task to memcg/0/
->>  mkdir memcg/0
->>  echo $$ > memcg/0/tasks
->> @@ -42,7 +49,3 @@ swapoff -a
->>  sleep 1
->>  echo $pid > memcg/tasks 2> /dev/null
->>  echo $$ > memcg/tasks 2> /dev/null
->> -
->> -# now remove the cgroup
->> -rmdir memcg/0
->> -
->> --
->> 2.37.0.rc0.161.g10f37bed90-goog
->>
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
->>
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		if ((rdoret = creat(testfile, 0444)) == -1) {
+> -			tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
+> -		} else {
+> -			if ((duprdo = dup(rdoret)) == -1) {
+> -				tst_resm(TFAIL, "Unable to dup '%s'", testfile);
+> -			} else {
+> -				fstat(rdoret,&retbuf);
+> -				fstat(duprdo,&dupbuf);
+> -				if (retbuf.st_mode != dupbuf.st_mode) {
+> -					tst_resm(TFAIL,
+> -						 "rdonly and dup do not match");
+> -				} else {
+> -					tst_resm(TPASS,
+> -					         "Passed in read mode.");
+> -				}
+> -				close(duprdo);
+> -			}
+> -			close(rdoret);
+> -		}
+> -
+> -		unlink(testfile);
+> -		
+> -		if ((wroret = creat(testfile, 0222)) == -1) {
+> -			tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
+> -		} else {
+> -			if ((dupwro = dup(wroret)) == -1) {
+> -				tst_resm(TFAIL, "Unable to dup '%s'", testfile);
+> -			} else {
+> -				fstat(wroret,&retbuf);
+> -				fstat(dupwro,&dupbuf);
+> -				if (retbuf.st_mode != dupbuf.st_mode) {
+> -					tst_resm(TFAIL,
+> -						 "wronly and dup do not match");
+> -				} else {
+> -					tst_resm(TPASS,
+> -					         "Passed in write mode.");
+> -				}
+> -				close(dupwro);
+> -			}
+> -			close(wroret);
+> -
+> -		}
+> -
+> -		unlink(testfile);
+> +	SAFE_FSTAT(rdo_fd,&rdo_st_buf);
+> +	SAFE_FSTAT(wro_fd,&wro_st_buf);
+> +	SAFE_FSTAT(rdwr_fd,&rdwr_st_buf);
+> +}
 >
-> --
-> Regards,
-> Li Wang
+> -		if ((rdwret = creat(testfile, 0666)) == -1) {
+> -			tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
+> -		} else {
+> -			if ((duprdwr = dup(rdwret)) == -1) {
+> -				tst_resm(TFAIL, "Unable to dup '%s'", testfile);
+> -			} else {
+> -				fstat(rdwret,&retbuf);
+> -				fstat(duprdwr,&dupbuf);
+> -				if (retbuf.st_mode != dupbuf.st_mode) {
+> -					tst_resm(TFAIL,
+> -						 "rdwr and dup do not match");
+> -				} else {
+> -					tst_resm(TPASS,
+> -					         "Passed in read/write mode.");
+> -				}
+> -				close(duprdwr);
+> -			}
+> -			close(rdwret);
+> -		}
+> -		
+> -		unlink(testfile);
+> +static void run(void)
+> +{
+> +	struct stat dup_st_buf;
+> +
+> +	TEST(dup(rdo_fd));
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TERRNO, "Unable to dup '%s'", temp_file1);
+> +	else {
+> +		SAFE_FSTAT(TST_RET,&dup_st_buf);
+> +		TST_EXP_EQ_LI(rdo_st_buf.st_mode, dup_st_buf.st_mode);
+> +		SAFE_CLOSE(TST_RET);
+>   	}
 >
-
-- Luke
-
---00000000000020041205e32756c8
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div>Hey,<br></div><br><div class=3D"gmail_quote"><div dir=
-=3D"ltr" class=3D"gmail_attr">On Tue, Jul 5, 2022 at 11:00 PM Li Wang &lt;<=
-a href=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></d=
-iv><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bord=
-er-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div =
-dir=3D"ltr"><div style=3D"font-size:small">Hi Edward,</div><div style=3D"fo=
-nt-size:small"><br></div><div style=3D"font-size:small">Thanks for your pat=
-ch and I believe it makes sense.</div><div style=3D"font-size:small">But th=
-e whole memcg test has been re-written by Luke&#39;s patchset which is stil=
-l reviewing.</div><div style=3D"font-size:small"><a href=3D"https://lists.l=
-inux.it/pipermail/ltp/2022-April/028777.html" target=3D"_blank">https://lis=
-ts.linux.it/pipermail/ltp/2022-April/028777.html<br></a></div><div style=3D=
-"font-size:small"><br></div><div style=3D"font-size:small"><a class=3D"gmai=
-l_plusreply" id=3D"gmail-m_-3967992612121128723plusReplyChip-0" href=3D"mai=
-lto:luke.nowakowskikrijger@canonical.com" target=3D"_blank">@Luke Nowakowsk=
-i-Krijger</a>=C2=A0=C2=A0</div><div style=3D"font-size:small">Luke, I guess=
- V3 should be the final version (if you take the time to do</div><div style=
-=3D"font-size:small">rebase/modification) and we&#39;ll happy to help merge=
- those patches next:).</div><div style=3D"font-size:small"><br></div></div>=
-</div></blockquote><div><br></div><div>Let me finally get around to putting=
- up the (hopefully) final revision so that people don&#39;t start doing thi=
-ngs I already did :) <br></div><div>=C2=A0</div><blockquote class=3D"gmail_=
-quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,=
-204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D"ltr"><div style=3D"font=
--size:small"></div><div style=3D"font-size:small"><br></div></div><br><div =
-class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Jul 2, =
-2022 at 5:38 AM Edward Liaw via ltp &lt;<a href=3D"mailto:ltp@lists.linux.i=
-t" target=3D"_blank">ltp@lists.linux.it</a>&gt; wrote:<br></div><blockquote=
- class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px so=
-lid rgb(204,204,204);padding-left:1ex">The memcg_regression test creates a =
-memcg/ directory that can be left<br>
-behind if the test exits unexpectedly.=C2=A0 Use a trap to clean up the<br>
-directories on exit.<br>
-<br>
-Signed-off-by: Edward Liaw &lt;<a href=3D"mailto:edliaw@google.com" target=
-=3D"_blank">edliaw@google.com</a>&gt;<br>
----<br>
-=C2=A0.../memcg/regression/memcg_regression_test.sh | 20 +++++++++++-------=
--<br>
-=C2=A0.../memcg/regression/memcg_test_4.sh=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 | 11 ++++++----<br>
-=C2=A02 files changed, 19 insertions(+), 12 deletions(-)<br>
-<br>
-diff --git a/testcases/kernel/controllers/memcg/regression/memcg_regression=
-_test.sh b/testcases/kernel/controllers/memcg/regression/memcg_regression_t=
-est.sh<br>
-index c91a4069e..2467ae0e6 100755<br>
---- a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.s=
-h<br>
-+++ b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.s=
-h<br>
-@@ -54,6 +54,15 @@ nr_null=3D0<br>
-=C2=A0nr_warning=3D0<br>
-=C2=A0nr_lockdep=3D0<br>
-<br>
-+clean_up()<br>
-+{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0# remove the cgroup<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0rmdir memcg/0 2&gt; /dev/null<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0# unmount cgroup if still mounted<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0umount memcg/<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0rmdir memcg/<br>
-+}<br>
-+<br>
-=C2=A0# check_kernel_bug - check if some kind of kernel bug happened<br>
-=C2=A0check_kernel_bug()<br>
-=C2=A0{<br>
-@@ -102,12 +111,12 @@ check_kernel_bug()<br>
-=C2=A0#--------------------------------------------------------------------=
--------<br>
-=C2=A0test_1()<br>
-=C2=A0{<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0mkdir memcg/0/<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0mkdir memcg/0<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 echo 0 &gt; memcg/0/memory.limit_in_bytes<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 ./memcg_test_1<br>
-<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0rmdir memcg/0/<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0rmdir memcg/0<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 check_kernel_bug<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 if [ $? -eq 1 ]; then<br>
-@@ -211,14 +220,12 @@ test_4()<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 killall -9 memcg_test_4 2&gt; /dev/null<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 killall -9 memcg_test_4.sh 2&gt; /dev/null<br>
-<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0# if test_4.sh gets killed, it won&#39;t clean =
-cgroup it created<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0rmdir memcg/0 2&gt; /dev/null<br>
--<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 swapon -a<br>
-=C2=A0}<br>
-<br>
-=C2=A0# main<br>
-=C2=A0failed=3D0<br>
-+trap clean_up EXIT<br>
-=C2=A0mkdir memcg/<br>
-<br>
-=C2=A0for cur in $(seq 1 $TST_TOTAL); do<br>
-@@ -236,7 +243,4 @@ for cur in $(seq 1 $TST_TOTAL); do<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 umount memcg/<br>
-=C2=A0done<br>
-<br>
--rmdir memcg/<br>
--<br>
-=C2=A0exit $failed<br>
--<br>
-diff --git a/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh =
-b/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh<br>
-index 620031366..d002601f1 100755<br>
---- a/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh<br>
-+++ b/testcases/kernel/controllers/memcg/regression/memcg_test_4.sh<br>
-@@ -22,6 +22,13 @@<br>
-=C2=A0##=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ##<br>
-=C2=A0#####################################################################=
-###########<br>
-<br>
-+clean_up()<br>
-+{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0# remove the cgroup when exiting<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0rmdir memcg/0<br>
-+}<br>
-+<br>
-+trap clean_up EXIT<br>
-=C2=A0# attach current task to memcg/0/<br>
-=C2=A0mkdir memcg/0<br>
-=C2=A0echo $$ &gt; memcg/0/tasks<br>
-@@ -42,7 +49,3 @@ swapoff -a<br>
-=C2=A0sleep 1<br>
-=C2=A0echo $pid &gt; memcg/tasks 2&gt; /dev/null<br>
-=C2=A0echo $$ &gt; memcg/tasks 2&gt; /dev/null<br>
--<br>
--# now remove the cgroup<br>
--rmdir memcg/0<br>
--<br>
--- <br>
-2.37.0.rc0.161.g10f37bed90-goog<br>
-<br>
-<br>
--- <br>
-Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
-oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
-<br>
-</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
-><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div>=
-</div></blockquote><div><br></div><div>- Luke <br></div></div></div>
-
---00000000000020041205e32756c8--
-
---===============0764149396==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+> -	cleanup();
+> -	tst_exit();
+> -}
+> +	TEST(dup(wro_fd));
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TERRNO, "Unable to dup '%s'", temp_file2);
+> +	else {
+> +		SAFE_FSTAT(TST_RET,&dup_st_buf);
+> +		TST_EXP_EQ_LI(wro_st_buf.st_mode, dup_st_buf.st_mode);
+> +		SAFE_CLOSE(TST_RET);
+> +	}
+>
+> -static void setup(void)
+> -{
+> -	tst_tmpdir();
+> +	TEST(dup(rdwr_fd));
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TERRNO, "Unable to dup '%s'", temp_file3);
+> +	else {
+> +		SAFE_FSTAT(TST_RET,&dup_st_buf);
+> +		TST_EXP_EQ_LI(rdwr_st_buf.st_mode, dup_st_buf.st_mode);
+> +		SAFE_CLOSE(TST_RET);
+> +	}
+>   }
+>
+>   static void cleanup(void)
+>   {
+> -	tst_rmdir();
+> +	SAFE_CLOSE(rdo_fd);
+> +	SAFE_CLOSE(wro_fd);
+> +	SAFE_CLOSE(rdwr_fd);
+>   }
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1
+> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0764149396==--
