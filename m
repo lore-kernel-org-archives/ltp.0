@@ -4,60 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A82E2C433EF
-	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 12:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6C22C43334
+	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 13:03:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C1113CA197
-	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 14:58:51 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id BC8933CA195
+	for <ltp@archiver.kernel.org>; Thu,  7 Jul 2022 15:03:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4F9F83C2DD2
- for <ltp@lists.linux.it>; Thu,  7 Jul 2022 14:58:39 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 69ABA3C96AC
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 15:03:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C38C41000F65
- for <ltp@lists.linux.it>; Thu,  7 Jul 2022 14:58:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1657198717;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=MFNmwYRDzIivwYm/hcg5+P2DNe9jpwuJygX1R499nSU=;
- b=GlHnPUeSHpoCuASYP05g2/+Why3CdIvJbsA30se11jpx9EdNyVt97XVbjlfd7qG5D8tm+e
- NwJOtFIowESobmOak+TlJACVbiYzuEkEYHINlC0CgfA0R+QntJn2Ku73WXEmlek/jjfGO1
- SSH/rmWvkl70l9w/Yy+3EzFobXBaatI=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-37-10FFlZ3UOnG0eYMu5WWiWg-1; Thu, 07 Jul 2022 08:58:36 -0400
-X-MC-Unique: 10FFlZ3UOnG0eYMu5WWiWg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
- [10.11.54.3])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C2B4B1A01148
+ for <ltp@lists.linux.it>; Thu,  7 Jul 2022 15:03:31 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0C4843C11E7B
- for <ltp@lists.linux.it>; Thu,  7 Jul 2022 12:58:36 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.40.192.37])
- by smtp.corp.redhat.com (Postfix) with ESMTP id A353A1121315
- for <ltp@lists.linux.it>; Thu,  7 Jul 2022 12:58:35 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Thu,  7 Jul 2022 14:58:30 +0200
-Message-Id: <f710f7cc103a61c20d5ee907d9717fa384810553.1657198689.git.jstancek@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C62B51FE32;
+ Thu,  7 Jul 2022 13:03:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1657199010;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iypJE5fH6JcGwdAmjYVaJh/P9L39AfWhyEbaJxoTtqM=;
+ b=SXhkMnvdU0k4Y5HxpLHv5+NLTLEbAT74uu5NGo2C0rmXm6XPCfLPR9xTsh9GBr94BWO5Eh
+ uv6/gEaVvUdTVKp/JMPMpQQ7lH3XSl2gvIyD6P56DTUvIk4dP65ro6bKTc/phWMtmAkDTr
+ HfpbQY7mzMf6WX4BsNlO6psdHIFM2Zo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1657199010;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iypJE5fH6JcGwdAmjYVaJh/P9L39AfWhyEbaJxoTtqM=;
+ b=StFh4dC8kTv+NAyS6gVQZJCrWWHWQXd7yEnhkU9qudlnTJMfZ/kW4DPEVQsqkO133F7W9X
+ jotzuvy8awPMptDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9488A13461;
+ Thu,  7 Jul 2022 13:03:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id dZRtIqLZxmI+BQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 07 Jul 2022 13:03:30 +0000
+Date: Thu, 7 Jul 2022 15:03:28 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <YsbZoAFmXc7i12aG@pevik>
+References: <20220617131659.27868-1-pvorel@suse.cz>
+ <YrA+LFaA664fHpZA@yuki>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YrA+LFaA664fHpZA@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] commands/df01.sh: print more logs when test fails
+Subject: Re: [LTP] [PATCH 1/1] ci/ubuntu: impish -> jammy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,35 +76,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/commands/df/df01.sh | 5 +++++
- 1 file changed, 5 insertions(+)
+Hi Cyril,
 
-diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-index f74032c962e5..6b20f21d0d74 100755
---- a/testcases/commands/df/df01.sh
-+++ b/testcases/commands/df/df01.sh
-@@ -103,6 +103,11 @@ df_check()
- 
- 	grep ${TST_DEVICE} output | grep -q "${total}.*${used}"
- 	if [ $? -ne 0 ]; then
-+		echo "total: ${total}, used: ${used}"
-+		echo "df saved output:"
-+		cat output
-+		echo "df output:"
-+		$@
- 		return 1
- 	fi
- }
--- 
-2.27.0
+> Hi!
+> > Ubuntu 21.10 impish EOL in 2027-04 (next month).
+>                                 ^
+> 			     2022-06
+> > Replace it with the latest stable release (EOL 2027-04).
 
+> Other than that:
+
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+Thanks, merged.
+
+> > Reported-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > Hi,
+
+> > It's also a question whether use 20.04 LTS focal instead of 18.04 LTS
+> > bionic. I guess we'd like to cover everything: bleeding edge, used
+> > distros and very old and still used distros. bionic EOL next year
+> > (2023-04).
+
+> I would keep that till the EOL
+Sure, np. Hope I don't forget :).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
