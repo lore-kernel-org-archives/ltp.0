@@ -4,83 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C73FC433EF
-	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 09:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6768CC433EF
+	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 11:05:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6B0343C980F
-	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 11:48:40 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 684153CA469
+	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 13:05:48 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 500713C051B
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 11:48:29 +0200 (CEST)
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
- [85.158.142.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id DAC893CA3AC
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 13:05:37 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 53300600F53
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 11:48:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1657273707; i=@fujitsu.com;
- bh=wJqF8wxYHa65gwPMAUmCWgfNP3zK+fYPl2Ao8M1duZk=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=azoTCH7zEsNJE/oZNDWUMRBg4dvqMEh5ENqdlfKZAaM6wxGBBJ94RISZ1NMm8CY8i
- CE1oiQIcZTjvRtbFxDEJ4fqik+DJX3Sefi6mZ9QZQkf9/TNDie2z1hgpDrlmHSJEB3
- NnselqjOrPm+GF9ROD5v8k8Z0PImTiuJfTZFnWBF84OKIWUKFZ0vUtoM0plncd6A5d
- b0s/iffi43WOY+rrssc0ZnwEOyu6GbrCHVQ/IcXrehvegfD5NCKAbRQniLPB/j1maL
- IOm97Znim/CmYnR85ABLHnXJMjalTAoAjMzZ53B4efufc+XSx3650m16G0dpENthSs
- T5Vdwzn4mhZGA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRWlGSWpSXmKPExsViZ8ORqJv193i
- SwbyHehYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8anTZfZC6YIVzSs38XSwLhGoIuRi0NI4Cyj
- RPucSYxdjJxAzgEmiQUnsiASuxklpv6dxgKSYBPQlHjWuYAZxBYRkJDoaHjLDmIzC6hLLJ/0i
- wnEFhZQlfj14DXQIA4OFgEVifPn/EHCvAIeEq/ON4O1SggoSEx5+J4ZIi4ocXLmExaIMRISB1
- +8gKpRlLjU8Y0Rwq6QeH34ElRcTeLquU3MExj5ZyFpn4WkfQEj0ypGm6SizPSMktzEzBxdQwM
- DXUNDU11Lc11DY0u9xCrdRL3UUt28/KKSDF1DvcTyYr3U4mK94src5JwUvbzUkk2MwLBMKU7s
- 3sG4et8vvUOMkhxMSqK89q+OJwnxJeWnVGYkFmfEF5XmpBYfYpTh4FCS4F33GygnWJSanlqRl
- pkDjBGYtAQHj5IIL/cfoDRvcUFibnFmOkTqFKMux9TZ//YzC7Hk5eelSonzsoIUCYAUZZTmwY
- 2AxeslRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK880Gm8GTmlcBtegV0BBPQEcvyj4AcUZK
- IkJJqYFq2sX768k0Tlxi8P6XFfVx3kyln0oMLPvXs4hv+aEw78ePktMQF4j9m8OQf/X8wqOt6
- pa7PlG3LeV/u3bJhL+ce1QdZtz8dXMT0KPyewuGu57v4rwRFmfHNDPE+9kTcXKxDU36JsVeD0
- SWnda9eT72ZMX1Z0EHmF3qaH5V4i9mObM+aulOqudPqZxencfyUpZozHfICmOotC580BFy521
- DB5sEunbhqN89ek1R/v4XxjC1vpignveeenlvWPusyc3U7X+LVZpv34h7rjiQeL1RTTlnFbm9
- QLPThbeuE2Sc176wMfC/4raDE/IXGltcuih7TmnjLtLbGdMw4zXxph6qzd+n5bRIi86V9JDu+
- XlJiKc5INNRiLipOBAAM1f+uUgMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-22.tower-728.messagelabs.com!1657273706!21306!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.87.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 31756 invoked from network); 8 Jul 2022 09:48:26 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-22.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 8 Jul 2022 09:48:26 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 2936F100192
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 10:48:26 +0100 (BST)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
- [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 1DA53100043
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 10:48:26 +0100 (BST)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Fri, 8 Jul 2022 10:48:24 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 90E21140118E
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 13:05:35 +0200 (CEST)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LfVkC4zmVzcnjR
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 19:02:59 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.155) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 8 Jul 2022 19:05:04 +0800
 To: <ltp@lists.linux.it>
-Date: Fri, 8 Jul 2022 18:49:08 +0800
-Message-ID: <1657277348-2169-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+Date: Fri, 8 Jul 2022 19:02:28 +0800
+Message-ID: <20220708110228.40301-1-luoxiaoyu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.67.174.155]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500024.china.huawei.com (7.185.36.10)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_cgroup: Fix typo
+Subject: [LTP] [PATCH] syscalls/open03.c: Rewrite open03.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,79 +50,142 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Luo xiaoyu via ltp <ltp@lists.linux.it>
+Reply-To: Luo xiaoyu <luoxiaoyu9@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-We only have needs_cgroup_ctrls instead of needs_cgroup_controllers in
-tst_test structure. So fix it.
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Luo xiaoyu <luoxiaoyu9@huawei.com>
 ---
-I found it when I plan to write a cgroup regression test to ltp.
- doc/c-test-api.txt   | 6 +++---
- include/tst_cgroup.h | 2 +-
- lib/tst_test.c       | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ testcases/kernel/syscalls/open/open03.c | 103 +++++++-----------------
+ 1 file changed, 27 insertions(+), 76 deletions(-)
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index c138b7027..9ecf28630 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -2144,13 +2144,13 @@ struct tst_test test = {
- 	.setup = setup,
- 	.test_all = run,
- 	.cleanup = cleanup,
--	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
-+	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
- 	...
- };
- -------------------------------------------------------------------------------
- 
- Above, we first ensure the memory controller is available on the
--test's CGroup with '.needs_cgroup_controllers'. This populates a structure,
-+test's CGroup with '.needs_cgroup_ctrls'. This populates a structure,
- 'tst_cg', which represents the test's CGroup.
- 
- We then write the current processes PID into 'cgroup.procs', which
-@@ -2217,7 +2217,7 @@ static void cleanup(void)
- struct tst_test test = {
- 	.setup = setup,
- 	.test_all = run,
--	.needs_cgroup_controllers = (const char *const []){
-+	.needs_cgroup_ctrls = (const char *const []){
- 		"cpuset",
- 		"memory",
- 		NULL
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index d32d62399..08d1339a2 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -115,7 +115,7 @@ void tst_cg_print_config(void);
- 
- /* Ensure the specified controller is available in the test's default
-  * CGroup, mounting/enabling it if necessary. Usually this is not
-- * necesary use tst_test.needs_cgroup_controllers instead.
-+ * necessary use tst_test.needs_cgroup_ctrls instead.
+diff --git a/testcases/kernel/syscalls/open/open03.c b/testcases/kernel/syscalls/open/open03.c
+index aa15ee9e9..7926e50f4 100644
+--- a/testcases/kernel/syscalls/open/open03.c
++++ b/testcases/kernel/syscalls/open/open03.c
+@@ -1,90 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
   */
- void tst_cg_require(const char *const ctrl_name,
- 			const struct tst_cg_opts *const options)
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 4a196fc46..4b4dd125d 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1259,7 +1259,7 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->needs_cgroup_ctrls)
- 		do_cgroup_requires();
- 	else if (tst_test->needs_cgroup_ver)
--		tst_brk(TBROK, "needs_cgroup_ver only works with needs_cgroup_controllers");
-+		tst_brk(TBROK, "tst_test->needs_cgroup_ctrls must be set");
+
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-static void setup(void);
+-static void cleanup(void);
++/*\
++ * [DESCRIPTION]
++ *
++ * Testcase to check that open a new file with O_RDWR | O_CREAT successfully.
++ */
+
+-char *TCID = "open03";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+
+-static char fname[255];
+-static int fd;
++#define TEST_FILE "testfile"
+
+-int main(int ac, char **av)
++static void verify_open(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		TEST(open(fname, O_RDWR | O_CREAT, 0700));
+-		fd = TEST_RETURN;
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO,
+-				 "open(%s,O_RDWR|O_CREAT,0700) failed", fname);
+-		} else {
+-			tst_resm(TPASS,
+-				 "open(%s, O_RDWR|O_CREAT,0700) returned %ld",
+-				 fname, TEST_RETURN);
+-
+-			SAFE_CLOSE(cleanup, fd);
+-			SAFE_UNLINK(cleanup, fname);
+-		}
++	int fd;
++
++	TEST(open(TEST_FILE, O_RDWR | O_CREAT, 0700));
++	fd = TST_RET;
++
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO,
++			"open(%s, O_RDWR | O_CREAT, 0700) failed", TEST_FILE);
++	} else {
++		tst_res(TPASS,
++			"open(%s, O_RDWR | O_CREAT, 0700) returned %ld",
++			TEST_FILE, TST_RET);
+ 	}
+
+-	cleanup();
+-	tst_exit();
++	SAFE_CLOSE(fd);
++	SAFE_UNLINK(TEST_FILE);
  }
- 
- static void do_test_setup(void)
--- 
-2.27.0
+
+-static void setup(void)
+-{
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+
+-	sprintf(fname, "tfile_%d", getpid());
+-}
+
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.test_all = verify_open,
++};
+--
+2.17.1
 
 
 -- 
