@@ -4,60 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE576C433EF
-	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 07:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C73FC433EF
+	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 09:48:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94F7B3CA417
-	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 09:33:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6B0343C980F
+	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 11:48:40 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AEF1A3C0646
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 09:33:36 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 500713C051B
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 11:48:29 +0200 (CEST)
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
+ [85.158.142.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C9CD0601A14
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 09:33:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1657265614;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=DSCshRjYLVJQScIyWr+9tTLqaCGVOCZ+wHrb4t2Hcvc=;
- b=KgYcsAzNXBZoqjIcO4QdzOPojwaoHoxN2qTV+VsAe4G4xLFJWLsIYSCMAZKnGitaWF+BMK
- Fu3NA9fwpiUXWeq74mBan2s7weFjrbFaci3OGIh7qPuhW0qg6Qu4xCejfZMDBFWUtQNzGA
- wZuQM+dX89pVup2vWsXZ7rCioVwBMys=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-606-QBuAynQnOgCRmPzStm1c6A-1; Fri, 08 Jul 2022 03:33:26 -0400
-X-MC-Unique: QBuAynQnOgCRmPzStm1c6A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
- [10.11.54.7])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 53300600F53
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 11:48:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1657273707; i=@fujitsu.com;
+ bh=wJqF8wxYHa65gwPMAUmCWgfNP3zK+fYPl2Ao8M1duZk=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=azoTCH7zEsNJE/oZNDWUMRBg4dvqMEh5ENqdlfKZAaM6wxGBBJ94RISZ1NMm8CY8i
+ CE1oiQIcZTjvRtbFxDEJ4fqik+DJX3Sefi6mZ9QZQkf9/TNDie2z1hgpDrlmHSJEB3
+ NnselqjOrPm+GF9ROD5v8k8Z0PImTiuJfTZFnWBF84OKIWUKFZ0vUtoM0plncd6A5d
+ b0s/iffi43WOY+rrssc0ZnwEOyu6GbrCHVQ/IcXrehvegfD5NCKAbRQniLPB/j1maL
+ IOm97Znim/CmYnR85ABLHnXJMjalTAoAjMzZ53B4efufc+XSx3650m16G0dpENthSs
+ T5Vdwzn4mhZGA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRWlGSWpSXmKPExsViZ8ORqJv193i
+ SwbyHehYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8anTZfZC6YIVzSs38XSwLhGoIuRi0NI4Cyj
+ RPucSYxdjJxAzgEmiQUnsiASuxklpv6dxgKSYBPQlHjWuYAZxBYRkJDoaHjLDmIzC6hLLJ/0i
+ wnEFhZQlfj14DXQIA4OFgEVifPn/EHCvAIeEq/ON4O1SggoSEx5+J4ZIi4ocXLmExaIMRISB1
+ +8gKpRlLjU8Y0Rwq6QeH34ElRcTeLquU3MExj5ZyFpn4WkfQEj0ypGm6SizPSMktzEzBxdQwM
+ DXUNDU11Lc11DY0u9xCrdRL3UUt28/KKSDF1DvcTyYr3U4mK94src5JwUvbzUkk2MwLBMKU7s
+ 3sG4et8vvUOMkhxMSqK89q+OJwnxJeWnVGYkFmfEF5XmpBYfYpTh4FCS4F33GygnWJSanlqRl
+ pkDjBGYtAQHj5IIL/cfoDRvcUFibnFmOkTqFKMux9TZ//YzC7Hk5eelSonzsoIUCYAUZZTmwY
+ 2AxeslRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK880Gm8GTmlcBtegV0BBPQEcvyj4AcUZK
+ IkJJqYFq2sX768k0Tlxi8P6XFfVx3kyln0oMLPvXs4hv+aEw78ePktMQF4j9m8OQf/X8wqOt6
+ pa7PlG3LeV/u3bJhL+ce1QdZtz8dXMT0KPyewuGu57v4rwRFmfHNDPE+9kTcXKxDU36JsVeD0
+ SWnda9eT72ZMX1Z0EHmF3qaH5V4i9mObM+aulOqudPqZxencfyUpZozHfICmOotC580BFy521
+ DB5sEunbhqN89ek1R/v4XxjC1vpignveeenlvWPusyc3U7X+LVZpv34h7rjiQeL1RTTlnFbm9
+ QLPThbeuE2Sc176wMfC/4raDE/IXGltcuih7TmnjLtLbGdMw4zXxph6qzd+n5bRIi86V9JDu+
+ XlJiKc5INNRiLipOBAAM1f+uUgMAAA==
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-22.tower-728.messagelabs.com!1657273706!21306!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.87.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 31756 invoked from network); 8 Jul 2022 09:48:26 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-22.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 8 Jul 2022 09:48:26 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 2936F100192
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 10:48:26 +0100 (BST)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
+ [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F1AA101A595
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 07:33:26 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.22.34.215])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 3EBE21415117
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 07:33:26 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Fri,  8 Jul 2022 09:33:20 +0200
-Message-Id: <b30a6712179ead9c8a5556d82a4ac386904c9b4d.1657265564.git.jstancek@redhat.com>
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 1DA53100043
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 10:48:26 +0100 (BST)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Fri, 8 Jul 2022 10:48:24 +0100
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Fri, 8 Jul 2022 18:49:08 +0800
+Message-ID: <1657277348-2169-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_find_backing_dev: fix logic in matching mount
- point
+Subject: [LTP] [PATCH] tst_cgroup: Fix typo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,77 +97,72 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-If backing dev is btrfs root device, then starting best_match_len
-from 1 creates an issue, because root (/) is never matched.
-Also we should check that entire mount point string is present in
-path we are matching against.
+We only have needs_cgroup_ctrls instead of needs_cgroup_controllers in
+tst_test structure. So fix it.
 
-In case there's error also dump /proc/self/mountinfo before tst_brk.
-
-This fixes test with following partition layout (TMPDIR is on /):
-  # cat /proc/self/mountinfo  | grep btrfs
-  59 1 0:29 /root / rw,relatime shared:1 - btrfs /dev/dasda2 rw,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=257,subvol=/root
-  93 59 0:29 /home /home rw,relatime shared:47 - btrfs /dev/dasda2 rw,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=256,subvol=/home
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- lib/tst_device.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+I found it when I plan to write a cgroup regression test to ltp.
+ doc/c-test-api.txt   | 6 +++---
+ include/tst_cgroup.h | 2 +-
+ lib/tst_test.c       | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index c34cbe6d1f56..414bf0eea816 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -506,12 +506,17 @@ unsigned long tst_dev_bytes_written(const char *dev)
- 	return dev_bytes_written;
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index c138b7027..9ecf28630 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -2144,13 +2144,13 @@ struct tst_test test = {
+ 	.setup = setup,
+ 	.test_all = run,
+ 	.cleanup = cleanup,
+-	.needs_cgroup_controllers = (const char *const []){ "memory", NULL },
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+ 	...
+ };
+ -------------------------------------------------------------------------------
+ 
+ Above, we first ensure the memory controller is available on the
+-test's CGroup with '.needs_cgroup_controllers'. This populates a structure,
++test's CGroup with '.needs_cgroup_ctrls'. This populates a structure,
+ 'tst_cg', which represents the test's CGroup.
+ 
+ We then write the current processes PID into 'cgroup.procs', which
+@@ -2217,7 +2217,7 @@ static void cleanup(void)
+ struct tst_test test = {
+ 	.setup = setup,
+ 	.test_all = run,
+-	.needs_cgroup_controllers = (const char *const []){
++	.needs_cgroup_ctrls = (const char *const []){
+ 		"cpuset",
+ 		"memory",
+ 		NULL
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index d32d62399..08d1339a2 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -115,7 +115,7 @@ void tst_cg_print_config(void);
+ 
+ /* Ensure the specified controller is available in the test's default
+  * CGroup, mounting/enabling it if necessary. Usually this is not
+- * necesary use tst_test.needs_cgroup_controllers instead.
++ * necessary use tst_test.needs_cgroup_ctrls instead.
+  */
+ void tst_cg_require(const char *const ctrl_name,
+ 			const struct tst_cg_opts *const options)
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 4a196fc46..4b4dd125d 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1259,7 +1259,7 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->needs_cgroup_ctrls)
+ 		do_cgroup_requires();
+ 	else if (tst_test->needs_cgroup_ver)
+-		tst_brk(TBROK, "needs_cgroup_ver only works with needs_cgroup_controllers");
++		tst_brk(TBROK, "tst_test->needs_cgroup_ctrls must be set");
  }
  
--static int count_match_len(const char *first, const char *second)
-+static int str_starts_with(const char *str, const char *prefix)
- {
- 	int len = 0;
- 
--	while (*first && *first++ == *second++)
-+	while (*prefix) {
-+		if (!*str)
-+			return 0;
-+		if (*str++ != *prefix++)
-+			return 0;
- 		len++;
-+	}
- 
- 	return len;
- }
-@@ -524,7 +529,7 @@ void tst_find_backing_dev(const char *path, char *dev)
- 	char *pre = NULL;
- 	char *next = NULL;
- 	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
--	unsigned int len, best_match_len = 1;
-+	unsigned int len, best_match_len = 0;
- 	char mnt_point[PATH_MAX];
- 
- 	if (stat(path, &buf) < 0)
-@@ -550,7 +555,7 @@ void tst_find_backing_dev(const char *path, char *dev)
- 			break;
- 		}
- 
--		len = count_match_len(path, mnt_point);
-+		len = str_starts_with(path, mnt_point);
- 		if (len > best_match_len) {
- 			strcpy(dev, pre);
- 			best_match_len = len;
-@@ -559,8 +564,10 @@ void tst_find_backing_dev(const char *path, char *dev)
- 
- 	SAFE_FCLOSE(NULL, file);
- 
--	if (!*dev)
-+	if (!*dev) {
-+		tst_system("cat /proc/self/mountinfo");
- 		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
-+	}
- 
- 	if (stat(dev, &buf) < 0)
- 		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+ static void do_test_setup(void)
 -- 
 2.27.0
 
