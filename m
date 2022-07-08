@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42410C433EF
-	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 04:52:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0856CC433EF
+	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 06:18:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9356F3CA318
-	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 06:52:33 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 6E14A3CA3D7
+	for <ltp@archiver.kernel.org>; Fri,  8 Jul 2022 08:18:49 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 18F2A3CA2C1
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 06:52:16 +0200 (CEST)
-Received: from a48-37.smtp-out.amazonses.com (a48-37.smtp-out.amazonses.com
- [54.240.48.37])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5D9DF3C051B
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 08:18:38 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 02A711000A66
- for <ltp@lists.linux.it>; Fri,  8 Jul 2022 06:52:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1657255934;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=QLWk4XjoUxZjcdzOc/172wKWu2SrGHHEc8DHPvc4u3g=;
- b=vDZptBoZ6tDL0LXGpktjt30Pa3yIre1SusCISOCW0Mt9MwHYHbq1PknmtTMLiNqC
- V1gV3K6q7KprfeZRAC4KlIElPtvPCJNcJnF7vKeyyVr4hX1qWyWw+HiBaYPi3lYQCFR
- ferNaKNQBP0wg69XBt3KL2ljRzNwufYBPowDrLT8=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1657255934;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=QLWk4XjoUxZjcdzOc/172wKWu2SrGHHEc8DHPvc4u3g=;
- b=Hpw55sLDctjAKXd6hGcifiN5r5wi/XoqJowcMf7DwsT3zVZCam45zs9bSzlf41Qp
- 13krNF91jeI9V/CkD+RJgBl/b7q1/Q8av1nRiqCp9UxHVzNjqrSw8Yosv3w2vu2WNbc
- 2IOMRN9NmJeyO4NJVeRUxmTgD6a1HQBaaMAiktOc=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 56EAA1400E52
+ for <ltp@lists.linux.it>; Fri,  8 Jul 2022 08:18:36 +0200 (CEST)
+Received: from canpemm100008.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LfNM76yTyzhZKV;
+ Fri,  8 Jul 2022 14:16:03 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ canpemm100008.china.huawei.com (7.192.104.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 8 Jul 2022 14:18:32 +0800
+Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
+ canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.024; 
+ Fri, 8 Jul 2022 14:18:32 +0800
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Thread-Topic: [LTP] [PATCH] syscalls/creat09: Add umask(0) to setup
+Thread-Index: AdiSfpfPHOhtinRARVqVHuUi3WEtKA==
+Date: Fri, 8 Jul 2022 06:18:32 +0000
+Message-ID: <4739766d7e9841eba1af74ac93878d40@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
-Message-ID: <01000181dc26b749-38dc8249-9cf5-48e3-8fb9-093c781e30a4-000000@email.amazonses.com>
-Date: Fri, 8 Jul 2022 04:52:13 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.07.08-54.240.48.37
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 17d354e
+Subject: Re: [LTP] [PATCH] syscalls/creat09: Add umask(0) to setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,76 +56,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
+From: zhaogongyi via ltp <ltp@lists.linux.it>
+Reply-To: zhaogongyi <zhaogongyi@huawei.com>
+Cc: Zhao Gongyi via ltp <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.17.15
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.17.y
-* git commit: eed68052d2016d9f96d6656435099762608120e3
-* git describe: 17d354e
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/17d354e
+Hi Xu,
 
-## Test Regressions (compared to 7b3c5d5)
-* qemu_arm64, ltp-cve
-  - cve-2019-8912
+Shall we also need to add umask(0) in setup() though the setgid strip logic is affected by acl operations?
 
+Best wishes,
+Gongyi 
 
-## Metric Regressions (compared to 7b3c5d5)
-No metric regressions found.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## Test Fixes (compared to 7b3c5d5)
-* qemu_arm, ltp-syscalls
-  - accept02
-
-
-## Metric Fixes (compared to 7b3c5d5)
-No metric fixes found.
-
-## Test result summary
-total: 12654, pass: 10651, fail: 63, skip: 1940, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-syscalls
-* ltp-tracing
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> 
+> Hi Zhao
+> 
+> I don't this fix is meaningful because it only for "fix" this failure
+> 
+> so do you look into why umask(0077) lead this case fail?
+> 
+> I have rejected a similar patch[1] from petr yesterday because it has bug
+> exists on kernel fs sgid strip logic.
+> 
+> [1]https://lists.linux.it/pipermail/ltp/2022-July/029495.html
+> 
+> Best Regards
+> Yang Xu
+> > The bit S_ISGID of st_mode is also affected by umask, if umask is
+> > 0077, the test will fail.
+> >
+> > Signed-off-by: Zhao Gongyi<zhaogongyi@huawei.com>
+> > ---
+> >   testcases/kernel/syscalls/creat/creat09.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > diff --git a/testcases/kernel/syscalls/creat/creat09.c
+> > b/testcases/kernel/syscalls/creat/creat09.c
+> > index bed7bddb0..6edd5dbb9 100644
+> > --- a/testcases/kernel/syscalls/creat/creat09.c
+> > +++ b/testcases/kernel/syscalls/creat/creat09.c
+> > @@ -52,6 +52,8 @@ static void setup(void)
+> >   	struct stat buf;
+> >   	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
+> >
+> > +	umask(0);
+> > +
+> >   	tst_res(TINFO, "User nobody: uid = %d, gid = %d",
+> (int)ltpuser->pw_uid,
+> >   		(int)ltpuser->pw_gid);
+> >   	free_gid = tst_get_free_gid(ltpuser->pw_gid);
+> > --
+> > 2.17.1
+> >
+> >
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
