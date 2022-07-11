@@ -4,68 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0BBFC43334
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 08:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E845CCA480
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 09:19:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A5C7F3CA6AB
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 10:59:56 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9DC143CA7C3
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 11:19:19 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4993D3CA5E5
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 10:59:46 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 899AC3C9FD8
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 11:18:59 +0200 (CEST)
+Received: from a8-35.smtp-out.amazonses.com (a8-35.smtp-out.amazonses.com
+ [54.240.8.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AAB966006D7
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 10:59:45 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D0B1E22555;
- Mon, 11 Jul 2022 08:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657529984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=h5ct+/OuCcMvoepRjp1L/mmakGCXxNQcO/DKlHEqY6U=;
- b=GmG48RXffpv0r2N/XV/de87HwzrEEuJrBNIo3i2Z01iqyITw7m/avlh91eif4sSbHXlHYT
- cGVh1QNhzCGW4Ck4or4uYB/oDMla51HHArbUivngu1r1FST/Cew38NPOiYUb1YENk5gbDj
- 8aXgvibr7cPmoSDTwILW4HJNv0gCliI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657529984;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=h5ct+/OuCcMvoepRjp1L/mmakGCXxNQcO/DKlHEqY6U=;
- b=RSztmyw1PlnchWTuuIc3df4ZTLPBGsNv7zn1D1H2fSFsKBawYPczeufzP60THVm1CqOwbp
- Kl0yAwEmXjDDROBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C6E7C13322;
- Mon, 11 Jul 2022 08:59:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2c5lIX/my2KDMwAAMHmgww
- (envelope-from <akumar@suse.de>); Mon, 11 Jul 2022 08:59:43 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DEF7E200388
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 11:18:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1657531106;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=8MJMm0jakLEFydeBStnloTd2Nlmq+dYx0fSQox6yKb8=;
+ b=nZnzVvQ54Eg9GWOZzmjc/xlJn1OaQTO6FLfl/ufNb5iS4FHoz2qMzN7EGR1FIjId
+ rTh5fx6A6wz5evlZlktZRmkB1Jbs7U4tvxqw2f6S6HJNmqkrdn7xo7zGs5z574X8Xf0
+ T0YadoluO9fg0oHsGl8y3DaXwLeRTIUufC6p9PPE=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1657531106;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=8MJMm0jakLEFydeBStnloTd2Nlmq+dYx0fSQox6yKb8=;
+ b=ILQsf+CecmeNqNtjoipQezoBrqFk8eGHIy4eOueQ6rRY33vYhPQuySd8cy4u/1il
+ Ez+HuDEqIXXC0AueMDE9YOUs3rBjEa3qmPb+TfnVs4UkMuzscB5zHAzFWa9F56XWZv5
+ bjhSW2CBSHiGx/3kZn345x1TogngMhpprMInjE94=
+From: lkft@linaro.org
 To: ltp@lists.linux.it
-Date: Mon, 11 Jul 2022 14:29:40 +0530
-Message-ID: <3415287.WrLqWuVBv1@localhost>
-Organization: SUSE
-In-Reply-To: <YsvF+aZqnjNB0G0j@pevik>
-References: <20220710104449.10387-1-akumar@suse.de> <YsvF+aZqnjNB0G0j@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Message-ID: <01000181ec8d8348-ddab19e2-a363-4369-a16b-aebef9eff96b-000000@email.amazonses.com>
+Date: Mon, 11 Jul 2022 09:18:26 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.07.11-54.240.8.35
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] open08.c: Use TST_EXP_FAIL2() and SAFE_CLOSE()
+Subject: [LTP] [REGRESSION] lkft ltp for 79ba953
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,85 +56,82 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, 
+## Build
+* kernel: 5.17.15
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.17.y
+* git commit: eed68052d2016d9f96d6656435099762608120e3
+* git describe: 79ba953
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/79ba953
 
-On Monday, July 11, 2022 12:10:57 PM IST Petr Vorel wrote:
-> Hi Avinesh,
-> 
-> > Make use of TST_EXP_FAIL2() macro with testcase descriptions
-> +1
-> 
-> Also +1 for static :).
-> 
-> ...
-> > +++ b/testcases/kernel/syscalls/open/open08.c
-> > @@ -33,34 +33,20 @@ static struct test_case_t {
-> >  	char **fname;
-> >  	int flags;
-> >  	int error;
-> > +	const char *desc;
-> >  } tcases[] = {
-> > -	{&existing_fname, O_CREAT | O_EXCL, EEXIST},
-> > -	{&dir_fname, O_RDWR, EISDIR},
-> > -	{&existing_fname, O_DIRECTORY, ENOTDIR},
-> > -	{&toolong_fname, O_RDWR, ENAMETOOLONG},
-> > -	{&user2_fname, O_WRONLY, EACCES},
-> > -	{&unmapped_fname, O_CREAT, EFAULT}
-> > +	{&existing_fname, O_CREAT | O_EXCL, EEXIST, "open() existing file with 'O_CREAT | O_EXCL'"},
-> > +	{&dir_fname, O_RDWR, EISDIR, "open() existing directory with write access"},
-> > +	{&existing_fname, O_DIRECTORY, ENOTDIR, "open() non-directory pathname with O_DIRECTORY"},
-> > +	{&toolong_fname, O_RDWR, ENAMETOOLONG, "open() too long pathname"},
-> > +	{&user2_fname, O_WRONLY, EACCES, "open() file without requested access rights"},
-> > +	{&unmapped_fname, O_CREAT, EFAULT, "open() pathname with bad address"}
-> >  };
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Instead of text descriptions I'd just print flags:
-> 
-> #define FLAGS_DESC(x) .flags = x, .desc = #x
-> 
-> static struct test_case_t {
-> 	char **fname;
-> 	int flags;
-> 	const char *desc;
-> 	int error;
-> } tcases[] = {
-> 	{&existing_fname, FLAGS_DESC(O_CREAT | O_EXCL), EEXIST},
-> 	{&dir_fname, FLAGS_DESC(O_RDWR), EISDIR},
-> 	{&existing_fname, FLAGS_DESC(O_DIRECTORY), ENOTDIR},
-> 	{&toolong_fname, FLAGS_DESC(O_RDWR), ENAMETOOLONG},
-> 	{&user2_fname, FLAGS_DESC(O_WRONLY), EACCES},
-> 	{&unmapped_fname, FLAGS_DESC(O_CREAT), EFAULT},
-> };
-> 
-> # ./open08 
-> tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
-> open08.c:52: TPASS: O_CREAT | O_EXCL : EEXIST (17)
-> open08.c:52: TPASS: O_RDWR : EISDIR (21)
-> open08.c:52: TPASS: O_DIRECTORY : ENOTDIR (20)
-> open08.c:52: TPASS: O_RDWR : ENAMETOOLONG (36)
-> open08.c:52: TPASS: O_WRONLY : EACCES (13)
-> open08.c:52: TPASS: O_CREAT : EFAULT (14)
-> 
-> If you agree, I can merge it with this change.
-Yes, this is nice, please go ahead.
+## Test Regressions (compared to 17d354e)
+* qemu_arm, ltp-syscalls
+  - accept02
 
-> 
-> Kind regards,
-> Petr
-> 
+* qemu_arm64, ltp-crypto
+  - af_alg07
 
-Thanks,
-Avinesh
+* qemu_arm64, ltp-fs
+  - read_all_proc
 
 
+## Metric Regressions (compared to 17d354e)
+No metric regressions found.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+## Test Fixes (compared to 17d354e)
+* qemu_arm64, ltp-cve
+  - cve-2019-8912
+
+
+## Metric Fixes (compared to 17d354e)
+No metric fixes found.
+
+## Test result summary
+total: 12637, pass: 10640, fail: 64, skip: 1933, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-syscalls
+* ltp-tracing
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
