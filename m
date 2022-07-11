@@ -4,76 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D78B3C433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 10:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C8ADC433EF
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 10:25:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C45073CA7A0
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 12:22:03 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 61E1C3CA745
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 12:25:22 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B06E03CA677
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 12:21:51 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B4C2A3CA677
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 12:25:06 +0200 (CEST)
+Received: from a8-73.smtp-out.amazonses.com (a8-73.smtp-out.amazonses.com
+ [54.240.8.73])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4D29C1A00811
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 12:21:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1657534908;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GkeOlMUWmgAwjzITU/vTg+TCbg/TC37gQcoCbEEvWLo=;
- b=U6Wdk/CFK6XG9LBVopd4YCFIOl9qyOKBZym1eKYAgS0StGFYcitE8JFsGo7mCAh3rUdAqG
- iiUoH+QTkt2aEkNPO67alzKiaUJILRuGuMZdDbLBZHkcbK5VYlw6IRWancVOgYSFORrGg7
- s83w0HvU/i8cynSgc9GjhDpO76D1QrE=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-633-YbR9FzT5OXuNcYMCm9d3Gg-1; Mon, 11 Jul 2022 06:21:47 -0400
-X-MC-Unique: YbR9FzT5OXuNcYMCm9d3Gg-1
-Received: by mail-yb1-f200.google.com with SMTP id
- i9-20020a258b09000000b0066efe437da6so2906840ybl.5
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 03:21:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=GkeOlMUWmgAwjzITU/vTg+TCbg/TC37gQcoCbEEvWLo=;
- b=Xfb8dOs+7b0MZAHaKg9M8+EiCqttWJJpaYYNLTwfrnIPxKUvdc/PmLQnefl511sLn6
- fXLIvnCp6dRTerq7ztf1XVu2kjBbaQdyehs7RNRdGhGVHa1n40OdI2Xkj0HLFzgNZIAw
- xOLwtxNs2kuj10OrjWTMIAj3cPKBbKJT+twDJsdeGRcNftQ28Q3nUu3z2VNogmzNBUiA
- d0oY248qkAhtxd2q2IeuojmugN0aEJL/jnwoqZ1V8YNYwP/ciQh0i+oSq04uviX1fRKj
- tb96K9PwFyljKKsKMOnvQfoe5/n6scmxj2PUNe2Vxy1ax54kFNRYKy2whoGRC81/oHc1
- P4tw==
-X-Gm-Message-State: AJIora+326lyctw3it5tHxHW9sO4tyZGU0XC7O0ggmqw7MU/mL7rAr8q
- mArARZH9ldUM7dYn8e//ElXXy7xXcKqqw+M10pKdx3C/GtpkaWHFRqqaasZ6Ja7J0LhBJ73QtJr
- WpOc6uOUYFZWzX0m/Q1/4vgl/hB0=
-X-Received: by 2002:a0d:f685:0:b0:31d:7685:8a90 with SMTP id
- g127-20020a0df685000000b0031d76858a90mr5013785ywf.12.1657534906397; 
- Mon, 11 Jul 2022 03:21:46 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sb9s9Oec2rMAmx7WjxBwbIL44TAtsr8fui2L++t1HTJ6UW3Z4UPPDA6MG2OMrV0zAFzZLaB2+nkIlDjynck7U=
-X-Received: by 2002:a0d:f685:0:b0:31d:7685:8a90 with SMTP id
- g127-20020a0df685000000b0031d76858a90mr5013755ywf.12.1657534905838; Mon, 11
- Jul 2022 03:21:45 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AE80560084C
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 12:25:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1657535104;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=ymS78xEkvT41LphVWXlX9+H+7dVMjE/J8m+W0IxoAxk=;
+ b=dx3C52K1AjzMsrHw+Lz6GCoiaZk9w5Tc0N3+Pml8J8yhuEbriNdOkLRZfU5mf66O
+ ZGsKJHjvMLVgc9UpVDAeKXdN5P4cocbuvkhwAqR4CvA4MBwWe3H5sIgeD0Bg8MDitoY
+ KE4DL2zM7nwrdINYJ+R4cIAlo6I/U7Jnbk24pwRA=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1657535104;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=ymS78xEkvT41LphVWXlX9+H+7dVMjE/J8m+W0IxoAxk=;
+ b=Tx3+y/fL6xvBTsYh69r33tKLsM7Olq+CAJawTtwLnBaEiJrW2pyim5RfABfH+joi
+ Mpd3dL0P+Ew9PTop/cpOB8Nvhr3OXvaULoElXLoczGtZ7JCX0D17pcBGAsmkv/Gex2u
+ e5M7nV2mr98pig7UFA0a1zQoWSdG4nmitSOMoymw=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-References: <1657190760-2272-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <87o7xwneq7.fsf@suse.de>
-In-Reply-To: <87o7xwneq7.fsf@suse.de>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 11 Jul 2022 18:21:34 +0800
-Message-ID: <CAEemH2fCd=iVmBcV-X_DnnHQiXNK1HrpvYgTvd+OU+jC=55HPw@mail.gmail.com>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Message-ID: <01000181ecca8379-2c499b32-2daa-4d18-b6b2-d8f28477d21d-000000@email.amazonses.com>
+Date: Mon, 11 Jul 2022 10:25:03 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.07.11-54.240.8.73
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] security/dirtyc0w: fix typo
+Subject: [LTP] [REGRESSION] lkft ltp for 9a6764e
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,69 +56,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0747183166=="
+Cc: lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0747183166==
-Content-Type: multipart/alternative; boundary="00000000000044099c05e384ebd0"
+## Build
+* kernel: 5.17.15
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.17.y
+* git commit: eed68052d2016d9f96d6656435099762608120e3
+* git describe: 9a6764e
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/9a6764e
 
---00000000000044099c05e384ebd0
-Content-Type: text/plain; charset="UTF-8"
-
-Richard Palethorpe <rpalethorpe@suse.de> wrote:
-
-Hello,
->
-> Yang Xu <xuyang2018.jy@fujitsu.com> writes:
->
-> > s/dirtyc0w/dirtycow/
->
-> I assume it's l33t speak, not a typo. Did the spelling cause a problem?
->
-
-+1, yes leetspeak is widely used in online gaming and hacker area.
-
--- 
-Regards,
-Li Wang
-
---00000000000044099c05e384ebd0
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
-ll">Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse.de">rpalethor=
-pe@suse.de</a>&gt; wrote:<br></div><div class=3D"gmail_default" style=3D"fo=
-nt-size:small"><br></div></div><div class=3D"gmail_quote"><blockquote class=
-=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
-b(204,204,204);padding-left:1ex">Hello,<br>
-<br>
-Yang Xu &lt;<a href=3D"mailto:xuyang2018.jy@fujitsu.com" target=3D"_blank">=
-xuyang2018.jy@fujitsu.com</a>&gt; writes:<br>
-<br>
-&gt; s/dirtyc0w/dirtycow/<br>
-<br>
-I assume it&#39;s l33t speak, not a typo. Did the spelling cause a problem?=
-<br></blockquote><div><br></div>+1, yes leetspeak is widely used in online =
-gaming and hacker area.</div><div><br></div>-- <br><div dir=3D"ltr" class=
-=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<b=
-r></div></div></div></div>
-
---00000000000044099c05e384ebd0--
+## Test Regressions (compared to 17d354e)
+* qemu_arm, ltp-syscalls
+  - accept02
 
 
---===============0747183166==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+## Metric Regressions (compared to 17d354e)
+No metric regressions found.
 
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+## Test Fixes (compared to 17d354e)
+* qemu_arm64, ltp-cve
+  - cve-2019-8912
+
+* qemu_arm64, ltp-syscalls
+  - accept02
+
+
+## Metric Fixes (compared to 17d354e)
+No metric fixes found.
+
+## Test result summary
+total: 12216, pass: 10283, fail: 54, skip: 1879, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-syscalls
+* ltp-tracing
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0747183166==--
-
