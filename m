@@ -4,77 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E285C433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 07:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3BBFC433EF
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 07:18:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 63BA03CA6DA
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 09:17:32 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D4E793CA670
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 09:18:26 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7512B3CA5B2
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 09:17:21 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id E08F83CA5CB
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 09:18:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 33D8B1000667
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 09:18:13 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5809D226F6
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 07:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1657523893;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wIpL3sOIvh2Ju8umvbMSaW6jIbKjWJ0vnIw0qIjJaYA=;
+ b=G1ym9/pgAWByi5amOS/8qMU8X7k9zdyMDnbpLXf0ezpl/2JnzCYvihZ74NrXqzkyleK63A
+ bQ9EP0rSdS1Ca+/q74rn26QbCeVzRTEftQaghHliLlzWnSN6gd6HjDmhQDCO8JVJqz7aIu
+ c22zC/CFhgyMamKNb0GwFJhoy/jJdBk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1657523893;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wIpL3sOIvh2Ju8umvbMSaW6jIbKjWJ0vnIw0qIjJaYA=;
+ b=iCxuv71xoNkwU6VMznJfU2vEQXQYKNRu+jt1z3cLstI+P754E6b/R0AerlwD4CSxDQ4Cms
+ yqVoUW3G/yRxDSAw==
+Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ABD971000608
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 09:17:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1657523839;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sMTB/B0sUWXtAnq/7A7lk2Ly0P9e/HOTpUk0cixVE/k=;
- b=ikSVPKYBKDxJknyyRzVsRBhsiYuqQ7Okwpc9XFXpRutjIO3J/yN4OB6QfmMfESoeuWHa7w
- 0kDNtWn8dbMsquIJ5RM5OeIiIk0HrYRXi0MOqhHCBuvb8LLSjPVWwuX/S91voWN8sqFTXW
- qgmV1MBHYLRsMbgUpvYa1SEO2oiAzP4=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-614-agsoItwYNSGX24Rtz-F27g-1; Mon, 11 Jul 2022 03:17:12 -0400
-X-MC-Unique: agsoItwYNSGX24Rtz-F27g-1
-Received: by mail-yw1-f198.google.com with SMTP id
- 00721157ae682-31d436816e1so36529017b3.15
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 00:17:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=sMTB/B0sUWXtAnq/7A7lk2Ly0P9e/HOTpUk0cixVE/k=;
- b=vaSSo9F7j5wZYqnHISTUHaZ+jQE3j2gzPWf/rtZ5bqZPs3g1WIaFCoRJN7cXccZncw
- l2rhQqVYJDpks4Nw+jdw4ojXoyWiS45vT6Jno3CtFhdF+EGlQU9dK/X1kLir8k4wkKqW
- 8hF7TTk6U+c+thZQXy3Dl5Bo1GeeTBZv/H3VgUdabZHWwAKZEKOh45tymNknS1ZvKxz6
- 8mmkkLczRw1RT2Fz1NeVMHk+BNsjb1iQNiFB6QYwXYWO8qjf/2jBU5D05TDKpzOofUNO
- KET4UwMOYp270g0WWnOnTPHSXxzjkhNfZZ/sLV9sTBgCE/8eemM0tpyEl+CoEkrQ1IFN
- N1RQ==
-X-Gm-Message-State: AJIora/dZsgZpUM9Ju2FqA3QCyFfj0s+JnVJmFD0OvZtFH7Rjux18o4i
- uBFSYpXnpSz7Jx72VnhwxiUsCfBx8PTktwmkn4lc8r/8sAxTx2aeOZjuZsiu1EldI1lGNjTVQDv
- zDyQ9x5mowWf9CqmjQEQjaFGuLM4=
-X-Received: by 2002:a0d:f685:0:b0:31d:7685:8a90 with SMTP id
- g127-20020a0df685000000b0031d76858a90mr4483818ywf.12.1657523831915; 
- Mon, 11 Jul 2022 00:17:11 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vSrFbVTkxBtM25RfdvLH8aqEuBT7aSz2Gg2aldskj76/vSRMQ/U6uA2b6kjVS0QgWofLNK9ZjGT/yGDDXBpuY=
-X-Received: by 2002:a0d:f685:0:b0:31d:7685:8a90 with SMTP id
- g127-20020a0df685000000b0031d76858a90mr4483813ywf.12.1657523831737; Mon, 11
- Jul 2022 00:17:11 -0700 (PDT)
+ by relay2.suse.de (Postfix) with ESMTPS id 094A82C141;
+ Mon, 11 Jul 2022 07:18:12 +0000 (UTC)
+References: <20220707110319.24665-1-akumar@suse.de>
+ <20220707110319.24665-10-akumar@suse.de>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Avinesh Kumar <akumar@suse.de>
+Date: Mon, 11 Jul 2022 07:50:55 +0100
+In-reply-to: <20220707110319.24665-10-akumar@suse.de>
+Message-ID: <871qusp16z.fsf@suse.de>
 MIME-Version: 1.0
-References: <d9cddda87dd121a4c57baa7f2d0e221b7a99bc1c.1657212941.git.jstancek@redhat.com>
-In-Reply-To: <d9cddda87dd121a4c57baa7f2d0e221b7a99bc1c.1657212941.git.jstancek@redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 11 Jul 2022 15:17:00 +0800
-Message-ID: <CAEemH2fe7PKvb08jr-jznrb939+0H7E3Xp6pLC80QKAVGsQ0Zw@mail.gmail.com>
-To: Jan Stancek <jstancek@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/futex_waitv03: replace
- TST_THREAD_STATE_WAIT with repeated wake
+Subject: Re: [LTP] [PATCH v2 9/9] Rewrite rename10.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,91 +69,245 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0189484418=="
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0189484418==
-Content-Type: multipart/alternative; boundary="00000000000032af0b05e3825710"
+Hello,
 
---00000000000032af0b05e3825710
-Content-Type: text/plain; charset="UTF-8"
+Avinesh Kumar <akumar@suse.de> writes:
 
-On Fri, Jul 8, 2022 at 12:56 AM Jan Stancek <jstancek@redhat.com> wrote:
-
-> TST_THREAD_STATE_WAIT isn't reliable to tell that it's safe to call
-> futex_wake().
-> futex_wake() can be called prematurely and return 0, which leaves other
-> thread
-> timing out on futex call:
->   tst_test.c:1459: TINFO: Timeout per run is 0h 10m 00s
->   futex_waitv03.c:37: TINFO: Testing variant: syscall with old kernel spec
->   tst_buffers.c:55: TINFO: Test is using guarded buffers
->   futex_waitv03.c:106: TBROK: futex_waitv returned: -1: ETIMEDOUT (110)
+> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> ---
+>  testcases/kernel/syscalls/rename/rename10.c | 182 +++-----------------
+>  1 file changed, 22 insertions(+), 160 deletions(-)
 >
-> Replace it with repeated futex_wake() until it fails or wakes at least 1
-> waiter.
-> Also extend timeout to 5 seconds to avoid false positives from systems with
-> high steal time (e.g. overloaded s390x host).
->
+> diff --git a/testcases/kernel/syscalls/rename/rename10.c b/testcases/kernel/syscalls/rename/rename10.c
+> index 4f0933320..6c14a7e28 100644
+> --- a/testcases/kernel/syscalls/rename/rename10.c
+> +++ b/testcases/kernel/syscalls/rename/rename10.c
+> @@ -1,175 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * Copyright (c) International Business Machines  Corp., 2001
+> + *  07/2001 Ported by Wayne Boyer
+> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+>   */
+>  
+> -/*
+> - * NAME
+> - *	rename10
+> - *
+> - * DESCRIPTION
+> - *	This test will verify that rename(2) syscall fails with ENAMETOOLONG
+> - *      and ENOENT
+> - *
+> - * ALGORITHM
+> - *	Setup:
+> - *		Setup signal handling.
+> - *		Create temporary directory.
+> - *		Pause for SIGUSR1 if option specified.
+> - *              create the "old" file
+> - *
+> - *	Test:
+> - *		Loop if the proper options are given.
+> - *              1.  rename the "old" to the "new" file
+> - *                  verify rename() failed with error ENAMETOOLONG
+> - *
+> - *              2.  "new" path contains a directory that does not exist
+> - *                  rename the "old" to the "new"
+> - *                  verify rename() failed with error ENOENT
+> - *	Cleanup:
+> - *		Print errno log and/or timing stats if options given
+> - *		Delete the temporary directory created.*
+> - *
+> - * USAGE
+> - *	rename10 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+> - *	where,  -c n : Run n copies concurrently.
+> - *		-e   : Turn on errno logging.
+> - *		-i n : Execute test n times.
+> - *		-I x : Execute test for x seconds.
+> - *		-P x : Pause for x seconds between iterations.
+> - *		-t   : Turn on syscall timing.
+> +/*\
+> + * [Description]
+>   *
+> - * HISTORY
+> - *	07/2001 Ported by Wayne Boyer
+> - *
+> - * RESTRICTIONS
+> - *	None.
+> + * Verify that rename(2) fails with ENAMETOOLONG, when
+> + * oldpath or newpath is too long.
+>   */
+> -#include <sys/types.h>
+> -#include <fcntl.h>
+> -#include <unistd.h>
+> -#include <errno.h>
+> -
+> -#include "test.h"
+> -
+> -void setup();
+> -void cleanup();
+>  
+> -char *TCID = "rename10";
+> -int TST_TOTAL = 2;
+> +#include <stdio.h>
+> +#include "tst_test.h"
+>  
+> -char badmname[] =
+> -    "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+> +#define TEMP_FILE "tmpfile"
+>  
+> -int fd;
+> -char fname[255], mname[255];
+> -char mdir[255];
+> -
+> -struct test_case_t {
+> -	char *fd1;
+> -	char *fd2;
+> -	int error;
+> -} TC[] = {
+> -	/* badmname is too long for a file name - ENAMETOOLONG */
+> -	{
+> -	fname, badmname, ENAMETOOLONG},
+> -	    /* mname contains a directory component which does not exist - ENOENT */
+> -	{
+> -	fname, mname, ENOENT}
+> -};
+> +static char long_path[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
 
-Though TST_THREAD_STATE_WAIT is unreliable, I guess that would
-still add more chances if we keep it?
-(I mean go with repeat futex_wake() after checking 'S' state)
+PATH_MAX is actually the minimum number of bytes the system is allowed
+to set as the maximum path length. Meaning it can accept more. However
+it seems what we are actually testing here is NAME_MAX which is only 255
+and can't be bigger than 255 according to POSIX.
 
+So I think we should be testing what happens when 256 chars are passed
+as a filename (not including null terminating char).
+
+>  
+> -int main(int ac, char **av)
+> +static void setup(void)
+>  {
+> -	int lc;
+> -	int i;
+> -
+> -	/*
+> -	 * parse standard options
+> -	 */
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	/*
+> -	 * perform global setup for test
+> -	 */
+> -	setup();
+> -
+> -	/*
+> -	 * check looping state if -i option given
+> -	 */
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		/* loop through the test cases */
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -
+> -			TEST(rename(TC[i].fd1, TC[i].fd2));
+> -
+> -			if (TEST_RETURN != -1) {
+> -				tst_resm(TFAIL, "call succeeded unexpectedly");
+> -				continue;
+> -			}
+> -
+> -			if (TEST_ERRNO == TC[i].error) {
+> -				tst_resm(TPASS, "expected failure - "
+> -					 "errno = %d : %s", TEST_ERRNO,
+> -					 strerror(TEST_ERRNO));
+> -			} else {
+> -				tst_resm(TFAIL, "unexpected error - %d : %s - "
+> -					 "expected %d", TEST_ERRNO,
+> -					 strerror(TEST_ERRNO), TC[i].error);
+> -			}
+> -		}
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -
+> +	SAFE_TOUCH(TEMP_FILE, 0700, NULL);
+>  }
+>  
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> +static void run(void)
+>  {
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	/* Create a temporary directory and make it current. */
+> -	tst_tmpdir();
+> -
+> -	sprintf(fname, "./tfile_%d", getpid());
+> -	sprintf(mdir, "./rndir_%d", getpid());
+> -	sprintf(mname, "%s/rnfile_%d", mdir, getpid());
+> -
+> -	SAFE_TOUCH(cleanup, fname, 0700, NULL);
+> +	TST_EXP_FAIL(rename(TEMP_FILE, long_path),
+> +				ENAMETOOLONG);
+>  }
+>  
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *             completion or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -
+> -	/*
+> -	 * Remove the temporary directory.
+> -	 */
+> -	tst_rmdir();
+> -}
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test_all = run,
+> +	.needs_tmpdir = 1
+> +};
+> -- 
+> 2.36.1
+
+Like the rest of these tests this should be run on all filesystems as
+well. I guess if it fails on exFAT or something like that. Then we can
+filter out those filesystems because not every FS Linux supports may be
+POSIX compliant. However we probably want to make sure the main ones are
+(e.g. xfs, btrfs, ext4).
 
 -- 
-Regards,
-Li Wang
-
---00000000000032af0b05e3825710
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, Jul 8, 2022 at 12:56 AM Jan Stancek &lt;<a =
-href=3D"mailto:jstancek@redhat.com">jstancek@redhat.com</a>&gt; wrote:<br><=
-/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
-rder-left:1px solid rgb(204,204,204);padding-left:1ex">TST_THREAD_STATE_WAI=
-T isn&#39;t reliable to tell that it&#39;s safe to call futex_wake().<br>
-futex_wake() can be called prematurely and return 0, which leaves other thr=
-ead<br>
-timing out on futex call:<br>
-=C2=A0 tst_test.c:1459: TINFO: Timeout per run is 0h 10m 00s<br>
-=C2=A0 futex_waitv03.c:37: TINFO: Testing variant: syscall with old kernel =
-spec<br>
-=C2=A0 tst_buffers.c:55: TINFO: Test is using guarded buffers<br>
-=C2=A0 futex_waitv03.c:106: TBROK: futex_waitv returned: -1: ETIMEDOUT (110=
-)<br>
-<br>
-Replace it with repeated futex_wake() until it fails or wakes at least 1 wa=
-iter.<br>
-Also extend timeout to 5 seconds to avoid false positives from systems with=
-<br>
-high steal time (e.g. overloaded s390x host).<br></blockquote><div><br></di=
-v><div><div class=3D"gmail_default" style=3D"font-size:small">Though TST_TH=
-READ_STATE_WAIT is unreliable, I guess that would</div><div class=3D"gmail_=
-default" style=3D"font-size:small">still add more chances if we keep it?=C2=
-=A0</div><div class=3D"gmail_default" style=3D"font-size:small">(I mean go =
-with repeat futex_wake() after checking &#39;S&#39; state)</div></div><div>=
-<br></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signa=
-ture"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div><=
-/div></div>
-
---00000000000032af0b05e3825710--
-
-
---===============0189484418==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0189484418==--
-
