@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFCBDC433EF
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 05:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68E93C433EF
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 05:39:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0AFA03CA592
-	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 07:26:05 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 87FCE3CA59D
+	for <ltp@archiver.kernel.org>; Mon, 11 Jul 2022 07:39:06 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8543A3CA4F7
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 07:25:53 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9CAD53CA552
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 07:38:55 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B23941A006B0
- for <ltp@lists.linux.it>; Mon, 11 Jul 2022 07:25:52 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DA9FF1FE2C;
- Mon, 11 Jul 2022 05:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1657517151;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3031600671
+ for <ltp@lists.linux.it>; Mon, 11 Jul 2022 07:38:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1657517933;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HQqbKY9ceR5uk5DV2weUfgEpaGf3q/Ch21QIonAzGs8=;
- b=C4VikmOr/muz38rHeW2RB78GAy6Dq3oFFCGY3GFcmQXXXIIgEj82KWCvO+gTDyjvfMUV66
- sYSlbZaTTik9cPGPISJ3S1C+f/xp1nor7GVyLJvCy5qD8RrfYBtoH43CLvtWRZF+v+ZdoO
- VOOIfQ2lawvQvaDC+CRDKfd6sJ7vJSM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1657517151;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HQqbKY9ceR5uk5DV2weUfgEpaGf3q/Ch21QIonAzGs8=;
- b=hNInhrlkntlbYOjjwD2NplM6Ib9WyNmEN+9pAnLvbHxjP1TjYHejGap6SUqfbp46kP4GXS
- kheJx46mpNqE3CBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9AF0113524;
- Mon, 11 Jul 2022 05:25:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id V/aBJF+0y2LIXQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 11 Jul 2022 05:25:51 +0000
-Date: Mon, 11 Jul 2022 07:25:50 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Message-ID: <Ysu0XlNGy2F+uInC@pevik>
-References: <20220314191234.12382-1-pvorel@suse.cz>
- <62C5663C.2060009@fujitsu.com> <YscgIvZauxbArm7i@pevik>
- <20220708143728.r655waixwr3x7xtg@wittgenstein>
+ bh=Y7tgZCsRwR+Z5yqaORW5p6Z8ecoeIsglI1+xh6eMwxc=;
+ b=iqzJwM8UIpJpDYzDXOS16bjYsgFF3fcD+PoYPNWH3off/b5uC6guHOpYyzQ42Ig1UxrOeh
+ iXk8xYnhpH8h1yThWijTF1iseHrE09/s+0LeDbAEDTFZjF1oXe3rURFxSYfueyLX4IyE4W
+ oImPL2gRheYSbkuDJsxD0Rk35Tojyw0=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-621-IE1zWaz8PFm82fVknkNakw-1; Mon, 11 Jul 2022 01:38:51 -0400
+X-MC-Unique: IE1zWaz8PFm82fVknkNakw-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ u17-20020a258411000000b0066dfb22644eso3043553ybk.6
+ for <ltp@lists.linux.it>; Sun, 10 Jul 2022 22:38:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Y7tgZCsRwR+Z5yqaORW5p6Z8ecoeIsglI1+xh6eMwxc=;
+ b=XOPke+A94OSOAWOHF6e1OEi2QhPn7wRgJe6HPGsxVTVBFxrEUPXnu5HY07bQLLUzCN
+ 8CuSWTI3FreTmrdR5lsJwN3zDL0asKIYW9qMq7W2KqtWAn2mNpZhynNRLx3BmPjllevj
+ 7l/Hqzq3jOluK94S4CH5Iwftw+nX6xVM7mkR3e2vH8f1GAb+Fg4todgzemtu/qP9wQx5
+ wjjgO2vxa7vRLOnSwheYTG0R1Z3WarnK6e5fJZ+bsJRwGF6XlkgTpg14fXTP0/RUffKJ
+ gXO3bw/3ts01X9YLSMKXG/ADOUKPTSvDWf3k9dIhnTwIBOgqjieOB3x/OfKNC56NX9h4
+ 93Jw==
+X-Gm-Message-State: AJIora/0LVebiVKwb7KT+LO8AkXvPekYPzJpvSc8zx5HZrIvNFeQ+JAm
+ BBFRiJDEJ+kXOjZ0/WHGr+Ni3IHIX9lOpy7Fe7xQXfoLZgh2uj+fQayegMhEGKIqqwJPQP280Ed
+ lhQ58vyfNfU9hSxZkR1xfk5FSMtU=
+X-Received: by 2002:a0d:d58c:0:b0:31c:e04f:33e0 with SMTP id
+ x134-20020a0dd58c000000b0031ce04f33e0mr18749329ywd.86.1657517930689; 
+ Sun, 10 Jul 2022 22:38:50 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uFbyaOis00SQH++YNKthbjK77mtxMybpwrR1Hy+8cv703mvJ8q01zgJwIckdffSEIT+tJsyaySEJ8LOvzhlPg=
+X-Received: by 2002:a0d:d58c:0:b0:31c:e04f:33e0 with SMTP id
+ x134-20020a0dd58c000000b0031ce04f33e0mr18749318ywd.86.1657517930480; Sun, 10
+ Jul 2022 22:38:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220708143728.r655waixwr3x7xtg@wittgenstein>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <1657277348-2169-1-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1657277348-2169-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 11 Jul 2022 13:38:39 +0800
+Message-ID: <CAEemH2c1n2FEykXXuCthxENcRN1_R0ZahF3YVOviCJCW-yP3FA@mail.gmail.com>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] creat09: Fix on more restrictive umask
+Subject: Re: [LTP] [PATCH] tst_cgroup: Fix typo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,45 +84,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>, Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0110691722=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Thu, Jul 07, 2022 at 08:04:18PM +0200, Petr Vorel wrote:
-> > Hi Xu,
+--===============0110691722==
+Content-Type: multipart/alternative; boundary="00000000000074a29305e380f780"
 
-> > > Hi Petr
+--00000000000074a29305e380f780
+Content-Type: text/plain; charset="UTF-8"
 
-> > > Share some process with you...
+Pushed, thanks!
 
-> > > I have rejected this patch and a kernel patchset[1] is plan to fix this 
-> > > but doesn't merged to upstream kernel due to none continue to review 
-> > > this(It is about one month since v9...)
 
-> > > TBH, this case only tests simple creat file with open but miss
-> > > open with O_TMPFILE[2]
-> > > mknodat[3]
+-- 
+Regards,
+Li Wang
 
-> > > setgid strip logic is not only affected by umask but also include acl 
-> > > operations[4].
+--00000000000074a29305e380f780
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > Thanks a lot for an update.
-> > Al, Christian, Amir, could you please have look on v9?
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Pushed, thanks!</div></div><br><div class=3D"gmail_quote"><di=
+v dir=3D"ltr" class=3D"gmail_attr"><br></div></div>-- <br><div dir=3D"ltr" =
+class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li W=
+ang<br></div></div></div></div>
 
-> Afaict, I reviewed v9 and left comments and had pointed out things that
-> needed to be changed. So I'd wait for v10 (I'm on vacation next week
-> though.).
+--00000000000074a29305e380f780--
 
-Thanks a lot, sorry for overlooking your change requests!
 
-Kind regards,
-Petr
+--===============0110691722==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> Christian
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0110691722==--
+
