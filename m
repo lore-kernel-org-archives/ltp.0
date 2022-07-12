@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAC4EC43334
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 15:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4B5BCCA47C
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 15:44:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 940F93CA775
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:41:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9A5363CA7F3
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:44:00 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB8143CA240
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:41:21 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E23433CA728
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:43:48 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CDEF6600566
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:41:20 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2537A200099
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:43:47 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D02F23370F;
- Tue, 12 Jul 2022 15:41:19 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 51C0E33713;
+ Tue, 12 Jul 2022 15:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657640479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1657640627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7BDZdU0d63rFWe5QNurCTdblChvV3TvirgDxdmjDbiE=;
- b=H5YxEPiesKzQJt8YpWvuJoDJIjp8FecPApli9yBCa2FoWps5agtWa6ehahN7J8xY2YP2Fb
- NJ/0xczch3zblh9CjiOk1S8C+59N1uRuy7EoLV76CX21cPvyIsGKcJCePiJ2TVbP/walyv
- q5LzOlD03c3zjMyoNtGGe0Om/z7k3f0=
+ bh=X45521xXyswrHruWs7ful8kGCeGamvRX3+teUg1gdrE=;
+ b=ZIRexuWKheKBPSRDJKiX1DgVpw15BDG3Tdz2Dy7yjstfgprrLwfYOTvvZScpm10CY0HucU
+ k0JfRTgGk0Y0c/7mymMLsgSjexJrDGSe3eY4ScT4nFnJ9nHzUNTeBjjvd8WVPXRKbojxj0
+ dbj21NQueqa+B/Yx8TDCYG/pSXi4SyY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657640479;
+ s=susede2_ed25519; t=1657640627;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7BDZdU0d63rFWe5QNurCTdblChvV3TvirgDxdmjDbiE=;
- b=Vkim+ybpyMP3aBv8K3ivr+NcZYvJ46XQLQVhnk93VAp9BczVVrKQ5F6lvUcuvJDJH/hwrF
- 6MDKxsuZfovpJcDg==
+ bh=X45521xXyswrHruWs7ful8kGCeGamvRX3+teUg1gdrE=;
+ b=fhDLy5xHSFlGCGwrEFEGKGTx+A3IlwCutrbG8eKKR28GBvIQZu7hVa8PrqGwYANfWW1Mzi
+ rF3hP8JVA5MCBWBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C589D13A94;
- Tue, 12 Jul 2022 15:41:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 428E913A94;
+ Tue, 12 Jul 2022 15:43:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +bQCIR6WzWLyfgAAMHmgww
- (envelope-from <akumar@suse.de>); Tue, 12 Jul 2022 15:41:18 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id vjX5ALKWzWLjfwAAMHmgww
+ (envelope-from <akumar@suse.de>); Tue, 12 Jul 2022 15:43:46 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 12 Jul 2022 21:11:16 +0530
-Message-ID: <4740847.qShWNTrPRO@localhost>
+Date: Tue, 12 Jul 2022 21:13:43 +0530
+Message-ID: <3360279.vcJHHDm8YO@localhost>
 Organization: SUSE
-In-Reply-To: <87edysp4o7.fsf@suse.de>
+In-Reply-To: <875yk4p3gx.fsf@suse.de>
 References: <20220707110319.24665-1-akumar@suse.de>
- <20220707110319.24665-2-akumar@suse.de> <87edysp4o7.fsf@suse.de>
+ <20220707110319.24665-5-akumar@suse.de> <875yk4p3gx.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/9] Rewrite rename01.c using new LTP API
+Subject: Re: [LTP] [PATCH v2 4/9] Rewrite rename04.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,21 +84,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Monday, July 11, 2022 11:00:20 AM IST Richard Palethorpe wrote:
+On Monday, July 11, 2022 11:47:23 AM IST Richard Palethorpe wrote:
 > Hello,
 > 
 > Avinesh Kumar <akumar@suse.de> writes:
 > 
 > > Signed-off-by: Avinesh Kumar <akumar@suse.de>
 > > ---
-> >  testcases/kernel/syscalls/rename/rename01.c | 259 +++++---------------
-> >  1 file changed, 58 insertions(+), 201 deletions(-)
+> >  testcases/kernel/syscalls/rename/rename04.c | 201 ++++----------------
+> >  1 file changed, 33 insertions(+), 168 deletions(-)
 > >
-> > diff --git a/testcases/kernel/syscalls/rename/rename01.c b/testcases/kernel/syscalls/rename/rename01.c
-> > index e7de18ff4..695d85c57 100644
-> > --- a/testcases/kernel/syscalls/rename/rename01.c
-> > +++ b/testcases/kernel/syscalls/rename/rename01.c
-> > @@ -1,218 +1,75 @@
+> > diff --git a/testcases/kernel/syscalls/rename/rename04.c b/testcases/kernel/syscalls/rename/rename04.c
+> > index 32594a776..13cdf98ad 100644
+> > --- a/testcases/kernel/syscalls/rename/rename04.c
+> > +++ b/testcases/kernel/syscalls/rename/rename04.c
+> > @@ -1,182 +1,47 @@
 > > +// SPDX-License-Identifier: GPL-2.0-or-later
 > >  /*
 > > - *
@@ -124,43 +124,33 @@ On Monday, July 11, 2022 11:00:20 AM IST Richard Palethorpe wrote:
 > >  
 > > -/*
 > > - * NAME
-> > - *	rename01
+> > - *	rename04
 > > - *
 > > - * DESCRIPTION
-> > - *	This test will verify the rename(2) syscall basic functionality.
-> > - *	Verify rename() works when the "new" file or directory does not exist.
-> > +/*\
-> > + * [Description]
-> >   *
+> > - *	This test will verify that rename(2) failed when newpath is
+> > - *      a non-empty directory and return EEXIST or ENOTEMPTY
+> > - *
 > > - * ALGORITHM
 > > - *	Setup:
 > > - *		Setup signal handling.
 > > - *		Create temporary directory.
 > > - *		Pause for SIGUSR1 if option specified.
+> > - *              create the "old" directory and the "new" directory
+> > - *              create a file uner the "new" directory
 > > - *
 > > - *	Test:
 > > - *		Loop if the proper options are given.
-> > - *              1.  "old" is plain file, new does not exists
-> > - *                  create the "old" file, make sure the "new" file
-> > - *                  dose not exist
-> > - *                  rename the "old" to the "new" file
-> > - *                  verify the "new" file points to the "old" file
-> > - *                  verify the "old" file does not exist
+> > - *                  rename the "old" to the "new" directory
+> > - *                  verify rename() failed and returned ENOTEMPTY
 > > - *
-> > - *              2.  "old" is a directory,"new" does not exists
-> > - *                  create the "old" directory, make sure "new"
-> > - *                  dose not exist
-> > - *                  rename the "old" to the "new"
-> > - *                  verify the "new" points to the "old"
-> > - *                  verify the "old" does not exist
 > > - *	Cleanup:
 > > - *		Print errno log and/or timing stats if options given
 > > - *		Delete the temporary directory created.
 > > - *
 > > - * USAGE
-> > - *	rename01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> > - *	rename04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 > > - *	where,  -c n : Run n copies concurrently.
-> > - *		-f   : Turn off functionality Testing.
+> > - *		-e   : Turn on errno logging.
 > > - *		-i n : Execute test n times.
 > > - *		-I x : Execute test for x seconds.
 > > - *		-P x : Pause for x seconds between iterations.
@@ -168,10 +158,13 @@ On Monday, July 11, 2022 11:00:20 AM IST Richard Palethorpe wrote:
 > > - *
 > > - * HISTORY
 > > - *	07/2001 Ported by Wayne Boyer
-> > - *
+> > +/*\
+> > + * [Description]
+> >   *
 > > - * RESTRICTIONS
 > > - *	None.
-> > + * Verify rename() when the newpath file or directory does not exist.
+> > + * Verify that rename() fails with EEXIST or ENOTEMPTY when
+> > + * newpath is a non-empty directory.
 > >   */
 > > -#include <sys/types.h>
 > > -#include <fcntl.h>
@@ -181,47 +174,164 @@ On Monday, July 11, 2022 11:00:20 AM IST Richard Palethorpe wrote:
 > >  
 > > -#include "test.h"
 > > -#include "safe_macros.h"
-> > -
-> > -void setup();
-> > -void cleanup();
-> > +#include <sys/stat.h>
 > > +#include <stdio.h>
 > > +#include "tst_test.h"
 > >  
-> > -char *TCID = "rename01";
-> > -int TST_TOTAL = 2;
-> > +#define SWAP(a, b) do { \
-> > +		const char *tmp__ = a; \
-> > +		a = b; \
-> > +		b = tmp__; \
-> > +} while (0)
+> > -void setup();
+> > -void cleanup();
+> > +#define DIR1 "dir1"
+> > +#define DIR2 "dir2"
+> > +#define TEMP_FILE DIR2"/tmpfile"
+> >  
+> > -char *TCID = "rename04";
+> > -int TST_TOTAL = 1;
+> > -
+> > -int fd;
+> > -char tstfile[40];
+> > -char fdir[255], mdir[255];
+> > -struct stat buf1, buf2;
+> > -dev_t olddev, olddev1;
+> > -ino_t oldino, oldino1;
+> > -
+> > -int main(int ac, char **av)
+> > +static void setup(void)
+> >  {
+> > -	int lc;
+> > -
+> > -	/*
+> > -	 * parse standard options
+> > -	 */
+> > -	tst_parse_opts(ac, av, NULL, NULL);
+> > -
+> > -	/*
+> > -	 * perform global setup for test
+> > -	 */
+> > -	setup();
+> > -
+> > -	/*
+> > -	 * check looping state if -i option given
+> > -	 */
+> > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> > -
+> > -		tst_count = 0;
+> > -
+> > -		/* rename a directory to a non-empty directory */
+> > -
+> > -		/* Call rename(2) */
+> > -		TEST(rename(fdir, mdir));
+> > -
+> > -		if (TEST_RETURN != -1) {
+> > -			tst_resm(TFAIL, "rename(%s, %s) succeeded unexpectedly",
+> > -				 fdir, mdir);
+> > -			continue;
+> > -		}
+> > -
+> > -		if (TEST_ERRNO == ENOTEMPTY) {
+> > -			tst_resm(TPASS, "rename() returned ENOTEMPTY");
+> > -		} else if (TEST_ERRNO == EEXIST) {
+> > -			tst_resm(TPASS, "rename() returned EEXIST");
+> > -		} else {
+> > -			tst_resm(TFAIL, "Expected ENOTEMPTY or EEXIST got %d",
+> > -				 TEST_ERRNO);
+> > -		}
+> > -
+> > -	}
+> > -
+> > -	/*
+> > -	 * cleanup and exit
+> > -	 */
+> > -	cleanup();
+> > -	tst_exit();
+> > -
+> > +	SAFE_MKDIR(DIR1, 00770);
+> > +	SAFE_MKDIR(DIR2, 00770);
+> > +	SAFE_TOUCH(TEMP_FILE, 0700, NULL);
+> >  }
+> >  
+> > -/*
+> > - * setup() - performs all ONE TIME setup for this test.
+> > - */
+> > -void setup(void)
+> > +static void run(void)
+> >  {
+> > -
+> > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> > -
+> > -	TEST_PAUSE;
+> > -
+> > -	/* Create a temporary directory and make it current. */
+> > -	tst_tmpdir();
+> > -
+> > -	sprintf(fdir, "./tdir_%d", getpid());
+> > -	sprintf(mdir, "./rndir_%d", getpid());
+> > -	sprintf(tstfile, "%s/tstfile_%d", mdir, getpid());
+> > -
+> > -	/* create "old" directory */
+> > -	SAFE_MKDIR(cleanup, fdir, 00770);
+> > -
+> > -	SAFE_STAT(cleanup, fdir, &buf1);
+> > -
+> > -	/* save "old"'s dev and ino */
+> > -	olddev = buf1.st_dev;
+> > -	oldino = buf1.st_ino;
+> > -
+> > -	/* create another directory */
+> > -	SAFE_MKDIR(cleanup, mdir, 00770);
+> > -
+> > -	SAFE_TOUCH(cleanup, tstfile, 0700, NULL);
+> > -
+> > -	SAFE_STAT(cleanup, mdir, &buf2);
+> > -
+> > -	/* save "new"'s dev and ino */
+> > -	olddev1 = buf2.st_dev;
+> > -	oldino1 = buf2.st_ino;
+> > +	TEST(rename(DIR1, DIR2));
+> > +
+> > +	if (TST_RET == -1 && TST_ERR == ENOTEMPTY)
+> > +		tst_res(TPASS, "rename() failed with ENOTEMPTY");
+> > +	else if (TST_RET == -1 && TST_ERR == EEXIST)
+> > +		tst_res(TPASS, "rename() failed with EEXIST");
+> > +	else if (TST_RET == 0)
+> > +		tst_res(TFAIL, "rename() succeeded unexpectedly");
+> > +	else
+> > +		tst_res(TFAIL, "rename() failed, but not with expected
+> > errno");
 > 
-> This doesn't need to be a macro (which don't have type or name collision
-> checking and confuse some tooling etc.). It's actually the same number of
-> lines to write it inline as well, i.e.
-> 
-> char *tmp;
-> 
-> tmp = a;
-> a = b;
-> b = tmp;
-> 
-> tmp = c;
-> c = d;
-> d = tmp;
-> 
-> However if you don't want to write it inline I'd prefer a function which
-> takes const *const *char.
-> 
+> You can print the errno name with tst_res(TFAIL | TERRNO, ...)
+Updated in the v3 patch.
 
-Thanks Richie! I have changed it to inline in updated patch.
-
-> Otherwise looks good.
+> 
+> >  }
+> >  
+> > -/*
+> > - * cleanup() - performs all ONE TIME cleanup for this test at
+> > - *              completion or premature exit.
+> > - */
+> > -void cleanup(void)
+> > -{
+> > -
+> > -	/*
+> > -	 * Remove the temporary directory.
+> > -	 */
+> > -	tst_rmdir();
+> > -}
+> > +static struct tst_test test = {
+> > +	.setup = setup,
+> > +	.test_all = run,
+> > +	.needs_tmpdir = 1
+> 
+> I suppose all these tests should be done on all file systems as
+> well. Renaming is implemented differently on each filesystem.
+Good point! I have enabled these tests on all filesystems in v3
+> 
+> > +};
+> 
 > 
 > 
 
 --
 Avinesh
+
 
 
 
