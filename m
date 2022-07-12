@@ -4,81 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02BC9C43334
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 08:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71951C43334
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 08:33:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 34CCE3CA84F
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 10:20:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 46C1E3CA84F
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 10:33:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8ABAE3CA791
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 10:19:50 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 015223CA7B4
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 10:33:22 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7EAAE2009EE
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 10:19:49 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 07A10600852
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 10:33:21 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1657613988;
+ s=mimecast20190719; t=1657614800;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kgJqLL+Ze+iL9HsfZ3taTH7f465Qz4tzMdsbQVOfxls=;
- b=dAyOtHpQjbI4zzsGGDToCD/VU9IFsWxF8DrOZBHHMEt2OvK7tYgLsD00dcYnIyN/LxE2rR
- Qa+GTc7q8pCQP/b0W1t+DPH5dzo/hEc7xZeYYoM7V6SS6PIKmnDdnjlzdaQ+iLKVhNBLdQ
- 0KaiKDKBLxdrBEeG3H3Fw9yGS2qa/wE=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=TuCfqmLMX4HS0KUr6UQQXoT+tjdGWMZC2PBAPdRbKgQ=;
+ b=bw07cFl2RSeX5juwUVI5CIqN0hgoycTEk9psIbj3cGFFMgQvkSEDbn2Ax33RUkoKVQpqH0
+ aJmySqhVWGjLyp1PD2EhFT2esi1d7L+XU3aB0LJGbW77c54cM9FNCcYtWvIQs5EI/+IU5O
+ AJKHLo6tKhTfgrUzLrvMHMyB7c7Vcro=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-232-YcVC426cNiq3kFq9R08BqA-1; Tue, 12 Jul 2022 04:19:41 -0400
-X-MC-Unique: YcVC426cNiq3kFq9R08BqA-1
-Received: by mail-lj1-f198.google.com with SMTP id
- r7-20020a2eb607000000b0025d547f19c4so1280265ljn.11
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 01:19:40 -0700 (PDT)
+ us-mta-391-B9QXbJNxOVywYjEwi4xXug-1; Tue, 12 Jul 2022 04:33:13 -0400
+X-MC-Unique: B9QXbJNxOVywYjEwi4xXug-1
+Received: by mail-yb1-f198.google.com with SMTP id
+ r16-20020a257610000000b0066f5239588eso2805640ybc.12
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 01:33:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=kgJqLL+Ze+iL9HsfZ3taTH7f465Qz4tzMdsbQVOfxls=;
- b=lLndNodc4tQySZrjs5nbu+2OS2bQSHjuKq66M1k6lDJGNBB3zsKxKlFWasUiygrJzu
- 6beP12PI5BFEbbQHeJn2/bWi/tc1Sxe3/oHkJ/W0DMK/UcxlRzc6x0o763qgBiUwY4he
- 3tMspfoOPJTOlBn3NpcYtdgTWSPil9f69ozNXGWiyJ8gGZEHp940fcQrdov2cx0ibYpQ
- mzNaahZ9ihVt6sNdGENiEa5wUYBemlItzGmcTia9opUDjZWitiOU8l8Dvj305h43zuZD
- 4Ns0yKdJwnXpM4WE+fD9AcDqv4XNLTANnAQwX2ohu/wXbDcNdoi+N9svPiSP8ZR9tsm3
- Uzag==
-X-Gm-Message-State: AJIora/L33VHf2p1+1Uf48gGDOzeRXL9l33eziVYEIJdFHKHYYcJ/b5t
- T+IYlU8Q+cL8rY7KdHboip7oVIO9q5TMFKYZ2PtBI4Ah7hIcu2OMad355UaQyg4jFUPefQuzNMt
- tdsmzct8j9Xs+OwiQkhOjMVIrAAg=
-X-Received: by 2002:a05:6512:2390:b0:489:f0bd:9fa7 with SMTP id
- c16-20020a056512239000b00489f0bd9fa7mr1375917lfv.430.1657613979329; 
- Tue, 12 Jul 2022 01:19:39 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1ulcV1N/f2MQ1AX/K7QJXAuBx8BK4RWf7HfyC81AZZ6d6VRRMG1gZnajmQkEr1FfHepZA+Pt6CGIyi1Qzde7Vc=
-X-Received: by 2002:a05:6512:2390:b0:489:f0bd:9fa7 with SMTP id
- c16-20020a056512239000b00489f0bd9fa7mr1375905lfv.430.1657613979102; Tue, 12
- Jul 2022 01:19:39 -0700 (PDT)
+ bh=TuCfqmLMX4HS0KUr6UQQXoT+tjdGWMZC2PBAPdRbKgQ=;
+ b=7HLbOaFkdgK/KSeE9XzgJ0z/AAdsxuIka+gfiY+f/7deGR2FCdJXzGZwH6F0hG82pS
+ vYGVtBrwkDMN0iFMsg8nh8esskmLKHkGp9wt7wtcMsK5bXc8gkpV8r/M7o9T6ecCvfrT
+ l+qs/TzoGH94Q6NaM2ZIHM4KhDEqpSHueIujx1laMsIZN7kiLR97h55VxfufBLFaIuWo
+ GzfcsEbIFiTdrPp1JjCAN5RbLGG9VzuFZCC52QlA9d2L1xzCSgqn14CrKHx0o7t3Q4+o
+ WaaRlMdN7/M7g1TvIlSzvyWSGwbaQVXk0qi4ary0H95mKFQYGtCrGxXfMJDJGg3G08nB
+ 9BSQ==
+X-Gm-Message-State: AJIora8C9u5poxWaBhVy1PsLB37v3fGx4Azb7QE+TuIJY8VxonZvZXdu
+ gcIuMRxDlhr1qLQEWlkVlf1aUay0eK4AWoyXj019SO9hY60cEjG972gUS+gbL5uk9NhN57d022C
+ 2hzOWYqsFX7EBdjYFjKUGTSQ7t/U=
+X-Received: by 2002:a25:25d7:0:b0:66e:ce4d:da48 with SMTP id
+ l206-20020a2525d7000000b0066ece4dda48mr20731699ybl.301.1657614792536; 
+ Tue, 12 Jul 2022 01:33:12 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sBbItPhPYAz1rNkTJVH8hxMjMwxmBu1mTGRHKrLKVP/wbkTs4nKA8BpWYNcwdEWAgSvqjfUT/pe2dmEZLxQ9U=
+X-Received: by 2002:a25:25d7:0:b0:66e:ce4d:da48 with SMTP id
+ l206-20020a2525d7000000b0066ece4dda48mr20731682ybl.301.1657614792155; Tue, 12
+ Jul 2022 01:33:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220613143826.1328830-1-amir73il@gmail.com>
- <20220613143826.1328830-6-amir73il@gmail.com>
- <CAASaF6wSYFOTsuZUN-B6QNrvrRxVavpujhLNXS4FBSeysDBgDQ@mail.gmail.com>
- <CAOQ4uxj9Tq9NL2tic+6GtS6q5tBWdo-ixHPPkovKQdvU6NpHMQ@mail.gmail.com>
- <CAASaF6w2NqMNCNY+MEgOB6sUKz19foF6a27ZCO-7qFe9dCarpQ@mail.gmail.com>
- <CAOQ4uxiJ2kb42XzQc8P2cZ6LKdrYNK3-P9u_cLS_WHYx4LzwzA@mail.gmail.com>
-In-Reply-To: <CAOQ4uxiJ2kb42XzQc8P2cZ6LKdrYNK3-P9u_cLS_WHYx4LzwzA@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 12 Jul 2022 10:19:19 +0200
-Message-ID: <CAASaF6y_KPnQh_ezG5njXaVOyFxtnTWDne2gf7S5XjMDZYa=rg@mail.gmail.com>
-To: Amir Goldstein <amir73il@gmail.com>
+References: <d9cddda87dd121a4c57baa7f2d0e221b7a99bc1c.1657212941.git.jstancek@redhat.com>
+ <CAEemH2fe7PKvb08jr-jznrb939+0H7E3Xp6pLC80QKAVGsQ0Zw@mail.gmail.com>
+ <CAASaF6x8tiwES5kiFR=bdrc8=h2BraG6fqUHsjdEM-ogkrgHpg@mail.gmail.com>
+In-Reply-To: <CAASaF6x8tiwES5kiFR=bdrc8=h2BraG6fqUHsjdEM-ogkrgHpg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 12 Jul 2022 16:33:01 +0800
+Message-ID: <CAEemH2dTgx26P5f=oXSVa0T4B5seE1r6wbdb_-0255PDundgcg@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
 Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jstancek@redhat.com
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/5] syscalls/fanotify10: Add test cases for
- evictable ignore mark
+Subject: Re: [LTP] [PATCH] syscalls/futex_waitv03: replace
+ TST_THREAD_STATE_WAIT with repeated wake
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,196 +87,137 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>,
- Matthew Bobrowski <repnop@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1038207660=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Sat, Jul 9, 2022 at 12:09 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Thu, Jul 7, 2022 at 3:49 PM Jan Stancek <jstancek@redhat.com> wrote:
+--===============1038207660==
+Content-Type: multipart/alternative; boundary="000000000000dc79f205e3978425"
+
+--000000000000dc79f205e3978425
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, Jul 12, 2022 at 4:00 PM Jan Stancek <jstancek@redhat.com> wrote:
+
+> On Mon, Jul 11, 2022 at 9:17 AM Li Wang <liwang@redhat.com> wrote:
 > >
-> > On Thu, Jun 30, 2022 at 10:21 AM Amir Goldstein <amir73il@gmail.com> wrote:
-> > >
-> > > On Thu, Jun 30, 2022 at 9:27 AM Jan Stancek <jstancek@redhat.com> wrote:
-> > > >
-> > > > On Mon, Jun 13, 2022 at 4:39 PM Amir Goldstein <amir73il@gmail.com> wrote:
-> > > > >
-> > > > > Test multiple groups with evictable mark with ignore mask
-> > > > >
-> > > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > > > > ---
-> > > > >  .../kernel/syscalls/fanotify/fanotify10.c     | 78 +++++++++++++++++++
-> > > > >  1 file changed, 78 insertions(+)
-> > > > >
-> > > > > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > > > > index b9a50672d..52277d0b7 100644
-> > > > > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > > > > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > > > > @@ -71,6 +71,7 @@ static char event_buf[EVENT_BUF_LEN];
-> > > > >  static int exec_events_unsupported;
-> > > > >  static int fan_report_dfid_unsupported;
-> > > > >  static int filesystem_mark_unsupported;
-> > > > > +static int evictable_mark_unsupported;
-> > > > >
-> > > > >  #define MOUNT_PATH "fs_mnt"
-> > > > >  #define MNT2_PATH "mntpoint"
-> > > > > @@ -90,6 +91,10 @@ static int filesystem_mark_unsupported;
-> > > > >  #define FILE_EXEC_PATH2 MNT2_PATH"/"TEST_APP
-> > > > >  #define FILE2_EXEC_PATH2 MNT2_PATH"/"TEST_APP2
-> > > > >
-> > > > > +#define DROP_CACHES_FILE "/proc/sys/vm/drop_caches"
-> > > > > +#define CACHE_PRESSURE_FILE "/proc/sys/vm/vfs_cache_pressure"
-> > > > > +
-> > > > > +static int old_cache_pressure;
-> > > > >  static pid_t child_pid;
-> > > > >  static int bind_mount_created;
-> > > > >  static unsigned int num_classes = NUM_CLASSES;
-> > > > > @@ -98,12 +103,14 @@ enum {
-> > > > >         FANOTIFY_INODE,
-> > > > >         FANOTIFY_MOUNT,
-> > > > >         FANOTIFY_FILESYSTEM,
-> > > > > +       FANOTIFY_EVICTABLE,
-> > > > >  };
-> > > > >
-> > > > >  static struct fanotify_mark_type fanotify_mark_types[] = {
-> > > > >         INIT_FANOTIFY_MARK_TYPE(INODE),
-> > > > >         INIT_FANOTIFY_MARK_TYPE(MOUNT),
-> > > > >         INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
-> > > > > +       INIT_FANOTIFY_MARK_TYPE(EVICTABLE),
-> > > > >  };
-> > > > >
-> > > > >  static struct tcase {
-> > > > > @@ -289,14 +296,59 @@ static struct tcase {
-> > > > >                 0,
-> > > > >                 FILE_PATH, FAN_OPEN, FAN_OPEN
-> > > > >         },
-> > > > > +       /* Evictable ignore mark test cases */
-> > > > > +       {
-> > > > > +               "don't ignore mount events created on file with evicted ignore mark",
-> > > > > +               MOUNT_PATH, FANOTIFY_MOUNT,
-> > > > > +               FILE_PATH, FANOTIFY_EVICTABLE,
-> > > > > +               0,
-> > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
-> > > > > +       },
-> > > > > +       {
-> > > > > +               "don't ignore fs events created on a file with evicted ignore mark",
-> > > > > +               MOUNT_PATH, FANOTIFY_FILESYSTEM,
-> > > > > +               FILE_PATH, FANOTIFY_EVICTABLE,
-> > > > > +               0,
-> > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
-> > > > > +       },
-> > > > > +       {
-> > > > > +               "don't ignore mount events created inside a parent with evicted ignore mark",
-> > > > > +               MOUNT_PATH, FANOTIFY_MOUNT,
-> > > > > +               DIR_PATH, FANOTIFY_EVICTABLE,
-> > > > > +               FAN_EVENT_ON_CHILD,
-> > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
-> > > > > +       },
-> > > > > +       {
-> > > > > +               "don't ignore fs events created inside a parent with evicted ignore mark",
-> > > > > +               MOUNT_PATH, FANOTIFY_FILESYSTEM,
-> > > > > +               DIR_PATH, FANOTIFY_EVICTABLE,
-> > > > > +               FAN_EVENT_ON_CHILD,
-> > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
-> > > > > +       },
-> > > >
-> > > > Hi,
-> > > >
-> > > > we are seeing some sporadic failures from this last testcase, with
-> > > > recent upstream kernels (v5.19-rc4-14-g941e3e791269).
-> > > > Has anyone also ran into it and knows if it's bug on test side or kernel?
->
-> Hi Jan,
->
-> I am traveling so I cannot work on solving the problem for the next week,
-> but I can explain the problem and offer suggestions for short term solutions
-> and maybe a longer term solution.
->
-> > > >
-> > > > fanotify10.c:496: TINFO: Test #27: don't ignore fs events created
-> > > > inside a parent with evicted ignore mark
-> > > > fanotify10.c:338: TPASS: No fanotify inode marks as expected
-> > > > fanotify10.c:338: TPASS: No fanotify inode marks as expected
-> > > > fanotify10.c:338: TPASS: No fanotify inode marks as expected
-> > > > fanotify10.c:340: TFAIL: Unexpected inode mark (mflags=240,
-> > > > mask=8000020 ignored_mask=20)
-> > >
-> > > It is a test bug.
-> > > The problem is that we want to evict an inode, but there is no
-> > > reliable mechanism to do that.
-> > >
-> > > This is the reason for this workaround in fanotify23:
-> > >
-> > >         /* Shrinkers on other fs do not work reliably enough to
-> > > guarantee mark eviction on drop_caches */
-> > >         .dev_fs_type = "ext2",
-> > >
-> > > I did not encounter the problem with fanotify10 myself, but it should
-> > > be the same.
-> > > fanotify10 is not filesystem dependent, so if you can apply the same workaround
-> > > from fanotify23 and it works on your systems we can do that.
 > >
-> > Test is using default fs type, which should already be ext2.
->
-> I see. You can try xfs on your system to see if it behaves better,
-> because xfs has a specialized inode shriker.
->
-> > Here's a more complete log from failed test:
-> > https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2022/06/30/redhat:576928171/build_ppc64le_redhat:576928171_ppc64le/tests/1/results_0001/job.01/recipes/12221009/tasks/8/logs/syscalls.fail.log
 > >
+> > On Fri, Jul 8, 2022 at 12:56 AM Jan Stancek <jstancek@redhat.com> wrote:
+> >>
+> >> TST_THREAD_STATE_WAIT isn't reliable to tell that it's safe to call
+> futex_wake().
+> >> futex_wake() can be called prematurely and return 0, which leaves other
+> thread
+> >> timing out on futex call:
+> >>   tst_test.c:1459: TINFO: Timeout per run is 0h 10m 00s
+> >>   futex_waitv03.c:37: TINFO: Testing variant: syscall with old kernel
+> spec
+> >>   tst_buffers.c:55: TINFO: Test is using guarded buffers
+> >>   futex_waitv03.c:106: TBROK: futex_waitv returned: -1: ETIMEDOUT (110)
+> >>
+> >> Replace it with repeated futex_wake() until it fails or wakes at least
+> 1 waiter.
+> >> Also extend timeout to 5 seconds to avoid false positives from systems
+> with
+> >> high steal time (e.g. overloaded s390x host).
+> >
+> >
+> > Though TST_THREAD_STATE_WAIT is unreliable, I guess that would
+> > still add more chances if we keep it?
+> > (I mean go with repeat futex_wake() after checking 'S' state)
 >
-> Are the failures only in the first test iteration?
+> We could keep it, though I'm not sure what benefit that has. You
+> would probably make fewer calls to futex_wake(). Without it,
+> the window where wake and wait calls are made in parallel
+> is larger, and it also makes test simpler.
+>
 
-I think so. It runs in automated environment, where we see failures
-about once a week. I haven't managed to reproduce it by hand yet.
+Yes, that helps reduce the tries of futex_wake() to make the test faster.
+But not benefit a lot compared with removing.
 
->
-> As a long shot, I would try to remove mount_cycle() from setup().
-> I see that fanotify23 does not have it and it is not really needed, so
-> it may help
-> fanotify10 pass the first iteration.
->
-> The problem is that the drop_caches knob is not a reliable way to evict inodes,
-> so when a test like fanotify10 needs to evict an inode, random factors are mixed
-> into the test run.
->
-> As a quick band aid, I suggest to replace the TFAIL, "Unexpected inode mark"
-> in show_fanotify_marks() with TCONF, because the test failed to setup an
-> "evictable ignored mark that gets evicted", propagate a failure return
-> value from
-> create_fanotify_groups() => show_fanotify_marks() and skip the test case
-> instead of failing it.
+So feel free to merge it as you wish, I think it's OK with both.
 
-Thanks for suggestion.
+Reviewed-by: Li Wang <liwang@redhat.com>
 
->
-> For long term, it would be nice if LTP could provide a
-> drop_inode_cache() library
-> function that tries harder to make inode eviction work using tricks
-> like fanotify10
-> and fanotify23 increases vfs_cache_pressure.
-> To pressure memory shrinkers to evict more inodes, need to check the amount
-> of total RAM in the system and dirty pages and add enough dirty memory pages
-> that cannot be evicted to drive the inode shrinker to work harder.
-> Utilizing memory cgroups with some of the new per memcg cache eviction knobs
-> could also be an option, but I did not look into it and not sure on
-> which kernels
-> this is available.
->
-> Bottom line is that there is a lot of black magic involved with memory shrinkers
-> and as your report shows, hacks and trick may impact different systems in
-> different ways, so it is better it the infrastructure is developed and tested in
-> LTP lib and not in individual tests.
->
-> Hope this helps.
->
-> Thanks,
-> Amir.
->
+
+-- 
+Regards,
+Li Wang
+
+--000000000000dc79f205e3978425
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Tue, Jul 12, 2022 at 4:00 PM Jan Stancek &lt;<a =
+href=3D"mailto:jstancek@redhat.com" target=3D"_blank">jstancek@redhat.com</=
+a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0p=
+x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">On=
+ Mon, Jul 11, 2022 at 9:17 AM Li Wang &lt;<a href=3D"mailto:liwang@redhat.c=
+om" target=3D"_blank">liwang@redhat.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; On Fri, Jul 8, 2022 at 12:56 AM Jan Stancek &lt;<a href=3D"mailto:jsta=
+ncek@redhat.com" target=3D"_blank">jstancek@redhat.com</a>&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt; TST_THREAD_STATE_WAIT isn&#39;t reliable to tell that it&#39;s saf=
+e to call futex_wake().<br>
+&gt;&gt; futex_wake() can be called prematurely and return 0, which leaves =
+other thread<br>
+&gt;&gt; timing out on futex call:<br>
+&gt;&gt;=C2=A0 =C2=A0tst_test.c:1459: TINFO: Timeout per run is 0h 10m 00s<=
+br>
+&gt;&gt;=C2=A0 =C2=A0futex_waitv03.c:37: TINFO: Testing variant: syscall wi=
+th old kernel spec<br>
+&gt;&gt;=C2=A0 =C2=A0tst_buffers.c:55: TINFO: Test is using guarded buffers=
+<br>
+&gt;&gt;=C2=A0 =C2=A0futex_waitv03.c:106: TBROK: futex_waitv returned: -1: =
+ETIMEDOUT (110)<br>
+&gt;&gt;<br>
+&gt;&gt; Replace it with repeated futex_wake() until it fails or wakes at l=
+east 1 waiter.<br>
+&gt;&gt; Also extend timeout to 5 seconds to avoid false positives from sys=
+tems with<br>
+&gt;&gt; high steal time (e.g. overloaded s390x host).<br>
+&gt;<br>
+&gt;<br>
+&gt; Though TST_THREAD_STATE_WAIT is unreliable, I guess that would<br>
+&gt; still add more chances if we keep it?<br>
+&gt; (I mean go with repeat futex_wake() after checking &#39;S&#39; state)<=
+br>
+<br>
+We could keep it, though I&#39;m not sure what benefit that has. You<br>
+would probably make fewer calls to futex_wake(). Without it,<br>
+the window where wake and wait calls are made in parallel<br>
+is larger, and it also makes test simpler.<br></blockquote><div><br></div><=
+div class=3D"gmail_default" style=3D"font-size:small">Yes, that helps reduc=
+e the tries of futex_wake() to make the=C2=A0test faster.</div></div><div c=
+lass=3D"gmail_default" style=3D"font-size:small">But not benefit=C2=A0a lot=
+ compared with removing.</div><div class=3D"gmail_default" style=3D"font-si=
+ze:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">=
+So feel free to merge it as you wish, I think it&#39;s OK with both.</div><=
+div class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=
+=3D"gmail_default" style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a hr=
+ef=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@redhat.com</a>&gt;=
+</div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"=
+ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000dc79f205e3978425--
+
+
+--===============1038207660==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1038207660==--
+
