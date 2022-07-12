@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11CD8C43334
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 15:35:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53403C433EF
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 15:35:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 896D13CA728
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:35:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5FEF03CA718
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:35:35 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2196E3CA592
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 8E3B73CA5E8
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5C38B1A004A4
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:35 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EA9D3200AC5
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:38 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B2FF8229E2
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3CB641F747
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657640074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1657640078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2JduWW+6FEnqnLR6EExPmWwwmYJZVd+B3+YcvrAoa28=;
- b=n45x7wgbJ3uLkxKWxWLXHSFpQZDd3YDPDzf8w7Vjy07GUbm/dv4Csmy3wtOnJ68L54LciU
- siSYybIv83Pn9YowT3PY2BAzHv808Cjp6hKB53zJIKBQlRVw0o6aIswv6g9zsbAjx8Bbbw
- akXPJNbrPfmp0oxNGToObbL4yVvbICw=
+ bh=6Z9mHIViDQI5PznvlYKrTBCoJgW2c+IJblpXn5fKf6g=;
+ b=wXVc2w6OD9UA9TcSIh/4vZJx1qkNR0y9BzdiITvMGmcKVhoemPZZ09vrB2Zjq3kToase0C
+ ZVjGsKLr0xTKEqINyDi3IjxaNrg1NHTTdEyEC8MP7rJnNeg6Ksz7UClAv16eDhXBa4yvS3
+ fmcOSQdryxinD4TRLMOyOyHlL0VPZTg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657640074;
+ s=susede2_ed25519; t=1657640078;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2JduWW+6FEnqnLR6EExPmWwwmYJZVd+B3+YcvrAoa28=;
- b=6w4OZtBWlYr7zU992PV5IWbCIzSkFN0edorYSPerak//fBvsQu+dgohG0Mk8oz4cSkApQE
- BNneW3aejYRW4vCw==
+ bh=6Z9mHIViDQI5PznvlYKrTBCoJgW2c+IJblpXn5fKf6g=;
+ b=qaaR6z4x7FMoPW61rEw2UAEO8mUoW+itPTFi1HwO6lEvQJGp/6Kj04N9TmeIVcg0J24qZg
+ YGsZHuJQcO0Bg3AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F3F913A94
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADCA113A94
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yZNmN4mUzWI3fAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6b5OG42UzWI9fAAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:33 +0000
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:37 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 12 Jul 2022 21:04:12 +0530
-Message-Id: <20220712153417.14551-5-akumar@suse.de>
+Date: Tue, 12 Jul 2022 21:04:13 +0530
+Message-Id: <20220712153417.14551-6-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220712153417.14551-1-akumar@suse.de>
 References: <20220712153417.14551-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/9] Rewrite rename04.c using new LTP API
+Subject: [LTP] [PATCH v3 5/9] Rewrite rename05.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,14 +87,14 @@ Rewrite using new LTP API and enable all filesystems
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/rename/rename04.c | 204 ++++----------------
- 1 file changed, 36 insertions(+), 168 deletions(-)
+ testcases/kernel/syscalls/rename/rename05.c | 193 +++-----------------
+ 1 file changed, 28 insertions(+), 165 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/rename/rename04.c b/testcases/kernel/syscalls/rename/rename04.c
-index 32594a776..d1d7161b8 100644
---- a/testcases/kernel/syscalls/rename/rename04.c
-+++ b/testcases/kernel/syscalls/rename/rename04.c
-@@ -1,182 +1,50 @@
+diff --git a/testcases/kernel/syscalls/rename/rename05.c b/testcases/kernel/syscalls/rename/rename05.c
+index db10720fe..7894a9214 100644
+--- a/testcases/kernel/syscalls/rename/rename05.c
++++ b/testcases/kernel/syscalls/rename/rename05.c
+@@ -1,179 +1,42 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -119,31 +120,29 @@ index 32594a776..d1d7161b8 100644
  
 -/*
 - * NAME
-- *	rename04
+- *	rename05
 - *
 - * DESCRIPTION
-- *	This test will verify that rename(2) failed when newpath is
-- *      a non-empty directory and return EEXIST or ENOTEMPTY
+- *	This test will verify that rename(2) fails with EISDIR
 - *
 - * ALGORITHM
 - *	Setup:
 - *		Setup signal handling.
 - *		Create temporary directory.
 - *		Pause for SIGUSR1 if option specified.
-- *              create the "old" directory and the "new" directory
-- *              create a file uner the "new" directory
+- *              create the "old" file and the "new" directory
+- *              rename the "old" file to the "new" directory
 - *
 - *	Test:
 - *		Loop if the proper options are given.
-- *                  rename the "old" to the "new" directory
-- *                  verify rename() failed and returned ENOTEMPTY
+- *                  verify rename() failed and returned EISDIR
 - *
 - *	Cleanup:
 - *		Print errno log and/or timing stats if options given
 - *		Delete the temporary directory created.
 - *
 - * USAGE
-- *	rename04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	rename05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *	where,  -c n : Run n copies concurrently.
 - *		-e   : Turn on errno logging.
 - *		-i n : Execute test n times.
@@ -158,8 +157,8 @@ index 32594a776..d1d7161b8 100644
   *
 - * RESTRICTIONS
 - *	None.
-+ * Verify that rename() fails with EEXIST or ENOTEMPTY when
-+ * newpath is a non-empty directory.
++ * Verify that rename(2) fails with EISDIR when
++ * oldpath is not a directory and newpath is an existing directory.
   */
 -#include <sys/types.h>
 -#include <fcntl.h>
@@ -175,16 +174,14 @@ index 32594a776..d1d7161b8 100644
 -void setup();
 -void cleanup();
 +#define MNT_POINT "mntpoint"
-+#define DIR1 "dir1"
-+#define DIR2 "dir2"
-+#define TEMP_FILE DIR2"/tmpfile"
++#define TEMP_FILE "tmpfile"
++#define TEMP_DIR "tmpdir"
  
--char *TCID = "rename04";
+-char *TCID = "rename05";
 -int TST_TOTAL = 1;
 -
 -int fd;
--char tstfile[40];
--char fdir[255], mdir[255];
+-char fname[255], mdir[255];
 -struct stat buf1, buf2;
 -dev_t olddev, olddev1;
 -ino_t oldino, oldino1;
@@ -211,26 +208,21 @@ index 32594a776..d1d7161b8 100644
 -
 -		tst_count = 0;
 -
--		/* rename a directory to a non-empty directory */
--
+-		/* attempt to rename a file to a directory */
 -		/* Call rename(2) */
--		TEST(rename(fdir, mdir));
+-		TEST(rename(fname, mdir));
 -
 -		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "rename(%s, %s) succeeded unexpectedly",
--				 fdir, mdir);
+-			tst_resm(TFAIL, "rename(%s, %s) succeed unexpected",
+-				 fname, mdir);
 -			continue;
 -		}
 -
--		if (TEST_ERRNO == ENOTEMPTY) {
--			tst_resm(TPASS, "rename() returned ENOTEMPTY");
--		} else if (TEST_ERRNO == EEXIST) {
--			tst_resm(TPASS, "rename() returned EEXIST");
+-		if (errno != EISDIR) {
+-			tst_resm(TFAIL, "Expected EISDIR got %d", TEST_ERRNO);
 -		} else {
--			tst_resm(TFAIL, "Expected ENOTEMPTY or EEXIST got %d",
--				 TEST_ERRNO);
+-			tst_resm(TPASS, "rename() returned EISDIR");
 -		}
--
 -	}
 -
 -	/*
@@ -240,9 +232,8 @@ index 32594a776..d1d7161b8 100644
 -	tst_exit();
 -
 +	SAFE_CHDIR(MNT_POINT);
-+	SAFE_MKDIR(DIR1, 00770);
-+	SAFE_MKDIR(DIR2, 00770);
 +	SAFE_TOUCH(TEMP_FILE, 0700, NULL);
++	SAFE_MKDIR(TEMP_DIR, 00770);
  }
  
 -/*
@@ -259,37 +250,31 @@ index 32594a776..d1d7161b8 100644
 -	/* Create a temporary directory and make it current. */
 -	tst_tmpdir();
 -
--	sprintf(fdir, "./tdir_%d", getpid());
 -	sprintf(mdir, "./rndir_%d", getpid());
--	sprintf(tstfile, "%s/tstfile_%d", mdir, getpid());
+-	sprintf(fname, "./tfile_%d", getpid());
 -
--	/* create "old" directory */
--	SAFE_MKDIR(cleanup, fdir, 00770);
--
--	SAFE_STAT(cleanup, fdir, &buf1);
+-	/* create "old" file */
+-	SAFE_TOUCH(cleanup, fname, 0700, NULL);
+-	SAFE_STAT(cleanup, fname, &buf1);
 -
 -	/* save "old"'s dev and ino */
 -	olddev = buf1.st_dev;
 -	oldino = buf1.st_ino;
 -
 -	/* create another directory */
--	SAFE_MKDIR(cleanup, mdir, 00770);
+-	if (stat(mdir, &buf2) != -1) {
+-		tst_brkm(TBROK, cleanup, "tmp directory %s found!", mdir);
+-	}
 -
--	SAFE_TOUCH(cleanup, tstfile, 0700, NULL);
+-	SAFE_MKDIR(cleanup, mdir, 00770);
 -
 -	SAFE_STAT(cleanup, mdir, &buf2);
 -
 -	/* save "new"'s dev and ino */
 -	olddev1 = buf2.st_dev;
 -	oldino1 = buf2.st_ino;
-+	TEST(rename(DIR1, DIR2));
-+
-+	if (TST_RET == -1 && (TST_ERR == ENOTEMPTY || TST_ERR == EEXIST))
-+		tst_res(TPASS | TERRNO, "rename() failed as expected");
-+	else if (TST_RET == 0)
-+		tst_res(TFAIL, "rename() succeeded unexpectedly");
-+	else
-+		tst_res(TFAIL | TERRNO, "rename() failed, but not with expected errno");
++	TST_EXP_FAIL(rename(TEMP_FILE, TEMP_DIR),
++				EISDIR);
  }
  
 -/*
@@ -303,13 +288,18 @@ index 32594a776..d1d7161b8 100644
 -	 * Remove the temporary directory.
 -	 */
 -	tst_rmdir();
+-
+-	/*
+-	 * Exit with return code appropriate for results.
+-	 */
+-
 -}
 +static struct tst_test test = {
 +	.setup = setup,
 +	.test_all = run,
 +	.needs_root = 1,
-+	.mntpoint = MNT_POINT,
 +	.mount_device = 1,
++	.mntpoint = MNT_POINT,
 +	.all_filesystems = 1
 +};
 -- 
