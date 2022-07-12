@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96D96C433EF
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 15:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BEBDC43334
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 15:36:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EEFB13CA788
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:35:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A7D633CA771
+	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:35:59 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4AB643CA2BE
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:44 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 94DB23CA25D
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:46 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3E405200ACD
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:42 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EB00C600944
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 17:34:45 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B9BFA1F747
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 43B5422A79
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657640081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1657640085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=8ujIMelnnmWKfxO4LWo9mmbmGKxV7v0Vrhjvf/Lcgvk=;
- b=MtAPt7tZPTFvH1XDoLygjKHKriZIsZ6mZuvw0Q58zPDDoo6hPTdlda7VpSu9uMQ6Ca2GDy
- V3rLIJe20NiaE/4FUaHUEYGKfhjyHUNGnVh277FyK21llyZhnmG8m0XInDahapgsXdRTlO
- hIW+cPrHjfZoPl7qIBchVbZTpoJ2N84=
+ bh=dpCk4BE2+utaujLpgELEsJcFf2tnc4mhjWG43gFyoeg=;
+ b=zc2NcOIFE/cjsSlCbES2IduShjhvmjRIzJJbqf/YCDLnuDym8AB+cvvR2ahYJXS3lcyW+/
+ uBSx/fNZ/ch5aBBa+kMSaJwulF/GNQZwW1tIpJcvc7Xuz5GiY1ZtzpGS+DJyaitGEfLRtU
+ jSgzCtR+MfMfapL+gSn0cGCZZz4WZsI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657640081;
+ s=susede2_ed25519; t=1657640085;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=8ujIMelnnmWKfxO4LWo9mmbmGKxV7v0Vrhjvf/Lcgvk=;
- b=JROWFXZIbxnknG39txPdpneitffLTloE7Iq8dbniQ/XfCpPHt/nqerDHUKwEH10RIfGhRv
- Fx81eWXdD7Ut1UCw==
+ bh=dpCk4BE2+utaujLpgELEsJcFf2tnc4mhjWG43gFyoeg=;
+ b=Zma8JfJN7xMMilvfZ/HDU1zNONXQhVNHHb0ZncJ3VdsRLWpCRkaJoptgXp5OlvVlajx2Ey
+ vVpzBWhBSZp86SAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3800013A94
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B342313A94
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id b1gyOpCUzWJDfAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id /xjDHJSUzWJHfAAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:40 +0000
+ for <ltp@lists.linux.it>; Tue, 12 Jul 2022 15:34:44 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 12 Jul 2022 21:04:14 +0530
-Message-Id: <20220712153417.14551-7-akumar@suse.de>
+Date: Tue, 12 Jul 2022 21:04:15 +0530
+Message-Id: <20220712153417.14551-8-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220712153417.14551-1-akumar@suse.de>
 References: <20220712153417.14551-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 6/9] Rewrite rename06.c using new LTP API
+Subject: [LTP] [PATCH v3 7/9] Rewrite rename07.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,79 +86,63 @@ Rewrite using new LTP API and enable all filesystems
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/rename/rename06.c | 187 +++-----------------
- 1 file changed, 28 insertions(+), 159 deletions(-)
+ testcases/kernel/syscalls/rename/rename07.c | 171 ++++----------------
+ 1 file changed, 30 insertions(+), 141 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/rename/rename06.c b/testcases/kernel/syscalls/rename/rename06.c
-index e415b4158..82665d1c2 100644
---- a/testcases/kernel/syscalls/rename/rename06.c
-+++ b/testcases/kernel/syscalls/rename/rename06.c
-@@ -1,173 +1,42 @@
+diff --git a/testcases/kernel/syscalls/rename/rename07.c b/testcases/kernel/syscalls/rename/rename07.c
+index 5b95f84bb..51338dbf4 100644
+--- a/testcases/kernel/syscalls/rename/rename07.c
++++ b/testcases/kernel/syscalls/rename/rename07.c
+@@ -1,154 +1,43 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *  07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
 - * NAME
-- *	rename06
+- *	rename07
 - *
 - * DESCRIPTION
-- *	This test will verify that rename(2) failed in EINVAL
+- *	This test will verify that rename(2) failed in ENOTDIR
+- *
+- * CALLS
+- *	stat,open,rename,mkdir,close
 - *
 - * ALGORITHM
 - *	Setup:
 - *		Setup signal handling.
 - *		Create temporary directory.
 - *		Pause for SIGUSR1 if option specified.
-- *              create the "old" directory
-- *              create the "new" directory under the "old" directory
+- *              create the "old" directory and the "new" file
+- *              rename the "old" directory to the "new" file
 - *
 - *	Test:
 - *		Loop if the proper options are given.
-- *                  rename the "old" to the "new" directory
-- *                  verify rename() failed and returned EINVAL
+- *                  verify rename() failed and returned ENOTDIR
 - *
 - *	Cleanup:
 - *		Print errno log and/or timing stats if options given
-- *		Delete the temporary directory created.
-- *
+- *		Delete the temporary directory created.*
 - * USAGE
-- *	rename06 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	rename07 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
 - *	where,  -c n : Run n copies concurrently.
 - *		-e   : Turn on errno logging.
 - *		-i n : Execute test n times.
 - *		-I x : Execute test for x seconds.
 - *		-P x : Pause for x seconds between iterations.
 - *		-t   : Turn on syscall timing.
++ * Copyright (c) International Business Machines  Corp., 2001
++ *  07/2001 Ported by Wayne Boyer
++ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
++ */
++
 +/*\
 + * [Description]
   *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
-- *
++ * Verify that rename(2) fails with ENOTDIR, when
++ * oldpath is a directory and newpath exists but is not a directory.
+  *
 - * RESTRICTIONS
 - *	None.
-+ * Verify that rename(2) fails with EINVAL when
-+ * an attempt is made to make a directory a subdirectory of itself.
   */
 -#include <sys/types.h>
 -#include <fcntl.h>
@@ -173,19 +156,19 @@ index e415b4158..82665d1c2 100644
 -void setup();
 -void cleanup();
  
--char *TCID = "rename06";
+-char *TCID = "rename07";
 -int TST_TOTAL = 1;
 +#include <stdio.h>
 +#include "tst_test.h"
  
 -int fd;
--char fdir[255], mdir[255];
+-char mname[255], fdir[255];
 -struct stat buf1, buf2;
 -dev_t olddev, olddev1;
 -ino_t oldino, oldino1;
 +#define MNT_POINT "mntpoint"
-+#define DIR1 "dir1"
-+#define DIR2 DIR1"/dir2"
++#define TEMP_DIR "tmpdir"
++#define TEMP_FILE "tmpfile"
  
 -int main(int ac, char **av)
 +static void setup(void)
@@ -209,20 +192,20 @@ index e415b4158..82665d1c2 100644
 -
 -		tst_count = 0;
 -
--		/* rename a directory to a subdirectory of itself */
+-		/* rename a directory to a file */
 -		/* Call rename(2) */
--		TEST(rename(fdir, mdir));
+-		TEST(rename(fdir, mname));
 -
 -		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "rename(%s, %s) succeed unexpected",
--				 fdir, mdir);
+-			tst_resm(TFAIL, "rename(%s, %s) succeeded unexpectedly",
+-				 fdir, mname);
 -			continue;
 -		}
 -
--		if (errno != EINVAL) {
--			tst_resm(TFAIL, "Expected EINVAL got %d", TEST_ERRNO);
+-		if (TEST_ERRNO != ENOTDIR) {
+-			tst_resm(TFAIL, "Expected ENOTDIR got %d", TEST_ERRNO);
 -		} else {
--			tst_resm(TPASS, "rename() returned EINVAL");
+-			tst_resm(TPASS, "rename() returned ENOTDIR");
 -		}
 -	}
 -
@@ -230,8 +213,8 @@ index e415b4158..82665d1c2 100644
 -	tst_exit();
 -
 +	SAFE_CHDIR(MNT_POINT);
-+	SAFE_MKDIR(DIR1, 00770);
-+	SAFE_MKDIR(DIR2, 00770);
++	SAFE_MKDIR(TEMP_DIR, 00770);
++	SAFE_TOUCH(TEMP_FILE, 0700, NULL);
  }
  
 -/*
@@ -248,37 +231,36 @@ index e415b4158..82665d1c2 100644
 -	/* Create a temporary directory and make it current. */
 -	tst_tmpdir();
 -
--	sprintf(fdir, "./tdir_%d", getpid());
--	sprintf(mdir, "%s/rndir_%d", fdir, getpid());
+-	sprintf(fdir, "./rndir_%d", getpid());
+-	sprintf(mname, "./tfile_%d", getpid());
 -
 -	/* create "old" directory */
 -	if (stat(fdir, &buf1) != -1) {
 -		tst_brkm(TBROK, cleanup, "tmp directory %s found!", fdir);
 -	}
+-
 -	SAFE_MKDIR(cleanup, fdir, 00770);
+-
 -	SAFE_STAT(cleanup, fdir, &buf1);
+-
 -	/* save "old"'s dev and ino */
 -	olddev = buf1.st_dev;
 -	oldino = buf1.st_ino;
 -
--	/* create another directory */
--	if (stat(mdir, &buf2) != -1) {
--		tst_brkm(TBROK, cleanup, "tmp directory %s found!", mdir);
--	}
--	SAFE_MKDIR(cleanup, mdir, 00770);
+-	SAFE_TOUCH(cleanup, mname, 0700, NULL);
 -
--	SAFE_STAT(cleanup, mdir, &buf2);
+-	SAFE_STAT(cleanup, mname, &buf2);
 -
 -	/* save "new"'s dev and ino */
 -	olddev1 = buf2.st_dev;
 -	oldino1 = buf2.st_ino;
-+	TST_EXP_FAIL(rename(DIR1, DIR2),
-+				EINVAL);
++	TST_EXP_FAIL(rename(TEMP_DIR, TEMP_FILE),
++				ENOTDIR);
  }
  
 -/*
 - * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
+- *              completion or premature exit.
 - */
 -void cleanup(void)
 -{
