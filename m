@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE613C433EF
-	for <ltp@archiver.kernel.org>; Wed, 13 Jul 2022 05:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7B7BC43334
+	for <ltp@archiver.kernel.org>; Wed, 13 Jul 2022 05:48:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0513F3C9886
-	for <ltp@archiver.kernel.org>; Wed, 13 Jul 2022 07:43:57 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 023613CA2E9
+	for <ltp@archiver.kernel.org>; Wed, 13 Jul 2022 07:48:12 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB8493C1C08
- for <ltp@lists.linux.it>; Wed, 13 Jul 2022 07:43:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 7E90A3C8CE5
+ for <ltp@lists.linux.it>; Wed, 13 Jul 2022 07:48:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5FF4710000D3
- for <ltp@lists.linux.it>; Wed, 13 Jul 2022 07:43:44 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D33E01000369
+ for <ltp@lists.linux.it>; Wed, 13 Jul 2022 07:47:59 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 422B41FD00
- for <ltp@lists.linux.it>; Wed, 13 Jul 2022 05:43:44 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 39C5B1FFBE
+ for <ltp@lists.linux.it>; Wed, 13 Jul 2022 05:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657691024;
+ t=1657691279;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IRbNQOdS+93uaotrafWsp4b9ckJpAPHPIa4o/eieDXg=;
- b=aEeEJq0lKTHfiu2q+twey6QK6mOMOn1fW/OXx9n12H6x46fQxeTa6RuxWlxPtfJyqHmIXx
- 1iMf8lbGZsDuwLacxRU6LW3wWx112haDloWTP3Bz2bfuL3Po8TDqOn5sUBGFF0lXiP+Te4
- o28aCUFYyZyMqIwPBbhhPRNLpVGGhO4=
+ bh=2TXKWVLHont/Klnbuecn+msTHZD7wXIIJLs+6RbAm30=;
+ b=y0hBTxdsF9qoAZCrvNW8LEsQtBPJ2XvkDMEUbzKM6+5J4nEqoNM7weygJwt6l7z+1qpksV
+ YlvnjshWCLP5wtcqT29h0F2+pOA51weJTJpoWuht/8mzojJ9vxZe22cTrlJygymQNw2jpv
+ rwp5BMhElXkjk6jTeacycM2cmj7Dov8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657691024;
+ s=susede2_ed25519; t=1657691279;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IRbNQOdS+93uaotrafWsp4b9ckJpAPHPIa4o/eieDXg=;
- b=3Ms5lq6yjhtV7/g+Dap26039sMhLgl09r3Y8WmyIgsvWmqD/GgQOOosCe22TXz/7QvzRdG
- qGZ/SfqlgLW9RbCA==
+ bh=2TXKWVLHont/Klnbuecn+msTHZD7wXIIJLs+6RbAm30=;
+ b=K8ODjMyzrRlKK4FLlmn2+1InfcCh0Sg7SVU0WePUqutBYG2F6VmZZhojblVN3yNPQsqta8
+ xWs+sOxJYoiPUfBQ==
 Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id EDB7D2C141;
- Wed, 13 Jul 2022 05:43:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id E06432C141;
+ Wed, 13 Jul 2022 05:47:58 +0000 (UTC)
 References: <20220712153417.14551-1-akumar@suse.de>
- <20220712153417.14551-8-akumar@suse.de>
+ <20220712153417.14551-9-akumar@suse.de>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Avinesh Kumar <akumar@suse.de>
-Date: Wed, 13 Jul 2022 06:43:38 +0100
-In-reply-to: <20220712153417.14551-8-akumar@suse.de>
-Message-ID: <878roxmusw.fsf@suse.de>
+Date: Wed, 13 Jul 2022 06:47:55 +0100
+In-reply-to: <20220712153417.14551-9-akumar@suse.de>
+Message-ID: <874jzlmult.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 7/9] Rewrite rename07.c using new LTP API
+Subject: Re: [LTP] [PATCH v3 8/9] Rewrite rename08.c using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,103 +85,142 @@ Avinesh Kumar <akumar@suse.de> writes:
 >
 > Signed-off-by: Avinesh Kumar <akumar@suse.de>
 > ---
->  testcases/kernel/syscalls/rename/rename07.c | 171 ++++----------------
->  1 file changed, 30 insertions(+), 141 deletions(-)
+>  testcases/kernel/syscalls/rename/rename08.c | 205 +++-----------------
+>  1 file changed, 29 insertions(+), 176 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/rename/rename07.c b/testcases/kernel/syscalls/rename/rename07.c
-> index 5b95f84bb..51338dbf4 100644
-> --- a/testcases/kernel/syscalls/rename/rename07.c
-> +++ b/testcases/kernel/syscalls/rename/rename07.c
-> @@ -1,154 +1,43 @@
+> diff --git a/testcases/kernel/syscalls/rename/rename08.c b/testcases/kernel/syscalls/rename/rename08.c
+> index 2efdfd390..8a9a9b344 100644
+> --- a/testcases/kernel/syscalls/rename/rename08.c
+> +++ b/testcases/kernel/syscalls/rename/rename08.c
+> @@ -1,190 +1,43 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 >  /*
+> - *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * Copyright (c) International Business Machines  Corp., 2001
+> + *  07/2001 Ported by Wayne Boyer
+> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+>   */
+>  
+> -/*
 > - * NAME
-> - *	rename07
+> - *	rename08
 > - *
 > - * DESCRIPTION
-> - *	This test will verify that rename(2) failed in ENOTDIR
-> - *
-> - * CALLS
-> - *	stat,open,rename,mkdir,close
+> - *	This test will verify that rename(2) syscall failed in EFAULT
 > - *
 > - * ALGORITHM
 > - *	Setup:
 > - *		Setup signal handling.
 > - *		Create temporary directory.
 > - *		Pause for SIGUSR1 if option specified.
-> - *              create the "old" directory and the "new" file
-> - *              rename the "old" directory to the "new" file
+> - *		Create a valid file to use in the rename() call.
 > - *
 > - *	Test:
 > - *		Loop if the proper options are given.
-> - *                  verify rename() failed and returned ENOTDIR
+> - *              1.  "old" is a valid file, newpath points to address
+> - *                   outside allocated address space
+> - *                  rename the "old" to the "new" file
+> - *                  verify rename() failed with error EFAULT
 > - *
+> - *              2.  "old" points to address outside allocated address space
+> - *                  ,"new" is a valid file
+> - *                  rename the "old" to the "new"
+> - *                  verify rename() failed with error EFAULT
+> - *
+> - *              3.  oldpath and newpath are all NULL
+> - *                  try to rename NULL to NULL
+> - *                  verify rename() failed with error EFAULT
 > - *	Cleanup:
 > - *		Print errno log and/or timing stats if options given
 > - *		Delete the temporary directory created.*
 > - * USAGE
-> - *	rename07 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+> - *	rename08 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 > - *	where,  -c n : Run n copies concurrently.
 > - *		-e   : Turn on errno logging.
 > - *		-i n : Execute test n times.
 > - *		-I x : Execute test for x seconds.
 > - *		-P x : Pause for x seconds between iterations.
 > - *		-t   : Turn on syscall timing.
-> + * Copyright (c) International Business Machines  Corp., 2001
-> + *  07/2001 Ported by Wayne Boyer
-> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-> + */
-> +
+> - *
+> - * HISTORY
+> - *	07/2001 Ported by Wayne Boyer
 > +/*\
 > + * [Description]
 >   *
-> - * HISTORY
-> - *	07/2001 Ported by Wayne Boyer
-> + * Verify that rename(2) fails with ENOTDIR, when
-> + * oldpath is a directory and newpath exists but is not a directory.
->   *
 > - * RESTRICTIONS
 > - *	None.
+> + * Verify that rename(2) fails with EFAULT, when
+> + * oldpath or newpath points outside of accessible address space.
 >   */
 > -#include <sys/types.h>
 > -#include <fcntl.h>
-> -#include <sys/stat.h>
+> -#include <sys/mman.h>
 > -#include <unistd.h>
 > -#include <errno.h>
-> -
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -
-> -void setup();
-> -void cleanup();
 >  
-> -char *TCID = "rename07";
-> -int TST_TOTAL = 1;
+> -#include "test.h"
 > +#include <stdio.h>
 > +#include "tst_test.h"
 >  
-> -int fd;
-> -char mname[255], fdir[255];
-> -struct stat buf1, buf2;
-> -dev_t olddev, olddev1;
-> -ino_t oldino, oldino1;
+> -void setup();
+> -void cleanup();
 > +#define MNT_POINT "mntpoint"
-> +#define TEMP_DIR "tmpdir"
 > +#define TEMP_FILE "tmpfile"
+> +#define INVALID_PATH ((void *)-1)
 >  
+> -char *TCID = "rename08";
+> -
+> -char *bad_addr = 0;
+> -
+> -int fd;
+> -char fname[255];
+> -
+> -struct test_case_t {
+> -	char *fd;
+> -	char *fd2;
+> -	int error;
+> -} TC[] = {
+> -#if !defined(UCLINUX)
+> -	/* "new" file is invalid - EFAULT */
+> -	{
+> -	fname, (char *)-1, EFAULT},
+> -	    /* "old" file is invalid - EFAULT */
+> -	{
+> -	(char *)-1, fname, EFAULT},
+> -#endif
+> -	    /* both files are NULL - EFAULT */
+> -	{
+> -	NULL, NULL, EFAULT}
+> -};
+> -
+> -int TST_TOTAL = ARRAY_SIZE(TC);
+> -
 > -int main(int ac, char **av)
 > +static void setup(void)
 >  {
 > -	int lc;
+> -	int i;
 > -
 > -	/*
 > -	 * parse standard options
 > -	 */
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
-> -	/*
-> -	 * perform global setup for test
-> -	 */
 > -	setup();
 > -
 > -	/*
@@ -191,20 +230,25 @@ Avinesh Kumar <akumar@suse.de> writes:
 > -
 > -		tst_count = 0;
 > -
-> -		/* rename a directory to a file */
-> -		/* Call rename(2) */
-> -		TEST(rename(fdir, mname));
+> -		/* loop through the test cases */
+> -		for (i = 0; i < TST_TOTAL; i++) {
 > -
-> -		if (TEST_RETURN != -1) {
-> -			tst_resm(TFAIL, "rename(%s, %s) succeeded unexpectedly",
-> -				 fdir, mname);
-> -			continue;
-> -		}
+> -			TEST(rename(TC[i].fd, TC[i].fd2));
 > -
-> -		if (TEST_ERRNO != ENOTDIR) {
-> -			tst_resm(TFAIL, "Expected ENOTDIR got %d", TEST_ERRNO);
-> -		} else {
-> -			tst_resm(TPASS, "rename() returned ENOTDIR");
+> -			if (TEST_RETURN != -1) {
+> -				tst_resm(TFAIL, "call succeeded unexpectedly");
+> -				continue;
+> -			}
+> -
+> -			if (TEST_ERRNO == TC[i].error) {
+> -				tst_resm(TPASS, "expected failure - "
+> -					 "errno = %d : %s", TEST_ERRNO,
+> -					 strerror(TEST_ERRNO));
+> -			} else {
+> -				tst_resm(TFAIL, "unexpected error - %d : %s - "
+> -					 "expected %d", TEST_ERRNO,
+> -					 strerror(TEST_ERRNO), TC[i].error);
+> -			}
 > -		}
 > -	}
 > -
@@ -212,7 +256,6 @@ Avinesh Kumar <akumar@suse.de> writes:
 > -	tst_exit();
 > -
 > +	SAFE_CHDIR(MNT_POINT);
-> +	SAFE_MKDIR(TEMP_DIR, 00770);
 > +	SAFE_TOUCH(TEMP_FILE, 0700, NULL);
 >  }
 >  
@@ -230,31 +273,23 @@ Avinesh Kumar <akumar@suse.de> writes:
 > -	/* Create a temporary directory and make it current. */
 > -	tst_tmpdir();
 > -
-> -	sprintf(fdir, "./rndir_%d", getpid());
-> -	sprintf(mname, "./tfile_%d", getpid());
+> -	sprintf(fname, "./tfile_%d", getpid());
 > -
-> -	/* create "old" directory */
-> -	if (stat(fdir, &buf1) != -1) {
-> -		tst_brkm(TBROK, cleanup, "tmp directory %s found!", fdir);
+> -	SAFE_TOUCH(cleanup, fname, 0700, NULL);
+> -
+> -#if !defined(UCLINUX)
+> -	bad_addr = mmap(0, 1, PROT_NONE,
+> -			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+> -	if (bad_addr == MAP_FAILED) {
+> -		tst_brkm(TBROK, cleanup, "mmap failed");
 > -	}
-> -
-> -	SAFE_MKDIR(cleanup, fdir, 00770);
-> -
-> -	SAFE_STAT(cleanup, fdir, &buf1);
-> -
-> -	/* save "old"'s dev and ino */
-> -	olddev = buf1.st_dev;
-> -	oldino = buf1.st_ino;
-> -
-> -	SAFE_TOUCH(cleanup, mname, 0700, NULL);
-> -
-> -	SAFE_STAT(cleanup, mname, &buf2);
-> -
-> -	/* save "new"'s dev and ino */
-> -	olddev1 = buf2.st_dev;
-> -	oldino1 = buf2.st_ino;
-> +	TST_EXP_FAIL(rename(TEMP_DIR, TEMP_FILE),
-> +				ENOTDIR);
+> -	TC[0].fd2 = bad_addr;
+> -	TC[1].fd = bad_addr;
+> -#endif
+> +	TST_EXP_FAIL(rename(INVALID_PATH, TEMP_FILE),
+> +				EFAULT);
+> +	TST_EXP_FAIL(rename(TEMP_FILE, INVALID_PATH),
+> +				EFAULT);
 >  }
 >  
 > -/*
