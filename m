@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3C94C43334
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 17:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46265C433EF
+	for <ltp@archiver.kernel.org>; Wed, 13 Jul 2022 05:22:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 999AA3CA84F
-	for <ltp@archiver.kernel.org>; Tue, 12 Jul 2022 19:39:40 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id C7CDC3CA35F
+	for <ltp@archiver.kernel.org>; Wed, 13 Jul 2022 07:22:06 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 421873CA1C0
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 19:39:29 +0200 (CEST)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
- [IPv6:2607:f8b0:4864:20::b49])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E0E443CA178
+ for <ltp@lists.linux.it>; Wed, 13 Jul 2022 07:21:49 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 32A761A0093C
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 19:39:29 +0200 (CEST)
-Received: by mail-yb1-xb49.google.com with SMTP id
- w15-20020a25ac0f000000b0066e50e4a553so6548043ybi.16
- for <ltp@lists.linux.it>; Tue, 12 Jul 2022 10:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=FsTJw0x4NHNbuFbtvuRhOXklbPjN5zOLro3K8nF+Efc=;
- b=qIhpbuSVq7xPI2ikEh1C+1mHxi2fFNn1Sz5NeYEzuHMIDZ8IwR4zRwfq8WzFIONE1b
- ymdumAoWq2dBW2+dzn4eLxPA54MliDE6TFceICpQJ4vAd7140kEa1k7/Em7BAg7nmxEZ
- ldg9LqVFQTSHqKOJCAUoEdeTa4uqQO3Bo8mEw+2Mb6qVceb2QnOV9cz7P1NWtXfmR/7J
- Povebd6Ovw84qfTS62B0EJjRJN4M8DO9NyOMNL3k25+RmCXg7bP2z8h9UaUFSuW7o299
- G1Ql84AhE9WQhbSbvq79t8EVA2cug0NfqrSGdZ44jCjbzlkmqCVwdU9d8ijLXpbGx4oM
- 2H1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=FsTJw0x4NHNbuFbtvuRhOXklbPjN5zOLro3K8nF+Efc=;
- b=DRSWpJP139KDDmG4doCr74Rg5SjTtnTLhjwYn4wI8q8HIc0ANHQB9R7cpg3s/Oyn5X
- c+os9ZeoMkZeJZ2OHeUIwPSF9BFilx9nDL436Qh+BqYAtCVysgHeL4CYrHwSbTS5+aHV
- mXA0gJP5T6BHveKQ+Wg9YY4SykWLt51n0Gb5EXnbGZVYG1OAi7rc3eslBh9mzmEjKUUz
- 7W2qx5gSobSH3awyoyvYE9LwtDsroriQRUPFozlP/phLlzetNGNhxKy7crQFeyJkVfDz
- x801uLVO9yv1AkxJALj5RSSqs7Sb05dJxaDm08XVO+qBgosIb9RS8qd3oN/qrUeOJNOz
- UK7w==
-X-Gm-Message-State: AJIora+OpZCHjprjg/as+O+J/WGk7NpAGz16VEXkVGASbKkayAcMrWhC
- 0hPvvll2hnpsU5sKHTFG6VzzjBGedFWRmz0i+XFK53gqoF0bKj51i8kOH4HFdgb4KLsREfTkW+j
- Sk3U4yvqrZLa5SF2BRNQEop+77svCovW3noqzAjR0I7XIoi7jrictnzDl
-X-Google-Smtp-Source: AGRyM1sQj1hSpKUZozLCNY31kmMhqgUSWGys1h60vV2DPaHtZX+5shbubvqOQCLhJnib974Apy/BMn/UG2I=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4be])
- (user=edliaw job=sendgmr) by 2002:a25:e6ce:0:b0:66e:a7b6:e407 with
- SMTP id
- d197-20020a25e6ce000000b0066ea7b6e407mr24329586ybh.611.1657647567759; Tue, 12
- Jul 2022 10:39:27 -0700 (PDT)
-Date: Tue, 12 Jul 2022 17:39:21 +0000
-Message-Id: <20220712173921.2623135-1-edliaw@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.144.g8ac04bfd2-goog
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2562910005C4
+ for <ltp@lists.linux.it>; Wed, 13 Jul 2022 07:21:48 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 579EC20116;
+ Wed, 13 Jul 2022 05:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1657689708;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kOQ1OCQVGLw9OLdp8wM26XzwWSkqpI2eIjyO97krvNE=;
+ b=mhhJoGnaiGU1g2JcE2hS1+RNAeOhvZYet3t/JxHGXAoIiI1EwIPM+KwInVmRVL22aD5MvI
+ vJuZCb5DKxx06/8lVEnkkRXanh49xOK5QGPCaoi+raquBKyM6sYVu8OEDwnnn81yFdRDAx
+ DhhdjZHEAhy7ynfNtiGZOOtWv+okUmk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1657689708;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kOQ1OCQVGLw9OLdp8wM26XzwWSkqpI2eIjyO97krvNE=;
+ b=8f/qsFRa0kN5sBIntEExNQVfctJslMNtJLyiXeBi7RmGIf2sTXSxYaLmUxNQFQ0QdFX36q
+ jjkat4dhismon5Ag==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 2393D2C141;
+ Wed, 13 Jul 2022 05:21:48 +0000 (UTC)
+References: <87k08joqp7.fsf@suse.de>
+ <1657598596-2296-1-git-send-email-xuyang2018.jy@fujitsu.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Wed, 13 Jul 2022 06:19:07 +0100
+In-reply-to: <1657598596-2296-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <8735f5oae1.fsf@suse.de>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] syscalls/signal06: add volatile to loop variable
+Subject: Re: [LTP] [PATCH v2] security/dirtypipe: Add test for CVE-2022-0847
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,38 +69,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Android compiled with clang, the loop variable will be optimized out
-unless it is tagged with volatile.
+Hello,
 
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- testcases/kernel/syscalls/signal/signal06.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yang Xu <xuyang2018.jy@fujitsu.com> writes:
 
-diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
-index 64f886ee3..b40ff3e40 100644
---- a/testcases/kernel/syscalls/signal/signal06.c
-+++ b/testcases/kernel/syscalls/signal/signal06.c
-@@ -65,7 +65,7 @@ char altstack[4096 * 10] __attribute__((aligned(4096)));
- 
- void test(void)
- {
--	int loop = 0;
-+	volatile int loop = 0;
- 	int pid = getpid();
- 
- 	D = VALUE;
+> +static void run(void)
+> +{
+> +	off_t offset;
+> +	int data_size, len;
+> +	ssize_t nbytes;
+> +
+> +	offset = 1;
+
+Still setting offset to 1.
+
+> +	data_size = strlen(TEXT);
+> +
+> +	fd = SAFE_OPEN(TESTFILE, O_RDONLY);
+> +
+> +	prepare_pipe();
+> +
+> +	offset = 0;
+> +	/*
+> +	 * splice one byte from the start into the pipe;
+> +	 * this will add a reference to the page cache, but since
+> +	 * copy_page_to_iter_pipe() does not initialize the "flags",
+> +	 * PIPE_BUF_FLAG_CAN_MERGE is still set
+> +	 */
+> +	nbytes = splice(fd, &offset, p[1], NULL, 1, 0);
+
+As offset is 0 we can just pass NULL. Otherwise all looks good, I'll fix
+it up and merge it.
+
 -- 
-2.37.0.144.g8ac04bfd2-goog
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
