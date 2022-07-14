@@ -4,63 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92F45C43334
-	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 09:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63B28C43334
+	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 10:25:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BBD443CA936
-	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 11:13:03 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A911D3CA947
+	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 12:25:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1012B3CA92C
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 11:12:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C8C613CA932
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 12:24:58 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D2D0A6002F9
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 11:12:46 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E5DD01FA58
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 09:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657789964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IiIGh7XtX/EgvKgLeeuD9FzEcBNrDskk2ihNXTw3rzY=;
- b=ZhiD+FltWuIDvaQXGsvBx6q0yYo8BzWgZ9Pv63nRdveaqE3zKKXgVV7zmRu38mUB6yak04
- Il3NaiYhmdUYwKvnUmUFViQy9Ftq2ZZD7ZTo/ndQruZpCANdZIBrEW/llq9SE8lqapJ5b8
- iB+5VbJhvCG/bnwDpeGkBfguzguyKro=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657789964;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IiIGh7XtX/EgvKgLeeuD9FzEcBNrDskk2ihNXTw3rzY=;
- b=BrItcLyYG+3P1fhhSixUNpWHEUHuRCayUOhP/5IcnmCd3smR8EtAvQTugRwnObBqDkfVOT
- /OoH7xInvzgVTzCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A44713A61
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 09:12:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id BCplBgzez2LAIwAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 09:12:44 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Thu, 14 Jul 2022 14:42:41 +0530
-Message-Id: <20220714091241.26524-1-akumar@suse.de>
-X-Mailer: git-send-email 2.36.1
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 00E451401107
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 12:24:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1657794296;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WSnoqNaTpRsyiiOxAGMz1rIlFp6kGljCVSXrYmxYza4=;
+ b=aSOWXZgOZ5V8wWNNj4QHFNGW2OCDH3wZz5b6WGa04wwxOriutnB2hn/IrZGYObhUMMvr9l
+ lG+tFGvoBCb7FLXtVn8p4o8Oopr5uLYgvkbTaEebjvU2dNsV4fdPBXdEkpbgudqh8xFuni
+ g9qEW998BbDo5595NW7D2vintCyetGI=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-645-v8mQYRW6O763sOvA4oAkrQ-1; Thu, 14 Jul 2022 06:24:53 -0400
+X-MC-Unique: v8mQYRW6O763sOvA4oAkrQ-1
+Received: by mail-yw1-f200.google.com with SMTP id
+ 00721157ae682-31cbe6ad44fso11792757b3.10
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 03:24:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=WSnoqNaTpRsyiiOxAGMz1rIlFp6kGljCVSXrYmxYza4=;
+ b=1WDCqn3LaTh2ySYjfXiasDmhreb5ZRWS7ouRaZgYbrCLQ/jZ8lZCUgax3M6P2FuNwu
+ M81Mute07sDxMjWLqHU4Bh+wCryzV/HCVBc07Q4VWRdhr7WIv3Uz7bRzNTlG2xkVkeRS
+ 2vexcv3p7KjfbSZ5Ur2E5UvhshJ1slrMTCp+q7PWrHN8NuV0EJfShblqck8ljosdPvl9
+ JlDynj41gnPK/YWyZHMUGnFEdJIRipn+gCacabJCiQR3o1Xe7gJVe2p5PJGvBAUmsXm2
+ YDkkGWgRR2Wyop8r6d8STqnNRJo1NXdDYmXm4RcsWr4/rEsgXYCVPAnAKlF4fnPPhmPo
+ /8rw==
+X-Gm-Message-State: AJIora951LVjj961g0VrV3wFl1PVP9RlH6oCW58xwZ5Iw32a8Kk9oD9I
+ Tx0/UzYWejuHMOTf/ayKn84KbCV/3yK6ohPI+DvZ5bCyU0fXq6kbGJcxbN0s3o8cxXQA56KQ8iS
+ UjRIJGHhV9dNKh3uVRNsPzEr3nzc=
+X-Received: by 2002:a0d:d654:0:b0:31c:8777:946c with SMTP id
+ y81-20020a0dd654000000b0031c8777946cmr9122066ywd.15.1657794292493; 
+ Thu, 14 Jul 2022 03:24:52 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uF2aUn+eIja406m/0oyJeWQOoYh0cmSOFGH3pgAUkqsJF36JTpUkV6IC0BqjRggUrDohEqzoygNXxygnemDEw=
+X-Received: by 2002:a0d:d654:0:b0:31c:8777:946c with SMTP id
+ y81-20020a0dd654000000b0031c8777946cmr9122054ywd.15.1657794292293; Thu, 14
+ Jul 2022 03:24:52 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <TY2PR01MB442719179C60B4DB6D275B5CFD889@TY2PR01MB4427.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY2PR01MB442719179C60B4DB6D275B5CFD889@TY2PR01MB4427.jpnprd01.prod.outlook.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 14 Jul 2022 18:24:41 +0800
+Message-ID: <CAEemH2fMfQYhfaV5_LeZCxfkCY=FKCqXc+SrZzQLVjzTf4yf8g@mail.gmail.com>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Remove open05.c
+Subject: Re: [LTP] Do we have some simple way to get the current
+ cgroup.procs path?
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,194 +86,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1937605648=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Remove open05.c as same testcase for EACCES is covered in open08.c
+--===============1937605648==
+Content-Type: multipart/alternative; boundary="000000000000e734ec05e3c14f77"
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- runtest/syscalls                          |   1 -
- testcases/kernel/syscalls/open/.gitignore |   1 -
- testcases/kernel/syscalls/open/open05.c   | 140 ----------------------
- 3 files changed, 142 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/open/open05.c
+--000000000000e734ec05e3c14f77
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 3847e8af2..9d58e0aa1 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -909,7 +909,6 @@ open01A symlink01 -T open01
- open02 open02
- open03 open03
- open04 open04
--open05 open05
- open06 open06
- open07 open07
- open08 open08
-diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
-index 4309e3a72..001d874d6 100644
---- a/testcases/kernel/syscalls/open/.gitignore
-+++ b/testcases/kernel/syscalls/open/.gitignore
-@@ -2,7 +2,6 @@
- /open02
- /open03
- /open04
--/open05
- /open06
- /open07
- /open08
-diff --git a/testcases/kernel/syscalls/open/open05.c b/testcases/kernel/syscalls/open/open05.c
-deleted file mode 100644
-index f5098be2d..000000000
---- a/testcases/kernel/syscalls/open/open05.c
-+++ /dev/null
-@@ -1,140 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * DESCRIPTION
-- *	Testcase to check open(2) sets errno to EACCES correctly.
-- *
-- * ALGORITHM
-- *	Create a file owned by root with no read permission for other users.
-- *	Attempt to open it as ltpuser(1). The attempt should fail with EACCES.
-- * RESTRICTION
-- *	Must run test as root.
-- */
--#include <errno.h>
--#include <pwd.h>
--#include <fcntl.h>
--#include <sys/stat.h>
--#include <sys/types.h>
--#include <sys/wait.h>
--
--#include "test.h"
--#include "safe_macros.h"
--
--char *TCID = "open05";
--int TST_TOTAL = 1;
--
--static char fname[20];
--static int fd;
--
--static uid_t nobody_uid;
--
--static void cleanup(void);
--static void setup(void);
--
--int main(int ac, char **av)
--{
--	int lc;
--	int e_code, status, retval = 0;
--	pid_t pid;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		pid = FORK_OR_VFORK();
--		if (pid == -1)
--			tst_brkm(TBROK, cleanup, "fork() failed");
--
--		if (pid == 0) {
--			if (seteuid(nobody_uid) == -1) {
--				tst_resm(TWARN, "seteuid() failed, errno: %d",
--					 errno);
--			}
--
--			TEST(open(fname, O_RDWR));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "open succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO != EACCES) {
--				retval = 1;
--				tst_resm(TFAIL, "Expected EACCES got %d",
--					 TEST_ERRNO);
--			} else {
--				tst_resm(TPASS, "open returned expected "
--					 "EACCES error");
--			}
--
--			/* set the id back to root */
--			if (seteuid(0) == -1)
--				tst_resm(TWARN, "seteuid(0) failed");
--
--			exit(retval);
--
--		} else {
--			/* wait for the child to finish */
--			wait(&status);
--			/* make sure the child returned a good exit status */
--			e_code = status >> 8;
--			if ((e_code != 0) || (retval != 0))
--				tst_resm(TFAIL, "Failures reported above");
--
--			close(fd);
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--	struct passwd *pw;
--
--	tst_require_root();
--
--	pw = SAFE_GETPWNAM(NULL, "nobody");
--	nobody_uid = pw->pw_uid;
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* make a temporary directory and cd to it */
--	tst_tmpdir();
--
--	sprintf(fname, "file.%d", getpid());
--
--	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
--}
--
--static void cleanup(void)
--{
--	unlink(fname);
--
--	/* delete the test directory created in setup() */
--	tst_rmdir();
--}
+Hi Xu,
+
+On Thu, Jul 14, 2022 at 2:02 PM xuyang2018.jy@fujitsu.com <
+xuyang2018.jy@fujitsu.com> wrote:
+
+> Hi Richard, LI
+>
+> I am writting a simple regression test[1]that refer to kernel selftest
+> cgroup test_core[2]. I may name it as memcontrol05.c.
+>
+> It tests cgroup migration permission check should be performed based on
+> the credentials at the time of open instead of write.
+>
+> I have used ltp cgroup framework, but ltp cgroup only use
+> SAFE_CGROUP_PRINTF to write value.
+>
+> How can get the cgroup root_dir ltp_dir path? So I can open this fd
+> and change/save effective uid between open and write?
+>
+
+Not sure if I fully understand your requirements.
+Can we achieve this test by creating a two-layer subdirectory?
+
+Does only the root/ltp_dir mandatory for completing your test?
+If yes, I think tst_cg_print_config() maybe fits your purpose,
+but that would need additional function help extracting that.
+
+Take a reference to see how Luke gets the root path (in shell):
+https://lists.linux.it/pipermail/ltp/2022-April/028772.html
+
+
 -- 
-2.36.1
+Regards,
+Li Wang
+
+--000000000000e734ec05e3c14f77
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Hi Xu,</div></div><br><div class=3D"gmail_quote"><div dir=3D"=
+ltr" class=3D"gmail_attr">On Thu, Jul 14, 2022 at 2:02 PM <a href=3D"mailto=
+:xuyang2018.jy@fujitsu.com" target=3D"_blank">xuyang2018.jy@fujitsu.com</a>=
+ &lt;<a href=3D"mailto:xuyang2018.jy@fujitsu.com" target=3D"_blank">xuyang2=
+018.jy@fujitsu.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote=
+" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);=
+padding-left:1ex">Hi Richard, LI<br>
+<br>
+I am writting a simple regression test[1]that refer to kernel selftest cgro=
+up test_core[2]. I may name it as memcontrol05.c.<br>
+<br>
+It tests cgroup migration permission check should be performed based on the=
+ credentials at the time of open instead of write.<br>
+<br>
+I have used ltp cgroup framework, but ltp cgroup only use SAFE_CGROUP_PRINT=
+F to write value.<br>
+<br>
+How can get the cgroup root_dir ltp_dir path? So I can open this fd<br>
+and change/save effective uid between open and write?<br></blockquote><div>=
+=C2=A0</div></div><div class=3D"gmail_default" style=3D"font-size:small">No=
+t sure if I fully understand your requirements.</div><div class=3D"gmail_de=
+fault" style=3D"font-size:small">Can we achieve=C2=A0this test by creating =
+a two-layer=C2=A0subdirectory?</div><div class=3D"gmail_default" style=3D"f=
+ont-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:s=
+mall">Does only the root/ltp_dir mandatory for completing=C2=A0your test?</=
+div><div class=3D"gmail_default" style=3D"font-size:small">If yes, I think =
+tst_cg_print_config() maybe fits your purpose,</div><div class=3D"gmail_def=
+ault" style=3D"font-size:small">but that would need additional function hel=
+p extracting that.</div><div class=3D"gmail_default" style=3D"font-size:sma=
+ll"><br></div><div class=3D"gmail_default" style=3D"font-size:small">Take a=
+ reference to see how Luke gets the root path (in shell):</div><div class=
+=3D"gmail_default" style=3D"font-size:small"><a href=3D"https://lists.linux=
+.it/pipermail/ltp/2022-April/028772.html">https://lists.linux.it/pipermail/=
+ltp/2022-April/028772.html<br></a></div><br clear=3D"all"><div><br></div>--=
+ <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<=
+br></div></div></div></div>
+
+--000000000000e734ec05e3c14f77--
+
+
+--===============1937605648==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1937605648==--
+
