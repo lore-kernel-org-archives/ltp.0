@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B807AC43334
-	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 11:08:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1142C43334
+	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 12:46:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A5D743CA94F
-	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 13:08:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 5CCC23CA96D
+	for <ltp@archiver.kernel.org>; Thu, 14 Jul 2022 14:46:27 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 816813CA1DB
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 13:08:15 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id AA6FF3CA93F
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 14:46:16 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 44E366011EA
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 13:08:13 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DA44D1401149
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 14:46:15 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 847921FAF1
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 11:08:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 379221F926
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 12:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657796893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1657802775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=unQqieMeQMoZ5c7GV8CXm2c9ETESBk2aeZ/3c4QR5aA=;
- b=u26jVAVNEVnKGC4Vw9odcVgSVs5Mg/DGeHsT8+l7x/iJpGIgUPgTSwTnuJlfvOB8ff06c+
- LQaIvRc00V3i0ae7KImKSpJrvbUL4tm9OmFAKNS84G/mKd5HPvNZnbA0Nmun4ibj27Psoy
- c1Am1sp4Yvz5ob0uhJFVS6jju6fCJXY=
+ bh=yXD4i1wyXTdT9ErIYfO3dS+XtIMudOdMmtHis7v2oHM=;
+ b=1xm95Zth2GPVgXVp1ESTFKLodSIbnWpbP6PbRm4NOKj9ZlYrLiGwXt7pTrN/97CBfCh4+C
+ SrbLMSZT/Y2iU8mRtLlVqA60xJH6a+9tYRbUz2aAo2We43JeGWlrf4Yj385IBMSWDcnIVT
+ fFvjEXovIFBo1/Ei0PpWJe+gI7GTf3k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657796893;
+ s=susede2_ed25519; t=1657802775;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=unQqieMeQMoZ5c7GV8CXm2c9ETESBk2aeZ/3c4QR5aA=;
- b=++47KmeN4ATZDIBcWt2eSeNMm0JEm26OyhZtN/dNYpXcIznZjYBPJL2q23Wt4sgm277PL2
- 0UJRE0APoqgdIqCQ==
+ bh=yXD4i1wyXTdT9ErIYfO3dS+XtIMudOdMmtHis7v2oHM=;
+ b=qnjoGv1qs3b6aqGIPO4TkWCnYQvlBus2uyszaoIG1hde2sdtw9xrKi4+/RQjnD7yJggLiP
+ 8HLggIIBrHaG0nCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 020DF13A61
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 11:08:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A653913A61
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 12:46:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id xWZQLRz5z2JTVwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id PkulGRYQ0GLMBAAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 14 Jul 2022 11:08:12 +0000
+ for <ltp@lists.linux.it>; Thu, 14 Jul 2022 12:46:14 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 14 Jul 2022 16:38:10 +0530
-Message-Id: <20220714110810.2783-1-akumar@suse.de>
+Date: Thu, 14 Jul 2022 18:16:11 +0530
+Message-Id: <20220714124611.9772-1-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] open06.c: convert to new LTP API
+Subject: [LTP] [PATCH v2] open06.c: convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,11 +79,11 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/open/open06.c | 92 +++++--------------------
- 1 file changed, 18 insertions(+), 74 deletions(-)
+ testcases/kernel/syscalls/open/open06.c | 94 +++++--------------------
+ 1 file changed, 19 insertions(+), 75 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/open/open06.c b/testcases/kernel/syscalls/open/open06.c
-index 6c774ce84..96bdd5fa2 100644
+index 6c774ce84..a3c3bcb89 100644
 --- a/testcases/kernel/syscalls/open/open06.c
 +++ b/testcases/kernel/syscalls/open/open06.c
 @@ -1,90 +1,34 @@
@@ -109,9 +109,10 @@ index 6c774ce84..96bdd5fa2 100644
 + *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
   */
  
- /*
+-/*
 - * DESCRIPTION
 - *	Testcase to check open(2) sets errno to ENXIO correctly.
++/*\
 + * [Description]
   *
 - * ALGORITHM
@@ -140,12 +141,12 @@ index 6c774ce84..96bdd5fa2 100644
 -int main(int ac, char **av)
 -{
 -	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
  
--	setup();
+-	tst_parse_opts(ac, av, NULL, NULL);
 +#include "tst_test.h"
  
+-	setup();
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
