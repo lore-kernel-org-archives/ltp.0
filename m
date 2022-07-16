@@ -4,45 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A56EC43334
-	for <ltp@archiver.kernel.org>; Sat, 16 Jul 2022 16:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B6BAC433EF
+	for <ltp@archiver.kernel.org>; Sat, 16 Jul 2022 16:02:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2D173CA3FF
-	for <ltp@archiver.kernel.org>; Sat, 16 Jul 2022 18:02:19 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id F3F533CA2E4
+	for <ltp@archiver.kernel.org>; Sat, 16 Jul 2022 18:02:30 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3DED53C97D2
- for <ltp@lists.linux.it>; Sat, 16 Jul 2022 18:02:09 +0200 (CEST)
-Received: from a8-97.smtp-out.amazonses.com (a8-97.smtp-out.amazonses.com
- [54.240.8.97])
+ by picard.linux.it (Postfix) with ESMTPS id 3E36D3CA378
+ for <ltp@lists.linux.it>; Sat, 16 Jul 2022 18:02:11 +0200 (CEST)
+Received: from a8-29.smtp-out.amazonses.com (a8-29.smtp-out.amazonses.com
+ [54.240.8.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8F6EB6006E7
- for <ltp@lists.linux.it>; Sat, 16 Jul 2022 18:02:07 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BDEA16002B0
+ for <ltp@lists.linux.it>; Sat, 16 Jul 2022 18:02:10 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1657987326;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1657987329;
  h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
  bh=ArtLFjay28qt9isnmGRIs/guQae13BhzVijdCgtE7wg=;
- b=A4zf4YCm/h9tvdBjAZMYyIGhd6Z9I4D9Fdl+turjdCcqggwy3OXZNHY5eXGUoSq5
- PY7kzWXVNRQ8G3VuxqKTJcyIBcpi7scWTljB+zc6PZE9KJl/Gbdr8wWSXTLWFEwu8i/
- jnjNken9PztpBoKwBJq0gHuE/actPYI3icC7IJ1c=
+ b=X0ErZ2rFuDC+ftenf0/fr0+XZXkyIdR4cnEfjgDn39MGX3AMPhsVqPNOCzMBhRcn
+ i2f/NqVyJOVWOsZ8r9dVLl/OM3fvHbAS5QsnM3mHV7Ud4zxV7PziSnXsCFJGKy6aZFN
+ fVr3eT2llNDhSORPW9vpLhEtUTkDpWmsnd40rejU=
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1657987326;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1657987329;
  h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
  bh=ArtLFjay28qt9isnmGRIs/guQae13BhzVijdCgtE7wg=;
- b=jmnsKCuX3p/7k/0uOk4cdXqt7dwI+mf0nRzgmeLcIdwHtjmQNgX3VmJ+kWjfpfcx
- WSrSJ4CEjZdJl3vcRW4YIIb6R7MKPXdJT023hJMW8UkboD0d4QQIz1Qm8b8I4jGCKcr
- xlBiUWml+2t9Ntp9XNpmtZn5RbxA2YY021ytviok=
+ b=a4j3WCnlCZs9ac183estBbIvhU55rEbIb31h4ADCKkuLWGzUdvif8VFlCvLD4jEB
+ CLXY8dEGueqoqaDtD7BH+WDI9ZNPVu6CQ+Y9ZiQloWP8a34oFf5OUJ53ofucTYee8W4
+ NpQDCNmfj++ag4bfMALn9Oz+gBK3+CNps5fXM9yQ=
 From: lkft@linaro.org
 To: ltp@lists.linux.it
 MIME-Version: 1.0
-Message-ID: <0100018207bedf8d-734a7554-d70c-4b90-982e-7eb2d647dba4-000000@email.amazonses.com>
-Date: Sat, 16 Jul 2022 16:02:05 +0000
+Message-ID: <0100018207beec05-4603c96b-092b-4bff-bdf6-f8743a11b8f6-000000@email.amazonses.com>
+Date: Sat, 16 Jul 2022 16:02:09 +0000
 Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.07.16-54.240.8.97
+X-SES-Outgoing: 2022.07.16-54.240.8.29
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: [LTP] lkft ltp for bda92ad
