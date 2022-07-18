@@ -4,65 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A8CDCCA481
-	for <ltp@archiver.kernel.org>; Mon, 18 Jul 2022 10:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29721C433EF
+	for <ltp@archiver.kernel.org>; Mon, 18 Jul 2022 10:37:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 046EE3C9650
-	for <ltp@archiver.kernel.org>; Mon, 18 Jul 2022 12:02:34 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E9D6D3C9582
+	for <ltp@archiver.kernel.org>; Mon, 18 Jul 2022 12:37:48 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29BC93C913B
- for <ltp@lists.linux.it>; Mon, 18 Jul 2022 12:02:23 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 8C4F73C90A6
+ for <ltp@lists.linux.it>; Mon, 18 Jul 2022 12:37:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3691A600790
- for <ltp@lists.linux.it>; Mon, 18 Jul 2022 12:02:22 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CE535600494
+ for <ltp@lists.linux.it>; Mon, 18 Jul 2022 12:37:36 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 61FAB20D96;
- Mon, 18 Jul 2022 10:02:22 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2EEC533895;
+ Mon, 18 Jul 2022 10:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658138542;
+ t=1658140656;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WH5WuG534UNCt4+WYgS90d2LcK4CfoeJPsl9xrBubX4=;
- b=J7LddrgcnHkw8kid+SwC74cHo0v3hQcq6VI6cvxoXZYAKQlmoPx+j+UXDBxB4fgGE83Jrz
- pAPOyHOIihkS0DCH+g/EIDcwGTLaVkeoWC/5p71jTtCXa+wMiy/NSuqT8/Cma1JuHLELi7
- oX2QrfKczPJdTIoj5HCX8DQ+/g363dU=
+ bh=/ad2o1ZN0l95751BxxMU7SvYqdoQ/7wSF2+HTpfZjbQ=;
+ b=XBSQGZ63zH8iIrkDyUkzPbJwrfUyVpGewkKZeMn1PdbRvBxD0NDeGLDmZbTztJOrpCyR0g
+ 6CE2J6wTtSrTNwP6Iar/LfllT3XmWlONTElmvwE9c+CXDW70JMe1Om8jfGWfFl5fNuqIWr
+ udeO5dtGFmYRqI9aqSiTLAVPpPXTVUc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658138542;
+ s=susede2_ed25519; t=1658140656;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WH5WuG534UNCt4+WYgS90d2LcK4CfoeJPsl9xrBubX4=;
- b=ASOb/UoQE7a8BeRKdLZV6+6W5w4ZBsSht5s8s9llUZpbNmdJ3xL41tbVzxA9+qqCylGVlz
- B0lUnBDPiWjMwPDw==
+ bh=/ad2o1ZN0l95751BxxMU7SvYqdoQ/7wSF2+HTpfZjbQ=;
+ b=2tYDT6UZz4Io+VBS29ebNdpjgji3iUzLfVk+UeECLcXVA8XtswyFI0+IpPvdcHnJ3Ciy9B
+ pR3eGhnUHWz20mCQ==
 Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 2418B2C141;
- Mon, 18 Jul 2022 10:02:22 +0000 (UTC)
-References: <TY2PR01MB442719179C60B4DB6D275B5CFD889@TY2PR01MB4427.jpnprd01.prod.outlook.com>
- <CAEemH2fMfQYhfaV5_LeZCxfkCY=FKCqXc+SrZzQLVjzTf4yf8g@mail.gmail.com>
- <8e16d91c-8307-8ea4-bde7-28ef093c1205@fujitsu.com>
+ by relay2.suse.de (Postfix) with ESMTPS id D16072C141;
+ Mon, 18 Jul 2022 10:37:35 +0000 (UTC)
+References: <20220712124617.23139-1-rpalethorpe@suse.com>
+ <CAEemH2e=-8rt+N=VdiA27xO=-Z5zE4RPu+MCf2NDCuOTq6xcAw@mail.gmail.com>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Date: Mon, 18 Jul 2022 10:33:20 +0100
-In-reply-to: <8e16d91c-8307-8ea4-bde7-28ef093c1205@fujitsu.com>
-Message-ID: <87tu7eivrm.fsf@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Mon, 18 Jul 2022 11:09:21 +0100
+In-reply-to: <CAEemH2e=-8rt+N=VdiA27xO=-Z5zE4RPu+MCf2NDCuOTq6xcAw@mail.gmail.com>
+Message-ID: <87pmi2iu4w.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Do we have some simple way to get the current
- cgroup.procs path?
+Subject: Re: [LTP] [PATCH 1/2] read_all: Add worker timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,50 +72,94 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8sCgoieHV5YW5nMjAxOC5qeUBmdWppdHN1LmNvbSIgPHh1eWFuZzIwMTguanlAZnVqaXRz
-dS5jb20+IHdyaXRlczoKCj4gSGkgTGkKPj4gSGkgWHUsCj4+IAo+PiBPbiBUaHUsIEp1bCAxNCwg
-MjAyMiBhdCAyOjAyIFBNIHh1eWFuZzIwMTguanlAZnVqaXRzdS5jb20gCj4+IDxtYWlsdG86eHV5
-YW5nMjAxOC5qeUBmdWppdHN1LmNvbT4gPHh1eWFuZzIwMTguanlAZnVqaXRzdS5jb20gCj4+IDxt
-YWlsdG86eHV5YW5nMjAxOC5qeUBmdWppdHN1LmNvbT4+IHdyb3RlOgo+PiAKPj4gICAgIEhpIFJp
-Y2hhcmQsIExJCj4+IAo+PiAgICAgSSBhbSB3cml0dGluZyBhIHNpbXBsZSByZWdyZXNzaW9uIHRl
-c3RbMV10aGF0IHJlZmVyIHRvIGtlcm5lbAo+PiAgICAgc2VsZnRlc3QgY2dyb3VwIHRlc3RfY29y
-ZVsyXS4gSSBtYXkgbmFtZSBpdCBhcyBtZW1jb250cm9sMDUuYy4KPj4gCj4+ICAgICBJdCB0ZXN0
-cyBjZ3JvdXAgbWlncmF0aW9uIHBlcm1pc3Npb24gY2hlY2sgc2hvdWxkIGJlIHBlcmZvcm1lZCBi
-YXNlZAo+PiAgICAgb24gdGhlIGNyZWRlbnRpYWxzIGF0IHRoZSB0aW1lIG9mIG9wZW4gaW5zdGVh
-ZCBvZiB3cml0ZS4KPj4gCj4+ICAgICBJIGhhdmUgdXNlZCBsdHAgY2dyb3VwIGZyYW1ld29yaywg
-YnV0IGx0cCBjZ3JvdXAgb25seSB1c2UKPj4gICAgIFNBRkVfQ0dST1VQX1BSSU5URiB0byB3cml0
-ZSB2YWx1ZS4KPj4gCj4+ICAgICBIb3cgY2FuIGdldCB0aGUgY2dyb3VwIHJvb3RfZGlyIGx0cF9k
-aXIgcGF0aD8gU28gSSBjYW4gb3BlbiB0aGlzIGZkCj4+ICAgICBhbmQgY2hhbmdlL3NhdmUgZWZm
-ZWN0aXZlIHVpZCBiZXR3ZWVuIG9wZW4gYW5kIHdyaXRlPwo+PiAKPj4gTm90IHN1cmUgaWYgSSBm
-dWxseSB1bmRlcnN0YW5kIHlvdXIgcmVxdWlyZW1lbnRzLgo+PiBDYW4gd2UgYWNoaWV2ZcKgdGhp
-cyB0ZXN0IGJ5IGNyZWF0aW5nIGEgdHdvLWxheWVywqBzdWJkaXJlY3Rvcnk/Cj4KPiBJIHRoaW5r
-IHllcy4KCkkgdGhpbmsgeW91IG11c3QgaGF2ZSBtdWx0aXBsZSBsYXllcnMuIE90aGVyd2lzZSB5
-b3UgY291bGQgYnJlYWsgb3RoZXIKdGVzdHMgcnVubmluZyBpbiBwYXJhbGxlbC4KCj4KPj4gCj4+
-IERvZXMgb25seSB0aGUgcm9vdC9sdHBfZGlyIG1hbmRhdG9yeSBmb3IgY29tcGxldGluZ8KgeW91
-ciB0ZXN0Pwo+Cj4gSXQgYWxzbyBuZWVkIGdldHRpZCBzdWJkaXJlY3RvcnkgYW5kIGNncm91cCBu
-YW1lLgoKWW91IGNvdWxkIGNyZWF0ZSBhbiBhY2Nlc3NvciBmdW5jdGlvbiBpbiB0aGUgbGlicmFy
-eSB0byBnZXQgZGlyX2ZkIGZyb20KY2dyb3VwX2Rpci4KClRoaXMgaXMgY29tcGxpY2F0ZWQgYnkg
-VjEgQ0dzIHdoZXJlIGEgdHN0X2NnX2dyb3VwIGNhbiBoYXZlIG11bHRpcGxlCnN0cnVjdCBjZ3Jv
-dXBfZGlyJ3MuIFRoaXMgaXNuJ3QgYSBwcm9ibGVtIGZvciBzZWxmdGVzdHMgYmVjYXVzZSB0aGV5
-Cm9ubHkgc3VwcG9ydCBWMiwgYnV0IGl0IHdvdWxkIGJlIG5pY2UgdG8gbWFrZSBhcyBtYW55IHRl
-c3RzIGFzIHBvc3NpYmxlCndvcmsgd2l0aCBWMS4KClRoZSBlYXNpZXN0IHNvbHV0aW9uIEkgY2Fu
-IHRoaW5rIG9mIGlzIHRvIHdyaXRlIGEgbGlicmFyeSBmdW5jdGlvbiBsaWtlClNBRkVfQ0dfR1JP
-VVBfRUFDSF9ESVIodm9pZCAoKmNvbnN0IGZuX3B0cikoaW50IGRpcl9mZCkpIHdoaWNoIHRha2Vz
-IGEKY29uc3QgZnVuY3Rpb24gcG9pbnRlciBhbmQgZXhlY3V0ZXMgaXQgd2l0aCB0aGUgRkQgb2Yg
-ZWFjaApkaXJlY3RvcnkuIFRoZW4geW91IGNhbiB1c2UgdGhlIGludGVybmFsIGZvcl9lYWNoX2Rp
-ciBtYWNybyBsaWtlClNBRkVfQ0dST1VQX1BSSU5URi4KCj4+IElmIHllcywgSSB0aGluayB0c3Rf
-Y2dfcHJpbnRfY29uZmlnKCkgbWF5YmUgZml0cyB5b3VyIHB1cnBvc2UsCj4+IGJ1dCB0aGF0IHdv
-dWxkIG5lZWQgYWRkaXRpb25hbCBmdW5jdGlvbiBoZWxwIGV4dHJhY3RpbmcgdGhhdC4KPj4gCj4+
-IFRha2UgYSByZWZlcmVuY2UgdG8gc2VlIGhvdyBMdWtlIGdldHMgdGhlIHJvb3QgcGF0aCAoaW4g
-c2hlbGwpOgo+PiBodHRwczovL2xpc3RzLmxpbnV4Lml0L3BpcGVybWFpbC9sdHAvMjAyMi1BcHJp
-bC8wMjg3NzIuaHRtbAo+PiA8aHR0cHM6Ly9saXN0cy5saW51eC5pdC9waXBlcm1haWwvbHRwLzIw
-MjItQXByaWwvMDI4NzcyLmh0bWw+Cj4KPiBUaGFua3MsIEkgcHJlZmVyIHRvIHVzZSBjIGFwaSBh
-bmQgd2lsbCB0aGluayBhYm91dCBpdCBjb250aW51ZWx5Lgo+Cj4gQmVzdCBSZWdhcmRzCj4gWWFu
-ZyBYdQo+PiAKPj4gCj4+IC0tIAo+PiBSZWdhcmRzLAo+PiBMaSBXYW5nCgoKLS0gClRoYW5rIHlv
-dSwKUmljaGFyZC4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
-dC9saXN0aW5mby9sdHAK
+Hello Li,
+
+Li Wang <liwang@redhat.com> writes:
+
+> Hi Richard,
+>
+> On Tue, Jul 12, 2022 at 8:46 PM Richard Palethorpe <rpalethorpe@suse.com> wrote:
+>
+>  Kill and restart workers that take too long to read a file. The
+>  default being one second. A custom time can be set with the new -t
+>  option.
+>
+>  This is to prevent a worker from blocking forever in a read. Currently
+>  when this happens the whole test times out and any remaining files in
+>  the worker's queue are not tested.
+>
+>  As a side effect we can now also set the timeout very low to cause
+>  partial reads.
+>
+> To restart workers which are blocked from reading files is a practical way.
+> My only concern is that restarted-worker is also slower reading on some
+> specific files so it will still be timed out again. Then the rest will fall into 
+> restart cycles. Here I'd suggest loosening the worker_timeout to 3000 ms
+> to accommodate systems of different IO speeds.
+
+I didn't observe any issues setting the timeout very low
+(<100ms). Worker's remove an item from the queue before trying to read
+it, so they shouldn't get stuck in a restart cycle on the same file (if
+thats what you meant).
+
+>
+> Though each worker at most takes 3secs, the max time would not
+> be overdue 45s (3 sec * max_works), unless tested sequentially
+> in the worst case. So bumping up max_runtime maybe also helpful.
+>
+> Anyway, I'd be happy to apply your patch first to see how things going.
+> Reviewed-by: Li Wang <liwang@redhat.com>
+>
+> --- a/testcases/kernel/fs/read_all/read_all.c
+> +++ b/testcases/kernel/fs/read_all/read_all.c
+> @@ -64,7 +64,7 @@ struct queue {
+>  struct worker {
+>         pid_t pid;
+>         struct queue *q;
+> -       int last_seen;
+> +       unsigned long long last_seen;
+>  };
+>  
+>  enum dent_action {
+> @@ -86,7 +86,7 @@ static long max_workers = 15;
+>  static struct worker *workers;
+>  static char *drop_privs;
+>  static char *str_worker_timeout;
+> -static int worker_timeout = 1000;
+> +static int worker_timeout = 3000;
+>  
+>  static char *blacklist[] = {
+>         NULL, /* reserved for -e parameter */
+> @@ -552,5 +552,6 @@ static struct tst_test test = {
+>         .cleanup = cleanup,
+>         .test_all = run,
+>         .forks_child = 1,
+> +       .max_runtime = 60,
+>  };
+
+I'm not sure if this is better or worse. In my sys folder there are
+approx 35K files. Obviously a timeout of even 1s is far too long to read
+all of them if they all timeout. In fact if we set the timeout as 100ms
+then they would still require about 58 mins.
+
+Of course most of them take a very short time on most systems. I guess
+that ideally the timeout needs to be adapted as the test runs so that
+all remaining files can be read. The issue with that though is that kill+wait+fork
+takes more time than most reads. Although that can be measured as
+well....
+
+This issue is quite a lot like the issues we have with fuzzy sync. I
+think it's maybe time to start dynamically adapting to system
+performance. That's probably best left to another patch series though.
+
+-- 
+Thank you,
+Richard.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
