@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A886DC433EF
-	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 11:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A28B3C433EF
+	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 11:41:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 466903C964E
-	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 13:32:15 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B81213C8CCD
+	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 13:41:30 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D1D223C899B
- for <ltp@lists.linux.it>; Tue, 19 Jul 2022 13:32:03 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 9F3853C8CA9
+ for <ltp@lists.linux.it>; Tue, 19 Jul 2022 13:41:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 385B8200CF5
- for <ltp@lists.linux.it>; Tue, 19 Jul 2022 13:32:02 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E877D6024AB
+ for <ltp@lists.linux.it>; Tue, 19 Jul 2022 13:41:18 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 63FC03510C;
- Tue, 19 Jul 2022 11:32:02 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 486B51FA88;
+ Tue, 19 Jul 2022 11:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1658230322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1658230878; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9T6hofqfbuQXOF/eYd7fhp2gP4e0+G/yXRFV9J0MJg4=;
- b=XxEatNUIauKmRBFIeFO83nvxHK1MsYOYr1KQ/cLQYwverH2M0k0qaZlIFAYD1KZdLHj2hH
- XL+ZqD2vvriEwAIBZtjEeb7idPQ6/jFeVHlD6B1kfVObcpitNN8hwyy6TRGgbFCJqll0rY
- NTroHaByFOjWYdDhh/X1NsoeGNNIx7U=
+ bh=mwtTgnB6W2GsnieQlDHKuuUjEgJEJZ+gcYsZ6b43jAw=;
+ b=CaNlPWBLj+G0VMYPMou3lP/+aGuSVniiExjN15fDcrtYa9G5Xj/wbFCN/8L/PbohCsN14s
+ KaBSpc97pAylkuk7ymBVVeJ+GEtuLrZhgDufxOmK47lIrNRODTYzo1PwpOizx/bIBLCZG3
+ lw+pj1o6nL/VwSVa1VFc9zimiPiXnEo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1658230322;
+ s=susede2_ed25519; t=1658230878;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9T6hofqfbuQXOF/eYd7fhp2gP4e0+G/yXRFV9J0MJg4=;
- b=YMgoQAsaXRAhV51wAQyeYRWC6uLqV2NUKTbDkXUUKwVqIUWJ9lneNjcB5PV5FkQShW4wcy
- uaOhYqMpwvtevaBw==
+ bh=mwtTgnB6W2GsnieQlDHKuuUjEgJEJZ+gcYsZ6b43jAw=;
+ b=pMxApuBvLGZ7coveqPe9vrm7lbCEdVigpxHxUg1fgmFJq7OPY+Mj/TOLO65KvV6rRTwL18
+ HGrnfCZk3NW0J6Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45BE913A72;
- Tue, 19 Jul 2022 11:32:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1C62113A72;
+ Tue, 19 Jul 2022 11:41:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2tCQDzKW1mK8IgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 19 Jul 2022 11:32:02 +0000
-Date: Tue, 19 Jul 2022 13:33:16 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id n5VZBV6Y1mIHJwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 19 Jul 2022 11:41:18 +0000
+Date: Tue, 19 Jul 2022 13:42:32 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YtaWfLBFAfYSaXIz@rei>
-References: <20220719072709.20397-1-akumar@suse.de>
+To: Hongchen Zhang <zhanghongchen@loongson.cn>
+Message-ID: <YtaYqAEIf/2w8Ngy@rei>
+References: <1658228710-37206-1-git-send-email-zhanghongchen@loongson.cn>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220719072709.20397-1-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <1658228710-37206-1-git-send-email-zhanghongchen@loongson.cn>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] readahead01.c: use TST_EXP_FAIL() macro and fix
- warnings
+Subject: Re: [LTP] [PATCH v4 1/2] syslog11: convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,14 +74,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: ltp@lists.linux.it, Lingling Li <lilingling@loongson.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Nice cleanup, applied, thanks.
+> +// SPDX-License-Identifier: GPL-2.0
+
+It's GPL-2.0-only see: https://spdx.org/licenses/
+
+I've fixed that and pushed, thanks.
 
 -- 
 Cyril Hrubis
