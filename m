@@ -4,65 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 349C0C433EF
-	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 08:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20A5EC43334
+	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 08:58:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 616463C958C
-	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 10:44:02 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 1238B3C9788
+	for <ltp@archiver.kernel.org>; Tue, 19 Jul 2022 10:58:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DAC13C60C2
- for <ltp@lists.linux.it>; Tue, 19 Jul 2022 10:43:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D6AD03C9175
+ for <ltp@lists.linux.it>; Tue, 19 Jul 2022 10:58:19 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CE0361A01DF4
- for <ltp@lists.linux.it>; Tue, 19 Jul 2022 10:43:49 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 84D1534AE2;
- Tue, 19 Jul 2022 08:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1658220228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C40611430DC3
+ for <ltp@lists.linux.it>; Tue, 19 Jul 2022 10:58:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1658221097;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8mpLH1QUxIVI894JrPut6xaCut6Mm5H7HYbg2LGD1eI=;
- b=AqC8LCChM2V3XBxIk4X7G9Jtm0eXAT0xVua1aHyFIXPEvnXLTZEKLF2ZFhCLwwZUtUYicI
- XKPCidmSG/9e/NV3jml7yCZNjUAqxlWxCa3CAxSReY46fpvCM1O5oaUMrB3V3h7xwV5jCf
- Z0p5IgLPpZkAPZlXtIwxFdaoKkICQg0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1658220228;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8mpLH1QUxIVI894JrPut6xaCut6Mm5H7HYbg2LGD1eI=;
- b=DakTIjSAxzBgcOAdTAU/sAG/VxMVuvelOisF4UKfGHcnT4WWTlvCffdgulFlQHK9JAFFkB
- ZG56gzzjvxiS4ACw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6749813A72;
- Tue, 19 Jul 2022 08:43:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id z4OeF8Ru1mJNUgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 19 Jul 2022 08:43:48 +0000
-Date: Tue, 19 Jul 2022 10:45:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Hongchen Zhang <zhanghongchen@loongson.cn>
-Message-ID: <YtZvDr3vb51AfUQc@rei>
-References: <1658198910-21458-1-git-send-email-zhanghongchen@loongson.cn>
+ bh=yo+U+SN7RsOx+biIwd/fqI9p1ca/4iatIJvkGCf2vWk=;
+ b=EnUbDxh1/ScpGQOJREA0OUSFM03QFz0nCjlA8jqrf/zh36ZOH+/B/28kZJj0IUYpxtn/dH
+ rs8OcuGbuK8Z8Y3KQdDoapLeoFqZ9OKszu7ciJMeiPIpkDe12AVq5XmvrI0G0OCReljHvO
+ G/AYBd+a2h5CZ+3D3i1MeV2aOsTM/xw=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-292-0q2ktWnWMDuqiGRugaaDDw-1; Tue, 19 Jul 2022 04:58:15 -0400
+X-MC-Unique: 0q2ktWnWMDuqiGRugaaDDw-1
+Received: by mail-yb1-f199.google.com with SMTP id
+ r64-20020a254443000000b006707b7c2baeso1924300yba.16
+ for <ltp@lists.linux.it>; Tue, 19 Jul 2022 01:58:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=yo+U+SN7RsOx+biIwd/fqI9p1ca/4iatIJvkGCf2vWk=;
+ b=MqIJuLkTtq1VHg0xbUoZ5UVV2m4Z/0NhUOxAmTajxSLyCJbDapuL+8ecuRzQAcQFwC
+ 2Ky0446n/wbjfXtHIW2BVtKtWP2YR7fCmjkSYINqx61sgpexnj23+TxibK73X6T+6Amx
+ Zo1eyFccddgedP/q8gRhRO4DcQ8BmBaTKC5clUbQXyjU3JsuQCZyUnJh42gvyQjxnJHB
+ KZSCnfxF9ZuegEUo9qMt74iRBgZyChtAJDUH9FkhqPeYdy2YTxCFBPpJEFgGB6yWJ8RH
+ 9aMVHHb0sPEvxn18OwJYRAa7pu9ecbUScvBPe/ATpEF0HW8tQpEwfrXXt18feA0IHsF4
+ I1CA==
+X-Gm-Message-State: AJIora8lk8XWezNyOcY6ve0bRvYU+Ik6JGbJ6E8ee74wdhrLNBJ2wN/j
+ w3KIMoBdoRbhLrEX/SDVsFwEOJ/mQnN3BYyshHBTx1DgFUj+G4oe9aX3eMlWTnw2duPVNhaXTh1
+ XnfzMoStNmwiTnMaeJknwyzlBWQ4=
+X-Received: by 2002:a05:6902:70b:b0:66e:8dde:7a58 with SMTP id
+ k11-20020a056902070b00b0066e8dde7a58mr30523950ybt.186.1658221095300; 
+ Tue, 19 Jul 2022 01:58:15 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vcXp+K4PFi+/A3OfHT4ckiAs2ABnwbeKDHneEj0ubfokIi0zzY5XlDBNR6QKXldkiWO+c69NZrE/u9xRGD2CM=
+X-Received: by 2002:a05:6902:70b:b0:66e:8dde:7a58 with SMTP id
+ k11-20020a056902070b00b0066e8dde7a58mr30523936ybt.186.1658221095010; Tue, 19
+ Jul 2022 01:58:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1658198910-21458-1-git-send-email-zhanghongchen@loongson.cn>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <20220712124617.23139-1-rpalethorpe@suse.com>
+ <CAEemH2e=-8rt+N=VdiA27xO=-Z5zE4RPu+MCf2NDCuOTq6xcAw@mail.gmail.com>
+ <87pmi2iu4w.fsf@suse.de>
+In-Reply-To: <87pmi2iu4w.fsf@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 19 Jul 2022 16:58:03 +0800
+Message-ID: <CAEemH2dVW7eXsPx4RRXD=N59xTG0+cbuLNG0qrA8aPrYSRwP=g@mail.gmail.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] syslog11: convert to new LTP API
+Subject: Re: [LTP] [PATCH 1/2] read_all: Add worker timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,304 +87,184 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0636419927=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> convert to use new LTP API for syslog11.
+--===============0636419927==
+Content-Type: multipart/alternative; boundary="00000000000053d99405e424af8e"
 
-You should at least mention here that the printk file is now saved and
-restored since that is a functional change.
+--00000000000053d99405e424af8e
+Content-Type: text/plain; charset="UTF-8"
 
-Or even better do the functional change that saves and restores the file
-in a separate patch.
+On Mon, Jul 18, 2022 at 6:37 PM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
-> ---
->  testcases/kernel/syscalls/syslog/syslog11.c | 231 +++++-----------------------
->  1 file changed, 42 insertions(+), 189 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/syslog/syslog11.c b/testcases/kernel/syscalls/syslog/syslog11.c
-> index b9540ef..b6fb4a8 100644
-> --- a/testcases/kernel/syscalls/syslog/syslog11.c
-> +++ b/testcases/kernel/syscalls/syslog/syslog11.c
-> @@ -1,212 +1,65 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
+> Hello Li,
+>
+> Li Wang <liwang@redhat.com> writes:
+>
+> > Hi Richard,
+> >
+> > On Tue, Jul 12, 2022 at 8:46 PM Richard Palethorpe <rpalethorpe@suse.com>
+> wrote:
+> >
+> >  Kill and restart workers that take too long to read a file. The
+> >  default being one second. A custom time can be set with the new -t
+> >  option.
+> >
+> >  This is to prevent a worker from blocking forever in a read. Currently
+> >  when this happens the whole test times out and any remaining files in
+> >  the worker's queue are not tested.
+> >
+> >  As a side effect we can now also set the timeout very low to cause
+> >  partial reads.
+> >
+> > To restart workers which are blocked from reading files is a practical
+> way.
+> > My only concern is that restarted-worker is also slower reading on some
+> > specific files so it will still be timed out again. Then the rest will
+> fall into
+> > restart cycles. Here I'd suggest loosening the worker_timeout to 3000 ms
+> > to accommodate systems of different IO speeds.
+>
+> I didn't observe any issues setting the timeout very low
+> (<100ms). Worker's remove an item from the queue before trying to read
+> it, so they shouldn't get stuck in a restart cycle on the same file (if
+> thats what you meant).
+>
 
-The original lincense is GPL-2.0-only we can't change the license to
-or-later here.
+Ah yes, exactly.
 
->  /*
-> - * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> + * Author: Madhu T L <madhu.tarikere@wipro.com>
->   */
-> -/**********************************************************
-> - *
-> - *    TEST IDENTIFIER   : syslog11
-> - *
-> - *    EXECUTED BY       : root / superuser
-> - *
-> - *    TEST TITLE        : Basic tests for syslog(2)
-> - *
-> - *    TEST CASE TOTAL   : 11
-> - *
-> - *    AUTHOR            : Madhu T L <madhu.tarikere@wipro.com>
-> - *
-> - *    SIGNALS
-> - *      Uses SIGUSR1 to pause before test if option set.
-> - *      (See the parse_opts(3) man page).
-> - *
-> - *    DESCRIPTION
-> - *	Verify that, syslog(2) is successful for type ranging from 1 to 8
-> - *
-> - *	Setup:
-> - *	  Setup signal handling.
-> - *	  Test caller is superuser
-> - *	  Check existence of user nobody
-> - *	  Pause for SIGUSR1 if option specified.
-> - *
-> - *	Test:
-> - *	 Loop if the proper options are given.
-> - *	  Execute system call
-> - *	  Check return value, if not successful,
-> - *		 Issue FAIL message
-> - *	  Otherwise,
-> - *		Issue PASS message
-> - *
-> - *	Cleanup:
-> - *	  Print errno log and/or timing stats if options given
-> - *
-> - * USAGE:  <for command-line>
-> - *  syslog11 [-c n] [-e] [-f] [-h] [-i n] [-I x] [-p] [-P x] [-t]
-> - *		where,  -c n : Run n copies concurrently.
-> - *			-e   : Turn on errno logging.
-> - *			-f   : Turn off functional testing
-> - *			-h   : Show help screen
-> - *			-i n : Execute test n times.
-> - *			-I x : Execute test for x seconds.
-> - *			-p   : Pause for SIGUSR1 before starting
-> - *			-P x : Pause for x seconds between iterations.
-> - *			-t   : Turn on syscall timing.
-> +
-> +/*
-> + * [Description]
-> + * Verify that, syslog(2) is successful for type ranging from 1 to 8
->   *
-> - ****************************************************************/
-> + */
->  
->  #include <errno.h>
-> -#include <pwd.h>
-> -#include <sys/types.h>
-> -#include <unistd.h>
-> -#include <linux/unistd.h>
-> -#include <sys/syscall.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
->  
-> -#define UNEXP_RET_VAL	-1
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "tst_safe_macros.h"
->  
-> -struct test_case_t {		/* test case structure */
-> +struct tcase {		/* test case structure */
->  	int type;		/* 1st arg. */
->  	char *buf;		/* 2nd arg. */
->  	int len;		/* 3rd arg. */
-> -	int (*setup) (void);	/* Individual setup routine */
-> -	void (*cleanup) (void);	/* Individual cleanup routine */
->  	char *desc;		/* Test description */
->  };
 
-I would have removed these comments as well, there is no point in
-commenting the obvious here.
 
-> -char *TCID = "syslog11";
-> -static int testno;
->  static char buf;
-> -static struct passwd *ltpuser;
-> -
-> -static void setup(void);
-> -static void cleanup(void);
-> -static int setup1(void);
-> -static void cleanup1(void);
->  
-> -#define syslog(arg1, arg2, arg3) syscall(__NR_syslog, arg1, arg2, arg3)
-> +#define syslog(arg1, arg2, arg3) tst_syscall(__NR_syslog, arg1, arg2, arg3)
->  
-> -static struct test_case_t tdat[] = {
-> +static struct tcase tcases[] = {
->  	/* Type 0 and 1 are currently not implemented, always returns success */
-> -	{0, &buf, 0, NULL, NULL, "type 0/Close the log"},
-> -	{1, &buf, 0, NULL, NULL, "type 1/Open the log"},
-> -	{2, &buf, 0, NULL, NULL, "type 2/Read from the log"},
-> -	{3, &buf, 0, NULL, NULL, "type 3/Read ring buffer"},
-> -	{3, &buf, 0, setup1, cleanup1, "type 3/Read ring buffer for non-root "
-> -	 "user"},
+> I'm not sure if this is better or worse. In my sys folder there are
+> approx 35K files. Obviously a timeout of even 1s is far too long to read
+> all of them if they all timeout. In fact if we set the timeout as 100ms
+> then they would still require about 58 mins.
+>
 
-Looking at the syslog12.c the non-root user read with EPERM is covered
-there, so it's fine to drop it from this test. But please mention that
-in the commit message as well.
+At the moment we just give a rough value on that as nobody has lots of
+sample data.
 
-> -	/* Next two lines will clear dmesg. Uncomment if that is okay. -Robbie Williamson */
-> -	/*    { 4, &buf, 0, NULL, NULL, "type 4/Read and clear ring buffer" },            */
-> -	/*    { 5, &buf, 0, NULL, NULL, "type 5/Clear ring buffer" },                     */
-> -
-> -	{8, NULL, 1, NULL, NULL, "type 8/Set log level to 1"},
-> -	{8, NULL, 7, NULL, NULL, "type 8/Set log level to 7(default)"},
-> -	{6, NULL, 0, NULL, NULL, "type 6/Disable printk's to console"},
-> -	{7, NULL, 0, NULL, NULL, "type 7/Enable printk's to console"},
-> +	{0, &buf, 0, "type 0/Close the log"},
-> +	{1, &buf, 0, "type 1/Open the log"},
-> +	{2, &buf, 0, "type 2/Read from the log"},
-> +	{3, &buf, 0, "type 3/Read ring buffer"},
-> +	/*
-> +	 * Next two lines will clear dmesg.
-> +	 * Uncomment if that is okay. -Robbie Williamson
-> +	 */
-> +	/*
-> +	 * { 4, &buf, 0, "type 4/Read and clear ring buffer" },
-> +	 * { 5, &buf, 0, "type 5/Clear ring buffer" },
-> +	 */
-> +	{8, NULL, 1, "type 8/Set log level to 1"},
-> +	{8, NULL, 7, "type 8/Set log level to 7(default)"},
-> +	{6, NULL, 0, "type 6/Disable printk's to console"},
-> +	{7, NULL, 0, "type 7/Enable printk's to console"},
->  };
->  
-> -int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
-> -
-> -int main(int argc, char **argv)
-> +static void run(unsigned int n)
->  {
-> -	int lc;
-> -
-> -	tst_parse_opts(argc, argv, NULL, NULL);
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		for (testno = 0; testno < TST_TOTAL; ++testno) {
-> +	struct tcase *tc = &tcases[n];
->  
-> -			if (tdat[testno].setup && tdat[testno].setup()) {
-> -				/* Setup failed, skip this testcase */
-> -				continue;
-> -			}
-> -
-> -			TEST(syslog(tdat[testno].type, tdat[testno].buf,
-> -				    tdat[testno].len));
-> -
-> -			if (TEST_RETURN == UNEXP_RET_VAL) {
-> -				if (TEST_ERRNO == EPERM && geteuid() != 0) {
-> -					tst_resm(TPASS,
-> -						 "syslog() passed for %s (non-root EPERM is OK)",
-> -						 tdat[testno].desc);
-> -				} else {
-> -					tst_resm(TFAIL,
-> -						 "syslog() failed for %s: errno "
-> -						 "%d (%s)", tdat[testno].desc,
-> -						 TEST_ERRNO, strerror(errno));
-> -				}
-> -			} else {
-> -				tst_resm(TPASS, "syslog() successful for %s",
-> -					 tdat[testno].desc);
-> -			}
-> -
-> -			if (tdat[testno].cleanup) {
-> -				tdat[testno].cleanup();
-> -			}
-> -		}
-> -	}
-> -	cleanup();
-> -
-> -	tst_exit();
-> -}
-> -
-> -int setup1(void)
-> -{
-> -	/* Change effective user id to nodody */
-> -	if (seteuid(ltpuser->pw_uid) == -1) {
-> -		tst_resm(TBROK, "seteuid failed to set the effective"
-> -			 " uid to %d", ltpuser->pw_uid);
-> -		return 1;
-> -	}
-> -	return 0;
-> +	TST_EXP_PASS(syslog(tc->type, tc->buf, tc->len),
-> +			"syslog() with %s", tc->desc);
->  }
->  
-> -void cleanup1(void)
-> -{
-> -	/* Change effective user id to root */
-> -	SAFE_SETEUID(NULL, 0);
-> -}
-> -
-> -/*
-> - * setup()
-> - *	performs all ONE TIME setup for this test
-> - */
-> -void setup(void)
-> -{
-> -	tst_require_root();
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	/* Check for nobody_uid user id */
-> -	if ((ltpuser = getpwnam("nobody")) == NULL) {
-> -		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
-> -	}
-> -
-> -	/* Pause if that option was specified
-> -	 * TEST_PAUSE contains the code to fork the test with the -c option.
-> -	 */
-> -	TEST_PAUSE;
-> -}
-> -
-> -/*
-> - * cleanup()
-> - *	performs all ONE TIME cleanup for this test at
-> - *	completion or premature exit
-> - */
-> -void cleanup(void)
-> -{
-> -
-> -}
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.save_restore = (const struct tst_path_val[]) {
-> +		{"!/proc/sys/kernel/printk", NULL},
-> +		{NULL, NULL}
-> +	},
-> +	.needs_root = 1,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +};
-> -- 
-> 1.8.3.1
-> 
+
+>
+> Of course most of them take a very short time on most systems. I guess
+> that ideally the timeout needs to be adapted as the test runs so that
+> all remaining files can be read. The issue with that though is that
+> kill+wait+fork
+> takes more time than most reads. Although that can be measured as
+> well....
+>
+> This issue is quite a lot like the issues we have with fuzzy sync. I
+> think it's maybe time to start dynamically adapting to system
+> performance. That's probably best left to another patch series though.
+>
+
+Yes, collecting sample data can help evaluate the performance.
+That's a practical way to make things more reliable.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+
+--00000000000053d99405e424af8e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Jul 18, 2022 at 6:37 PM Richard Palethorpe =
+&lt;<a href=3D"mailto:rpalethorpe@suse.de">rpalethorpe@suse.de</a>&gt; wrot=
+e:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
+.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello Li,<br>
+<br>
+Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@r=
+edhat.com</a>&gt; writes:<br>
+<br>
+&gt; Hi Richard,<br>
+&gt;<br>
+&gt; On Tue, Jul 12, 2022 at 8:46 PM Richard Palethorpe &lt;<a href=3D"mail=
+to:rpalethorpe@suse.com" target=3D"_blank">rpalethorpe@suse.com</a>&gt; wro=
+te:<br>
+&gt;<br>
+&gt;=C2=A0 Kill and restart workers that take too long to read a file. The<=
+br>
+&gt;=C2=A0 default being one second. A custom time can be set with the new =
+-t<br>
+&gt;=C2=A0 option.<br>
+&gt;<br>
+&gt;=C2=A0 This is to prevent a worker from blocking forever in a read. Cur=
+rently<br>
+&gt;=C2=A0 when this happens the whole test times out and any remaining fil=
+es in<br>
+&gt;=C2=A0 the worker&#39;s queue are not tested.<br>
+&gt;<br>
+&gt;=C2=A0 As a side effect we can now also set the timeout very low to cau=
+se<br>
+&gt;=C2=A0 partial reads.<br>
+&gt;<br>
+&gt; To restart workers which are blocked from reading files is a practical=
+ way.<br>
+&gt; My only concern is that restarted-worker is also slower reading on som=
+e<br>
+&gt; specific files so it will still be timed out again. Then the rest will=
+ fall into <br>
+&gt; restart cycles. Here I&#39;d suggest loosening the worker_timeout to 3=
+000 ms<br>
+&gt; to accommodate systems of different IO speeds.<br>
+<br>
+I didn&#39;t observe any issues setting the timeout very low<br>
+(&lt;100ms). Worker&#39;s remove an item from the queue before trying to re=
+ad<br>
+it, so they shouldn&#39;t get stuck in a restart cycle on the same file (if=
+<br>
+thats what you meant).<br></blockquote><div><br></div><div><div class=3D"gm=
+ail_default" style=3D"font-size:small">Ah yes, exactly.</div></div><div>=C2=
+=A0</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+>
+I&#39;m not sure if this is better or worse. In my sys folder there are<br>
+approx 35K files. Obviously a timeout of even 1s is far too long to read<br=
+>
+all of them if they all timeout. In fact if we set the timeout as 100ms<br>
+then they would still require about 58 mins.<br></blockquote><div><br></div=
+><div><span class=3D"gmail_default" style=3D"font-size:small">At the moment=
+ we=C2=A0</span>just give a rough value on that as nobody has lots of sampl=
+e data.<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex">
+<br>
+Of course most of them take a very short time on most systems. I guess<br>
+that ideally the timeout needs to be adapted as the test runs so that<br>
+all remaining files can be read. The issue with that though is that kill+wa=
+it+fork<br>
+takes more time than most reads. Although that can be measured as<br>
+well....<br>
+<br>
+This issue is quite a lot like the issues we have with fuzzy sync. I<br>
+think it&#39;s maybe time to start dynamically adapting to system<br>
+performance. That&#39;s probably best left to another patch series though.<=
+br></blockquote><div><br></div><div><div class=3D"gmail_default" style=3D"f=
+ont-size:small">Yes,=C2=A0collecting sample data can help evaluate the perf=
+ormance.</div><div class=3D"gmail_default" style=3D"font-size:small">That&#=
+39;s a practical way to make things more reliable.</div></div></div><div><b=
+r></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr">=
+<div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--00000000000053d99405e424af8e--
+
+
+--===============0636419927==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0636419927==--
+
