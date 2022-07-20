@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 567B0C433EF
-	for <ltp@archiver.kernel.org>; Wed, 20 Jul 2022 10:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4A05C433EF
+	for <ltp@archiver.kernel.org>; Wed, 20 Jul 2022 11:55:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 02EDA3C983A
-	for <ltp@archiver.kernel.org>; Wed, 20 Jul 2022 12:53:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9B8163C98E2
+	for <ltp@archiver.kernel.org>; Wed, 20 Jul 2022 13:55:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 982F43C1B73
- for <ltp@lists.linux.it>; Wed, 20 Jul 2022 12:53:36 +0200 (CEST)
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com
- [IPv6:2607:f8b0:4864:20::a36])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 46B1A3C215A
+ for <ltp@lists.linux.it>; Wed, 20 Jul 2022 13:54:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C5C6420011A
- for <ltp@lists.linux.it>; Wed, 20 Jul 2022 12:53:35 +0200 (CEST)
-Received: by mail-vk1-xa36.google.com with SMTP id q194so6746068vkb.6
- for <ltp@lists.linux.it>; Wed, 20 Jul 2022 03:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=qgn4lzqB5dYjS3/duAw0VhMmFPHwwY4orb9x1il57Y0=;
- b=p/NER40qAiNH43/fMzdqNcDl8Hm6Lhtl53wLAv4pAMrcxbA7NHDAXBRXddNL8+XesS
- wiui+2bJnSDivAW0+zgd5bcCAMhyrRok88tAlFkkoIMRT3a06lZxgeqrb9FT0KXWgay2
- VJI36Cbe7TQzIUYUdW5wS64tt0Tkoz6o8WJAHUNjf0wrRHUxeoFnrsxKeQXCRrY4C2Gz
- sgmrMJ6TTmoCtsciSI+BQNhl3t66ZkE/pzN5D2zvUKrWJnlCo/zVVfKrI5ULV1gCJQS0
- GllDWoriqDeGbDbTZnZ1YqzOH+xLG+hSAxxx/IkRPHSxlnjgXBfmCaGBgBPZPoA4BrXB
- 8E6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=qgn4lzqB5dYjS3/duAw0VhMmFPHwwY4orb9x1il57Y0=;
- b=DuUl5zLzFOMMFKlyg2sbTh4InLFkRdPZ+rQcMlo2fjru3DN1h8TzIy+TitlNUJXXGW
- 5jCd4xcYdvxACjo4CxoAOedIZQ5p7cQ5tFd6AcXK3u88GExMmxW0Akbuj/veYOtajNaf
- XDrm5zBwBQRF8cVzlRqEth7uSHQzOOummsbU/9T61afcMmY59MVHn+MmO7UDdTLMoRfQ
- J9EVkkLUqvEfhi9duHUowGmqYc+cRxLJT/NyPvcRc/SdtwLebAmBAh3DaWPxzhv13ts3
- fHOZBZA2+ybTBtjOQTA2Iu+DUJBqIaT5vPkVVx3WtD4OQd9Wt/73k3hC4+SPoMPmQfrx
- t4iQ==
-X-Gm-Message-State: AJIora8rVFHJ8/WOIgi7z1bE2HqlP2/5FINHr81lFf1oYUnhbgwCKOOw
- 6NpGSSJBpXRdUMF/rRzpI6QSAa47x9QYHgaC4eE=
-X-Google-Smtp-Source: AGRyM1uXn79xIrwYpDIWT+KRoxpZ5cyf023/eJX23rzO2m1oIMSz+qgyxK+SqsdEp/4XF98jw3yJTOqD5SPDvqQ0zzU=
-X-Received: by 2002:a1f:2aca:0:b0:370:9de2:51f7 with SMTP id
- q193-20020a1f2aca000000b003709de251f7mr13521113vkq.11.1658314414701; Wed, 20
- Jul 2022 03:53:34 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 40D321400DCA
+ for <ltp@lists.linux.it>; Wed, 20 Jul 2022 13:54:50 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1D9FD1FD65;
+ Wed, 20 Jul 2022 11:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1658318089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4ZhmeJIbLI8A5FHY5caLwZoStLl4FqrfcS4p+s5n7mo=;
+ b=TrP1wN7O3sv5np0JAmRMLUnGedgxNjMOwPpZEePX5QN4EKz/Z1llfitKStXzN+WqAbb1GV
+ Raj2OqbLRhpCYbvxl7mYMUPLwQ+fvxLd1QoFAqaVpe+QUz7rBFomPzboeBnGjeUyB4dtGm
+ pI0D6MmCYttVRTy/ZtBakNFkyr0/58o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1658318089;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4ZhmeJIbLI8A5FHY5caLwZoStLl4FqrfcS4p+s5n7mo=;
+ b=Sj505n/iwZmyMG0Af2AXmofMxhAYgkTEuQOJK/uH9h1AXqMDDS0qIY2vOtaO/FHPjW4uMW
+ S2r3fhCzDswkt8Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0764813AA1;
+ Wed, 20 Jul 2022 11:54:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2eRTAAnt12JPUwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 20 Jul 2022 11:54:49 +0000
+Date: Wed, 20 Jul 2022 13:56:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Jan Stancek <jstancek@redhat.com>
+Message-ID: <YtftUlDCvP5uchp9@rei>
+References: <19d19a5d6bbf5b19940a936b62db6dfdd29a085f.1658313770.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <20220719095853.3373732-1-amir73il@gmail.com>
- <20220719095853.3373732-2-amir73il@gmail.com>
- <YtcpBkevcBF6iycz@google.com>
-In-Reply-To: <YtcpBkevcBF6iycz@google.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 20 Jul 2022 12:53:23 +0200
-Message-ID: <CAOQ4uxi=9iMqOvE+9iNHkXxCqbGBp90QT5sisGwsVtGjoRzihg@mail.gmail.com>
-To: Matthew Bobrowski <repnop@google.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <19d19a5d6bbf5b19940a936b62db6dfdd29a085f.1658313770.git.jstancek@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] syscalls/fanotify14: Encode the expected
- errno in test case
+Subject: Re: [LTP] [PATCH] syscalls/fsync02: restore runtime to 5m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,29 +74,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Jul 19, 2022 at 11:58 PM Matthew Bobrowski <repnop@google.com> wrote:
->
-> On Tue, Jul 19, 2022 at 11:58:52AM +0200, Amir Goldstein wrote:
-> > So we can add test cases for errors other than EINVAL.
->
-> Just one optional nit. We can probably remove the comments which are
-> directly above the existing `if (errno == EINVAL)` checks as they're
-> specific to one expected errno value, but this is no longer the case
-> with ENOTDIR now in some fanotify_init/fanotify_mark cases.
+Hi!
+> Test allows up to 240 seconds for PASS result (depending if its VM or not),
+> but on slower systems library now kills it after a minute. Restore
+> runtime to 5 minutes.
 
-Good point.
+Looking at the test itself it's a bit messed up too.
 
->
-> Feel free to add RVB tags.
+The test uses rand(); to initialize the buffer size but without
+initializing the seed which is not random at all. It also uses number of
+available disk blocks as a upper limit, which makes the test runtime
+completely unpredictable.
 
-Thanks,
-Amir.
+I guess that it would make sense to randomize the buffer sizes but in
+certain bounds to make the test more predictable and print the numbers
+we are going to use too. Maybe run the test with a few different sizes
+and time limits. Maybe the size of the buffers can be function of the
+test runtime.
+
+All in all I think that we should really rething what we are doing here
+since the current code does not make that much sense to me.
+
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/fsync/fsync02.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fsync/fsync02.c b/testcases/kernel/syscalls/fsync/fsync02.c
+> index e13ba89f1b63..55c7a71c1d65 100644
+> --- a/testcases/kernel/syscalls/fsync/fsync02.c
+> +++ b/testcases/kernel/syscalls/fsync/fsync02.c
+> @@ -114,5 +114,6 @@ static struct tst_test test = {
+>  	.test_all = run,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> -	.needs_tmpdir = 1
+> +	.needs_tmpdir = 1,
+> +	.max_runtime = 300,
+>  };
+
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
