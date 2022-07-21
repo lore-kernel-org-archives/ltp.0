@@ -4,81 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16607C43334
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 20:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D067C43334
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 20:54:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C1C243C9CF4
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 22:53:49 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 371A63C9E93
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 22:54:01 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C483D3C98CE
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:12 +0200 (CEST)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id 72D2C3C9A5D
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:14 +0200 (CEST)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8EB8C20004A
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:11 +0200 (CEST)
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 047EF20004A
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:13 +0200 (CEST)
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 47F5C3F12D
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 20:53:10 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EF7C03F11B
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 20:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1658436790;
- bh=pIJLWr7fr3oY/znYyHVM76bWkKK8D4f79ORIWbnwRIQ=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=G3hj4bwXVidXOMXl7A5X9dBF010X7Lev7ZC6bio8Wumdrltj1llpZtW5s920g9ZH7
- drsgj4uv0rNlIclgwD68MJKHyjqYcym/5U8K1lrrhGeGWERN89n5L2Ir39TSYG+DNX
- 30xWvpMzQ/EgZMrHp3tChIsW/oqL9qg5/wpRLCrEWpyleH0hXKYGlebBlTtxztc2Se
- OolWIXgQbfFV9ztZlrpi/QVJc22PmCs22n0v3or9BCnautGZD3f3JTlyRC4ZotaGU8
- XZHGL63Hak8O2oR0N+KNtkcdXQ2oUOm+V3zhAA6JEgJmw6zNvA6/epkVnEX9oHIbMR
- EdeRNSWtBKqXQ==
-Received: by mail-pg1-f198.google.com with SMTP id
- h185-20020a636cc2000000b00419b8e7df69so1343031pgc.18
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 13:53:10 -0700 (PDT)
+ s=20210705; t=1658436792;
+ bh=P+imqzZRtIbo7EXhr+N6KiUT9ZmZo9StcJVTryUo8SU=;
+ h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=JMeOtiSwrNZvL++WPuWo88WbHK22HcqvAOsoLzMaukOPD88dTADtgNPKeekFVYgOl
+ 5D8jIYr4LEYxI6uC+1Fcqm3AAtmiXtuiHpQQW4qCVl8QobYVhmmjCkDZsF8Tdv+P0v
+ QBy6Kw6OzT9DmO3dnQiirqPLVCKoMjm14iFV2L2shgLc163lLvltFAnEZDPsX92hW9
+ Gol+cCsQEAlZgPC5PBDMfAXYjCFJ4iwAobJNWfx1dmUJFRoWEDVHun80m6rf1JTcTw
+ jHZnLLaCM00oMHtxhg9EWNt4KWt51R+pTx70WrOWZWK0kCuULjCLlMmsW4pYbQFTnj
+ cIab8wPE1/vHg==
+Received: by mail-pl1-f197.google.com with SMTP id
+ i9-20020a170902cf0900b0016d1e277547so1674067plg.0
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 13:53:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=pIJLWr7fr3oY/znYyHVM76bWkKK8D4f79ORIWbnwRIQ=;
- b=Df2ViXzBVSBuWo6mslUZv5QE6PVz7QLjGJZKkg7hF8swmt0/nn2lO3XscWMAB3TjNV
- hJVPlQ7hac/kFbaZkCrNtvOYXE9eTidxjj0OQ6HucdIFkrxEgQa9QYBZUqMjNR8KOyqg
- Qv2GoZTM2C7m9OC9JXfNDN2F3oUvxzHaweJ+Im+4eZGw4nEoGBMvaUCMor4lyVk1+FzO
- nILcm9bm3GVXBnuUWk9IfMhIxKghcuWTVdzev4VZ2hpe5aEzuyaqr4uV4SoKADePGq/L
- IZXiYOiUw5xca6oAqpa78G+F72ZBpP16m9LJz08LPkcQ3SxE1ND960OygDd5oFt9Usns
- yaAg==
-X-Gm-Message-State: AJIora+ajnezV+P5FulkRRKfSxQuoXIPQigbbVDvFlcptvTaJ2MdV+XU
- pZqP9wmOIG4nSpRUDeoRUd2kQuEzkhiNg6VXCQOJVIm+Jq/M+FpS8hSSZrPEoHvPc30ahZ2FUex
- eC5vXE8KiwxMkUfnM44DINWzwtpcn
-X-Received: by 2002:a17:902:d2d1:b0:16d:37b3:f8b3 with SMTP id
- n17-20020a170902d2d100b0016d37b3f8b3mr154340plc.98.1658436787650; 
- Thu, 21 Jul 2022 13:53:07 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1um3K9r6CmLXCczDxpMI1rRncnwgnerdwMzjFkbjd2Ofx85OC3EeWnhMuoj/s3XJ58MLkEiVA==
-X-Received: by 2002:a17:902:d2d1:b0:16d:37b3:f8b3 with SMTP id
- n17-20020a170902d2d100b0016d37b3f8b3mr154310plc.98.1658436787306; 
- Thu, 21 Jul 2022 13:53:07 -0700 (PDT)
+ h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=P+imqzZRtIbo7EXhr+N6KiUT9ZmZo9StcJVTryUo8SU=;
+ b=UmnctNmfJCw+03iOMO1nXH7nlf/5MCAppyIFrI+wPDFQ62+t2K5ssGc5zI6w147r70
+ jYegDycru0SEnHT85sv47uyD1MIHDEmB95V1VcbX6UZ2sb5Lx5ceDjVziD9HBSw01wgu
+ VbsBu9NQUpnFI35BjPzMqC7/IV5sHRPyZ4Ttbdf/doXsIm2wdZzG+CIcaox5Zuq1vJ9d
+ n5VbAGElv436hG43E+ofi3HPbEz4MYLd0NuP31i/PzfOia0im3JYSAmSTkUukG6XcKLC
+ fqMDXiXuAk8UIGfmgoQYg9qbwm5RktLJmYpWTllKE7buek9tnn5h+uMfkIZN437YmBVx
+ yP6A==
+X-Gm-Message-State: AJIora8mi4NBQdslUiBvvQlt+UZuanE6/UuFuyTdWUhzkmHoEL/PDxWU
+ KAckl+iPFkdedUEUPiHDTQvegwJcahnSvtZuWTsJLzFSmNIPpCyhHVhlmQFjpd4QXDU6o/iD4jl
+ i6cZGKl2+i1z4T2oxTg/SCRFQb64f
+X-Received: by 2002:a63:7c49:0:b0:40c:b3f9:18c5 with SMTP id
+ l9-20020a637c49000000b0040cb3f918c5mr193664pgn.588.1658436791222; 
+ Thu, 21 Jul 2022 13:53:11 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1ve6BnF6UdNqMFU9pfOJg5pyqDIdJFJGXtjr6YGylPo/K+GWQMRGl1EFPPapsqAAwLcve745Q==
+X-Received: by 2002:a63:7c49:0:b0:40c:b3f9:18c5 with SMTP id
+ l9-20020a637c49000000b0040cb3f918c5mr193648pgn.588.1658436790945; 
+ Thu, 21 Jul 2022 13:53:10 -0700 (PDT)
 Received: from luke-ubuntu.buildd (cpe-75-80-146-43.san.res.rr.com.
  [75.80.146.43]) by smtp.gmail.com with ESMTPSA id
- c6-20020a656746000000b0041a4d5e7e5fsm1916364pgu.47.2022.07.21.13.53.06
+ c6-20020a656746000000b0041a4d5e7e5fsm1916364pgu.47.2022.07.21.13.53.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Jul 2022 13:53:06 -0700 (PDT)
+ Thu, 21 Jul 2022 13:53:10 -0700 (PDT)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it, rpalethorpe@suse.de, liwang@redhat.com, pvorel@suse.cz,
  chrubis@suse.cz
-Date: Thu, 21 Jul 2022 13:52:10 -0700
-Message-Id: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
+Date: Thu, 21 Jul 2022 13:52:13 -0700
+Message-Id: <3280b1912e28489c64abe5c16f3e4cf6866ff8e9.1658433280.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
+References: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 00/18] Expand Cgroup lib and modify controller tests
+Subject: [LTP] [PATCH v2 03/18] API/cgroup: Add cgroup_find_root helper
+ function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,68 +99,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patchset aims to expand the cgroup_lib shell library to simplify
-and centralize the whole mounting and cleanup process that can get
-rather confusing and redundant when writing cgroup controller tests from
-a shell environment. This is done by having the shell library make calls
-to the C cgroup API from a binary utility.
+Add a helper function similar to cgroup_find_ctrl to make matching paths
+to roots more convenient.
 
-In this patch set there are a few tests that have been extensively
-rewritten to work with the new test API and to use the new functionality
-from the cgroup lib. Because the test Cgroup lib handles mounting for v1
-and v2 controllers, some tests were modified to also work under cgroup
-v2. Some tests that were written for v1 controller also effictively test
-v2 controllers, while others were written to test v2 controllers in the
-spirit of the test or skipped outright.
+Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+---
+v2: Use the for_each_root() macro to properly loop over v1 roots
 
-Luke Nowakowski-Krijger (18):
-  API/cgroup: Modify tst_cg_print_config for parsing and consumption
-  API/cgroup: Add option for specific pid to tst_cg_opts
-  API/cgroup: Add cgroup_find_root helper function
-  API/cgroup: Add CTRL_NAME_MAX define
-  tst_test_macros: Add TST_TO_STR and TST_STR macro
-  API/cgroup: Implement tst_cg_load_config
-  API/cgroup: Add more controllers to tst_cgroup
-  API/cgroup: refuse to mount blkio when io controller is mounted
-  testcases/lib: Implement tst_cgctl binary
-  controllers: Expand cgroup_lib shell library
-  controllers: Update cgroup_fj_* to use newer cgroup lib and test lib
-  controllers: Update memcg_control_test to newer test lib and cgroup
-    lib
-  controllers: Update memcg/regression/* to new test and cgroup lib
-  controllers: Update memcg_stress_test to use newer cgroup lib
-  controllers: update memcg/functional to use newer cgroup lib
-  controllers: Update pids.sh to use newer cgroup lib
-  controllers: update cpuset_regression_test.sh to use newer cgroup lib
-  controllers: update cgroup_regression_test to use newer cgroup lib
+ lib/tst_cgroup.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
- include/tst_cgroup.h                          |  17 +-
- include/tst_test_macros.h                     |   3 +
- lib/tst_cgroup.c                              | 216 +++++++++++++++++-
- .../cgroup/cgroup_regression_test.sh          |  31 +--
- .../controllers/cgroup_fj/cgroup_fj_common.sh | 115 +++-------
- .../cgroup_fj/cgroup_fj_function.sh           | 172 ++++++++------
- .../controllers/cgroup_fj/cgroup_fj_proc.c    |  24 +-
- .../controllers/cgroup_fj/cgroup_fj_stress.sh | 171 +++++++-------
- testcases/kernel/controllers/cgroup_lib.sh    | 133 +++++++++--
- .../cpuset/cpuset_regression_test.sh          |  26 +--
- .../controllers/memcg/control/mem_process.c   |  28 +--
- .../memcg/control/memcg_control_test.sh       | 149 +++---------
- .../memcg/functional/memcg_force_empty.sh     |   2 +-
- .../controllers/memcg/functional/memcg_lib.sh |  54 +++--
- .../memcg/regression/memcg_regression_test.sh | 203 ++++++++--------
- .../memcg/regression/memcg_test_1.c           |  40 ++--
- .../memcg/regression/memcg_test_2.c           |  24 +-
- .../memcg/regression/memcg_test_3.c           |  38 ++-
- .../memcg/regression/memcg_test_4.c           |  24 +-
- .../memcg/regression/memcg_test_4.sh          |  50 ++--
- .../memcg/stress/memcg_stress_test.sh         |  32 +--
- testcases/kernel/controllers/pids/pids.sh     |  67 +-----
- testcases/lib/Makefile                        |   2 +-
- testcases/lib/tst_cgctl.c                     |  87 +++++++
- 24 files changed, 909 insertions(+), 799 deletions(-)
- create mode 100644 testcases/lib/tst_cgctl.c
-
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index d757c832f..677a6f318 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -362,6 +362,19 @@ static struct cgroup_ctrl *cgroup_find_ctrl(const char *const ctrl_name)
+ 	return NULL;
+ }
+ 
++static struct cgroup_root *cgroup_find_root(const char *const mnt_path)
++{
++	struct cgroup_root *root;
++
++	for_each_root(root) {
++		if (!strcmp(root->mnt_path, mnt_path))
++			return root;
++	}
++
++	return NULL;
++}
++
++
+ /* Determine if a mounted cgroup hierarchy is unique and record it if so.
+  *
+  * For CGroups V2 this is very simple as there is only one
 -- 
 2.34.1
 
