@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 485B7C433EF
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 20:56:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC87EC433EF
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 21:01:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C9C293C9F7C
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 22:56:53 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 86E323C9CED
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 23:01:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA0B93C9E00
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:33 +0200 (CEST)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id 8EA173C97FA
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 23:01:42 +0200 (CEST)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 590E11A004B1
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:33 +0200 (CEST)
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 90CF16009F9
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 23:01:41 +0200 (CEST)
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5D2A53F12B
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 20:53:32 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A02D03F0ED
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 21:01:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1658436812;
- bh=z7fI6+Tfcup/mW0iuAwIAp6KDgkGN6eW5jOrAqu9RNk=;
- h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
- MIME-Version;
- b=uNDyEPz5LUgSJ6kfMxJQhn2+faUSKXODMtuPUUViq4MUahEdAzDLxwDojTYd3o7t0
- cQksYSI9mDndCZWM9KhzXlbRJNi2qJmYiJzBnCpO7DS2/oObGePqD5hq/5Eu+xJuzk
- FWS7CEdBR0geWacZAgXUasOeLaeFyandbBUKq/b0JvNjNlU3ozzE2WmNMxNl5xmqFP
- AJ7ih5ubA76oyZx0DzoHCRItpB5pynX2X4D0BZIyes8qlHOWgIOpHqgfPMctNhp0wA
- cKZ6P+zEBhDaboYcBmodcjA3P8+0C+E7Xu5/jhskapw9k9lH8ouNHv1sKVQ+caiHFY
- WcS4AT+MQ/LJg==
-Received: by mail-pj1-f69.google.com with SMTP id
- c12-20020a17090a8d0c00b001f20d603777so3269524pjo.4
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 13:53:32 -0700 (PDT)
+ s=20210705; t=1658437300;
+ bh=syIXYmU4X0TmBtOIa9/yTtCmbcBdK1kLK/aajNuXYWQ=;
+ h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+ To:Cc:Content-Type;
+ b=vB4WSoP56zuTCq1TjYt57Et3JiFIlqMzI4Kcuey0vMBdu2VDdRPGYLX6B45zgl7TM
+ SKOtrgFYC61puQXL1pF+6w5ymwQhd6oFYRf4fUlKS7F+WdziE6J21dJ2i7cfISZmiV
+ VRzWi9TWfFCteXdHbU36pXeMJJ2/pYB7pDtmH4+asZ5YiL9f7n7XMwGDR+Yu8OB9+C
+ OGPQ2lZ8wXmDEP9t3FjqrYi+44GUsgongSqsEt4hTERIF+IyWFkxcpuSzhFWhNJL64
+ dzL5bWI7mSpZrQZ3OO29tcFI1x9CQrS53OMp16PIOKLRvV/Tl0BLlZnyiDYvxfjgSK
+ qdGeNUu+Cyegg==
+Received: by mail-ed1-f69.google.com with SMTP id
+ w13-20020a05640234cd00b0043a991fb3f3so1810087edc.3
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 14:01:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=z7fI6+Tfcup/mW0iuAwIAp6KDgkGN6eW5jOrAqu9RNk=;
- b=71s3dtXnig/KdIvumvf/2ccNt3nV9oHyJNGMiF82yn+e/7o62hl77OOvDmSbfth0Rs
- CYqJWBDVxsDwvD5HBj8CdnGl0yZ5wactBvuIW6X3Vomcn+nfbY141m/rW+UVHfL8iIzl
- 8GOpZh2KzygmTnCMCjs1DRXvdLBUH/qTfVpgk5S9Cnar01z+LlYx0ovZQ5mevPYTxOFI
- nWnjcAhzPIhltuklQ69QccKKsXyV7ROOV8m0IDNASUVzCVJbbOgOhSguEXSjoeRPYePd
- hhAFsgj9nKbVHf2QLKSf8RiW1NKouqk14EvGs7C6sS7FImyXAvqNIOTNuovNoWP9nySE
- arVQ==
-X-Gm-Message-State: AJIora/vs4P5pqbM6lCgNsD18bKzgKT77xdx82HUps2LyaiCJNNbp28L
- 9oajWzgfg6fJr5HFwxrD3Ha/g7KE9ugnLJKATXv/rGPuGSu844SFjEgyy123OGL10r15j/hVQO9
- PU1nuNk37ma9qYhJPpzTn0+XUXljV
-X-Received: by 2002:a17:902:ec90:b0:16d:2e8f:27cb with SMTP id
- x16-20020a170902ec9000b0016d2e8f27cbmr171431plg.12.1658436809898; 
- Thu, 21 Jul 2022 13:53:29 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vquskciixI2LSQYypnXMZBcmToqOliQ0Y8Dl6oh96I0S3rl1DuUdsBaoFxc3aMQJy4m/i+rw==
-X-Received: by 2002:a17:902:ec90:b0:16d:2e8f:27cb with SMTP id
- x16-20020a170902ec9000b0016d2e8f27cbmr171411plg.12.1658436809633; 
- Thu, 21 Jul 2022 13:53:29 -0700 (PDT)
-Received: from luke-ubuntu.buildd (cpe-75-80-146-43.san.res.rr.com.
- [75.80.146.43]) by smtp.gmail.com with ESMTPSA id
- c6-20020a656746000000b0041a4d5e7e5fsm1916364pgu.47.2022.07.21.13.53.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Jul 2022 13:53:29 -0700 (PDT)
-From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-To: ltp@lists.linux.it, rpalethorpe@suse.de, liwang@redhat.com, pvorel@suse.cz,
- chrubis@suse.cz
-Date: Thu, 21 Jul 2022 13:52:28 -0700
-Message-Id: <d75ac3cf4d3202ac48139805e10e20575d0f53a3.1658433280.git.luke.nowakowskikrijger@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
-References: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=syIXYmU4X0TmBtOIa9/yTtCmbcBdK1kLK/aajNuXYWQ=;
+ b=clt7JxKvgWE7VQfMP0AmFZVSy9SMIdidHmNA5cit00RbigQCVCJDsTxTuIAVJ8vSq9
+ WQEkE3mX9fhu5nxEWXVjCVg6TqTIF8QTjzycXp9jiZGjzwyvwMJZyE/snD4Ez/NB0zuP
+ WHdbdX0QPQpzx+0GGEKYndJtKkypQWLeViMSuz5VlR/6Lj4cAH8DrlGKrpu5nWt9DsQn
+ l4siE5eSkzKQuSf/TMQIJ5ACU7OMPNGK1PyxgiHGuXGGWw7/Gpw5kYI10WpMs+ypSu0v
+ Y0QsIzPNJCRagCykvR7esCyEvjeQZJR5N4kB4lP3dBTQ5WE2igQyn9Fb0OUt96aOZ+bX
+ p7WA==
+X-Gm-Message-State: AJIora+3wDNNFgTRr/1Jgo3JK5UviWHOL5Pq+TzEjaQY52eqxJdvbCYH
+ dyTBZyppusl9XlAUMoA7rENHIY/gHaJhWwKT0izpUceCjU+DToSFIP9MMTohoB2YWfMNFytKv2y
+ bhZRB8y7XB+JJP4ZEMgauhyrgh+l27Rl3OpB5t9A9n+mL
+X-Received: by 2002:a50:cdc2:0:b0:43b:bb93:3a5f with SMTP id
+ h2-20020a50cdc2000000b0043bbb933a5fmr264933edj.122.1658437299433; 
+ Thu, 21 Jul 2022 14:01:39 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1verNikZTe6yXpnLjDyvAswkDmfQSSqvOQOFhc6BrY0F00EA66OqDtcqqlfdxtSLNKw1DwKhduSxsOxn2W/nEQ=
+X-Received: by 2002:a50:cdc2:0:b0:43b:bb93:3a5f with SMTP id
+ h2-20020a50cdc2000000b0043bbb933a5fmr264921edj.122.1658437299263; Thu, 21 Jul
+ 2022 14:01:39 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <cover.1651176645.git.luke.nowakowskikrijger@canonical.com>
+ <3d85635f6b87c73a2389627bc94c847c52165dc7.1651176646.git.luke.nowakowskikrijger@canonical.com>
+ <YnOH4h8rTbg1NzCO@pevik> <YnPW0gfMAUGZYPSM@yuki> <YnpKSTal7IG3jtAx@pevik>
+ <CADS1e3ehEbnh+wwS-sfS0zWSw4t6Znz_wVmETox2QDCgKaL-Fg@mail.gmail.com>
+In-Reply-To: <CADS1e3ehEbnh+wwS-sfS0zWSw4t6Znz_wVmETox2QDCgKaL-Fg@mail.gmail.com>
+From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Date: Thu, 21 Jul 2022 14:01:03 -0700
+Message-ID: <CADS1e3cFjUDHB0tF+hcBtosgQs=bVbeM4KKs9Z25mP5aYqQ-EA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 18/18] controllers: update cgroup_regression_test
- to use newer cgroup lib
+Subject: Re: [LTP] [PATCH v4 11/19] controllers: Expand cgroup_lib shell
+ library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,98 +90,184 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0278868308=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The older function in the cgroup lib 'get_cgroup_mountpoint' has been
-removed, so instead replace it with its old functionaility to get
-mountpoint.
+--===============0278868308==
+Content-Type: multipart/alternative; boundary="0000000000001af67f05e457069c"
 
-Also use the newer cgroup lib require operation to mount and cleanup a
-cpu controller.
+--0000000000001af67f05e457069c
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
----
-v2: Use cgroup_require "$subsys" instead of manual greping the path
-v3: fixed bug where the ouput of cgroup_get_mountpoint wasnt being
-captured
+Hi Petr and Cyril,
 
- .../cgroup/cgroup_regression_test.sh          | 31 ++++++-------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
+On Fri, May 13, 2022 at 1:15 PM Luke Nowakowski-Krijger <
+luke.nowakowskikrijger@canonical.com> wrote:
 
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index 69b51773c..bfa9097ec 100755
---- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -168,17 +168,8 @@ test3()
- 		return
- 	fi
- 
--	cpu_subsys_path=$(get_cgroup_mountpoint "cpu")
--
--	# Run the test for 30 secs
--	if [ -z "$cpu_subsys_path" ]; then
--		mount -t cgroup -o cpu xxx cgroup/
--		if [ $? -ne 0 ]; then
--			tst_res TFAIL "Failed to mount cpu subsys"
--			return
--		fi
--		cpu_subsys_path=cgroup
--	fi
-+	cgroup_require "cpu"
-+	cpu_subsys_path=$(cgroup_get_mountpoint "cpu")
- 
- 	cgroup_regression_3_1.sh $cpu_subsys_path &
- 	pid1=$!
-@@ -191,7 +182,7 @@ test3()
- 	wait $pid2 2>/dev/null
- 
- 	rmdir $cpu_subsys_path/0 2> /dev/null
--	tst_umount $PWD/cgroup
-+	cgroup_cleanup
- 	check_kernel_bug
- }
- 
-@@ -303,21 +294,15 @@ test6()
- test_7_1()
- {
- 	local subsys=$1
-+	local subsys_path
- 	# we should be careful to select a $subsys_path which is related to
- 	# cgroup only: if cgroup debugging is enabled a 'debug' $subsys
- 	# could be passed here as params and this will lead to ambiguity and
- 	# errors when grepping simply for 'debug' in /proc/mounts since we'll
- 	# find also /sys/kernel/debug. Helper takes care of this.
--	local subsys_path=$(get_cgroup_mountpoint $subsys)
--
--	if [ -z "$subsys_path" ]; then
--		mount -t cgroup -o $subsys xxx cgroup/
--		if [ $? -ne 0 ]; then
--			tst_res TFAIL "failed to mount $subsys"
--			return
--		fi
--		subsys_path=cgroup
--	fi
-+
-+	cgroup_require "$subsys"
-+	subsys_path=$(cgroup_get_mountpoint "$subsys")
- 
- 	mkdir $subsys_path/0
- 	sleep 100 < $subsys_path/0 &	# add refcnt to this dir
-@@ -332,6 +317,8 @@ test_7_1()
- 		wait $! 2>/dev/null
- 		umount cgroup/
- 	fi
-+
-+	cgroup_cleanup
- }
- 
- test_7_2()
--- 
-2.34.1
+> Hi Petr and Cyril,
+>
+> On Tue, May 10, 2022 at 4:19 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+>> Hi Luke, Cyril,
+>>
+>> > Hi!
+>> > > > +_cgroup_check_return()
+>> > > > +{
+>> > > > + local ret="$1"
+>> > > > + local msg="$2"
+>> > > > +
+>> > > > + tst_flag2mask TBROK
+>> > > > + [ "$ret" = "$?" ] && tst_brk TBROK "$msg"
+>> > > > +
+>> > > > + tst_flag2mask TCONF
+>> > > > + [ "$ret" = "$?" ] && tst_brk TCONF "$msg"
+>> > > > +}
+>> > > As I wrote in previous patch likely we can avoid tst_flag2mask in new
+>> API.
+>>
+>>
+I submitted a new version of the changes, however I found that ROD does not
+seem to play nice with sending output to a variable (e.g. var=$(command)).
+
+Also reflecting on it, I think it would be better to propagate the TCONF
+that comes from tst_cgroup.c so that the errors make a little more sense
+instead of getting a TBROK when the error previous was TCONF. This also
+makes sense as test frameworks (at canonical) usually parse TBROK as fails
+and TCONF as skips in our testing framework, so having a TCONF would just
+propagate the status in tst_cgctl and make things make a little more sense.
+
+The only issue, like you said, is in hardcoding the 32 return value. If you
+guys think its safe I think thats the best way to go.
+
+Let me know. I submitted the patches to the ML. Sorry for the long hiatus
+BTW :) Ive been lagging on getting these patches out forever.
+
+
+
+> > > In few cases where needed we hardwired numbers (IMHO POSIX shell does
+>> not
+>> > > support constants, which would be better than variables which can be
+>> changed).
+>>
+>> > > In this case you could probably use ROD() or EXPECT_PASS_BRK().
+>>
+>> > Or we can just passthrough the result, as long as it's non-zero we can
+>> > do exit $ret and be done with it.
+>> +1 (that would suggest to use ROD)
+>>
+>> Please, rebase the code for new version. You'll have to for cgroup_lib.sh
+>> put
+>> '. tst_test.sh' to the end and also '. cgroup_lib.sh' in the tests also
+>> at the
+>> end - required by 04021637f ("tst_test.sh: Cleanup getopts usage").
+>>
+>>
+> Thank you for the reviews! I agree with the changes mentioned and will
+> submit an update to these patches.
+>
+> Kind regards,
+>> Petr
+>>
+>
+> Thanks,
+> - Luke
+>
+
+Best
+
+- Luke
+
+--0000000000001af67f05e457069c
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi Petr and Cyril, <br></div><br><div class=3D"gmail_=
+quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, May 13, 2022 at 1:15 P=
+M Luke Nowakowski-Krijger &lt;<a href=3D"mailto:luke.nowakowskikrijger@cano=
+nical.com">luke.nowakowskikrijger@canonical.com</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div>Hi Pet=
+r and Cyril, <br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
+s=3D"gmail_attr">On Tue, May 10, 2022 at 4:19 AM Petr Vorel &lt;<a href=3D"=
+mailto:pvorel@suse.cz" target=3D"_blank">pvorel@suse.cz</a>&gt; wrote:<br><=
+/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
+rder-left:1px solid rgb(204,204,204);padding-left:1ex">Hi Luke, Cyril,<br>
+<br>
+&gt; Hi!<br>
+&gt; &gt; &gt; +_cgroup_check_return()<br>
+&gt; &gt; &gt; +{<br>
+&gt; &gt; &gt; + local ret=3D&quot;$1&quot;<br>
+&gt; &gt; &gt; + local msg=3D&quot;$2&quot;<br>
+&gt; &gt; &gt; +<br>
+&gt; &gt; &gt; + tst_flag2mask TBROK<br>
+&gt; &gt; &gt; + [ &quot;$ret&quot; =3D &quot;$?&quot; ] &amp;&amp; tst_brk=
+ TBROK &quot;$msg&quot;<br>
+&gt; &gt; &gt; +<br>
+&gt; &gt; &gt; + tst_flag2mask TCONF<br>
+&gt; &gt; &gt; + [ &quot;$ret&quot; =3D &quot;$?&quot; ] &amp;&amp; tst_brk=
+ TCONF &quot;$msg&quot;<br>
+&gt; &gt; &gt; +}<br>
+&gt; &gt; As I wrote in previous patch likely we can avoid tst_flag2mask in=
+ new API.<br>
+<br></blockquote></div></div></blockquote><div><br></div><div>I submitted a=
+ new version of the changes, however I found that ROD does not seem to play=
+ nice with sending output to a variable (e.g. var=3D$(command)). <br></div>=
+<div><br></div><div>Also reflecting on it, I think it would be better to pr=
+opagate the TCONF that comes from tst_cgroup.c so that the errors make a li=
+ttle more sense instead of getting a TBROK when the error previous was TCON=
+F. This also makes sense as test frameworks (at canonical) usually parse TB=
+ROK as fails and TCONF as skips in our testing framework, so having a TCONF=
+ would just propagate the status in tst_cgctl and make things make a little=
+ more sense. <br></div><div><br></div><div>The only issue, like you said, i=
+s in hardcoding the 32 return value. If you guys think its safe I think tha=
+ts the best way to go. <br></div><div><br></div><div>Let me know. I submitt=
+ed the patches to the ML. Sorry for the long hiatus BTW :) Ive been lagging=
+ on getting these patches out forever. <br></div><div>=C2=A0<br></div><div>=
+=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
+.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"l=
+tr"><div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
+:1ex">
+&gt; &gt; In few cases where needed we hardwired numbers (IMHO POSIX shell =
+does not<br>
+&gt; &gt; support constants, which would be better than variables which can=
+ be changed).<br>
+<br>
+&gt; &gt; In this case you could probably use ROD() or EXPECT_PASS_BRK().<b=
+r>
+<br>
+&gt; Or we can just passthrough the result, as long as it&#39;s non-zero we=
+ can<br>
+&gt; do exit $ret and be done with it.<br>
++1 (that would suggest to use ROD)<br>
+<br>
+Please, rebase the code for new version. You&#39;ll have to for cgroup_lib.=
+sh put<br>
+&#39;. tst_test.sh&#39; to the end and also &#39;. cgroup_lib.sh&#39; in th=
+e tests also at the<br>
+end - required by 04021637f (&quot;tst_test.sh: Cleanup getopts usage&quot;=
+).<br>
+<br></blockquote><div><br></div><div>Thank you for the reviews! I agree wit=
+h the changes mentioned and will submit an update to these patches. <br></d=
+iv><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+Kind regards,<br>
+Petr<br></blockquote><div><br></div><div>Thanks, <br></div><div>- Luke <br>=
+</div></div></div></blockquote><div><br></div><div>Best</div><div><br></div=
+><div>- Luke <br></div></div></div>
+
+--0000000000001af67f05e457069c--
+
+--===============0278868308==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0278868308==--
