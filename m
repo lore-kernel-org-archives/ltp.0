@@ -4,47 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C8BDC43334
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 07:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C76AEC43334
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 07:02:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA7AA3CA067
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 09:02:17 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 950F93C9AC2
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 09:02:32 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A01323C1BEB
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 09:02:01 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 402A43C9F31
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 09:02:21 +0200 (CEST)
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id 9F394600812
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 09:01:56 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTP id EAEA76008B2
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 09:02:18 +0200 (CEST)
 Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
- by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9G3+dhimhAsAA--.17888S2; 
- Thu, 21 Jul 2022 15:01:35 +0800 (CST)
+ by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT+Pg+dhi5xAsAA--.15215S2; 
+ Thu, 21 Jul 2022 15:02:05 +0800 (CST)
 From: Hongchen Zhang <zhanghongchen@loongson.cn>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 21 Jul 2022 15:01:08 +0800
-Message-Id: <1658386868-658-1-git-send-email-zhanghongchen@loongson.cn>
+Date: Thu, 21 Jul 2022 15:01:51 +0800
+Message-Id: <1658386911-890-1-git-send-email-zhanghongchen@loongson.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9Dxn9G3+dhimhAsAA--.17888S2
+X-CM-TRANSID: AQAAf9DxT+Pg+dhi5xAsAA--.15215S2
 X-Coremail-Antispam: 1UD129KBjvAXoW3trWDGr17XF1kZw1xArW7twb_yoW8Xr4xuo
  WFvw1Ykw1rGr1rtr18J3ZxtFyUJr1DWrW3Ar4rG3WDGFnrXFs5urWrCw13G343JF45Ka47
- Xry7X345XrWftF1rn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
- AaLaJ3UjIYCTnIWjp_UUUYn7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+ Xry7X345XrWftF1rn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+ AaLaJ3UjIYCTnIWjp_UUUY87AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xva
  j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
  x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWx
  JVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
  xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
- 6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+ 6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
  0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm-wCF
  04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
  18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vI
  r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
- 1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
- cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
+ 1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+ x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbWCJPUUUUU==
 X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: [LTP] [PATCH v1] float: convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
