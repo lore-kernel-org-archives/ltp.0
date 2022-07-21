@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 452B4C433EF
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 20:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E12A4C433EF
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 20:55:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B6A5B3C0134
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 22:55:20 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 09C233C9111
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 22:55:31 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6934E3CA0A9
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:23 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id A8C473C9A4D
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:24 +0200 (CEST)
 Received: from smtp-relay-internal-1.canonical.com
  (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 89CDF600072
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:22 +0200 (CEST)
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E270E60047B
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 22:53:23 +0200 (CEST)
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7B41A3F12F
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 20:53:21 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6B49C3F128
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 20:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1658436801;
- bh=Tbhfb3K+S1yeMNmvZuGlNcyrvNDM2tgq98czHc/86gA=;
+ s=20210705; t=1658436803;
+ bh=t9q8vTngw+lf9m2drUYy1fnybiOklT0CDNMyQah0THk=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=nD7DFYFx0IqdWeWKwBdangA8xZUxaOnUIpLhs00TIlk8qAJORrBNJiXpGXz8pGuFl
- G+xULUZF5YQdmHGoia/M9jyVc/Mz3nnWMM+aYYu+rKmUZofsB/6A/ModxWc4rLh/8a
- /n0TbxSvyVnrcKRrjv+lBrLMjR42zGUkO1jzxtunLhMKIT5PWsk4G+PAX2DOUSUu/A
- T+uXrHBn/bwKsKRux45FdemXXBpJMq+cwtAi1i0jbLfoNWGHuRGJFNN2syCpgxRZaM
- zwcewlqw9l36RU0rViptsSJDNTQv5ByeIO1tmiXsqxqML2Mem9yNnjKbhYmxrEyCEQ
- /xQEGLP5Ks7pQ==
-Received: by mail-pj1-f71.google.com with SMTP id
- c15-20020a17090abf0f00b001f221ef494fso2629182pjs.0
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 13:53:21 -0700 (PDT)
+ b=jFGOvj0aYZjh4bGObzrTIlD2zJI6TY5s1kvyz3wvXQ1AHs5QT98whmOlRHk6arUlq
+ ljcUqD0CfJ2/BBPfDDPmJ6dDV2ODZOgL+BTog/tFVneOuYhLTNznJPZ1psOjpnvdPL
+ Nr7qJ4meF4XcaNw5n5vPmgMsVjbrsFwY6IO0A5oH8rFGq3zTgVtrpavTzsTUdtVtz1
+ AIKAYAeP3MqZsxQ/znaUtUm9dUsaTUuAMIa1EbC+tBJcKxx/uxFcWcAZ5aU1B+tgwT
+ Z193u2COVVgur4HWVsjS7K7f9xea0Do10GNFlajROQv96pky2RotXbrT/raTr3mU7t
+ ZQuRwS9kXKFTQ==
+Received: by mail-pl1-f200.google.com with SMTP id
+ k11-20020a170902ce0b00b0016a15fe2627so1658239plg.22
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 13:53:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Tbhfb3K+S1yeMNmvZuGlNcyrvNDM2tgq98czHc/86gA=;
- b=CC8bz05JgkpFf5hCTU/AlZ/xRimL+D6K274h/F/6zlbv2zUuzDAWtuOEkvdiJk7L9x
- NJUS4HO7uImhXBECiGUB8h6vBXxnlzF2uf/qwtWL9e6xlRa+h/EYlPQcV9ddPthCJl2f
- TyiuQhc5ga/E/CFVorBKWupSaqkDDFv+ZsFxz3WvdzOInjpAUh+1Asg2ORne3o2Nf3oE
- YXq6fAYqMhw/1KN+bqctzrnX4Qe7ujB812suejV4ff+iJNkGKuE+HykxOU6/jOxn66U2
- TPmjnBjfE+ozjuQn4Ggym31EbcCbVeFpbLG2jHteN74Mh1Tb3vUK6jc8aYuXoArvG5sC
- ADuw==
-X-Gm-Message-State: AJIora8z0BbY2ed49YG/5O/iHb5NleR+SPHm31IGjYQvWSy+0SjBcn9N
- GmX1JpYMfJauFpslT/mZiUK27PvavQbasBFuoJMPrdRZ9U/xoebGhD0UPcPpxhQYJq2Qmf1aiHa
- 6EITIaewImIt719hmEC1pD4w2OupN
-X-Received: by 2002:a17:902:988b:b0:16b:fae3:fcd5 with SMTP id
- s11-20020a170902988b00b0016bfae3fcd5mr122568plp.109.1658436799851; 
- Thu, 21 Jul 2022 13:53:19 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sW2jzBQ3hFlzmiWFL+RwWwj8QSTL8nif1U8NdYORVaSUQwVdEMTYDVrjQSIc+D/kQC59P4dg==
-X-Received: by 2002:a17:902:988b:b0:16b:fae3:fcd5 with SMTP id
- s11-20020a170902988b00b0016bfae3fcd5mr122535plp.109.1658436799346; 
- Thu, 21 Jul 2022 13:53:19 -0700 (PDT)
+ bh=t9q8vTngw+lf9m2drUYy1fnybiOklT0CDNMyQah0THk=;
+ b=cMBjXFvn7VyiGnGH02BTRBdO5qtoDGg02NjvILlcQ+TeDX0wZj2i/DQfB7+KBGDI8S
+ JgchymqRhBOJKi1FUdGzA+zq87rZDP7Bz2aA9O+6nnLHYH1T3T1A0RuJqUI1brUKfVAj
+ RHYTZGrr7ugVsBkYtuhIytu/zD+b82yMomTRmamGDIj/Zq3mZ7F9lCGyugi6WvzjSkPU
+ xWnmejF8bf3RDtGZEBzQ4bO1W3k+qIEP4h0tB8ivmu9YXlTXg5Xjm9483OhcxQ8sNzSY
+ Kayo9m6Q4ZPKriF96H6rwCbfcVpE/s/qCEJjwjAD4MRMOpe0uADq2mCkiG3CgOvs79p3
+ 0iQQ==
+X-Gm-Message-State: AJIora+zCmOaBUS+KAC/uHKIhKGeVVqSR5Dtsq+SEw/Cfe6RQaceg3lK
+ LYG4Fv8lFysUUEGg1nb8NHlLfkT/S3QTCIlGXPV3sMuTec2X0zdcXYBWNtGgaNGJKrVzpw+AJfv
+ Codn9eGu5Hi4yC3ngVI+WWp1Yi3v9
+X-Received: by 2002:a17:902:b191:b0:16c:64ef:ed86 with SMTP id
+ s17-20020a170902b19100b0016c64efed86mr288590plr.63.1658436802592; 
+ Thu, 21 Jul 2022 13:53:22 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1v6Ambio3FA+HBbXGFOtnvXJpn00xGs4eGQpTGDk8ZPyO0pv+twNsI1iD1CvUTmZiWLxz8gIg==
+X-Received: by 2002:a17:902:b191:b0:16c:64ef:ed86 with SMTP id
+ s17-20020a170902b19100b0016c64efed86mr288560plr.63.1658436802215; 
+ Thu, 21 Jul 2022 13:53:22 -0700 (PDT)
 Received: from luke-ubuntu.buildd (cpe-75-80-146-43.san.res.rr.com.
  [75.80.146.43]) by smtp.gmail.com with ESMTPSA id
- c6-20020a656746000000b0041a4d5e7e5fsm1916364pgu.47.2022.07.21.13.53.18
+ c6-20020a656746000000b0041a4d5e7e5fsm1916364pgu.47.2022.07.21.13.53.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Jul 2022 13:53:18 -0700 (PDT)
+ Thu, 21 Jul 2022 13:53:21 -0700 (PDT)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it, rpalethorpe@suse.de, liwang@redhat.com, pvorel@suse.cz,
  chrubis@suse.cz
-Date: Thu, 21 Jul 2022 13:52:20 -0700
-Message-Id: <d2355625a3b0bd7cac07fc2e80098ca2c59d10b1.1658433280.git.luke.nowakowskikrijger@canonical.com>
+Date: Thu, 21 Jul 2022 13:52:22 -0700
+Message-Id: <ba1aad2658344e39a66af8da69855c1b41d96898.1658433280.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 10/18] controllers: Expand cgroup_lib shell library
+Subject: [LTP] [PATCH v3 12/18] controllers: Update memcg_control_test to
+ newer test lib and cgroup lib
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,184 +98,251 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Expand the cgroup_lib library by using the tst_cgctl binary
-utility to make calls to the Cgroup C API to simplify and centralize the
-mounting and cleanup process of Cgroups
+Update memcg_control_test to use the newer test lib and to use the newer
+cgroup lib which enables the memory v1 and v2 controller to be tested.
+
+Also updated to newer SPDX license identifier.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
-v2: Add "^" to propery grep the correct mountpoint.
-    Removed is_cgroup_enabled_and_available function and put the check
-    in cgroup_require().
-    Check if /proc/cgroups exists in cgroup_require().
-    Change to TCONF if controllers not available.
-v3: Add copyright.
-    Change awks to grab new config variables.
-    Change version from v2 to just 2 to match config variables.
-v4: add _cgroup_check_return to repeat return value of tst_cgctl
-v5: Instead of _cgroup_check_return, use ROD in cgroup_cleanup
-    Also manually parse return value in cgroup_require
-    Change some minor nits and quote a variable
+v2: Change version numbers to 2 instead of v2
+v3: put cgroup_lib.sh include in bottom of file
 
- testcases/kernel/controllers/cgroup_lib.sh | 133 +++++++++++++++++----
- 1 file changed, 113 insertions(+), 20 deletions(-)
+ .../controllers/memcg/control/mem_process.c   |  28 +---
+ .../memcg/control/memcg_control_test.sh       | 149 +++++-------------
+ 2 files changed, 39 insertions(+), 138 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cgroup_lib.sh b/testcases/kernel/controllers/cgroup_lib.sh
-index 56c9a7521..3e9a9ea9b 100644
---- a/testcases/kernel/controllers/cgroup_lib.sh
-+++ b/testcases/kernel/controllers/cgroup_lib.sh
-@@ -2,38 +2,131 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2019-2022 Petr Vorel <pvorel@suse.cz>
- # Copyright (c) 2018-2019 ARM Ltd. All Rights Reserved.
-+# Copyright (c) 2022 Canonical Ltd.
+diff --git a/testcases/kernel/controllers/memcg/control/mem_process.c b/testcases/kernel/controllers/memcg/control/mem_process.c
+index 6c1b36ca6..8ecabb272 100644
+--- a/testcases/kernel/controllers/memcg/control/mem_process.c
++++ b/testcases/kernel/controllers/memcg/control/mem_process.c
+@@ -1,28 +1,6 @@
+-/*****************************************************************************/
+-/*                                                                           */
+-/*  Copyright (c) 2010 Mohamed Naufal Basheer                                */
+-/*                                                                           */
+-/*  This program is free software;  you can redistribute it and/or modify    */
+-/*  it under the terms of the GNU General Public License as published by     */
+-/*  the Free Software Foundation; either version 2 of the License, or        */
+-/*  (at your option) any later version.                                      */
+-/*                                                                           */
+-/*  This program is distributed in the hope that it will be useful,          */
+-/*  but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
+-/*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
+-/*  the GNU General Public License for more details.                         */
+-/*                                                                           */
+-/*  You should have received a copy of the GNU General Public License        */
+-/*  along with this program;  if not, write to the Free Software             */
+-/*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
+-/*                                                                           */
+-/*  File:    mem_process.c                                                   */
+-/*                                                                           */
+-/*  Purpose: act as a memory hog for the memcg_control tests                 */
+-/*                                                                           */
+-/*  Author:  Mohamed Naufal Basheer <naufal11@gmail.com >                    */
+-/*                                                                           */
+-/*****************************************************************************/
++// SPDX-License-Identifier: GPL-2.0-or-later
++// Copyright (c) 2010 Mohamed Naufal Basheer
++// Author: Mohamed Naufal Basheer
  
--# Find mountpoint to given subsystem
--# get_cgroup_mountpoint SUBSYSTEM
--# RETURN: 0 if mountpoint found, otherwise 1
--get_cgroup_mountpoint()
-+_cgroup_state=
-+
-+# Find mountpoint of the given controller
-+# USAGE: cgroup_get_mountpoint CONTROLLER
-+# RETURNS: Prints the mountpoint of the given controller
-+# Must call cgroup_require before calling
-+cgroup_get_mountpoint()
-+{
-+	local ctrl="$1"
-+	local mountpoint
-+
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_mountpoint: controller not defined"
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_mountpoint: No previous state found. Forgot to call cgroup_require?"
-+
-+	mountpoint=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $4 }')
-+	echo "$mountpoint"
-+
-+	return 0
-+}
-+
-+# Get the test path of a given controller that has been created by the cgroup C API
-+# USAGE: cgroup_get_test_path CONTROLLER
-+# RETURNS: Prints the path to the test direcory
-+# Must call cgroup_require before calling
-+cgroup_get_test_path()
-+{
-+	local ctrl="$1"
-+	local mountpoint
-+	local test_path
-+
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_test_path: controller not defined"
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_test_path: No previous state found. Forgot to call cgroup_require?"
-+
-+	mountpoint=$(cgroup_get_mountpoint "$ctrl")
-+
-+	test_path="$mountpoint/ltp/test-$$"
-+
-+	[ ! -e "$test_path" ] && tst_brk TBROK "cgroup_get_test_path: No test path found. Forgot to call cgroup_require?"
-+
-+	echo "$test_path"
-+
-+	return 0
-+}
-+
-+# Gets the cgroup version of the given controller
-+# USAGE: cgroup_get_version CONTROLLER
-+# RETURNS: "1" if version 1 and "2" if version 2
-+# Must call cgroup_require before calling
-+cgroup_get_version()
+ #include <sys/types.h>
+ #include <sys/mman.h>
+diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+index 4d9f1bb5d..f96ed3abb 100644
+--- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
++++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+@@ -1,45 +1,14 @@
+ #!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2010 Mohamed Naufal Basheer
++# Author: Mohamed Naufal Basheer
+ 
+-################################################################################
+-##                                                                            ##
+-##   Copyright (c) 2010 Mohamed Naufal Basheer                                ##
+-##                                                                            ##
+-##   This program is free software;  you can redistribute it and/or modify    ##
+-##   it under the terms of the GNU General Public License as published by     ##
+-##   the Free Software Foundation; either version 2 of the License, or        ##
+-##   (at your option) any later version.                                      ##
+-##                                                                            ##
+-##   This program is distributed in the hope that it will be useful,          ##
+-##   but WITHOUT ANY WARRANTY;  without even the implied warranty of          ##
+-##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                ##
+-##   the GNU General Public License for more details.                         ##
+-##                                                                            ##
+-##   You should have received a copy of the GNU General Public License        ##
+-##   along with this program;  if not, write to the Free Software             ##
+-##   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  ##
+-##                                                                            ##
+-##                                                                            ##
+-##   File:    memcg_control_test.sh                                           ##
+-##                                                                            ##
+-##   Purpose: Implement various memory controller tests                       ##
+-##                                                                            ##
+-##   Author:  Mohamed Naufal Basheer <naufal11@gmail.com>                     ##
+-##                                                                            ##
+-################################################################################
+-
+-if [ "x$(grep -w memory /proc/cgroups | cut -f4)" != "x1" ]; then
+-	echo "WARNING:"
+-	echo "Either kernel does not support memory resource controller or feature not enabled"
+-	echo "Skipping all memcg_control testcases...."
+-	exit 0
+-fi
+-
+-export TCID="memcg_control"
+-export TST_TOTAL=1
+-export TST_COUNT=0
+-
+-export TMP=${TMP:-/tmp}
+-cd $TMP
++TST_TESTFUNC=test
++TST_SETUP=setup
++TST_CLEANUP=cleanup
++TST_CNT=1
++TST_NEEDS_ROOT=1
++TST_NEEDS_TMPDIR=1
+ 
+ PAGE_SIZE=$(tst_getconf PAGESIZE)
+ 
+@@ -47,20 +16,14 @@ TOT_MEM_LIMIT=$PAGE_SIZE
+ ACTIVE_MEM_LIMIT=$PAGE_SIZE
+ PROC_MEM=$((PAGE_SIZE * 2))
+ 
+-TST_PATH=$PWD
+-STATUS_PIPE="$TMP/status_pipe"
+-
+-PASS=0
+-FAIL=1
++STATUS_PIPE="status_pipe"
+ 
+ # Check if the test process is killed on crossing boundary
+ test_proc_kill()
  {
--	local subsystem=$1
--	local mntpoint
-+	local ctrl="$1"
-+	local version
+-	cd $TMP
+ 	mem_process -m $PROC_MEM &
+-	cd $OLDPWD
+ 	sleep 1
+-	echo $! > tasks
++	ROD echo $! > "$test_dir/$task_list"
  
--	[ $# -eq 0 ] && tst_brk TBROK "get_cgroup_mountpoint: subsystem not defined"
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_version: controller not defined"
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_version: No previous state found. Forgot to call cgroup_require?"
- 
--	mntpoint=$(grep cgroup /proc/mounts | grep -w $subsystem | awk '{ print $2 }')
--	[ -z "$mntpoint" ] && return 1
-+	version=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $2 }')
-+	[ "$version" = "" ] && tst_brk TBROK "cgroup_get_version: Could not find controller $ctrl"
-+
-+	echo "$version"
- 
--	echo $mntpoint
- 	return 0
+ 	#Instruct the test process to start acquiring memory
+ 	echo m > $STATUS_PIPE
+@@ -77,87 +40,47 @@ test_proc_kill()
  }
  
--# Check if given subsystem is supported and enabled
--# is_cgroup_subsystem_available_and_enabled SUBSYSTEM
--# RETURN: 0 if subsystem supported and enabled, otherwise 1
--is_cgroup_subsystem_available_and_enabled()
-+# Cleans up any setup done by calling cgroup_require.
-+# USAGE: cgroup_cleanup
-+# Can be safely called even when no setup has been done
-+cgroup_cleanup()
+ # Validate the memory usage limit imposed by the hierarchically topmost group
+-testcase_1()
++test1()
  {
--	local val
--	local subsystem=$1
-+	[ "$_cgroup_state" = "" ] && return 0
+-	TST_COUNT=1
+-	tst_resm TINFO "Test #1: Checking if the memory usage limit imposed by the topmost group is enforced"
++	cd $TST_TMPDIR
++
++	tst_res TINFO "Test #1: Checking if the memory usage limit imposed by the topmost group is enforced"
  
--	[ $# -eq 0 ] && tst_brk TBROK "is_cgroup_subsystem_available_and_enabled: subsystem not defined"
-+	ROD tst_cgctl cleanup "$_cgroup_state"
+-	echo "$ACTIVE_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.limit_in_bytes
+-	echo "$TOT_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.memsw.limit_in_bytes
++	ROD echo "$ACTIVE_MEM_LIMIT" > "$test_dir/$memory_limit"
++	ROD echo "$TOT_MEM_LIMIT" > "$test_dir/$memsw_memory_limit"
  
--	val=$(grep -w $subsystem /proc/cgroups | awk '{ print $4 }')
--	[ "$val" = "1" ] && return 0
-+	_cgroup_state=
+-	mkdir sub
+-	(cd sub
+ 	KILLED_CNT=0
+ 	test_proc_kill
  
--	return 1
-+	return 0
-+}
-+
-+# Get the task list of the given controller
-+# USAGE: cgroup_get_task_list CONTROLLER
-+# RETURNS: prints out "cgroup.procs" if version 2 otherwise "tasks"
-+# Must call cgroup_require before calling
-+cgroup_get_task_list()
-+{
-+	local ctrl="$1"
-+	local version
-+
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_task_list: controller not defined"
-+
-+	version=$(cgroup_get_version "$ctrl")
-+
-+	if [ "$version" = "2" ]; then
-+		echo "cgroup.procs"
-+	else
-+		echo "tasks"
+ 	if [ $PROC_MEM -gt $TOT_MEM_LIMIT ] && [ $KILLED_CNT -eq 0 ]; then
+-		result $FAIL "Test #1: failed"
++		tst_res TFAIL "Test #1: failed"
+ 	else
+-		result $PASS "Test #1: passed"
+-	fi)
+-	rmdir sub
++		tst_res TPASS "Test #1: passed"
 +	fi
-+
-+	return 0
-+}
-+
-+# Mounts and configures the given controller
-+# USAGE: cgroup_require CONTROLLER
-+cgroup_require()
-+{
-+	local ctrl="$1"
-+
-+	[ $# -eq 0 ] && tst_brk TBROK "cgroup_require: controller not defined"
-+
-+	[ ! -f /proc/cgroups ] && tst_brk TCONF "Kernel does not support control groups"
-+
-+	_cgroup_state=$(tst_cgctl require "$ctrl" $$)
-+
-+	if [ $? -eq 32 ]; then
-+		tst_brk TCONF "'tst_cgctl require' exited. Controller is probably not available?"
-+	fi
-+
-+	if [ $? -ne 0 ]; then
-+		tst_brk TBROK "'tst_cgctl require' exited."
-+	fi
-+
-+	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_require: No state was set after call to tst_cgctl require?"
-+
-+	return 0
  }
  
- . tst_test.sh
+-# Record the test results
+-#
+-# $1: Result of the test case, $PASS or $FAIL
+-# $2: Output information
+-result()
++setup()
+ {
+-	RES=$1
+-	INFO=$2
+-
+-	if [ $RES -eq $PASS ]; then
+-		tst_resm TPASS "$INFO"
++	cgroup_require "memory"
++	cgroup_version=$(cgroup_get_version "memory")
++	test_dir=$(cgroup_get_test_path "memory")
++	task_list=$(cgroup_get_task_list "memory")
++
++	if [ "$cgroup_version" = "2" ]; then
++		memory_limit="memory.max"
++		memsw_memory_limit="memory.swap.max"
+ 	else
+-		: $((FAILED_CNT += 1))
+-		tst_resm TFAIL "$INFO"
++		memory_limit="memory.limit_in_bytes"
++		memsw_memory_limit="memory.memsw.limit_in_bytes"
+ 	fi
+-}
+ 
+-cleanup()
+-{
+-	if [ -e $TST_PATH/mnt ]; then
+-		umount $TST_PATH/mnt 2> /dev/null
+-		rm -rf $TST_PATH/mnt
+-	fi
++	tst_res TINFO "Test starts with cgroup version $cgroup_version"
+ }
+ 
+-do_mount()
++cleanup()
+ {
+-	cleanup
+-
+-	mkdir $TST_PATH/mnt
+-	mount -t cgroup -o memory cgroup $TST_PATH/mnt 2> /dev/null
+-	if [ $? -ne 0 ]; then
+-		tst_brkm TBROK NULL "Mounting cgroup to temp dir failed"
+-		rmdir $TST_PATH/mnt
+-		exit 1
+-	fi
++	cgroup_cleanup
+ }
+ 
+-do_mount
+-
+-echo 1 > mnt/memory.use_hierarchy 2> /dev/null
+-
+-FAILED_CNT=0
+-
+-TST_NUM=1
+-while [ $TST_NUM -le $TST_TOTAL ]; do
+-	mkdir $TST_PATH/mnt/$TST_NUM
+-	(cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM)
+-	rmdir $TST_PATH/mnt/$TST_NUM
+-	: $((TST_NUM += 1))
+-done
+-
+-echo 0 > mnt/memory.use_hierarchy 2> /dev/null
+-
+-cleanup
+-
+-if [ "$FAILED_CNT" -ne 0 ]; then
+-	tst_resm TFAIL "memcg_control: failed"
+-	exit 1
+-else
+-	tst_resm TPASS "memcg_control: passed"
+-	exit 0
+-fi
++. cgroup_lib.sh
++tst_run
 -- 
 2.34.1
 
