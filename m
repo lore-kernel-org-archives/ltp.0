@@ -4,62 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 276AFC43334
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 06:31:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C8BDC43334
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 07:02:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B1A5F3C9D96
-	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 08:31:05 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id AA7AA3CA067
+	for <ltp@archiver.kernel.org>; Thu, 21 Jul 2022 09:02:17 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5AA893C9808
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 08:30:54 +0200 (CEST)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5BB66600695
- for <ltp@lists.linux.it>; Thu, 21 Jul 2022 08:30:54 +0200 (CEST)
-Received: by mail-lf1-x129.google.com with SMTP id bp17so1259984lfb.3
- for <ltp@lists.linux.it>; Wed, 20 Jul 2022 23:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amarulasolutions.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=IYoQxNSTNPsHjHHdnVSJTy6XvsIdkgtZZ+m+9kxdaVU=;
- b=cZTmE+yyZgkjRauw/z93i+eKr30+XFGJf4rOsbFIOkshDTO7DtT6DgMU1FfySEgVZ4
- 8tcRWKJXfXdsE8ND0zp0iQcQSqDDQBRnGm3IUm/+0CTLKKxFRjAGEEMDftVCqoLiHDKz
- JbQCZRl2mvkzBVXQZYKO+7jcUFAfzihTz/sz4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=IYoQxNSTNPsHjHHdnVSJTy6XvsIdkgtZZ+m+9kxdaVU=;
- b=BuPUOC/NRa/83SUc61XPegWvNqwOywl5LKtyXjscFGxXHhw8jywnWsjqApHStOjpeJ
- 14I0V+/nztTWbqi5JcHxf16Ui1Eue/PL/8so/yMOyY5LxuyhM1TTdsi6z5JctBW4zLkr
- NRl3qmMJqGffWUmYvawpf4SA9Hq+XZ3DDQCuyx1nn2NkJ4+UxAxVyPh/d4ECz7SFs2yS
- xlvqE6q2zLyYb7DXmp/OWJwbqogI5OCdyX25KwKSlCUO3f7ZMQQ2i5YeRwXROafuew39
- wC0n3Rxx9q6mGURiKX0QETlfv+ZaM4bfiNiYpV6nV74O2vf06sPNgMAPBpaiUweoS41g
- b/7Q==
-X-Gm-Message-State: AJIora+a5KtRsk6QXtWN72RY7hKaeIFmbGFYj6UXmvDakTOaw1VlN1xQ
- iYwfJkfQ1JZWW4rurNrUIB+1kn6nGsyJEv6YmCMyeA==
-X-Google-Smtp-Source: AGRyM1usdgJl116CRWoUjAKiyWdkZRovdyYrhs9Y/nxMXs1ETjBLO8msMh63pAMXzRER3QO83WcRywU7CnVHOdkIVMk=
-X-Received: by 2002:a05:6512:1389:b0:489:d0bb:241e with SMTP id
- p9-20020a056512138900b00489d0bb241emr22781346lfa.536.1658385053417; Wed, 20
- Jul 2022 23:30:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220715072951.859586-1-dario.binacchi@amarulasolutions.com>
- <CAFqt6zaMnfGhwxnnJrbW1eoiGy46-WNUe8H-iqztRmZW5Z8jfQ@mail.gmail.com>
-In-Reply-To: <CAFqt6zaMnfGhwxnnJrbW1eoiGy46-WNUe8H-iqztRmZW5Z8jfQ@mail.gmail.com>
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date: Thu, 21 Jul 2022 08:30:41 +0200
-Message-ID: <CABGWkvqonbDuSXk_iaxV4a-uBtHqeSUqAufj+LZULAVqb+u07Q@mail.gmail.com>
-To: Souptick Joarder <jrdr.linux@gmail.com>
+ by picard.linux.it (Postfix) with ESMTPS id A01323C1BEB
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 09:02:01 +0200 (CEST)
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id 9F394600812
+ for <ltp@lists.linux.it>; Thu, 21 Jul 2022 09:01:56 +0200 (CEST)
+Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
+ by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9G3+dhimhAsAA--.17888S2; 
+ Thu, 21 Jul 2022 15:01:35 +0800 (CST)
+From: Hongchen Zhang <zhanghongchen@loongson.cn>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Jul 2022 15:01:08 +0800
+Message-Id: <1658386868-658-1-git-send-email-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9Dxn9G3+dhimhAsAA--.17888S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3trWDGr17XF1kZw1xArW7twb_yoW8Xr4xuo
+ WFvw1Ykw1rGr1rtr18J3ZxtFyUJr1DWrW3Ar4rG3WDGFnrXFs5urWrCw13G343JF45Ka47
+ Xry7X345XrWftF1rn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+ AaLaJ3UjIYCTnIWjp_UUUYn7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+ j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+ x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWx
+ JVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+ xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+ 6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+ 0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm-wCF
+ 04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+ 18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vI
+ r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+ 1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+ cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] can: slcan: do not sleep with a spin lock held
+Subject: [LTP] [PATCH v1] float: convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,116 +58,562 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kbuild test robot <lkp@intel.com>,
- Linux Memory Management List <linux-mm@kvack.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jeroen Hofstee <jhofstee@victronenergy.com>, linux-kernel@vger.kernel.org,
- linux-can@vger.kernel.org, lkp@lists.01.org,
- Eric Dumazet <edumazet@google.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- kernel test robot <oliver.sang@intel.com>,
- Vincent Mailhol <mailhol.vincent@wanadoo.fr>, netdev@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Paolo Abeni <pabeni@redhat.com>, Jiri Slaby <jirislaby@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, ltp@lists.linux.it,
- Wolfgang Grandegger <wg@grandegger.com>
+Cc: ltp@lists.linux.it, Hongchen Zhang <zhanghongchen@loongson.cn>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Souptick,
+convert float to new LTP API. we will run NB_FUNC test cases,
+every test case will run with num_threads and every thread run
+num_loops loops.
+You can specify the parameters(-D -n -l -v) as before.
 
-On Thu, Jul 21, 2022 at 3:58 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
->
-> On Fri, Jul 15, 2022 at 1:00 PM Dario Binacchi
-> <dario.binacchi@amarulasolutions.com> wrote:
-> >
-> > We can't call close_candev() with a spin lock held, so release the lock
-> > before calling it. After calling close_candev(), we can update the
-> > fields of the private `struct can_priv' without having to acquire the
-> > lock.
->
-> But here we are updating private 'struct can_priv' before close_candev() while
-> taking the lock.  If we go by change logs, then spin_unlock_bh() need to called
-> before close_candev() and we can update the private 'struct can_priv'
-> in existing place.
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+---
+ testcases/misc/math/float/main.c | 446 +++++++++------------------------------
+ 1 file changed, 100 insertions(+), 346 deletions(-)
 
-sl-> rcount and sl-> xleft are not part of 'struct can_priv' and can
-be reset after
-calling netif_stop_queu() because it inhibits any serial reception/transmission.
-
-Thanks and regards,
-Dario
-
->
-> >
-> > Fixes: c4e54b063f42f ("can: slcan: use CAN network device driver API")
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Link: https://lore.kernel.org/linux-kernel/Ysrf1Yc5DaRGN1WE@xsang-OptiPlex-9020/
-> > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> >
-> > ---
-> >
-> > Changes in v3:
-> > - Update the commit message.
-> > - Reset sl->rcount and sl->xleft before releasing the spin lock.
-> >
-> > Changes in v2:
-> > - Release the lock just before calling the close_candev().
-> >
-> >  drivers/net/can/slcan/slcan-core.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-> > index 54d29a410ad5..d40ddc596596 100644
-> > --- a/drivers/net/can/slcan/slcan-core.c
-> > +++ b/drivers/net/can/slcan/slcan-core.c
-> > @@ -689,15 +689,14 @@ static int slc_close(struct net_device *dev)
-> >                 clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
-> >         }
-> >         netif_stop_queue(dev);
-> > +       sl->rcount   = 0;
-> > +       sl->xleft    = 0;
-> > +       spin_unlock_bh(&sl->lock);
-> >         close_candev(dev);
-> >         sl->can.state = CAN_STATE_STOPPED;
-> >         if (sl->can.bittiming.bitrate == CAN_BITRATE_UNKNOWN)
-> >                 sl->can.bittiming.bitrate = CAN_BITRATE_UNSET;
-> >
-> > -       sl->rcount   = 0;
-> > -       sl->xleft    = 0;
-> > -       spin_unlock_bh(&sl->lock);
-> > -
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.32.0
-> >
-> >
-
-
-
+diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/main.c
+index 7285141..7ddce1d 100644
+--- a/testcases/misc/math/float/main.c
++++ b/testcases/misc/math/float/main.c
+@@ -1,52 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+-	* Copyright (C) Bull S.A. 2001
+-	* Copyright (c) International Business Machines  Corp., 2001
+-	*
+-	*   This program is free software;  you can redistribute it and/or modify
+-	*   it under the terms of the GNU General Public License as published by
+-	*   the Free Software Foundation; either version 2 of the License, or
+-	*   (at your option) any later version.
+-	*
+-	*   This program is distributed in the hope that it will be useful,
+-	*   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-	*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-	*   the GNU General Public License for more details.
+-	*
+-	*   You should have received a copy of the GNU General Public License
+-	*   along with this program;  if not, write to the Free Software
+-	*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-	*/
+-
+-/******************************************************************************/
+-/*									    */
+-/* Dec-03-2001  Created: Jacky Malcles & Jean Noel Cordenner		  */
+-/*	      These tests are adapted from AIX float PVT tests.	     */
+-/*									    */
+-/******************************************************************************/
++ * Copyright (C) Bull S.A. 2001
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Dec-03-2001  Created: Jacky Malcles & Jean Noel Cordenner
++ *	      These tests are adapted from AIX float PVT tests.
++ */
+ #include "tfloat.h"
+ 
+-#include "test.h"
++#include "tst_test.h"
+ 
+ #define SAFE_FREE(p) { if (p) { free(p); (p)=NULL; } }
+-/* LTP status reporting */
+-char *TCID;			/* Test program identifier.    */
+-int TST_TOTAL = 1;		/* Total number of test cases. */
+-
+-/* To avoid extensive modifications to the code, use this bodge */
+-#define exit(x) myexit(x)
+-
+-void myexit(int x)
+-{
+-	if (x)
+-		tst_resm(TFAIL, "Test failed");
+-	else
+-		tst_resm(TPASS, "Test passed");
+-	tst_exit();
+-}
+ 
+ TH_DATA *pcom;
+ TH_DATA **tabcom;
+-TH_DATA **tabcour;
++
+ #ifndef	PATH_MAX
+ #define PATH_MAX		1024
+ #endif
+@@ -59,32 +26,27 @@ char datadir[PATH_MAX];		/* DATA directory */
+ int num_threads = DEFAULT_NUM_THREADS;
+ int num_loops = 500;
+ 
+-int sig_cancel = 0;		/* flag set by handle_signals to tell initial thread
+-				   to stop creating new threads (signal caught) */
+-
+-int indice = 0;			/* # of threads created, to be canceled by handle_signals
+-				   or waited for by initial thread */
+-
+-pthread_mutex_t sig_mutex;
+ pthread_t *threads;
+-
+ int debug = 0;
+-int true = 1;
+-
+-static void *handle_signals(void *);
+-
+-static void sys_error(const char *, int);
+ 
+ const double EPS = 0.1e-300;
+ 
+-const int nb_func = NB_FUNC;
++static char *Dopt, *lopt, *nopt, *vopt;
++static struct tst_option opt[] = {
++	{"D:", &Dopt,   "DATA directory's absolute path"},
++	{"l:", &lopt, "set number of loops per function"},
++	{"n:", &nopt, "set number of threads per function"},
++	{"v", &vopt, "debug level"},
++	{}
++};
+ 
+ int generate(char *datadir, char *bin_path)
+ {
+ 	char *cmdline;
+ 	char *fmt = "cd %s; %s/%s %s";
+ 
+-	cmdline = malloc(2 * strlen(bin_path) + strlen(datadir) + strlen(GENERATOR) + strlen(fmt));
++	cmdline = malloc(2 * strlen(bin_path) + strlen(datadir) +
++				strlen(GENERATOR) + strlen(fmt));
+ 	if (cmdline == NULL)
+ 		return (1);
+ 	sprintf(cmdline, fmt, datadir, bin_path, GENERATOR, bin_path);
+@@ -93,345 +55,137 @@ int generate(char *datadir, char *bin_path)
+ 	return (0);
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-
+-int main(int argc, char *argv[])
++static void setup(void)
+ {
+-	int opt = 0;
+-	pid_t pid;
+-
+ 	char *bin_path, *ltproot;
+-	void *exit_value;
+-	pthread_attr_t newattr;
+-	pthread_t sig_hand;
+-	size_t stacksize = 2093056;
+-	int th_num;
+-	int retvalend = 0;
+-	int retval = 0;
+-	int error = 0;
+-	/*int time=1; */
+-	int i;
+-
+-	/* Generate test ID from invocation name */
+-	if ((TCID = strrchr(argv[0], '/')) != NULL)
+-		TCID++;
+-	else
+-		TCID = argv[0];
++
+ 	ltproot = getenv("LTPROOT");
+ 	if (ltproot == NULL || strlen(ltproot) == 0) {
+-		tst_brkm(TBROK, NULL,
++		tst_brk(TBROK,
+ 			 "You must set $LTPROOT before executing this test");
+ 	}
+ 	bin_path = malloc(strlen(ltproot) + 16);
+ 	if (bin_path == NULL) {
+-		tst_brkm(TBROK | TERRNO, NULL, "malloc failed");
++		tst_brk(TBROK, "malloc failed");
+ 	}
+ 	sprintf(bin_path, "%s/testcases/bin", ltproot);
+ 
+-	tst_tmpdir();
+-
+ 	setbuf(stdout, NULL);
+ 	setbuf(stderr, NULL);
+ 	datadir[0] = '.';
+ 	datadir[1] = '\0';
+ 
+-	if (argc != 1) {
+-		while ((opt = getopt(argc, argv, "vn:l:D:?")) != EOF) {
+-			switch (opt) {
+-			case 'D':
+-				strncpy(datadir, optarg, PATH_MAX);
+-				break;
+-			case 'l':
+-				num_loops = atoi(optarg);
+-				break;
+-			case 'n':
+-				num_threads = atoi(optarg);
+-				break;
+-			case 'v':
+-				++debug;	/* verbose mode */
+-				break;
+-			default:
+-				fprintf(stderr,
+-					"usage: %s [-n number_of_threads] [-v]\n",
+-					argv[0]);
+-				fprintf(stderr, "[-l number_of_loops] ");
+-				fprintf(stderr, "[-D DATAs absolute path]\n");
+-				exit(1);
+-			}
+-		}
+-	}
+-	switch (pid = fork()) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+-	case 0:
+-		generate(datadir, bin_path);
+-		exit(0);
+-	default:
+-		waitpid(pid, NULL, 0);
+-	}
++	if (Dopt)
++		strncpy(datadir, Dopt, PATH_MAX);
++	if (lopt)
++		num_loops = atoi(lopt);
++	if (nopt)
++		num_threads = atoi(nopt);
++	if (vopt)
++		debug = 1;
++
++	generate(datadir, bin_path);
+ 	SAFE_FREE(bin_path);
+ 
+-	if (debug) {
+-		tst_resm(TINFO,
+-			 "%s: will run for %d loops; using %s as a data directory",
+-			 argv[0], num_loops, datadir);
+-	}
+ 	if (num_threads <= 0) {
+-		tst_resm(TWARN,
+-			 "num_threads undefined or incorrect, using \"1\"");
+ 		num_threads = 1;
++	} else if (num_threads > PTHREAD_THREADS_MAX - 2) {
++		num_threads = PTHREAD_THREADS_MAX - 2;
+ 	}
+ 
+-	if (nb_func * num_threads > PTHREAD_THREADS_MAX - 2)
+-		while (nb_func * num_threads > PTHREAD_THREADS_MAX - 2)
+-			num_threads--;
+-	if (debug)
+-		tst_resm(TINFO,
+-			 "%s: will run %d functions, %d threads per function",
+-			 argv[0], nb_func, num_threads);
+-
+-	retval = pthread_mutex_init(&sig_mutex, NULL);
+-	if (retval != 0)
+-		sys_error("main : mutex_init(&sig_mutex) FAILED", __LINE__);
++	if (debug) {
++		tst_res(TINFO,
++			"will run for %d loops, %d threads per function;"
++			"using %s as a data directory",
++			num_loops, num_threads, datadir);
++	}
++}
+ 
+-	retval = pthread_create(&sig_hand, NULL, handle_signals, NULL);
+-	if (retval != 0)
+-		sys_error("main : create(&sig_hand) FAILED", __LINE__);
++void run(unsigned int n)
++{
++	void *exit_value;
++	pthread_attr_t newattr;
++	size_t stacksize = 2093056;
++	int th_num;
++	int retval = 0;
+ 
+ 	/*
+-	 * Start all calculation threads...
++	 * Start calculation threads...
+ 	 */
+-	threads = malloc(nb_func * num_threads * sizeof(pthread_t));
++	threads = malloc(num_threads * sizeof(pthread_t));
+ 	if (threads == NULL)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "malloc failed");
++		tst_brk(TFAIL, "malloc failed");
+ 
+-	tabcom = malloc((sizeof(TH_DATA *) * nb_func * num_threads));
++	tabcom = malloc((sizeof(TH_DATA *) * num_threads));
+ 	if (!tabcom)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "malloc failed");
+-	tabcour = tabcom;
++		tst_brk(TFAIL, "malloc failed");
+ 
+ 	retval = pthread_attr_init(&newattr);
+ 	if (retval != 0)
+-		sys_error("main : attr_init(&newattr) FAILED", __LINE__);
++		tst_brk(TFAIL, "attr_init(&newattr) failed");
+ 
+ 	if (pthread_attr_setstacksize(&newattr, stacksize))
+-		sys_error("main: pthread_attr_setstacksize failed", __LINE__);
++		tst_brk(TFAIL, "pthread_attr_setstacksize failed");
+ 
+-	retval = pthread_attr_setdetachstate(&newattr, PTHREAD_CREATE_JOINABLE);
++	retval = pthread_attr_setdetachstate(&newattr,
++						PTHREAD_CREATE_JOINABLE);
+ 	if (retval != 0)
+-		sys_error("main : attr_setdetachstate(&newattr) FAILED",
+-			  __LINE__);
+-
+-	/* run the nb_func functions on num_threads */
+-
+-	indice = 0;
+-	for (i = 0; i < nb_func; i++) {
+-
+-		for (th_num = 0; th_num < num_threads; th_num++) {
+-
+-			/* allocate struct of commucation  with the thread */
+-			pcom = calloc(1, sizeof(TH_DATA));
+-			if (pcom == NULL)
+-				tst_brkm(TFAIL | TERRNO, cleanup,
+-					 "calloc failed");
+-			*tabcour = (TH_DATA *) pcom;
+-			tabcour++;
+-			/*
+-			 * update structure of communication
+-			 */
+-			pcom->th_num = th_num;
+-			pcom->th_func = th_func[i];
+-
+-			pthread_mutex_lock(&sig_mutex);
+-
+-			if (sig_cancel) {	/* stop processing right now! */
+-				pthread_mutex_unlock(&sig_mutex);
+-				goto finished;
+-			}
+-			retval = pthread_create(&threads[indice], &newattr,
+-						thread_code, (void *)pcom);
+-			if (retval != 0)
+-				sys_error("main : create FAILED", __LINE__);
+-			indice++;
+-			pthread_mutex_unlock(&sig_mutex);
+-
+-		}		/* num_threads */
+-	}			/* for i */
+-
+-	/*alarm(60*time); *//* start all threads for TEST_time */
++		tst_brk(TFAIL, "attr_setdetachstate(&newattr) FAILED");
++
++	/* run the calculation function on num_threads */
++	for (th_num = 0; th_num < num_threads; th_num++) {
++
++		/* allocate struct of commucation  with the thread */
++		pcom = calloc(1, sizeof(TH_DATA));
++		if (pcom == NULL)
++			tst_brk(TFAIL, "calloc failed");
++		*(tabcom + th_num) = (TH_DATA *) pcom;
++		/*
++		 * update structure of communication
++		 */
++		pcom->th_num = th_num;
++		pcom->th_func = th_func[n];
++
++		retval = pthread_create(&threads[th_num], &newattr,
++					thread_code, (void *)pcom);
++		if (retval != 0)
++			tst_brk(TFAIL, "pthread create failed");
++
++	}
+ 
+ 	/*
+ 	 * Wait for the threads finish their task
+ 	 * pthread_join () will block
+ 	 */
+-
+-finished:
+-	if (debug) {
+-		tst_resm(TINFO,
+-			 "initial thread: Waiting for %d threads to finish",
+-			 indice);
+-	}
+-	tabcour = tabcom;
+-
+-	for (th_num = 0; th_num < indice; th_num++) {
+-		retvalend = pthread_join(threads[th_num], &exit_value);
+-		if (retvalend != 0)
+-			sys_error("finish : join FAILED", __LINE__);
++	for (th_num = 0; th_num < num_threads; th_num++) {
++		retval = pthread_join(threads[th_num], &exit_value);
++		if (retval != 0)
++			tst_brk(TFAIL, "finish : join %d failed", th_num);
+ 
+ 		/* test the result in TH_DATA : communication buffer */
+-		pcom = *tabcour++;
++		pcom = *(tabcom + th_num);
+ 		if (pcom->th_result != 0) {
+-			error++;
+-			tst_resm(TFAIL,
+-				 "thread %d (%s) terminated unsuccessfully %d "
+-				 "errors/%d loops\n%s",
+-				 th_num, pcom->th_func.fident, pcom->th_nerror,
+-				 pcom->th_nloop, pcom->detail_data);
+-		} else if (debug) {
+-			tst_resm(TINFO,
+-				 "thread %d (%s) terminated successfully %d loops",
+-				 th_num, pcom->th_func.fident,
+-				 pcom->th_nloop - 1);
++			tst_res(TFAIL,
++				"thread %d (%s) terminated unsuccessfully %d errors/%d loops\n%s",
++				th_num, pcom->th_func.fident,
++				pcom->th_nerror, pcom->th_nloop,
++				pcom->detail_data);
+ 		}
+ 		SAFE_FREE(pcom);
+-
+ 	}
++
+ 	SAFE_FREE(tabcom);
+ 	SAFE_FREE(threads);
+-	tst_rmdir();
+-	if (error)
+-		exit(1);
+-	else
+-		exit(0);
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------------+
+-|			    handle_signals ()				|
+-| ======================================================================|
+-|									|
+-| Function:  ....							|
+-|	    If SIGALRM or SIGUSR1 or SIGINT : cancel threads		|
+-|									|
+-| Updates:   ....							|
+-|									|
+-+-----------------------------------------------------------------------*/
+-static void *handle_signals(void *arg)
+-{
+-	sigset_t signals_set;
+-	int thd;
+-	int sig;
+-	int retvalsig = 0;
+ 
+-	if (debug)
+-		tst_resm(TINFO, "signal handler %lu started", pthread_self());
+-	/*
+-	 * Set up the signals that we want to handle...
+-	 */
+-	sigemptyset(&signals_set);
+-	sigaddset(&signals_set, SIGINT);
+-	sigaddset(&signals_set, SIGQUIT);
+-	sigaddset(&signals_set, SIGTERM);
+-	sigaddset(&signals_set, SIGUSR1);
+-	sigaddset(&signals_set, SIGALRM);
+-	while (1) {
+-		if (debug)
+-			tst_resm(TINFO, "Signal handler starts waiting...");
+-
+-		sigwait(&signals_set, &sig);
+-		if (debug)
+-			tst_resm(TINFO, "Signal handler caught signal %d", sig);
+-
+-		switch (sig) {
+-		case SIGALRM:
+-		case SIGUSR1:
+-		case SIGINT:
+-			if (sig_cancel)
+-				tst_resm(TINFO,
+-					 "Signal handler: already finished; "
+-					 "ignoring signal");
+-			else {
+-				/*
+-				 * Have to signal all non started threads...
+-				 */
+-
+-				retvalsig = pthread_mutex_lock(&sig_mutex);
+-				if (retvalsig != 0)
+-					sys_error
+-					    ("handle_signal : mutex_lock(&sig_mutex) FAILED",
+-					     __LINE__);
+-
+-				sig_cancel = 1;
+-				retvalsig = pthread_mutex_unlock(&sig_mutex);
+-				if (retvalsig != 0)
+-					sys_error
+-					    ("handle_signal : mutex_unlock(&sig_mutex) FAILED",
+-					     __LINE__);
+-
+-				/*
+-				 * ......... and all started
+-				 */
+-				for (thd = 0; thd < indice; thd++) {
+-					if (debug)
+-						tst_resm(TINFO,
+-							 "signal handler: "
+-							 "cancelling thread (%d of "
+-							 "%d)", thd, indice);
+-					retvalsig =
+-					    pthread_cancel(threads[thd]);
+-					if (retvalsig != 0)
+-						sys_error
+-						    ("handle_signal : cancel FAILED",
+-						     __LINE__);
+-				}
+-			}
+-			break;
+-		case SIGQUIT:
+-			tst_resm(TINFO,
+-				 "Signal handler: Caught SIGQUIT; doing nothing");
+-			break;
+-		case SIGTERM:
+-			tst_resm(TINFO,
+-				 "Signal handler: Caught SIGTERM; doing nothing");
+-			break;
+-		default:
+-			exit(1);
+-		}
+-	}
+-	return NULL;
++	tst_res(TPASS,
++		"%s terminated successfully", th_func[n].fident);
+ }
+ 
+-/*----------------------------------------------------------------------+
+- |				error ()				|
+- | =====================================================================|
+- |									|
+- | Function:  Prints out message and exits...				|
+- |									|
+- +----------------------------------------------------------------------*/
+-static void error(const char *msg, int line)
+-{
+-	tst_brkm(TFAIL, cleanup, "ERROR [line: %d] %s", line, msg);
+-}
+-
+-/*----------------------------------------------------------------------+
+- |			     sys_error ()				|
+- | =====================================================================|
+- |									|
+- | Function:  Creates system error message and calls error ()		|
+- |									|
+- +----------------------------------------------------------------------*/
+-/*
+- * XXX (garrcoop): the way that this is being called is just plain wrong.
+- * pthread(5) returns 0 or errnos, not necessarily sets errno to a sensible
+- * value.
+- */
+-static void sys_error(const char *msg, int line)
+-{
+-	char syserr_msg[256];
+-
+-	sprintf(syserr_msg, "%s: %s", msg, strerror(errno));
+-	error(syserr_msg, line);
+-}
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.options = opt,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.tcnt = NB_FUNC,
++};
 -- 
+1.8.3.1
 
-Dario Binacchi
-
-Embedded Linux Developer
-
-dario.binacchi@amarulasolutions.com
-
-__________________________________
-
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
