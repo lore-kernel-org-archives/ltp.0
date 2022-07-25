@@ -4,67 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62AC4C43334
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 08:52:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E66DC433EF
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 10:07:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D0B23C0E6F
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 10:52:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C63113C94FB
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 12:06:58 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B21E03C0E6F
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 10:52:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 64DFE3C0756
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 12:06:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8BDD12005D0
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 10:52:36 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 59063378DA;
- Mon, 25 Jul 2022 08:52:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1658739156;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D4DB7600067
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 12:06:47 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 3664237589;
+ Mon, 25 Jul 2022 10:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1658743607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=X3kCs4LtU1ddF3bWU4opilwIK3233apXGjPq+QPIECs=;
- b=CCWuNgdLJH1foUpm4nnhp6/EuMqCGVTP7vw0OWartnZREgctqH2KsJw6STPl//txZyPPCE
- d44MFdn5E2dK/dIcrVYsIsEnc0GCGTkhOjLDmmdpSPnqrRkIEDckmJaRO6FmL/Zq0JaqCm
- A2F5qf2wsC0R8f9gNT04lQW5mIjEcg0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1658739156;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X3kCs4LtU1ddF3bWU4opilwIK3233apXGjPq+QPIECs=;
- b=Eag04g5sVG2rFalPuWKWakaQEnYT3QtwEhInKLHXTmqEJp1CeD+qr9onbCfK798E20znSf
- 1wehpWcekxevmtDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 09EE713ABB;
- Mon, 25 Jul 2022 08:52:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id dNWMANRZ3mLzfgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 25 Jul 2022 08:52:36 +0000
-Date: Mon, 25 Jul 2022 10:52:34 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Yt5Z0s6ymBfgUL4j@pevik>
-References: <20220715062519.2480-1-chenhx.fnst@fujitsu.com>
- <YtGZZeUm2iB/uySr@pevik> <YtURQlBJhpnWoSCv@yuki>
+ bh=sdxQcTiPkBJmV3teKxQo0wIsOmyH5XlP/WxciZOQrFM=;
+ b=MnMGq4O+n4nibjO5GCTGUW0rFenAGZTRNDZpHYuemLaZnabfF/DkxWHRs4fTfgN3zE8wTo
+ dwPqfIK7TIbrIVHmafBIe2uRvvjvA/Pob9FNAfHCyg3s+gPFwHNFHdG1AwoFp7lPPFklQB
+ AHwUIfrb+ba9F2WJVzcgT3dXEqnjEdM=
+Received: from g78.suse.de (unknown [10.163.24.226])
+ by relay2.suse.de (Postfix) with ESMTP id DE17D2C149;
+ Mon, 25 Jul 2022 10:06:46 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 25 Jul 2022 11:06:39 +0100
+Message-Id: <20220725100641.11625-2-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220725100641.11625-1-rpalethorpe@suse.com>
+References: <20220725100641.11625-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YtURQlBJhpnWoSCv@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mount03: Convert to new API
+Subject: [LTP] [PATCH v2 2/4] read_all: Fix type warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,44 +58,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > @Richie @Li @Metan: There are checkpatch.pl warnings. Yes, kernel folks does not
-> > like permission warnings. Do we want to follow? Or should we remove these from
-> > our checkpatch.pl fork (we use constants in many places)?
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/fs/read_all/read_all.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > $ make check-mount03
-> > mount03.c:29: WARNING: Symbolic permissions 'S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH' are not preferred. Consider using octal permissions '0644'.
-> > mount03.c:30: WARNING: Symbolic permissions 'S_IRUSR|S_IXUSR|S_IXGRP|S_IXOTH' are not preferred. Consider using octal permissions '0511'.
-> > mount03.c:50: WARNING: static char array declaration should probably be static const char
-> > mount03.c:103: WARNING: Symbolic permissions 'S_IRWXU' are not preferred. Consider using octal permissions '0700'.
-> > mount03.c:114: WARNING: Symbolic permissions 'S_IRWXU' are not preferred. Consider using octal permissions '0700'.
-> > mount03.c:125: WARNING: Symbolic permissions 'S_IRWXU' are not preferred. Consider using octal permissions '0700'.
-> > mount03.c:181: WARNING: Symbolic permissions 'S_IRWXU' are not preferred. Consider using octal permissions '0700'.
-> > mount03.c:204: WARNING: Symbolic permissions 'S_IRWXU' are not preferred. Consider using octal permissions '0700'.
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+index 4449fe894..02c8f1754 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -184,7 +184,7 @@ static void sanitize_str(char *buf, ssize_t count)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < MIN(count, MAX_DISPLAY); i++)
++	for (i = 0; i < MIN(count, (ssize_t)MAX_DISPLAY); i++)
+ 		if (!isprint(buf[i]))
+ 			buf[i] = ' ';
+ 
+@@ -552,7 +552,7 @@ static void setup(void)
+ 		tst_brk(TBROK, "The directory argument (-d) is required");
+ 
+ 	if (!worker_count)
+-		worker_count = MIN(MAX(tst_ncpus() - 1, 1), max_workers);
++		worker_count = MIN(MAX(tst_ncpus() - 1, 1L), max_workers);
+ 	workers = SAFE_MALLOC(worker_count * sizeof(*workers));
+ 
+ 	if (tst_parse_int(str_worker_timeout, &worker_timeout, 1, INT_MAX)) {
+-- 
+2.36.1
 
-> To be honest I think Linus is right at this one, the single octal number
-> is way more readable than the bitwise or of four constants, so I would
-> be inclined to start following the kernel practice here.
-
-Agree with the rule, numbers are indeed much readable and I'm for using it in
-LTP source.
-
-My concern was different: aren't these constants part of POSIX? See man from
-<sys/stat.h> from 1997 [1]. There might be a test for these constants but
-it has much lower priority than tests for new kernel functionality and CVE.
-
-Kind regards,
-Petr
-
-[1] https://pubs.opengroup.org/onlinepubs/007908799/xsh/sysstat.h.html
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
