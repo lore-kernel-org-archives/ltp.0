@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F41C6C43334
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 15:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24D3BC43334
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 15:37:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CCDEE3C9D51
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 17:15:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id CEB303C9480
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 17:37:39 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 419C93C9809
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:15:09 +0200 (CEST)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3CCD43C071B
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:37:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9811B60032E
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:15:08 +0200 (CEST)
-Received: by mail-ej1-x62c.google.com with SMTP id j22so21185740ejs.2
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 08:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=BaSad2Bie0SsyU6fTSWB4e91cfoh49c/6Iq8mPVxfU0=;
- b=MBBvX2RG9834OykXPoCPGvp0wZJcZRy6S2ld/vapv8IKmMLFRwEcOsZpP1f4WyNHgD
- e5fyYOmIThiX9LQen7dR1114gJPlhU9DM4CMM7Ji7YDgYqnIc9S73Y/csTrU4d8UrWdB
- jGBq0fb5RZcQCENds+Kk+IdKFZ9PF2kBtBNmqpDqM+yfPkZRdxHwgiFhAkrF0Ei25Zzq
- PQmUNXNBGAkVn85dfciSPoYqBf9cGjbeUBFeNe/scPkGRg1O1w7up7WpA4I1YjubYj6x
- xi5Jr8AV7UDsfXQ9ybpX6p0Umdy/vycSIG4dYcNbPHBrUOoYVnU9hxZzxiQbIbMS6j1B
- oXdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=BaSad2Bie0SsyU6fTSWB4e91cfoh49c/6Iq8mPVxfU0=;
- b=O54vYTqAeR9op9ya5UhW7JSo9F+wovo1gLqnFuaQeJxeevnNUNnyKcyeh1VGf67l5E
- DftvXeLOLJOmOniP8glLnlZjPEDuRgXfVjxgjfb9XTqhMfz2e/szjtzyOmtD3g50npXF
- kodCT8IltF+qczsqujGTr6xl287R7WDOBKr0pNLlPqz/RxcbzCd8GxplGV0ywdKwriXX
- kr4x6BgncHWS6CNoSB+jSuHu+dUStnSeTbU4IdN8sdPdGszx5DFU69CPvOzxjRbCRDWZ
- fMBVk+V0nvPCjW7DWXUvYDb4GXDviqrMTmwIUq1QRVOn5otzO4yLU3vtgnpLGMtZTyNo
- /drA==
-X-Gm-Message-State: AJIora+uP6kK/yOJC/Oi8PqDVuCC7sMWWvBy5oSiGiZqmIlTEgJXVaBJ
- N/526zi1gEEn9JdwFgjewDMCAMPYPKUmaw==
-X-Google-Smtp-Source: AGRyM1tErsqrN6XzR9txgyMSh5DiiSiUuId+8hwcyScN7lWcihgbBUKl4uLPNH0WHzFF6H3Rd4lisw==
-X-Received: by 2002:a17:907:75cc:b0:72b:4a96:69fe with SMTP id
- jl12-20020a17090775cc00b0072b4a9669femr10767306ejc.276.1658762107867; 
- Mon, 25 Jul 2022 08:15:07 -0700 (PDT)
-Received: from amir-ThinkPad-T480.kpn
- (2a02-a45a-4ae9-1-ded3-af6f-ecdf-f6f4.fixed6.kpn.net.
- [2a02:a45a:4ae9:1:ded3:af6f:ecdf:f6f4])
- by smtp.gmail.com with ESMTPSA id
- g22-20020a17090670d600b006f3ef214e27sm5422966ejk.141.2022.07.25.08.15.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 25 Jul 2022 08:15:07 -0700 (PDT)
-From: Amir Goldstein <amir73il@gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jul 2022 17:14:53 +0200
-Message-Id: <20220725151453.3846227-3-amir73il@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220725151453.3846227-1-amir73il@gmail.com>
-References: <20220725151453.3846227-1-amir73il@gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8FE9410005F8
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:37:28 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5831E3504D
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 15:37:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1658763448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=j6r3uiMKAyJSjfQttTBAwwVjdTc0LTOP0N/+BAXjF7Y=;
+ b=ICTnr6awpzJ3eQDMPhrF5gT7JZncUxjsq3shHIzLdv1X9KioPwPhbJtoaK/DTph7lUCRcA
+ +KExv6KFamT/teidE94u+AAnuXy0pQ2H957ia60EMoGuC9fPKFxml1D6keK4nHgTKbb4k7
+ 6Y9Q98KCuRHAZEJq3Dq3plT9pDJZ2xo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1658763448;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=j6r3uiMKAyJSjfQttTBAwwVjdTc0LTOP0N/+BAXjF7Y=;
+ b=FVF/pa0OB2KI7z1iqMIF8A3YS8yzaxO2QDf72CXw4N+6GI7KUMhZqrx/wHfP4rcJLg9v9E
+ jchMzyAjX9jpvhCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4925713ABB
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 15:37:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id h40FEbi43mK+NgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 15:37:28 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 25 Jul 2022 17:37:27 +0200
+Message-Id: <20220725153727.30418-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] syscalls/fanotify14: Add test cases for events
- not allowed on non-dir
+Subject: [LTP] [PATCH] Add KVM_LD Makefile variable for building KVM payload
+ binaries
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,184 +72,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.cz>,
- ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Dirent events are meaningless in mask of non-dir inode and so do
-the flags FAN_ONDIR FAN_EVENT_ON_CHILD.
+KVM linker needs to be configurable for cross-compiling but some
+linkers don't support the linker script for wrapping arbitrary files
+into linkable resource files. Allow KVM linker to be changed
+independently of $LD via $KVM_LD.
 
-With fanotify_init flag FAN_REPORT_TARGET_FID, they are also not allowed.
-Make sure that trying to add them to non-dir inode mark mask results in
-ENOTDIR error and that trying to add them to directory or filesystem
-mark does not fail.
-
-Also add validity check for legacy FAN_MARK_ONLYDIR and add more
-information to error when safe_fanotify_mark() fails.
-
-Reviewed-by: Matthew Bobrowski <repnop@google.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h |  4 +-
- .../kernel/syscalls/fanotify/fanotify14.c     | 73 ++++++++++++++++++-
- 2 files changed, 73 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 0ad7ef21b..a118fbd9e 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -48,7 +48,9 @@ static inline int safe_fanotify_mark(const char *file, const int lineno,
- 	rval = fanotify_mark(fd, flags, mask, dfd, pathname);
+This should solve the issues with
+https://github.com/linux-test-project/ltp/pull/948
+
+ doc/build-system-guide.txt    | 5 +++++
+ testcases/kernel/kvm/Makefile | 5 +++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/doc/build-system-guide.txt b/doc/build-system-guide.txt
+index 166f7fb92..b8d267b4b 100644
+--- a/doc/build-system-guide.txt
++++ b/doc/build-system-guide.txt
+@@ -145,6 +145,11 @@ $(CPPFLAGS)		: Preprocessor flags, e.g. -I arguments.
  
- 	if (rval == -1) {
--		tst_brk_(file, lineno, TBROK | TERRNO, "fanotify_mark() failed");
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "fanotify_mark(%d, 0x%x, 0x%lx, ..., %s) failed",
-+			 fd, flags, mask, pathname);
- 	}
+ $(DEBUG_CFLAGS)		: Debug flags to pass to $(CC), -g, etc.
  
- 	if (rval < -1) {
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-index b9ef2fd91..020e01ddf 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-@@ -13,6 +13,13 @@
-  * mask value has been specified in conjunction with FAN_REPORT_FID.
-  */
- 
-+/*
-+ * The ENOTDIR test cases are regression tests for commits:
-+ *
-+ *     ceaf69f8eadc fanotify: do not allow setting dirent events in mask of non-dir
-+ *     8698e3bab4dd fanotify: refine the validation checks on non-dir inode mask
-+ */
++$(KVM_LD)		: Special linker for wrapping KVM payload binaries
++			  into linkable object files. Defaults to $(LD).
++			  Change this variable if the KVM Makefile fails
++			  to build files named *-payload.o.
 +
- #define _GNU_SOURCE
- #include "tst_test.h"
- #include <errno.h>
-@@ -31,6 +38,7 @@
- 		      FAN_DELETE_SELF | FAN_MOVE_SELF)
+ $(LD)			: The system linker (typically $(CC), but not
+ 			  necessarily).
  
- static int fanotify_fd;
-+static int fan_report_target_fid_unsupported;
+diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+index 22a840da6..6986844be 100644
+--- a/testcases/kernel/kvm/Makefile
++++ b/testcases/kernel/kvm/Makefile
+@@ -11,6 +11,7 @@ GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
+ GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
+ GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fno-stack-protector
+ GUEST_LDLIBS =
++KVM_LD ?= $(LD)
  
- /*
-  * Each test case has been designed in a manner whereby the values defined
-@@ -79,6 +87,26 @@ static struct test_case_t {
- 		/* FAN_RENAME without FAN_REPORT_NAME is not valid */
- 		FAN_CLASS_NOTIF | FAN_REPORT_DFID_FID, 0, FAN_RENAME, EINVAL
- 	},
-+	{
-+		/* With FAN_MARK_ONLYDIR on non-dir is not valid */
-+		FAN_CLASS_NOTIF, FAN_MARK_ONLYDIR, FAN_OPEN, ENOTDIR
-+	},
-+	{
-+		/* With FAN_REPORT_TARGET_FID, FAN_DELETE on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_DELETE, ENOTDIR
-+	},
-+	{
-+		/* With FAN_REPORT_TARGET_FID, FAN_RENAME on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_RENAME, ENOTDIR
-+	},
-+	{
-+		/* With FAN_REPORT_TARGET_FID, FAN_ONDIR on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_OPEN | FAN_ONDIR, ENOTDIR
-+	},
-+	{
-+		/* With FAN_REPORT_TARGET_FID, FAN_EVENT_ON_CHILD on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_OPEN | FAN_EVENT_ON_CHILD, ENOTDIR
-+	},
- };
+ FILTER_OUT_MAKE_TARGETS := lib_guest lib_host lib_x86
  
- static void do_test(unsigned int number)
-@@ -86,6 +114,12 @@ static void do_test(unsigned int number)
- 	int ret;
- 	struct test_case_t *tc = &test_cases[number];
- 
-+	if (fan_report_target_fid_unsupported && tc->init_flags & FAN_REPORT_TARGET_FID) {
-+		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_TARGET_FID,
-+					    fan_report_target_fid_unsupported);
-+		return;
-+	}
-+
- 	fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY);
- 	if (fanotify_fd < 0) {
- 		if (errno == tc->expected_errno) {
-@@ -117,8 +151,10 @@ static void do_test(unsigned int number)
- 		goto out;
- 	}
- 
-+	/* Set mark on non-dir only when expecting error ENOTDIR */
-+	const char *path = tc->expected_errno == ENOTDIR ? FILE1 : MNTPOINT;
- 	ret = fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
--				tc->mask, AT_FDCWD, FILE1);
-+				tc->mask, AT_FDCWD, path);
- 	if (ret < 0) {
- 		if (errno == tc->expected_errno) {
- 			tst_res(TPASS,
-@@ -129,7 +165,30 @@ static void do_test(unsigned int number)
- 				fanotify_fd,
- 				tc->mark_flags,
- 				tc->mask,
--				FILE1, tc->expected_errno);
-+				path, tc->expected_errno);
-+			/*
-+			 * ENOTDIR are errors for events/flags not allowed on a non-dir inode.
-+			 * Try to set an inode mark on a directory and it should succeed.
-+			 * Try to set directory events in filesystem mark mask on non-dir
-+			 * and it should succeed.
-+			 */
-+			if (tc->expected_errno == ENOTDIR) {
-+				SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-+						   tc->mask, AT_FDCWD, MNTPOINT);
-+				tst_res(TPASS,
-+					"Adding an inode mark on directory did not fail with "
-+					"ENOTDIR error as on non-dir inode");
-+			}
-+			if (tc->expected_errno == ENOTDIR &&
-+			    !(tc->mark_flags & FAN_MARK_ONLYDIR)) {
-+				SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags |
-+						   FAN_MARK_FILESYSTEM, tc->mask,
-+						   AT_FDCWD, FILE1);
-+				tst_res(TPASS,
-+					"Adding a filesystem mark on non-dir did not fail with "
-+					"ENOTDIR error as with an inode mark");
-+			}
-+
- 			goto out;
- 		}
- 		tst_brk(TBROK | TERRNO,
-@@ -165,6 +224,9 @@ static void do_setup(void)
- 	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
- 	SAFE_CLOSE(fd);
- 
-+	fan_report_target_fid_unsupported =
-+		fanotify_init_flags_supported_on_fs(FAN_REPORT_DFID_NAME_TARGET, MNTPOINT);
-+
- 	/* Create temporary test file to place marks on */
- 	SAFE_FILE_PRINTF(FILE1, "0");
- }
-@@ -183,7 +245,12 @@ static struct tst_test test = {
- 	.cleanup = do_cleanup,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
--	.all_filesystems = 1
-+	.all_filesystems = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "ceaf69f8eadc"},
-+		{"linux-git", "8698e3bab4dd"},
-+		{}
-+	}
- };
- 
- #else
+@@ -53,11 +54,11 @@ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ ifdef VERBOSE
+ 	$(CC) $(GUEST_CPPFLAGS) $(GUEST_CFLAGS) $(GUEST_LDFLAGS) -o $*-payload.elf $^ $(GUEST_LDLIBS)
+ 	objcopy -O binary -j .init.boot -j .text -j .data -j .init -j .preinit_array -j .init_array --gap-fill=0 $*-payload.elf $*-payload.bin
+-	$(LD) -z noexecstack -r -T $(abs_srcdir)/linker/payload.lds --oformat=$(BIN_FORMAT) -o $@ $*-payload.bin
++	$(KVM_LD) -z noexecstack -r -T $(abs_srcdir)/linker/payload.lds --oformat=$(BIN_FORMAT) -o $@ $*-payload.bin
+ else
+ 	@$(CC) $(GUEST_CPPFLAGS) $(GUEST_CFLAGS) $(GUEST_LDFLAGS) -o $*-payload.elf $^ $(GUEST_LDLIBS)
+ 	@objcopy -O binary -j .init.boot -j .text -j .data -j .init -j .preinit_array -j .init_array --gap-fill=0 $*-payload.elf $*-payload.bin
+-	@$(LD) -z noexecstack -r -T $(abs_srcdir)/linker/payload.lds --oformat=$(BIN_FORMAT) -o $@ $*-payload.bin
++	@$(KVM_LD) -z noexecstack -r -T $(abs_srcdir)/linker/payload.lds --oformat=$(BIN_FORMAT) -o $@ $*-payload.bin
+ 	@echo KVM_CC $(target_rel_dir)$@
+ endif
+ 	@rm $*-payload.elf $*-payload.bin
 -- 
-2.25.1
+2.36.1
 
 
 -- 
