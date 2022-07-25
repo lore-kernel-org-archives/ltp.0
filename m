@@ -4,65 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BE7BC43334
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 15:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C3D0C43334
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 15:15:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2AEF53C9732
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 17:11:18 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D5AEE3C9F31
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 17:15:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 915A83C06A9
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:11:06 +0200 (CEST)
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com
- [IPv6:2607:f8b0:4864:20::e35])
+ by picard.linux.it (Postfix) with ESMTPS id F1A383C9202
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:15:06 +0200 (CEST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
+ [IPv6:2a00:1450:4864:20::533])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3FA7B1000434
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:11:06 +0200 (CEST)
-Received: by mail-vs1-xe35.google.com with SMTP id 125so10965328vsx.7
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 08:11:06 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 138CB10005C5
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:15:06 +0200 (CEST)
+Received: by mail-ed1-x533.google.com with SMTP id u12so9350168edd.5
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 08:15:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=rF5etP49FNRJT0P3PMoz1wC8AvVMe1/8dIdcTVeUEZU=;
- b=W8V8VsJghIKgt+g1Be2AGU0u55WNJz08b2vvCOHdcgfKnrGVbR6c+NtrypHtKvPq1n
- C4Hrfg406/lRfN43M4/fSkqOVX9PrZR8MU8eWENYV3K7LvRNiKN/1jqG2f7/DlDUJI6F
- UzFfLdsqZm5ZTLL3/ztYVvd/zUxlVbkOMTR9GgWj3torhbAVGBaqdhiMfs7J8m1ku4Er
- +YznyauwD8PY0X+moNL3kNNNqn1DeWz8KxvolBznHEoo/XRtbPmMlncz/sF66BExiWyY
- 1d1QXO4SqLuMvbmkSAOexU0It5RxRyiWx+c18AVqqUOTco40no3hB195v4CgfmhFT7d5
- sFAQ==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=2bRDEHwZuVNs1zWM/xLm6zsYBFBliua3QfuQ8pwQB/M=;
+ b=WA+bhff4b1JYk0P+SLl5aKrRrvI334UutTBaA+IeT4RTej0TvY+e/QN/q+HGOL/w0v
+ X0uMVx7fLHrzKEDqViR+03FZscytcUq4II8t+qPxSJuP19k7vc/vLqq3ZaZuSIFGxaK8
+ Vd4PQvPViWz+Sq/JJZvFqRSZRKgkVt3zqnjtgxgmkOd9kUc5CJSbpAPSfvx/1e1QL7k0
+ Rj1QHAjOj+mg33hOmOch6KpRX8yQCUx0AwiHz1XHgWBgTh5Z+OmTjdnN6S18e3lhsL5V
+ 6IkrWB+I8zfge5ECdOhkL4ey4ntPb6sCMCWnymgHI87HT9FvnZNa7L/EcrxFTeNlxcUB
+ husw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=rF5etP49FNRJT0P3PMoz1wC8AvVMe1/8dIdcTVeUEZU=;
- b=g9QVDOvo5/TWFqBySRT/FXxWGVq61zve/Tsc75fl6FNjpOOOWXh6OKU3lLtm0PWJGL
- 7IGOhlLkxRVgp2S9TrIx7zt30ivMvgsm6+yQ/En6KOYGSbONBvlcMkYCfk5xWXQU0JKQ
- 9/ndtE4kHt3iP6Is2Po8buaCLgbN+BdslCcpBLZ3oJWrOYzdrfRd/fxLWqghGt5gD5bQ
- /dvjXrZWWU/A7Ar3u7evRKim/59EOTLi2x+pKg6kJxzEz/cQ1NFigj4/BBCPrHsFnJl6
- fSCgT+kohO54r2pmZhUQ1d9EVehVuQsUzMPQbUjrH/G2Xs1/la3IpfkN3zoNZ2l86ybZ
- V63g==
-X-Gm-Message-State: AJIora86e/qM0C6sJtbe6HIqRMge9Bv3Qku8GWuM7Fb6FLAfl/u0aJOl
- VZBiygzqFnAL1Thj7hEmTa/1rgtAsXtmA9HByIs=
-X-Google-Smtp-Source: AGRyM1u/sRgwn4NS3IAzGWX8yHGngnfrG66j3s/LBFlk/dGwZ5uruNx/VtSdOK+YB1hWvFjkuiroMnNageTNZLrJc+w=
-X-Received: by 2002:a05:6102:3ecd:b0:358:57a1:d8a with SMTP id
- n13-20020a0561023ecd00b0035857a10d8amr1814951vsv.2.1658761864826; Mon, 25 Jul
- 2022 08:11:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220719095853.3373732-1-amir73il@gmail.com>
- <20220719095853.3373732-2-amir73il@gmail.com>
- <YtcpBkevcBF6iycz@google.com> <Yt6Rcd3NAO1bKwwD@pevik>
-In-Reply-To: <Yt6Rcd3NAO1bKwwD@pevik>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=2bRDEHwZuVNs1zWM/xLm6zsYBFBliua3QfuQ8pwQB/M=;
+ b=xoofKDhquWfOnAEvBmsabXlg7RvQSds9Ydm2Xj2BZziM9Qmfa+Y/dDrDEYvdqO+0V8
+ XCs3AP8yFBcqW1R2Vj30Kllq1qELA27HHmt+TX+5RC09YDbQzz5A+mbuOBMKm1MQvxyH
+ HQZMdgBWyth51xzUZXyEM3deA146WVxlvbHIfuJUH8faStco6NN1Xr/KYrtzCJ5Qofp6
+ hSkdY4xIQrxj9N5b1kmGmYibTtkf7B7+eS9ARHmKC0BlHLd7QpTvUEs1mX6eYOG75sa7
+ EgHSBQXH7zvG2dDvTsrAkGp6tjgMtM9AcNwnTcBlU8wgUsSqN/Tu8Nil/2wZUkagvJnS
+ sCrQ==
+X-Gm-Message-State: AJIora9CFacgZC5Skid2qy1yUz+qFDv+dTAUs4XAPDbD/sHckqmYOM3p
+ 1FFdkpOp5ay0JLrpgov80BSQBliMxHNsBw==
+X-Google-Smtp-Source: AGRyM1sUFh6RYJByydJtlvp4HjdVRaeH3UUy2akhyscVqS3rtqBU1r3ZjICfbLfJcW/e+moJfvbKQg==
+X-Received: by 2002:a05:6402:354b:b0:43b:bef0:5b67 with SMTP id
+ f11-20020a056402354b00b0043bbef05b67mr13913527edd.357.1658762105407; 
+ Mon, 25 Jul 2022 08:15:05 -0700 (PDT)
+Received: from amir-ThinkPad-T480.kpn
+ (2a02-a45a-4ae9-1-ded3-af6f-ecdf-f6f4.fixed6.kpn.net.
+ [2a02:a45a:4ae9:1:ded3:af6f:ecdf:f6f4])
+ by smtp.gmail.com with ESMTPSA id
+ g22-20020a17090670d600b006f3ef214e27sm5422966ejk.141.2022.07.25.08.15.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 25 Jul 2022 08:15:04 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 25 Jul 2022 17:10:53 +0200
-Message-ID: <CAOQ4uxgG_jrLHKFm67AQEw-+x66WoRaAfBi+3WwXzXwh9GOUAQ@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 25 Jul 2022 17:14:51 +0200
+Message-Id: <20220725151453.3846227-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] syscalls/fanotify14: Encode the expected
- errno in test case
+Subject: [LTP] [PATCH v2 0/2] Fanotify tests for v5.19-rc5
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,31 +80,42 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.cz>,
- LTP List <ltp@lists.linux.it>
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Jul 25, 2022 at 2:49 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> > On Tue, Jul 19, 2022 at 11:58:52AM +0200, Amir Goldstein wrote:
-> > > So we can add test cases for errors other than EINVAL.
->
-> > Just one optional nit. We can probably remove the comments which are
-> > directly above the existing `if (errno == EINVAL)` checks as they're
-> > specific to one expected errno value, but this is no longer the case
-> > with ENOTDIR now in some fanotify_init/fanotify_mark cases.
->
-> @Amir, I can remove it in this commit before merge (see diff below),
-> but don't you want to keep this info somewhere?
-> Or feel free to post new version.
+Hi Petr,
 
-Good idea.
-I will add the comments to the individual test cases and re-post.
+This updates the tests to validate the current ENOTDIR behavior of
+fanotify that was merged for v5.19-rc5 and v5.18.10.
+
+This is a retroactive change for APIs FAN_REPORT_TARGET_FID
+and FAN_RENAME introduced in v5.17.
+
+The current upstream behavior is already documented in man pages [1].
 
 Thanks,
 Amir.
+
+Changes since v1:
+- Split comment in generic code to per test case comment
+- Added RVB and Tested-by
+
+[1] https://lore.kernel.org/linux-man/20220630190610.3043428-1-amir73il@gmail.com/
+
+Amir Goldstein (2):
+  syscalls/fanotify14: Encode the expected errno in test case
+  syscalls/fanotify14: Add test cases for events not allowed on non-dir
+
+ testcases/kernel/syscalls/fanotify/fanotify.h |   4 +-
+ .../kernel/syscalls/fanotify/fanotify14.c     | 117 +++++++++++++-----
+ 2 files changed, 92 insertions(+), 29 deletions(-)
+
+-- 
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
