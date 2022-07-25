@@ -4,62 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2496CC43334
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 11:44:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 588CDC43334
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 12:50:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A77153C9F7C
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 13:44:44 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6FB9A3C9FEA
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 14:50:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 169B33C0756
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 13:44:34 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 095BF3C941D
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 14:49:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 59FDC6006F1
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 13:44:33 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 5C56734848;
- Mon, 25 Jul 2022 11:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658749473;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4Vv+nWrDdnzC69K9mo/5LFL6LTld6xr0jEju1J5IbAU=;
- b=ZB+5OPEgZwbX8BNb5Y5BmPeHJ5mCBuDQiiPwqBrTeksiqP3BuDvN5qcjASKlbsZSYChFvG
- bZuXAgkMetlJBbmsKRKsFOks/vXEHTEXVbPXHLzMhrS6st7gRYMVJoPnmpZohwr8z9Abso
- E7mk7BKs57tErD8llZFLrBHoOts8GiU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658749473;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4Vv+nWrDdnzC69K9mo/5LFL6LTld6xr0jEju1J5IbAU=;
- b=LSLZzEwZ1qiWvjL0AHFEMfA8wTyDKOgpyRZC6wi5qTO/WC82lU96ke0TvU0Ccylr0nFv1m
- W6NpysZo/m0mQvDw==
-Received: from g78 (unknown [10.163.24.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1099A200766
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 14:49:56 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id E8AC92C14F;
- Mon, 25 Jul 2022 11:44:32 +0000 (UTC)
-References: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
- <caab3f8e65b22bf00aa2fa1da9669c7f43df119d.1658433280.git.luke.nowakowskikrijger@canonical.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Date: Mon, 25 Jul 2022 12:41:37 +0100
-In-reply-to: <caab3f8e65b22bf00aa2fa1da9669c7f43df119d.1658433280.git.luke.nowakowskikrijger@canonical.com>
-Message-ID: <8735ep5sdb.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1BCE2201AA;
+ Mon, 25 Jul 2022 12:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1658753395;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pzaKYbxnlOPuPs+8xkxfDJttz+LEOvY00s5ZGhJ5feE=;
+ b=hn/B+e9vmXpYj1rDBBHCcNV0hxXPRgiSXyFAaX8W3wEf11CyJPxAPUclj3Igl8pSmfPzyR
+ 5DEpW9mBPCUlT00J5dycOcAy+JV1Xm8y8PNqbLDLnSCBM5cKiFP4p9DpozFuGHwxhfa+yh
+ 3s6Asejn7bw9TR14WbNqGK+GRKYxO7A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1658753395;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pzaKYbxnlOPuPs+8xkxfDJttz+LEOvY00s5ZGhJ5feE=;
+ b=zsuh3lalmdnJ0Li2BhxbM2iCZsRWeuIYpv1SW+A6ly/Bu8Fk0ySz+rWRb4Tzmuh+zgocyg
+ SvJkTLk/SfU6fcAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C705113ABB;
+ Mon, 25 Jul 2022 12:49:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id wLXALXKR3mJQagAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 25 Jul 2022 12:49:54 +0000
+Date: Mon, 25 Jul 2022 14:49:53 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Matthew Bobrowski <repnop@google.com>
+Message-ID: <Yt6Rcd3NAO1bKwwD@pevik>
+References: <20220719095853.3373732-1-amir73il@gmail.com>
+ <20220719095853.3373732-2-amir73il@gmail.com>
+ <YtcpBkevcBF6iycz@google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YtcpBkevcBF6iycz@google.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 11/18] controllers: Update cgroup_fj_* to use
- newer cgroup lib and test lib
+Subject: Re: [LTP] [PATCH 1/2] syscalls/fanotify14: Encode the expected
+ errno in test case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,52 +79,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+> On Tue, Jul 19, 2022 at 11:58:52AM +0200, Amir Goldstein wrote:
+> > So we can add test cases for errors other than EINVAL.
 
-Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com> writes:
+> Just one optional nit. We can probably remove the comments which are
+> directly above the existing `if (errno == EINVAL)` checks as they're
+> specific to one expected errno value, but this is no longer the case
+> with ENOTDIR now in some fanotify_init/fanotify_mark cases.
 
-> +setup()
-> +{
-> +    common_setup
+@Amir, I can remove it in this commit before merge (see diff below),
+but don't you want to keep this info somewhere?
+Or feel free to post new version.
 
-This can fail and we have not set pid yet.
+BTW I tested both commits on various kernels and it works as expected
+(failing only on 5.17.3 (openSUSE) 5.18.5, (Debian), old kernels TCONF
+as expected.
 
-> +    cgroup_fj_proc&
-> +    pid=$!
-> +    create_subgroup "$start_path/ltp_1"
-> +}
->  
-> -ROD kill -9 $pid
-> -wait $pid
-> -ROD rmdir "$start_path/ltp_1"
-> +cleanup()
-> +{
-> +    kill -9 $pid >/dev/null 2>&1
-> +    wait $pid >/dev/null 2>&1
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 
-$pid is unset so this just waits forever. We need something like the
-following:
+> Feel free to add RVB tags.
 
-    if [ -n "$pid" ]; then
-      kill -9 $pid >/dev/null 2>&1
-      wait $pid >/dev/null 2>&1
-    fi
+@Matthew FYI adding it with correct form in the email reply help us maintainers
+to get it added automatically via LTP patchwork instance.
 
+Kind regards,
+Petr
 
-> +    rmdir "$start_path/ltp_1" >/dev/null 2>&1
-> +    common_cleanup
-> +}
->  
-
--- 
-Thank you,
-Richard.
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
+index c99e19706..ce7e4c54c 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify14.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
+@@ -84,11 +84,6 @@ static void do_test(unsigned int number)
+ 
+ 	fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY);
+ 	if (fanotify_fd < 0) {
+-		/*
+-		 * EINVAL is to be returned to the calling process when
+-		 * an invalid notification class is specified in
+-		 * conjunction with FAN_REPORT_FID.
+-		 */
+ 		if (errno == tc->expected_errno) {
+ 			tst_res(TPASS,
+ 				"fanotify_fd=%d, fanotify_init(%x, O_RDONLY) "
+@@ -121,12 +116,6 @@ static void do_test(unsigned int number)
+ 	ret = fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
+ 				tc->mask, AT_FDCWD, FILE1);
+ 	if (ret < 0) {
+-		/*
+-		 * EINVAL is to be returned to the calling process when
+-		 * attempting to use INODE_EVENTS without FAN_REPORT_FID
+-		 * specified on the notification group, or using
+-		 * INODE_EVENTS with mark type FAN_MARK_MOUNT.
+-		 */
+ 		if (errno == tc->expected_errno) {
+ 			tst_res(TPASS,
+ 				"ret=%d, fanotify_mark(%d, FAN_MARK_ADD | %x, "
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
