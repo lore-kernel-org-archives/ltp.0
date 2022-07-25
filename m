@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 346F6C433EF
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 17:37:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E61F8C433EF
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 17:38:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B8E23C9F6D
-	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 19:37:18 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id CF7903C97DD
+	for <ltp@archiver.kernel.org>; Mon, 25 Jul 2022 19:38:34 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0365D3C04EF
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 19:37:07 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 639053C04EF
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 19:38:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E5D571400066
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 19:37:06 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A9A6E140020C
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 19:38:23 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A8DC31FF58
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:37:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0406F34ACE
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658770625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1658770703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5LgUnqUJ40gGaGvDoSMHN8sIrW69FtW/B1wfzMrUWBk=;
- b=2DVM0XDLdHy2KscHE2hcTUTfIOPuytvkmsv0A9l88iH7Ep0/mrQRIJvQBMt54sDAliLqxG
- ZPa+F4CWvFpjiMpRJ51g6YwdfT8WWFIP7XWiomtWlmd3ChDPYqS3bIuR6/t+Zkcyw/zz8e
- bwpNLXpcZWyomIzWmebSDxXNVOk7M6E=
+ bh=LUh3lK/WIIKgmcBjKrUo3gBhoyvWrldrxd64/da+beI=;
+ b=kNaiBjYcna4bdbsjlg46/7ESJLe+Msg6w34sPxMHMnJ2lukwf4HxbZGdQQ7sRI2NMkhU24
+ aV74UoPKwGY/4DbeJM1Y1op2M3ZUMpCfKWFHr8HhED+rcsxWiBVzjFoyTuU8esHRrski+6
+ VxiEtaxLkkbrqQPOcAxUWUFK26HVhP0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658770625;
+ s=susede2_ed25519; t=1658770703;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=5LgUnqUJ40gGaGvDoSMHN8sIrW69FtW/B1wfzMrUWBk=;
- b=/UBjIlEbtfeeHVAA+WDh1nAjTABAM7OixqqRQOw4bO1ulmTqY8RwM6jFv7xzaBjCLygCBj
- 72f3xaZrvZj89wBA==
+ bh=LUh3lK/WIIKgmcBjKrUo3gBhoyvWrldrxd64/da+beI=;
+ b=VcWa2GF78mpctJIXb84M9dCzn8vcgKSHY0qgSRSNTyZBMhhgv+NMWi4IkKwFZjBXlF6EW2
+ 6SICdb2qBgcoRcDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FFCA13ABB
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:37:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7181C13ABB
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:38:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id BdTyM8DU3mKtZgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id XZgyDA7V3mJEZwAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:37:04 +0000
+ for <ltp@lists.linux.it>; Mon, 25 Jul 2022 17:38:22 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 25 Jul 2022 23:07:02 +0530
-Message-Id: <20220725173702.9359-1-akumar@suse.de>
+Date: Mon, 25 Jul 2022 23:08:19 +0530
+Message-Id: <20220725173819.9669-1-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] rename12.c: Convert to new LTP API
+Subject: [LTP] [PATCH] rename13.c: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,14 +80,14 @@ Rewrite test using new LTP API and enable on all supporting filesystems
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/rename/rename12.c | 253 ++++----------------
- 1 file changed, 50 insertions(+), 203 deletions(-)
+ testcases/kernel/syscalls/rename/rename13.c | 206 ++++----------------
+ 1 file changed, 37 insertions(+), 169 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/rename/rename12.c b/testcases/kernel/syscalls/rename/rename12.c
-index 36691783f..d6e1ccbe9 100644
---- a/testcases/kernel/syscalls/rename/rename12.c
-+++ b/testcases/kernel/syscalls/rename/rename12.c
-@@ -1,222 +1,69 @@
+diff --git a/testcases/kernel/syscalls/rename/rename13.c b/testcases/kernel/syscalls/rename/rename13.c
+index 07a90c4d1..51490db75 100644
+--- a/testcases/kernel/syscalls/rename/rename13.c
++++ b/testcases/kernel/syscalls/rename/rename13.c
+@@ -1,186 +1,54 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -112,10 +112,11 @@ index 36691783f..d6e1ccbe9 100644
  
 -/*
 - * NAME
-- *	rename12
+- *	rename13
 - *
 - * DESCRIPTION
-- *      check rename() fails with EPERM or EACCES
+- *	Verify rename() return successfully and performs no other action
+- *      when "old" file and "new" file link to the same file.
 - *
 - * ALGORITHM
 - *	Setup:
@@ -125,26 +126,20 @@ index 36691783f..d6e1ccbe9 100644
 - *
 - *	Test:
 - *		Loop if the proper options are given.
-- *              create a directory fdir and set the sticky bit
-- *              create file fname under fdir
-- *              fork a child
-- *                      set to nobody
-- *                      try to rename fname to mname
-- *                      check the return value, if succeeded (return=0)
-- *			       Log the errno and Issue a FAIL message.
-- *		        Otherwise,
-- *			       Verify the errno
-- *			       if equals to EPERMS or EACCES,
-- *				       Issue Pass message.
-- *			       Otherwise,
-- *				       Issue Fail message.
+- *                  create the "old" file
+- *                  link the "new" file to the "old" file
+- *                  rename the "old" to the "new" file
+- *                  verify the "new" file points to the original file
+- *                  verify the "old" file exists and points to
+- *                         the original file
 - *	Cleanup:
 - *		Print errno log and/or timing stats if options given
 - *		Delete the temporary directory created.
+- *
 - * USAGE
-- *	rename12 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	rename13 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
 - *		-i n : Execute test n times.
 - *		-I x : Execute test for x seconds.
 - *		-P x : Pause for x seconds between iterations.
@@ -152,46 +147,45 @@ index 36691783f..d6e1ccbe9 100644
 - *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	Must run test as root.
 +/*\
 + * [Description]
   *
-+ * Verify that rename() fails with EPERM or EACCES when the directory
-+ * containing oldpath has the sticky bit (S_ISVTX) set and the caller
-+ * is not privileged.
+- * RESTRICTIONS
+- *	None.
++ * Verify that rename() does nothing and returns a success status when
++ * oldpath and newpath are existing hard links referring to the same file.
   */
--#include <errno.h>
--#include <sys/stat.h>
 -#include <sys/types.h>
--#include <sys/wait.h>
 -#include <fcntl.h>
--#include <pwd.h>
+-#include <sys/stat.h>
 -#include <unistd.h>
--
+-#include <errno.h>
+ 
 -#include "test.h"
 -#include "safe_macros.h"
--
++#include <stdio.h>
++#include "tst_test.h"
+ 
 -void setup();
 -void cleanup();
--
--#define PERMS		0777
--
--char *TCID = "rename12";
++#define MNT_POINT "mntpoint"
++#define TEMP_FILE1 MNT_POINT"/tmpfile1"
++#define TEMP_FILE2 MNT_POINT"/tmpfile2"
+ 
+-char *TCID = "rename13";
 -int TST_TOTAL = 1;
--
++static struct stat buf1, buf2;
+ 
 -int fd;
--char fdir[255];
 -char fname[255], mname[255];
--uid_t nobody_uid;
--struct stat buf1;
+-struct stat buf1, buf2;
+-dev_t olddev;
+-ino_t oldino;
 -
 -int main(int ac, char **av)
--{
++static void setup(void)
+ {
 -	int lc;
--	pid_t pid;
--	int status;
 -
 -	/*
 -	 * parse standard options
@@ -211,115 +205,84 @@ index 36691783f..d6e1ccbe9 100644
 -		tst_count = 0;
 -
 -		/*
--		 * rename a file whose parent directory has
--		 * the sticky bit set without root permission
--		 * or effective uid
+-		 * TEST rename()works when
+-		 * both old file and new file link to the same file
 -		 */
 -
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup, "fork() failed");
+-		/* Call rename(2) */
+-		TEST(rename(fname, mname));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "rename(%s, %s) failed", fname, mname);
+-			continue;
 -		}
- 
--		if (pid == 0) {	/* child */
--			/* set to nobody */
--			if (seteuid(nobody_uid) == -1) {
--				tst_resm(TWARN, "setreuid failed");
--				perror("setreuid");
--				exit(1);
--			}
 -
--			/* rename "old" to "new" */
--			TEST(rename(fname, mname));
+-		/* check the existence of "new", and get the status */
+-		SAFE_STAT(cleanup, mname, &buf2);
 -
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				exit(1);
--			}
+-		/* check the existence of "old", and get the status */
+-		SAFE_STAT(cleanup, fname, &buf1);
 -
--			if ((TEST_ERRNO != EPERM) && (TEST_ERRNO != EACCES)) {
--				tst_resm(TFAIL,
--					 "Expected EPERM or EACCES, got %d",
--					 TEST_ERRNO);
--				exit(1);
--			} else {
--				tst_resm(TPASS,
--					 "rename returned EPERM or EACCES");
--			}
--
--			/* set the id back to root */
--			if (seteuid(0) == -1) {
--				tst_resm(TWARN, "seteuid(0) failed");
--			}
--		} else {	/* parent */
--			wait(&status);
--			if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
--				exit(WEXITSTATUS(status));
--			} else {
--				exit(0);
--			}
--
+-		/* verify the new file is the same as the original */
+-		if (buf2.st_dev != olddev || buf2.st_ino != oldino) {
+-			tst_resm(TFAIL,
+-				 "rename() failed: new file does "
+-				 "not point to the same file as old "
+-				 "file");
+-			continue;
 -		}
+-
+-		/* verify the old file is unchanged */
+-		if (buf1.st_dev != olddev || buf1.st_ino != oldino) {
+-			tst_resm(TFAIL,
+-				 "rename() failed: old file does "
+-				 "not point to the original file");
+-			continue;
+-		}
+-
+-		tst_resm(TPASS, "functionality of rename() is correct");
 -	}
-+#include <stdio.h>
-+#include <pwd.h>
-+#include "tst_test.h"
- 
+-
 -	cleanup();
 -	tst_exit();
-+#define MNT_POINT "mntpoint"
-+#define TEMP_DIR "tempdir"
-+#define TEMP_FILE1 TEMP_DIR"/tmpfile1"
-+#define TEMP_FILE2 TEMP_DIR"/tmpfile2"
- 
--}
-+static uid_t nobody_uid;
-+static struct stat buf1;
++	SAFE_TOUCH(TEMP_FILE1, 0700, NULL);
++	SAFE_STAT(TEMP_FILE1, &buf1);
++	SAFE_LINK(TEMP_FILE1, TEMP_FILE2);
+ }
  
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - */
 -void setup(void)
-+static void setup(void)
++static void run(void)
  {
- 	struct passwd *pw;
++	TST_EXP_PASS(rename(TEMP_FILE1, TEMP_FILE1));
++	if (TST_RET != 0)
++		return;
  
--	tst_require_root();
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	pw = SAFE_GETPWNAM(NULL, "nobody");
-+	pw = SAFE_GETPWNAM("nobody");
- 	nobody_uid = pw->pw_uid;
- 
 -	TEST_PAUSE;
 -
 -	/* Create a temporary directory and make it current. */
 -	tst_tmpdir();
 -
--	umask(0);
+-	sprintf(fname, "./tfile_%d", getpid());
+-	sprintf(mname, "./rnfile_%d", getpid());
 -
--	sprintf(fdir, "./tdir_%d", getpid());
--	sprintf(fname, "%s/tfile_%d", fdir, getpid());
--	sprintf(mname, "%s/rnfile_%d", fdir, getpid());
--
--	/* create a directory */
--	SAFE_MKDIR(cleanup, fdir, PERMS);
--
--	SAFE_STAT(cleanup, fdir, &buf1);
--
--	/* set the sticky bit */
--	if (chmod(fdir, buf1.st_mode | S_ISVTX) != 0) {
--		tst_brkm(TBROK, cleanup, "failed to set the S_ISVTX bit");
--
--	}
--
--	/* create a file under fdir */
 -	SAFE_TOUCH(cleanup, fname, 0700, NULL);
-+	SAFE_CHDIR(MNT_POINT);
-+	SAFE_MKDIR(TEMP_DIR, 0777);
-+	SAFE_STAT(TEMP_DIR, &buf1);
-+	SAFE_CHMOD(TEMP_DIR, buf1.st_mode | S_ISVTX);
-+	SAFE_TOUCH(TEMP_FILE1, 0700, NULL);
+-
+-	SAFE_STAT(cleanup, fname, &buf1);
+-
+-	/* save the dev and inode */
+-	olddev = buf1.st_dev;
+-	oldino = buf1.st_ino;
+-
+-	/* link the "new" file to the "old" file */
+-	SAFE_LINK(cleanup, fname, mname);
++	SAFE_STAT(TEMP_FILE2, &buf2);
++	TST_EXP_EQ_LU(buf1.st_dev, buf2.st_dev);
++	TST_EXP_EQ_LU(buf1.st_ino, buf2.st_ino);
  }
  
 -/*
@@ -327,24 +290,14 @@ index 36691783f..d6e1ccbe9 100644
 - *             completion or premature exit.
 - */
 -void cleanup(void)
-+static void run(void)
- {
+-{
 -
 -	/*
 -	 * Remove the temporary directory.
 -	 */
 -	tst_rmdir();
-+	SAFE_SETEUID(nobody_uid);
-+
-+	TEST(rename(TEMP_FILE1, TEMP_FILE2));
-+	if (TST_RET == -1 && (TST_ERR == EPERM || TST_ERR == EACCES))
-+		tst_res(TPASS | TTERRNO, "rename() failed as expected");
-+	else if (TST_RET == 0)
-+		tst_res(TFAIL, "rename() succeeded unexpectedly");
-+	else
-+		tst_res(TFAIL | TTERRNO, "rename() failed, but not with expected errno");
- }
-+
+-
+-}
 +static struct tst_test test = {
 +	.setup = setup,
 +	.test_all = run,
@@ -355,8 +308,6 @@ index 36691783f..d6e1ccbe9 100644
 +	.skip_filesystems = (const char *const[]){
 +		"exfat",
 +		"vfat",
-+		"fuse",
-+		"ntfs",
 +		NULL
 +	},
 +};
