@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E3DDC43334
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 13:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2AB1C433EF
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 13:19:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7CF3B3C9F6D
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 15:12:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 70ADE3C9D96
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 15:19:18 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8745F3C9427
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:12:29 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2C98C3C87C6
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:19:08 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1D9E76011AE
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:12:28 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 543111FBA0;
- Tue, 26 Jul 2022 13:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1658841148;
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 633141000997
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:19:08 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id BEF071FCD7
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 13:19:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1658841547;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=mIV0TqFk+nGTbdOaeNXczfRH2L5f/06eNREkuEEpAfQ=;
- b=ZebgD1fk+Gv0AxgAj8N4t0gyZRBVay90FGt4TU3X5QAAhsFSdyB+z72w+ue8kZY6g1kLuL
- EpelpmmWHdjYYiHcLSUPqTZeS6fRd/XuZO0wfASzstDYEYvnY+hTpZ5VfQdthr24orc7AE
- yw2zpukTSRCIbfH0LIagaNy7F0tQeCY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1658841148;
+ bh=qYe5Rd8RO6kbs3W8KWALukhKo6nuq2FEvXW/PmbT/X0=;
+ b=OlTT0BIdhf2VEbechEScQlmLjdaAk3YhVGHxheOYnC2D4adQenq1OvMZ3lav9a1LxmeqbH
+ EGeuZB/nEX617ZeKBerO4RiFnnFGOmyjqODvpkBlVwNYeAXiqEWB2AN5EsOcRYpQa3+ES0
+ Ob07cYoqJrWjJz85unIXJlCTJ6+29Hg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1658841547;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=mIV0TqFk+nGTbdOaeNXczfRH2L5f/06eNREkuEEpAfQ=;
- b=I8yvRTSnBVMqnFimR528I3hbIXF8O73KxSfc7VVgfAZLXXI4FadYByoC39y9ibkOK02Q46
- 8KFThjup6Z89pkDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=qYe5Rd8RO6kbs3W8KWALukhKo6nuq2FEvXW/PmbT/X0=;
+ b=dX/C44O+rY5eBhjm9ZqhKFFeVKZKwbtedpqUnWT0EjQaDXHTAEk5rKiTZOkkmfoTlPlHZY
+ dt9vOCTwR2AdN/DA==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 252C613A7C;
- Tue, 26 Jul 2022 13:12:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id U5+NBzzo32LVFgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 26 Jul 2022 13:12:28 +0000
-Date: Tue, 26 Jul 2022 15:12:26 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Message-ID: <Yt/oOuaJU3ExV5f9@pevik>
-References: <cover.1658433280.git.luke.nowakowskikrijger@canonical.com>
- <d2355625a3b0bd7cac07fc2e80098ca2c59d10b1.1658433280.git.luke.nowakowskikrijger@canonical.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 913372C141;
+ Tue, 26 Jul 2022 13:19:07 +0000 (UTC)
+References: <Yt+RA5chfBh54kvI@pevik>
+ <20220726115234.25310-1-rpalethorpe@suse.com> <Yt/YIR+anMcbsEp2@pevik>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 26 Jul 2022 13:53:02 +0100
+In-reply-to: <Yt/YIR+anMcbsEp2@pevik>
+Message-ID: <878rog3tbo.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d2355625a3b0bd7cac07fc2e80098ca2c59d10b1.1658433280.git.luke.nowakowskikrijger@canonical.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 10/18] controllers: Expand cgroup_lib shell
- library
+Subject: Re: [LTP] [PATCH] tools: Check headers with checkpatch.pl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,96 +71,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Luke,
-
-...
-> +# Gets the cgroup version of the given controller
-> +# USAGE: cgroup_get_version CONTROLLER
-> +# RETURNS: "1" if version 1 and "2" if version 2
-> +# Must call cgroup_require before calling
-> +cgroup_get_version()
->  {
-> -	local subsystem=$1
-> -	local mntpoint
-> +	local ctrl="$1"
-> +	local version
-
-> -	[ $# -eq 0 ] && tst_brk TBROK "get_cgroup_mountpoint: subsystem not defined"
-> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_get_version: controller not defined"
-NOTE: this will always pass, because you pass variable in ""
-(thus $1 = "" and $# = 1):
-cgroup_get_task_list()
-{
-	local ctrl="$1"
-	version=$(cgroup_get_version "$ctrl")
-
-> +	[ "$_cgroup_state" = "" ] && tst_brk TBROK "cgroup_get_version: No previous state found. Forgot to call cgroup_require?"
-
-> -	mntpoint=$(grep cgroup /proc/mounts | grep -w $subsystem | awk '{ print $2 }')
-> -	[ -z "$mntpoint" ] && return 1
-> +	version=$(echo "$_cgroup_state" | grep -w "^$ctrl" | awk '{ print $2 }')
-> +	[ "$version" = "" ] && tst_brk TBROK "cgroup_get_version: Could not find controller $ctrl"
-> +
-> +	echo "$version"
-
-> -	echo $mntpoint
->  	return 0
->  }
-...
-
-> +# Mounts and configures the given controller
-> +# USAGE: cgroup_require CONTROLLER
-> +cgroup_require()
-> +{
-> +	local ctrl="$1"
-> +
-> +	[ $# -eq 0 ] && tst_brk TBROK "cgroup_require: controller not defined"
-> +
-> +	[ ! -f /proc/cgroups ] && tst_brk TCONF "Kernel does not support control groups"
-> +
-> +	_cgroup_state=$(tst_cgctl require "$ctrl" $$)
-> +
-> +	if [ $? -eq 32 ]; then
-> +		tst_brk TCONF "'tst_cgctl require' exited. Controller is probably not available?"
-> +	fi
-> +
-> +	if [ $? -ne 0 ]; then
-> +		tst_brk TBROK "'tst_cgctl require' exited."
-> +	fi
-FYI if cgroup_require is called from cleanup function tst_brk does not exit the
-code:
-
-tst_brk()
-{
-	local res=$1
-	shift
-
-	if [ "$TST_DO_EXIT" = 1 ]; then
-		tst_res TWARN "$@"
-		return
-	fi
-
-	tst_res "$res" "$@"
-	_tst_do_exit
-}
-
-IMHO that means that $? became 0 even it was previously 32.
-It's always safer to save $? into local variable if needed to store exit code
-(otherwise using if, e.g. "if ! foo; then" is preferred).
-
-NOTE: Maybe at this point it might be safer if you post next version
-where you do fixes yourself. I'll try to review the rest of the shell scripts
-today (C code looks correct to me).
-
-Kind regards,
-Petr
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGVsbG8sCgpQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JpdGVzOgoKPiBIaSBSaWNoaWUs
+Cj4KPj4gY2hlY2twYXRjaC5wbCBkb2Vzbid0IGxvYWQgaW5jbHVkZWQgaGVhZGVycyBzbyB0aGV5
+IG11c3QgYmUgcGFzc2VkIHRvCj4+IGl0IHNwZWNpZmljYWxseS4gVGhpcyBjaGFuZ2UgYXV0b21h
+dGljYWxseSBpbmNsdWRlcyBoZWFkZXJzIGZyb20gdGhlCj4+IGN1cnJlbnQgZGlyZWN0b3J5LiBN
+YW51YWwgaW50ZXJ2ZW50aW9uIGlzIHN0aWxsIHJlcXVpcmVkIGlmIGEgdGVzdAo+PiBhdXRob3Ig
+Y2hhbmdlcyBhIGhlYWRlciBsb2NhdGVkIGVsc2V3aGVyZS4gSG93ZXZlciB5b3UgY2FuIG5vdyB3
+cml0ZQo+PiAnbWFrZSBjaGVjay1oZWFkZXIuaCcsIG9uY2UgaW4gdGhlIGNvcnJlY3QgZGlyZWN0
+b3J5Lgo+Cj4+IE5vdGUgdGhhdCBvdXIgU3BhcnNlIGJhc2VkIHRvb2wgKGFtb25nc3Qgb3RoZXJz
+KSBsb2FkcyBoZWFkZXJzIGFuZAo+PiBjaGVja3MgYXQgbGVhc3Qgc29tZSBvZiB0aGUgY29udGVu
+dC4KPgo+IFRoYW5rcyBhIGxvdCBmb3IgaW1wbGVtZW50aW5nIHRoaXMuCj4KPiBMR1RNLCBqdXN0
+IGEgc21hbGwgbml0OiB0YXJnZXQgZm9yIGhlYWRlcnMgY29udGFpbiAuaCBleHRlbnNpb24uCj4g
+U2hvdWxkbid0IHdlIGFkZCAuYyBmb3IgQyBzb3VyY2VzIGZvciBjb25zaXN0ZW5jeT8KPgo+IEl0
+J8SRIHN0cmFuZ2UsIHRoYXQgbWFrZSBjaGVjayBpbiB0ZXN0Y2FzZXMvbWlzYy9tYXRoL2Zsb2F0
+LyBkb2VzIG5vdCBpbmNsdWRlCj4gdGZsb2F0LmgsIGJ1dCBtYWtlIGNoZWNrLXRmbG9hdC5oIHBy
+aW50cyBlcnJvcnMuIEJ1dCBtYWtlIGNoZWNrIGluIGxpYi8gd29ya3MgYXMKPiBleHBlY3RlZCAo
+YWRkcyBhbHNvICouaCkuCgpUaGUgU3BhcnNlIGJhc2VkIHRvb2wgZG9lcyBpbmNsdWRlIGhlYWRl
+cnMgdGhvdWdoLiBTbyByZWFsbHkgd2UgYXJlCmNoZWNraW5nIHRoZSB0YXJnZXQgd2hpY2ggaW5j
+bHVkZXMgbW9yZSB0aGFuIGp1c3QgYSBzaW5nbGUgYyBmaWxlLgoKPgo+IFJldmlld2VkLWJ5OiBQ
+ZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCgoKLS0g
+ClRoYW5rIHlvdSwKUmljaGFyZC4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
+cy5saW51eC5pdC9saXN0aW5mby9sdHAK
