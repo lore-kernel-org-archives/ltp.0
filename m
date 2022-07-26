@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3161C433EF
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 09:09:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 745B6C433EF
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 09:09:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 95B1F3C9D96
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 11:09:09 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 828193C9A4D
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 11:09:36 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 565853C1BC6
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 11:08:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id B0C163C05C3
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 11:09:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CC0D1200C81
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 11:08:53 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AE45D1A00705
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 11:09:25 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 30FFE1FA28
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 09:08:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 05EDA375FA
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 09:09:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658826533;
+ t=1658826565;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DRLg54YD5LKdq6zKmdpFNJ1kuiNBikOAQacsh2o7GrI=;
- b=yPY/DTnJX70Pcl2Mbb/KU6A4N703LjDO9DWwTIKSAQCrcREvJ9TEB0JDXJ8FxMY27qe1tG
- P1jg0H6+WFqlPg3xxRaPQhNjoHLYxPNPQr4ZHcmMtdvAcFl2/qUNsAS10VD6yFFQuC+fwk
- 05piz8qQVa+7kutEOqMBQhQ6HEZ2x8k=
+ bh=h4kanUT3N+TjKduEEEi6VlMtf+LUJY5l1DitOpHjyKA=;
+ b=QQ9FIPmFnfJuMfZ81GE+g6P+KHkEiyCi1JvBiZVD5x8eLIm6hsZDxu7rG8AOFtZyyqxyC7
+ 3uCGZegCbk1am3nFqYTH2rIX0rAyUCBOavtfWS9MZIRw4PfPW+32meW4gw+EptRIlNm0wr
+ 49Fa/bMeCYKvXJYneWJRv09i2CjYCj0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658826533;
+ s=susede2_ed25519; t=1658826565;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DRLg54YD5LKdq6zKmdpFNJ1kuiNBikOAQacsh2o7GrI=;
- b=Eh+VICJ8hStDghwloe34f48VjKCelcLRmJxrHpiHFdZ+4IcUxDqglYthpH7O5if14eH5SZ
- +ca4lRoKIZCPGtDg==
+ bh=h4kanUT3N+TjKduEEEi6VlMtf+LUJY5l1DitOpHjyKA=;
+ b=uPeTLwVDnSpquOqQv5bbFBaLFARBEwdnGy2Ni6F3FQVNYkQD7bzbrji2LtOLpeCpuAXIhp
+ TjU8o0w5ec3UcCBw==
 Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 00B5B2C15D;
- Tue, 26 Jul 2022 09:08:52 +0000 (UTC)
-References: <20220726055810.15176-1-akumar@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id AC6B42C171;
+ Tue, 26 Jul 2022 09:09:24 +0000 (UTC)
+References: <20220725173819.9669-1-akumar@suse.de>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Avinesh Kumar <akumar@suse.de>
-Date: Tue, 26 Jul 2022 10:08:05 +0100
-In-reply-to: <20220726055810.15176-1-akumar@suse.de>
-Message-ID: <87tu7444wr.fsf@suse.de>
+Date: Tue, 26 Jul 2022 10:09:03 +0100
+In-reply-to: <20220725173819.9669-1-akumar@suse.de>
+Message-ID: <87pmhs44vv.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Typo fixes in comments
+Subject: Re: [LTP] [PATCH] rename13.c: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,38 +82,241 @@ Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 Avinesh Kumar <akumar@suse.de> writes:
 
+> Rewrite test using new LTP API and enable on all supporting filesystems
+>
 > Signed-off-by: Avinesh Kumar <akumar@suse.de>
 > ---
->  include/tst_fs.h        | 2 +-
->  lib/tst_fs_link_count.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  testcases/kernel/syscalls/rename/rename13.c | 206 ++++----------------
+>  1 file changed, 37 insertions(+), 169 deletions(-)
 >
-> diff --git a/include/tst_fs.h b/include/tst_fs.h
-> index bc6692bd4..26b8b353f 100644
-> --- a/include/tst_fs.h
-> +++ b/include/tst_fs.h
-> @@ -193,7 +193,7 @@ const char **tst_get_supported_fs_types(const char *const *skiplist);
->   * Returns 1 if filesystem is in skiplist 0 otherwise.
->   *
->   * @fs_type A filesystem type to lookup.
-> - * @skiplist A NULL terminated array of fileystemsytems to skip.
-> + * @skiplist A NULL terminated array of filesystems to skip.
+> diff --git a/testcases/kernel/syscalls/rename/rename13.c b/testcases/kernel/syscalls/rename/rename13.c
+> index 07a90c4d1..51490db75 100644
+> --- a/testcases/kernel/syscalls/rename/rename13.c
+> +++ b/testcases/kernel/syscalls/rename/rename13.c
+> @@ -1,186 +1,54 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - *
+>   *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + *		07/2001 Ported by Wayne Boyer
+> + *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
 >   */
->  int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist);
 >  
-> diff --git a/lib/tst_fs_link_count.c b/lib/tst_fs_link_count.c
-> index b8807236d..6a6bb52b2 100644
-> --- a/lib/tst_fs_link_count.c
-> +++ b/lib/tst_fs_link_count.c
-> @@ -119,7 +119,7 @@ int tst_fs_fill_subdirs_(void (*cleanup) (void), const char *dir)
->  		return 0;
->  	}
+> -/*
+> - * NAME
+> - *	rename13
+> - *
+> - * DESCRIPTION
+> - *	Verify rename() return successfully and performs no other action
+> - *      when "old" file and "new" file link to the same file.
+> - *
+> - * ALGORITHM
+> - *	Setup:
+> - *		Setup signal handling.
+> - *		Create temporary directory.
+> - *		Pause for SIGUSR1 if option specified.
+> - *
+> - *	Test:
+> - *		Loop if the proper options are given.
+> - *                  create the "old" file
+> - *                  link the "new" file to the "old" file
+> - *                  rename the "old" to the "new" file
+> - *                  verify the "new" file points to the original file
+> - *                  verify the "old" file exists and points to
+> - *                         the original file
+> - *	Cleanup:
+> - *		Print errno log and/or timing stats if options given
+> - *		Delete the temporary directory created.
+> - *
+> - * USAGE
+> - *	rename13 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *	where,  -c n : Run n copies concurrently.
+> - *		-f   : Turn off functionality Testing.
+> - *		-i n : Execute test n times.
+> - *		-I x : Execute test for x seconds.
+> - *		-P x : Pause for x seconds between iterations.
+> - *		-t   : Turn on syscall timing.
+> - *
+> - * HISTORY
+> - *	07/2001 Ported by Wayne Boyer
+> +/*\
+> + * [Description]
+>   *
+> - * RESTRICTIONS
+> - *	None.
+> + * Verify that rename() does nothing and returns a success status when
+> + * oldpath and newpath are existing hard links referring to the same file.
+>   */
+> -#include <sys/types.h>
+> -#include <fcntl.h>
+> -#include <sys/stat.h>
+> -#include <unistd.h>
+> -#include <errno.h>
 >  
-> -	/* for current kernel, subdir limit is not availiable for all fs */
-> +	/* for current kernel, subdir limit is not available for all fs */
->  	fs_type = tst_fs_type(cleanup, dir);
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include <stdio.h>
+> +#include "tst_test.h"
 >  
->  	whitelist_size = ARRAY_SIZE(subdir_limit_whitelist);
+> -void setup();
+> -void cleanup();
+> +#define MNT_POINT "mntpoint"
+> +#define TEMP_FILE1 MNT_POINT"/tmpfile1"
+> +#define TEMP_FILE2 MNT_POINT"/tmpfile2"
+>  
+> -char *TCID = "rename13";
+> -int TST_TOTAL = 1;
+> +static struct stat buf1, buf2;
+>  
+> -int fd;
+> -char fname[255], mname[255];
+> -struct stat buf1, buf2;
+> -dev_t olddev;
+> -ino_t oldino;
+> -
+> -int main(int ac, char **av)
+> +static void setup(void)
+>  {
+> -	int lc;
+> -
+> -	/*
+> -	 * parse standard options
+> -	 */
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	/*
+> -	 * perform global setup for test
+> -	 */
+> -	setup();
+> -
+> -	/*
+> -	 * check looping state if -i option given
+> -	 */
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		/*
+> -		 * TEST rename()works when
+> -		 * both old file and new file link to the same file
+> -		 */
+> -
+> -		/* Call rename(2) */
+> -		TEST(rename(fname, mname));
+> -
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL, "rename(%s, %s) failed", fname, mname);
+> -			continue;
+> -		}
+> -
+> -		/* check the existence of "new", and get the status */
+> -		SAFE_STAT(cleanup, mname, &buf2);
+> -
+> -		/* check the existence of "old", and get the status */
+> -		SAFE_STAT(cleanup, fname, &buf1);
+> -
+> -		/* verify the new file is the same as the original */
+> -		if (buf2.st_dev != olddev || buf2.st_ino != oldino) {
+> -			tst_resm(TFAIL,
+> -				 "rename() failed: new file does "
+> -				 "not point to the same file as old "
+> -				 "file");
+> -			continue;
+> -		}
+> -
+> -		/* verify the old file is unchanged */
+> -		if (buf1.st_dev != olddev || buf1.st_ino != oldino) {
+> -			tst_resm(TFAIL,
+> -				 "rename() failed: old file does "
+> -				 "not point to the original file");
+> -			continue;
+> -		}
+> -
+> -		tst_resm(TPASS, "functionality of rename() is correct");
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> +	SAFE_TOUCH(TEMP_FILE1, 0700, NULL);
+> +	SAFE_STAT(TEMP_FILE1, &buf1);
+> +	SAFE_LINK(TEMP_FILE1, TEMP_FILE2);
+>  }
+>  
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> +static void run(void)
+>  {
+> +	TST_EXP_PASS(rename(TEMP_FILE1, TEMP_FILE1));
+> +	if (TST_RET != 0)
+> +		return;
+>  
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	/* Create a temporary directory and make it current. */
+> -	tst_tmpdir();
+> -
+> -	sprintf(fname, "./tfile_%d", getpid());
+> -	sprintf(mname, "./rnfile_%d", getpid());
+> -
+> -	SAFE_TOUCH(cleanup, fname, 0700, NULL);
+> -
+> -	SAFE_STAT(cleanup, fname, &buf1);
+> -
+> -	/* save the dev and inode */
+> -	olddev = buf1.st_dev;
+> -	oldino = buf1.st_ino;
+> -
+> -	/* link the "new" file to the "old" file */
+> -	SAFE_LINK(cleanup, fname, mname);
+> +	SAFE_STAT(TEMP_FILE2, &buf2);
+> +	TST_EXP_EQ_LU(buf1.st_dev, buf2.st_dev);
+> +	TST_EXP_EQ_LU(buf1.st_ino, buf2.st_ino);
+>  }
+>  
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *             completion or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -
+> -	/*
+> -	 * Remove the temporary directory.
+> -	 */
+> -	tst_rmdir();
+> -
+> -}
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test_all = run,
+> +	.needs_root = 1,
+> +	.mntpoint = MNT_POINT,
+> +	.mount_device = 1,
+> +	.all_filesystems = 1,
+> +	.skip_filesystems = (const char *const[]){
+> +		"exfat",
+> +		"vfat",
+> +		NULL
+> +	},
+> +};
 > -- 
 > 2.36.1
 
