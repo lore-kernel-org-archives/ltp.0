@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1576C00144
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 22:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8604C00144
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 22:15:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8E50E3C2824
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 00:15:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0949A3C4D6B
+	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 00:15:24 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 039933C2297
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:16 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5F3903C4FC3
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:17 +0200 (CEST)
 Received: from smtp-relay-internal-1.canonical.com
  (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 60B471400747
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:15 +0200 (CEST)
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CD603601222
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:16 +0200 (CEST)
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 64EAC3F12F
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 22:14:13 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4C71C3F12F
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 22:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1658873653;
- bh=09PLHaH2fA6Q9kLpKKswDghZk0sUAqN4tNNvv4jx4Ak=;
+ s=20210705; t=1658873656;
+ bh=uGNa8QdHMz0k2ooFiK8T8MMz532JCzb7s2Y8B8pZR2s=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=IKe6a/KjRRvQ42Pqnwhav23UplFo8vZXqk3dLwsJK5q7W9Axz64L50Vk9UXy22j1t
- FS8fHQlDIXndM1qW0OOHJdUQeOT1aMnyIZz/Euaa8QUs2IGqJoNniYgHeVBHu/0n5U
- nRqiDFZdu2ct6UChXgfw/QAwDMkP/pCGdypU1iZuIUqkOBnN6i7oW+g3WG9SykIRwx
- mm+Rs3dHgYAoMuhJ4pG0YFuSUXyLs1QByNjtYfrLPV0cNizd9AuYpCdoQRQe6WPSJw
- 6JwoSn654NMWR16uzKQp1sigaY7K9k7z1XOLd1s8PZGrzHaKs4agH3YYdv1zAZ6auH
- lWFxi6IR6caHA==
-Received: by mail-pl1-f198.google.com with SMTP id
- u4-20020a170902e5c400b0016d6a70a282so4661809plf.10
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:14:13 -0700 (PDT)
+ b=s5ZC6KKcXAJU+iqSCkOQUoiQi/wzxdr8dq5Yav3mjSKpOqe5NtVYtruGpSgr2SrpE
+ 7uxYXm5xhWMLVi7d/2ZqxptNhNZbGHZi9NXzKGJf90BTpMpEiVwp1ikccfF/bD2rkU
+ rUsuXdyxdvd+6KwMUxgqfeyknOlxVQEOB2yvAeC3FB/LEGoXSWRy3vCpePuV95Umy1
+ lQZDGkq4JQUNj5FJ1P61eE/8KRbOO5DB7vYYP7KuqpR+/cRNbjPfxoGPwpi8yI5NBC
+ n8Q4XkMZIRgRYDmX4EflIISRLH/dbO/V6EPJj7/agoJpnIo69n1rASasmwZQxENS2x
+ oVYL9TtbndVVw==
+Received: by mail-pj1-f69.google.com with SMTP id
+ d21-20020a17090ae29500b001f2042edb63so6334595pjz.8
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:14:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:to:from:x-gm-message-state:from:to:cc;
- bh=09PLHaH2fA6Q9kLpKKswDghZk0sUAqN4tNNvv4jx4Ak=;
- b=FlVixIXbLNDMcNc39w+eN26uMFBo656YwpKibGIDb9F7+yV722N7/2p78ywUzihkjm
- 8DSdoFDeYpW+NSUVW4QcmsMna3lfBpN81xnbW+M9uvwvCevj+GsI6pQ8maI+kwXUtz56
- w7XSGAHqDkNTLUdVtjZsj+As4Q+7oJc9ZbfCFsnQUpUxfuA0vBfZxBsNzdcTpwIa83C6
- yj21QQQBd5xtn0UA76PTfEbZzotf1q1o4qAxoyAmsp/23x4nppPBurY1yhMpYNXRJxB2
- qBSsaZkKFvTYRqgAFwu0COkMNdzeAiaDAKRiYw61YIHjBTFiirqVTZJMo9s+OCE63tIl
- Tt0A==
-X-Gm-Message-State: AJIora82lH9lyKPJVBpWjbhTeJG/uSess9caDZg8JSeOqHNBEw5ASTp/
- atBzl3SYQzSdVccX9dWUAHfYG1sQ4pSWWHyFozPi0bneB0IxxszlUNaCzJAmUDbcLMon20pQ5y9
- 428Eg2DP5tKlHMPjYyx+5m1pq2voC
-X-Received: by 2002:a05:6a00:1708:b0:52b:c765:9688 with SMTP id
- h8-20020a056a00170800b0052bc7659688mr19036300pfc.19.1658873650858; 
- Tue, 26 Jul 2022 15:14:10 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1u8ISjrfD6mAmSua8DqapNQeNLFGS0sKGGFzKhWQTgw+BMVw7vDwwOVMl0+oglNnAspMS48iA==
-X-Received: by 2002:a05:6a00:1708:b0:52b:c765:9688 with SMTP id
- h8-20020a056a00170800b0052bc7659688mr19036277pfc.19.1658873650543; 
- Tue, 26 Jul 2022 15:14:10 -0700 (PDT)
+ bh=uGNa8QdHMz0k2ooFiK8T8MMz532JCzb7s2Y8B8pZR2s=;
+ b=So6jheHk2AVFDaFl7aXgf2dWjG5rm6sLxazXtPB0FrbRXLjH2rmJlxda7hg/9lGh+y
+ fjCxwCACAeLVsoDz8Bj0fMEX+9U4vmL+z6LMWc2ZNVXryJu7hW+S88YkyXjwFMxMmyE1
+ TtEYlIK4ePQLXnN7mK/9R9bZN2IFLMu2N0QtqfjJRH4KiRi/9r5NR0Ubz+oIgrjPGspX
+ IFjmzwFs/GtLjbtFwOHh2CpaPVOSfYRk1BpkveX4W676lCHeEi2SrfHkEclVWa75KgqZ
+ SMIkQB1JKUkJbxDc7wGgPqa1DiyVQ1lZV3Qu+oY143R9A/Y/CrTtdbKJDdrU9Sv+rAjr
+ dYhw==
+X-Gm-Message-State: AJIora+82LlJ9VnjjiewI7yKkc5rXaUrba3sdzRxXdemU3UqGZtxcan5
+ KpnkzZoTXsA99iK6RqtJAjw99yO/9CDhEKxxCXM/jfw/HXe8Eu9JZVUsUOGajg5fPk68VmiMDUD
+ OSxeTqhQwkS1YecOVik6Jgxv15Jng
+X-Received: by 2002:a05:6a00:10cf:b0:528:48c3:79e0 with SMTP id
+ d15-20020a056a0010cf00b0052848c379e0mr18713334pfu.18.1658873653536; 
+ Tue, 26 Jul 2022 15:14:13 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1teQkeMJzIHnNBKPwH/tUCuBK+rWQB7cb0Usy8KAiFrWnSVv/lQbEqzCkmH1rSYxgLjA85MbQ==
+X-Received: by 2002:a05:6a00:10cf:b0:528:48c3:79e0 with SMTP id
+ d15-20020a056a0010cf00b0052848c379e0mr18713319pfu.18.1658873653177; 
+ Tue, 26 Jul 2022 15:14:13 -0700 (PDT)
 Received: from luke-ubuntu.buildd (cpe-75-80-146-43.san.res.rr.com.
  [75.80.146.43]) by smtp.gmail.com with ESMTPSA id
- a13-20020a1709027e4d00b0015e9f45c1f4sm12069308pln.186.2022.07.26.15.14.09
+ a13-20020a1709027e4d00b0015e9f45c1f4sm12069308pln.186.2022.07.26.15.14.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Jul 2022 15:14:10 -0700 (PDT)
+ Tue, 26 Jul 2022 15:14:12 -0700 (PDT)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it, rpalethorpe@suse.de, liwang@redhat.com, pvorel@suse.cz,
  chrubis@suse.cz
-Date: Tue, 26 Jul 2022 15:13:20 -0700
-Message-Id: <c2327a9e47ece60ffb9cb5b7c7473788cdceb859.1658872195.git.luke.nowakowskikrijger@canonical.com>
+Date: Tue, 26 Jul 2022 15:13:22 -0700
+Message-Id: <4688f4cff888ae1131c5dbab7cb52a3ac93d8a6e.1658872195.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
 References: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 04/10] controllers: Update memcg_control_test to
- newer test lib and cgroup lib
+Subject: [LTP] [PATCH v6 06/10] controllers: Update memcg_stress_test to use
+ newer cgroup lib
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,250 +99,90 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update memcg_control_test to use the newer test lib and to use the newer
-cgroup lib which enables the memory v1 and v2 controller to be tested.
-
-Also updated to newer SPDX license identifier.
+Update the test to use the newer cgroup lib which enables the testing of
+both v1 and v2 memory controllers and makes the setup and cleanup much
+simpler.
 
 Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 ---
-v3->v6: None
+v2->v6: None
 
- .../controllers/memcg/control/mem_process.c   |  28 +---
- .../memcg/control/memcg_control_test.sh       | 149 +++++-------------
- 2 files changed, 39 insertions(+), 138 deletions(-)
+ .../memcg/stress/memcg_stress_test.sh         | 32 +++++++------------
+ 1 file changed, 12 insertions(+), 20 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/control/mem_process.c b/testcases/kernel/controllers/memcg/control/mem_process.c
-index 6c1b36ca6..8ecabb272 100644
---- a/testcases/kernel/controllers/memcg/control/mem_process.c
-+++ b/testcases/kernel/controllers/memcg/control/mem_process.c
-@@ -1,28 +1,6 @@
--/*****************************************************************************/
--/*                                                                           */
--/*  Copyright (c) 2010 Mohamed Naufal Basheer                                */
--/*                                                                           */
--/*  This program is free software;  you can redistribute it and/or modify    */
--/*  it under the terms of the GNU General Public License as published by     */
--/*  the Free Software Foundation; either version 2 of the License, or        */
--/*  (at your option) any later version.                                      */
--/*                                                                           */
--/*  This program is distributed in the hope that it will be useful,          */
--/*  but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
--/*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
--/*  the GNU General Public License for more details.                         */
--/*                                                                           */
--/*  You should have received a copy of the GNU General Public License        */
--/*  along with this program;  if not, write to the Free Software             */
--/*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
--/*                                                                           */
--/*  File:    mem_process.c                                                   */
--/*                                                                           */
--/*  Purpose: act as a memory hog for the memcg_control tests                 */
--/*                                                                           */
--/*  Author:  Mohamed Naufal Basheer <naufal11@gmail.com >                    */
--/*                                                                           */
--/*****************************************************************************/
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright (c) 2010 Mohamed Naufal Basheer
-+// Author: Mohamed Naufal Basheer
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index fa0df3196..d38c650ea 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -21,10 +21,16 @@ TST_TIMEOUT=2100
  
- #include <sys/types.h>
- #include <sys/mman.h>
-diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-index 4d9f1bb5d..f96ed3abb 100644
---- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-+++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-@@ -1,45 +1,14 @@
- #!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2010 Mohamed Naufal Basheer
-+# Author: Mohamed Naufal Basheer
- 
--################################################################################
--##                                                                            ##
--##   Copyright (c) 2010 Mohamed Naufal Basheer                                ##
--##                                                                            ##
--##   This program is free software;  you can redistribute it and/or modify    ##
--##   it under the terms of the GNU General Public License as published by     ##
--##   the Free Software Foundation; either version 2 of the License, or        ##
--##   (at your option) any later version.                                      ##
--##                                                                            ##
--##   This program is distributed in the hope that it will be useful,          ##
--##   but WITHOUT ANY WARRANTY;  without even the implied warranty of          ##
--##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                ##
--##   the GNU General Public License for more details.                         ##
--##                                                                            ##
--##   You should have received a copy of the GNU General Public License        ##
--##   along with this program;  if not, write to the Free Software             ##
--##   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  ##
--##                                                                            ##
--##                                                                            ##
--##   File:    memcg_control_test.sh                                           ##
--##                                                                            ##
--##   Purpose: Implement various memory controller tests                       ##
--##                                                                            ##
--##   Author:  Mohamed Naufal Basheer <naufal11@gmail.com>                     ##
--##                                                                            ##
--################################################################################
--
--if [ "x$(grep -w memory /proc/cgroups | cut -f4)" != "x1" ]; then
--	echo "WARNING:"
--	echo "Either kernel does not support memory resource controller or feature not enabled"
--	echo "Skipping all memcg_control testcases...."
--	exit 0
--fi
--
--export TCID="memcg_control"
--export TST_TOTAL=1
--export TST_COUNT=0
--
--export TMP=${TMP:-/tmp}
--cd $TMP
-+TST_TESTFUNC=test
-+TST_SETUP=setup
-+TST_CLEANUP=cleanup
-+TST_CNT=1
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
- 
- PAGE_SIZE=$(tst_getconf PAGESIZE)
- 
-@@ -47,20 +16,14 @@ TOT_MEM_LIMIT=$PAGE_SIZE
- ACTIVE_MEM_LIMIT=$PAGE_SIZE
- PROC_MEM=$((PAGE_SIZE * 2))
- 
--TST_PATH=$PWD
--STATUS_PIPE="$TMP/status_pipe"
--
--PASS=0
--FAIL=1
-+STATUS_PIPE="status_pipe"
- 
- # Check if the test process is killed on crossing boundary
- test_proc_kill()
+ setup()
  {
--	cd $TMP
- 	mem_process -m $PROC_MEM &
--	cd $OLDPWD
- 	sleep 1
--	echo $! > tasks
-+	ROD echo $! > "$test_dir/$task_list"
- 
- 	#Instruct the test process to start acquiring memory
- 	echo m > $STATUS_PIPE
-@@ -77,87 +40,47 @@ test_proc_kill()
- }
- 
- # Validate the memory usage limit imposed by the hierarchically topmost group
--testcase_1()
-+test1()
- {
--	TST_COUNT=1
--	tst_resm TINFO "Test #1: Checking if the memory usage limit imposed by the topmost group is enforced"
-+	cd $TST_TMPDIR
-+
-+	tst_res TINFO "Test #1: Checking if the memory usage limit imposed by the topmost group is enforced"
- 
--	echo "$ACTIVE_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.limit_in_bytes
--	echo "$TOT_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.memsw.limit_in_bytes
-+	ROD echo "$ACTIVE_MEM_LIMIT" > "$test_dir/$memory_limit"
-+	ROD echo "$TOT_MEM_LIMIT" > "$test_dir/$memsw_memory_limit"
- 
--	mkdir sub
--	(cd sub
- 	KILLED_CNT=0
- 	test_proc_kill
- 
- 	if [ $PROC_MEM -gt $TOT_MEM_LIMIT ] && [ $KILLED_CNT -eq 0 ]; then
--		result $FAIL "Test #1: failed"
-+		tst_res TFAIL "Test #1: failed"
- 	else
--		result $PASS "Test #1: passed"
--	fi)
--	rmdir sub
-+		tst_res TPASS "Test #1: passed"
-+	fi
- }
- 
--# Record the test results
--#
--# $1: Result of the test case, $PASS or $FAIL
--# $2: Output information
--result()
-+setup()
- {
--	RES=$1
--	INFO=$2
--
--	if [ $RES -eq $PASS ]; then
--		tst_resm TPASS "$INFO"
+-	if ! is_cgroup_subsystem_available_and_enabled "memory"; then
+-		tst_brk TCONF "Either kernel does not support Memory Resource Controller or feature not enabled"
 +	cgroup_require "memory"
 +	cgroup_version=$(cgroup_get_version "memory")
-+	test_dir=$(cgroup_get_test_path "memory")
++	test_path=$(cgroup_get_test_path "memory")
 +	task_list=$(cgroup_get_task_list "memory")
-+
 +	if [ "$cgroup_version" = "2" ]; then
-+		memory_limit="memory.max"
-+		memsw_memory_limit="memory.swap.max"
- 	else
--		: $((FAILED_CNT += 1))
--		tst_resm TFAIL "$INFO"
-+		memory_limit="memory.limit_in_bytes"
-+		memsw_memory_limit="memory.memsw.limit_in_bytes"
++		ROD echo "+memory" > "$test_path/cgroup.subtree_control"
  	fi
--}
  
--cleanup()
--{
--	if [ -e $TST_PATH/mnt ]; then
--		umount $TST_PATH/mnt 2> /dev/null
--		rm -rf $TST_PATH/mnt
--	fi
-+	tst_res TINFO "Test starts with cgroup version $cgroup_version"
- }
++	tst_res TINFO "test starts with cgroup version $cgroup_version"
++
+ 	echo 3 > /proc/sys/vm/drop_caches
+ 	sleep 2
+ 	local mem_free=`cat /proc/meminfo | grep MemFree | awk '{ print $2 }'`
+@@ -41,18 +47,7 @@ setup()
  
--do_mount()
-+cleanup()
+ cleanup()
  {
+-	if [ -e /dev/memcg ]; then
+-		EXPECT_PASS umount /dev/memcg
+-		EXPECT_PASS rmdir /dev/memcg
+-	fi
+-}
+-
+-do_mount()
+-{
 -	cleanup
 -
--	mkdir $TST_PATH/mnt
--	mount -t cgroup -o memory cgroup $TST_PATH/mnt 2> /dev/null
--	if [ $? -ne 0 ]; then
--		tst_brkm TBROK NULL "Mounting cgroup to temp dir failed"
--		rmdir $TST_PATH/mnt
--		exit 1
--	fi
+-	EXPECT_PASS mkdir /dev/memcg
+-	EXPECT_PASS mount -t cgroup -omemory memcg /dev/memcg
 +	cgroup_cleanup
  }
  
--do_mount
+ # $1 Number of cgroups
+@@ -69,13 +64,11 @@ run_stress()
+ 
+ 	tst_res TINFO "Testing $cgroups cgroups, using $mem_size MB, interval $interval"
+ 
+-	do_mount
 -
--echo 1 > mnt/memory.use_hierarchy 2> /dev/null
--
--FAILED_CNT=0
--
--TST_NUM=1
--while [ $TST_NUM -le $TST_TOTAL ]; do
--	mkdir $TST_PATH/mnt/$TST_NUM
--	(cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM)
--	rmdir $TST_PATH/mnt/$TST_NUM
--	: $((TST_NUM += 1))
--done
--
--echo 0 > mnt/memory.use_hierarchy 2> /dev/null
--
--cleanup
--
--if [ "$FAILED_CNT" -ne 0 ]; then
--	tst_resm TFAIL "memcg_control: failed"
--	exit 1
--else
--	tst_resm TPASS "memcg_control: passed"
--	exit 0
--fi
-+. cgroup_lib.sh
-+tst_run
+ 	tst_res TINFO "Starting cgroups"
+ 	for i in $(seq 0 $(($cgroups-1))); do
+-		mkdir /dev/memcg/$i 2> /dev/null
++		ROD mkdir "$test_path/$i"
+ 		memcg_process_stress $mem_size $interval &
+-		echo $! > /dev/memcg/$i/tasks
++		ROD echo $! > "$test_path/$i/$task_list"
+ 		pids="$pids $!"
+ 	done
+ 
+@@ -91,12 +84,11 @@ run_stress()
+ 	for pid in $pids; do
+ 		kill -KILL $pid 2> /dev/null
+ 		wait $pid 2> /dev/null
+-		rmdir /dev/memcg/$i 2> /dev/null
++		ROD rmdir "$test_path/$i"
+ 		i=$((i+1))
+ 	done
+ 
+ 	tst_res TPASS "Test passed"
+-	cleanup
+ }
+ 
+ test1()
 -- 
 2.34.1
 
