@@ -4,49 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 728D3CCA489
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 11:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23A46C433EF
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 11:55:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 561BF3CA0A3
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 13:53:05 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 72BB43CA00A
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 13:55:30 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C55A3C04EF
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 13:52:55 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7F1813C9427
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 13:55:19 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A3F3A600701
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 13:52:54 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8D76C375CB;
- Tue, 26 Jul 2022 11:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1658836373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7D2FC1000643
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 13:55:17 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9FD3734E49;
+ Tue, 26 Jul 2022 11:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1658836517;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4RuF7aGkBcQrRfahPYqO/o6qlOZMEFnYDHJzSbO2qxk=;
- b=j/4DY8977Z475lhyBoYQ68ru7+kdcvJg0e3qhIJVf2cxqj6BdYBpxM+Dzq/FIej/Tgt+iw
- NQXhY+S3qIB5M9dVNhYGRbbbux1Yt+yACFMFYdWwgu7H+FE7DnyisXR5LEOuTTkSMI4X3Z
- AeeKCWecrSuobpfIp8rP6V2Lt5tdpac=
-Received: from g78.suse.de (unknown [10.163.24.226])
- by relay2.suse.de (Postfix) with ESMTP id 5144F2C15D;
- Tue, 26 Jul 2022 11:52:53 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 26 Jul 2022 12:52:34 +0100
-Message-Id: <20220726115234.25310-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <Yt+RA5chfBh54kvI@pevik>
-References: <Yt+RA5chfBh54kvI@pevik>
+ bh=OxkwAw1gclasYY9egdRVBHMexlQd+gnS4nEovb4t/8g=;
+ b=vQFw3NAbgeG5RjQj9nKV0RrVnur+9L8gZYGmKJnW//eQ5hel3wNf/msPjNjZBZcwXDP55t
+ iDYGbRZTXooi4PH9JFwKZpntVr8lP9PVF3cdv4d+DTU2BPI+nxByFnQfz+cMIabiKpbnHo
+ MkJeGB/Oc6SuGgeiwU4Yw96Z/HmJbmU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1658836517;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=OxkwAw1gclasYY9egdRVBHMexlQd+gnS4nEovb4t/8g=;
+ b=EkVgIl+sXQRCIE4wl1fYVKodPb38UksgtHjrN33yS0qfZoZJstNtTjEGU5Ei5Dm/GRwtUy
+ 5PSd75GXduQvrrCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FCF413322;
+ Tue, 26 Jul 2022 11:55:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 7LDoGCXW32I3bwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 26 Jul 2022 11:55:17 +0000
+Date: Tue, 26 Jul 2022 13:55:15 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Hongchen Zhang <zhanghongchen@loongson.cn>
+Message-ID: <Yt/WI0ABJpMfXLjk@pevik>
+References: <1658386911-890-1-git-send-email-zhanghongchen@loongson.cn>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1658386911-890-1-git-send-email-zhanghongchen@loongson.cn>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tools: Check headers with checkpatch.pl
+Subject: Re: [LTP] [PATCH v1] float: convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,78 +76,104 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-checkpatch.pl doesn't load included headers so they must be passed to
-it specifically. This change automatically includes headers from the
-current directory. Manual intervention is still required if a test
-author changes a header located elsewhere. However you can now write
-'make check-header.h', once in the correct directory.
+Hi Hongchen,
 
-Note that our Sparse based tool (amongst others) loads headers and
-checks at least some of the content.
+thank you for your effort, but much more needs to be done.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: Petr Vorel <pvorel@suse.cz>
----
- include/mk/env_post.mk             | 1 +
- include/mk/generic_leaf_target.inc | 2 +-
- include/mk/rules.mk                | 9 +++++++++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+Code in whole project (all sources in testcases/misc/math/float) is very old and
+IMHO weird. I still wonder why testing float / math functions requires creating
+files, using pthread (in thread_code.c), ... It'd be worth to have look whether
+current approach is really useful before spending time to rewrite it.
 
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index dc4df41d3..a00f31b08 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -92,6 +92,7 @@ endif
- 
- CHECK_TARGETS			?= $(addprefix check-,$(notdir $(patsubst %.c,%,$(sort $(wildcard $(abs_srcdir)/*.c)))))
- CHECK_TARGETS			:= $(filter-out $(addprefix check-, $(FILTER_OUT_MAKE_TARGETS)), $(CHECK_TARGETS))
-+CHECK_HEADER_TARGETS		?= $(addprefix check-,$(notdir $(sort $(wildcard $(abs_srcdir)/*.h))))
- CHECK				?= $(abs_top_srcdir)/tools/sparse/sparse-ltp
- CHECK_NOFLAGS			?= $(abs_top_srcdir)/scripts/checkpatch.pl -f --no-tree --terse --no-summary --ignore CONST_STRUCT,VOLATILE,SPLIT_STRING
- SHELL_CHECK			?= $(abs_top_srcdir)/scripts/checkbashisms.pl --force --extra
-diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
-index 33e9c9ea0..565a282bb 100644
---- a/include/mk/generic_leaf_target.inc
-+++ b/include/mk/generic_leaf_target.inc
-@@ -110,6 +110,6 @@ $(INSTALL_FILES): | $(INSTALL_DEPS)
- install: $(INSTALL_FILES)
- 
- $(CHECK_TARGETS): | $(CHECK_DEPS)
--check: $(CHECK_TARGETS) $(SHELL_CHECK_TARGETS)
-+check: $(CHECK_HEADER_TARGETS) $(CHECK_TARGETS) $(SHELL_CHECK_TARGETS)
- 
- # vim: syntax=make
-diff --git a/include/mk/rules.mk b/include/mk/rules.mk
-index 32d8d05a7..517863c04 100644
---- a/include/mk/rules.mk
-+++ b/include/mk/rules.mk
-@@ -57,6 +57,15 @@ else
- 	@-$(CHECK) $(CHECK_FLAGS) $(CPPFLAGS) $(CFLAGS) $<
- endif
- 
-+.PHONY: $(CHECK_HEADER_TARGETS)
-+$(CHECK_HEADER_TARGETS): check-%.h: %.h
-+ifdef VERBOSE
-+	-$(CHECK_NOFLAGS) $<
-+else
-+	@echo CHECK $(target_rel_dir)$<
-+	@-$(CHECK_NOFLAGS) $<
-+endif
-+
- .PHONY: $(SHELL_CHECK_TARGETS)
- $(SHELL_CHECK_TARGETS): check-%.sh: %.sh
- ifdef VERBOSE
--- 
-2.36.1
+Some notes to your rewrite. main.c and thread_code.c should be turned into
+header file (e.g. float.h) with functions being static inline. Because
+including C files is no-go.
 
+>  testcases/misc/math/float/main.c | 446 +++++++++------------------------------
+...
+> -const int nb_func = NB_FUNC;
+> +static char *Dopt, *lopt, *nopt, *vopt;
+> +static struct tst_option opt[] = {
+> +	{"D:", &Dopt,   "DATA directory's absolute path"},
+IMHO this should not be needed, everything should be in test temporary
+directory, there is no need to put it elsewhere.
+> +	{"l:", &lopt, "set number of loops per function"},
+> +	{"n:", &nopt, "set number of threads per function"},
+> +	{"v", &vopt, "debug level"},
+I'd get rid of the debugging (important things should be always printed).
+
+> +	{}
+> +};
+
+>  int generate(char *datadir, char *bin_path)
+>  {
+>  	char *cmdline;
+>  	char *fmt = "cd %s; %s/%s %s";
+
+> -	cmdline = malloc(2 * strlen(bin_path) + strlen(datadir) + strlen(GENERATOR) + strlen(fmt));
+> +	cmdline = malloc(2 * strlen(bin_path) + strlen(datadir) +
+> +				strlen(GENERATOR) + strlen(fmt));
+>  	if (cmdline == NULL)
+>  		return (1);
+There is SAFE_MALLOC(), no need to check for NULL.
+
+>  	sprintf(cmdline, fmt, datadir, bin_path, GENERATOR, bin_path);
+> @@ -93,345 +55,137 @@ int generate(char *datadir, char *bin_path)
+>  	return (0);
+
+Also code style suggests it's very old. brackets around integer in return is
+quite strange (i.e. "return (0);").
+>  }
+
+
+>  	ltproot = getenv("LTPROOT");
+>  	if (ltproot == NULL || strlen(ltproot) == 0) {
+> -		tst_brkm(TBROK, NULL,
+> +		tst_brk(TBROK,
+>  			 "You must set $LTPROOT before executing this test");
+
+generate() function which runs binary should be replaced with tst_cmd().
+IMHO we don't need to check for $LTPROOT, because we expect PATH to be set
+correctly.
+
+>  	}
+>  	bin_path = malloc(strlen(ltproot) + 16);
+>  	if (bin_path == NULL) {
+SAFE_MALLOC() (in many places)
+> -		tst_brkm(TBROK | TERRNO, NULL, "malloc failed");
+> +		tst_brk(TBROK, "malloc failed");
+>  	}
+...
+
+> +void run(unsigned int n)
+> +{
+> +	void *exit_value;
+> +	pthread_attr_t newattr;
+> +	size_t stacksize = 2093056;
+I'm not sure if this is portable for all archs and I'd use #define at the top.
+
+...
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.setup = setup,
+> +	.options = opt,
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.tcnt = NB_FUNC,
+> +};
+
+struct tst_test test should be defined in float*.c tests, not in this
+common file included by tests.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
