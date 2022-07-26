@@ -4,80 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B312C00144
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 22:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A9E6C00144
+	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 22:14:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14C703C1D21
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 00:14:21 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 240D33C1C3B
+	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 00:14:33 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F1543C0EF2
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:08 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7B52D3C1ADE
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:09 +0200 (CEST)
 Received: from smtp-relay-internal-0.canonical.com
  (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3F1F01A003F1
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:07 +0200 (CEST)
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AE6AC10005B4
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:08 +0200 (CEST)
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 170603F143
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 22:14:07 +0000 (UTC)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 37DAF3F14B
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 22:14:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1658873647;
- bh=/4QBePYw+HB6dnuTkaiGoKS1ntvZ+0QaYpzbVg81Dp8=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=YchYvcRF+V2dzpcHGyAbBv4wSDBjZ4snivedzQ4CZIxoVFVl6A+y8VuhoWyYySffx
- XPaiiO+F5q4MN9WjrZl2qbWDFjjkI/g1d6Ifv3HdCW8os/VfJ4fQzhgmj4260MFGmx
- mO1qWPje8FCE04AfzbvoKztF5XzWUA3mQIs+/WhZN5Axsam8xXjWwwjR5grMYuOXZb
- APWRpjQOYpyYQkyF4/SIzeKUwmov3nSOvE58Wps49R+nDnC/pUWc75cMjXqcHegvhb
- A30g1BKW2qKYySdyvI2tI+EPvxKMgB7ocw6X+6GKoBkgWozvDSWuYIfw6wS181tPck
- rT7cU0KPJ4U5Q==
-Received: by mail-pj1-f70.google.com with SMTP id
- g8-20020a17090a3c8800b001f2103a43d9so124326pjc.6
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:14:07 -0700 (PDT)
+ s=20210705; t=1658873648;
+ bh=sH5K3oAQ/567wS6owWEwDYhTAKYaPG5lAbHsrg05TQ4=;
+ h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=guYnTTpnW+OFmFz0EBuMYVoiBDnwNe/RDpkVGJDSFD8YyZw4kyLHVBrwxAdyNOHCC
+ z81yJC6+OcVmVu8dabkm8T+XTTxrDS3ppq+4PqTfXEvDobVpDC6PW/yfpa5A366PBz
+ 5TKBDDfKzYXdSjnGTOanijDmWteV75s+XHWxtwBxAaptqTqlX/dtTzI+jNWZXhF9C7
+ nd9J5iKxYbW5WpDBn4wFWY3Uo7FdV2V3rvMxcrzYO3Z/3voOM3HIMFpSo5KENrLEtT
+ hLEMEhl1kej08NngfcjC0by+LpRGeR7yhEOEtp31t/GxmsrnIzDBT9oEw7wlUFZWRU
+ alF6Z7OyCM3rQ==
+Received: by mail-pl1-f197.google.com with SMTP id
+ c15-20020a170902d48f00b0016c01db365cso9100605plg.20
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:14:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc;
- bh=/4QBePYw+HB6dnuTkaiGoKS1ntvZ+0QaYpzbVg81Dp8=;
- b=m0yvAZOOQy0v4FsiR8PobDWbtqUiSq3VMQdRcX/rgIwLePtvZ5XaTfC6XBax2Mkt+C
- I5NUleMehjuMNcyxKVMDoRWWV++O0mIvRMfUSyi1NLnZz7moBj1/U1QfoVYt6RSPNwH6
- brjhBQRTPhLrpHqWJapycrRDErrHX5VUQ2hziLnDseK4LgWj9v7wwKAb8LWdtvQDOXzz
- TD9odh8/oqVrSOIrlkBYcUzBZCvZkupO/IzR+my5fwbLHdOUP9j2xicnCA7Nqnc+Xkvw
- MGjpL9MMp6+XA9pz4CtJzI+mURjEHaY5iOaGQD0ItXQWuNPcJ5CVqtPpI+ytz6u7qCo6
- Djlw==
-X-Gm-Message-State: AJIora8EY48BP2gYvMcp0A0/vTF1Pkusw69AcuoSP81521etpZ8Ov8I+
- ghxtcQQtc00cMrtYHkuRSO/imAz3YJpLf4Le6NDmg5nNzNDDOkEp3XBXGUsWLJG6rh/9IBrTTCy
- aE6KU2vhnxmbHplA8VCkCmoVqehGu
-X-Received: by 2002:a63:fc14:0:b0:419:d6c0:c79e with SMTP id
- j20-20020a63fc14000000b00419d6c0c79emr16465590pgi.493.1658873645440; 
- Tue, 26 Jul 2022 15:14:05 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1u92DhiTAgN9DdPQ4ZHavVrsKpz94G5MBb7r8UiZ3B1x/3WufqnV2vttpx3ntKu5+RH49OkhQ==
-X-Received: by 2002:a63:fc14:0:b0:419:d6c0:c79e with SMTP id
- j20-20020a63fc14000000b00419d6c0c79emr16465573pgi.493.1658873645133; 
- Tue, 26 Jul 2022 15:14:05 -0700 (PDT)
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:to:from:x-gm-message-state:from:to:cc;
+ bh=sH5K3oAQ/567wS6owWEwDYhTAKYaPG5lAbHsrg05TQ4=;
+ b=EiXyGJGGjLk92vJvEGrSYFXtezwVQJSPodhq5g6utTmBIvG9Xhj7BYVdvkduz5d6Vo
+ +8+gNgV+IlpTFDoRS4Kw/8JRAu+v2OxAfIatDSXQ65tvT4aaCuAITJ5S2VSsCpuNHeI5
+ Dq9OBmvmqzCA9GPFdXz/T1ZM/zk0mLNESZjCx2wn9yxwRTJPDQFHmP8O/XFMYCE2X7kL
+ s55tYSBUWbb3nmDyBm9ZeaDE0kxjhimEp6rdWNMVY+2xRJRmObMgt42GKjwGn7awMEGJ
+ YB0CQc4Ze3BFjQvXBXWnjib4Dbc8G0mOu3P4V465KA6seRChyeSwTPvlS7EIjOhBKJ22
+ CRAA==
+X-Gm-Message-State: AJIora9Y/RZM2qNTjTFR/qgRmhaer7CuBse3MyuybmT2y0re8+9sIq+j
+ usDevn4OAuvK+53chlgMXn/wrIVYgW7w2oVAd6TfLHpWUWueI3rdbiXNhrWGuZjduXGtay7Ze6n
+ QrSLT4N4nNbBff29nQmM+CWelND70
+X-Received: by 2002:a63:5504:0:b0:416:2152:431a with SMTP id
+ j4-20020a635504000000b004162152431amr16676416pgb.97.1658873646630; 
+ Tue, 26 Jul 2022 15:14:06 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1unCVwx2L4RKnno2WJUZK+jd6h7rZe11nSnOW/xqbAt5hORv5rRyg6qGvwMADSGuf2ouphH5A==
+X-Received: by 2002:a63:5504:0:b0:416:2152:431a with SMTP id
+ j4-20020a635504000000b004162152431amr16676407pgb.97.1658873646408; 
+ Tue, 26 Jul 2022 15:14:06 -0700 (PDT)
 Received: from luke-ubuntu.buildd (cpe-75-80-146-43.san.res.rr.com.
  [75.80.146.43]) by smtp.gmail.com with ESMTPSA id
- a13-20020a1709027e4d00b0015e9f45c1f4sm12069308pln.186.2022.07.26.15.14.04
+ a13-20020a1709027e4d00b0015e9f45c1f4sm12069308pln.186.2022.07.26.15.14.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Jul 2022 15:14:04 -0700 (PDT)
+ Tue, 26 Jul 2022 15:14:05 -0700 (PDT)
 From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
 To: ltp@lists.linux.it, rpalethorpe@suse.de, liwang@redhat.com, pvorel@suse.cz,
  chrubis@suse.cz
-Date: Tue, 26 Jul 2022 15:13:16 -0700
-Message-Id: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
+Date: Tue, 26 Jul 2022 15:13:17 -0700
+Message-Id: <5e6668a49ad97716816dba94b024970e7b60b12c.1658872195.git.luke.nowakowskikrijger@canonical.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
+References: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 00/10] Expand cgroup_lib shell library
+Subject: [LTP] [PATCH v6 01/10] testcases/lib: Implement tst_cgctl binary
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,47 +98,127 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update the remaining tests and shell library expansion after review.
+Implement a binary utility that creates an interface to make calls to
+the cgroup C API.
 
-Rebased off of accepted tst_cgroup changes in previous patchset version.
+This will effectively allow shell scripts to make calls to the cgroup C
+api.
 
-Luke Nowakowski-Krijger (10):
-  testcases/lib: Implement tst_cgctl binary
-  controllers: Expand cgroup_lib shell library
-  controllers: Update cgroup_fj_* to use newer cgroup lib and test lib
-  controllers: Update memcg_control_test to newer test lib and cgroup
-    lib
-  controllers: Update memcg/regression/* to new test and cgroup lib
-  controllers: Update memcg_stress_test to use newer cgroup lib
-  controllers: update memcg/functional to use newer cgroup lib
-  controllers: Update pids.sh to use newer cgroup lib
-  controllers: update cpuset_regression_test.sh to use newer cgroup lib
-  controllers: update cgroup_regression_test to use newer cgroup lib
+Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+---
+v2->v6: Added cgctl_usage() and replaced define string usage with
+	function.
 
- .../cgroup/cgroup_regression_test.sh          |  31 +--
- .../controllers/cgroup_fj/cgroup_fj_common.sh | 115 +++-------
- .../cgroup_fj/cgroup_fj_function.sh           | 173 ++++++++-------
- .../controllers/cgroup_fj/cgroup_fj_proc.c    |  24 +--
- .../controllers/cgroup_fj/cgroup_fj_stress.sh | 171 ++++++++-------
- testcases/kernel/controllers/cgroup_lib.sh    | 137 ++++++++++--
- .../cpuset/cpuset_regression_test.sh          |  26 +--
- .../controllers/memcg/control/mem_process.c   |  28 +--
- .../memcg/control/memcg_control_test.sh       | 149 ++++---------
- .../memcg/functional/memcg_force_empty.sh     |   2 +-
- .../controllers/memcg/functional/memcg_lib.sh |  54 ++---
- .../memcg/regression/memcg_regression_test.sh | 203 +++++++++---------
- .../memcg/regression/memcg_test_1.c           |  40 ++--
- .../memcg/regression/memcg_test_2.c           |  24 +--
- .../memcg/regression/memcg_test_3.c           |  37 ++--
- .../memcg/regression/memcg_test_4.c           |  24 +--
- .../memcg/regression/memcg_test_4.sh          |  50 ++---
- .../memcg/stress/memcg_stress_test.sh         |  32 ++-
- testcases/kernel/controllers/pids/pids.sh     |  67 +-----
- testcases/lib/Makefile                        |   2 +-
- testcases/lib/tst_cgctl.c                     |  87 ++++++++
- 21 files changed, 690 insertions(+), 786 deletions(-)
+ testcases/lib/Makefile    |  2 +-
+ testcases/lib/tst_cgctl.c | 87 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+), 1 deletion(-)
  create mode 100644 testcases/lib/tst_cgctl.c
 
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index f2de0c832..f4f8c8524 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -12,6 +12,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+ 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
+ 			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
+-			   tst_check_kconfigs
++			   tst_check_kconfigs tst_cgctl
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_cgctl.c b/testcases/lib/tst_cgctl.c
+new file mode 100644
+index 000000000..8ef615a56
+--- /dev/null
++++ b/testcases/lib/tst_cgctl.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 Canonical Ltd.
++ */
++
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <unistd.h>
++#include "tst_cgroup.h"
++
++static void cgctl_usage(void)
++{
++	fprintf(stderr, "Usage: tst_cgctl require [controller] [test_pid]\n\tcleanup [config (output of tst_cg_print_config)]\n\tprint\n\t help\n");
++}
++
++static int cgctl_require(const char *ctrl, int test_pid)
++{
++	struct tst_cg_opts opts;
++
++	memset(&opts, 0, sizeof(opts));
++	opts.test_pid = test_pid;
++
++	tst_cg_require(ctrl, &opts);
++	tst_cg_print_config();
++
++	return 0;
++}
++
++static int cgctl_cleanup(const char *const config)
++{
++	tst_cg_scan();
++	tst_cg_load_config(config);
++	tst_cg_cleanup();
++
++	return 0;
++}
++
++static int cgctl_print(void)
++{
++	tst_cg_scan();
++	tst_cg_print_config();
++
++	return 0;
++}
++
++int main(int argc, char *argv[])
++{
++	int test_pid;
++	const char *cmd_name = argv[1];
++
++	if (argc < 2)
++		goto error;
++
++	if (!strcmp(cmd_name, "require")) {
++		if (argc != 4)
++			goto arg_num_error;
++		test_pid = atoi(argv[3]);
++		if (!test_pid) {
++			fprintf(stderr, "tst_cgctl: Invalid test_pid '%s' given\n",
++				argv[3]);
++			goto error;
++		}
++		return cgctl_require(argv[2], test_pid);
++	} else if (!strcmp(cmd_name, "cleanup")) {
++		if (argc != 3)
++			goto arg_num_error;
++		return cgctl_cleanup(argv[2]);
++	} else if (!strcmp(cmd_name, "print")) {
++		return cgctl_print();
++	} else if (!strcmp(cmd_name, "help")) {
++		cgctl_usage();
++		return 0;
++	}
++
++	fprintf(stderr, "tst_cgctl: Unknown command '%s' given\n", cmd_name);
++	goto error;
++
++arg_num_error:
++	fprintf(stderr,
++		"tst_cgctl: Invalid number of arguments given for command '%s'\n",
++		cmd_name);
++error:
++	cgctl_usage();
++	return 1;
++}
 -- 
 2.34.1
 
