@@ -4,85 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CC0CC00144
-	for <ltp@archiver.kernel.org>; Tue, 26 Jul 2022 22:16:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E179FC00144
+	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 01:36:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89D5B3C6651
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 00:16:22 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1D2933C1ADE
+	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 03:36:00 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AFC483C2A24
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:23 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2955260087B
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 00:14:22 +0200 (CEST)
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4BCB73F130
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 22:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1658873662;
- bh=Vgl3NeWSSm6MUdSzmMkpfd0Wy0WkA4Rz98gnPodEW0I=;
- h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
- MIME-Version;
- b=GDvBZtcrT+gcpOZja2mpgm/118IppKH6pXHhibpVu+4Xp8OL52UGXPd1rtWGlOfI7
- yMVsuD6FVnjqsHdmv1e629fV8it6DcVS6Axqt4XwRBAfMrjq4fZKrt4mFswMyHsOCL
- GvdD/hPFk+acFl1vC8IBfsA7RWckjAdJ6k5yuymk3K4Haiv5vhjnfBHGzCM7isjuzP
- OPSnPR1sN4pUYH9SgHmEEjhaJy+6JfwS8YKOwrVC13tmBi+Biw5Bmqk9zOFPWM0kke
- B4qQFmGRzWxBVZe3NrlB84g2BukDNUJ1i897J6MGV9gtRE6hRjL+m+HhM5Tt/4vX5G
- I3r/muRlpr6oA==
-Received: by mail-pf1-f197.google.com with SMTP id
- d18-20020aa78692000000b0052abaa9a6bbso5108564pfo.2
- for <ltp@lists.linux.it>; Tue, 26 Jul 2022 15:14:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-message-state:from:to:cc;
- bh=Vgl3NeWSSm6MUdSzmMkpfd0Wy0WkA4Rz98gnPodEW0I=;
- b=Al8uKHcVWZQORPtNgnqb2SGf8ABvV19fOChRNf3PamG258DVY3CFwBCsH7USMXcrE2
- 8fnqtLsSaioYkrk4LLvPmTb8tpjYKkiDKOAUipfPBwiNlD0MTCNXp+MRIX4kRUKazo96
- bnqSVyBfUYPoOEAb2otaNeFMmDlTJihXHNIgmBAa1keeQAFjKylAx15yn3WwjCSsIfIM
- mTx2M1W/LFlboLSWn5Kgy1pwMkoP1fef0HEtTRI9fzSg3vG+T2W37v1V62DJA4fN5nX6
- 78RFfflqCfJbsKGPp9Beh3Vd59sSxf5XT3EMBQkkljLBB9JwcUlBuR7sf2JtHW2EU5aW
- PNZw==
-X-Gm-Message-State: AJIora8g3/Dovl49bmYkoSKIAHKro0YjYE+3uPE1IesUFTa5zmJaGByb
- 0LreqtSEzQadXcKgPqTRvNaHs6aLINjZL5gVE+rx/F6DXG7iqLOEK0CZzaovQ84nDTGHIhoME8T
- BZG91pqZQ9YSDynQIoNHYKJdW0yNa
-X-Received: by 2002:a17:90b:33cd:b0:1f0:3655:17a8 with SMTP id
- lk13-20020a17090b33cd00b001f0365517a8mr1125995pjb.33.1658873659242; 
- Tue, 26 Jul 2022 15:14:19 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sUAmlBQKsXaj7SSUjadbiMy+FzHrCG+fvq/wSgN4y42U6Gry94rij80ms6TRFxItlshgO5Zw==
-X-Received: by 2002:a17:90b:33cd:b0:1f0:3655:17a8 with SMTP id
- lk13-20020a17090b33cd00b001f0365517a8mr1125977pjb.33.1658873658964; 
- Tue, 26 Jul 2022 15:14:18 -0700 (PDT)
-Received: from luke-ubuntu.buildd (cpe-75-80-146-43.san.res.rr.com.
- [75.80.146.43]) by smtp.gmail.com with ESMTPSA id
- a13-20020a1709027e4d00b0015e9f45c1f4sm12069308pln.186.2022.07.26.15.14.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Jul 2022 15:14:18 -0700 (PDT)
-From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-To: ltp@lists.linux.it, rpalethorpe@suse.de, liwang@redhat.com, pvorel@suse.cz,
- chrubis@suse.cz
-Date: Tue, 26 Jul 2022 15:13:26 -0700
-Message-Id: <cb4a8316623f57851192fdc301de6867967cbea2.1658872195.git.luke.nowakowskikrijger@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
-References: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
+ by picard.linux.it (Postfix) with ESMTPS id 102CC3C0F97
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 03:35:47 +0200 (CEST)
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 35DFE2000D9
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 03:35:43 +0200 (CEST)
+Received: from [10.180.13.185] (unknown [10.180.13.185])
+ by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxWeBsluBiQh87AA--.37557S3; 
+ Wed, 27 Jul 2022 09:35:40 +0800 (CST)
+To: Petr Vorel <pvorel@suse.cz>
+References: <1658386911-890-1-git-send-email-zhanghongchen@loongson.cn>
+ <Yt/WI0ABJpMfXLjk@pevik>
+From: Hongchen Zhang <zhanghongchen@loongson.cn>
+Message-ID: <c380d186-e0b8-9613-3c5f-6eb21bc6e03c@loongson.cn>
+Date: Wed, 27 Jul 2022 09:35:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <Yt/WI0ABJpMfXLjk@pevik>
+Content-Language: en-US
+X-CM-TRANSID: AQAAf9AxWeBsluBiQh87AA--.37557S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr4rWw1UXw1UWrW8ArWxCrg_yoW5CFyrpa
+ 9xt3W2yr48Jr42yrs7ZayDZ34fZ3y8GF47uws0qay8ZFs3u3s3KF4vg3yF9ryUurWIkr4r
+ Zw40yr9xGFWDAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+ 0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+ A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+ jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+ vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+ FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+ 0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxv
+ r21lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+ 0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+ XVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+ CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+ 67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+ 9x07bOoGdUUUUU=
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 10/10] controllers: update cgroup_regression_test
- to use newer cgroup lib
+Subject: Re: [LTP] [PATCH v1] float: convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,96 +64,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The older function in the cgroup lib 'get_cgroup_mountpoint' has been
-removed, so instead replace it with its old functionaility to get
-mountpoint.
-
-Also use the newer cgroup lib require operation to mount and cleanup a
-cpu controller.
-
-Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
----
-v3->v6: None
-
- .../cgroup/cgroup_regression_test.sh          | 31 ++++++-------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index 69b51773c..bfa9097ec 100755
---- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -168,17 +168,8 @@ test3()
- 		return
- 	fi
- 
--	cpu_subsys_path=$(get_cgroup_mountpoint "cpu")
--
--	# Run the test for 30 secs
--	if [ -z "$cpu_subsys_path" ]; then
--		mount -t cgroup -o cpu xxx cgroup/
--		if [ $? -ne 0 ]; then
--			tst_res TFAIL "Failed to mount cpu subsys"
--			return
--		fi
--		cpu_subsys_path=cgroup
--	fi
-+	cgroup_require "cpu"
-+	cpu_subsys_path=$(cgroup_get_mountpoint "cpu")
- 
- 	cgroup_regression_3_1.sh $cpu_subsys_path &
- 	pid1=$!
-@@ -191,7 +182,7 @@ test3()
- 	wait $pid2 2>/dev/null
- 
- 	rmdir $cpu_subsys_path/0 2> /dev/null
--	tst_umount $PWD/cgroup
-+	cgroup_cleanup
- 	check_kernel_bug
- }
- 
-@@ -303,21 +294,15 @@ test6()
- test_7_1()
- {
- 	local subsys=$1
-+	local subsys_path
- 	# we should be careful to select a $subsys_path which is related to
- 	# cgroup only: if cgroup debugging is enabled a 'debug' $subsys
- 	# could be passed here as params and this will lead to ambiguity and
- 	# errors when grepping simply for 'debug' in /proc/mounts since we'll
- 	# find also /sys/kernel/debug. Helper takes care of this.
--	local subsys_path=$(get_cgroup_mountpoint $subsys)
--
--	if [ -z "$subsys_path" ]; then
--		mount -t cgroup -o $subsys xxx cgroup/
--		if [ $? -ne 0 ]; then
--			tst_res TFAIL "failed to mount $subsys"
--			return
--		fi
--		subsys_path=cgroup
--	fi
-+
-+	cgroup_require "$subsys"
-+	subsys_path=$(cgroup_get_mountpoint "$subsys")
- 
- 	mkdir $subsys_path/0
- 	sleep 100 < $subsys_path/0 &	# add refcnt to this dir
-@@ -332,6 +317,8 @@ test_7_1()
- 		wait $! 2>/dev/null
- 		umount cgroup/
- 	fi
-+
-+	cgroup_cleanup
- }
- 
- test_7_2()
--- 
-2.34.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gMjAyMi83LzI2IOS4i+WNiDc6NTUsIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgSG9uZ2NoZW4s
+Cj4gCj4gdGhhbmsgeW91IGZvciB5b3VyIGVmZm9ydCwgYnV0IG11Y2ggbW9yZSBuZWVkcyB0byBi
+ZSBkb25lLgo+IAo+IENvZGUgaW4gd2hvbGUgcHJvamVjdCAoYWxsIHNvdXJjZXMgaW4gdGVzdGNh
+c2VzL21pc2MvbWF0aC9mbG9hdCkgaXMgdmVyeSBvbGQgYW5kCj4gSU1ITyB3ZWlyZC4gSSBzdGls
+bCB3b25kZXIgd2h5IHRlc3RpbmcgZmxvYXQgLyBtYXRoIGZ1bmN0aW9ucyByZXF1aXJlcyBjcmVh
+dGluZwo+IGZpbGVzLCB1c2luZyBwdGhyZWFkIChpbiB0aHJlYWRfY29kZS5jKSwgLi4uIEl0J2Qg
+YmUgd29ydGggdG8gaGF2ZSBsb29rIHdoZXRoZXIKPiBjdXJyZW50IGFwcHJvYWNoIGlzIHJlYWxs
+eSB1c2VmdWwgYmVmb3JlIHNwZW5kaW5nIHRpbWUgdG8gcmV3cml0ZSBpdC4KPiAKPiBTb21lIG5v
+dGVzIHRvIHlvdXIgcmV3cml0ZS4gbWFpbi5jIGFuZCB0aHJlYWRfY29kZS5jIHNob3VsZCBiZSB0
+dXJuZWQgaW50bwo+IGhlYWRlciBmaWxlIChlLmcuIGZsb2F0LmgpIHdpdGggZnVuY3Rpb25zIGJl
+aW5nIHN0YXRpYyBpbmxpbmUuIEJlY2F1c2UKPiBpbmNsdWRpbmcgQyBmaWxlcyBpcyBuby1nby4K
+PiAKPj4gICB0ZXN0Y2FzZXMvbWlzYy9tYXRoL2Zsb2F0L21haW4uYyB8IDQ0NiArKysrKysrKyst
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAuLi4KPj4gLWNvbnN0IGludCBuYl9mdW5j
+ID0gTkJfRlVOQzsKPj4gK3N0YXRpYyBjaGFyICpEb3B0LCAqbG9wdCwgKm5vcHQsICp2b3B0Owo+
+PiArc3RhdGljIHN0cnVjdCB0c3Rfb3B0aW9uIG9wdFtdID0gewo+PiArCXsiRDoiLCAmRG9wdCwg
+ICAiREFUQSBkaXJlY3RvcnkncyBhYnNvbHV0ZSBwYXRoIn0sCj4gSU1ITyB0aGlzIHNob3VsZCBu
+b3QgYmUgbmVlZGVkLCBldmVyeXRoaW5nIHNob3VsZCBiZSBpbiB0ZXN0IHRlbXBvcmFyeQo+IGRp
+cmVjdG9yeSwgdGhlcmUgaXMgbm8gbmVlZCB0byBwdXQgaXQgZWxzZXdoZXJlLgo+PiArCXsibDoi
+LCAmbG9wdCwgInNldCBudW1iZXIgb2YgbG9vcHMgcGVyIGZ1bmN0aW9uIn0sCj4+ICsJeyJuOiIs
+ICZub3B0LCAic2V0IG51bWJlciBvZiB0aHJlYWRzIHBlciBmdW5jdGlvbiJ9LAo+PiArCXsidiIs
+ICZ2b3B0LCAiZGVidWcgbGV2ZWwifSwKPiBJJ2QgZ2V0IHJpZCBvZiB0aGUgZGVidWdnaW5nIChp
+bXBvcnRhbnQgdGhpbmdzIHNob3VsZCBiZSBhbHdheXMgcHJpbnRlZCkuCj4gCj4+ICsJe30KPj4g
+K307Cj4gCj4+ICAgaW50IGdlbmVyYXRlKGNoYXIgKmRhdGFkaXIsIGNoYXIgKmJpbl9wYXRoKQo+
+PiAgIHsKPj4gICAJY2hhciAqY21kbGluZTsKPj4gICAJY2hhciAqZm10ID0gImNkICVzOyAlcy8l
+cyAlcyI7Cj4gCj4+IC0JY21kbGluZSA9IG1hbGxvYygyICogc3RybGVuKGJpbl9wYXRoKSArIHN0
+cmxlbihkYXRhZGlyKSArIHN0cmxlbihHRU5FUkFUT1IpICsgc3RybGVuKGZtdCkpOwo+PiArCWNt
+ZGxpbmUgPSBtYWxsb2MoMiAqIHN0cmxlbihiaW5fcGF0aCkgKyBzdHJsZW4oZGF0YWRpcikgKwo+
+PiArCQkJCXN0cmxlbihHRU5FUkFUT1IpICsgc3RybGVuKGZtdCkpOwo+PiAgIAlpZiAoY21kbGlu
+ZSA9PSBOVUxMKQo+PiAgIAkJcmV0dXJuICgxKTsKPiBUaGVyZSBpcyBTQUZFX01BTExPQygpLCBu
+byBuZWVkIHRvIGNoZWNrIGZvciBOVUxMLgo+IAo+PiAgIAlzcHJpbnRmKGNtZGxpbmUsIGZtdCwg
+ZGF0YWRpciwgYmluX3BhdGgsIEdFTkVSQVRPUiwgYmluX3BhdGgpOwo+PiBAQCAtOTMsMzQ1ICs1
+NSwxMzcgQEAgaW50IGdlbmVyYXRlKGNoYXIgKmRhdGFkaXIsIGNoYXIgKmJpbl9wYXRoKQo+PiAg
+IAlyZXR1cm4gKDApOwo+IAo+IEFsc28gY29kZSBzdHlsZSBzdWdnZXN0cyBpdCdzIHZlcnkgb2xk
+LiBicmFja2V0cyBhcm91bmQgaW50ZWdlciBpbiByZXR1cm4gaXMKPiBxdWl0ZSBzdHJhbmdlIChp
+LmUuICJyZXR1cm4gKDApOyIpLgo+PiAgIH0KPiAKPiAKPj4gICAJbHRwcm9vdCA9IGdldGVudigi
+TFRQUk9PVCIpOwo+PiAgIAlpZiAobHRwcm9vdCA9PSBOVUxMIHx8IHN0cmxlbihsdHByb290KSA9
+PSAwKSB7Cj4+IC0JCXRzdF9icmttKFRCUk9LLCBOVUxMLAo+PiArCQl0c3RfYnJrKFRCUk9LLAo+
+PiAgIAkJCSAiWW91IG11c3Qgc2V0ICRMVFBST09UIGJlZm9yZSBleGVjdXRpbmcgdGhpcyB0ZXN0
+Iik7Cj4gCj4gZ2VuZXJhdGUoKSBmdW5jdGlvbiB3aGljaCBydW5zIGJpbmFyeSBzaG91bGQgYmUg
+cmVwbGFjZWQgd2l0aCB0c3RfY21kKCkuCj4gSU1ITyB3ZSBkb24ndCBuZWVkIHRvIGNoZWNrIGZv
+ciAkTFRQUk9PVCwgYmVjYXVzZSB3ZSBleHBlY3QgUEFUSCB0byBiZSBzZXQKPiBjb3JyZWN0bHku
+Cj4gCj4+ICAgCX0KPj4gICAJYmluX3BhdGggPSBtYWxsb2Moc3RybGVuKGx0cHJvb3QpICsgMTYp
+Owo+PiAgIAlpZiAoYmluX3BhdGggPT0gTlVMTCkgewo+IFNBRkVfTUFMTE9DKCkgKGluIG1hbnkg
+cGxhY2VzKQo+PiAtCQl0c3RfYnJrbShUQlJPSyB8IFRFUlJOTywgTlVMTCwgIm1hbGxvYyBmYWls
+ZWQiKTsKPj4gKwkJdHN0X2JyayhUQlJPSywgIm1hbGxvYyBmYWlsZWQiKTsKPj4gICAJfQo+IC4u
+Lgo+IAo+PiArdm9pZCBydW4odW5zaWduZWQgaW50IG4pCj4+ICt7Cj4+ICsJdm9pZCAqZXhpdF92
+YWx1ZTsKPj4gKwlwdGhyZWFkX2F0dHJfdCBuZXdhdHRyOwo+PiArCXNpemVfdCBzdGFja3NpemUg
+PSAyMDkzMDU2Owo+IEknbSBub3Qgc3VyZSBpZiB0aGlzIGlzIHBvcnRhYmxlIGZvciBhbGwgYXJj
+aHMgYW5kIEknZCB1c2UgI2RlZmluZSBhdCB0aGUgdG9wLgo+IAo+IC4uLgo+PiArc3RhdGljIHN0
+cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+PiArCS50ZXN0ID0gcnVuLAo+PiArCS5zZXR1cCA9IHNl
+dHVwLAo+PiArCS5vcHRpb25zID0gb3B0LAo+PiArCS5uZWVkc19yb290ID0gMSwKPj4gKwkubmVl
+ZHNfdG1wZGlyID0gMSwKPj4gKwkudGNudCA9IE5CX0ZVTkMsCj4+ICt9Owo+IAo+IHN0cnVjdCB0
+c3RfdGVzdCB0ZXN0IHNob3VsZCBiZSBkZWZpbmVkIGluIGZsb2F0Ki5jIHRlc3RzLCBub3QgaW4g
+dGhpcwo+IGNvbW1vbiBmaWxlIGluY2x1ZGVkIGJ5IHRlc3RzLgo+IAo+IEtpbmQgcmVnYXJkcywK
+PiBQZXRyCj4gCkhpIFBldHIsCgpUaGFua3MgZm9yIHlvdSByZXZpZXcsSSB3aWxsIGNoYW5nZSB0
+aGUgY29kZSBhcyB5b3Ugc2FpZCBsYXRlci4KCkJlc3QgUmVnYXJkcy4KCkhvbmdjaGVuIFpoYW5n
+CgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZv
+L2x0cAo=
