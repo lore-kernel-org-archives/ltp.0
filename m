@@ -4,62 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F322C19F21
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 06:12:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A86C04A68
+	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 06:34:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53AB03C6651
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 08:12:15 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7AC3D3C305A
+	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 08:34:44 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F4F53C0FB0
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 08:12:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 31DF33C05D5
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 08:34:35 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ECD0D1000603
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 08:12:02 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E523D2040D;
- Wed, 27 Jul 2022 06:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658902320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ywhE+VgSbbARBZ8EUTcC2kmUchX/eivyrXzmSugl69s=;
- b=pi1SI+i/DTLyt4lXFp/ccmn7LEljgI2LfsiAGY+etlSeq7gofnaqDLGiZbpNA+C9MdHjMx
- JBzoT2rbLBsdUBervaY2F1vMLgnTlSFmveMlwrG7ltUboDdhmopV9FcMj8stjSjJly7BvA
- brrI8YZrbCXunMEC0ipL2IDzbCKW/vE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658902320;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ywhE+VgSbbARBZ8EUTcC2kmUchX/eivyrXzmSugl69s=;
- b=wa8HqrfpwKn/jGUxA30KvF7lOiL9Cd39zMKFplpxEfD4C1+KjrXnLTDtXqu0W5PzsoEz5Y
- DCoi5e2U67DXgyCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F32C13A8E;
- Wed, 27 Jul 2022 06:12:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id j+7oBzDX4GJWdAAAMHmgww
- (envelope-from <akumar@suse.de>); Wed, 27 Jul 2022 06:12:00 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 27 Jul 2022 11:41:57 +0530
-Message-Id: <20220727061157.30554-1-akumar@suse.de>
-X-Mailer: git-send-email 2.36.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4064A6006F6
+ for <ltp@lists.linux.it>; Wed, 27 Jul 2022 08:34:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1658903672;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J6V6klK55hVAghyTStwp0iK9rPUfOeQtpsJWkV8Hx0Y=;
+ b=gGmjeeTemkvLJNscBBV24QPHtpFzluRqiqd08ClzB0ppvKR/FgFMIpSJhEvigGciQbg17Q
+ bfWwTiJ3eijsePKs/zm9sojUBa6dRETG0sZQqq7jxhxLILEOStLo0F2ip7U/+lkqJs2Mnv
+ U12ikzLGhORkW7GufLw49aXGrQ2gGwY=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-261-qaCiSIgnMzy_kFIFZkMW2A-1; Wed, 27 Jul 2022 02:34:31 -0400
+X-MC-Unique: qaCiSIgnMzy_kFIFZkMW2A-1
+Received: by mail-yb1-f200.google.com with SMTP id
+ j11-20020a05690212cb00b006454988d225so12871962ybu.10
+ for <ltp@lists.linux.it>; Tue, 26 Jul 2022 23:34:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=J6V6klK55hVAghyTStwp0iK9rPUfOeQtpsJWkV8Hx0Y=;
+ b=JyMH4CIE5didHCjVoUKaAbkbVeTFOXHJ9rCSrPj1Lrzp3/1chW1rgMlzNhRg4nc5/+
+ f+CurrjlVtbQb1yKpKldqCMH12lmCkKq8FLb1MCzAA/MDUU+PoUrGklzhSq6jFyqhyvF
+ 8IYoH2ria7wdU8qm9l+TUEUraXqIoaUIGjm6lbwGCX+fmQ833Q9fjBGfsfO48rRXJY2j
+ LbL6cCdI6l3WgCFFRvAAcZ8PPFkOmYbExoBnjWSq+f5uDeEAnOSe9lgXj3lRwOl1B8Rq
+ 9l3KiorAR8/ca4qM6pJY4Ek6y1TXsKKEWHquDaSPxXaicxjyWthw46QN2Ei8X7j8w+ZB
+ nUGQ==
+X-Gm-Message-State: AJIora99p70cNB1z5isljqbXTJyTc+hsFY1nEN4D3vAm9xQq2drfq7cS
+ 3hhS6kxcXKzYAFYuNChL11cbkxe2Vk7LwE+VuBqek4wF8GHZB4/komIdLTHZwk81s0t0DS2O2Mp
+ cbc9JCkG+JALwWnP/RGpZmlYFlpc=
+X-Received: by 2002:a25:bf86:0:b0:671:3607:1381 with SMTP id
+ l6-20020a25bf86000000b0067136071381mr11192472ybk.355.1658903670278; 
+ Tue, 26 Jul 2022 23:34:30 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uLcL5PujX7qgh3t0TNGnYhwK9Mk/5bk4rFtoNWVtupmQx4KQ9KehLCvXIUqyz8YbSIt5LLxH8kaNUmp9ck5Ic=
+X-Received: by 2002:a25:bf86:0:b0:671:3607:1381 with SMTP id
+ l6-20020a25bf86000000b0067136071381mr11192468ybk.355.1658903670106; Tue, 26
+ Jul 2022 23:34:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
+In-Reply-To: <cover.1658872195.git.luke.nowakowskikrijger@canonical.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 27 Jul 2022 14:34:18 +0800
+Message-ID: <CAEemH2fG_zv2gPhzXUnC45sWr+N87-Kzjyd3Xbx-J2qMR4PdKA@mail.gmail.com>
+To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=liwan@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] fstat02.c: simplify using TST_EXP_*() macros
+Subject: Re: [LTP] [PATCH v6 00/10] Expand cgroup_lib shell library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,102 +84,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1662161980=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/fstat/fstat02.c | 60 ++++-------------------
- 1 file changed, 10 insertions(+), 50 deletions(-)
+--===============1662161980==
+Content-Type: multipart/alternative; boundary="000000000000f9467a05e4c39b27"
 
-diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/kernel/syscalls/fstat/fstat02.c
-index 2f9632edf..09f8fef59 100644
---- a/testcases/kernel/syscalls/fstat/fstat02.c
-+++ b/testcases/kernel/syscalls/fstat/fstat02.c
-@@ -4,17 +4,15 @@
-  *  07/2001 Ported by Wayne Boyer
-  *  05/2019 Ported to new library: Christian Amann <camann@suse.com>
-  */
--/*
-+
-+/*\
-+ * [Description]
-+ *
-  * Tests if fstat() returns correctly and reports correct file information
-  * using the stat structure.
-  */
- 
--#include <errno.h>
--#include <unistd.h>
--#include <sys/stat.h>
--#include <sys/types.h>
- #include "tst_test.h"
--#include "tst_safe_macros.h"
- 
- #define TESTFILE        "test_file"
- #define LINK_TESTFILE   "link_test_file"
-@@ -29,50 +27,12 @@ static int fildes;
- 
- static void run(void)
- {
--	int fail = 0;
--
--	TEST(fstat(fildes, &stat_buf));
--
--	if (TST_RET != 0) {
--		tst_res(TFAIL | TTERRNO, "fstat() failed");
--		return;
--	}
--
--	fail = 0;
--	if (stat_buf.st_uid != user_id) {
--		tst_res(TFAIL, "stat_buf.st_uid = %i expected %i",
--			stat_buf.st_uid, user_id);
--		fail++;
--	}
--
--	if (stat_buf.st_gid != group_id) {
--		tst_res(TFAIL, "stat_buf.st_gid = %i expected %i",
--			stat_buf.st_gid, group_id);
--		fail++;
--	}
--
--	if (stat_buf.st_size != FILE_SIZE) {
--		tst_res(TFAIL, "stat_buf.st_size = %li expected %i",
--			(long)stat_buf.st_size, FILE_SIZE);
--		fail++;
--	}
--
--	if ((stat_buf.st_mode & 0777) != FILE_MODE) {
--		tst_res(TFAIL, "stat_buf.st_mode = %o expected %o",
--			(stat_buf.st_mode & 0777), FILE_MODE);
--		fail++;
--	}
--
--	if (stat_buf.st_nlink != NLINK) {
--		tst_res(TFAIL, "stat_buf.st_nlink = %li expected %i",
--			(long)stat_buf.st_nlink, NLINK);
--		fail++;
--	}
--
--	if (fail)
--		return;
--
--	tst_res(TPASS, "fstat() reported correct values.");
-+	TST_EXP_PASS(fstat(fildes, &stat_buf));
-+	TST_EXP_EQ_LU(stat_buf.st_uid, user_id);
-+	TST_EXP_EQ_LU(stat_buf.st_gid, group_id);
-+	TST_EXP_EQ_LI(stat_buf.st_size, FILE_SIZE);
-+	TST_EXP_EQ_LU(stat_buf.st_mode & 0777, FILE_MODE);
-+	TST_EXP_EQ_LU(stat_buf.st_nlink, NLINK);
- }
- 
- static void setup(void)
+--000000000000f9467a05e4c39b27
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Petr and all,
+
+I agree with all the changes in V6, pretty good.
+Feel free to add my Reviewed-by when you do merge.
+
 -- 
-2.36.1
+Regards,
+Li Wang
+
+--000000000000f9467a05e4c39b27
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Hi Petr and all,</div><div class=3D"gmail_default" style=3D"f=
+ont-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:s=
+mall">I agree with all the changes in V6, pretty good.</div><div class=3D"g=
+mail_default" style=3D"font-size:small">Feel free to add my Reviewed-by whe=
+n you do merge.</div></div><div><br></div>-- <br><div dir=3D"ltr"><div dir=
+=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000f9467a05e4c39b27--
+
+
+--===============1662161980==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1662161980==--
+
