@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E511FC04A68
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 21:37:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07DE6C04A68
+	for <ltp@archiver.kernel.org>; Thu, 28 Jul 2022 11:21:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E11EE3C4CA9
-	for <ltp@archiver.kernel.org>; Wed, 27 Jul 2022 23:37:48 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4F6F13C884F
+	for <ltp@archiver.kernel.org>; Thu, 28 Jul 2022 13:21:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 889B73C2168
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 23:37:39 +0200 (CEST)
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com
- [IPv6:2607:f8b0:4864:20::e2b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id ED90F3C0CC0
+ for <ltp@lists.linux.it>; Thu, 28 Jul 2022 13:21:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B93381000D0E
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 23:37:38 +0200 (CEST)
-Received: by mail-vs1-xe2b.google.com with SMTP id 66so15021471vse.4
- for <ltp@lists.linux.it>; Wed, 27 Jul 2022 14:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=gpd8vF343U9xNimvBQnKXhUtg4ZptloRWJMxmUfGVj4=;
- b=X/JCZRVv6uLY0vyB1sRc5RJDJQejsQPrivonNEQn2PGsmRsATc0dmbWj/NJc6JzfbR
- WsI7A99etanCQ3fNnzbB5MG+35H6MK6Iiakc2BFjNP0zawV/X5+zwMxYW8WlTMlc1YcB
- yzCUVVKnXhe/Bq3IaN1EPWCkxwJfbYeYdwnTURXetnOM3+ULDju1DPCRvkoDb2g46uQx
- uEwuAduugliOg4xwTEPYhfh+gI9wflJBU9t4OrbfW0lLbE+OftXe1V3zyd6lWPVX6hku
- s4bYBMVYKc7LEHOVrPSHqLxQBYBPC+xrGT+PdmHkoqYdq1J8iwmALGqP5VSZKNdA+aPg
- ncIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=gpd8vF343U9xNimvBQnKXhUtg4ZptloRWJMxmUfGVj4=;
- b=ncZtpcDK9fsQrlwxWbxUh6hfcxTrT9hKuhMA2Ci0ZJ389A77YJkggCr+Mx2hhRUStI
- /IGBweGpSm9oYVMqvdW7o2XMNYFoK8jpVYj34N9uhebLE0aZqFJHfB29rVdVoPClbHyW
- XCKtrDE27WxHOd8WR/aqERG4MHS0Im9E45n0xrVQKS26bfAjVdc2ElU0iWkvVbf2UpnH
- gIe+mxzXX9MsL9mhyjmni3YeFK9wypCKs7jrFpVL04DPALZKZGUINrBHIx4Gex7uz+8I
- 7Gxw+/GYMzNHPjMEB+005qsd+12K4IY3vRzilxJfZCOTQllOSBcs4waqF4SKdwAp9I2k
- LEEg==
-X-Gm-Message-State: AJIora/WZtVh/1mfGlmaFOXpDFyPSCvz+8snB/T8bYjPLKm++eFnsfdn
- b1ElzOrKJrfWHVEZi+D9IrhNS+j2m1FRg0/2+N+oKw==
-X-Google-Smtp-Source: AGRyM1uKCFIn9Kx/jXhne8ChmMAZRbImtMq++9mvJNOwlSg00tfjbWJIKaLWNNfy+6OV903LpzZte4FZdkZb6fWZhyE=
-X-Received: by 2002:a05:6102:2432:b0:357:4793:d267 with SMTP id
- l18-20020a056102243200b003574793d267mr7624337vsi.83.1658957857463; Wed, 27
- Jul 2022 14:37:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220712173921.2623135-1-edliaw@google.com> <YtaFddMFjVPMTpme@rei>
-In-Reply-To: <YtaFddMFjVPMTpme@rei>
-Date: Wed, 27 Jul 2022 14:37:26 -0700
-Message-ID: <CAG4es9Wn+wZRu6xr-FgZ=pTq4ReGdrmsmGYO4ZXvKj8ee3QH8w@mail.gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8FF136008B7
+ for <ltp@lists.linux.it>; Thu, 28 Jul 2022 13:21:20 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B2A4738048;
+ Thu, 28 Jul 2022 11:21:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1659007279;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y1UvrQwXr6yZiH4QMlnFs17UuF/uLWkvwrG5hipEfR8=;
+ b=UhJWht/cUFE1UiglWzcGbll7doeK9AsIEAX/E/3r8m3JXW6KgXxRC1qUZ+ms5kIMQpsRAV
+ p7OoBbYDxeqa2xxhHPLFjCGndr8K3IJWCkykOyC0iZKJGzXFKut9JJ/Alp1Gm+CmMy3OJh
+ in+TVBp40olM0gLAI7nEg91VG97rnaY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1659007279;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y1UvrQwXr6yZiH4QMlnFs17UuF/uLWkvwrG5hipEfR8=;
+ b=8LShdYrPnw+4MDg4nM9qKFPFehFXh9v7VmeR6RqhMTBqKRrCJIgZsOWagqbKzzu3FBDFKd
+ erMOEVbSMExnE1Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34BD913427;
+ Thu, 28 Jul 2022 11:21:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id S9bDCi9x4mIoAwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 28 Jul 2022 11:21:19 +0000
+Date: Thu, 28 Jul 2022 13:21:17 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Message-ID: <YuJxLemY+2vN0OYZ@pevik>
+References: <20220614115710.22720-1-chrubis@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220614115710.22720-1-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] syscalls/signal06: add volatile to loop
- variable
+Subject: Re: [LTP] [RFC] [PATCH] syscalls/timer_tests: Hardcode runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,58 +76,209 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>, Martin Doucha <martin.doucha@suse.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hey Cyril, sorry for the late reply, I was on vacation.
+Hi Cyril, all,
 
-On Tue, Jul 19, 2022 at 3:19 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > On Android compiled with clang, the loop variable will be optimized out
-> > unless it is tagged with volatile.
->
-> Looking at the code it looks strange that it's optimized out since we
-> use the value for the loop as:
->
->         loop = 0;
->
->         D = VALUE;
->         while (D == VALUE && loop < LOOPS) {
->                 asm(...);
->                 loop++;
->         }
->
-> And the D variable is properly marked as volatile so it's not like the
-> loop can be expected to iterate preciselly LOOPS iterations.
->
-> It looks to me like the compiler actually forgets about the volatility
-> of D for some reason and then assumes that the loop does LOOPS
-> iterations.
+[ sorry for duplicity in the reply ]
 
-I'm not totally sure how the compiler is working in this case.
+> This commit changes how default runtime is set for the timer testcases.
 
-What I saw with Android is that it fails with:
-signal06    0  TINFO  :  loop = 2076174312
-signal06    1  TFAIL  :
-external/ltp/testcases/kernel/syscalls/signal/signal06.c:87: Bug
-Reproduced!
+> The main motivation behind this is to make sure that runtime is
+> propagated to the metadata. The downside is that we have to add the
+> runtime explicitly into each tst_test structure, but I still think that
+> it's better this way.
 
-It makes one iteration, then loop is set to a random large int and the
-loop terminates.  Printing the value of loop inside the for loop
-actually caused it to iterate 30000 times and succeed.
+I'm not happy having to put .max_runtime = TST_TIMER_TEST_RUNTIME, into each
+tst_test structure, but as C does not allow to have a default value and assign
+it in runtime does not help to have it in docs, I agree. Others, WDYT?
 
-Compared to a successful run, which looks like:
-signal06    0  TINFO  :  loop = 30000
-signal06    1  TPASS  :  signal06 call succeeded
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-Thanks,
-Edward
+Kind regards,
+Petr
+
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  include/tst_timer_test.h                             |  5 +++++
+>  lib/tst_timer_test.c                                 | 12 ++++++------
+>  .../syscalls/clock_nanosleep/clock_nanosleep02.c     |  1 +
+>  .../kernel/syscalls/epoll_pwait/epoll_pwait03.c      |  1 +
+>  testcases/kernel/syscalls/epoll_wait/epoll_wait02.c  |  1 +
+>  testcases/kernel/syscalls/epoll_wait/epoll_wait04.c  |  1 +
+>  testcases/kernel/syscalls/futex/futex_wait05.c       |  1 +
+>  testcases/kernel/syscalls/nanosleep/nanosleep01.c    |  1 +
+>  testcases/kernel/syscalls/poll/poll02.c              |  1 +
+>  testcases/kernel/syscalls/prctl/prctl09.c            |  1 +
+>  testcases/kernel/syscalls/pselect/pselect01.c        |  1 +
+>  testcases/kernel/syscalls/select/select02.c          |  1 +
+>  12 files changed, 21 insertions(+), 6 deletions(-)
+
+> diff --git a/include/tst_timer_test.h b/include/tst_timer_test.h
+> index b825a4d1a..689e2eea7 100644
+> --- a/include/tst_timer_test.h
+> +++ b/include/tst_timer_test.h
+> @@ -39,6 +39,11 @@
+
+>  void tst_timer_sample(void);
+
+> +/*
+> + * By default the timer tests run for bit less than 9 seconds.
+> + */
+> +#define TST_TIMER_TEST_RUNTIME 10
+> +
+>  # ifdef TST_NO_DEFAULT_MAIN
+>  struct tst_test *tst_timer_test_setup(struct tst_test *test);
+>  # endif /* TST_NO_DEFAULT_MAIN */
+> diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
+> index ef9b24d11..593917f40 100644
+> --- a/lib/tst_timer_test.c
+> +++ b/lib/tst_timer_test.c
+> @@ -387,6 +387,10 @@ static void timer_cleanup(void)
+>  		cleanup();
+>  }
+
+> +/*
+> + * If you change this table do not forget to update the TST_TIMER_TEST_RUNTIME
+> + * in the corresponding header to be slightly larger than a sum of this table.
+> + */
+>  static struct tst_timer_tcase {
+>  	long long usec;
+>  	unsigned int samples;
+> @@ -420,7 +424,6 @@ static struct tst_option options[] = {
+
+>  static void parse_timer_opts(void)
+>  {
+> -	size_t i;
+>  	long long runtime_us = 0;
+
+>  	if (str_sleep_time) {
+> @@ -449,12 +452,9 @@ static void parse_timer_opts(void)
+>  		test->test_all = single_timer_test;
+>  		test->test = NULL;
+>  		test->tcnt = 0;
+> -	} else {
+> -		for (i = 0; i < ARRAY_SIZE(tcases); i++)
+> -			runtime_us += tcases[i].usec * tcases[i].samples;
+> -	}
+
+> -	tst_set_max_runtime((runtime_us + runtime_us/10)/1000000);
+> +		tst_set_max_runtime((runtime_us + runtime_us/10)/1000000);
+> +	}
+>  }
+
+>  struct tst_test *tst_timer_test_setup(struct tst_test *timer_test)
+> diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
+> index feb3e4791..544884e9a 100644
+> --- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
+> +++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
+> @@ -32,5 +32,6 @@ int sample_fn(int clk_id, long long usec)
+
+>  static struct tst_test test = {
+>  	.scall = "clock_nanosleep()",
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  	.sample = sample_fn,
+>  };
+> diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+> index 2ad1a6abc..064231d9d 100644
+> --- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+> +++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+> @@ -70,5 +70,6 @@ static struct tst_test test = {
+>  	.sample = sample_fn,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  	.test_variants = TEST_VARIANTS,
+>  };
+> diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+> index d2c0b6ef4..7bd45498e 100644
+> --- a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+> +++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+> @@ -68,6 +68,7 @@ static void cleanup(void)
+>  static struct tst_test test = {
+>  	.scall = "epoll_wait()",
+>  	.sample = sample_fn,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+>  };
+> diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
+> index dc62e9202..44b957ee0 100644
+> --- a/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
+> +++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
+> @@ -68,4 +68,5 @@ static struct tst_test test = {
+>  	.test_all = run,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+> diff --git a/testcases/kernel/syscalls/futex/futex_wait05.c b/testcases/kernel/syscalls/futex/futex_wait05.c
+> index 8fad5d858..b80832054 100644
+> --- a/testcases/kernel/syscalls/futex/futex_wait05.c
+> +++ b/testcases/kernel/syscalls/futex/futex_wait05.c
+> @@ -41,4 +41,5 @@ int sample_fn(int clk_id, long long usec)
+>  static struct tst_test test = {
+>  	.scall = "futex_wait()",
+>  	.sample = sample_fn,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+> diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep01.c b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
+> index eaacb89fa..e0045662c 100644
+> --- a/testcases/kernel/syscalls/nanosleep/nanosleep01.c
+> +++ b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
+> @@ -35,4 +35,5 @@ int sample_fn(int clk_id, long long usec)
+>  static struct tst_test test = {
+>  	.scall = "nanosleep()",
+>  	.sample = sample_fn,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+> diff --git a/testcases/kernel/syscalls/poll/poll02.c b/testcases/kernel/syscalls/poll/poll02.c
+> index c0665927b..30026e7d0 100644
+> --- a/testcases/kernel/syscalls/poll/poll02.c
+> +++ b/testcases/kernel/syscalls/poll/poll02.c
+> @@ -55,4 +55,5 @@ static struct tst_test test = {
+>  	.sample = sample_fn,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+> diff --git a/testcases/kernel/syscalls/prctl/prctl09.c b/testcases/kernel/syscalls/prctl/prctl09.c
+> index 07ce57063..8c22d95dd 100644
+> --- a/testcases/kernel/syscalls/prctl/prctl09.c
+> +++ b/testcases/kernel/syscalls/prctl/prctl09.c
+> @@ -44,4 +44,5 @@ static struct tst_test test = {
+>  	.setup = setup,
+>  	.scall = "prctl()",
+>  	.sample = sample_fn,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+> diff --git a/testcases/kernel/syscalls/pselect/pselect01.c b/testcases/kernel/syscalls/pselect/pselect01.c
+> index 5b2b8b3ba..e2381bc61 100644
+> --- a/testcases/kernel/syscalls/pselect/pselect01.c
+> +++ b/testcases/kernel/syscalls/pselect/pselect01.c
+> @@ -34,4 +34,5 @@ int sample_fn(int clk_id, long long usec)
+>  static struct tst_test test = {
+>  	.scall = "pselect()",
+>  	.sample = sample_fn,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+> diff --git a/testcases/kernel/syscalls/select/select02.c b/testcases/kernel/syscalls/select/select02.c
+> index 784ec9211..5e51951e6 100644
+> --- a/testcases/kernel/syscalls/select/select02.c
+> +++ b/testcases/kernel/syscalls/select/select02.c
+> @@ -62,4 +62,5 @@ static struct tst_test test = {
+>  	.setup = setup,
+>  	.test_variants = TEST_VARIANTS,
+>  	.cleanup = cleanup,
+> +	.max_runtime = TST_TIMER_TEST_RUNTIME,
+>  };
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
