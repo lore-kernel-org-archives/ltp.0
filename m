@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F29C19F2A
-	for <ltp@archiver.kernel.org>; Fri, 29 Jul 2022 17:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C20A1C00140
+	for <ltp@archiver.kernel.org>; Sun, 31 Jul 2022 16:03:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 35ACD3C8C6C
-	for <ltp@archiver.kernel.org>; Fri, 29 Jul 2022 19:23:58 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 158253C8D6D
+	for <ltp@archiver.kernel.org>; Sun, 31 Jul 2022 18:03:31 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00B773C0282
- for <ltp@lists.linux.it>; Fri, 29 Jul 2022 19:23:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 374B93C87C6
+ for <ltp@lists.linux.it>; Sun, 31 Jul 2022 18:03:19 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 72583601472
- for <ltp@lists.linux.it>; Fri, 29 Jul 2022 19:23:42 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E932A20033C
+ for <ltp@lists.linux.it>; Sun, 31 Jul 2022 18:03:18 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BDD1F5BDCD;
- Fri, 29 Jul 2022 17:23:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 67A2F3467B;
+ Sun, 31 Jul 2022 16:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1659115421;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1X59ZQqLOqEA/iXhhdM3S93H7JnaJtmi7MsBVbTMwDA=;
- b=I6YhCopQGh6HN3gOnAccRbOYZ+pgRq+febi8FLFdNPS/S+hS5N2O+IJ3GOLE77/kCDyeBm
- uCPRs4pU5+blYjcSVSLatC+izFQukgNWP56S1/807lbRsx6fYDo81TItl35ZFs1INq35+P
- YsEn/US/0+C3ICmZnqG2j/FDJ/3g+ho=
+ t=1659283396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=p4L9Qkd2gdeZ2TNlApycON4Ljo8qjwPh+92ALTu8HKo=;
+ b=YDoTbujcwwHRz5Q6fofAISJonEbTpb6131qvgeAOeVm8Prxfh1BMdBN7Pwj0Ee75SYFQNO
+ VPOSlG1reaSloOBbl1TZ14ZybzzlOSXgsTaVt1+dggF7OZgUeoGRzUjayXaxGN2m0ZvlSr
+ qOSnLq4bdxqhU1lCKcli+hjhoaGLItQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1659115421;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1X59ZQqLOqEA/iXhhdM3S93H7JnaJtmi7MsBVbTMwDA=;
- b=LwYrxDlasH7Cdm067D1Iw1HuFadC1cbJvsF06U94aqAjS1u3klhSn5O4Dg8r3QDriqcYTD
- f0QokpCIXfAORZBA==
+ s=susede2_ed25519; t=1659283396;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=p4L9Qkd2gdeZ2TNlApycON4Ljo8qjwPh+92ALTu8HKo=;
+ b=72AdWELO6p2pG/tMHYv3f9hjtBUeI3eH97agA5gpqooxdcnYJ3GXqKgNIKBC6aENKJm3Hq
+ kxpHC8TivQ9tfYDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7300C13A1B;
- Fri, 29 Jul 2022 17:23:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B850513754;
+ Sun, 31 Jul 2022 16:03:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id K5hhGp0X5GL6IwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 29 Jul 2022 17:23:41 +0000
-Date: Fri, 29 Jul 2022 19:23:40 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id bVKfKsOn5mJxEwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Sun, 31 Jul 2022 16:03:15 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Joerg Vehlow <lkml@jv-coder.de>
-Message-ID: <YuQXnCgSjBT1mGFH@pevik>
-References: <20220727053307.3009235-1-lkml@jv-coder.de>
- <20220727053307.3009235-4-lkml@jv-coder.de>
+To: ltp@lists.linux.it
+Date: Sun, 31 Jul 2022 18:03:07 +0200
+Message-Id: <20220731160307.16063-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220727053307.3009235-4-lkml@jv-coder.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] configure: Integrate open posix testsuite
- configure
+Subject: [LTP] [PATCH 1/1] MAINTAINERS: Add Namjae's exfat git tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,99 +71,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Joerg Vehlow <joerg.vehlow@aox.de>, ltp@lists.linux.it,
- automated-testing@lists.yoctoproject.org
+Cc: Sungjong Seo <sj1557.seo@samsung.com>, Namjae Jeon <linkinjeon@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Joerg,
+From: Petr Vorel <petr.vorel@gmail.com>
 
-[ Cc automated-testing@lists.yoctoproject.org ]
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-> From: Joerg Vehlow <joerg.vehlow@aox.de>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 64379c699903..0cfde0f3544b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7573,6 +7573,7 @@ M:	Namjae Jeon <linkinjeon@kernel.org>
+ M:	Sungjong Seo <sj1557.seo@samsung.com>
+ L:	linux-fsdevel@vger.kernel.org
+ S:	Maintained
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git
+ F:	fs/exfat/
+ 
+ EXT2 FILE SYSTEM
+-- 
+2.36.1
 
-> This changes the default installation location
-> of the open posix testsuite from
-> $prefix
-> to
-> $prefix/testcases/open_posix_testsuite
-I need to have a deeper look on this patchset next week.
-But it looks to me strange, that running LTP top level configure causes
-installation into /opt/ltp/testcases/open_posix_testsuite/, but after running
-./configure in testcases/open_posix_testsuite make install goes by default to
-/opt/openposix_testsuite.
-
-Also openposix does not use LTP API, when we're touching it, wouldn't it make
-more sense to put it into separate git repository? IMHO that would cause work
-for other people (clone separate git, need to fix CI and tools which are using
-it), but openposix embedded in LTP always looked strange to me.
-
-Kind regards,
-Petr
-
-> Scripts for execution of the testsuite (run-all-posix-option-group-tests.sh,
-> run-posix-option-group-test.sh) will still be installed under $prefix/bin.
-
-> To revert back to the old installation behavior, just use
-> ./configure -with-open-posix-testdir=.
-
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox.de>
-> ---
->  configure.ac           | 11 +++++++++++
->  include/mk/automake.mk |  7 ++++++-
->  2 files changed, 17 insertions(+), 1 deletion(-)
-
-> diff --git a/configure.ac b/configure.ac
-> index 69b145b5f..4256b3113 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -334,8 +334,19 @@ AC_ARG_WITH([open-posix-testsuite],
->    [with_open_posix_testsuite=$withval],
->    [with_open_posix_testsuite=no]
->  )
-> +
-> +# Allow setting the directoy, where the open posix testsuite is installed to.
-> +# If nothing is defined, we have to pass our default value to submake
-> +AC_ARG_WITH([open-posix-testdir],
-> +  [AS_HELP_STRING([--with-open-posix-testdir=<dir>],
-> +    [set the directory, where the open posix testsuite will be installed under prefix])],
-> +  [],
-> +  [ac_configure_args="$ac_configure_args --with-open-posix-testdir=testcases/open_posix_testsuite"]
-> +)
-> +
->  if test "x$with_open_posix_testsuite" = xyes; then
->      AC_SUBST([WITH_OPEN_POSIX_TESTSUITE],["yes"])
-> +    AC_CONFIG_SUBDIRS([testcases/open_posix_testsuite])
->  else
->      AC_SUBST([WITH_OPEN_POSIX_TESTSUITE],["no"])
->  fi
-> diff --git a/include/mk/automake.mk b/include/mk/automake.mk
-> index 219d015d0..ee3b7f1b8 100644
-> --- a/include/mk/automake.mk
-> +++ b/include/mk/automake.mk
-> @@ -27,7 +27,8 @@ AUTOHEADER	?= autoheader
->  AUTOMAKE	?= automake
-
->  AUTOCONFED_SUBDIRS	= \
-> -			testcases/realtime
-> +			testcases/realtime \
-> +			testcases/open_posix_testsuite
-
->  # We want to run this every single time to ensure that all of the prereq files
->  # are there.
-> @@ -35,6 +36,10 @@ AUTOCONFED_SUBDIRS	= \
->  testcases/realtime/configure:
->  	$(MAKE) -C $(@D) autotools
-
-> +.PHONY: testcases/open_posix_testsuite/configure
-> +testcases/open_posix_testsuite/configure:
-> +	$(MAKE) -C $(@D) autotools
-> +
->  .PHONY: autotools
->  autotools: aclocal autoconf autoheader automake $(addsuffix /configure,$(AUTOCONFED_SUBDIRS))
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
