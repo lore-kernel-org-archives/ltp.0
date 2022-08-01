@@ -4,62 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6F91C19F2C
-	for <ltp@archiver.kernel.org>; Mon,  1 Aug 2022 07:41:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 210C1C00144
+	for <ltp@archiver.kernel.org>; Mon,  1 Aug 2022 12:49:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 708243C920D
-	for <ltp@archiver.kernel.org>; Mon,  1 Aug 2022 09:41:37 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A260D3C919E
+	for <ltp@archiver.kernel.org>; Mon,  1 Aug 2022 14:49:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 259143C8CCF
- for <ltp@lists.linux.it>; Mon,  1 Aug 2022 09:41:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 4DE4C3C8216
+ for <ltp@lists.linux.it>; Mon,  1 Aug 2022 14:49:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 842841A004B1
- for <ltp@lists.linux.it>; Mon,  1 Aug 2022 09:41:26 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D47224D521;
- Mon,  1 Aug 2022 07:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659339683;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TLCyw8+AInqfXpD2GZ+buZOnzHUQ6XZx9fI5SBI0SNA=;
- b=X9InGUw7ZT6RXvtyOEzW9D2sZegIbQAfeOiTkoPnICYJleAO0qn3g6Nqke5FDamW52LEfe
- XA6jgQJwFfO5qm2pg9J5RMlvzarZFUBKoRwftgV9By2sJIhXJ7cIUazmbNaJCleLJmtX6r
- Pfg5Zxm5bfjZiGa/bJeyW1hHpwzO7VI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659339683;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TLCyw8+AInqfXpD2GZ+buZOnzHUQ6XZx9fI5SBI0SNA=;
- b=jsEO145x97Ws3kJZkPxSgyO+du7nRTJ1583nWzobrJlYFS3unL4QYMeIx9Voom5EeN76mw
- yKIjL4loYrl7TVDw==
-Received: from g78 (unknown [10.163.24.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8015F1A004FE
+ for <ltp@lists.linux.it>; Mon,  1 Aug 2022 14:49:35 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 714532C141;
- Mon,  1 Aug 2022 07:41:23 +0000 (UTC)
-References: <20220727053307.3009235-1-lkml@jv-coder.de>
- <20220727053307.3009235-4-lkml@jv-coder.de> <YuQXnCgSjBT1mGFH@pevik>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CA76366EC7;
+ Mon,  1 Aug 2022 12:49:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1659358174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+mnHx9LdVMN40M4C4fKnP1Xs/r6uMgKwM2C2/VuU/yk=;
+ b=TF5xp3nB2WY56fOeaCb1hGtQXvsU+jl3maABxJ364YubNKsepHhMAvxmB6ZzJhvN+fnPeN
+ ia0TCXR149YojoAX5msy+y99/olMT+AmaK+HE8MJIETe4iP9Pyyhl6DvLFczp8nMeU4eNC
+ bQc4RTVCbfdIWAG+Mem14d/YaJr21pk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1659358174;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+mnHx9LdVMN40M4C4fKnP1Xs/r6uMgKwM2C2/VuU/yk=;
+ b=6jD9TGBQwvXt/is39ycStrmb5V382Qa3rley0GZT0jiB9b0WuBQE7SYDcfiHlBg4beRPHW
+ Sb8l7GmwLGDRH+BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B02F913A72;
+ Mon,  1 Aug 2022 12:49:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id S4qDKd7L52I5KgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 01 Aug 2022 12:49:34 +0000
+Date: Mon, 1 Aug 2022 14:51:21 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 01 Aug 2022 08:16:10 +0100
-In-reply-to: <YuQXnCgSjBT1mGFH@pevik>
-Message-ID: <87pmhkfm1p.fsf@suse.de>
+Message-ID: <YufMST1r0+ciz2c4@yuki>
+References: <20220729153246.1213-1-pvorel@suse.cz>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220729153246.1213-1-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] configure: Integrate open posix testsuite
- configure
+Subject: Re: [LTP] [RFC PATCH 1/1] metaparse: Replace macro also in arrays
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,55 +74,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: Joerg Vehlow <joerg.vehlow@aox.de>,
- automated-testing@lists.yoctoproject.org, ltp@lists.linux.it
+Cc: linux-nfs@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi!
+> This helps to replace macros like:
+> 
+>     #define TEST_APP "userns06_capcheck"
+> 
+>     static const char *const resource_files[] = {
+> 	TEST_APP,
+> 	NULL,
+>     };
+> 
+> $ ./metaparse -Iinclude -Itestcases/kernel/syscalls/utils/ ../testcases/kernel/containers/userns/userns06.c
+> Before:
+>    "resource_files": [
+>      "TEST_APP"
+>     ],
+>     ...
+> 
+> After:
+>    "resource_files": [
+>      "userns06_capcheck"
+>     ],
+>     ...
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi all,
+> 
+> This is a reaction on patch
+> https://patchwork.ozlabs.org/project/ltp/patch/20220722083529.209-1-chenhx.fnst@fujitsu.com/
+> First: I was wrong, inlining arrays does any change in the docparse output.
+> BTW I'd be still for inlining for better readability.
+> 
+> I'm not sure if this is not good idea, maybe some of the constants should be
+> kept unparsed, e.g.:
+> 
+> Orig:
+>    "caps": [
+>      "TST_CAP",
+>      "(",
+>      "TST_CAP_DROP",
+>      "CAP_SYS_RESOURCE",
+> 
+> Becomes:
+>    "caps": [
+>      "TST_CAP",
+>      "(",
+>      "TST_CAP_DROP",
+>      "24",
+> 
+> CAP_SYS_RESOURCE is replaced because it's a string, but IMHO it'd be better to keep it.
+> TST_CAP{_DROP,} aren't replaced because they aren't a plain strings.
+> Maybe replace only non-numerc values?
 
-Petr Vorel <pvorel@suse.cz> writes:
+That really depends on the context, we do have many cases where we have
+a macro that expands to numeric that should be expanded, runtime would
+be one of the prime examples of that.
 
-> Hi Joerg,
->
-> [ Cc automated-testing@lists.yoctoproject.org ]
->
->> From: Joerg Vehlow <joerg.vehlow@aox.de>
->
->> This changes the default installation location
->> of the open posix testsuite from
->> $prefix
->> to
->> $prefix/testcases/open_posix_testsuite
-> I need to have a deeper look on this patchset next week.
-> But it looks to me strange, that running LTP top level configure causes
-> installation into /opt/ltp/testcases/open_posix_testsuite/, but after running
-> ./configure in testcases/open_posix_testsuite make install goes by default to
-> /opt/openposix_testsuite.
->
-> Also openposix does not use LTP API, when we're touching it, wouldn't it make
-> more sense to put it into separate git repository? IMHO that would cause work
-> for other people (clone separate git, need to fix CI and tools which are using
-> it), but openposix embedded in LTP always looked strange to me.
-
-I wouldn't be against this based on my anecdotal experience.
-
-I don't recall a specific time these tests found a kernel bug. They
-sometimes find issues with glibc, but there is usually a debate as to
-how to interpret the spec instead of a clear error on glibc's part. Most
-often the test is broken.
-
-So I'd say these tests are almost useless for kernel testing. I also
-think they often misinterpret the POSIX spec or have some basic logic
-error.
-
+I guess that the only solution would be an explicit list of macro
+prefixes that should not be expanded, e.g. do not expand if macro starts
+with "CAP_".
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
