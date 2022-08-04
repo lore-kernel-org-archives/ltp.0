@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3C3C19F2B
-	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 12:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8779BC19F2B
+	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 12:22:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 419F83C9338
-	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 14:22:26 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0EF5F3C948B
+	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 14:22:37 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 81CD43C25DD
+ by picard.linux.it (Postfix) with ESMTPS id 933FE3C885D
  for <ltp@lists.linux.it>; Thu,  4 Aug 2022 14:21:55 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D2B8D60073B
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DA73D600634
  for <ltp@lists.linux.it>; Thu,  4 Aug 2022 14:21:54 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id ED88A348C5;
- Thu,  4 Aug 2022 12:19:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E76BA33F39;
+ Thu,  4 Aug 2022 12:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1659615595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1659615594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YtJpW8i08s/5sT92dF9aVPvOseb6YfJTwQhj7I/x/Yg=;
- b=tAl5ff/kPdg+10z6Wd9RwzL4D+bcLcyn715f0DRZl01wHKOkKcWVWCoxfePqmwybSytmyJ
- HK8vvNaTuLMjw36yWh0FHzehQDxnEQsLWkp8uunpHw9AtzzB/YiVFDZYYEEBUwBX06obGt
- V40B2i51BnV4QpmGelq3HgiUPKnEUqI=
+ bh=6wTkL4sVOgFonza2ilqiafwUZP2ShFRVfW6fSFyrWIA=;
+ b=ieFcMMWfeqCLJ5k6wz3WF1DB72WLVmo4KFWGdjsA8vnbU1aU+NdiefWD2OIw5kIHUWaaw1
+ I2dTjAfkwJKPKkMq2UOn7RlgWIOdGSkUeLfC67GBN1IUVlJKmgaIt9sWSXMZgIN8BC+gvY
+ hOUcGn9Xvbv43aT5b3a8wJHqX7IPD40=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1659615595;
+ s=susede2_ed25519; t=1659615594;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YtJpW8i08s/5sT92dF9aVPvOseb6YfJTwQhj7I/x/Yg=;
- b=egYNoBQc1MZb7ile8a+3H32/LEIba4gDFhi7pz7r9umjfZGnfi5BtiOd7Q7LwhLBkILerX
- OD4W8+/O7Z5gkvBA==
+ bh=6wTkL4sVOgFonza2ilqiafwUZP2ShFRVfW6fSFyrWIA=;
+ b=WYNKf+Imx0d7VIH5X3sfhsJsBEk+Lj0IZs95Tq4qltu00gTHxWH/ZTPXRlAO3gZxqAnYdy
+ fZBsYkAH3R8f1VCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9049C13A94;
- Thu,  4 Aug 2022 12:19:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11C9A13A94;
+ Thu,  4 Aug 2022 12:19:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iGC5IWu562L2PQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 04 Aug 2022 12:19:55 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id SOJ/AGq562L2PQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 04 Aug 2022 12:19:54 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  4 Aug 2022 14:19:44 +0200
-Message-Id: <20220804121946.19564-9-pvorel@suse.cz>
+Date: Thu,  4 Aug 2022 14:19:42 +0200
+Message-Id: <20220804121946.19564-7-pvorel@suse.cz>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20220804121946.19564-1-pvorel@suse.cz>
 References: <20220804121946.19564-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 08/10] tst_test.sh: Add $TST_ALL_FILESYSTEMS
+Subject: [LTP] [PATCH v3 06/10] tst_supported_fs: Support skip list when
+ query single fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,247 +84,78 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-$TST_ALL_FILESYSTEMS is shell API equivalent of .all_filesystems from
-C API.
-
-Improve also $TST_SKIP_FILESYSTEMS to behave like .skip_filesystems.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Changes v2->v3:
-* Fixed various functional problems
-* Added $TST_SKIP_FILESYSTEMS support
+New in v3
 
+ include/tst_fs.h                 | 10 ++++++++++
+ lib/tst_supported_fs_types.c     | 18 ++++++++++++++++++
+ testcases/lib/tst_supported_fs.c |  2 +-
+ 3 files changed, 29 insertions(+), 1 deletion(-)
 
-
- doc/shell-test-api.txt    |   6 +-
- testcases/lib/tst_test.sh | 118 +++++++++++++++++++++++++-------------
- 2 files changed, 82 insertions(+), 42 deletions(-)
-
-diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
-index 0961dc5ef..ecadb8e32 100644
---- a/doc/shell-test-api.txt
-+++ b/doc/shell-test-api.txt
-@@ -199,6 +199,9 @@ simply by setting right '$TST_FOO'.
- [options="header"]
- |=============================================================================
- | Variable name            | Action done
-+| 'TST_ALL_FILESYSTEMS'    | Testing on all available filesystems (tst_test.all_filesystems equivalent).
-+                             When 'TST_SKIP_FILESYSTEMS' any listed filesystem is not
-+                             included in the resulting list of supported filesystems.
- | 'TST_DEV_EXTRA_OPTS'     | Pass extra 'mkfs' options _after_ device name,
-                              to 'tst_mkfs', use with 'TST_FORMAT_DEVICE=1'.
- | 'TST_DEV_FS_OPTS'        | Pass 'mkfs' options _before_ the device name,
-@@ -229,7 +232,8 @@ simply by setting right '$TST_FOO'.
- | 'TST_NEEDS_KCONFIGS'     | Checks kernel kconfigs support for the test (see below).
- | 'TST_NEEDS_KCONFIGS_IFS' | Used for splitting '$TST_NEEDS_KCONFIGS' variable,
-                              default value is comma, it only supports single character.
--| 'TST_SKIP_FILESYSTEMS'   | Comma separated list of filesystems on which test will be skipped.
-+| 'TST_SKIP_FILESYSTEMS'   | Comma separated list of filesystems on which test will be skipped
-+                             (tst_test.skip_filesystems equivalent).
- | 'TST_TIMEOUT'            | Maximum timeout set for the test in sec. Must be int >= 1,
-                              or -1 (special value to disable timeout), default is 300.
-                              Variable is meant be set in tests, not by user.
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 926053357..b679339a0 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -33,17 +33,7 @@ _tst_do_exit()
- 	local ret=0
- 	TST_DO_EXIT=1
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 8159b99eb..2fe97f174 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -182,6 +182,16 @@ enum tst_fs_impl {
+  */
+ enum tst_fs_impl tst_fs_is_supported(const char *fs_type);
  
--	if [ -n "$TST_DO_CLEANUP" -a -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
--		if command -v $TST_CLEANUP >/dev/null 2>/dev/null; then
--			$TST_CLEANUP
--		else
--			tst_res TWARN "TST_CLEANUP=$TST_CLEANUP declared, but function not defined (or cmd not found)"
--		fi
--	fi
--
--	if [ "$TST_MOUNT_FLAG" = 1 ]; then
--		tst_umount
--	fi
-+	[ "$TST_MOUNT_FLAG" = 1 ] && tst_umount
- 
- 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
- 		if ! tst_device release "$TST_DEVICE"; then
-@@ -479,6 +469,7 @@ LTPROOT              Prefix for installed LTP (default: /opt/ltp)
- LTP_COLORIZE_OUTPUT  Force colorized output behaviour (y/1 always, n/0: never)
- LTP_DEV              Path to the block device to be used (for .needs_device)
- LTP_DEV_FS_TYPE      Filesystem used for testing (default: ext2)
-+LTP_SINGLE_FS_TYPE   Testing only - specifies filesystem instead all supported (for TST_ALL_FILESYSTEMS=1)
- LTP_TIMEOUT_MUL      Timeout multiplier (must be a number >=1, ceiled to int)
- TMPDIR               Base directory for template directory (for .needs_tmpdir, default: /tmp)
- EOF
-@@ -619,10 +610,33 @@ _tst_init_checkpoints()
- 	export LTP_IPC_PATH
++/*
++ * Check filesystem support (@see tst_fs_is_supported()), but consider also
++ * filesystems to skip.
++ *
++ * @fs_type A filesystem name to check the support for.
++ * @skiplist A NULL terminated array of filesystems to skip.
++ */
++enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
++					      *const *skiplist);
++
+ /*
+  * Returns NULL-terminated array of kernel-supported filesystems.
+  *
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index 9726d193a..8c9379c1b 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -134,6 +134,24 @@ enum tst_fs_impl tst_fs_is_supported(const char *fs_type)
+ 	return TST_FS_UNSUPPORTED;
  }
  
-+_prepare_device()
++enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
++					      *const *skiplist)
 +{
-+	if [ "$TST_FORMAT_DEVICE" = 1 ]; then
-+		tst_device clear "$TST_DEVICE"
-+		tst_mkfs $TST_FS_TYPE $TST_DEV_FS_OPTS $TST_DEVICE $TST_DEV_EXTRA_OPTS
-+	fi
++	int ret;
 +
-+	if [ "$TST_MOUNT_DEVICE" = 1 ]; then
-+		tst_mount
-+		TST_MOUNT_FLAG=1
-+	fi
++	ret = tst_fs_is_supported(fs_type);
++
++	if (!ret)
++		return ret;
++
++	if (tst_fs_in_skiplist(fs_type, skiplist)) {
++		tst_brk(TCONF, "%s is not supported by the test",
++			fs_type);
++	}
++
++	return ret;
 +}
 +
-+_tst_run_tcases_per_fs()
-+{
-+	for _tst_fs in $(tst_supported_fs -s "$TST_SKIP_FILESYSTEMS"); do
-+		tst_res TINFO "=== Testing on $_tst_fs ==="
-+		TST_FS_TYPE="$_tst_fs"
-+		_tst_run_iterations
-+	done
-+}
-+
- tst_run()
+ const char **tst_get_supported_fs_types(const char *const *skiplist)
  {
- 	local _tst_i
- 	local _tst_data
-+	local _tst_fs
- 	local _tst_max
- 	local _tst_name
- 	local _tst_pattern='[='\''"} \t\/:`$\;].*'
-@@ -631,7 +645,7 @@ tst_run()
- 	if [ -n "$TST_TEST_PATH" ]; then
- 		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed "s/.*TST_//; s/$_tst_pattern//"); do
- 			case "$_tst_i" in
--			DISABLE_APPARMOR|DISABLE_SELINUX);;
-+			ALL_FILESYSTEMS|DISABLE_APPARMOR|DISABLE_SELINUX);;
- 			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|TMPDIR|NEEDS_DEVICE|DEVICE);;
-@@ -677,16 +691,29 @@ tst_run()
- 			tst_brk TCONF "test requires kernel $TST_MIN_KVER+"
- 	fi
+ 	unsigned int i, j = 0;
+diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
+index 87be2b759..75945c809 100644
+--- a/testcases/lib/tst_supported_fs.c
++++ b/testcases/lib/tst_supported_fs.c
+@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
+ 	}
  
--	tst_supported_fs -s "$TST_SKIP_FILESYSTEMS" $TST_FS_TYPE
--	ret=$?
--	[ $ret -ne 0 ] && return $ret
--
--	_tst_setup_timer
-+	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
+ 	if (optind < argc)
+-		return !tst_fs_is_supported(argv[optind]);
++		return !tst_fs_is_supported_skiplist(argv[optind], (const char * const*)skiplist);
  
-+	[ "$TST_ALL_FILESYSTEMS" = 1 ] && TST_MOUNT_DEVICE=1
- 	[ "$TST_MOUNT_DEVICE" = 1 ] && TST_FORMAT_DEVICE=1
- 	[ "$TST_FORMAT_DEVICE" = 1 ] && TST_NEEDS_DEVICE=1
- 	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
- 
-+	if [ "$TST_ALL_FILESYSTEMS" != 1 ]; then
-+		tst_supported_fs -s "$TST_SKIP_FILESYSTEMS" $TST_FS_TYPE
-+		ret=$?
-+		[ $ret -ne 0 ] && return $ret
-+	fi
-+
-+	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
-+		TST_DEVICE=$(tst_device acquire)
-+
-+		if [ ! -b "$TST_DEVICE" -o $? -ne 0 ]; then
-+			unset TST_DEVICE
-+			tst_brk TBROK "Failed to acquire device"
-+		fi
-+		TST_DEVICE_FLAG=1
-+	fi
-+
- 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
- 		if [ -z "$TMPDIR" ]; then
- 			export TMPDIR="/tmp"
-@@ -697,35 +724,32 @@ tst_run()
- 		chmod 777 "$TST_TMPDIR"
- 
- 		TST_STARTWD=$(pwd)
--
- 		cd "$TST_TMPDIR"
- 	fi
- 
--	TST_MNTPOINT="${TST_MNTPOINT:-$PWD/mntpoint}"
--	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
--
--		TST_DEVICE=$(tst_device acquire)
-+	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
- 
--		if [ ! -b "$TST_DEVICE" -o $? -ne 0 ]; then
--			unset TST_DEVICE
--			tst_brk TBROK "Failed to acquire device"
--		fi
-+	TST_MNTPOINT="${TST_MNTPOINT:-$PWD/mntpoint}"
- 
--		TST_DEVICE_FLAG=1
-+	if [ "$TST_ALL_FILESYSTEMS" = 1 ]; then
-+		_tst_run_tcases_per_fs
-+	else
-+		_tst_run_iterations
- 	fi
- 
--	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
-+	_tst_do_exit
-+}
- 
--	if [ "$TST_FORMAT_DEVICE" = 1 ]; then
--		tst_mkfs $TST_FS_TYPE $TST_DEV_FS_OPTS $TST_DEVICE $TST_DEV_EXTRA_OPTS
--	fi
-+_tst_run_iterations()
-+{
-+	local _tst_i=$TST_ITERATIONS
-+	local _tst_j
- 
--	if [ "$TST_MOUNT_DEVICE" = 1 ]; then
--		tst_mount
--		TST_MOUNT_FLAG=1
--	fi
-+	[ "$TST_NEEDS_TMPDIR" = 1 ] && cd "$TST_TMPDIR"
- 
--	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
-+	_prepare_device
-+
-+	_tst_setup_timer
- 
- 	if [ -n "$TST_SETUP" ]; then
- 		if command -v $TST_SETUP >/dev/null 2>/dev/null; then
-@@ -737,20 +761,32 @@ tst_run()
- 	fi
- 
- 	#TODO check that test reports some results for each test function call
--	while [ $TST_ITERATIONS -gt 0 ]; do
-+	while [ $_tst_i -gt 0 ]; do
- 		if [ -n "$TST_TEST_DATA" ]; then
- 			tst_require_cmds cut tr wc
- 			_tst_max=$(( $(echo $TST_TEST_DATA | tr -cd "$TST_TEST_DATA_IFS" | wc -c) +1))
--			for _tst_i in $(seq $_tst_max); do
--				_tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$_tst_i)"
-+			for _tst_j in $(seq $_tst_max); do
-+				_tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$_tst_j)"
- 				_tst_run_tests "$_tst_data"
- 			done
- 		else
- 			_tst_run_tests
- 		fi
--		TST_ITERATIONS=$((TST_ITERATIONS-1))
-+		_tst_i=$((_tst_i-1))
- 	done
--	_tst_do_exit
-+
-+	if [ -n "$TST_DO_CLEANUP" -a -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
-+		if command -v $TST_CLEANUP >/dev/null 2>/dev/null; then
-+			$TST_CLEANUP
-+		else
-+			tst_res TWARN "TST_CLEANUP=$TST_CLEANUP declared, but function not defined (or cmd not found)"
-+		fi
-+	fi
-+
-+	if [ "$TST_MOUNT_FLAG" = 1 ]; then
-+		tst_umount
-+		TST_MOUNT_FLAG=
-+	fi
- }
- 
- _tst_run_tests()
+ 	filesystems = tst_get_supported_fs_types((const char * const*)skiplist);
+ 	for (i = 0; filesystems[i]; i++)
 -- 
 2.37.1
 
