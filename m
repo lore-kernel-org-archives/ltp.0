@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8779BC19F2B
-	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 12:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E5C0C19F2B
+	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 12:22:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0EF5F3C948B
-	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 14:22:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D76A43C93F2
+	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 14:22:49 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 933FE3C885D
+ by picard.linux.it (Postfix) with ESMTPS id 1EA983C9427
  for <ltp@lists.linux.it>; Thu,  4 Aug 2022 14:21:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DA73D600634
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CBAB310000EE
  for <ltp@lists.linux.it>; Thu,  4 Aug 2022 14:21:54 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E76BA33F39;
- Thu,  4 Aug 2022 12:19:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5A440350C3;
+ Thu,  4 Aug 2022 12:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1659615594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1659615596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6wTkL4sVOgFonza2ilqiafwUZP2ShFRVfW6fSFyrWIA=;
- b=ieFcMMWfeqCLJ5k6wz3WF1DB72WLVmo4KFWGdjsA8vnbU1aU+NdiefWD2OIw5kIHUWaaw1
- I2dTjAfkwJKPKkMq2UOn7RlgWIOdGSkUeLfC67GBN1IUVlJKmgaIt9sWSXMZgIN8BC+gvY
- hOUcGn9Xvbv43aT5b3a8wJHqX7IPD40=
+ bh=Otj02OSlPlm2Sk5asG7DkaYHqCcce0okZQHBkG2haBc=;
+ b=naBnuGbVrn0TqNZRlg4GzltpFq9UFrnCIwtKQLDaNQddKjLWjs/Z6wB08eG6TltK1qJ1E5
+ OFIC3v+YEJSe1vrr5EitEtM9ZIovNX55rKmHFu5yiH+Wo7QttJUY+gb/rRDk0LIVAhsAjo
+ Gib5Hx6/t52DIXVuv+WqTnNs7Yeb+R4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1659615594;
+ s=susede2_ed25519; t=1659615596;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6wTkL4sVOgFonza2ilqiafwUZP2ShFRVfW6fSFyrWIA=;
- b=WYNKf+Imx0d7VIH5X3sfhsJsBEk+Lj0IZs95Tq4qltu00gTHxWH/ZTPXRlAO3gZxqAnYdy
- fZBsYkAH3R8f1VCg==
+ bh=Otj02OSlPlm2Sk5asG7DkaYHqCcce0okZQHBkG2haBc=;
+ b=GpMfSCC5G0MtsR+GlR5/o75VJgjHHGRWsFgA5NtmtK4jHjC/BW9mJkl0MwzaJ2Cao/z5Js
+ ioPya0N+BGZPcdDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11C9A13A94;
- Thu,  4 Aug 2022 12:19:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D59113A94;
+ Thu,  4 Aug 2022 12:19:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id SOJ/AGq562L2PQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 04 Aug 2022 12:19:54 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id yPUeAGy562L2PQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 04 Aug 2022 12:19:56 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  4 Aug 2022 14:19:42 +0200
-Message-Id: <20220804121946.19564-7-pvorel@suse.cz>
+Date: Thu,  4 Aug 2022 14:19:45 +0200
+Message-Id: <20220804121946.19564-10-pvorel@suse.cz>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20220804121946.19564-1-pvorel@suse.cz>
 References: <20220804121946.19564-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 06/10] tst_supported_fs: Support skip list when
- query single fs
+Subject: [LTP] [PATCH v3 09/10] shell: Add test for TST_ALL_FILESYSTEMS=1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,78 +82,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Unfortunately GitHub Actions don't have loop devices, thus cannot be run
+in CI:
+
+tst_format_device 1 TINFO: timeout per run is 0h 5m 0s
+/__w/ltp/ltp/lib/tst_device.c:139: TINFO: No free devices found
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-New in v3
+ lib/newlib_tests/shell/tst_all_filesystems.sh | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100755 lib/newlib_tests/shell/tst_all_filesystems.sh
 
- include/tst_fs.h                 | 10 ++++++++++
- lib/tst_supported_fs_types.c     | 18 ++++++++++++++++++
- testcases/lib/tst_supported_fs.c |  2 +-
- 3 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 8159b99eb..2fe97f174 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -182,6 +182,16 @@ enum tst_fs_impl {
-  */
- enum tst_fs_impl tst_fs_is_supported(const char *fs_type);
- 
-+/*
-+ * Check filesystem support (@see tst_fs_is_supported()), but consider also
-+ * filesystems to skip.
-+ *
-+ * @fs_type A filesystem name to check the support for.
-+ * @skiplist A NULL terminated array of filesystems to skip.
-+ */
-+enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
-+					      *const *skiplist);
+diff --git a/lib/newlib_tests/shell/tst_all_filesystems.sh b/lib/newlib_tests/shell/tst_all_filesystems.sh
+new file mode 100755
+index 000000000..8509a7481
+--- /dev/null
++++ b/lib/newlib_tests/shell/tst_all_filesystems.sh
+@@ -0,0 +1,27 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
 +
- /*
-  * Returns NULL-terminated array of kernel-supported filesystems.
-  *
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index 9726d193a..8c9379c1b 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -134,6 +134,24 @@ enum tst_fs_impl tst_fs_is_supported(const char *fs_type)
- 	return TST_FS_UNSUPPORTED;
- }
- 
-+enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
-+					      *const *skiplist)
++TST_ALL_FILESYSTEMS=1
++TST_TESTFUNC=test
++TST_CNT=2
++
++test1()
 +{
-+	int ret;
-+
-+	ret = tst_fs_is_supported(fs_type);
-+
-+	if (!ret)
-+		return ret;
-+
-+	if (tst_fs_in_skiplist(fs_type, skiplist)) {
-+		tst_brk(TCONF, "%s is not supported by the test",
-+			fs_type);
-+	}
-+
-+	return ret;
++	tst_res TPASS "device using filesystem"
 +}
 +
- const char **tst_get_supported_fs_types(const char *const *skiplist)
- {
- 	unsigned int i, j = 0;
-diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
-index 87be2b759..75945c809 100644
---- a/testcases/lib/tst_supported_fs.c
-+++ b/testcases/lib/tst_supported_fs.c
-@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
- 	}
- 
- 	if (optind < argc)
--		return !tst_fs_is_supported(argv[optind]);
-+		return !tst_fs_is_supported_skiplist(argv[optind], (const char * const*)skiplist);
- 
- 	filesystems = tst_get_supported_fs_types((const char * const*)skiplist);
- 	for (i = 0; filesystems[i]; i++)
++test2()
++{
++	local pattern
++
++
++	if [ "$TST_FS_TYPE" = "exfat" -o "$TST_FS_TYPE" = "ntfs" ]; then
++		pattern="|fuseblk"
++	fi
++
++	EXPECT_PASS "grep -E '$TST_MNTPOINT ($TST_FS_TYPE${pattern})' /proc/mounts"
++}
++
++. tst_test.sh
++tst_run
 -- 
 2.37.1
 
