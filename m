@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4454DC19F2B
-	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 10:14:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C68DC19F2B
+	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 10:28:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 88C3C3C9501
-	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 12:14:17 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 5E5FA3C9378
+	for <ltp@archiver.kernel.org>; Thu,  4 Aug 2022 12:28:26 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1B223C4FC3
- for <ltp@lists.linux.it>; Thu,  4 Aug 2022 12:14:06 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 720683C25D7
+ for <ltp@lists.linux.it>; Thu,  4 Aug 2022 12:28:16 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9AF84601BED
- for <ltp@lists.linux.it>; Thu,  4 Aug 2022 12:14:04 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D7DBF600F9D
+ for <ltp@lists.linux.it>; Thu,  4 Aug 2022 12:28:15 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 98DFB34A57;
- Thu,  4 Aug 2022 10:14:03 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id D46EC37C61;
+ Thu,  4 Aug 2022 10:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659608043;
+ t=1659608894;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=De/SpeZM8ZAa/P1RfxrkGpN/xnYAKkvsj0pZbWA5sRE=;
- b=pHOMufDHb3mnlxISW+lhd0ShNl0t6QGnFH8RiEAxa/SgfrXSrcCAHo+R99+UjnlUrw4bPd
- Qqa1AQRjGPwN1NwJouzb3PLYe3y1melmf/gPMmtYkNpeoqtLqZeRkCIZJfjxXt2Hh1paFI
- x3jF8Wf1h4zVs396yTAKPtkoF8peRgA=
+ bh=iIBuEC43DEkA8oduiKuox1JqAYdvsiglHpnFrQ3pJHo=;
+ b=pGtnvP+lYvYlGDLDcfMk+zW7ACcgCe09QtJZsy/km9XHMN3gtOfBvdpqfaNOrowgjJDB+2
+ TPeErvRPp+GLFn103hAl4/RxZWhCVSloiTH2BObHfG0jTZAgoHg3m+bBF8i6yhtAZ2wctn
+ 0THAOcRk8tQO0j+y8OtkjByzIWLAnng=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659608043;
+ s=susede2_ed25519; t=1659608894;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=De/SpeZM8ZAa/P1RfxrkGpN/xnYAKkvsj0pZbWA5sRE=;
- b=mezpDmo4vBgV4yqzR8xXt/oGqO9KSlKIYkuOEbI4Ny4o1WDWfJKWPLCct6ELFLNrFAz7ew
- x1wtbZ7tP5fpWnDg==
+ bh=iIBuEC43DEkA8oduiKuox1JqAYdvsiglHpnFrQ3pJHo=;
+ b=YlGDjRziaPYtboiduPfsJ4xCp5OSOWZqlGS3yuGY5WwAFuQtbL8e+Gk0/NHL6QMxdJN7Gz
+ 6ikamx3msrY8FNDA==
 Received: from g78 (unknown [10.163.17.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 392EB2C16E;
- Thu,  4 Aug 2022 10:14:03 +0000 (UTC)
-References: <20220725100641.11625-1-rpalethorpe@suse.com>
- <CAEemH2ck+baL4PA5F5OoL1VRCS+W=CJHpXJbx9-jUNVa9ofR0Q@mail.gmail.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 85D212C141;
+ Thu,  4 Aug 2022 10:28:14 +0000 (UTC)
+References: <1659521981-2241-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1659521981-2241-2-git-send-email-xuyang2018.jy@fujitsu.com>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Li Wang <liwang@redhat.com>
-Date: Thu, 04 Aug 2022 10:47:43 +0100
-In-reply-to: <CAEemH2ck+baL4PA5F5OoL1VRCS+W=CJHpXJbx9-jUNVa9ofR0Q@mail.gmail.com>
-Message-ID: <874jystixh.fsf@suse.de>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 04 Aug 2022 11:24:08 +0100
+In-reply-to: <1659521981-2241-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Message-ID: <87zggks3pe.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/4] read_all: Add worker timeout and rewrite
- scheduling
+Subject: Re: [LTP] [PATCH v1 2/3] tst_cgroup: Add safe_cg_open and
+ safe_cg_fchown functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,116 +72,83 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: LTP List <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Li,
+Hello,
 
-Li Wang <liwang@redhat.com> writes:
+Yang Xu <xuyang2018.jy@fujitsu.com> writes:
 
-> Hi Richard, All,
+> safe_cg_open is used to open the sub control's file ie cgroup.procs
+> and returns the fd.
 >
-> On Mon, Jul 25, 2022 at 6:06 PM Richard Palethorpe <rpalethorpe@suse.com> wrote:
+> safe_cg_fchown is used to use fchownat to change file's uid and gid.
 >
->  Kill and restart workers that take too long to read a file. The
->  default being 10% of max_runtime. A custom time can be set with the
->  new -t option.
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  include/tst_cgroup.h | 15 +++++++++++++++
+>  lib/tst_cgroup.c     | 39 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 54 insertions(+)
 >
->  This is to prevent a worker from blocking forever in a read. Currently
->  when this happens the whole test times out and any remaining files in
->  the worker's queue are not tested.
->
->  As a side effect we can now also set the timeout very low to cause
->  partial reads. However setting it to less than the time it takes to
->  start (fork) a new worker is treated as an error. Forking takes much
->  longer than most reads.
->
->  A number of other possible issues were fixed as well as a side effect
->  of changing the scheduling:
->
->  + The worker queues are now filled in a
->    "round robin" way. Before this only happened when -r was large
->    enough.
->  + When testing is finished the main process waits on the child procs before
->    destroying the semaphores and worker queues.
->  + max_runtime is set to 100 secs. This is so that the worker timeout
->    is a round number.
->  + Files which don't implement O_NONBLOCK and may block, no longer need
->    to be avoided. Even if they refuse to die immediately;
->    although this may result in TBROK due to zombie processes.
->
->  Note that with a worker timeout of 1s, 2 to 3 files will usually timeout on
->  my workstation. With 2s, none will. In any case testing completes in
->  under 3s for proc, sys or dev.
->
->  This is much faster than many other machines. It's quite likely the
->  worker timeout and max_runtime need to be increased on small and very
->  large machines. This can be done manually by setting LTP_RUNTIME_MUL.
->
-> Yes, apart from a bit of difficulty (at least for me) to comprehend the detailed
-> behavior of this scheduler :). 
->
-> Thanks for your improvements! Just one tiny query below.
->
-> Reviewed-by: Li Wang <liwang@redhat.com>
+> diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+> index d06847cc6..292c9baa4 100644
+> --- a/include/tst_cgroup.h
+> +++ b/include/tst_cgroup.h
+> @@ -188,6 +188,21 @@ ssize_t safe_cg_read(const char *const file, const int lineno,
+>  			 char *const out, const size_t len)
+>  			 __attribute__ ((nonnull));
+>  
+> +#define SAFE_CG_OPEN(cg, file_name, flags)			\
+> +	safe_cg_open(__FILE__, __LINE__, (cg), (file_name), (flags))
+> +
+> +int safe_cg_open(const char *const file, const int lineno,
+> +		 const struct tst_cg_group *const cg,
+> +		 const char *const file_name, int flags);
+> +
+> +#define SAFE_CG_FCHOWN(cg, file_name, owner, group)		\
+> +	safe_cg_fchown(__FILE__, __LINE__,			\
+> +			   (cg), (file_name), (owner), (group))
+> +
+> +void safe_cg_fchown(const char *const file, const int lineno,
+> +		    const struct tst_cg_group *const cg,
+> +		    const char *const file_name, uid_t owner, gid_t group);
+> +
+>  #define SAFE_CG_PRINTF(cg, file_name, fmt, ...)			\
+>  	safe_cg_printf(__FILE__, __LINE__,				\
+>  			   (cg), (file_name), (fmt), __VA_ARGS__)
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index 1cfd79243..dedc0f65b 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -1297,6 +1297,45 @@ ssize_t safe_cg_read(const char *const file, const int lineno,
+>  	return read_ret;
+>  }
+>  
+> +int safe_cg_open(const char *const file, const int lineno,
+> +			const struct tst_cg_group *cg,
+> +			const char *const file_name, int flags)
+> +{
+> +	const struct cgroup_file *const cfile =
+> +		cgroup_file_find(file, lineno, file_name);
+> +	struct cgroup_dir *const *dir;
+> +	const char *alias;
+> +	int fd;
+> +
+> +	for_each_dir(cg, cfile->ctrl_indx, dir) {
+> +		alias = cgroup_file_alias(cfile, *dir);
+> +		if (!alias)
+> +			continue;
+> +
+> +		fd = safe_openat(file, lineno, (*dir)->dir_fd, alias,
+> flags);
 
-Thanks!
->
->   
->  --- a/testcases/kernel/fs/read_all/read_all.c
->  +++ b/testcases/kernel/fs/read_all/read_all.c
->  ...
->
->  +#include <signal.h>
->   #include <sys/types.h>
->   #include <sys/stat.h>
->  +#include <sys/wait.h>
->   #include <lapi/fnmatch.h>
->   #include <stdlib.h>
->   #include <stdio.h>
->  @@ -43,7 +45,10 @@
->   #include <pwd.h>
->   #include <grp.h>
->
->  +#include "tst_atomic.h"
->  +#include "tst_safe_clocks.h"
->   #include "tst_test.h"
->  +#include "tst_timer.h"
->
->   #define QUEUE_SIZE 16384
->   #define BUFFER_SIZE 1024
->  @@ -55,11 +60,15 @@ struct queue {
->          int front;
->          int back;
->          char data[QUEUE_SIZE];
->
-> I doubt whether we need to maintain a queue to store the paths.
-> During the test it seems only one path is being pushed in the q->data[],
-> so the rest of the space is wasted, right?
->
-> By shrinking the QUEUE_SIZE to equal BUFFER_SIZE, the test
-> still works normally.
-
-The rest of the space should be being used unless it is buggy. It's a
-circle buffer with multiple (variable length) items delimited by \0.
-
-However it's a very good point you make. It's true that having a
-multi-item queue on each worker is not necessary.
-
-At most we need two buffers (or a flip buffer) on each worker, one
-containing the current path being worked on and one with the next path
-to be worked on.
-
-This would be much simpler than the circle buffer queue I originally
-implemented. It may mean the workers are more likely to starve while
-waiting for the main process. However the main process usually adds work
-far faster than the workers can consume it.
-
-So we should probably swap the queue for a flip buffer. I'll look into
-that and merge this patchset as it is for now.
+This will only return the last fd that gets opened. That's OK if the
+file only exists on a single V1 controller, but if it exists on multiple
+controllers (e.g. any cgroup.* file) then we will open multiple files
+and only return the fd for the last of them.
 
 -- 
 Thank you,
