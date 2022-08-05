@@ -4,75 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DA42C00140
-	for <ltp@archiver.kernel.org>; Fri,  5 Aug 2022 10:05:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECC2BC00140
+	for <ltp@archiver.kernel.org>; Fri,  5 Aug 2022 10:18:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CE7FB3C9442
-	for <ltp@archiver.kernel.org>; Fri,  5 Aug 2022 12:05:00 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 82A363C9478
+	for <ltp@archiver.kernel.org>; Fri,  5 Aug 2022 12:18:52 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B5F713C021D
- for <ltp@lists.linux.it>; Fri,  5 Aug 2022 12:04:51 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B50F93C062C
+ for <ltp@lists.linux.it>; Fri,  5 Aug 2022 12:18:42 +0200 (CEST)
+Received: from a8-29.smtp-out.amazonses.com (a8-29.smtp-out.amazonses.com
+ [54.240.8.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 273222009DA
- for <ltp@lists.linux.it>; Fri,  5 Aug 2022 12:04:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1659693889;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DRISR1ny+hs7XZrga6g8Pfg7pNkVCoT7rRcyTqGgldk=;
- b=ZL97LTrRcu8P5LKWC+oJCsse9gTp+Owr26H9QaQBTeid3i2mg3Eq3VQxp0EiILlVh7Rg1D
- ULXWD558vIYFj1v5eD+vNR+nqRzIGoGXAYwWNaU5fgapIQ4x0fovDJMToSo46Kvb04B2ue
- bN6nCJAgiJuLlHb4P1B3zEYXdgYYuJw=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-638-ACOn7m10McKS6nGLmWHotg-1; Fri, 05 Aug 2022 06:04:48 -0400
-X-MC-Unique: ACOn7m10McKS6nGLmWHotg-1
-Received: by mail-yb1-f199.google.com with SMTP id
- s186-20020a255ec3000000b0067162ed1bd3so1707735ybb.8
- for <ltp@lists.linux.it>; Fri, 05 Aug 2022 03:04:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=DRISR1ny+hs7XZrga6g8Pfg7pNkVCoT7rRcyTqGgldk=;
- b=zXxqPEn5l1R/RGcsrcT3WhVdBuvXbeJ5a6YiDEPAqlTNU3NcwD5bjeFgFzsk2b4Rfm
- CEfA5d7SfHSXM2wQokhzuQ5diA+noN1DLacN0lpT5pvzDzAuxRXCzk/rTsr4ScrQYKvX
- qlOzOyeb83QQzTFeagREZOGCw+BE8wpXJWI0vT1iEQKGMcp5Zemr/nngFWg7l834O+cS
- 87Tg7fdjiNnTEFfntuUIkeSc58i9V/zIhFecIcG/btuGuMt1MOmP9JF1kuyzX1w2NJRJ
- FYIdpx/CwB4SlGWNQeXyYvflr8NOpOBcwaCzjVz9UJKXOqD/oCz7VmE8hBJmFQRKucq3
- dskA==
-X-Gm-Message-State: ACgBeo2NlufEIwRMwjoC0kZ/4HMiQWU3tNCdu1v12gkLWucKPAE+EPml
- eec4DI4bVV34+2TYsLH5W8ytM++SCOXNhGLfuHHr6b10OmPNAq5518yVApy4ZvjHJtxEMbgewWZ
- qz5lfOPUZMt/O91ZIIqfjYR4zcsQ=
-X-Received: by 2002:a05:6902:724:b0:67a:3d6c:213d with SMTP id
- l4-20020a056902072400b0067a3d6c213dmr4781145ybt.461.1659693887667; 
- Fri, 05 Aug 2022 03:04:47 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR5cks6OFXN63B4vXAGC10KE3CZVmj5OpcMRA/gEFAPDYtK9D13kKJjAEbqt+jnja4xyX9fJQhxZmWKY8D6qvP4=
-X-Received: by 2002:a05:6902:724:b0:67a:3d6c:213d with SMTP id
- l4-20020a056902072400b0067a3d6c213dmr4781130ybt.461.1659693887373; Fri, 05
- Aug 2022 03:04:47 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A05F81400452
+ for <ltp@lists.linux.it>; Fri,  5 Aug 2022 12:18:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1659694720;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=pc/Fc9XeqgmmPuFWdv9MgvMkhcZdIZ6kEAvmWehhk84=;
+ b=douRR+tgzIQOdQxWhGxSiCK6HL5vX6ieJbGbU2exxq0V6jK8g3Ui4s2VadkEFyc7
+ DUHem1dTOr0HXl4e1jdvGWWM5fBlpxc/ax6LaiMei7KU8IlQL5rNc4JLiduBezsTPOi
+ PeDRIs5LEnxfPxEy8lUtN3DckXFL4J6tJe7jnBgM=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1659694720;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=pc/Fc9XeqgmmPuFWdv9MgvMkhcZdIZ6kEAvmWehhk84=;
+ b=FA5UzvnFEGSAB7BIb/yWAGaB+bG/XVRnKtD1CEZHABuOAKJrCvfBfIBUOSipPyhI
+ G6XzZJWjUMAjZTOQ32UCJzwdKrrOIqA7lKtSC6Q/g5UUNlPwqpGAfvTnNoT7MMt5FsQ
+ XQuiGVr1T6ok1js1G2Oi7AWttPqCwd7PBzWSlTRo=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-References: <20220805063401.1647479-1-liwang@redhat.com>
- <20220805063401.1647479-2-liwang@redhat.com>
- <YuzDY8Lg36lCXlEe@pevik>
-In-Reply-To: <YuzDY8Lg36lCXlEe@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 5 Aug 2022 18:04:36 +0800
-Message-ID: <CAEemH2dKyjLw4wH+yeMXyv6QLHyTLWbxxSeHpyuUBjDiFUhFOQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Message-ID: <010001826d83a393-16a42a0a-9703-4ea8-8278-e08934ea3a8c-000000@email.amazonses.com>
+Date: Fri, 5 Aug 2022 10:18:39 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.08.05-54.240.8.29
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lapi/pidfd: adding pidfd header file
+Subject: [LTP] lkft ltp for b857f87
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,88 +57,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0393043894=="
+Cc: lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0393043894==
-Content-Type: multipart/alternative; boundary="00000000000097dcd705e57b98d7"
+## Build
+* kernel: 5.18.16
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.18.y
+* git commit: 8843bf1f0737ecea456d2bbd19d4263d49f2d110
+* git describe: b857f87
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/b857f87
 
---00000000000097dcd705e57b98d7
-Content-Type: text/plain; charset="UTF-8"
+## Test Regressions (compared to d4f0d8e)
+No test regressions found.
 
-Hi Petr,
+## Metric Regressions (compared to d4f0d8e)
+No metric regressions found.
 
-On Fri, Aug 5, 2022 at 3:14 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-> Hi Li,
->
-> obviously correct, thanks!
->
-
-Patchset merged.
-
-
-> BTW if you wish to use rawhide in CI, we can give it a try
-> (could be reverted to fedora:latest - i.e. the latest release if got
-> problematic).
->
-
-Thanks, but I'm not very passionate about enabling it, as we now have
-ltp quick test on fedora-rawhide internally(RedHat), but obviously that
-consumed people's energy on debugging *temporally* failure[1]. I'm still
-thinking if that's worth it.
-
-[1] some of them disappear after code-rebase or package upgrading
-
--- 
-Regards,
-Li Wang
-
---00000000000097dcd705e57b98d7
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Petr,</div></div><br><div class=3D"gmail_quote"><div dir=
-=3D"ltr" class=3D"gmail_attr">On Fri, Aug 5, 2022 at 3:14 PM Petr Vorel &lt=
-;<a href=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></div><=
-blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-l=
-eft:1px solid rgb(204,204,204);padding-left:1ex">Hi Li,<br>
-<br>
-obviously correct, thanks!<br></blockquote><div><br></div><div><div class=
-=3D"gmail_default" style=3D"font-size:small">Patchset merged.</div></div><d=
-iv><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px =
-0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-BTW if you wish to use rawhide in CI, we can give it a try<br>
-(could be reverted to fedora:latest - i.e. the latest release if got<br>
-problematic).<br></blockquote><div><br></div><div><div class=3D"gmail_defau=
-lt" style=3D"font-size:small">Thanks, but I&#39;m not very passionate about=
- enabling it, as we now have</div><div class=3D"gmail_default" style=3D"fon=
-t-size:small">ltp quick test on fedora-rawhide internally(RedHat), but obvi=
-ously that</div><div class=3D"gmail_default" style=3D"font-size:small">cons=
-umed people&#39;s energy on debugging *temporally* failure[1]. I&#39;m stil=
-l</div><div class=3D"gmail_default" style=3D"font-size:small">thinking if t=
-hat&#39;s worth it.</div></div><div class=3D"gmail_default" style=3D"font-s=
-ize:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small"=
->[1] some of them disappear after code-rebase or package upgrading</div></d=
-iv><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div di=
-r=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
-
---00000000000097dcd705e57b98d7--
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
---===============0393043894==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+## Test Fixes (compared to d4f0d8e)
+No test fixes found.
 
+## Metric Fixes (compared to d4f0d8e)
+No metric fixes found.
+
+## Test result summary
+total: 1120, pass: 1120, fail: 0, skip: 0, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* log-parser-boot
+* log-parser-test
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0393043894==--
-
