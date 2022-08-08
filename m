@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62FCAC25B07
-	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 11:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F6C8C00140
+	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 11:38:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 273123C945E
-	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 13:12:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5F6E43C9539
+	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 13:38:12 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 18AB33C712D
- for <ltp@lists.linux.it>; Mon,  8 Aug 2022 13:12:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7C5DF3C91F1
+ for <ltp@lists.linux.it>; Mon,  8 Aug 2022 13:38:02 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DB61F1A006E0
- for <ltp@lists.linux.it>; Mon,  8 Aug 2022 13:12:21 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DFF776006E6
+ for <ltp@lists.linux.it>; Mon,  8 Aug 2022 13:38:01 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CDC9D378FB;
- Mon,  8 Aug 2022 11:12:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 45BD220B66;
+ Mon,  8 Aug 2022 11:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1659957140;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1659958681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lX4TOhlw7h8AwpxFC7SjavCzix9p1oAwtGr2NZfh360=;
- b=v7u3Otr7h9lHtSlr4eVUw0zC6dVTW55sANITqosp7EezcJ1aVKLpS8Sff7vj0lWhQUNsUM
- 3rIbEgVw2sX4+SfxOfTeBGXXqbg7THtoSmifp9LIvoKSH46gHD7/egzl3nh1PRjjoSz6VT
- a1atbIUrLKf8tCRAxHKwh8Ecm2kd1f4=
+ bh=m2B6QpTyz9udmWdGc6xYWYdMsbdBOhN81v/twKgGsos=;
+ b=mhmu2/58Zcxu+HF8vx7cGYkehqnCNyGAZSS+peEkIFsoYRNAFRdF1O31UReIWbuB0Rc6jZ
+ 1ui0xtwnR58KPT2JlsKjwmP3sZqLDDj2KFYT/s6BHCmb3q/5dxGhabmE1ee18hEWMyMqXI
+ 8XHOJmZZofYD0++aZiCzP+VsiOdiMYk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1659957140;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1659958681;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lX4TOhlw7h8AwpxFC7SjavCzix9p1oAwtGr2NZfh360=;
- b=Bs8qGxIDzfJaNrl+DKO6cTLDEESvO7/+jugsBgv732Ffv9wjlBK+sCMhCXtl3iAsGZCjhl
- S8PdgDGvL1RbqeDg==
+ bh=m2B6QpTyz9udmWdGc6xYWYdMsbdBOhN81v/twKgGsos=;
+ b=WOqI7NmamqGE8X0JpaGgVvkP9l4PSJrAXtJj1R5qapjzhX9WxGLdC7x5AgAR6h08x6Zy2q
+ 1563kQCNDbEfZGDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A139613AB3;
- Mon,  8 Aug 2022 11:12:20 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1199513AB3;
+ Mon,  8 Aug 2022 11:38:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id jsbBJJTv8GJoIgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 08 Aug 2022 11:12:20 +0000
-Date: Mon, 8 Aug 2022 13:12:13 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id YO6aApn18GJ0LgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 08 Aug 2022 11:38:01 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Message-ID: <YvDvjVU66LrHpZ2M@pevik>
-References: <20220808101019.29892-1-pvorel@suse.cz>
- <20220808101019.29892-3-pvorel@suse.cz>
+Date: Mon,  8 Aug 2022 13:37:53 +0200
+Message-Id: <20220808113756.11582-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20220808113756.11582-1-pvorel@suse.cz>
+References: <20220808113756.11582-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220808101019.29892-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/4] tst_ansi_color.sh: Allow to run with set -e
+Subject: [LTP] [PATCH v4 1/4] tst_test.sh: runtest.sh: Remove unused code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,40 +76,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> set -e (or #!/bin/sh -e or set -o errexit) quits on any non-zero exit
-> code, harden tst_res TINFO to be able to be used on scripts with it.
+This code is in tst_print_colored() (probably forgotten to remove code
+from tst_test.sh in a7f613372 when moved to tst_print_colored during
+development; later copy wrong code in d132084bc into runtest.sh).
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/lib/tst_ansi_color.sh | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+Fixes: a7f613372 ("Colorize test type in the output")
+Fixes: d132084bc ("lib: Add script for running tests")
 
-> diff --git a/testcases/lib/tst_ansi_color.sh b/testcases/lib/tst_ansi_color.sh
-> index 703df1eb8..4b2255448 100644
-> --- a/testcases/lib/tst_ansi_color.sh
-> +++ b/testcases/lib/tst_ansi_color.sh
-> @@ -32,8 +32,9 @@ tst_color_enabled()
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/newlib_tests/runtest.sh | 3 ---
+ testcases/lib/tst_test.sh   | 3 ---
+ 2 files changed, 6 deletions(-)
 
->  tst_print_colored()
->  {
-> -	tst_color_enabled
-> -	local color=$?
-> +	local color=0
-> +
-> +	tst_color_enabled || color=$?
-OK, this is not working for LTP_COLORIZE_OUTPUT=n => v4 will come shortly.
+diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
+index f136bcb88..e78b556c5 100755
+--- a/lib/newlib_tests/runtest.sh
++++ b/lib/newlib_tests/runtest.sh
+@@ -48,9 +48,6 @@ runtest_res()
+ 	local res="$1"
+ 	shift
+ 
+-	tst_color_enabled
+-	local color=$?
+-
+ 	printf "runtest " >&2
+ 	tst_print_colored $res "$res: " >&2
+ 	echo "$@" >&2
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index a35fa2e7b..356af0106 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -112,9 +112,6 @@ tst_res()
+ 	local res=$1
+ 	shift
+ 
+-	tst_color_enabled
+-	local color=$?
+-
+ 	_tst_inc_res "$res"
+ 
+ 	printf "$TST_ID $TST_COUNT " >&2
+-- 
+2.37.1
 
-Kind regards,
-Petr
-
->  	[ "$color" = "1" ] && tst_flag2color "$1"
->  	printf "$2"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
