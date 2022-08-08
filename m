@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42AE3C00140
-	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 12:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD081C00140
+	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 12:43:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 663FE3C9575
-	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 14:35:04 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 3134E3C952F
+	for <ltp@archiver.kernel.org>; Mon,  8 Aug 2022 14:43:12 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E594B3C4DF4
- for <ltp@lists.linux.it>; Mon,  8 Aug 2022 14:34:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id E44793C6D89
+ for <ltp@lists.linux.it>; Mon,  8 Aug 2022 14:43:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 43BCB60070E
- for <ltp@lists.linux.it>; Mon,  8 Aug 2022 14:34:53 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 78046100040B
+ for <ltp@lists.linux.it>; Mon,  8 Aug 2022 14:43:00 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 16D0E2019A;
- Mon,  8 Aug 2022 12:34:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7D43D1F952;
+ Mon,  8 Aug 2022 12:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1659962093;
+ t=1659962580;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NS/wuIx/GBQE2PEQmNSdFQQApD2iODS1bGeC7QioEUo=;
- b=xYfjSqVVw1iiKB1Nu61whfEcg3Xo5hV59koMbnULVd1rOK+scclC/KjyzKpyY41Lg51Jd0
- JxeCMIaCfof4zpxcfdpASz0Tn92GtIrF57N3qcVQQvX9d2Qqti8bbfzsNh9NGXqyR/Voe4
- RsiJtOxznrh2vD2Y+9Sxx8W9151cUgo=
+ bh=NTKUfMw4C9XeGUPBumWO8Fg8N8q2mGTcSKJ4oRSO1mQ=;
+ b=d02B7J3m1rJIqLbAIE3msGHvp4DgtXC3EJnOXR8JroUC4QOI7u2UXu94jqnjoP9puzkgu2
+ awjIv/WaJcvwXK+mpUAGN/XHNCCSKZY+x76M0FvBL1bdWy9MuJWEuhqXtkG+79cWN/TKpB
+ UKMz5k3a+vM50SrtgTqnOtm2FYcuyg8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1659962093;
+ s=susede2_ed25519; t=1659962580;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NS/wuIx/GBQE2PEQmNSdFQQApD2iODS1bGeC7QioEUo=;
- b=OcORtohA8mi1WfY/JaGANc295YTiKPFXLjc0IzPJ6JI2Z5igpKwSGDeij1TI5ZAi3iDN/Y
- QrJDh6nDkN3gmeCg==
+ bh=NTKUfMw4C9XeGUPBumWO8Fg8N8q2mGTcSKJ4oRSO1mQ=;
+ b=EbA+MwGnnnF0KtyUA6uCHcfzLUa2Eqg2FgwU1ZFJHZusBwErYzfyc2wCgcgeRIOUd58f74
+ jKjOkhdPBFVmpNCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E592313A7C;
- Mon,  8 Aug 2022 12:34:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08AAE13A7C;
+ Mon,  8 Aug 2022 12:42:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Tog8NuwC8WJgSQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 08 Aug 2022 12:34:52 +0000
-Date: Mon, 8 Aug 2022 14:34:50 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id vy5/OdME8WJBTQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 08 Aug 2022 12:42:59 +0000
+Date: Mon, 8 Aug 2022 14:42:56 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YvEC6gpWO7qnV7sd@pevik>
-References: <20220708170634.842-1-akumar@suse.de> <YsxHHDw0H1lZTFMN@pevik>
- <118407732.DU46jWBZyT@localhost>
+Message-ID: <YvEE0P7lCkXUAaWD@pevik>
+References: <20220727061157.30554-1-akumar@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <118407732.DU46jWBZyT@localhost>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20220727061157.30554-1-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fstat02.c: simplify using TST_EXP_*() macros
+Subject: Re: [LTP] [PATCH v2] fstat02.c: simplify using TST_EXP_*() macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,17 +82,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Monday, July 11, 2022 9:21:56 PM IST Petr Vorel wrote:
-> > Hi Avinesh,
+Hi Avinesh,
 
-
-> > LGTM, thanks!
-> > Minor comments below.
-> Hi Petr, Thank you! I agree with your comments here.
-> Do I need to send v2 or you will merge with these changes?
-
-I'm sorry, I overlooked your question (vacation).
-Going to merge v2.
+thanks, merged!
++1 for fixing my points.
 
 Kind regards,
 Petr
