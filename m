@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5886EC19F2D
-	for <ltp@archiver.kernel.org>; Tue,  9 Aug 2022 05:29:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508A8C19F2D
+	for <ltp@archiver.kernel.org>; Tue,  9 Aug 2022 05:50:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4DE343C94FD
-	for <ltp@archiver.kernel.org>; Tue,  9 Aug 2022 07:29:54 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id F0A0C3C94E0
+	for <ltp@archiver.kernel.org>; Tue,  9 Aug 2022 07:50:10 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ADA4F3C0646
- for <ltp@lists.linux.it>; Tue,  9 Aug 2022 07:29:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 5F68F3C0646
+ for <ltp@lists.linux.it>; Tue,  9 Aug 2022 07:50:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3D3F7200924
- for <ltp@lists.linux.it>; Tue,  9 Aug 2022 07:29:40 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 557BA1A007F0
+ for <ltp@lists.linux.it>; Tue,  9 Aug 2022 07:49:59 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8301633E97;
- Tue,  9 Aug 2022 05:29:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 94682202AD;
+ Tue,  9 Aug 2022 05:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660022980;
+ t=1660024197;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6tNB+tdOfAhqw1pTEzJmQVp1ZbSYCPmTUCtiOt+QimU=;
- b=NmnBTkGC7mnlYUS7hIaEi5HpNlWHX/Fcy+xkIKnuissKOftxa0tlpKyIg4ZOuNtDLopEph
- +9xxtT199XuIUHpwwbzSWjjC5NaD47jKep53ScdjaFtK2jPd4kxubD0LTIp0Ri615nI4FN
- 3odkrmCNeZgdSuCUPMADCFLm0g5iFj4=
+ bh=o1joQe4igtM5rWxtUdye5IJYkd7RVgkGKZxVUBIoy5g=;
+ b=rV9nqhew1xpIwDpv0G01HAUZ0f1lhTy+gE2g3fo9yHLC6vpbSj17guOp03yQynbGg6OgtW
+ mBf0h5GlH/ad3PfL717QRiXkBxgh6ZhS4JEZNUav4et1D+0rj2wi993Ug6v8N5j/QVnUvO
+ rfCQ/dzFUu4ezQmMDaX1HcrUNhzpfeI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660022980;
+ s=susede2_ed25519; t=1660024197;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6tNB+tdOfAhqw1pTEzJmQVp1ZbSYCPmTUCtiOt+QimU=;
- b=9YkTLRr64v2rGZFZ+elVDoLfuO68BkzJE8ecoq4xoBkmnon68CLtIkcB/pAVs7qyNJlY7+
- Nuj8sF8oE7rYtkCw==
+ bh=o1joQe4igtM5rWxtUdye5IJYkd7RVgkGKZxVUBIoy5g=;
+ b=E74OAtMX2X+MWCfnIfClUjyDJdBJ7f3Xs1jToaqvE5NjFjpuIBbWoCcIu3bhAhLXgu3RH5
+ u4JngWAIeKruJRBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54D211333E;
- Tue,  9 Aug 2022 05:29:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6141D1333E;
+ Tue,  9 Aug 2022 05:49:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 04w6E8Tw8WKnSAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 09 Aug 2022 05:29:40 +0000
-Date: Tue, 9 Aug 2022 07:29:38 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id +eMWFoX18WJETwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 09 Aug 2022 05:49:57 +0000
+Date: Tue, 9 Aug 2022 07:49:55 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Zhao Gongyi <zhaogongyi@huawei.com>
-Message-ID: <YvHwwsjr52lZXtVA@pevik>
-References: <20220804073805.196537-1-zhaogongyi@huawei.com>
+To: Edward Liaw <edliaw@google.com>
+Message-ID: <YvH1gzt85rP6mjQA@pevik>
+References: <20220804000626.1098734-1-edliaw@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220804073805.196537-1-zhaogongyi@huawei.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220804000626.1098734-1-edliaw@google.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] cpuhotplug*.sh: Check return value of
- online_cpu/offline_cpu
+Subject: Re: [LTP] [PATCH v1] syscalls/timerfd04: incorrect CLOCK_BOOTIME end
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,131 +76,24 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Zhao,
+Hi Edward,
 
-> We need to check the return value of online_cpu() and offline_cpu()
-> although it is always success.
+> The end time was hardcoded to CLOCK_MONOTONIC and needs to be changed to
+> the clk_id of the test case.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Looks reasonable.
+Good catch! This bug has been since ever, probably because reproducible
+only on bare metal SUT (wrong clock works on VM).
+
+Thanks, merged!
 
 Kind regards,
 Petr
-
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> ---
->  .../hotplug/cpu_hotplug/functional/cpuhotplug02.sh   | 10 ++++++++--
->  .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh   |  9 +++++++--
->  .../hotplug/cpu_hotplug/functional/cpuhotplug06.sh   |  5 ++++-
->  .../hotplug/cpu_hotplug/functional/cpuhotplug07.sh   | 12 ++++++------
->  4 files changed, 25 insertions(+), 11 deletions(-)
-
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
-> index f12aabc72..ba274db01 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
-> @@ -90,7 +90,10 @@ until [ $LOOP_COUNT -gt $HOTPLUG02_LOOPS ]; do
->  	set_affinity ${SPIN_LOOP_PID} ${CPU_TO_TEST}
-
->  	# Verify the process migrated to the CPU we intended it to go to
-> -	offline_cpu ${CPU_TO_TEST}
-> +	if ! offline_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be offlined"
-> +	fi
-> +
->  	NEW_CPU=`ps --pid=${SPIN_LOOP_PID} -o psr --no-headers`
->  	if [ -z "${NEW_CPU}" ]; then
->  		tst_brkm TBROK "PID ${SPIN_LOOP_PID} no longer running"
-> @@ -101,7 +104,10 @@ until [ $LOOP_COUNT -gt $HOTPLUG02_LOOPS ]; do
->  	fi
-
->  	# Turn the CPU back online just to see what happens.
-> -	online_cpu ${CPU_TO_TEST}
-> +	if ! online_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
-> +	fi
-> +
->  	LOOP_COUNT=$((LOOP_COUNT+1))
->  done
-
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-> index 2feb8d9ff..1eb204f4e 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-> @@ -36,7 +36,9 @@ EOF
->  do_clean()
->  {
->  	pid_is_valid ${SAR_PID} && kill_pid ${SAR_PID}
-> -	online_cpu "$CPU_TO_TEST"
-> +	if ! online_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
-> +	fi
->  }
-
->  get_field()
-> @@ -149,7 +151,10 @@ until [ $LOOP_COUNT -gt $HOTPLUG05_LOOPS ]; do
->  		tst_exit
->  	fi
-
-> -	offline_cpu ${CPU_TO_TEST}
-> +	if ! offline_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be offlined"
-> +	fi
-> +
->  	kill_pid ${SAR_PID}
-
->  	LOOP_COUNT=$((LOOP_COUNT+1))
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-> index 319c66537..b9c1889d3 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-> @@ -99,7 +99,10 @@ until [ $LOOP_COUNT -gt $HOTPLUG06_LOOPS ]; do
->  		tst_exit
->  	fi
-
-> -	online_cpu ${CPU_TO_TEST}
-> +	if ! online_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
-> +	fi
-> +
->  	kill_pid ${TOP_PID}
-
->  	LOOP_COUNT=$((LOOP_COUNT+1))
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
-> index 0d2dec7fe..af170f1cc 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
-> @@ -100,9 +100,9 @@ until [ $LOOP_COUNT -gt $HOTPLUG07_LOOPS ]; do
->  	# Move spin_loop.sh to the CPU to offline.
->  	set_affinity ${KCOMPILE_LOOP_PID} ${CPU_TO_TEST}
-
-> -	offline_cpu ${CPU_TO_TEST}
-> -	RC=$?
-> -	echo "Offlining cpu${CPU_TO_TEST}: Return Code = ${RC}"
-> +	if ! offline_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be offlined"
-> +	fi
-
->  	NEW_CPU=`ps --pid=${KCOMPILE_LOOP_PID} -o psr --no-headers`
->  	if [ -z "${NEW_CPU}" ]; then
-> @@ -113,9 +113,9 @@ until [ $LOOP_COUNT -gt $HOTPLUG07_LOOPS ]; do
->  		tst_exit
->  	fi
-
-> -	online_cpu ${CPU_TO_TEST}
-> -	RC=$?
-> -	echo "Onlining cpu${CPU_TO_TEST}: Return Code = ${RC}"
-> +	if ! online_cpu ${CPU_TO_TEST}; then
-> +		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
-> +	fi
-
->  	LOOP_COUNT=$((LOOP_COUNT+1))
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
