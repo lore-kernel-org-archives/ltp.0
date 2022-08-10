@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12B40C00140
-	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 16:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E45A1C00140
+	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 16:38:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 859C43C971B
-	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 18:30:12 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 1E1393C94B0
+	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 18:38:30 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B65F43C920E
- for <ltp@lists.linux.it>; Wed, 10 Aug 2022 18:30:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 1EDC33C920E
+ for <ltp@lists.linux.it>; Wed, 10 Aug 2022 18:38:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1C49F14002D3
- for <ltp@lists.linux.it>; Wed, 10 Aug 2022 18:30:01 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 514071A00906
+ for <ltp@lists.linux.it>; Wed, 10 Aug 2022 18:38:18 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4345C348C6;
- Wed, 10 Aug 2022 16:30:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 38D6C37BD9;
+ Wed, 10 Aug 2022 16:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660149001;
+ t=1660149498;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6P3aQVR77miV0IBQlhtScivKZAr53D52+udYIz4RsNo=;
- b=wgVcv5CoOAcFkl6a4HJxOsapEJG1+7KEALEjxnlUhS9gHSeiu3Yj5e5aFaX6+jA06koERb
- 66ry0NsmWHy7fRrooVMNXP+ejKclwO3fovtxW5jRq8HZ7ptqUokVMueKEhiGvwyOgQAqKn
- b+5qnG1bjUtLK2ho4o/dl9hbDeojjr8=
+ bh=MItfLdweFxok0p5mi3Hbzi2HHTfdH7ywiJcc8f6ZiPQ=;
+ b=EeDPFeNXlgEVTaXoM563R3K5p95D1uZ6fG0RBpJNSAWA/Pkn0F62+Db6ALwro0Ta/Bn1Qo
+ RipmKmiUH9/vVFFZTwT8BLH9Mc9YUG6AG31NMiO8rAHMv2d6FIe9DD651PBOD2f8zRtp2j
+ dylGCS7kh0946FGYJW/TVANFZNMFn5Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660149001;
+ s=susede2_ed25519; t=1660149498;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6P3aQVR77miV0IBQlhtScivKZAr53D52+udYIz4RsNo=;
- b=2Xpmshxp7SAwI2QAvNwFqHnPqoDOTRgxqPOxwdtXoii/yQxBH5QMFN4R9M6IitdvGZ66Wi
- W/MV6qzFS3h+e3AA==
+ bh=MItfLdweFxok0p5mi3Hbzi2HHTfdH7ywiJcc8f6ZiPQ=;
+ b=upBlSqBaQaBfxZdblRRF+CD63FS8XPZwcLmtiP8/r79346c7YMdzXOU25QC3Lc7DYpTQuy
+ GgcDJJKvyApp/bDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F365313AB3;
- Wed, 10 Aug 2022 16:30:00 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 094A213AB3;
+ Wed, 10 Aug 2022 16:38:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WD6aOAjd82IwbQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 10 Aug 2022 16:30:00 +0000
-Date: Wed, 10 Aug 2022 18:29:59 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id rph8APre82LfcAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 10 Aug 2022 16:38:18 +0000
+Date: Wed, 10 Aug 2022 18:38:15 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YvPdB6YhTlDAlPBR@pevik>
+Message-ID: <YvPe96wKjXH27S2B@pevik>
 References: <20220808113756.11582-1-pvorel@suse.cz>
- <20220808113756.11582-4-pvorel@suse.cz>
- <7d501d57-2438-cd28-5e49-019ea06fb8f2@suse.cz>
+ <20220808113756.11582-5-pvorel@suse.cz>
+ <b7559faa-50db-a339-8685-1e0f55427513@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <7d501d57-2438-cd28-5e49-019ea06fb8f2@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <b7559faa-50db-a339-8685-1e0f55427513@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/4] tst_test.sh: Fix _tst_cleanup_timer() on
- set -e
+Subject: Re: [LTP] [PATCH v4 4/4] generate_lvm_runfile.sh: Fix bashism
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,62 +88,50 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Hi Martin,
 
 > Hi,
-> a comment explaining why this is needed would be nice, otherwise looks
-> good. For patches 2 and 3:
+> I've tested the patchset and the generator script now work correctly.
 
-> Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+Thanks! I'll wait unless you suggest anything on 3rd commit and merge with this
+style change below. FYI I tested various setup:
 
-> On 08. 08. 22 13:37, Petr Vorel wrote:
-> > If test exits on time (i.e. no timeout) kill in _tst_cleanup_timer()
-> > have nothing to kill therefore following wait exits 143.
-I thought this is the explanation. Or would you prefer anything else to add?
+for i in y n 0 1 ""; do
+	echo "== '$i' =="
+	LTP_COLORIZE_OUTPUT=$i PATH="/opt/ltp/testcases/bin:$PATH" $f
+	rc=$?
+	echo "'$i': $rc"
+	[ $rc -eq 0 ] || break
+done
+
+I also added patch for this test
+https://lore.kernel.org/ltp/20220808122716.18556-1-pvorel@suse.cz/
 
 Kind regards,
 Petr
 
-> > set -e (or #!/bin/sh -e or set -o errexit) quits on any non-zero exit code,
-> > fix hardens _tst_cleanup_timer() to be able to be used on scripts with it.
+> Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > I can use 'if ...; then ; fi' if you prefer:
-
-> > 	if [ "$LTP_COLORIZE_OUTPUT" = "n" -o "$LTP_COLORIZE_OUTPUT" = "0" ]; then
-> > 		return 0
-> > 	fi
-
-> > 	if [ "$LTP_COLORIZE_OUTPUT" = "y" ] || [ "$LTP_COLORIZE_OUTPUT" = "1" ]; then
-> > 		return 1
-> > 	fi
-
-> > ...
-> > 	if [ "$color" = 1 ]; then
-> > 		tst_flag2color "$1"
-> > 	fi
-> > 	printf "$2"
-> > 	if [ "$color" = 1 ]; then
-> > 		printf '\033[0m'
-> > 	fi
-
-
-> > Kind regards,
-> > Petr
-
-> >  testcases/lib/tst_test.sh | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-
-> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> > index 356af0106..1d2bf06cc 100644
-> > --- a/testcases/lib/tst_test.sh
-> > +++ b/testcases/lib/tst_test.sh
-> > @@ -518,7 +518,7 @@ _tst_cleanup_timer()
-> >  {
-> >  	if [ -n "$_tst_setup_timer_pid" ]; then
-> >  		kill -TERM $_tst_setup_timer_pid 2>/dev/null
-> > -		wait $_tst_setup_timer_pid 2>/dev/null
-> > +		wait $_tst_setup_timer_pid 2>/dev/null || true
-> >  	fi
-> >  }
+diff --git testcases/lib/tst_ansi_color.sh testcases/lib/tst_ansi_color.sh
+index 517b709d0..04e120cf7 100644
+--- testcases/lib/tst_ansi_color.sh
++++ testcases/lib/tst_ansi_color.sh
+@@ -24,9 +24,16 @@ tst_flag2color()
+ 
+ tst_color_enabled()
+ {
+-	[ "$LTP_COLORIZE_OUTPUT" = "n" -o "$LTP_COLORIZE_OUTPUT" = "0" ] || return 1
+-	[ "$LTP_COLORIZE_OUTPUT" = "y" -o "$LTP_COLORIZE_OUTPUT" = "1" ] || return 0
++	if [ "$LTP_COLORIZE_OUTPUT" = "n" -o "$LTP_COLORIZE_OUTPUT" = "0" ]; then
++		return 0
++	fi
++
++	if [ "$LTP_COLORIZE_OUTPUT" = "y" -o "$LTP_COLORIZE_OUTPUT" = "1" ]; then
++		return 0
++	fi
++
+ 	[ -t 1 ] || return 0
++
+ 	return 1
+ }
+ 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
