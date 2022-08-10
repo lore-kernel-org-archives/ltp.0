@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90EA6C00140
-	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 15:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01992C00140
+	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 15:14:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0738A3C954A
-	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 17:09:11 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 147DE3C954D
+	for <ltp@archiver.kernel.org>; Wed, 10 Aug 2022 17:14:08 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DFDE3C013B
- for <ltp@lists.linux.it>; Wed, 10 Aug 2022 17:09:01 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 063CE3C013B
+ for <ltp@lists.linux.it>; Wed, 10 Aug 2022 17:13:59 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 815641400335
- for <ltp@lists.linux.it>; Wed, 10 Aug 2022 17:08:59 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 96596600803
+ for <ltp@lists.linux.it>; Wed, 10 Aug 2022 17:13:58 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8935D378F1;
- Wed, 10 Aug 2022 15:08:59 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D569037F2F;
+ Wed, 10 Aug 2022 15:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660144139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1660144437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FJyftLZ0jgmepYKyv4s8d/yRjYwub6T6595kT36xtc8=;
- b=E0I0AIeDnxkAawBwtjFTziF90+JDwhE+dCCMoYuRMUYJtYAEVc2MDdCzVYMdewamrVCWrf
- yz+ZYoPNljrELCkUpbvzzFMHlfRyKh+1nNqhiFw2ZH9OE2ZwAzES2i+DsJEUE+sDmQlT7q
- xzAK0cuv6v9UAX7WIdHx7T9+JUW4QvU=
+ bh=Sca/31l4Sli9ZJ6W0yBUZfX1zUaahHDxq1m3PlTFjaA=;
+ b=SCPX5S6Hizzx9lD5SF87CIcZLnHUKSChITLJhgZlCZOde8QY2zSIHIyXi1fk439c4uISY5
+ XkXODwSfJwHhLQA4ruTCbvQrWlagghmxcmiS/rmm1LMbq4N9CzQ3Y3izc/DQcSu7JJR2yG
+ +x/Xgkd0RepY6eudAPpD5dI6r1tXgAk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660144139;
+ s=susede2_ed25519; t=1660144437;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FJyftLZ0jgmepYKyv4s8d/yRjYwub6T6595kT36xtc8=;
- b=wk9X/3HLEkbJjxeP/PUZnh6Ba5no84glCq13yVvjwBIg4QpSIcOY1oTfH/gTJmgWO2cMGp
- zPVLdioIgMXlqIBA==
+ bh=Sca/31l4Sli9ZJ6W0yBUZfX1zUaahHDxq1m3PlTFjaA=;
+ b=haJ41jU1QNinVvYzk+uIKms/gjxJ98eCgM8WK3GismTEVODdBdgBCWAOEyNNOcshhsOok9
+ s6YB+P8/qWd1UvBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B72613A7E;
- Wed, 10 Aug 2022 15:08:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA7DB13A7E;
+ Wed, 10 Aug 2022 15:13:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id P+k+GQvK82LXSAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Wed, 10 Aug 2022 15:08:59 +0000
-Message-ID: <7d501d57-2438-cd28-5e49-019ea06fb8f2@suse.cz>
-Date: Wed, 10 Aug 2022 17:08:59 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id H6mNLDXL82LsSgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Wed, 10 Aug 2022 15:13:57 +0000
+Message-ID: <b7559faa-50db-a339-8685-1e0f55427513@suse.cz>
+Date: Wed, 10 Aug 2022 17:13:57 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
 Content-Language: en-US
 To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
 References: <20220808113756.11582-1-pvorel@suse.cz>
- <20220808113756.11582-4-pvorel@suse.cz>
+ <20220808113756.11582-5-pvorel@suse.cz>
 From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20220808113756.11582-4-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220808113756.11582-5-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/4] tst_test.sh: Fix _tst_cleanup_timer() on
- set -e
+Subject: Re: [LTP] [PATCH v4 4/4] generate_lvm_runfile.sh: Fix bashism
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,59 +85,43 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
-a comment explaining why this is needed would be nice, otherwise looks
-good. For patches 2 and 3:
+I've tested the patchset and the generator script now work correctly.
 
 Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
 On 08. 08. 22 13:37, Petr Vorel wrote:
-> If test exits on time (i.e. no timeout) kill in _tst_cleanup_timer()
-> have nothing to kill therefore following wait exits 143.
+> ERR is not on dash (tested on 0.5.11).
 > 
-> set -e (or #!/bin/sh -e or set -o errexit) quits on any non-zero exit code,
-> fix hardens _tst_cleanup_timer() to be able to be used on scripts with it.
+> using -e (i.e. implying 'set -e') is required to exit on any non zero
+> exit code. It requires 2 previous fixes.
 > 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
-> I can use 'if ...; then ; fi' if you prefer:
+>  testcases/misc/lvm/generate_lvm_runfile.sh | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> 	if [ "$LTP_COLORIZE_OUTPUT" = "n" -o "$LTP_COLORIZE_OUTPUT" = "0" ]; then
-> 		return 0
-> 	fi
-> 
-> 	if [ "$LTP_COLORIZE_OUTPUT" = "y" ] || [ "$LTP_COLORIZE_OUTPUT" = "1" ]; then
-> 		return 1
-> 	fi
-> 
-> ...
-> 	if [ "$color" = 1 ]; then
-> 		tst_flag2color "$1"
-> 	fi
-> 	printf "$2"
-> 	if [ "$color" = 1 ]; then
-> 		printf '\033[0m'
-> 	fi
-> 
-> 
-> Kind regards,
-> Petr
-> 
->  testcases/lib/tst_test.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 356af0106..1d2bf06cc 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -518,7 +518,7 @@ _tst_cleanup_timer()
->  {
->  	if [ -n "$_tst_setup_timer_pid" ]; then
->  		kill -TERM $_tst_setup_timer_pid 2>/dev/null
-> -		wait $_tst_setup_timer_pid 2>/dev/null
-> +		wait $_tst_setup_timer_pid 2>/dev/null || true
->  	fi
->  }
+> diff --git a/testcases/misc/lvm/generate_lvm_runfile.sh b/testcases/misc/lvm/generate_lvm_runfile.sh
+> index 72b286a69..aba706c64 100755
+> --- a/testcases/misc/lvm/generate_lvm_runfile.sh
+> +++ b/testcases/misc/lvm/generate_lvm_runfile.sh
+> @@ -1,6 +1,7 @@
+> -#!/bin/sh
+> +#!/bin/sh -e
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+>  # Copyright (c) 2020 SUSE LLC <mdoucha@suse.cz>
+> +# Copyright (c) Linux Test Project, 2022
+>  #
+>  # Generate LTP runfile for LVM tests (runtest/lvm.local)
 >  
+> @@ -13,7 +14,7 @@ LVM_TMPDIR="$LVM_DIR/ltp/growfiles"
+>  
+>  generate_runfile()
+>  {
+> -	trap 'tst_brk TBROK "Cannot create LVM runfile"' ERR
+> +	trap '[ $? -eq 0 ] || tst_brk TBROK "Cannot create LVM runfile"' EXIT
+>  	INFILE="$LTPROOT/testcases/data/lvm/runfile.tpl"
+>  	OUTFILE="$LTPROOT/runtest/lvm.local"
+>  	FS_LIST=`tst_supported_fs`
 
 
 -- 
