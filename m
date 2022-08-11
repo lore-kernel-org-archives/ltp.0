@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3946CC19F2A
-	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 13:14:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FED3C19F2A
+	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 13:14:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2AC133C9613
-	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 15:14:39 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 030963C95CA
+	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 15:14:50 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD60C3C9639
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 15:14:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 2E3123C95E8
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 15:14:15 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 626001A00CC6
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 15:14:10 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 72DEA600875
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 15:14:13 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D11F738B65
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 13:14:09 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8C25738B68
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 13:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1660223649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1660223653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=R+6g8fp4rIfMcWutDNnK5aKqIOt4uAcboHlZhdm63c8=;
- b=IUYCNrXaiGf3BByAPxiaD1At841JHT8Rrn+TnJXcxHZMWJylgu6VshjhxyA1akXCazZYWZ
- Zf+y/Hpm0hMIUTsAII6fu4Rk0qG3QqcY/L7krkXmWo9CWSpFb0d2shwlG/VRJa/CkbiTCf
- gCiZft38iQ/Ki6rqglfGZsc0EwqoUFg=
+ bh=YLmkRFINwRcaQpn2BybBiwLGq4vojHhE5Onku38ZmQk=;
+ b=lYAnUFsMTDrWdx8A8DNkibvZX0SKmRv30PNLqPDyk0VGIaVMbjbXhWA4+wYwlfqQL9ovI1
+ /ABoJPcuN3DybGDfDWdgJ2hDteklYEZ6s6uUWNSzB47r+/0M5Rh0wXL+FbUp69BJ1AKngE
+ ESVZXtC24IX76rVlarS2g8c6sxSU6ws=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1660223649;
+ s=susede2_ed25519; t=1660223653;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=R+6g8fp4rIfMcWutDNnK5aKqIOt4uAcboHlZhdm63c8=;
- b=vDYUeVus1IXIy6iZXn3ht7khhHK/lcFlWRGI8ElizQr7YOIv9tb6ju9UwpMwAMI5MialzW
- e7KeyDRoHoISEVDQ==
+ bh=YLmkRFINwRcaQpn2BybBiwLGq4vojHhE5Onku38ZmQk=;
+ b=SxBXfXg/u1vPLY87QFWLC0WM9LgNgk0BA/2ohLhZgEJUfwEkU6FDplXTT9cuyFJPUo/7+x
+ 8IjqAfuigWSHYlDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B53613A9B
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 13:14:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED9DD13AF7
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 13:14:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id rJ8wA6EA9WKrXgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 1tmzKqQA9WKvXgAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 13:14:09 +0000
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 13:14:12 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 11 Aug 2022 18:43:56 +0530
-Message-Id: <20220811131358.18906-3-akumar@suse.de>
+Date: Thu, 11 Aug 2022 18:43:57 +0530
+Message-Id: <20220811131358.18906-4-akumar@suse.de>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220811131358.18906-1-akumar@suse.de>
 References: <20220811131358.18906-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/5] alarm05: use TST_EXP_* macros
+Subject: [LTP] [PATCH 4/5] alarm06: cleanup and simplify
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,70 +82,79 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- turn comment into docparse format
+- turn description comment into docparse and reword
+- remove duplicated headers
 - make check fix: un-initialize static var
-- simplify test using TST_EXP_* macros
+- test using TST_EXP_* macros
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/alarm/alarm05.c | 30 ++++++-----------------
- 1 file changed, 7 insertions(+), 23 deletions(-)
+ testcases/kernel/syscalls/alarm/alarm06.c | 34 +++++------------------
+ 1 file changed, 7 insertions(+), 27 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/alarm/alarm05.c b/testcases/kernel/syscalls/alarm/alarm05.c
-index c60f98994..2a1258f6a 100644
---- a/testcases/kernel/syscalls/alarm/alarm05.c
-+++ b/testcases/kernel/syscalls/alarm/alarm05.c
-@@ -7,8 +7,9 @@
-  * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
+diff --git a/testcases/kernel/syscalls/alarm/alarm06.c b/testcases/kernel/syscalls/alarm/alarm06.c
+index eee9429a1..e5c0d3768 100644
+--- a/testcases/kernel/syscalls/alarm/alarm06.c
++++ b/testcases/kernel/syscalls/alarm/alarm06.c
+@@ -5,25 +5,15 @@
+  * Ported to LTP: Wayne Boyer
   */
  
 -/*
-- * Test Description:
+- * Check the functionality of the Alarm system call when the time input
+- * parameter is zero.
 +/*\
 + * [Description]
-+ *
-  *  The return value of the alarm system call should be equal to the
-  *  amount previously remaining in the alarm clock.
-  *  A SIGALRM signal should be received after the specified amount of
-@@ -17,34 +18,17 @@
+  *
+- * Expected Result:
+- * The previously specified alarm request should be cancelled and the
+- * SIGALRM should not be received.
++ * Verify that any pending alarm() is canceled when seconds is zero.
+  */
  
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <sys/types.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-
  #include "tst_test.h"
  
--static volatile int alarms_fired = 0;
-+static volatile int alarms_fired;
+-static volatile int alarms_received = 0;
++static volatile int alarms_received;
  
- static void run(void)
+ static void sigproc(int sig)
  {
--	unsigned int ret;
--
- 	alarms_fired = 0;
+@@ -38,25 +28,15 @@ static void setup(void)
  
--	ret = alarm(10);
--	if (ret)
--		tst_res(TFAIL, "alarm() returned non-zero");
--	else
--		tst_res(TPASS, "alarm() returned zero");
+ static void verify_alarm(void)
+ {
+-	int ret;
 -
-+	TST_EXP_PASS(alarm(10));
+-	alarm(2);
++	TST_EXP_PASS_SILENT(alarm(2));
  	sleep(1);
--
--	ret = alarm(1);
--	if (ret == 9)
--		tst_res(TPASS, "alarm() returned remainder correctly");
--	else
--		tst_res(TFAIL, "alarm() returned wrong remained %u", ret);
--
-+	TST_EXP_VAL(alarm(1), 9);
+ 
+-	ret = alarm(0);
++	TST_EXP_VAL(alarm(0), 1);
+ 
+ 	/* Wait for signal SIGALRM */
  	sleep(2);
--
--	if (alarms_fired == 1)
--		tst_res(TPASS, "alarm handler fired once");
+ 
+-	if (alarms_received)
+-		tst_res(TFAIL, "Received %i alarms", alarms_received);
 -	else
--		tst_res(TFAIL, "alarm handler filred %u times", alarms_fired);
-+	TST_EXP_EQ_LU(alarms_fired, 1);
+-		tst_res(TPASS, "Received 0 alarms");
+-
+-	if (ret == 1)
+-		tst_res(TPASS, "alarm(0) returned 1");
+-	else
+-		tst_res(TFAIL, "alarm(0) returned %i, expected 1", ret);
++	TST_EXP_EQ_LU(alarms_received, 0);
  }
  
- static void sighandler(int sig)
+ static struct tst_test test = {
 -- 
 2.36.1
 
