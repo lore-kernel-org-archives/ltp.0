@@ -4,70 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF043C19F2A
-	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 09:42:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3D63C19F2A
+	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 10:09:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9AE653C95EE
-	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 11:42:54 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 256A33C965A
+	for <ltp@archiver.kernel.org>; Thu, 11 Aug 2022 12:09:09 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C0853C0763
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 11:42:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id F36DA3C0204
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 12:08:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ADDCE1A00CAB
- for <ltp@lists.linux.it>; Thu, 11 Aug 2022 11:42:45 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8F5215C919;
- Thu, 11 Aug 2022 09:42:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660210964;
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DDAED1A0099B
+ for <ltp@lists.linux.it>; Thu, 11 Aug 2022 12:08:57 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id EE4AC3895C;
+ Thu, 11 Aug 2022 10:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1660212536;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=u+rfhOqg2s8JY+GmoulBHbWXnPtCg6dhgFm5WYM3awM=;
- b=cogOdzvJaRmNhxqvt93uCJgZ6tZcYHg46lW+kln8CjbjRo15Hg9kQe1xf7bUJh2bYaE5Wz
- vZgoRnMH42IaUD1WYY4+54bCMvvsWz5imTFG+rHAxWPONjxHgFeHYDaIFf49gAvQLBnIsM
- CGNxThEaEIOm5bzSe+6BkPxvfgU5I2c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660210964;
+ bh=CyVJN6p3UyOujVFFc0hw5R43B3uztqdMLnDyCbm0NlA=;
+ b=hiP51NffHirzW+s+A6WBC6UMAgJlsoAMC1AdL8S9iY+ho1c+wfd8Ga4whRSGoZyz29WmMr
+ BDi3O/PEoyK57SvubyE/G3i+WreFcfqth3u1B9t21FzTX2zgD6/orYLIJ1LrGRRcpcXQtO
+ RTZq4JkDWsjAmazBqqA6JerV1KzYoQ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1660212536;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=u+rfhOqg2s8JY+GmoulBHbWXnPtCg6dhgFm5WYM3awM=;
- b=oWME9yRJUHdlTjXIQ8UxQLIUDgtbxjSk+pXVM6CgtMofeDIVJaKP9PsAEY5myXMID+laFq
- eqtA9MA/8dJbHYBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=CyVJN6p3UyOujVFFc0hw5R43B3uztqdMLnDyCbm0NlA=;
+ b=sdUiAiOsGDL13R6iV77WA4uZmyF03L25lmUsXovqpnG5+8pftqAGuhqzsRZBCLYoTy+fXn
+ OlzEPl/Sz+x99CCA==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 651F31342A;
- Thu, 11 Aug 2022 09:42:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UhnwFhTP9GJldQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 11 Aug 2022 09:42:44 +0000
-Date: Thu, 11 Aug 2022 11:42:42 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YvTPEoDUp4AKu/0V@pevik>
-References: <20220810092804.5771-1-andrea.cervesato@suse.com>
- <YvOKbt1urOeVwQ57@yuki>
- <ade189ba-4211-99a8-d5e6-c99b1950e21b@suse.com>
- <YvOmiXBO1njKMzUM@yuki>
+ by relay2.suse.de (Postfix) with ESMTPS id BC3152C221;
+ Thu, 11 Aug 2022 10:08:56 +0000 (UTC)
+References: <20220722120501.28670-1-andrea.cervesato@suse.com>
+ <20220722120501.28670-3-andrea.cervesato@suse.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Date: Thu, 11 Aug 2022 10:53:10 +0100
+In-reply-to: <20220722120501.28670-3-andrea.cervesato@suse.com>
+Message-ID: <87r11nw0qv.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YvOmiXBO1njKMzUM@yuki>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] Refactor aiocp using new LTP API
+Subject: Re: [LTP] [PATCH v3 2/7] Refactor mqns_01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,38 +70,88 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hello,
 
-> Hi!
-> > Yes, we can reduce the amount of time to generate file (especially if 
-> > it's really big), but I wouldn't
-> > introduce any repetition because we would like to check that file has 
-> > been copied properly during
-> > callbacks which are asynchronous by definition.
+Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
 
-> I guess that we can do a little trick such as making the buffer with
-> random data slightly bigger and choosing a random start offset in that
-> etc.
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  runtest/containers                         |   3 +-
+>  testcases/kernel/containers/mqns/common.h  | 101 +++++++++++
+>  testcases/kernel/containers/mqns/mqns_01.c | 193 +++++++--------------
+>  3 files changed, 166 insertions(+), 131 deletions(-)
+>  create mode 100644 testcases/kernel/containers/mqns/common.h
+>
+> diff --git a/runtest/containers b/runtest/containers
+> index 2637b62fe..863a964ad 100644
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -16,7 +16,8 @@ pidns31 pidns31
+>  pidns32 pidns32
+>  
+>  mqns_01 mqns_01
+> -mqns_01_clone mqns_01 -clone
+> +mqns_01_clone mqns_01 -m clone
+> +mqns_01_unshare mqns_01 -m unshare
+>  mqns_02 mqns_02
+>  mqns_02_clone mqns_02 -clone
+>  mqns_03 mqns_03
+> diff --git a/testcases/kernel/containers/mqns/common.h b/testcases/kernel/containers/mqns/common.h
+> new file mode 100644
+> index 000000000..92a77b566
+> --- /dev/null
+> +++ b/testcases/kernel/containers/mqns/common.h
+> @@ -0,0 +1,101 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +#ifndef MQNS_H
+> +#define MQNS_H
+> +
+> +#include <stdlib.h>
+> +#include "lapi/namespaces_constants.h"
+> +#include "tst_test.h"
+> +#include "tst_safe_posix_ipc.h"
+> +
+> +enum {
+> +	T_CLONE,
+> +	T_UNSHARE,
+> +	T_NONE,
+> +};
+> +
+> +static int dummy_child1(void *v)
+> +{
+> +	(void)v;
+> +	return 0;
+> +}
+> +
+> +static inline void check_newipc(void)
+> +{
+> +	int pid, status;
+> +
+> +	pid = ltp_clone_quick(CLONE_NEWIPC | SIGCHLD, dummy_child1,
+>  NULL);
 
-I tested Andreas patches from v2 to v6 and aiocp with -f DIRECT works only on
-btrfs. Running on $TMPDIR being on ext4, xfs, tmpfs endup with EINVAL:
+ltp_clone_quick is still part of the old API and only uses clone2. I
+think it should be replaced with tst_clone. This may require extending
+tst_clone. In fact we probably need a test variant to switch between the
+clone2 and clone3 syscalls when using tst_clone.
 
-# ./aiocp -b 1k -n 1 -f DIRECT
-aiocp.c:240: TINFO: Maximum AIO blocks: 65536
-aiocp.c:265: TINFO: Fill srcfile.bin with random data
-aiocp.c:267: TBROK: open(srcfile.bin,16450,0666) failed: EINVAL (22)
+I'll leave it to you whether you want to try that and rebase this patch
+set on it.
 
-Any idea what could be wrong?
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
