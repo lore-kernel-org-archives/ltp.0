@@ -4,71 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A25F1C00140
-	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 14:00:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48900C00140
+	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 15:18:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4CABF3C958F
-	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 16:00:43 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9723D3C95CA
+	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 17:18:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA0543C01CF
- for <ltp@lists.linux.it>; Fri, 12 Aug 2022 16:00:30 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id DF30A3C02C2
+ for <ltp@lists.linux.it>; Fri, 12 Aug 2022 17:17:59 +0200 (CEST)
+Received: from a8-73.smtp-out.amazonses.com (a8-73.smtp-out.amazonses.com
+ [54.240.8.73])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3F7DD10000C7
- for <ltp@lists.linux.it>; Fri, 12 Aug 2022 16:00:29 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 75C513F7DF;
- Fri, 12 Aug 2022 14:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660312829;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mmMcxR3luXAAfZt0qQrsQU3WBRdPesjPfp6BxoGMRiI=;
- b=pXBfwu6vovlebYiTuPDJU5B3y+fUhFb5MmDxrm9WhviztSGTbnoOLz7O7/nEYSHx23GQHJ
- Xq6DOPbZwYKWJKwrT7GrizWOjt96bp6m2oISjaLfjyKtUFOpT8GuLXhdwdDnCZlcbqGIk9
- JusymBeXY+tzH39FGQQeNxXGh1A+AGo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660312829;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mmMcxR3luXAAfZt0qQrsQU3WBRdPesjPfp6BxoGMRiI=;
- b=6uCtk6YNqCWUvLTpVyDa++OKjN5XsbhWcBGJ9RUa5c2KtvQcKEI9bV+dO2d+7ocOtyD1ld
- UgJF/LSko6Qm3RBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 348CE13AAE;
- Fri, 12 Aug 2022 14:00:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VbQ4C/1c9mJ5PAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 12 Aug 2022 14:00:29 +0000
-Date: Fri, 12 Aug 2022 16:00:26 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- Jan Kara <jack@suse.cz>, Hannes Reinecke <hare@suse.de>,
- linux-xfs@vger.kernel.org
-Message-ID: <YvZc+jvRdTLn8rus@pevik>
-References: <YvZTpQFinpkB06p9@pevik>
- <YvZUfq+3HYwXEncw@pevik>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D2C5D1400F9C
+ for <ltp@lists.linux.it>; Fri, 12 Aug 2022 17:17:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1660317477;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=2hxX56S+e9cpS/qPFn7+rtttMTV267WK+hJo7sSKd6o=;
+ b=LMrBHEkGAPukPw1kemvt7ji7sooSlXSl8fNYfGfxR6o/xdPi8uJTIodkTz+Zk7nX
+ ZCIbbr6EFh445axLQQJu75GA2ZwtOcjQGp1DLt874qTOxNdj6DtUpzd0/duEN5c7KMo
+ 5IGAUJ7V3jvYJ5buNB/ZAKbVlh2HtjJq/AGmTVHo=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1660317477;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=2hxX56S+e9cpS/qPFn7+rtttMTV267WK+hJo7sSKd6o=;
+ b=iu9JRf5JcImgWAerZNwQdYBozp+j0ryOCKTUSrhZ6uPTHS1+iFRTXU40UG5tfPGL
+ /X0cyrok8EdD1uQH97Q6xQQO8tPrgJCKoe1/ihR7ceMNncWBPShh0/1t9iWRAJa9W/C
+ mrxQLe1ccmv92VAPRVT/srXVo+d04Qx4C/gBQX2Y=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YvZUfq+3HYwXEncw@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Message-ID: <0100018292a228df-1eef519f-036c-4286-a0f2-ee8cfbd4e895-000000@email.amazonses.com>
+Date: Fri, 12 Aug 2022 15:17:57 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.08.12-54.240.8.73
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP test df01.sh detected different size of loop device
- in v5.19
+Subject: [LTP] lkft ltp for bccfa73
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,60 +56,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-[ Cc LTP ML, sorry for the noise ]
-Petr
+## Build
+* kernel: 5.18.16
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.18.y
+* git commit: 8843bf1f0737ecea456d2bbd19d4263d49f2d110
+* git describe: bccfa73
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/bccfa73
 
-> > Hi all,
+## Test Regressions (compared to f42f6f3)
+No test regressions found.
 
-> > LTP test df01.sh found different size of loop device in v5.19.
-> > Test uses loop device formatted on various file systems, only XFS fails.
-> > It randomly fails during verifying that loop size usage changes:
+## Metric Regressions (compared to f42f6f3)
+No metric regressions found.
 
-> > grep ${TST_DEVICE} output | grep -q "${total}.*${used}" [1]
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > How to reproduce:
-> > # PATH="/opt/ltp/testcases/bin:$PATH" df01.sh -f xfs # it needs several tries to hit
 
-> > df saved output:
-> > Filesystem     1024-blocks    Used Available Capacity Mounted on
-> > ...
-> > /dev/loop0          256672   16208    240464       7% /tmp/LTP_df01.1kRwoUCCR7/mntpoint
-> > df output:
-> > Filesystem     1024-blocks    Used Available Capacity Mounted on
-> > ...
-> > tmpfs               201780       0    201780       0% /run/user/0
-> > /dev/loop0          256672   15160    241512       6% /tmp/LTP_df01.1kRwoUCCR7/mntpoint
-> > => different size
-> > df01 4 TFAIL: 'df -k -P' failed, not expected.
+## Test Fixes (compared to f42f6f3)
+No test fixes found.
 
-> > Also 'df -T -P' fails.
+## Metric Fixes (compared to f42f6f3)
+No metric fixes found.
 
-> > It might be a false positive / bug in the test, but it's at least a changed behavior.
-> > I was able to reproduce it on v5.19 distro kernels (openSUSE, Debian).
-> > I haven't bisected (yet), nor checked Jens' git tree (maybe it has been fixed).
+## Test result summary
+total: 1120, pass: 1120, fail: 0, skip: 0, xfail: 0
 
-> Forget to note dmesg "operation not supported error" warning on *each* run (even
-> successful) on affected v5.19:
-> [ 5097.594021] loop0: detected capacity change from 0 to 524288
-> [ 5097.658201] operation not supported error, dev loop0, sector 262192 op 0x9:(WRITE_ZEROES) flags 0x8000800 phys_seg 0 prio class 0
-> [ 5097.675670] XFS (loop0): Mounting V5 Filesystem
-> [ 5097.681668] XFS (loop0): Ending clean mount
-> [ 5097.956445] XFS (loop0): Unmounting Filesystem
+## Build Summary
 
-> Kind regards,
-> Petr
+## Test suites summary
+* log-parser-boot
+* log-parser-test
 
-> > Kind regards,
-> > Petr
-
-> > [1] https://github.com/linux-test-project/ltp/blob/f42f6f3b4671f447b743afe8612917ba4362b8a6/testcases/commands/df/df01.sh#L103-L110
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
