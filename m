@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BF33C00140
-	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 07:51:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BC32C00140
+	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 10:13:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE5303C9606
-	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 09:50:58 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 1D7053C95DD
+	for <ltp@archiver.kernel.org>; Fri, 12 Aug 2022 12:13:12 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ED4E53C1BEA
- for <ltp@lists.linux.it>; Fri, 12 Aug 2022 09:50:47 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id AB47D3C02C2
+ for <ltp@lists.linux.it>; Fri, 12 Aug 2022 12:13:00 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E08F11A0069B
- for <ltp@lists.linux.it>; Fri, 12 Aug 2022 09:50:46 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BBF39600C3A
+ for <ltp@lists.linux.it>; Fri, 12 Aug 2022 12:12:59 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E487E5D906;
- Fri, 12 Aug 2022 07:50:44 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BA8F15C858;
+ Fri, 12 Aug 2022 10:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1660290644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1660299178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=obpBeH0qm012uxg7W9VB6vKss6KfYAHrsVtuyAfSlhQ=;
- b=ko8Qq5PCwWAWdsOxuXJPWEKC8/Tdt0fdcW3T1yZVHkr1xULgOcfJDooqkg+zkTLRoueVQd
- geJ0o0SSiAj4XmAaJ1m1G9T1LWnWorAbi9jJWrErRSd8XmA5qg6gM9iaJljitgBuriv/ZD
- Ojxkf/5prkJS+34NwU4y2U9j5S6E8b0=
+ bh=PP1ujnQrzIwv5ttucilayfc0TPS521QHophlKqAy1LA=;
+ b=KIjlrUJxRi/RmzLfwgLDV3Z2AphnXHNe8/WrrWuFAIs430i7jiwWCyqSI01CuUhZUqI1tt
+ iJaaXjYOTOcxOtgtMPbv68M4b69YIwxraI7jfeL6xkMAkkd1JzibkdGqGraNXbhkrL5Ug/
+ OZD4LqzL0PDrChp8PebBrSD7ZVSbNko=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B5F4313305;
- Fri, 12 Aug 2022 07:50:44 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E53613305;
+ Fri, 12 Aug 2022 10:12:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hGRZKlQG9mJrEwAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Fri, 12 Aug 2022 07:50:44 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id q1X9IKon9mJ6VAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Fri, 12 Aug 2022 10:12:58 +0000
 To: ltp@lists.linux.it
-Date: Fri, 12 Aug 2022 09:50:05 +0200
-Message-Id: <20220812075005.16920-1-andrea.cervesato@suse.com>
+Date: Fri, 12 Aug 2022 12:12:19 +0200
+Message-Id: <20220812101219.10233-1-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Refactor pidns30 test using new LTP API
+Subject: [LTP] [PATCH v1] Refactor pidns31 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,14 +71,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/containers/pidns/pidns30.c | 317 +++++---------------
- 1 file changed, 72 insertions(+), 245 deletions(-)
+ testcases/kernel/containers/pidns/pidns31.c | 352 +++++---------------
+ 1 file changed, 80 insertions(+), 272 deletions(-)
 
-diff --git a/testcases/kernel/containers/pidns/pidns30.c b/testcases/kernel/containers/pidns/pidns30.c
-index c8b0806c0..2207f0206 100644
---- a/testcases/kernel/containers/pidns/pidns30.c
-+++ b/testcases/kernel/containers/pidns/pidns30.c
-@@ -1,296 +1,123 @@
+diff --git a/testcases/kernel/containers/pidns/pidns31.c b/testcases/kernel/containers/pidns/pidns31.c
+index 8821ec83c..1c2728fb5 100644
+--- a/testcases/kernel/containers/pidns/pidns31.c
++++ b/testcases/kernel/containers/pidns/pidns31.c
+@@ -1,330 +1,138 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 -* Copyright (c) Bull S.A.S. 2008
@@ -96,12 +95,12 @@ index c8b0806c0..2207f0206 100644
 -* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 -*
 -***************************************************************************
--* File: pidns30.c
+-* File: pidns31.c
 -*
 -*   Description:
 -*    This testcase checks if the si_pid is correctly set when a process
--*    that has registered for notification on a posix mqueue is in a
--*    descendant namespace wrt the process that sends a message to that posix
+-*    that has registered for notification on a posix mqueue is in an
+-*    ancestor namespace wrt the process that sends a message to that posix
 -*    mqueue.
 -*
 -*   Test Assertion & Strategy:
@@ -109,78 +108,81 @@ index c8b0806c0..2207f0206 100644
 -*    --------------------------------------------------------------------------
 -*    Create a POSIX mqueue.
 -*    Create a PID namespace container.
--*                                             Open that mqueue for reading
--*                                             Register for notification when a
--*                                                message arrives in that mqueue
--*                                             Install a handler for SIGUSR1.
--*    Write something to the mqueue.
--*                                             Inside the handler, check that
--*                                                si_pid is set to 0
+-*    Register for notification when a
+-*       message arrives in that mqueue
+-*    Install a handler for SIGUSR1.
+-*                                             Open that mqueue for writing
+-*                                             Write something to the mqueue.
+-*    Inside the handler, check that
+-*       si_pid is set to the child's pid
 -*
 -*   Usage: <for command-line>
--*    pidns30
+-*    pidns31
 -*
 -*   History:
 -*    DATE      NAME                             DESCRIPTION
--*    01/12/08  Nadia Derbey               Creation of this test.
+-*    04/12/08  Nadia Derbey               Creation of this test.
 -*              <Nadia.Derbey@bull.net>
 -*
 -******************************************************************************/
-+ * Copyright (c) Bull S.A.S. 2008
-+ *               01/12/08  Nadia Derbey <Nadia.Derbey@bull.net>
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Clone a process with CLONE_NEWPID flag, register notification on a posix
-+ * mqueue and send a mqueue message from the parent. Then check if signal
-+ * notification contains si_pid of the parent.
-+ */
-+
- #define _GNU_SOURCE 1
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
 -#include <sys/wait.h>
 -#include <sys/types.h>
- #include <signal.h>
+-#include <signal.h>
 -#include <stdlib.h>
 -#include <unistd.h>
 -#include <stdio.h>
- #include <mqueue.h>
+-#include <mqueue.h>
 -#include "lapi/syscalls.h"
 -#include "pidns_helper.h"
 -#include "test.h"
 -
--char *TCID = "pidns30";
+-char *TCID = "pidns31";
 -int TST_TOTAL = 1;
 -
 -char *mqname = "mq1";
 -int result = TFAIL;
-+#include "tst_test.h"
-+#include "lapi/namespaces_constants.h"
- 
+-
 -int father_to_child[2];
--int child_to_father[2];
-+#define MQNAME "/LTP_PIDNS30_MQ"
++ * Copyright (c) Bull S.A.S. 2008
++ *               01/12/08  Nadia Derbey <Nadia.Derbey@bull.net>
++ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
  
 -#define CHILD_PID       1
 -#define PARENT_PID      0
--
++/*\
++ * [Description]
++ *
++ * Clone a process with CLONE_NEWPID flag, register notification on a posix
++ * mqueue and send a mqueue message from the child. Then check if signal
++ * notification contains si_pid of the child.
++ */
+ 
 -#define MSG      "HOW ARE YOU"
 -#define MSG_PRIO 1
--
--#define NO_STEP	-1
++#define _GNU_SOURCE 1
++#include <signal.h>
++#include <mqueue.h>
++#include "tst_test.h"
++#include "lapi/namespaces_constants.h"
+ 
+-#define NO_STEP -1
 -#define F_STEP_0 0x00
 -#define F_STEP_1 0x01
 -#define F_STEP_2 0x02
 -#define F_STEP_3 0x03
 -#define C_STEP_0 0x10
 -#define C_STEP_1 0x11
--#define C_STEP_2 0x12
--
--mqd_t rc = -1;
--mqd_t mqd = -1;
--
++#define MQNAME "/LTP_PIDNS30_MQ"
+ 
+ struct notify_info {
+ 	mqd_t mqd;
+ 	pid_t pid;
+ };
+ 
 -static void remove_pipe(int *fd)
 -{
 -	close(fd[0]);
@@ -195,170 +197,173 @@ index c8b0806c0..2207f0206 100644
 -	tst_syscall(__NR_mq_unlink, mqname);
 -}
 -
--static void cleanup(void)
+-/*
+- * steps F_STEP_XX : called from main
+- * steps C_STEP_XX : called from child_fn
+- */
+-static void cleanup_resources(int step, mqd_t mqd)
 -{
--	if (mqd != -1) {
--		remove_mqueue(mqd);
--	}
--	if (rc != -1) {
--		remove_mqueue(rc);
--	}
--	remove_pipe(father_to_child);
--	remove_pipe(child_to_father);
--}
+-	switch (step) {
+-	case C_STEP_1:
+-		close(father_to_child[0]);
+-		/* fall through */
+-	case C_STEP_0:
 +	if (mqd != -1)
-+		mq_close(mqd);
- 
--static void cleanup_child(void)
--{
--	if (mqd != -1) {
+ 		mq_close(mqd);
+-		break;
+-
+-	case F_STEP_3:
+-		remove_mqueue(mqd);
+-		close(father_to_child[1]);
+-		break;
+-
+-	case F_STEP_2:
 -		tst_syscall(__NR_mq_notify, mqd, NULL);
+-		/* fall through */
+-	case F_STEP_1:
+-		remove_mqueue(mqd);
+-		/* fall through */
+-	case F_STEP_0:
+-		remove_pipe(father_to_child);
+-		break;
+-	default:
+-		tst_resm(TWARN, "Unknown code - no resource removed.");
+-		break;
 -	}
--	cleanup();
+-}
+-
+-/*
+- * cleanup_mqueue() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- * step == -1 means no local resource to remove.
+- */
+-void cleanup_mqueue(int result, int step, mqd_t mqd)
+-{
+-	if (step != NO_STEP)
+-		cleanup_resources(step, mqd);
+ 
+-	tst_exit();
 +	mq_unlink(MQNAME);
  }
  
 -/*
-- * child_signal_handler() - to handle SIGUSR1
-- *
-- * XXX (garrcoop): add calls to cleanup_child() -- or should this be handled
-- * from the libltp signal handler?
+- * child_fn() - Inside container
 - */
--static void child_signal_handler(int sig, siginfo_t * si, void *unused)
+-int child_fn(void *arg)
 +static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LTP_ATTRIBUTE_UNUSED void *unused)
  {
--	char buf[256];
--	struct mq_attr attr;
+-	pid_t pid, ppid;
+-	mqd_t mqd;
+-	char buf[5];
 -
--	if (si->si_signo != SIGUSR1) {
--		printf("received signal = %d unexpectedly\n", si->si_signo);
-+	if (si->si_signo != SIGUSR1 || si->si_code != SI_MESGQ || si->si_pid != 0)
- 		return;
+-	/* Set process id and parent pid */
+-	pid = getpid();
+-	ppid = getppid();
+-
+-	if (pid != CHILD_PID || ppid != PARENT_PID) {
+-		tst_resm(TBROK, "cinit: pidns is not created");
+-		cleanup_mqueue(TBROK, NO_STEP, 0);
 -	}
+-
+-	/* Close the appropriate end of pipe */
+-	close(father_to_child[1]);
++	struct notify_info *info;
  
--	if (si->si_code != SI_MESGQ) {
--		printf("expected signal code SI_MESGQ; got %d instead\n",
--		       si->si_code);
--		return;
+-	/* Is parent ready to receive a message? */
+-	read(father_to_child[0], buf, 5);
+-	if (strcmp(buf, "f:ok")) {
+-		tst_resm(TBROK, "cinit: parent did not send the message!");
+-		cleanup_mqueue(TBROK, NO_STEP, 0);
 -	}
--
--	if (si->si_pid) {
--		printf("expected signal originator PID = 0; got %d instead\n",
--		       si->si_pid);
--		return;
--	} else {
--		printf("signal originator PID = 0\n");
--		result = TPASS;
+-	tst_resm(TINFO, "cinit: my father is ready to receive a message");
++	received = 0;
+ 
+-	mqd = tst_syscall(__NR_mq_open, mqname, O_WRONLY, 0, NULL);
+-	if (mqd == (mqd_t) - 1) {
+-		tst_resm(TBROK, "cinit: mq_open() failed (%s)",
+-			 strerror(errno));
+-		cleanup_mqueue(TBROK, NO_STEP, 0);
 -	}
--
--	/*
--	 * Now read the message - Be silent on errors since this is not the
--	 * test purpose.
--	 */
--	rc = mq_getattr(si->si_int, &attr);
--	if (rc != -1)
--		mq_receive(si->si_int, buf, attr.mq_msgsize, NULL);
-+	received++;
+-	tst_resm(TINFO, "cinit: mq_open succeeded");
++	if (si->si_signo != SIGUSR1 || si->si_code != SI_MESGQ)
++		return;
+ 
+-	if (mq_send(mqd, MSG, strlen(MSG), MSG_PRIO) == (mqd_t) - 1) {
+-		tst_resm(TBROK, "cinit: mq_send() failed (%s)",
+-			 strerror(errno));
+-		cleanup_mqueue(TBROK, C_STEP_0, mqd);
+-	}
+-	tst_resm(TINFO, "cinit: mq_send() succeeded");
++	info = (struct notify_info*)si->si_ptr;
+ 
+-	/* Cleanup and exit */
+-	cleanup_resources(C_STEP_1, mqd);
+-	exit(0);
++	if (si->si_pid == info->pid)
++		received++;
  }
  
 -/*
-- * child_fn() - Inside container
-- *
-- * XXX (garrcoop): add more calls to cleanup_child()?
+- * father_signal_handler()
 - */
--int child_fn(void *arg)
+-static void father_signal_handler(int sig, siginfo_t * si, void *unused)
 +static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
  {
--	pid_t pid, ppid;
+-	char buf[256];
+-	struct mq_attr attr;
+-	struct notify_info *info;
 +	int ret;
 +	pid_t cpid, ppid;
- 	struct sigaction sa;
- 	struct sigevent notif;
--	char buf[5];
 +	mqd_t mqd_child;
  
--	/* Set process id and parent pid */
--	pid = getpid();
+-	if (si->si_signo != SIGUSR1) {
+-		tst_resm(TBROK, "father: received %s unexpectedly",
+-			 strsignal(si->si_signo));
+-		return;
+-	}
 +	cpid = getpid();
- 	ppid = getppid();
++	ppid = getppid();
  
--	if (pid != CHILD_PID || ppid != PARENT_PID) {
--		printf("pidns was not created\n");
--		return 1;
+-	if (si->si_code != SI_MESGQ) {
+-		tst_resm(TBROK, "father: expected signal code SI_MESGQ - "
+-			 "Got %d", si->si_code);
+-		return;
 +	if (cpid != 1 || ppid != 0) {
 +		tst_res(TFAIL, "got unexpected result of cpid=%d ppid=%d", cpid, ppid);
 +		return 0;
  	}
  
--	/* Close the appropriate end of each pipe */
--	close(child_to_father[0]);
--	close(father_to_child[1]);
--
--	while (read(father_to_child[0], buf, 1) != 1)
--		sleep(1);
+-	if (!si->si_ptr) {
+-		tst_resm(TBROK, "father: expected si_ptr - Got NULL");
+-		return;
+-	}
 +	TST_CHECKPOINT_WAIT(0);
  
--	mqd = tst_syscall(__NR_mq_open, mqname, O_RDONLY, 0, NULL);
--	if (mqd == -1) {
--		perror("mq_open failed");
--		return 1;
--	} else
--		printf("mq_open succeeded\n");
-+	mqd_child = mq_open(MQNAME, O_RDONLY, 0, NULL);
+-	info = (struct notify_info *)si->si_ptr;
++	mqd_child = mq_open(MQNAME, O_WRONLY, 0, NULL);
 +	if (mqd_child == -1)
 +		tst_brk(TBROK | TERRNO, "mq_open failed");
  
--	/* Register for notification on message arrival */
- 	notif.sigev_notify = SIGEV_SIGNAL;
- 	notif.sigev_signo = SIGUSR1;
--	notif.sigev_value.sival_int = mqd;
--	if (tst_syscall(__NR_mq_notify, mqd, &notif) == -1) {
--		perror("mq_notify failed");
--		return 1;
--	} else
--		printf("successfully registered for notification\n");
-+	notif.sigev_value.sival_int = mqd_child;
-+
-+	ret = mq_notify(mqd_child, &notif);
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "mq_notify failed");
- 
--	/* Define handler for SIGUSR1 */
- 	sa.sa_flags = SA_SIGINFO;
--	sigemptyset(&sa.sa_mask);
-+	SAFE_SIGEMPTYSET(&sa.sa_mask);
- 	sa.sa_sigaction = child_signal_handler;
--	if (sigaction(SIGUSR1, &sa, NULL) == -1) {
--		perror("sigaction failed");
--		return 1;
--	} else
--		printf("successfully registered handler for SIGUSR1\n");
-+	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
- 
--	/* Ask parent to send a message to the mqueue */
--	if (write(child_to_father[1], "c:ok", 5) != 5) {
--		perror("write failed");
--		return 1;
+-	if (si->si_pid != info->pid) {
+-		tst_resm(TFAIL,
+-			 "father: expected signal originator PID = %d - Got %d",
+-			 info->pid, si->si_pid);
+-		return;
 -	}
--
--	sleep(3);
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
++	ret = mq_send(mqd_child, "pippo", 5, 1);
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "mq_send failed");
  
--	/* Has parent sent a message? */
--	read(father_to_child[0], buf, 5);
--	if (strcmp(buf, "f:ok") != 0) {
--		printf("parent did not send the message!\n");
--		return 1;
-+	if (received != 1) {
-+		tst_res(TFAIL, "Signal hasn't been received after mqueue event");
-+		return 0;
- 	}
--	printf("parent is done - cleaning up\n");
+-	tst_resm(TPASS, "father: signal originator PID = %d", si->si_pid);
+-	result = TPASS;
++	TST_CHECKPOINT_WAKE(0);
  
--	cleanup_child();
-+	tst_res(TPASS, "Signal has been received after mqueue event");
- 
--	exit(0);
+-	/*
+-	 * Now read the message - Be silent on errors since this is not the
+-	 * test purpose.
+-	 */
+-	if (!mq_getattr(info->mqd, &attr))
+-		mq_receive(info->mqd, buf, attr.mq_msgsize, NULL);
 +	return 0;
  }
  
@@ -370,76 +375,112 @@ index c8b0806c0..2207f0206 100644
 +	remove_mqueue(mqd);
  }
  
+-/***********************************************************************
+-*   M A I N
+-***********************************************************************/
+-
 -int main(void)
 +static void run(void)
  {
--	int status;
--	char buf[5];
 -	pid_t cpid;
--
+-	mqd_t mqd;
+-	struct sigevent notif;
++	int cpid, ret, status;
+ 	struct sigaction sa;
+-	int status;
++	struct sigevent notif;
+ 	struct notify_info info;
+ 
 -	setup();
 -
--	if (pipe(child_to_father) == -1 || pipe(father_to_child) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
+-	if (pipe(father_to_child) == -1) {
+-		tst_resm(TBROK, "parent: pipe() failed. aborting!");
+-		cleanup_mqueue(TBROK, NO_STEP, 0);
 -	}
-+	int ret;
- 
--	tst_syscall(__NR_mq_unlink, mqname);
 +	remove_mqueue(mqd);
  
--	/* container creation on PID namespace */
--	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
--	if (cpid == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-+	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
-+	if (ret < 0)
-+		tst_brk(TBROK | TERRNO, "clone failed");
- 
+-	tst_syscall(__NR_mq_unlink, mqname);
 -	mqd =
 -	    tst_syscall(__NR_mq_open, mqname, O_RDWR | O_CREAT | O_EXCL, 0777,
 -		    NULL);
-+	mqd = mq_open(MQNAME, O_RDWR | O_CREAT | O_EXCL, 0777, 0);
- 	if (mqd == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "mq_open failed");
--	else
--		tst_resm(TINFO, "successfully created posix mqueue");
+-	if (mqd == (mqd_t) - 1) {
+-		tst_resm(TBROK, "parent: mq_open() failed (%s)",
+-			 strerror(errno));
+-		cleanup_mqueue(TBROK, F_STEP_0, 0);
+-	}
+-	tst_resm(TINFO, "parent: successfully created posix mqueue");
++	mqd = mq_open(MQNAME, O_RDWR | O_CREAT | O_EXCL, 0777, NULL);
++	if (mqd == -1)
 +		tst_brk(TBROK | TERRNO, "mq_open failed");
  
--	if (write(father_to_child[1], buf, 1) != 1)
--		tst_brkm(TBROK | TERRNO, cleanup, "write failed");
+-	/* container creation on PID namespace */
+-	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
+-	if (cpid < 0) {
+-		tst_resm(TBROK, "parent: clone() failed(%s)", strerror(errno));
+-		cleanup_mqueue(TBROK, F_STEP_1, mqd);
+-	}
+-	tst_resm(TINFO, "parent: successfully created child (pid = %d)", cpid);
++	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
++	if (cpid < 0)
++		tst_brk(TBROK | TERRNO, "clone failed");
+ 
+-	/* Register for notification on message arrival */
+ 	notif.sigev_notify = SIGEV_SIGNAL;
+ 	notif.sigev_signo = SIGUSR1;
+ 	info.mqd = mqd;
+ 	info.pid = cpid;
+ 	notif.sigev_value.sival_ptr = &info;
+-	if (tst_syscall(__NR_mq_notify, mqd, &notif) == (mqd_t) -1) {
+-		tst_resm(TBROK, "parent: mq_notify() failed (%s)",
+-			 strerror(errno));
+-		cleanup_mqueue(TBROK, F_STEP_1, mqd);
+-	}
+-	tst_resm(TINFO, "parent: successfully registered for notification");
+ 
+-	/* Define handler for SIGUSR1 */
+-	sa.sa_flags = SA_SIGINFO;
+-	sigemptyset(&sa.sa_mask);
+-	sa.sa_sigaction = father_signal_handler;
+-	if (sigaction(SIGUSR1, &sa, NULL) == -1) {
+-		tst_resm(TBROK, "parent: sigaction() failed(%s)",
+-			 strerror(errno));
+-		cleanup_mqueue(TBROK, F_STEP_2, mqd);
+-	}
+-	tst_resm(TINFO, "parent: successfully registered handler for SIGUSR1");
++	ret = mq_notify(mqd, &notif);
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "mq_notify failed");
+ 
+-	/* Close the appropriate end of pipe */
+-	close(father_to_child[0]);
++	sa.sa_flags = SA_SIGINFO;
++	SAFE_SIGEMPTYSET(&sa.sa_mask);
++	sa.sa_sigaction = child_signal_handler;
++	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
+ 
+-	/* Tell the child a message can be sent */
+-	if (write(father_to_child[1], "f:ok", 5) != 5) {
+-		tst_resm(TBROK, "parent: pipe is broken(%s)", strerror(errno));
+-		cleanup_mqueue(TBROK, F_STEP_2, mqd);
+-	}
 +	TST_CHECKPOINT_WAKE_AND_WAIT(0);
  
--	/* Close the appropriate end of each pipe */
--	close(child_to_father[1]);
--	close(father_to_child[0]);
-+	ret = mq_send(mqd, "pippo", 5, 1);
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "mq_send failed");
+-	sleep(3);
++	SAFE_WAITPID(cpid, &status, 0);
  
--	/* Is container ready */
--	read(child_to_father[0], buf, 5);
--	if (strcmp(buf, "c:ok") != 0)
--		tst_brkm(TBROK, cleanup,
--			 "container did not respond as expected!");
--
--	rc = mq_send(mqd, MSG, strlen(MSG), MSG_PRIO);
--	if (rc == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "mq_send failed");
--	else
--		tst_resm(TINFO, "mq_send succeeded");
--
--	/* Tell the child the message has been sent */
--	if (write(father_to_child[1], "f:ok", 5) != 5)
--		tst_brkm(TBROK | TERRNO, cleanup, "write failed");
--
 -	/* Wait for child to finish */
--	if (wait(&status) == -1)
--		tst_resm(TBROK | TERRNO, "wait failed");
--
--	cleanup();
+-	if (wait(&status) == -1) {
+-		tst_resm(TBROK, "parent: wait() failed(%s)", strerror(errno));
+-		cleanup_mqueue(TBROK, F_STEP_1, mqd);
++	if (received != 1) {
++		tst_res(TFAIL, "Signal hasn't been received after mqueue event");
++		return;
+ 	}
+ 
+-	cleanup_mqueue(result, F_STEP_3, mqd);
 -
 -	tst_exit();
-+	TST_CHECKPOINT_WAKE(0);
++	tst_res(TPASS, "Signal has been received after mqueue event");
  }
 +
 +static struct tst_test test = {
