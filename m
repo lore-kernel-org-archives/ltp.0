@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24545C25B0E
-	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 06:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA458C00140
+	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 07:41:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D025B3C95EE
-	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 08:58:30 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3A1D43C9728
+	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 09:41:47 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4CBAE3C1FED
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 08:58:21 +0200 (CEST)
-Received: from esa13.fujitsucc.c3s2.iphmx.com (esa13.fujitsucc.c3s2.iphmx.com
- [68.232.156.96])
+ by picard.linux.it (Postfix) with ESMTPS id 987883C01CC
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 09:41:35 +0200 (CEST)
+Received: from esa2.fujitsucc.c3s2.iphmx.com (esa2.fujitsucc.c3s2.iphmx.com
+ [68.232.152.246])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 591D120074D
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 08:58:19 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B1D9C200773
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 09:41:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1660546700; x=1692082700;
+ t=1660549294; x=1692085294;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=VGjfIG6ZVwSaBFuJlTzRHhUtjUKD++ev4f7+yb7yZCw=;
- b=G0Id1uoEQi8ONlH7AhtI86bhcKpzYc3qhyCiqBZSIbPaYbuSJ8wb+W9k
- SRGaMdZnCqWhiYE6lqYWDJTW3RNgn+/G2+wok/561Enc0PlkXF7ITTzLy
- auFaaLRqjgIf0yyD30q9A4yMOyAzgX2IhXtspQJ1vkHlu8CrGSmrsN026
- Ee2uZ6M6oFsdaMm0AUnyj3QOwyUZj8B8PDjy2UecNNW81FDZMKGPEIwAN
- PvzxTxf/O85UG9WpOg+e7SOaar4leSgpmINxlFSebeQu0Fh5tSCCoXLPF
- 4kpDPway5HiV8TtjnuPI9uOq+p2l/yunjGU+xSC7PDtKkiNCpDP4gmgDP Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10439"; a="62520201"
-X-IronPort-AV: E=Sophos;i="5.93,237,1654527600"; d="scan'208";a="62520201"
-Received: from mail-tycjpn01lp2173.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.173])
+ bh=TIxeXdY1qCz0w0WwYYIplCb82y98ZKAD0vKZBmgfvko=;
+ b=ZAK5SqSUO1/LmRmMN7aKHpy6XME8+iHVhwXoQWvZCL242S9CYaRuqW7+
+ WQ0Izq8zhMByn2dXbTQGh8mwJVOrLzyyxd+1+DvrW5AiMr5O9lp/4j0kN
+ ft2H4s7DC/OdDdDHP5aPAP4I/vzXnX5ud9mXlcKtoHp4UEiSfIqrParLM
+ tyHzc1PtIr0UgT2v0rJ22PJWRWbBk0gowwMOFrlQV43FL7H/x3BQ4Jyin
+ zemj4gwSixSYokm2XlirKJRioOzJfA2oGPBofDu+WUdMh5NMXjs2cdpBQ
+ aepC7FEaXDQOtRaRdctMfGStTr5ljjrbK5hf5bXu4eIzK5MW3hzb96J3f Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10439"; a="70996603"
+X-IronPort-AV: E=Sophos;i="5.93,237,1654527600"; d="scan'208";a="70996603"
+Received: from mail-tycjpn01lp2172.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.172])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Aug 2022 15:58:18 +0900
+ 15 Aug 2022 16:41:32 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jLlRHYC4EbUCPF7D4jwIG4hwUgOuNGG2KvVrFhXJfH4ZMAqMgwY8S0SpjXKP68tU6y8XrJ7LJvI6G7TJwDFFqrm6qyWukI3cukgUM7CUFs8nAYdnJE95vk3Biu6IZpMpstTUwS3CdeCc2MBiKuVW2GPI10nVYbxQSldSyxq95aQF196GYQlhj9dZ1pEmYFmFrMr4fqUummxCclfmm1D0V3CjyHq7itPeSVOKYwu4cMx+vjpTm/AVabxu3svmD9X18jLAzn0gmGSQjH+anA4oslxbBBNAaVVI9WUEd4il1C3yvir2sKrnD9KoiITy7Uu3vl/LC4OPwdCDie6D9iWwZA==
+ b=HYXB0JmwbuKIUMY9rxcnyX46N3roj2UxysYpg84/wC8krWDScNM9WdtCq/vOW4rtDhbzx/qwgNtuV07aG3VQ1Pr07kR4kKmqtBtp2LYwyViFMcwi9QwdKfEV4ncyVb8n9k2mSz9HASzg8ZWzvS8xGHtv1QHZR7nTpQtxelofR0tVLA9xou7rMog85w50YXfndNZGYKcO1cUCJ6LTV46w0TModpnNYGcJmhlJCCggLCECGz2Jta2KAQtmpViaTr4yjxEOZCoySq6ah8CNaPC5GvbttWi//sYST5e9QQAmpnYLxIxnGJqPXQxiBcElske7mjebHIzSbO6J+T0epfwYfQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VGjfIG6ZVwSaBFuJlTzRHhUtjUKD++ev4f7+yb7yZCw=;
- b=SL2c9IVHAZHAAOKkYgz43ChS6hQ77wL1mdT2+ieDc6mG7vJ22G4eiImwRJjdTuBq3PaymSc5TtnYn0klQu4Hq9cN3Hyiyw96UZcsmteuKsBl3w8zCuFmovtJFl5tRtJ6GEFrpEgrv7rw1lrPEFuk/7foEGUzz4gk1BrT9+Y31MjDyCM15YTKziy2xJsHsCmuME/mrr06WVgkJb095ce2ErSqiFUMUAfGhzVXwULxWLiTB+QjoVJvRY9s4GzqwhB558ARi4L6Gf+oLGifb3M/zFoburw8OUapwqgJy0eT9DUb0OBDtnF5VvhOBhjABrhB9aW65Z9aa0LOOH/vcz0YsA==
+ bh=TIxeXdY1qCz0w0WwYYIplCb82y98ZKAD0vKZBmgfvko=;
+ b=GvWU+PzR3hv8RlGub/+Ag0aUllW61HrVUprGrmR29TcHZc4YnduShvrV6DvOq0gSxWc1qX6FRgBSOeMMTcnt7khAIgk9rA1Sqkjz80yTNgEGcLjxf+SeUcQyBUlLtmYtWlHF5C17eDcyG+QanU44pXLwQawrHygFnNQNP4VsuGG23U5+ijg5FHm3Zz/rPnEdE45dKy0rUQttHOSzIAj68GYMMEykY/LzNHbVpR3lejxKQtOX0tRsRir5UbfTgeeSwcLHnn6edYReuJ2Onyc6UMsDByebGq0b2Qy3z4McgOEET4INRjljqso5Xb4ouubt9qAm9zm1PHv4fcJmsYhcow==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TY2PR01MB2489.jpnprd01.prod.outlook.com (2603:1096:404:6f::11)
+ by TY2PR01MB4954.jpnprd01.prod.outlook.com (2603:1096:404:117::12)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.17; Mon, 15 Aug
- 2022 06:58:15 +0000
+ 2022 07:41:27 +0000
 Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
  ([fe80::2440:60cd:7bc9:5d48]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
  ([fe80::2440:60cd:7bc9:5d48%2]) with mapi id 15.20.5504.027; Mon, 15 Aug 2022
- 06:58:14 +0000
+ 07:41:27 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH v3 0/2] mount03: Convert to new API
-Thread-Index: AQHYrYpdivkAy4rXlU+UH1tz7IrvUK2vgeuAgAAG24CAABXngA==
-Date: Mon, 15 Aug 2022 06:58:14 +0000
-Message-ID: <1e791bd1-2661-95b0-1f0b-e3ca82b6524f@fujitsu.com>
-References: <20220811135731.2228-1-pvorel@suse.cz>
- <765b4f35-2cd0-04e1-e405-04261b5ef645@fujitsu.com> <YvnqZfyByO42kAX9@pevik>
-In-Reply-To: <YvnqZfyByO42kAX9@pevik>
+To: Martin Doucha <mdoucha@suse.cz>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [PATCH v2 2/2] syscalls/openat: Add new regression test when
+ using open(O_TMPFILE) under umask
+Thread-Index: AQHYpuAZG5FwgMg6rkOOHaINEbboH62e6yiAgBDM6wA=
+Date: Mon, 15 Aug 2022 07:41:26 +0000
+Message-ID: <e0dc38e7-ea7e-106c-7796-3981ab90a1d0@fujitsu.com>
+References: <1659497063-2212-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1659497063-2212-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ <c266e389-c6f4-502f-523d-6d51fbf3ed58@suse.cz>
+In-Reply-To: <c266e389-c6f4-502f-523d-6d51fbf3ed58@suse.cz>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -74,71 +77,70 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 65616f26-f630-405e-3385-08da7e8b8688
-x-ms-traffictypediagnostic: TY2PR01MB2489:EE_
+x-ms-office365-filtering-correlation-id: 41926b89-213e-4d18-b2c4-08da7e918f94
+x-ms-traffictypediagnostic: TY2PR01MB4954:EE_
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 62G9pf4ZaHd8yzDJVMAuNmfHPVGWr91V00ji+GtpmnSFuzbnf3/kQnO2GdBiHgvge4wg0gj2FNdeWnkzgz58uNPfhWOo2JKrKfdelEdAvzEOi1fU7FI2ojDEFP85AefkB2VS/oHEdUZfr5I6hNmQUG2Re3vWIMT/M2RTcmtDrZj1KW4OhbxMo6CckDeSSFvHDagMwELgWxY5S/pD785+wnPp8BX0Fm7SR7hAA43xDZe7gk7fr46sVj5r/Xa07FA1vEBIhzxD/w9wEm3HwjcwCZhMvO0v4ZzhW+x6k9GcJvn9hONGES50lT/rfBph5JvwMgQb+BZr23P4+/Vg4TlTMXNqPHkM9Ygja8F8/oWhU2LHW1r8ZJo3VNfnTTU9z6tGQadBNVOT35f0IMj3Y6vFs53TdDTZZg1oZUtdGBNTB1huwet6uWXy6PAE3DJE43JKqAeBAOn0fqWxI1HGQ06iiBNKr41/rBoov8tDagtoDjyrHiRQNHDyhU0dL3idHqYBCHk5xbRAsOdSHdxNUl9/F3a/dEJ+3gTTJ/kF3AioXWjgfNkw5JDv5cWVL79s+7q5lSZHjs9pt07t7aTiSzPZ+0FgJTtvnnBFtXr9/Se03G2mtgM7d75hjDwbko21WjuzbH8r63xaY79tHf3d0gXN2LYI5Bek8Ucf51tm4bVJf80gEMBPaO6SgwbcBPZyEDRJNwNLJorFvXCdlsEgkhyFHer3S97UUHuCVd+6UnV9MxUGDa57ErTjkM5DWvpe2kyf9r5GJQqWk/ajyeL83FkdjlCdPQJNM5MAZHEu0/SBex4SXI0GmNxltOg0ehfxGFkdwJIssV/RE7vpp9JTqCUCBObAxdgK3LBrOXmoxOtX77xULardNBVL9X0so+P+R7Xh
+x-microsoft-antispam-message-info: y7OBG98+qemQ+uj6juCr27/v4nUH1hF+NIEesScFyr+/1ODx5LpUe0q0I2bAYqzkveJAdWC1NDAFoo9cE7eWQy4aG5QW1AJ7YPuqZT+58DYfpm0c00KNPa7VEAIAHX6rx1241T1wjerOCQymOAP7fzvC6Wa3CDw82FPX46NUfLR895hLKdG1WgIS+LAQhj09nrDN5VOZjy6S6lbGc+KFSvChldyZjVRNw5To2tZjnGyxhNT95FF4TqBv9iGDB6/qF12yrVlUQydONH6TOG/IEwpFJjq97G+7A/jYyO30l05BFEFO4OXyFQOKInVZDQtv+Rcg3NjO1D01S1zzS5UuZOOv1KVyDwP+ReAXp1vwkNBqKf/wLP8TBbZNpsiz1TcMHAjDQZ1BQuM6mnqdkNe/ZFP0QirK0iag5MfxQlPfrRr3EkkI5VO9IAeIIPQUSvkeckh3y746VA59rCxtIT29IcaeIRz+PpC4EGqm/OTAbha9bemihGTwcr8qow8gNYfEgxSQOpLvrtR78le3AVGNN9vN/nYpRcfWBBHvqbzB63rTIaIblOn/dG5TxHE2C359F8OAwGAexLw/hwx8a81sTHnJNjBTpihyssuJNjMeSBc5nzw2nsf0tsHk6T7iosWo7HhdLbN8XTco/JeW3Zw4ZQpl/Z/GOmGYNPJeMHCbI+mXprf2rx9Oy70q9eg0DAUhIoJmq3t2nTCMl2vQsyorId1TlsGsa5XDSu5ff7t0jkCAbQO8rRBZfmtzMiMN9XDQty994I9Oq4tgUnyNxH8581fRjVgm7gZurNmObsuNxs50MFJlaKxCPWqk98wghRoneq9QKgwgZoWixSMhajgSC06lyDU1eHlGMIkYqghSgqAkWNprrlkmRUthopy7xz+u
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230016)(4636009)(376002)(396003)(39860400002)(136003)(346002)(366004)(6916009)(316002)(8936002)(82960400001)(31686004)(2616005)(1580799003)(36756003)(186003)(85182001)(71200400001)(31696002)(86362001)(26005)(6512007)(6486002)(83380400001)(478600001)(6506007)(38100700002)(8676002)(4326008)(2906002)(5660300002)(66556008)(66476007)(91956017)(64756008)(66946007)(66446008)(38070700005)(41300700001)(76116006)(122000001)(45980500001);
+ SFS:(13230016)(4636009)(39860400002)(366004)(376002)(396003)(136003)(346002)(38070700005)(2906002)(26005)(66556008)(38100700002)(66476007)(66946007)(82960400001)(86362001)(64756008)(66446008)(6512007)(110136005)(31696002)(6506007)(91956017)(54906003)(478600001)(6486002)(8676002)(1580799003)(76116006)(41300700001)(122000001)(71200400001)(186003)(2616005)(8936002)(83380400001)(316002)(4326008)(31686004)(85182001)(36756003)(5660300002)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dmNURGw2MU9XNTlleE5ueTQrWm5Qd0krL3ZYQkM3cjFhS2xUZFlGOVM4UENZ?=
- =?utf-8?B?R1JOV0hCSllvc1QvK0tWOTQ4SFBOWXkwYlhMdFJXekh4UnhqcVoxaWZvVzRJ?=
- =?utf-8?B?emowRndLRGlrMkZGcHZDaTNjUTFPaVNJV0o4dXlCMHBTM0hFZ01vV0ZIVFZG?=
- =?utf-8?B?UDl5QkJqNWoyY1FLWi8wSG1MczQ5K1lPNC9TUWF1T0k3YSttaHFzVWRBZEMw?=
- =?utf-8?B?QlVQbUVkUUlzVCtKWTZkRTYzM2RJWE1xeXVzZytQYk4yZGRSUEczaHgvV3dK?=
- =?utf-8?B?aEovL2Q1dkFPcTZVRnJTY1FOTzkzUEsvNGpyM1gxYVdDNE1sQVpRbVN3dURh?=
- =?utf-8?B?c1lUWW5IRkF2OVBBbUMxNmpNc3ljVll4WC96WDJSK2p0ZXlwSU03QTR1blpK?=
- =?utf-8?B?dDk3OHF4QlZ5enJZek5YWjB0SWMwdHM4M1c4U1FyK1pVNW42Y2dGKzF6UGQr?=
- =?utf-8?B?dTIxWHRMbVVoWmtmV2Qrb3locVQrMElUdk0zd01RNmVnck01SUxXRzVyWnY2?=
- =?utf-8?B?dUNnQkttdGdSWWdieUNhSFFKaGtZVW9wWTJTVi9CODdwdTJJZ3RwWXB2d2xi?=
- =?utf-8?B?a09OTW0xRjAvTmJmYzlReWJuVDdtaTZYTTNVK1Y5TXZTQVhwRnJiTnduL3h1?=
- =?utf-8?B?RWhxVHRkeTlYUCtYYjVhUVN0UDdaTEFXSFYxTjgxTC94NnpZM1k0Lzg1bGNk?=
- =?utf-8?B?STZHZk1pVzQ5eTRVKzJ5a29uOFpwVkZjTjlDQndCK1NCSzFadUFKRDlEV1Zp?=
- =?utf-8?B?NkxpaytPSWdaNThjOG52ZG1xc3dVc3ZiRjd5UWFFSzdMVG5STXdXM05iU1N2?=
- =?utf-8?B?Z09sdmcyNEF0UXRaaVRTT1Zjb001VDljTmpxQkNMQTdaa0dvNUdiUG1mU21E?=
- =?utf-8?B?K0hRN2xmaW43S1daRnZsMHd1SjFVSjBUTy9uWjl1WmxuRkJlRThhSFNUdms1?=
- =?utf-8?B?ZHVaci9DYmNCb3kzT0s2bEI5d3ZlSDJSWis0ZWpPVjhJY1lqbTN5T1l3dm0r?=
- =?utf-8?B?YlNZTHFHUmU2Zy9DOEpoNGgzY05HK3dzc3hyamhPUzN5ZkVjMzU3dUtDSlhn?=
- =?utf-8?B?cUdUMEE2Mk9HRjNJTm9FRWZsT21naFdML2k3cW4yZ3NZak9jS0ozdHIxOUV6?=
- =?utf-8?B?RkNQekN1UkREYldVbFl2dEdWVU5ncWVSQWFObTVJN0xCeHdMUkVPREowZERk?=
- =?utf-8?B?SVU2M1lHdkpSckhoVUcwOUoySzk1bzE3OUEraDRWRGVGTmQ2NzZ0V2U1YWxs?=
- =?utf-8?B?MG9UTVB5WitVN1dxN0Y1cldGZWFMZWlzcXJwdE5SSS9HalQvTnlXWERFNUJY?=
- =?utf-8?B?SW52dkppUEpuMzJiczd0MDE0UHFycmZ3MFpiZ0U5d2RlcmtZd1A1ckFYdEhy?=
- =?utf-8?B?YXpma2FDWW1WS1hmNVJFdTNOY2oyS3k5ek5PUW5OOTZGa0M5RnBuL1cvM2hq?=
- =?utf-8?B?T1dJa01ZM0x6Z1JDM0R2Zy9YdmtScWN5UHlrQnZrVkNYZmk4V0p5VHR6eDYz?=
- =?utf-8?B?a0lUTm04Mzl2MVJlNWlMdENZazVPYjdTWWs0WHNwR01qYzhWbjNXYnVOSjFX?=
- =?utf-8?B?TDZMMlYvU2hmbk16WWJVRnZOLzV1NGxDL2dFWnNhYlE1NlNUMWw1a25UUTdl?=
- =?utf-8?B?UWNWOHZiSEdPZmZhTHVoMEM1aDlVSU5KcGl4TFRteGRwK2M3elRpdTNRcjVw?=
- =?utf-8?B?cFZaU0x3b3ArU2c0K2RJcWJ5NnV1Y2xGektIbjI3Sjd0RVdQVlFPazNZSmYz?=
- =?utf-8?B?K3BZQVJQK3FWMWkwZVJiVTBZVFZEMVJyQWE1N2IwWTY0Nm54Zi9OSnRuVXpG?=
- =?utf-8?B?NlR5ZWF2VWhPVnRTdUFJVnJYMml3dS9xeldMVlJFNEhlY1pUU2tuV0E5WlJy?=
- =?utf-8?B?LzNYM0luV0k1Mk1LbC9Ld1g2RVQ1Z21jcUtQUXplaXNiRHlqRlh6emNwU2pz?=
- =?utf-8?B?aHVoV1JlY2lUSXRxSVF5MlBuSEdBVTlyUTZGR3lHZGtMY1NSbHE4YVBqMmNz?=
- =?utf-8?B?RXJDZGxyUVhpV3VhTWtrQTRiRDZvQVdocm9sL2pVYzV3MmpWTWp2czZRWno1?=
- =?utf-8?B?QndOamdPZWlwb1Q4YTBkVTdFcmxBeGtvdWJuZ1psWTlEZWFzZ0xxbDlEcC9M?=
- =?utf-8?B?YmY2TEFHbzBUaXdsS0pibUc2dmZueVAyNXdSRGxncUdIN0c2dCt2eUkxWndC?=
- =?utf-8?B?NlE9PQ==?=
-Content-ID: <7D90CC8B69885A46982CA37CF0D546AA@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SGgwKy94SFdxM3ZNVTloYkxZbEJneG40MngvNWlMTVF5MEh5OWFwK1BrZHJp?=
+ =?utf-8?B?U0Z2WHBGOFRYMHM3azhJNzNsS2pXa2YrSzZNTVh2MGQyanhvUjgvaGVrUVV2?=
+ =?utf-8?B?emI4NFBTSFE2ZkRaMGZqMG1pNzk4Zk5FL0N3ci9tTlpRUzdBZlVTeFhmVWRm?=
+ =?utf-8?B?WG9ISjQwblBKUTlqN2Q3eXE0TjJhdnJTSUtTZnIrNitVdEkrd0hJNjhLQ1Np?=
+ =?utf-8?B?MFh1Z0pJd1NieHZKaXlFOUxXUzBiWW84UUxiZTlxNktEU2lCRXlzTjZ3aUZF?=
+ =?utf-8?B?MjFRT3I5TEZNNXFVUndXTG5VUnl0anVaUit3K2FaNVV5ZkF5a2JmZ2xTTFJ6?=
+ =?utf-8?B?WC92cU1QYjJkMnZMWmxIUHNOWHhINlp3TnhNNlJHSXlqM0hoMkVIOExMOTZ5?=
+ =?utf-8?B?dm9lSlZJVVRSTlBsc3I3dDZibnFQWmdiU0huM1RPZVRVQ0xwa0NGZUNIL1pl?=
+ =?utf-8?B?MEhuVDFsWFc4S2l6MFU4T0lkb2NSNnpMSmt4MTFVeUxRSWV6ZEdSbDBhNHg3?=
+ =?utf-8?B?a2Z1L0szL1NwV1hzcitvQjJoS2JLQXRCd0lwWjBMWUdyYTdrOVZyVVF2ZlVl?=
+ =?utf-8?B?Vjh3MFdoRnI0VVphbE5yUy9FYVkxakZyZjRvanlWMWFYVXdSNnl4Vk9Nak8y?=
+ =?utf-8?B?ZGMzSUVZd0gyRW1SZ0JwYVlIVytFOUs1cmZrYW5JNEREK3kzdWs0K3dBY3J1?=
+ =?utf-8?B?YVlScGwyVjdoRzhmYWlMZjE4NDVqd1NVcTZyQnJzN1pQaU42eE9RNjRGMSti?=
+ =?utf-8?B?dUk3ak55NzNHclp2ZHoyQ3FKVlpEQUxzTVpUbWlFbVcxaGVheXd6aVpvc2M3?=
+ =?utf-8?B?UnpRQUZ2SzBYTXF4WTNUNHVKYnRPNUU4NU5EMmlCVEJwc3MxYk56QUZIZzh5?=
+ =?utf-8?B?MEhMbm9sQkJmd00vaWovZCt1QTRWd2lVbWtlRXIrL2RlSGs5TFlvRmMzdm9B?=
+ =?utf-8?B?V3FoZXRRSlNxSHhrNWhhZjZOUjVTM3QwWXNvZWRLRWljaHg3bGdoUXB0WHhX?=
+ =?utf-8?B?Nk5kV25RMkFJZDVsT3FDblo3ZlZ2VzlhL1loMVcvdWFCV3dtWXpaOUg5djZD?=
+ =?utf-8?B?S0ZJQWNEbE5OZitOSk9hNUhsME9SdnR4QVc4V2FicHlyVWFIS3pvUzVwUkZv?=
+ =?utf-8?B?QVE3YlVjTTVtTmwvSEVVYWlVMUJQL0Z5c3FkT2VObDVPUzIzMWNNM3FJUGha?=
+ =?utf-8?B?Rnc0c1lzVzdJNTk5VnB2T2VpR3BoYnZkKzFlSjNLelBpdnZ3T1hyM1UzZnJW?=
+ =?utf-8?B?TXBLY3NBYmFPdHBlY2M0ZzMxN2NkWlR6a2pwWnpwUGVXTXc1MU5aZHBKVEFO?=
+ =?utf-8?B?Q2J6TDI2RGJSWWh0UVQ5alcwR0puVk5xbmY4RkVlNERyZ2FKbGFEMDE2QVc2?=
+ =?utf-8?B?NW9heU5pUlowTXV5a1diTHphbmI3UU1zS0h1eko5dVJnUU0vTGo2SDNzR2V5?=
+ =?utf-8?B?eFNuSE1EQ1pTMnFNS1R3VXRqdndHL2Y5MHV0M2t0OHYxb2NHdXZ1dm5vQi9v?=
+ =?utf-8?B?czYrR3N5WDlqcVllTDdpU2h6VjA0bXZPTWg5TzEyRFJWT0cwWHIzdjltVkM0?=
+ =?utf-8?B?M2FWeS9XMWJGY0xJeXdRMSs0ek1xcm81TnVMVzRWM29VbDNsY3hXSXFkOW1H?=
+ =?utf-8?B?YnNtdGJ3NTdPd3BNNHJReGp5UDYvVXQ2TlhZV2dwcjRhcW93SDZybFFZMGYz?=
+ =?utf-8?B?QVBIeUhHNlY4RCtrRG9GSmZydVphS0VsWExjakNLaTJ0cGdkOFJjTlpjQlQv?=
+ =?utf-8?B?cmlqcFR3c1pZNmh3V2pQVHZONi9qWSsrZmQ3VG1ZbnY5OW9xYWhHNSs3ZGha?=
+ =?utf-8?B?d1ByTUdCSHZmTTNDNXRNWnJ5VTY0bXBiM2gzalpzRytFZUU4ODJyb3IrSzFY?=
+ =?utf-8?B?VjRuNmNGNm1rbEJZUW8vRUVyRWVKS2t4YXZIMTZWaHBGbnlQQlM2ZnA2bHc5?=
+ =?utf-8?B?S2pLNlRSNFVmVlZhb1IrNnpRZGRKdTNaUjJySWRpSUlzUFFmUGRTTm52TGtT?=
+ =?utf-8?B?OGRuek94cnEzd0JyUjAwQ2kwRzhnRnJ2ejM3OUJ0dGwwaTJpbWVpbGt3STdy?=
+ =?utf-8?B?S2lqblNQeTljcTA3Z2dieXdkS1h4RmxaS2s3OXlXRGtwOEdDRmFLM3hGeGxE?=
+ =?utf-8?B?U2dKVGVma1N2RVdPZUZKQ1ZzazYvaFh2Zm05cVBBN0dILzM3NmJVdWJCeVln?=
+ =?utf-8?B?ekE9PQ==?=
+Content-ID: <272EE72F8274BB4399B656B659613330@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: gjody2k7s6oxIstBGfnDqBharnvE1o6vZbl9jbwmTeU1IcYPV+R2mUi9f8PbcmGtrT4JwyznFBeS3Ahu+hv6WJIByhTRgCmnXnbXuZ0asWVnzi/iIhZjKMAjR99liclblCulA+/aO5/w630uZLmEjft1QPkDYaoQ6xTxFlrh1NeD5ptp8L47OzYhffz/kQTpNRzeiwu2ejAEHPT7Tk/YYKXOMLYJYzPbTmBJDadb6DPWiGh9WtX1QBlIPc+5P7+Zwbtq0VMZtalj4I/5xuV9+zsQBsEa8PRlBKIEDlpiZ/BLJJSPrUG/OBKv0tsPz5H4LnX/A8Do1MEQijSwhjDhqY4guuse8Ncnf0T++dFT94qYA0wQZPSpxxbjXWu7DJ7IzzrHzMcSe2r4aCnSaOuQ4XGoBaL5ZhUySriLgzZIkKHWGPWx6pdM3ff1uBvqGSoCOI4sIDHmA7h6yrPzvBHFyxtUuDkByKpIjM+zkjviyHE0+Q2W9O8RFFAt40MT+YgT/7QBc/8pnCQZ8VHQ3gcS5QfgkcQTDv68wK7xlTH6ZaG3g/Bty2zN17ECWYtVE6oXRdFzPqN8+Ed49EyWDiCMaIkFJ3weHvHfWR0nodChCNn8D3n2/T+gKdQahq6i2WcOYwSyjMBDcD0LxpRBqyhzUGGtKnfTwg2up0B4/OogjMDCHopgf84gHpIHwQbESom6WmChwytmKYQWQnDHnFms8D5zPdnTJ9sAQ6FFXdUNWgzkHiT/6XlkK6SilJrctgwz
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65616f26-f630-405e-3385-08da7e8b8688
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2022 06:58:14.8348 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41926b89-213e-4d18-b2c4-08da7e918f94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2022 07:41:27.0122 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CNIyo9vwV0LsAiP6mJzmwncDmALRCkPoMMl4dkGdz3CznVm7PvjFMwj3KDL/ZGy+aF0OWqoSl314zRimQbn9h0+3BmIhx7dObCk2rTiEubY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2489
+X-MS-Exchange-CrossTenant-userprincipalname: YZJaqwrLLHo6hRiqrAF7jF5tyk8ep0ZfofMi1lPgot7Jm/GebcFsRrOUU16yX6QgH5IVcFjlrWcf9XobZhQ954UwgPz5qkZ3ImMRlndCmNM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4954
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 0/2] mount03: Convert to new API
+Subject: Re: [LTP] [PATCH v2 2/2] syscalls/openat: Add new regression test
+ when using open(O_TMPFILE) under umask
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -150,70 +152,276 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: "brauner@kernel.org" <brauner@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-DQpIaSBQZXRyDQoNCj4gSGkgWHUsDQo+IA0KPj4gSGkgUGV0cg0KPiANCj4+PiBIaSwNCj4gDQo+
-Pj4gSSB3YW50ZWQgdG8gc3BlZWR1cCBtb3VudDAzIHJld3JpdGUgWzFdLCB0aHVzIEkgZmluaXNo
-ZWQgdGhlIHdvcmsuDQo+IA0KPj4+IENoYW5nZXMgaW5jbHVkZToNCj4+PiAqIHNpbXBsaWZ5IGNv
-ZGUgYnkgdXNpbmc6DQo+Pj4gICAgIC0gU0FGRSBtYWNyb3MNCj4+PiAgICAgLSBUU1RfRVhQX0ZB
-SUwoKSBpbnN0ZWFkIG9mIFRTVF9FWFBfRkFJTDIoKQ0KPj4+ICAgICAtIHJlbW92ZSBpZiAoKSBj
-aGVjayBmcm9tIFNBRkUgbWFjcm9zICh0aGF0J3MgdGhlIHBvaW50IG9mIHNhZmUgbWFjcm9zDQo+
-Pj4gCXRvIG5vdCBoYXZpbmcgdG8gdXNlIGlmICgpIGNoZWNrDQo+IA0KPj4+ICogZml4IG1vdW50
-MDNfc2V0dWlkX3Rlc3QgY2FsbCwgc28gaXQgY2FuIGV4cGVjdCAwIGV4aXQgY29kZQ0KPj4+IEkg
-d29uZGVyIG15c2VsZiB3aHkgdGhpcyBmaXhlcyBpdDoNCj4+PiAtCQlTQUZFX1NFVFJFVUlEKG5v
-Ym9keV91aWQsIG5vYm9keV9naWQpOw0KPiANCj4+IFdoeSBoZXJlIGlzIG5vYm9keV9naWQ/DQo+
-IA0KPj4+ICsJCVNBRkVfU0VUR0lEKG5vYm9keV9naWQpOw0KPj4+ICsJCVNBRkVfU0VUUkVVSUQo
-LTEsIG5vYm9keV91aWQpOw0KPiANCj4+IFdoYXQgcHJvYmxlbSBkbyB5b3UgbWVldD8NCj4gDQo+
-IFVzaW5nIG9yaWdpbmFsIGNvZGUgU0FGRV9TRVRSRVVJRChub2JvZHlfdWlkLCBub2JvZHlfZ2lk
-KTsNCj4gY2F1c2VzIG1vdW50MDNfc2V0dWlkX3Rlc3QgdG8gZmFpbCAoZXhpdCAxKS4NCj4gVGhl
-IHNhbWUgY29kZSBpcyBpbiBjcmVhdDA4LmMsIGNyZWF0MDkuYywgb3BlbjEwLmMuDQo+IERpZCBJ
-IGFuc3dlciB5b3VyIHF1ZXN0aW9uPw0KDQpZZXMuDQo+IA0KPj4+ICogYWRkIG1pc3NpbmcgVFNU
-X1JFU09VUkNFX0NPUFkoKQ0KPj4+IEBDeXJpbDogaXMgaXQgcmVhbGx5IG5lZWRlZD8NCj4gDQo+
-PiBJTU8sIGlmIHdlIHVzZSByZXNvdXJjZWluIHRlc3Qgc3RydWN0LCB3ZSBkb24ndCBuZWVkIGl0
-IGJlY2F1c2UgbHRwIGxpYg0KPj4gaGFzIG1vdmUgaXQgdG8gdG1wZGlyLCB3ZSAgY2FuIGp1c3Qg
-dXNlIFNBRkVfQ09QWSBpZSBwcmN0bDA2LmMuDQo+IA0KPiBBaCwgdGhhbmtzIQ0KPiBTQUZFX0NQ
-KFRFU1RCSU4sIGZpbGUpOw0KPiANCj4gLi4uDQo+Pj4gKyNkZWZpbmUgRkxBR19ERVNDKHgpIC5m
-bGFnID0geCwgLmRlc2MgPSAjeA0KPj4+ICtzdGF0aWMgc3RydWN0IHRjYXNlIHsNCj4+PiArCXVu
-c2lnbmVkIGludCBmbGFnOw0KPj4+ICsJY2hhciAqZGVzYzsNCj4+PiArCXZvaWQgKCp0ZXN0KSh2
-b2lkKTsNCj4+PiArfSB0Y2FzZXNbXSA9IHsNCj4+PiArCXtGTEFHX0RFU0MoTVNfUkRPTkxZKSwg
-dGVzdF9yZG9ubHl9LA0KPj4+ICsJe0ZMQUdfREVTQyhNU19OT0RFViksIHRlc3Rfbm9kZXZ9LA0K
-Pj4+ICsJe0ZMQUdfREVTQyhNU19OT0VYRUMpLCB0ZXN0X25vZXhlY30sDQo+Pj4gKwl7RkxBR19E
-RVNDKE1TX1NZTkNIUk9OT1VTKSwgdGVzdF9zeW5jaHJvbm91c30sDQo+Pj4gKwl7RkxBR19ERVND
-KE1TX1JET05MWSksIHRlc3RfcmVtb3VudH0sDQo+Pj4gKwl7RkxBR19ERVNDKE1TX05PU1VJRCks
-IHRlc3Rfbm9zdWlkfSwNCj4+PiArCXtGTEFHX0RFU0MoTVNfTk9BVElNRSksIHRlc3Rfbm9hdGlt
-ZX0sDQo+Pj4gK307DQo+IA0KPj4+IC0Jc2xlZXAoMSk7DQo+Pj4gK3N0YXRpYyB2b2lkIHNldHVw
-KHZvaWQpDQo+Pj4gK3sNCj4+PiArCXN0cnVjdCBzdGF0IHN0Ow0KPj4+ICsJc3RydWN0IHBhc3N3
-ZCAqbHRwdXNlciA9IFNBRkVfR0VUUFdOQU0oIm5vYm9keSIpOw0KPiANCj4+PiAtCVNBRkVfUkVB
-RCgwLCBvdGZkLCByZWFkYnVmLCBzaXplb2YocmVhZGJ1ZikpOw0KPj4+ICsJbm9ib2R5X3VpZCA9
-IGx0cHVzZXItPnB3X3VpZDsNCj4+PiArCW5vYm9keV9naWQgPSBsdHB1c2VyLT5wd19naWQ7DQo+
-IA0KPj4+IC0JU0FGRV9GU1RBVChvdGZkLCAmZmlsZV9zdGF0KTsNCj4+PiArCXNucHJpbnRmKGZp
-bGUsIFBBVEhfTUFYLCAiJXMvJXMiLCBNTlRQT0lOVCwgVEVTVEJJTik7DQo+Pj4gKwlUU1RfUkVT
-T1VSQ0VfQ09QWShOVUxMLCBURVNUQklOLCBmaWxlKTsNCj4gDQo+PiBJbiBmYWN0LCBvbGQgdGVz
-dCBjYXNlIGNvcHkgcmVzb3VyY2UgZmlsZSB3aGVuIG1vdW50IGZpbGV5c3RlbSwgYnV0IG5vdywN
-Cj4+IHlvdSBjaGFuZ2UgdGhpcy4gIFNvIGluIHRlc3Rfbm9zdWlkIGZ1bmN0aW9uLCB5b3UgdGVz
-dCBub3N1aWQgYmVoYXZpb3VyDQo+PiBpbiB0bXBkaXIgaW5zdGVhZCBvZiBkaWZmZXJlbnQgZmls
-ZXN5c3RlbXMuDQo+IA0KPiBvbGQgY29kZSBpbiBzZXR1cDoNCj4gICAgICBmc190eXBlID0gdHN0
-X2Rldl9mc190eXBlKCk7DQo+ICAgICAgZGV2aWNlID0gdHN0X2FjcXVpcmVfZGV2aWNlKGNsZWFu
-dXApOw0KPiANCj4gICAgICBpZiAoIWRldmljZSkNCj4gICAgICAgICAgdHN0X2Jya20oVENPTkYs
-IGNsZWFudXAsICJGYWlsZWQgdG8gb2J0YWluIGJsb2NrIGRldmljZSIpOw0KPiANCj4gICAgICB0
-c3RfbWtmcyhjbGVhbnVwLCBkZXZpY2UsIGZzX3R5cGUsIE5VTEwsIE5VTEwpOw0KPiANCj4gICAg
-ICBTQUZFX01LRElSKGNsZWFudXAsIG1udHBvaW50LCBESVJfTU9ERSk7DQo+IA0KPiAgICAgIFNB
-RkVfTU9VTlQoY2xlYW51cCwgZGV2aWNlLCBtbnRwb2ludCwgZnNfdHlwZSwgMCwgTlVMTCk7DQo+
-ICAgICAgVFNUX1JFU09VUkNFX0NPUFkoY2xlYW51cCwgIm1vdW50MDNfc2V0dWlkX3Rlc3QiLCBw
-YXRoX25hbWUpOw0KPiANCj4gbmV3IGNvZGU6DQo+ICAgICAgc25wcmludGYoZmlsZSwgUEFUSF9N
-QVgsICIlcy8lcyIsIE1OVFBPSU5ULCBURVNUQklOKTsNCj4gICAgICBTQUZFX0NQKFRFU1RCSU4s
-IGZpbGUpOw0KPiANCj4gV2VsbCwgTGkgaW4gaGlzIHYyIHJlbW92ZWQgdGhlIGNvZGUgYmVjYXVz
-ZSB0aGVyZSBpcyAubW50cG9pbnQgPSBNTlRQT0lOVCwgaW4NCj4gc3RydWN0IHRzdF90ZXN0LCB0
-aGVyZWZvcmUgTU5UUE9JTlQgaXMgbW91bnRlZCBpbiB0aGUgZmlsZXN5c3RlbSwgcmlnaHQ/DQo+
-IA0KPiBCdXQgaGUgYWxzbyBkaWQgU0FGRV9TVEFUIGFuZCBTQUZFX0NITU9EIG9uIE1OVFBPSU5U
-LCB3aGljaCBpcyBJTUhPIHdyb25nDQo+IChvciBhdCBsZWFzdCBkaWZmZXJlbnQgZnJvbSB0aGUg
-b2xkIGNvZGUpLg0KDQpZZXMsIGl0IGlzIHdyb25nLiBJIGd1ZXNzIENoZW4gbWlzdW5kZXJ0YW5k
-IG1udHBvaW50IHVzYWdlKGl0IGp1c3QgDQpjcmVhdGUgbW50cG9pbnQgaW5zdGVhZCBtb3VudCBk
-ZXYgdG8gYSBtb3V0cG9pbnQpLg0KDQpTbyBkbyB5b3Ugd2lsbCBmaXggdGhpc++8nw0KDQpCZXN0
-IFJlZ2FyZHMNCllhbmcgWHUNCj4gDQo+IEtpbmQgcmVnYXJkcywNCj4gUGV0cg0KPiANCj4+IEJl
-c3QgUmVnYXJkcw0KPj4gWWFuZyBYdQoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
-c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Martin
+
+> Hi,
+> 
+> On 03. 08. 22 5:24, Yang Xu wrote:
+>> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> ---
+>> v1-v2:
+>> no change
+>>   runtest/syscalls                            |   2 +-
+>>   testcases/kernel/syscalls/openat/.gitignore |   1 +
+>>   testcases/kernel/syscalls/openat/openat04.c | 194 ++++++++++++++++++++
+>>   3 files changed, 196 insertions(+), 1 deletion(-)
+>>   create mode 100644 testcases/kernel/syscalls/openat/openat04.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 3847e8af2..448b5613c 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -920,10 +920,10 @@ open12 open12
+>>   open13 open13
+>>   open14 open14
+>>   
+>> -#openat test cases
+>>   openat01 openat01
+>>   openat02 openat02
+>>   openat03 openat03
+>> +openat04 openat04
+>>   
+>>   openat201 openat201
+>>   openat202 openat202
+>> diff --git a/testcases/kernel/syscalls/openat/.gitignore b/testcases/kernel/syscalls/openat/.gitignore
+>> index 2928dae22..2d15872ab 100644
+>> --- a/testcases/kernel/syscalls/openat/.gitignore
+>> +++ b/testcases/kernel/syscalls/openat/.gitignore
+>> @@ -2,3 +2,4 @@
+>>   /openat02
+>>   /openat02_child
+>>   /openat03
+>> +/openat04
+>> diff --git a/testcases/kernel/syscalls/openat/openat04.c b/testcases/kernel/syscalls/openat/openat04.c
+>> new file mode 100644
+>> index 000000000..323d9a971
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/openat/openat04.c
+>> @@ -0,0 +1,194 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Check setgid strip logic whether works correctly when creating tmpfile under
+>> + * filesystem without posix acl supported(by using noacl mount option). Test it
+>> + * with umask S_IXGRP and also check file mode whether has filtered S_IXGRP.
+>> + *
+>> + * Fixed in:
+>> + *
+>> + *  commit ac6800e279a22b28f4fc21439843025a0d5bf03e
+>> + *  Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> + *  Date:   Thu July 14 14:11:26 2022 +0800
+>> + *
+>> + *  fs: Add missing umask strip in vfs_tmpfile
+>> + *
+>> + * The most code is pasted form creat09.c.
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <stdlib.h>
+>> +#include <sys/types.h>
+>> +#include <pwd.h>
+>> +#include <sys/mount.h>
+>> +#include <fcntl.h>
+>> +#include <unistd.h>
+>> +#include <stdio.h>
+>> +#include "tst_test.h"
+>> +#include "tst_uid.h"
+>> +#include "tst_safe_file_at.h"
+>> +
+>> +#define MODE_RWX        0777
+>> +#define MODE_SGID       (S_ISGID|0777)
+>> +#define MNTPOINT	"mntpoint"
+>> +#define WORKDIR		MNTPOINT "/testdir"
+>> +#define OPEN_FILE	"open.tmp"
+>> +
+>> +static gid_t free_gid;
+>> +static int tmpfile_fd = -1, dir_fd = -1, mount_flag;
+>> +static struct passwd *ltpuser;
+>> +
+>> +static void do_mount(const char *source, const char *target,
+>> +	const char *filesystemtype, unsigned long mountflags,
+>> +	const void *data)
+>> +{
+>> +	TEST(mount(source, target, filesystemtype, mountflags, data));
+>> +
+>> +	if (TST_RET == -1 && TST_ERR == EINVAL)
+>> +		tst_brk(TCONF, "Kernel does not support noacl feature");
+>> +
+>> +	if (TST_RET == -1) {
+>> +		tst_brk(TBROK | TTERRNO, "mount(%s, %s, %s, %lu, %p) failed",
+>> +			source, target, filesystemtype, mountflags, data);
+>> +	}
+>> +
+> 
+> The tst_brk() calls above and below are identical. You can either remove
+> the one above, or change the error message to "Invalid return value" below.
+
+Oh, yes, will change the error message to "Invalid return value".
+> 
+>> +	if (TST_RET) {
+>> +		tst_brk(TBROK | TTERRNO, "mount(%s, %s, %s, %lu, %p) failed",
+>> +			source, target, filesystemtype, mountflags, data);
+>> +	}
+>> +
+>> +	mount_flag = 1;
+>> +}
+>> +
+>> +static void open_tmpfile_supported(int dirfd)
+>> +{
+>> +	TEST(openat(dirfd, ".", O_TMPFILE | O_RDWR, S_IXGRP | S_ISGID));
+>> +
+>> +	if (TST_RET == -1) {
+>> +		if (errno == ENOTSUP)
+>> +			tst_brk(TCONF, "fs doesn't support O_TMPFILE");
+>> +		else
+>> +			tst_brk(TBROK | TTERRNO, "open(%d, O_TMPFILE) failed", dirfd);
+>> +	}
+> 
+> What if openat() returns some other negative value?
+
+Will add it for invalid return value.
+> 
+>> +
+>> +	SAFE_CLOSE(TST_RET);
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	struct stat buf;
+>> +
+>> +	ltpuser = SAFE_GETPWNAM("nobody");
+>> +
+>> +	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "noacl");
+>> +
+>> +	tst_res(TINFO, "User nobody: uid = %d, gid = %d", (int)ltpuser->pw_uid,
+>> +		(int)ltpuser->pw_gid);
+>> +	free_gid = tst_get_free_gid(ltpuser->pw_gid);
+>> +
+>> +	/* Create directories and set permissions */
+>> +	SAFE_MKDIR(WORKDIR, MODE_RWX);
+>> +	dir_fd = SAFE_OPEN(WORKDIR, O_RDONLY, O_DIRECTORY);
+>> +	open_tmpfile_supported(dir_fd);
+>> +
+>> +	SAFE_CHOWN(WORKDIR, ltpuser->pw_uid, free_gid);
+>> +	SAFE_CHMOD(WORKDIR, MODE_SGID);
+>> +	SAFE_STAT(WORKDIR, &buf);
+>> +
+>> +	if (!(buf.st_mode & S_ISGID))
+>> +		tst_brk(TBROK, "%s: Setgid bit not set", WORKDIR);
+>> +
+>> +	if (buf.st_gid != free_gid) {
+>> +		tst_brk(TBROK, "%s: Incorrect group, %u != %u", WORKDIR,
+>> +			buf.st_gid, free_gid);
+>> +	}
+>> +}
+>> +
+>> +static void file_test(int dfd, const char *path, int flags)
+>> +{
+>> +	struct stat buf;
+>> +
+>> +	TST_EXP_PASS_SILENT(fstatat(dfd, path, &buf, flags));
+>> +	if (!TST_PASS) {
+>> +		tst_res(TFAIL, "fstat failed");
+>> +		return;
+>> +	}
+>> +
+>> +	if (buf.st_gid != free_gid) {
+>> +		tst_res(TFAIL, "%s: Incorrect group, %u != %u", path,
+>> +			buf.st_gid, free_gid);
+>> +	} else {
+>> +		tst_res(TPASS, "%s: Owned by correct group", path);
+>> +	}
+>> +
+>> +	if (buf.st_mode & S_ISGID)
+>> +		tst_res(TFAIL, "%s: Setgid bit is set", path);
+>> +	else
+>> +		tst_res(TPASS, "%s: Setgid bit not set", path);
+>> +
+>> +	if (buf.st_mode & S_IXGRP)
+>> +		tst_res(TFAIL, "%s: S_IXGRP bit is set", path);
+>> +	else
+>> +		tst_res(TPASS, "%s: S_IXGRP bit is not set", path);
+>> +}
+>> +
+>> +static void run(void)
+>> +{
+>> +	int pid;
+>> +	char path[PATH_MAX];
+>> +
+>> +	pid = SAFE_FORK();
+> 
+> You don't need to fork() here. Just change EUID/GID at the end of
+> setup() like in creat09 and then change EUID back at the beginning of
+> cleanup().
+
+Yes.
+
+Best Regards
+Yang Xu
+
+> 
+>> +	if (pid == 0) {
+>> +		  /* Switch user */
+>> +		SAFE_SETGID(ltpuser->pw_gid);
+>> +		SAFE_SETREUID(-1, ltpuser->pw_uid);
+>> +
+>> +		umask(S_IXGRP);
+>> +		tmpfile_fd = SAFE_OPENAT(dir_fd, ".", O_TMPFILE | O_RDWR, MODE_SGID);
+>> +		snprintf(path, PATH_MAX, "/proc/self/fd/%d", tmpfile_fd);
+>> +		SAFE_LINKAT(AT_FDCWD, path, dir_fd, OPEN_FILE, AT_SYMLINK_FOLLOW);
+>> +		file_test(dir_fd, OPEN_FILE, 0);
+>> +		SAFE_CLOSE(tmpfile_fd);
+>> +		/* Cleanup between loops */
+>> +		tst_purge_dir(WORKDIR);
+>> +	}
+>> +
+>> +	tst_reap_children();
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (tmpfile_fd >= 0)
+>> +		SAFE_CLOSE(tmpfile_fd);
+>> +	if (dir_fd >= 0)
+>> +		SAFE_CLOSE(dir_fd);
+>> +	if (mount_flag && tst_umount(MNTPOINT))
+>> +		tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = run,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.needs_root = 1,
+>> +	.forks_child = 1,
+>> +	.all_filesystems = 1,
+>> +	.format_device = 1,
+>> +	.mntpoint = MNTPOINT,
+>> +	.skip_filesystems = (const char*[]) {
+>> +		"exfat",
+>> +		"ntfs",
+>> +		"vfat",
+>> +		NULL
+>> +	},
+>> +	.tags = (const struct tst_tag[]) {
+>> +		{"linux-git", "ac6800e279a2"},
+>> +		{}
+>> +	},
+>> +};
+> 
+> 
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
