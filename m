@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0B0BC00140
-	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 14:47:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCAD9C25B0E
+	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 15:05:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5F38A3C966D
-	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 16:47:57 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 34C2D3C9739
+	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 17:05:57 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D8843C95DD
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 16:47:48 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 845653C0134
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 17:05:47 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E6416100034A
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 16:47:47 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4510020004D
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 17:05:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1032337590;
- Mon, 15 Aug 2022 14:47:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7923734270;
+ Mon, 15 Aug 2022 15:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660574867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1660575946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=K2Tqi27/XiB0YsKiLznKcKRdMpVlARo0f85GyaydwOk=;
- b=aqqsxYpSgbzv0I8TDG7c09fjcS1miv3CvP8clCRNtR6EBHE0zAwQdgip6GSNL+VPVPuHH4
- 7FLWyWPGlC1zRGMf7O03Dse1myTg0tmxN1bSSaz/TCVqV57LBkqW5tRjd7ts0Y+BcT7XYC
- HausGNN8NmuGZgJORhbl9N3JeKDXUF4=
+ bh=Xoj6LSjO5fzZR+xFPkcQdHdSiBKsJYLByt78qCwz6Ak=;
+ b=ihEJnh2MHYjrkyi7dt7nnaPr5tLojboqjIslQVCm05loCFdSkQxShTIuPV4BLTpQ1ekoHV
+ aEpGE6xi7MP+gSb1EGJ3dytMw00pYA2Pk0WB9nNyZmtpU9E73L+Iyk/kZIH42CRQhpGI7T
+ ik/Vi8/Thw60LDfbcvZVBs4OSmjC5Mw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660574867;
+ s=susede2_ed25519; t=1660575946;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=K2Tqi27/XiB0YsKiLznKcKRdMpVlARo0f85GyaydwOk=;
- b=kQwJKWd2lLlAYYigUdr/CUcj1cy2fv/ZohThWstXucF3d0fUJPCieWSyXv0gIWrFtnT3n7
- 5SR7Wj8dzeh7d4BA==
+ bh=Xoj6LSjO5fzZR+xFPkcQdHdSiBKsJYLByt78qCwz6Ak=;
+ b=ZcDjAPuw4yECp7dZkV8fA6L6E+LNNteMtkFufpu4yBkpdS46H0NTaTZIMaDfsMby7mshh0
+ QbMcYfrVh7Idu7BA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0B9A13A99;
- Mon, 15 Aug 2022 14:47:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6759E13A99;
+ Mon, 15 Aug 2022 15:05:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EMYxKpJc+mIBaQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 15 Aug 2022 14:47:46 +0000
-Date: Mon, 15 Aug 2022 16:49:41 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 4NYuGMpg+mJscAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 15 Aug 2022 15:05:46 +0000
+Date: Mon, 15 Aug 2022 17:07:41 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <YvpdBVnJGs6OVKag@yuki>
-References: <20220811113640.8499-1-andrea.cervesato@suse.com>
+Message-ID: <YvphPfNzlDY6MM9r@yuki>
+References: <20220812075005.16920-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220811113640.8499-1-andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20220812075005.16920-1-andrea.cervesato@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Refactor pidns32 test using new LTP API
+Subject: Re: [LTP] [PATCH v2] Refactor pidns30 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,34 +81,82 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Pushed with one fix, thanks.
+> +static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LTP_ATTRIBUTE_UNUSED void *unused)
+>  {
+> -	char buf[256];
+> -	struct mq_attr attr;
+> -
+> -	if (si->si_signo != SIGUSR1) {
+> -		printf("received signal = %d unexpectedly\n", si->si_signo);
+> +	if (si->si_signo != SIGUSR1 || si->si_code != SI_MESGQ || si->si_pid != 0)
+>  		return;
+> -	}
+>  
+> -	if (si->si_code != SI_MESGQ) {
+> -		printf("expected signal code SI_MESGQ; got %d instead\n",
+> -		       si->si_code);
+> -		return;
+> -	}
+> -
+> -	if (si->si_pid) {
+> -		printf("expected signal originator PID = 0; got %d instead\n",
+> -		       si->si_pid);
+> -		return;
+> -	} else {
+> -		printf("signal originator PID = 0\n");
+> -		result = TPASS;
+> -	}
+> -
+> -	/*
+> -	 * Now read the message - Be silent on errors since this is not the
+> -	 * test purpose.
+> -	 */
+> -	rc = mq_getattr(si->si_int, &attr);
+> -	if (rc != -1)
+> -		mq_receive(si->si_int, buf, attr.mq_msgsize, NULL);
+> +	received++;
 
-I moved the *nested = 1 from setup to the run() function, otherwise the
-test would be no-op on second and subsequent iterations with -i option.
+I do not like that much that we lost most of the information about the
+failure here. Can we store at least the si_signo and si_pid so that they
+can be printed in the case of the failure?
 
-Diff:
+> -int main(void)
+> +static void run(void)
+>  {
+> -	int status;
+> -	char buf[5];
+> -	pid_t cpid;
+> -
+> -	setup();
+> -
+> -	if (pipe(child_to_father) == -1 || pipe(father_to_child) == -1) {
+> -		tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
+> -	}
+> +	int ret;
+>  
+> -	tst_syscall(__NR_mq_unlink, mqname);
+> +	remove_mqueue(mqd);
+>  
+> -	/* container creation on PID namespace */
+> -	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
+> -	if (cpid == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+> +	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
+> +	if (ret < 0)
+> +		tst_brk(TBROK | TERRNO, "clone failed");
+>  
+> -	mqd =
+> -	    tst_syscall(__NR_mq_open, mqname, O_RDWR | O_CREAT | O_EXCL, 0777,
+> -		    NULL);
+> +	mqd = mq_open(MQNAME, O_RDWR | O_CREAT | O_EXCL, 0777, 0);
+>  	if (mqd == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "mq_open failed");
+> -	else
+> -		tst_resm(TINFO, "successfully created posix mqueue");
+> +		tst_brk(TBROK | TERRNO, "mq_open failed");
 
-diff --git a/testcases/kernel/containers/pidns/pidns32.c b/testcases/kernel/cont
-index cbc91df68..333e1fcad 100644
---- a/testcases/kernel/containers/pidns/pidns32.c
-+++ b/testcases/kernel/containers/pidns/pidns32.c
-@@ -43,13 +43,14 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
- static void setup(void)
- {
-        level = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED
--       *level = 1;
- }
-
- static void run(void)
- {
-        int ret, status;
-
-+       *level = 1;
-+
-        ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, 0);
-        if (ret < 0)
-                tst_brk(TBROK | TERRNO, "clone failed");
-
+We allready have SAFE_MQ_OPEN() I guess that we may add the rest of the
+SAFE_MQ_* calls as well and use them here.
 
 -- 
 Cyril Hrubis
