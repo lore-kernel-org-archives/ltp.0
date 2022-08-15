@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB0AC00140
-	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 10:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9C7BC00140
+	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 11:10:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5CEA83C0134
-	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 12:55:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BD7B03C9650
+	for <ltp@archiver.kernel.org>; Mon, 15 Aug 2022 13:10:22 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD8893C0134
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 12:55:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 88D0B3C013B
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 13:10:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E52841A007E3
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 12:55:40 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A194D200910
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 13:10:10 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A1D9B35015;
- Mon, 15 Aug 2022 10:55:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3DE563512D;
+ Mon, 15 Aug 2022 11:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660560939;
+ t=1660561809;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MHEUgyUldA5ewRN0NUFy39NAvQPf0lp9KuYvae+hN9I=;
- b=I+WDX2wNhBEmn3+BElX/q3zxx9/AP4Ig22FFjO8A/76a5PEKDOfmNJ2XU/EbXe1WQn8oI/
- 3czDmPBKyVns7WO3bv85PNYrmQnqdmWE5rLBxzBgpko+NOt97EvO6BmMR5sMtYNKM78XZ2
- 0NPCAoCwMuj29AmtbCix9OS5jvkDEKI=
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=gcX0J11PtGaSQUmxYCxIQYDnVMTa0E4BN2F1aCntmgA=;
+ b=JbWmfXxuMdWxnVP8wsF2zA0/VIuMWOZgdAVcPKurhMUH/NZTuHX92Osmv/I173tzyBFxj1
+ oEJaI9Y5fXoO5piXmyAWOHObwXDmwG4bWr3EZ2ikMi+oFlvhdZFs+aLhBBtW/y5mmOWNBQ
+ pvzVq3ZIq00YpWaWNMSNcDwUWZhxk80=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660560939;
+ s=susede2_ed25519; t=1660561809;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MHEUgyUldA5ewRN0NUFy39NAvQPf0lp9KuYvae+hN9I=;
- b=Fp1dIy2MWk/ksiC8yikE+h4Em3JuOvWZR2/BhwGAAtyhjr+FYkqr8LGaK7hubZ5+CLxq3z
- TO0eNwlikVbMbhCw==
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=gcX0J11PtGaSQUmxYCxIQYDnVMTa0E4BN2F1aCntmgA=;
+ b=LBXZGjmjmsSrLYkzbNFvYUhGlv3xHYNoZxh2t63ryaqb6uspF2JH/rfaIMN+UismGdTRv+
+ C+/DDhuIcfI8KrDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7137B13A93;
- Mon, 15 Aug 2022 10:55:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E21EB13A93;
+ Mon, 15 Aug 2022 11:10:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZwUdGSsm+mLiAgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 15 Aug 2022 10:55:39 +0000
-Date: Mon, 15 Aug 2022 12:55:37 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id jeiPNZAp+mKeCQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 15 Aug 2022 11:10:08 +0000
+Date: Mon, 15 Aug 2022 13:10:07 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YvomKbuADOd2dJk+@pevik>
-References: <20220808071439.741-1-pvorel@suse.cz>
- <20220808071439.741-2-pvorel@suse.cz> <YvoWEVb9eZIHqrBI@yuki>
+To: stable@vger.kernel.org, linux-mm@kvack.org
+Message-ID: <Yvopj0gK5Dg95u+b@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YvoWEVb9eZIHqrBI@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] github: pull_request_template.md
+Subject: [LTP] Backport d4ae9916ea29 ("mm: soft-offline: close the race
+ against page allocation") to 4.14 and 4.9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,56 +73,31 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Petr Vorel <pevik@users.noreply.github.com>, ltp@lists.linux.it
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Naoya Horiguchi <naoya.horiguchi@nec.com>,
+ William Roche <william.roche@oracle.com>,
+ Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>, Michal Hocko <mhocko@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > Create pull request template to inform people that we prefer patches to
-> > our mailing list. We have this info in README.md, but even experienced,
-> > who send patches with git send-email to other projects overlook this
-> > info and open github pull requests.
+Hi all,
 
-> > While at it, add links to the test case tutorial, lore and patchwork.
+I wonder if there was an attempt to backport d4ae9916ea29 ("mm: soft-offline:
+close the race against page allocation") from 4.19 to 4.14 and 4.9 (patch does
+not apply, haven't found anything on stable ML, nor in stable tree git,
+therefore I assume it was left as not easily fixable).
 
-> > Template does not support any formatting, therefore using plain links.
+I'm asking because William is writing a LTP test madvise11 [1] which shows it's
+failing on 4.14.290 (the latest 4.14). I know that 4.9 EOL in 4 months, but 4.14
+in Jan 2024, it might be worth to fix it at least for 4.14.
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > NOTE: you can test it if you fork from my fork:
-> > https://github.com/pevik/ltp
+Kind regards,
+Petr
 
-> >  .github/pull_request_template.md | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >  create mode 100644 .github/pull_request_template.md
-
-> > diff --git a/.github/pull_request_template.md b/.github/pull_request_template.md
-> > new file mode 100644
-> > index 000000000..68c8a6499
-> > --- /dev/null
-> > +++ b/.github/pull_request_template.md
-> > @@ -0,0 +1,6 @@
-> > +Although we *occasionally* also accept GitHub pull requests, the *preferred* way is sending patches to our mailing list: https://lore.kernel.org/ltp/
-> > +
-> > +There is an example how to use it: https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial#7-submitting-the-test-for-review (using git format-patch and git send-email).
-> > +
-> > +LTP mailing list is archived: https://lore.kernel.org/ltp/.
->                         ^
-> 			archived at:
-Ah, my poor English, I didn't know 'at' is mandatory.
-
-> > +We also have a patchwork instance: https://patchwork.ozlabs.org/project/ltp/list/.
-
-> So this text is filled in the pull request as a message when user
-> creates it, right?
-Yes :).
-
-> I guess that this is a creative misuse but I kind of like it :-).
-Thx!
-
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+[1] https://lore.kernel.org/ltp/1659975072-29808-1-git-send-email-william.roche@oracle.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
