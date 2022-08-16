@@ -4,83 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7520CC32772
-	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 07:57:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1755C2BB41
+	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 08:09:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D22E3C9A5D
-	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 09:57:28 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B5D6C3C98D4
+	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 10:09:40 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9861E3C96E0
- for <ltp@lists.linux.it>; Tue, 16 Aug 2022 09:57:16 +0200 (CEST)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.4])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id CEA843C95DD
+ for <ltp@lists.linux.it>; Tue, 16 Aug 2022 10:09:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3C0CA6008A7
- for <ltp@lists.linux.it>; Tue, 16 Aug 2022 09:57:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1660636635; i=@fujitsu.com;
- bh=QhyiWGd2d75cBc2sTynE3cNP+m8WsmU7CMaHM1jW/yg=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=R1pgemOuWfvFShKGDR16z3KZAVQQG3580QRZxsK5dt2EzaAb9pA5Om3A5E0QRrs22
- AnmK5aKUJpfDomnjSLNMzIVtY1+jR1ilEl7H6iRlU7ez87CIdbpy7w/aYWRLAC8PmO
- jUfrRqOOR87FInFqOqBOfoj5BqQFhvstNpU5XiqNVzpA5IaoSoKXNTqRwSSKeyMCn6
- v3JGwTNQayfSEexDon/UKNFbw5e46TSF3CqPIAtzqSigUT4hbyW8KjIBuZyqBXhgJ0
- CBCFn+hxUtfnPygmNLjMCkecCgOWhkSrjmXqlZ5SHDFKlBpUAFEVB0yaKAL57CTOUg
- 2RchvyFGbtmrg==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRWlGSWpSXmKPExsViZ8MxSfe27+8
- kg6kvGC1WfN/B6MDose/3OtYAxijWzLyk/IoE1oxtO8IKPmhWLNih38D4SqmLkYtDSOAso8TL
- s99ZIJwDTBLbXzxl7mLkBHK2M0qs7OQDsdkEtCXu9MxgBLFFBCQkOhresoPYzAKaEveuHAaLC
- wtYSFx+3wZmswioSkzYeRXM5hVwkTj9pxOsXkJAQWLKw/fMEHFBiZMzn7BAzJGQOPjiBTNEja
- LE1dN7WSHsConXhy9BxdUkrp7bxDyBkX8WkvZZSNoXMDKtYrROKspMzyjJTczM0TU0MNA1NDT
- VNbbQNTQy10us0k3USy3VLU8tLtE10kssL9ZLLS7WK67MTc5J0ctLLdnECAzJlGK1+h2ML1b+
- 1DvEKMnBpCTK22vyO0mILyk/pTIjsTgjvqg0J7X4EKMMB4eSBG86MMiFBItS01Mr0jJzgPEBk
- 5bg4FES4a30BkrzFhck5hZnpkOkTjEqSonzqoD0CYAkMkrz4NpgMXmJUVZKmJeRgYFBiKcgtS
- g3swRV/hWjOAejkjBvHcgUnsy8Erjpr4AWMwEt1rv7HWRxSSJCSqqByXJZkf/HA78KNUT9Fgg
- //BayckPnlShrD/P938wbVqypCyqafu241FGPj2bVLfUlvyU2r8zdLJ1Xs2T/jxYnn/iayJPh
- D7n5P7Qc+7cllvGoz+slR+uP3fuwsrpDm/cu737P+zLxP45/frfm5Z+TAXkLmNTnBQavvCwzb
- 5dVE6fPXX7zheHCiVyXt7qZhkrUipybs787SP7X0ndrZuR4zYjm07xlUCS55vdZxRMxc+3fai
- pHdrTPPJyeH13yrNefpzNczP91RVLOzKyQSZ9umLQETvpy/IVWzCbrnplfJduZ1+9bfqTM9qX
- KPdO+XxHClqE9re+VL5gvKG2LN73/62johNAlXg5b8jUsb9VyKbEUZyQaajEXFScCAFXsPLpE
- AwAA
-X-Env-Sender: liaohj.jy@fujitsu.com
-X-Msg-Ref: server-12.tower-548.messagelabs.com!1660636634!92089!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.87.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 1227 invoked from network); 16 Aug 2022 07:57:15 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
- by server-12.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 16 Aug 2022 07:57:15 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id B561A1000CC
- for <ltp@lists.linux.it>; Tue, 16 Aug 2022 08:57:14 +0100 (BST)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
- [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1AEB9600698
+ for <ltp@lists.linux.it>; Tue, 16 Aug 2022 10:09:28 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id A6DFB1000C2
- for <ltp@lists.linux.it>; Tue, 16 Aug 2022 08:57:14 +0100 (BST)
-Received: from rhel-server--7.5 (10.167.215.42) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Tue, 16 Aug 2022 08:57:13 +0100
-From: Liao Huangjie <liaohj.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Tue, 16 Aug 2022 15:57:02 +0800
-Message-ID: <1660636622-5252-1-git-send-email-liaohj.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D593633DCD;
+ Tue, 16 Aug 2022 08:09:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1660637366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=PyoqIMTDnw00x1ZUCudLDUU8d1r59kBjys7NYZq2kP8=;
+ b=JSxLGL4V3f7DjKY/a7disfKlBh/cgC+TTdaYrb+kRiewOyvaML/YK1WbI/zVP8Hlw5loUl
+ 5rXcdjZkXLJOU6HV+Pm4ouofyXmL678EPmA0yXvqadO7O6kIhCD007izo6xfOjuQg6xxJa
+ pos80F3CDtAIxGkgizNT0DjrwMGuKxE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BB711345B;
+ Tue, 16 Aug 2022 08:09:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id /iC9FbZQ+2IGVgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Tue, 16 Aug 2022 08:09:26 +0000
+To: ltp@lists.linux.it
+Date: Tue, 16 Aug 2022 10:08:36 +0200
+Message-Id: <20220816080836.5063-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Originating-IP: [10.167.215.42]
-X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/openat01: Convert into new api
+Subject: [LTP] [PATCH v2] Refactor pidns16 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,212 +62,250 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Huangjie Liao <liaohj.jy@fujitsu.com>
-
-Signed-off-by: Huangjie Liao <liaohj.jy@fujitsu.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/openat/openat01.c | 145 ++++++++++------------------
- 1 file changed, 51 insertions(+), 94 deletions(-)
+ testcases/kernel/containers/pidns/pidns16.c | 197 +++++++-------------
+ 1 file changed, 68 insertions(+), 129 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
-index daed419..25b3f83 100644
---- a/testcases/kernel/syscalls/openat/openat01.c
-+++ b/testcases/kernel/syscalls/openat/openat01.c
-@@ -1,55 +1,30 @@
--/******************************************************************************
+diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
+index 2ee61065a..d11e8eaa1 100644
+--- a/testcases/kernel/containers/pidns/pidns16.c
++++ b/testcases/kernel/containers/pidns/pidns16.c
+@@ -1,157 +1,96 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 FUJITSU LIMITED. ALL Rights Reserved.
-+ * Author: Huangjie Liao <liaohj.jy@fujitsu.com>
+ /*
+-* Copyright (c) International Business Machines Corp., 2007
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-***************************************************************************
+-
+-* * Test Assertion.
+-* *----------------
+-* * kill -USR1 container_init
+-* *	- from the parent process and also inside a container
+-* *	- Where init has defined a custom handler for USR1
+-* *	- Should call the handler and
+-* *	- Verify whether the signal handler is called from the proper process.
+-* *
+-* * Description:
+-* *  Create PID namespace container.
+-* *  Container init defines the handler for SIGUSR1 and waits indefinetly.
+-* *  Parent sends SIGUSR1 to container init.
+-* *  The signal handler is handled and the cont-init resumes normally.
+-* *  From the container, again the signal SIGUSR1 is sent.
+-* *  In the sig-handler check if it's invoked from correct pid(parent/container)
+-* *  If cont-init wakes up properly -
+-* *  it will return expected value at exit which is verified at the end.
+-* *
+-* * History:
+-* *  DATE	  NAME				   DESCRIPTION
+-* *  04/11/08  Veerendra C  <vechandr@in.ibm.com> Verifying cont init kill -USR1
+-*
+-*******************************************************************************/
+-#include "config.h"
++ * Copyright (c) International Business Machines Corp., 2007
++ *               04/11/08  Veerendra C  <vechandr@in.ibm.com>
++ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
 + * [Description]
-  *
-- * Copyright (c) International Business Machines  Corp., 2006
-- *  Author: Yi Yang <yyangcdl@cn.ibm.com>
-- * Copyright (c) Cyril Hrubis 2014 <chrubis@suse.cz>
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software Foundation,
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-- * DESCRIPTION
-- *  This test case will verify basic function of openat
-- *  added by kernel 2.6.16 or up.
-- *
-- *****************************************************************************/
--
-+ * This test case will verify basic function of openat
++ *
++ * Clone a process with CLONE_NEWPID flag and verifies that siginfo->si_pid is
++ * set to 0 if sender (parent process) sent the signal. Then send signal from
++ * container itself and check if siginfo->si_pid is set to 1.
 + */
- #define _GNU_SOURCE
--
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
--#include <signal.h>
--
+ 
+ #define _GNU_SOURCE 1
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/wait.h>
+-#include <sys/types.h>
+ #include <signal.h>
+-#include <unistd.h>
+-#include "pidns_helper.h"
 -#include "test.h"
--#include "safe_macros.h"
--#include "lapi/fcntl.h"
--#include "openat.h"
 -
--static void setup(void);
--static void cleanup(void);
-+#include <stdio.h>
+-#define CHILD_PID	1
+-#define PARENT_PID	0
 +#include "tst_test.h"
-+#include "tst_safe_macros.h"
++#include "lapi/namespaces_constants.h"
  
--char *TCID = "openat01";
-+#define TEST_FILE "test_file"
-+#define TEST_DIR "test_dir/"
+-char *TCID = "pidns16";
+-int TST_TOTAL = 3;
++static volatile int exp_pid;
++static volatile int passed;
  
- static int dir_fd, fd;
- static int fd_invalid = 100;
- static int fd_atcwd = AT_FDCWD;
--
--#define TEST_FILE "test_file"
--#define TEST_DIR "test_dir/"
--
- static char glob_path[256];
- 
- static struct test_case {
-@@ -65,80 +40,62 @@ static struct test_case {
- 	{&fd_atcwd, TEST_DIR TEST_FILE, 0, 0}
- };
- 
--int TST_TOTAL = ARRAY_SIZE(test_cases);
--
--static void verify_openat(struct test_case *test)
-+static void verify_openat(unsigned int n)
+-void child_signal_handler(int sig, siginfo_t * si, void *unused)
++static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LTP_ATTRIBUTE_UNUSED void *unused)
  {
--	TEST(openat(*test->dir_fd, test->pathname, O_RDWR, 0600));
+-	static int c = 1;
+-	pid_t expected_pid;
 -
--	if ((test->exp_ret == -1 && TEST_RETURN != -1) ||
--	    (test->exp_ret == 0 && TEST_RETURN < 0)) {
--		tst_resm(TFAIL | TTERRNO,
--		         "openat() returned %ldl, expected %d",
--			 TEST_RETURN, test->exp_ret);
-+	struct test_case *tc = &test_cases[n];
-+
-+	TEST(openat(*tc->dir_fd, tc->pathname, O_RDWR, 0600));
-+	
-+	if ((tc->exp_ret == -1 && TST_RET != -1) ||
-+	    (tc->exp_ret == 0 && TST_RET < 0)) {
-+		tst_res(TFAIL | TTERRNO,
-+		         "openat() returned %ld, expected %d",
-+			 TST_RET, tc->exp_ret);
- 		return;
- 	}
-+	
-+	if (TST_RET > 0)
-+		SAFE_CLOSE(TST_RET);
- 
--	if (TEST_RETURN > 0)
--		SAFE_CLOSE(cleanup, TEST_RETURN);
+-	/* Verifying from which process the signal handler is signalled */
 -
--	if (TEST_ERRNO != test->exp_errno) {
--		tst_resm(TFAIL | TTERRNO,
-+	if (TST_ERR != tc->exp_errno) {
-+		tst_res(TFAIL | TTERRNO,
- 		         "openat() returned wrong errno, expected %s(%d)",
--			 tst_strerrno(test->exp_errno), test->exp_errno);
-+			 tst_strerrno(tc->exp_errno), tc->exp_errno);
- 		return;
- 	}
- 
--	tst_resm(TPASS | TTERRNO, "openat() returned %ld", TEST_RETURN);
--}
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			verify_openat(test_cases + i);
+-	switch (c) {
+-	case 1:
+-		expected_pid = PARENT_PID;
+-		break;
+-	case 2:
+-		expected_pid = CHILD_PID;
+-		break;
+-	default:
+-		tst_resm(TBROK, "child should NOT be signalled 3+ times");
+-		return;
 -	}
++	tst_res(TINFO, "Received signal %s from PID %d", tst_strsig(si->si_signo), si->si_pid);
+ 
+-	if (si->si_pid == expected_pid)
+-		tst_resm(TPASS, "child is signalled from expected pid %d",
+-			 expected_pid);
+-	else
+-		tst_resm(TFAIL, "child is signalled from unexpected pid %d,"
+-			 " expecting pid %d", si->si_pid, expected_pid);
++	if (si->si_signo != SIGUSR1)
++		return;
+ 
+-	c++;
++	if (si->si_pid == exp_pid)
++		passed = 1;
+ }
+ 
+-/*
+- * child_fn() - Inside container
+- */
+-int child_fn(void *ttype)
++static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ {
+ 	struct sigaction sa;
+-	pid_t pid, ppid;
++	pid_t cpid, ppid;
+ 
+-	/* Set process id and parent pid */
+-	pid = getpid();
++	cpid = getpid();
+ 	ppid = getppid();
+ 
+-	if ((pid != CHILD_PID) || (ppid != PARENT_PID))
+-		tst_resm(TBROK, "pidns is not created.");
++	if (cpid != 1 || ppid != 0) {
++		tst_res(TFAIL, "Got unexpected result of cpid=%d ppid=%d", cpid, ppid);
++		return 1;
++	}
+ 
+-	/* Set signal handler for SIGUSR1, also mask other signals */
+ 	sa.sa_flags = SA_SIGINFO;
+-	sigemptyset(&sa.sa_mask);
++	SAFE_SIGFILLSET(&sa.sa_mask);
+ 	sa.sa_sigaction = child_signal_handler;
+-	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+-		tst_resm(TBROK, "%d: sigaction() failed", pid);
 -
--	cleanup();
--	tst_exit();
-+	if (tc->exp_ret)
-+		tst_res(TPASS | TTERRNO, "openat failed as expected");
+-	pause();
+-	tst_resm(TINFO, "Container: Resumed after receiving SIGUSR1 "
+-		 "from parentNS ");
+-	if (kill(pid, SIGUSR1) != 0) {
+-		tst_resm(TFAIL, "kill(SIGUSR1) fails.");
+-	}
+-	tst_resm(TINFO, "Container: Resumed after sending SIGUSR1 "
+-		 "from container itself");
+-	_exit(10);
+-}
+ 
+-static void setup(void)
+-{
+-	tst_require_root();
+-	check_newpid();
+-}
++	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
+ 
+-/***********************************************************************
+-*   M A I N
+-***********************************************************************/
+-int main()
+-{
+-	int status;
+-	pid_t cpid;
++	passed = 0;
++	exp_pid = 0;
+ 
+-	setup();
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+-	cpid = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
++	if (passed)
++		tst_res(TPASS, "Container resumed after receiving SIGUSR1 from parent namespace");
 +	else
-+		tst_res(TPASS, "openat succeeded as expected");
- }
++		tst_res(TFAIL, "Container did not receive the SIGUSR1 signal from parent");
  
- static void setup(void)
- {
- 	char *tmpdir;
+-	if (cpid < 0) {
+-		tst_resm(TBROK, "clone() failed.");
+-	}
++	passed = 0;
++	exp_pid = 1;
  
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_tmpdir();
--
--	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
--	dir_fd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
--	fd = SAFE_OPEN(cleanup, TEST_DIR TEST_FILE, O_CREAT | O_RDWR, 0600);
-+	SAFE_MKDIR(TEST_DIR, 0700);
-+	dir_fd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
-+	fd = SAFE_OPEN(TEST_DIR TEST_FILE, O_CREAT | O_RDWR, 0600);
+-	sleep(1);
+-	if (kill(cpid, SIGUSR1) != 0) {
+-		tst_resm(TFAIL, "kill(SIGUSR1) fails.");
+-	}
+-	sleep(1);
+-	if (waitpid(cpid, &status, 0) < 0)
+-		tst_resm(TWARN, "waitpid() failed.");
++	SAFE_KILL(cpid, SIGUSR1);
  
- 	tmpdir = tst_get_tmpdir();
- 	snprintf(glob_path, sizeof(glob_path), "%s/" TEST_DIR TEST_FILE,
--	         tmpdir);
-+				tmpdir);
- 	free(tmpdir);
--
--	TEST_PAUSE;
- }
- 
- static void cleanup(void)
- {
--	if (fd > 0 && close(fd))
--		tst_resm(TWARN | TERRNO, "close(fd) failed");
--
--	if (dir_fd > 0 && close(dir_fd))
--		tst_resm(TWARN | TERRNO, "close(dir_fd) failed");
--
--	tst_rmdir();
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+	if (dir_fd > 0)
-+		SAFE_CLOSE(dir_fd);
+-	if ((WIFEXITED(status)) && (WEXITSTATUS(status) == 10))
+-		tst_resm(TPASS, "container init continued successfuly, "
+-			 "after handling signal -USR1");
++	if (passed)
++		tst_res(TPASS, "Container resumed after receiving SIGUSR1 from container namespace");
+ 	else
+-		tst_resm(TFAIL, "c-init failed to continue after "
+-			 "passing kill -USR1");
+-	tst_exit();
++		tst_res(TFAIL, "Container did not receive the SIGUSR1 signal from container");
++
++	return 0;
++}
++
++static void run(void)
++{
++	int ret;
++
++	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
++	if (ret < 0)
++		tst_brk(TBROK | TERRNO, "clone failed");
++
++	TST_CHECKPOINT_WAIT(0);
++
++	SAFE_KILL(ret, SIGUSR1);
++
++	TST_CHECKPOINT_WAKE(0);
  }
 +
 +static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_openat,
-+	.tcnt = ARRAY_SIZE(test_cases),
-+	.needs_tmpdir = 1,
++	.test_all = run,
++	.needs_root = 1,
++	.needs_checkpoints = 1,
 +};
 -- 
-1.8.3.1
+2.35.3
 
 
 -- 
