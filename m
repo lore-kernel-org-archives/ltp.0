@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B103C19F2C
-	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 05:16:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA937C19F2C
+	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 06:02:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 399A83C98AA
-	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 07:16:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 5CCD43C98CE
+	for <ltp@archiver.kernel.org>; Tue, 16 Aug 2022 08:02:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F76F3C96E5
- for <ltp@lists.linux.it>; Tue, 16 Aug 2022 07:15:46 +0200 (CEST)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
- [IPv6:2607:f8b0:4864:20::635])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 82F573C9635
+ for <ltp@lists.linux.it>; Tue, 16 Aug 2022 08:02:37 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8564710006C5
- for <ltp@lists.linux.it>; Tue, 16 Aug 2022 07:15:45 +0200 (CEST)
-Received: by mail-pl1-x635.google.com with SMTP id t3so356575ply.2
- for <ltp@lists.linux.it>; Mon, 15 Aug 2022 22:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc;
- bh=LO2SjgNkaYYExEEDtxNJ+NTRG5h3aa/zS0/+WKK/gX8=;
- b=AJpn8508PRkrQpoMHzuaCA7YC/Ys7Eo+LLn9FKWNK/5Zq/elPE9BDVygCpiYaBqTOT
- 0x7UvXoGD/FIM88tXJup2otJfKk7Bmmzr3+mQSW1f0H7uFMswD/qEOBA9kueZAac+Nia
- pXZz695+1P1KvgX2d2iQotfshEEOFncbF97azi3hlux2g49bBjJJtnVFhEsqvpvPnqQH
- 7BWbE3SYFQiSSY+0BzEFrkZFa0uYKlQnqNsIRIpmF8sWmWHYJfwCB6FR0VStKaGfe4qn
- cK+oC9Q4yBRmi9ndpIGzZCMveyF97hDRG6vh287clAXhgBGS6bBKDqVzEtWgu2EAbJhs
- GDgw==
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1494F140017C
+ for <ltp@lists.linux.it>; Tue, 16 Aug 2022 08:02:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1660629750;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cHzsVPGLsP+yVjMiAC55CcX4VyYkGXOQg58F50z5teE=;
+ b=EVwLNPk816z39rgKan8HY/MnG3DkRiUFbdBWk4V4QVqjHnSTukAuGMv7oTZ43WMdSAh7e5
+ G8U8jpj8q+PnzWurZWiYFTkuWuqoySmDzZ/22FebVtwHq3iie4hTiZkGa3OFe8NDJ0vTN4
+ yw9Tn09UuUBL2yhs/La+kJj8yUT80MM=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-531-0c1y9BhwOnqmT8plQXOK5w-1; Tue, 16 Aug 2022 02:02:28 -0400
+X-MC-Unique: 0c1y9BhwOnqmT8plQXOK5w-1
+Received: by mail-yw1-f200.google.com with SMTP id
+ 00721157ae682-3283109eae2so92141947b3.15
+ for <ltp@lists.linux.it>; Mon, 15 Aug 2022 23:02:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
- bh=LO2SjgNkaYYExEEDtxNJ+NTRG5h3aa/zS0/+WKK/gX8=;
- b=co9qhoPButzvcz1vrLPGDI8q+aiRmQfUfd7Dz0wt6wS9gOWJNNnWGHv7SnII0eT5Bt
- sfRYCFrmzaCEzLzMurbYTczWDIpdfi5b+mEjrsRyRhkqS+9R7U+DG2bSAyGvBFzRCrxV
- uiI+sv6in5ZWhKJkPTYQ9XeO0FlFNmx8Wjnhk5cwmrQyyM+imsOWVauGHtmyZiplQDjQ
- npiQaLWbyN/JGpLHkhXM5AhCzLbWDS5ZfKgSsAQ/fpMh5odWg0YClBRrJztlf3HWsl21
- suuuZIKdB1OjZ1Fzcye+WlOGRmAbwf2Ohff1G7Pi3UCYm50TcdTkpj6xGJlnTYNOrIF+
- 0PpA==
-X-Gm-Message-State: ACgBeo2PpBrEVLZL3Npep3m9Bj5/c5pnsoLWsGNYvRWAOQ01MVA4uGJy
- L5OipYboNEG925XZAFKcMr2DmTegQ7CMKA==
-X-Google-Smtp-Source: AA6agR7YuUP9K4SUnVWuI23CClxA4go4fAr1hpiWps5s8mmtDu+TQXt7BZJe91ogXWM06tqgdZtZ4A==
-X-Received: by 2002:a17:902:ce0e:b0:172:69cc:60aa with SMTP id
- k14-20020a170902ce0e00b0017269cc60aamr9838333plg.31.1660626943456; 
- Mon, 15 Aug 2022 22:15:43 -0700 (PDT)
-Received: from apollo.hsd1.ca.comcast.net ([2601:646:9200:a0f0::bb7a])
- by smtp.gmail.com with ESMTPSA id
- l18-20020a170903245200b001641b2d61d4sm7965252pls.30.2022.08.15.22.15.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Aug 2022 22:15:42 -0700 (PDT)
-From: Khem Raj <raj.khem@gmail.com>
-To: ltp@lists.linux.it
-Date: Mon, 15 Aug 2022 22:15:39 -0700
-Message-Id: <20220816051539.2948547-2-raj.khem@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220816051539.2948547-1-raj.khem@gmail.com>
-References: <20220816051539.2948547-1-raj.khem@gmail.com>
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc;
+ bh=cHzsVPGLsP+yVjMiAC55CcX4VyYkGXOQg58F50z5teE=;
+ b=FkCHabuAwRx20Jl/VxONwNk7e1GjVEZC0lyjHBsoIg74d2CNexDndNaLM78ou8PDo1
+ MV7ePxbDvc/N0WU9KXIVZDXqx3ZwzNab2CQxAM9tyhHGoy09zRVbKM951DEKVB6ODma9
+ BBOj7/n9UbtIL8Fw6JQaYlKn2VWZfbQxzwa+Vv4O5J2Vvhy3dEW64Eeqc/+Xs9cO/x6i
+ ddAuD7nN37+IZKZ6OGSd4rPe+g3SW27JatLolMWmLpJT2oJFbiGrtZbOjLkCIvq7mgrs
+ 56rO8O2ZQMBJDPAQAGZVJ/s+WMgvpQNARoSqMzrAmQXcQP+r69WFuvUR01Y1xdonoHII
+ ktiQ==
+X-Gm-Message-State: ACgBeo31NxhmtJSmZ9hrp8MD+fuKg/4vzUn5dnmtQI2/7HW+CBsQwnNC
+ F2ulhzgySlgJdF5sD9aJgdIgtVF+0UKrWELc9auR7vhbY+UOfhwKAcpwqV5R6JEVby0M1Vc7ATE
+ nUqDcP6tx1dRP44V7W+/FvvmlWsA=
+X-Received: by 2002:a81:1c4f:0:b0:322:dd6b:2552 with SMTP id
+ c76-20020a811c4f000000b00322dd6b2552mr15366845ywc.320.1660629747853; 
+ Mon, 15 Aug 2022 23:02:27 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR7YtTUjZgN2AGJj5ngjDa82+7SSwzK8HUtWEDMuRMXKEYf7gmKZVvxBE+T6art5Ror2s87hXkUXotZsUUg30Gg=
+X-Received: by 2002:a81:1c4f:0:b0:322:dd6b:2552 with SMTP id
+ c76-20020a811c4f000000b00322dd6b2552mr15366824ywc.320.1660629747555; Mon, 15
+ Aug 2022 23:02:27 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220816051539.2948547-1-raj.khem@gmail.com>
+In-Reply-To: <20220816051539.2948547-1-raj.khem@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 16 Aug 2022 14:02:16 +0800
+Message-ID: <CAEemH2d24Pgvkz+n8rrF+ATkU3vb9f7-_ageZ3sOge0p37=B0w@mail.gmail.com>
+To: Khem Raj <raj.khem@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] Fix conflicting linux/mount.h and sys/mount.h
+Subject: Re: [LTP] [PATCH 1/2] Add configure check for sys/pidfd.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,72 +82,167 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Khem Raj <raj.khem@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0139651918=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-glibc 2.36 mount.h is conflicting with linux/mount.h [1] which is included
-by linux/fs.h via lapi/fs.h, as a compromize define needed macros from
-linux/fs.h and avoid the conflict
+--===============0139651918==
+Content-Type: multipart/alternative; boundary="00000000000034ffe805e6557ebf"
 
-[1] https://sourceware.org/glibc/wiki/Release/2.36#Usage_of_.3Clinux.2Fmount.h.3E_and_.3Csys.2Fmount.h.3E
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- include/lapi/fsmount.h                    |  5 +----
- testcases/kernel/syscalls/statx/statx09.c | 12 ++++++++++--
- 2 files changed, 11 insertions(+), 6 deletions(-)
+--00000000000034ffe805e6557ebf
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-index 3609855f6..a61711d52 100644
---- a/include/lapi/fsmount.h
-+++ b/include/lapi/fsmount.h
-@@ -12,11 +12,8 @@
- #include <sys/syscall.h>
- #include <sys/types.h>
- 
--#ifdef HAVE_LINUX_MOUNT_H
--# include <linux/mount.h>
--#endif
--
- #include "lapi/fcntl.h"
-+#include "lapi/mount.h"
- #include "lapi/syscalls.h"
- 
- #ifndef HAVE_FSOPEN
-diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
-index aea329e08..e03f29613 100644
---- a/testcases/kernel/syscalls/statx/statx09.c
-+++ b/testcases/kernel/syscalls/statx/statx09.c
-@@ -18,14 +18,22 @@
-  */
- 
- #define _GNU_SOURCE
--#include <sys/mount.h>
- #include <stdlib.h>
- #include "tst_test.h"
--#include "lapi/fs.h"
- #include "lapi/fsverity.h"
- #include "lapi/stat.h"
-+#include "lapi/mount.h"
- #include <inttypes.h>
- 
-+/* define neded FS_* macros to avoid linux/fs.h conflict with sys/mount.h */
-+#ifndef FS_IOC_GETFLAGS
-+#define FS_IOC_GETFLAGS _IOR('f', 1, long)
-+#endif
-+
-+#ifndef FS_VERITY_FL
-+#define FS_VERITY_FL 0x00100000 /* Verity protected inode */
-+#endif
-+
- #define MNTPOINT "mnt_point"
- #define TESTFILE_FLAGGED MNTPOINT"/test_file1"
- #define TESTFILE_UNFLAGGED MNTPOINT"/test_file2"
+Hi Khem,
+
+Did you fetch the latest branch of LTP? if not, can you try with that?
+
+I guess this was duplicated with another fix(merged).
+https://github.com/linux-test-project/ltp/commit/dbc9c14c92a5acf450d07868a735ac8cd6ec5b90
+
+and patch2/2 similar to:
+https://github.com/linux-test-project/ltp/commit/b857f8723f30a4b9554bf6b0ff8fa52fd07e8b60
+
+
+On Tue, Aug 16, 2022 at 1:16 PM Khem Raj <raj.khem@gmail.com> wrote:
+
+> Use it to include newly added sys/pidfd.h in glibc 2.36+
+>
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
+>  configure.ac         | 1 +
+>  include/lapi/pidfd.h | 4 ++++
+>  2 files changed, 5 insertions(+)
+>
+> diff --git a/configure.ac b/configure.ac
+> index 81cba98c2..a0123f166 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -71,6 +71,7 @@ AC_CHECK_HEADERS_ONCE([ \
+>      sys/epoll.h \
+>      sys/fanotify.h \
+>      sys/inotify.h \
+> +    sys/pidfd.h \
+>      sys/prctl.h \
+>      sys/shm.h \
+>      sys/timerfd.h \
+> diff --git a/include/lapi/pidfd.h b/include/lapi/pidfd.h
+> index 244d3acaf..d29a2b274 100644
+> --- a/include/lapi/pidfd.h
+> +++ b/include/lapi/pidfd.h
+> @@ -15,6 +15,10 @@
+>  #define PIDFD_NONBLOCK O_NONBLOCK
+>  #endif
+>
+> +#ifdef HAVE_SYS_PIDFD_H
+> +#include <sys/pidfd.h>
+> +#endif
+> +
+>  static inline void pidfd_send_signal_supported(void)
+>  {
+>         /* allow the tests to fail early */
+> --
+> 2.37.2
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+
 -- 
-2.37.2
+Regards,
+Li Wang
+
+--00000000000034ffe805e6557ebf
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-size:small">Hi=
+=C2=A0Khem,</div><div class=3D"gmail_default" style=3D"font-size:small"><br=
+></div><div class=3D"gmail_default" style=3D"font-size:small">Did you fetch=
+ the latest branch of LTP? if not, can you try with that?</div><div class=
+=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_=
+default" style=3D"font-size:small">I guess this was duplicated with another=
+ fix(merged).</div><div class=3D"gmail_default" style=3D"font-size:small"><=
+a href=3D"https://github.com/linux-test-project/ltp/commit/dbc9c14c92a5acf4=
+50d07868a735ac8cd6ec5b90" target=3D"_blank">https://github.com/linux-test-p=
+roject/ltp/commit/dbc9c14c92a5acf450d07868a735ac8cd6ec5b90</a><br></div><di=
+v class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D=
+"gmail_default" style=3D"font-size:small">and patch2/2 similar to:</div><di=
+v class=3D"gmail_default" style=3D"font-size:small"><a href=3D"https://gith=
+ub.com/linux-test-project/ltp/commit/b857f8723f30a4b9554bf6b0ff8fa52fd07e8b=
+60" target=3D"_blank">https://github.com/linux-test-project/ltp/commit/b857=
+f8723f30a4b9554bf6b0ff8fa52fd07e8b60<br></a></div><div class=3D"gmail_defau=
+lt" style=3D"font-size:small"><br></div></div><br><div class=3D"gmail_quote=
+"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Aug 16, 2022 at 1:16 PM Khe=
+m Raj &lt;<a href=3D"mailto:raj.khem@gmail.com" target=3D"_blank">raj.khem@=
+gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex">Use it to include newly added sys/pidfd.h in glibc 2.36+<br>
+<br>
+Signed-off-by: Khem Raj &lt;<a href=3D"mailto:raj.khem@gmail.com" target=3D=
+"_blank">raj.khem@gmail.com</a>&gt;<br>
+---<br>
+=C2=A0<a href=3D"http://configure.ac" rel=3D"noreferrer" target=3D"_blank">=
+configure.ac</a>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| 1 +<br>
+=C2=A0include/lapi/pidfd.h | 4 ++++<br>
+=C2=A02 files changed, 5 insertions(+)<br>
+<br>
+diff --git a/<a href=3D"http://configure.ac" rel=3D"noreferrer" target=3D"_=
+blank">configure.ac</a> b/<a href=3D"http://configure.ac" rel=3D"noreferrer=
+" target=3D"_blank">configure.ac</a><br>
+index 81cba98c2..a0123f166 100644<br>
+--- a/<a href=3D"http://configure.ac" rel=3D"noreferrer" target=3D"_blank">=
+configure.ac</a><br>
++++ b/<a href=3D"http://configure.ac" rel=3D"noreferrer" target=3D"_blank">=
+configure.ac</a><br>
+@@ -71,6 +71,7 @@ AC_CHECK_HEADERS_ONCE([ \<br>
+=C2=A0 =C2=A0 =C2=A0sys/epoll.h \<br>
+=C2=A0 =C2=A0 =C2=A0sys/fanotify.h \<br>
+=C2=A0 =C2=A0 =C2=A0sys/inotify.h \<br>
++=C2=A0 =C2=A0 sys/pidfd.h \<br>
+=C2=A0 =C2=A0 =C2=A0sys/prctl.h \<br>
+=C2=A0 =C2=A0 =C2=A0sys/shm.h \<br>
+=C2=A0 =C2=A0 =C2=A0sys/timerfd.h \<br>
+diff --git a/include/lapi/pidfd.h b/include/lapi/pidfd.h<br>
+index 244d3acaf..d29a2b274 100644<br>
+--- a/include/lapi/pidfd.h<br>
++++ b/include/lapi/pidfd.h<br>
+@@ -15,6 +15,10 @@<br>
+=C2=A0#define PIDFD_NONBLOCK O_NONBLOCK<br>
+=C2=A0#endif<br>
+<br>
++#ifdef HAVE_SYS_PIDFD_H<br>
++#include &lt;sys/pidfd.h&gt;<br>
++#endif<br>
++<br>
+=C2=A0static inline void pidfd_send_signal_supported(void)<br>
+=C2=A0{<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 /* allow the tests to fail early */<br>
+-- <br>
+2.37.2<br>
+<br>
+<br>
+-- <br>
+Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
+oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
+<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div>
+
+--00000000000034ffe805e6557ebf--
+
+
+--===============0139651918==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0139651918==--
+
