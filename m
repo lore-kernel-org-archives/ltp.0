@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEB94C25B08
-	for <ltp@archiver.kernel.org>; Wed, 17 Aug 2022 15:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E74D3C25B08
+	for <ltp@archiver.kernel.org>; Wed, 17 Aug 2022 20:40:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 01ED53C9F31
-	for <ltp@archiver.kernel.org>; Wed, 17 Aug 2022 17:04:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 050773CA15C
+	for <ltp@archiver.kernel.org>; Wed, 17 Aug 2022 22:40:33 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B8733C98D4
- for <ltp@lists.linux.it>; Wed, 17 Aug 2022 17:04:16 +0200 (CEST)
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com
- [IPv6:2607:f8b0:4864:20::a32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C4F7B3C9AEA
+ for <ltp@lists.linux.it>; Wed, 17 Aug 2022 22:40:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D5E4E1A0068E
- for <ltp@lists.linux.it>; Wed, 17 Aug 2022 17:04:15 +0200 (CEST)
-Received: by mail-vk1-xa32.google.com with SMTP id bj43so6822305vkb.4
- for <ltp@lists.linux.it>; Wed, 17 Aug 2022 08:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc;
- bh=d5Algv5slMjzxmkJfWG5sUOLb+g9FprA7EFKQ6Z2H1U=;
- b=quW8G4LxaqQuLc4dV2+o3oBmYpNZzd0FMdZIWlHEZZ2aiDbpUZj/gUUksnCRvHbqrH
- uKtXN22gNGy1ECLEhWiWPnUE7GBCMqLC+MrLo1c6iEZZUYlJaRkau4So3iUTGHx7AYlo
- +60PfAKd1FFngIAmh1y7AOKYEyffFhNb9bfuBbvmER2IkHOsUs84+nKLh4/OHUet1Dui
- 2XxFpthr5iIkKZbE0QZMOHTmPiFefEjniK3yuTV/1jJ4T9gNxkecsja9MIAmvE99KeAw
- HmEDAwMd9xeF12dsunZdB7eITCccR296MSlTe/xESMxAcS0fiWXRl+iG4wGqlYlbfmfN
- T4yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc;
- bh=d5Algv5slMjzxmkJfWG5sUOLb+g9FprA7EFKQ6Z2H1U=;
- b=AIfMaNeNAFH5/35OX7+bM3PzgSzQrRpK1r8ez+ba80KVCTfSxqi3XMILpymNyWQjsA
- qnhV1evQI3IpbNgQgV1dqMZQxBM5ZbhPzetOqGYPynOJqXT1OvOM3VYZEJRE1+liRzo8
- r+CJlt3v/LyRiI+HT9TI2z+SYn36a/QO9tbSEuFW9hvksMhAnWueCEgP6cnItcARzI+n
- TMCqdd3fYMb754PC03m/t/McfDrLUhmr57TN0jlGVCGQZ1J4Y8oK8LN/luDIoPt5lT+B
- /k3ie2OF8OIkMvyhD5T4DenerpGlgOWCx3vOSb5boXNtCxLbrlRdrhxmmkt9A+TSZoVJ
- 3bqg==
-X-Gm-Message-State: ACgBeo2EGqlBjkeVNdKvWKl8CWePNrYzN6i2tsmAQDKcKPGOHRzgHDmM
- GZykqKtNAjI6ruOwQ6T+ZaZNAeuuF7yJCC3mHcLPtQ==
-X-Google-Smtp-Source: AA6agR6Imx5tHG23MdlH+rYrFexpyzIq9YsGqBE4xIygorGMFfWwoGk7uRUmxF5nr8fuAxWEdnkQOxtzrAGhWqOAbvA=
-X-Received: by 2002:a05:6122:218f:b0:37c:fe5c:9967 with SMTP id
- j15-20020a056122218f00b0037cfe5c9967mr11283909vkd.8.1660748654432; Wed, 17
- Aug 2022 08:04:14 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9F23F200217
+ for <ltp@lists.linux.it>; Wed, 17 Aug 2022 22:40:21 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3ABC133BE1;
+ Wed, 17 Aug 2022 20:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1660768821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6P22HJgbmvI/P6+1CJnXSSgfgTPsbSb0qtF2HE+5mTw=;
+ b=QNeGUc73g3ejBqQRu8HZWs9PskwTHgfve5sapAoVjLhR01Phx6e2N8v9d1/AvsxDoflNnw
+ sFY1Rgi2IZ5wSSxcHivMuUJhpWsIRIGS6Fgkjpk3jqtg+u0uUmSEPAtCnX50JiJrZv79IS
+ 7YE0gssxSDUChLTX1I5qcLmgP3FAVB4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1660768821;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6P22HJgbmvI/P6+1CJnXSSgfgTPsbSb0qtF2HE+5mTw=;
+ b=8D+4a8ZZSeoFMrav84oX3Nz+rN3aXh8OLoXlfC2zA1sOWfhmNfipdOk6XYzqMSzGA4V0jM
+ +hJijH+NjSJ5qVAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADBB513A8E;
+ Wed, 17 Aug 2022 20:40:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Q7mxJzRS/WIpfgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 17 Aug 2022 20:40:20 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed, 17 Aug 2022 22:40:15 +0200
+Message-Id: <20220817204015.31420-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-References: <20220712173921.2623135-1-edliaw@google.com> <YtaFddMFjVPMTpme@rei>
- <CAG4es9Wn+wZRu6xr-FgZ=pTq4ReGdrmsmGYO4ZXvKj8ee3QH8w@mail.gmail.com>
- <CAG4es9XhZ7ksvLxwRNO73FC4DQc7KteUQAUPwipbks6kGsvFmw@mail.gmail.com>
- <YvUhZ/9Yf7eZ4a32@yuki> <YvuRAR1DSi67PDzh@pevik>
- <CAG4es9XdXgmPOQK3i+FL3VD-Y8C39sAShwdM6bi7U-CJjk7BQg@mail.gmail.com>
- <YvyxCXTGYpLd8kbQ@pevik>
-In-Reply-To: <YvyxCXTGYpLd8kbQ@pevik>
-Date: Wed, 17 Aug 2022 08:04:03 -0700
-Message-ID: <CAG4es9XkRDYnwDr9huepzGhEiHxWdu40DOK9ouA2yWGqv842ow@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] syscalls/signal06: add volatile to loop
- variable
+Subject: [LTP] [RFC PATCH 1/1] API: Allow to use xfs filesystems < 300 MB
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,74 +70,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team <kernel-team@android.com>, LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1990918461=="
+Cc: linux-xfs@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
+ automated-testing@yoctoproject.org, automated-testing@lists.yoctoproject.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1990918461==
-Content-Type: multipart/alternative; boundary="0000000000009c566f05e6712d62"
+mkfs.xfs since v5.19.0-rc1 [1] refuses to create filesystems < 300 MB.
+Reuse workaround intended for fstests: set 3 environment variables:
+export TEST_DIR=1 TEST_DEV=1 QA_CHECK_FS=1
 
---0000000000009c566f05e6712d62
-Content-Type: text/plain; charset="UTF-8"
+Workaround added to both C API (for .needs_device) and shell API (for
+TST_NEEDS_DEVICE=1).
 
-On Wed, Aug 17, 2022, 2:12 AM Petr Vorel <pvorel@suse.cz> wrote:
+Fix includes any use of filesystem (C API: .all_filesystems,
+.format_device, shell API: TST_MOUNT_DEVICE=1, TST_FORMAT_DEVICE=1).
 
-> Hi Edward,
->
-> > We are currently building with clang 14.0.6.  I haven't filed a bug
-> report
-> > with llvm, will work on doing that.
-> Thanks for info. I expected it'd be for aarch64 arch, but I can reproduce
-> it on
-> the same clang version on x86_64 on openSUSE Tumbleweed.
->
-> Would you mind we delay merging after you fill the bug in llvm, so that we
-> can
-> add it to git commit message?
->
+Fixes various C and shell API failures, e.g.:
 
-Sure thing, not a problem.
+./mkfs01.sh -f xfs
+mkfs01 1 TINFO: timeout per run is 0h 5m 0s
+tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+mkfs01 1 TFAIL: 'mkfs -t xfs  -f /dev/loop0 ' failed.
+Filesystem must be larger than 300MB.
 
->
+./creat09
+...
+tst_test.c:1599: TINFO: Testing on xfs
+tst_test.c:1064: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+Filesystem must be larger than 300MB.
 
---0000000000009c566f05e6712d62
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Link: https://lore.kernel.org/all/164738662491.3191861.15611882856331908607.stgit@magnolia/
 
-<div dir=3D"auto"><div><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
-s=3D"gmail_attr">On Wed, Aug 17, 2022, 2:12 AM Petr Vorel &lt;<a href=3D"ma=
-ilto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></div><blockquote cla=
-ss=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;pa=
-dding-left:1ex">Hi Edward,<br>
-<br>
-&gt; We are currently building with clang 14.0.6.=C2=A0 I haven&#39;t filed=
- a bug report<br>
-&gt; with llvm, will work on doing that.<br>
-Thanks for info. I expected it&#39;d be for aarch64 arch, but I can reprodu=
-ce it on<br>
-the same clang version on x86_64 on openSUSE Tumbleweed.<br>
-<br>
-Would you mind we delay merging after you fill the bug in llvm, so that we =
-can<br>
-add it to git commit message?<br></blockquote></div></div><div dir=3D"auto"=
-><br></div><div dir=3D"auto">Sure thing, not a problem.</div><div dir=3D"au=
-to"><div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"m=
-argin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"></blockquote>=
-</div></div></div>
+Reported-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Dave, please next time remember there are other testsuites testing XFS,
+not just fstests :). How long do you plan to keep this workaround?
 
---0000000000009c566f05e6712d62--
+LTP community: do we want to depend on this behavior or we just increase from 256MB to 301 MB
+(either for XFS or for all). It might not be a good idea to test size users are required
+to use.
 
---===============1990918461==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Kind regards,
+Petr
+ lib/tst_test.c            | 7 +++++++
+ testcases/lib/tst_test.sh | 6 +++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 4b4dd125d..657348732 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1160,6 +1160,13 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->all_filesystems)
+ 		tst_test->needs_device = 1;
+ 
++	/* allow to use XFS filesystem < 300 MB */
++	if (tst_test->needs_device) {
++		putenv("TEST_DIR=1");
++		putenv("TEST_DEV=1");
++		putenv("QA_CHECK_FS=1");
++	}
++
+ 	if (tst_test->min_cpus > (unsigned long)tst_ncpus())
+ 		tst_brk(TCONF, "Test needs at least %lu CPUs online", tst_test->min_cpus);
+ 
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 24a3d29d8..b42e54ca1 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -671,7 +671,11 @@ tst_run()
+ 
+ 	[ "$TST_MOUNT_DEVICE" = 1 ] && TST_FORMAT_DEVICE=1
+ 	[ "$TST_FORMAT_DEVICE" = 1 ] && TST_NEEDS_DEVICE=1
+-	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
++	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
++		TST_NEEDS_TMPDIR=1
++		# allow to use XFS filesystem < 300 MB
++		export TEST_DIR=1 TEST_DEV=1 QA_CHECK_FS=1
++	fi
+ 
+ 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+ 		if [ -z "$TMPDIR" ]; then
+-- 
+2.37.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1990918461==--
