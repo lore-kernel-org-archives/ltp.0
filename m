@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AEC2C00140
-	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 11:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34078C00140
+	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 11:28:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 59C583CA21F
-	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 13:16:53 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id AE98D3CA1B5
+	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 13:28:40 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 07D003CA0C6
- for <ltp@lists.linux.it>; Thu, 18 Aug 2022 13:16:42 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6E0A33CA155
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 13:28:31 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 378611000479
- for <ltp@lists.linux.it>; Thu, 18 Aug 2022 13:16:41 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E5167100061F
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 13:28:30 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 304FB20F8A;
- Thu, 18 Aug 2022 11:16:41 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B60985BDFE;
+ Thu, 18 Aug 2022 11:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660821401;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1660822109; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bG6wuYdC/zt/96T+C7daPM4586zII6xmpZDWC2O/VAQ=;
- b=ZML7uLw64ZxpWiBrYPX6QJRCOWsjyeAzHmNWlLWj+DwnFYeMtYQXJBMCltPsZty1dWR57r
- xS9jYOv2nI0qQLsPUJxk1/yyTvqZf6mGVuE1JjJfT2XzzCckNHw+/ksa8QyrXr1K/dG7nc
- ID6HF33mSESz4aLMCSFU3DxYESEVLEw=
+ bh=52uM/uWZ0VDt/vom63V5uOWSqqnIVymzuJcqNwduUUM=;
+ b=wH/pfHMcz3SdjBxU7xNRUJcP3u9UBAYOiSGUoqty0Yl7nIO2BKsmTJTf76fOHitcsHJp/h
+ XMyukHYsPsZmd8vg3pUW7SKk3fptp/3ZmaKR+tRDBfQmUnVHVU4yipLyC8sLbbWphy1O9B
+ u+aRxsbkSEOI8l2acq2bawZDaT1mvHc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660821401;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1660822109;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bG6wuYdC/zt/96T+C7daPM4586zII6xmpZDWC2O/VAQ=;
- b=+DH5oiUuV12h9g/c2MladcB1I0aUtFKDlHLPSjQeHuEfqz9X3GQ4FTusSbJU7WzmG/9Krb
- vr+5E5PgekN18wBQ==
+ bh=52uM/uWZ0VDt/vom63V5uOWSqqnIVymzuJcqNwduUUM=;
+ b=BxUxoSzLImBa9WhqR9MUvGub1N+YrwQQcoPHdZwi6gO5wgqtqvplDUb9y3hQCpNQHAmNgl
+ CWig8EJ1uwvyeoCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EA3B4139B7;
- Thu, 18 Aug 2022 11:16:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D796139B7;
+ Thu, 18 Aug 2022 11:28:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id AfEeN5gf/mKkJwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 18 Aug 2022 11:16:40 +0000
-Date: Thu, 18 Aug 2022 13:16:38 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Yv4fllRUrfmdjcgg@pevik>
-References: <20220818100945.7935-1-pvorel@suse.cz>
- <20220818100945.7935-2-pvorel@suse.cz>
- <CAOQ4uxhvf11FxVJcGiy_GpVHALXNnC4qFc0azTi2Qn_FS3oqyw@mail.gmail.com>
- <Yv4dons8AYcqE9gU@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id IGDwJV0i/mJILAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 18 Aug 2022 11:28:29 +0000
+Date: Thu, 18 Aug 2022 13:30:26 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Yv4i0gWiHTkfWB5m@yuki>
+References: <20220817204015.31420-1-pvorel@suse.cz> <Yv4MBF79PnJKJbwm@yuki>
+ <Yv4eiT5L+M7dMkQ5@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yv4dons8AYcqE9gU@yuki>
+In-Reply-To: <Yv4eiT5L+M7dMkQ5@pevik>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] tst_device: Increase DEV_MIN_SIZE to 300 MB
+Subject: Re: [LTP] [RFC PATCH 1/1] API: Allow to use xfs filesystems < 300 MB
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,53 +76,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: LTP List <ltp@lists.linux.it>, automated-testing@lists.yoctoproject.org
+Cc: linux-xfs@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
+ automated-testing@yoctoproject.org, ltp@lists.linux.it,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > > Previous default 256 MB was not enough for mkfs.xfs since v5.19.0-rc1
-> > > [1] which refuses to create filesystems < 300 MB. Although the
-> > > limitation can be workarounded by setting three environment variables,
-> > > it's better to increase the variable.
+Hi!
+> > I'm starting to wonder if we should start tracking minimal FS size per
+> > filesystem since btrfs and xfs will likely to continue to grow and with
+> > that we will end up disabling the whole fs related testing on embedded
+> > boards with a little disk space. If we tracked that per filesystem we
+> > would be able to skip a subset of filesystems when there is not enough
+> > space. The downside is obviously that we would have to add a bit more
+> > complexity to the test library.
+> 
+> Maybe I could for start rewrite v2 (I've sent it without Cc kernel devs now it's
+> mainly LTP internal thing) as it just to have 300 MB for XFS and 256 MB for the
+> rest. That would require to specify filesystem when acquiring device (NULL would
+> be for the default filesystem), that's would be worth if embedded folks counter
+> each MB. It'd be nice to hear from them.
 
-> > > [1]: https://lore.kernel.org/all/164738662491.3191861.15611882856331908607.stgit@magnolia/
+The 256MB limit was set previously due to btrfs, I bet that we can
+create smaller images for ext filesytems for example.
 
-> > > Reported-by: Martin Doucha <mdoucha@suse.cz>
-> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > ---
-> > >  lib/tst_device.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-
-> > > diff --git a/lib/tst_device.c b/lib/tst_device.c
-> > > index c34cbe6d1..8419b80c3 100644
-> > > --- a/lib/tst_device.c
-> > > +++ b/lib/tst_device.c
-> > > @@ -44,7 +44,7 @@
-> > >  #define LOOP_CONTROL_FILE "/dev/loop-control"
-
-> > >  #define DEV_FILE "test_dev.img"
-> > > -#define DEV_SIZE_MB 256u
-> > > +#define DEV_SIZE_MB 300u
-
-> > Subject is wrong - it is saying DEV_MIN_SIZE
-
-> > It really looks weird that DEV_SIZE_MB < DEV_MIN_SIZE
-> > What am I missing?
-
-> The DEV_MIN_SIZE macro is used in a LTP test library API test that
-> checks that test can override minial device size so it has to be greater
-> than DEV_SIZE_MB which is the size used by the test library when
-> loopback devices are created.
-Tests in lib/newlib_tests/ are tests which test the LTP itself,
-maybe use some prefix for these constants would make obvious that it's not part
-of the library (i.e. not visible in normal LTP tests).
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
