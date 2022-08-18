@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC84FC00140
-	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 09:45:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A85D3C00140
+	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 09:50:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A9CEF3CA1CC
-	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 11:45:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 7326A3CA22A
+	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 11:50:47 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0B6223C2417
- for <ltp@lists.linux.it>; Thu, 18 Aug 2022 11:45:44 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 686B03C87EF
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 11:50:37 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 471FD1A00694
- for <ltp@lists.linux.it>; Thu, 18 Aug 2022 11:45:43 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 745E320090D
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 11:50:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1660816235;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=IRsz/P9/Mtacq3YGcsD/Pa0uTJtMXyshF1iH20vzkuk=;
+ b=NLYKPcpgwU5mLDtg8UkOPnYJXz8A1IpO2nJ0f/pdAj1lkVLeXc6Ur7OYbbhmy4eTqeppyb
+ 1TPpCwao8B24hGT/kkhn2uTsp0V5MT1POl8ee1l8Q5bCUnKchNBH7badItUUnn0DlU4y1K
+ 0KvgyBp/u2SdQ0V5qPyPTOXVT61+dS8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-57-j3rV7x5KNwWEMlHqFBojfQ-1; Thu, 18 Aug 2022 05:50:33 -0400
+X-MC-Unique: j3rV7x5KNwWEMlHqFBojfQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 39C952108B;
- Thu, 18 Aug 2022 09:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660815943;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4+LcSyNkb5WBqX0USANKXsWGWq/H06zcrui9isF0wQ4=;
- b=O5HdzCF70xwlA79tuUnywkLHk3CbFNT74gGHzEC0WKXCDB/rzR+YJP52m0dwWppJDA+DGF
- I+J5c2jXIKblkuAePtoQsVAMRXZz6HEC2gwX+m5G5o3pdU2qDa3uLyVzvWHinqbmUIf7J8
- OoBkqXpQBhH1JiNflADI5qL4wG0xFHo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660815943;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4+LcSyNkb5WBqX0USANKXsWGWq/H06zcrui9isF0wQ4=;
- b=qmGKR4nO6KJU20bcliyTqShVBaONPAr8KsFgQFFNcCyKnbHvWBS9BmLnwputOa8mvsDulh
- 2t1WBsEgrx5DLqBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5DE1139B7;
- Thu, 18 Aug 2022 09:45:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id tYC5MkYK/mJsAwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 18 Aug 2022 09:45:42 +0000
-Date: Thu, 18 Aug 2022 11:45:41 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <Yv4KRRNM2Dq+B+2x@pevik>
-References: <20220817204015.31420-1-pvorel@suse.cz> <Yv2A9Ggkv/NBrTd4@magnolia>
- <CAOQ4uxjMEHYQwO25dhs5WtzbOkJcee0HofQDTT3cD-qXJn7xQw@mail.gmail.com>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 835F6185A7BA
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 09:50:33 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 91DDA2166B26
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 09:50:32 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu, 18 Aug 2022 17:50:30 +0800
+Message-Id: <20220818095030.1964355-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjMEHYQwO25dhs5WtzbOkJcee0HofQDTT3cD-qXJn7xQw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] API: Allow to use xfs filesystems < 300 MB
+Subject: [LTP] [PATCH] statx04: mask STATX_ATTR_COMPRESSED on tmpfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,127 +69,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>,
- "Darrick J. Wong" <djwong@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
- linux-xfs <linux-xfs@vger.kernel.org>, automated-testing@yoctoproject.org,
- Richard Palethorpe <rpalethorpe@suse.com>, LTP List <ltp@lists.linux.it>,
- automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Thu, Aug 18, 2022 at 2:59 AM Darrick J. Wong <djwong@kernel.org> wrote:
+Recently a new kernel commit (e408e695f) introduces the inode attributes
+being supported in tmpfs, which is like other Linux file systems. But that
+caused statx04 to throw an unsupported error in STATX_ATTR_COMPRESSED.
 
-> > On Wed, Aug 17, 2022 at 10:40:15PM +0200, Petr Vorel wrote:
-> > > mkfs.xfs since v5.19.0-rc1 [1] refuses to create filesystems < 300 MB.
-> > > Reuse workaround intended for fstests: set 3 environment variables:
-> > > export TEST_DIR=1 TEST_DEV=1 QA_CHECK_FS=1
+This patch help masks it just like what we did for XFS.
 
-> > > Workaround added to both C API (for .needs_device) and shell API (for
-> > > TST_NEEDS_DEVICE=1).
+    tst_test.c:1599: TINFO: Testing on tmpfs
+    tst_test.c:1064: TINFO: Skipping mkfs for TMPFS filesystem
+    tst_test.c:1045: TINFO: Limiting tmpfs size to 32MB
+    statx04.c:114: TFAIL: STATX_ATTR_COMPRESSED not supported
+    statx04.c:112: TPASS: STATX_ATTR_APPEND is supported
+    statx04.c:112: TPASS: STATX_ATTR_IMMUTABLE is supported
+    statx04.c:112: TPASS: STATX_ATTR_NODUMP is supported
 
-> > > Fix includes any use of filesystem (C API: .all_filesystems,
-> > > .format_device, shell API: TST_MOUNT_DEVICE=1, TST_FORMAT_DEVICE=1).
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/statx/statx04.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-> > > Fixes various C and shell API failures, e.g.:
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index 083298310..03d909534 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -17,7 +17,7 @@
+  * xfs filesystem doesn't support STATX_ATTR_COMPRESSED flag, so we only test
+  * three other flags.
+  *
+- * ext2, ext4, btrfs and xfs support statx syscall since the following commit
++ * ext2, ext4, btrfs, xfs and tmpfs support statx syscall since the following commit
+  *
+  *  commit 93bc420ed41df63a18ae794101f7cbf45226a6ef
+  *  Author: yangerkun <yangerkun@huawei.com>
+@@ -42,6 +42,13 @@
+  *  Date:   Fri Mar 31 18:32:03 2017 +0100
+  *
+  *  xfs: report crtime and attribute flags to statx
++ *
++ *  commit e408e695f5f1f60d784913afc45ff2c387a5aeb8
++ *  Author: Theodore Ts'o <tytso@mit.edu>
++ *  Date:   Thu Jul 14 21:59:12 2022 -0400
++ *
++ *  mm/shmem: support FS_IOC_[SG]ETFLAGS in tmpfs
++ *
+  */
+ 
+ #define _GNU_SOURCE
+@@ -88,8 +95,8 @@ static void setup(void)
+ 	for (i = 0, expected_mask = 0; i < ARRAY_SIZE(attr_list); i++)
+ 		expected_mask |= attr_list[i].attr;
+ 
+-	/* STATX_ATTR_COMPRESSED not supported on XFS */
+-	if (!strcmp(tst_device->fs_type, "xfs"))
++	/* STATX_ATTR_COMPRESSED not supported on XFS, TMPFS */
++	if (!strcmp(tst_device->fs_type, "xfs") || !strcmp(tst_device->fs_type, "tmpfs"))
+ 		expected_mask &= ~STATX_ATTR_COMPRESSED;
+ 
+ 	/* Attribute support was added to Btrfs statx() in kernel v4.13 */
+-- 
+2.35.3
 
-> > > ./mkfs01.sh -f xfs
-> > > mkfs01 1 TINFO: timeout per run is 0h 5m 0s
-> > > tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-> > > mkfs01 1 TFAIL: 'mkfs -t xfs  -f /dev/loop0 ' failed.
-> > > Filesystem must be larger than 300MB.
-
-> > > ./creat09
-> > > ...
-> > > tst_test.c:1599: TINFO: Testing on xfs
-> > > tst_test.c:1064: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-> > > Filesystem must be larger than 300MB.
-
-> > > Link: https://lore.kernel.org/all/164738662491.3191861.15611882856331908607.stgit@magnolia/
-
-> > > Reported-by: Martin Doucha <mdoucha@suse.cz>
-> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > ---
-> > > Dave, please next time remember there are other testsuites testing XFS,
-
-> > Dave?? <cough>
-
-
-> TBH, it is not about remembering, it is about running integration tests
-> that catch these test bugs.
-You're right, that's the only reliable thing.
-
-> Obviously, xfsprogs maintainer (Eric) is running fstests before an
-> xfsprogs release, but I cannot blame Eric for not running the entire
-> LTS test suite for xfsprogs release...
-Not expecting that.
-
-> I suppose that the bots running LTP on rc kernels might want
-> to consider also running LTP with rc xfsprogs/e2fsprogs/...
-That would be great, but don't expect it'd happen.
-
-> otherwise, those bugs would be caught when *progs hits a distro
-> that is used to run LTP.
-That's what happen on openSUSE.
-
-> > > not just fstests :). How long do you plan to keep this workaround?
-
-> > Forever.  In the ideal world we'll some day get around to restructuring
-> > all the xfstests that do tricky things with sub-500M filesystems, but
-> > that's the unfortunate part of removing support for small disks.
-
-
-> If it's forever, then it should probably have been a command line option.
-> IIUC, the motivation was to discourage users from formatting too small
-> filesystems, but if users have a way to do it, they will find it anyway.
-+1
-
-> Petr,
-
-> Notice that the fstests hack was needed for fstests that require MAX fs size,
-> while the existing LTP lib and tests only have MIN dev size requirement.
-
-> > Most of the fstests don't care about the fs size and so they'll run with
-> > the configured storage (some tens or millions of gigabytes) so we're
-> > mostly using the same fs sizes that users are expected to have.
-
-> > > LTP community: do we want to depend on this behavior or we just increase from 256MB to 301 MB
-> > > (either for XFS or for all). It might not be a good idea to test size users are required
-> > > to use.
-
-
-> For most LTS tests, all you need to do is increase the default (DEV_MIN_SIZE)
-> from 300MB to 301MB so that's not worth doing any workarounds.
-FYI DEV_MIN_SIZE is used just for tests which test LTP API itself. For real
-tests is DEV_SIZE_MB (lib/tst_device.c). And actually 300 MB is enough,
-therefore the only change for the default values is: DEV_SIZE_MB from 256 to 300
-(should be enough for all LTP tests: C and shell API, also these tests of LTP
-API itself).  I also think 46MB is not worth of hacks.
-
-BTW for some reason DEV_MIN_SIZE was higher than the default (probably to test
-library with non-default value, but now is the same, we might want to increase
-it (or remove it).
-
-> For the 3 memcontrol tests that require dev_min_size = 256 and run on
-> all_filesystems, it does not look like changing min size is needed at all.
-Indeed, this value can stay. This check is here because although LTP uses loop
-device by default, any device can be used via LTP_DEV env variable.
-
-> For squashfs01 the xfs limitation is irrelevant, but generally,
-> If the test min requirement (1MB) is smaller than the lib default,
-> DEV_MIN_SIZE still meets the test requirement, so why bother
-> going below the lib default DEV_MIN_SIZE?
-For use with LTP_DEV.
-
-Anyway, Darrick, Amir, thank you both for your input.
-
-Kind regards,
-Petr
-
-> Thanks,
-> Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
