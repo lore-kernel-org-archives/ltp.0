@@ -4,52 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 502F9C28B2B
-	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 21:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 010F9C00140
+	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 21:19:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A39473CA1EC
-	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 23:03:20 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 608793CA1A2
+	for <ltp@archiver.kernel.org>; Thu, 18 Aug 2022 23:19:19 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4316C3C1C63
- for <ltp@lists.linux.it>; Thu, 18 Aug 2022 23:03:09 +0200 (CEST)
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au
- [211.29.132.246])
- by in-6.smtp.seeweb.it (Postfix) with ESMTP id 33FBB140032F
- for <ltp@lists.linux.it>; Thu, 18 Aug 2022 23:03:07 +0200 (CEST)
-Received: from dread.disaster.area (pa49-181-52-176.pa.nsw.optusnet.com.au
- [49.181.52.176])
- by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id A681E62D490;
- Fri, 19 Aug 2022 07:03:00 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
- (envelope-from <david@fromorbit.com>)
- id 1oOmfL-00EjSC-6k; Fri, 19 Aug 2022 07:02:59 +1000
-Date: Fri, 19 Aug 2022 07:02:59 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Eric Sandeen <sandeen@sandeen.net>
-Message-ID: <20220818210259.GG3600936@dread.disaster.area>
-References: <YvZc+jvRdTLn8rus@pevik> <YvZUfq+3HYwXEncw@pevik>
- <YvZTpQFinpkB06p9@pevik>
- <20220814224440.GR3600936@dread.disaster.area>
- <YvoSeTmLoQVxq7p9@pevik>
- <8d33a7a0-7a7c-47a1-ed84-83fd25089897@sandeen.net>
- <Yv5Z7eu5RGnutMly@pevik>
- <f03c6929-9a14-dd58-3726-dd2c231d0981@sandeen.net>
+ by picard.linux.it (Postfix) with ESMTPS id 318DC3C931E
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 23:19:06 +0200 (CEST)
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com
+ [IPv6:2607:f8b0:4864:20::e2e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6332060066B
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 23:19:06 +0200 (CEST)
+Received: by mail-vs1-xe2e.google.com with SMTP id o123so2749114vsc.3
+ for <ltp@lists.linux.it>; Thu, 18 Aug 2022 14:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc;
+ bh=+hfQ8wueaucFBGYQ+2wnV2w3LB+Nboj3w75I11W2FIw=;
+ b=d5D9xQnhAr4ymdEODzhvTcX9tBFjQcE8naO1gXsHGS5q+ax/00GIcyv31SfZTsXGWi
+ It0h4kfjFDa46ZSs1XsV6788ZvURTM7yVe4CdfFuH3lHW3taXn3M1iP/hMzPJMZdLhZw
+ En+D2PdmP0xYMhmjUxO3ZcYiXLREOu5oSY2M4Q1QiOm/gHfF4hcVqdFdWr+Dqfzj1hhr
+ MJVBKun2cpJvZV2uIZsVN+7OAoE0dibvu+VklBhNkBaGY+bPlR9joKcypzB/9uR9nINo
+ 8RNfBN61ND1j19Fhvnxc2XxgPJLNxIIv1YiY1K9M/OjeLdZx7THIyjQuJhOMYovTJgiH
+ eUAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc;
+ bh=+hfQ8wueaucFBGYQ+2wnV2w3LB+Nboj3w75I11W2FIw=;
+ b=okM8yQf2kfCnA3IYofNX+PtCjROQ3opnFjYvgT5G1oM1aqcNg/NCCI1UYWCzG3frf3
+ NoTeRoQ2MjcaEpZtcvBnj89x9TuM29H6QVYSqUtJIhSr7NAZoSnKbV/DMTrAdzY4u3aY
+ GmlzZqj9UO1cH3G30rieA+DOpDtmuCyMAOtmiw3cfBfYn5rIYCeBnJxaCuWXAzYuKM+U
+ pnRgJ6AUtOUDD7+J/E1JM9Z2tW0ek9GM11y7vUaPwrQqZJLqnzz5gXqGCygoKvzB2AFV
+ YCo9Qat/V+Z25aGft3WGMwG8nkOZ6Ak1WF3YAaLUifL27v9SsOSeNhJ+l7CW13k7zZ/w
+ CI6A==
+X-Gm-Message-State: ACgBeo3CTTbHERheIeEbxkUZRQZtme0UsRa3JUCBB7MjOSbkM0M2h5mN
+ FsDNB24f6THsO+k0ydaJoRcxoX8UB0KhOk/vS4g6Rw==
+X-Google-Smtp-Source: AA6agR5I8h3DnRaEsM3DFb2IQ6c0s6oNxSmq2MTa4juW2Q70jfxfAHN7v5hdM8nHNQ9Xo/lqGzJLShUR2dWxTUvslDE=
+X-Received: by 2002:a67:b249:0:b0:38a:b02b:b161 with SMTP id
+ s9-20020a67b249000000b0038ab02bb161mr1889976vsh.80.1660857545082; Thu, 18 Aug
+ 2022 14:19:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f03c6929-9a14-dd58-3726-dd2c231d0981@sandeen.net>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=OJNEYQWB c=1 sm=1 tr=0 ts=62fea908
- a=O3n/kZ8kT9QBBO3sWHYIyw==:117 a=O3n/kZ8kT9QBBO3sWHYIyw==:17
- a=kj9zAlcOel0A:10 a=biHskzXt2R4A:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
- a=goNm9uWxpVm3eJU7WO0A:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=biEYGPWJfzWAr4FL6Ov7:22
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+References: <20220712173921.2623135-1-edliaw@google.com> <YtaFddMFjVPMTpme@rei>
+ <CAG4es9Wn+wZRu6xr-FgZ=pTq4ReGdrmsmGYO4ZXvKj8ee3QH8w@mail.gmail.com>
+ <CAG4es9XhZ7ksvLxwRNO73FC4DQc7KteUQAUPwipbks6kGsvFmw@mail.gmail.com>
+ <YvUhZ/9Yf7eZ4a32@yuki> <YvuRAR1DSi67PDzh@pevik>
+ <CAG4es9XdXgmPOQK3i+FL3VD-Y8C39sAShwdM6bi7U-CJjk7BQg@mail.gmail.com>
+ <YvyxCXTGYpLd8kbQ@pevik>
+ <CAG4es9XkRDYnwDr9huepzGhEiHxWdu40DOK9ouA2yWGqv842ow@mail.gmail.com>
+In-Reply-To: <CAG4es9XkRDYnwDr9huepzGhEiHxWdu40DOK9ouA2yWGqv842ow@mail.gmail.com>
+Date: Thu, 18 Aug 2022 14:18:39 -0700
+Message-ID: <CAG4es9WmHd52fmjdt7RBkSXEtnGuC2jkBO6UdCTbaHOq8CDgVw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP test df01.sh detected different size of loop device
- in v5.19
+Subject: Re: [LTP] [PATCH v1] syscalls/signal06: add volatile to loop
+ variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,74 +79,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
- Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
- Hannes Reinecke <hare@suse.de>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team <kernel-team@android.com>, LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1650467319=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Aug 18, 2022 at 11:05:33AM -0500, Eric Sandeen wrote:
-> On 8/18/22 10:25 AM, Petr Vorel wrote:
-> > Hi Eric, all,
-> > 
-> 
-> ...
-> 
-> > 
-> >> IOWS, I think the test expects that free space is reflected in statfs numbers
-> >> immediately after a file is removed, and that's no longer the case here. They
-> >> change in between the df check and the statfs check.
-> > 
-> >> (The test isn't just checking that the values are correct, it is checking that
-> >> the values are /immediately/ correct.)
-> > 
-> >> Putting a "sleep 1" after the "rm -f" in the test seems to fix it; IIRC
-> >> the max time to wait for inodegc is 1s. This does slow the test down a bit.
-> > 
-> > Sure, it looks like we can sleep just 50ms on my hw (although better might be to
-> > poll for the result [1]), I just wanted to make sure there is no bug/regression
-> > before hiding it with sleep.
-> > 
-> > Thanks for your input!
-> > 
-> > Kind regards,
-> > Petr
-> > 
-> > [1] https://people.kernel.org/metan/why-sleep-is-almost-never-acceptable-in-tests
-> > 
-> >> -Eric
-> > 
-> > +++ testcases/commands/df/df01.sh
-> > @@ -63,6 +63,10 @@ df_test()
-> >  		tst_res TFAIL "'$cmd' failed."
-> >  	fi
-> >  
-> > +	if [ "$DF_FS_TYPE" = xfs ]; then
-> > +		tst_sleep 50ms
-> > +	fi
-> > +
-> 
-> Probably worth at least a comment as to why ...
-> 
-> Dave / Darrick / Brian - I'm not sure how long it might take to finish inodegc?
-> A too-short sleep will let the flakiness remain ...
+--===============1650467319==
+Content-Type: multipart/alternative; boundary="000000000000ffcb8005e68a87ee"
 
-For a single 1MB file? inodegc is delayed 1 jiffie (max 10ms).
-If it's processed immediately because everything else is idle and
-nothing blocks, it will be done in 250-500 microsends.
+--000000000000ffcb8005e68a87ee
+Content-Type: text/plain; charset="UTF-8"
 
-Of course, the moment you put such tests in a VM on a host that is
-running other VMs nothing is ever idle and inodegc delays are
-outside the control of the guest kernel/filesystem....
+>
+> On Wed, Aug 17, 2022, 2:12 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+>> Hi Edward,
+>>
+>> Would you mind we delay merging after you fill the bug in llvm, so that
+>> we can
+>> add it to git commit message?
+>
+>
+Here's the link to the bug on llvm:
+https://github.com/llvm/llvm-project/issues/57234
 
-Cheers,
+--000000000000ffcb8005e68a87ee
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+<div dir=3D"ltr"><div class=3D"gmail_quote"><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
+;padding-left:1ex"><div dir=3D"auto"><div><div class=3D"gmail_quote"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Wed, Aug 17, 2022, 2:12 AM Petr Vorel &l=
+t;<a href=3D"mailto:pvorel@suse.cz" target=3D"_blank">pvorel@suse.cz</a>&gt=
+; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi Edwa=
+rd,<br><br>
+Would you mind we delay merging after you fill the bug in llvm, so that we =
+can<br>
+add it to git commit message?</blockquote></div></div></div></blockquote><d=
+iv dir=3D"ltr"><br></div><div dir=3D"ltr">Here&#39;s the link to the bug on=
+ llvm: <a href=3D"https://github.com/llvm/llvm-project/issues/57234">https:=
+//github.com/llvm/llvm-project/issues/57234</a></div><div>=C2=A0</div></div=
+></div>
+
+--000000000000ffcb8005e68a87ee--
+
+--===============1650467319==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1650467319==--
