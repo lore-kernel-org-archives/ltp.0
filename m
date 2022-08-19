@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2F94C32771
-	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 09:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84BFEC32771
+	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 10:02:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA6223CA29C
-	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 11:32:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2CF2B3CA295
+	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 12:02:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4EA8E3C144C
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 11:32:38 +0200 (CEST)
-Received: from esa20.fujitsucc.c3s2.iphmx.com (esa20.fujitsucc.c3s2.iphmx.com
- [216.71.158.65])
+ by picard.linux.it (Postfix) with ESMTPS id 000803C88EB
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 12:02:36 +0200 (CEST)
+Received: from esa13.fujitsucc.c3s2.iphmx.com (esa13.fujitsucc.c3s2.iphmx.com
+ [68.232.156.96])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2D87A1400DE3
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 11:32:37 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 98A4B600235
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 12:02:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1660901558; x=1692437558;
+ t=1660903355; x=1692439355;
  h=from:to:subject:date:message-id:references:in-reply-to:
  content-id:content-transfer-encoding:mime-version;
- bh=2vGMXMDYvit3FeEvq9ccMCpgNFp5tRRMu5vq0r64Bs8=;
- b=zSEkZaJQz59ZdmHckXiiYFPfITc9CPOsX17Yt1G63c+Bn2usFFQQoybE
- vVF2Xtf6GyZBJh5SSG62N9pcD58zwzRZkiMhczd05Xf10g7fsgQFoaK3s
- H1/FbLUP2Azy/4cHMXS8eAXmRAT474TrYuSTE6Xyphjl9ONeHSzDNrP8s
- sAykoeb2IAFn32CbrakRdrzvxxzArFga8Ktl4ShidFXS11h3VgNig1jk3
- OgNY9q1AitaYwlM/McX+04EOf+U4YP1B2q5ONRDtRIIeM/lietWlw4Abi
- Fn5yd+uAvxNQDshWeBJo3r05chaXMn5eQfr0pAAY3FwN+bP94cS3u+FcW Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10443"; a="62962915"
-X-IronPort-AV: E=Sophos;i="5.93,247,1654527600"; d="scan'208";a="62962915"
-Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
+ bh=Vx8Ot/qnpqQ8kRYw3LnEZnCv27vwZdRTFmYdEpNbvyQ=;
+ b=qVJmBGCfHbGGBX0mTi5Fh3135ETf1j6BI3VIQZe7ucJLuUIH5L4TI3TL
+ Fa42ZZkxXuRxhXrFauOj44jxOnbCZ1/0eVN6p1mtocKR3Dbl/2nU+jju6
+ KN43Du0bhUSPLVM8UcQ4aeveE4SVHZ5JR3ZRJ6uN5kqbpoyI02NuWTWd4
+ Hj3qa2Zy+yD3svl58NNcwcKVW/XwEdDisxuWt/K4qoFE0LyjGheR64VaI
+ GuB05GJtfV9Y63ZLVZjmhyRCyfSXSo6EA/X/NvX1OvyE1+X223Dr/Ragc
+ Sqjmp88DpxKXMZrfPye/BwvRVUQGtNBZ5vw7UW/2a7X3jcnJ9vIdCRkmU A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10443"; a="62823822"
+X-IronPort-AV: E=Sophos;i="5.93,247,1654527600"; d="scan'208";a="62823822"
+Received: from mail-os0jpn01lp2109.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.109])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Aug 2022 18:32:36 +0900
+ 19 Aug 2022 19:02:33 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lOeyPkYfzqTCXm7M4hVhIuhNZUjfmn/eUaN6h5fH97Jfil/FTUuulJlkK0lsnRiRIOMMOGiY5sV+gQMjOwv94vjH42UK1k7/nETC+yG7TCjW52/rlZsX6I8zF+xhxXaWnIMP7MBH4dpBR5E+pZLWLufoiqyP+DYs1TltWvzpybHP4tdWF0IWjiCh+HmKTVN5h/ZQ770MDqfRIsunOgUaCFvqtfMdVuaZfK0+5oYoMQmhcJCJIV7PuzOt+IDUhdFc8BqtLfatX8iY7UyKP+WlBbUMJjKWh/GXBRewouGJPeLfmfc1kdJQHo8RmeNprNkst6y1d4RWXdR1UyfiG9hElA==
+ b=DtiaZX5PRpLT26/6ZAZ2qw62LYGnxQXP6A32yKPUfDEK+zbO6S0+QUcCOI9kW9q8sd+n1fgsveRKTlq/kiktEBE2Y0GXdcGzfmcTzCGTQ/cHuT5KdoS+bqz8rjrzTdUu2OIPiftTQfjy1WOPxDNsAXqCzDC7g4LnD+5b7/tInEfeqsEe/KbPfaAItfqqQ0FtfJnfTwJSXnwdP7Q+ZQzOgwU+vMzoC84ibB06SGdURfTHst3pd7KvBdv2AaNjNdLkssPyqRte11NL61fksOuiiJEj79KvazXOoHzkbKBhOZjV4aYZgG0IugrUhYc+2rPDfyhW74TrDpZg4HeYfKvmXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2vGMXMDYvit3FeEvq9ccMCpgNFp5tRRMu5vq0r64Bs8=;
- b=fKXgV5lPyD6cZR9hbfZQXOimweMa9dUz0nJmfCROo42sd1qedQ2iazEgnNn1b+xsLbAiXGvg2EcoMuuu0CAYmSxOUtvfaZysxaAkVEW+6/gNLONPkINaGxoVD0mVN0JeHhUh483TpHOe8dd6ruKvNFxXYqmZKbN1poaxfFuJ9dymPnR+AmWxC01w/9Uy9z8IzjtELkcmp8+3hPSHqG5xowPUcQSRtgL3uSqeGgxloy4dhTqFxbsZGadAJj4PFmdk7IgMm4WBJl4MleX+lUiobECCDJFJfE468dG1qIPYfXK/Xp/sY3tLR9wcHYENm6Ocg84sUqcvNTFSHA5QzLzufQ==
+ bh=Vx8Ot/qnpqQ8kRYw3LnEZnCv27vwZdRTFmYdEpNbvyQ=;
+ b=N1z7I5aSTUOyBWrEV1EiCxbFrpAXqPKaPjzQq1IozYbGbsWP8ZUuKnRwV5E/yLklKC1N3pJHrq2+vqMN7LHBiszSZ2cHdrosT3d/3Js7v4fq1JN9zEJuYvqJuRJquc/Xe9iUuJNXBsrEefhSynBoyq5OpHZ01eh8eO3TThKpnXV6ViodwmLH9z/kN2iBT2+nQ3jxWqWZZBVetW1kBEeGmvptEIvkSHb6INzlJ9Iu4LnHAH1pieXjp5yPMhKQ+UtlNegV+PlygliD4mBuT7gFHzGQgMQ+0bfq+z+cQ0/jujfujOyxpR2TETUaxoERFg8+5rG3bDh5ea6w7XBMPgbc8Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by OS3PR01MB8400.jpnprd01.prod.outlook.com (2603:1096:604:193::5)
+ by TY3PR01MB9983.jpnprd01.prod.outlook.com (2603:1096:400:1dc::6)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.17; Fri, 19 Aug
- 2022 09:32:32 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.16; Fri, 19 Aug
+ 2022 10:02:30 +0000
 Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
  ([fe80::2440:60cd:7bc9:5d48]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
  ([fe80::2440:60cd:7bc9:5d48%2]) with mapi id 15.20.5504.028; Fri, 19 Aug 2022
- 09:32:32 +0000
+ 10:02:30 +0000
 From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: "liaohj.jy@fujitsu.com" <liaohj.jy@fujitsu.com>, "ltp@lists.linux.it"
- <ltp@lists.linux.it>
-Thread-Topic: [LTP] [PATCH v2] syscalls/openat01:Convert into new api
-Thread-Index: AQHYshxjcP9OinIy7EGDXtYGl9tDKK22CgCA
-Date: Fri, 19 Aug 2022 09:32:32 +0000
-Message-ID: <3d8c98e8-8a0a-cbd5-2b13-9ebd33e61231@fujitsu.com>
-References: <1862883.hHHqqg6b1x@localhost>
- <1660728765-4544-1-git-send-email-liaohj.jy@fujitsu.com>
-In-Reply-To: <1660728765-4544-1-git-send-email-liaohj.jy@fujitsu.com>
+To: Petr Vorel <pvorel@suse.cz>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [LTP] [PATCH 1/1] statx04: Remove kernel comments in docparse
+Thread-Index: AQHYs6sbVtcKUuJd90ucFfHvyztCDq22D0YA
+Date: Fri, 19 Aug 2022 10:02:30 +0000
+Message-ID: <950bbc2f-1af9-581b-c7a2-e6d39fc276ec@fujitsu.com>
+References: <20220819090704.17219-1-pvorel@suse.cz>
+In-Reply-To: <20220819090704.17219-1-pvorel@suse.cz>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -76,71 +74,71 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7a86a43f-f37a-4366-fe3e-08da81c5be35
-x-ms-traffictypediagnostic: OS3PR01MB8400:EE_
+x-ms-office365-filtering-correlation-id: 763a60b3-2b16-4410-c0f1-08da81c9ede6
+x-ms-traffictypediagnostic: TY3PR01MB9983:EE_
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: egBEBAxuZoE1kvbl924evANqbvngjRF6lchq2lmUmstH4Y6hULv1w6HqoLZjYQkU4Fhd5/SAhbH/YQ6Kk5Qnw8rSxgCCkX+i0fouISK78iB+HmOeP8nE4LyfOW0CrU97vp+i3hMwTIeQtIVfUOy0TyWLuvja7SdKxu2OmVVKukTMyDQcaXJxXjLBtB0JnWwmnxzNq57plXA5NxtaY+tC6oijGO4H72x5EGUueiyhNIFASWIybPo2XVYlrk+cWfiQA4W6ruygtnhlP/kD4VZMlySDMZL8VndnK+1KVNyFCwbi6anEfQ33CH/BMer7EdEixtmOw2yrn5cR2MGZYPkadzgmS39dVA/TP28W7L2oMGSdQhCGRdYqxqM1+1Nf5MEIcuuTDTqM870u1+e1gFQvsguatPtA/SD00jVd0N+eAiA9B/p3PCBG79lbYDZl4jVlGMNVgWIitn3D/y1+Ld7lnhZbpC/CIrxnMfwOUERoJFb03At9VLJXP6pRSO0LxPnR7emXBDmG9u8AU3x/R57IgslFsw1+pRRsTJ/ntaSMcqfHpGzqkRvjkrzSLn1m444/VKfvudBWjZ5kHx/Vxd76MgUP16C8n7DY7IwdLh6CWJJjUJ/gwhhZrj8TL6h/G8g8c5n5vEIICOV1ySGNYegzUFt9D0fZ6xFfFk13gRHtlIs4XW3SzW3ooiBlplP85xR6w6QcapDlsES8NlzNSs3YeUubMbOhnqUeaNxqSSwo4GiP9ZwU7RDBipBorpzH+e2D3sqRs0C6tbHbnLa5uKsO1I+Ma9p6kw1PpX1c8i+DyWV+m3i26gGGFTC7f7hWFJ8egTqv7d87a8hJFBMl7beVYzIaSerou9pjeEpburR2+ms=
+x-microsoft-antispam-message-info: CRVKRH+lP8QE4s6r8LGLA0QGWU8aHWs24wBdGGp7tWcWQqB9g7Pl+mzDOI2jjLnmoz4bHh17tOpJeUIyMgL9BXD8QhBsGvp/iQJ74GgUQ/X6HJgcEY+hDbp71pzMl9oPTQl6VYUIc+6UjcFHa85I5Hj0H+9Pqb16fd6/ng4ejc73CY/5PYg/2I9wpQn1+MaCHSsbnljhFDPO9yorneyT82UpgX38A7y+sW9B1zfI7LKfWvKVIo5WzNPuSE90ug6bHjyLnR0RK+jlHBYREj2nd2u0AWsZQv60GkSLNSgql9r3drh4Ft8jrSFM+uNqmRpMAwo+H0ZV5FpXeQ7qk4mpxkVHhsxlmuXR8XcZX555z9XdhfBDxrTcjBhX4f0zIOXEs+/Z1r9voEqWYheevee24CXGDCsegS58JaUtnnhri8kttjeiIxpT0G/lGn0cY4KFTO1RaU4aKYKECGqYgJCEBuwGkVWa9W3NDmIURbTwPD4ESsui43G5kCxVlClN9EQ6dHVJCJTBD1YjKgLZbgP1tlJBa+AiGhMdB65hm0TPREpDs2uQNS6etRIE2oPegLjzVjp3jh+CLFPsnCcEs8Ikcutde/Hqx2B6/U6WL3VnENxHykhm/03qekNONcc0PEPDg7xvURJe7FAiwuw36nWQq25Aovgh9n0w1Q3dQimNlhjiI8+o1g1sFjRG2YGFusvncUUtFjTbJHJNsPQj/r2ZOkxUDP1EL5+qf0b0rzfQw7obaojRe21KAWutFXJL4QahB0ZJk8yUMzDHoZ/UiRfJm/qvhhaQQxgVc2huOsVVElcaEvFsdCHfSczJaHsaXQQ0zrZLdwoAkV2uMCmrpMwk43nIkNBaeOayA1e4sVl++rk=
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230016)(4636009)(136003)(366004)(376002)(346002)(396003)(39860400002)(71200400001)(91956017)(316002)(6486002)(41300700001)(478600001)(110136005)(8676002)(5660300002)(64756008)(66446008)(66556008)(66476007)(76116006)(66946007)(122000001)(8936002)(2906002)(38100700002)(31686004)(36756003)(31696002)(86362001)(85182001)(38070700005)(82960400001)(2616005)(186003)(1580799003)(6506007)(26005)(6512007)(83380400001)(2004002)(45980500001);
+ SFS:(13230016)(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(41300700001)(66446008)(66556008)(966005)(6486002)(64756008)(66946007)(66476007)(76116006)(91956017)(8936002)(5660300002)(86362001)(31696002)(2906002)(1580799003)(186003)(71200400001)(478600001)(83380400001)(6512007)(2616005)(82960400001)(26005)(6506007)(38100700002)(38070700005)(8676002)(316002)(31686004)(122000001)(110136005)(36756003)(85182001)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eFBSWDc5Ym9RZHQyRkk1aGYyRy9nRkk5Y1Fsc0Z0YU1LU1pOV2MxWWFiZFV3?=
- =?utf-8?B?YldETDdsYVFldjB3NHlaRFVHdnU2bFlIQi82MXE3bHJGQ3FZOWxWSGV5RVpS?=
- =?utf-8?B?Q0xBQTBXc3B1NWFjYXRQaWdlSUZ3eXJjWjRIRTd6c084bzJDU0loZTVRVVRz?=
- =?utf-8?B?NWkwM1pTcTZkNnowSTl6aWJyYm4xekZ4K3ZyQnFyRVRyWE9COVljcjladUhw?=
- =?utf-8?B?Z2xZYU9GTzZvSStUQlFlaUpjYzByNEtyU0wzY1NsZGZMTlNBb1VBTjllOHZt?=
- =?utf-8?B?VEdlVEhrQWVuUDBUdXBLMm9wNnRQMXkxNktEa2NLcTNSb3ViM0VqYmc1UVZE?=
- =?utf-8?B?aHpxR2VtcXhsSFJic0lCSTdxd1hiWEc4TWZOK0VaMHprYWx5SWovajJzNXF1?=
- =?utf-8?B?cjNHRnpobFdSQmYzQysyQWRZR2JMOExyOWFpeml1TTcrb1EyeDlZOVZwYlRt?=
- =?utf-8?B?STVYTituWVkvWHpEUWRiWG1rYlRhei9yQjhEaExHL28wQzBaVHVXbDdCMUJs?=
- =?utf-8?B?QlI1bkFzSHdiSURnaGFqd1FHTUtZemFxbVh1bmI4OVFiMXkwWkMwa2pNQkpN?=
- =?utf-8?B?c3plcG8zMDIrZ3lobWN1VzBZVEwveDR0Wnd1WFFUWFI3ckNuS3V4T2tkbGlo?=
- =?utf-8?B?alJWYm00NkVyTXJDMTJNRGVodlJlRDh2STNvWDU3UGtjNERJM1NEZEtEZXNj?=
- =?utf-8?B?T0FwSEZNRDZKMVJGSElheTNLVHQvRjE0aTNlR1phSlZsdXh3enB6WVovNXRa?=
- =?utf-8?B?Q1ZxN3ozZjgrdWZUcU50c0pJbU5wZmNBTXd0MTBmbGcvZ0NUbUNtVlZPRmdw?=
- =?utf-8?B?WTZqOC9NTzM2dWV0YVdHVVk5TWpEUlIwU1l2K2FHTTlxajV4WkJ4ZUZEQjJW?=
- =?utf-8?B?cFdvdUtwOE9UblJGMUJWVGE5M2I0RWMzRjJER1pwbFhoc0c3TDZKeFBCdTVE?=
- =?utf-8?B?bERlMVVKNVplY2FjdmUvZC93aDRRU21qREorenYxMEdhRnJRL3JvUll4WU5J?=
- =?utf-8?B?NEFmZDNVL2VzNXJQcDUyVzRhNzF6Zk9UL0EwQVpGNXJPMnppMlNpSVVYN2x5?=
- =?utf-8?B?SmdzcmQ0V2tWM2NqUlB2dG02dUZOWDFwRUpRMEh3dEMwZ1dheWxSWlRydVIw?=
- =?utf-8?B?VDV5M3FYZm0ycCtwSTZMbE5YTFp4ZXFmbTAzbDd6OU1rUUVYMTUvLzcwS210?=
- =?utf-8?B?RGJJRFpCMHFvWFRocE9zV0lMZjR1aTdVZ3YxMHFsNFljMlBsblVxZXFZbWw4?=
- =?utf-8?B?R29qY0RCOXY4UmpRQjRRWjI1R2RRVzRqeFZ1M1RxRWZOd2VUajM0akhrS0tp?=
- =?utf-8?B?dDQ2dkVvcUFUeGgvdERRaGhEb1hPVUxsMmkxU3Zhd2pxM0dDRUJyd25ETFgz?=
- =?utf-8?B?TDdRN3R6aE9Na0NFdURvYzgyNXhPbWxuT0g5SzJSSmxtandlQng1S1ZEV2Rm?=
- =?utf-8?B?ekE1WFBFMHVLTDk5UjJvWVF6bHFGUkJBa2k4VmgvK0NYMXFQZ0pwSFMvK1FY?=
- =?utf-8?B?cDFrL2s2SVM3ZnR6a2JFNWdJQmNzWWRNZGd4SDltRmh5RkZVdFc3RmJxcG5l?=
- =?utf-8?B?dVZYSjhjWmhZbDk5ZWpRbE1xbDRzbFNtamlySnVrN01Jd2Rra0NSTnRRdW5W?=
- =?utf-8?B?TlVyWWphNVVmdGYrRFlhQTdVU2JkWEVJbkMyeVlNVmNiN3pDWWwrai9vQWRl?=
- =?utf-8?B?TTBnUE9ZOS9HcVZMd1h2RXkreVliKzVhdVFpNUphbzAzZ1VkT21PWmRxNmdl?=
- =?utf-8?B?MmlyYnhlUVJUd2RzbEliN0tkMGpRemRNZy9BTlU3dm9kalVTUWVMMEpFUkVF?=
- =?utf-8?B?ZnN2UFdGVzJDV0Q2ZUVJdjNqTTRjOUc3eENLeVhlaGtPWElJZWc2QnRtd0RS?=
- =?utf-8?B?WE43YWp6MDRxdUlFQi81VjNZeUZGSm10dVZKU2w2M0l4amliUythUFo1dXBI?=
- =?utf-8?B?Q0ZrdGxFYllaZzJvZUc1ZTV4cnEvc2JPM1doY3JmbEFvdGpFeXl3RVlnVEIy?=
- =?utf-8?B?Y2d1aXZxOFc3bFo3YmxaMms5ckpmNjhNR2RTdGtlMlV4ZVFOaktpYUFTalRC?=
- =?utf-8?B?bEFzOGZzOUdCZ0ViSHF2eXk5SkFiVzIxOFJ2M0Jnd1BjeVFQdGlVQmdDSkZJ?=
- =?utf-8?B?TkVsUHQ5QjZWSzViL2ExMm53MWJSSEovbWpRakNZZTlsMGl2RGtsb1pjdlpP?=
- =?utf-8?B?Nmc9PQ==?=
-Content-ID: <3FE3C665417A0B48A092AE47A0651EA7@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L0xKd2UwNkpoYnErYjNqOExESmJBRk04ZWtHSmxYUjFaVVo2Zmk2SXBnNUVY?=
+ =?utf-8?B?aG4vV3pPSEVrY0w0UVpyUzViRkQ2TVh0ZGFIclg0RlA5RW1QMm93bk5UR3Ju?=
+ =?utf-8?B?Mm5NT3hpQW1UMlJ4U09BNjBrRlpzQnYvWlhLSjE0RmFucmFLYXVUQ1M1UVhu?=
+ =?utf-8?B?MmlJeTBKdUxDVGQxSGU3WC90YnRicGhOK1NpZ3d0aHdRajU1aFBqdHlsaENP?=
+ =?utf-8?B?MVYxYnJKcjR0VFoyNTBVVE9BUnNWTkF1bGNmVU1sd1FxbTVtWVN2MGdteXJL?=
+ =?utf-8?B?VlAvb1FXSWNHZHcyaDBCR205UjBQaUM4MTgwZUNjUnFxbXhuc25kVmlJQ2hR?=
+ =?utf-8?B?NzFEZEVxcGNnUmdMc3Q0SXNIL2hNV01MYmExNkVjNURabzJWbmFnVFphK05w?=
+ =?utf-8?B?eVU1QU5ESTltbzdybVRTcTZOMm9WUVg5UUFxRVl2dENJYU9CQWNMcFkybndG?=
+ =?utf-8?B?dnlZSi91ODFidFVSWE9vODJFM2J6SE8rd2RGd0JYaUlZa2F1M25zd0xtK3Nt?=
+ =?utf-8?B?WkFOMXNvKzJvNktJeFBEUEtEclU4Yk9jVVZ4enN5UTdSVzFaaDFWS2l6endu?=
+ =?utf-8?B?eGdJTUJYdXdtWlJxWnBSYnBXcTUvMDI3ZlArMzQ0cHgydFpjWmx6V1VmaXQx?=
+ =?utf-8?B?VTNJb0JsbXNJcVFFT2ZpRklqL2lqc3RUcVdMeCtocGtIRHIzRXdkNGRLWnhz?=
+ =?utf-8?B?WU1YTjhqK09YS2pNZkdOam9kbkFseDNhYk1HbEtwMzJDL1dNa1F3anhISWd2?=
+ =?utf-8?B?a1paYlJsQ3h2blNDamRQRnQwSkJXbWpvWmNOUkY1MUVWWmRQaGxKaUpscHZx?=
+ =?utf-8?B?OHBlUCtSOFI1S3YxRjQ5QlRPNHdwS1FjZ3l2ZEh2MUtZMUVXSXFQZzRWZHVW?=
+ =?utf-8?B?VEczZU9uQnJPUVBaUGR2a2Qxei9XSExoRlA1WjZYQWt6TjFQaVRTK3lLN1lk?=
+ =?utf-8?B?ODlkbC9PbmZTNnZJM2ZHeEVlMTZ4SmdHb1c5Y0s1cWV3RHhTcUl0c3lCRks5?=
+ =?utf-8?B?UFBKcEl3bkVZRVV5T3JENGc2R0dLdVJ0eEdiQ1ZCN3BoVVdPU3N6TVllR3Yr?=
+ =?utf-8?B?V1FJTWVjS0hSWGd0V2FVTVd6Zm4wNXYrNytTcUlQVkI1alljQWZlM2xVd3RS?=
+ =?utf-8?B?THVwVm9LL2hqWXd6dHFkelJRY0hZY3RXVjNMcjg5ZW16VDhWV1JMTTlXNTNE?=
+ =?utf-8?B?bUtIbmxiVXBUR2QxakxZR1BBb2RTYm1DZ2RJcDBna3gyZk13V1RoL29YczJ2?=
+ =?utf-8?B?aHlpeWJrczBBRDZuYTBSNy94bFd4M2JqdlplS3FMVW5jQ2Q0eGtIZ3FZVHdx?=
+ =?utf-8?B?K0wza2tpNDJRR2ZuOTJrZ3JtV2dvRmxLdGpGajhKZ1hzVE9vK3J0T1ZWV2Rr?=
+ =?utf-8?B?a2s0bTlFZzlqYXRUZmVuRk5Fb0N1dTljZ3ZTamh1WGNvWXhOY1ROV2R3OVFM?=
+ =?utf-8?B?THFWeHFpUGdrc2dQeG9rTHl4YzdZcXNsV1o3T1VjcWlreHZKVjh4WDdFQ1RS?=
+ =?utf-8?B?TXYxazZaeXFHMFhlQlUxNzJyYWZEYVRNTVVjK1RLT3QwQ3p1eGFaU21BSXdl?=
+ =?utf-8?B?Wm1iYjhDTkplczVabTExVkpsQloyZ0xTNWF4M2thblhPZS9HRGZhdG13SW5r?=
+ =?utf-8?B?MzVnRFh4S1NtemxCYlhYeU44dkpJUnM3VDYvSlVySy85dFJjbHc5SW5VR2F2?=
+ =?utf-8?B?MGluSzFxRTVtU3NVNm1QYjdnSUgxc3ovOE9ZUGJnRkJUVUx2MU1FZ0I4Z1pO?=
+ =?utf-8?B?RktWcWpweWlsQVZtNzBCb1NOQ2R5NUk3UWRiY3BpbzZvOWhxSEp2YWJod2Fa?=
+ =?utf-8?B?UWRsUjlMcDY2VVFxOExPZlI5aTg2YzJuVHI1aGtDdTBrSXVrSDM2ZkhYRVdn?=
+ =?utf-8?B?dGlXbDdsdyt3MUE2TkdVdmpYdER3WlRVZ2ovREN1K3FBUWtQK01kS0hiMWZa?=
+ =?utf-8?B?VUpVcWlWcSt6RDNTbEJYMjVoWVEwZFhCT2VRZmFuNnVyNTduUVYwMEZOQWxq?=
+ =?utf-8?B?YUFVZUFhdUVsSVhGRXFXamgvRFhtU2ZRWHdBQVRLaDBBNUdJcXJRNEVTV01D?=
+ =?utf-8?B?cW9Hc1BPekx5Q1RLMVB5S1N0NWNNcmZobDY1cnFqcGxVcUFHVXM1N256Ukwx?=
+ =?utf-8?B?eG9SQWJ3dUVobnZ1Nll3bEk3bHEwQXpOV1hqNFhINEhsak4rejlNa2ZWOFRo?=
+ =?utf-8?B?R1E9PQ==?=
+Content-ID: <B45D5FC87EEE9C44B97CEA9BF10DB259@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Lv7lQeMVmGZtauGWb8wuhrN2XRPrQcX8wDROSIEMaKTU0u/MzFVLL5JfaKlIWCMu/s0k2gb2LI+VLpyOSB3sEeDwfVJCkAzMGqSEATzjSppUUMUtSC1cFguMeUkDjcyCaJkRMyWwqKO42UUPwz2qmiLyD1RtQJ8zZP/PRR9IP7dzg2f/exDjxhifbIiehjr3NFZRc2QkXlYFAGcCwG4oqJxrUIEXSqlHEy7YpYBbKP3gIALO8godaRNeWXIHWhBKdSTZbHK/qM7/IreQ2cDHdMOC+p5tA2/MQzpOxJy5KNY3VcULUnaeST90ecXpkSwCsZ/IrBErS3CGpclDAFZY5yKhElRleTkgAmnMKLG5/HPBOfLlt1R4pT6VG7zVBHQLlEX8qOvACMfrOWU9rJSbAdELpj5ZA0iX1xrUgAR18s91rcEuigzYAHxF22oYTv6OITsngIG7XGE7sodonsFQqed8/NFZLGeA9z5jeTCqwd6t1Sqd7/nqK1KdnyPV0RF5vXWGMcHOFyzCMcP3mADhBNR8ngVS9YyeF7elaGof51hAd96x4+UmtywguVa2xLil4u9DZI7AzjjH6tNrKMUEKlmxtZL5/AW1rsCNkqCkjCtCMMlMupWuI8yvpYpI7qmtzfBhgtohfkkQdq7C9JgKIkYD9VpmTlfEnvhZnkZ0dCrNTBNiXU3ehkH6Bd3mZQh7VW0aJH5x/vljzoua/F/mgQ==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: YtY7ysDf4I06DrAnehvXAAu/74D0sG9nt4w5OeZB9LLYp9VZUbcanFTk3n9L/pvWHspZEHgtp+YEE0cT1SiHT0WBd0LmCuDLx9DYmbSAtl9mzW/zWue8f5xM/7zWGexNGizOjyytzlZGWLTAoP2DPB7W/VYVwKDR3kp+uV20Nqqlct+0JmEa1rpcG/HunteDWFchcjSXG60Ypk9lwsEaWh7aa7WXu6pmYT1IN6RYvfZBe/q+aG/UoXco3eYzEVJvCIcln5Nw6wkeWDY05M2nzJeKRr+xJ2XKm1jzkvcrxzOoiutln+HeD/BJRR7FpAh8c4M5gJdkNRDrvlKtnT9axjt4HjpIA4RZRLPxdkjIjV4EcbB/KtS36PYv5DKTM/KObdq8q16QlI5WCcuqxqi6Y4m4VUKdfc6zI69gAsEi6PfnQvqjbw2Iua8YctK9TTUWbQTFOW3ZtTQ8xDMLvDRCNy0S+6nany8/VBl7a6Pmif3PUIkarn4LHugn4wcxM+4NCifOB3kKdMixoG+20A2lDdY9agoGxezQQb4OgzQUaIeD0WDOXnJAKxsZZp118nqRGu4wiEfqU7Ma+QQZZDT/WjhLaCJUf9XAOxMqH9YCxET6IeVxl4KMQQ1LICeDvqSFmVd6i1oYJg4Kw8H5KDaCc2eQnxqDuPorCsIJnbPZnsIbtSt5gvCrPmaiRr12nP+hvN900Ydxhvy0eQAV1w6r7aPS8/sUcGC/95fQVbqW/gfnvpCbzQBsE3d1wUepSO0v
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a86a43f-f37a-4366-fe3e-08da81c5be35
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2022 09:32:32.5940 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 763a60b3-2b16-4410-c0f1-08da81c9ede6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2022 10:02:30.5610 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ynXk3dm0NzUNr2hmrZEJLszPMPmGVzFyNNAs/eJtRyaD7Gr4kxXNaDLCNj5Yzsl8HxkfCMDojY5z/6Bep32G7ZVofMdidd2K24c0Uj+ey7w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8400
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: KyCpF4Fv/G5GfO/EVaAs6EI9gSLrau0SaKBKjnGeJ4j8V0xYOpRFU5EGgqe/Tz/NfTroUawpnaonDzF6XOiZwaQtEMPCS9E6DqI+jFOrZ/s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB9983
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/openat01:Convert into new api
+Subject: Re: [LTP] [PATCH 1/1] statx04: Remove kernel comments in docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -157,207 +155,101 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Liao
 
-I added detailed test description and merged, Thanks!
+Hi Petr
+
+Oh, I see commit title in metadata that I don't see it before.
+
+Tag	   Info
+linux-git 93bc420ed41d ("ext2: support statx syscall")
+
+linux-git 99652ea56a41 ("ext4: Add statx support")
+
+linux-git 04a87e347282 ("Btrfs: add statx support")
+
+linux-git 5f955f26f3d4 ("xfs: report crtime and attribute flags to statx")
+
+
+But user that doesn't use metadata(miss this usage or miss dependent 
+package ie rubygem-asciidoctor), then they only see some numbers in tag 
+but know nothing.
+
+IMO, it is not clear like min_kever.
 
 Best Regards
 Yang Xu
-> From: Huangjie Liao <liaohj.jy@fujitsu.com>
+> They are defined in .tags, having in docparse results into poor
+> formating in metadata.{html,pdf}.
 > 
-> Signed-off-by: Huangjie Liao <liaohj.jy@fujitsu.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->   testcases/kernel/syscalls/openat/openat01.c | 148 +++++++++-------------------
->   1 file changed, 47 insertions(+), 101 deletions(-)
+> Hi Li,
 > 
-> diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
-> index daed419..eb7f70c 100644
-> --- a/testcases/kernel/syscalls/openat/openat01.c
-> +++ b/testcases/kernel/syscalls/openat/openat01.c
-> @@ -1,55 +1,31 @@
-> -/******************************************************************************
-> - *
-> - * Copyright (c) International Business Machines  Corp., 2006
-> - *  Author: Yi Yang <yyangcdl@cn.ibm.com>
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) Internstional Business Machines  Corp., 2006
-> + * Author: Yi Yang <yyangcdl@cn.ibm.com>
->    * Copyright (c) Cyril Hrubis 2014 <chrubis@suse.cz>
-> + */
-> +
-> +/*\
-> + * [Description]
+> I've done cleanup like this in the past, but sending a patch just to
+> make consensus about it. If we prefer to have git commits like this in
+> the code (i.e. if being in .tags is not enough), they should be in
+> normal comments /* ... */ so that they aren't in docparse.
+> 
+> IMHO docparse can mention some commit if wanted to add some description,
+> but just as 5f955f26f3d4 or 5f955f26f3d4 ("xfs: report crtime and
+> attribute flags to statx") if the commit subject is a description
+> itself.
+> 
+> http://linux-test-project.github.io/metadata/metadata.stable.html#statx04
+> 
+> Kind regards,
+> Petr
+> 
+>   testcases/kernel/syscalls/statx/statx04.c | 35 +----------------------
+>   1 file changed, 1 insertion(+), 34 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+> index 98f9a6315..6c562b3d7 100644
+> --- a/testcases/kernel/syscalls/statx/statx04.c
+> +++ b/testcases/kernel/syscalls/statx/statx04.c
+> @@ -14,41 +14,8 @@
+>    * - STATX_ATTR_NODUMP: File is not a candidate for backup when a backup
+>    *                        program such as dump(8) is run.
 >    *
-> - * This program is free software;  you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
+> - * xfs filesystem doesn't support STATX_ATTR_COMPRESSED flag, so we only test
+> + * XFS filesystem doesn't support STATX_ATTR_COMPRESSED flag, so we only test
+>    * three other flags.
 > - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - * the GNU General Public License for more details.
+> - * ext2, ext4, btrfs, xfs and tmpfs support statx syscall since the following commit
 > - *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program;  if not, write to the Free Software Foundation,
-> - * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - *  commit 93bc420ed41df63a18ae794101f7cbf45226a6ef
+> - *  Author: yangerkun <yangerkun@huawei.com>
+> - *  Date:   Mon Feb 18 09:07:02 2019 +0800
 > - *
-> - * DESCRIPTION
-> - *  This test case will verify basic function of openat
-> - *  added by kernel 2.6.16 or up.
+> - *  ext2: support statx syscall
 > - *
-> - *****************************************************************************/
-> + * This test case will verify basic function of openat
-> + */
+> - *  commit 99652ea56a4186bc5bf8a3721c5353f41b35ebcb
+> - *  Author: David Howells <dhowells@redhat.com>
+> - *  Date:   Fri Mar 31 18:31:56 2017 +0100
+> - *
+> - *  ext4: Add statx support
+> - *
+> - *  commit 04a87e3472828f769a93655d7c64a27573bdbc2c
+> - *  Author: Yonghong Song <yhs@fb.com>
+> - *  Date:   Fri May 12 15:07:43 2017 -0700
+> - *
+> - *  Btrfs: add statx support
+> - *
+> - *  commit 5f955f26f3d42d04aba65590a32eb70eedb7f37d
+> - *  Author: Darrick J. Wong <darrick.wong@oracle.com>
+> - *  Date:   Fri Mar 31 18:32:03 2017 +0100
+> - *
+> - *  xfs: report crtime and attribute flags to statx
+> - *
+> - *  commit e408e695f5f1f60d784913afc45ff2c387a5aeb8
+> - *  Author: Theodore Ts'o <tytso@mit.edu>
+> - *  Date:   Thu Jul 14 21:59:12 2022 -0400
+> - *
+> - *  mm/shmem: support FS_IOC_[SG]ETFLAGS in tmpfs
+> - *
+>    */
 >   
 >   #define _GNU_SOURCE
-> -
->   #include <sys/types.h>
->   #include <sys/stat.h>
->   #include <stdlib.h>
->   #include <errno.h>
->   #include <string.h>
-> -#include <signal.h>
-> -
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -#include "lapi/fcntl.h"
-> -#include "openat.h"
-> -
-> -static void setup(void);
-> -static void cleanup(void);
-> +#include <stdio.h>
-> +#include "tst_test.h"
->   
-> -char *TCID = "openat01";
-> +#define TEST_FILE "test_file"
-> +#define TEST_DIR "test_dir/"
->   
->   static int dir_fd, fd;
->   static int fd_invalid = 100;
->   static int fd_atcwd = AT_FDCWD;
-> -
-> -#define TEST_FILE "test_file"
-> -#define TEST_DIR "test_dir/"
-> -
->   static char glob_path[256];
->   
->   static struct test_case {
-> @@ -65,80 +41,50 @@ static struct test_case {
->   	{&fd_atcwd, TEST_DIR TEST_FILE, 0, 0}
->   };
->   
-> -int TST_TOTAL = ARRAY_SIZE(test_cases);
-> -
-> -static void verify_openat(struct test_case *test)
-> -{
-> -	TEST(openat(*test->dir_fd, test->pathname, O_RDWR, 0600));
-> -
-> -	if ((test->exp_ret == -1 && TEST_RETURN != -1) ||
-> -	    (test->exp_ret == 0 && TEST_RETURN < 0)) {
-> -		tst_resm(TFAIL | TTERRNO,
-> -		         "openat() returned %ldl, expected %d",
-> -			 TEST_RETURN, test->exp_ret);
-> -		return;
-> -	}
-> -
-> -	if (TEST_RETURN > 0)
-> -		SAFE_CLOSE(cleanup, TEST_RETURN);
-> -
-> -	if (TEST_ERRNO != test->exp_errno) {
-> -		tst_resm(TFAIL | TTERRNO,
-> -		         "openat() returned wrong errno, expected %s(%d)",
-> -			 tst_strerrno(test->exp_errno), test->exp_errno);
-> -		return;
-> -	}
-> -
-> -	tst_resm(TPASS | TTERRNO, "openat() returned %ld", TEST_RETURN);
-> -}
-> -
-> -int main(int ac, char **av)
-> +static void verify_openat(unsigned int n)
->   {
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -
-> -		for (i = 0; i < TST_TOTAL; i++)
-> -			verify_openat(test_cases + i);
-> +	struct test_case *tc = &test_cases[n];
-> +
-> +	if (tc->exp_ret) {
-> +		if (tc->exp_errno == ENOTDIR) {
-> +			TST_EXP_FAIL2(openat(*tc->dir_fd, tc->pathname, O_RDWR, 0600),
-> +				ENOTDIR, "openat with a filefd instead of dirfd");
-> +		} else {
-> +			TST_EXP_FAIL2(openat(*tc->dir_fd, tc->pathname, O_RDWR, 0600),
-> +				EBADF, "openat with invalid fd");
-> +		}
-> +	} else {
-> +		TST_EXP_FD(openat(*tc->dir_fd, tc->pathname, O_RDWR, 0600));
->   	}
->   
-> -	cleanup();
-> -	tst_exit();
-> +	if (TST_RET > 0)
-> +		SAFE_CLOSE(TST_RET);
->   }
->   
->   static void setup(void)
->   {
-> -	char *tmpdir;
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	tst_tmpdir();
-> -
-> -	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
-> -	dir_fd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
-> -	fd = SAFE_OPEN(cleanup, TEST_DIR TEST_FILE, O_CREAT | O_RDWR, 0600);
-> +	char buf[PATH_MAX];
->   
-> -	tmpdir = tst_get_tmpdir();
-> -	snprintf(glob_path, sizeof(glob_path), "%s/" TEST_DIR TEST_FILE,
-> -	         tmpdir);
-> -	free(tmpdir);
-> +	SAFE_GETCWD(buf, PATH_MAX);
-> +	SAFE_MKDIR(TEST_DIR, 0700);
-> +	dir_fd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
-> +	fd = SAFE_OPEN(TEST_DIR TEST_FILE, O_CREAT | O_RDWR, 0600);
->   
-> -	TEST_PAUSE;
-> +	snprintf(glob_path, sizeof(glob_path), "%s/" TEST_DIR TEST_FILE, buf);
->   }
->   
->   static void cleanup(void)
->   {
-> -	if (fd > 0 && close(fd))
-> -		tst_resm(TWARN | TERRNO, "close(fd) failed");
-> -
-> -	if (dir_fd > 0 && close(dir_fd))
-> -		tst_resm(TWARN | TERRNO, "close(dir_fd) failed");
-> -
-> -	tst_rmdir();
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +	if (dir_fd > 0)
-> +		SAFE_CLOSE(dir_fd);
->   }
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test = verify_openat,
-> +	.tcnt = ARRAY_SIZE(test_cases),
-> +	.needs_tmpdir = 1,
-> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
