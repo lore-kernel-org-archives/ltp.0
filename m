@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78045C32771
-	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 10:32:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3763C32771
+	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 10:40:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4E8363CA1B5
-	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 12:32:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B6E403CA251
+	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 12:40:48 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 460373CA1A4
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 12:31:52 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id BDBCA3CA1A4
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 12:40:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 97FED600735
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 12:31:51 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 53394100074D
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 12:40:36 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9DD3534B98;
- Fri, 19 Aug 2022 10:31:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 469225CAF5;
+ Fri, 19 Aug 2022 10:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1660905110;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1660905636;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VFFi2+w5ruWH1gSQkHztYKEB1VHDFWTH5wAfYVgm5Dw=;
- b=UsvGFNup5aHkC/ERxpXC4fFcoeVOPvYHrWFjhrVAFbzfwGlZLS4hpIeX1banpDiM4Wwuw0
- CYEmbAhyI7JaKIcOTF9aeP2vA1f9Oy4bUMh5PalW0a02ggR5nh7bLEBPfiNvgUTm9wXaud
- 1q+rK4tSWxuF8B6joGlW9BAjjiWWTAk=
+ bh=7LlNFG/TV/B6gtMJhyQnGFD7BWMRrlhj4ATFfRS5gnQ=;
+ b=eWfDzckh6+nbKuAgZhhYXASkxu1sJjzt2qI/B36aYMDt+JJZlNDcytAY60RLAOWx6Ea6CJ
+ 9xokAVwKGfemeF9X8Bz0vdMdP3KdnnfLbjUl4d+JRcs7Tprfxl5CvNY+lQUMGoSvmPIPYy
+ aT329SNxWpvxFTGGipHoOBejMZS8MZE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1660905110;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1660905636;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VFFi2+w5ruWH1gSQkHztYKEB1VHDFWTH5wAfYVgm5Dw=;
- b=dADsqkPugGnIDh9ZBwwsGUZrWlrO+4+4zLQtcoarbMvrJEQkJYqA+OoHL489cCslA9VA7L
- 1TTW6HujjzchjUAw==
+ bh=7LlNFG/TV/B6gtMJhyQnGFD7BWMRrlhj4ATFfRS5gnQ=;
+ b=MFXfzncfs795nmfWzV3Phfa54GB78KHaVW8HMJILKNvC+oeDSCO/+i1n697icokwr9C+Th
+ 26VpHVl/8aZOpYCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 742EC13AE9;
- Fri, 19 Aug 2022 10:31:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1986C13AE9;
+ Fri, 19 Aug 2022 10:40:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wdToGpZm/2JDGAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 19 Aug 2022 10:31:50 +0000
-Date: Fri, 19 Aug 2022 12:31:48 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2vGXBKRo/2JAHAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 19 Aug 2022 10:40:36 +0000
+Date: Fri, 19 Aug 2022 12:40:34 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
- Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <Yv9mlIgAZ/xjE1C/@pevik>
-References: <20220818171724.9182-1-pvorel@suse.cz> <Yv9Jafy8AzSCH437@yuki>
- <Yv9lxML3bw61wI1o@pevik>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Yv9ooj5RVoiQ1FhC@pevik>
+References: <CAG4es9Wn+wZRu6xr-FgZ=pTq4ReGdrmsmGYO4ZXvKj8ee3QH8w@mail.gmail.com>
+ <CAG4es9XhZ7ksvLxwRNO73FC4DQc7KteUQAUPwipbks6kGsvFmw@mail.gmail.com>
+ <YvUhZ/9Yf7eZ4a32@yuki> <YvuRAR1DSi67PDzh@pevik>
+ <CAG4es9XdXgmPOQK3i+FL3VD-Y8C39sAShwdM6bi7U-CJjk7BQg@mail.gmail.com>
+ <YvyxCXTGYpLd8kbQ@pevik>
+ <CAG4es9XkRDYnwDr9huepzGhEiHxWdu40DOK9ouA2yWGqv842ow@mail.gmail.com>
+ <CAG4es9WmHd52fmjdt7RBkSXEtnGuC2jkBO6UdCTbaHOq8CDgVw@mail.gmail.com>
+ <Yv9F8MnPGyLLE0Zm@pevik> <Yv9Msztwn77epwCP@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yv9lxML3bw61wI1o@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <Yv9Msztwn77epwCP@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] bpf_prog0[5-7]: Run with
- kernel.unprivileged_bpf_disabled = 0
+Subject: Re: [LTP] [PATCH v1] syscalls/signal06: add volatile to loop
+ variable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,72 +85,51 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: kernel-team <kernel-team@android.com>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> > Hi!
-> > > --- a/testcases/kernel/syscalls/bpf/bpf_prog05.c
-> > > +++ b/testcases/kernel/syscalls/bpf/bpf_prog05.c
-> > > @@ -209,6 +209,11 @@ static struct tst_test test = {
-> > >  		{&msg, .size = sizeof(MSG)},
-> > >  		{}
-> > >  	},
-> > > +	.needs_root = 1,
-> > > +	.save_restore = (const struct tst_path_val[]) {
-> > > +		{"?/proc/sys/kernel/unprivileged_bpf_disabled", "0"},
-> > > +		{}
-> > > +	},
+> Hi!
+> > Thanks! The bug was closed as 'adding "cx" worked'. Reading topperc's comment it
+> > looks like there no other way to fix the issue on clang than workaround with
+> > volatile. Does it mean that it's a syscall problem and clang can do nothing
+> > about it?
 
-> > If we set needs_root the test would run under root and there is no need
-> > to fiddle with the unprivileged_bpf_disabled at all.
+> It's problem with the inline assembly in the body of the while loop, the
+> call to the syscall changes the register value that is used for the D
+> variable in the case of clang, so the loop exits prematurely. We have to
+> add cx register to the clobber list for that asm statement so that
+> compiler knows that it's changed by the assembly.
 
-> I expected that as well, but well, I don't know why, but:
+> Interfacing assembly with C is a bit tricky since you have to explain
+> to compiler which registers are changed from the assembly otherwise the
+> results are undefined.
 
-> # cat /proc/sys/kernel/unprivileged_bpf_disabled
-> 2
+> The patch should look like:
 
-> # id
-> uid=0(root) gid=0(root) groups=0(root)
+> diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
+> index 64f886ee3..78efd0fb9 100644
+> --- a/testcases/kernel/syscalls/signal/signal06.c
+> +++ b/testcases/kernel/syscalls/signal/signal06.c
+> @@ -73,7 +73,7 @@ void test(void)
+>                 /* sys_tkill(pid, SIGHUP); asm to avoid save/reload
+>                  * fp regs around c call */
+>                 asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
+> -               asm ("syscall" : : : "ax");
+> +               asm ("syscall" : : : "ax", "cx");
 
-> # ./bpf_prog05
-> tst_buffers.c:55: TINFO: Test is using guarded buffers
-> tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
-> bpf_common.c:16: TINFO: Raising RLIMIT_MEMLOCK to 10485760
-> tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
-> tst_capability.c:29: TINFO: Dropping CAP_BPF(39)
-Maybe dropping CAP_BPF() causes that even running root is not enough.
+OK, I completely overlooked asm() in the test. Thanks!
 
-Kind regards,
 Petr
 
-> bpf_common.c:39: TCONF: Hint: check also /proc/sys/kernel/unprivileged_bpf_disabled
-> bpf_common.c:40: TCONF: bpf() requires CAP_SYS_ADMIN or CAP_BPF on this system: EPERM (1)
+>                 loop++;
+>         }
 
-> Summary:
-> passed   0
-> failed   0
-> broken   0
-> skipped  2
-> warnings 0
-
-> I.e. 1 or 2 kernel.unprivileged_bpf_disabled results bpf() returning EPERM for
-> *all* users including root. 0 allows running again for all users, but we need
-> root to set it 0 via .save_restore:
-
-> tst_sys_conf.c:106: TBROK: Failed to open FILE '/proc/sys/kernel/unprivileged_bpf_disabled' for writing: EACCES (13)
-
-> Maybe we could change tst_sys_conf_save() not to write the value if value can be
-> read and is the same (and not run tst_sys_conf_restore() if value was the same).
-
-> That way we would not need to require root if value is the same.
-
-> But it'd be nice to have some tag saying: maybe root is needed, depend on sysfs
-> value...
-
-> Kind regards,
-> Petr
+> Although it may not be a complete as the llwm issue suggests we should
+> have a look at calling conventions for the syscall and check if we need
+> to add any other registers to the clobber list.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
