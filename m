@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BAABC32771
-	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 12:42:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A00EDC32773
+	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 12:56:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8EA383CA255
-	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 14:42:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 76A663C8CA7
+	for <ltp@archiver.kernel.org>; Fri, 19 Aug 2022 14:56:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9BC73C2A8C
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 14:42:42 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 375953C8CA7
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 14:56:03 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BBC561A0024E
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 14:42:41 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7FAA36002B4
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 14:56:02 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1660912960;
+ s=mimecast20190719; t=1660913760;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cnBAOiGZdpZKmBG2YuaNcCj9W85kZ/fBgboGY2V5Qwg=;
- b=fPu+krcQ0zlxFb4pTVND1lepAVr4X5rXOIW8EmCShAWVxVHJc4WnfskPj0WV1QfmPPWixe
- /OMUw+wQ7yzfR3x6xkdJyiYQtPj0GQB9ZRhB7IeL1TrbGkIVXo/Sw6j2nAGhL4zEsJtE5S
- TuTsqqcRXiA+r1qKcUrSlYRy9b/dIFE=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=uISs9+AHNlrGbVWzHCQQlc5xCccyoWlrEAD3hh8mVjE=;
+ b=RcJbGNECDcLuG6E32kHVpcyTSRnm7FJbyVhL+3aj8Ilkm+CEND8f3xMQkK8dEHXzCRiDJY
+ 7aunnX4gKYL/DYisD+Ni72KzrxpRg5zfSUPR0WIYUQQi0yIbni3y0w5hepG86magDYzNiM
+ 2i7G+j9L5PqKYgkFjPGu8Esxm+0c5ks=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-391-3xzUrL11PpC_j40Ej0JTiA-1; Fri, 19 Aug 2022 08:42:39 -0400
-X-MC-Unique: 3xzUrL11PpC_j40Ej0JTiA-1
-Received: by mail-yw1-f197.google.com with SMTP id
- 00721157ae682-3339532b6a8so75556727b3.1
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 05:42:38 -0700 (PDT)
+ us-mta-653-jOw-Lm56N--tmZ5iEkAJXw-1; Fri, 19 Aug 2022 08:55:59 -0400
+X-MC-Unique: jOw-Lm56N--tmZ5iEkAJXw-1
+Received: by mail-yw1-f200.google.com with SMTP id
+ 00721157ae682-3363b1dffa0so75852567b3.23
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 05:55:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc;
- bh=cnBAOiGZdpZKmBG2YuaNcCj9W85kZ/fBgboGY2V5Qwg=;
- b=yNoNQjkfgOS4YbZ3W6EuU16ewNdbj9xVxTWi+r9tkEuaN7vfO94OVRE3YSBkD+Muyy
- OZJXO/62u02c5YBuH3aBkm9x9aibsq5DI9QyJepDWYZlFgvOZF+1LDWzZG8EnZcvwHbI
- DQHCl4nbJOh42Lk6CaTT2P+XwbLrmUx7hp6BkrC8VjOBoDo0Jr4tdBZSqzqgfPYT72Nn
- 1jedfF63NlX6NQsbm3qixJVjQ5tqArxtZPyLLyMGNupv3QFkEv1EsBFmg18dtaBrRs+/
- FDgZt4nPh63cr3XC2UYtYcFyzoQOq12e7+Sk0A2qUGdhSyW/TV+iDwhvIFHkDGVKByTz
- 8pCA==
-X-Gm-Message-State: ACgBeo0E5BckDbhMT5umtCqPy7ZWDvfHZfYGI6Ynaicz8tp4zO0KCSGE
- QVVKvyVYq65O94SmQEyYXxptsVyQmyeqO858t/SKzXSyruOINqp1LBasQRfbFQfe+KsOuQZgnpx
- fzG8pwj6pQHPWFz5pr0GMHy+c4co=
-X-Received: by 2002:a25:bf86:0:b0:671:3607:1381 with SMTP id
- l6-20020a25bf86000000b0067136071381mr7492730ybk.355.1660912958058; 
- Fri, 19 Aug 2022 05:42:38 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4Sxl0s3tqDqyD5545Wb6IbmlClZHxts6Rarxb1Z/KfHbfdQbh50hhj0VcjvkhrY5ypTSeDIf7D9bgoR8XKC4k=
-X-Received: by 2002:a25:bf86:0:b0:671:3607:1381 with SMTP id
- l6-20020a25bf86000000b0067136071381mr7492716ybk.355.1660912957809; Fri, 19
- Aug 2022 05:42:37 -0700 (PDT)
+ bh=6i9Ta0ds3yuu0ZuzmxB8FsBX8ivSlF9bmLsHkSqalqY=;
+ b=n2V/WMG3TXrtPdVsY/XgYw2/kgEHbmrxpkHsjwR/idoM4Igv+n4Ma0UA6HxeMXQ5+4
+ LhVeSwT0eMYGFX8p6BQam+cSPG/z32ymJ7UUDx+Oc6xHvYo41EDKK4wi55/vyB0vIgy9
+ 3PY33yBJfjPXnGDW/PfV3k+VsQK9b0hghnm+9VrVGJL0+o5WGXxo3Yawi/bVXFFI8Umw
+ 3HyD6CBy1YskhYbBxSU2OZYR4rKKpuF8GQy0Ip5nkedRm0GLwtj2Wiuk8tXEs03LWncz
+ LL5DVbAwjGdFELFZWYSC3dnIGS3Shkvo1fY/mRKXV/jLZZcIRYykYX609Vvt10ugdiLI
+ 5f1g==
+X-Gm-Message-State: ACgBeo3j9DOw47KdCIwOakmM1mnuVdyn2Ks++xZsyPdj53Iln4uBjLKU
+ G2tPTtknBDahQfPY2MUXxM1d3Dye0/Y19XGWuoJhPBnidIeI6yY4HZmPAi7la08DR/PpNYJvunz
+ HmnHVKpqUzv2cAiBgw65Xu/ZBgWA=
+X-Received: by 2002:a25:2e50:0:b0:669:9a76:beb with SMTP id
+ b16-20020a252e50000000b006699a760bebmr7531430ybn.597.1660913759182; 
+ Fri, 19 Aug 2022 05:55:59 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4py+/uhpSlZ4KUA6WIRw7IMJFN4qXu8xt6nzCpPmUc+v2i0eV4mIGzODuDhirjLFyjXPXTUF7+A4sMwRyRd8U=
+X-Received: by 2002:a25:2e50:0:b0:669:9a76:beb with SMTP id
+ b16-20020a252e50000000b006699a760bebmr7531415ybn.597.1660913758957; Fri, 19
+ Aug 2022 05:55:58 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220819090704.17219-1-pvorel@suse.cz>
  <950bbc2f-1af9-581b-c7a2-e6d39fc276ec@fujitsu.com>
- <269bbc89-2a89-9eac-e4f9-69b66a862a23@fujitsu.com> <Yv9ykCw5VDoXaCmD@pevik>
-In-Reply-To: <Yv9ykCw5VDoXaCmD@pevik>
+ <269bbc89-2a89-9eac-e4f9-69b66a862a23@fujitsu.com>
+In-Reply-To: <269bbc89-2a89-9eac-e4f9-69b66a862a23@fujitsu.com>
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 19 Aug 2022 20:42:26 +0800
-Message-ID: <CAEemH2eHrBkwZBVyM7Rxnxt7c3U7dh5-AjL9GhDDh4JWspTjQA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 19 Aug 2022 20:55:48 +0800
+Message-ID: <CAEemH2d97boX8x3+XKS23djO93S3+og+5r9RDFp3gzo97mMp+A@mail.gmail.com>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] statx04: Remove kernel comments in docparse
 X-BeenThere: ltp@lists.linux.it
@@ -86,86 +87,73 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============1038020146=="
+Content-Type: multipart/mixed; boundary="===============0704564569=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1038020146==
-Content-Type: multipart/alternative; boundary="000000000000da7f4405e6976e8f"
+--===============0704564569==
+Content-Type: multipart/alternative; boundary="0000000000009b0ac705e6979ed7"
 
---000000000000da7f4405e6976e8f
+--0000000000009b0ac705e6979ed7
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Xu, Petr,
-
-On Fri, Aug 19, 2022 at 7:23 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-
-> > So for me, If remove kernel commit in description, then I only see
-> > useless commit id number, unless I go to search them in kernel org.
->
-> > I prefer to keep these kernel commit comment.
+> So for me, If remove kernel commit in description, then I only see
+> useless commit id number, unless I go to search them in kernel org.
 >
 
-If so, adding normal C comments should be a workaround
-(as Petr proposed), but I doubt how much value for reserving that:).
+Not exactly, another thing to make people's attention is test fail with
+hint,
+then we can simply click the link.
 
+    58	HINT: You _MAY_ be missing kernel fixes:
+    59	
+    60	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93bc420ed41d
+    61	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=99652ea56a41
+    62	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=04a87e347282
+    63  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5f955f26f3d4
 
->
-> I would still suggest to have change them as normal C comments - that's
-> enough
-> for reading C source. We already added released docs to
-> linux-test-project.github.io [1], I plan to add hook to to push master
-> version
-> there after each commit and stable after release (after pushing tag).
-> Then we can add this link to README.md to propagate docs.
->
-
-+1, sounds good to me, thanks!
 
 -- 
 Regards,
 Li Wang
 
---000000000000da7f4405e6976e8f
+--0000000000009b0ac705e6979ed7
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Xu, Petr,</div></div><br><div class=3D"gmail_quote"><div d=
-ir=3D"ltr" class=3D"gmail_attr">On Fri, Aug 19, 2022 at 7:23 PM Petr Vorel =
-&lt;<a href=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></di=
-v><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0p=
-x 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-&gt; So for me, If remove kernel commit in description, then I only see<br>
-&gt; useless commit id number, unless I go to search them in kernel org.<br=
->
-<br>
-&gt; I prefer to keep these kernel commit comment.<br></blockquote><div><br=
-></div><div><div class=3D"gmail_default" style=3D"font-size:small">If so, a=
-dding normal C comments should be a workaround</div><div class=3D"gmail_def=
-ault" style=3D"font-size:small">(as Petr proposed), but I doubt how much va=
-lue for reserving that:).</div></div><div>=C2=A0</div><blockquote class=3D"=
-gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(20=
-4,204,204);padding-left:1ex">
-<br>
-I would still suggest to have change them as normal C comments - that&#39;s=
- enough<br>
-for reading C source. We already added released docs to<br>
-<a href=3D"http://linux-test-project.github.io" rel=3D"noreferrer" target=
-=3D"_blank">linux-test-project.github.io</a> [1], I plan to add hook to to =
-push master version<br>
-there after each commit and stable after release (after pushing tag).<br>
-Then we can add this link to README.md to propagate docs.<br></blockquote><=
-div><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">+=
-1, sounds good to me, thanks!</div></div></div><div><br></div>-- <br><div d=
-ir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></di=
-v><div>Li Wang<br></div></div></div></div>
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
+So for me, If remove kernel commit in description, then I only see<br>
+useless commit id number, unless I go to search them in kernel org.<br></bl=
+ockquote><div><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
+ll">Not exactly, another thing to make people&#39;s attention is test fail =
+with hint,</div><div class=3D"gmail_default" style=3D"font-size:small">then=
+ we can simply click the link.</div><div class=3D"gmail_default" style=3D"f=
+ont-size:small"><br></div><pre class=3D"gmail-code gmail-highlight" lang=3D=
+"shell"><span class=3D"gmail_default" style=3D"font-size:small"></span>=C2=
+=A0 =C2=A0 58=09HINT: You _MAY_ be missing kernel fixes:<br>=C2=A0 =C2=A0 5=
+9=09<br>=C2=A0 =C2=A0 60=09<a href=3D"https://git.kernel.org/pub/scm/linux/=
+kernel/git/torvalds/linux.git/commit/?id=3D93bc420ed41d">https://git.kernel=
+.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3D93bc420ed41d<=
+/a><br>=C2=A0 =C2=A0 61=09<a href=3D"https://git.kernel.org/pub/scm/linux/k=
+ernel/git/torvalds/linux.git/commit/?id=3D99652ea56a41">https://git.kernel.=
+org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3D99652ea56a41</=
+a><br>=C2=A0 =C2=A0 62=09<a href=3D"https://git.kernel.org/pub/scm/linux/ke=
+rnel/git/torvalds/linux.git/commit/?id=3D04a87e347282">https://git.kernel.o=
+rg/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3D04a87e347282</a=
+> <br>=C2=A0 =C2=A0 63 <span class=3D"gmail_default" style=3D"font-size:sma=
+ll"> </span><a href=3D"https://git.kernel.org/pub/scm/linux/kernel/git/torv=
+alds/linux.git/commit/?id=3D5f955f26f3d4">https://git.kernel.org/pub/scm/li=
+nux/kernel/git/torvalds/linux.git/commit/?id=3D5f955f26f3d4</a><span style=
+=3D"font-family:Arial,Helvetica,sans-serif"></span><br></pre></div><div><br=
+></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><=
+div>Regards,<br></div><div>Li Wang<br></div></div></div></div>
 
---000000000000da7f4405e6976e8f--
+--0000000000009b0ac705e6979ed7--
 
 
---===============1038020146==
+--===============0704564569==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -175,5 +163,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1038020146==--
+--===============0704564569==--
 
