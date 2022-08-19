@@ -4,75 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21DDEC25B08
-	for <ltp@archiver.kernel.org>; Sat, 20 Aug 2022 20:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 299F0C32789
+	for <ltp@archiver.kernel.org>; Mon, 22 Aug 2022 09:04:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2EF983CA357
-	for <ltp@archiver.kernel.org>; Sat, 20 Aug 2022 22:40:57 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 6E4BE3CA33A
+	for <ltp@archiver.kernel.org>; Mon, 22 Aug 2022 11:04:39 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 244423C8D45
- for <ltp@lists.linux.it>; Sat, 20 Aug 2022 22:40:48 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 4AE583C65EB
+ for <ltp@lists.linux.it>; Sat, 20 Aug 2022 00:34:37 +0200 (CEST)
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
+ [IPv6:2607:f8b0:4864:20::1129])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2BDDB1000444
- for <ltp@lists.linux.it>; Sat, 20 Aug 2022 22:40:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1661028045;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Om8Vvbirc9mAVpxMg3s28/Wg51whLgy0C6eHBMCQ5+8=;
- b=Dh3K4ZJdHd2jYQ+DdWtUA0hkEux/P4MQM6Wh50dw4kmui7dP0zdw1DOTzQ3KpT++vX9YAJ
- CkQ24WzFjJ44+pavLSTocNDIsluwE7Tk55Sw7wUWJaT9V+wo8KCC4DQbsShTLB23OcSVOI
- 1xrL27AeoTqtc6lSV9gtMyd1NREq5Zo=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-320-Up5c-VxYO7O_8DbJmgxcJw-1; Sat, 20 Aug 2022 16:40:43 -0400
-X-MC-Unique: Up5c-VxYO7O_8DbJmgxcJw-1
-Received: by mail-lf1-f71.google.com with SMTP id
- p8-20020a056512234800b0048b12cb7738so2108018lfu.6
- for <ltp@lists.linux.it>; Sat, 20 Aug 2022 13:40:43 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5EF2F14001EE
+ for <ltp@lists.linux.it>; Sat, 20 Aug 2022 00:34:37 +0200 (CEST)
+Received: by mail-yw1-x1129.google.com with SMTP id
+ 00721157ae682-3321c2a8d4cso157243677b3.5
+ for <ltp@lists.linux.it>; Fri, 19 Aug 2022 15:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc;
+ bh=ZlWbI++jh8dqP5fLWt1UFrn3ApOU9dqiRzqm6PTMrG4=;
+ b=tOOwgFa1L/GC9/dSeYlO9lz6r+s/Y73u8pYRZ/ZtmXEcAjlZGepG4OOA2ViviS6yDI
+ /PtrZKxHTBXqCGOE3Pc/31ZI1pf5rgDl7sDfCWPExTeZwxSuSH3N0/iR/tShXPZ0DrUC
+ A01uKnzaDERsHZ6YpwFSW3B6x/d9Aq1+3G7GmqfGPK0pXV0ijK90uL2NjAYrVZLi4xYJ
+ faCkTc+bfrB/68onT/5cSri9+aOQu6kGqS3ZI15g9v/pk7rNllvOg7rDUAAQjHNp0idu
+ Z/x6lVTTfJ/x68/QM3Q1506brEaSLMVe6Bw5QOy39R7ZSfZilSUJYG2UodiRoP6OX1s6
+ Kb+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc;
- bh=Om8Vvbirc9mAVpxMg3s28/Wg51whLgy0C6eHBMCQ5+8=;
- b=uiCLH2ImNXBQsfDY2G74v0vh7/CKiptmKBnQCp4Nie7wM0JGeYyUnG+XRof6Jf0YAS
- rk/VQF9myQD8BDT33zgzw14bAT8eYdSNxvTMuyV2qKPZi/6Xm8zunP457cDCM1DR87k/
- PQGwy4nvGwA1w11wqNCIdEaaTd0KtDS7YHd/UzI4aHhAWvo9b74q5I0eBjUq6UZiwPrc
- kQdQyzqeMdDDaUSpSbNMY6LVVGCm4Sa3/BK+cRYXRdv7HywAUiHDF7L/mNLPGcikX3cu
- MRbN4rWzvNm5vNotIxjckf8ODBVEKyFcoqPen8lck9viaZH8+aNaA+KRD+ykE5T7ZZt4
- +0uQ==
-X-Gm-Message-State: ACgBeo2L1ut0B51MnuJ4SGVLi9p9+bx6qJ9N3hcg3OZCWJvrqWimOpHT
- yQNm7SysJ4syOnXYOCRHbPzg3Ev9qHAY4XESLL0ehn8XnGMS7CimBaCqPdq2PEpEDqqXCBQEpZz
- 7dPYOyqgHiibAFe6lw+JO8dqi7O0=
-X-Received: by 2002:a2e:b282:0:b0:25e:46b6:ff33 with SMTP id
- 2-20020a2eb282000000b0025e46b6ff33mr3769650ljx.503.1661028042182; 
- Sat, 20 Aug 2022 13:40:42 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR6U1zrwozn486E/WrZXuUyhDJBZVGn/kbSOlhfVXNh67gmuusYBII1uA1KcdauaHg1hsIqtKdOpMaLghnZoJrs=
-X-Received: by 2002:a2e:b282:0:b0:25e:46b6:ff33 with SMTP id
- 2-20020a2eb282000000b0025e46b6ff33mr3769647ljx.503.1661028041953; Sat, 20 Aug
- 2022 13:40:41 -0700 (PDT)
+ bh=ZlWbI++jh8dqP5fLWt1UFrn3ApOU9dqiRzqm6PTMrG4=;
+ b=aFSe2XrETs6oslviMJCsh0agmDZknXbNT0v6c5+kF1/dosTU69AvCEbuioIfR3f7KX
+ RcUHynvm5RX8ab6ll4MFrHlpDNM7XLFPW415bdwbKsgOTUo4UduQZ52DgfXxT6S8QTAb
+ cAt9VK8z95UOdsSI0T8gxRpsbAc30QewbEvlIU+Mb0f2dh8h5cg5pn7ErXmVpKB6s+kx
+ H19szgld8AdoAuJzG1leXbRZ9sAEhTWVrpH3CSAu44PxddqbYY9E845Bxu8gtr8G7fsi
+ hCLDi747PZr9/8BUHn+WO2UYlsB5QL1UMk3SiQz0UdGrjEh2J6+k+lfbIC04F6jCKd8G
+ qn4A==
+X-Gm-Message-State: ACgBeo1oT2Z5Pv/NPEoi9DaRNrFJR6TdSQRuCmV3LY0Pmr9meNlnrduw
+ 2Xw9XNJDXLl/BnrgcJCYsPB6lne3sbFoZiH4xeYoxfSe9bVJ/w==
+X-Google-Smtp-Source: AA6agR4qa22g2Tr52pLpBHeTi8XH0OQYbg0+4ku/jXXbXWtJx9aUkVvMR4/3hWHs0fU+Scl3jTitp4ODuopJy7SAt/I=
+X-Received: by 2002:a0d:c307:0:b0:335:6fff:dc70 with SMTP id
+ f7-20020a0dc307000000b003356fffdc70mr9884556ywd.493.1660948475949; Fri, 19
+ Aug 2022 15:34:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <f710f7cc103a61c20d5ee907d9717fa384810553.1657198689.git.jstancek@redhat.com>
- <Yv+rxD5EO4MDayXT@pevik>
-In-Reply-To: <Yv+rxD5EO4MDayXT@pevik>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Sat, 20 Aug 2022 22:40:25 +0200
-Message-ID: <CAASaF6xWmj4Gk39E7Edbn55bfhGJiJ=nWX=XVUtV3WctFSiK4g@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220819213148.1995580-1-edliaw@google.com>
+In-Reply-To: <20220819213148.1995580-1-edliaw@google.com>
+Date: Fri, 19 Aug 2022 15:34:25 -0700
+Message-ID: <CAMvVZq0DKK7PydiVwbS1GZoSaJLu=qUSXq_xi17wQS176hHt3g@mail.gmail.com>
+To: Edward Liaw <edliaw@google.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] commands/df01.sh: print more logs when test fails
+X-Mailman-Approved-At: Mon, 22 Aug 2022 11:04:29 +0200
+Subject: Re: [LTP] [PATCH v2] syscalls/signal06: loop being clobbered by
+ syscall on clang
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,50 +74,160 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Viktor Martensson via ltp <ltp@lists.linux.it>
+Reply-To: Viktor Martensson <vmartensson@google.com>
+Cc: kernel-team@android.com, ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============0802915950=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Aug 19, 2022 at 5:27 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Jan,
->
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  testcases/commands/df/df01.sh | 5 +++++
-> >  1 file changed, 5 insertions(+)
->
-> > diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> > index f74032c962e5..6b20f21d0d74 100755
-> > --- a/testcases/commands/df/df01.sh
-> > +++ b/testcases/commands/df/df01.sh
-> > @@ -103,6 +103,11 @@ df_check()
->
-> >       grep ${TST_DEVICE} output | grep -q "${total}.*${used}"
-> >       if [ $? -ne 0 ]; then
-> > +             echo "total: ${total}, used: ${used}"
-> > +             echo "df saved output:"
-> I wonder why you didn't use tst_res TINFO? It'd be more readable as the output
-> can be quite long...
+--===============0802915950==
+Content-Type: multipart/alternative; boundary="000000000000e6a61c05e69fb30a"
 
-It didn't cross my mind at the time. It looks like the df failures are
-coming to a resolution,
-so I don't mind if you want to drop these 'echos' later.
+--000000000000e6a61c05e69fb30a
+Content-Type: text/plain; charset="UTF-8"
 
-> > +             cat output
-> > +             echo "df output:"
-> > +             $@
+Hello!
+
+The syscall will get the return value in %rax I believe, so it may be wise
+to indicate that it gets modified no? I would assume something like
+
+*int foo; *
+asm volatile ("syscall" : *"=a" (foo)*: "a"(__NR_tkill), "D"(pid),
+"S"(SIGHUP) : "rcx", "r11");
+
+would instruct the compiler to expect that %rax has been modified, and it
+can't rely on it staying the same. An optimization pass may otherwise take
+away the repeated setting of __NR_tkill in %rax.
+
+/V
+
+On Fri, Aug 19, 2022 at 2:31 PM 'Edward Liaw' via kernel-team <
+kernel-team@android.com> wrote:
+
+> Indicate to the compiler that the syscall will modify registers rcx
+> and r11 to prevent loop from getting clobbered.
 >
-> Kind regards,
-> Petr
+> Signed-off-by: Edward Liaw <edliaw@google.com>
 >
-> >               return 1
-> >       fi
-> >  }
+> ---
+> When I combined the asm instruction into one line, it threw an error
+> that the "Asm-specifier for input or output variable conflicts with asm
+> clobber list" for rax.  I omitted it for now, but I'm not sure if that
+> is correct.
 >
+> Also, is it ok to change the subject line like I did?
+> ---
+>  testcases/kernel/syscalls/signal/signal06.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/signal/signal06.c
+> b/testcases/kernel/syscalls/signal/signal06.c
+> index 64f886ee3..fba380610 100644
+> --- a/testcases/kernel/syscalls/signal/signal06.c
+> +++ b/testcases/kernel/syscalls/signal/signal06.c
+> @@ -72,8 +72,7 @@ void test(void)
+>         while (D == VALUE && loop < LOOPS) {
+>                 /* sys_tkill(pid, SIGHUP); asm to avoid save/reload
+>                  * fp regs around c call */
+> -               asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
+> -               asm ("syscall" : : : "ax");
+> +               asm volatile ("syscall" : : "a"(__NR_tkill), "D"(pid),
+> "S"(SIGHUP) : "rcx", "r11");
+>
+>                 loop++;
+>         }
+> --
+> 2.37.2.609.g9ff673ca1a-goog
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an
+> email to kernel-team+unsubscribe@android.com.
+>
+>
+
+--000000000000e6a61c05e69fb30a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hello!<br></div><div><br></div><div>The syscall will =
+get the return value in %rax I believe, so it may be wise to indicate that =
+it gets modified no? I would assume something like</div><div><br></div><div=
+><font face=3D"monospace" color=3D"#990000"><b>int foo;=C2=A0</b></font></d=
+iv><div><font face=3D"monospace">asm volatile (&quot;syscall&quot; : <font =
+color=3D"#990000"><b>&quot;=3Da&quot; (foo)</b>:</font> &quot;a&quot;(__NR_=
+tkill), &quot;D&quot;(pid), &quot;S&quot;(SIGHUP) : &quot;rcx&quot;, &quot;=
+r11&quot;);<br></font></div><div><br></div><div>would instruct the compiler=
+ to expect that %rax has been modified, and it can&#39;t rely on it staying=
+ the same. An optimization pass may otherwise take away the repeated settin=
+g of __NR_tkill in %rax.=C2=A0</div><div>=C2=A0</div><div>/V</div></div><br=
+><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, A=
+ug 19, 2022 at 2:31 PM &#39;Edward Liaw&#39; via kernel-team &lt;<a href=3D=
+"mailto:kernel-team@android.com">kernel-team@android.com</a>&gt; wrote:<br>=
+</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
+order-left:1px solid rgb(204,204,204);padding-left:1ex">Indicate to the com=
+piler that the syscall will modify registers rcx<br>
+and r11 to prevent loop from getting clobbered.<br>
+<br>
+Signed-off-by: Edward Liaw &lt;<a href=3D"mailto:edliaw@google.com" target=
+=3D"_blank">edliaw@google.com</a>&gt;<br>
+<br>
+---<br>
+When I combined the asm instruction into one line, it threw an error<br>
+that the &quot;Asm-specifier for input or output variable conflicts with as=
+m<br>
+clobber list&quot; for rax.=C2=A0 I omitted it for now, but I&#39;m not sur=
+e if that<br>
+is correct.<br>
+<br>
+Also, is it ok to change the subject line like I did?<br>
+---<br>
+=C2=A0testcases/kernel/syscalls/signal/signal06.c | 3 +--<br>
+=C2=A01 file changed, 1 insertion(+), 2 deletions(-)<br>
+<br>
+diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel=
+/syscalls/signal/signal06.c<br>
+index 64f886ee3..fba380610 100644<br>
+--- a/testcases/kernel/syscalls/signal/signal06.c<br>
++++ b/testcases/kernel/syscalls/signal/signal06.c<br>
+@@ -72,8 +72,7 @@ void test(void)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 while (D =3D=3D VALUE &amp;&amp; loop &lt; LOOP=
+S) {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* sys_tkill(pid, S=
+IGHUP); asm to avoid save/reload<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* fp regs aro=
+und c call */<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm (&quot;&quot; :=
+ : &quot;a&quot;(__NR_tkill), &quot;D&quot;(pid), &quot;S&quot;(SIGHUP));<b=
+r>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm (&quot;syscall&=
+quot; : : : &quot;ax&quot;);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm volatile (&quot=
+;syscall&quot; : : &quot;a&quot;(__NR_tkill), &quot;D&quot;(pid), &quot;S&q=
+uot;(SIGHUP) : &quot;rcx&quot;, &quot;r11&quot;);<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 loop++;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>
+-- <br>
+2.37.2.609.g9ff673ca1a-goog<br>
+<br>
+-- <br>
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to <a href=3D"mailto:kernel-team%2Bunsubscribe@android.com" target=3D"=
+_blank">kernel-team+unsubscribe@android.com</a>.<br>
+<br>
+</blockquote></div>
+
+--000000000000e6a61c05e69fb30a--
+
+--===============0802915950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0802915950==--
