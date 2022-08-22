@@ -4,65 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 299F0C32789
-	for <ltp@archiver.kernel.org>; Mon, 22 Aug 2022 09:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DA8AC28D13
+	for <ltp@archiver.kernel.org>; Mon, 22 Aug 2022 09:37:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E4BE3CA33A
-	for <ltp@archiver.kernel.org>; Mon, 22 Aug 2022 11:04:39 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 44FBE3CA2CC
+	for <ltp@archiver.kernel.org>; Mon, 22 Aug 2022 11:37:06 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4AE583C65EB
- for <ltp@lists.linux.it>; Sat, 20 Aug 2022 00:34:37 +0200 (CEST)
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
- [IPv6:2607:f8b0:4864:20::1129])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D21B93C0726
+ for <ltp@lists.linux.it>; Mon, 22 Aug 2022 11:36:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5EF2F14001EE
- for <ltp@lists.linux.it>; Sat, 20 Aug 2022 00:34:37 +0200 (CEST)
-Received: by mail-yw1-x1129.google.com with SMTP id
- 00721157ae682-3321c2a8d4cso157243677b3.5
- for <ltp@lists.linux.it>; Fri, 19 Aug 2022 15:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc;
- bh=ZlWbI++jh8dqP5fLWt1UFrn3ApOU9dqiRzqm6PTMrG4=;
- b=tOOwgFa1L/GC9/dSeYlO9lz6r+s/Y73u8pYRZ/ZtmXEcAjlZGepG4OOA2ViviS6yDI
- /PtrZKxHTBXqCGOE3Pc/31ZI1pf5rgDl7sDfCWPExTeZwxSuSH3N0/iR/tShXPZ0DrUC
- A01uKnzaDERsHZ6YpwFSW3B6x/d9Aq1+3G7GmqfGPK0pXV0ijK90uL2NjAYrVZLi4xYJ
- faCkTc+bfrB/68onT/5cSri9+aOQu6kGqS3ZI15g9v/pk7rNllvOg7rDUAAQjHNp0idu
- Z/x6lVTTfJ/x68/QM3Q1506brEaSLMVe6Bw5QOy39R7ZSfZilSUJYG2UodiRoP6OX1s6
- Kb+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc;
- bh=ZlWbI++jh8dqP5fLWt1UFrn3ApOU9dqiRzqm6PTMrG4=;
- b=aFSe2XrETs6oslviMJCsh0agmDZknXbNT0v6c5+kF1/dosTU69AvCEbuioIfR3f7KX
- RcUHynvm5RX8ab6ll4MFrHlpDNM7XLFPW415bdwbKsgOTUo4UduQZ52DgfXxT6S8QTAb
- cAt9VK8z95UOdsSI0T8gxRpsbAc30QewbEvlIU+Mb0f2dh8h5cg5pn7ErXmVpKB6s+kx
- H19szgld8AdoAuJzG1leXbRZ9sAEhTWVrpH3CSAu44PxddqbYY9E845Bxu8gtr8G7fsi
- hCLDi747PZr9/8BUHn+WO2UYlsB5QL1UMk3SiQz0UdGrjEh2J6+k+lfbIC04F6jCKd8G
- qn4A==
-X-Gm-Message-State: ACgBeo1oT2Z5Pv/NPEoi9DaRNrFJR6TdSQRuCmV3LY0Pmr9meNlnrduw
- 2Xw9XNJDXLl/BnrgcJCYsPB6lne3sbFoZiH4xeYoxfSe9bVJ/w==
-X-Google-Smtp-Source: AA6agR4qa22g2Tr52pLpBHeTi8XH0OQYbg0+4ku/jXXbXWtJx9aUkVvMR4/3hWHs0fU+Scl3jTitp4ODuopJy7SAt/I=
-X-Received: by 2002:a0d:c307:0:b0:335:6fff:dc70 with SMTP id
- f7-20020a0dc307000000b003356fffdc70mr9884556ywd.493.1660948475949; Fri, 19
- Aug 2022 15:34:35 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3C56A600085
+ for <ltp@lists.linux.it>; Mon, 22 Aug 2022 11:36:54 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F3FAD1FB5C;
+ Mon, 22 Aug 2022 09:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1661161014;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h+BxhhYnsr6hoefbZrh0xKNdC0aNnv2SordBDWoyEew=;
+ b=D1n9Lrq7prTdH8PSJWpd8oEdbICwcabU31lNKRgcwkZeK8L4jSG4KNGDRlB53Vc1S2oH8G
+ hEYAritDsadkUHYfFVW42AqwEHYDrGWGAAN3N7YZU8au35WnGVXJ8JkgPhQZ2QFWBnaBfJ
+ MGlPkq6dqmJ5ErRn7CeF3Ht2eCWKEcI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1661161014;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h+BxhhYnsr6hoefbZrh0xKNdC0aNnv2SordBDWoyEew=;
+ b=p1cLOCKxL6w3CtilKfWbq3NJDgjhpXFYw84uWQ+qRvz+2JNXTQy+jujzkY/wA8rdRep4W9
+ d8U1kEMH9GZuFlAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 629EA13523;
+ Mon, 22 Aug 2022 09:36:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id sBrtFTVOA2NBdgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 22 Aug 2022 09:36:53 +0000
+Date: Mon, 22 Aug 2022 11:36:51 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <YwNOMy9m72J/uH+Q@pevik>
+References: <20220817204015.31420-1-pvorel@suse.cz> <Yv4MBF79PnJKJbwm@yuki>
+ <Yv4eiT5L+M7dMkQ5@pevik> <Yv4i0gWiHTkfWB5m@yuki>
+ <CAMuHMdUMBjCTwPu7wxrnagXnbyVxxmXN+vHmML0Lr=SyrTw0nQ@mail.gmail.com>
+ <Yv/kVXSK0xJGb3RO@pevik>
+ <CAEemH2ehh1+WPtwjzere-JEHeBUpg27w4nZs6_QG71ZTAkUzpA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220819213148.1995580-1-edliaw@google.com>
-In-Reply-To: <20220819213148.1995580-1-edliaw@google.com>
-Date: Fri, 19 Aug 2022 15:34:25 -0700
-Message-ID: <CAMvVZq0DKK7PydiVwbS1GZoSaJLu=qUSXq_xi17wQS176hHt3g@mail.gmail.com>
-To: Edward Liaw <edliaw@google.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2ehh1+WPtwjzere-JEHeBUpg27w4nZs6_QG71ZTAkUzpA@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 22 Aug 2022 11:04:29 +0200
-Subject: Re: [LTP] [PATCH v2] syscalls/signal06: loop being clobbered by
- syscall on clang
+Subject: Re: [LTP] [Automated-testing] [RFC PATCH 1/1] API: Allow to use xfs
+ filesystems < 300 MB
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,160 +80,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Viktor Martensson via ltp <ltp@lists.linux.it>
-Reply-To: Viktor Martensson <vmartensson@google.com>
-Cc: kernel-team@android.com, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0802915950=="
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>, automated-testing@yoctoproject.org,
+ LTP List <ltp@lists.linux.it>, automated-testing@lists.yoctoproject.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0802915950==
-Content-Type: multipart/alternative; boundary="000000000000e6a61c05e69fb30a"
+Hi Li, all,
 
---000000000000e6a61c05e69fb30a
-Content-Type: text/plain; charset="UTF-8"
+> Hi Petr, All,
 
-Hello!
+> On Sat, Aug 20, 2022 at 3:28 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-The syscall will get the return value in %rax I believe, so it may be wise
-to indicate that it gets modified no? I would assume something like
+> > Hi all,
 
-*int foo; *
-asm volatile ("syscall" : *"=a" (foo)*: "a"(__NR_tkill), "D"(pid),
-"S"(SIGHUP) : "rcx", "r11");
+> > > Hi Cyril,
 
-would instruct the compiler to expect that %rax has been modified, and it
-can't rely on it staying the same. An optimization pass may otherwise take
-away the repeated setting of __NR_tkill in %rax.
+> > > On Thu, Aug 18, 2022 at 1:28 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+> > > > > > I'm starting to wonder if we should start tracking minimal FS size
+> > per
+> > > > > > filesystem since btrfs and xfs will likely to continue to grow and
+> > with
+> > > > > > that we will end up disabling the whole fs related testing on
+> > embedded
+> > > > > > boards with a little disk space. If we tracked that per filesystem
+> > we
+> > > > > > would be able to skip a subset of filesystems when there is not
+> > enough
+> > > > > > space. The downside is obviously that we would have to add a bit
+> > more
+> > > > > > complexity to the test library.
 
-/V
+> > > > > Maybe I could for start rewrite v2 (I've sent it without Cc kernel
+> > devs now it's
+> > > > > mainly LTP internal thing) as it just to have 300 MB for XFS and 256
+> > MB for the
+> > > > > rest. That would require to specify filesystem when acquiring device
+> > (NULL would
+> > > > > be for the default filesystem), that's would be worth if embedded
+> > folks counter
+> > > > > each MB. It'd be nice to hear from them.
 
-On Fri, Aug 19, 2022 at 2:31 PM 'Edward Liaw' via kernel-team <
-kernel-team@android.com> wrote:
+> > > > The 256MB limit was set previously due to btrfs, I bet that we can
+> > > > create smaller images for ext filesytems for example.
 
-> Indicate to the compiler that the syscall will modify registers rcx
-> and r11 to prevent loop from getting clobbered.
->
-> Signed-off-by: Edward Liaw <edliaw@google.com>
->
-> ---
-> When I combined the asm instruction into one line, it threw an error
-> that the "Asm-specifier for input or output variable conflicts with asm
-> clobber list" for rax.  I omitted it for now, but I'm not sure if that
-> is correct.
->
-> Also, is it ok to change the subject line like I did?
-> ---
->  testcases/kernel/syscalls/signal/signal06.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/signal/signal06.c
-> b/testcases/kernel/syscalls/signal/signal06.c
-> index 64f886ee3..fba380610 100644
-> --- a/testcases/kernel/syscalls/signal/signal06.c
-> +++ b/testcases/kernel/syscalls/signal/signal06.c
-> @@ -72,8 +72,7 @@ void test(void)
->         while (D == VALUE && loop < LOOPS) {
->                 /* sys_tkill(pid, SIGHUP); asm to avoid save/reload
->                  * fp regs around c call */
-> -               asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
-> -               asm ("syscall" : : : "ax");
-> +               asm volatile ("syscall" : : "a"(__NR_tkill), "D"(pid),
-> "S"(SIGHUP) : "rcx", "r11");
->
->                 loop++;
->         }
-> --
-> 2.37.2.609.g9ff673ca1a-goog
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an
-> email to kernel-team+unsubscribe@android.com.
->
->
+> > Thanks for input, Geert!
 
---000000000000e6a61c05e69fb30a
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > > Yeah, we used to have ext2 root file systems that fit on 1440 KiB
+> > floppies.
+> > These nice times when everything simple hadn't been solved yet ... :).
+> > > IIRC, ext3 does have a minimum size of 32 MiB or so.
+> > Interesting, I was able to create smaller.
 
-<div dir=3D"ltr"><div>Hello!<br></div><div><br></div><div>The syscall will =
-get the return value in %rax I believe, so it may be wise to indicate that =
-it gets modified no? I would assume something like</div><div><br></div><div=
-><font face=3D"monospace" color=3D"#990000"><b>int foo;=C2=A0</b></font></d=
-iv><div><font face=3D"monospace">asm volatile (&quot;syscall&quot; : <font =
-color=3D"#990000"><b>&quot;=3Da&quot; (foo)</b>:</font> &quot;a&quot;(__NR_=
-tkill), &quot;D&quot;(pid), &quot;S&quot;(SIGHUP) : &quot;rcx&quot;, &quot;=
-r11&quot;);<br></font></div><div><br></div><div>would instruct the compiler=
- to expect that %rax has been modified, and it can&#39;t rely on it staying=
- the same. An optimization pass may otherwise take away the repeated settin=
-g of __NR_tkill in %rax.=C2=A0</div><div>=C2=A0</div><div>/V</div></div><br=
-><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, A=
-ug 19, 2022 at 2:31 PM &#39;Edward Liaw&#39; via kernel-team &lt;<a href=3D=
-"mailto:kernel-team@android.com">kernel-team@android.com</a>&gt; wrote:<br>=
-</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
-order-left:1px solid rgb(204,204,204);padding-left:1ex">Indicate to the com=
-piler that the syscall will modify registers rcx<br>
-and r11 to prevent loop from getting clobbered.<br>
-<br>
-Signed-off-by: Edward Liaw &lt;<a href=3D"mailto:edliaw@google.com" target=
-=3D"_blank">edliaw@google.com</a>&gt;<br>
-<br>
----<br>
-When I combined the asm instruction into one line, it threw an error<br>
-that the &quot;Asm-specifier for input or output variable conflicts with as=
-m<br>
-clobber list&quot; for rax.=C2=A0 I omitted it for now, but I&#39;m not sur=
-e if that<br>
-is correct.<br>
-<br>
-Also, is it ok to change the subject line like I did?<br>
----<br>
-=C2=A0testcases/kernel/syscalls/signal/signal06.c | 3 +--<br>
-=C2=A01 file changed, 1 insertion(+), 2 deletions(-)<br>
-<br>
-diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel=
-/syscalls/signal/signal06.c<br>
-index 64f886ee3..fba380610 100644<br>
---- a/testcases/kernel/syscalls/signal/signal06.c<br>
-+++ b/testcases/kernel/syscalls/signal/signal06.c<br>
-@@ -72,8 +72,7 @@ void test(void)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 while (D =3D=3D VALUE &amp;&amp; loop &lt; LOOP=
-S) {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* sys_tkill(pid, S=
-IGHUP); asm to avoid save/reload<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* fp regs aro=
-und c call */<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm (&quot;&quot; :=
- : &quot;a&quot;(__NR_tkill), &quot;D&quot;(pid), &quot;S&quot;(SIGHUP));<b=
-r>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm (&quot;syscall&=
-quot; : : : &quot;ax&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm volatile (&quot=
-;syscall&quot; : : &quot;a&quot;(__NR_tkill), &quot;D&quot;(pid), &quot;S&q=
-uot;(SIGHUP) : &quot;rcx&quot;, &quot;r11&quot;);<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 loop++;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>
--- <br>
-2.37.2.609.g9ff673ca1a-goog<br>
-<br>
--- <br>
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to <a href=3D"mailto:kernel-team%2Bunsubscribe@android.com" target=3D"=
-_blank">kernel-team+unsubscribe@android.com</a>.<br>
-<br>
-</blockquote></div>
+> > I did some testing minimal size (verified on chdir01 test):
+> > XFS: 300 MB, btrfs: 109 MB, ntfs: 2 MB, ext3: 2 MB, ext[24]: 1 MB, vfat: 1
+> > MB, exfat: 1 MB.
 
---000000000000e6a61c05e69fb30a--
+> > I guess using XFS: 300 MB, btrfs: 109 MB and 16 MB for the rest could be
+> > enough.
 
---===============0802915950==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
+> I think so, tracking minimal FS size per FS is a practical idea.
+> But one thing we have to be aware of is that there may be different
+> minimal sizes for each FS version.
+> (so we'd better choose the maximum of minimal sizes).
+
+> 16MB for general FS should be fine, I will help to test that if someone
+> works out the patch.
+
+So should we combine both: minimal FS size and those XFS variables which would
+allow to use lower size for XFS? I wonder which which size would be relevant,
+it might be safer to use 64 MB:
+
+https://git.kernel.org/pub/scm/fs/xfs/xfsprogs-dev.git/tree/mkfs/xfs_mkfs.c
+/*
+ * Realistically, the log should never be smaller than 64MB.  Studies by the
+ * kernel maintainer in early 2022 have shown a dramatic reduction in long tail
+ * latency of the xlog grant head waitqueue when running a heavy metadata
+ * update workload when the log size is at least 64MB.
+ */
+
+Because there is really not a big difference between 256MB and 300MB.
+
+Kind regards,
+Petr
+
+> > But that would require to run all tests to see how many tests actually use
+> > bigger data.
+
+
+> Absolutely YES!
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0802915950==--
