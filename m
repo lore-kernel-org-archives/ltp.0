@@ -4,49 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FD4FC00140
-	for <ltp@archiver.kernel.org>; Wed, 24 Aug 2022 10:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37672C00140
+	for <ltp@archiver.kernel.org>; Wed, 24 Aug 2022 10:21:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE9453CA481
-	for <ltp@archiver.kernel.org>; Wed, 24 Aug 2022 12:00:03 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id AC6993CA43F
+	for <ltp@archiver.kernel.org>; Wed, 24 Aug 2022 12:21:53 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A5F43C1BC6
- for <ltp@lists.linux.it>; Wed, 24 Aug 2022 11:59:53 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 36A6D3C02C2
+ for <ltp@lists.linux.it>; Wed, 24 Aug 2022 12:21:39 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CCFDE600D08
- for <ltp@lists.linux.it>; Wed, 24 Aug 2022 11:59:51 +0200 (CEST)
-Received: from canpemm100005.china.huawei.com (unknown [172.30.72.54])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MCM1Z67zDz1N7HN
- for <ltp@lists.linux.it>; Wed, 24 Aug 2022 17:56:18 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm100005.china.huawei.com (7.192.105.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 24 Aug 2022 17:59:48 +0800
-Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
- canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.024; 
- Wed, 24 Aug 2022 17:59:48 +0800
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP][PATCH v4] syscalls/nice05: Add testcase for nice() syscall
-Thread-Index: Adi3n57+Qn05nXVIYU+YkZQt897ETQ==
-Date: Wed, 24 Aug 2022 09:59:48 +0000
-Message-ID: <eecac802efe34cd3a95582feb1fc4fbd@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 149C4600C7F
+ for <ltp@lists.linux.it>; Wed, 24 Aug 2022 12:21:38 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DF99634130;
+ Wed, 24 Aug 2022 10:21:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1661336497;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qfAsUdGPIwFM+BwBjh/0loP+iKjGevDQutOmBqVD0Q4=;
+ b=Cg1LobxsCHG962UAsvUIVfAVgZCoR4+nbUDsz4R+2uUumX7tEaxeveS8WfQNLynLH88sfh
+ HcwTqmmT44UQIOCHnBN89VWDMdX0badUmqgVUxhgoBVfRd47KIZM0GyDEU6DkbEeC9RWmC
+ 2rKR/AC7gHufxLVOcO0PFo4e+QFYOmE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1661336497;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qfAsUdGPIwFM+BwBjh/0loP+iKjGevDQutOmBqVD0Q4=;
+ b=qS8UQgznt0gsg0JSAsVBfl+8uFumrQSrU0ghbFBFxTXnqBwCZuyTBxPBFXEursHLnlCVAQ
+ RKdrAGloKayH6aAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9565E13AC0;
+ Wed, 24 Aug 2022 10:21:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id aDiPIrH7BWPzGAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 24 Aug 2022 10:21:37 +0000
+Date: Wed, 24 Aug 2022 12:21:35 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <YwX7r5VWrGRzaXoa@pevik>
+References: <20220817204015.31420-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <20220817204015.31420-1-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] syscalls/nice05: Add testcase for nice()
- syscall
+Subject: Re: [LTP] [RFC PATCH 1/1] API: Allow to use xfs filesystems < 300 MB
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,292 +76,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: zhaogongyi via ltp <ltp@lists.linux.it>
-Reply-To: zhaogongyi <zhaogongyi@huawei.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-xfs@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi all,
 
-Thanks for your review! I have resubmit a patch according to your suggestion. Please see: https://patchwork.ozlabs.org/project/ltp/patch/20220824095144.259871-1-zhaogongyi@huawei.com/
+Could we in the end accept this patch?
 
-Best Wishes,
-Gongyi
+It'd fix the issue for now and I could set size of the XFS loop device smaller
+than 300 MB (better for embedded). i.e. 16 MB (or 32 or 64 MB or anything higher
+if XFS developers are convinced it's needed).
 
-> 
-> Hi!
-> > Add test verifies that the low nice thread executes more time than the
-> > high nice thread since the two thread binded on the same cpu.
-> 
-> Looks very good now, there are few very minor points see below.
-> 
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> > v3->v4: Replace getting exec time from sum_exec_runtime with
-> pthread_getcpuclockid().
-> >
-> >  runtest/syscalls                          |   1 +
-> >  testcases/kernel/syscalls/nice/.gitignore |   1 +
-> >  testcases/kernel/syscalls/nice/Makefile   |   2 +
-> >  testcases/kernel/syscalls/nice/nice05.c   | 188
-> ++++++++++++++++++++++
-> >  4 files changed, 192 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/nice/nice05.c
-> >
-> > diff --git a/runtest/syscalls b/runtest/syscalls index
-> > 9d58e0aa1..98fcbbe1e 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -903,6 +903,7 @@ nice01 nice01
-> >  nice02 nice02
-> >  nice03 nice03
-> >  nice04 nice04
-> > +nice05 nice05
-> >
-> >  open01 open01
-> >  open01A symlink01 -T open01
-> > diff --git a/testcases/kernel/syscalls/nice/.gitignore
-> > b/testcases/kernel/syscalls/nice/.gitignore
-> > index 9d7a1bb43..58d64779e 100644
-> > --- a/testcases/kernel/syscalls/nice/.gitignore
-> > +++ b/testcases/kernel/syscalls/nice/.gitignore
-> > @@ -2,3 +2,4 @@
-> >  /nice02
-> >  /nice03
-> >  /nice04
-> > +/nice05
-> > diff --git a/testcases/kernel/syscalls/nice/Makefile
-> > b/testcases/kernel/syscalls/nice/Makefile
-> > index 044619fb8..02e78a295 100644
-> > --- a/testcases/kernel/syscalls/nice/Makefile
-> > +++ b/testcases/kernel/syscalls/nice/Makefile
-> > @@ -3,6 +3,8 @@
-> >
-> >  top_srcdir		?= ../../../..
-> >
-> > +nice05: CFLAGS += -pthread
-> > +
-> >  include $(top_srcdir)/include/mk/testcases.mk
-> >
-> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > diff --git a/testcases/kernel/syscalls/nice/nice05.c
-> > b/testcases/kernel/syscalls/nice/nice05.c
-> > new file mode 100644
-> > index 000000000..8ef33f932
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/nice/nice05.c
-> > @@ -0,0 +1,188 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright(c) 2022 Huawei Technologies Co., Ltd
-> > + * Author: Li Mengfei <limengfei4@huawei.com>
-> > + *         Zhao Gongyi <zhaogongyi@huawei.com>
-> > + */
-> > +
-> > +/*\
-> > + * [Description]
-> > + *
-> > + * 1. Create a high nice thread and a low nice thread, the main
-> > + *    thread wake them at the same time
-> > + * 2. Both threads run on the same CPU
-> > + * 3. Verify that the low nice thread executes more time than
-> > + *    the high nice thread
-> > + */
-> > +
-> > +#define _GNU_SOURCE
-> > +#include <pthread.h>
-> > +#include <sys/types.h>
-> > +#include <stdio.h>
-> > +#include "tst_test.h"
-> > +#include "tst_safe_pthread.h"
-> > +#include "lapi/syscalls.h"
-> > +
-> > +#define SEC2NS(sec)  ((sec) * 1000000000LL)
-> > +
-> > +static pthread_barrier_t barrier;
-> > +static int some_cpu;
-> > +static cpu_set_t *set;
-> > +
-> > +static void set_nice(int nice_inc)
-> > +{
-> > +	int orig_nice;
-> > +
-> > +	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
-> > +
-> > +	TEST(nice(nice_inc));
-> > +
-> > +	if (TST_RET != (orig_nice + nice_inc)) {
-> > +		tst_brk(TBROK | TTERRNO, "nice(%d) returned %li, expected %i",
-> > +			nice_inc, TST_RET, orig_nice + nice_inc);
-> > +	}
-> > +
-> > +	if (TST_ERR)
-> > +		tst_brk(TBROK | TTERRNO, "nice(%d) failed", nice_inc); }
-> > +
-> > +static void *nice_low_thread(void *arg) {
-> > +	volatile int number = 0;
-> > +
-> > +	set_nice((intptr_t)arg);
-> > +	TEST(pthread_barrier_wait(&barrier));
-> > +	if (TST_RET != 0 && TST_RET != PTHREAD_BARRIER_SERIAL_THREAD)
-> > +		tst_brk(TBROK | TRERRNO, "pthread_barrier_wait() failed");
-> > +
-> > +	while (1)
-> > +		number++;
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +static void *nice_high_thread(void *arg) {
-> > +	volatile int number = 0;
-> > +
-> > +	set_nice((intptr_t)arg);
-> > +	TEST(pthread_barrier_wait(&barrier));
-> > +	if (TST_RET != 0 && TST_RET != PTHREAD_BARRIER_SERIAL_THREAD)
-> > +		tst_brk(TBROK | TRERRNO, "pthread_barrier_wait() failed");
-> 
-> It may be worth to add SAFE_PTHREAD_BARRIER_WAIT() to the
-> tst_safe_pthread_h to make the code nicer.
-> 
-> > +	while (1)
-> > +		number++;
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +static void setup(void)
-> > +{
-> > +	size_t size;
-> > +	size_t i;
-> > +	int nrcpus = 1024;
-> > +
-> > +	set = CPU_ALLOC(nrcpus);
-> > +	if (!set)
-> > +		tst_brk(TBROK | TERRNO, "CPU_ALLOC()");
-> > +
-> > +	size = CPU_ALLOC_SIZE(nrcpus);
-> > +	CPU_ZERO_S(size, set);
-> > +	if (sched_getaffinity(0, size, set) < 0)
-> > +		tst_brk(TBROK | TERRNO, "sched_getaffinity()");
-> > +
-> > +	for (i = 0; i < size * 8; i++)
-> > +		if (CPU_ISSET_S(i, size, set))
-> > +			some_cpu = i;
-> > +
-> > +	CPU_ZERO_S(size, set);
-> > +	CPU_SET_S(some_cpu, size, set);
-> > +	if (sched_setaffinity(0, size, set) < 0)
-> > +		tst_brk(TBROK | TERRNO, "sched_setaffinity()"); }
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	if (set)
-> > +		CPU_FREE(set);
-> 
-> This is very minor however we do not seem to use set anywhere outside
-> the setup so we may as well free it there.
-> 
-> > +}
-> > +
-> > +static void verify_nice(void)
-> > +{
-> > +	intptr_t nice_inc_high = -1;
-> > +	intptr_t nice_inc_low = -2;
-> > +	clockid_t nice_low_clockid, nice_high_clockid;
-> > +	struct timespec nice_high_ts, nice_low_ts;
-> > +	long long delta;
-> > +	pid_t pid;
-> > +	pthread_t thread[2];
-> > +
-> > +	pid = SAFE_FORK();
-> > +	if (!pid) {
-> 
-> Is there a reason why we run the actual test in the child?
-> 
-> > +		TEST(pthread_barrier_init(&barrier, NULL, 3));
-> > +		if (TST_RET != 0) {
-> > +			tst_brk(TBROK | TTERRNO,
-> > +					"pthread_barrier_init() failed");
-> > +		}
-> > +
-> > +		SAFE_PTHREAD_CREATE(&thread[0], NULL, nice_high_thread,
-> > +				(void *)nice_inc_high);
-> > +		SAFE_PTHREAD_CREATE(&thread[1], NULL, nice_low_thread,
-> > +				(void *)nice_inc_low);
-> > +
-> > +		TEST(pthread_barrier_wait(&barrier));
-> > +		if (TST_RET != 0 && TST_RET !=
-> PTHREAD_BARRIER_SERIAL_THREAD) {
-> > +			tst_brk(TBROK | TTERRNO,
-> > +					"pthread_barrier_wait() failed");
-> > +		}
-> > +
-> > +		sleep(tst_remaining_runtime());
-> > +
-> > +		if (pthread_getcpuclockid(thread[1], &nice_low_clockid) != 0) {
-> > +			perror("clock_getcpuclockid");
-> > +			tst_brk(TBROK | TERRNO,
-> > +					"clock_getcpuclockid() failed");
-> > +		}
-> > +		if (pthread_getcpuclockid(thread[0], &nice_high_clockid) != 0) {
-> > +			perror("clock_getcpuclockid");
-> > +			tst_brk(TBROK | TERRNO,
-> > +					"clock_getcpuclockid() failed");
-> > +		}
-> > +
-> > +		if (clock_gettime(nice_low_clockid, &nice_low_ts) == -1) {
-> > +			tst_brk(TBROK | TERRNO,
-> > +					"clock_getcpuclockid() failed");
-> > +		}
-> > +
-> > +		if (clock_gettime(nice_high_clockid, &nice_high_ts) == -1) {
-> > +			tst_brk(TBROK | TERRNO,
-> > +					"clock_getcpuclockid() failed");
-> > +		}
-> 
-> We do have SAFE_CLOCK_GETTIME() please use them.
-> 
-> > +		tst_res(TINFO, "Nice low thread CPU time: %ld.%09ld s",
-> > +			nice_low_ts.tv_sec, nice_low_ts.tv_nsec);
-> > +		tst_res(TINFO, "Nice high thread CPU time: %ld.%09ld s",
-> > +			nice_high_ts.tv_sec, nice_high_ts.tv_nsec);
-> > +
-> > +		delta = SEC2NS(nice_low_ts.tv_sec - nice_high_ts.tv_sec) +
-> > +			(nice_low_ts.tv_nsec - nice_high_ts.tv_nsec);
-> 
-> We do have a tst_timespec_diff_{us,ns,ms} functions in the tst_timer.h so
-> we may as well use them.
-> 
-> > +		if (delta < 0) {
-> > +			tst_res(TFAIL, "executes less cycles than "
-> > +				"the high nice thread, delta: %lld ns", delta);
-> > +		} else {
-> > +			tst_res(TPASS, "executes more cycles than "
-> > +				"the high nice thread, delta: %lld ns", delta);
-> > +		}
-> > +		return;
-> > +	}
-> > +	SAFE_WAIT(NULL);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.setup = setup,
-> > +	.cleanup = cleanup,
-> > +	.test_all = verify_nice,
-> > +	.needs_root = 1,
-> > +	.forks_child = 1,
-> > +	.max_runtime = 3,
-> > +};
-> > --
-> > 2.17.1
-> >
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+As I wrote before I plan to suggest sizes:
+btrfs 110 MB
+the rest (ext[234], xfs, ntfs, vfat, exfat, tmpfs): 16 MB
+
+Based on quick test:
+https://lore.kernel.org/ltp/Yv%2FkVXSK0xJGb3RO@pevik/
+btrfs: 109 MB, ntfs: 2 MB, ext3: 2 MB, ext[24]: 1 MB, vfat: 1 MB, exfat: 1 MB.
+
+Kind regards,
+Petr
+
+> mkfs.xfs since v5.19.0-rc1 [1] refuses to create filesystems < 300 MB.
+> Reuse workaround intended for fstests: set 3 environment variables:
+> export TEST_DIR=1 TEST_DEV=1 QA_CHECK_FS=1
+
+> Workaround added to both C API (for .needs_device) and shell API (for
+> TST_NEEDS_DEVICE=1).
+
+> Fix includes any use of filesystem (C API: .all_filesystems,
+> .format_device, shell API: TST_MOUNT_DEVICE=1, TST_FORMAT_DEVICE=1).
+
+> Fixes various C and shell API failures, e.g.:
+
+> ./mkfs01.sh -f xfs
+> mkfs01 1 TINFO: timeout per run is 0h 5m 0s
+> tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+> mkfs01 1 TFAIL: 'mkfs -t xfs  -f /dev/loop0 ' failed.
+> Filesystem must be larger than 300MB.
+
+> ./creat09
+> ...
+> tst_test.c:1599: TINFO: Testing on xfs
+> tst_test.c:1064: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+> Filesystem must be larger than 300MB.
+
+> Link: https://lore.kernel.org/all/164738662491.3191861.15611882856331908607.stgit@magnolia/
+
+> Reported-by: Martin Doucha <mdoucha@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Dave, please next time remember there are other testsuites testing XFS,
+> not just fstests :). How long do you plan to keep this workaround?
+
+> LTP community: do we want to depend on this behavior or we just increase from 256MB to 301 MB
+> (either for XFS or for all). It might not be a good idea to test size users are required
+> to use.
+
+> Kind regards,
+> Petr
+>  lib/tst_test.c            | 7 +++++++
+>  testcases/lib/tst_test.sh | 6 +++++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 4b4dd125d..657348732 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -1160,6 +1160,13 @@ static void do_setup(int argc, char *argv[])
+>  	if (tst_test->all_filesystems)
+>  		tst_test->needs_device = 1;
+
+> +	/* allow to use XFS filesystem < 300 MB */
+> +	if (tst_test->needs_device) {
+> +		putenv("TEST_DIR=1");
+> +		putenv("TEST_DEV=1");
+> +		putenv("QA_CHECK_FS=1");
+> +	}
+> +
+>  	if (tst_test->min_cpus > (unsigned long)tst_ncpus())
+>  		tst_brk(TCONF, "Test needs at least %lu CPUs online", tst_test->min_cpus);
+
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 24a3d29d8..b42e54ca1 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -671,7 +671,11 @@ tst_run()
+
+>  	[ "$TST_MOUNT_DEVICE" = 1 ] && TST_FORMAT_DEVICE=1
+>  	[ "$TST_FORMAT_DEVICE" = 1 ] && TST_NEEDS_DEVICE=1
+> -	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
+> +	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
+> +		TST_NEEDS_TMPDIR=1
+> +		# allow to use XFS filesystem < 300 MB
+> +		export TEST_DIR=1 TEST_DEV=1 QA_CHECK_FS=1
+> +	fi
+
+>  	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+>  		if [ -z "$TMPDIR" ]; then
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
