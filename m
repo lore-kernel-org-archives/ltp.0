@@ -4,61 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98438C28D13
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 14:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5003EC64990
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 14:37:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EA2BC3CA478
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 16:31:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 450C83C0367
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 16:37:14 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 666043C0367
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 16:31:16 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BDC9A200075
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 16:31:15 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 487741FAE7
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 14:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661437875;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SmlLv4zcYV/CqPHtGeFLKAF7Gbitowt4uiGVZhvrewY=;
- b=bhnLjQE/nWT1HTRaig+RE+oJNDSHoltW/pVj9z2hWLjzK/XeBn86xLYfBypdcv7fx25196
- WHANzhgUY8KFDFWeRFjSoPXpZCF+sPB/wuKaszKsWdWzwrbzaUOsSB4HG70bQUxEg46D0K
- DYk5rMC0GWcxuZSijZMFs/wUZjS9kDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661437875;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SmlLv4zcYV/CqPHtGeFLKAF7Gbitowt4uiGVZhvrewY=;
- b=JaTbPfOukM9BYamyogpdbOQ3IqPD4fjEtvylEuqBFfWlXpWpd98ZVp0+YN7/qAAC9C5NG6
- BoLnlCYa/vDtiUAw==
-Received: from g78 (unknown [10.163.24.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id F346D2C141;
- Thu, 25 Aug 2022 14:31:14 +0000 (UTC)
-References: <20220818171724.9182-1-pvorel@suse.cz> <Yv9Jafy8AzSCH437@yuki>
- <Yv9lxML3bw61wI1o@pevik> <Yv9tWKCKQUcct66H@yuki> <Yv99VtoOhs2m3lSP@pevik>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 25 Aug 2022 15:22:03 +0100
-In-reply-to: <Yv99VtoOhs2m3lSP@pevik>
-Message-ID: <87a67s2y4t.fsf@suse.de>
+ by picard.linux.it (Postfix) with ESMTPS id 0C5063C0367
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 16:37:04 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id A67671400530
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 16:37:03 +0200 (CEST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38A3DD6E;
+ Thu, 25 Aug 2022 07:37:05 -0700 (PDT)
+Received: from e129169.arm.com (usa-sjc-imap-foss1.foss.arm.com
+ [10.121.207.14])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1D483F67D;
+ Thu, 25 Aug 2022 07:36:59 -0700 (PDT)
+From: Tudor Cretu <tudor.cretu@arm.com>
+To: ltp@lists.linux.it
+Date: Thu, 25 Aug 2022 15:38:17 +0100
+Message-Id: <20220825143819.311023-1-tudor.cretu@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] bpf_prog0[5-7]: Run with
- kernel.unprivileged_bpf_disabled = 0
+Subject: [LTP] [PATCH v4 0/2] syscalls: Fix various syscall tests when
+ compiled with Musl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,48 +47,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi,
 
-Petr Vorel <pvorel@suse.cz> writes:
+There were a few issues with some syscalls tests when they were compiled
+with Musl. This series attempts to improve the robustness of some syscall
+tests.
 
->> Hi!
->> > I.e. 1 or 2 kernel.unprivileged_bpf_disabled results bpf() returning EPERM for
->> > *all* users including root. 0 allows running again for all users, but we need
->> > root to set it 0 via .save_restore:
->
->> > tst_sys_conf.c:106: TBROK: Failed to open FILE
->> > '/proc/sys/kernel/unprivileged_bpf_disabled' for writing: EACCES
->> > (13)
->
->> > Maybe we could change tst_sys_conf_save() not to write the value if value can be
->> > read and is the same (and not run tst_sys_conf_restore() if value was the same).
->
->> That would be a good idea either way.
->
->> The unprivileged_bpf_disabled is more complicated that this though. It's
->> a three state as:
->
->> 0 - enabled
->> 1 - disabled and can't be enabled
->> 2 - disabled and can be enabled
-> Good point, I didn't realize 1 means "no" also for root :).
+changes v3->v4:
+* My apologies, I was missing stdlib.h in [v3 Patch 2/2] so I updated the series.
 
-IMO I've always thought that it's not worth tyring to change this value
-because of this and also the hopeless nature of unprivileged eBPF.
+Tudor Cretu (2):
+  syscalls/statfs02,fstatfs02: Convert to new API
+  syscalls/statfs02,fstatfs02: Accept segfault instead of EFAULT
 
-OTOH if it is set to 1 then we can argue that known bugs should be fixed
-because setting it to 1 shows intent to use it.
+ testcases/kernel/syscalls/fstatfs/fstatfs02.c | 111 ++++++------------
+ testcases/kernel/syscalls/statfs/statfs02.c   | 108 ++++++-----------
+ 2 files changed, 78 insertions(+), 141 deletions(-)
 
 -- 
-Thank you,
-Richard.
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
