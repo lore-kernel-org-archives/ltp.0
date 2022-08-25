@@ -4,81 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 761EFECAA24
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 16:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90B57ECAA25
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 17:39:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B9F013CA48F
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 18:43:41 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 2FDF33CA417
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 19:39:51 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D29D3C0134
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 18:43:31 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C00883C1351
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 19:39:41 +0200 (CEST)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 113221000411
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 18:43:31 +0200 (CEST)
-Received: by mail-ej1-x62f.google.com with SMTP id h22so30414736ejk.4
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 09:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linux-foundation.org; s=google;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc;
- bh=Zej4CxY/1CWynJQcpIFCE/ePm/cZkXwlSREUqfzuJ8Y=;
- b=h5BQlI0xIEyNRWKjxWMt8RcIcaw6Iab9Lro//TN7cNvmYLCYmjHA9b7vqil1aO5lR2
- jjncnbXB0E5n8vUT5r/OBW2cdzESp8HNiF0+6Am4i8gbPE/IF29BiN++mET+t+9HhGXy
- KU+7dVHbSPecBR62YILXw08KL2z9er7opHtdU=
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BBD13140034E
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 19:39:40 +0200 (CEST)
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 466193FB9E
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 17:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1661449179;
+ bh=R4C6oZbj4fRSjMdKk0fOLHv+Kf6WkjfsLDKwll+45BM=;
+ h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+ To:Cc:Content-Type;
+ b=gZz9ZLPjemSQZS+kREjVcvTfQD4ezmuG2n5NgHSdICmfCx1Y7Tt6lC8akDuPHJbbj
+ zLmbQplolQJCZwOk3JMyHBrrAMZwTeE4UX4JvUHxAnFzIZ4yQa+ohRtK/4/8kIErsF
+ OJRi9u79f3ng2Kb5yOBz/1nqrG/kJbHfI35stk1b1OzTqhVHsb8QUR3kQ6ATojaU18
+ rLiQ08DkLUNk/ICdfZN62rko0C3CPfYDNBuPGP+1B5GFHgIDV7V1rU3LlcQv30LtHV
+ ltV+t2T8Op0x3yLHdRsLfaJ28Ju7eVrhkT2neCKm6AcX682eBL///1dM9IsQGCAH5H
+ t4LL6VislskWQ==
+Received: by mail-ed1-f72.google.com with SMTP id
+ z20-20020a05640235d400b0043e1e74a495so13346696edc.11
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 10:39:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc;
- bh=Zej4CxY/1CWynJQcpIFCE/ePm/cZkXwlSREUqfzuJ8Y=;
- b=HyuYV+vz2qF5G4UJMxKRc+agb49tb/eZzdSxGMy8s30ut9ojp+IBh+R4tqMTjS0YB7
- s32AkCth0THUmi5h0W+7oiYwPfIJyOG6uidW48VHl5B430tDzTpaDYNbu4VRBq+GO3zE
- PIV3jrPKg0twK6jjuh/rxtowX+zEBE/MwHRRJ1BFs2T9ukrfwCflIgXdNsOo8AqU77iB
- CSLjVWKTHmql1hSJWnr3Q2nu7eSkw0fVLlf43Bx6EppfP3CWVxbzSe+hzja5Yjec4pDT
- jfsACT7A2MGn5NDxRX0uFOIwAYUp09WMUQlUpAiLEnRUDJjQNRejsxFpQP4Tuvnz62to
- LPoA==
-X-Gm-Message-State: ACgBeo0IVUT316sTvxCV/9fGaOsenRB+fsYK1L0QBMm5OdkRYTrqSf+M
- umlpbj6kZHb78eSEtVWBg5bH7dCTMM56PP6JFVk=
-X-Google-Smtp-Source: AA6agR5Ltp6P8MtPvso0KrCcWyb/BDLyffL3bamM5R/PBbsiY6i5ti39shF7qDYULk//FiSXe22hMQ==
-X-Received: by 2002:a17:907:c0e:b0:731:614:e507 with SMTP id
- ga14-20020a1709070c0e00b007310614e507mr3072571ejc.529.1661445810134; 
- Thu, 25 Aug 2022 09:43:30 -0700 (PDT)
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com.
- [209.85.221.47]) by smtp.gmail.com with ESMTPSA id
- d7-20020aa7d687000000b0044786c2c5c1sm2872318edr.3.2022.08.25.09.43.28
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 25 Aug 2022 09:43:28 -0700 (PDT)
-Received: by mail-wr1-f47.google.com with SMTP id a4so25386631wrq.1
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 09:43:28 -0700 (PDT)
-X-Received: by 2002:a05:6000:1888:b0:222:ca41:dc26 with SMTP id
- a8-20020a056000188800b00222ca41dc26mr2680808wri.442.1661445807749; Thu, 25
- Aug 2022 09:43:27 -0700 (PDT)
+ bh=R4C6oZbj4fRSjMdKk0fOLHv+Kf6WkjfsLDKwll+45BM=;
+ b=DYjqB243I+XXusTaA8z41muFLEuvUbf2gm5CIEHm89gMjmi3LkskkmJgqBDrw5n52l
+ K9qjBSlyp8Jv1BRWHROAoVjJjqRT6rbQptc0OO/GNjrAE+PoFirKIj3k9xKYlVkaHqia
+ RGA/WpvCFE0T++LvyS+4rPItkR/ABDseW+oohelaEMdzrzw6l1a5yuvlEygHY/bdy9EJ
+ dQBIFka2ajXOr8trjI2ETYkEND7Q4B/YB2iFcRs0dOLbBR/gIaHILTSGNKBfAtZRN360
+ lmV9md4Qr4fazPViBApfOjBOWFTQw2ymRQlyWCtRxFEW41OC9zMXNs/3+JCUCfKqfWhl
+ Hmaw==
+X-Gm-Message-State: ACgBeo2eRh7zJkv6iQhI0tnmygCXKDXwYW5Ys6zcKqeiLpQCwLAJYW5F
+ XjnSlseWI+IelCNlDmMEQsroDkgXsS8J6Gj7s2Z0X+VSYfAJFeFaScGOltaDypgzKo1aJGWm/WX
+ DlpE/jcdXzj+MEnZUorfufEhiBTomTnL6kPnOQKhG8+/z
+X-Received: by 2002:a05:6402:19:b0:447:901f:6b28 with SMTP id
+ d25-20020a056402001900b00447901f6b28mr3943061edu.392.1661449179007; 
+ Thu, 25 Aug 2022 10:39:39 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR7zaJwTgwjzQrdHA8GbFTssT5lX6mPyuUftMaHAIqsqgLvAJDNGm5+ItYzAYEcj6FteXyvL/y0kZnPbW7P8sVQ=
+X-Received: by 2002:a05:6402:19:b0:447:901f:6b28 with SMTP id
+ d25-20020a056402001900b00447901f6b28mr3943052edu.392.1661449178809; Thu, 25
+ Aug 2022 10:39:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20220824185505.56382-1-alx.manpages@gmail.com>
- <CAADnVQKiEVL9zRtN4WY2+cTD2b3b3buV8BQb83yQw13pWq4OGQ@mail.gmail.com>
- <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com> <YwcPQ987poRYjfoL@kroah.com>
- <87ilmgddui.fsf@oldenburg.str.redhat.com>
- <CAHk-=whsETo4kc2Ec1Nf4HQY5vKYmRi9et243kyqN4E-=PgKJw@mail.gmail.com>
- <alpine.DEB.2.22.394.2208251435370.104368@digraph.polyomino.org.uk>
-In-Reply-To: <alpine.DEB.2.22.394.2208251435370.104368@digraph.polyomino.org.uk>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 25 Aug 2022 09:43:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgWiU_KjueEE1Mi7rk6NCKaQRE=5hQaQC+2MY6-CabKFA@mail.gmail.com>
-Message-ID: <CAHk-=wgWiU_KjueEE1Mi7rk6NCKaQRE=5hQaQC+2MY6-CabKFA@mail.gmail.com>
-To: Joseph Myers <joseph@codesourcery.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220824215421.90947-1-luke.nowakowskikrijger@canonical.com>
+ <YwdWKb/Imzwk5F1V@pevik> <87wnaw1ebh.fsf@suse.de>
+In-Reply-To: <87wnaw1ebh.fsf@suse.de>
+From: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+Date: Thu, 25 Aug 2022 10:39:02 -0700
+Message-ID: <CADS1e3dmMMsBQggVPBKHdYRwV0pw6277HmBPoHpkL3=b5AN5MQ@mail.gmail.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Many pages: Document fixed-width types with
- ISO C naming
+Subject: Re: [LTP] [PATCH] API/cgroup: Add rdma controller
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,56 +86,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Alejandro Colomar <alx.manpages@gmail.com>,
- linux-man <linux-man@vger.kernel.org>, Rich Felker <dalias@libc.org>,
- Alexei Starovoitov <ast@kernel.org>, David Howells <dhowells@redhat.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- linux-arch <linux-arch@vger.kernel.org>, Zack Weinberg <zackw@panix.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Alex Colomar <alx@kernel.org>,
- Michael Kerrisk <mtk.manpages@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- GCC <gcc-patches@gcc.gnu.org>, LTP List <ltp@lists.linux.it>,
- glibc <libc-alpha@sourceware.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- LKML <linux-kernel@vger.kernel.org>, David Laight <David.Laight@aculab.com>,
- Adhemerval Zanella <adhemerval.zanella@linaro.org>,
- Linux API <linux-api@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1931952255=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Aug 25, 2022 at 7:38 AM Joseph Myers <joseph@codesourcery.com> wrote:
+--===============1931952255==
+Content-Type: multipart/alternative; boundary="0000000000001da23405e71448d9"
+
+--0000000000001da23405e71448d9
+Content-Type: text/plain; charset="UTF-8"
+
+Hi,
+
+On Thu, Aug 25, 2022 at 9:24 AM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
+
+> Hi,
 >
-> I've not yet implemented it for glibc or for GCC format checking, but C23
-> adds 'wN' format length modifiers so you will be able to e.g. use "%w64d"
-> with printf to print an int64_t and won't need those PRI macros any more.
+> Petr Vorel <pvorel@suse.cz> writes:
+>
+> > Hi Luke,
+> >
+> >> There is a test reporting "TBROK: 'rdma' controller is unknown
+> >> to LTP" so lets add the controller.
+> >
+> > Out of curiosity: which test?
+> >
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> >
+> > Kind regards,
+> > Petr
+>
+> I'm not sure, I think it was one of the shell tests which tries to mount
+> all the controllers. Anyway, merged thanks!
+>
+>
+It looks like cgroup/cgroup_regression_test.sh test 7 was the failing test.
+Li ran into this earlier too I think.
 
-Yeah, that's going to help user space.
+Thanks for merging :)
 
-We don't typically have huge issues with it (any more) in the kernel
-exactly because we refused to do the syntactically horrendous PRIxyz
-thing.
+Thanks,
+- Luke
 
-So in the kernel, we still do have some format string issues, but they
-tend to be about "different architectures and configurations do
-different things for this type", and those different things are sadly
-not necessarily about a fixed width.
+-- 
+> Thank you,
+> Richard.
+>
 
-IOW, we used to have horrors like "sector_t can be 32-bit or 64-bit
-depending on config options" (because small machines didn't want the
-overhead of having to pass 64-bit things around - from back when
-32-bit was a primary target).
+--0000000000001da23405e71448d9
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We got rid of *that* thing a few years ago because it just wasn't
-worth supporting any more, but some similar issues remain.
+<div dir=3D"ltr"><div>Hi, <br></div><br><div class=3D"gmail_quote"><div dir=
+=3D"ltr" class=3D"gmail_attr">On Thu, Aug 25, 2022 at 9:24 AM Richard Palet=
+horpe &lt;<a href=3D"mailto:rpalethorpe@suse.de">rpalethorpe@suse.de</a>&gt=
+; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi,<br>
+<br>
+Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_blank">pvorel@s=
+use.cz</a>&gt; writes:<br>
+<br>
+&gt; Hi Luke,<br>
+&gt;<br>
+&gt;&gt; There is a test reporting &quot;TBROK: &#39;rdma&#39; controller i=
+s unknown<br>
+&gt;&gt; to LTP&quot; so lets add the controller.<br>
+&gt;<br>
+&gt; Out of curiosity: which test?<br>
+&gt;<br>
+&gt; Reviewed-by: Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=
+=3D"_blank">pvorel@suse.cz</a>&gt;<br>
+&gt;<br>
+&gt; Kind regards,<br>
+&gt; Petr<br>
+<br>
+I&#39;m not sure, I think it was one of the shell tests which tries to moun=
+t<br>
+all the controllers. Anyway, merged thanks!<br>
+<br></blockquote><div><br></div><div>It looks like cgroup/cgroup_regression=
+_test.sh test 7 was the failing test. Li ran into this earlier too I think.=
+</div><div><br></div><div>Thanks for merging :) <br></div><div><br></div><d=
+iv>Thanks, <br></div><div>- Luke <br></div><div><br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex">
+-- <br>
+Thank you,<br>
+Richard.<br>
+</blockquote></div></div>
 
-So we still have a number of cases of "if you really need to print
-this out, you need to use '%llui' and cast the value to 'unsigned long
-long'".
+--0000000000001da23405e71448d9--
 
-But it's happily not as common as it used to be.
+--===============1931952255==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-                 Linus
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1931952255==--
